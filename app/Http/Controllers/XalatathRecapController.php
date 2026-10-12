@@ -168,13 +168,18 @@ class XalatathRecapController extends Controller
             ->get(['blizz_id', 'region'])
             ->keyBy(fn ($a) => $a->blizz_id.'|'.$a->region);
 
+        // One list per game mode (game_type null = all modes), each trimmed to its own top 25.
         return collect($rows)
-            ->sortBy('rank')
-            ->reject(fn ($row) => $this->globalDataService->isHiddenFrom($row['blizz_id'], $row['region'], $viewer))
-            ->take(self::LEADERBOARD_SIZE)
-            ->values()
-            ->map(fn ($row, $i) => [
-                'rank' => $i + 1,
+            ->groupBy(fn ($row) => $row['game_type'] ?? 'all')
+            ->flatMap(fn ($group) => $group
+                ->sortBy('rank')
+                ->reject(fn ($row) => $this->globalDataService->isHiddenFrom($row['blizz_id'], $row['region'], $viewer))
+                ->take(self::LEADERBOARD_SIZE)
+                ->values()
+                ->map(fn ($row, $i) => [...$row, 'rank' => $i + 1]))
+            ->map(fn ($row) => [
+                'game_type' => $row['game_type'] ?? null,
+                'rank' => $row['rank'],
                 'blizz_id' => $row['blizz_id'],
                 'region' => $row['region'],
                 'battletag' => explode('#', $row['battletag'])[0],

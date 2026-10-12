@@ -57,12 +57,174 @@
       </article>
     </div>
 
-    <div class="max-w-[1500px] mx-auto px-4 py-8 flex flex-col gap-10">
+    <!-- Event-wide: doesn't change with the mode toggle -->
+    <div class="max-w-[1500px] mx-auto px-4 pt-8 flex flex-col gap-10">
+      <!-- Stage timeline -->
+      <section id="recap-stages" data-index="How the Nexus Fell" v-if="stages.length">
+        <h2 class="recap-heading">How the Nexus Fell on Heroes Profile</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+          <div v-for="stage in timelineStages" :key="stage.stage" :class="['rounded-md p-4 flex flex-col items-center text-center', { 'opacity-30': !stage.reached_at }]" :style="stageCardStyle(stage.stage)">
+            <img class="w-24 mb-2" :src="`/images/event/xalatath/xalatath-logo-stage-${stage.stage}.svg`" alt="" />
+            <div class="font-bold">Stage {{ stage.stage }}</div>
+            <div class="text-xs opacity-75">{{ stage.stage === 0 ? 'Event start' : `${format(stage.threshold)} games + bans` }}</div>
+            <div class="text-sm mb-2">{{ stage.reached_at ? formatDate(stage.reached_at) : 'Never reached' }}</div>
+            <p class="text-sm opacity-90">{{ stageNotes[stage.stage] }}</p>
+          </div>
+        </div>
 
+        <!-- What each stage changed, one card per stage, all the same size. The Before/After
+             toggle above flips every card at once. -->
+        <div class="flex flex-wrap items-center gap-3 mt-6 mb-2">
+          <h3 class="text-sm uppercase tracking-widest xalatath-title">What Changed</h3>
+          <multi-tab-button :options="changeOptions" :model-value="paletteOn ? 'after' : 'before'" @update:model-value="setChangeView"></multi-tab-button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+          <!-- Stage 5 added no new colours (the site stayed in the stage 4 palette); its gradient was only the splash -->
+          <div v-for="stage in timelineStages" :key="'change-' + stage.stage" :class="['rounded-md p-3 h-96 flex flex-col overflow-hidden', { 'opacity-30': !stage.reached_at }]" :style="stageCardStyle(stage.stage === 5 ? 4 : stage.stage)">
+            <div class="text-xs uppercase opacity-75 text-center mb-2">Stage {{ stage.stage }}</div>
+            <!-- Top-aligned so the logos and samples line up across the row -->
+            <div class="flex-1 min-h-0 flex flex-col items-center justify-start pt-2 text-center">
+
+              <!-- Every card leads with the logo: the previous stage's frame becoming this one's.
+                   Event frames get the nav's nudge (the hex sits low in the image); the original logo doesn't. -->
+              <span class="relative inline-block w-20 h-20 shrink-0">
+                <img :src="logoBefore(stage.stage)" alt="" :class="['absolute inset-0 w-full h-full object-contain void-palette-mock', { '-translate-y-[8%]': stage.stage > 0 }]" :style="{ opacity: paletteOn ? 0 : 1 }" />
+                <img :src="`/images/event/xalatath/xalatath-logo-stage-${stage.stage}.svg`" alt="" class="absolute inset-0 w-full h-full object-contain -translate-y-[8%] void-palette-mock" :style="{ opacity: paletteOn ? 1 : 0 }" />
+              </span>
+
+              <!-- 0: the eye hunt; her eye turns up tucked into a page -->
+              <div v-if="stage.stage === 0" class="w-full mt-4 text-[10px]">
+                <div class="relative h-24 rounded overflow-hidden text-left" style="background-color: #0F121D;">
+                  <div class="px-2 py-1" style="background-color: #333333;">Heroes Profile</div>
+                  <div class="px-2 pt-2 opacity-50 leading-relaxed">Player stats · Match history<br />Talent builds · Leaderboards</div>
+                  <img src="/images/event/xalatath/void-eye.svg" alt="" class="absolute bottom-1 right-2 w-8 h-8 void-palette-mock" :style="{ opacity: paletteOn ? 1 : 0 }" />
+                </div>
+                <div class="mt-1 opacity-75 void-palette-mock" :style="{ opacity: paletteOn ? 1 : 0 }">The eye hunt begins</div>
+              </div>
+
+              <!-- 1: the nav picking up the purple glow -->
+              <div v-else-if="stage.stage === 1" class="w-full mt-4 rounded overflow-hidden text-[10px] text-left" style="background-color: #0F121D;">
+                <div class="px-2 py-1 void-palette-mock"
+                  :style="{ backgroundColor: '#333333', boxShadow: paletteOn ? '0 4px 14px rgba(123, 63, 228, 0.8)' : 'none' }">
+                  Heroes Profile · Global Stats · Tools
+                </div>
+                <div class="h-4"></div>
+              </div>
+
+              <!-- 2: her whispers, a new one each time it flips to After -->
+              <div v-else-if="stage.stage === 2" class="h-28 w-full mt-4 flex items-center justify-center">
+                <transition name="void-whisper" mode="out-in">
+                  <p v-if="paletteOn" :key="whisperIndex" class="void-whisper rounded px-3 py-2 text-sm italic">{{ whispers[whisperIndex] }}</p>
+                </transition>
+              </div>
+
+              <!-- 3: the nav scrambled into glyphs -->
+              <div v-else-if="stage.stage === 3" class="h-28 w-full mt-4 flex flex-wrap content-center justify-center gap-x-3 gap-y-1 text-sm">
+                <span v-for="word in glyphWords" :key="word" :class="['whitespace-nowrap', { 'void-glyph-text': paletteOn }]">{{ paletteOn ? glyph(word) : word }}</span>
+              </div>
+
+              <!-- 4: a tiny slice of the site flipping to the stage 4 palette -->
+              <div v-else-if="stage.stage === 4" class="w-full mt-4 text-[10px] text-left">
+                <div class="rounded overflow-hidden border border-[#5b21b6] void-palette-mock" :style="{ backgroundColor: palette.page }">
+                  <div class="px-2 py-1 flex justify-between" :style="{ backgroundColor: palette.nav }">
+                    <span>Heroes Profile</span>
+                    <span :style="{ color: palette.accent }">Global Stats</span>
+                  </div>
+                  <div class="px-2 py-1 flex justify-between" :style="{ backgroundColor: palette.thead }">
+                    <span>Hero</span><span>Win rate</span>
+                  </div>
+                  <div class="px-2 py-1 flex justify-between">
+                    <span>Xal'atath</span>
+                    <span class="px-2 rounded" :style="{ backgroundColor: palette.button }">Search</span>
+                  </div>
+                </div>
+                <!-- The colours for whichever side of the toggle is showing -->
+                <div class="grid grid-cols-[auto_1fr_auto] items-center gap-x-2 gap-y-1 mt-2">
+                  <template v-for="swatch in paletteSwatches" :key="swatch.label">
+                    <span class="inline-block w-3 h-3 rounded-sm void-palette-mock" :style="{ backgroundColor: paletteOn ? swatch.after : swatch.before }"></span>
+                    <span class="opacity-75 truncate">{{ swatch.label }}</span>
+                    <span class="opacity-75 tabular-nums">{{ paletteOn ? swatch.after : swatch.before }}</span>
+                  </template>
+                </div>
+              </div>
+
+              <!-- 5: the fallen splash's message -->
+              <div v-else-if="stage.stage === 5" class="h-28 w-full mt-4 flex items-center justify-center">
+                <div class="font-logo text-lg leading-tight void-palette-mock" :style="{ opacity: paletteOn ? 1 : 0 }">The Nexus Has Fallen</div>
+              </div>
+            </div>
+            <!-- Before/after label pinned to the bottom of every card -->
+            <div class="text-xs opacity-75 text-center pt-2">{{ paletteOn ? (stage.stage === 0 ? 'Event logo' : `After stage ${stage.stage}`) : 'Before' }}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- First sighting -->
+      <section id="recap-firsts" data-index="First Sighting" v-if="firstGame">
+        <h2 class="recap-heading">First Sighting</h2>
+        <div class="xalatath-recap-card p-4 max-w-[600px]">
+          <p class="mb-2">This is the first Xal'atath game seen on Heroes Profile.</p>
+          <a class="link text-sm" target="_blank" rel="noopener" :href="`/Match/Single/${firstGame.replayID}`">View the first match</a>
+        </div>
+      </section>
+
+      <!-- Launch comparison -->
+      <section id="recap-launch" data-index="Biggest Launch Ever?" v-if="launches.length">
+        <h2 class="recap-heading">Biggest Launch Ever?</h2>
+        <p class="mb-3 text-sm opacity-75">Games played in each hero's first {{ launchDays }} days, the length of the event, from replays uploaded to Heroes Profile.</p>
+        <div v-for="row in launches" :key="row.hero" class="mb-3">
+          <div class="flex justify-between text-sm mb-1">
+            <span :class="{ 'font-bold xalatath-title': row.hero == heroId }">{{ heroName(row.hero) }} <span class="opacity-60">({{ formatDate(row.release_date) }})</span></span>
+            <span class="tabular-nums">{{ format(row.games) }}</span>
+          </div>
+          <div class="h-3 bg-darken rounded overflow-hidden">
+            <div :class="['h-full', row.hero == heroId ? 'xalatath-progress' : 'bg-[#6b7280]']" :style="{ width: percent(row.games, launchMax) }"></div>
+          </div>
+        </div>
+        <p class="mt-2 font-bold">{{ launchVerdict }}</p>
+      </section>
+
+      <!-- Eye hunt -->
+      <section id="recap-eye" data-index="The Eye Hunt" v-if="recap.eyeHunt && recap.eyeHunt.finders">
+        <h2 class="recap-heading">The Eye Hunt</h2>
+        <div class="flex flex-wrap gap-6 items-end">
+          <div class="xalatath-recap-card p-4 flex items-center gap-4">
+            <img src="/images/event/xalatath/void-eye.svg" alt="" class="w-16 h-16" />
+            <div>
+              <div class="text-3xl font-bold tabular-nums">{{ format(recap.eyeHunt.finders) }}</div>
+              <div>found Xal'atath's eye</div>
+              <div v-if="eyeBusiestDay" class="text-sm opacity-75">Busiest day: {{ format(eyeBusiestDay.count) }} found on {{ formatDate(eyeBusiestDay.date) }}</div>
+            </div>
+          </div>
+          <div class="flex items-end gap-[2px] h-24">
+            <div v-for="day in eyeDays" :key="day.date" class="w-3 bg-[#7b3fe4] rounded-t-sm" :style="{ height: percent(day.count, eyeDayMax) }" :title="`${day.date}: ${day.count}`"></div>
+          </div>
+        </div>
+        <div class="max-w-[900px] mt-4 text-sm leading-relaxed">
+          <p class="mb-2">
+            While the event ran, Xal'atath hid her eye somewhere on Heroes Profile. It turned up on roughly one page in twelve,
+            in a different spot for every visitor, and moved each day. Clicking it and logging in with Battle.net claimed it.
+          </p>
+          <p>
+            <span class="font-bold">The reward:</span> the Mark of the Void, an eye shown beside your battletag across the site that stays for good,
+            plus 3 months of ad-free Heroes Profile. Finders can hide the mark in Profile Settings.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Stats by game mode; the toggle sticks while scrolling through them -->
+    <div class="max-w-[1500px] mx-auto px-4 pt-10">
+      <div class="xalatath-mode-bar sticky top-0 max-md:top-[75px] z-40 py-3 mb-6 flex flex-wrap items-center gap-3">
+        <span class="text-sm opacity-75">Showing stats for</span>
+        <multi-tab-button :options="modeOptions" :model-value="mode" @update:model-value="mode = $event"></multi-tab-button>
+      </div>
+      <div class="flex flex-col gap-10">
       <!-- Final stats -->
       <section id="recap-final-count" data-index="The Final Count">
         <h2 class="recap-heading">The Final Count</h2>
-        <p class="mb-4 opacity-80">The Void reached stage {{ final.stage }} of 5 with {{ format(final.corruption) }} games and bans.</p>
+        <p v-if="mode === 'all'" class="mb-4 opacity-80">The Void reached stage {{ final.stage }} of 5 with {{ format(final.corruption) }} games and bans.</p>
+        <p v-else class="mb-4 opacity-80">{{ modeLabel }} games only.</p>
         <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-3">
           <div v-for="tile in allTiles" :key="tile.label" class="xalatath-recap-card p-3 text-center" :title="tile.info">
             <div class="text-xs uppercase opacity-75">{{ tile.label }}</div>
@@ -89,29 +251,6 @@
           <div v-for="item in ledger" :key="item.label" class="xalatath-recap-card p-3 text-center">
             <div class="text-xs uppercase opacity-75">{{ item.label }}</div>
             <div class="text-xl font-bold tabular-nums">{{ item.value }}</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Stage timeline -->
-      <section id="recap-stages" data-index="How the Nexus Fell" v-if="stages.length">
-        <h2 class="recap-heading">How the Nexus Fell on Heroes Profile</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          <div v-for="stage in stages" :key="stage.stage" :class="['rounded-md p-4 flex flex-col items-center text-center', { 'opacity-30': !stage.reached_at }]" :style="stageCardStyle(stage.stage)">
-            <img class="w-24 mb-2" :src="`/images/event/xalatath/xalatath-logo-stage-${stage.stage}.svg`" alt="" />
-            <div class="font-bold">Stage {{ stage.stage }}</div>
-            <div class="text-xs opacity-75">{{ format(stage.threshold) }} games + bans</div>
-            <div class="text-sm mb-2">{{ stage.reached_at ? formatDate(stage.reached_at) : 'Never reached' }}</div>
-            <p class="text-sm opacity-90">{{ stageNotes[stage.stage] }}</p>
-            <!-- Fixed heights so cycling samples never resize the card row -->
-            <div v-if="stage.stage === 2" class="w-full h-32 mt-3 flex items-center justify-center overflow-hidden">
-              <transition name="void-whisper" mode="out-in">
-                <p :key="whisperIndex" class="void-whisper rounded px-3 py-2 text-sm italic">{{ whispers[whisperIndex] }}</p>
-              </transition>
-            </div>
-            <div v-if="stage.stage === 3" class="w-full h-20 mt-3 flex flex-wrap content-center justify-center gap-x-3 gap-y-1 text-sm overflow-hidden">
-              <span v-for="word in glyphWords" :key="word" class="whitespace-nowrap void-glyph-text">{{ glyph(word) }}</span>
-            </div>
           </div>
         </div>
       </section>
@@ -172,7 +311,7 @@
 
       <!-- Game modes + regions -->
       <section id="recap-modes" data-index="Modes & Regions" class="grid md:grid-cols-2 gap-6">
-        <div>
+        <div v-if="mode === 'all'">
           <h2 class="recap-heading">Corruption by Game Mode</h2>
           <table class="min-w-0 w-full responsive-table">
             <thead>
@@ -223,31 +362,6 @@
           <span class="opacity-75">More games</span>
         </div>
         <p v-if="heatmap.peak" class="mt-2 text-sm">The Void was hungriest on {{ heatmap.peak }}.</p>
-      </section>
-
-      <!-- Launch comparison -->
-      <section id="recap-launch" data-index="Biggest Launch Ever?" v-if="launches.length">
-        <h2 class="recap-heading">Biggest Launch Ever?</h2>
-        <p class="mb-3 text-sm opacity-75">Games played in each hero's first {{ launchDays }} days, the length of the event, from replays uploaded to Heroes Profile.</p>
-        <div v-for="row in launches" :key="row.hero" class="mb-3">
-          <div class="flex justify-between text-sm mb-1">
-            <span :class="{ 'font-bold xalatath-title': row.hero == heroId }">{{ heroName(row.hero) }} <span class="opacity-60">({{ formatDate(row.release_date) }})</span></span>
-            <span class="tabular-nums">{{ format(row.games) }}</span>
-          </div>
-          <div class="h-3 bg-darken rounded overflow-hidden">
-            <div :class="['h-full', row.hero == heroId ? 'xalatath-progress' : 'bg-[#6b7280]']" :style="{ width: percent(row.games, launchMax) }"></div>
-          </div>
-        </div>
-        <p class="mt-2 font-bold">{{ launchVerdict }}</p>
-      </section>
-
-      <!-- First sighting -->
-      <section id="recap-firsts" data-index="First Sighting" v-if="firstGame">
-        <h2 class="recap-heading">First Sighting</h2>
-        <div class="xalatath-recap-card p-4 max-w-[600px]">
-          <p class="mb-2">This is the first Xal'atath game seen on Heroes Profile.</p>
-          <a class="link text-sm" target="_blank" rel="noopener" :href="`/Match/Single/${firstGame.replayID}`">View the first match</a>
-        </div>
       </section>
 
       <!-- Single-game records, grouped; each opens to its top 10 -->
@@ -355,14 +469,14 @@
       </section>
 
       <!-- Leaderboard -->
-      <section id="recap-leaderboard" data-index="Most Corrupted" v-if="recap.leaderboard.length">
+      <section id="recap-leaderboard" data-index="Most Corrupted" v-if="leaderboard.length">
         <h2 class="recap-heading">Most Corrupted</h2>
         <table class="min-w-0 w-full responsive-table">
           <thead>
             <tr><th class="py-2 px-3 text-left text-sm">Rank</th><th class="py-2 px-3 text-left text-sm">Player</th><th class="py-2 px-3 text-left text-sm">Region</th><th class="py-2 px-3 text-left text-sm">Games</th><th class="py-2 px-3 text-left text-sm">Win rate</th></tr>
           </thead>
           <tbody>
-            <tr v-for="row in recap.leaderboard" :key="row.blizz_id + '-' + row.region">
+            <tr v-for="row in leaderboard" :key="row.blizz_id + '-' + row.region">
               <td class="py-2 px-3">{{ row.rank }}</td>
               <td class="py-2 px-3">
                 <div class="flex items-center">
@@ -395,35 +509,10 @@
           </tbody>
         </table>
       </section>
+      </div>
+    </div>
 
-      <!-- Eye hunt -->
-      <section id="recap-eye" data-index="The Eye Hunt" v-if="recap.eyeHunt && recap.eyeHunt.finders">
-        <h2 class="recap-heading">The Eye Hunt</h2>
-        <div class="flex flex-wrap gap-6 items-end">
-          <div class="xalatath-recap-card p-4 flex items-center gap-4">
-            <img src="/images/event/xalatath/void-eye.svg" alt="" class="w-16 h-16" />
-            <div>
-              <div class="text-3xl font-bold tabular-nums">{{ format(recap.eyeHunt.finders) }}</div>
-              <div>found Xal'atath's eye</div>
-              <div v-if="eyeBusiestDay" class="text-sm opacity-75">Busiest day: {{ format(eyeBusiestDay.count) }} found on {{ formatDate(eyeBusiestDay.date) }}</div>
-            </div>
-          </div>
-          <div class="flex items-end gap-[2px] h-24">
-            <div v-for="day in eyeDays" :key="day.date" class="w-3 bg-[#7b3fe4] rounded-t-sm" :style="{ height: percent(day.count, eyeDayMax) }" :title="`${day.date}: ${day.count}`"></div>
-          </div>
-        </div>
-        <div class="max-w-[900px] mt-4 text-sm leading-relaxed">
-          <p class="mb-2">
-            While the event ran, Xal'atath hid her eye somewhere on Heroes Profile. It turned up on roughly one page in twelve,
-            in a different spot for every visitor, and moved each day. Clicking it and logging in with Battle.net claimed it.
-          </p>
-          <p>
-            <span class="font-bold">The reward:</span> the Mark of the Void, an eye shown beside your battletag across the site that stays for good,
-            plus 3 months of ad-free Heroes Profile. Finders can hide the mark in Profile Settings.
-          </p>
-        </div>
-      </section>
-
+    <div class="max-w-[1500px] mx-auto px-4 py-10 flex flex-col gap-10">
       <!-- Your contribution -->
       <section id="recap-contribution" data-index="Your Contribution">
         <h2 class="recap-heading">Your Contribution</h2>
@@ -598,6 +687,7 @@ const NEGATIVE_RECORDS = ['deaths', 'outnumbered_deaths', 'time_spent_dead'];
 const TIME_RECORDS = ['stunning_enemies', 'rooting_enemies', 'silencing_enemies', 'time_on_fire', 'fastest_win', 'longest_game', 'time_spent_dead'];
 // What each stage did to the site while the event ran.
 const STAGE_NOTES = {
+  0: "She arrived. The Heroes Profile logo gave way to hers, the corruption scoreboard appeared across the top of the site, and her eye began hiding on its pages.",
   1: 'The logo cracked, and a purple glow crept under the nav bar and scoreboard.',
   2: 'She started whispering. Taunts surfaced across the site, aimed at your win rate and your uploads.',
   3: 'Her whispers scrambled the navigation into Void glyphs while she spoke.',
@@ -612,6 +702,8 @@ const NERFED_TALENTS = ['Anchored Core', 'Dark Barrier', 'Silence of the Lamb', 
 const STAGE_GLOW = '0 0 22px rgba(123, 63, 228, 0.45)';
 const STAGE_CARD_STYLES = {
   // Normal site colours, plus the purple glow under the nav.
+  // The site as it always was, before any corruption.
+  0: { backgroundColor: '#0F121D', border: '1px solid #2b3047' },
   1: { backgroundColor: '#0F121D', border: '1px solid #2b3047', boxShadow: STAGE_GLOW },
   2: { backgroundColor: '#0F121D', border: '1px solid #2b3047', boxShadow: STAGE_GLOW },
   3: { backgroundColor: '#0F121D', border: '1px solid #2b3047', boxShadow: STAGE_GLOW },
@@ -632,6 +724,21 @@ const STAGE_CARD_STYLES = {
 // Each region's heatmap is shown in its own time zone.
 const REGION_ZONES = { 1: 'America/New_York', 2: 'Europe/Berlin', 3: 'Asia/Seoul', 5: 'Asia/Shanghai' };
 const REGION_ZONE_LABELS = { 1: 'US Eastern', 2: 'Central European', 3: 'Korea', 5: 'China' };
+// The page-wide mode toggle. Keys match game_type in the snapshot ('all' = no game_type).
+const MODE_OPTIONS = [
+  { key: 'all', label: 'All' },
+  { key: '1', label: 'Quick Match' },
+  { key: '5', label: 'Storm League' },
+  { key: '6', label: 'ARAM' },
+];
+// The site's colours before stage 4 and what the stage 4 CSS turned them into.
+const PALETTE_SWATCHES = [
+  { key: 'nav', label: 'Nav bar', before: '#333333', after: '#1d0f38' },
+  { key: 'thead', label: 'Table headers', before: '#008b8b', after: '#5b21b6' },
+  { key: 'button', label: 'Buttons', before: '#213d7a', after: '#3a1470' },
+  { key: 'accent', label: 'Teal text', before: '#00d5d5', after: '#c084fc' },
+  { key: 'page', label: 'Background', before: '#0F121D', after: '#110822' },
+];
 const DEVOTEE_LABELS = { 1: 'Played once and fled', '2-9': 'Dabbled (2 to 9 games)', '10+': 'Devoted (10+ games)' };
 
 export default {
@@ -653,10 +760,12 @@ export default {
       chart: null,
       whisperIndex: 0,
       glyphWords: ['Global Stats', 'Leaderboards', 'Tools', 'Find a Player'],
-      sampleTimers: [],
       indexEntries: [],
       canShareFiles: false,
       selectedHeatmapRegion: null,
+      mode: 'all',
+      paletteOn: false,
+      paletteSwatches: PALETTE_SWATCHES,
       cardUrl: null,
     };
   },
@@ -665,10 +774,40 @@ export default {
       return this.recap.final || { totals: {}, stage: 0, corruption: 0, byGameType: {} };
     },
     totals() {
-      return this.final.totals || {};
+      if (this.mode === 'all') {
+        return this.final.totals || {};
+      }
+      return (this.final.byGameType || {})[this.mode] || {};
     },
     sections() {
       return this.recap.sections || {};
+    },
+    // Snapshot sections narrowed to the selected mode, and to All (for the Gazette and other event-wide bits).
+    modeSections() {
+      return this.sectionsFor(this.mode);
+    },
+    allSections() {
+      return this.sectionsFor('all');
+    },
+    changeOptions() {
+      return [{ key: 'before', label: 'Before' }, { key: 'after', label: 'After' }];
+    },
+    palette() {
+      const side = this.paletteOn ? 'after' : 'before';
+      return Object.fromEntries(PALETTE_SWATCHES.map((swatch) => [swatch.key, swatch[side]]));
+    },
+    modeOptions() {
+      return MODE_OPTIONS;
+    },
+    modeLabel() {
+      const option = MODE_OPTIONS.find((item) => item.key === this.mode);
+      return option ? option.label : '';
+    },
+    allGames() {
+      return this.allStat('games_played');
+    },
+    leaderboard() {
+      return (this.recap.leaderboard || []).filter((row) => this.modeKey(row) === this.mode);
     },
     allTiles() {
       return [...mainTiles(this.totals), ...extraTiles(this.totals)];
@@ -680,7 +819,7 @@ export default {
       return this.stat('games_played');
     },
     averages() {
-      const avg = this.sections.averages;
+      const avg = this.modeSections.averages[0];
       if (!avg || !avg.games) {
         return [];
       }
@@ -706,11 +845,15 @@ export default {
         { label: 'One game every', value: this.games ? this.duration((this.eventDays * 86400) / this.games) : '-' },
       ];
     },
+    // Stage 0 is the event start; it has no threshold in the snapshot.
+    timelineStages() {
+      return [{ stage: 0, threshold: 0, reached_at: this.recap.startsAt }, ...this.stages];
+    },
     stages() {
       return [...(this.sections.stages || [])].sort((a, b) => a.stage - b.stage);
     },
     daily() {
-      return [...(this.sections.daily || [])].sort((a, b) => (a.day < b.day ? -1 : 1));
+      return [...this.modeSections.daily].sort((a, b) => (a.day < b.day ? -1 : 1));
     },
     gameModes() {
       return Object.values(this.final.byGameType || {})
@@ -718,24 +861,24 @@ export default {
         .sort((a, b) => b.games_played - a.games_played);
     },
     regions() {
-      return [...(this.sections.regions || [])].sort((a, b) => (b.games + b.bans) - (a.games + a.bans));
+      return [...this.modeSections.regions].sort((a, b) => Number(a.region) - Number(b.region));
     },
     regionTotal() {
       return this.regions.reduce((sum, row) => sum + row.games + row.bans, 0);
     },
     heatmapRegions() {
       const games = {};
-      (this.sections.hourly || []).forEach((cell) => {
+      this.modeSections.hourly.forEach((cell) => {
         if (cell.region !== undefined) {
           games[cell.region] = (games[cell.region] || 0) + cell.games;
         }
       });
-      return Object.keys(games).map(Number).sort((a, b) => games[b] - games[a]);
+      return Object.keys(games).map(Number).sort((a, b) => a - b);
     },
     heatmapRegionOptions() {
       return this.heatmapRegions.map((region) => ({ key: region, label: this.recap.regions[region] || String(region) }));
     },
-    // Defaults to the region with the most games.
+    // Region id order (NA first); defaults to the first.
     heatmapRegion() {
       return this.heatmapRegions.includes(this.selectedHeatmapRegion) ? this.selectedHeatmapRegion : this.heatmapRegions[0];
     },
@@ -749,7 +892,7 @@ export default {
       const rows = Array.from({ length: 7 }, () => Array(24).fill(0));
       // One offset for the whole event, taken at its start.
       const offsetHours = Math.round(moment.tz(this.recap.startsAt, this.heatmapZone).utcOffset() / 60);
-      (this.sections.hourly || [])
+      this.modeSections.hourly
         .filter((cell) => cell.region === undefined || cell.region === this.heatmapRegion)
         .forEach((cell) => {
           // DAYOFWEEK is 1 = Sunday; shift to 0 = Monday hour-of-week, then into the region's time.
@@ -788,15 +931,329 @@ export default {
       return '';
     },
     recordRows() {
-      return this.sections.records || [];
+      return this.modeSections.records;
     },
     firstGame() {
-      return this.recordRows.find((row) => row.record === 'first_game' && (row.place || 1) === 1) || null;
+      return this.allSections.records.find((row) => row.record === 'first_game' && (row.place || 1) === 1) || null;
     },
     records() {
+      return this.buildRecords(this.recordRows);
+    },
+    nerf() {
+      return this.nerfSummary(this.modeSections.nerf);
+    },
+    allNerf() {
+      return this.nerfSummary(this.allSections.nerf);
+    },
+    nerfedTalents() {
+      const rows = this.modeSections.nerf_talents;
+      const levelGames = {};
+      rows.forEach((row) => {
+        const key = `${Number(row.after_nerf)}-${row.level}`;
+        levelGames[key] = (levelGames[key] || 0) + row.games;
+      });
+      const byTalent = {};
+      rows.forEach((row) => {
+        if (!NERFED_TALENTS.includes(this.talentName(row.talent_id))) {
+          return;
+        }
+        byTalent[row.talent_id] = byTalent[row.talent_id] || { talent_id: row.talent_id, level: row.level };
+        byTalent[row.talent_id][Number(row.after_nerf) ? 'after' : 'before'] = row;
+      });
+      const pick = (side, after) => (side ? this.percent(side.games, levelGames[`${after}-${side.level}`]) : '-');
+      return Object.values(byTalent)
+        .sort((a, b) => a.level - b.level)
+        .map((talent) => ({
+          ...talent,
+          pickBefore: pick(talent.before, 0),
+          pickAfter: pick(talent.after, 1),
+          winBefore: talent.before ? this.winRate(talent.before.wins, talent.before.games) : '-',
+          winAfter: talent.after ? this.winRate(talent.after.wins, talent.after.games) : '-',
+        }));
+    },
+    recordGroups() {
+      const byKey = Object.fromEntries(this.records.map((record) => [record.record, record]));
+      return RECORD_GROUPS
+        .map((group) => ({ title: group.title, records: group.records.map((record) => byKey[record.key]).filter(Boolean) }))
+        .filter((group) => group.records.length);
+    },
+    builds() {
+      return [...this.modeSections.builds].sort((a, b) => a.rank - b.rank);
+    },
+    talentTiers() {
+      const byLevel = {};
+      this.modeSections.talents.forEach((row) => {
+        byLevel[row.level] = byLevel[row.level] || { level: row.level, games: 0, talents: [] };
+        byLevel[row.level].games += row.games;
+        byLevel[row.level].talents.push(row);
+      });
+      return Object.values(byLevel)
+        .sort((a, b) => a.level - b.level)
+        .map((tier) => ({ ...tier, talents: tier.talents.sort((a, b) => b.games - a.games) }));
+    },
+    // Shaped like GlobalTalentBuildsSection's rows: talents as objects, win_rate as a percent.
+    buildRows() {
+      const hero = this.recap.heroes[HERO_ID];
+      const levels = ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'];
+      return this.builds.map((build) => {
+        const row = { hero, games_played: build.games, win_rate: build.games ? (build.wins / build.games) * 100 : 0 };
+        levels.forEach((level, i) => {
+          row[level] = this.recap.talents[build.talents[i]] || null;
+        });
+        return row;
+      });
+    },
+    // Shaped like GlobalTalentDetailsSection's talentdetaildata: { level: [{ talentInfo, win_rate, popularity, games_played, sort }] }.
+    talentGridData() {
+      if (!this.talentTiers.length) {
+        return null;
+      }
+      const data = {};
+      this.talentTiers.forEach((tier) => {
+        data[tier.level] = tier.talents
+          .filter((talent) => this.recap.talents[talent.talent_id])
+          .map((talent) => {
+            const info = this.recap.talents[talent.talent_id];
+            return {
+              talentInfo: info,
+              sort: Number(info.sort) || 0,
+              games_played: talent.games,
+              win_rate: talent.games ? (talent.wins / talent.games) * 100 : 0,
+              popularity: tier.games ? (talent.games / tier.games) * 100 : 0,
+            };
+          });
+      });
+      return data;
+    },
+    matchups() {
+      return this.modeSections.matchups;
+    },
+    victims() {
+      return this.victimsOf(this.matchups);
+    },
+    allVictims() {
+      return this.victimsOf(this.allSections.matchups);
+    },
+    allies() {
+      return this.matchups.filter((row) => row.relation === 'ally').sort((a, b) => this.edge(b) - this.edge(a));
+    },
+    matchupGroups() {
+      return [
+        { title: 'Victims', info: 'Enemy heroes she beat by more than everyone else does.', rows: this.victims.slice(0, 5) },
+        { title: 'Enemies', info: 'Enemy heroes that held her below what they usually concede.', rows: [...this.victims].reverse().slice(0, 5) },
+        { title: 'Allies', info: 'Teammates who won more with her than they usually do.', rows: this.allies.slice(0, 5) },
+      ];
+    },
+    maps() {
+      return this.sortMaps(this.modeSections.maps);
+    },
+    allMaps() {
+      return this.sortMaps(this.allSections.maps);
+    },
+    awards() {
+      return [...this.modeSections.awards].sort((a, b) => b.count - a.count);
+    },
+    devotees() {
+      return this.devoteeSummary(this.modeSections.devotees);
+    },
+    allDevotees() {
+      return this.devoteeSummary(this.allSections.devotees);
+    },
+    eyeDays() {
+      return Object.entries((this.recap.eyeHunt && this.recap.eyeHunt.per_day) || {})
+        .map(([date, count]) => ({ date, count }))
+        .sort((a, b) => (a.date < b.date ? -1 : 1));
+    },
+    eyeBusiestDay() {
+      return this.eyeDays.reduce((best, day) => (!best || day.count > best.count ? day : best), null);
+    },
+    eyeDayMax() {
+      return this.eyeDays.reduce((max, day) => Math.max(max, day.count), 0);
+    },
+    leadArticle() {
+      const fallen = this.final.stage >= 5;
+      return {
+        headline: fallen ? 'Xal\'atath Consumes the Nexus' : `Void Reaches Stage ${this.final.stage}, Then Recedes`,
+        // Opens with a word so the drop cap never splits a number.
+        body: `The Void reached stage ${this.final.stage} of 5 across Heroes Profile after ${this.format(this.allGames)} games `
+          + `and ${this.format(this.allStat('bans'))} bans. She won ${this.winRate(this.allStat('wins'), this.allGames)} of those games `
+          + `and racked up ${this.format(this.allStat('takedowns'))} takedowns along the way. `
+          + (fallen
+            ? 'The site\'s logo was consumed, its colours turned violet, and visitors were told the Nexus had fallen. Officials insisted everything was fine.'
+            : 'The site cracked, whispered and glitched, but the Nexus held. For now.'),
+      };
+    },
+    shareText() {
+      const c = this.contribution;
+      if (c && c.games > 0) {
+        return `I fed the Void ${this.format(c.games)} Xal'atath games and won ${this.winRate(c.wins, c.games)}. See what she left behind on Heroes Profile:`;
+      }
+      return `Xal'atath corrupted Heroes Profile to stage ${this.final.stage} of 5. See what she left behind:`;
+    },
+    recapUrl() {
+      return `${window.location.origin}/Event/Xalatath`;
+    },
+    // Intent links can't attach an image. For players with games, openShare() uploads
+    // their card first and posts their card page, whose og:image is that card.
+    shareLinks() {
+      const text = this.shareText;
+      return [
+        { name: 'Post on X', icon: 'fab fa-x-twitter', build: (url) => `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}` },
+        { name: 'Post on Bluesky', icon: 'fab fa-bluesky', build: (url) => `https://bsky.app/intent/compose?text=${encodeURIComponent(`${text} ${url}`)}` },
+      ];
+    },
+    contributionMates() {
+      const c = this.contribution || {};
+      return [
+        { title: 'Most played with', rows: c.allies || [] },
+        { title: 'Most played against', rows: c.enemies || [] },
+      ];
+    },
+    reclaimedBody() {
+      const days = Math.round(this.eventDays);
+      return `After ${days} days under the Void, the Heroes Profile team has taken the site back. `
+        + 'The logo is whole again, the colours have returned, and the whispers have stopped. '
+        + 'Staff remain on watch. Our sources whisper that more heroes may yet find their way to the Nexus, '
+        + 'and if they do, Heroes Profile will be here tracking every game.';
+    },
+    articles() {
+      const games = this.allGames || 1;
+      const list = [
+        {
+          headline: `Nexus Loses ${this.compact(this.allStat('spell_damage'))} Health to the Void, Sources Say`,
+          body: `Investigators confirm ${this.format(this.allStat('spell_damage'))} Void damage, about ${this.format(Math.round(this.allStat('spell_damage') / games))} a game. `
+            + `Her best single outing dealt ${this.recordDisplay('spell_damage')}.`,
+        },
+        {
+          headline: `Xal'atath Dies ${this.format(this.allStat('deaths'))} Times, Remains Unrepentant`,
+          body: `That's ${(this.allStat('deaths') / games).toFixed(1)} deaths a game and ${this.format(Math.floor(this.allStat('time_spent_dead') / 86400))} days spent sealed in the dagger. `
+            + `She has declined to comment.`,
+        },
+        {
+          headline: `${this.format(this.allStat('bans'))} Drafts Ban Her. She Spreads Anyway`,
+          body: `Bans counted toward the corruption meter too, so every attempt to seal her away only fed the Void.`,
+        },
+      ];
+      if (this.allMaps.length) {
+        const map = this.allMaps[0];
+        list.push({
+          headline: `${this.mapName(map.game_map)} Declared Her Favorite Battleground`,
+          body: `She won ${this.winRate(map.wins, map.games)} of ${this.format(map.games)} games there, her best of any map.`,
+        });
+      }
+      const tourists = this.allDevotees.rows.find((row) => String(row.bucket) === '1');
+      const devoted = this.allDevotees.rows.find((row) => String(row.bucket) === '10+');
+      if (tourists && this.allDevotees.total) {
+        list.push({
+          headline: `${this.percent(tourists.players, this.allDevotees.total)} of Heroes Tried Her Once and Fled`,
+          body: `${this.format(this.allDevotees.total)} players answered her call. ${devoted ? `${this.format(devoted.players)} of them stayed for 10 games or more.` : ''}`,
+        });
+      }
+      if (this.recap.eyeHunt && this.recap.eyeHunt.finders) {
+        list.push({
+          headline: `${this.format(this.recap.eyeHunt.finders)} Mortals Claim to Have Seen "The Eye"`,
+          body: `Witnesses describe a single eye hidden somewhere on the site. Finders now bear the Mark of the Void beside their names.`,
+        });
+      }
+      if (this.allVictims.length) {
+        const victim = this.allVictims[0];
+        list.push({
+          headline: `${this.heroName(victim.hero)} Players Request Therapy`,
+          body: `She won ${this.winRate(victim.wins, victim.games)} of her ${this.format(victim.games)} games against ${this.heroName(victim.hero)}, `
+            + `${this.edge(victim).toFixed(1)} points better than everyone else manages against them.`,
+        });
+      }
+      if (this.allNerf) {
+        list.push({
+          headline: 'Blizzard Responds With Balance Update',
+          body: `${this.allNerf.verdict} Win rate went from ${this.allNerf.rows[0].before} to ${this.allNerf.rows[0].after}.`,
+        });
+      }
+      return list;
+    },
+  },
+  watch: {
+    mode() {
+      this.chart?.destroy();
+      this.chart = null;
+      this.$nextTick(() => this.drawDailyChart());
+    },
+  },
+  mounted() {
+    this.drawDailyChart();
+    try {
+      this.canShareFiles = !!(navigator.canShare && navigator.canShare({ files: [new File([''], 'card.png', { type: 'image/png' })] }));
+    } catch (e) {
+      this.canShareFiles = false;
+    }
+    // Built from whichever sections actually rendered, numbered like newspaper pages.
+    this.indexEntries = Array.from(this.$el.querySelectorAll('[data-index]')).map((el, i) => ({
+      id: el.id,
+      label: el.dataset.index,
+      page: `A${i + 2}`,
+    }));
+    // Stage 2 and 3 cards replay what those stages looked like.
+  },
+  beforeUnmount() {
+    this.chart?.destroy();
+  },
+  methods: {
+    format: formatNumber,
+    glyph: toGlyphs,
+    // The What Changed toggle; a new whisper each time it flips to After.
+    // The logo a stage started from: the original Heroes Profile logo before the event, else the previous frame.
+    logoBefore(stage) {
+      return stage === 0 ? '/images/logo/heroesprofilelogo.png' : `/images/event/xalatath/xalatath-logo-stage-${stage - 1}.svg`;
+    },
+    setChangeView(view) {
+      const after = view === 'after';
+      if (after && !this.paletteOn) {
+        this.whisperIndex = (this.whisperIndex + 1) % this.whispers.length;
+      }
+      this.paletteOn = after;
+    },
+    // Her win rate with/against a hero minus the baseline, in points. Against a hero the
+    // baseline is what everyone wins against them (100 - their win rate); with one it's
+    // their own win rate.
+    edge(row) {
+      const hers = row.games ? (row.wins / row.games) * 100 : 0;
+      if (!row.hero_games) {
+        return hers - 50;
+      }
+      const heroRate = (row.hero_wins / row.hero_games) * 100;
+      return row.relation === 'enemy' ? hers - (100 - heroRate) : hers - heroRate;
+    },
+    edgeLabel(row) {
+      const edge = this.edge(row);
+      return `${edge >= 0 ? '+' : ''}${edge.toFixed(1)} pts vs usual`;
+    },
+    jumpTo(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    },
+    // Rows with no game_type (and snapshots from before the split) belong to All.
+    modeKey(row) {
+      return row.game_type === null || row.game_type === undefined ? 'all' : String(row.game_type);
+    },
+    sectionsFor(mode) {
+      const out = {};
+      Object.entries(this.sections).forEach(([name, value]) => {
+        const rows = Array.isArray(value) ? value : [value];
+        out[name] = rows.filter((row) => row && this.modeKey(row) === mode);
+      });
+      ['daily', 'regions', 'hourly', 'records', 'nerf', 'nerf_talents', 'builds', 'talents', 'matchups', 'maps', 'awards', 'devotees', 'averages']
+        .forEach((name) => { out[name] = out[name] || []; });
+      return out;
+    },
+    allStat(column) {
+      return Number((this.final.totals || {})[column] || 0);
+    },
+    buildRecords(rows) {
       return Object.keys(RECORD_LABELS)
         .map((key) => {
-          const top = this.recordRows
+          const top = rows
             .filter((row) => row.record === key)
             .sort((a, b) => (a.place || 1) - (b.place || 1))
             .map((row, i) => ({ ...row, place: row.place || i + 1, display: this.recordValue(key, row.value) }));
@@ -807,8 +1264,21 @@ export default {
         })
         .filter(Boolean);
     },
-    nerf() {
-      const rows = this.sections.nerf || [];
+    sortMaps(rows) {
+      return [...rows].sort((a, b) => b.wins / b.games - a.wins / a.games);
+    },
+    devoteeSummary(rows) {
+      const order = ['10+', '2-9', '1'];
+      const sorted = [...rows]
+        .sort((a, b) => order.indexOf(String(a.bucket)) - order.indexOf(String(b.bucket)))
+        .map((row) => ({ ...row, label: DEVOTEE_LABELS[row.bucket] || row.bucket }));
+      return { rows: sorted, total: sorted.reduce((sum, row) => sum + row.players, 0) };
+    },
+    // Sorted by edge over the baseline, so a hero everyone beats doesn't top the list.
+    victimsOf(rows) {
+      return rows.filter((row) => row.relation === 'enemy').sort((a, b) => this.edge(b) - this.edge(a));
+    },
+    nerfSummary(rows) {
       const before = rows.find((row) => !Number(row.after_nerf));
       const after = rows.find((row) => Number(row.after_nerf));
       if (!before || !after || !before.games || !after.games) {
@@ -858,280 +1328,11 @@ export default {
         ],
       };
     },
-    nerfedTalents() {
-      const rows = this.sections.nerf_talents || [];
-      const levelGames = {};
-      rows.forEach((row) => {
-        const key = `${Number(row.after_nerf)}-${row.level}`;
-        levelGames[key] = (levelGames[key] || 0) + row.games;
-      });
-      const byTalent = {};
-      rows.forEach((row) => {
-        if (!NERFED_TALENTS.includes(this.talentName(row.talent_id))) {
-          return;
-        }
-        byTalent[row.talent_id] = byTalent[row.talent_id] || { talent_id: row.talent_id, level: row.level };
-        byTalent[row.talent_id][Number(row.after_nerf) ? 'after' : 'before'] = row;
-      });
-      const pick = (side, after) => (side ? this.percent(side.games, levelGames[`${after}-${side.level}`]) : '-');
-      return Object.values(byTalent)
-        .sort((a, b) => a.level - b.level)
-        .map((talent) => ({
-          ...talent,
-          pickBefore: pick(talent.before, 0),
-          pickAfter: pick(talent.after, 1),
-          winBefore: talent.before ? this.winRate(talent.before.wins, talent.before.games) : '-',
-          winAfter: talent.after ? this.winRate(talent.after.wins, talent.after.games) : '-',
-        }));
-    },
-    recordGroups() {
-      const byKey = Object.fromEntries(this.records.map((record) => [record.record, record]));
-      return RECORD_GROUPS
-        .map((group) => ({ title: group.title, records: group.records.map((record) => byKey[record.key]).filter(Boolean) }))
-        .filter((group) => group.records.length);
-    },
-    builds() {
-      return [...(this.sections.builds || [])].sort((a, b) => a.rank - b.rank);
-    },
-    talentTiers() {
-      const byLevel = {};
-      (this.sections.talents || []).forEach((row) => {
-        byLevel[row.level] = byLevel[row.level] || { level: row.level, games: 0, talents: [] };
-        byLevel[row.level].games += row.games;
-        byLevel[row.level].talents.push(row);
-      });
-      return Object.values(byLevel)
-        .sort((a, b) => a.level - b.level)
-        .map((tier) => ({ ...tier, talents: tier.talents.sort((a, b) => b.games - a.games) }));
-    },
-    // Shaped like GlobalTalentBuildsSection's rows: talents as objects, win_rate as a percent.
-    buildRows() {
-      const hero = this.recap.heroes[HERO_ID];
-      const levels = ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'];
-      return this.builds.map((build) => {
-        const row = { hero, games_played: build.games, win_rate: build.games ? (build.wins / build.games) * 100 : 0 };
-        levels.forEach((level, i) => {
-          row[level] = this.recap.talents[build.talents[i]] || null;
-        });
-        return row;
-      });
-    },
-    // Shaped like GlobalTalentDetailsSection's talentdetaildata: { level: [{ talentInfo, win_rate, popularity, games_played, sort }] }.
-    talentGridData() {
-      if (!this.talentTiers.length) {
-        return null;
-      }
-      const data = {};
-      this.talentTiers.forEach((tier) => {
-        data[tier.level] = tier.talents
-          .filter((talent) => this.recap.talents[talent.talent_id])
-          .map((talent) => {
-            const info = this.recap.talents[talent.talent_id];
-            return {
-              talentInfo: info,
-              sort: Number(info.sort) || 0,
-              games_played: talent.games,
-              win_rate: talent.games ? (talent.wins / talent.games) * 100 : 0,
-              popularity: tier.games ? (talent.games / tier.games) * 100 : 0,
-            };
-          });
-      });
-      return data;
-    },
-    matchups() {
-      return this.sections.matchups || [];
-    },
-    // Sorted by edge over the baseline, so a hero everyone beats doesn't top the list.
-    victims() {
-      return this.matchups.filter((row) => row.relation === 'enemy').sort((a, b) => this.edge(b) - this.edge(a));
-    },
-    allies() {
-      return this.matchups.filter((row) => row.relation === 'ally').sort((a, b) => this.edge(b) - this.edge(a));
-    },
-    matchupGroups() {
-      return [
-        { title: 'Victims', info: 'Enemy heroes she beat by more than everyone else does.', rows: this.victims.slice(0, 5) },
-        { title: 'Enemies', info: 'Enemy heroes that held her below what they usually concede.', rows: [...this.victims].reverse().slice(0, 5) },
-        { title: 'Allies', info: 'Teammates who won more with her than they usually do.', rows: this.allies.slice(0, 5) },
-      ];
-    },
-    maps() {
-      return [...(this.sections.maps || [])].sort((a, b) => b.wins / b.games - a.wins / a.games);
-    },
-    awards() {
-      return [...(this.sections.awards || [])].sort((a, b) => b.count - a.count);
-    },
-    devotees() {
-      const order = ['10+', '2-9', '1'];
-      const rows = [...(this.sections.devotees || [])]
-        .sort((a, b) => order.indexOf(String(a.bucket)) - order.indexOf(String(b.bucket)))
-        .map((row) => ({ ...row, label: DEVOTEE_LABELS[row.bucket] || row.bucket }));
-      return { rows, total: rows.reduce((sum, row) => sum + row.players, 0) };
-    },
-    eyeDays() {
-      return Object.entries((this.recap.eyeHunt && this.recap.eyeHunt.per_day) || {})
-        .map(([date, count]) => ({ date, count }))
-        .sort((a, b) => (a.date < b.date ? -1 : 1));
-    },
-    eyeBusiestDay() {
-      return this.eyeDays.reduce((best, day) => (!best || day.count > best.count ? day : best), null);
-    },
-    eyeDayMax() {
-      return this.eyeDays.reduce((max, day) => Math.max(max, day.count), 0);
-    },
-    leadArticle() {
-      const fallen = this.final.stage >= 5;
-      return {
-        headline: fallen ? 'Xal\'atath Consumes the Nexus' : `Void Reaches Stage ${this.final.stage}, Then Recedes`,
-        // Opens with a word so the drop cap never splits a number.
-        body: `The Void reached stage ${this.final.stage} of 5 across Heroes Profile after ${this.format(this.games)} games `
-          + `and ${this.format(this.stat('bans'))} bans. She won ${this.winRate(this.stat('wins'), this.games)} of those games `
-          + `and racked up ${this.format(this.stat('takedowns'))} takedowns along the way. `
-          + (fallen
-            ? 'The site\'s logo was consumed, its colours turned violet, and visitors were told the Nexus had fallen. Officials insisted everything was fine.'
-            : 'The site cracked, whispered and glitched, but the Nexus held. For now.'),
-      };
-    },
-    shareText() {
-      const c = this.contribution;
-      if (c && c.games > 0) {
-        return `I fed the Void ${this.format(c.games)} Xal'atath games and won ${this.winRate(c.wins, c.games)}. See what she left behind on Heroes Profile:`;
-      }
-      return `Xal'atath corrupted Heroes Profile to stage ${this.final.stage} of 5. See what she left behind:`;
-    },
-    recapUrl() {
-      return `${window.location.origin}/Event/Xalatath`;
-    },
-    // Intent links can't attach an image. For players with games, openShare() uploads
-    // their card first and posts their card page, whose og:image is that card.
-    shareLinks() {
-      const text = this.shareText;
-      return [
-        { name: 'Post on X', icon: 'fab fa-x-twitter', build: (url) => `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}` },
-        { name: 'Post on Bluesky', icon: 'fab fa-bluesky', build: (url) => `https://bsky.app/intent/compose?text=${encodeURIComponent(`${text} ${url}`)}` },
-      ];
-    },
-    contributionMates() {
-      const c = this.contribution || {};
-      return [
-        { title: 'Most played with', rows: c.allies || [] },
-        { title: 'Most played against', rows: c.enemies || [] },
-      ];
-    },
-    reclaimedBody() {
-      const days = Math.round(this.eventDays);
-      return `After ${days} days under the Void, the Heroes Profile team has taken the site back. `
-        + 'The logo is whole again, the colours have returned, and the whispers have stopped. '
-        + 'Staff remain on watch. Our sources whisper that more heroes may yet find their way to the Nexus, '
-        + 'and if they do, Heroes Profile will be here tracking every game.';
-    },
-    articles() {
-      const games = this.games || 1;
-      const list = [
-        {
-          headline: `Nexus Loses ${this.compact(this.stat('spell_damage'))} Health to the Void, Sources Say`,
-          body: `Investigators confirm ${this.format(this.stat('spell_damage'))} Void damage, about ${this.format(Math.round(this.stat('spell_damage') / games))} a game. `
-            + `Her best single outing dealt ${this.recordDisplay('spell_damage')}.`,
-        },
-        {
-          headline: `Xal'atath Dies ${this.format(this.stat('deaths'))} Times, Remains Unrepentant`,
-          body: `That's ${(this.stat('deaths') / games).toFixed(1)} deaths a game and ${this.format(Math.floor(this.stat('time_spent_dead') / 86400))} days spent sealed in the dagger. `
-            + `She has declined to comment.`,
-        },
-        {
-          headline: `${this.format(this.stat('bans'))} Drafts Ban Her. She Spreads Anyway`,
-          body: `Bans counted toward the corruption meter too, so every attempt to seal her away only fed the Void.`,
-        },
-      ];
-      if (this.maps.length) {
-        const map = this.maps[0];
-        list.push({
-          headline: `${this.mapName(map.game_map)} Declared Her Favorite Battleground`,
-          body: `She won ${this.winRate(map.wins, map.games)} of ${this.format(map.games)} games there, her best of any map.`,
-        });
-      }
-      const tourists = this.devotees.rows.find((row) => String(row.bucket) === '1');
-      const devoted = this.devotees.rows.find((row) => String(row.bucket) === '10+');
-      if (tourists && this.devotees.total) {
-        list.push({
-          headline: `${this.percent(tourists.players, this.devotees.total)} of Heroes Tried Her Once and Fled`,
-          body: `${this.format(this.devotees.total)} players answered her call. ${devoted ? `${this.format(devoted.players)} of them stayed for 10 games or more.` : ''}`,
-        });
-      }
-      if (this.recap.eyeHunt && this.recap.eyeHunt.finders) {
-        list.push({
-          headline: `${this.format(this.recap.eyeHunt.finders)} Mortals Claim to Have Seen "The Eye"`,
-          body: `Witnesses describe a single eye hidden somewhere on the site. Finders now bear the Mark of the Void beside their names.`,
-        });
-      }
-      if (this.victims.length) {
-        const victim = this.victims[0];
-        list.push({
-          headline: `${this.heroName(victim.hero)} Players Request Therapy`,
-          body: `She won ${this.winRate(victim.wins, victim.games)} of her ${this.format(victim.games)} games against ${this.heroName(victim.hero)}, `
-            + `${this.edge(victim).toFixed(1)} points better than everyone else manages against them.`,
-        });
-      }
-      if (this.nerf) {
-        list.push({
-          headline: 'Blizzard Responds With Balance Update',
-          body: `${this.nerf.verdict} Win rate went from ${this.nerf.rows[0].before} to ${this.nerf.rows[0].after}.`,
-        });
-      }
-      return list;
-    },
-  },
-  mounted() {
-    this.drawDailyChart();
-    try {
-      this.canShareFiles = !!(navigator.canShare && navigator.canShare({ files: [new File([''], 'card.png', { type: 'image/png' })] }));
-    } catch (e) {
-      this.canShareFiles = false;
-    }
-    // Built from whichever sections actually rendered, numbered like newspaper pages.
-    this.indexEntries = Array.from(this.$el.querySelectorAll('[data-index]')).map((el, i) => ({
-      id: el.id,
-      label: el.dataset.index,
-      page: `A${i + 2}`,
-    }));
-    // Stage 2 and 3 cards replay what those stages looked like.
-    this.sampleTimers.push(setInterval(() => {
-      this.whisperIndex = (this.whisperIndex + 1) % this.whispers.length;
-    }, 5000));
-  },
-  beforeUnmount() {
-    this.chart?.destroy();
-    this.sampleTimers.forEach((timer) => clearInterval(timer));
-  },
-  methods: {
-    format: formatNumber,
-    glyph: toGlyphs,
-    // Her win rate with/against a hero minus the baseline, in points. Against a hero the
-    // baseline is what everyone wins against them (100 - their win rate); with one it's
-    // their own win rate.
-    edge(row) {
-      const hers = row.games ? (row.wins / row.games) * 100 : 0;
-      if (!row.hero_games) {
-        return hers - 50;
-      }
-      const heroRate = (row.hero_wins / row.hero_games) * 100;
-      return row.relation === 'enemy' ? hers - (100 - heroRate) : hers - heroRate;
-    },
-    edgeLabel(row) {
-      const edge = this.edge(row);
-      return `${edge >= 0 ? '+' : ''}${edge.toFixed(1)} pts vs usual`;
-    },
-    jumpTo(id) {
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    },
     recordValue(key, value) {
       return TIME_RECORDS.includes(key) ? this.gameLength(value) : this.format(value);
     },
     recordDisplay(key) {
-      const record = this.records.find((row) => row.record === key);
+      const record = this.buildRecords(this.allSections.records).find((row) => row.record === key);
       return record ? record.display : '-';
     },
     stageCardStyle(stage) {
