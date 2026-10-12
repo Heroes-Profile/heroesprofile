@@ -541,7 +541,7 @@
                 </div>
 
                 <div v-if="card.build" class="mb-4">
-                  <div class="text-xs uppercase opacity-75 mb-1">Most played build</div>
+                  <div class="text-xs uppercase opacity-75 mb-1">Played build</div>
                   <div class="flex flex-wrap items-center gap-2">
                     <talent-image-wrapper v-for="(talent, index) in card.build.talents" :key="index" :talent="talent" size="small"></talent-image-wrapper>
                     <span class="text-sm ml-2 opacity-90">{{ format(card.build.games) }} games, {{ winRate(card.build.wins, card.build.games) }} won</span>
@@ -1132,8 +1132,8 @@ export default {
     contributionMates() {
       const c = this.card || {};
       return [
-        { title: 'Most played with', rows: c.allies || [] },
-        { title: 'Most played against', rows: c.enemies || [] },
+        { title: 'Played with', rows: c.allies || [] },
+        { title: 'Played against', rows: c.enemies || [] },
       ];
     },
     reclaimedBody() {
@@ -1613,7 +1613,7 @@ export default {
         if (c.build) {
           ctx.fillStyle = '#c9a8ff';
           ctx.font = 'bold 16px sans-serif';
-          ctx.fillText('MOST PLAYED BUILD', x, 292);
+          ctx.fillText('PLAYED BUILD', x, 292);
           talentImages.forEach((img, i) => {
             if (img) {
               ctx.drawImage(img, x + i * 70, 302, 60, 60);
@@ -1625,7 +1625,7 @@ export default {
           ctx.fillText(`${this.winRate(c.build.wins, c.build.games)} won`, x + 7 * 70 + 10, 352);
         }
 
-        [['MOST PLAYED WITH', c.allies || [], x, 0], ['MOST PLAYED AGAINST', c.enemies || [], x + 420, (c.allies || []).length]].forEach(([title, rows, left, offset]) => {
+        [['PLAYED WITH', c.allies || [], x, 0], ['PLAYED AGAINST', c.enemies || [], x + 420, (c.allies || []).length]].forEach(([title, rows, left, offset]) => {
           ctx.fillStyle = '#c9a8ff';
           ctx.font = 'bold 16px sans-serif';
           // Column headers once, numbers right-aligned under them.
