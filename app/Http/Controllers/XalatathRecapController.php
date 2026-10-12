@@ -21,6 +21,9 @@ class XalatathRecapController extends Controller
 
     private const CARD_DISK = 'gcs-xalatath-cards';
 
+    /** The page's mode toggle: key => game_type (null = all modes). */
+    private const CARD_MODES = ['all' => null, '1' => 1, '5' => 5, '6' => 6];
+
     public function show()
     {
         if (! $this->globalDataService->isXalatathRecapAvailable()) {
@@ -216,38 +219,58 @@ class XalatathRecapController extends Controller
 
         $user = Auth::user();
 
-        return $this->globalDataService->rememberXalatathRecap("xalatath_recap_contribution_v2:{$user->blizz_id}|{$user->region}", function () use ($user, $startsAt, $endsAt) {
-            // This player's Xal'atath games in the event window; player(blizz_id, hero) keeps it cheap.
-            $games = fn () => DB::connection('heroesprofile')->table('player')
-                ->join('replay', 'replay.replayID', '=', 'player.replayID')
-                ->where('player.blizz_id', $user->blizz_id)
-                ->where('player.hero', self::HERO_ID)
-                ->where('replay.region', $user->region)
-                ->where('replay.game_type', '<>', 0)
-                ->where('replay.game_date', '>=', $startsAt)
-                ->where('replay.game_date', '<', $endsAt);
+        return $this->globalDataService->rememberXalatathRecap("xalatath_recap_contribution_v3:{$user->blizz_id}|{$user->region}", function () use ($user, $startsAt, $endsAt) {
+            $faced = $this->facedXalatath($user, $startsAt, $endsAt);
 
-            $row = $games()
-                ->selectRaw('COUNT(*) AS games, COALESCE(SUM(player.winner), 0) AS wins, MIN(replay.game_date) AS first_game')
-                ->first();
-
-            $contribution = [
-                'battletag' => explode('#', (string) $user->battletag)[0],
-                'games' => (int) $row->games,
-                'wins' => (int) $row->wins,
-                'first_game' => $row->first_game,
-                'modes' => [],
-                'build' => null,
-                'allies' => [],
-                'enemies' => [],
-            ];
-
-            if ($contribution['games'] === 0) {
-                return $contribution;
+            // One card per page mode (all, Quick Match, Storm League, ARAM).
+            $views = [];
+            foreach (self::CARD_MODES as $key => $gameType) {
+                $views[$key] = $this->contributionView($user, $startsAt, $endsAt, $gameType);
+                $views[$key]['faced'] = $faced[$key];
             }
 
+            return [
+                'battletag' => explode('#', (string) $user->battletag)[0],
+                'views' => $views,
+            ];
+        });
+    }
+
+    // This player's own Xal'atath games, optionally in one game mode.
+    private function contributionView($user, Carbon $startsAt, Carbon $endsAt, ?int $gameType): array
+    {
+        // player(blizz_id, hero) keeps this cheap.
+        $games = fn () => DB::connection('heroesprofile')->table('player')
+            ->join('replay', 'replay.replayID', '=', 'player.replayID')
+            ->where('player.blizz_id', $user->blizz_id)
+            ->where('player.hero', self::HERO_ID)
+            ->where('replay.region', $user->region)
+            ->where('replay.game_type', '<>', 0)
+            ->when($gameType !== null, fn ($query) => $query->where('replay.game_type', $gameType))
+            ->where('replay.game_date', '>=', $startsAt)
+            ->where('replay.game_date', '<', $endsAt);
+
+        $row = $games()
+            ->selectRaw('COUNT(*) AS games, COALESCE(SUM(player.winner), 0) AS wins')
+            ->first();
+
+        $view = [
+            'games' => (int) $row->games,
+            'wins' => (int) $row->wins,
+            'modes' => [],
+            'build' => null,
+            'allies' => [],
+            'enemies' => [],
+        ];
+
+        if ($view['games'] === 0) {
+            return $view;
+        }
+
+        // Per-mode chips only on the All card.
+        if ($gameType === null) {
             $gameTypes = $this->globalDataService->getGameTypes()->pluck('name', 'type_id');
-            $contribution['modes'] = $games()
+            $view['modes'] = $games()
                 ->groupBy('replay.game_type')
                 ->selectRaw('replay.game_type, COUNT(*) AS games, SUM(player.winner) AS wins')
                 ->orderByDesc('games')
@@ -258,56 +281,121 @@ class XalatathRecapController extends Controller
                     'wins' => (int) $mode->wins,
                 ])
                 ->all();
+        }
 
-            $levels = ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'];
-            $buildQuery = $games()->join('talents', function ($join) {
-                $join->on('talents.replayID', '=', 'player.replayID')
-                    ->on('talents.battletag', '=', 'player.battletag');
-            });
-            foreach ($levels as $level) {
-                $buildQuery->where("talents.{$level}", '>', 0);
-            }
-            $build = $buildQuery
-                ->groupBy(array_map(fn ($level) => "talents.{$level}", $levels))
-                ->selectRaw(implode(', ', array_map(fn ($level) => "talents.{$level}", $levels)).', COUNT(*) AS games, SUM(player.winner) AS wins')
-                ->orderByDesc('games')
-                ->first();
-
-            if ($build) {
-                $talents = $this->globalDataService->getAllTalentsKeyed();
-                $contribution['build'] = [
-                    'talents' => array_map(fn ($level) => $talents->get($build->{$level}), $levels),
-                    'games' => (int) $build->games,
-                    'wins' => (int) $build->wins,
-                ];
-            }
-
-            // Most common heroes beside and against them, with their win rate in those games.
-            $heroes = $this->globalDataService->getHeroesByID();
-            $mates = $games()
-                ->join('player as other', function ($join) {
-                    $join->on('other.replayID', '=', 'player.replayID')
-                        ->on('other.battletag', '<>', 'player.battletag');
-                })
-                ->where('other.hero', '<>', self::HERO_ID)
-                ->groupByRaw('relation, other.hero')
-                ->selectRaw("IF(other.team = player.team, 'ally', 'enemy') AS relation, other.hero, COUNT(*) AS games, SUM(player.winner) AS wins")
-                ->get();
-
-            foreach (['ally' => 'allies', 'enemy' => 'enemies'] as $relation => $key) {
-                $contribution[$key] = $mates->where('relation', $relation)
-                    ->sortByDesc('games')
-                    ->take(3)
-                    ->map(fn ($mate) => [
-                        'hero' => $heroes->get($mate->hero),
-                        'games' => (int) $mate->games,
-                        'wins' => (int) $mate->wins,
-                    ])
-                    ->values()
-                    ->all();
-            }
-
-            return $contribution;
+        $levels = ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'];
+        $buildQuery = $games()->join('talents', function ($join) {
+            $join->on('talents.replayID', '=', 'player.replayID')
+                ->on('talents.battletag', '=', 'player.battletag');
         });
+        foreach ($levels as $level) {
+            $buildQuery->where("talents.{$level}", '>', 0);
+        }
+        $build = $buildQuery
+            ->groupBy(array_map(fn ($level) => "talents.{$level}", $levels))
+            ->selectRaw(implode(', ', array_map(fn ($level) => "talents.{$level}", $levels)).', COUNT(*) AS games, SUM(player.winner) AS wins')
+            ->orderByDesc('games')
+            ->first();
+
+        if ($build) {
+            $talents = $this->globalDataService->getAllTalentsKeyed();
+            $view['build'] = [
+                'talents' => array_map(fn ($level) => $talents->get($build->{$level}), $levels),
+                'games' => (int) $build->games,
+                'wins' => (int) $build->wins,
+            ];
+        }
+
+        // Most common heroes beside and against them, with their win rate in those games.
+        $heroes = $this->globalDataService->getHeroesByID();
+        $mates = $games()
+            ->join('player as other', function ($join) {
+                $join->on('other.replayID', '=', 'player.replayID')
+                    ->on('other.battletag', '<>', 'player.battletag');
+            })
+            ->where('other.hero', '<>', self::HERO_ID)
+            ->groupByRaw('relation, other.hero')
+            ->selectRaw("IF(other.team = player.team, 'ally', 'enemy') AS relation, other.hero, COUNT(*) AS games, SUM(player.winner) AS wins")
+            ->get();
+
+        foreach (['ally' => 'allies', 'enemy' => 'enemies'] as $relation => $key) {
+            $view[$key] = $mates->where('relation', $relation)
+                ->sortByDesc('games')
+                ->take(3)
+                ->map(fn ($mate) => [
+                    'hero' => $heroes->get($mate->hero),
+                    'games' => (int) $mate->games,
+                    'wins' => (int) $mate->wins,
+                ])
+                ->values()
+                ->all();
+        }
+
+        return $view;
+    }
+
+    /**
+     * Games this player (on any hero) had Xal'atath on the enemy team, and an estimate of
+     * their deaths to her. Per game: their deaths x her share of their team's deaths, using
+     * her takedowns (involved) or her kills (killing blows), capped at their deaths. Two
+     * enemy Xal'ataths (ARAM) add together. Keyed like CARD_MODES.
+     */
+    private function facedXalatath($user, Carbon $startsAt, Carbon $endsAt): array
+    {
+        $rows = DB::connection('heroesprofile')->select('
+            SELECT r.game_type,
+                   COUNT(*) AS games,
+                   SUM(LEAST(su.deaths, su.deaths * x.takedowns / NULLIF(td.team_deaths, 0))) AS involved,
+                   SUM(LEAST(su.deaths, su.deaths * x.kills / NULLIF(td.team_deaths, 0))) AS killing_blows
+            FROM player me
+            JOIN replay r ON r.replayID = me.replayID
+            JOIN scores su ON su.replayID = me.replayID AND su.battletag = me.battletag
+            JOIN (
+                SELECT xp.replayID, xp.team, SUM(sx.takedowns) AS takedowns, SUM(sx.kills) AS kills
+                FROM player xp
+                JOIN scores sx ON sx.replayID = xp.replayID AND sx.battletag = xp.battletag
+                WHERE xp.hero = ? AND xp.replayID IN (
+                    SELECT mine.replayID FROM player mine
+                    JOIN replay mr ON mr.replayID = mine.replayID
+                    WHERE mine.blizz_id = ? AND mr.game_date >= ? AND mr.game_date < ?
+                )
+                GROUP BY xp.replayID, xp.team
+            ) x ON x.replayID = me.replayID AND x.team <> me.team
+            JOIN (
+                SELECT tp.replayID, tp.team, SUM(ts.deaths) AS team_deaths
+                FROM player tp
+                JOIN scores ts ON ts.replayID = tp.replayID AND ts.battletag = tp.battletag
+                WHERE tp.replayID IN (
+                    SELECT mine.replayID FROM player mine
+                    JOIN replay mr ON mr.replayID = mine.replayID
+                    WHERE mine.blizz_id = ? AND mr.game_date >= ? AND mr.game_date < ?
+                )
+                GROUP BY tp.replayID, tp.team
+            ) td ON td.replayID = me.replayID AND td.team = me.team
+            WHERE me.blizz_id = ?
+              AND r.region = ?
+              AND r.game_type <> 0
+              AND r.game_date >= ?
+              AND r.game_date < ?
+            GROUP BY r.game_type
+        ', [
+            self::HERO_ID, $user->blizz_id, $startsAt, $endsAt,
+            $user->blizz_id, $startsAt, $endsAt,
+            $user->blizz_id, $user->region, $startsAt, $endsAt,
+        ]);
+
+        $byType = collect($rows)->keyBy('game_type');
+        $summary = fn ($rows) => [
+            'games' => (int) $rows->sum('games'),
+            'involved' => (int) round($rows->sum('involved')),
+            'killing_blows' => (int) round($rows->sum('killing_blows')),
+        ];
+
+        $faced = [];
+        foreach (self::CARD_MODES as $key => $gameType) {
+            $faced[$key] = $summary($gameType === null ? $byType : $byType->only([$gameType]));
+        }
+
+        return $faced;
     }
 }

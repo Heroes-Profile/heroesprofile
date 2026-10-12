@@ -509,10 +509,7 @@
           </tbody>
         </table>
       </section>
-      </div>
-    </div>
 
-    <div class="max-w-[1500px] mx-auto px-4 py-10 flex flex-col gap-10">
       <!-- Your contribution -->
       <section id="recap-contribution" data-index="Your Contribution">
         <h2 class="recap-heading">Your Contribution</h2>
@@ -523,40 +520,59 @@
               <img class="w-40 md:w-52" :src="`/images/event/xalatath/xalatath-logo-stage-${final.stage}.svg`" alt="" />
             </div>
             <div class="min-w-0">
-              <div class="text-xs uppercase tracking-widest xalatath-title">Xal'atath Void Corruption</div>
+              <div class="text-xs uppercase tracking-widest xalatath-title">Xal'atath Void Corruption<span v-if="mode !== 'all'"> · {{ modeLabel }}</span></div>
               <div class="text-3xl md:text-4xl font-bold mb-1">{{ contribution.battletag }}</div>
-              <template v-if="contribution.games > 0">
+              <template v-if="card.games > 0">
                 <div class="text-lg mb-4">
-                  Fed the Void <span class="font-bold">{{ format(contribution.games) }}</span> games,
-                  won <span class="font-bold">{{ format(contribution.wins) }}</span> ({{ winRate(contribution.wins, contribution.games) }})
+                  Fed the Void <span class="font-bold">{{ format(card.games) }}</span> games,
+                  won <span class="font-bold">{{ format(card.wins) }}</span> ({{ winRate(card.wins, card.games) }})
                 </div>
 
-                <div v-if="contribution.modes && contribution.modes.length" class="flex flex-wrap gap-2 mb-4">
-                  <span v-for="mode in contribution.modes" :key="mode.name" class="bg-darken rounded px-2 py-1 text-sm">
-                    {{ mode.name }}: {{ winRate(mode.wins, mode.games) }} <span class="opacity-60">({{ format(mode.games) }})</span>
-                  </span>
+                <!-- Labels once as column headers, numbers lined up underneath -->
+                <div v-if="card.modes && card.modes.length" class="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-x-6 gap-y-1 text-sm mb-4 max-w-[420px]">
+                  <span class="text-xs uppercase opacity-75">Mode</span>
+                  <span class="text-xs uppercase opacity-75 text-right">Games</span>
+                  <span class="text-xs uppercase opacity-75 text-right">Win rate</span>
+                  <template v-for="mode in card.modes" :key="mode.name">
+                    <span class="truncate">{{ mode.name }}</span>
+                    <span class="text-right tabular-nums">{{ format(mode.games) }}</span>
+                    <span class="text-right tabular-nums">{{ winRate(mode.wins, mode.games) }}</span>
+                  </template>
                 </div>
 
-                <div v-if="contribution.build" class="mb-4">
+                <div v-if="card.build" class="mb-4">
                   <div class="text-xs uppercase opacity-75 mb-1">Most played build</div>
                   <div class="flex flex-wrap items-center gap-2">
-                    <talent-image-wrapper v-for="(talent, index) in contribution.build.talents" :key="index" :talent="talent" size="small"></talent-image-wrapper>
-                    <span class="text-sm ml-2">{{ format(contribution.build.games) }} games, {{ winRate(contribution.build.wins, contribution.build.games) }}</span>
+                    <talent-image-wrapper v-for="(talent, index) in card.build.talents" :key="index" :talent="talent" size="small"></talent-image-wrapper>
+                    <span class="text-sm ml-2 opacity-90">{{ format(card.build.games) }} games, {{ winRate(card.build.wins, card.build.games) }} won</span>
                   </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div v-for="group in contributionMates" :key="group.title">
-                    <div class="text-xs uppercase opacity-75 mb-1">{{ group.title }}</div>
-                    <div v-for="mate in group.rows" :key="mate.hero ? mate.hero.id : mate.games" class="flex items-center gap-2 mb-1">
-                      <hero-image-wrapper v-if="mate.hero" :hero="mate.hero" size="small"></hero-image-wrapper>
-                      <span class="flex-1 text-sm">{{ mate.hero ? mate.hero.name : '' }}</span>
-                      <span class="text-sm tabular-nums">{{ winRate(mate.wins, mate.games) }} <span class="opacity-60">({{ format(mate.games) }})</span></span>
-                    </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div v-for="group in contributionMates" :key="group.title" class="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-x-4 gap-y-1 text-sm">
+                    <span class="text-xs uppercase opacity-75">{{ group.title }}</span>
+                    <span class="text-xs uppercase opacity-75 text-right">Games</span>
+                    <span class="text-xs uppercase opacity-75 text-right">Win rate</span>
+                    <template v-for="mate in group.rows" :key="mate.hero ? mate.hero.id : mate.games">
+                      <span class="flex items-center gap-2 min-w-0">
+                        <hero-image-wrapper v-if="mate.hero" :hero="mate.hero" size="small"></hero-image-wrapper>
+                        <span class="truncate">{{ mate.hero ? mate.hero.name : '' }}</span>
+                      </span>
+                      <span class="text-right tabular-nums">{{ format(mate.games) }}</span>
+                      <span class="text-right tabular-nums">{{ winRate(mate.wins, mate.games) }}</span>
+                    </template>
                   </div>
                 </div>
               </template>
-              <div v-else class="text-lg">Never played her. The Void noticed.</div>
+              <div v-else class="text-lg mb-4">Never played her{{ mode !== 'all' ? ` in ${modeLabel}` : '' }}. The Void noticed.</div>
+
+              <!-- Estimated from her share of your team's deaths in each game she was against you -->
+              <div v-if="card.faced && card.faced.games" class="text-sm mt-2">
+                <div class="text-xs uppercase opacity-75 mb-1">Facing her</div>
+                Faced her in <span class="font-bold">{{ format(card.faced.games) }}</span> games:
+                <span class="font-bold">&asymp; {{ format(card.faced.involved) }}</span> deaths involving her,
+                <span class="font-bold">&asymp; {{ format(card.faced.killing_blows) }}</span> to her killing blow.
+              </div>
               <div class="text-xs opacity-60 mt-4">heroesprofile.com/Event/Xalatath</div>
             </div>
           </div>
@@ -577,7 +593,10 @@
           </a>
         </div>
       </section>
+      </div>
+    </div>
 
+    <div class="max-w-[1500px] mx-auto px-4 py-10 flex flex-col gap-10">
       <!-- Whispers -->
       <section id="recap-whispers" data-index="Her Last Whispers">
         <h2 class="recap-heading">Her Last Whispers</h2>
@@ -1084,7 +1103,7 @@ export default {
       };
     },
     shareText() {
-      const c = this.contribution;
+      const c = this.card;
       if (c && c.games > 0) {
         return `I fed the Void ${this.format(c.games)} Xal'atath games and won ${this.winRate(c.wins, c.games)}. See what she left behind on Heroes Profile:`;
       }
@@ -1102,8 +1121,16 @@ export default {
         { name: 'Post on Bluesky', icon: 'fab fa-bluesky', build: (url) => `https://bsky.app/intent/compose?text=${encodeURIComponent(`${text} ${url}`)}` },
       ];
     },
+    // The contribution card for the selected mode (older cached cards have no per-mode views).
+    card() {
+      const c = this.contribution;
+      if (!c) {
+        return null;
+      }
+      return c.views ? (c.views[this.mode] || c.views.all) : c;
+    },
     contributionMates() {
-      const c = this.contribution || {};
+      const c = this.card || {};
       return [
         { title: 'Most played with', rows: c.allies || [] },
         { title: 'Most played against', rows: c.enemies || [] },
@@ -1174,6 +1201,7 @@ export default {
   },
   watch: {
     mode() {
+      this.cardUrl = null;
       this.chart?.destroy();
       this.chart = null;
       this.$nextTick(() => this.drawDailyChart());
@@ -1488,7 +1516,7 @@ export default {
       return this.cardUrl;
     },
     async openShare(event, link) {
-      if (!this.contribution || !this.contribution.games) {
+      if (!this.card || !this.card.games) {
         return;
       }
       event.preventDefault();
@@ -1530,7 +1558,8 @@ export default {
     },
     // Draws the same layout as the on-page card.
     async buildCardCanvas() {
-      const c = this.contribution;
+      const c = this.card;
+      const battletag = this.contribution.battletag;
       const canvas = document.createElement('canvas');
       canvas.width = 1200;
       canvas.height = 675;
@@ -1558,10 +1587,17 @@ export default {
       const x = 340;
       ctx.fillStyle = '#c9a8ff';
       ctx.font = 'bold 22px sans-serif';
-      ctx.fillText("XAL'ATATH VOID CORRUPTION", x, 70);
+      ctx.fillText(`XAL'ATATH VOID CORRUPTION${this.mode !== 'all' ? ` · ${this.modeLabel.toUpperCase()}` : ''}`, x, 70);
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 54px sans-serif';
-      ctx.fillText(c.battletag, x, 130);
+      ctx.fillText(battletag, x, 130);
+
+      if (c.faced && c.faced.games) {
+        ctx.font = '20px sans-serif';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.fillText(`Faced her in ${this.format(c.faced.games)} games: ≈${this.format(c.faced.involved)} deaths involving her, ≈${this.format(c.faced.killing_blows)} to her killing blow`, x, 252);
+        ctx.fillStyle = '#ffffff';
+      }
 
       if (c.games > 0) {
         ctx.font = '30px sans-serif';
@@ -1569,39 +1605,48 @@ export default {
 
         ctx.font = '20px sans-serif';
         ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-        const modes = (c.modes || []).slice(0, 4).map((mode) => `${mode.name} ${this.winRate(mode.wins, mode.games)}`).join('   ·   ');
-        ctx.fillText(modes, x, 222);
+        const modes = (c.modes || []).slice(0, 3).map((mode) => `${mode.name} ${this.winRate(mode.wins, mode.games)}`).join('   ·   ');
+        if (modes) {
+          ctx.fillText(`Win rate by mode:   ${modes}`, x, 216);
+        }
 
         if (c.build) {
           ctx.fillStyle = '#c9a8ff';
           ctx.font = 'bold 16px sans-serif';
-          ctx.fillText('MOST PLAYED BUILD', x, 268);
+          ctx.fillText('MOST PLAYED BUILD', x, 292);
           talentImages.forEach((img, i) => {
             if (img) {
-              ctx.drawImage(img, x + i * 70, 280, 60, 60);
+              ctx.drawImage(img, x + i * 70, 302, 60, 60);
             }
           });
           ctx.fillStyle = '#ffffff';
           ctx.font = '20px sans-serif';
-          ctx.fillText(`${this.format(c.build.games)} games, ${this.winRate(c.build.wins, c.build.games)}`, x + 7 * 70 + 10, 318);
+          ctx.fillText(`${this.format(c.build.games)} games`, x + 7 * 70 + 10, 326);
+          ctx.fillText(`${this.winRate(c.build.wins, c.build.games)} won`, x + 7 * 70 + 10, 352);
         }
 
         [['MOST PLAYED WITH', c.allies || [], x, 0], ['MOST PLAYED AGAINST', c.enemies || [], x + 420, (c.allies || []).length]].forEach(([title, rows, left, offset]) => {
           ctx.fillStyle = '#c9a8ff';
           ctx.font = 'bold 16px sans-serif';
-          ctx.fillText(title, left, 390);
+          // Column headers once, numbers right-aligned under them.
+          ctx.fillText(title, left, 400);
+          ctx.textAlign = 'right';
+          ctx.fillText('GAMES', left + 290, 400);
+          ctx.fillText('WIN RATE', left + 390, 400);
+          ctx.textAlign = 'left';
           rows.forEach((mate, i) => {
-            const top = 405 + i * 62;
+            const top = 415 + i * 62;
             const img = heroImages[offset + i];
             if (img) {
               ctx.drawImage(img, left, top, 50, 50);
             }
             ctx.fillStyle = '#ffffff';
             ctx.font = '22px sans-serif';
-            ctx.fillText(mate.hero ? mate.hero.name : '', left + 62, top + 22);
-            ctx.font = '18px sans-serif';
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-            ctx.fillText(`${this.winRate(mate.wins, mate.games)} in ${this.format(mate.games)} games`, left + 62, top + 46);
+            ctx.fillText(mate.hero ? mate.hero.name : '', left + 62, top + 33);
+            ctx.textAlign = 'right';
+            ctx.fillText(this.format(mate.games), left + 290, top + 33);
+            ctx.fillText(this.winRate(mate.wins, mate.games), left + 390, top + 33);
+            ctx.textAlign = 'left';
           });
         });
       } else {
