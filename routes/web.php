@@ -177,6 +177,9 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
         Route::get('DeepAnalytics', [DeepAnalyticsController::class, 'show']);
         Route::get('DeepAnalytics/Status', [DeepAnalyticsController::class, 'status'])->middleware('throttle:60,1');
         Route::post('DeepAnalytics/Request', [DeepAnalyticsController::class, 'request'])->middleware('throttle:10,1');
+        Route::post('DeepAnalytics/Data/{tab}', [DeepAnalyticsController::class, 'data'])->whereAlpha('tab')->middleware('throttle:60,1');
+        Route::get('DeepAnalytics/Replay/{replayID}', [DeepAnalyticsController::class, 'replay'])->whereNumber('replayID');
+        Route::get('DeepAnalytics/Replay/{replayID}/Data', [DeepAnalyticsController::class, 'replayData'])->whereNumber('replayID')->middleware('throttle:30,1');
     });
 
     // Player data

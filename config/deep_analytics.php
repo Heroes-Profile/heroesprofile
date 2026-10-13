@@ -19,6 +19,10 @@ return [
     'archive_bucket' => env('DEEP_ANALYTICS_ARCHIVE_BUCKET', 'heroesprofile-replay-archive'),
     'replay_bucket' => env('DEEP_ANALYTICS_REPLAY_BUCKET', 'heroesprofile-replay-storage'),
 
+    // The parser's DeepExtract.Version. Games loaded at an older version are reprocessed on
+    // the next request, and cached results are keyed on it.
+    'extract_v' => 2,
+
     // Only games from the start of season 34 on are archived or analysed.
     'cutover' => '2026-10-02 16:00:01',
 
@@ -27,4 +31,13 @@ return [
 
     // How long one account's request blocks another, in seconds.
     'request_lock_seconds' => 600,
+
+    // Where the analytics are read from (filled by the deep analytics loader).
+    'bigquery_project' => env('DEEP_ANALYTICS_BIGQUERY_PROJECT', 'heroesprofile-244413'),
+    'bigquery_dataset' => env('DEEP_ANALYTICS_BIGQUERY_DATASET', 'deep_analytics'),
+    'bigquery_location' => 'us-east1',
+
+    // Baselines use replays with replayID % 1000 below this: 50 is the 5% nightly sample.
+    // Keep it at or below the sampler's sample_rate * 10 so every baseline game is sampled.
+    'baseline_threshold' => env('DEEP_ANALYTICS_BASELINE_THRESHOLD', 50),
 ];

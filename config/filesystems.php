@@ -116,6 +116,16 @@ return [
             'throw' => true,
         ],
 
+        /* Deep analytics docs (doc/{replayID}.json.gz), written by the replay parser's deep service. */
+        'gcs-deep' => [
+            'driver' => 'gcs',
+            'project_id' => env('GOOGLE_CLOUD_PROJECT_ID'),
+            'bucket' => env('DEEP_ANALYTICS_DOC_BUCKET', 'heroesprofile-replay-deep'),
+            'key_file_path' => env('GOOGLE_CLOUD_KEY_FILE'),
+            'visibility' => 'private',
+            'throw' => true,
+        ],
+
         /* NGS replays live in their own bucket, separate from uploader replays. */
         'gcs-ngs' => [
             'driver' => 'gcs',

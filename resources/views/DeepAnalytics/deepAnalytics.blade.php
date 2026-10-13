@@ -6,6 +6,10 @@
   <deep-analytics-page
     :battletag="{{ json_encode($battletag) }}"
     :initial-status="{{ json_encode($status) }}"
+    :filters="{{ json_encode($filters) }}"
+    :gametypedefault="{{ json_encode($gametypedefault) }}"
+    :maps="{{ json_encode($maps) }}"
+    :urlparameters="{{ json_encode($urlparameters) }}"
   >
   </deep-analytics-page>
 @endsection
