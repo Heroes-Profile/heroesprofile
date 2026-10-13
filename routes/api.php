@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Admin\AdminConsoleController;
 use App\Http\Controllers\Api\Admin\TwitchAdminController;
 use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DeepAnalyticsWorkerController;
 use App\Http\Controllers\Esports\CCL\CCLController;
 use App\Http\Controllers\Esports\EsportsController;
 use App\Http\Controllers\Esports\HeroesInternational\HeroesInternationalController;
@@ -61,6 +62,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->middleware(['api', 'cloud.tasks'])->group(function () {
     Route::post('internal/global/process', [GlobalQueryWorkerController::class, 'process']);
+    Route::post('internal/deep/fanout', [DeepAnalyticsWorkerController::class, 'fanOut']);
 });
 
 Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function () {

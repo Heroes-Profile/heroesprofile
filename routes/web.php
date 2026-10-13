@@ -20,6 +20,7 @@ use App\Http\Controllers\Auth\BattleNetController;
 use App\Http\Controllers\Auth\PatreonController;
 use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DeepAnalyticsController;
 use App\Http\Controllers\Esports\CCL\CCLController;
 use App\Http\Controllers\Esports\EsportsController;
 use App\Http\Controllers\Esports\HeroesInternational\HeroesInternationalController;
@@ -170,6 +171,13 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 
     // Logged in User Settings
     Route::get('Profile/Settings', [ProfileController::class, 'showSettings'])->middleware('ensureBattlenetAuth');
+
+    // Deep analytics for the logged-in account's own season games (allowlisted for now)
+    Route::middleware('ensureBattlenetAuth')->group(function () {
+        Route::get('DeepAnalytics', [DeepAnalyticsController::class, 'show']);
+        Route::get('DeepAnalytics/Status', [DeepAnalyticsController::class, 'status'])->middleware('throttle:60,1');
+        Route::post('DeepAnalytics/Request', [DeepAnalyticsController::class, 'request'])->middleware('throttle:10,1');
+    });
 
     // Player data
     Route::get('Player/{battletag}/{blizz_id}/{region}', [PlayerController::class, 'show'])->middleware('checkIfPrivateProfilePage');
