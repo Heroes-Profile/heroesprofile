@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1567244cb490c3c7ec94454f064e4b02",
+    "content-hash": "f6a796ac4d3953334821e3ffea0ce051",
     "packages": [
         {
             "name": "brick/math",
@@ -719,6 +719,65 @@
                 "docs": "https://cloud.google.com/php/docs/reference/auth/latest",
                 "issues": "https://github.com/googleapis/google-auth-library-php/issues",
                 "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.55.1"
+            },
+            "time": "2026-09-28T17:51:46+00:00"
+        },
+        {
+            "name": "google/cloud-bigquery",
+            "version": "v1.39.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/googleapis/google-cloud-php-bigquery.git",
+                "reference": "52a9ec904723092721ce8b30289ededf817f0228"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-bigquery/zipball/52a9ec904723092721ce8b30289ededf817f0228",
+                "reference": "52a9ec904723092721ce8b30289ededf817f0228",
+                "shasum": ""
+            },
+            "require": {
+                "google/cloud-core": "^1.72.4",
+                "php": "^8.2",
+                "ramsey/uuid": "^3.0|^4.0"
+            },
+            "require-dev": {
+                "erusev/parsedown": "^1.6",
+                "google/cloud-bigquery-connection": "^2.1",
+                "google/cloud-bigquery-reservation": "^2.0",
+                "google/cloud-storage": "^2.0",
+                "nikic/php-parser": "^5.0",
+                "phpdocumentor/reflection": "^5.3.3||^6.0",
+                "phpdocumentor/reflection-docblock": "^5.3.3||^6.0",
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "suggest": {
+                "google/cloud-storage": "Makes it easier to load data from Cloud Storage into BigQuery"
+            },
+            "type": "library",
+            "extra": {
+                "component": {
+                    "id": "cloud-bigquery",
+                    "path": "BigQuery",
+                    "entry": "src/BigQueryClient.php",
+                    "target": "googleapis/google-cloud-php-bigquery.git",
+                    "displayName": "Google Cloud BigQuery"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Google\\Cloud\\BigQuery\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "BigQuery Client for PHP",
+            "support": {
+                "source": "https://github.com/googleapis/google-cloud-php-bigquery/tree/v1.39.3"
             },
             "time": "2026-09-28T17:51:46+00:00"
         },

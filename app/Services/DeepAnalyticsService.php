@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\DB;
  * away: it queues one Cloud Task per chunk of games to this app's fan-out route, and
  * each of those queues the chunk's deep parses on the replay parser's deep service.
  * The VM loader writes replay_deep once a game's rows are in BigQuery, so progress is
- * a count of those rows.
+ * a count of those rows. Rows from an older extract version count as not done, so the
+ * next request rebuilds them.
  */
 class DeepAnalyticsService
 {
@@ -27,7 +28,7 @@ class DeepAnalyticsService
     public function status(int $blizzId, int $region): array
     {
         $row = $this->seasonGames($blizzId, $region)
-            ->leftJoin('replay_deep', 'replay_deep.replayID', '=', 'replay.replayID')
+            ->leftJoin('replay_deep', fn ($join) => $this->currentDeepRow($join))
             ->selectRaw('COUNT(*) AS total, COUNT(replay_deep.replayID) AS done')
             ->first();
 
@@ -47,7 +48,7 @@ class DeepAnalyticsService
         }
 
         $pending = $this->seasonGames($blizzId, $region)
-            ->leftJoin('replay_deep', 'replay_deep.replayID', '=', 'replay.replayID')
+            ->leftJoin('replay_deep', fn ($join) => $this->currentDeepRow($join))
             ->whereNull('replay_deep.replayID')
             ->orderBy('replay.replayID')
             ->pluck('replay.replayID')
@@ -120,6 +121,12 @@ class DeepAnalyticsService
         }
 
         return $queued;
+    }
+
+    private function currentDeepRow($join): void
+    {
+        $join->on('replay_deep.replayID', '=', 'replay.replayID')
+            ->where('replay_deep.extract_v', '>=', config('deep_analytics.extract_v'));
     }
 
     private function seasonGames(int $blizzId, int $region)
