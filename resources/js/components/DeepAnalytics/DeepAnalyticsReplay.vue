@@ -48,11 +48,11 @@
               </span>
               <span>Level {{ levelAt(team) }} &middot; {{ killsAt(team) }} takedowns</span>
             </div>
-            <svg viewBox="0 0 100 30" class="w-full h-20 mt-2" preserveAspectRatio="none">
-              <polyline v-for="team in [0, 1]" :key="'xp' + team" :points="xpLine(team)" fill="none" :stroke="teamColor(team)" stroke-width="0.8" vector-effect="non-scaling-stroke"></polyline>
-              <line :x1="100 * t / data.length_s" :x2="100 * t / data.length_s" y1="0" y2="30" stroke="#ffffff" stroke-width="1" vector-effect="non-scaling-stroke" stroke-opacity="0.6"></line>
-            </svg>
-            <div class="text-center text-gray-light">Team XP; {{ xpLead }}</div>
+            <div class="text-center text-gray-light mb-1">Team XP: {{ xpLead }}</div>
+            <!-- The match page's experience chart; Team 1 is Blue -->
+            <div class="w-full">
+              <dual-line-chart :data="experience" :winner="winningTeam"></dual-line-chart>
+            </div>
           </div>
 
           <!-- Players -->
@@ -65,7 +65,9 @@
                 :class="{ 'bg-lighten': p.idx === selected }"
                 @click="selected = p.idx"
               >
-                <img v-if="p.short_name" :src="'/images/heroes/circular/' + p.short_name + '.png'" class="w-6 h-6 rounded-full border-2" :style="{ borderColor: teamColor(team), opacity: aliveAt(p.idx) ? 1 : 0.35 }" :alt="p.hero">
+                <div :style="{ opacity: aliveAt(p.idx) ? 1 : 0.35 }">
+                  <hero-image-wrapper v-if="p.short_name" :hero="{ name: p.hero, short_name: p.short_name }" :size="'small'"></hero-image-wrapper>
+                </div>
                 <span class="flex-1 truncate">{{ p.battletag || p.hero }}<span v-if="p.you" class="text-yellow"> (you)</span></span>
                 <span class="font-mono">{{ takedownsAt(p.idx) }} / {{ deathsAt(p.idx) }}</span>
               </div>
@@ -76,15 +78,11 @@
           <!-- Selected player -->
           <div v-if="selectedPlayer" class="bg-darken rounded p-3">
             <div class="font-bold mb-2">{{ selectedPlayer.hero }}{{ selectedPlayer.battletag ? ' - ' + selectedPlayer.battletag : '' }}</div>
-            <div class="flex flex-wrap gap-1 mb-2">
-              <img
-                v-for="talent in talentsAt(selected)"
-                :key="talent.tier"
-                :src="talent.icon ? '/images/talents/' + talent.icon : '/images/talents/no-image.png'"
-                :title="'Level tier ' + (talent.tier + 1) + ': ' + talent.title + ' (' + clock(talent.t) + ')'"
-                :alt="talent.title"
-                class="w-8 h-8 rounded"
-              >
+            <div class="flex flex-wrap gap-2 mb-2">
+              <div v-for="pick in talentsAt(selected)" :key="pick.tier" class="flex flex-col items-center">
+                <talent-image-wrapper :talent="pick.talent" :size="'small'"></talent-image-wrapper>
+                <span class="text-xs text-gray-light">{{ clock(pick.t) }}</span>
+              </div>
               <span v-if="talentsAt(selected).length === 0" class="text-gray-light">No talents picked yet</span>
             </div>
             <div>Globes picked up: {{ globesAt(selected) }}</div>
@@ -217,8 +215,25 @@ export default {
       const total = b => b.minion + b.creep + b.structure + b.hero + b.trickle;
       return [0, 1].map(team => this.data.xp_breakdown.filter(b => b.team === team).map(b => [b.t, total(b)]));
     },
-    xpMax() {
-      return Math.max(1, ...this.xpSeries.flat().map(p => p[1]));
+    winningTeam() {
+      return this.data.players.find(p => p.winner)?.team ?? 0;
+    },
+    // Per-minute XP lead and level for each team, in the shape the match page's chart takes
+    experience() {
+      const byMinute = [{}, {}];
+      const total = b => b.minion + b.creep + b.structure + b.hero + b.trickle;
+      this.data.xp_breakdown.forEach(b => {
+        byMinute[b.team][Math.floor(b.t / 60)] = { xp: total(b), level: b.lvl };
+      });
+      const minutes = [...new Set(Object.keys(byMinute[0]).concat(Object.keys(byMinute[1])).map(Number))].sort((a, b) => a - b);
+      const xp = (team, m) => byMinute[team][m]?.xp ?? 0;
+      return {
+        x_axis_time: minutes,
+        team_one_differences: minutes.map(m => Math.max(0, xp(0, m) - xp(1, m))),
+        team_two_differences: minutes.map(m => Math.max(0, xp(1, m) - xp(0, m))),
+        team_one_level: minutes.map(m => byMinute[0][m]?.level ?? null),
+        team_two_level: minutes.map(m => byMinute[1][m]?.level ?? null),
+      };
     },
     xpLead() {
       const at = this.xpSeries.map(series => {
@@ -305,10 +320,6 @@ export default {
     },
     disconnectedAt(idx) {
       return this.data.disconnects.some(d => d.p === idx && d.left <= this.t && (d.rejoined === null || d.rejoined > this.t));
-    },
-    xpLine(team) {
-      const length = this.data.length_s;
-      return this.xpSeries[team].map(([t, xp]) => `${(100 * t / length).toFixed(2)},${(30 - 28 * xp / this.xpMax).toFixed(2)}`).join(' ');
     },
   },
 };

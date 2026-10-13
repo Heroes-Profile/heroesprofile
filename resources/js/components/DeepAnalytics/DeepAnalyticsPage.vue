@@ -26,7 +26,11 @@
       </div>
 
       <div class="text-center mb-6">
-        <p v-if="processing">Processing your games: {{ status.done }} of {{ status.total }} done. This page updates as they finish.</p>
+        <div v-if="processing" class="max-w-[600px] mx-auto">
+          <p>Processing your games: {{ status.done }} of {{ status.total }} done. This page updates as they finish.</p>
+          <p class="text-sm text-gray-light">You can leave this page; processing carries on, and your progress shows here when you come back.</p>
+          <stat-bar-box class="w-full" size="full" :title="'Progress'" :value="percent" :displaytext="status.done + ' of ' + status.total"></stat-bar-box>
+        </div>
         <custom-button
           v-else-if="status.done < status.total"
           @click="request"
@@ -72,7 +76,7 @@ export default {
     return {
       status: { ...this.initialStatus },
       requesting: false,
-      processing: false,
+      processing: Boolean(this.initialStatus.processing),
       pollTimer: null,
       error: '',
       tabs: [
@@ -101,6 +105,10 @@ export default {
   mounted() {
     if (this.status.done > 0) {
       this.loadTab();
+    }
+    // A request still running from an earlier visit
+    if (this.processing) {
+      this.startPolling();
     }
   },
   beforeUnmount() {
@@ -160,8 +168,14 @@ export default {
       this.requesting = true;
       this.error = '';
       try {
-        await this.$axios.post('/DeepAnalytics/Request');
-        this.startPolling();
+        const response = await this.$axios.post('/DeepAnalytics/Request');
+        if (response.data.already_requested) {
+          this.error = 'Your games were already requested in the last 10 minutes. Try again in a few minutes if they are not processing.';
+        } else if (response.data.queued === 0) {
+          this.error = 'There are no unprocessed games to queue.';
+        } else {
+          this.startPolling();
+        }
       } catch (e) {
         this.error = 'Could not start processing. Please try again in a minute.';
       } finally {
@@ -179,7 +193,7 @@ export default {
       try {
         const response = await this.$axios.get('/DeepAnalytics/Status');
         this.status = response.data;
-        if (this.status.done >= this.status.total) {
+        if (this.status.done >= this.status.total || !this.status.processing) {
           clearInterval(this.pollTimer);
           this.pollTimer = null;
           this.processing = false;
