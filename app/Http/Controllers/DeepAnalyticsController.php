@@ -15,10 +15,10 @@ use Illuminate\View\View;
  */
 class DeepAnalyticsController extends Controller
 {
-    public function __construct(
-        private DeepAnalyticsService $deepAnalytics,
-        private GlobalDataService $globalDataService,
-    ) {}
+    public function __construct(GlobalDataService $globalDataService, private DeepAnalyticsService $deepAnalytics)
+    {
+        parent::__construct($globalDataService);
+    }
 
     public function show(): View
     {
