@@ -21,7 +21,7 @@ return [
 
     // The parser's DeepExtract.Version. Games loaded at an older version are reprocessed on
     // the next request, and cached results are keyed on it.
-    'extract_v' => 2,
+    'extract_v' => 3,
 
     // Only games from the start of season 34 on are archived or analysed.
     'cutover' => '2026-10-02 16:00:01',
@@ -31,6 +31,9 @@ return [
 
     // How long one account's request blocks another, in seconds.
     'request_lock_seconds' => 600,
+
+    // How long the page keeps showing a request as in progress if some games never finish.
+    'processing_seconds' => 7200,
 
     // Where the analytics are read from (filled by the deep analytics loader).
     'bigquery_project' => env('DEEP_ANALYTICS_BIGQUERY_PROJECT', 'heroesprofile-244413'),

@@ -2,9 +2,14 @@
   <div>
     <h2 class="text-xl font-bold mb-2 text-teal">Where you spend your time</h2>
     <div class="flex flex-wrap justify-center items-center gap-4 mb-2">
-      <select v-model="selectedMap" class="bg-darken text-white rounded px-3 py-1">
-        <option v-for="map in mapsPlayed" :key="map" :value="map">{{ mapName(map) }}</option>
-      </select>
+      <single-select-filter
+        :key="mapsPlayed.join()"
+        :values="mapsPlayed.map(map => ({ code: map, name: mapName(map) }))"
+        :text="'Map'"
+        :defaultValue="selectedMap"
+        :disabledeselectfilters="true"
+        @input-changed="selectedMap = $event.value"
+      ></single-select-filter>
       <multi-tab-button :options="teamOptions" v-model="team"></multi-tab-button>
     </div>
     <deep-analytics-map-view :map-name="mapName(selectedMap)" :layout="layout" :heatmap="cells"></deep-analytics-map-view>

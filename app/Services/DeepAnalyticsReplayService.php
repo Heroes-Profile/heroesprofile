@@ -23,6 +23,9 @@ class DeepAnalyticsReplayService
      */
     public function games(int $blizzId, int $region, array $filters): array
     {
+        $heroes = $this->globalDataService->getHeroesByID();
+        $maps = $this->globalDataService->getAllMapsKeyed();
+
         return DB::connection('heroesprofile')->table('player')
             ->join('replay', 'replay.replayID', '=', 'player.replayID')
             ->join('replay_deep', 'replay_deep.replayID', '=', 'replay.replayID')
@@ -35,15 +38,21 @@ class DeepAnalyticsReplayService
             ->when($filters['hero'] > 0, fn ($q) => $q->where('player.hero', $filters['hero']))
             ->orderByDesc('replay.game_date')
             ->get(['replay.replayID', 'replay.game_date', 'replay.game_type', 'replay.game_map', 'replay.game_length', 'player.hero', 'player.winner'])
-            ->map(fn ($row) => [
-                'replay_id' => (int) $row->replayID,
-                'game_date' => $row->game_date,
-                'game_type' => (int) $row->game_type,
-                'game_map' => (int) $row->game_map,
-                'game_length' => (int) $row->game_length,
-                'hero' => (int) $row->hero,
-                'winner' => (bool) $row->winner,
-            ])
+            ->map(function ($row) use ($heroes, $maps) {
+                $hero = $heroes->get((int) $row->hero);
+                $map = $maps->get((int) $row->game_map);
+
+                return [
+                    'replay_id' => (int) $row->replayID,
+                    'game_date' => $row->game_date,
+                    'game_type' => (int) $row->game_type,
+                    'game_length' => (int) $row->game_length,
+                    'winner' => (bool) $row->winner,
+                    // Shaped for hero-image-wrapper and map-image-wrapper
+                    'hero' => $hero ? ['id' => $hero->id, 'name' => $hero->name, 'short_name' => $hero->short_name] : null,
+                    'map' => $map ? ['map_id' => $map->map_id, 'name' => $map->name, 'sanitized_map_name' => $map->sanitized_map_name] : null,
+                ];
+            })
             ->all();
     }
 
@@ -62,7 +71,7 @@ class DeepAnalyticsReplayService
             return null;
         }
 
-        $replay = Cache::remember('deep_analytics:replay:v'.config('deep_analytics.extract_v').':'.$replayId, now()->addDay(), function () use ($replayId) {
+        $replay = Cache::remember('deep_analytics:replay:v'.config('deep_analytics.extract_v').'.3:'.$replayId, now()->addDay(), function () use ($replayId) {
             try {
                 $raw = Storage::disk(self::DISK)->get('doc/'.$replayId.'.json.gz');
             } catch (UnableToReadFile) {
@@ -134,11 +143,7 @@ class DeepAnalyticsReplayService
             'deaths' => $doc['deaths'],
             'structures' => $doc['structures'],
             'units' => array_values(array_filter($doc['units'], fn ($u) => $u['g'] !== 'Hero')),
-            // [player, born t, x, y, died t or null]: each hero life, from its spawn point
-            'lives' => array_values(array_map(
-                fn ($u) => [$u['owner'], $u['b'][0], $u['b'][1], $u['b'][2], $u['d'][0] ?? null],
-                array_filter($doc['units'], fn ($u) => $u['g'] === 'Hero' && $u['owner'] >= 0),
-            )),
+            'lives' => $this->lives($doc),
             'team_levels' => $doc['team_levels'],
             'xp_breakdown' => $doc['xp_breakdown'],
             'objectives' => $doc['objectives'],
@@ -151,7 +156,54 @@ class DeepAnalyticsReplayService
         ];
     }
 
-    /** Talent picks with the site's title and icon, matched on the hero and the game's talent name. */
+    /**
+     * [player, born t, x, y, died t or null]: each hero life, from its spawn point. The parser only
+     * tags heroes it knows by name as hero units, so newer heroes (Xal'atath, Deathwing, Hogger and
+     * others) have none; their lives come from their positions instead, split at each death.
+     */
+    private function lives(array $doc): array
+    {
+        $lives = [];
+        foreach ($doc['units'] as $unit) {
+            if ($unit['g'] === 'Hero' && $unit['owner'] >= 0) {
+                $lives[] = [$unit['owner'], $unit['b'][0], $unit['b'][1], $unit['b'][2], $unit['d'][0] ?? null];
+            }
+        }
+
+        $known = array_unique(array_column($lives, 0));
+        foreach ($doc['hero_positions'] as $track) {
+            $p = $track['p'];
+            if (in_array($p, $known, true) || $track['pts'] === []) {
+                continue;
+            }
+
+            $deaths = array_values(array_map(fn ($d) => $d['t'], array_filter($doc['deaths'], fn ($d) => $d['v'] === $p)));
+            sort($deaths);
+            $points = $track['pts'];
+            $start = $points[0];
+            foreach ($deaths as $died) {
+                if ($start === null || $died < $start[0]) {
+                    continue;
+                }
+                $lives[] = [$p, $start[0], $start[1], $start[2], $died];
+                // Back in the game at the first position after the death
+                $start = null;
+                foreach ($points as $point) {
+                    if ($point[0] > $died) {
+                        $start = $point;
+                        break;
+                    }
+                }
+            }
+            if ($start !== null) {
+                $lives[] = [$p, $start[0], $start[1], $start[2], null];
+            }
+        }
+
+        return $lives;
+    }
+
+    /** Talent picks with the site's talent record, matched on the hero and the game's talent name. */
     private function talents(array $picks, array $players): array
     {
         $byHero = [];
@@ -162,7 +214,7 @@ class DeepAnalyticsReplayService
         $known = DB::connection('heroesprofile')->table('heroes_data_talents')
             ->whereIn('hero_name', array_unique(array_values($byHero)))
             ->whereIn('talent_name', array_unique(array_column($picks, 'name')))
-            ->get(['hero_name', 'talent_name', 'title', 'icon'])
+            ->get(['talent_id', 'hero_name', 'talent_name', 'title', 'icon', 'hotkey', 'description', 'level', 'status'])
             ->keyBy(fn ($t) => $t->hero_name.'|'.$t->talent_name);
 
         return array_map(function ($pick) use ($byHero, $known) {
@@ -172,8 +224,8 @@ class DeepAnalyticsReplayService
                 'p' => $pick['p'],
                 'tier' => $pick['tier'],
                 't' => $pick['t'],
-                'title' => $talent?->title ?? $pick['name'],
-                'icon' => $talent?->icon,
+                // The site's talent record, as talent-image-wrapper takes it
+                'talent' => $talent ? (array) $talent : ['talent_name' => $pick['name'], 'title' => $pick['name'], 'icon' => null, 'hotkey' => '', 'description' => ''],
             ];
         }, $picks);
     }

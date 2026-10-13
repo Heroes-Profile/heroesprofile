@@ -24,15 +24,29 @@ class DeepAnalyticsService
         return in_array($blizzId, config('deep_analytics.allowlist'), true);
     }
 
-    /** @return array{total: int, done: int} */
+    /**
+     * processing: a request is still working through the games, so a page opened later
+     * picks up where it left off. Games that never finish (no replay file anywhere) would
+     * keep it set, so it also runs out on its own.
+     *
+     * @return array{total: int, done: int, processing: bool}
+     */
     public function status(int $blizzId, int $region): array
     {
         $row = $this->seasonGames($blizzId, $region)
             ->leftJoin('replay_deep', fn ($join) => $this->currentDeepRow($join))
             ->selectRaw('COUNT(*) AS total, COUNT(replay_deep.replayID) AS done')
             ->first();
+        $total = (int) $row->total;
+        $done = (int) $row->done;
 
-        return ['total' => (int) $row->total, 'done' => (int) $row->done];
+        $processing = Cache::has($this->processingKey($blizzId, $region));
+        if ($processing && $done >= $total) {
+            Cache::forget($this->processingKey($blizzId, $region));
+            $processing = false;
+        }
+
+        return ['total' => $total, 'done' => $done, 'processing' => $processing];
     }
 
     /**
@@ -63,7 +77,16 @@ class DeepAnalyticsService
             );
         }
 
+        if ($pending !== []) {
+            Cache::put($this->processingKey($blizzId, $region), now()->timestamp, config('deep_analytics.processing_seconds'));
+        }
+
         return ['queued' => count($pending), 'already_requested' => false];
+    }
+
+    private function processingKey(int $blizzId, int $region): string
+    {
+        return 'deep_analytics:processing:'.$region.':'.$blizzId;
     }
 
     /**

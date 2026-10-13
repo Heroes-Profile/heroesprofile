@@ -16,8 +16,18 @@
       <tbody>
         <tr v-for="game in data.games" :key="game.replay_id">
           <td>{{ formatDate(game.game_date) }}</td>
-          <td>{{ mapName(game.game_map) }}</td>
-          <td>{{ heroName(game.hero) }}</td>
+          <td>
+            <div class="flex items-center gap-2">
+              <map-image-wrapper v-if="game.map" :map="game.map" :size="'small'"></map-image-wrapper>
+              <span>{{ game.map ? game.map.name : '-' }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="flex items-center gap-2">
+              <hero-image-wrapper v-if="game.hero" :hero="game.hero" :size="'small'"></hero-image-wrapper>
+              <span>{{ game.hero ? game.hero.name : '-' }}</span>
+            </div>
+          </td>
           <td :class="game.winner ? 'text-teal' : 'text-red'">{{ game.winner ? 'Win' : 'Loss' }}</td>
           <td>{{ clock(game.game_length) }}</td>
           <td>
