@@ -20,19 +20,22 @@
         :class="{ talking }"
         @animationend="talking = false"
       >
-      <div class="speech-bubble flex-1" :class="{ pop: talking }">
-        <template v-if="said.length">
-          <span class="font-mono bubble-time mr-2">{{ clock(said[0].t) }}</span>
-          <span class="font-bold">{{ said[0].text }}</span>
-          <span v-if="said[0].why" class="bubble-why ml-1">Why: {{ said[0].why }}.</span>
-        </template>
-        <span v-else>Waiting for the gates to open.</span>
+      <!-- Always two lines tall so the page never shifts; longer lines are cut, full text on hover -->
+      <div class="speech-bubble flex-1" :class="{ pop: talking }" :title="said.length ? fullText(said[0]) : ''">
+        <div class="line-clamp-2">
+          <template v-if="said.length">
+            <span class="font-mono bubble-time mr-2">{{ clock(said[0].t) }}</span>
+            <span class="font-bold">{{ said[0].text }}</span>
+            <span v-if="said[0].why" class="bubble-why ml-1">Why: {{ said[0].why }}.</span>
+          </template>
+          <span v-else>Waiting for the gates to open.</span>
+        </div>
       </div>
     </div>
 
-    <!-- The two lines before it -->
-    <div v-if="said.length > 1" class="mt-2 ml-[4.5rem] text-xs opacity-60">
-      <div v-for="(line, index) in said.slice(1)" :key="line.t + ':' + index">
+    <!-- The two lines before it: one line each, and the space is kept even before there are two -->
+    <div class="mt-2 ml-[4.5rem] h-8 text-xs opacity-60">
+      <div v-for="(line, index) in said.slice(1)" :key="line.t + ':' + index" class="truncate" :title="fullText(line)">
         <span class="font-mono text-gray-light mr-2">{{ clock(line.t) }}</span>
         <span>{{ line.text }}</span>
       </div>
@@ -342,6 +345,9 @@ export default {
   },
   methods: {
     teamColor,
+    fullText(line) {
+      return this.clock(line.t) + ' ' + line.text + (line.why ? ' Why: ' + line.why + '.' : '');
+    },
     pct(p) {
       return Math.round(p * 100) + '%';
     },
@@ -363,6 +369,10 @@ export default {
   border-radius: 1rem;
   padding: 0.6rem 0.9rem;
   line-height: 1.4;
+  /* Exactly two lines plus padding and border, whatever the text */
+  height: calc(2.8em + 1.2rem + 4px);
+  display: flex;
+  align-items: center;
 }
 
 .speech-bubble::before,
