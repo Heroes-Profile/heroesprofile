@@ -37,8 +37,16 @@
               </slot>
             </round-image>
           </span>
-          <!-- Replay viewer: shown to Battle.net logins, for season games -->
-          <a v-if="canWatchReplay" class="link" :href="'/Analytics/Match/Single/' + replayid">Watch Replay</a>
+          <!-- Replay viewer: season games; needs a Battle.net login, like Download Replay -->
+          <a v-if="isWatchableGame && replayViewerAllowed" class="link" :href="'/Analytics/Match/Single/' + replayid">Watch Replay</a>
+          <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
+            Watch Replay
+            <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
+              <slot>
+                <p>You need to be logged in with Battle.net to watch replays.</p>
+              </slot>
+            </round-image>
+          </span>
         </div>
       </div>
 
@@ -667,8 +675,9 @@
     mounted() {
     },
     computed: {
-      canWatchReplay() {
-        return this.replayViewerAllowed && !this.esport && !!this.deepAnalyticsCutover && !!this.data
+      // A non-esport game from the season start on: the ones the replay viewer can show
+      isWatchableGame() {
+        return !this.esport && !!this.deepAnalyticsCutover && !!this.data
           && this.data.game_date >= this.deepAnalyticsCutover;
       },
       // Non-draft modes still have replay_bans rows, all hero 0
