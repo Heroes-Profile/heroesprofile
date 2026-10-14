@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import analytics from '../../utils/deepAnalyticsFormat.js';
+import analytics from '../../utils/analyticsFormat.js';
 import { teamColor } from '../../utils/mapAssets.js';
 
 const HEROIC_TIER = 3; // the level 10 pick
@@ -67,7 +67,7 @@ const HEROIC_TIER = 3; // the level 10 pick
 // The in-game style top bar: each team's heroes with respawn timers and heroic, and the team
 // levels with progress to the next one. `t` is whole game seconds, so it updates once a second.
 export default {
-  name: 'DeepAnalyticsReplayScoreboard',
+  name: 'AnalyticsReplayScoreboard',
   mixins: [analytics],
   props: {
     data: Object,

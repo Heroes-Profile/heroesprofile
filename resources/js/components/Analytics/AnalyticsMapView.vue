@@ -85,7 +85,7 @@ import { minimapFor, structureIcons, teamColor, tintMatrix } from '../../utils/m
 // One map: the in-game minimap and its structures when we have them, camp positions from
 // replay data, and points or a heatmap on top. Game y grows upward, SVG y downward.
 export default {
-  name: 'DeepAnalyticsMapView',
+  name: 'AnalyticsMapView',
   props: {
     mapName: { type: String, default: null },
     layout: { type: Array, default: () => [] },

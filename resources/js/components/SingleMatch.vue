@@ -579,7 +579,7 @@
       tournament: String,
       // Replay viewer: any Battle.net login, season games only
       replayViewerAllowed: { type: Boolean, default: false },
-      deepAnalyticsCutover: { type: String, default: null },
+      analyticsCutover: { type: String, default: null },
     },
     data(){
       return {
@@ -677,8 +677,8 @@
     computed: {
       // A non-esport game from the season start on: the ones the replay viewer can show
       isWatchableGame() {
-        return !this.esport && !!this.deepAnalyticsCutover && !!this.data
-          && this.data.game_date >= this.deepAnalyticsCutover;
+        return !this.esport && !!this.analyticsCutover && !!this.data
+          && this.data.game_date >= this.analyticsCutover;
       },
       // Non-draft modes still have replay_bans rows, all hero 0
       showBans(){

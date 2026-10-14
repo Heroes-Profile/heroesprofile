@@ -7,9 +7,9 @@ use App\Models\Map;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
-use App\Services\DeepAnalyticsQueryService;
-use App\Services\DeepAnalyticsReplayService;
-use App\Services\DeepAnalyticsService;
+use App\Services\AnalyticsQueryService;
+use App\Services\AnalyticsReplayService;
+use App\Services\AnalyticsService;
 use App\Services\GlobalDataService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,17 +17,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 /**
- * Deep analytics for the logged-in Battle.net account's own season games. Only blizz
- * IDs on the deep_analytics allowlist see it until access is opened up; everyone else
+ * Analytics for the logged-in Battle.net account's own season games. Only blizz
+ * IDs on the analytics allowlist see it until access is opened up; everyone else
  * gets a 404.
  */
-class DeepAnalyticsController extends Controller
+class AnalyticsController extends Controller
 {
     public function __construct(
         GlobalDataService $globalDataService,
-        private DeepAnalyticsService $deepAnalytics,
-        private DeepAnalyticsQueryService $queries,
-        private DeepAnalyticsReplayService $replays,
+        private AnalyticsService $analytics,
+        private AnalyticsQueryService $queries,
+        private AnalyticsReplayService $replays,
     ) {
         parent::__construct($globalDataService);
     }
@@ -36,14 +36,15 @@ class DeepAnalyticsController extends Controller
     {
         $user = $this->allowedUser();
 
-        return view('DeepAnalytics.deepAnalytics')->with([
+        return view('Analytics.analytics')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'battletag' => explode('#', (string) $user->battletag)[0],
-            'status' => $this->deepAnalytics->status((int) $user->blizz_id, (int) $user->region),
+            'status' => $this->analytics->status((int) $user->blizz_id, (int) $user->region),
             'filters' => $this->globalDataService->getFilterData(),
             'gametypedefault' => $this->globalDataService->getPlayerGameTypeDefault(),
             'maps' => $this->globalDataService->getAllMapsKeyed()->map(fn ($map) => $map->name),
             'urlparameters' => $request->query(),
+            'playermatchtablestyle' => $this->globalDataService->getPlayerMatchStyle(),
         ]);
     }
 
@@ -51,20 +52,20 @@ class DeepAnalyticsController extends Controller
     {
         $user = $this->allowedUser();
 
-        return response()->json($this->deepAnalytics->status((int) $user->blizz_id, (int) $user->region));
+        return response()->json($this->analytics->status((int) $user->blizz_id, (int) $user->region));
     }
 
     public function request(): JsonResponse
     {
         $user = $this->allowedUser();
 
-        return response()->json($this->deepAnalytics->request((int) $user->blizz_id, (int) $user->region));
+        return response()->json($this->analytics->request((int) $user->blizz_id, (int) $user->region));
     }
 
     public function data(Request $request, string $tab): JsonResponse
     {
         $user = $this->allowedUser();
-        abort_unless($tab === 'games' || $tab === 'ability' || in_array($tab, DeepAnalyticsQueryService::TABS, true), 404);
+        abort_unless($tab === 'games' || $tab === 'ability' || in_array($tab, AnalyticsQueryService::TABS, true), 404);
 
         // No selection arrives as an empty list; that means "all", not an invalid value
         foreach (['game_type', 'game_map', 'hero'] as $field) {
@@ -118,7 +119,7 @@ class DeepAnalyticsController extends Controller
         $this->loggedInUser();
         abort_unless($this->replays->isSeasonGame($replayID), 404);
 
-        return view('DeepAnalytics.deepAnalyticsReplay')->with([
+        return view('Analytics.analyticsReplay')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'replayId' => $replayID,
         ]);
@@ -162,7 +163,7 @@ class DeepAnalyticsController extends Controller
     {
         $user = Auth::user();
 
-        abort_unless($user && $this->deepAnalytics->isAllowed((int) $user->blizz_id), 404);
+        abort_unless($user && $this->analytics->isAllowed((int) $user->blizz_id), 404);
 
         return $user;
     }

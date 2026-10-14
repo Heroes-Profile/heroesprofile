@@ -6,22 +6,22 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 /**
- * On-demand deep analytics for a player's season games.
+ * On-demand analytics for a player's season games.
  *
  * A request queues every season game not yet in replay_deep. The page answers right
  * away: it queues one Cloud Task per chunk of games to this app's fan-out route, and
- * each of those queues the chunk's deep parses on the replay parser's deep service.
+ * each of those queues the chunk's analytics parses on the replay parser's analytics service (replay-parser-deep).
  * The VM loader writes replay_deep once a game's rows are in BigQuery, so progress is
  * a count of those rows. Rows from an older extract version count as not done, so the
  * next request rebuilds them.
  */
-class DeepAnalyticsService
+class AnalyticsService
 {
     public function __construct(private CloudTasksDispatcher $tasks) {}
 
     public function isAllowed(int $blizzId): bool
     {
-        return in_array($blizzId, config('deep_analytics.allowlist'), true);
+        return in_array($blizzId, config('analytics.allowlist'), true);
     }
 
     /**
@@ -34,7 +34,7 @@ class DeepAnalyticsService
     public function status(int $blizzId, int $region): array
     {
         $row = $this->seasonGames($blizzId, $region)
-            ->leftJoin('replay_deep', fn ($join) => $this->currentDeepRow($join))
+            ->leftJoin('replay_deep', fn ($join) => $this->currentLoadedRow($join))
             ->selectRaw('COUNT(*) AS total, COUNT(replay_deep.replayID) AS done')
             ->first();
         $total = (int) $row->total;
@@ -57,28 +57,28 @@ class DeepAnalyticsService
      */
     public function request(int $blizzId, int $region): array
     {
-        if (! Cache::add('deep_analytics:request:'.$region.':'.$blizzId, 1, config('deep_analytics.request_lock_seconds'))) {
+        if (! Cache::add('analytics:request:'.$region.':'.$blizzId, 1, config('analytics.request_lock_seconds'))) {
             return ['queued' => 0, 'already_requested' => true];
         }
 
         $pending = $this->seasonGames($blizzId, $region)
-            ->leftJoin('replay_deep', fn ($join) => $this->currentDeepRow($join))
+            ->leftJoin('replay_deep', fn ($join) => $this->currentLoadedRow($join))
             ->whereNull('replay_deep.replayID')
             ->orderBy('replay.replayID')
             ->pluck('replay.replayID')
             ->map(fn ($id) => (int) $id)
             ->all();
 
-        foreach (array_chunk($pending, config('deep_analytics.fanout_chunk')) as $chunk) {
+        foreach (array_chunk($pending, config('analytics.fanout_chunk')) as $chunk) {
             $this->tasks->dispatchHttp(
                 url: $this->fanoutUrl(),
                 body: ['replay_ids' => $chunk],
-                queue: config('deep_analytics.queue'),
+                queue: config('analytics.queue'),
             );
         }
 
         if ($pending !== []) {
-            Cache::put($this->processingKey($blizzId, $region), now()->timestamp, config('deep_analytics.processing_seconds'));
+            Cache::put($this->processingKey($blizzId, $region), now()->timestamp, config('analytics.processing_seconds'));
         }
 
         return ['queued' => count($pending), 'already_requested' => false];
@@ -86,11 +86,11 @@ class DeepAnalyticsService
 
     private function processingKey(int $blizzId, int $region): string
     {
-        return 'deep_analytics:processing:'.$region.':'.$blizzId;
+        return 'analytics:processing:'.$region.':'.$blizzId;
     }
 
     /**
-     * Run by the fan-out task: queues one deep parse per replay, reading it from its
+     * Run by the fan-out task: queues one analytics parse per replay, reading it from its
      * archive bundle or, if it was parsed too recently to be archived, the upload bucket.
      *
      * @param  array<int>  $replayIds
@@ -110,7 +110,7 @@ class DeepAnalyticsService
             ->whereIn('replayID', $replayIds)
             ->pluck('fingerprint', 'replayID');
 
-        $serviceUrl = config('deep_analytics.service_url');
+        $serviceUrl = config('analytics.service_url');
         $queued = 0;
 
         foreach ($replayIds as $replayId) {
@@ -118,7 +118,7 @@ class DeepAnalyticsService
                 $body = [
                     'parseType' => 'deep',
                     'replayID' => $replayId,
-                    'bucket' => config('deep_analytics.archive_bucket'),
+                    'bucket' => config('analytics.archive_bucket'),
                     'input' => $archive->bundle,
                     'offset' => (int) $archive->byte_offset,
                     'length' => (int) $archive->byte_length,
@@ -127,7 +127,7 @@ class DeepAnalyticsService
                 $body = [
                     'parseType' => 'deep',
                     'replayID' => $replayId,
-                    'bucket' => config('deep_analytics.replay_bucket'),
+                    'bucket' => config('analytics.replay_bucket'),
                     'input' => $fingerprint.'.StormReplay',
                 ];
             } else {
@@ -137,7 +137,7 @@ class DeepAnalyticsService
             $this->tasks->dispatchHttp(
                 url: $serviceUrl,
                 body: $body,
-                queue: config('deep_analytics.queue'),
+                queue: config('analytics.queue'),
                 audience: $serviceUrl,
             );
             $queued++;
@@ -146,10 +146,10 @@ class DeepAnalyticsService
         return $queued;
     }
 
-    private function currentDeepRow($join): void
+    private function currentLoadedRow($join): void
     {
         $join->on('replay_deep.replayID', '=', 'replay.replayID')
-            ->where('replay_deep.extract_v', '>=', config('deep_analytics.extract_v'));
+            ->where('replay_deep.extract_v', '>=', config('analytics.extract_v'));
     }
 
     private function seasonGames(int $blizzId, int $region)
@@ -158,21 +158,21 @@ class DeepAnalyticsService
             ->join('replay', 'replay.replayID', '=', 'player.replayID')
             ->where('player.blizz_id', $blizzId)
             ->where('replay.region', $region)
-            ->where('replay.game_date', '>=', config('deep_analytics.cutover'));
+            ->where('replay.game_date', '>=', config('analytics.cutover'));
     }
 
     // Same host the global query tasks already reach this app on, so the callback takes the
     // path Cloud Tasks is known to get through.
     private function fanoutUrl(): string
     {
-        if ($url = config('deep_analytics.fanout_url')) {
+        if ($url = config('analytics.fanout_url')) {
             return (string) $url;
         }
 
         $handler = parse_url((string) config('global.cloud_tasks.handler_url'));
 
         return isset($handler['scheme'], $handler['host'])
-            ? $handler['scheme'].'://'.$handler['host'].(isset($handler['port']) ? ':'.$handler['port'] : '').'/api/v1/internal/deep/fanout'
-            : url('/api/v1/internal/deep/fanout');
+            ? $handler['scheme'].'://'.$handler['host'].(isset($handler['port']) ? ':'.$handler['port'] : '').'/api/v1/internal/analytics/fanout'
+            : url('/api/v1/internal/analytics/fanout');
     }
 }

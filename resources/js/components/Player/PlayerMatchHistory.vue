@@ -36,14 +36,18 @@
               Previous
             </a>
           </li>
-          <li v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: !data.next_page_url }">
-            <a class="page-link" @click.prevent="getData(data.current_page + 1)" href="#">
-              Next
-            </a>
+          <!-- Left of Next, as the Talent Builder's layout toggle sits left of its Patch Notes button -->
+          <li class="ml-auto flex items-center gap-4">
+            <tab-button :tab1text="'Table'" :tab2text="'Compact'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="compact ? 'right' : 'left'"></tab-button>
+            <span v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4" :class="{ disabled: !data.next_page_url }">
+              <a class="page-link" @click.prevent="getData(data.current_page + 1)" href="#">
+                Next
+              </a>
+            </span>
           </li>
         </ul>
       </div>
-      <div v-if="playermatchtablestyle == 1">
+      <div v-if="compact">
         <div class="p-10 max-w-[90em] ml-auto mr-auto">
           <game-summary-box v-for="(item, index) in data.data" :data="item"></game-summary-box>
         </div>
@@ -139,6 +143,7 @@
 
 <script>
 import moment from 'moment-timezone';
+import Cookies from 'js-cookie';
 
 export default {
   name: 'PlayerMatchHistory',
@@ -160,6 +165,7 @@ export default {
     playermatchtablestyle: {
       type: [String, Boolean]
     },
+    authenticated: Boolean,
     urlparameters: {
       type: Object,
       default: () => ({}),
@@ -168,6 +174,7 @@ export default {
   data(){
     return {
       windowWidth: window.innerWidth,
+      compact: this.playermatchtablestyle == 1,
       cancelTokenSource: null,
       userTimezone: moment.tz.guess(),
       isLoading: false,
@@ -233,6 +240,26 @@ export default {
   watch: {
   },
   methods: {
+    // Like the Talent Builder's layout toggle: a cookie for everyone, and the account setting when logged in
+    setStyle(side) {
+      this.compact = side === 'right';
+      Cookies.set('playerhistorytable', this.compact ? '1' : '0', { expires: 365, path: '/' });
+      if (this.authenticated) {
+        this.$axios.post('/api/v1/profile/save/settings', { playerhistorytable: this.compact }).catch(() => {});
+      }
+      this.$nextTick(() => this.scaleTable());
+    },
+    // Narrow screens scale the table to fit
+    scaleTable() {
+      const responsivetable = this.$refs.responsivetable;
+      if (responsivetable && this.windowWidth < 1500) {
+        const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+        responsivetable.style.transformOrigin = 'top left';
+        responsivetable.style.transform = `scale(${newTableWidth})`;
+        const container = this.$refs.tablecontainer;
+        container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+      }
+    },
     async getData(page){      
      if (this.isLoading || page < 1 || (this.data && page > this.data.last_page)) {
         return;
@@ -277,16 +304,7 @@ export default {
         this.cancelTokenSource = null;
         this.isLoading = false;
         this.asyncLoading = false;
-        this.$nextTick(() => {
-        const responsivetable = this.$refs.responsivetable;
-          if (responsivetable && this.windowWidth < 1500) {
-            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
-            responsivetable.style.transformOrigin = 'top left';
-            responsivetable.style.transform = `scale(${newTableWidth})`;
-            const container = this.$refs.tablecontainer;
-            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
-          }
-        });
+        this.$nextTick(() => this.scaleTable());
       }
     },
     getHeroID() {

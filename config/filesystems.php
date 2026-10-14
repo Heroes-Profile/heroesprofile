@@ -116,8 +116,8 @@ return [
             'throw' => true,
         ],
 
-        /* Deep analytics docs (doc/{replayID}.json.gz), written by the replay parser's deep service. */
-        'gcs-deep' => [
+        /* Analytics extract docs (doc/{replayID}.json.gz), written by the replay parser's analytics service. */
+        'gcs-analytics' => [
             'driver' => 'gcs',
             'project_id' => env('GOOGLE_CLOUD_PROJECT_ID'),
             'bucket' => env('DEEP_ANALYTICS_DOC_BUCKET', 'heroesprofile-replay-deep'),

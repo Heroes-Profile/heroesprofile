@@ -9,7 +9,7 @@ import { markRaw } from 'vue';
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 
-// Like LineChart, but several series on one axis (e.g. you vs baseline).
+// Like LineChart, but several series on one axis (e.g. you vs global).
 // series: [{ label, data: [numbers aligned with labels], color: 'teal' | 'yellow' | 'red' | 'blue',
 //            dashed?, hidden? (off until clicked in the legend), axis?: 'right' (own scale, y2Label) }]
 const COLORS = {

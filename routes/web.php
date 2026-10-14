@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AnimationsController;
 use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
 use App\Http\Controllers\Api\Account\BillingController as ApiBillingController;
@@ -20,7 +21,6 @@ use App\Http\Controllers\Auth\BattleNetController;
 use App\Http\Controllers\Auth\PatreonController;
 use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\DeepAnalyticsController;
 use App\Http\Controllers\Esports\CCL\CCLController;
 use App\Http\Controllers\Esports\EsportsController;
 use App\Http\Controllers\Esports\HeroesInternational\HeroesInternationalController;
@@ -175,14 +175,14 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     // Analytics for the logged-in account's own season games, and the replay viewer for any season
     // match (allowlisted for now)
     Route::middleware('ensureBattlenetAuth')->group(function () {
-        Route::get('Analytics', [DeepAnalyticsController::class, 'show']);
-        Route::get('Analytics/Status', [DeepAnalyticsController::class, 'status'])->middleware('throttle:60,1');
-        Route::post('Analytics/Request', [DeepAnalyticsController::class, 'request'])->middleware('throttle:10,1');
-        Route::post('Analytics/Data/{tab}', [DeepAnalyticsController::class, 'data'])->whereAlpha('tab')->middleware('throttle:60,1');
-        Route::get('Analytics/Match/Single/{replayID}', [DeepAnalyticsController::class, 'replay'])->whereNumber('replayID');
-        Route::get('Analytics/Match/Single/{replayID}/Data', [DeepAnalyticsController::class, 'replayData'])->whereNumber('replayID')->middleware('throttle:30,1');
-        Route::get('Analytics/Match/Single/{replayID}/Status', [DeepAnalyticsController::class, 'replayStatus'])->whereNumber('replayID')->middleware('throttle:60,1');
-        Route::post('Analytics/Match/Single/{replayID}/Process', [DeepAnalyticsController::class, 'replayProcess'])->whereNumber('replayID')->middleware('throttle:10,1');
+        Route::get('Analytics', [AnalyticsController::class, 'show']);
+        Route::get('Analytics/Status', [AnalyticsController::class, 'status'])->middleware('throttle:60,1');
+        Route::post('Analytics/Request', [AnalyticsController::class, 'request'])->middleware('throttle:10,1');
+        Route::post('Analytics/Data/{tab}', [AnalyticsController::class, 'data'])->whereAlpha('tab')->middleware('throttle:60,1');
+        Route::get('Analytics/Match/Single/{replayID}', [AnalyticsController::class, 'replay'])->whereNumber('replayID');
+        Route::get('Analytics/Match/Single/{replayID}/Data', [AnalyticsController::class, 'replayData'])->whereNumber('replayID')->middleware('throttle:30,1');
+        Route::get('Analytics/Match/Single/{replayID}/Status', [AnalyticsController::class, 'replayStatus'])->whereNumber('replayID')->middleware('throttle:60,1');
+        Route::post('Analytics/Match/Single/{replayID}/Process', [AnalyticsController::class, 'replayProcess'])->whereNumber('replayID')->middleware('throttle:10,1');
     });
 
     // The old addresses, from before the rename

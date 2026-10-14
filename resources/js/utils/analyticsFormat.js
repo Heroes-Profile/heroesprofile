@@ -1,8 +1,8 @@
-// Shared helpers for the deep analytics tabs. Expects `heroes` ([{ code, name }]) and
+// Shared helpers for the analytics tabs. Expects `heroes` ([{ code, name }]) and
 // `maps` ({ id: name }) props on the component.
 export default {
   methods: {
-    // The "you" or "baseline" row of a result set, or an empty object
+    // The "you" or "global" row of a result set, or an empty object
     pick(rows, who) {
       return (rows || []).find(r => r.who === who) || {};
     },

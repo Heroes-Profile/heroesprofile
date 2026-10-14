@@ -50,16 +50,16 @@
 </template>
 
 <script>
-import analytics from '../../utils/deepAnalyticsFormat.js';
+import analytics from '../../utils/analyticsFormat.js';
 import { teamColor } from '../../utils/mapAssets.js';
 
 // Win chance for the replay viewer's announcer. A logistic model over the game state at one moment,
 // always from Blue's side (positive favours Blue). The weights below are a hand-tuned starting point;
-// weights trained on the baseline sample replace them later with the same features, so nothing else
+// weights trained on the global sample replace them later with the same features, so nothing else
 // changes when they do.
 
 const MODEL = {
-  // Trained in BigQuery ML (deep_analytics.win_model) on 86,476 minute snapshots of 5,023 baseline games;
+  // Trained in BigQuery ML (deep_analytics.win_model) on 86,476 minute snapshots of 5,023 global games;
   // on held-out games the favourite wins 71% overall, 78% from minute 10 to 20
   source: 'trained',
   trainedOn: '2026-10-14',
@@ -296,7 +296,7 @@ function plural(n, word, many = null) {
 // "Heroes Profile", the replay announcer: each team's chance to win as the game goes, and a line
 // of commentary when something changes it. `t` is whole game seconds.
 export default {
-  name: 'DeepAnalyticsReplayAnnouncer',
+  name: 'AnalyticsReplayAnnouncer',
   mixins: [analytics],
   props: {
     data: Object,

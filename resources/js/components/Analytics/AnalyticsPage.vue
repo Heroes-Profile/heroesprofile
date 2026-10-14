@@ -2,7 +2,7 @@
   <div>
     <page-heading
       :heading="'Analytics (Pre-Alpha)'"
-      :infoText1="'Deep replay analysis of ' + battletag + '\'s season games (from Oct 2, 2026), compared with a sample of all games.'"
+      :infoText1="'Replay analysis of ' + battletag + '\'s season games (from Oct 2, 2026), compared with a sample of all games.'"
       :infoText2="'Pre-alpha: this is in very early development. Numbers, views and features will change, and some may be wrong or missing.'"
     ></page-heading>
 
@@ -13,7 +13,7 @@
       :gametypedefault="gametype"
       :includehero="true"
       :heroinput="getHeroID()"
-      :includegametype="true"
+      :includegametypefull="true"
       :includegamemap="true"
       :hideadvancedfilteringbutton="true"
     ></filters>
@@ -48,23 +48,34 @@
       <div v-if="status.done > 0">
         <multi-tab-button class="mb-6" :options="tabs" v-model="activeTab"></multi-tab-button>
 
-        <loading-component v-if="isLoading"></loading-component>
-        <div v-else-if="tabData">
-          <deep-analytics-deaths v-if="activeTab === 'deaths'" :data="tabData" :maps="maps" :heroes="filters.heroes"></deep-analytics-deaths>
-          <deep-analytics-positions v-else-if="activeTab === 'map'" :data="tabData" :maps="maps" :heroes="filters.heroes"></deep-analytics-positions>
-          <deep-analytics-timelines v-else-if="activeTab === 'timelines'" :data="tabData" :maps="maps" :heroes="filters.heroes"></deep-analytics-timelines>
-          <deep-analytics-activity v-else-if="activeTab === 'activity'" :data="tabData" :maps="maps" :heroes="filters.heroes" :filter-params="filterParams"></deep-analytics-activity>
-          <deep-analytics-sessions v-else-if="activeTab === 'sessions'" :data="tabData" :maps="maps" :heroes="filters.heroes"></deep-analytics-sessions>
-          <deep-analytics-games v-else-if="activeTab === 'games'" :data="tabData" :maps="maps" :heroes="filters.heroes"></deep-analytics-games>
+        <div v-if="!isLoading && tabData">
+          <analytics-deaths v-if="activeTab === 'deaths'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-deaths>
+          <analytics-positions v-else-if="activeTab === 'map'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-positions>
+          <analytics-timelines v-else-if="activeTab === 'timelines'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-timelines>
+          <analytics-activity v-else-if="activeTab === 'activity'" :data="tabData" :maps="maps" :heroes="filters.heroes" :filter-params="filterParams"></analytics-activity>
+          <analytics-sessions v-else-if="activeTab === 'sessions'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-sessions>
         </div>
       </div>
     </div>
+
+    <!-- Page level, like the Talent Builder, so it fills the screen width -->
+    <loading-component v-if="status.done > 0 && isLoading"></loading-component>
+
+    <!-- Full page width, like Match History, so its cards and table lay out the same -->
+    <analytics-games
+      v-if="status.done > 0 && !isLoading && tabData && activeTab === 'games'"
+      :data="tabData"
+      :maps="maps"
+      :heroes="filters.heroes"
+      :playermatchtablestyle="playermatchtablestyle"
+      :authenticated="true"
+    ></analytics-games>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'DeepAnalyticsPage',
+  name: 'AnalyticsPage',
   props: {
     battletag: String,
     initialStatus: Object,
@@ -72,6 +83,8 @@ export default {
     gametypedefault: Array,
     maps: Object,
     urlparameters: { type: Object, default: () => ({}) },
+    // The player's Match History style setting: cards (true) or table
+    playermatchtablestyle: { type: [String, Boolean, Number], default: false },
   },
   data() {
     return {
@@ -88,7 +101,8 @@ export default {
         { key: 'sessions', label: 'Sessions' },
         { key: 'games', label: 'Games' },
       ],
-      activeTab: 'deaths',
+      // ?tab= in the URL opens that tab
+      activeTab: ['deaths', 'map', 'timelines', 'activity', 'sessions', 'games'].includes((this.urlparameters || {}).tab) ? this.urlparameters.tab : 'deaths',
       tabCache: {},
       isLoading: false,
       gametype: this.gametypedefault,
@@ -131,7 +145,11 @@ export default {
     },
   },
   watch: {
-    activeTab() {
+    activeTab(tab) {
+      // ?tab= in the URL, so a tab can be linked to and comes back on reload
+      const params = new URLSearchParams(window.location.search);
+      params.set('tab', tab);
+      history.pushState(null, null, `${window.location.pathname}?${params.toString()}`);
       this.loadTab();
     },
   },

@@ -6,26 +6,28 @@
       :infoText2="'Pre-alpha: this is in very early development. Things will change, and some of what you see may be wrong or missing.'"
     ></page-heading>
 
-    <div class="max-w-[1500px] mx-auto px-4 mt-4">
-      <loading-component v-if="loading" :textoverride="preparing">Preparing replay, usually under a minute...</loading-component>
-      <p v-else-if="error" class="text-center text-red">{{ error }}</p>
+    <!-- Page level, like the Talent Builder, so it fills the screen width -->
+    <loading-component v-if="loading" :textoverride="preparing">Preparing replay, usually under a minute...</loading-component>
+
+    <div v-else class="max-w-[1500px] mx-auto px-4 mt-4">
+      <p v-if="error" class="text-center text-red">{{ error }}</p>
       <template v-else>
       <div class="flex flex-wrap gap-4">
         <!-- Map and controls -->
         <div class="flex-1 min-w-0 basis-[60%]">
           <!-- The announcer: win chance and commentary -->
-          <deep-analytics-replay-announcer :data="data" :events="events" :t="second"></deep-analytics-replay-announcer>
+          <analytics-replay-announcer :data="data" :events="events" :t="second"></analytics-replay-announcer>
           <!-- In-game style top bar, centred over the map -->
-          <deep-analytics-replay-scoreboard :data="data" :t="second" :selected="selected" @select="selected = $event"></deep-analytics-replay-scoreboard>
-          <deep-analytics-replay-map
+          <analytics-replay-scoreboard :data="data" :t="second" :selected="selected" @select="selected = $event"></analytics-replay-scoreboard>
+          <analytics-replay-map
             :data="data"
             :tracks="tracks"
             :t="t"
             :selected="selected"
             :minimap="minimap"
             @select="selected = $event"
-          ></deep-analytics-replay-map>
-          <deep-analytics-replay-timeline
+          ></analytics-replay-map>
+          <analytics-replay-timeline
             :t="t"
             :length="data.length_s"
             :playing="playing"
@@ -34,7 +36,7 @@
             @toggle="toggle"
             @seek="seek"
             @speed="speed = $event"
-          ></deep-analytics-replay-timeline>
+          ></analytics-replay-timeline>
           <div class="flex flex-wrap items-center gap-3 mt-3 text-sm">
             <custom-button
               :text="'XP Graph'"
@@ -137,11 +139,11 @@
 
 <script>
 import { markRaw } from 'vue';
-import analytics from '../../utils/deepAnalyticsFormat.js';
+import analytics from '../../utils/analyticsFormat.js';
 import { buildTracks, positionAt } from '../../utils/replayTracks.js';
 import { loadWalkable, minimapFor, teamColor } from '../../utils/mapAssets.js';
 
-// The replay viewer's event feed and timeline markers, built once per game from its deep doc.
+// The replay viewer's event feed and timeline markers, built once per game from its extract doc.
 // Each event is { t, type, color, label, team }; `type` is one of EVENT_TYPES' codes and `team` is the
 // team it helps (null when neither, e.g. a disconnect).
 
@@ -292,9 +294,9 @@ function humanize(type) {
 }
 
 
-// One game played back on the minimap from its deep doc, with team and player panels.
+// One game played back on the minimap from its extract doc, with team and player panels.
 export default {
-  name: 'DeepAnalyticsReplay',
+  name: 'AnalyticsReplay',
   mixins: [analytics],
   props: {
     replayId: Number,

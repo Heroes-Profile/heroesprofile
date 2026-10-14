@@ -2,15 +2,15 @@
 
 return [
 
-    // The replay parser's deep analytics service (Cloud Run replay-parser-deep). Tasks are
+    // The replay parser's analytics service (Cloud Run replay-parser-deep). Tasks are
     // signed by the global.cloud_tasks service account with this URL as the audience.
     'service_url' => env('DEEP_ANALYTICS_SERVICE_URL', 'https://replay-parser-deep-484440392946.us-east1.run.app'),
 
-    // Cloud Tasks queue for the per-replay deep parses; it caps how many run at once.
+    // Cloud Tasks queue for the per-replay analytics parses; it caps how many run at once.
     'queue' => env('DEEP_ANALYTICS_QUEUE', 'deep-analytics'),
 
     // This app's own fan-out route. A request queues one task here per chunk of replays,
-    // and each of those queues the chunk's deep parses, so the page answers right away.
+    // and each of those queues the chunk's analytics parses, so the page answers right away.
     'fanout_url' => env('DEEP_ANALYTICS_FANOUT_URL'),
     'fanout_chunk' => 50,
 
@@ -40,12 +40,12 @@ return [
     // How long the page keeps showing a request as in progress if some games never finish.
     'processing_seconds' => 7200,
 
-    // Where the analytics are read from (filled by the deep analytics loader).
+    // Where the analytics are read from (filled by the analytics loader).
     'bigquery_project' => env('DEEP_ANALYTICS_BIGQUERY_PROJECT', 'heroesprofile-244413'),
     'bigquery_dataset' => env('DEEP_ANALYTICS_BIGQUERY_DATASET', 'deep_analytics'),
     'bigquery_location' => 'us-east1',
 
-    // Baselines use replays with replayID % 1000 below this: 50 is the 5% nightly sample.
-    // Keep it at or below the sampler's sample_rate * 10 so every baseline game is sampled.
-    'baseline_threshold' => env('DEEP_ANALYTICS_BASELINE_THRESHOLD', 50),
+    // Global stats use replays with replayID % 1000 below the sampler's sample_rate * 10, read from
+    // processing_check (DeepAnalyticsGlobal). This is only the fallback when that row can't be read.
+    'global_threshold' => env('DEEP_ANALYTICS_GLOBAL_THRESHOLD', 50),
 ];
