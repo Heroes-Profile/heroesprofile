@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AbilityLink;
 use App\Models\Battletag;
 use Google\Cloud\BigQuery\BigQueryClient;
 use Illuminate\Support\Facades\Cache;
@@ -31,7 +32,7 @@ class DeepAnalyticsQueryService
     public function tab(string $tab, int $blizzId, int $region, array $filters): array
     {
         $processed = $this->deepAnalytics->status($blizzId, $region)['done'];
-        $key = 'deep_analytics:tab:v'.config('deep_analytics.extract_v').':'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.md5(json_encode($filters));
+        $key = 'deep_analytics:tab:v'.config('deep_analytics.extract_v').'.3:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.md5(json_encode($filters));
 
         return Cache::remember($key, now()->addDays(7), function () use ($tab, $blizzId, $region, $filters) {
             $params = [
@@ -55,7 +56,96 @@ class DeepAnalyticsQueryService
                 $data['layout'] = $this->layout();
             }
 
+            if ($tab === 'activity') {
+                $data['ability_usage'] = $this->namedAbilities($data['ability_usage'], $data['hero_games']);
+            }
+
             return $data;
+        });
+    }
+
+    /**
+     * One ability's presses and casts per game minute (you vs baseline, same hero), with your
+     * deaths and takedowns per minute to lay over it. Averages divide by the games still
+     * running at that minute.
+     *
+     * @param  array{game_types: array<int>, maps: array<int>, hero: int}  $filters
+     * @return array<int, array<string, mixed>>
+     */
+    public function abilityTimeline(int $blizzId, int $region, array $filters, int $heroId, string $abilityId): array
+    {
+        $links = AbilityLink::where('ability_id', $abilityId)
+            ->where(fn ($q) => $q->where('hero_id', $heroId)->orWhereNull('hero_id'))
+            ->get(['build', 'abil_link']);
+        if ($links->isEmpty()) {
+            return [];
+        }
+
+        $processed = $this->deepAnalytics->status($blizzId, $region)['done'];
+        $key = 'deep_analytics:ability:v'.config('deep_analytics.extract_v').':'.$region.':'.$blizzId.':'.$processed.':'.$heroId.':'.$abilityId.':'.md5(json_encode($filters));
+
+        return Cache::remember($key, now()->addDays(7), function () use ($blizzId, $region, $filters, $heroId, $links) {
+            return $this->run(['timeline' => $this->ctes().',
+                hero_pg AS (
+                  SELECT pg.who, pg.replay_id, pg.blizz, m.length_s,
+                    SAFE_CAST(SPLIT(m.game_version, ".")[SAFE_OFFSET(3)] AS INT64) AS build
+                  FROM pg JOIN `{dataset}.match` m ON m.replay_id = pg.replay_id AND m.game_date >= @cutover
+                  WHERE pg.hero_id = @ability_hero
+                ),
+                mapped AS (
+                  -- Each game reads the mapping of its build, or the newest mapped build before it
+                  SELECT *, IFNULL((SELECT MAX(b) FROM UNNEST(@builds) b WHERE b <= build), (SELECT MIN(b) FROM UNNEST(@builds) b)) AS mapped_build
+                  FROM hero_pg
+                ),
+                per_game AS (
+                  -- Some abilities send two command indexes per press; the busiest one stands for the ability
+                  SELECT h.who, h.replay_id,
+                    ARRAY_AGG(STRUCT(u.presses_per_min AS presses, u.casts_per_min AS casts) ORDER BY u.uses DESC LIMIT 1)[OFFSET(0)] AS top
+                  FROM mapped h
+                  JOIN `{dataset}.ability_usage` u ON u.replay_id = h.replay_id AND u.blizz_id = h.blizz AND u.game_date >= @cutover
+                  WHERE CONCAT(CAST(h.mapped_build AS STRING), ":", CAST(u.abil_link AS STRING)) IN UNNEST(@keys)
+                  GROUP BY h.who, h.replay_id
+                ),
+                ability_minutes AS (
+                  SELECT who, i AS minute, SUM(top.presses[OFFSET(i)]) AS presses, SUM(top.casts[SAFE_OFFSET(i)]) AS casts
+                  FROM per_game, UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(top.presses) - 1)) i
+                  GROUP BY who, minute
+                ),
+                alive AS (
+                  SELECT who, minute, COUNT(*) AS games
+                  FROM mapped, UNNEST(GENERATE_ARRAY(0, 39)) minute
+                  WHERE minute * 60 < length_s
+                  GROUP BY who, minute
+                ),
+                death_minutes AS (
+                  SELECT h.who, DIV(d.t_s, 60) AS minute, COUNT(*) AS n
+                  FROM mapped h JOIN `{dataset}.deaths` d ON d.replay_id = h.replay_id AND d.victim_blizz_id = h.blizz AND d.game_date >= @cutover
+                  GROUP BY who, minute
+                ),
+                takedown_minutes AS (
+                  SELECT h.who, DIV(d.t_s, 60) AS minute, COUNT(*) AS n
+                  FROM mapped h JOIN `{dataset}.deaths` d ON d.replay_id = h.replay_id AND d.game_date >= @cutover AND h.blizz IN UNNEST(d.killer_blizz_ids)
+                  GROUP BY who, minute
+                )
+                SELECT a.who, a.minute, a.games,
+                  IFNULL(u.presses, 0) / a.games AS presses, u.casts / a.games AS casts,
+                  IFNULL(dd.n, 0) / a.games AS deaths, IFNULL(td.n, 0) / a.games AS takedowns
+                FROM alive a
+                LEFT JOIN ability_minutes u USING (who, minute)
+                LEFT JOIN death_minutes dd USING (who, minute)
+                LEFT JOIN takedown_minutes td USING (who, minute)
+                ORDER BY a.who, a.minute'], [
+                'blizz' => $blizzId,
+                'region' => $region,
+                'game_types' => array_values($filters['game_types']),
+                'maps' => array_values($filters['maps']),
+                'hero' => $filters['hero'],
+                'cutover' => config('deep_analytics.cutover'),
+                'sample' => (int) config('deep_analytics.baseline_threshold'),
+                'ability_hero' => $heroId,
+                'builds' => $links->pluck('build')->unique()->map(fn ($b) => (int) $b)->values()->all(),
+                'keys' => $links->map(fn ($link) => $link->build.':'.$link->abil_link)->values()->all(),
+            ])['timeline'];
         });
     }
 
@@ -303,6 +393,29 @@ class DeepAnalyticsQueryService
                     SELECT pg.who, tp.tier, AVG(tp.t_s) AS avg_seconds, COUNT(*) AS picks
                     FROM pg JOIN `{dataset}.talent_picks` tp ON tp.replay_id = pg.replay_id AND tp.blizz_id = pg.blizz AND tp.game_date >= @cutover
                     GROUP BY pg.who, tp.tier ORDER BY pg.who, tp.tier',
+
+                // Baseline only for the heroes the player has played, to keep the result small
+                'hero_games' => $this->ctes().'
+                    SELECT who, hero_id, COUNT(*) AS games
+                    FROM pg WHERE hero_id IN (SELECT hero_id FROM games)
+                    GROUP BY who, hero_id',
+
+                'ability_usage' => $this->ctes().',
+                    used AS (
+                      -- Some abilities send two command indexes per press; the busiest one stands for the ability
+                      SELECT pg.who, pg.hero_id, pg.replay_id, pg.blizz, u.abil_link,
+                        SAFE_CAST(SPLIT(m.game_version, ".")[SAFE_OFFSET(3)] AS INT64) AS build,
+                        ARRAY_AGG(STRUCT(u.uses, u.casts) ORDER BY u.uses DESC LIMIT 1)[OFFSET(0)] AS top,
+                        MIN(u.first_use_s) AS first_use
+                      FROM pg
+                      JOIN `{dataset}.ability_usage` u ON u.replay_id = pg.replay_id AND u.blizz_id = pg.blizz AND u.game_date >= @cutover
+                      JOIN `{dataset}.match` m ON m.replay_id = pg.replay_id AND m.game_date >= @cutover
+                      WHERE pg.hero_id IN (SELECT hero_id FROM games)
+                      GROUP BY pg.who, pg.hero_id, pg.replay_id, pg.blizz, u.abil_link, build
+                    )
+                    SELECT who, hero_id, build, abil_link, COUNT(*) AS games_used, SUM(top.uses) AS uses,
+                      SUM(top.casts) AS casts, COUNTIF(top.casts IS NOT NULL) AS casts_games, AVG(first_use) AS avg_first_use
+                    FROM used GROUP BY who, hero_id, build, abil_link',
             ],
 
             'sessions' => [
@@ -349,7 +462,7 @@ class DeepAnalyticsQueryService
         $dataset = config('deep_analytics.bigquery_project').'.'.config('deep_analytics.bigquery_dataset');
 
         // Element types for the array params, so an empty filter list is still ARRAY<INT64>
-        $types = array_intersect_key(['game_types' => 'INT64', 'maps' => 'INT64'], $params);
+        $types = array_intersect_key(['game_types' => 'INT64', 'maps' => 'INT64', 'builds' => 'INT64', 'keys' => 'STRING'], $params);
 
         $jobs = [];
         foreach ($queries as $name => $sql) {
@@ -373,7 +486,85 @@ class DeepAnalyticsQueryService
     }
 
     /**
-     * Adds each player's current battletag, unless they have opted out.
+     * Turns per-build ability link counts into named abilities via ability_links. A game
+     * uses the mapping of its own build, or the newest mapped build before it (links rarely
+     * move between patches). Links with no name (move orders, internal helpers) are dropped.
+     *
+     * @param  array<int, array<string, mixed>>  $rows
+     * @param  array<int, array<string, mixed>>  $heroGames
+     * @return array<int, array<string, mixed>>
+     */
+    private function namedAbilities(array $rows, array $heroGames): array
+    {
+        $builds = AbilityLink::query()->distinct()->orderBy('build')->pluck('build')->all();
+        if ($builds === [] || $rows === []) {
+            return [];
+        }
+
+        $mappedBuild = function (?int $build) use ($builds): int {
+            $match = $builds[0];
+            foreach ($builds as $candidate) {
+                if ($build !== null && $candidate <= $build) {
+                    $match = $candidate;
+                }
+            }
+
+            return $match;
+        };
+
+        $needed = array_unique(array_map(fn ($row) => $mappedBuild($row['build'] === null ? null : (int) $row['build']), $rows));
+        $links = AbilityLink::whereIn('build', $needed)
+            ->whereNotNull('name')
+            ->get(['build', 'abil_link', 'ability_id', 'hero_id', 'slot', 'name', 'icon', 'confidence'])
+            ->keyBy(fn ($link) => $link->build.':'.$link->abil_link);
+
+        $games = [];
+        foreach ($heroGames as $row) {
+            $games[$row['who'].':'.$row['hero_id']] = (int) $row['games'];
+        }
+
+        $named = [];
+        foreach ($rows as $row) {
+            $link = $links[$mappedBuild($row['build'] === null ? null : (int) $row['build']).':'.$row['abil_link']] ?? null;
+            if (! $link) {
+                continue;
+            }
+
+            $key = $row['who'].':'.$row['hero_id'].':'.$link->ability_id;
+            $entry = $named[$key] ?? [
+                'who' => $row['who'],
+                'hero_id' => (int) $row['hero_id'],
+                'ability_id' => $link->ability_id,
+                'name' => $link->name,
+                'slot' => $link->slot,
+                'icon' => $link->icon,
+                'confidence' => $link->confidence,
+                'generic' => $link->hero_id === null,
+                'games' => $games[$row['who'].':'.$row['hero_id']] ?? 0,
+                'games_used' => 0,
+                'uses' => 0,
+                'casts' => 0,
+                'casts_games' => 0,
+                'first_use_total' => 0,
+            ];
+            $entry['games_used'] += (int) $row['games_used'];
+            $entry['uses'] += (int) $row['uses'];
+            $entry['casts'] += (int) ($row['casts'] ?? 0);
+            $entry['casts_games'] += (int) $row['casts_games'];
+            $entry['first_use_total'] += (float) $row['avg_first_use'] * (int) $row['games_used'];
+            $named[$key] = $entry;
+        }
+
+        return array_values(array_map(function ($entry) {
+            $entry['avg_first_use'] = $entry['games_used'] ? $entry['first_use_total'] / $entry['games_used'] : null;
+            unset($entry['first_use_total']);
+
+            return $entry;
+        }, $named));
+    }
+
+    /**
+     * Adds each player's current battletag without the #number, unless they have opted out.
      *
      * @param  array<int, array<string, mixed>>  $rows
      * @return array<int, array<string, mixed>>
@@ -392,6 +583,6 @@ class DeepAnalyticsQueryService
             ->get(['blizz_id', 'battletag'])
             ->pluck('battletag', 'blizz_id');
 
-        return array_map(fn ($row) => $row + ['battletag' => $tags[(int) $row['blizz_id']] ?? null], $rows);
+        return array_map(fn ($row) => $row + ['battletag' => isset($tags[(int) $row['blizz_id']]) ? explode('#', $tags[(int) $row['blizz_id']])[0] : null], $rows);
     }
 }

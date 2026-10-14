@@ -38,7 +38,7 @@ class DeepAnalyticsController extends Controller
 
         return view('DeepAnalytics.deepAnalytics')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-            'battletag' => $user->battletag,
+            'battletag' => explode('#', (string) $user->battletag)[0],
             'status' => $this->deepAnalytics->status((int) $user->blizz_id, (int) $user->region),
             'filters' => $this->globalDataService->getFilterData(),
             'gametypedefault' => $this->globalDataService->getPlayerGameTypeDefault(),
@@ -64,7 +64,7 @@ class DeepAnalyticsController extends Controller
     public function data(Request $request, string $tab): JsonResponse
     {
         $user = $this->allowedUser();
-        abort_unless($tab === 'games' || in_array($tab, DeepAnalyticsQueryService::TABS, true), 404);
+        abort_unless($tab === 'games' || $tab === 'ability' || in_array($tab, DeepAnalyticsQueryService::TABS, true), 404);
 
         // No selection arrives as an empty list; that means "all", not an invalid value
         foreach (['game_type', 'game_map', 'hero'] as $field) {
@@ -91,6 +91,17 @@ class DeepAnalyticsController extends Controller
                 : Map::whereIn('name', $list($validated['game_map']))->pluck('map_id')->map(fn ($id) => (int) $id)->all(),
             'hero' => (int) ($validated['hero'] ?? 0),
         ];
+
+        if ($tab === 'ability') {
+            $ability = $request->validate([
+                'ability_hero' => ['required', 'integer', 'min:1'],
+                'ability_id' => ['required', 'string', 'max:100', 'regex:/^[A-Za-z0-9_]+$/'],
+            ]);
+
+            return response()->json(['timeline' => $this->queries->abilityTimeline(
+                (int) $user->blizz_id, (int) $user->region, $filters, (int) $ability['ability_hero'], $ability['ability_id']
+            )]);
+        }
 
         if ($tab === 'games') {
             return response()->json(['games' => $this->replays->games((int) $user->blizz_id, (int) $user->region, $filters)]);

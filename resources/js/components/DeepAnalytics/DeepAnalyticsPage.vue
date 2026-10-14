@@ -1,8 +1,9 @@
 <template>
   <div>
     <page-heading
-      :heading="'Analytics'"
+      :heading="'Analytics (Pre-Alpha)'"
       :infoText1="'Deep replay analysis of ' + battletag + '\'s season games (from Oct 2, 2026), compared with a sample of all games.'"
+      :infoText2="'Pre-alpha: this is in very early development. Numbers, views and features will change, and some may be wrong or missing.'"
     ></page-heading>
 
     <filters
@@ -52,7 +53,7 @@
           <deep-analytics-deaths v-if="activeTab === 'deaths'" :data="tabData" :maps="maps" :heroes="filters.heroes"></deep-analytics-deaths>
           <deep-analytics-positions v-else-if="activeTab === 'map'" :data="tabData" :maps="maps" :heroes="filters.heroes"></deep-analytics-positions>
           <deep-analytics-timelines v-else-if="activeTab === 'timelines'" :data="tabData" :maps="maps" :heroes="filters.heroes"></deep-analytics-timelines>
-          <deep-analytics-activity v-else-if="activeTab === 'activity'" :data="tabData" :maps="maps" :heroes="filters.heroes"></deep-analytics-activity>
+          <deep-analytics-activity v-else-if="activeTab === 'activity'" :data="tabData" :maps="maps" :heroes="filters.heroes" :filter-params="filterParams"></deep-analytics-activity>
           <deep-analytics-sessions v-else-if="activeTab === 'sessions'" :data="tabData" :maps="maps" :heroes="filters.heroes"></deep-analytics-sessions>
           <deep-analytics-games v-else-if="activeTab === 'games'" :data="tabData" :maps="maps" :heroes="filters.heroes"></deep-analytics-games>
         </div>
@@ -122,6 +123,9 @@ export default {
     percent() {
       return this.status.total > 0 ? Math.floor((this.status.done / this.status.total) * 100) : 0;
     },
+    filterParams() {
+      return { game_type: this.gametype, game_map: this.gamemap, hero: this.getHeroID() };
+    },
     tabData() {
       return this.tabCache[this.cacheKey()];
     },
@@ -156,11 +160,7 @@ export default {
       }
       this.isLoading = true;
       try {
-        const response = await this.$axios.post('/Analytics/Data/' + this.activeTab, {
-          game_type: this.gametype,
-          game_map: this.gamemap,
-          hero: this.getHeroID(),
-        });
+        const response = await this.$axios.post('/Analytics/Data/' + this.activeTab, this.filterParams);
         this.tabCache = { ...this.tabCache, [key]: response.data };
       } catch (e) {
         this.error = 'Could not load this tab. Please try again in a minute.';

@@ -1,8 +1,9 @@
 <template>
   <div>
     <page-heading
-      :heading="'Replay Viewer'"
+      :heading="'Replay Viewer (Pre-Alpha)'"
       :infoText1="data ? (data.game_map || 'Unknown map') + ' - ' + clock(data.length_s) : 'Loading game'"
+      :infoText2="'Pre-alpha: this is in very early development. Things will change, and some of what you see may be wrong or missing.'"
     ></page-heading>
 
     <div class="max-w-[1500px] mx-auto px-4 mt-4">
