@@ -99,11 +99,12 @@ class DeepAnalyticsController extends Controller
         return response()->json($this->queries->tab($tab, (int) $user->blizz_id, (int) $user->region, $filters));
     }
 
-    // Any season game, processed on demand: the page opens straight away and the viewer waits for
-    // the game to be ready, starting its processing if nobody has yet
+    // The replay viewer: any season game for any Battle.net login (no allowlist), processed on demand.
+    // The page opens straight away and the viewer waits for the game to be ready, starting its
+    // processing if nobody has yet
     public function replay(int $replayID): View
     {
-        $this->allowedUser();
+        $this->loggedInUser();
         abort_unless($this->replays->isSeasonGame($replayID), 404);
 
         return view('DeepAnalytics.deepAnalyticsReplay')->with([
@@ -114,7 +115,7 @@ class DeepAnalyticsController extends Controller
 
     public function replayStatus(int $replayID): JsonResponse
     {
-        $this->allowedUser();
+        $this->loggedInUser();
         abort_unless($this->replays->isSeasonGame($replayID), 404);
 
         return response()->json(['ready' => $this->replays->isReady($replayID)]);
@@ -122,7 +123,7 @@ class DeepAnalyticsController extends Controller
 
     public function replayProcess(int $replayID): JsonResponse
     {
-        $this->allowedUser();
+        $this->loggedInUser();
         abort_unless($this->replays->isSeasonGame($replayID), 404);
 
         return response()->json(['queued' => $this->replays->process($replayID)]);
@@ -130,11 +131,20 @@ class DeepAnalyticsController extends Controller
 
     public function replayData(int $replayID): JsonResponse
     {
-        $user = $this->allowedUser();
+        $user = $this->loggedInUser();
         $replay = $this->replays->replay($replayID, (int) $user->blizz_id);
         abort_unless($replay, 404);
 
         return response()->json($replay);
+    }
+
+    // The replay viewer only needs a Battle.net login; the analytics pages also need the allowlist
+    private function loggedInUser()
+    {
+        $user = Auth::user();
+        abort_unless($user, 404);
+
+        return $user;
     }
 
     private function allowedUser()
