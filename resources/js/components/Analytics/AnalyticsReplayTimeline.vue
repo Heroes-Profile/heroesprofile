@@ -35,10 +35,10 @@
 </template>
 
 <script>
-import analytics from '../../utils/deepAnalyticsFormat.js';
+import analytics from '../../utils/analyticsFormat.js';
 
 export default {
-  name: 'DeepAnalyticsReplayTimeline',
+  name: 'AnalyticsReplayTimeline',
   mixins: [analytics],
   props: {
     t: Number,

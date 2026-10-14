@@ -82,7 +82,7 @@ class SingleMatchController extends Controller
             'tournament' => null,
             // For the replay viewer button (any Battle.net login): per user, so it stays out of the shared match data
             'replayViewerAllowed' => Auth::check(),
-            'deepAnalyticsCutover' => config('deep_analytics.cutover'),
+            'analyticsCutover' => config('analytics.cutover'),
         ]);
     }
 

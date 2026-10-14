@@ -789,19 +789,25 @@ class GlobalDataService
         return true;
     }
 
+    /**
+     * Match History style: Compact cards (true) or Table. The account setting, else the cookie the
+     * on-page toggle sets (like talentbuilderstyle), else Compact when logged in and Table when not.
+     */
     public function getPlayerMatchStyle()
     {
         if (Auth::check()) {
-            $user = Auth::user();
-
-            $playerhistorytable = $user->userSettings->firstWhere('setting', 'playerhistorytable');
-
-            $playerhistorytable = $playerhistorytable ? $playerhistorytable->value : true;
-
-            return $playerhistorytable;
+            $setting = Auth::user()->userSettings->firstWhere('setting', 'playerhistorytable');
+            if ($setting) {
+                return $setting->value;
+            }
         }
 
-        return false;
+        $cookie = request()->cookie('playerhistorytable');
+        if ($cookie !== null) {
+            return $cookie === '1';
+        }
+
+        return Auth::check();
     }
 
     public function getRegionIDtoString()

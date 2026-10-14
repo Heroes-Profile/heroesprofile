@@ -59,20 +59,20 @@
     <!-- Disconnects -->
     <h2 class="text-xl font-bold mb-2 text-teal">Disconnects</h2>
     <div class="flex flex-wrap justify-center gap-4">
-      <stat-box class="w-[30%] max-md:w-[48%]" :title="'Games With a Teammate Disconnect'" :value="dc.own_dc_games ?? '-'" :secondstat="percent(dc.win_rate_own_dc)" :secondcaption="'win rate'" color="red"></stat-box>
-      <stat-box class="w-[30%] max-md:w-[48%]" :title="'Games With an Enemy Disconnect'" :value="dc.enemy_dc_games ?? '-'" :secondstat="percent(dc.win_rate_enemy_dc)" :secondcaption="'win rate'" color="teal"></stat-box>
-      <stat-box class="w-[30%] max-md:w-[48%]" :title="'Win Rate Without Disconnects'" :value="percent(dc.win_rate_no_dc)" color="yellow"></stat-box>
+      <stat-box class="w-[30%] max-md:w-[48%]" :title="'Teammate DC Games'" :value="dc.own_dc_games ?? '-'" :secondstat="percent(dc.win_rate_own_dc)" :secondcaption="'win rate'" color="red"></stat-box>
+      <stat-box class="w-[30%] max-md:w-[48%]" :title="'Enemy DC Games'" :value="dc.enemy_dc_games ?? '-'" :secondstat="percent(dc.win_rate_enemy_dc)" :secondcaption="'win rate'" color="teal"></stat-box>
+      <stat-box class="w-[30%] max-md:w-[48%]" :title="'Win Rate, No DCs'" :value="percent(dc.win_rate_no_dc)" color="yellow"></stat-box>
     </div>
   </div>
 </template>
 
 <script>
-import analytics from '../../utils/deepAnalyticsFormat.js';
+import analytics from '../../utils/analyticsFormat.js';
 
 const SESSION_BREAK_SECONDS = 30 * 60;
 
 export default {
-  name: 'DeepAnalyticsSessions',
+  name: 'AnalyticsSessions',
   mixins: [analytics],
   props: {
     data: Object,

@@ -1,4 +1,4 @@
-import minimaps from '../components/DeepAnalytics/minimaps.js';
+import minimaps from '../components/Analytics/minimaps.js';
 
 // Shared by the map views and the replay viewer: which minimap a map uses, and the game's icons.
 
@@ -14,13 +14,13 @@ export function minimapFor(mapName) {
   }
   const slug = mapName.toLowerCase().replace(/'/g, '').replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
   const map = minimaps[slug];
-  return map ? { ...map, slug, src: `/images/deep-analytics/minimaps/${slug}.png` } : null;
+  return map ? { ...map, slug, src: `/images/analytics/minimaps/${slug}.png` } : null;
 }
 
 /** The map's structures as icons: { kind, team, x, y, size, src }. */
 export function structureIcons(minimap) {
   return (minimap?.structures || []).map(([kind, team, x, y]) => ({
-    kind, team, x, y, size: ICON_SIZE[kind], src: `/images/deep-analytics/minimaps/icons/${ICON[kind]}.png`,
+    kind, team, x, y, size: ICON_SIZE[kind], src: `/images/analytics/minimaps/icons/${ICON[kind]}.png`,
   }));
 }
 

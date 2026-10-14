@@ -8,16 +8,16 @@ use Illuminate\Support\Facades\Storage;
 use League\Flysystem\UnableToReadFile;
 
 /**
- * The replay viewer's data: the player's processed season games, and one game's deep doc
+ * The replay viewer's data: the player's processed season games, and one game's extract doc
  * trimmed to what the viewer draws, with site heroes, battletags and talents attached.
  */
-class DeepAnalyticsReplayService
+class AnalyticsReplayService
 {
-    private const DISK = 'gcs-deep';
+    private const DISK = 'gcs-analytics';
 
     public function __construct(
         private GlobalDataService $globalDataService,
-        private DeepAnalyticsService $deepAnalytics,
+        private AnalyticsService $analytics,
     ) {}
 
     /** A season game: the only ones archived and processed. */
@@ -25,7 +25,7 @@ class DeepAnalyticsReplayService
     {
         return DB::connection('heroesprofile')->table('replay')
             ->where('replayID', $replayId)
-            ->where('game_date', '>=', config('deep_analytics.cutover'))
+            ->where('game_date', '>=', config('analytics.cutover'))
             ->exists();
     }
 
@@ -34,58 +34,79 @@ class DeepAnalyticsReplayService
     {
         return DB::connection('heroesprofile')->table('replay_deep')
             ->where('replayID', $replayId)
-            ->where('extract_v', '>=', config('deep_analytics.extract_v'))
+            ->where('extract_v', '>=', config('analytics.extract_v'))
             ->exists();
     }
 
     /**
-     * Queues one game's deep parse, for the viewer opened on a game nobody has processed yet. A
+     * Queues one game's analytics parse, for the viewer opened on a game nobody has processed yet. A
      * second request inside the lock window queues nothing, so refreshing costs nothing.
      */
     public function process(int $replayId): bool
     {
-        if ($this->isReady($replayId) || ! Cache::add('deep_analytics:replay_request:'.$replayId, 1, config('deep_analytics.request_lock_seconds'))) {
+        if ($this->isReady($replayId) || ! Cache::add('analytics:replay_request:'.$replayId, 1, config('analytics.request_lock_seconds'))) {
             return false;
         }
 
-        return $this->deepAnalytics->fanOut([$replayId]) > 0;
+        return $this->analytics->fanOut([$replayId]) > 0;
     }
 
     /**
+     * The player's processed season games, shaped like Player Match History rows so the same
+     * game-summary-box cards and table render them.
+     *
      * @param  array{game_types: array<int>, maps: array<int>, hero: int}  $filters
      * @return array<int, array<string, mixed>>
      */
     public function games(int $blizzId, int $region, array $filters): array
     {
-        $heroes = $this->globalDataService->getHeroesByID();
+        $heroes = $this->globalDataService->getHeroes()->keyBy('id');
         $maps = $this->globalDataService->getAllMapsKeyed();
+        $gameTypes = $this->globalDataService->getGameTypeIDtoString();
+        $talentData = $this->globalDataService->getAllTalentsKeyed();
+        $levels = ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'];
 
         return DB::connection('heroesprofile')->table('player')
             ->join('replay', 'replay.replayID', '=', 'player.replayID')
             ->join('replay_deep', 'replay_deep.replayID', '=', 'replay.replayID')
+            ->leftJoin('talents', function ($join) {
+                $join->on('talents.replayID', '=', 'replay.replayID')
+                    ->on('talents.battletag', '=', 'player.battletag');
+            })
             ->where('player.blizz_id', $blizzId)
             ->where('replay.region', $region)
-            ->where('replay.game_date', '>=', config('deep_analytics.cutover'))
-            ->where('replay_deep.extract_v', '>=', config('deep_analytics.extract_v'))
+            ->where('replay.game_date', '>=', config('analytics.cutover'))
+            ->where('replay_deep.extract_v', '>=', config('analytics.extract_v'))
             ->when($filters['game_types'] !== [], fn ($q) => $q->whereIn('replay.game_type', $filters['game_types']))
             ->when($filters['maps'] !== [], fn ($q) => $q->whereIn('replay.game_map', $filters['maps']))
             ->when($filters['hero'] > 0, fn ($q) => $q->where('player.hero', $filters['hero']))
             ->orderByDesc('replay.game_date')
-            ->get(['replay.replayID', 'replay.game_date', 'replay.game_type', 'replay.game_map', 'replay.game_length', 'player.hero', 'player.winner'])
-            ->map(function ($row) use ($heroes, $maps) {
-                $hero = $heroes->get((int) $row->hero);
-                $map = $maps->get((int) $row->game_map);
-
-                return [
-                    'replay_id' => (int) $row->replayID,
+            ->get(array_merge([
+                'replay.replayID', 'replay.game_date', 'replay.game_type', 'replay.game_map', 'player.hero', 'player.winner',
+                'player.player_conservative_rating', 'player.player_change', 'player.hero_conservative_rating', 'player.hero_change',
+                'player.role_conservative_rating', 'player.role_change',
+            ], array_map(fn ($level) => 'talents.'.$level, $levels)))
+            ->map(function ($row) use ($heroes, $maps, $gameTypes, $talentData, $levels) {
+                $game = [
+                    'replayID' => (int) $row->replayID,
                     'game_date' => $row->game_date,
-                    'game_type' => (int) $row->game_type,
-                    'game_length' => (int) $row->game_length,
-                    'winner' => (bool) $row->winner,
-                    // Shaped for hero-image-wrapper and map-image-wrapper
-                    'hero' => $hero ? ['id' => $hero->id, 'name' => $hero->name, 'short_name' => $hero->short_name] : null,
-                    'map' => $map ? ['map_id' => $map->map_id, 'name' => $map->name, 'sanitized_map_name' => $map->sanitized_map_name] : null,
+                    'game_type' => $gameTypes[$row->game_type] ?? null,
+                    'game_map' => $maps->get((int) $row->game_map),
+                    'hero_id' => (int) $row->hero,
+                    'hero' => $heroes->get((int) $row->hero),
+                    'winner' => (int) $row->winner,
+                    'player_mmr' => round(1800 + (40 * $row->player_conservative_rating)),
+                    'player_change' => $row->player_change,
+                    'hero_mmr' => round(1800 + (40 * $row->hero_conservative_rating)),
+                    'hero_change' => $row->hero_change,
+                    'role_mmr' => round(1800 + (40 * $row->role_conservative_rating)),
+                    'role_change' => $row->role_change,
                 ];
+                foreach ($levels as $level) {
+                    $game[$level] = $row->{$level} ? ($talentData[$row->{$level}] ?? null) : null;
+                }
+
+                return $game;
             })
             ->all();
     }
@@ -97,7 +118,7 @@ class DeepAnalyticsReplayService
             return null;
         }
 
-        $replay = Cache::remember('deep_analytics:replay:v'.config('deep_analytics.extract_v').'.3:'.$replayId, now()->addDay(), function () use ($replayId) {
+        $replay = Cache::remember('analytics:replay:v'.config('analytics.extract_v').'.3:'.$replayId, now()->addDay(), function () use ($replayId) {
             try {
                 $raw = Storage::disk(self::DISK)->get('doc/'.$replayId.'.json.gz');
             } catch (UnableToReadFile) {

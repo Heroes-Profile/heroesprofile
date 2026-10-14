@@ -1,15 +1,16 @@
 @extends('layouts.app', $bladeGlobals)
 @section('title', 'Analytics')
-@section('meta_keywords', 'deep analytics, replay analysis, coaching')
-@section('meta_description', 'Deep replay analytics for your own season games.')
+@section('meta_keywords', 'analytics, replay analysis, coaching')
+@section('meta_description', 'Replay analytics for your own season games.')
 @section('content')
-  <deep-analytics-page
+  <analytics-page
     :battletag="{{ json_encode($battletag) }}"
     :initial-status="{{ json_encode($status) }}"
     :filters="{{ json_encode($filters) }}"
     :gametypedefault="{{ json_encode($gametypedefault) }}"
     :maps="{{ json_encode($maps) }}"
     :urlparameters="{{ json_encode($urlparameters) }}"
+    :playermatchtablestyle="{{ json_encode($playermatchtablestyle) }}"
   >
-  </deep-analytics-page>
+  </analytics-page>
 @endsection

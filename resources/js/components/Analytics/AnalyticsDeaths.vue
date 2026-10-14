@@ -13,23 +13,23 @@
           @input-changed="selectedMap = $event.value"
         ></single-select-filter>
       </div>
-      <deep-analytics-map-view :map-name="mapName(selectedMap)" :layout="layoutFor(selectedMap)" :points="deathPoints" :legend="deathLegend"></deep-analytics-map-view>
+      <analytics-map-view :map-name="mapName(selectedMap)" :layout="layoutFor(selectedMap)" :points="deathPoints" :legend="deathLegend"></analytics-map-view>
     </div>
 
     <!-- Death context -->
     <h2 class="text-xl font-bold mb-2 text-teal">How you die</h2>
     <div class="flex flex-wrap justify-center gap-4 mb-8">
-      <stat-box class="w-[23%] max-md:w-[48%]" :title="'Ganked'" :value="share(you.ganked, you.deaths)" :secondstat="share(base.ganked, base.deaths)" :secondcaption="'baseline'" color="teal"></stat-box>
-      <stat-box class="w-[23%] max-md:w-[48%]" :title="'Teamfight'" :value="share(you.teamfight, you.deaths)" :secondstat="share(base.teamfight, base.deaths)" :secondcaption="'baseline'" color="red"></stat-box>
-      <stat-box class="w-[23%] max-md:w-[48%]" :title="'While a Level Behind'" :value="share(you.level_behind, you.deaths)" :secondstat="share(base.level_behind, base.deaths)" :secondcaption="'baseline'" color="yellow"></stat-box>
-      <stat-box class="w-[23%] max-md:w-[48%]" :title="'On the Enemy Half'" :value="share(you.enemy_half, you.deaths)" :secondstat="share(base.enemy_half, base.deaths)" :secondcaption="'baseline'" color="teal"></stat-box>
+      <stat-box class="w-[23%] max-md:w-[48%]" :title="'Ganked'" :value="share(you.ganked, you.deaths)" :secondstat="share(base.ganked, base.deaths)" :secondcaption="'global'" color="teal"></stat-box>
+      <stat-box class="w-[23%] max-md:w-[48%]" :title="'Teamfight'" :value="share(you.teamfight, you.deaths)" :secondstat="share(base.teamfight, base.deaths)" :secondcaption="'global'" color="red"></stat-box>
+      <stat-box class="w-[23%] max-md:w-[48%]" :title="'Level Behind'" :value="share(you.level_behind, you.deaths)" :secondstat="share(base.level_behind, base.deaths)" :secondcaption="'global'" color="yellow"></stat-box>
+      <stat-box class="w-[23%] max-md:w-[48%]" :title="'Enemy Half'" :value="share(you.enemy_half, you.deaths)" :secondstat="share(base.enemy_half, base.deaths)" :secondcaption="'global'" color="teal"></stat-box>
     </div>
 
     <!-- Death timing -->
     <h2 class="text-xl font-bold mb-2 text-teal">When you die</h2>
     <div class="flex flex-wrap justify-center gap-4 mb-4">
-      <stat-box class="w-[30%] max-md:w-[48%]" :title="'First Death'" :value="clock(youTiming.avg_first_death)" :secondstat="clock(baseTiming.avg_first_death)" :secondcaption="'baseline'" color="teal"></stat-box>
-      <stat-box class="w-[30%] max-md:w-[48%]" :title="'Deathless Games'" :value="percent(youTiming.deathless_share)" :secondstat="percent(baseTiming.deathless_share)" :secondcaption="'baseline'" color="yellow"></stat-box>
+      <stat-box class="w-[30%] max-md:w-[48%]" :title="'First Death'" :value="clock(youTiming.avg_first_death)" :secondstat="clock(baseTiming.avg_first_death)" :secondcaption="'global'" color="teal"></stat-box>
+      <stat-box class="w-[30%] max-md:w-[48%]" :title="'Deathless Games'" :value="percent(youTiming.deathless_share)" :secondstat="percent(baseTiming.deathless_share)" :secondcaption="'global'" color="yellow"></stat-box>
     </div>
     <multi-series-chart
       class="max-w-[1200px] mx-auto mb-8"
@@ -38,7 +38,7 @@
       :title="'Average deaths per game by game phase'"
       :series="[
         { label: 'You', data: phases(youTiming), color: 'teal' },
-        { label: 'Baseline', data: phases(baseTiming), color: 'yellow' },
+        { label: 'Global', data: phases(baseTiming), color: 'yellow' },
       ]"
     ></multi-series-chart>
 
@@ -50,7 +50,7 @@
       :yLabel="'%'"
       :series="[
         { label: 'You', data: overextension('you'), color: 'teal' },
-        { label: 'Baseline', data: overextension('baseline'), color: 'yellow' },
+        { label: 'Global', data: overextension('global'), color: 'yellow' },
       ]"
     ></multi-series-chart>
 
@@ -74,10 +74,10 @@
 </template>
 
 <script>
-import analytics from '../../utils/deepAnalyticsFormat.js';
+import analytics from '../../utils/analyticsFormat.js';
 
 export default {
-  name: 'DeepAnalyticsDeaths',
+  name: 'AnalyticsDeaths',
   mixins: [analytics],
   props: {
     data: Object,
@@ -95,13 +95,13 @@ export default {
       return this.pick(this.data.death_context, 'you');
     },
     base() {
-      return this.pick(this.data.death_context, 'baseline');
+      return this.pick(this.data.death_context, 'global');
     },
     youTiming() {
       return this.pick(this.data.death_timing, 'you');
     },
     baseTiming() {
-      return this.pick(this.data.death_timing, 'baseline');
+      return this.pick(this.data.death_timing, 'global');
     },
     mapsWithDeaths() {
       const counts = {};

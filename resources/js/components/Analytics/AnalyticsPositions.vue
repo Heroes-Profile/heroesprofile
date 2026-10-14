@@ -12,7 +12,7 @@
       ></single-select-filter>
       <multi-tab-button :options="teamOptions" v-model="team"></multi-tab-button>
     </div>
-    <deep-analytics-map-view :map-name="mapName(selectedMap)" :layout="layout" :heatmap="cells"></deep-analytics-map-view>
+    <analytics-map-view :map-name="mapName(selectedMap)" :layout="layout" :heatmap="cells"></analytics-map-view>
 
     <!-- Rough lane split: the map's height cut into thirds -->
     <div class="flex flex-wrap justify-center gap-4 mt-6">
@@ -25,7 +25,7 @@
     </p>
 
     <h2 class="text-xl font-bold mt-8 mb-2 text-teal">Where you click</h2>
-    <deep-analytics-map-view :map-name="mapName(selectedMap)" :layout="layout" :heatmap="clickCells" heat-color="#f2b134"></deep-analytics-map-view>
+    <analytics-map-view :map-name="mapName(selectedMap)" :layout="layout" :heatmap="clickCells" heat-color="#f2b134"></analytics-map-view>
     <p class="text-center text-sm mt-2 text-gray-light">
       Move and ability target points, at most one per second.
     </p>
@@ -33,10 +33,10 @@
 </template>
 
 <script>
-import analytics from '../../utils/deepAnalyticsFormat.js';
+import analytics from '../../utils/analyticsFormat.js';
 
 export default {
-  name: 'DeepAnalyticsPositions',
+  name: 'AnalyticsPositions',
   mixins: [analytics],
   props: {
     data: Object,

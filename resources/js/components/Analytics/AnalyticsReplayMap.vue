@@ -116,7 +116,7 @@ const KIND = { TownTownHallL2: 'fort', TownTownHallL3: 'keep', KingsCore: 'core'
 // The replay at one moment: structures, camps, minion and hero deaths, pings and heroes
 // on the minimap. Game y grows upward, SVG y downward.
 export default {
-  name: 'DeepAnalyticsReplayMap',
+  name: 'AnalyticsReplayMap',
   props: {
     data: Object,
     tracks: Map,

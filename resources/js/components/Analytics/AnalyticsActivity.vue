@@ -7,7 +7,7 @@
       :yLabel="'Ability commands per minute'"
       :series="[
         { label: 'You', data: apm('you'), color: 'teal' },
-        { label: 'Baseline', data: apm('baseline'), color: 'yellow' },
+        { label: 'Global', data: apm('global'), color: 'yellow' },
       ]"
     ></multi-series-chart>
     <p class="text-center text-sm mb-8 text-gray-light">Counts ability and attack orders, not mouse movement.</p>
@@ -20,7 +20,7 @@
       :yLabel="'Game time (seconds)'"
       :series="[
         { label: 'You', data: talents('you'), color: 'teal' },
-        { label: 'Baseline', data: talents('baseline'), color: 'yellow' },
+        { label: 'Global', data: talents('global'), color: 'yellow' },
       ]"
     ></multi-series-chart>
     <p class="text-center text-sm mb-8 text-gray-light">Average game time of each pick. Choose a hero in the filters to compare like for like.</p>
@@ -35,10 +35,10 @@
             <th>Ability</th>
             <th>Presses per game</th>
             <th>Casts per game</th>
-            <th>Baseline presses</th>
-            <th>Baseline casts</th>
+            <th>Global presses</th>
+            <th>Global casts</th>
             <th>Games used in</th>
-            <th>Baseline games used in</th>
+            <th>Global games used in</th>
             <th>First use</th>
           </tr>
         </thead>
@@ -53,10 +53,10 @@
               </td>
               <td>{{ perGame(row.you) }}</td>
               <td>{{ castsPerGame(row.you) }}</td>
-              <td>{{ perGame(row.baseline) }}</td>
-              <td>{{ castsPerGame(row.baseline) }}</td>
+              <td>{{ perGame(row.global) }}</td>
+              <td>{{ castsPerGame(row.global) }}</td>
               <td>{{ row.you ? share(row.you.games_used, row.you.games) : '-' }}</td>
-              <td>{{ row.baseline ? share(row.baseline.games_used, row.baseline.games) : '-' }}</td>
+              <td>{{ row.global ? share(row.global.games_used, row.global.games) : '-' }}</td>
               <td>{{ row.you ? clock(row.you.avg_first_use) : '-' }}</td>
             </tr>
             <!-- The clicked ability's graph opens right under it; clicking the row again closes it -->
@@ -87,10 +87,10 @@
 </template>
 
 <script>
-import analytics from '../../utils/deepAnalyticsFormat.js';
+import analytics from '../../utils/analyticsFormat.js';
 
 export default {
-  name: 'DeepAnalyticsActivity',
+  name: 'AnalyticsActivity',
   mixins: [analytics],
   props: {
     data: Object,
@@ -115,7 +115,7 @@ export default {
     minutes() {
       return [...new Set(this.data.apm.map(r => r.minute))].sort((a, b) => a - b);
     },
-    // Your heroes, most played first, each with its abilities paired you / baseline
+    // Your heroes, most played first, each with its abilities paired you / global
     heroesPlayed() {
       return (this.data.hero_games || [])
         .filter(r => r.who === 'you')
@@ -151,8 +151,8 @@ export default {
       return [
         { label: 'Your presses', data: line('you', 'presses'), color: 'teal' },
         { label: 'Your casts', data: line('you', 'casts'), color: 'teal', dashed: true },
-        { label: 'Baseline presses', data: line('baseline', 'presses'), color: 'yellow' },
-        { label: 'Baseline casts', data: line('baseline', 'casts'), color: 'yellow', dashed: true },
+        { label: 'Global presses', data: line('global', 'presses'), color: 'yellow' },
+        { label: 'Global casts', data: line('global', 'casts'), color: 'yellow', dashed: true },
         { label: 'Your deaths', data: line('you', 'deaths'), color: 'red', axis: 'right', hidden: true },
         { label: 'Your takedowns', data: line('you', 'takedowns'), color: 'blue', axis: 'right', hidden: true },
       ];
@@ -180,8 +180,11 @@ export default {
       return base === 'Activable' ? 'Active' : base;
     },
     castsPerGame(row) {
-      // Games loaded before casts were recorded have none; only show casts once every game has them
-      return row && row.games && row.casts_games === row.games_used ? this.round(row.casts / row.games, 1) : '-';
+      // A game loaded just before casts were recorded has none yet; scale from the games that do
+      if (!row || !row.games || !row.casts_games) {
+        return '-';
+      }
+      return this.round((row.casts * (row.games_used / row.casts_games)) / row.games, 1);
     },
     isSelected(heroId, row) {
       return this.selected && this.selected.hero === heroId && this.selected.ability === row.ability_id;

@@ -12,7 +12,7 @@
     :user="{{ json_encode(Auth::user()) }}"
     :tournament="{{ json_encode($tournament) }}"
     :replay-viewer-allowed="{{ json_encode($replayViewerAllowed ?? false) }}"
-    :deep-analytics-cutover="{{ json_encode($deepAnalyticsCutover ?? null) }}"
+    :analytics-cutover="{{ json_encode($analyticsCutover ?? null) }}"
 >
 </single-match>
 @endsection

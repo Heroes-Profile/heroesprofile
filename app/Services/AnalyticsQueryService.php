@@ -6,24 +6,26 @@ use App\Models\AbilityLink;
 use App\Models\Battletag;
 use Google\Cloud\BigQuery\BigQueryClient;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
- * Reads deep analytics for one player out of BigQuery (dataset deep_analytics, filled by
+ * Reads analytics for one player out of BigQuery (dataset deep_analytics, filled by
  * the VM loader). Every view compares "you" (the player's processed games under the page
- * filters) with "baseline" (each player-game in the sampled games under the same filters,
- * replay_id % 1000 below the sample threshold), so baselines are never skewed toward the
+ * filters) with "global" (each player-game in the sampled games under the same filters,
+ * replay_id % 1000 below the sample threshold), so global stats are never skewed toward the
  * people who use the tool.
  *
  * Results are cached per player, tab and filter set, keyed on the player's processed-game
  * count, so they refresh exactly when new games land.
  */
-class DeepAnalyticsQueryService
+class AnalyticsQueryService
 {
     public const TABS = ['deaths', 'map', 'timelines', 'activity', 'sessions'];
 
     private ?BigQueryClient $client = null;
 
-    public function __construct(private DeepAnalyticsService $deepAnalytics) {}
+    public function __construct(private AnalyticsService $analytics) {}
 
     /**
      * @param  array{game_types: array<int>, maps: array<int>, hero: int}  $filters
@@ -31,18 +33,19 @@ class DeepAnalyticsQueryService
      */
     public function tab(string $tab, int $blizzId, int $region, array $filters): array
     {
-        $processed = $this->deepAnalytics->status($blizzId, $region)['done'];
-        $key = 'deep_analytics:tab:v'.config('deep_analytics.extract_v').'.3:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.md5(json_encode($filters));
+        $processed = $this->analytics->status($blizzId, $region)['done'];
+        $threshold = $this->globalThreshold();
+        $key = 'analytics:tab:v'.config('analytics.extract_v').'.5:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.':'.md5(json_encode($filters));
 
-        return Cache::remember($key, now()->addDays(7), function () use ($tab, $blizzId, $region, $filters) {
+        return Cache::remember($key, now()->addDays(7), function () use ($tab, $blizzId, $region, $filters, $threshold) {
             $params = [
                 'blizz' => $blizzId,
                 'region' => $region,
                 'game_types' => array_values($filters['game_types']),
                 'maps' => array_values($filters['maps']),
                 'hero' => $filters['hero'],
-                'cutover' => config('deep_analytics.cutover'),
-                'sample' => (int) config('deep_analytics.baseline_threshold'),
+                'cutover' => config('analytics.cutover'),
+                'sample' => $threshold,
             ];
 
             $data = $this->run($this->queries($tab), $params);
@@ -65,7 +68,33 @@ class DeepAnalyticsQueryService
     }
 
     /**
-     * One ability's presses and casts per game minute (you vs baseline, same hero), with your
+     * Global stats use replays with replayID % 1000 below this. It follows the nightly sampler's
+     * own setting (processing_check.sample_rate for DeepAnalyticsGlobal, a percent), so the site
+     * only counts buckets the sampler processes. Falls back to the config value if the row
+     * can't be read.
+     */
+    public function globalThreshold(): int
+    {
+        return Cache::remember('analytics:global_threshold', now()->addMinutes(5), function () {
+            try {
+                $rate = DB::connection('heroesprofile_processing')->table('processing_check')
+                    ->where('process', 'DeepAnalyticsGlobal')
+                    ->value('sample_rate');
+            } catch (\Throwable $e) {
+                Log::warning('Analytics: could not read the global sample rate, using the config fallback', ['error' => $e->getMessage()]);
+                $rate = null;
+            }
+
+            if ($rate === null || $rate < 0 || $rate > 100) {
+                return (int) config('analytics.global_threshold');
+            }
+
+            return (int) round($rate * 10);
+        });
+    }
+
+    /**
+     * One ability's presses and casts per game minute (you vs global, same hero), with your
      * deaths and takedowns per minute to lay over it. Averages divide by the games still
      * running at that minute.
      *
@@ -81,10 +110,11 @@ class DeepAnalyticsQueryService
             return [];
         }
 
-        $processed = $this->deepAnalytics->status($blizzId, $region)['done'];
-        $key = 'deep_analytics:ability:v'.config('deep_analytics.extract_v').':'.$region.':'.$blizzId.':'.$processed.':'.$heroId.':'.$abilityId.':'.md5(json_encode($filters));
+        $processed = $this->analytics->status($blizzId, $region)['done'];
+        $threshold = $this->globalThreshold();
+        $key = 'analytics:ability:v'.config('analytics.extract_v').'.3:'.$region.':'.$blizzId.':'.$processed.':'.$threshold.':'.$heroId.':'.$abilityId.':'.md5(json_encode($filters));
 
-        return Cache::remember($key, now()->addDays(7), function () use ($blizzId, $region, $filters, $heroId, $links) {
+        return Cache::remember($key, now()->addDays(7), function () use ($blizzId, $region, $filters, $heroId, $links, $threshold) {
             return $this->run(['timeline' => $this->ctes().',
                 hero_pg AS (
                   SELECT pg.who, pg.replay_id, pg.blizz, m.length_s,
@@ -107,7 +137,7 @@ class DeepAnalyticsQueryService
                   GROUP BY h.who, h.replay_id
                 ),
                 ability_minutes AS (
-                  SELECT who, i AS minute, SUM(top.presses[OFFSET(i)]) AS presses, SUM(top.casts[SAFE_OFFSET(i)]) AS casts
+                  SELECT who, i AS minute, SUM(top.presses[SAFE_OFFSET(i)]) AS presses, SUM(top.casts[SAFE_OFFSET(i)]) AS casts
                   FROM per_game, UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(top.presses) - 1)) i
                   GROUP BY who, minute
                 ),
@@ -140,8 +170,8 @@ class DeepAnalyticsQueryService
                 'game_types' => array_values($filters['game_types']),
                 'maps' => array_values($filters['maps']),
                 'hero' => $filters['hero'],
-                'cutover' => config('deep_analytics.cutover'),
-                'sample' => (int) config('deep_analytics.baseline_threshold'),
+                'cutover' => config('analytics.cutover'),
+                'sample' => $threshold,
                 'ability_hero' => $heroId,
                 'builds' => $links->pluck('build')->unique()->map(fn ($b) => (int) $b)->values()->all(),
                 'keys' => $links->map(fn ($link) => $link->build.':'.$link->abil_link)->values()->all(),
@@ -157,20 +187,20 @@ class DeepAnalyticsQueryService
      */
     public function layout(): array
     {
-        return Cache::remember('deep_analytics:layout', now()->addDay(), function () {
+        return Cache::remember('analytics:layout', now()->addDay(), function () {
             return $this->run(['layout' => <<<'SQL'
                 SELECT game_map, kind, type, team, CAST(ROUND(AVG(x)) AS INT64) AS x, CAST(ROUND(AVG(y)) AS INT64) AS y, COUNT(*) AS seen
                 FROM `{dataset}.objectives`
                 WHERE game_date >= @cutover AND kind IN ('town', 'building', 'camp') AND x IS NOT NULL
                 GROUP BY game_map, kind, type, team, DIV(x, 3), DIV(y, 3)
                 HAVING seen >= 3
-                SQL], ['cutover' => config('deep_analytics.cutover')])['layout'];
+                SQL], ['cutover' => config('analytics.cutover')])['layout'];
         });
     }
 
     /**
      * Shared CTEs. `games`: the player's games under the filters. `pg`: "you" and
-     * "baseline" player-games in one shape (who, replay_id, blizz, team, hero_id, winner).
+     * "global" player-games in one shape (who, replay_id, blizz, team, hero_id, winner).
      */
     private function ctes(): string
     {
@@ -186,7 +216,7 @@ class DeepAnalyticsQueryService
             pg AS (
               SELECT 'you' AS who, replay_id, @blizz AS blizz, team, hero_id, winner FROM games
               UNION ALL
-              SELECT 'baseline', replay_id, blizz_id, team, hero_id, winner
+              SELECT 'global', replay_id, blizz_id, team, hero_id, winner
               FROM `{dataset}.player_match`
               WHERE game_date >= @cutover AND sample_bucket < @sample
                 AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR game_type IN UNNEST(@game_types))
@@ -364,7 +394,7 @@ class DeepAnalyticsQueryService
                     per_game AS (
                       SELECT pg.who, COUNT(d.replay_id) AS enemy_deaths,
                         COUNTIF(pg.blizz IN UNNEST(d.killer_blizz_ids)) AS participated,
-                        COUNTIF(ARRAY_LENGTH(d.killer_blizz_ids) = 1 AND d.killer_blizz_ids[OFFSET(0)] = pg.blizz) AS solo
+                        COUNTIF(ARRAY_LENGTH(d.killer_blizz_ids) = 1 AND d.killer_blizz_ids[SAFE_OFFSET(0)] = pg.blizz) AS solo
                       FROM pg LEFT JOIN `{dataset}.deaths` d ON d.replay_id = pg.replay_id AND d.victim_team != pg.team AND d.game_date >= @cutover
                       GROUP BY pg.who, pg.replay_id, pg.blizz
                     )
@@ -394,7 +424,7 @@ class DeepAnalyticsQueryService
                     FROM pg JOIN `{dataset}.talent_picks` tp ON tp.replay_id = pg.replay_id AND tp.blizz_id = pg.blizz AND tp.game_date >= @cutover
                     GROUP BY pg.who, tp.tier ORDER BY pg.who, tp.tier',
 
-                // Baseline only for the heroes the player has played, to keep the result small
+                // Global only for the heroes the player has played, to keep the result small
                 'hero_games' => $this->ctes().'
                     SELECT who, hero_id, COUNT(*) AS games
                     FROM pg WHERE hero_id IN (SELECT hero_id FROM games)
@@ -458,8 +488,8 @@ class DeepAnalyticsQueryService
      */
     private function run(array $queries, array $params): array
     {
-        $client = $this->client ??= new BigQueryClient(['projectId' => config('deep_analytics.bigquery_project')]);
-        $dataset = config('deep_analytics.bigquery_project').'.'.config('deep_analytics.bigquery_dataset');
+        $client = $this->client ??= new BigQueryClient(['projectId' => config('analytics.bigquery_project')]);
+        $dataset = config('analytics.bigquery_project').'.'.config('analytics.bigquery_dataset');
 
         // Element types for the array params, so an empty filter list is still ARRAY<INT64>
         $types = array_intersect_key(['game_types' => 'INT64', 'maps' => 'INT64', 'builds' => 'INT64', 'keys' => 'STRING'], $params);
@@ -469,7 +499,7 @@ class DeepAnalyticsQueryService
             $config = $client->query(str_replace('{dataset}', $dataset, $sql))
                 ->parameters($params)
                 ->setParamTypes($types)
-                ->location(config('deep_analytics.bigquery_location'));
+                ->location(config('analytics.bigquery_location'));
             $jobs[$name] = $client->startQuery($config);
         }
 
