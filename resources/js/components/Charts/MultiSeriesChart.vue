@@ -10,7 +10,8 @@ import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 
 // Like LineChart, but several series on one axis (e.g. you vs baseline).
-// series: [{ label, data: [numbers aligned with labels], color: 'teal' | 'yellow' | 'red' | 'blue' }]
+// series: [{ label, data: [numbers aligned with labels], color: 'teal' | 'yellow' | 'red' | 'blue',
+//            dashed?, hidden? (off until clicked in the legend), axis?: 'right' (own scale, y2Label) }]
 const COLORS = {
   teal: '0, 139, 139',
   yellow: '217, 140, 64',
@@ -26,6 +27,7 @@ export default {
     series: Array,
     title: String,
     yLabel: String,
+    y2Label: String,
   },
   data() {
     return {
@@ -44,10 +46,18 @@ export default {
         scales: {
           x: { grid: { display: true }, ticks: { display: true } },
           y: {
-            beginAtZero: this.type === 'bar',
+            // Counts never go negative; also keeps an all-zero series from centring on 0
+            beginAtZero: true,
             grid: { display: true },
             ticks: { display: true },
             title: { display: !!this.yLabel, text: this.yLabel },
+          },
+          y2: {
+            display: this.series.some(s => s.axis === 'right'),
+            position: 'right',
+            beginAtZero: true,
+            grid: { display: false },
+            title: { display: !!this.y2Label, text: this.y2Label },
           },
         },
       },
@@ -79,6 +89,9 @@ export default {
           pointRadius: 0,
           pointHoverRadius: 3,
           spanGaps: true,
+          borderDash: s.dashed ? [6, 4] : [],
+          hidden: !!s.hidden,
+          yAxisID: s.axis === 'right' ? 'y2' : 'y',
         };
       });
     },
