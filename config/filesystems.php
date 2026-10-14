@@ -1,5 +1,7 @@
 <?php
 
+use League\Flysystem\GoogleCloudStorage\UniformBucketLevelAccessVisibility;
+
 return [
 
     /*
@@ -95,6 +97,30 @@ return [
             'project_id' => env('GOOGLE_CLOUD_PROJECT_ID'),
             'bucket' => env('GOOGLE_CLOUD_RANK_SAMPLES_BUCKET'),
             'path_prefix' => env('GOOGLE_CLOUD_RANK_SAMPLES_PREFIX', ''),
+            'key_file_path' => env('GOOGLE_CLOUD_KEY_FILE'),
+            'visibility' => 'private',
+            'throw' => true,
+        ],
+
+        /*
+         * Xal'atath recap cards players chose to share, one PNG per account. The bucket is
+         * public-read (link previews fetch the image directly) with uniform bucket-level
+         * access, so no per-object ACLs are set.
+         */
+        'gcs-xalatath-cards' => [
+            'driver' => 'gcs',
+            'project_id' => env('GOOGLE_CLOUD_PROJECT_ID'),
+            'bucket' => env('GOOGLE_CLOUD_XALATATH_CARDS_BUCKET', 'player-xalatath-cards'),
+            'key_file_path' => env('GOOGLE_CLOUD_KEY_FILE'),
+            'visibilityHandler' => UniformBucketLevelAccessVisibility::class,
+            'throw' => true,
+        ],
+
+        /* Analytics extract docs (doc/{replayID}.json.gz), written by the replay parser's analytics service. */
+        'gcs-analytics' => [
+            'driver' => 'gcs',
+            'project_id' => env('GOOGLE_CLOUD_PROJECT_ID'),
+            'bucket' => env('DEEP_ANALYTICS_DOC_BUCKET', 'heroesprofile-replay-deep'),
             'key_file_path' => env('GOOGLE_CLOUD_KEY_FILE'),
             'visibility' => 'private',
             'throw' => true,

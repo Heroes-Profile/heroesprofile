@@ -25,7 +25,7 @@ class StandingMail
         ?array $button,
         string $closing,
     ): MailMessage {
-        return (new MailMessage)
+        $message = (new MailMessage)
             ->subject($subject)
             ->view('emails.api.standing', [
                 'headline' => $headline,
@@ -35,5 +35,9 @@ class StandingMail
                 'button' => $button,
                 'closing' => $closing,
             ]);
+
+        $admin = config('mail.admin_address');
+
+        return $admin ? $message->bcc($admin) : $message;
     }
 }

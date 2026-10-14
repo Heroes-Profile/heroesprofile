@@ -163,6 +163,11 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(10)->by('xalatath-eye:'.(Auth::id() ?? ClientIpService::getClientIp($request)));
         });
 
+        // Recap card uploads: one PNG per account, overwritten on each share.
+        RateLimiter::for('xalatath-card', function (Request $request) {
+            return Limit::perMinute(5)->by('xalatath-card:'.(Auth::id() ?? ClientIpService::getClientIp($request)));
+        });
+
         $this->routes(function () {
             // First, so nothing added to routes/api.php can shadow a legacy path by
             // accident. Domain-scoped, so it only exists once DNS points here.

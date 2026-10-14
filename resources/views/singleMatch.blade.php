@@ -11,6 +11,8 @@
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :user="{{ json_encode(Auth::user()) }}"
     :tournament="{{ json_encode($tournament) }}"
+    :replay-viewer-allowed="{{ json_encode($replayViewerAllowed ?? false) }}"
+    :analytics-cutover="{{ json_encode($analyticsCutover ?? null) }}"
 >
 </single-match>
 @endsection

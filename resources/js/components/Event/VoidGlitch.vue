@@ -1,9 +1,5 @@
 <script>
-const GLYPHS = {
-  a: '⏃', b: '⏚', c: '☊', d: '⎅', e: '⟒', f: '⎎', g: '☌', h: '⊑', i: '⟟', j: '⟊', k: '☍', l: '⌰', m: '⋔',
-  n: '⋏', o: '⍜', p: '⌿', q: '⍾', r: '⍀', s: '⌇', t: '⏁', u: '⎍', v: '⎐', w: '⍙', x: '⌖', y: '⊬', z: '⋉',
-};
-const FALLBACK = Object.values(GLYPHS);
+import { GLYPHS, FALLBACK } from './voidGlyphs';
 
 const TARGETS = 'nav.bg-gray-dark a';
 const SCRAMBLE_MS = 300;

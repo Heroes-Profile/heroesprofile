@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsWorkerController;
 use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
 use App\Http\Controllers\Api\Account\ApiKeyController;
 use App\Http\Controllers\Api\Account\BillingController;
@@ -61,6 +62,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->middleware(['api', 'cloud.tasks'])->group(function () {
     Route::post('internal/global/process', [GlobalQueryWorkerController::class, 'process']);
+    Route::post('internal/analytics/fanout', [AnalyticsWorkerController::class, 'fanOut']);
+    // Old path, for fan-out tasks queued before the rename; remove once the queue has drained
+    Route::post('internal/deep/fanout', [AnalyticsWorkerController::class, 'fanOut']);
 });
 
 Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function () {

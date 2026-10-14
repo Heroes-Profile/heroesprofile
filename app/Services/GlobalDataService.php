@@ -96,40 +96,169 @@ class GlobalDataService
         });
     }
 
-    public function getXalatathEvent()
+    private function getXalatathThresholds(): Collection
     {
-        $thresholds = collect(explode(',', (string) config('global.xalatath_event.stage_thresholds')))
+        return collect(explode(',', (string) config('global.xalatath_event.stage_thresholds')))
             ->map(fn ($threshold) => (int) trim($threshold))
             ->filter(fn ($threshold) => $threshold > 0)
             ->sort()
             ->values()
             ->take(5);
+    }
+
+    public function getXalatathEvent()
+    {
+        $thresholds = $this->getXalatathThresholds();
+
+        if ($this->getXalatathEndedPreview()) {
+            return null;
+        }
 
         $previewStage = $this->getXalatathPreviewStage();
 
         if ($previewStage !== null) {
-            $byGameType = [];
-            $totals = $this->fakeXalatathTotals($previewStage, $thresholds);
-        } elseif (! filter_var(config('global.xalatath_event.enabled'), FILTER_VALIDATE_BOOLEAN)) {
-            return null;
-        } else {
-            $byGameType = Cache::remember('global_xalatath_event', 30, function () {
-                return XalatathData::all()->keyBy('game_type')->toArray();
-            });
+            return $this->buildXalatathState($this->fakeXalatathTotals($previewStage, $thresholds), [], $thresholds);
+        }
 
-            $totals = [];
-            foreach ($byGameType as $row) {
-                foreach ($row as $column => $value) {
-                    if ($column === 'game_type') {
-                        continue;
-                    }
-                    $totals[$column] = $column === 'highest_kill_streak'
-                        ? max($totals[$column] ?? 0, (int) $value)
-                        : ($totals[$column] ?? 0) + (int) $value;
+        if (! filter_var(config('global.xalatath_event.enabled'), FILTER_VALIDATE_BOOLEAN) || $this->hasXalatathEventEnded()) {
+            return null;
+        }
+
+        $byGameType = Cache::remember('global_xalatath_event', 30, function () {
+            return XalatathData::all()->keyBy('game_type')->toArray();
+        });
+
+        return $this->buildXalatathState($this->sumXalatathTotals($byGameType), $byGameType, $thresholds);
+    }
+
+    public function getXalatathEventEndsAt(): ?Carbon
+    {
+        $endsAt = config('global.xalatath_event.ends_at');
+
+        return $endsAt ? Carbon::parse($endsAt) : null;
+    }
+
+    public function hasXalatathEventEnded(): bool
+    {
+        $endsAt = $this->getXalatathEventEndsAt();
+
+        return $endsAt !== null && now()->gte($endsAt);
+    }
+
+    /**
+     * The final snapshot is loaded and the event is over, so the recap page can show.
+     */
+    public function isXalatathRecapAvailable(): bool
+    {
+        if ($this->getXalatathEndedPreview()) {
+            return true;
+        }
+
+        if (! $this->hasXalatathEventEnded()) {
+            return false;
+        }
+
+        if (Cache::get('xalatath_recap_available')) {
+            return true;
+        }
+
+        $loaded = Cache::remember('xalatath_recap_checked', 300, function () {
+            return DB::connection('heroesprofile')->table('xalatath_recap')->where('section', 'totals')->exists();
+        });
+
+        if ($loaded) {
+            Cache::forever('xalatath_recap_available', true);
+        }
+
+        return $loaded;
+    }
+
+    /**
+     * Final totals for the ending banner and splash, shown for recap_days after the end.
+     */
+    public function getXalatathEnding(): ?array
+    {
+        if ($this->getXalatathEndedPreview()) {
+            $thresholds = $this->getXalatathThresholds();
+
+            return $this->buildXalatathState($this->fakeXalatathTotals(5, $thresholds), [], $thresholds);
+        }
+
+        if (! $this->isXalatathRecapAvailable()) {
+            return null;
+        }
+
+        $recapDays = (int) config('global.xalatath_event.recap_days');
+
+        if (now()->gte($this->getXalatathEventEndsAt()->copy()->addDays($recapDays))) {
+            return null;
+        }
+
+        return $this->getXalatathFinalState();
+    }
+
+    /**
+     * Every xalatath_recap section, decoded: ['totals' => [...rows], 'stages' => [...], ...].
+     */
+    public function getXalatathRecap(): array
+    {
+        return $this->rememberXalatathRecap('xalatath_recap_data', function () {
+            return DB::connection('heroesprofile')->table('xalatath_recap')->get()
+                ->mapWithKeys(fn ($row) => [$row->section => json_decode($row->data, true) ?? []])
+                ->all();
+        });
+    }
+
+    /**
+     * Snapshot data never changes once the event is over and loaded, so it's cached forever.
+     * Before that (local ?void_ended preview) it's read fresh, so a partial load isn't frozen.
+     */
+    public function rememberXalatathRecap(string $key, callable $callback)
+    {
+        if (! $this->hasXalatathEventEnded() || ! Cache::get('xalatath_recap_available')) {
+            return $callback();
+        }
+
+        return Cache::rememberForever($key, $callback);
+    }
+
+    /**
+     * The event's final state from the snapshot. Kept after the live config is gone.
+     */
+    public function getXalatathFinalState(): array
+    {
+        return $this->rememberXalatathRecap('xalatath_recap_final_state', function () {
+            $recap = $this->getXalatathRecap();
+
+            $byGameType = collect($recap['totals'] ?? [])->keyBy('game_type')->toArray();
+
+            $thresholds = collect($recap['stages'] ?? [])->sortBy('stage')->pluck('threshold')
+                ->map(fn ($threshold) => (int) $threshold)
+                ->values();
+
+            return $this->buildXalatathState($this->sumXalatathTotals($byGameType), $byGameType, $thresholds);
+        });
+    }
+
+    private function sumXalatathTotals(array $byGameType): array
+    {
+        $totals = [];
+        foreach ($byGameType as $row) {
+            foreach ($row as $column => $value) {
+                if ($column === 'game_type') {
+                    continue;
                 }
+                $totals[$column] = $column === 'highest_kill_streak'
+                    ? max($totals[$column] ?? 0, (int) $value)
+                    : ($totals[$column] ?? 0) + (int) $value;
             }
         }
 
+        return $totals;
+    }
+
+    private function buildXalatathState(array $totals, array $byGameType, Collection $thresholds): array
+    {
         // Bans spread the Void too.
         $corruption = ($totals['games_played'] ?? 0) + ($totals['bans'] ?? 0);
         $stage = $thresholds->filter(fn ($threshold) => $corruption >= $threshold)->count();
@@ -168,14 +297,33 @@ class GlobalDataService
     }
 
     /**
-     * "blizz_id|region" keys of accounts that found the Xal'atath eye. Empty once the event is off.
+     * Local testing: ?void_ended=1 shows the ending banner, splash and recap links until
+     * ?void_ended=off. Never available in production.
+     */
+    private function getXalatathEndedPreview(): bool
+    {
+        $request = request();
+
+        if (app()->isProduction() || ! $request->hasSession()) {
+            return false;
+        }
+
+        $param = $request->query('void_ended');
+
+        if ($param === 'off') {
+            $request->session()->forget('void_ended_preview');
+        } elseif ($param === '1') {
+            $request->session()->put('void_ended_preview', true);
+        }
+
+        return (bool) $request->session()->get('void_ended_preview');
+    }
+
+    /**
+     * "blizz_id|region" keys of accounts that found the Xal'atath eye. The flair is permanent.
      */
     public function getVoidEyeHolders(): array
     {
-        if (! $this->getXalatathEvent()) {
-            return [];
-        }
-
         $holders = Cache::remember('global_void_eye_holders', 60, function () {
             return BattlenetAccountFlair::query()
                 ->join('battlenet_accounts', 'battlenet_accounts.battlenet_accounts_id', '=', 'battlenet_account_flair.battlenet_accounts_id')
@@ -561,6 +709,8 @@ class GlobalDataService
             'maps' => $this->getMaps(),
             'xalatathEvent' => $xalatathEvent = $this->getXalatathEvent(),
             'voidEyeSpot' => $this->getVoidEyeSpot((bool) $xalatathEvent),
+            'xalatathEnding' => $this->getXalatathEnding(),
+            'xalatathRecapAvailable' => $this->isXalatathRecapAvailable(),
         ];
 
     }
@@ -639,19 +789,25 @@ class GlobalDataService
         return true;
     }
 
+    /**
+     * Match History style: Compact cards (true) or Table. The account setting, else the cookie the
+     * on-page toggle sets (like talentbuilderstyle), else Compact when logged in and Table when not.
+     */
     public function getPlayerMatchStyle()
     {
         if (Auth::check()) {
-            $user = Auth::user();
-
-            $playerhistorytable = $user->userSettings->firstWhere('setting', 'playerhistorytable');
-
-            $playerhistorytable = $playerhistorytable ? $playerhistorytable->value : true;
-
-            return $playerhistorytable;
+            $setting = Auth::user()->userSettings->firstWhere('setting', 'playerhistorytable');
+            if ($setting) {
+                return $setting->value;
+            }
         }
 
-        return false;
+        $cookie = request()->cookie('playerhistorytable');
+        if ($cookie !== null) {
+            return $cookie === '1';
+        }
+
+        return Auth::check();
     }
 
     public function getRegionIDtoString()

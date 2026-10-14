@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Log;
 
 class CloudTasksDispatcher
 {
+    /** Reused across dispatchHttp calls, so a burst of tasks opens one connection. */
+    private ?CloudTasksClient $httpClient = null;
+
     public function dispatch(string $jobId): void
     {
         $projectId = config('global.cloud_tasks.project_id');
@@ -79,22 +82,23 @@ class CloudTasksDispatcher
      *
      * Same project, service account and token audience as the global query queue,
      * so VerifyCloudTasksRequest accepts it unchanged — the audience is a value the
-     * token is minted for, not the URL it is sent to.
+     * token is minted for, not the URL it is sent to. A task for another service
+     * (Cloud Run checks the audience against its own URL) passes that service's URL.
      *
      * @param  array<string, mixed>  $body
      */
-    public function dispatchHttp(string $url, array $body, string $queue, ?\DateTimeInterface $notBefore = null): void
+    public function dispatchHttp(string $url, array $body, string $queue, ?\DateTimeInterface $notBefore = null, ?string $audience = null): void
     {
         $projectId = config('global.cloud_tasks.project_id');
         $location = config('global.cloud_tasks.location');
-        $audience = config('global.cloud_tasks.handler_url');
+        $audience = $audience ?? config('global.cloud_tasks.handler_url');
         $serviceAccount = config('global.cloud_tasks.service_account');
 
         if (! $projectId || ! $audience || ! $serviceAccount) {
             throw new \RuntimeException('Cloud Tasks is not configured. Set CLOUD_TASKS_* environment variables.');
         }
 
-        $client = new CloudTasksClient;
+        $client = $this->httpClient ??= new CloudTasksClient;
 
         $task = new Task([
             'http_request' => new HttpRequest([

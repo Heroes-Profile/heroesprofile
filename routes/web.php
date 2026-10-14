@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AnimationsController;
 use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
 use App\Http\Controllers\Api\Account\BillingController as ApiBillingController;
@@ -66,6 +67,7 @@ use App\Http\Controllers\Tools\RandomizeMeController;
 use App\Http\Controllers\TwitchPageController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\XalatathEventController;
+use App\Http\Controllers\XalatathRecapController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -101,6 +103,10 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/Terms/Of/Service', [TermsOfServiceController::class, 'show']);
 
     Route::get('/FAQ', [FaqController::class, 'show']);
+    Route::get('/Event/Xalatath', [XalatathRecapController::class, 'show']);
+    Route::get('/Event/Xalatath/Card/{battletag}/{blizz_id}/{region}', [XalatathRecapController::class, 'showCard'])
+        ->whereNumber('blizz_id')
+        ->whereNumber('region');
 
     // Streamers using the Twitch extension, and the code of conduct they agree to.
     Route::get('/Twitch', [TwitchPageController::class, 'index']);
@@ -165,6 +171,23 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 
     // Logged in User Settings
     Route::get('Profile/Settings', [ProfileController::class, 'showSettings'])->middleware('ensureBattlenetAuth');
+
+    // Analytics for the logged-in account's own season games, and the replay viewer for any season
+    // match (allowlisted for now)
+    Route::middleware('ensureBattlenetAuth')->group(function () {
+        Route::get('Analytics', [AnalyticsController::class, 'show']);
+        Route::get('Analytics/Status', [AnalyticsController::class, 'status'])->middleware('throttle:60,1');
+        Route::post('Analytics/Request', [AnalyticsController::class, 'request'])->middleware('throttle:10,1');
+        Route::post('Analytics/Data/{tab}', [AnalyticsController::class, 'data'])->whereAlpha('tab')->middleware('throttle:60,1');
+        Route::get('Analytics/Match/Single/{replayID}', [AnalyticsController::class, 'replay'])->whereNumber('replayID');
+        Route::get('Analytics/Match/Single/{replayID}/Data', [AnalyticsController::class, 'replayData'])->whereNumber('replayID')->middleware('throttle:30,1');
+        Route::get('Analytics/Match/Single/{replayID}/Status', [AnalyticsController::class, 'replayStatus'])->whereNumber('replayID')->middleware('throttle:60,1');
+        Route::post('Analytics/Match/Single/{replayID}/Process', [AnalyticsController::class, 'replayProcess'])->whereNumber('replayID')->middleware('throttle:10,1');
+    });
+
+    // The old addresses, from before the rename
+    Route::permanentRedirect('DeepAnalytics', '/Analytics');
+    Route::get('DeepAnalytics/Replay/{replayID}', fn (string $replayID) => redirect('/Analytics/Match/Single/'.$replayID, 301))->whereNumber('replayID');
 
     // Player data
     Route::get('Player/{battletag}/{blizz_id}/{region}', [PlayerController::class, 'show'])->middleware('checkIfPrivateProfilePage');
@@ -345,3 +368,4 @@ Route::get('/Animation/Tassadar', [AnimationsController::class, 'showTassadar'])
 Route::get('/Event/Xalatath/Totals', [XalatathEventController::class, 'totals'])->middleware('throttle:xalatath-totals');
 Route::get('/Flair/State', [XalatathEventController::class, 'flairState'])->middleware('throttle:flair-state');
 Route::post('/Event/Xalatath/Eye', [XalatathEventController::class, 'claimEye'])->middleware('throttle:xalatath-eye');
+Route::post('/Event/Xalatath/Card', [XalatathRecapController::class, 'uploadCard'])->middleware('throttle:xalatath-card');
