@@ -12,8 +12,9 @@
       <multi-tab-button :options="speedOptions" :modelValue="speed" @update:modelValue="$emit('speed', $event)"></multi-tab-button>
     </div>
 
-    <!-- Event markers above the scrubber; click one to jump a few seconds before it -->
-    <div class="relative h-4">
+    <!-- Event markers above the scrubber; click one to jump a few seconds before it. They don't move
+         with the game clock, so v-memo skips re-rendering them every frame. -->
+    <div class="relative h-4" v-memo="[markers, length]">
       <span
         v-for="(m, index) in markers"
         :key="index"
@@ -34,7 +35,7 @@
 </template>
 
 <script>
-import analytics from './deepAnalyticsFormat.js';
+import analytics from '../../utils/deepAnalyticsFormat.js';
 
 export default {
   name: 'DeepAnalyticsReplayTimeline',

@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { toRaw } from 'vue';
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 
@@ -135,6 +136,27 @@ export default {
     if (window.innerWidth < 768) {
       this.$refs.chartCanvas.style.height = '260px';
     }
+  },
+  watch: {
+    // Redraw when given new data (the replay viewer grows the lines as its game clock runs)
+    data(newData) {
+      // Chart.js breaks when updated through Vue's reactive wrapper, so work on the raw chart
+      const chart = toRaw(this.chart);
+      if (!chart) return;
+      const list = value => (Array.isArray(value) ? value : Object.values(value));
+      const teamOne = list(newData.team_one_differences);
+      const teamTwo = list(newData.team_two_differences);
+      const levelOne = list(newData.team_one_level);
+      const levelTwo = list(newData.team_two_level);
+      const [winnerExp, loserExp, winnerLevel, loserLevel] = this.winner == 0
+        ? [teamOne, teamTwo, levelOne, levelTwo]
+        : [teamTwo, teamOne, levelTwo, levelOne];
+      chart.data.labels = list(newData.x_axis_time);
+      [winnerExp, loserExp, winnerLevel, loserLevel].forEach((values, i) => {
+        chart.data.datasets[i].data = values;
+      });
+      chart.update('none');
+    },
   },
   beforeUnmount() {
     if (this.chart) {

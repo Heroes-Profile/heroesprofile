@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import analytics from './deepAnalyticsFormat.js';
+import analytics from '../../utils/deepAnalyticsFormat.js';
 
 export default {
   name: 'DeepAnalyticsTimelines',

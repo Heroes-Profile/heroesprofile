@@ -110,9 +110,13 @@ export default {
     if (this.processing) {
       this.startPolling();
     }
+    document.addEventListener('visibilitychange', this.onVisible);
+    window.addEventListener('focus', this.onVisible);
   },
   beforeUnmount() {
     clearInterval(this.pollTimer);
+    document.removeEventListener('visibilitychange', this.onVisible);
+    window.removeEventListener('focus', this.onVisible);
   },
   computed: {
     percent() {
@@ -188,6 +192,13 @@ export default {
       }
       this.processing = true;
       this.pollTimer = setInterval(this.refresh, 5000);
+      this.refresh();
+    },
+    // Browsers slow or pause timers in background tabs; catch up as soon as the page is looked at
+    onVisible() {
+      if (this.processing && document.visibilityState === 'visible') {
+        this.refresh();
+      }
     },
     async refresh() {
       try {
