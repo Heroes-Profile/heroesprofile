@@ -6,7 +6,7 @@
     ></page-heading>
 
     <div class="max-w-[1500px] mx-auto px-4 mt-4">
-      <loading-component v-if="loading"></loading-component>
+      <loading-component v-if="loading" :textoverride="preparing">Preparing replay, usually under a minute...</loading-component>
       <p v-else-if="error" class="text-center text-red">{{ error }}</p>
       <template v-else>
       <div class="flex flex-wrap gap-4">
@@ -314,6 +314,8 @@ export default {
       playing: false,
       speed: 4,
       selected: null,
+      preparing: false,
+      stopWaiting: false,
       eventTypes: EVENT_TYPES.map(({ code, name }) => ({ code, name })),
       // The filter copies defaultValue whenever it changes and emits on every copy, so it gets a fixed
       // starting list; binding shownTypes there makes the two update each other forever
@@ -326,18 +328,24 @@ export default {
   async mounted() {
     window.addEventListener('keydown', this.onKey);
     try {
-      const response = await this.$axios.get('/DeepAnalytics/Replay/' + this.replayId + '/Data');
+      await this.ensureReady();
+      const response = await this.$axios.get('/Analytics/Match/Single/' + this.replayId + '/Data');
       this.data = response.data;
       this.selected = this.data.players.find(p => p.you)?.idx ?? null;
       this.walkable = await loadWalkable(this.minimap);
       this.rebuild();
     } catch (e) {
-      this.error = 'Could not load this game. Please try again in a minute.';
+      this.error = e.message === 'could not start'
+        ? 'Could not start preparing this replay. Please try again in a minute.'
+        : this.preparing
+          ? 'This replay is taking longer than usual to prepare. Please try again in a few minutes.'
+          : 'Could not load this game. Please try again in a minute.';
     } finally {
       this.loading = false;
     }
   },
   beforeUnmount() {
+    this.stopWaiting = true;
     window.removeEventListener('keydown', this.onKey);
     cancelAnimationFrame(this.frame);
   },
@@ -418,6 +426,30 @@ export default {
   },
   methods: {
     teamColor,
+    // A game nobody has processed yet: start it, then wait until it's parsed and loaded
+    async ensureReady() {
+      const url = '/Analytics/Match/Single/' + this.replayId;
+      if ((await this.$axios.get(url + '/Status')).data.ready) return;
+      this.preparing = true;
+      try {
+        await this.$axios.post(url + '/Process');
+      } catch (e) {
+        throw new Error('could not start');
+      }
+      const giveUp = Date.now() + 5 * 60 * 1000;
+      while (!this.stopWaiting) {
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        try {
+          if ((await this.$axios.get(url + '/Status')).data.ready) {
+            this.preparing = false;
+            return;
+          }
+        } catch (e) {
+          // A failed check (a blip, a server restart) is retried on the next one
+        }
+        if (Date.now() > giveUp) throw new Error('timed out');
+      }
+    },
     rebuild() {
       if (!this.data) return;
       this.tracks = markRaw(buildTracks(this.data, { mode: this.mode, walkable: this.walkable }));

@@ -37,6 +37,8 @@
               </slot>
             </round-image>
           </span>
+          <!-- Replay viewer: shown only to allowlisted Battle.net accounts, for season games -->
+          <a v-if="canWatchReplay" class="link" :href="'/Analytics/Match/Single/' + replayid">Watch Replay</a>
         </div>
       </div>
 
@@ -567,6 +569,9 @@
       user: Object,
       patreonUser: Boolean,
       tournament: String,
+      // Replay viewer: allowlisted Battle.net accounts, season games only
+      deepAnalyticsAllowed: { type: Boolean, default: false },
+      deepAnalyticsCutover: { type: String, default: null },
     },
     data(){
       return {
@@ -662,6 +667,10 @@
     mounted() {
     },
     computed: {
+      canWatchReplay() {
+        return this.deepAnalyticsAllowed && !this.esport && !!this.deepAnalyticsCutover && !!this.data
+          && this.data.game_date >= this.deepAnalyticsCutover;
+      },
       // Non-draft modes still have replay_bans rows, all hero 0
       showBans(){
         if(!this.data.replay_bans || this.data.replay_bans.length == 0){

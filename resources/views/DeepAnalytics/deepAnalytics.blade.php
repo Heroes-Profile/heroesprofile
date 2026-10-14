@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)
-@section('title', 'Deep Analytics')
+@section('title', 'Analytics')
 @section('meta_keywords', 'deep analytics, replay analysis, coaching')
 @section('meta_description', 'Deep replay analytics for your own season games.')
 @section('content')
