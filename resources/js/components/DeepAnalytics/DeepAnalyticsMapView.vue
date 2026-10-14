@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { minimapFor, structureIcons, teamColor, tintMatrix } from './mapAssets.js';
+import { minimapFor, structureIcons, teamColor, tintMatrix } from '../../utils/mapAssets.js';
 
 // One map: the in-game minimap and its structures when we have them, camp positions from
 // replay data, and points or a heatmap on top. Game y grows upward, SVG y downward.
@@ -129,9 +129,10 @@ export default {
       return minimapFor(this.mapName);
     },
     extent() {
+      // Only the drawn part of the minimap; its transparent border would otherwise take up space
       if (this.minimap) {
-        const m = this.minimap;
-        return { minX: 0, maxX: m.width, minY: m.top - m.height, maxY: m.top };
+        const [left, bottom, right, top] = this.minimap.view;
+        return { minX: left, maxX: right, minY: bottom, maxY: top };
       }
       const xs = [], ys = [];
       [...this.layout, ...this.points, ...this.heatmap].forEach(p => {

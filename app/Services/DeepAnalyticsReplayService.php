@@ -15,7 +15,41 @@ class DeepAnalyticsReplayService
 {
     private const DISK = 'gcs-deep';
 
-    public function __construct(private GlobalDataService $globalDataService) {}
+    public function __construct(
+        private GlobalDataService $globalDataService,
+        private DeepAnalyticsService $deepAnalytics,
+    ) {}
+
+    /** A season game: the only ones archived and processed. */
+    public function isSeasonGame(int $replayId): bool
+    {
+        return DB::connection('heroesprofile')->table('replay')
+            ->where('replayID', $replayId)
+            ->where('game_date', '>=', config('deep_analytics.cutover'))
+            ->exists();
+    }
+
+    /** Processed at the current extract version and loaded into BigQuery. */
+    public function isReady(int $replayId): bool
+    {
+        return DB::connection('heroesprofile')->table('replay_deep')
+            ->where('replayID', $replayId)
+            ->where('extract_v', '>=', config('deep_analytics.extract_v'))
+            ->exists();
+    }
+
+    /**
+     * Queues one game's deep parse, for the viewer opened on a game nobody has processed yet. A
+     * second request inside the lock window queues nothing, so refreshing costs nothing.
+     */
+    public function process(int $replayId): bool
+    {
+        if ($this->isReady($replayId) || ! Cache::add('deep_analytics:replay_request:'.$replayId, 1, config('deep_analytics.request_lock_seconds'))) {
+            return false;
+        }
+
+        return $this->deepAnalytics->fanOut([$replayId]) > 0;
+    }
 
     /**
      * @param  array{game_types: array<int>, maps: array<int>, hero: int}  $filters
@@ -56,18 +90,10 @@ class DeepAnalyticsReplayService
             ->all();
     }
 
-    /** Null when the account didn't play the game, or it has no current doc. */
-    public function replay(int $replayId, int $blizzId, int $region): ?array
+    /** Any season game; null until it has been processed and loaded. */
+    public function replay(int $replayId, int $blizzId): ?array
     {
-        $played = DB::connection('heroesprofile')->table('player')
-            ->join('replay', 'replay.replayID', '=', 'player.replayID')
-            ->join('replay_deep', 'replay_deep.replayID', '=', 'replay.replayID')
-            ->where('player.replayID', $replayId)
-            ->where('player.blizz_id', $blizzId)
-            ->where('replay.region', $region)
-            ->where('replay_deep.extract_v', '>=', config('deep_analytics.extract_v'))
-            ->exists();
-        if (! $played) {
+        if (! $this->isReady($replayId)) {
             return null;
         }
 

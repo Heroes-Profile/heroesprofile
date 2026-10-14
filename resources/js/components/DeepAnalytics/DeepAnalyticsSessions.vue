@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import analytics from './deepAnalyticsFormat.js';
+import analytics from '../../utils/deepAnalyticsFormat.js';
 
 const SESSION_BREAK_SECONDS = 30 * 60;
 

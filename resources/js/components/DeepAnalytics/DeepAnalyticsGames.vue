@@ -32,7 +32,7 @@
           <td>{{ clock(game.game_length) }}</td>
           <td>
             <custom-button
-              :href="'/DeepAnalytics/Replay/' + game.replay_id"
+              :href="'/Analytics/Match/Single/' + game.replay_id"
               :text="'Watch'"
               :alt="'Watch this game'"
               size="small"
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import analytics from './deepAnalyticsFormat.js';
+import analytics from '../../utils/deepAnalyticsFormat.js';
 
 export default {
   name: 'DeepAnalyticsGames',

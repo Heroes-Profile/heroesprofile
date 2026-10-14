@@ -26,6 +26,11 @@ return [
     // Only games from the start of season 34 on are archived or analysed.
     'cutover' => '2026-10-02 16:00:01',
 
+    // Local testing only (APP_ENV=local): pages behind Battle.net login act as this account without
+    // signing in. Leave unset normally.
+    'local_test_blizz_id' => env('DEEP_ANALYTICS_LOCAL_TEST_BLIZZ_ID'),
+    'local_test_region' => env('DEEP_ANALYTICS_LOCAL_TEST_REGION', 1),
+
     // Blizz IDs allowed to use it until access is opened up, comma-separated.
     'allowlist' => array_values(array_filter(array_map('intval', explode(',', (string) env('DEEP_ANALYTICS_ALLOWLIST', '67280'))))),
 

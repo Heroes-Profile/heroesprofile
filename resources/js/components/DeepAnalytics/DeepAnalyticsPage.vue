@@ -1,7 +1,7 @@
 <template>
   <div>
     <page-heading
-      :heading="'Deep Analytics'"
+      :heading="'Analytics'"
       :infoText1="'Deep replay analysis of ' + battletag + '\'s season games (from Oct 2, 2026), compared with a sample of all games.'"
     ></page-heading>
 
@@ -110,9 +110,13 @@ export default {
     if (this.processing) {
       this.startPolling();
     }
+    document.addEventListener('visibilitychange', this.onVisible);
+    window.addEventListener('focus', this.onVisible);
   },
   beforeUnmount() {
     clearInterval(this.pollTimer);
+    document.removeEventListener('visibilitychange', this.onVisible);
+    window.removeEventListener('focus', this.onVisible);
   },
   computed: {
     percent() {
@@ -152,7 +156,7 @@ export default {
       }
       this.isLoading = true;
       try {
-        const response = await this.$axios.post('/DeepAnalytics/Data/' + this.activeTab, {
+        const response = await this.$axios.post('/Analytics/Data/' + this.activeTab, {
           game_type: this.gametype,
           game_map: this.gamemap,
           hero: this.getHeroID(),
@@ -168,7 +172,7 @@ export default {
       this.requesting = true;
       this.error = '';
       try {
-        const response = await this.$axios.post('/DeepAnalytics/Request');
+        const response = await this.$axios.post('/Analytics/Request');
         if (response.data.already_requested) {
           this.error = 'Your games were already requested in the last 10 minutes. Try again in a few minutes if they are not processing.';
         } else if (response.data.queued === 0) {
@@ -188,10 +192,17 @@ export default {
       }
       this.processing = true;
       this.pollTimer = setInterval(this.refresh, 5000);
+      this.refresh();
+    },
+    // Browsers slow or pause timers in background tabs; catch up as soon as the page is looked at
+    onVisible() {
+      if (this.processing && document.visibilityState === 'visible') {
+        this.refresh();
+      }
     },
     async refresh() {
       try {
-        const response = await this.$axios.get('/DeepAnalytics/Status');
+        const response = await this.$axios.get('/Analytics/Status');
         this.status = response.data;
         if (this.status.done >= this.status.total || !this.status.processing) {
           clearInterval(this.pollTimer);

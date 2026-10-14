@@ -7,6 +7,7 @@ use App\Models\BattlenetAccount;
 use App\Models\BattletagNotAllowedDownloadReplay;
 use App\Models\ReplayExperienceBreakdownBlob;
 use App\Rules\ReplayIDValidation;
+use App\Services\DeepAnalyticsService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -80,6 +81,9 @@ class SingleMatchController extends Controller
             'esport' => null,
             'replayID' => $replayID,
             'tournament' => null,
+            // For the replay viewer button: per user, so it stays out of the shared match data
+            'deepAnalyticsAllowed' => Auth::check() && app(DeepAnalyticsService::class)->isAllowed((int) Auth::user()->blizz_id),
+            'deepAnalyticsCutover' => config('deep_analytics.cutover'),
         ]);
     }
 

@@ -6,11 +6,16 @@
     ></page-heading>
 
     <div class="max-w-[1500px] mx-auto px-4 mt-4">
-      <loading-component v-if="loading"></loading-component>
+      <loading-component v-if="loading" :textoverride="preparing">Preparing replay, usually under a minute...</loading-component>
       <p v-else-if="error" class="text-center text-red">{{ error }}</p>
-      <div v-else class="flex flex-wrap gap-4">
+      <template v-else>
+      <div class="flex flex-wrap gap-4">
         <!-- Map and controls -->
         <div class="flex-1 min-w-0 basis-[60%]">
+          <!-- The announcer: win chance and commentary -->
+          <deep-analytics-replay-announcer :data="data" :events="events" :t="second"></deep-analytics-replay-announcer>
+          <!-- In-game style top bar, centred over the map -->
+          <deep-analytics-replay-scoreboard :data="data" :t="second" :selected="selected" @select="selected = $event"></deep-analytics-replay-scoreboard>
           <deep-analytics-replay-map
             :data="data"
             :tracks="tracks"
@@ -30,18 +35,22 @@
             @speed="speed = $event"
           ></deep-analytics-replay-timeline>
           <div class="flex flex-wrap items-center gap-3 mt-3 text-sm">
+            <custom-button
+              :text="'XP Graph'"
+              :alt="'Jump to the team XP graph'"
+              size="small"
+              :ignoreclick="true"
+              @click="$refs.xp.scrollIntoView({ behavior: 'smooth', block: 'start' })"
+            ></custom-button>
             <span>Movement</span>
             <multi-tab-button :options="modeOptions" v-model="mode"></multi-tab-button>
             <span class="text-gray-light">
               Positions between the game's own updates are estimated from move orders. Space plays or pauses, arrows skip 5 seconds.
             </span>
           </div>
-        </div>
 
-        <!-- Panels -->
-        <div class="w-[380px] max-md:w-full flex flex-col gap-4 text-sm">
           <!-- Teams: level, takedowns, XP over the game -->
-          <div class="bg-darken rounded p-3">
+          <div ref="xp" class="bg-darken rounded p-3 mt-4 text-sm scroll-mt-4">
             <div v-for="team in [0, 1]" :key="'team' + team" class="flex justify-between items-center mb-1">
               <span class="font-bold" :style="{ color: teamColor(team) }">
                 {{ team === 0 ? 'Blue' : 'Red' }}{{ yourTeam === team ? ' (your team)' : '' }}
@@ -54,7 +63,10 @@
               <dual-line-chart :data="experience" :winner="winningTeam"></dual-line-chart>
             </div>
           </div>
+        </div>
 
+        <!-- Panels -->
+        <div class="w-[380px] max-md:w-full flex flex-col gap-4 text-sm">
           <!-- Players -->
           <div class="bg-darken rounded p-3">
             <div v-for="team in [0, 1]" :key="'players' + team" class="mb-2">
@@ -90,34 +102,194 @@
             <div class="text-gray-light mt-1">The white box on the map is roughly where their camera is.</div>
           </div>
 
-          <!-- Event feed -->
+          <!-- Event feed: newest first, up to the current game time; click one to jump just before it -->
           <div class="bg-darken rounded p-3">
-            <div class="font-bold mb-1">Events</div>
-            <div
-              v-for="(e, index) in feed"
-              :key="index"
-              class="flex gap-2 cursor-pointer hover:bg-lighten rounded px-1"
-              @click="seek(Math.max(0, e.t - 5))"
-            >
-              <span class="font-mono text-gray-light">{{ clock(e.t) }}</span>
-              <span :style="{ color: e.color }">{{ e.label }}</span>
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <span class="font-bold">Events</span>
+              <multi-select-filter
+                :values="eventTypes"
+                :text="'Show'"
+                :defaultValue="defaultTypes"
+                @input-changed="shownTypes = $event.value"
+              ></multi-select-filter>
             </div>
-            <div v-if="feed.length === 0" class="text-gray-light">Nothing yet</div>
+            <div class="max-h-80 overflow-y-auto">
+              <div
+                v-for="(e, index) in feed"
+                :key="index"
+                class="flex gap-3 cursor-pointer hover:bg-lighten rounded px-1"
+                @click="seek(Math.max(0, e.t - 5))"
+              >
+                <span class="font-mono text-gray-light">{{ clock(e.t) }}</span>
+                <span :style="{ color: e.color }">{{ e.label }}</span>
+              </div>
+              <div v-if="feed.length === 0" class="text-gray-light">Nothing yet</div>
+            </div>
           </div>
+
         </div>
       </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
 import { markRaw } from 'vue';
-import analytics from './deepAnalyticsFormat.js';
-import { buildTracks, positionAt } from './replayTracks.js';
-import { loadWalkable, minimapFor, teamColor } from './mapAssets.js';
+import analytics from '../../utils/deepAnalyticsFormat.js';
+import { buildTracks, positionAt } from '../../utils/replayTracks.js';
+import { loadWalkable, minimapFor, teamColor } from '../../utils/mapAssets.js';
 
-const FALLEN = { TownTownHallL2: 'fort', TownTownHallL3: 'keep', KingsCore: 'core', VanndarStormpike: 'core', DrekThar: 'core' };
+// The replay viewer's event feed and timeline markers, built once per game from its deep doc.
+// Each event is { t, type, color, label, team }; `type` is one of EVENT_TYPES' codes and `team` is the
+// team it helps (null when neither, e.g. a disconnect).
+
+const EVENT_TYPES = [
+  { code: 'kills', name: 'Kills', on: true },
+  { code: 'multikills', name: 'First blood & multi-kills', on: true },
+  { code: 'wipes', name: 'Team wipes', on: true },
+  { code: 'structures', name: 'Forts, keeps & cores', on: true },
+  { code: 'defenses', name: 'Towers, walls, gates & wells', on: false },
+  { code: 'camps', name: 'Merc camps', on: true },
+  { code: 'objectives', name: 'Map objectives', on: true },
+  { code: 'levels', name: 'Talent levels', on: true },
+  { code: 'talents', name: 'Talent picks', on: true },
+  { code: 'xp', name: 'XP lead swaps', on: true },
+  { code: 'globes', name: 'Regen globes', on: false },
+  { code: 'disconnects', name: 'Disconnects', on: true },
+];
+
 const TIERS = [4, 7, 10, 13, 16, 20];
+const FIGHT_GAP = 10; // seconds between deaths that still count as the same fight
+const STRUCTURE = [
+  [/^TownTownHallL2/, 'fort', 'structures'],
+  [/^TownTownHallL3/, 'keep', 'structures'],
+  [/^(KingsCore|VanndarStormpike|DrekThar)/, 'core', 'structures'],
+  [/^TownCannonTower/, 'tower', 'defenses'],
+  [/^TownWall/, 'wall', 'defenses'],
+  [/^TownGate/, 'gate', 'defenses'],
+  [/^TownMoonwell/, 'healing well', 'defenses'],
+];
+const STREAK = { 3: 'triple', 4: 'quadruple', 5: 'quintuple' };
+
+function buildEvents(data, clock) {
+  const hero = idx => data.players[idx]?.hero ?? '?';
+  const team = idx => data.players[idx]?.team ?? 0;
+  const side = t => (t === 0 ? 'Blue' : 'Red');
+  const names = list => list.map(hero).join(', ');
+  const events = [];
+  const add = (t, type, color, label, helps = null) => events.push({ t, type, color, label, team: helps });
+  const deaths = [...data.deaths].sort((a, b) => a.t - b.t);
+
+  // Kills, first blood
+  deaths.forEach((d, i) => {
+    const color = teamColor(1 - team(d.v));
+    add(d.t, 'kills', color, (names(d.k) || 'Something') + ' killed ' + hero(d.v), 1 - team(d.v));
+    if (i === 0) add(d.t, 'multikills', color, 'First blood: ' + hero(d.v) + ' died', 1 - team(d.v));
+  });
+
+  // Multi-takedowns: three or more of a hero's takedowns with no more than FIGHT_GAP between them (doubles
+  // are in nearly every fight), at the end of the run
+  data.players.forEach(p => {
+    const times = deaths.filter(d => d.k.includes(p.idx)).map(d => d.t);
+    chains(times).forEach(chain => {
+      if (chain.length >= 3) {
+        add(chain[chain.length - 1], 'multikills', teamColor(p.team), p.hero + ': ' + (STREAK[chain.length] ?? chain.length) + ' takedown', p.team);
+      }
+    });
+  });
+
+  // Team wipes: 3+ heroes of one team down in one fight, all 5 is an ace
+  [0, 1].forEach(t => {
+    const times = deaths.filter(d => team(d.v) === t).map(d => d.t);
+    chains(times).forEach(chain => {
+      if (chain.length >= 5) add(chain[chain.length - 1], 'wipes', teamColor(1 - t), 'Ace: ' + side(t) + ' wiped', 1 - t);
+      else if (chain.length >= 3) add(chain[chain.length - 1], 'wipes', teamColor(1 - t), side(t) + ' lost ' + chain.length + ' heroes in a fight', 1 - t);
+    });
+  });
+
+  // Structures, with who got the kill when there was one
+  data.structures.buildings.forEach(b => {
+    const match = STRUCTURE.find(([pattern]) => pattern.test(b.name));
+    if (!match) return;
+    const by = b.killer >= 0 ? ' by ' + hero(b.killer) : '';
+    add(b.t, match[2], match[2] === 'structures' ? '#bbbbbb' : '#888888', side(b.team) + ' ' + match[1] + ' destroyed' + by, 1 - b.team);
+  });
+
+  data.camps.forEach(c => {
+    add(c.t, 'camps', '#d98c40', side(c.team) + ' took a ' + c.type.toLowerCase(), c.team);
+  });
+
+  // Map objectives: the game reports several stats for one moment, so they're joined into one line
+  const moments = new Map();
+  // Objective types start with the map's name ('InfernalShrines...'), which the feed doesn't need
+  const mapPrefix = (data.game_map || '').replace(/[^A-Za-z]/g, '');
+  data.objectives.forEach(o => {
+    const key = o.t + ':' + o.team;
+    if (!moments.has(key)) moments.set(key, { t: o.t, team: o.team, parts: [] });
+    const value = o.v >= 0 ? ' ' + o.v.toLocaleString('en-US') : '';
+    const who = o.p >= 0 ? ' (' + hero(o.p) + ')' : '';
+    moments.get(key).parts.push(humanize(o.type.startsWith(mapPrefix) ? o.type.slice(mapPrefix.length) : o.type) + value + who);
+  });
+  moments.forEach(m => add(m.t, 'objectives', teamColor(m.team), side(m.team) + ': ' + m.parts.join('; '), m.team));
+
+  data.team_levels.filter(l => TIERS.includes(l.lvl)).forEach(l => {
+    add(l.t, 'levels', '#f2b134', side(l.team) + ' reached level ' + l.lvl, l.team);
+  });
+
+  data.talents.forEach(pick => {
+    const level = pick.talent?.level ?? [1, 4, 7, 10, 13, 16, 20][pick.tier];
+    add(pick.t, 'talents', teamColor(team(pick.p)), hero(pick.p) + ' took ' + (pick.talent?.title ?? 'a talent') + ' (level ' + level + ')', team(pick.p));
+  });
+
+  // XP lead swaps, from the periodic team XP totals
+  const total = b => b.minion + b.creep + b.structure + b.hero + b.trickle;
+  const byTime = new Map();
+  data.xp_breakdown.forEach(b => {
+    if (!byTime.has(b.t)) byTime.set(b.t, [null, null]);
+    byTime.get(b.t)[b.team] = total(b);
+  });
+  let leader = null;
+  [...byTime.entries()].sort((a, b) => a[0] - b[0]).forEach(([t, [blue, red]]) => {
+    if (blue === null || red === null || blue === red) return;
+    const now = blue > red ? 0 : 1;
+    if (leader !== null && now !== leader) {
+      add(t, 'xp', teamColor(now), side(now) + ' took the XP lead (+' + Math.abs(blue - red).toLocaleString('en-US') + ')', now);
+    }
+    leader = now;
+  });
+
+  data.globe_points.forEach(([t, p]) => {
+    add(t, 'globes', teamColor(team(p)), hero(p) + ' picked up a regen globe', team(p));
+  });
+
+  // Leaving in the last few seconds is just the game ending
+  data.disconnects.forEach(d => {
+    if (d.left >= data.length_s - 10) return;
+    add(d.left, 'disconnects', '#b33616', hero(d.p) + ' disconnected');
+    if (d.rejoined !== null) add(d.rejoined, 'disconnects', '#008b8b', hero(d.p) + ' reconnected (' + clock(d.rejoined - d.left) + ' later)');
+  });
+
+  return events.sort((a, b) => a.t - b.t);
+}
+
+// Runs of times with no gap bigger than FIGHT_GAP
+function chains(times) {
+  const out = [];
+  times.forEach(t => {
+    const last = out[out.length - 1];
+    if (last && t - last[last.length - 1] <= FIGHT_GAP) last.push(t);
+    else out.push([t]);
+  });
+  return out;
+}
+
+// 'InfernalShrinesPunisherKilledWithSiegeDamageDone' -> 'Infernal shrines punisher killed with siege damage done'
+function humanize(type) {
+  const words = type.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2').toLowerCase();
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
 
 // One game played back on the minimap from its deep doc, with team and player panels.
 export default {
@@ -142,6 +314,13 @@ export default {
       playing: false,
       speed: 4,
       selected: null,
+      preparing: false,
+      stopWaiting: false,
+      eventTypes: EVENT_TYPES.map(({ code, name }) => ({ code, name })),
+      // The filter copies defaultValue whenever it changes and emits on every copy, so it gets a fixed
+      // starting list; binding shownTypes there makes the two update each other forever
+      defaultTypes: EVENT_TYPES.filter(type => type.on).map(type => type.code),
+      shownTypes: EVENT_TYPES.filter(type => type.on).map(type => type.code),
       frame: null,
       lastFrame: null,
     };
@@ -149,18 +328,24 @@ export default {
   async mounted() {
     window.addEventListener('keydown', this.onKey);
     try {
-      const response = await this.$axios.get('/DeepAnalytics/Replay/' + this.replayId + '/Data');
+      await this.ensureReady();
+      const response = await this.$axios.get('/Analytics/Match/Single/' + this.replayId + '/Data');
       this.data = response.data;
       this.selected = this.data.players.find(p => p.you)?.idx ?? null;
       this.walkable = await loadWalkable(this.minimap);
       this.rebuild();
     } catch (e) {
-      this.error = 'Could not load this game. Please try again in a minute.';
+      this.error = e.message === 'could not start'
+        ? 'Could not start preparing this replay. Please try again in a minute.'
+        : this.preparing
+          ? 'This replay is taking longer than usual to prepare. Please try again in a few minutes.'
+          : 'Could not load this game. Please try again in a minute.';
     } finally {
       this.loading = false;
     }
   },
   beforeUnmount() {
+    this.stopWaiting = true;
     window.removeEventListener('keydown', this.onKey);
     cancelAnimationFrame(this.frame);
   },
@@ -179,37 +364,22 @@ export default {
     selectedPlayer() {
       return this.data.players.find(p => p.idx === this.selected) || null;
     },
-    hero() {
-      return idx => this.data.players[idx]?.hero ?? '?';
-    },
     // Everything worth a marker or a feed line, in time order
     events() {
-      const events = [];
-      this.data.deaths.forEach(d => {
-        const victim = this.data.players[d.v];
-        const killers = d.k.map(k => this.hero(k)).join(', ');
-        events.push({
-          t: d.t,
-          color: teamColor(1 - (victim?.team ?? 0)),
-          label: (killers || 'Something') + ' killed ' + (victim?.hero ?? '?'),
-        });
-      });
-      this.data.units.filter(u => FALLEN[u.name] && u.d).forEach(u => {
-        events.push({ t: u.d[0], color: '#bbbbbb', label: (u.team === 0 ? 'Blue' : 'Red') + ' ' + FALLEN[u.name] + ' destroyed' });
-      });
-      this.data.camps.forEach(c => {
-        events.push({ t: c.t, color: '#d98c40', label: (c.team === 0 ? 'Blue' : 'Red') + ' took a ' + c.type.toLowerCase() });
-      });
-      this.data.team_levels.filter(l => TIERS.includes(l.lvl)).forEach(l => {
-        events.push({ t: l.t, color: '#f2b134', label: (l.team === 0 ? 'Blue' : 'Red') + ' reached level ' + l.lvl });
-      });
-      return events.sort((a, b) => a.t - b.t);
+      return buildEvents(this.data, this.clock);
+    },
+    shownEvents() {
+      return this.events.filter(e => this.shownTypes.includes(e.type));
     },
     markers() {
-      return this.events;
+      return this.shownEvents;
+    },
+    // Whole game seconds, so the feed is rebuilt when the clock passes a second rather than every frame
+    second() {
+      return Math.floor(this.t);
     },
     feed() {
-      return this.events.filter(e => e.t <= this.t).slice(-12).reverse();
+      return this.shownEvents.filter(e => e.t <= this.second).slice(-60).reverse();
     },
     xpSeries() {
       const total = b => b.minion + b.creep + b.structure + b.hero + b.trickle;
@@ -218,7 +388,12 @@ export default {
     winningTeam() {
       return this.data.players.find(p => p.winner)?.team ?? 0;
     },
-    // Per-minute XP lead and level for each team, in the shape the match page's chart takes
+    // Changes once a game minute, so the chart below only redraws then
+    currentMinute() {
+      return Math.floor(this.t / 60);
+    },
+    // Per-minute XP lead and level for each team, in the shape the match page's chart takes, up to
+    // the current game time; later minutes stay on the axis but empty so the lines grow as it plays
     experience() {
       const byMinute = [{}, {}];
       const total = b => b.minion + b.creep + b.structure + b.hero + b.trickle;
@@ -227,12 +402,13 @@ export default {
       });
       const minutes = [...new Set(Object.keys(byMinute[0]).concat(Object.keys(byMinute[1])).map(Number))].sort((a, b) => a - b);
       const xp = (team, m) => byMinute[team][m]?.xp ?? 0;
+      const upTo = (m, value) => (m <= this.currentMinute ? value : null);
       return {
         x_axis_time: minutes,
-        team_one_differences: minutes.map(m => Math.max(0, xp(0, m) - xp(1, m))),
-        team_two_differences: minutes.map(m => Math.max(0, xp(1, m) - xp(0, m))),
-        team_one_level: minutes.map(m => byMinute[0][m]?.level ?? null),
-        team_two_level: minutes.map(m => byMinute[1][m]?.level ?? null),
+        team_one_differences: minutes.map(m => upTo(m, Math.max(0, xp(0, m) - xp(1, m)))),
+        team_two_differences: minutes.map(m => upTo(m, Math.max(0, xp(1, m) - xp(0, m)))),
+        team_one_level: minutes.map(m => upTo(m, byMinute[0][m]?.level ?? null)),
+        team_two_level: minutes.map(m => upTo(m, byMinute[1][m]?.level ?? null)),
       };
     },
     xpLead() {
@@ -250,6 +426,30 @@ export default {
   },
   methods: {
     teamColor,
+    // A game nobody has processed yet: start it, then wait until it's parsed and loaded
+    async ensureReady() {
+      const url = '/Analytics/Match/Single/' + this.replayId;
+      if ((await this.$axios.get(url + '/Status')).data.ready) return;
+      this.preparing = true;
+      try {
+        await this.$axios.post(url + '/Process');
+      } catch (e) {
+        throw new Error('could not start');
+      }
+      const giveUp = Date.now() + 5 * 60 * 1000;
+      while (!this.stopWaiting) {
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        try {
+          if ((await this.$axios.get(url + '/Status')).data.ready) {
+            this.preparing = false;
+            return;
+          }
+        } catch (e) {
+          // A failed check (a blip, a server restart) is retried on the next one
+        }
+        if (Date.now() > giveUp) throw new Error('timed out');
+      }
+    },
     rebuild() {
       if (!this.data) return;
       this.tracks = markRaw(buildTracks(this.data, { mode: this.mode, walkable: this.walkable }));

@@ -99,10 +99,12 @@ class DeepAnalyticsController extends Controller
         return response()->json($this->queries->tab($tab, (int) $user->blizz_id, (int) $user->region, $filters));
     }
 
+    // Any season game, processed on demand: the page opens straight away and the viewer waits for
+    // the game to be ready, starting its processing if nobody has yet
     public function replay(int $replayID): View
     {
-        $user = $this->allowedUser();
-        abort_unless($this->replays->replay($replayID, (int) $user->blizz_id, (int) $user->region), 404);
+        $this->allowedUser();
+        abort_unless($this->replays->isSeasonGame($replayID), 404);
 
         return view('DeepAnalytics.deepAnalyticsReplay')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
@@ -110,10 +112,26 @@ class DeepAnalyticsController extends Controller
         ]);
     }
 
+    public function replayStatus(int $replayID): JsonResponse
+    {
+        $this->allowedUser();
+        abort_unless($this->replays->isSeasonGame($replayID), 404);
+
+        return response()->json(['ready' => $this->replays->isReady($replayID)]);
+    }
+
+    public function replayProcess(int $replayID): JsonResponse
+    {
+        $this->allowedUser();
+        abort_unless($this->replays->isSeasonGame($replayID), 404);
+
+        return response()->json(['queued' => $this->replays->process($replayID)]);
+    }
+
     public function replayData(int $replayID): JsonResponse
     {
         $user = $this->allowedUser();
-        $replay = $this->replays->replay($replayID, (int) $user->blizz_id, (int) $user->region);
+        $replay = $this->replays->replay($replayID, (int) $user->blizz_id);
         abort_unless($replay, 404);
 
         return response()->json($replay);

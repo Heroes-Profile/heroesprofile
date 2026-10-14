@@ -1,5 +1,24 @@
 <template>
-  <svg :viewBox="viewBox" class="w-full max-h-[75vh] bg-darken rounded select-none" preserveAspectRatio="xMidYMid meet">
+  <!-- The dark card spans the column like the cards around it; the map inside is 75% wide.
+       Wheel zooms around the cursor, dragging pans, and the buttons do the same for touch. -->
+  <div class="relative w-full bg-darken rounded">
+  <div class="absolute top-2 right-2 z-10 flex gap-1">
+    <custom-button :text="'+'" :alt="'Zoom in'" size="small" :ignoreclick="true" @click="zoomBy(1.5)"></custom-button>
+    <custom-button :text="'−'" :alt="'Zoom out'" size="small" :ignoreclick="true" @click="zoomBy(1 / 1.5)"></custom-button>
+    <custom-button v-if="zoom > 1" :text="'Reset'" :alt="'Reset zoom'" size="small" :ignoreclick="true" @click="resetZoom"></custom-button>
+  </div>
+  <svg
+    ref="svg"
+    :viewBox="viewBox"
+    class="block w-3/4 mx-auto max-h-[56vh] select-none touch-none"
+    :class="{ 'cursor-grab': zoom > 1 && !dragging, 'cursor-grabbing': dragging }"
+    preserveAspectRatio="xMidYMid meet"
+    @wheel.prevent="onWheel"
+    @pointerdown="onPointerDown"
+    @pointermove="onPointerMove"
+    @pointerup="onPointerUp"
+    @pointercancel="onPointerUp"
+  >
     <defs>
       <filter v-for="team in [0, 1, -1]" :key="'f' + team" :id="tintId(team)" color-interpolation-filters="sRGB">
         <feColorMatrix type="matrix" :values="tintMatrix(team)"></feColorMatrix>
@@ -69,7 +88,7 @@
     ></rect>
 
     <!-- Heroes -->
-    <g v-for="hero in heroes" :key="'hero' + hero.idx" class="cursor-pointer" @click="$emit('select', hero.idx)">
+    <g v-for="hero in heroes" :key="'hero' + hero.idx" class="cursor-pointer" @click="select(hero.idx)">
       <circle :cx="hero.x" :cy="flip(hero.y)" :r="portrait / 2 + 0.6" :fill="teamColor(hero.team)"></circle>
       <image
         v-if="hero.short_name"
@@ -85,11 +104,12 @@
       <title>{{ hero.label }}</title>
     </g>
   </svg>
+  </div>
 </template>
 
 <script>
-import { positionAt } from './replayTracks.js';
-import { structureIcons, teamColor, tintMatrix } from './mapAssets.js';
+import { positionAt } from '../../utils/replayTracks.js';
+import { structureIcons, teamColor, tintMatrix } from '../../utils/mapAssets.js';
 
 const KIND = { TownTownHallL2: 'fort', TownTownHallL3: 'keep', KingsCore: 'core', VanndarStormpike: 'core', DrekThar: 'core' };
 
@@ -113,12 +133,35 @@ export default {
       pingWindow: 4,
       // Roughly what the game camera shows, in map units
       cameraSize: [36, 20],
+      // 1 = the whole map; centre is in SVG units, null = the map's own centre
+      zoom: 1,
+      centre: null,
+      dragging: false,
+      drag: null,
+      maxZoom: 6,
     };
   },
   computed: {
-    viewBox() {
+    // Only the drawn part of the minimap; the image's transparent border would otherwise take up space
+    // The whole drawn map in SVG units: x, y, width, height
+    fullView() {
       const m = this.minimap;
-      return m ? `0 0 ${m.width} ${m.height}` : '0 0 250 220';
+      if (!m) return [0, 0, 250, 220];
+      const [left, bottom, right, top] = m.view;
+      return [left, this.flip(top), right - left, top - bottom];
+    },
+    // The part of the map in view at the current zoom, kept inside the map
+    view() {
+      const [x, y, w, h] = this.fullView;
+      const vw = w / this.zoom;
+      const vh = h / this.zoom;
+      const [cx, cy] = this.centre ?? [x + w / 2, y + h / 2];
+      const left = Math.min(Math.max(cx - vw / 2, x), x + w - vw);
+      const topEdge = Math.min(Math.max(cy - vh / 2, y), y + h - vh);
+      return [left, topEdge, vw, vh];
+    },
+    viewBox() {
+      return this.view.join(' ');
     },
     top() {
       return this.minimap ? this.minimap.top : 220;
@@ -187,6 +230,67 @@ export default {
   },
   methods: {
     teamColor,
+    // A point on screen in SVG units
+    toMap(clientX, clientY) {
+      const point = this.$refs.svg.createSVGPoint();
+      point.x = clientX;
+      point.y = clientY;
+      const mapped = point.matrixTransform(this.$refs.svg.getScreenCTM().inverse());
+      return [mapped.x, mapped.y];
+    },
+    // Zoom by a factor, keeping `at` (SVG units, default the middle of the view) where it is on screen
+    zoomBy(factor, at = null) {
+      const next = Math.min(this.maxZoom, Math.max(1, this.zoom * factor));
+      if (next === this.zoom) return;
+      const [x, y, w, h] = this.view;
+      const [px, py] = at ?? [x + w / 2, y + h / 2];
+      const [cx, cy] = [x + w / 2, y + h / 2];
+      const keep = this.zoom / next;
+      this.centre = [px + (cx - px) * keep, py + (cy - py) * keep];
+      this.zoom = next;
+      if (next === 1) this.centre = null;
+    },
+    resetZoom() {
+      this.zoom = 1;
+      this.centre = null;
+    },
+    onWheel(event) {
+      this.zoomBy(event.deltaY < 0 ? 1.2 : 1 / 1.2, this.toMap(event.clientX, event.clientY));
+    },
+    onPointerDown(event) {
+      if (this.zoom === 1) return;
+      const [x, y, w, h] = this.view;
+      this.drag = { id: event.pointerId, startX: event.clientX, startY: event.clientY, centre: [x + w / 2, y + h / 2], moved: false };
+    },
+    onPointerMove(event) {
+      if (!this.drag || event.pointerId !== this.drag.id) return;
+      const dx = event.clientX - this.drag.startX;
+      const dy = event.clientY - this.drag.startY;
+      // A small threshold so clicking a hero still selects it
+      if (!this.drag.moved && Math.hypot(dx, dy) < 4) return;
+      if (!this.drag.moved) {
+        this.drag.moved = true;
+        this.dragging = true;
+        this.$refs.svg.setPointerCapture(event.pointerId);
+      }
+      const rect = this.$refs.svg.getBoundingClientRect();
+      const [, , w, h] = this.view;
+      const unitsPerPixel = Math.max(w / rect.width, h / rect.height);
+      this.centre = [this.drag.centre[0] - dx * unitsPerPixel, this.drag.centre[1] - dy * unitsPerPixel];
+    },
+    onPointerUp(event) {
+      if (this.drag && event.pointerId === this.drag.id && this.drag.moved) {
+        this.$refs.svg.releasePointerCapture(event.pointerId);
+        // Swallow the click that ends a drag
+        this.justDragged = true;
+        setTimeout(() => { this.justDragged = false; }, 0);
+      }
+      this.drag = null;
+      this.dragging = false;
+    },
+    select(idx) {
+      if (!this.justDragged) this.$emit('select', idx);
+    },
     tintMatrix,
     flip(y) {
       return this.top - y;

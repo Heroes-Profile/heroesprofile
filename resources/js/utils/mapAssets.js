@@ -1,4 +1,4 @@
-import minimaps from './minimaps.js';
+import minimaps from '../components/DeepAnalytics/minimaps.js';
 
 // Shared by the map views and the replay viewer: which minimap a map uses, and the game's icons.
 
