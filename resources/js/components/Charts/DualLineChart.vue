@@ -16,6 +16,9 @@ export default {
     data: Object,
     dataAttribute: String,  //need to pass in win_rate for seasonal winrate info
     winner: Number,
+    // Optional, by team (0, 1): colours (hex) and names. Without them the winner is teal and the loser pink.
+    teamColors: Array,
+    teamNames: Array,
   },
   data() {
     return {
@@ -34,15 +37,21 @@ export default {
 
 
 
-    let winnerExpLabel = this.winner == 0 ? 'Team 1 Exp. Lead' : 'Team 2 Exp. Lead';
-    let loserExpLabel = this.winner == 1 ?  'Team 1 Exp. Lead' : 'Team 2 Exp. Lead' ;
+    const winnerTeam = this.winner == 0 ? 0 : 1;
+    const teamName = team => (this.teamNames ? this.teamNames[team] : 'Team ' + (team + 1));
+    const colors = this.teamColors
+      ? [this.rgba(this.teamColors[winnerTeam]), this.rgba(this.teamColors[1 - winnerTeam])]
+      : ['75, 192, 192', '255, 99, 132'];
+
+    let winnerExpLabel = teamName(winnerTeam) + ' Exp. Lead';
+    let loserExpLabel = teamName(1 - winnerTeam) + ' Exp. Lead';
 
     let winnerExperienceDataset = this.winner == 0 ? team_one_dataset : team_two_dataset;
     let loserExperienceDataset = this.winner == 1 ?  team_one_dataset : team_two_dataset ;
 
 
-    let winnerLevelLabel = this.winner == 0 ? 'Team 1 Level' : 'Team 2 Level';
-    let loserLevelLabel = this.winner == 1 ?  'Team 1 Level' : 'Team 2 Level' ;
+    let winnerLevelLabel = teamName(winnerTeam) + ' Level';
+    let loserLevelLabel = teamName(1 - winnerTeam) + ' Level';
 
     let winnerLevel = this.winner == 0 ? team_one_level : team_two_level;
     let loserLevel = this.winner == 1 ?  team_one_level : team_two_level ;
@@ -57,8 +66,8 @@ export default {
           {
             label: winnerExpLabel,
             data: winnerExperienceDataset,
-            backgroundColor: 'rgba(75, 192, 192, 0.5)',
-            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: `rgba(${colors[0]}, 0.5)`,
+            borderColor: `rgba(${colors[0]}, 1)`,
             borderWidth: 1,
             pointRadius: 0,
             fill: true,
@@ -67,8 +76,8 @@ export default {
           {
             label: loserExpLabel,
             data: loserExperienceDataset,
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: `rgba(${colors[1]}, 0.5)`,
+            borderColor: `rgba(${colors[1]}, 1)`,
             borderWidth: 1,
             pointRadius: 0,
             fill: true,
@@ -77,8 +86,8 @@ export default {
           {
             label: winnerLevelLabel,
             data: winnerLevel,
-            backgroundColor: 'rgba(75, 192, 192, 1)',
-            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: `rgba(${colors[0]}, 1)`,
+            borderColor: `rgba(${colors[0]}, 1)`,
             borderWidth: 1,
             pointRadius: 0,
             yAxisID: 'y1',
@@ -87,8 +96,8 @@ export default {
           {
             label: loserLevelLabel,
             data: loserLevel,
-            backgroundColor: 'rgba(255, 99, 132, 1)',
-            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: `rgba(${colors[1]}, 1)`,
+            borderColor: `rgba(${colors[1]}, 1)`,
             borderWidth: 1,
             pointRadius: 0,
             yAxisID: 'y1',
@@ -156,6 +165,12 @@ export default {
         chart.data.datasets[i].data = values;
       });
       chart.update('none');
+    },
+  },
+  methods: {
+    // '#315bb6' -> '49, 91, 182'
+    rgba(hex) {
+      return [1, 3, 5].map(i => parseInt(hex.substr(i, 2), 16)).join(', ');
     },
   },
   beforeUnmount() {

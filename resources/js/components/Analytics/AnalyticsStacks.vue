@@ -1,10 +1,7 @@
 <template>
   <div>
     <h2 class="text-xl font-bold mb-2 text-teal">Stacks (experimental)</h2>
-    <p class="text-sm text-gray-light mb-4">
-      How you do with and against premade parties. A team's stack is its biggest party; "facing a stack" means the enemy's
-      biggest party was 3 or more and bigger than yours. Global numbers come from the global sample under the same filters.
-    </p>
+    <infobox class="text-gray-light mb-4" :input="'How you do with and against premade parties. A team\'s stack is its biggest party: a team with a duo and three solo players is a 2-stack. Facing a stack means the enemy\'s biggest party was 3 or more and bigger than your team\'s. Global numbers come from the global sample under the same filters. Win rate differences are in percentage points (pts): 55% against a global 50% is +5 pts. Games where anyone\'s party size isn\'t known yet are left out.'"></infobox>
 
     <p v-if="!hasData" class="text-center text-gray-light">Party data is still being loaded for your games. Check back soon.</p>
 
@@ -19,11 +16,11 @@
       <table class="min-w-0 w-full responsive-table mb-6">
         <thead>
           <tr>
-            <th>Enemy's biggest party</th>
+            <th><span class="inline-flex items-center gap-1">Enemy's biggest party <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">The largest group that queued together on the enemy team. No party means all five queued alone.</p></slot></round-image></span></th>
             <th>Your games</th>
             <th>Your win rate</th>
-            <th>Global win rate</th>
-            <th>Difference</th>
+            <th><span class="inline-flex items-center gap-1">Global win rate <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Win rate of players in the global sample in the same kind of game, under the same filters.</p></slot></round-image></span></th>
+            <th><span class="inline-flex items-center gap-1">Difference <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Your win rate minus the global win rate, in percentage points. Positive means you win more than players overall in these games.</p></slot></round-image></span></th>
           </tr>
         </thead>
         <tbody>
@@ -37,7 +34,7 @@
         </tbody>
       </table>
 
-      <h3 class="text-lg font-bold mb-1">Stack advantage</h3>
+      <h3 class="text-lg font-bold mb-1"><span class="inline-flex items-center gap-1">Stack advantage <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Win rate by how much bigger the enemy's biggest party was than your team's. Gaps beyond 3 count as ±3.</p></slot></round-image></span></h3>
       <multi-series-chart
         class="max-w-[1200px] mx-auto mb-2"
         type="bar"
@@ -48,9 +45,9 @@
           { label: 'Global', data: advantage('global'), color: 'yellow' },
         ]"
       ></multi-series-chart>
-      <p class="text-center text-sm mb-6 text-gray-light">Enemy's biggest party minus your team's. +3 is, say, a 5-stack against your duo.</p>
+      <p class="text-center text-sm mb-6 text-gray-light">Enemy's biggest party minus your team's. +3 is, say, a 5-stack against your duo; -2 is your 3-stack against an all-solo team. Even means both teams' biggest parties were the same size.</p>
 
-      <h3 class="text-lg font-bold mb-1">Your party size</h3>
+      <h3 class="text-lg font-bold mb-1"><span class="inline-flex items-center gap-1">Your party size <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">The size of the party you queued in yourself, not your team's biggest party. Global compares players who queued in the same size of party.</p></slot></round-image></span></h3>
       <table class="min-w-0 w-full responsive-table mb-6">
         <thead>
           <tr>
@@ -58,7 +55,7 @@
             <th>Your games</th>
             <th>Your win rate</th>
             <th>Global win rate</th>
-            <th>Difference</th>
+            <th><span class="inline-flex items-center gap-1">Difference <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Your win rate minus the global win rate, in percentage points. Positive means you win more than players overall in these games.</p></slot></round-image></span></th>
           </tr>
         </thead>
         <tbody>
@@ -77,16 +74,17 @@
         Global teams that faced a bigger enemy stack of 3+: how the teams that won played compared with the teams that lost
         ({{ beatTeams.toLocaleString('en-US') }} teams). These are differences in what winning teams did, not proof that each one causes the win.
       </p>
+      <infobox class="text-gray-light mb-2" :input="'Each number is a team average per player (per game, or a share where shown with %). Difference is how much better the winners were, relative to the losers: winners dying 30% less than losers shows as +30%. Only behaviours where the winners did better are listed, biggest gap first. The last two columns are your own averages in games facing a stack and in all your other games, so you can see where your play slips. The winner and loser columns always use every hero, even with a hero filter, because they need a large sample; your own columns follow the filters.'"></infobox>
       <table class="min-w-0 w-full responsive-table mb-6">
         <thead>
           <tr>
             <th>Suggestion</th>
-            <th>Teams that won</th>
-            <th>Teams that lost</th>
-            <th>Difference</th>
-            <th>Confidence</th>
-            <th>You vs stacks</th>
-            <th>You otherwise</th>
+            <th><span class="inline-flex items-center gap-1">Teams that won <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Average for teams that beat a bigger enemy stack.</p></slot></round-image></span></th>
+            <th><span class="inline-flex items-center gap-1">Teams that lost <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Average for teams that lost to a bigger enemy stack.</p></slot></round-image></span></th>
+            <th><span class="inline-flex items-center gap-1">Difference <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">How much better the winners were than the losers, as a percent of the losers' value.</p></slot></round-image></span></th>
+            <th><span class="inline-flex items-center gap-1">Confidence <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">High: gap of 20%+ with at least 300 winning and 300 losing teams. Medium: 10%+ with at least 100 each. Low: anything less, so treat it as a hint.</p></slot></round-image></span></th>
+            <th><span class="inline-flex items-center gap-1">You vs stacks <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Your own average in games where the enemy's biggest party was 3+ and bigger than your team's.</p></slot></round-image></span></th>
+            <th><span class="inline-flex items-center gap-1">You otherwise <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Your own average in all your other games, including ones where your team had the bigger or equal stack.</p></slot></round-image></span></th>
           </tr>
         </thead>
         <tbody>

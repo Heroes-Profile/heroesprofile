@@ -33,5 +33,10 @@ export default {
     mapName(id) {
       return (this.maps || {})[id] || 'Map ' + id;
     },
+    // The site's filters name maps; the analytics data uses map ids
+    mapId(name) {
+      const entry = Object.entries(this.maps || {}).find(([, n]) => n === name);
+      return entry ? Number(entry[0]) : null;
+    },
   },
 };
