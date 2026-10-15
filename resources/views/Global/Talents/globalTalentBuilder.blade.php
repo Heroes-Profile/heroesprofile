@@ -23,6 +23,7 @@
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :urlparameters="{{ json_encode($urlparameters) }}"
     :talentbuilderstyle="{{ json_encode($talentbuilderstyle) }}"
+    :talentbuilderload="{{ json_encode($talentbuilderload) }}"
     :authenticated="{{ json_encode(auth()->check()) }}"
 
   >

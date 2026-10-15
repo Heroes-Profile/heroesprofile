@@ -63,6 +63,7 @@
           <span @click="resetTalentData" class="mt-auto ml-auto link text-sm">Reset Talent data</span>
         </span>
         <span class="flex items-center gap-4">
+          <tab-button :tab1text="'Auto Load'" :tab2text="'On Filter'" :ignoreclick="true" @tab-click="loadStyleSelected" :overridedefaultside="localLoad === 'filter' ? 'right' : 'left'"></tab-button>
           <tab-button v-if="!isMobile" :tab1text="'Vertical'" :tab2text="'Horizontal'" :ignoreclick="true" @tab-click="layoutStyleSelected" :overridedefaultside="effectiveStyle === 'horizontal' ? 'right' : 'left'"></tab-button>
           <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
         </span>
@@ -194,6 +195,7 @@
       patreonUser: Boolean,
       urlparameters: Object,
       talentbuilderstyle: { type: String, default: 'vertical' },
+      talentbuilderload: { type: String, default: 'auto' },
       authenticated: Boolean,
     },
     data(){
@@ -233,11 +235,13 @@
         showReplayList: false,
         isMobile: window.innerWidth < 768,
         localStyle: 'vertical',
+        localLoad: 'auto',
         showPatchNotes: false,
       }
     },
     created(){
       this.localStyle = this.talentbuilderstyle;
+      this.localLoad = this.talentbuilderload;
       this.selectedHero = this.inputhero;
       this.timeframe = this.defaulttimeframe;
       this.gametype = this.gametypedefault;
@@ -285,6 +289,14 @@
 
         if (this.authenticated) {
           this.$axios.post('/api/v1/profile/save/settings', { talentbuilderstyle: this.localStyle }).catch(() => {});
+        }
+      },
+      loadStyleSelected(side) {
+        this.localLoad = side === 'right' ? 'filter' : 'auto';
+        Cookies.set('talentbuilderload', this.localLoad, { expires: 365, path: '/' });
+
+        if (this.authenticated) {
+          this.$axios.post('/api/v1/profile/save/settings', { talentbuilderload: this.localLoad }).catch(() => {});
         }
       },
       async getData(){
@@ -374,7 +386,7 @@
           this.isLoading = false;
         }
       },
-      resetTalentData() {
+      clearTalentSelections() {
         this.clickedData = {
           1: null,
           4: null,
@@ -384,7 +396,12 @@
           16: null,
           20: null,
         };
-        this.getData();
+      },
+      resetTalentData() {
+        this.clearTalentSelections();
+        if (this.localLoad === 'auto') {
+          this.getData();
+        }
       },
       cancelAxiosRequest() {
         if (this.cancelTokenSource) {
@@ -396,7 +413,9 @@
       },
       talentClicked(talent, index, level){
         this.clickedData[level] = talent.talent_id;
-        this.getData();
+        if (this.localLoad === 'auto') {
+          this.getData();
+        }
       },
 
       clickedHero(hero) {
@@ -475,6 +494,10 @@
       },
       removeLevelSelections(level){
         this.clickedData[level] = null;
+
+        if (this.localLoad === 'filter') {
+          return;
+        }
 
         this.data = null;
         this.replays = null;
@@ -577,7 +600,8 @@
 
           //Have to use setTimeout to make this occur on next tic to allow header info/text to update properly.  
           setTimeout(() => {
-            this.resetTalentData();
+            this.clearTalentSelections();
+            this.getData();
           }, .25);
         }
       },

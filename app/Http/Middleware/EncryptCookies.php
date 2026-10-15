@@ -21,6 +21,7 @@ class EncryptCookies extends Middleware
         'darkmode',
         'darkmode_pending',
         'talentbuilderstyle',
+        'talentbuilderload',
         'playerhistorytable',
         'talentStatsLayout',
     ];

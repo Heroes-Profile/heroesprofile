@@ -1272,6 +1272,17 @@ class GlobalDataService
         return $value === 'horizontal' ? 'horizontal' : 'vertical';
     }
 
+    public function getTalentBuilderLoad(): string
+    {
+        $value = Auth::check()
+            ? Auth::user()->userSettings->firstWhere('setting', 'talentbuilderload')?->value
+            : null;
+
+        $value ??= request()->cookie('talentbuilderload');
+
+        return $value === 'filter' ? 'filter' : 'auto';
+    }
+
     /**
      * Game types preselected on player pages: the user's saved default, otherwise every type.
      * Never includes custom games; match history only offers them as an option.
