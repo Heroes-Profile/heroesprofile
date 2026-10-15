@@ -31,7 +31,7 @@ class EnsureBattlenetAuthenticated
         }
 
         if (! Auth::check()) {
-            return redirect('/Authenticate/Battlenet');
+            return redirect()->guest('/Authenticate/Battlenet');
         }
 
         return $next($request);
