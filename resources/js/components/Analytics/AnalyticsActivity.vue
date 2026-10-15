@@ -1,6 +1,15 @@
 <template>
   <div>
-    <h2 class="text-xl font-bold mb-2 text-teal">Activity over the game</h2>
+    <infobox class="mb-4" :input="'Everything on this tab comes from the orders saved in your replays: each ability key press, attack order and talent pick, with the game time it happened. Replays don\'t record what happened on screen, such as each auto-attack or whether an ability hit. Global is a sample of other players\' games under the same filters.'"></infobox>
+
+    <h2 class="text-xl font-bold mb-2 text-teal">
+      <span class="inline-flex items-center gap-1">
+        Activity over the game
+        <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+          <slot><p class="text-sm p-2 text-left">Average number of ability, attack and stop orders given in each game minute, over the games still running at that minute. Late minutes come from only a few long games, so they jump around more.</p></slot>
+        </round-image>
+      </span>
+    </h2>
     <multi-series-chart
       class="max-w-[1200px] mx-auto mb-2"
       :labels="minutes.map(m => m + ' min')"
@@ -12,7 +21,14 @@
     ></multi-series-chart>
     <p class="text-center text-sm mb-8 text-gray-light">Counts ability and attack orders, not mouse movement.</p>
 
-    <h2 class="text-xl font-bold mb-2 text-teal">When you pick talents</h2>
+    <h2 class="text-xl font-bold mb-2 text-teal">
+      <span class="inline-flex items-center gap-1">
+        When you pick talents
+        <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+          <slot><p class="text-sm p-2 text-left">Average game time when the talent for each tier was chosen. That's when you clicked the talent, which can be later than when your team reached the level.</p></slot>
+        </round-image>
+      </span>
+    </h2>
     <multi-series-chart
       class="max-w-[1200px] mx-auto mb-2"
       type="bar"
@@ -26,6 +42,7 @@
     <p class="text-center text-sm mb-8 text-gray-light">Average game time of each pick. Choose a hero in the filters to compare like for like.</p>
 
     <h2 class="text-xl font-bold mb-2 text-teal">Ability usage</h2>
+    <infobox class="mb-4" :input="'Presses count every time you pressed an ability\'s key or gave that order. Casts estimate how many times you actually used it: a press within 2 seconds of the previous press is the same cast, and for single-charge abilities with a known cooldown, a press before 60% of the base cooldown has passed isn\'t a new cast. Attack shows the difference best: you give hundreds of attack orders a game, but casts roughly count separate bursts of attacking, since the auto-attacks themselves aren\'t in replays. Per game figures average over all your games on that hero, including games where you never pressed it.'"></infobox>
     <p v-if="!abilityHeroes.length" class="text-center text-gray-light">No ability data for these filters yet.</p>
     <div v-for="hero in abilityHeroes" :key="hero.id" class="max-w-[1200px] mx-auto mb-6">
       <h3 class="text-lg font-bold mb-1">{{ heroName(hero.id) }} <span class="text-sm text-gray-light">({{ hero.games }} games)</span></h3>
@@ -33,13 +50,48 @@
         <thead>
           <tr>
             <th>Ability</th>
-            <th>Presses per game</th>
-            <th>Casts per game</th>
-            <th>Global presses</th>
+            <th>
+              <span class="inline-flex items-center gap-1">
+                Presses per game
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <slot><p class="text-sm p-2 text-left">Every key press or order for this ability, averaged over all your games on this hero. Pressing the key again while it's on cooldown still adds a press.</p></slot>
+                </round-image>
+              </span>
+            </th>
+            <th>
+              <span class="inline-flex items-center gap-1">
+                Casts per game
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <slot><p class="text-sm p-2 text-left">Presses grouped into estimated uses: repeats within 2 seconds count once, and presses while a single-charge ability is likely still on cooldown don't count. Abilities whose cooldown gets reduced or reset can be undercounted.</p></slot>
+                </round-image>
+              </span>
+            </th>
+            <th>
+              <span class="inline-flex items-center gap-1">
+                Global presses
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <slot><p class="text-sm p-2 text-left">The global columns are the same figures from a sample of other players' games on this hero, under the same filters.</p></slot>
+                </round-image>
+              </span>
+            </th>
             <th>Global casts</th>
-            <th>Games used in</th>
+            <th>
+              <span class="inline-flex items-center gap-1">
+                Games used in
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <slot><p class="text-sm p-2 text-left">Share of your games on this hero where you pressed this ability at least once.</p></slot>
+                </round-image>
+              </span>
+            </th>
             <th>Global games used in</th>
-            <th>First use</th>
+            <th>
+              <span class="inline-flex items-center gap-1">
+                First use
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <slot><p class="text-sm p-2 text-left">Average game time of your first press, over the games where you used it.</p></slot>
+                </round-image>
+              </span>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -68,11 +120,18 @@
                 <template v-else-if="timeline">
                   <multi-series-chart
                     :labels="timelineMinutes.map(m => m + ' min')"
-                    :yLabel="'Per game'"
-                    :y2Label="'Deaths / takedowns per game'"
+                    :yLabel="'Per game, in that minute'"
+                    :y2Label="'Deaths / takedowns per game, in that minute'"
                     :series="timelineSeries"
                   ></multi-series-chart>
-                  <p class="text-center text-sm text-gray-light">{{ row.name }} over the game. Click a legend item to show or hide it, e.g. your deaths and takedowns.</p>
+                  <div class="text-center text-sm text-gray-light">
+                    <span class="inline-flex items-center gap-1">
+                      {{ row.name }} over the game. Click a legend item to show or hide it, e.g. your deaths and takedowns.
+                      <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                        <slot><p class="text-sm p-2 text-left">Per game is the average count in that game minute, over your games on this hero still running at that minute; games where you didn't press it count as 0. Your lines stop once fewer than 5 of your games were still running at that minute, since one or two games aren't a fair average. Deaths and takedowns use the right axis.</p></slot>
+                      </round-image>
+                    </span>
+                  </div>
                 </template>
               </td>
             </tr>
@@ -81,13 +140,16 @@
       </table>
     </div>
     <p class="text-center text-sm mb-8 text-gray-light">
-      Click an ability for its usage over the game. Presses count every key press; casts drop repeat presses within 2 seconds and presses while the ability is still on its base cooldown (with slack for cooldown reduction), so abilities that reset early can be undercounted.<span v-if="moreHeroes"> Showing your {{ abilityHeroes.length }} most played heroes; choose a hero in the filters to see another.</span>
+      Click an ability for its usage over the game.<span v-if="moreHeroes"> Showing your {{ abilityHeroes.length }} most played heroes; choose a hero in the filters to see another.</span>
     </p>
   </div>
 </template>
 
 <script>
 import analytics from '../../utils/analyticsFormat.js';
+
+// Fewest of your games still running for a minute to be drawn on the per-ability graph
+const MIN_TIMELINE_GAMES = 5;
 
 export default {
   name: 'AnalyticsActivity',
@@ -144,9 +206,11 @@ export default {
       return (this.timeline || []).some(r => Number(r.presses) > 0);
     },
     timelineSeries() {
+      // Your lines stop where fewer than MIN_TIMELINE_GAMES of your games were still running: one or two games aren't an average
       const line = (who, field) => this.timelineMinutes.map(m => {
         const row = this.timeline.find(r => r.who === who && r.minute === m);
-        return row && row[field] !== null ? this.round(row[field], 2) : null;
+        if (!row || row[field] === null || (who === 'you' && Number(row.games) < MIN_TIMELINE_GAMES)) return null;
+        return this.round(row[field], 2);
       });
       return [
         { label: 'Your presses', data: line('you', 'presses'), color: 'teal' },

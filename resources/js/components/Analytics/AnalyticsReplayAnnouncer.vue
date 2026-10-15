@@ -30,7 +30,10 @@
       </div>
     </div>
 
-    <div class="mt-2 text-xs text-gray-light">
+    <div class="mt-2 text-xs text-gray-light inline-flex items-center gap-1">
+      <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+        <slot><p class="text-sm p-2 text-left">Each team's chance to win at this moment, from team levels, XP, forts and keeps destroyed, heroes dead right now and takedowns. It stays 50/50 until the gates open; "Why" lists what favours the leading team most.</p></slot>
+      </round-image>
       {{ source === 'heuristic'
         ? 'Estimated from levels, XP, structures and deaths; not yet trained on past games.'
         : 'Win chance from a model trained on ' + model.games.toLocaleString('en-US') + ' games; the favourite wins about ' + Math.round(model.accuracy * 10) + ' times in 10.' }}

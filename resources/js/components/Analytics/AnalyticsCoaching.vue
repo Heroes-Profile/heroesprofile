@@ -1,12 +1,8 @@
 <template>
   <div>
     <h2 class="text-xl font-bold mb-2 text-teal">Coaching (experimental)</h2>
-    <p class="text-sm text-gray-light mb-4">
-      Patterns from your processed games compared with the global sample. Each signal has two ratings:
-      <b>Signal</b> is how strongly that behaviour relates to winning across all players (it updates nightly as more games come in),
-      and <b>Your sample</b> is how many of your games back your number. Click a row for recent examples, each linked into the replay viewer.
-      <span v-if="computedAt">Updated {{ computedAt }}.</span>
-    </p>
+    <infobox class="mb-2" :input="'Coaching looks for 14 habits (signals) in your processed games, like dying after a fight is already lost or walking without mounting, and compares your rate with other players under the same filters. Each signal has two ratings. Signal says how strongly that habit goes with winning or losing across all players: High means strong evidence, Medium some, Low not enough yet. Your sample says how many of your games back your number: High is 30+, Medium 10-29, Low under 10. The tips focus on signals that are both rated Medium or High and where most players do better than you. Click any signal for recent examples, each linked into the replay viewer.'"></infobox>
+    <p v-if="computedAt" class="text-sm text-gray-light mb-4">Signal ratings updated {{ computedAt }}.</p>
 
     <p v-if="!mine.games" class="text-center text-gray-light">No coaching data for these filters yet. It's built nightly from processed games.</p>
 
@@ -23,10 +19,7 @@
         <h3 class="text-lg font-bold">Are you improving?</h3>
         <tab-button :tab1text="'Last 3 games'" :tab2text="'Last 5 games'" :ignoreclick="true" @tab-click="setRecentCount" :overridedefaultside="recentCount === 3 ? 'left' : 'right'"></tab-button>
       </div>
-      <p class="text-sm text-gray-light mb-2">
-        Your last {{ recentCount }} games compared with your earlier games under these filters. A change only counts once it is bigger than your
-        usual game-to-game swing; with so few games, most small changes are noise. New games appear here the day after they are processed.
-      </p>
+      <infobox class="mb-2" :input="'Your average over your last ' + recentCount + ' games compared with your average over your earlier games under these filters, for each signal rated Medium or High. Improving or Worse only shows when the change is bigger than your usual swing, worked out from how much your earlier games vary; anything smaller is About the same, because a few games are mostly noise. Hover a verdict to see that swing. Signals marked (working on) are the ones the summary above tells you to work on. Click a signal for a chart of up to your last 20 games. New games appear here the day after they are processed.'"></infobox>
       <p v-if="recentGames.length < recentCount + 5" class="text-center text-gray-light mb-8">
         Not enough games yet: this needs at least {{ recentCount + 5 }} processed games under these filters (you have {{ recentGames.length }}).
       </p>
@@ -36,8 +29,22 @@
             <th>Signal</th>
             <th>Earlier games</th>
             <th>Last {{ recentCount }}</th>
-            <th>Change</th>
-            <th>Verdict</th>
+            <th>
+              <span class="inline-flex items-center gap-1">
+                Change
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <slot><p class="text-sm p-2 text-left">Last {{ recentCount }} minus earlier games. Whether up is good depends on the signal: for deaths and missed fights, a minus is better.</p></slot>
+                </round-image>
+              </span>
+            </th>
+            <th>
+              <span class="inline-flex items-center gap-1">
+                Verdict
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <slot><p class="text-sm p-2 text-left">Improving or Worse when the change is bigger than your usual swing for {{ recentCount }} games (your earlier games' spread divided by the square root of {{ recentCount }}). Otherwise About the same.</p></slot>
+                </round-image>
+              </span>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -67,15 +74,51 @@
       </table>
 
       <h3 class="text-lg font-bold mb-1">All signals</h3>
+      <infobox class="mb-2" :input="'Every signal, whatever its rating. Shares are a percentage of chances (fights, objectives, travel time); counts are per game; Camp duty is in percentage points above or below the norm for your hero. Hover a rating for the numbers behind it, or click a signal for details and examples.'"></infobox>
       <table class="min-w-0 w-full responsive-table">
         <thead>
           <tr>
             <th>Signal</th>
-            <th>You</th>
-            <th>Global median</th>
-            <th>Standing</th>
-            <th>Signal</th>
-            <th>Your sample</th>
+            <th>
+              <span class="inline-flex items-center gap-1">
+                You
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <slot><p class="text-sm p-2 text-left">Your rate across all your processed games under these filters.</p></slot>
+                </round-image>
+              </span>
+            </th>
+            <th>
+              <span class="inline-flex items-center gap-1">
+                Global median
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <slot><p class="text-sm p-2 text-left">The middle player in the global sample under these filters: half of players are above it, half below. Click a signal to see who it is compared with.</p></slot>
+                </round-image>
+              </span>
+            </th>
+            <th>
+              <span class="inline-flex items-center gap-1">
+                Standing
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <slot><p class="text-sm p-2 text-left">Where you rank among those players, taking into account which way is better for that signal (fewer deaths, more presence).</p></slot>
+                </round-image>
+              </span>
+            </th>
+            <th>
+              <span class="inline-flex items-center gap-1">
+                Signal
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <slot><p class="text-sm p-2 text-left">How strongly this habit goes with winning or losing across all players, re-checked nightly. High: it passes all three tests (linked to win rate beyond deaths, a 3+ point win-rate effect when it happens in the first 10 minutes, and consistent from game to game). Medium: one of the first two. Low: neither yet.</p></slot>
+                </round-image>
+              </span>
+            </th>
+            <th>
+              <span class="inline-flex items-center gap-1">
+                Your sample
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <slot><p class="text-sm p-2 text-left">How many of your games back your number. High: 30+, Medium: 10-29, Low: under 10. Some signals only count certain games (maps with bushes, games with mounts, strong camp heroes).</p></slot>
+                </round-image>
+              </span>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -98,7 +141,14 @@
             <tr v-if="selected === signal.key">
               <td colspan="6">
                 <p v-if="signal.caveat" class="text-sm text-gray-light mb-2">{{ signal.caveat }}</p>
-                <p class="text-sm text-gray-light mb-2">{{ evidenceText(signal) }}</p>
+                <div class="text-sm text-gray-light mb-2">
+                  <span class="inline-flex items-center gap-1">
+                    {{ evidenceText(signal) }}
+                    <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                      <slot><p class="text-sm p-2 text-left">Early-game effect: how much win rate changes when this happens in the first 10 minutes, in games that were equally close on deaths at that point (3+ points counts). Link beyond deaths: how closely players' rate tracks their win rate once deaths per game are accounted for (r from -1 to 1; 0.15+ in either direction counts). Habit consistency: how similar a player's odd and even games are (0.2+ counts).</p></slot>
+                    </round-image>
+                  </span>
+                </div>
                 <p v-if="signal.basis" class="text-sm text-gray-light mb-2">Compared with {{ signal.basis }}.</p>
                 <p v-if="!examples(signal).length" class="text-sm">No recent examples.</p>
                 <table v-if="examples(signal).length" class="min-w-0 w-full responsive-table">
@@ -245,6 +295,8 @@ export default {
           value,
           median: percentiles.length ? percentiles[50] : null,
           percentile: value === null || !percentiles.length ? null : percentiles.filter(p => p < value).length,
+          // Percentile points above your value; points equal to it are ties, counted neither way
+          above: value === null || !percentiles.length ? null : percentiles.filter(p => p > value).length,
           confidence: stat.confidence || 'Low',
           stat,
           sampleGames,
@@ -349,15 +401,25 @@ export default {
       }
       return this.round(value, 2) + ' / game';
     },
-    // Share of players (10+ games) doing better than you on this signal
+    // Share of players doing better than you on this signal (ties count neither way)
     playersAhead(signal) {
       const below = Math.max(0, Math.min(100, signal.percentile));
-      return signal.better === 'lower' ? below : 100 - below;
+      const above = Math.max(0, Math.min(100, signal.above));
+      return signal.better === 'lower' ? below : above;
     },
-    // Whichever way reads naturally: "Better than 70% of players" or "61% of players are better than you"
+    playersBehind(signal) {
+      const below = Math.max(0, Math.min(100, signal.percentile));
+      const above = Math.max(0, Math.min(100, signal.above));
+      return signal.better === 'lower' ? above : below;
+    },
+    // Whichever way reads naturally: "Better than 70% of players" or "61% of players are better than you",
+    // plus the tied share when many players share your value (e.g. lots of players at 0)
     standingText(signal) {
       const ahead = this.playersAhead(signal);
-      return ahead > 50 ? ahead + '% of players are better than you' : 'Better than ' + (100 - ahead) + '% of players';
+      const behind = this.playersBehind(signal);
+      const same = Math.max(0, 100 - ahead - behind);
+      const text = ahead > 50 ? ahead + '% of players are better than you' : 'Better than ' + behind + '% of players';
+      return same >= 10 ? text + ', ' + same + '% the same' : text;
     },
     evidenceText(signal) {
       const s = signal.stat || {};

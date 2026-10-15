@@ -52,7 +52,7 @@ export function loadWalkable(minimap) {
       const alpha = context.getImageData(0, 0, img.width, img.height).data;
       const scale = img.width / minimap.width;
       resolve((x, y) => {
-        const px = Math.round(x * scale);
+        const px = Math.round((x - (minimap.left || 0)) * scale);
         const py = Math.round((minimap.top - y) * scale);
         return px >= 0 && py >= 0 && px < img.width && py < img.height && alpha[(py * img.width + px) * 4 + 3] > 40;
       });
