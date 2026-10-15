@@ -232,7 +232,7 @@
         <div class="bg-darken p-4">
           <h3 class="font-semibold mb-4">6. Turn It On in Twitch</h3>
           <ol class="text-sm list-decimal list-inside space-y-1">
-            <li>In your Twitch Creator Dashboard, open <strong>Extensions</strong> and search for <strong>Heroes Profile</strong>.</li>
+            <li>Open the <a href="https://dashboard.twitch.tv/extensions/chu7yxvts476q2ys0pben0ij8iagsk-2.0.0" target="_blank" rel="noopener" class="link">Heroes Profile extension on Twitch</a>, or in your Twitch Creator Dashboard open <strong>Extensions</strong> and search for <strong>Heroes Profile</strong>.</li>
             <li>Install it and activate it as a <strong>Video Component</strong>.</li>
             <li>In the Heroes Profile Uploader, paste your uploader key and tick <strong>Twitch Extension</strong>.</li>
             <li>Start a game. Your viewers will see the lobby, heroes and talents as they are picked.</li>

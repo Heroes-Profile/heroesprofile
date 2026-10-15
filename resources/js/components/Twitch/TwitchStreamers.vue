@@ -77,6 +77,7 @@
         </p>
         <p>
           <a href="/Api/Account#twitch" class="link">Set it up</a> ·
+          <a href="https://dashboard.twitch.tv/extensions/chu7yxvts476q2ys0pben0ij8iagsk-2.0.0" target="_blank" rel="noopener" class="link">Extension on Twitch</a> ·
           <a href="/Twitch/Guidelines" class="link">Streamer code of conduct</a>
         </p>
       </div>
