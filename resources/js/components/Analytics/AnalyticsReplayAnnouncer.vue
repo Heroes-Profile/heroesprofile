@@ -10,28 +10,17 @@
       <div class="transition-all" :style="{ width: 100 * (1 - chance) + '%', background: teamColor(1) }"></div>
     </div>
 
-    <!-- Comic style: the logo is the announcer, its latest line in a speech bubble pointing at it -->
-    <div class="flex items-center gap-4 mt-3">
-      <img
-        src="/images/logo/heroesprofilelogo.png"
-        alt="Heroes Profile"
-        title="Heroes Profile"
-        class="w-14 h-auto shrink-0 announcer-logo"
-        :class="{ talking }"
-        @animationend="talking = false"
-      >
-      <!-- Always two lines tall so the page never shifts; longer lines are cut, full text on hover -->
-      <div class="speech-bubble flex-1" :class="{ pop: talking }" :title="said.length ? fullText(said[0]) : ''">
-        <div class="line-clamp-2">
-          <template v-if="said.length">
-            <span class="font-mono bubble-time mr-2">{{ clock(said[0].t) }}</span>
-            <span class="font-bold">{{ said[0].text }}</span>
-            <span v-if="said[0].why" class="bubble-why ml-1">Why: {{ said[0].why }}.</span>
-          </template>
-          <span v-else>Waiting for the gates to open.</span>
-        </div>
+    <!-- Always two lines tall so the page never shifts; longer lines are cut, full text on hover -->
+    <analytics-speech-bubble class="mt-3" :talking="talking" :two-lines="true" :title="said.length ? fullText(said[0]) : ''" @done="talking = false">
+      <div class="line-clamp-2">
+        <template v-if="said.length">
+          <span class="font-mono bubble-time mr-2">{{ clock(said[0].t) }}</span>
+          <span class="font-bold">{{ said[0].text }}</span>
+          <span v-if="said[0].why" class="bubble-why ml-1">Why: {{ said[0].why }}.</span>
+        </template>
+        <span v-else>Waiting for the gates to open.</span>
       </div>
-    </div>
+    </analytics-speech-bubble>
 
     <!-- The two lines before it: one line each, and the space is kept even before there are two -->
     <div class="mt-2 ml-[4.5rem] h-8 text-xs opacity-60">
@@ -356,73 +345,8 @@ export default {
 </script>
 
 <style scoped>
-.announcer-logo.talking {
-  animation: announcer-talk 1.1s ease-in-out;
-}
-
-/* A comic speech bubble with its tail pointing left at the logo */
-.speech-bubble {
-  position: relative;
-  background: #f4f4f8;
-  color: #111;
-  border: 2px solid #111;
-  border-radius: 1rem;
-  padding: 0.6rem 0.9rem;
-  line-height: 1.4;
-  /* Exactly two lines plus padding and border, whatever the text */
-  height: calc(2.8em + 1.2rem + 4px);
-  display: flex;
-  align-items: center;
-}
-
-.speech-bubble::before,
-.speech-bubble::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  border-style: solid;
-}
-
-/* The tail's outline, then its fill on top */
-.speech-bubble::before {
-  left: -14px;
-  border-width: 9px 14px 9px 0;
-  border-color: transparent #111 transparent transparent;
-}
-
-.speech-bubble::after {
-  left: -10px;
-  border-width: 7px 11px 7px 0;
-  border-color: transparent #f4f4f8 transparent transparent;
-}
-
 .bubble-time,
 .bubble-why {
   color: #555;
-}
-
-.speech-bubble.pop {
-  animation: bubble-pop 0.3s ease-out;
-}
-
-@keyframes bubble-pop {
-  0% { transform: scale(0.92); opacity: 0.6; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes announcer-talk {
-  0% { transform: translateY(0) rotate(0); }
-  20% { transform: translateY(-3px) rotate(-5deg); }
-  45% { transform: translateY(0) rotate(4deg); }
-  70% { transform: translateY(-2px) rotate(-2deg); }
-  100% { transform: translateY(0) rotate(0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .announcer-logo.talking,
-  .speech-bubble.pop {
-    animation: none;
-  }
 }
 </style>
