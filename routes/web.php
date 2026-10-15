@@ -117,6 +117,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/Upload', [UploadController::class, 'show']);
     Route::get('/Upload/Embed', [UploadController::class, 'embed']);
     Route::get('/Upload/Widget', [UploadController::class, 'widget']);
+    Route::get('/Upload/Uploader', [UploadController::class, 'uploader']);
 
     // The match page's download button. Battlenet auth, a per-person daily limit,
     // and no API key — the public API's replays/download is a separate thing for

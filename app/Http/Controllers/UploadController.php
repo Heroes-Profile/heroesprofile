@@ -57,6 +57,14 @@ class UploadController extends Controller
         ]);
     }
 
+    /** The desktop uploader: what's new, moving from the old one, and rank reading. */
+    public function uploader()
+    {
+        return view('upload-uploader')->with([
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+        ]);
+    }
+
     // Built from config so it stays correct on either mount.
     private function uploadUrl(string $source): string
     {

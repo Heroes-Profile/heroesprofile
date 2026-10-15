@@ -11,8 +11,8 @@
         <h2 class="text-2xl mb-4">Replay Uploader</h2>
 
         <img
-          src="/images/miscellaneous/windowsUploader.PNG"
-          alt="The Heroes Profile replay uploader running on Windows"
+          src="/images/miscellaneous/uploader.png"
+          alt="The Heroes Profile replay uploader"
           class="w-full mb-4"
         />
 
@@ -21,31 +21,17 @@
           post-match analysis. Games uploaded this way count towards the leaderboards.
         </p>
 
-        <div class="mb-4 flex flex-wrap gap-2">
-          <custom-button
-            :href="windowsInstaller"
-            text="Download for Windows"
-            alt="Download the Windows replay uploader"
-            color="teal"
-            :targetblank="true"
-          ></custom-button>
-          <custom-button
-            :href="linuxAppImage"
-            text="Download for Linux"
-            alt="Download the Linux replay uploader (AppImage)"
-            color="teal"
-            :targetblank="true"
-          ></custom-button>
-        </div>
-
         <p class="text-sm mb-4">
-          Linux is also available as a <a class="link" :href="linuxTarball" target="_blank" rel="noopener">tar.gz</a>,
-          which includes the headless CLI.
+          The uploader has been rewritten for Windows, macOS and Linux.
+          <a class="link" href="/Upload/Uploader">See what's new and how to move over from the old one</a>.
         </p>
 
-        <p class="text-sm mb-2">
-          macOS
-          <a class="link block" :href="electronRelease" target="_blank" rel="noopener">{{ electronRelease }}</a>
+        <uploader-downloads class="text-sm mb-4" :show-ranks="true"></uploader-downloads>
+
+        <p class="text-sm mb-4">
+          <strong>Windows, with rank reading</strong> is the same uploader plus an opt-in reader for the Storm
+          League loading screen, which helps us get real in-game ranks onto Heroes Profile.
+          <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>.
         </p>
 
         <p class="text-sm">
@@ -76,10 +62,6 @@ export default {
   },
   data() {
     return {
-      windowsInstaller: 'https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe',
-      linuxAppImage: 'https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploader-linux-x86_64.AppImage',
-      linuxTarball: 'https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploader-linux-x64.tar.gz',
-      electronRelease: 'https://github.com/Heroes-Profile/heroesprofile-electron-uploader/releases',
       repository: 'https://github.com/Heroes-Profile/HeroesProfile.Uploader',
     }
   },
