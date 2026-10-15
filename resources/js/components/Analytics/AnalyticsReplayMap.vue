@@ -31,7 +31,7 @@
     <image
       v-if="minimap"
       :href="minimap.src"
-      x="0" :y="flip(minimap.top)" :width="minimap.width" :height="minimap.height"
+      :x="minimap.left || 0" :y="flip(minimap.top)" :width="minimap.width" :height="minimap.height"
       preserveAspectRatio="none"
     ></image>
 

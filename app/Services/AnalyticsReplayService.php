@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AbilityLink;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -14,6 +15,9 @@ use League\Flysystem\UnableToReadFile;
 class AnalyticsReplayService
 {
     private const DISK = 'gcs-analytics';
+
+    // Stop / hold: the only command that doesn't dismount
+    private const STOP_LINK = 23;
 
     public function __construct(
         private GlobalDataService $globalDataService,
@@ -118,7 +122,7 @@ class AnalyticsReplayService
             return null;
         }
 
-        $replay = Cache::remember('analytics:replay:v'.config('analytics.extract_v').'.3:'.$replayId, now()->addDay(), function () use ($replayId) {
+        $replay = Cache::remember('analytics:replay:v'.config('analytics.extract_v').'.4:'.$replayId, now()->addDay(), function () use ($replayId) {
             try {
                 $raw = Storage::disk(self::DISK)->get('doc/'.$replayId.'.json.gz');
             } catch (UnableToReadFile) {
@@ -198,6 +202,7 @@ class AnalyticsReplayService
             'talents' => $this->talents($doc['talent_picks'], $players),
             'disconnects' => $doc['disconnects'],
             'minion_deaths' => $doc['minion_deaths'],
+            'mounts' => $this->mounts($doc),
             'camera' => $doc['camera'],
             'pings' => $doc['pings'],
         ];
@@ -248,6 +253,55 @@ class AnalyticsReplayService
         }
 
         return $lives;
+    }
+
+    /**
+     * [t, player, 1] for each mount press and [t, player, 0] for each other cast (which dismounts), so the
+     * viewer can walk mounted heroes faster. Stop doesn't dismount. Mount abilities come from the game
+     * build's ability links: the generic Mount and each hero's own mount slot.
+     */
+    private function mounts(array $doc): array
+    {
+        $mountLinks = array_flip($this->mountLinks(isset($doc['build']) ? (int) $doc['build'] : null));
+        $commands = $doc['commands'] ?? [];
+        usort($commands, fn ($a, $b) => $a[0] <=> $b[0]);
+        $out = [];
+        $last = [];
+        foreach ($commands as [$t, $player, $link]) {
+            if ($link === self::STOP_LINK) {
+                continue;
+            }
+            $on = isset($mountLinks[$link]) ? 1 : 0;
+            // A dismount only matters after a mount press
+            if ($on === 0 && ($last[$player] ?? 0) === 0) {
+                continue;
+            }
+            $out[] = [$t, $player, $on];
+            $last[$player] = $on;
+        }
+
+        return $out;
+    }
+
+    /** Mount ability links for a build, from the newest mapped build at or before it. */
+    private function mountLinks(?int $build): array
+    {
+        return Cache::remember('analytics:mount_links:'.($build ?? 0), now()->addDay(), function () use ($build) {
+            $builds = AbilityLink::query()->distinct()->orderBy('build')->pluck('build')->all();
+            if ($builds === []) {
+                return [];
+            }
+            $mapped = $builds[0];
+            foreach ($builds as $candidate) {
+                if ($build !== null && $candidate <= $build) {
+                    $mapped = $candidate;
+                }
+            }
+
+            return AbilityLink::where('build', $mapped)
+                ->where(fn ($q) => $q->where('slot', 'Mount')->orWhere('ability_id', 'Mount'))
+                ->pluck('abil_link')->map(fn ($link) => (int) $link)->all();
+        });
     }
 
     /** Talent picks with the site's talent record, matched on the hero and the game's talent name. */
