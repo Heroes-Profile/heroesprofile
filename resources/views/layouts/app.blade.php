@@ -128,7 +128,8 @@
 
     @if(isset($headeralert) && $headeralert !== null)
       <div class="bg-red text-sm text-center p-1">
-          {{ $headeralert }}
+          {{-- Admin-written HTML from header_alert, so it can carry links. --}}
+          {!! $headeralert !!}
       </div>
     @endif
 
