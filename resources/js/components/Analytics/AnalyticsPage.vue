@@ -54,6 +54,8 @@
           <analytics-timelines v-else-if="activeTab === 'timelines'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-timelines>
           <analytics-activity v-else-if="activeTab === 'activity'" :data="tabData" :maps="maps" :heroes="filters.heroes" :filter-params="filterParams"></analytics-activity>
           <analytics-sessions v-else-if="activeTab === 'sessions'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-sessions>
+          <analytics-coaching v-else-if="activeTab === 'coaching'" :data="tabData" :maps="maps" :heroes="filters.heroes" :filter-params="filterParams"></analytics-coaching>
+          <analytics-stacks v-else-if="activeTab === 'stacks'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-stacks>
         </div>
       </div>
     </div>
@@ -70,10 +72,19 @@
       :playermatchtablestyle="playermatchtablestyle"
       :authenticated="true"
     ></analytics-games>
+
+    <!-- How the open tab's numbers are made -->
+    <analytics-paper
+      v-if="status.done > 0 && !isLoading && tabData && papers[activeTab]"
+      :key="activeTab"
+      :paper="papers[activeTab]"
+    ></analytics-paper>
   </div>
 </template>
 
 <script>
+import papers from '../../utils/analyticsPapers.js';
+
 export default {
   name: 'AnalyticsPage',
   props: {
@@ -99,10 +110,13 @@ export default {
         { key: 'timelines', label: 'Timelines & Objectives' },
         { key: 'activity', label: 'Activity' },
         { key: 'sessions', label: 'Sessions' },
+        { key: 'coaching', label: 'Coaching' },
+        { key: 'stacks', label: 'Stacks' },
         { key: 'games', label: 'Games' },
       ],
       // ?tab= in the URL opens that tab
-      activeTab: ['deaths', 'map', 'timelines', 'activity', 'sessions', 'games'].includes((this.urlparameters || {}).tab) ? this.urlparameters.tab : 'deaths',
+      papers,
+      activeTab: ['deaths', 'map', 'timelines', 'activity', 'sessions', 'coaching', 'stacks', 'games'].includes((this.urlparameters || {}).tab) ? this.urlparameters.tab : 'deaths',
       tabCache: {},
       isLoading: false,
       gametype: this.gametypedefault,

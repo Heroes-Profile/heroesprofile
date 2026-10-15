@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Log;
  */
 class AnalyticsQueryService
 {
-    public const TABS = ['deaths', 'map', 'timelines', 'activity', 'sessions'];
+    public const TABS = ['deaths', 'map', 'timelines', 'activity', 'sessions', 'coaching', 'stacks'];
 
     private ?BigQueryClient $client = null;
 
@@ -35,7 +35,9 @@ class AnalyticsQueryService
     {
         $processed = $this->analytics->status($blizzId, $region)['done'];
         $threshold = $this->globalThreshold();
-        $key = 'analytics:tab:v'.config('analytics.extract_v').'.5:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.':'.md5(json_encode($filters));
+        // Coaching tables are rebuilt by a nightly BigQuery job (or by hand); refresh whenever they change
+        $nightly = $tab === 'coaching' ? ':'.$this->coachingVersion() : '';
+        $key = 'analytics:tab:v'.config('analytics.extract_v').'.6:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
 
         return Cache::remember($key, now()->addDays(7), function () use ($tab, $blizzId, $region, $filters, $threshold) {
             $params = [
@@ -64,6 +66,16 @@ class AnalyticsQueryService
             }
 
             return $data;
+        });
+    }
+
+    /** When the coaching tables were last rebuilt, checked every 10 minutes. */
+    private function coachingVersion(): string
+    {
+        return Cache::remember('analytics:coaching_version', now()->addMinutes(10), function () {
+            $rows = $this->run(['v' => 'SELECT CAST(MAX(computed_at) AS STRING) AS computed_at FROM `{dataset}.coaching_signal_stats`'], []);
+
+            return (string) ($rows['v'][0]['computed_at'] ?? 'none');
         });
     }
 
@@ -229,6 +241,19 @@ class AnalyticsQueryService
               FROM `{dataset}.hero_positions` hp, UNNEST(hp.points) p WITH OFFSET o
               WHERE hp.game_date >= @cutover AND o = 0 AND hp.replay_id IN (SELECT replay_id FROM pg)
               GROUP BY hp.replay_id, hp.team
+            )
+            SQL;
+    }
+
+    /** Each team's biggest party per game, and how many of its players have no party size yet. */
+    private function teamStacks(): string
+    {
+        return <<<'SQL'
+            team_stacks AS (
+              SELECT replay_id, team, MAX(IF(IFNULL(stack_size, 0) <= 1, 1, stack_size)) AS max_party, COUNTIF(stack_size IS NULL) AS unknown
+              FROM `{dataset}.player_match`
+              WHERE game_date >= @cutover
+              GROUP BY 1, 2
             )
             SQL;
     }
@@ -446,6 +471,142 @@ class AnalyticsQueryService
                     SELECT who, hero_id, build, abil_link, COUNT(*) AS games_used, SUM(top.uses) AS uses,
                       SUM(top.casts) AS casts, COUNTIF(top.casts IS NOT NULL) AS casts_games, AVG(first_use) AS avg_first_use
                     FROM used GROUP BY who, hero_id, build, abil_link',
+            ],
+
+            // Built nightly by the coaching script (HeroesProfileDeepAnalytics/bigquery/coaching.sql)
+            'coaching' => [
+                'signals' => 'SELECT signal, rules_v, computed_at, player_games, early_effect_pts, early_n, consistency_r, players_10,
+                    r_win, partial_r, percentiles, confidence FROM `{dataset}.coaching_signal_stats`',
+
+                'mine' => 'SELECT COUNT(*) AS games, SUM(win) AS wins,
+                    SUM(fights) AS fights, SUM(fights_present) AS fights_present, SUM(lost_absent) AS lost_absent,
+                    SUM(lost_absent_costly) AS lost_absent_costly, SUM(deaths) AS deaths, SUM(picked_alone) AS picked_alone,
+                    SUM(caught_first) AS caught_first, SUM(overstay) AS overstay, SUM(tier_down_present) AS tier_down_present,
+                    SUM(tier_down_lost) AS tier_down_lost, SUM(obj_events) AS obj_events, SUM(obj_present) AS obj_present,
+                    AVG(heroic_delay_s) AS heroic_delay, COUNTIF(heroic_pick_s IS NOT NULL) AS heroic_games,
+                    SUM(repeat_deaths) AS repeat_deaths, SUM(matchups_unadapted) AS matchups_unadapted,
+                    AVG(IF(strong_camper AND camp_events > 0, camp_present / camp_events - hero_camp_rate, NULL)) AS camp_duty,
+                    COUNTIF(strong_camper AND camp_events > 0) AS camp_games,
+                    SUM(IF(bush_map, bush_deaths, 0)) AS bush_deaths, COUNTIF(bush_map) AS bush_games,
+                    SAFE_DIVIDE(SUM(IF(mounts_used AND travel_s >= 30, unmounted_travel_s, 0)), SUM(IF(mounts_used AND travel_s >= 30, travel_s, 0))) AS unmounted_share,
+                    COUNTIF(mounts_used AND travel_s >= 30) AS travel_games
+                    FROM `{dataset}.coaching_player_game`
+                    WHERE blizz_id = @blizz AND region = @region AND game_date >= @cutover
+                      AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR game_type IN UNNEST(@game_types))
+                      AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR game_map IN UNNEST(@maps))
+                      AND (@hero = 0 OR hero_id = @hero)',
+
+                // The global sample under the same filters as "You": per-game values, and players with 5+ games
+                'compare' => 'WITH g AS (
+                      SELECT * FROM `{dataset}.coaching_player_game`
+                      WHERE sample_bucket < @sample AND game_date >= @cutover
+                        AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR game_type IN UNNEST(@game_types))
+                        AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR game_map IN UNNEST(@maps))
+                        AND (@hero = 0 OR hero_id = @hero)
+                    ),
+                    long AS (
+                      SELECT blizz_id, s.signal, s.value FROM g, UNNEST([
+                        STRUCT("overstay" AS signal, CAST(overstay AS FLOAT64) AS value),
+                        STRUCT("missed_lost_fight", CAST(lost_absent AS FLOAT64)),
+                        STRUCT("missed_costly_fight", CAST(lost_absent_costly AS FLOAT64)),
+                        STRUCT("objective_presence", SAFE_DIVIDE(obj_present, obj_events)),
+                        STRUCT("tier_down_fights", CAST(tier_down_present AS FLOAT64)),
+                        STRUCT("caught_first", CAST(caught_first AS FLOAT64)),
+                        STRUCT("picked_alone", CAST(picked_alone AS FLOAT64)),
+                        STRUCT("fight_presence", SAFE_DIVIDE(fights_present, fights)),
+                        STRUCT("heroic_delay", CAST(heroic_delay_s AS FLOAT64)),
+                        STRUCT("unmounted_travel", IF(mounts_used AND travel_s >= 30, SAFE_DIVIDE(unmounted_travel_s, travel_s), NULL)),
+                        STRUCT("camp_duty", IF(strong_camper AND camp_events > 0, camp_present / camp_events - hero_camp_rate, NULL)),
+                        STRUCT("repeat_nemesis", CAST(repeat_deaths AS FLOAT64)),
+                        STRUCT("matchup_unadapted", CAST(matchups_unadapted AS FLOAT64)),
+                        STRUCT("bush_deaths", IF(bush_map, CAST(bush_deaths AS FLOAT64), NULL))
+                      ]) s
+                      WHERE s.value IS NOT NULL
+                    ),
+                    per_game AS (SELECT signal, APPROX_QUANTILES(value, 100) AS game_percentiles, COUNT(*) AS game_n FROM long GROUP BY 1),
+                    per_player AS (
+                      SELECT signal, APPROX_QUANTILES(v, 100) AS player_percentiles, COUNT(*) AS players
+                      FROM (SELECT signal, blizz_id, AVG(value) AS v FROM long GROUP BY 1, 2 HAVING COUNT(*) >= 5)
+                      GROUP BY 1
+                    )
+                    SELECT signal, game_percentiles, game_n, player_percentiles, IFNULL(players, 0) AS players
+                    FROM per_game LEFT JOIN per_player USING (signal)',
+
+                'events' => 'SELECT e.kind, e.replay_id, e.t_s, e.detail, e.hero_id, e.ref_hero_id, e.game_map, FORMAT_DATETIME("%Y-%m-%dT%H:%M:%S", e.game_date) AS game_date
+                    FROM `{dataset}.coaching_events` e
+                    JOIN `{dataset}.coaching_player_game` g ON g.replay_id = e.replay_id AND g.blizz_id = e.blizz_id
+                    WHERE e.blizz_id = @blizz AND e.region = @region AND e.game_date >= @cutover
+                      AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR g.game_type IN UNNEST(@game_types))
+                      AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR e.game_map IN UNNEST(@maps))
+                      AND (@hero = 0 OR e.hero_id = @hero)
+                    QUALIFY ROW_NUMBER() OVER (PARTITION BY e.kind ORDER BY e.game_date DESC, e.t_s) <= 10',
+            ],
+
+            // Party size comes from heroesprofile.player via the loader (player_match.stack_size: 0 or 1 =
+            // solo, else 2-5). A team's stack is its biggest party; games with any player still unknown
+            // (not yet backfilled) are left out.
+            'stacks' => [
+                'party_size' => $this->ctes().', '.$this->teamStacks().'
+                    SELECT pg.who, IF(IFNULL(p.stack_size, 0) <= 1, 1, p.stack_size) AS party, COUNT(*) AS games, AVG(IF(pg.winner, 1, 0)) AS win_rate
+                    FROM pg
+                    JOIN `{dataset}.player_match` p ON p.replay_id = pg.replay_id AND p.blizz_id = pg.blizz AND p.game_date >= @cutover
+                    JOIN team_stacks own ON own.replay_id = pg.replay_id AND own.team = pg.team AND own.unknown = 0
+                    GROUP BY 1, 2 ORDER BY 1, 2',
+
+                'enemy_stack' => $this->ctes().', '.$this->teamStacks().'
+                    SELECT pg.who, en.max_party AS enemy_party, COUNT(*) AS games, AVG(IF(pg.winner, 1, 0)) AS win_rate
+                    FROM pg
+                    JOIN team_stacks own ON own.replay_id = pg.replay_id AND own.team = pg.team AND own.unknown = 0
+                    JOIN team_stacks en ON en.replay_id = pg.replay_id AND en.team != pg.team AND en.unknown = 0
+                    GROUP BY 1, 2 ORDER BY 1, 2',
+
+                'advantage' => $this->ctes().', '.$this->teamStacks().'
+                    SELECT pg.who, GREATEST(-3, LEAST(3, en.max_party - own.max_party)) AS diff, COUNT(*) AS games, AVG(IF(pg.winner, 1, 0)) AS win_rate
+                    FROM pg
+                    JOIN team_stacks own ON own.replay_id = pg.replay_id AND own.team = pg.team AND own.unknown = 0
+                    JOIN team_stacks en ON en.replay_id = pg.replay_id AND en.team != pg.team AND en.unknown = 0
+                    GROUP BY 1, 2 ORDER BY 1, 2',
+
+                // Global sample teams that faced a bigger enemy stack of 3+: how the teams that won played
+                // compared with the teams that lost, from the coaching rows (team averages per player)
+                'beat_stacks' => 'WITH '.$this->teamStacks().'
+                    , teams AS (
+                      SELECT c.replay_id, c.team, ANY_VALUE(c.win) AS win,
+                        AVG(c.overstay) AS overstay, AVG(c.picked_alone) AS picked_alone, AVG(c.caught_first) AS caught_first,
+                        AVG(c.lost_absent) AS lost_absent, AVG(SAFE_DIVIDE(c.fights_present, c.fights)) AS fight_presence,
+                        AVG(SAFE_DIVIDE(c.obj_present, c.obj_events)) AS objective_presence, AVG(c.camp_present) AS camps,
+                        AVG(c.tier_down_present) AS tier_down_fights, AVG(c.deaths) AS deaths, AVG(c.bush_deaths) AS bush_deaths,
+                        AVG(IF(c.mounts_used AND c.travel_s >= 30, SAFE_DIVIDE(c.unmounted_travel_s, c.travel_s), NULL)) AS unmounted_travel
+                      FROM `{dataset}.coaching_player_game` c
+                      JOIN team_stacks own ON own.replay_id = c.replay_id AND own.team = c.team AND own.unknown = 0
+                      JOIN team_stacks en ON en.replay_id = c.replay_id AND en.team != c.team AND en.unknown = 0
+                      WHERE c.sample_bucket < @sample AND c.game_date >= @cutover AND en.max_party >= 3 AND en.max_party > own.max_party
+                        AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR c.game_type IN UNNEST(@game_types))
+                        AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR c.game_map IN UNNEST(@maps))
+                      GROUP BY 1, 2
+                    )
+                    SELECT win, COUNT(*) AS teams, AVG(overstay) AS overstay, AVG(picked_alone) AS picked_alone, AVG(caught_first) AS caught_first,
+                      AVG(lost_absent) AS lost_absent, AVG(fight_presence) AS fight_presence, AVG(objective_presence) AS objective_presence,
+                      AVG(camps) AS camps, AVG(tier_down_fights) AS tier_down_fights, AVG(deaths) AS deaths, AVG(bush_deaths) AS bush_deaths,
+                      AVG(unmounted_travel) AS unmounted_travel
+                    FROM teams GROUP BY win',
+
+                // Your own play in games against a bigger enemy stack of 3+, compared with your other games
+                'mine_vs_stacks' => 'WITH '.$this->teamStacks().'
+                    SELECT en.max_party >= 3 AND en.max_party > own.max_party AS facing_stack, COUNT(*) AS games, AVG(c.win) AS win_rate,
+                      AVG(c.overstay) AS overstay, AVG(c.picked_alone) AS picked_alone, AVG(c.caught_first) AS caught_first,
+                      AVG(c.lost_absent) AS lost_absent, AVG(SAFE_DIVIDE(c.fights_present, c.fights)) AS fight_presence,
+                      AVG(SAFE_DIVIDE(c.obj_present, c.obj_events)) AS objective_presence, AVG(c.camp_present) AS camps,
+                      AVG(c.tier_down_present) AS tier_down_fights, AVG(c.deaths) AS deaths, AVG(c.bush_deaths) AS bush_deaths,
+                      AVG(IF(c.mounts_used AND c.travel_s >= 30, SAFE_DIVIDE(c.unmounted_travel_s, c.travel_s), NULL)) AS unmounted_travel
+                    FROM `{dataset}.coaching_player_game` c
+                    JOIN team_stacks own ON own.replay_id = c.replay_id AND own.team = c.team AND own.unknown = 0
+                    JOIN team_stacks en ON en.replay_id = c.replay_id AND en.team != c.team AND en.unknown = 0
+                    WHERE c.blizz_id = @blizz AND c.region = @region AND c.game_date >= @cutover
+                      AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR c.game_type IN UNNEST(@game_types))
+                      AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR c.game_map IN UNNEST(@maps))
+                      AND (@hero = 0 OR c.hero_id = @hero)
+                    GROUP BY 1',
             ],
 
             'sessions' => [

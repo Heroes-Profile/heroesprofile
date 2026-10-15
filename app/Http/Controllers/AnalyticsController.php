@@ -114,7 +114,7 @@ class AnalyticsController extends Controller
     // The replay viewer: any season game for any Battle.net login (no allowlist), processed on demand.
     // The page opens straight away and the viewer waits for the game to be ready, starting its
     // processing if nobody has yet
-    public function replay(int $replayID): View
+    public function replay(Request $request, int $replayID): View
     {
         $this->loggedInUser();
         abort_unless($this->replays->isSeasonGame($replayID), 404);
@@ -122,6 +122,7 @@ class AnalyticsController extends Controller
         return view('Analytics.analyticsReplay')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'replayId' => $replayID,
+            'urlparameters' => $request->query(),
         ]);
     }
 
