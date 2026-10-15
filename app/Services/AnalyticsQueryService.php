@@ -37,7 +37,7 @@ class AnalyticsQueryService
         $threshold = $this->globalThreshold();
         // Coaching tables are rebuilt by a nightly BigQuery job (or by hand); refresh whenever they change
         $nightly = $tab === 'coaching' ? ':'.$this->coachingVersion() : '';
-        $key = 'analytics:tab:v'.config('analytics.extract_v').'.6:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
+        $key = 'analytics:tab:v'.config('analytics.extract_v').'.7:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
 
         return Cache::remember($key, now()->addDays(7), function () use ($tab, $blizzId, $region, $filters, $threshold) {
             $params = [
