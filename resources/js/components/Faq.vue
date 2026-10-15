@@ -260,7 +260,7 @@ export default {
             },
             {
               q: 'Does the uploader work on macOS or Linux?',
-              a: 'Yes. Linux has a native uploader, available as an <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploader-linux-x86_64.AppImage" class="link">AppImage</a> or a <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploader-linux-x64.tar.gz" class="link">tar.gz</a> that includes a headless CLI. For macOS, use our <a href="https://github.com/Heroes-Profile/heroesprofile-electron-uploader" target="_blank" class="link">Electron uploader on GitHub</a>.',
+              a: 'Yes. The uploader is one app for Windows, macOS and Linux. Downloads for each are on the <a href="/Upload" class="link">Upload page</a>, and <a href="/Upload/Uploader" class="link">the uploader page</a> covers what changed and how to move over from the old Windows uploader.',
             },
             {
               q: 'How do I make my profile private?',
