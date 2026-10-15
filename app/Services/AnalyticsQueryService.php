@@ -37,7 +37,7 @@ class AnalyticsQueryService
         $threshold = $this->globalThreshold();
         // Coaching tables are rebuilt by a nightly BigQuery job (or by hand); refresh whenever they change
         $nightly = $tab === 'coaching' ? ':'.$this->coachingVersion() : '';
-        $key = 'analytics:tab:v'.config('analytics.extract_v').'.7:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
+        $key = 'analytics:tab:v'.config('analytics.extract_v').'.8:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
 
         return Cache::remember($key, now()->addDays(7), function () use ($tab, $blizzId, $region, $filters, $threshold) {
             $params = [
@@ -495,6 +495,20 @@ class AnalyticsQueryService
                       AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR game_type IN UNNEST(@game_types))
                       AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR game_map IN UNNEST(@maps))
                       AND (@hero = 0 OR hero_id = @hero)',
+
+                // Your games one by one, newest first, for "Are you improving?" (last few vs earlier games)
+                'recent' => 'SELECT replay_id, FORMAT_DATETIME("%Y-%m-%dT%H:%M:%S", game_date) AS game_date, win,
+                      overstay, lost_absent, lost_absent_costly, SAFE_DIVIDE(obj_present, obj_events) AS objective_presence,
+                      tier_down_present, caught_first, picked_alone, SAFE_DIVIDE(fights_present, fights) AS fight_presence,
+                      heroic_delay_s, IF(mounts_used AND travel_s >= 30, SAFE_DIVIDE(unmounted_travel_s, travel_s), NULL) AS unmounted_travel,
+                      IF(strong_camper AND camp_events > 0, camp_present / camp_events - hero_camp_rate, NULL) AS camp_duty,
+                      repeat_deaths, matchups_unadapted, IF(bush_map, bush_deaths, NULL) AS bush_deaths
+                    FROM `{dataset}.coaching_player_game`
+                    WHERE blizz_id = @blizz AND region = @region AND game_date >= @cutover
+                      AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR game_type IN UNNEST(@game_types))
+                      AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR game_map IN UNNEST(@maps))
+                      AND (@hero = 0 OR hero_id = @hero)
+                    ORDER BY game_date DESC LIMIT 200',
 
                 // The global sample under the same filters as "You": per-game values, and players with 5+ games
                 'compare' => 'WITH g AS (
