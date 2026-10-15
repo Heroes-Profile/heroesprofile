@@ -33,7 +33,7 @@
     <div class="mt-2 text-xs text-gray-light">
       {{ source === 'heuristic'
         ? 'Estimated from levels, XP, structures and deaths; not yet trained on past games.'
-        : 'Win chance from a model trained on ' + model.games.toLocaleString('en-US') + ' games; the favourite wins about 7 times in 10.' }}
+        : 'Win chance from a model trained on ' + model.games.toLocaleString('en-US') + ' games; the favourite wins about ' + Math.round(model.accuracy * 10) + ' times in 10.' }}
     </div>
   </div>
 </template>
@@ -43,26 +43,24 @@ import analytics from '../../utils/analyticsFormat.js';
 import { teamColor } from '../../utils/mapAssets.js';
 
 // Win chance for the replay viewer's announcer. A logistic model over the game state at one moment,
-// always from Blue's side (positive favours Blue). The weights below are a hand-tuned starting point;
-// weights trained on the global sample replace them later with the same features, so nothing else
-// changes when they do.
+// always from Blue's side (positive favours Blue). The nightly BigQuery job retrains it on the global
+// sample and the replay data carries the current weights (win_model); these are the fallback.
 
 const MODEL = {
-  // Trained in BigQuery ML (deep_analytics.win_model) on 86,476 minute snapshots of 5,023 global games;
-  // on held-out games the favourite wins 71% overall, 78% from minute 10 to 20
+  // Trained in BigQuery ML (deep_analytics.win_model) on 11,148 global games, 2026-10-15
   source: 'trained',
-  trainedOn: '2026-10-14',
-  games: 5023,
-  intercept: -0.0528,
+  games: 11148,
+  accuracy: 0.725,
+  intercept: 0.0071,
   weights: {
-    level_diff: 0.2856,
-    level_diff_late: 0.169, // level_diff x minutes / 10
-    xp_diff_k: 0.047, // XP lead in thousands
-    forts_diff: 0.3226, // enemy forts destroyed minus own forts lost
-    keeps_diff: 0.3911,
-    dead_diff: 0.1035, // Red heroes dead minus Blue heroes dead, right now (see respawnEstimate)
-    dead_diff_late: 0.0546, // dead_diff x minutes / 10
-    takedown_diff: 0.0297,
+    level_diff: 0.2932,
+    level_diff_late: 0.1737, // level_diff x minutes / 10
+    xp_diff_k: 0.0475, // XP lead in thousands
+    forts_diff: 0.3174, // enemy forts destroyed minus own forts lost
+    keeps_diff: 0.368,
+    dead_diff: 0.1027, // Red heroes dead minus Blue heroes dead, right now (see respawnEstimate)
+    dead_diff_late: 0.0537, // dead_diff x minutes / 10
+    takedown_diff: 0.03,
   },
 };
 
@@ -316,13 +314,15 @@ export default {
     },
     // Built once per game
     announcer() {
-      return buildAnnouncer(this.data, this.events);
+      return buildAnnouncer(this.data, this.events, this.model);
     },
     source() {
       return this.announcer.source;
     },
+    // Tonight's retrained weights when the server has them, else the built-in ones
     model() {
-      return MODEL;
+      const m = this.data.win_model;
+      return m && Object.keys(MODEL.weights).every(name => name in m.weights) ? { ...m, source: 'trained' } : MODEL;
     },
     chance() {
       const series = this.announcer.chance;

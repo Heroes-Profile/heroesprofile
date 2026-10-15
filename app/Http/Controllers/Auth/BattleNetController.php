@@ -16,6 +16,15 @@ class BattleNetController extends Controller
 {
     public function show(Request $request)
     {
+        // Send the user back to the page they clicked Login from.
+        $previous = $request->headers->get('referer');
+        if ($previous && parse_url($previous, PHP_URL_HOST) === $request->getHost()) {
+            $path = strtolower(ltrim(parse_url($previous, PHP_URL_PATH) ?? '', '/'));
+            if (! str_starts_with($path, 'authenticate/') && ! str_starts_with($path, 'redirect/authenticate/')) {
+                $request->session()->put('url.intended', $previous);
+            }
+        }
+
         return view('Battlenet.authenticate')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
@@ -88,7 +97,7 @@ class BattleNetController extends Controller
             $request->session()->flash('void_eye_awarded', true);
         }
 
-        return redirect('/Profile/Settings'); // Redirect to desired location
+        return redirect()->intended('/Profile/Settings');
     }
 
     public function handleProviderCallbackFailed(Request $request)

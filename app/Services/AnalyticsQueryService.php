@@ -80,6 +80,42 @@ class AnalyticsQueryService
     }
 
     /**
+     * The replay viewer's win model, retrained by the nightly BigQuery job: intercept, weights by
+     * feature, games trained on and held-out accuracy. Null if it can't be read, and the viewer
+     * falls back to its built-in weights.
+     *
+     * @return array{intercept: float, weights: array<string, float>, games: int, accuracy: float}|null
+     */
+    public function winModel(): ?array
+    {
+        return Cache::remember('analytics:win_model', now()->addMinutes(10), function () {
+            try {
+                $rows = $this->run(['m' => 'SELECT games, accuracy, weights FROM `{dataset}.win_model_info`'], []);
+            } catch (\Throwable $e) {
+                Log::warning('Analytics: could not read the win model', ['error' => $e->getMessage()]);
+
+                return null;
+            }
+            $row = $rows['m'][0] ?? null;
+            if (! $row) {
+                return null;
+            }
+
+            $weights = [];
+            foreach ($row['weights'] as $w) {
+                $weights[$w['feature']] = (float) $w['weight'];
+            }
+            $intercept = $weights['__INTERCEPT__'] ?? null;
+            unset($weights['__INTERCEPT__']);
+            if ($intercept === null) {
+                return null;
+            }
+
+            return ['intercept' => $intercept, 'weights' => $weights, 'games' => (int) $row['games'], 'accuracy' => (float) $row['accuracy']];
+        });
+    }
+
+    /**
      * Global stats use replays with replayID % 1000 below this. It follows the nightly sampler's
      * own setting (processing_check.sample_rate for DeepAnalyticsGlobal, a percent), so the site
      * only counts buckets the sampler processes. Falls back to the config value if the row
