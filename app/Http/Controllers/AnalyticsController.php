@@ -147,6 +147,7 @@ class AnalyticsController extends Controller
         $user = $this->loggedInUser();
         $replay = $this->replays->replay($replayID, (int) $user->blizz_id);
         abort_unless($replay, 404);
+        $replay['win_model'] = $this->queries->winModel();
 
         return response()->json($replay);
     }
