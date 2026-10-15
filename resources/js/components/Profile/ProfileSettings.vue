@@ -102,6 +102,10 @@
             <tab-button tab1text="Vertical" tab2text="Horizontal" :ignoreclick="true" @tab-click="talentbuilderstylesetting" :overridedefaultside="talentbuilderstyle"></tab-button>
           </div>
           <div>
+            <h3 class="mb-2">Talent Builder Load</h3>
+            <tab-button tab1text="Auto Load" tab2text="On Filter" :ignoreclick="true" @tab-click="talentbuilderloadsetting" :overridedefaultside="talentbuilderload"></tab-button>
+          </div>
+          <div>
             <h3 class="mb-2">Talent Statistics Layout</h3>
             <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" @tab-click="setTalentStatsLayout" :overridedefaultside="talentStatsLayout"></tab-button>
           </div>
@@ -270,6 +274,7 @@ export default {
       talentBuildType: null,
       darkmode: 'left',
       talentbuilderstyle: 'left',
+      talentbuilderload: 'left',
       talentStatsLayout: 'left',
       playerhistorytable: 'left',
       playerload: 'true',
@@ -311,6 +316,7 @@ export default {
     this.talentBuildType = this.defaultBuildType;
     this.darkmode = this.defaultDarkMode;
     this.talentbuilderstyle = this.defaultTalentBuilderStyle;
+    this.talentbuilderload = this.user.user_settings.some(item => item.setting === 'talentbuilderload' && item.value === 'filter') ? 'right' : 'left';
     this.talentStatsLayout = this.user.user_settings.some(item => item.setting === 'talentStatsLayout' && item.value === 'compact') ? 'right' : 'left';
     this.playerhistorytable = this.defaultPlayerhistorytable;
     this.customgames = this.defaultCustomGames;
@@ -417,6 +423,7 @@ export default {
           advancedfiltering: this.advancedfiltering,
           talentbuildtype: this.talentBuildType,
           talentbuilderstyle: this.talentbuilderstyle === 'right' ? 'horizontal' : 'vertical',
+          talentbuilderload: this.talentbuilderload === 'right' ? 'filter' : 'auto',
           talentStatsLayout: this.talentStatsLayout === 'right' ? 'compact' : 'table',
           darkmode: darkmodeinput,
           playerload: this.playerload,
@@ -482,6 +489,10 @@ export default {
     },
     talentbuilderstylesetting(side) {
       this.talentbuilderstyle = side;
+      this.saveSettings();
+    },
+    talentbuilderloadsetting(side) {
+      this.talentbuilderload = side;
       this.saveSettings();
     },
     setTalentStatsLayout(side) {
