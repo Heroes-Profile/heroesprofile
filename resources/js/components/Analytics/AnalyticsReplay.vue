@@ -300,6 +300,7 @@ export default {
   mixins: [analytics],
   props: {
     replayId: Number,
+    urlparameters: { type: Object, default: () => ({}) },
   },
   data() {
     return {
@@ -337,6 +338,11 @@ export default {
       this.selected = this.data.players.find(p => p.you)?.idx ?? null;
       this.walkable = await loadWalkable(this.minimap);
       this.rebuild();
+      // ?t= opens the game a few seconds before that moment (coaching examples link here)
+      const start = Number((this.urlparameters || {}).t);
+      if (start > 0) {
+        this.t = Math.max(0, Math.min(start - 5, this.data.length_s));
+      }
     } catch (e) {
       this.error = e.message === 'could not start'
         ? 'Could not start preparing this replay. Please try again in a minute.'
