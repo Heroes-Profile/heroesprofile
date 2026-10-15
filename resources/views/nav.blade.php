@@ -81,6 +81,9 @@
                                 @if (! empty($bladeGlobals['xalatathRecapAvailable']))
                                 <a href="/Event/Xalatath" >Xal'atath Recap</a>
                                 @endif
+                                @if (Auth::check() && app(\App\Services\AnalyticsService::class)->isAllowed(Auth::user()))
+                                <a href="/Analytics" >Analytics - Pre Alpha</a>
+                                @endif
                                 @if (\App\Services\Twitch\TwitchAccess::visible())
                                 <a href="/Twitch" >Twitch Streamers (Beta)</a>
                                 @endif

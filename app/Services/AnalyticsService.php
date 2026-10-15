@@ -19,9 +19,20 @@ class AnalyticsService
 {
     public function __construct(private CloudTasksDispatcher $tasks) {}
 
-    public function isAllowed(int $blizzId): bool
+    /**
+     * Analytics pages (not the replay viewer): current Patreon supporters, plus the allowlist for
+     * testing. A supporter is a linked Patreon account with site flair or ad-free on, the same test
+     * as Patreon flair elsewhere; both flags drop when a pledge lapses.
+     */
+    public function isAllowed($user): bool
     {
-        return in_array($blizzId, config('analytics.allowlist'), true);
+        if (in_array((int) $user->blizz_id, config('analytics.allowlist'), true)) {
+            return true;
+        }
+
+        $patreon = $user->patreonAccount;
+
+        return $patreon && ($patreon->site_flair == 1 || $patreon->ad_free == 1);
     }
 
     /**

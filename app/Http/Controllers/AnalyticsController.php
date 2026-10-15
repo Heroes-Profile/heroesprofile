@@ -17,9 +17,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 /**
- * Analytics for the logged-in Battle.net account's own season games. Only blizz
- * IDs on the analytics allowlist see it until access is opened up; everyone else
- * gets a 404.
+ * Analytics for the logged-in Battle.net account's own season games, for current Patreon
+ * supporters (and the testing allowlist); everyone else gets a 404. The replay viewer below
+ * is open to any Battle.net login.
  */
 class AnalyticsController extends Controller
 {
@@ -164,7 +164,7 @@ class AnalyticsController extends Controller
     {
         $user = Auth::user();
 
-        abort_unless($user && $this->analytics->isAllowed((int) $user->blizz_id), 404);
+        abort_unless($user && $this->analytics->isAllowed($user), 404);
 
         return $user;
     }

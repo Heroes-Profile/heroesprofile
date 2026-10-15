@@ -1,5 +1,6 @@
 <template>
   <div>
+    <analytics-disclaimer-popup v-if="showDisclaimer" @popupclosed="showDisclaimer = false"></analytics-disclaimer-popup>
     <page-heading
       :heading="'Analytics (Pre-Alpha)'"
       :infoText1="'Replay analysis of ' + battletag + '\'s season games (from Oct 2, 2026), compared with a sample of all games.'"
@@ -76,15 +77,15 @@
 
     <!-- How the open tab's numbers are made -->
     <analytics-paper
-      v-if="status.done > 0 && !isLoading && tabData && papers[activeTab]"
+      v-if="status.done > 0 && !isLoading && tabData"
       :key="activeTab"
-      :paper="papers[activeTab]"
+      :tab="activeTab"
     ></analytics-paper>
   </div>
 </template>
 
 <script>
-import papers from '../../utils/analyticsPapers.js';
+import { ANALYTICS_DISCLAIMER_KEY } from './AnalyticsDisclaimerPopup.vue';
 
 export default {
   name: 'AnalyticsPage',
@@ -100,6 +101,8 @@ export default {
   },
   data() {
     return {
+      // The pre-alpha notice, until it has been acknowledged in this browser
+      showDisclaimer: (() => { try { return !localStorage.getItem(ANALYTICS_DISCLAIMER_KEY); } catch (e) { return true; } })(),
       status: { ...this.initialStatus },
       requesting: false,
       processing: Boolean(this.initialStatus.processing),
@@ -116,7 +119,6 @@ export default {
         { key: 'games', label: 'Games' },
       ],
       // ?tab= in the URL opens that tab
-      papers,
       activeTab: ['deaths', 'map', 'timelines', 'activity', 'sessions', 'coaching', 'stacks', 'games'].includes((this.urlparameters || {}).tab) ? this.urlparameters.tab : 'deaths',
       tabCache: {},
       tabError: '',
