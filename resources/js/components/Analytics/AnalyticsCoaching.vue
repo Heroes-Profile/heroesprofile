@@ -18,6 +18,55 @@
         </div>
       </analytics-speech-bubble>
 
+      <!-- Are you improving: your last few games against your earlier ones, per signal -->
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-2">
+        <h3 class="text-lg font-bold">Are you improving?</h3>
+        <tab-button :tab1text="'Last 3 games'" :tab2text="'Last 5 games'" :ignoreclick="true" @tab-click="setRecentCount" :overridedefaultside="recentCount === 3 ? 'left' : 'right'"></tab-button>
+      </div>
+      <p class="text-sm text-gray-light mb-2">
+        Your last {{ recentCount }} games compared with your earlier games under these filters. A change only counts once it is bigger than your
+        usual game-to-game swing; with so few games, most small changes are noise. New games appear here the day after they are processed.
+      </p>
+      <p v-if="recentGames.length < recentCount + 5" class="text-center text-gray-light mb-8">
+        Not enough games yet: this needs at least {{ recentCount + 5 }} processed games under these filters (you have {{ recentGames.length }}).
+      </p>
+      <table v-else class="min-w-0 w-full responsive-table mb-8">
+        <thead>
+          <tr>
+            <th>Signal</th>
+            <th>Earlier games</th>
+            <th>Last {{ recentCount }}</th>
+            <th>Change</th>
+            <th>Verdict</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template v-for="row in progressRows" :key="row.key">
+            <tr class="cursor-pointer" :class="{ 'font-bold': progressSelected === row.key }" @click="progressSelected = progressSelected === row.key ? null : row.key">
+              <td>
+                {{ row.name }}
+                <span v-if="row.focus" class="text-sm text-yellow ml-1">(working on)</span>
+              </td>
+              <td>{{ format(row, row.earlier) }}</td>
+              <td>{{ format(row, row.recent) }}</td>
+              <td>{{ changeText(row) }}</td>
+              <td :title="'Usual swing for ' + recentCount + ' games: ' + format(row, row.swing)"><span :class="verdictClass(row.verdict)">{{ row.verdict }}</span></td>
+            </tr>
+            <tr v-if="progressSelected === row.key">
+              <td colspan="5">
+                <multi-series-chart
+                  :labels="trend(row).labels"
+                  :yLabel="row.name"
+                  :series="trendSeries(row)"
+                ></multi-series-chart>
+                <p class="text-center text-sm text-gray-light">Your last {{ trend(row).labels.length }} games under these filters, oldest to newest.</p>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+
+      <h3 class="text-lg font-bold mb-1">All signals</h3>
       <table class="min-w-0 w-full responsive-table">
         <thead>
           <tr>
@@ -130,6 +179,24 @@ const SIGNALS = [
     value: m => m.heroic_delay, sampleGames: m => m.heroic_games, events: ['slow_heroic', 'unused_heroic'] },
 ];
 
+// Each signal's column in your per-game rows (the "recent" query)
+const GAME_COLUMN = {
+  overstay: 'overstay',
+  missed_lost_fight: 'lost_absent',
+  missed_costly_fight: 'lost_absent_costly',
+  objective_presence: 'objective_presence',
+  tier_down_fights: 'tier_down_present',
+  caught_first: 'caught_first',
+  picked_alone: 'picked_alone',
+  fight_presence: 'fight_presence',
+  unmounted_travel: 'unmounted_travel',
+  camp_duty: 'camp_duty',
+  repeat_nemesis: 'repeat_deaths',
+  matchup_unadapted: 'matchups_unadapted',
+  bush_deaths: 'bush_deaths',
+  heroic_delay: 'heroic_delay_s',
+};
+
 export default {
   name: 'AnalyticsCoaching',
   mixins: [analytics],
@@ -144,6 +211,8 @@ export default {
     return {
       selected: null,
       talking: true,
+      recentCount: 5,
+      progressSelected: null,
     };
   },
   computed: {
@@ -191,6 +260,40 @@ export default {
         .filter(r => r.confidence !== 'Low' && r.percentile !== null && r.key !== 'tier_down_fights')
         .map(r => ({ ...r, ahead: this.playersAhead(r) }))
         .sort((a, b) => b.ahead - a.ahead);
+    },
+    recentGames() {
+      return this.data.recent || [];
+    },
+    // The signals the summary tells you to work on
+    workKeys() {
+      return this.ranked.filter(r => r.ahead > 50).slice(0, 2).map(r => r.key);
+    },
+    // Last few games vs earlier games for every signal with enough evidence, the ones you are working on first
+    progressRows() {
+      const n = this.recentCount;
+      return this.rows
+        .filter(r => r.confidence !== 'Low' && GAME_COLUMN[r.key])
+        .map(r => {
+          const values = this.recentGames.map(g => g[GAME_COLUMN[r.key]]).filter(v => v !== null && v !== undefined && v !== '').map(Number);
+          const recent = values.slice(0, n);
+          const earlier = values.slice(n);
+          if (recent.length < Math.min(n, 2) || earlier.length < 5) {
+            return null;
+          }
+          const mean = list => list.reduce((a, b) => a + b, 0) / list.length;
+          const earlierMean = mean(earlier);
+          const sd = Math.sqrt(earlier.reduce((t, v) => t + (v - earlierMean) ** 2, 0) / (earlier.length - 1));
+          // The usual swing of a few-game average: one standard error, from your earlier games
+          const swing = sd / Math.sqrt(recent.length);
+          const diff = mean(recent) - earlierMean;
+          const better = r.better === 'lower' ? diff < 0 : diff > 0;
+          // A floor of 1% of the earlier average, so a signal that never varies doesn't flag rounding noise
+          const threshold = Math.max(swing, Math.abs(earlierMean) * 0.01, 1e-6);
+          const verdict = Math.abs(diff) <= threshold ? 'About the same' : better ? 'Improving' : 'Worse';
+          return { ...r, earlier: earlierMean, recent: mean(recent), diff, swing, verdict, focus: this.workKeys.includes(r.key) };
+        })
+        .filter(Boolean)
+        .sort((a, b) => Number(b.focus) - Number(a.focus));
     },
     // What the announcer says: up to two things to work on, and your best area
     summary() {
@@ -269,6 +372,44 @@ export default {
         parts.push('habit consistency r=' + this.round(s.consistency_r, 2));
       }
       return parts.length ? 'Evidence: ' + parts.join(', ') + ' (' + Number(s.player_games || 0).toLocaleString('en-US') + ' player-games).' : 'Not enough data yet.';
+    },
+    setRecentCount(side) {
+      this.recentCount = side === 'left' ? 3 : 5;
+    },
+    changeText(row) {
+      const sign = row.diff >= 0 ? '+' : '';
+      if (row.share || row.delta) {
+        return sign + this.round(row.diff * 100, 1) + ' pts';
+      }
+      if (row.seconds) {
+        return sign + Math.round(row.diff) + ' s';
+      }
+      return sign + this.round(row.diff, 2) + ' / game';
+    },
+    verdictClass(verdict) {
+      return verdict === 'Improving' ? 'text-teal' : verdict === 'Worse' ? 'text-red' : 'text-gray-light';
+    },
+    // Your last 20 games for one signal, oldest first, with a 5-game rolling average
+    trend(row) {
+      const games = this.recentGames
+        .map(g => ({ date: g.game_date, value: g[GAME_COLUMN[row.key]] }))
+        .filter(g => g.value !== null && g.value !== undefined && g.value !== '')
+        .slice(0, 20)
+        .reverse();
+      const scale = v => (row.share || row.delta ? Number(v) * 100 : Number(v));
+      const values = games.map(g => this.round(scale(g.value), 2));
+      const rolling = values.map((v, i) => {
+        const window = values.slice(Math.max(0, i - 4), i + 1);
+        return window.length < 3 ? null : this.round(window.reduce((a, b) => a + b, 0) / window.length, 2);
+      });
+      return { labels: games.map(g => moment.tz(g.date, 'Atlantic/Reykjavik').clone().tz(moment.tz.guess()).format('MM/DD')), values, rolling };
+    },
+    trendSeries(row) {
+      const t = this.trend(row);
+      return [
+        { label: 'Each game', data: t.values, color: 'teal' },
+        { label: '5-game average', data: t.rolling, color: 'yellow', dashed: true },
+      ];
     },
     confidenceClass(level) {
       return level === 'High' ? 'text-teal' : level === 'Medium' ? 'text-yellow' : 'text-red';

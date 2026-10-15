@@ -193,6 +193,8 @@ export default {
         { formula: 'r_xw·d = (r_xw − r_xd · r_wd) / √((1 − r_xd²)(1 − r_wd²))' },
         'Signal confidence is High when the association beyond deaths is at least 0.15 in magnitude, the early-game effect is at least 3 points, and consistency is at least 0.2. It is Medium when either of the first two holds, and Low otherwise.',
         'Your-sample confidence is High with 30 or more of your games behind the value, Medium with 10-29, and Low below 10.',
+        'Progress over recent games ("Are you improving?") compares the mean of your last 3 or 5 games with the mean of your earlier games under the same filters, for each signal rated Medium or High. Because a few games are a small sample, a change is only reported as improving or worse when it exceeds one standard error of a few-game mean, estimated from the spread of your earlier games; otherwise it is reported as about the same. At least five earlier games are required.',
+        { formula: 'reported change if |mean(last n) − mean(earlier)| > sd(earlier) / √n' },
         'Your standing is your position in the global distribution under the same filters. We use players with at least 5 games under those filters when there are at least 20 such players, otherwise individual global games (when there are at least 50), and otherwise the unfiltered distribution of players with at least 10 games. Standing is reported as the share of players doing better or worse than you.',
       ] },
       { heading: 'Limitations', body: [

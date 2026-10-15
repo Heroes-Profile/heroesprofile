@@ -48,6 +48,7 @@
       <div v-if="status.done > 0">
         <multi-tab-button class="mb-6" :options="tabs" v-model="activeTab"></multi-tab-button>
 
+        <p v-if="tabError" class="text-center text-red mb-4">{{ tabError }}</p>
         <div v-if="!isLoading && tabData">
           <analytics-deaths v-if="activeTab === 'deaths'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-deaths>
           <analytics-positions v-else-if="activeTab === 'map'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-positions>
@@ -118,6 +119,7 @@ export default {
       papers,
       activeTab: ['deaths', 'map', 'timelines', 'activity', 'sessions', 'coaching', 'stacks', 'games'].includes((this.urlparameters || {}).tab) ? this.urlparameters.tab : 'deaths',
       tabCache: {},
+      tabError: '',
       isLoading: false,
       gametype: this.gametypedefault,
       gamemap: [],
@@ -187,6 +189,7 @@ export default {
     },
     async loadTab() {
       const key = this.cacheKey();
+      this.tabError = '';
       if (this.tabCache[key]) {
         return;
       }
@@ -195,7 +198,7 @@ export default {
         const response = await this.$axios.post('/Analytics/Data/' + this.activeTab, this.filterParams);
         this.tabCache = { ...this.tabCache, [key]: response.data };
       } catch (e) {
-        this.error = 'Could not load this tab. Please try again in a minute.';
+        this.tabError = 'Could not load this tab. Please try again in a minute.';
       } finally {
         this.isLoading = false;
       }
