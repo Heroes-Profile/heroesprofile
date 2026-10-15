@@ -37,7 +37,7 @@ class AnalyticsQueryService
         $threshold = $this->globalThreshold();
         // Coaching tables are rebuilt by a nightly BigQuery job (or by hand); refresh whenever they change
         $nightly = $tab === 'coaching' ? ':'.$this->coachingVersion() : '';
-        $key = 'analytics:tab:v'.config('analytics.extract_v').'.8:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
+        $key = 'analytics:tab:v'.config('analytics.extract_v').'.9:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
 
         return Cache::remember($key, now()->addDays(7), function () use ($tab, $blizzId, $region, $filters, $threshold) {
             $params = [
@@ -660,31 +660,38 @@ class AnalyticsQueryService
             ],
 
             'sessions' => [
-                'games' => $this->ctes().'
-                    SELECT g.replay_id, FORMAT_DATETIME("%Y-%m-%dT%H:%M:%S", m.game_date) AS game_date, m.length_s, m.game_map, g.hero_id, g.winner
-                    FROM games g JOIN `{dataset}.match` m ON m.replay_id = g.replay_id AND m.game_date >= @cutover
+                // Every game, so sessions aren't split by games the filters hide; in_filter marks the ones the stats use
+                'games' => '
+                    SELECT p.replay_id, FORMAT_DATETIME("%Y-%m-%dT%H:%M:%S", m.game_date) AS game_date, m.length_s, m.game_map, p.hero_id, p.winner,
+                      (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR p.game_type IN UNNEST(@game_types))
+                        AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR p.game_map IN UNNEST(@maps))
+                        AND (@hero = 0 OR p.hero_id = @hero) AS in_filter
+                    FROM `{dataset}.player_match` p JOIN `{dataset}.match` m ON m.replay_id = p.replay_id AND m.game_date >= @cutover
+                    WHERE p.game_date >= @cutover AND p.blizz_id = @blizz AND p.region = @region
                     ORDER BY m.game_date',
 
                 'disconnects' => $this->ctes().",
                     leaves AS (
                       -- A leave in the last 30 s is the end of the game, not a disconnect
-                      SELECT dc.replay_id, p.team
+                      SELECT dc.replay_id, p.team, dc.blizz_id
                       FROM `{dataset}.disconnects` dc
                       JOIN `{dataset}.player_match` p ON p.replay_id = dc.replay_id AND p.blizz_id = dc.blizz_id AND p.game_date >= @cutover
                       JOIN `{dataset}.match` m ON m.replay_id = dc.replay_id AND m.game_date >= @cutover
                       WHERE dc.game_date >= @cutover AND dc.kind = 'leave' AND dc.t_s < m.length_s - 30
-                      GROUP BY dc.replay_id, p.team
+                      GROUP BY dc.replay_id, p.team, dc.blizz_id
                     ),
                     per_game AS (
                       SELECT g.winner,
-                        EXISTS(SELECT 1 FROM leaves l WHERE l.replay_id = g.replay_id AND l.team = g.team) AS own_dc,
+                        EXISTS(SELECT 1 FROM leaves l WHERE l.replay_id = g.replay_id AND l.blizz_id = @blizz) AS you_dc,
+                        EXISTS(SELECT 1 FROM leaves l WHERE l.replay_id = g.replay_id AND l.team = g.team AND l.blizz_id != @blizz) AS mate_dc,
                         EXISTS(SELECT 1 FROM leaves l WHERE l.replay_id = g.replay_id AND l.team != g.team) AS enemy_dc
                       FROM games g
                     )
                     SELECT COUNT(*) AS games,
-                      COUNTIF(own_dc) AS own_dc_games, AVG(IF(own_dc, IF(winner, 1, 0), NULL)) AS win_rate_own_dc,
+                      COUNTIF(you_dc) AS you_dc_games, AVG(IF(you_dc, IF(winner, 1, 0), NULL)) AS win_rate_you_dc,
+                      COUNTIF(mate_dc) AS mate_dc_games, AVG(IF(mate_dc, IF(winner, 1, 0), NULL)) AS win_rate_mate_dc,
                       COUNTIF(enemy_dc) AS enemy_dc_games, AVG(IF(enemy_dc, IF(winner, 1, 0), NULL)) AS win_rate_enemy_dc,
-                      AVG(IF(NOT own_dc AND NOT enemy_dc, IF(winner, 1, 0), NULL)) AS win_rate_no_dc
+                      AVG(IF(NOT you_dc AND NOT mate_dc AND NOT enemy_dc, IF(winner, 1, 0), NULL)) AS win_rate_no_dc
                     FROM per_game",
             ],
         };

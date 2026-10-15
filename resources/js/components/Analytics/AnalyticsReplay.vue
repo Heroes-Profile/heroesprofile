@@ -12,6 +12,7 @@
     <div v-else class="max-w-[1500px] mx-auto px-4 mt-4">
       <p v-if="error" class="text-center text-red">{{ error }}</p>
       <template v-else>
+      <infobox class="mb-4" :input="'Watch the game play out on the minimap, with the in-game top bar, each team\'s win chance and a feed of events. Replays only record exact hero positions now and then, so hero positions between those moments are estimates.'"></infobox>
       <div class="flex flex-wrap gap-4">
         <!-- Map and controls -->
         <div class="flex-1 min-w-0 basis-[60%]">
@@ -45,10 +46,15 @@
               :ignoreclick="true"
               @click="$refs.xp.scrollIntoView({ behavior: 'smooth', block: 'start' })"
             ></custom-button>
-            <span>Movement</span>
+            <span class="inline-flex items-center gap-1">
+              Movement
+              <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                <slot><p class="text-sm p-2 text-left">Replays only record exact positions now and then (position updates, spawns, globe pickups, deaths). Follow move orders walks heroes toward where they were ordered to move, faster while mounted and around walls; Smooth glides them between exact positions, also around walls. Follow is the more accurate of the two.</p></slot>
+              </round-image>
+            </span>
             <multi-tab-button :options="modeOptions" v-model="mode"></multi-tab-button>
             <span class="text-gray-light">
-              Positions between the game's own updates are estimated from move orders. Space plays or pauses, arrows skip 5 seconds.
+              {{ mode === 'follow' ? "Between the game's own position updates, heroes walk along their move orders." : "Between the game's own position updates, heroes glide straight to the next one." }} Space plays or pauses, arrows skip 5 seconds.
             </span>
           </div>
 
@@ -61,9 +67,9 @@
               <span>Level {{ levelAt(team) }} &middot; {{ killsAt(team) }} takedowns</span>
             </div>
             <div class="text-center text-gray-light mb-1">Team XP: {{ xpLead }}</div>
-            <!-- The match page's experience chart; Team 1 is Blue -->
+            <!-- The match page's experience chart, in this page's team colours and names -->
             <div class="w-full">
-              <dual-line-chart :data="experience" :winner="winningTeam"></dual-line-chart>
+              <dual-line-chart :data="experience" :winner="winningTeam" :team-colors="[teamColor(0), teamColor(1)]" :team-names="['Blue', 'Red']"></dual-line-chart>
             </div>
           </div>
         </div>
@@ -142,6 +148,7 @@ import { markRaw } from 'vue';
 import analytics from '../../utils/analyticsFormat.js';
 import { buildTracks, positionAt } from '../../utils/replayTracks.js';
 import { loadWalkable, minimapFor, teamColor } from '../../utils/mapAssets.js';
+import { loadWalkGrid } from '../../utils/replayPathing.js';
 
 // The replay viewer's event feed and timeline markers, built once per game from its extract doc.
 // Each event is { t, type, color, label, team }; `type` is one of EVENT_TYPES' codes and `team` is the
@@ -309,6 +316,7 @@ export default {
       error: '',
       tracks: markRaw(new Map()),
       walkable: null,
+      walkGrid: null,
       mode: 'follow',
       modeOptions: [
         { key: 'follow', label: 'Follow move orders' },
@@ -336,7 +344,7 @@ export default {
       const response = await this.$axios.get('/Analytics/Match/Single/' + this.replayId + '/Data');
       this.data = response.data;
       this.selected = this.data.players.find(p => p.you)?.idx ?? null;
-      this.walkable = await loadWalkable(this.minimap);
+      [this.walkable, this.walkGrid] = await Promise.all([loadWalkable(this.minimap), loadWalkGrid(this.minimap)]);
       this.rebuild();
       // ?t= opens the game a few seconds before that moment (coaching examples link here)
       const start = Number((this.urlparameters || {}).t);
@@ -461,7 +469,7 @@ export default {
     },
     rebuild() {
       if (!this.data) return;
-      this.tracks = markRaw(buildTracks(this.data, { mode: this.mode, walkable: this.walkable }));
+      this.tracks = markRaw(buildTracks(this.data, { mode: this.mode, walkable: this.walkable, walkGrid: this.walkGrid }));
     },
     toggle() {
       this.playing = !this.playing;
