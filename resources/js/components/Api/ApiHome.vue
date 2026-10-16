@@ -7,7 +7,7 @@
         Heroes Profile API is a tool used to get Heroes of the Storm data parsed for
         <a href="https://www.heroesprofile.com/" class="underline hover:text-lteal">Heroes Profile</a>.
         We source original replay data from our own
-        <a href="/upload" class="underline hover:text-lteal">Uploader</a>, then parse the data to
+        <a href="/Upload" class="underline hover:text-lteal">Uploader</a>, then parse the data to
         provide you with up-to-date calculated MMR, win rates, and more. Your subscription helps us
         create new features for Heroes Profile. View our
         <a href="/Api/Docs" class="underline hover:text-lteal">Documentation</a> or
