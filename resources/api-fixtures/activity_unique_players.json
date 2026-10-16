@@ -561,6 +561,20 @@
     },
     {
         "x_label": "2026-08",
-        "unique_players": 44218
+        "unique_players": 44218,
+        "previous_months_to_date": [
+            {
+                "x_label": "2026-07",
+                "unique_players": 32150
+            },
+            {
+                "x_label": "2026-06",
+                "unique_players": 39870
+            },
+            {
+                "x_label": "2026-05",
+                "unique_players": 40215
+            }
+        ]
     }
 ]

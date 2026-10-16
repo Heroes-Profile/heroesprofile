@@ -240,6 +240,7 @@ return [
         'replayID' => 'The match id. Pass it to `/replay/{replayID}` for full detail.',
         'blizz_id' => 'Blizzard account id. Stable per region, and not a battletag.',
         'region' => 'Region id. 1 NA, 2 EU, 3 KR, 5 CN.',
+        'previous_months_to_date' => 'Current month only: unique players in each of the previous three months up to the same day and time, for projecting the current month.',
         'next_after' => 'Pass as `after` to get the following page. Null once you have caught up.',
         'max_replay_id' => 'The highest replay id stored, so you know how far there is to go.',
         'downloadable' => 'Whether the replay file is still within the retention window and can be fetched from `/download/replay`.',
