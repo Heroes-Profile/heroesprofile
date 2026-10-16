@@ -102318,6 +102318,25 @@
                                             },
                                             "unique_players": {
                                                 "type": "integer"
+                                            },
+                                            "previous_months_to_date": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "x_label": {
+                                                            "type": "string"
+                                                        },
+                                                        "unique_players": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "x_label",
+                                                        "unique_players"
+                                                    ]
+                                                },
+                                                "description": "Current month only: unique players in each of the previous three months up to the same day and time, for projecting the current month."
                                             }
                                         },
                                         "required": [

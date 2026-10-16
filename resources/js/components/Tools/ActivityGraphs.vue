@@ -54,6 +54,8 @@
           :title="'Unique Players per Month'"
           :pointRadius="4"
           :pointHoverRadius="8"
+          :projected="projectedCurrentMonth"
+          :projectedLabel="'Expected (current month)'"
         ></line-chart>
       </template>
     </div>
@@ -70,7 +72,7 @@ export default {
   },
   data() {
     return {
-      infoText: 'Unique player counts per month based on replays uploaded to Heroes Profile. Data goes back to October 2014. The current month is always calculated in real time.',
+      infoText: 'Unique player counts per month based on replays uploaded to Heroes Profile. Data goes back to October 2014. The current month is always calculated in real time, and the dotted line shows its expected total, based on how the previous three months typically grew from the same point.',
       data: [],
       loading: false,
       error: null,
@@ -93,6 +95,30 @@ export default {
     },
     filteredData() {
       return this.data.filter(d => this.activeYears.includes(d.x_label.split('-')[0]));
+    },
+    // Current month so far, grown by the median of how the previous months grew
+    // from the same point. A median so one unusual month can't skew it.
+    projectedCurrentMonth() {
+      const shown = this.filteredData[this.filteredData.length - 1];
+      const current = this.data[this.data.length - 1];
+      if (!shown || shown !== current || !current.previous_months_to_date) {
+        return null;
+      }
+
+      const ratios = current.previous_months_to_date
+        .map(toDate => {
+          const month = this.data.find(d => d.x_label === toDate.x_label);
+          return month && toDate.unique_players ? month.unique_players / toDate.unique_players : null;
+        })
+        .filter(ratio => ratio !== null)
+        .sort((a, b) => a - b);
+      if (!ratios.length) {
+        return null;
+      }
+
+      const mid = Math.floor(ratios.length / 2);
+      const median = ratios.length % 2 ? ratios[mid] : (ratios[mid - 1] + ratios[mid]) / 2;
+      return Math.round(current.unique_players * median);
     },
   },
   mounted() {

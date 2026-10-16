@@ -13,7 +13,7 @@ namespace App\Support;
  */
 class JsonSchemaFromSample
 {
-    /** Beyond this, a list is described by its first entries rather than all of them. */
+    /** Beyond this, a list is described by its first entries and its last one rather than all of them. */
     private const SAMPLE_LIMIT = 25;
 
     /** @return array<string, mixed> */
@@ -38,6 +38,10 @@ class JsonSchemaFromSample
         }
 
         $items = array_slice($value, 0, self::SAMPLE_LIMIT);
+        // Running totals put a current-period row with extra fields at the end.
+        if (count($value) > self::SAMPLE_LIMIT) {
+            $items[] = end($value);
+        }
         $schema = self::describe(array_shift($items));
 
         foreach ($items as $item) {

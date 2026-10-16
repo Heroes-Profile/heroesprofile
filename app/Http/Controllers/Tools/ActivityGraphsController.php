@@ -22,6 +22,9 @@ class ActivityGraphsController extends GlobalsInputValidationController
     // Unsettled months are still moving, but not by the minute.
     private const LIVE_CACHE_SECONDS = 1800;
 
+    // How many previous months the current-month projection is based on.
+    private const PROJECTION_MONTHS = 3;
+
     public function show(Request $request)
     {
         return view('Tools.activityGraphs')
@@ -92,6 +95,33 @@ class ActivityGraphsController extends GlobalsInputValidationController
             $month->addMonth();
         }
 
+        // The previous months' counts up to the same point, so the page can project
+        // the current month from how those months grew after it.
+        $last = count($result) - 1;
+        if ($last > 0) {
+            $previous = [];
+            $firstMonth = Carbon::parse(self::START_DATE)->startOfMonth();
+
+            for ($i = 1; $i <= self::PROJECTION_MONTHS; $i++) {
+                $start = $now->copy()->startOfMonth()->subMonthsNoOverflow($i);
+                if ($start->lessThan($firstMonth)) {
+                    break;
+                }
+                $toDate = $now->copy()->subMonthsNoOverflow($i);
+
+                $previous[] = [
+                    'x_label' => $start->format('Y-m'),
+                    'unique_players' => $cache->remember(
+                        'ActivityGraph|UniquePlayersByMonth|ToDate|'.$now->format('Y-m').'|'.$i.'|'.$filterHash,
+                        self::LIVE_CACHE_SECONDS,
+                        fn () => $this->queryUniquePlayers($start, $toDate, $gameType, $region)
+                    ),
+                ];
+            }
+
+            $result[$last]['previous_months_to_date'] = $previous;
+        }
+
         return response()->json($result);
     }
 
@@ -133,13 +163,15 @@ class ActivityGraphsController extends GlobalsInputValidationController
 
     private function queryUniquePlayersForMonth(Carbon $month, ?array $gameType, ?array $region): int
     {
-        $start = $month->copy()->startOfMonth()->toDateTimeString();
-        $end = $month->copy()->endOfMonth()->toDateTimeString();
+        return $this->queryUniquePlayers($month->copy()->startOfMonth(), $month->copy()->endOfMonth(), $gameType, $region);
+    }
 
+    private function queryUniquePlayers(Carbon $start, Carbon $end, ?array $gameType, ?array $region): int
+    {
         return DB::connection('heroesprofile')
             ->table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->whereBetween('replay.game_date', [$start, $end])
+            ->whereBetween('replay.game_date', [$start->toDateTimeString(), $end->toDateTimeString()])
             ->when(! is_null($gameType), fn ($q) => $q->whereIn('replay.game_type', $gameType))
             ->when(! is_null($region), fn ($q) => $q->whereIn('replay.region', $region))
             ->distinct()
