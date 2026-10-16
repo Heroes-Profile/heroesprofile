@@ -1,0 +1,40 @@
+# Creates a release for every push to master, bumping the patch number of the
+# latest v* tag. Minor/major bumps are done by hand; the next push continues
+# from whatever tag is newest.
+
+name: Release
+
+on:
+  push:
+    branches: master
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Create release
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        latest=$(git tag --list 'v*' --sort=-v:refname | head -n 1)
+        latest=${latest:-v0.0.0}
+
+        IFS=. read -r major minor patch <<< "${latest#v}"
+        next="v${major}.${minor}.$((patch + 1))"
+
+        gh release create "$next" \
+          --target "$GITHUB_SHA" \
+          --title "Heroes Profile $next" \
+          --generate-notes
