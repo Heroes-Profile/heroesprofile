@@ -141,6 +141,109 @@
       <div v-if="notice" class="bg-teal p-3 mb-4">{{ notice }}</div>
       <div v-if="error" class="bg-red p-3 mb-4">{{ error }}</div>
 
+      <div id="details" class="bg-lighten p-6 mb-8">
+        <h2 class="text-lg mb-4">Account Details</h2>
+
+        <table class="min-w-0 w-full responsive-table mb-6">
+          <tbody>
+            <tr>
+              <td class="py-2 px-3 text-sm">Email</td>
+              <td class="py-2 px-3">
+                {{ account.email }}
+                <span v-if="account.email_verified" class="text-sm text-lteal ml-2">Verified</span>
+                <template v-else>
+                  <span class="text-sm text-yellow ml-2">Not verified</span>
+                  <button
+                    v-if="!verificationSent"
+                    @click="resendVerification"
+                    :disabled="sendingVerification"
+                    class="link text-sm ml-2"
+                  >
+                    {{ sendingVerification ? 'Sending…' : 'Resend verification email' }}
+                  </button>
+                  <span v-else class="text-sm text-lteal ml-2">Sent. Check your inbox.</span>
+                </template>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-2 px-3 text-sm">Member since</td>
+              <td class="py-2 px-3">{{ account.member_since || 'Unknown' }}</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-3 text-sm">Plan</td>
+              <td class="py-2 px-3">
+                {{ account.plans.length ? account.plans.join(', ') : 'None' }}
+                <a class="link text-sm ml-2" href="/Api/Account/Billing">Billing</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p v-if="verificationError" class="text-sm text-red mb-4">{{ verificationError }}</p>
+
+        <label class="block text-sm mb-1" for="account-name">Name</label>
+        <input
+          id="account-name"
+          v-model="name"
+          type="text"
+          maxlength="255"
+          class="w-full p-2 bg-darken mb-4"
+        />
+
+        <button
+          @click="saveName"
+          :disabled="savingName"
+          class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+        >
+          {{ savingName ? 'Saving…' : 'Save' }}
+        </button>
+
+        <p v-if="nameError" class="text-sm text-red mt-2">{{ nameError }}</p>
+        <p v-if="nameSaved" class="text-sm text-lteal mt-2">Saved.</p>
+
+        <h3 class="mt-8 mb-2">Change Password</h3>
+        <p class="text-sm text-gray-medium mb-4">
+          Forgotten it? <a class="link" href="/Api/Password/Forgot">Reset it by email</a> instead.
+        </p>
+
+        <label class="block text-sm mb-1" for="current-password">Current password</label>
+        <input
+          id="current-password"
+          v-model="currentPassword"
+          type="password"
+          autocomplete="current-password"
+          class="w-full p-2 bg-darken mb-4"
+        />
+
+        <label class="block text-sm mb-1" for="new-password">New password</label>
+        <input
+          id="new-password"
+          v-model="newPassword"
+          type="password"
+          autocomplete="new-password"
+          class="w-full p-2 bg-darken mb-4"
+        />
+
+        <label class="block text-sm mb-1" for="new-password-confirmation">Confirm new password</label>
+        <input
+          id="new-password-confirmation"
+          v-model="newPasswordConfirmation"
+          type="password"
+          autocomplete="new-password"
+          class="w-full p-2 bg-darken mb-4"
+        />
+
+        <button
+          @click="changePassword"
+          :disabled="changingPassword"
+          class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+        >
+          {{ changingPassword ? 'Saving…' : 'Change password' }}
+        </button>
+
+        <p v-if="passwordError" class="text-sm text-red mt-2">{{ passwordError }}</p>
+        <p v-if="passwordChanged" class="text-sm text-lteal mt-2">Password changed.</p>
+      </div>
+
       <div id="project" class="bg-lighten p-6 mb-8" :class="{ 'border-l-4 border-yellow': projectRequired }">
         <h2 class="text-lg mb-2">Your Project</h2>
         <p v-if="projectRequired" class="mb-4">
@@ -389,6 +492,19 @@ export default {
       savingProject: false,
       projectSaved: false,
       projectError: null,
+      name: this.account.name || '',
+      savingName: false,
+      nameSaved: false,
+      nameError: null,
+      currentPassword: '',
+      newPassword: '',
+      newPasswordConfirmation: '',
+      changingPassword: false,
+      passwordChanged: false,
+      passwordError: null,
+      sendingVerification: false,
+      verificationSent: false,
+      verificationError: null,
     }
   },
   computed: {
@@ -411,6 +527,66 @@ export default {
     },
   },
   methods: {
+    async saveName(){
+      this.savingName = true;
+      this.nameError = null;
+      this.nameSaved = false;
+
+      try {
+        const response = await this.$axios.post('/api/v1/account/name', { name: this.name });
+        this.name = response.data.name;
+        this.nameSaved = true;
+      } catch (error) {
+        this.nameError = this.firstError(error);
+      } finally {
+        this.savingName = false;
+      }
+    },
+    async changePassword(){
+      this.changingPassword = true;
+      this.passwordError = null;
+      this.passwordChanged = false;
+
+      try {
+        await this.$axios.post('/api/v1/account/password', {
+          current_password: this.currentPassword,
+          password: this.newPassword,
+          password_confirmation: this.newPasswordConfirmation,
+        });
+        this.currentPassword = '';
+        this.newPassword = '';
+        this.newPasswordConfirmation = '';
+        this.passwordChanged = true;
+      } catch (error) {
+        this.passwordError = this.firstError(error);
+      } finally {
+        this.changingPassword = false;
+      }
+    },
+    async resendVerification(){
+      this.sendingVerification = true;
+      this.verificationError = null;
+
+      try {
+        await this.$axios.post('/api/v1/account/email/resend');
+        this.verificationSent = true;
+      } catch (error) {
+        this.verificationError = this.firstError(error);
+      } finally {
+        this.sendingVerification = false;
+      }
+    },
+    firstError(error){
+      if(error.response?.status === 429){
+        return 'Too many attempts. Wait a minute and try again.';
+      }
+
+      const errors = error.response?.data?.errors;
+
+      return errors
+        ? Object.values(errors).flat()[0]
+        : (error.response?.data?.error || 'Could not save that. Please try again.');
+    },
     async saveProject(){
       this.savingProject = true;
       this.projectError = null;
