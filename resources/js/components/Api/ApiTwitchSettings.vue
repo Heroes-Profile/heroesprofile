@@ -69,7 +69,7 @@
         <div class="bg-darken p-4 mb-4">
           <h3 class="font-semibold mb-4">2. Your Battle.net Account</h3>
           <p class="text-sm text-gray-medium mb-4">
-            Tells us which player in the lobby is you, so your team is always shown first.
+            Tells us which player in the lobby is you, so viewers can see which side is your team. Without it, the teams are shown as Left Team and Right Team.
           </p>
 
           <p v-if="channel.battletag" class="text-sm mb-4">
