@@ -86,6 +86,10 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
     // is part of getting reinstated.
     Route::post('account/project', [ApiAccountController::class, 'setProject']);
 
+    Route::post('account/name', [ApiAccountController::class, 'setName']);
+    Route::post('account/password', [ApiAccountController::class, 'changePassword'])->middleware('throttle:contact');
+    Route::post('account/email/resend', [ApiAccountController::class, 'resendVerification'])->middleware('throttle:contact');
+
     Route::post('account/billing/setup-intent', [BillingController::class, 'setupIntent']);
     Route::post('account/billing/payment-method', [BillingController::class, 'savePaymentMethod']);
     Route::post('account/billing/subscribe', [BillingController::class, 'subscribe'])->middleware('blockSuspendedApi');

@@ -15,6 +15,9 @@ use App\Support\StandingText;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 
 class AccountController extends Controller
 {
@@ -35,6 +38,9 @@ class AccountController extends Controller
             'account' => [
                 'name' => $account->name,
                 'email' => $account->email,
+                'email_verified' => $account->hasVerifiedEmail(),
+                'member_since' => $account->created_at?->toFormattedDateString(),
+                'plans' => array_map(fn (int $id) => config("api_plans.plans.{$id}.name"), $usage->planIdsFor($account)),
                 'migrated' => $account->hasMigrated(),
                 'test_mode' => $account->inTestMode(),
                 'receives_test_data' => $account->receivesTestData(),
@@ -101,6 +107,56 @@ class AccountController extends Controller
             'project_description' => $account->project_description,
             'website' => $account->website,
         ]);
+    }
+
+    public function setName(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $account = Auth::guard('api_web')->user();
+
+        $account->forceFill(['name' => trim($validated['name'])])->save();
+
+        return response()->json(['name' => $account->name]);
+    }
+
+    /** `users` is shared with the old site, so this changes the password there too. */
+    public function changePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'string'],
+            'password' => ['required', 'confirmed', Password::min(8)],
+        ]);
+
+        $account = Auth::guard('api_web')->user();
+
+        if (! Hash::check($validated['current_password'], (string) $account->password)) {
+            return response()->json([
+                'errors' => ['current_password' => ['Your current password is not correct.']],
+            ], 422);
+        }
+
+        $account->forceFill([
+            'password' => Hash::make($validated['password']),
+            'remember_token' => Str::random(60),
+        ])->save();
+
+        return response()->json(['changed' => true]);
+    }
+
+    public function resendVerification()
+    {
+        $account = Auth::guard('api_web')->user();
+
+        if ($account->hasVerifiedEmail()) {
+            return response()->json(['error' => 'Your email address is already verified.'], 409);
+        }
+
+        $account->sendEmailVerificationNotification();
+
+        return response()->json(['sent' => true]);
     }
 
     /** Dismissing the warning banner. The timestamp is the evidence it was read. */
