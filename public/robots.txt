@@ -24,6 +24,29 @@ Allow: /Privacy/Policy
 Allow: /Terms/Of/Service
 Allow: /Player/Zemill/67280/1/
 
+# Fixed-size pages. Exact matches only ($), so query strings stay blocked.
+Allow: /Api$
+Allow: /Api/Docs$
+Allow: /Api/Migrating$
+Allow: /Api/DeveloperTier$
+Allow: /Api/EndpointLimits$
+Allow: /Api/Terms$
+Allow: /Api/Privacy$
+Allow: /Upload$
+Allow: /Upload/Uploader$
+Allow: /Drafter$
+Allow: /Tools/RandomizeMe$
+Allow: /Tools/AutoBattler$
+Allow: /Tools/Activity$
+Allow: /Twitch$
+Allow: /Twitch/Guidelines$
+Allow: /Github/Change/Log$
+Allow: /Community/Support$
+
+# Filter combinations are unbounded. Longer than "Allow: /Global/", so it wins.
+Disallow: /*?
+Disallow: /Global/*?
+
 # API
 Disallow: /api/
 
