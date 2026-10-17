@@ -53,6 +53,27 @@ class GenerateSitemap extends Command
             ['loc' => '/Contact',                  'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.4'],
             ['loc' => '/Privacy/Policy',           'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.3'],
             ['loc' => '/Terms/Of/Service',         'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.3'],
+            ['loc' => '/Github/Change/Log',        'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.4'],
+            ['loc' => '/Community/Support',        'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.4'],
+
+            // Tools
+            ['loc' => '/Upload',                   'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.7'],
+            ['loc' => '/Upload/Uploader',          'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.6'],
+            ['loc' => '/Drafter',                  'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.7'],
+            ['loc' => '/Tools/RandomizeMe',        'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.5'],
+            ['loc' => '/Tools/AutoBattler',        'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.5'],
+            ['loc' => '/Tools/Activity',           'lastmod' => $now, 'changefreq' => 'daily',   'priority' => '0.5'],
+            ['loc' => '/Twitch',                   'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.6'],
+            ['loc' => '/Twitch/Guidelines',        'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.3'],
+
+            // API portal
+            ['loc' => '/Api',                      'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.8'],
+            ['loc' => '/Api/Docs',                 'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.7'],
+            ['loc' => '/Api/DeveloperTier',        'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.5'],
+            ['loc' => '/Api/EndpointLimits',       'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.5'],
+            ['loc' => '/Api/Migrating',            'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.4'],
+            ['loc' => '/Api/Terms',                'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.3'],
+            ['loc' => '/Api/Privacy',              'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.3'],
         ];
     }
 
