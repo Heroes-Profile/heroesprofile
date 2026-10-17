@@ -121,6 +121,9 @@ return new class extends Migration
             $table->text('project_description')->nullable();
             $table->timestamp('project_updated_at')->nullable();
 
+            // What the portal header shows for them: 'email', 'name' or 'none'.
+            $table->string('header_display', 10)->default('email');
+
             // Enforcement state. Denormalised here rather than derived from
             // `api_account_actions` because both sites read it on the hot path: the
             // resolver already joins this table, and the old site asks for it in raw

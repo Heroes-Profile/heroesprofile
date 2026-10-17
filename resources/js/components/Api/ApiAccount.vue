@@ -200,6 +200,22 @@
         <p v-if="nameError" class="text-sm text-red mt-2">{{ nameError }}</p>
         <p v-if="nameSaved" class="text-sm text-lteal mt-2">Saved.</p>
 
+        <label class="block text-sm mt-6 mb-1" for="header-display">Show in header</label>
+        <select
+          id="header-display"
+          v-model="headerDisplay"
+          @change="saveHeaderDisplay"
+          :disabled="savingHeaderDisplay"
+          class="text-black p-2 rounded"
+        >
+          <option value="email">Email</option>
+          <option value="name">Name</option>
+          <option value="none">Nothing</option>
+        </select>
+
+        <p v-if="headerDisplayError" class="text-sm text-red mt-2">{{ headerDisplayError }}</p>
+        <p v-if="headerDisplaySaved" class="text-sm text-lteal mt-2">Saved. The header updates on your next page load.</p>
+
         <h3 class="mt-8 mb-2">Change Password</h3>
         <p class="text-sm text-gray-medium mb-4">
           Forgotten it? <a class="link" href="/Api/Password/Forgot">Reset it by email</a> instead.
@@ -497,6 +513,10 @@ export default {
       savingName: false,
       nameSaved: false,
       nameError: null,
+      headerDisplay: this.account.header_display,
+      savingHeaderDisplay: false,
+      headerDisplaySaved: false,
+      headerDisplayError: null,
       currentPassword: '',
       newPassword: '',
       newPasswordConfirmation: '',
@@ -541,6 +561,21 @@ export default {
         this.nameError = this.firstError(error);
       } finally {
         this.savingName = false;
+      }
+    },
+    async saveHeaderDisplay(){
+      this.savingHeaderDisplay = true;
+      this.headerDisplayError = null;
+      this.headerDisplaySaved = false;
+
+      try {
+        const response = await this.$axios.post('/api/v1/account/header-display', { header_display: this.headerDisplay });
+        this.headerDisplay = response.data.header_display;
+        this.headerDisplaySaved = true;
+      } catch (error) {
+        this.headerDisplayError = this.firstError(error);
+      } finally {
+        this.savingHeaderDisplay = false;
       }
     },
     async changePassword(){

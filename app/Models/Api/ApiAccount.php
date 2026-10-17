@@ -225,6 +225,18 @@ class ApiAccount extends Authenticatable implements MustVerifyEmail
         return $this->isAdmin() && (bool) $this->admin_mode;
     }
 
+    public const HEADER_DISPLAYS = ['email', 'name', 'none'];
+
+    /** What the portal header shows for this account, or null to show nothing. */
+    public function headerLabel(): ?string
+    {
+        return match ($this->header_display) {
+            'none' => null,
+            'name' => trim((string) $this->name) !== '' ? $this->name : $this->email,
+            default => $this->email,
+        };
+    }
+
     /**
      * NGS data is a granted permission rather than a purchased tier, so it is not
      * sold, not priced and not visible in the plan tables. Either flag is enough

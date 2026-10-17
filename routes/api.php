@@ -87,6 +87,7 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
     Route::post('account/project', [ApiAccountController::class, 'setProject']);
 
     Route::post('account/name', [ApiAccountController::class, 'setName']);
+    Route::post('account/header-display', [ApiAccountController::class, 'setHeaderDisplay']);
     Route::post('account/password', [ApiAccountController::class, 'changePassword'])->middleware('throttle:contact');
     Route::post('account/email/resend', [ApiAccountController::class, 'resendVerification'])->middleware('throttle:contact');
 
