@@ -7,6 +7,7 @@ use App\Models\Api\TwitchChannel;
 use App\Models\Battletag;
 use App\Services\PlayerLobbyStatsService;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
 
@@ -47,6 +48,8 @@ class TwitchSnapshotService
 
         // Out of order or repeated: an older full state carries nothing new.
         if (is_array($latest) && $latest['game_id'] === $gameId && $seq <= $latest['seq']) {
+            $this->logSnapshot($channel, $gameId, $seq, $snapshot, [], false);
+
             return ['accepted' => false, 'seq' => (int) $latest['seq']];
         }
 
@@ -80,7 +83,55 @@ class TwitchSnapshotService
         // no endpoint serving viewers early data to go around it.
         $this->push->schedule($channel, $gameId, $seq, $payload, (int) $channel->delay_seconds);
 
+        $this->logSnapshot($channel, $gameId, $seq, $snapshot, $players, true, strlen($payload));
+
         return ['accepted' => true, 'seq' => $seq];
+    }
+
+    /**
+     * One line per snapshot, to stderr so it reaches Cloud Logging. Enough to answer
+     * "what did this channel send, and what did we make of it" without the database:
+     * a game that never resolves heroes, or one whose talents never arrive, reads
+     * differently here.
+     *
+     * @param  array<string, mixed>  $snapshot
+     * @param  array<int, array<string, mixed>>  $players
+     */
+    private function logSnapshot(
+        TwitchChannel $channel,
+        string $gameId,
+        int $seq,
+        array $snapshot,
+        array $players,
+        bool $accepted,
+        ?int $payloadBytes = null,
+    ): void {
+        try {
+            Log::channel('stderr')->info('Twitch snapshot', [
+                'channel' => $channel->twitch_login,
+                'channel_id' => $channel->twitch_user_id,
+                'account_id' => $channel->user_id,
+                'game_id' => $gameId,
+                'seq' => $seq,
+                'accepted' => $accepted,
+                'phase' => $snapshot['phase'] ?? null,
+                'mode' => $snapshot['game_mode'] ?? null,
+                'map' => $snapshot['map'] ?? null,
+                'version' => $snapshot['game_version'] ?? null,
+                'players' => count($snapshot['players'] ?? []),
+                // What the uploader read, against what we could resolve from it.
+                'heroes_sent' => count(array_filter($snapshot['players'] ?? [], fn ($p) => ! empty($p['hero']))),
+                'heroes_resolved' => count(array_filter($players, fn ($p) => $p['hero_id'] !== null)),
+                'talents_sent' => array_sum(array_map(fn ($p) => count(array_filter($p['talents'] ?? [])), $snapshot['players'] ?? [])),
+                'talents_resolved' => array_sum(array_map(fn ($p) => count(array_filter($p['talents'] ?? [])), $players)),
+                'identified' => count(array_filter($players, fn ($p) => $p['blizz_id'] !== null)),
+                'delay' => (int) $channel->delay_seconds,
+                'payload_bytes' => $payloadBytes,
+            ]);
+        } catch (Throwable $e) {
+            // A log line is never worth failing an upload over.
+            report($e);
+        }
     }
 
     /** The newest snapshot, undelayed, for the broadcaster's own view. */
