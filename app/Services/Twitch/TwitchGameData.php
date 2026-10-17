@@ -4,6 +4,8 @@ namespace App\Services\Twitch;
 
 use App\Services\GlobalDataService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Hero and talent lookups for live snapshots, and the static data file the
@@ -33,6 +35,22 @@ class TwitchGameData
         }
 
         return $this->heroAliases()[mb_strtolower($value)] ?? null;
+    }
+
+    /**
+     * The English map name for whatever the uploader sent.
+     *
+     * A save file carries the map in the language of the client that wrote it, so a
+     * German streamer's panel would read "Türme des Untergangs". The replay backend
+     * translates the same way when it stores a game.
+     */
+    public function mapName(?string $map): ?string
+    {
+        if ($map === null || $map === '') {
+            return null;
+        }
+
+        return $this->mapTranslations()[$map] ?? $map;
     }
 
     public function heroName(int $heroId): ?string
@@ -113,6 +131,24 @@ class TwitchGameData
         return $this->globalDataService->getHeroes();
     }
 
+    /** @return array<string, string> translated name => English name */
+    private function mapTranslations(): array
+    {
+        return Cache::remember('twitch_map_translations', 3600, fn () => DB::connection('heroesprofile')
+            ->table('maps_translations')
+            ->pluck('name', 'translation')
+            ->all());
+    }
+
+    /** @return array<string, string> translated name => English name */
+    private function heroTranslations(): array
+    {
+        return Cache::remember('twitch_hero_translations', 3600, fn () => DB::connection('heroesprofile')
+            ->table('heroes_translations')
+            ->pluck('name', 'translation')
+            ->all());
+    }
+
     /** @return array<string, int> */
     private function heroAliases(): array
     {
@@ -124,6 +160,22 @@ class TwitchGameData
                     if ($alias !== null && $alias !== '') {
                         $this->heroIdsByAlias[mb_strtolower((string) $alias)] ??= (int) $hero->id;
                     }
+                }
+            }
+
+            // Same reason as the map names: the uploader reads the hero from the save
+            // file, in the client's language. Added last, so a translation never wins
+            // over a hero's own name.
+            $byName = [];
+            foreach ($this->heroes() as $hero) {
+                $byName[mb_strtolower((string) $hero->name)] = (int) $hero->id;
+            }
+
+            foreach ($this->heroTranslations() as $translation => $name) {
+                $id = $byName[mb_strtolower((string) $name)] ?? null;
+
+                if ($id !== null) {
+                    $this->heroIdsByAlias[mb_strtolower((string) $translation)] ??= $id;
                 }
             }
         }

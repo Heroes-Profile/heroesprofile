@@ -65,7 +65,7 @@ class TwitchSnapshotService
             seq: $seq,
             phase: (string) $snapshot['phase'],
             mode: $snapshot['game_mode'] ?? null,
-            map: $snapshot['map'] ?? null,
+            map: $this->gameData->mapName($snapshot['map'] ?? null),
             players: $players,
             maxBytes: (int) config('twitch.max_payload_bytes'),
             channelName: $channel->twitch_display_name ?: $channel->twitch_login,
