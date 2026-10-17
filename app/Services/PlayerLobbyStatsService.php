@@ -276,10 +276,14 @@ class PlayerLobbyStatsService
             $key = self::key($player);
 
             $modeStats = [];
+            $allWins = 0;
+            $allGames = 0;
             foreach ([1 => 'qm', 5 => 'sl', 6 => 'ar'] as $gameType => $prefix) {
                 $modeRows = $mmrData[$gameType]->get($key, collect());
                 $totalRow = $modeRows->firstWhere('type_value', 10000);
                 $gamesPlayed = $totalRow ? $totalRow->win + $totalRow->loss : 0;
+                $allWins += $totalRow ? $totalRow->win : 0;
+                $allGames += $gamesPlayed;
                 $mmr = $totalRow ? round(1800 + ($totalRow->conservative_rating * 40)) : 1800;
 
                 $modeStats[$prefix] = [
@@ -335,6 +339,12 @@ class PlayerLobbyStatsService
                 'ar_mmr' => $modeStats['ar']['mmr'],
                 'ar_games_played' => $modeStats['ar']['games_played'],
                 'ar_win_rate' => $modeStats['ar']['win_rate'],
+
+                // The three modes together, for anywhere that cannot say which one
+                // is being played. Only these modes are tracked, so this is not
+                // every game a player has ever had.
+                'all_games_played' => $allGames,
+                'all_win_rate' => $allGames > 0 ? round(($allWins / $allGames) * 100, 2) : null,
 
                 'top_heroes' => $combinedTopHeroes,
             ];

@@ -110,6 +110,58 @@ final class TwitchPayload
     }
 
     /**
+     * The same figures, but as one combined number in the Quick Match slot.
+     *
+     * Sent while the mode is unknown - the lobby - and for modes with no stats of
+     * their own, such as Unranked Draft or Brawl. The extension leads with that slot
+     * whenever it cannot name the mode, so this needs no change on its side.
+     *
+     * @param  array<string, mixed>  $stats
+     * @return array<string, mixed>
+     */
+    public static function combinedStats(array $stats): array
+    {
+        $games = (int) ($stats['all_games_played'] ?? 0);
+
+        if ($games === 0) {
+            return ['l' => $stats['account_level'] ?? null];
+        }
+
+        return [
+            'l' => $stats['account_level'] ?? null,
+            'q' => [
+                null,
+                null,
+                ($stats['all_win_rate'] ?? null) === null ? null : round((float) $stats['all_win_rate'], 1),
+                $games,
+            ],
+        ];
+    }
+
+    /**
+     * Which tracked mode a game belongs to, matching what the extension works out
+     * from the same string. Null when the game is not one of the three.
+     */
+    public static function modeKey(?string $mode): ?string
+    {
+        $value = mb_strtolower((string) $mode);
+
+        if ($value === '') {
+            return null;
+        }
+
+        if (str_contains($value, 'storm') || str_contains($value, 'hero') || str_contains($value, 'team')) {
+            return 'sl';
+        }
+
+        if (str_contains($value, 'aram')) {
+            return 'ar';
+        }
+
+        return str_contains($value, 'quick') ? 'qm' : null;
+    }
+
+    /**
      * Drops trailing fields of each mode, keeping only the given positions.
      *
      * @param  array<string, mixed>|null  $stats
