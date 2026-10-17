@@ -401,6 +401,7 @@
         :initialchannel="twitch.channel"
         :regions="twitch.regions"
         :maxdelay="twitch.max_delay"
+        :listingdays="twitch.directory_active_days"
         :notice="twitchnotice"
         :linkerror="twitcherror"
       ></api-twitch-settings>

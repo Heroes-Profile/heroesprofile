@@ -78,4 +78,9 @@ return [
     // How long the public streamer directory is cached, in seconds.
     'directory_cache_seconds' => 180,
 
+    // A listed channel only appears once it has actually played with the uploader
+    // running, and drops off again after this many days without a game. Opting in
+    // is not enough: the page is for streamers people can go and watch.
+    'directory_active_days' => 30,
+
 ];

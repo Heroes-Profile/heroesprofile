@@ -49,6 +49,7 @@ class TwitchController extends Controller
             'channel' => $channel ? self::present($channel, $entitlements) : null,
             'regions' => self::REGIONS,
             'max_delay' => (int) config('twitch.max_delay'),
+            'directory_active_days' => (int) config('twitch.directory_active_days'),
         ];
     }
 

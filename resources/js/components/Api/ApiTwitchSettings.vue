@@ -194,7 +194,14 @@
           <p class="text-sm text-gray-medium mb-4">
             List your channel on <a href="/Twitch" class="link">heroesprofile.com/Twitch</a>,
             where viewers can find streamers using the extension. Live channels are shown first.
+            Your channel appears once you have played a game with the uploader running, and drops
+            off after {{ listingdays }} days without one.
           </p>
+
+          <div v-if="listingPending" class="bg-darken border-l-4 border-yellow p-3 mb-4 text-sm">
+            Your channel is not on the streamer page yet. Play a game with the uploader running and
+            the Twitch Extension box ticked, and it appears within a few minutes.
+          </div>
 
           <div v-if="channel.listing_hidden" class="bg-darken border-l-4 border-red p-3 mb-4 text-sm">
             Your listing has been hidden by Heroes Profile. Write to zemill@heroesprofile.com to ask why.
@@ -256,6 +263,11 @@ export default {
       type: Number,
       default: 900,
     },
+    // Days of uploader silence after which a listed channel drops off the page.
+    listingdays: {
+      type: Number,
+      default: 30,
+    },
     // Outcome of a Twitch or Battle.net connect redirect, flashed by the server.
     notice: String,
     linkerror: String,
@@ -316,6 +328,17 @@ export default {
             ? 'Your free trial has ended.'
             : 'Not active.';
       }
+    },
+    // Listed, but with nothing played inside the window the directory looks at.
+    listingPending(){
+      if(!this.channel || !this.channel.listing_opt_in){
+        return false;
+      }
+      if(!this.channel.uploader_last_seen_at){
+        return true;
+      }
+      const cutoff = Date.now() - this.listingdays * 86400000;
+      return new Date(this.channel.uploader_last_seen_at).getTime() < cutoff;
     },
     lastSeenText(){
       if(!this.channel.uploader_last_seen_at){
