@@ -78,6 +78,39 @@ trait HandlesAsyncGlobalQueries
     }
 
     /**
+     * What the API endpoint would answer from cache, or null. Never runs the query;
+     * a stale hit is returned and queued for refresh like `asyncGlobalResponse()` does.
+     *
+     * @param  array<string, mixed>  $parameters
+     */
+    protected function cachedGlobalResult(string $cacheKey, array $gameVersion, string $executeMethod, array $parameters): mixed
+    {
+        if ($this->globalDataService->shouldBypassGlobalCache() || ! $this->globalDataService->usesProductionCaching()) {
+            return null;
+        }
+
+        $cached = Cache::store('database')->get($cacheKey);
+
+        if ($cached === null) {
+            return null;
+        }
+
+        $window = $this->globalDataService->calculateCacheWindow($gameVersion);
+
+        if ($this->globalDataService->isGlobalAsyncEnabled() && GlobalCacheFreshness::isStale($cacheKey, $window)) {
+            app(GlobalQueryService::class)->dispatchIfNotPending(
+                $cacheKey,
+                static::class,
+                $executeMethod,
+                $parameters,
+                $window->ttl
+            );
+        }
+
+        return $cached;
+    }
+
+    /**
      * The same query once per playable map, keyed by map name.
      *
      * Runs no query of its own. Each child is the caller's request with `game_map`

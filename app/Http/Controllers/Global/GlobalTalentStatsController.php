@@ -64,20 +64,60 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
         $userinput = $this->globalDataService->getHeroModel($request['hero']);
 
+        $defaultTimeframeType = $this->globalDataService->getDefaultTimeframeType();
+        $defaultTimeframe = $this->globalDataService->getDefaultTimeframe();
+        $gameTypeDefault = $this->globalDataService->getGameTypeDefault('multi');
+        $defaultBuildType = $this->globalDataService->getDefaultBuildType();
+
+        $initialTalentData = null;
+        $initialBuildData = null;
+
+        // Default view only: anything in the query string means the page asks for something else.
+        if ($userinput && empty($request->query())) {
+            $parameters = [
+                'hero' => $userinput->name,
+                'timeframe_type' => $defaultTimeframeType,
+                'timeframe' => [$defaultTimeframe],
+                'game_type' => $gameTypeDefault,
+                'statfilter' => 'win_rate',
+                'mirror' => '0',
+            ];
+            $buildParameters = array_merge($parameters, ['talentbuildtype' => $defaultBuildType]);
+
+            $gameVersion = $this->globalDataService->getTimeframeFilterValues($defaultTimeframeType, [$defaultTimeframe]);
+            $versionIds = $this->gameVersionIds($gameVersion);
+
+            $initialTalentData = $this->cachedGlobalResult(
+                $this->globalCacheKey('GlobalHeroTalentStats', $versionIds, $parameters),
+                $gameVersion,
+                'executeGlobalHeroTalentData',
+                $parameters
+            );
+            $initialBuildData = $this->cachedGlobalResult(
+                $this->globalCacheKey('GlobalHeroTalentStatsBuilds', $versionIds, $buildParameters),
+                $gameVersion,
+                'executeGlobalHeroTalentBuildData',
+                $buildParameters
+            );
+        }
+
         return view('Global.Talents.globalTalentStats')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'heroes' => $this->globalDataService->getHeroes(),
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(true, self::MINIMUM_PATCH),
-                'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
-                'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
+                'gametypedefault' => $gameTypeDefault,
+                'defaulttimeframetype' => $defaultTimeframeType,
                 'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
-                'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
-                'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
+                'defaulttimeframe' => [$defaultTimeframe],
+                'defaultbuildtype' => $defaultBuildType,
                 'talentStatsLayout' => $this->globalDataService->getTalentStatsLayout(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
                 'urlparameters' => $request->all(),
+                'initialtalentdata' => $initialTalentData,
+                'initialbuilddata' => $initialBuildData,
+                'topbuild' => $initialBuildData ? collect($initialBuildData)->first() : null,
             ]);
     }
 
