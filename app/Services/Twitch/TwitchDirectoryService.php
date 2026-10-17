@@ -59,6 +59,8 @@ class TwitchDirectoryService
             ->whereNull('listing_hidden_at')
             ->whereNull('suspended_at')
             ->whereNotNull('user_id')
+            // Opting in does not put a channel on the page; playing does.
+            ->where('uploader_last_seen_at', '>=', now()->subDays((int) config('twitch.directory_active_days')))
             ->get()
             ->filter(fn (TwitchChannel $channel) => $this->isActive($channel))
             ->keyBy('twitch_user_id');

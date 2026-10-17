@@ -20,7 +20,7 @@ use Throwable;
  * The Twitch extension section of the API portal's account page.
  *
  * A streamer connects the Twitch channel the extension runs on, connects the
- * Battle.net account they play on (so their team is shown first), generates an
+ * Battle.net account they play on (so their team is labelled in the extension), generates an
  * uploader key, and sets their delay and listing preferences. Access comes from
  * any API plan, so billing stays on the existing billing page.
  *
@@ -49,6 +49,7 @@ class TwitchController extends Controller
             'channel' => $channel ? self::present($channel, $entitlements) : null,
             'regions' => self::REGIONS,
             'max_delay' => (int) config('twitch.max_delay'),
+            'directory_active_days' => (int) config('twitch.directory_active_days'),
         ];
     }
 
