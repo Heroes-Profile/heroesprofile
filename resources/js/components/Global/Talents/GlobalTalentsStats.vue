@@ -3,7 +3,7 @@
     <global-async-debug-banner page-label="Global Talents" />
 
     <div class="grid gap-5 grid-cols-1">
-      <page-heading :infoText1="infoText" :heading="selectedHero ? 'Talent Statistics' : 'Hero Talent Statistics'">
+      <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Talent Statistics' : 'Hero Talent Statistics'">
         <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
           <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
           <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 220px; max-height: 340px; overflow-y: auto;">
@@ -173,6 +173,8 @@
       urlparameters: Object,
       talentStatsLayout: { type: String, default: 'table' },
       authenticated: Boolean,
+      initialtalentdata: { type: [Object, Array], default: null },
+      initialbuilddata: { type: [Object, Array], default: null },
     },
     data(){
       return {
@@ -236,11 +238,17 @@
 
     if(this.inputhero){
       this.selectedHero = this.inputhero;
-      Promise.allSettled([
-        this.getTalentData(),
-        this.getTalentBuildData(),
-        ]).then(results => {
-      });
+      // Server hands over the cached default view so it renders without the API round trip.
+      if(this.initialtalentdata){
+        this.talentdetaildata = this.initialtalentdata;
+      }else{
+        this.getTalentData();
+      }
+      if(this.initialbuilddata){
+        this.talentbuilddata = this.initialbuilddata;
+      }else{
+        this.getTalentBuildData();
+      }
     }
    },
     mounted() {
