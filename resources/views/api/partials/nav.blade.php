@@ -61,7 +61,9 @@
           </a>
         @endif
 
-        <span class="text-gray-medium hidden md:inline">{{ $apiUser->email }}</span>
+        @if($apiUser->headerLabel() !== null)
+          <span class="text-gray-medium hidden md:inline">{{ $apiUser->headerLabel() }}</span>
+        @endif
 
         <form method="POST" action="/Api/Logout" class="inline">
           @csrf

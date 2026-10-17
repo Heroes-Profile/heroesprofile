@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class AccountController extends Controller
@@ -38,6 +39,7 @@ class AccountController extends Controller
             'account' => [
                 'name' => $account->name,
                 'email' => $account->email,
+                'header_display' => $account->header_display ?? 'email',
                 'email_verified' => $account->hasVerifiedEmail(),
                 'member_since' => $account->created_at?->toFormattedDateString(),
                 'plans' => array_map(fn (int $id) => config("api_plans.plans.{$id}.name"), $usage->planIdsFor($account)),
@@ -120,6 +122,19 @@ class AccountController extends Controller
         $account->forceFill(['name' => trim($validated['name'])])->save();
 
         return response()->json(['name' => $account->name]);
+    }
+
+    public function setHeaderDisplay(Request $request)
+    {
+        $validated = $request->validate([
+            'header_display' => ['required', Rule::in(ApiAccount::HEADER_DISPLAYS)],
+        ]);
+
+        $account = Auth::guard('api_web')->user();
+
+        $account->forceFill(['header_display' => $validated['header_display']])->save();
+
+        return response()->json(['header_display' => $account->header_display]);
     }
 
     /** `users` is shared with the old site, so this changes the password there too. */
