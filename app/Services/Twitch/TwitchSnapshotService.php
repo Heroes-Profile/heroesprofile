@@ -122,7 +122,7 @@ class TwitchSnapshotService
                 'region' => $hidden ? null : ($known['region'] ?? null),
                 'hero_id' => $heroId,
                 'talents' => $this->talentIds($heroId, $player['talents'] ?? []),
-                'stats' => $channel->show_stats ? ($known['stats'] ?? null) : null,
+                'stats' => $channel->show_stats ? $this->statsFor($known, $snapshot['game_mode'] ?? null) : null,
                 'ai' => (bool) ($player['ai'] ?? false),
             ];
         }
@@ -184,6 +184,9 @@ class TwitchSnapshotService
                 'hidden' => isset($hidden[$key]),
                 'stats' => $row !== null && ! isset($hidden[$key])
                     ? TwitchPayload::stats($row, $this->lobbyStats->ranks($row))
+                    : null,
+                'stats_combined' => $row !== null && ! isset($hidden[$key])
+                    ? TwitchPayload::combinedStats($row)
                     : null,
             ];
 
@@ -263,6 +266,32 @@ class TwitchSnapshotService
                 report($e);
             }
         });
+    }
+
+    /**
+     * Per-mode figures once the game names a mode the stats cover, and the three
+     * combined until then. A lobby has no mode at all, and Unranked Draft, Brawl,
+     * custom and A.I. games are not in the stats, so a Quick Match number would be
+     * the wrong answer to a question nobody asked.
+     *
+     * @param  array<string, mixed>|null  $known
+     * @return array<string, mixed>|null
+     */
+    private function statsFor(?array $known, ?string $gameMode): ?array
+    {
+        if ($known === null) {
+            return null;
+        }
+
+        if (TwitchPayload::modeKey($gameMode) !== null) {
+            return $known['stats'] ?? null;
+        }
+
+        $combined = $known['stats_combined'] ?? null;
+
+        // Player stats cached before the combined totals existed carry no figure to
+        // lead with; those fall back to the per-mode ones until the cache rolls over.
+        return isset($combined['q']) ? $combined : ($known['stats'] ?? null);
     }
 
     private function touchLastSeen(TwitchChannel $channel): void
