@@ -93,8 +93,9 @@
         <div v-if="newKey" class="bg-teal p-4 mb-4">
           <h3 class="font-semibold mb-2">Copy Your Uploader Key Now</h3>
           <p class="text-sm mb-3">
-            Paste it into the Heroes Profile Uploader under Settings → Twitch Extension.
-            This is the only time it will be shown.
+            Paste it into the Heroes Profile Uploader under Settings → Twitch Extension, then tick
+            <strong>Twitch Extension</strong> on the uploader's main window. This is the only time
+            the key will be shown.
           </p>
           <div class="flex flex-wrap gap-2 items-center">
             <code class="bg-darken p-2 break-all flex-grow">{{ newKey }}</code>
@@ -115,6 +116,18 @@
           <p class="text-sm mb-4" :class="channel.uploader_last_seen_at ? '' : 'text-gray-medium'">
             {{ lastSeenText }}
           </p>
+
+          <div class="bg-lighten p-3 mb-4 text-sm">
+            <p class="font-semibold mb-2">In the uploader</p>
+            <ol class="list-decimal list-inside space-y-1 text-gray-light">
+              <li>Settings → Twitch Extension: paste the key, then <strong>Check key</strong>.</li>
+              <li>
+                Close settings and tick <strong>Twitch Extension</strong> on the main window.
+                The key on its own does nothing — nothing is sent until that box is ticked.
+              </li>
+              <li>Play a game. The uploader shows "Twitch extension updated" each time it sends.</li>
+            </ol>
+          </div>
 
           <button
             @click="rotateKey"
