@@ -7,6 +7,7 @@ use App\Models\ReplayFingerprint;
 use App\Models\UploadAttempt;
 use App\Models\UploadAttemptLog;
 use App\Models\UploadedReplayData;
+use App\Models\UploadedReplayPlayer;
 use App\Models\UploaderSourceChange;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -35,6 +36,12 @@ use Throwable;
 class ReplayUploadService
 {
     public const MAX_BYTES = 10 * 1024 * 1024;
+
+    /** How long a Storm League replay's upload-time players are kept to check rank reads against. */
+    private const PLAYERS_KEEP_DAYS = 3;
+
+    /** One upload in this many prunes players past PLAYERS_KEEP_DAYS. */
+    private const PLAYERS_PRUNE_EVERY = 50;
 
     /**
      * The status a caller gets when no fingerprint could be produced. Not a member
@@ -79,7 +86,7 @@ class ReplayUploadService
     /**
      * @return array<string, mixed> the response body, frozen shape
      */
-    public function upload(UploadedFile $file, string $source, string $ip, string $version, string $compiled): array
+    public function upload(UploadedFile $file, string $source, string $ip, string $version, string $compiled, ?bool $signed = null): array
     {
         $hash = (string) hash_file('sha256', $file->getRealPath());
         $name = $file->getClientOriginalName();
@@ -150,6 +157,7 @@ class ReplayUploadService
                 'uploaded_source' => $source,
                 'uploader_version' => $version,
                 'uploader_compile_checker' => $compiled,
+                'signed' => $signed,
                 'game_date' => $this->gameDate($parsed),
                 'ip' => $ip,
             ]);
@@ -157,9 +165,52 @@ class ReplayUploadService
             return $this->afterInsertFailed($e, $fingerprint, $ip, $hash, $name, $size, $source);
         }
 
+        $this->storePlayers((int) $replay->replayID, $parsed);
+
         $this->record($ip, $hash, $name, $size, $source, 'Success', $fingerprint, (int) $replay->replayID);
 
         return $this->body($fingerprint, $replay->replayID, 'Success');
+    }
+
+    /**
+     * A Storm League replay's players as the upload-time parse saw them, kept a few days: the ranks the
+     * uploader's rank reader sends for the replay are checked against them on arrival, before the full
+     * parse has filled `player` (RealRankService). Every so often, rows past their few days go. Never fails
+     * the upload: without them, ranks for the game just aren't accepted.
+     */
+    private function storePlayers(int $replayID, array $parsed): void
+    {
+        if (($parsed['game_mode'] ?? null) !== 'StormLeague' || ! is_array($parsed['players'] ?? null)) {
+            return;
+        }
+
+        $now = now();
+        $rows = [];
+        foreach ($parsed['players'] as $player) {
+            $name = $player['battletag_name'] ?? null;
+            $tag = $player['battletag_id'] ?? null;
+            $region = $player['region'] ?? null;
+            $team = $player['team'] ?? null;
+            if (! is_string($name) || $name === '' || ! is_int($tag) || $tag <= 0 || ! is_int($region) || ! is_int($team)) {
+                continue;
+            }
+            $battletag = $name.'#'.$tag;
+            if (mb_strlen($battletag) > 45) {
+                continue;
+            }
+            $rows[] = ['replayID' => $replayID, 'battletag' => $battletag, 'region' => $region, 'team' => $team, 'created_at' => $now];
+        }
+
+        try {
+            if ($rows !== []) {
+                UploadedReplayPlayer::insertOrIgnore($rows);
+            }
+            if (random_int(1, self::PLAYERS_PRUNE_EVERY) === 1) {
+                UploadedReplayPlayer::where('created_at', '<', $now->copy()->subDays(self::PLAYERS_KEEP_DAYS))->limit(5000)->delete();
+            }
+        } catch (Throwable $e) {
+            report($e);
+        }
     }
 
     /**
