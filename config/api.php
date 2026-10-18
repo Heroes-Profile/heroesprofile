@@ -201,6 +201,8 @@ return [
             // A Storm League game sends a handful of requests (one per frame), and an hour of play is two
             // or three games; this only stops floods.
             'rank_samples_per_hour' => 60,
+            // One request per Storm League game, sent once its replay is up.
+            'ranks_per_hour' => 60,
         ],
     ],
 
@@ -236,6 +238,28 @@ return [
         'max_frames' => 12,
         'max_frame_kb' => 8192,
         'max_meta_kb' => 64,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Real ranks
+    |--------------------------------------------------------------------------
+    |
+    | Ranks the uploader's rank reader sends (POST ranks, RealRankService). Only
+    | released builds can send them: each signs with a key derived from
+    | RANKS_SIGNING_SECRET and its version (VerifyUploaderSignature) - the release
+    | workflow holds the same secret. No secret, no ranks taken. A version whose
+    | key leaked goes in RANKS_DENIED_VERSIONS (comma-separated), or below
+    | RANKS_MINIMUM_VERSION.
+    |
+    */
+
+    'ranks' => [
+        'signing_secret' => env('RANKS_SIGNING_SECRET'),
+        'minimum_version' => env('RANKS_MINIMUM_VERSION', '0'),
+        'denied_versions' => array_values(array_filter(array_map('trim', explode(',', (string) env('RANKS_DENIED_VERSIONS', ''))))),
+        'max_clock_skew' => 300,
+        'max_ranks' => 10,
     ],
 
 ];

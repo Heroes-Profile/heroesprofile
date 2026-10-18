@@ -15,7 +15,7 @@ class UploadedReplayData extends Model
 
     protected $fillable = [
         'replayID', 'uploaded_filename', 'uploaded_source', 'uploader_version',
-        'uploader_compile_checker', 'uploader_start_diff', 'game_date',
+        'uploader_compile_checker', 'signed', 'uploader_start_diff', 'game_date',
         'upload_team', 'ip',
     ];
 

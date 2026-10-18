@@ -24,6 +24,9 @@ return new class extends Migration
                 $table->string('uploaded_source', 255)->nullable();
                 $table->string('uploader_version', 45)->nullable();
                 $table->integer('uploader_compile_checker')->nullable();
+                // Whether a released uploader build signed the upload (UploaderSignature): 1 signed, 0 not,
+                // null when the site had no signing secret. Recorded only - unsigned uploads are still taken.
+                $table->tinyInteger('signed')->nullable();
                 $table->dateTime('uploader_start_diff')->nullable();
                 $table->dateTime('game_date')->nullable();
                 $table->dateTime('updated_at')->nullable();

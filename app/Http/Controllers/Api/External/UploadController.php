@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\External;
 
 use App\Http\Controllers\Controller;
 use App\Services\Api\ReplayUploadService;
+use App\Services\Api\UploaderSignature;
 use App\Services\ClientIpService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +25,7 @@ class UploadController extends Controller
     /** The width of `uploaded_replay_data.uploaded_source`. */
     private const SOURCE_LENGTH = 255;
 
-    public function store(Request $request, ReplayUploadService $uploads, string $source): Response
+    public function store(Request $request, ReplayUploadService $uploads, UploaderSignature $signature, string $source): Response
     {
         $source = substr(trim($source), 0, self::SOURCE_LENGTH) ?: 'unknown';
         $ip = ClientIpService::getClientIp($request);
@@ -51,6 +52,8 @@ class UploadController extends Controller
             // Empty ones arrive null: ConvertEmptyStringsToNull runs globally.
             (string) ($request->input('version') ?: 'unknown'),
             (string) ($request->input('compiled') ?: '0'),
+            // Recorded, not required: whether a released build signed it (over the file's SHA-256).
+            $signature->configured() ? $signature->problem($request, (string) hash_file('sha256', $file->getRealPath())) === null : null,
         ));
     }
 

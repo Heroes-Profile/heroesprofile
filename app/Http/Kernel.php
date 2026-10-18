@@ -41,6 +41,7 @@ use App\Http\Middleware\VerifyCloudTasksRequest;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Http\Middleware\VerifyStripeWebhookSecretConfigured;
 use App\Http\Middleware\VerifyTwitchExtensionJwt;
+use App\Http\Middleware\VerifyUploaderSignature;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
@@ -173,6 +174,7 @@ class Kernel extends HttpKernel
         'communitySupportRedirect' => CommunitySupportRedirect::class,
         'requireWebsiteAuthForAll' => RequireWebsiteAuthForAll::class,
         'cloud.tasks' => VerifyCloudTasksRequest::class,
+        'uploader.signed' => VerifyUploaderSignature::class,
         'twitch.uploader' => AuthenticateTwitchUploaderKey::class,
         'twitch.jwt' => VerifyTwitchExtensionJwt::class,
     ];

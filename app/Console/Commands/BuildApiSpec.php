@@ -48,6 +48,7 @@ class BuildApiSpec extends Command
         'api.external.prematch',
         'api.external.prematch.mode',
         'api.external.rank-samples',
+        'api.external.ranks',
         // Promotes the replay's source to desktop on every read, so only the desktop client may call it.
         'api.external.replays.fingerprint',
     ];

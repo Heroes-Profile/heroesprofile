@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\External\NgsController;
 use App\Http\Controllers\Api\External\PlayerController;
 use App\Http\Controllers\Api\External\PreMatchController;
 use App\Http\Controllers\Api\External\RankSampleController;
+use App\Http\Controllers\Api\External\RealRankController;
 use App\Http\Controllers\Api\External\ReferenceController;
 use App\Http\Controllers\Api\External\ToolsController;
 use App\Http\Controllers\Api\External\UploadController;
@@ -399,3 +400,12 @@ Route::post('prematch/{prematchID}/mode', [PreMatchController::class, 'mode'])
 Route::post('rank-samples', [RankSampleController::class, 'store'])
     ->middleware('throttle:rank-samples')
     ->name('api.external.rank-samples');
+
+/*
+| Real ranks from the uploader's opt-in rank reader, for a replay already on the
+| site. Only a released build's signed request is taken (VerifyUploaderSignature).
+*/
+
+Route::post('ranks', [RealRankController::class, 'store'])
+    ->middleware(['throttle:ranks', 'uploader.signed'])
+    ->name('api.external.ranks');
