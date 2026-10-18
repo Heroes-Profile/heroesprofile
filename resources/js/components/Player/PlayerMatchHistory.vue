@@ -37,7 +37,7 @@
             </a>
           </li>
           <!-- Left of Next, as the Talent Builder's layout toggle sits left of its Patch Notes button -->
-          <li class="ml-auto flex items-center gap-4">
+          <li class="ml-auto max-md:mx-auto flex items-center gap-4">
             <tab-button :tab1text="'Table'" :tab2text="'Compact'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="compact ? 'right' : 'left'"></tab-button>
             <span v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4" :class="{ disabled: !data.next_page_url }">
               <a class="page-link" @click.prevent="getData(data.current_page + 1)" href="#">
@@ -48,7 +48,7 @@
         </ul>
       </div>
       <div v-if="compact">
-        <div class="p-10 max-w-[90em] ml-auto mr-auto">
+        <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
           <game-summary-box v-for="(item, index) in data.data" :data="item"></game-summary-box>
         </div>
       </div>
@@ -142,6 +142,7 @@
 </template>
 
 <script>
+import { scaleTableToFit } from '../../utils/scaleTable';
 import moment from 'moment-timezone';
 import Cookies from 'js-cookie';
 
@@ -253,11 +254,7 @@ export default {
     scaleTable() {
       const responsivetable = this.$refs.responsivetable;
       if (responsivetable && this.windowWidth < 1500) {
-        const newTableWidth = this.windowWidth /responsivetable.clientWidth;
-        responsivetable.style.transformOrigin = 'top left';
-        responsivetable.style.transform = `scale(${newTableWidth})`;
-        const container = this.$refs.tablecontainer;
-        container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+        scaleTableToFit(responsivetable, this.$refs.tablecontainer);
       }
     },
     async getData(page){      

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="max-md:w-full">
     <div id="table-container2" ref="tablecontainer2" class=" max-md:overflow-hidden max-md:w-full min-w-0 max-sm:text-xs  2xl:mx-auto " style=" ">
       <table class="min-w-0 w-auto mx-auto max-sm:text-xs" ref="responsivetable2">
           <thead v-if="!$slots.heading">
@@ -59,6 +59,7 @@
 
 <script>
 import { statFilterLabel } from '../../../utils/statFilterLabel';
+import { scaleTableToFit } from '../../../utils/scaleTable';
 
 export default {
   name: 'GlobalTalentBuildsSection',
@@ -89,18 +90,11 @@ export default {
   },
 
   mounted() {
-    
-   /* var responsivetable = this.$refs.responsivetable2;
-    if (responsivetable && this.windowWidth < 1500) {
-            var newTableWidth = this.windowWidth /responsivetable.clientWidth;
-            responsivetable.style.transformOrigin = 'top left';
-            responsivetable.style.transform = `scale(${newTableWidth})`;
-            var container = this.$refs.tablecontainer2;
-            this.tablewidth = newTableWidth;
-            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
-            //container.style.width = this.windowWidth;
-          }
-         */
+    this.$nextTick(() => {
+      if (window.matchMedia('(max-width: 767px)').matches) {
+        scaleTableToFit(this.$refs.responsivetable2, this.$refs.tablecontainer2);
+      }
+    });
   },
   computed: {
   },

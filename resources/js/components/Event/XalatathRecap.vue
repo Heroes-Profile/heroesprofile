@@ -272,6 +272,7 @@
           Launch patch compared with the balance update.
         </p>
         <p class="mb-4 text-lg font-bold xalatath-title">{{ nerf.verdict }}</p>
+        <scroll-hint-container :fit="true">
         <table class="min-w-0 w-full responsive-table mb-6">
           <thead>
             <tr><th class="py-2 px-3 text-left text-sm">Stat</th><th class="py-2 px-3 text-left text-sm">Launch patch</th><th class="py-2 px-3 text-left text-sm">After the balance update</th><th class="py-2 px-3 text-left text-sm">Change</th></tr>
@@ -285,8 +286,10 @@
             </tr>
           </tbody>
         </table>
+        </scroll-hint-container>
         <div v-if="nerfedTalents.length">
           <h3 class="font-bold mb-2">The Talents It Changed</h3>
+          <scroll-hint-container :fit="true">
           <table class="min-w-0 w-full responsive-table">
             <thead>
               <tr><th class="py-2 px-3 text-left text-sm">Talent</th><th class="py-2 px-3 text-left text-sm">Picked before</th><th class="py-2 px-3 text-left text-sm">Picked after</th><th class="py-2 px-3 text-left text-sm">Win rate before</th><th class="py-2 px-3 text-left text-sm">Win rate after</th></tr>
@@ -306,13 +309,15 @@
               </tr>
             </tbody>
           </table>
+          </scroll-hint-container>
         </div>
       </section>
 
       <!-- Game modes + regions -->
-      <section id="recap-modes" data-index="Modes & Regions" class="grid md:grid-cols-2 gap-6">
+      <section id="recap-modes" data-index="Modes & Regions" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div v-if="mode === 'all'">
           <h2 class="recap-heading">Corruption by Game Mode</h2>
+          <scroll-hint-container :fit="true">
           <table class="min-w-0 w-full responsive-table">
             <thead>
               <tr><th class="py-2 px-3 text-left text-sm">Game mode</th><th class="py-2 px-3 text-left text-sm">Games</th><th class="py-2 px-3 text-left text-sm">Win rate</th><th class="py-2 px-3 text-left text-sm">Bans</th></tr>
@@ -326,6 +331,7 @@
               </tr>
             </tbody>
           </table>
+          </scroll-hint-container>
         </div>
         <div>
           <h2 class="recap-heading">Corruption by Region</h2>
@@ -370,7 +376,7 @@
         <p class="mb-4 text-sm opacity-75">Her best single games for every stat. Click a record to see the top 10.</p>
         <div v-for="group in recordGroups" :key="group.title" class="mb-5">
           <h3 class="text-sm uppercase tracking-widest xalatath-title mb-2">{{ group.title }}</h3>
-          <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 items-start">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 items-start">
             <details v-for="item in group.records" :key="item.record" class="xalatath-recap-card group">
               <summary class="px-3 py-2 flex justify-between items-center gap-3 cursor-pointer list-none">
                 <div class="min-w-0">
@@ -425,6 +431,7 @@
       <!-- Maps -->
       <section id="recap-maps" data-index="Battlegrounds" v-if="maps.length">
         <h2 class="recap-heading">Battlegrounds Conquered</h2>
+        <scroll-hint-container :fit="true">
         <table class="min-w-0 w-full responsive-table">
           <thead>
             <tr><th class="py-2 px-3 text-left text-sm">Battleground</th><th class="py-2 px-3 text-left text-sm">Games</th><th class="py-2 px-3 text-left text-sm">Win rate</th></tr>
@@ -437,18 +444,20 @@
             </tr>
           </tbody>
         </table>
+        </scroll-hint-container>
       </section>
 
       <!-- Awards + devotees -->
       <section id="recap-awards" data-index="Awards & Devotees" class="grid md:grid-cols-2 gap-6">
         <div v-if="awards.length">
           <h2 class="recap-heading">Awards Hoard</h2>
+          <p class="mb-3 text-sm opacity-75">A player gets one award a game and MVP takes priority, so MVP is out of all her games and every other award is out of the games she wasn't MVP.</p>
           <div class="grid grid-cols-2 gap-3">
-            <div v-for="row in awards" :key="row.award" class="xalatath-recap-card p-3 flex items-center gap-3">
+            <div v-for="row in awards" :key="row.award" class="xalatath-recap-card p-3 flex items-center gap-3 max-md:flex-col max-md:text-center">
               <img v-if="recap.awards[row.award]" :src="`/images/awards/${recap.awards[row.award].icon}_blue.png`" :alt="awardTitle(row.award)" class="w-10 h-10" />
-              <div>
+              <div class="min-w-0 max-w-full">
                 <div class="font-bold">{{ awardTitle(row.award) }}</div>
-                <div class="text-sm tabular-nums">{{ format(row.count) }}</div>
+                <div class="text-sm tabular-nums">{{ format(row.count) }}<span v-if="awardShareOf(row)" class="opacity-75"> · {{ percent(row.count, awardShareOf(row)) }} {{ isMvp(row) ? 'of her games' : 'of non-MVP games' }}</span></div>
               </div>
             </div>
           </div>
@@ -471,6 +480,7 @@
       <!-- Leaderboard -->
       <section id="recap-leaderboard" data-index="Most Corrupted" v-if="leaderboard.length">
         <h2 class="recap-heading">Most Corrupted</h2>
+        <scroll-hint-container :fit="true">
         <table class="min-w-0 w-full responsive-table">
           <thead>
             <tr><th class="py-2 px-3 text-left text-sm">Rank</th><th class="py-2 px-3 text-left text-sm">Player</th><th class="py-2 px-3 text-left text-sm">Region</th><th class="py-2 px-3 text-left text-sm">Games</th><th class="py-2 px-3 text-left text-sm">Win rate</th></tr>
@@ -508,6 +518,7 @@
             </tr>
           </tbody>
         </table>
+        </scroll-hint-container>
       </section>
 
       <!-- Your contribution -->
@@ -1069,6 +1080,15 @@ export default {
     allMaps() {
       return this.sortMaps(this.allSections.maps);
     },
+    // Her games in the selected mode, from the same score rows the awards are counted from.
+    awardGames() {
+      const averages = this.modeSections.averages[0];
+      return averages ? Number(averages.games) || 0 : 0;
+    },
+    awardMvpCount() {
+      const mvp = this.modeSections.awards.find((row) => this.isMvp(row));
+      return mvp ? Number(mvp.count) || 0 : 0;
+    },
     awards() {
       return [...this.modeSections.awards].sort((a, b) => b.count - a.count);
     },
@@ -1355,6 +1375,17 @@ export default {
           number(before.deaths, after.deaths, 'Deaths per game', 2),
         ],
       };
+    },
+    // match_award 1 is MVP, same as the player page's MVP rate.
+    isMvp(row) {
+      return String(row.award) === '1';
+    },
+    // MVP is out of all her games; other awards are out of the games she wasn't MVP.
+    awardShareOf(row) {
+      if (!this.awardGames) {
+        return 0;
+      }
+      return this.isMvp(row) ? this.awardGames : Math.max(this.awardGames - this.awardMvpCount, 0);
     },
     recordValue(key, value) {
       return TIME_RECORDS.includes(key) ? this.gameLength(value) : this.format(value);

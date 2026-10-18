@@ -1,8 +1,8 @@
 <template>
   <div :class="{ 'px-4': compact }">
     <button v-if="!compact" class="md:hidden p-2 bg-blue w-full" @click="showMobile">Show Filters</button>
-    <div v-show="compact || showNav" :class="compact ? 'bg-lighten rounded p-3' : 'bg-gray-dark py-2 md:px-20 mb-[2em] max-md:fixed max-md:top-0 max-md:z-50 max-md:h-[100vh] max-md:flex max-md:flex-wrap max-md:px-4 max-md:flex-col'">
-      <button v-if="!compact" class="md:hidden ml-auto text-2xl" @click="showMobile">x</button>
+    <div v-show="compact || showNav" :class="compact ? 'bg-lighten rounded p-3' : 'bg-gray-dark py-2 md:px-20 mb-[2em] max-md:fixed max-md:inset-0 max-md:z-50 max-md:h-[100dvh] max-md:overflow-y-auto max-md:flex max-md:px-4 max-md:flex-col'">
+      <button v-if="!compact" class="md:hidden ml-auto text-2xl min-w-[44px] min-h-[44px]" aria-label="Close filters" @click="showMobile">x</button>
       <div :class="compact ? 'flex flex-wrap items-end gap-3' : 'flex items-center justify-center max-md:flex-wrap max-md:flex-1 max-md:items-start max-md:justify-start max-md:flex-col'">
         <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,160px),1fr))] flex-1 basis-[800px] gap-2 min-w-0' : 'flex flex-wrap items-center justify-center'">
           <!--Hero or Role -->
@@ -455,7 +455,7 @@
             :defaultValue="modifiedGroupSizeDefaultValue"
           ></multi-select-filter>
         </div>
-        <button :disabled="disabledFilter" @click="applyFilter" :class="compact ? 'bg-teal rounded text-white px-5 py-2 h-10 disabled:opacity-50 hover:bg-blue' : {'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disabledFilter, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disabledFilter}">
+        <button :disabled="disabledFilter" @click="applyFilter" :class="compact ? 'bg-teal rounded text-white px-5 py-2 h-10 disabled:opacity-50 hover:bg-blue' : {'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10 max-md:sticky max-md:bottom-2': !disabledFilter, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full max-md:sticky max-md:bottom-2': disabledFilter}">
           Filter
         </button>
 
@@ -614,6 +614,7 @@
         modifiedincluderole: null,
         modifiedincludegroupsize: null,
         showNav: true,
+        desktopView: true,
         defaultRoleModified: null,
         modifiedGroupSizeDefaultValue: null,
         statfilterdisabled: false,
@@ -711,8 +712,9 @@
       this.ffBlizzid = this.ffblizzidinput || null;
       this.ffRegion = this.ffregioninput || null;
 
-      // Set initial visibility based on screen width (hidden on mobile, shown on desktop)
-      this.showNav = window.innerWidth > 768;
+      // Hidden on mobile, shown on desktop. Media query, not innerWidth, so a page wider than the phone can't open it
+      this.desktopView = !this.isMobileView();
+      this.showNav = this.desktopView;
 
       window.addEventListener('resize', this.checkScreenWidth);
     },
@@ -838,6 +840,12 @@
       }
     },
     watch: {
+      // The mobile panel covers the screen, so the page behind it shouldn't scroll
+      showNav(open){
+        if(!this.compact && this.isMobileView()){
+          document.body.style.overflow = open ? 'hidden' : '';
+        }
+      },
       toggleExtraFilters(value){
         if(!value){
           // Only filters that disappear with the advanced section; Map stays visible.
@@ -865,6 +873,9 @@
     },
     unmounted(){
       window.removeEventListener('resize', this.checkScreenWidth);
+      if(!this.compact && this.showNav && this.isMobileView()){
+        document.body.style.overflow = '';
+      }
     },
     methods: {
       // Patch groups carry no date of their own; they date from their earliest build.
@@ -1127,7 +1138,7 @@
             if (!this.ffBlizzid) return;
           }
 
-          if(window.innerWidth < 768){
+          if(this.isMobileView()){
             this.showNav = false;
           }
           const allSelectedFilters = {
@@ -1175,12 +1186,20 @@
       showMobile(){
         this.showNav = !this.showNav;
       },
+      isMobileView() {
+        // Same breakpoint as Tailwind's md
+        return !window.matchMedia('(min-width: 768px)').matches;
+      },
       checkScreenWidth() {
-      // Only auto-show on desktop, never auto-hide (let the X button handle closing)
-          if (window.innerWidth > 768) {
-            this.showNav = true;
-          }
-       },
+        // Show on desktop; close it when going back to mobile (e.g. rotating a phone) so it doesn't cover the page
+        const desktop = !this.isMobileView();
+        if (desktop) {
+          this.showNav = true;
+        } else if (this.desktopView) {
+          this.showNav = false;
+        }
+        this.desktopView = desktop;
+      },
     }
   };
 </script>

@@ -126,6 +126,7 @@
 </template>
 
 <script>
+import { scaleTableToFit } from '../../utils/scaleTable';
 import moment from 'moment-timezone';
 
 export default {
@@ -240,11 +241,7 @@ export default {
         this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
           if (responsivetable && this.windowWidth < 1500) {
-            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
-            responsivetable.style.transformOrigin = 'top left';
-            responsivetable.style.transform = `scale(${newTableWidth})`;
-            const container = this.$refs.tablecontainer;
-            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+            scaleTableToFit(responsivetable, this.$refs.tablecontainer);
           }
         });
       }

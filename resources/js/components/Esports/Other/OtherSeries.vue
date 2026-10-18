@@ -2,7 +2,7 @@
   <div>
     <page-heading :infoText1="infoText1" :heading="''" :heading-image="'/images/EsportOther/' + this.series.icon" :heading-image-url="'/Esports/Other/' + this.series.name"></page-heading>
     
-    <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue">
+    <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue flex-wrap max-md:text-xs">
       <div class="border-r border-white">
         <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="rounded-none " :color="activeButton === 'teams' ? 'lblue' : ''" :active="teamsClicked" :ignoreclick="true"></custom-button>
       </div>

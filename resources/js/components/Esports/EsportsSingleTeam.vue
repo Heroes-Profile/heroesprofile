@@ -238,7 +238,7 @@
       </div>
       <div class="bg-lighten ">
 
-        <div class="p-10 max-w-[90em] ml-auto mr-auto">
+        <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
           <game-summary-box 
             v-for="(item, index) in data.matches" 

@@ -127,10 +127,14 @@
 
 
     @if(isset($headeralert) && $headeralert !== null)
-      <div class="bg-red text-sm text-center p-1">
-          {{-- Admin-written HTML from header_alert, so it can carry links. --}}
+      {{-- Admin-written HTML from header_alert, so it can carry links. --}}
+      <div class="bg-red text-sm text-center p-1 max-md:hidden">
           {!! $headeralert !!}
       </div>
+      <details class="group bg-red text-sm text-center px-4 py-2 md:hidden">
+          <summary class="cursor-pointer list-none">Site update. <span class="link group-open:hidden">Read more</span></summary>
+          {!! $headeralert !!}
+      </details>
     @endif
 
     @if($xalatathEvent)

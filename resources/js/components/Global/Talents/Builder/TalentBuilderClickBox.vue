@@ -1,5 +1,5 @@
 <template>
-  <div :class="horizontal ? 'border-b text-black flex flex-col justify-stretch min-h-[250px]' : 'text-black flex flex-col justify-stretch min-w-[210px]'">
+  <div :class="horizontal ? 'border-b text-black flex flex-col justify-stretch min-h-[250px]' : 'text-black flex flex-col justify-stretch min-w-[210px] max-md:min-w-[140px]'">
     <div
       :class="['cursor-pointer p-4 transition duration-300 hover:bg-gray-md hover:text-black h-full m-2', horizontal ? 'min-h-[250px]' : '', { 'bg-teal text-white': isClicked }]"
     >

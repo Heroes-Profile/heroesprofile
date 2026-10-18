@@ -14,6 +14,85 @@
         </div>
       </analytics-speech-bubble>
 
+      <!-- Your last game: this one game's signals against your usual, and its flagged moments -->
+      <template v-if="lastGame">
+        <h3 class="text-lg font-bold mb-1">Your last game</h3>
+        <infobox class="mb-2" :input="'Your most recent game under these filters, broken down signal by signal. Your usual is your average over your earlier games; a value counts as better or worse than usual only when it is further from that average than your games normally vary. Coaching is rebuilt overnight, so a game you just played shows up here the day after it is processed. Check the game below is the one you expect.'"></infobox>
+        <div class="flex flex-wrap items-center justify-between gap-4 bg-darken rounded p-3 mb-2">
+          <div>
+            <span class="font-bold">{{ heroName(lastGame.hero_id) }}</span> on {{ mapName(lastGame.game_map) }}
+            &middot; <span :class="isWin(lastGame) ? 'text-teal' : 'text-red'">{{ isWin(lastGame) ? 'Win' : 'Loss' }}</span>
+            <div class="text-sm text-gray-light">Game ended {{ formatDateTime(lastGame.game_date) }} &middot; Replay {{ lastGame.replay_id }}</div>
+          </div>
+          <custom-button
+            :href="'/Analytics/Match/Single/' + lastGame.replay_id"
+            :text="'Watch this game'"
+            :alt="'Open this game in the replay viewer'"
+            size="small"
+          ></custom-button>
+        </div>
+        <table class="min-w-0 w-full responsive-table mb-4">
+          <thead>
+            <tr>
+              <th>Signal</th>
+              <th>This game</th>
+              <th>
+                <span class="inline-flex items-center gap-1">
+                  Your usual
+                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                    <slot><p class="text-sm p-2 text-left">Your average over your earlier games under these filters (up to 200). Needs at least 5 earlier games.</p></slot>
+                  </round-image>
+                </span>
+              </th>
+              <th>Global median</th>
+              <th>
+                <span class="inline-flex items-center gap-1">
+                  Against your usual
+                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                    <slot><p class="text-sm p-2 text-left">Better or Worse when this game is further from your usual than one game normally swings (the spread of your earlier games). Otherwise Typical.</p></slot>
+                  </round-image>
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in lastGameRows" :key="row.key">
+              <td>{{ row.name }}</td>
+              <td>{{ format(row, row.game) }}</td>
+              <td>{{ format(row, row.usual) }}</td>
+              <td>{{ format(row, row.median) }}</td>
+              <td><span :class="lastVerdictClass(row.verdict)">{{ row.verdict }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <p v-if="!lastEvents.length" class="text-sm text-gray-light mb-8">Nothing flagged in this game.</p>
+        <table v-else class="min-w-0 w-full responsive-table mb-8">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Signal</th>
+              <th>What happened</th>
+              <th>Replay</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(event, index) in lastEvents" :key="index">
+              <td>{{ clock(event.t_s) }}</td>
+              <td>{{ eventSignal(event) }}</td>
+              <td>{{ event.detail }}<template v-if="event.ref_hero_id"> ({{ heroName(event.ref_hero_id) }})</template></td>
+              <td>
+                <custom-button
+                  :href="'/Analytics/Match/Single/' + event.replay_id + '?t=' + event.t_s"
+                  :text="'Watch'"
+                  :alt="'Watch this moment in the replay viewer'"
+                  size="small"
+                ></custom-button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
+
       <!-- Are you improving: your last few games against your earlier ones, per signal -->
       <div class="flex flex-wrap items-center justify-between gap-4 mb-2">
         <h3 class="text-lg font-bold">Are you improving?</h3>
@@ -316,6 +395,33 @@ export default {
     recentGames() {
       return this.data.recent || [];
     },
+    lastGame() {
+      return this.recentGames[0] || null;
+    },
+    // The last game's value for each signal against your earlier games; a one-game swing is the
+    // spread (standard deviation) of those earlier games
+    lastGameRows() {
+      if (!this.lastGame) return [];
+      return this.rows
+        .filter(r => GAME_COLUMN[r.key])
+        .map(r => {
+          const raw = this.lastGame[GAME_COLUMN[r.key]];
+          if (raw === null || raw === undefined || raw === '') return null;
+          const game = Number(raw);
+          const earlier = this.recentGames.slice(1).map(g => g[GAME_COLUMN[r.key]]).filter(v => v !== null && v !== undefined && v !== '').map(Number);
+          if (earlier.length < 5) return { ...r, game, usual: null, verdict: '-' };
+          const usual = earlier.reduce((a, b) => a + b, 0) / earlier.length;
+          const sd = Math.sqrt(earlier.reduce((t, v) => t + (v - usual) ** 2, 0) / (earlier.length - 1));
+          const diff = game - usual;
+          const threshold = Math.max(sd, Math.abs(usual) * 0.01, 1e-6);
+          const better = r.better === 'lower' ? diff < 0 : diff > 0;
+          return { ...r, game, usual, verdict: Math.abs(diff) <= threshold ? 'Typical' : better ? 'Better' : 'Worse' };
+        })
+        .filter(Boolean);
+    },
+    lastEvents() {
+      return this.data.last_events || [];
+    },
     // The signals the summary tells you to work on
     workKeys() {
       return this.ranked.filter(r => r.ahead > 50).slice(0, 2).map(r => r.key);
@@ -480,6 +586,21 @@ export default {
       return (this.data.events || [])
         .filter(e => signal.events.includes(e.kind) && (!signal.filter || signal.filter(e)))
         .slice(0, 10);
+    },
+    isWin(game) {
+      return game.win === true || game.win === 'true' || Number(game.win) === 1;
+    },
+    lastVerdictClass(verdict) {
+      return verdict === 'Better' ? 'text-teal' : verdict === 'Worse' ? 'text-red' : 'text-gray-light';
+    },
+    // The signal a flagged moment belongs to
+    eventSignal(event) {
+      const signal = SIGNALS.find(s => s.events.includes(event.kind) && (!s.filter || s.filter(event)));
+      return signal ? signal.name : event.kind;
+    },
+    // game_date is when the game ended, in UTC
+    formatDateTime(value) {
+      return moment.tz(value, 'Atlantic/Reykjavik').clone().tz(moment.tz.guess()).format('MM/DD/YYYY h:mm A');
     },
     formatDate(value) {
       return moment.tz(value, 'Atlantic/Reykjavik').clone().tz(moment.tz.guess()).format('MM/DD/YYYY');

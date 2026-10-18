@@ -69,7 +69,7 @@
       </div>
     </div>
 
-    <div class="flex justify-between max-w-[1500px] mx-auto mb-2">
+    <div class="flex justify-between max-w-[1500px] mx-auto mb-2 max-md:flex-wrap max-md:gap-2 max-md:px-2">
       <div class="flex">
         <div v-if="showTalentHeroToggle" class="text-center flex items-center justify-stretch gap-2 mx-2">
           Talents:    

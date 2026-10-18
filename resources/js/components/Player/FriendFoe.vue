@@ -26,8 +26,8 @@
     </div>
 
     <div v-if="frienddata && enemydata" class="gap-1 mx-auto  flex justify-center max-w-[1500px] max-md:flex-col max-md:text-sm max-md:max-w-[100vw]">
-      <div>
-        <table class="min-w-0 max-w-[750px] max-md:max-w-[100vw]">
+      <div ref="friendcontainer" class="max-md:overflow-hidden">
+        <table ref="friendtable" class="min-w-0 max-w-[750px]">
           <thead >
             <tr >
               <th  @click="sortTableFriend('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
@@ -78,8 +78,8 @@
           </tbody>
         </table>
       </div>
-      <div>
-        <table class="min-w-0 max-w-[750px] max-md:max-w-[100vw]">
+      <div ref="enemycontainer" class="max-md:overflow-hidden">
+        <table ref="enemytable" class="min-w-0 max-w-[750px]">
           <thead class="bg-red">
             <tr>
               <th @click="sortTableEnemy('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
@@ -141,6 +141,8 @@
 </template>
 
 <script>
+import { scaleTableToFit } from '../../utils/scaleTable';
+
 export default {
   name: 'FriendFoe',
   components: {
@@ -208,6 +210,12 @@ export default {
 
 
 
+  },
+  updated() {
+    if (window.matchMedia('(max-width: 767px)').matches) {
+      scaleTableToFit(this.$refs.friendtable, this.$refs.friendcontainer);
+      scaleTableToFit(this.$refs.enemytable, this.$refs.enemycontainer);
+    }
   },
   computed: {
     sortedDataFriends() {

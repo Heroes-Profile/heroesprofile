@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full">
-    <table class="w-full text-sm">
+  <div ref="tablecontainer" class="w-full max-md:overflow-hidden">
+    <table ref="responsivetable" class="w-full text-sm">
       <thead>
         <tr>
           <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Hero</th>
@@ -46,6 +46,8 @@
 </template>
 
 <script>
+import { scaleTableToFit } from '../../../utils/scaleTable';
+
 export default {
   name: 'GlobalTalentBuildsAll',
   props: {
@@ -62,6 +64,13 @@ export default {
     return {
       copiedState: {},
     };
+  },
+  mounted() {
+    this.$nextTick(() => {
+      if (window.matchMedia('(max-width: 767px)').matches) {
+        scaleTableToFit(this.$refs.responsivetable, this.$refs.tablecontainer);
+      }
+    });
   },
   methods: {
     firstBuild(heroName, gameType) {

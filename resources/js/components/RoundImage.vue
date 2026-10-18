@@ -120,6 +120,8 @@ export default {
     voideye: Boolean,
     icon: String,
     mobileClick: false,
+    // Name-only hero portraits link elsewhere on tap, so phones show neither the inline text nor a popup
+    hidemobiletext: Boolean,
     hidedelay: {
       type: Number,
       default: 0,
@@ -145,7 +147,7 @@ export default {
   computed: {
     // Mobile shows the hover text inline under the image.
     hasMobileText() {
-      return !this.excludehover && !this.mobileClick;
+      return !this.excludehover && !this.mobileClick && !this.hidemobiletext;
     },
   },
   watch: {
@@ -166,8 +168,8 @@ export default {
       window.removeEventListener('scroll', this.hideTooltip, true);
     },
     handleMouseOver() {
-      // Mobile already shows this text under the image
-      if (this.hasMobileText && this.isSmallScreen()) return;
+      // Mobile already shows this text under the image, or hides it
+      if ((this.hasMobileText || (this.hidemobiletext && !this.mobileClick)) && this.isSmallScreen()) return;
 
       clearTimeout(this.hideTimer);
       if (!this.showTooltip) {

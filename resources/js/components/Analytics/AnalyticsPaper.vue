@@ -241,11 +241,11 @@ export default {
               'Performance can depend on when and how long a player plays as much as on in-game decisions. This tab looks at those patterns across a player\'s game history.',
             ] },
             { heading: 'Data', shared: true, body: [
-              'This tab uses each game\'s start time, length, map and result, and the leave and rejoin events of every player.',
+              'This tab uses each game\'s end time, length, map and result, and the leave and rejoin events of every player.',
             ] },
             { heading: 'Definitions', body: [
               { list: [
-                'Session: a run of consecutive games in which no more than 30 minutes pass between the end of one game (start time plus length) and the start of the next. Sessions are built from all your processed games; the filters then choose which games are counted, each at its real place in its session.',
+                'Session: a run of consecutive games in which no more than 30 minutes pass between the end of one game and the start of the next (a replay records when the game ended; the start is that minus the game length). Sessions are built from all your processed games; the filters then choose which games are counted, each at its real place in its session.',
                 'Sessions and games per session: sessions containing at least one game that matches the filters, and their average length in games (all games, matching or not).',
                 'Win rate after a win (or loss): win rate in games whose previous game in the same session was a win (or loss). The first game of a session has no previous game and is excluded.',
                 'Disconnect: a leave event by any player more than 30 seconds before the game ended, whether or not the player rejoined.',
@@ -254,7 +254,7 @@ export default {
               ] },
             ] },
             { heading: 'Methods', body: [
-              'Sessions. All your processed games are ordered by start time, whatever the filters. A new session starts when more than 30 minutes pass between the end of one game (start time plus length) and the start of the next. Games matching the filters are then counted at their position in their session.',
+              'Sessions. All your processed games are ordered by start time, whatever the filters. A new session starts when more than 30 minutes pass between the end of one game and the start of the next. A replay records when the game ended, so each start is that time minus the game length. Games matching the filters are then counted at their position in their session.',
               'Win rate by session position is computed for the 1st to 5th game of a session and for all later games combined. Win rate after a win (or loss) uses every game that follows a win (or loss) within the same session.',
               'Time of day and day of week use your browser\'s local time zone, in four-hour blocks. Game length is grouped into under 15, 15-20, 20-25 and 25+ minutes.',
               'Disconnects. A leave event counts as a disconnect unless it occurs in the last 30 seconds of the game (the normal end-of-game exit); a later rejoin does not remove it. Games are classed by whether you, another teammate, or an enemy disconnected (a game can be in more than one class), and the win rate is reported for each class and for games with no disconnect at all.',
@@ -285,6 +285,7 @@ export default {
                 'Signal rating (High, Medium, Low): how strong the global evidence is that the behaviour goes with winning or losing. It is the same for every player and is recomputed nightly.',
                 'Your sample (High, Medium, Low): how many of your own games stand behind your value. It is specific to you and to the filters.',
                 'Improving, Worse, About the same: whether your last 3 or 5 games differ from your earlier games by more than your usual game-to-game swing.',
+                'Your last game: your most recent processed game under the filters, each signal against your usual (the average of your earlier games, up to 200) and the global median. Better or Worse means further from your usual than one game normally varies (the standard deviation of your earlier games, with a floor of 1% of the usual); otherwise Typical. Every moment flagged in that game is listed with a link into the replay viewer. The game shown is identified by its end time and replay number, because coaching is rebuilt overnight and a game just played appears the day after it is processed.',
               ] },
               'The summary at the top lists up to two signals to work on: those rated Medium or High where more than half of players do better than you, most-behind first (fights a talent tier down is excluded because it mostly reflects the team being behind on levels). It also names your best signal where you are ahead of most players, and notes when fewer than 10 games are behind the read.',
             ] },

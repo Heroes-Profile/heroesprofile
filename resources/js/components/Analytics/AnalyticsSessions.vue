@@ -97,8 +97,11 @@ export default {
   computed: {
     // Every game, in order; sessions are built from these so a filter can't split one
     allGames() {
-      // game_date is stored in UTC
-      return this.data.games.map(g => ({ ...g, date: new Date(g.game_date + 'Z'), in_filter: g.in_filter !== false && g.in_filter !== 'false' }));
+      // game_date is when the game ended, in UTC; date is when it started
+      return this.data.games.map(g => {
+        const end = new Date(g.game_date + 'Z');
+        return { ...g, end, date: new Date(end - g.length_s * 1000), in_filter: g.in_filter !== false && g.in_filter !== 'false' };
+      });
     },
     // The games the stats count: the ones matching the filters
     games() {
@@ -113,7 +116,7 @@ export default {
       let current = [];
       this.allGames.forEach(game => {
         const previous = current[current.length - 1];
-        if (previous && (game.date - previous.date) / 1000 - previous.length_s > SESSION_BREAK_SECONDS) {
+        if (previous && (game.date - previous.end) / 1000 > SESSION_BREAK_SECONDS) {
           sessions.push(current);
           current = [];
         }

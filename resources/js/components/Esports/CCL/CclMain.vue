@@ -3,7 +3,7 @@
     <page-heading :infoText1="infoText1" :heading="'CCL'" :heading-image="'/images/CCL/600-600-HHE_CCL_Logo_rectangle.png'" :heading-image-url="'/Esports/CCL'"></page-heading>
 
       <!---You are going to have to design this better, I am going to use buttons for now -->
-      <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue">
+      <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue flex-wrap max-md:text-xs">
         <div class="border-r border-white">
           <custom-button @click="setButtonActive('organizations')" :text="'Organizations'" :size="'big'" class="rounded-none " :color="activeButton === 'organizations' ? 'lblue' : ''" :active="organizationsClicked" :ignoreclick="true"></custom-button>
         </div>

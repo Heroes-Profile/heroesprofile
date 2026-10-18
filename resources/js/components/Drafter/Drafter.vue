@@ -27,7 +27,7 @@
       ></filters>
     </div>
 
-    <div v-if="!started" class="flex flex-col items-center gap-4 py-10">
+    <div v-if="!started" class="flex flex-col items-center gap-4 py-10 px-4">
       <div class="flex gap-8">
         <label class="flex items-center gap-2 cursor-pointer">
           <input type="radio" value="team1" v-model="firstPickTeam" /> Team 1 First Pick

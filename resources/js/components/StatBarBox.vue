@@ -48,7 +48,7 @@ export default {
   },
   computed: {
     widthClass() {
-      return this.size === 'big' || this.size === 'full' ? 'w-full' : 'w-[10em]';
+      return this.size === 'big' || this.size === 'full' ? 'w-full max-md:mx-0' : 'w-[10em]';
     },
   },
 }

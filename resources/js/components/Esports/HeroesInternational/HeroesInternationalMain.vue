@@ -3,7 +3,7 @@
     <page-heading :infoText1="infoText1" :heading="'Heroes International'" :heading-image="'/images/HI/heroes_international.png'" :heading-image-url="'/Esports/HeroesInternational/Main'"></page-heading>
 
       <!---You are going to have to design this better, I am going to use buttons for now -->
-      <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue">
+      <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue flex-wrap max-md:text-xs">
         <div class="border-r border-white">
           <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class=" rounded-none" :color="activeButton === 'teams' ? 'lblue' : ''" :active="teamsClicked" :ignoreclick="true"></custom-button>
         </div>

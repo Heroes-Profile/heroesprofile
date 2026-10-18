@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap">
+  <div class="flex flex-wrap max-md:justify-center">
     <div id="filter-label" class="relative">
       <div class="flex items-end  text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors">
         <div class="flex flex-col"><span>From Date</span>

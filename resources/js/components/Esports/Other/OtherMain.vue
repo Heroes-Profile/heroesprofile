@@ -39,7 +39,7 @@
           </li>
         </ul>
       </div>
-      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[25vw]   2xl:mx-auto  " style=" ">
+      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[25vw] max-md:w-full   2xl:mx-auto  " style=" ">
         <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
           <thead>
             <tr>
@@ -136,6 +136,8 @@
 </template>
 
 <script>
+import { scaleTableToFit } from '../../../utils/scaleTable';
+
 export default {
   name: 'OtherMain',
   components: {
@@ -223,6 +225,11 @@ export default {
         //Do something here
       }finally {
         this.isLoading = false;
+        this.$nextTick(() => {
+          if (window.matchMedia('(max-width: 767px)').matches) {
+            scaleTableToFit(this.$refs.responsivetable, this.$refs.tablecontainer);
+          }
+        });
       }
     },
     sortTable(key) {

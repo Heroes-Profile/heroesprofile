@@ -1,7 +1,8 @@
 <template>
   <div class="relative">
-    <div ref="scroller" class="table-container w-full overflow-x-auto" @scroll="updateHints">
-      <slot></slot>
+    <div ref="scroller" :class="['table-container w-full', fitting ? 'overflow-hidden' : 'overflow-x-auto']" @scroll="updateHints">
+      <div v-if="fit" ref="content"><slot></slot></div>
+      <slot v-else></slot>
     </div>
 
     <div v-show="canScrollLeft" class="pointer-events-none absolute inset-y-0 left-0 w-12" :style="{ background: 'linear-gradient(to right, rgba(15, 18, 29, 0.9), rgba(15, 18, 29, 0))' }"></div>
@@ -17,22 +18,31 @@
 </template>
 
 <script>
+import { scaleTableToFit } from '../utils/scaleTable';
+
 export default {
   name: 'ScrollHintContainer',
   components: {
   },
   props: {
+    // Phones shrink the content to fit instead of scrolling
+    fit: Boolean,
   },
   data(){
     return {
       canScrollLeft: false,
       canScrollRight: false,
       resizeObserver: null,
+      fitting: this.fit && window.matchMedia('(max-width: 767px)').matches,
     }
   },
   created(){
   },
   mounted() {
+    if (this.fitting) {
+      scaleTableToFit(this.$refs.content, this.$refs.scroller);
+      return;
+    }
     // Content width changes when tables flip or get scaled, not just on window resize
     this.resizeObserver = new ResizeObserver(() => this.updateHints());
     this.resizeObserver.observe(this.$refs.scroller);
@@ -40,6 +50,10 @@ export default {
     this.updateHints();
   },
   updated() {
+    if (this.fitting) {
+      scaleTableToFit(this.$refs.content, this.$refs.scroller);
+      return;
+    }
     this.updateHints();
   },
   beforeUnmount() {

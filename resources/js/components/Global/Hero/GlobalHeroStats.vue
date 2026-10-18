@@ -207,6 +207,7 @@
 </template>
 
 <script>
+import { scaleTableToFit } from '../../../utils/scaleTable';
 export default {
   name: 'GlobalHeroStats',
   components: {
@@ -424,12 +425,7 @@ export default {
         this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
           if (responsivetable && this.windowWidth < 1500) {
-            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
-            responsivetable.style.transformOrigin = 'top left';
-            responsivetable.style.transform = `scale(${newTableWidth})`;
-            const container = this.$refs.tablecontainer;
-            this.tablewidth = newTableWidth;
-            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+            this.tablewidth = scaleTableToFit(responsivetable, this.$refs.tablecontainer);
           }
         });
       }
@@ -478,12 +474,7 @@ export default {
         this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
           if (responsivetable && this.windowWidth < 1500) {
-            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
-            responsivetable.style.transformOrigin = 'top left';
-            responsivetable.style.transform = `scale(${newTableWidth})`;
-            const container = this.$refs.tablecontainer;
-            this.tablewidth = newTableWidth;
-            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+            this.tablewidth = scaleTableToFit(responsivetable, this.$refs.tablecontainer);
           }
         });
       }

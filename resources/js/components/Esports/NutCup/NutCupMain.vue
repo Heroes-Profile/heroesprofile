@@ -3,7 +3,7 @@
     <page-heading :infoText1="infoText1" :heading="'Nut Cup'" :heading-image="'/images/NutCup/IMG_0265.PNG'" :heading-image-url="''"></page-heading>
 
       <!---You are going to have to design this better, I am going to use buttons for now -->
-      <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue">
+      <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue flex-wrap max-md:text-xs">
 
         <div class="border-r border-white">
           <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="rounded-none " :color="activeButton === 'overallHeroStats' ? 'lblue' : ''"  :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
