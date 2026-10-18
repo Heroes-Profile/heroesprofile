@@ -48,6 +48,7 @@
       <div id="patch-history" class="mt-10 mb-8">
         <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">Patch &amp; Season History</h2>
         <div class="bg-lighten rounded-b-lg p-4">
+          <scroll-hint-container :fit="true">
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
             <thead>
               <tr>
@@ -69,6 +70,7 @@
               </tr>
             </tbody>
           </table>
+          </scroll-hint-container>
         </div>
       </div>
 
@@ -77,6 +79,7 @@
         <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">Season Dates</h2>
         <div class="bg-lighten rounded-b-lg p-4">
           <p class="text-sm text-gray-300 mb-3">Shown in your time zone.</p>
+          <scroll-hint-container :fit="true">
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
             <thead>
               <tr>
@@ -93,6 +96,7 @@
               </tr>
             </tbody>
           </table>
+          </scroll-hint-container>
         </div>
       </div>
 
@@ -100,6 +104,7 @@
       <div id="awards" class="mt-10 mb-8">
         <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">Match Awards</h2>
         <div class="bg-lighten rounded-b-lg p-4">
+          <scroll-hint-container :fit="true">
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
             <thead>
               <tr>
@@ -118,6 +123,7 @@
               </tr>
             </tbody>
           </table>
+          </scroll-hint-container>
         </div>
       </div>
 
@@ -253,6 +259,10 @@ export default {
             {
               q: 'Why aren\'t all of my games showing up?',
               a: 'Heroes Profile only contains games that have been uploaded to our system. If you haven\'t uploaded your replays, or only recently started uploading, older games won\'t appear. You can <a href="/Upload" class="link">upload past replay files manually</a>, or use the <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe" class="link">Heroes Profile Uploader</a> to auto-upload going forward. Replay files are stored by Heroes of the Storm in your Documents folder.',
+            },
+            {
+              q: 'Is a game\'s date and time when it started or when it ended?',
+              a: 'When it ended. The time shown for a game comes from its replay file, which Heroes of the Storm saves at the end of the game, so a 25 minute game that started at 8:00 shows as 8:25.',
             },
             {
               q: 'Can I upload old replays, and will that affect my MMR?',

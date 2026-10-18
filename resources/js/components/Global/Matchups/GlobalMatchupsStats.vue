@@ -82,7 +82,7 @@
 
       <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
 
-      <div id="table-container" ref="tablecontainer" class="w-[100vw]   2xl:mx-auto  " style=" ">
+      <div id="table-container" ref="tablecontainer" class="w-[100vw] max-md:overflow-hidden 2xl:mx-auto" style=" ">
         <table id="responsive-table" class="responsive-table  relative" ref="responsivetable">
           <thead class="top-0 w-full sticky z-40">
           <tr>
@@ -179,6 +179,7 @@
 </template>
 
 <script>
+import { scaleTableToFit } from '../../../utils/scaleTable';
   export default {
     name: 'GlobalMatchupsStats',
     components: {
@@ -350,6 +351,11 @@
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
+          this.$nextTick(() => {
+            if (window.matchMedia('(max-width: 767px)').matches) {
+              scaleTableToFit(this.$refs.responsivetable, this.$refs.tablecontainer);
+            }
+          });
         }
       },
       cancelAxiosRequest() {

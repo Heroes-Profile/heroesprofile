@@ -1,8 +1,14 @@
 <template >
   <div v-if="!patreonUser">
-    <div v-if="adBlocker" class="bg-teal px-20 py-4 text-sm text-center">
-      Heroes Profile uses ads to help fund site running costs.  Please consider allowing ads or support us through patreon at <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">https://www.patreon.com/heroesprofile</a>
-    </div>
+    <template v-if="adBlocker">
+      <div class="bg-teal px-20 py-4 text-sm text-center max-md:hidden">
+        Heroes Profile uses ads to help fund site running costs.  Please consider allowing ads or support us through patreon at <a class="link break-all" href="https://www.patreon.com/heroesprofile" target="_blank">https://www.patreon.com/heroesprofile</a>
+      </div>
+      <details class="group bg-teal px-4 py-2 text-sm text-center md:hidden">
+        <summary class="cursor-pointer list-none">Heroes Profile uses ads to help fund the site. <span class="link group-open:hidden">Read more</span></summary>
+        Please consider allowing ads or support us through patreon at <a class="link break-all" href="https://www.patreon.com/heroesprofile" target="_blank">https://www.patreon.com/heroesprofile</a>
+      </details>
+    </template>
     <div v-else class="mb-2" id="horizontal-banner-ad-container" style="min-height:120px; position:relative;"></div>
   </div>
 </template>

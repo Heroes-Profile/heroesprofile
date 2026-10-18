@@ -120,6 +120,7 @@
 </template>
 
 <script>
+import { scaleTableToFit } from '../../../utils/scaleTable';
   export default {
     name: 'GlobalDraftStats',
     components: {
@@ -230,7 +231,11 @@
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
-          
+          this.$nextTick(() => {
+            if (window.matchMedia('(max-width: 767px)').matches) {
+              scaleTableToFit(this.$refs.responsivetable, this.$refs.tablecontainer);
+            }
+          });
         }
       },
       cancelAxiosRequest() {

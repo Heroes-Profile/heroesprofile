@@ -21,6 +21,8 @@ const LAST_HIT_RANGE = 6;
 const TAKEDOWN_RANGE = 8;
 const EASE = 3; // seconds over which a walk eases onto the next exact point
 const MAX_DETOUR = 3; // a route around walls longer than this times the straight line isn't trusted
+// A hero's own body, for heroes that also have extra ones
+export const MAIN_BODIES = ['HeroAbathur', 'HeroChen', 'HeroSamuro'];
 
 // data.mounts: [t, player, 1] for a mount press, [t, player, 0] for anything that dismounts.
 // A player controlling several heroes at once (the Lost Vikings) has a life per hero unit: data.lives
@@ -64,14 +66,25 @@ export function buildTracks(data, { mode = 'follow', walkable = null, walkGrid =
     if (!selections.has(p)) selections.set(p, []);
     selections.get(p).push([t, new Set(ids)]);
   });
-  // Was this unit selected when the order at time t was given?
-  const selectedAt = (p, id, t) => {
+  // When each body id is alive (a revived body keeps its id)
+  const alive = new Map();
+  (data.unit_tracks || []).forEach(u => {
+    if (!alive.has(u.id)) alive.set(u.id, []);
+    alive.get(u.id).push([u.b[0], u.d ? u.d[0] : length]);
+  });
+  const aliveAt = (id, t) => (alive.get(id) || []).some(([from, to]) => t >= from && t <= to);
+  // Was this unit selected when the order at time t was given? Selections still list bodies that have
+  // died (Chen's elements after Storm, Earth, Fire), so only living ones count. A hero's own body also
+  // takes orders given while none of its living bodies is selected (Abathur with only his Symbiote).
+  const selectedAt = (p, id, t, main) => {
     let current = null;
     for (const [at, ids] of selections.get(p) || []) {
       if (at > t) break;
       current = ids;
     }
-    return !!current?.has(id);
+    if (!current) return main;
+    const living = [...current].filter(i => aliveAt(i, t));
+    return living.includes(id) || (main && living.length === 0);
   };
 
   data.lives.forEach(([p, born, bx, by, died, unitId]) => {
@@ -82,9 +95,10 @@ export function buildTracks(data, { mode = 'follow', walkable = null, walkGrid =
       // One of several heroes: its own positions and death spot, and only the orders given while it was selected
       const own = [...unit.pts, ...(unit.d ? [unit.d] : [])];
       const anchors = dedupe([[born, bx, by], ...inLife(own)]);
-      const lifeMoves = inLife(moves.get(p) || []).filter(m => selectedAt(p, unitId, m[0]));
+      const main = MAIN_BODIES.includes(unit.unit);
+      const lifeMoves = inLife(moves.get(p) || []).filter(m => selectedAt(p, unitId, m[0], main));
       const lifeMounts = [[born, false], ...inLife(mounts.get(p) || [])];
-      byPlayer.get(p)?.push({ born, died, unit: unit.unit, path: walk(anchors, lifeMoves, lifeMounts, end, mode, walkGrid) });
+      byPlayer.get(p)?.push({ born, died, unit: unit.unit, hidden: unit.hidden || [], path: walk(anchors, lifeMoves, lifeMounts, end, mode, walkGrid) });
       return;
     }
     const anchors = dedupe([[born, bx, by], ...inLife(exact.get(p) || [])]);
@@ -117,10 +131,12 @@ export function positionAt(lives, t) {
   return life ? sample(life.path, t) : null;
 }
 
-/** Every hero a player has alive at time t (several for the Lost Vikings): [{ unit, x, y }]. */
+/** Every body a player has out at time t (several for the Lost Vikings, Chen, Samuro...): [{ unit, x, y }].
+ * A body riding inside another (D.Va's pilot in her mech, Chen during Storm, Earth, Fire) isn't out. */
 export function positionsAt(lives, t) {
   return (lives || [])
     .filter(l => t >= l.born && (l.died === null || t <= l.died))
+    .filter(l => !(l.hidden || []).some(([from, to]) => t >= from && t < to))
     .map(l => {
       const [x, y] = sample(l.path, t);
       return { unit: l.unit || null, x, y };

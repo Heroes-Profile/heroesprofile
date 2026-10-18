@@ -10,7 +10,7 @@
       <input class="form-control search-input text-black" type="password" id="password" name="password" required>
 
       <label class="flex items-center gap-2 my-2">
-        <input type="checkbox" name="remember" value="1">
+        <input type="checkbox" name="remember" value="1" class="w-5 h-5">
         Remember me
       </label>
 

@@ -2,7 +2,7 @@
   <div class="">
     <page-heading :infoText1="infoText" :heading="'Profile'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
     </page-heading>
-    <div class="flex justify-center max-w-[1500px] mx-auto">
+    <div class="flex justify-center max-w-[1500px] mx-auto flex-wrap max-md:flex-col max-md:items-center">
       <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
       <multi-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="seasonselection"></multi-select-filter>
       <date-range-filter :startDate="startdate" :endDate="enddate" @input-changed="handleInputChange"></date-range-filter>
@@ -22,9 +22,9 @@
 
 
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-between  max-md:flex-col max-md:items-center">
-        <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em] max-md:order-1">
-          <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins.toLocaleString('en-US')"></stat-box>
-          <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses.toLocaleString('en-US')"></stat-box>
+        <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em] max-md:order-1 max-md:px-4">
+          <stat-box class="w-[48%] max-md:min-w-0" :title="'Wins'" :value="data.wins.toLocaleString('en-US')"></stat-box>
+          <stat-box class="w-[48%] max-md:min-w-0" :title="'Losses'" :value="data.losses.toLocaleString('en-US')"></stat-box>
 
           
           <div class="w-full mx-auto text-center">
@@ -34,8 +34,8 @@
            <div class="w-full mx-auto text-center">
             <stat-bar-box class="w-full" size="full" :title="'Second to Ten Win Rate'" :value="data.second_to_ten_win_rate.toFixed(2)" color="red"></stat-bar-box>         
            </div>
-          <stat-box class="w-[48%]" :title="'KDR'" :value="data.kdr" color="yellow"></stat-box>          
-          <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
+          <stat-box class="w-[48%] max-md:min-w-0" :title="'KDR'" :value="data.kdr" color="yellow"></stat-box>          
+          <stat-box class="w-[48%] max-md:min-w-0" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
 
           <stat-box class="w-full" :title="'Account Level'" :value="data.account_level.toLocaleString('en-US')"></stat-box>          
         </div>
@@ -43,7 +43,7 @@
           <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name" size="large"></hero-image-wrapper>
         </div>
 
-        <div class="flex flex-col max-w-[400px] text-left w-full items-between max-md:order-2 ">
+        <div class="flex flex-col max-w-[400px] text-left w-full items-between max-md:order-2  max-md:px-4">
           <stat-bar-box class="w-full" size="full" :title="'Win Rate'" :value="data.win_rate.toFixed(2)"></stat-bar-box>       
           <stat-bar-box class="w-full" size="full" :title="'Bruiser Win Rate'" :value="data.bruiser_win_rate.toFixed(2)" color="teal"></stat-bar-box>       
           <stat-bar-box class="w-full" size="full" :title="'Support Win Rate'" :value="data.support_win_rate.toFixed(2)" color="red"></stat-bar-box>       
@@ -71,7 +71,7 @@
           </div>
 
         </div>
-        <div class="max-w-[1500px] mx-auto text-right mb-2">
+        <div class="max-w-[1500px] mx-auto text-right mb-2 max-md:text-center">
           <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Hero'" class=" " text="View All Heroes"></custom-button>
         </div>
       </div>
@@ -86,21 +86,21 @@
             </slot>
           </round-image>
         </h2>
-        <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 md:px-20 py-5 justify-center" >
+        <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
           <h4 class="text-right">Quick Match</h4>
           <stat-bar-box :title="'Win Rate'" :value=" data.qm_mmr_data ? data.qm_mmr_data.win_rate.toFixed(2) : 0 "></stat-bar-box>
           <stat-box title="HP Rank Tier" :value="data.qm_mmr_data ? data.qm_mmr_data.rank_tier : ''"></stat-box>
           <stat-box :title="'HP MMR'" :value="data.qm_mmr_data ? data.qm_mmr_data.mmr.toLocaleString('en-US') : 0 "></stat-box>
         </div>
 
-        <div class="grid grid-cols-4 max-md:grid-cols-2   items-center gap-10 md:px-20 py-5 justify-center" >
+        <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
           <h4 class="text-right">Unranked Draft</h4>
           <stat-bar-box :title="'Win Rate'" :value=" data.ud_mmr_data ? data.ud_mmr_data.win_rate.toFixed(2) : 0 " color="teal"></stat-bar-box>
           <stat-box title="HP Rank Tier" :value="data.ud_mmr_data ? data.ud_mmr_data.rank_tier : ''" color="teal"></stat-box>
           <stat-box :title="'HP MMR'" :value="data.ud_mmr_data ? data.ud_mmr_data.mmr.toLocaleString('en-US') : 0 " color="teal"></stat-box>
         </div>
 
-        <div class=" grid grid-cols-4 max-md:grid-cols-2  items-center gap-10 md:px-20 py-5 justify-center" >
+        <div class=" grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
           <h4 class="text-right">Hero league</h4>
           <stat-bar-box :title="'Win Rate'" :value=" data.hl_mmr_data ? data.hl_mmr_data.win_rate.toFixed(2) : 0 " color="red"></stat-bar-box>
           <stat-box title="HP Rank Tier" :value="data.hl_mmr_data ? data.hl_mmr_data.rank_tier : ''" color="red"></stat-box>
@@ -108,21 +108,21 @@
         </div>
 
 
-        <div class="grid grid-cols-4 max-md:grid-cols-2  items-center gap-10 md:px-20 py-5 justify-center" >
+        <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
           <h4 class="text-right">Team league</h4>
           <stat-bar-box :title="'Win Rate'" :value=" data.tl_mmr_data ? data.tl_mmr_data.win_rate.toFixed(2) : 0 " color="yellow"></stat-bar-box>
           <stat-box title="HP Rank Tier" :value="data.tl_mmr_data ? data.tl_mmr_data.rank_tier : ''" color="yellow"></stat-box>
           <stat-box :title="'HP MMR'" :value="data.tl_mmr_data ? data.tl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="yellow"></stat-box>
         </div>
 
-        <div class="grid grid-cols-4  max-md:grid-cols-2  items-center gap-10 md:px-20 py-5 justify-center" >
+        <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
          <h4 class="text-right"> Storm league</h4>
          <stat-bar-box :title="'Win Rate'" :value=" data.sl_mmr_data ? data.sl_mmr_data.win_rate.toFixed(2) : 0 " color="gray-dark"></stat-bar-box>
          <stat-box title="HP Rank Tier" :value="data.sl_mmr_data ? data.sl_mmr_data.rank_tier : ''" color="gray-dark"></stat-box>
          <stat-box :title="'HP MMR'" :value="data.sl_mmr_data ? data.sl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="gray-dark"></stat-box>
        </div>
 
-       <div class="grid grid-cols-4 max-md:grid-cols-2  items-center gap-10 md:px-20 py-5 justify-center" >
+       <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
         <h4 class="text-right">ARAM</h4>
         <stat-bar-box :title="'Win Rate'" :value=" data.ar_mmr_data ? data.ar_mmr_data.win_rate.toFixed(2) : 0 "></stat-bar-box>
         <stat-box title="HP Rank Tier" :value="data.ar_mmr_data ? data.ar_mmr_data.rank_tier : ''"></stat-box>
@@ -148,7 +148,7 @@
           <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.maps_three_highest_win_rate" color="teal"></group-box>
           <group-box :playerlink="true" :text="'Latest Played'" :data="data.maps_three_latest_played" color="yellow"></group-box>
         </div>
-        <div class="max-w-[1500px] mx-auto text-right my-2">
+        <div class="max-w-[1500px] mx-auto text-right my-2 max-md:text-center">
         <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Map'" class=" " text="View All Maps"></custom-button>
       </div>
       </div>
@@ -156,7 +156,7 @@
     </div>
 
     <div class="flex justify-center max-w-[1500px] mx-auto items-center max-md:flex-col">
-    <div class="p-10 max-w-[90em] ml-auto mr-auto">
+    <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
       <h2 class="text-3xl font-bold py-5">Party Size Win Rates</h2>
 
       <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
@@ -186,14 +186,14 @@
     </div>
 
     <div class="flex justify-center max-w-[1500px] mx-auto items-center max-md:flex-col" v-if="data && data.weekday_data">
-      <div class="p-10 max-w-[90em] ml-auto mr-auto">
+      <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
         <h2 class="text-3xl font-bold py-5">Week Day Win Rates</h2>
         <player-weekday-win-rates :data="data.weekday_data"></player-weekday-win-rates>
       </div>
     </div>
 
     <div class="bg-lighten">
-      <div class="p-10 max-w-[90em] ml-auto mr-auto" v-if="data && data.matchData">
+      <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto" v-if="data && data.matchData">
         <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
 
         

@@ -11,7 +11,7 @@
 
     <!-- Same cards and table as Player Match History, chosen by the same setting and toggle -->
     <div v-if="data.games.length && compact">
-      <div class="p-10 max-w-[90em] ml-auto mr-auto">
+      <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
         <div v-for="game in data.games" :key="game.replayID">
           <game-summary-box :data="game"></game-summary-box>
           <div class="flex justify-end mt-1">
@@ -89,6 +89,7 @@
 </template>
 
 <script>
+import { scaleTableToFit } from '../../utils/scaleTable';
 import moment from 'moment-timezone';
 import Cookies from 'js-cookie';
 
@@ -126,11 +127,7 @@ export default {
     scaleTable() {
       const responsivetable = this.$refs.responsivetable;
       if (responsivetable && this.windowWidth < 1500) {
-        const newTableWidth = this.windowWidth / responsivetable.clientWidth;
-        responsivetable.style.transformOrigin = 'top left';
-        responsivetable.style.transform = `scale(${newTableWidth})`;
-        const container = this.$refs.tablecontainer;
-        container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+        scaleTableToFit(responsivetable, this.$refs.tablecontainer);
       }
     },
     formatDate(dateString) {

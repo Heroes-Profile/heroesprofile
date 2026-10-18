@@ -13,6 +13,7 @@
       :ispatreon="ispatreon"
       :voideye="voideye"
       :mobileClick="mobileClick"
+      :hidemobiletext="!hasSlotContent"
       :popupsize="popupsize || 'fit'"
     >
       <slot>

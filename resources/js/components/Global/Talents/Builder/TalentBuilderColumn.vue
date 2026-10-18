@@ -18,14 +18,14 @@
     </div>
 
     <!-- Vertical layout: full-width row, header on left, talents wrap horizontally -->
-    <div v-else class="m-1 bg-gray-light rounded-2xl flex">
-      <h2 class="bg-blue rounded-l-2xl p-2 text-sm text-center uppercase relative pr-8 min-w-[9em]">Level {{ level }}
+    <div v-else class="m-1 bg-gray-light rounded-2xl flex max-md:flex-col">
+      <h2 class="bg-blue rounded-l-2xl max-md:rounded-l-none max-md:rounded-t-2xl p-2 text-sm text-center uppercase relative pr-8 min-w-[9em] max-md:min-w-0">Level {{ level }}
         <div @click="removeAnySelections" class="absolute right-0 top-0 text-bold p-2 rounded hover:bg-teal">
           <i class="fa-solid fa-xmark"></i>
         </div>
       </h2>
       <div class="flex flex-wrap w-full max-md:justify-center text-sm max-md:text-sm">
-        <div class="min-w-[20%]" v-for="(talent, index) in data" :key="talent.title">
+        <div class="min-w-[20%] max-md:w-1/2" v-for="(talent, index) in data" :key="talent.title">
           <talent-builder-click-box
             :talent="talent"
             :isClicked="isSelected(talent)"

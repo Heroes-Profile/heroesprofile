@@ -6,9 +6,9 @@
   } ]">
     <a :href="getHref()">
       <div :class="[
-      'mt-4  m-l-auto w-full text-right min-h-4 py-2 pl-[6em]',
+      'mt-4  m-l-auto w-full text-right min-h-4 py-2 md:pl-[6em] break-words',
       {
-        'pl-[6em]' : esport != true
+        'md:pl-[6em]' : esport != true
       }
       ]
       ">{{ getCaptions() }}</div>

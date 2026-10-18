@@ -47,6 +47,7 @@
         </div>
       </div>
 
+      <scroll-hint-container :fit="true">
       <table class="responsive-table">
         <tbody>
           <tr>
@@ -123,6 +124,7 @@
           </tr>
         </tbody>
       </table>
+      </scroll-hint-container>
     </div>
   </div>
 </template>

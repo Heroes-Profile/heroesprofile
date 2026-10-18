@@ -100,7 +100,7 @@
           </p>
           <p class="text-sm mb-4">
             <code>/heroes</code> means <code class="break-all">{{ baseUrl }}/heroes</code> — not
-            <code>https://www.heroesprofile.com/heroes</code>, which is the website.
+            <code class="break-all">https://www.heroesprofile.com/heroes</code>, which is the website.
           </p>
 
           <h3 class="text-sm uppercase tracking-wider text-lteal mb-2">Authentication</h3>
@@ -151,9 +151,9 @@
                 :href="op.sitePage"
                 target="_blank"
                 rel="noopener"
-                class="link"
+                class="link break-all"
               >heroesprofile.com{{ op.sitePage }}</a>
-              <code v-else class="text-lteal">heroesprofile.com{{ op.sitePage }}</code>
+              <code v-else class="text-lteal break-all">heroesprofile.com{{ op.sitePage }}</code>
               — the same data, filtered the same way.
             </p>
 
@@ -167,6 +167,7 @@
 
             <template v-if="op.parameters.length">
               <h3 class="text-sm uppercase tracking-wider text-lteal mb-2">Parameters</h3>
+              <scroll-hint-container :fit="true">
               <table class="min-w-0 w-full responsive-table mb-4">
                 <thead>
                   <tr>
@@ -218,6 +219,7 @@
                   </tr>
                 </tbody>
               </table>
+              </scroll-hint-container>
             </template>
 
             <div class="mb-4">
@@ -267,7 +269,7 @@
                     <span class="text-gray-medium">Request URL</span>
                     <!-- Carries its own scheme: it comes from the spec's declared
                          server, so it is exactly the base URL the docs advertise. -->
-                    <code class="text-lteal">{{ results[op.id].public_url }}</code>
+                    <code class="text-lteal break-all">{{ results[op.id].public_url }}</code>
                   </p>
 
                   <div class="relative">

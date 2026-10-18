@@ -36,14 +36,25 @@ export default {
       },
       options: {
         responsive: true,
+        // Phones: taller plot, and few flat date labels so they don't crush it
+        aspectRatio: window.matchMedia('(max-width: 767px)').matches ? 1.2 : 2,
         scales: {
           x: {
             grid: {
-              display: true, 
+              display: true,
             },
             ticks: {
-              display: true, 
+              display: true,
               //maxTicksLimit: 10, // Limit the number of x-axis ticks to 100
+              ...(window.matchMedia('(max-width: 767px)').matches ? {
+                maxTicksLimit: 3,
+                maxRotation: 0,
+                // Date only; the time makes neighbouring labels overlap
+                callback(value) {
+                  const label = this.getLabelForValue(value);
+                  return typeof label === 'string' ? label.slice(0, 10) : label;
+                },
+              } : {}),
             },
           },
           y: {

@@ -37,7 +37,7 @@ class AnalyticsQueryService
         $threshold = $this->globalThreshold();
         // Coaching tables are rebuilt by a nightly BigQuery job (or by hand); refresh whenever they change
         $nightly = $tab === 'coaching' ? ':'.$this->coachingVersion() : '';
-        $key = 'analytics:tab:v'.config('analytics.extract_v').'.9:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
+        $key = 'analytics:tab:v'.config('analytics.extract_v').'.10:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
 
         return Cache::remember($key, now()->addDays(7), function () use ($tab, $blizzId, $region, $filters, $threshold) {
             $params = [
@@ -533,7 +533,7 @@ class AnalyticsQueryService
                       AND (@hero = 0 OR hero_id = @hero)',
 
                 // Your games one by one, newest first, for "Are you improving?" (last few vs earlier games)
-                'recent' => 'SELECT replay_id, FORMAT_DATETIME("%Y-%m-%dT%H:%M:%S", game_date) AS game_date, win,
+                'recent' => 'SELECT replay_id, FORMAT_DATETIME("%Y-%m-%dT%H:%M:%S", game_date) AS game_date, win, hero_id, game_map,
                       overstay, lost_absent, lost_absent_costly, SAFE_DIVIDE(obj_present, obj_events) AS objective_presence,
                       tier_down_present, caught_first, picked_alone, SAFE_DIVIDE(fights_present, fights) AS fight_presence,
                       heroic_delay_s, IF(mounts_used AND travel_s >= 30, SAFE_DIVIDE(unmounted_travel_s, travel_s), NULL) AS unmounted_travel,
@@ -590,6 +590,20 @@ class AnalyticsQueryService
                       AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR e.game_map IN UNNEST(@maps))
                       AND (@hero = 0 OR e.hero_id = @hero)
                     QUALIFY ROW_NUMBER() OVER (PARTITION BY e.kind ORDER BY e.game_date DESC, e.t_s) <= 10',
+
+                // Every flagged moment in your most recent game under the filters, for the last-game breakdown
+                'last_events' => 'WITH last AS (
+                      SELECT replay_id FROM `{dataset}.coaching_player_game`
+                      WHERE blizz_id = @blizz AND region = @region AND game_date >= @cutover
+                        AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR game_type IN UNNEST(@game_types))
+                        AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR game_map IN UNNEST(@maps))
+                        AND (@hero = 0 OR hero_id = @hero)
+                      ORDER BY game_date DESC LIMIT 1
+                    )
+                    SELECT e.kind, e.replay_id, e.t_s, e.detail, e.hero_id, e.ref_hero_id
+                    FROM `{dataset}.coaching_events` e JOIN last USING (replay_id)
+                    WHERE e.blizz_id = @blizz AND e.region = @region AND e.game_date >= @cutover
+                    ORDER BY e.t_s',
             ],
 
             // Party size comes from heroesprofile.player via the loader (player_match.stack_size: 0 or 1 =

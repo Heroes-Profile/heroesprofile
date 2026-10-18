@@ -2,7 +2,7 @@
 
   <div class="modal-mask ">
       <div class="modal-wrapper ">
-        <div class="modal-container bg-blue rounded-lg p-10 max-w-[750px] w-[90%] text-sm">
+        <div class="modal-container bg-blue rounded-lg p-10 max-md:p-4 max-w-[750px] w-[90%] text-sm">
 
           <div class="modal-header">
             <slot name="header">
@@ -39,22 +39,22 @@
                   </p>
                 </div>
               </div>
-              
-              <div class="mt-6 flex items-start">
-                <input 
-                  type="checkbox" 
-                  id="agreeConditions" 
-                  v-model="agreedToConditions"
-                  class="mt-1 mr-2 cursor-pointer"
-                />
-                <label for="agreeConditions" class="cursor-pointer">
-                  I agree to the conditions above and understand that violations will result in zero tolerance enforcement.
-                </label>
-              </div>
             </slot>
           </div>
 
-          <div class="modal-footer flex">
+          <!-- Kept out of the scrolling body so it is always on screen -->
+          <div class="modal-footer flex flex-col gap-3">
+            <div class="flex items-start">
+              <input
+                type="checkbox"
+                id="agreeConditions"
+                v-model="agreedToConditions"
+                class="mt-1 mr-2 cursor-pointer w-5 h-5 shrink-0"
+              />
+              <label for="agreeConditions" class="cursor-pointer">
+                I agree to the conditions above and understand that violations will result in zero tolerance enforcement.
+              </label>
+            </div>
             <slot name="footer">
               <button 
                 class="bg-teal p-2 rounded-lg ml-auto disabled:opacity-50 disabled:cursor-not-allowed" 
@@ -112,12 +112,14 @@ export default {
 
 <style scoped>
   .modal-mask {
-    position: absolute;
+    position: fixed;
     z-index: 9998;
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
+    /* Phones: the visible height, not the height behind the address bar */
+    height: 100dvh;
     background-color: rgba(0, 0, 0, 0.9);
     display: flex;
     align-items: center;
@@ -138,7 +140,9 @@ export default {
 .modal-container {
   margin: 0px auto;
   max-height: calc(100vh - 40px);
-  overflow-y: auto;
+  max-height: calc(100dvh - 40px);
+  display: flex;
+  flex-direction: column;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
 }
@@ -148,8 +152,12 @@ export default {
   
 }
 
+/* Only the rules scroll; header and footer stay put */
 .modal-body {
   margin: 20px 0;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .modal-default-button {

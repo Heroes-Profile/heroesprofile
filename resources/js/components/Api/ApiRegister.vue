@@ -17,7 +17,7 @@
       <input class="form-control search-input text-black" type="password" id="password_confirmation" name="password_confirmation" required>
 
       <label class="flex items-start gap-2 mt-3 text-sm">
-        <input type="checkbox" id="terms" name="terms" value="1" class="mt-1" required>
+        <input type="checkbox" id="terms" name="terms" value="1" class="mt-1 w-5 h-5 shrink-0" required>
         <span>
           I agree to the
           <a href="/Api/Terms" target="_blank" class="underline hover:text-lteal">Terms of Service</a>

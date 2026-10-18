@@ -27,7 +27,7 @@
     <h2 class="text-2xl mb-3">The short version</h2>
     <ul class="list-disc list-inside text-sm space-y-1 mb-8">
       <li>
-        Base URL is <code class="text-lteal">https://www.heroesprofile.com/api/external/v1</code>.
+        Base URL is <code class="text-lteal break-all">https://www.heroesprofile.com/api/external/v1</code>.
         Port to that — it works now and keeps working
       </li>
       <li>Send your key as <code class="text-lteal">Authorization: Bearer &lt;key&gt;</code> instead of <code>?api_token=</code></li>
@@ -38,9 +38,9 @@
 
     <h2 class="text-2xl mb-3">Base URL</h2>
     <p class="text-sm mb-3">
-      <code class="text-lteal">https://www.heroesprofile.com/api/external/v1</code> — every
+      <code class="text-lteal break-all">https://www.heroesprofile.com/api/external/v1</code> — every
       path below hangs off that. <code>/v1/heroes</code> in the table means
-      <code>https://www.heroesprofile.com/api/external/v1/heroes</code>.
+      <code class="break-all">https://www.heroesprofile.com/api/external/v1/heroes</code>.
     </p>
     <p class="text-sm mb-3">
       <strong>That is the only base URL, now and later.</strong> Port to it once and you
@@ -81,6 +81,7 @@
       not only their URLs.</strong> The <a href="/Api/Docs" class="link">docs</a> carry the
       exact shape of every response, taken from real output.
     </p>
+    <scroll-hint-container :fit="true">
     <table class="min-w-0 w-full responsive-table mb-4">
       <thead>
         <tr>
@@ -122,6 +123,7 @@
         <tr><td class="py-2 px-3">/upload/heroesprofile/{source}</td><td class="py-2 px-3">/v1/upload/heroesprofile/{source}</td><td class="py-2 px-3">Unchanged contract</td></tr>
       </tbody>
     </table>
+    </scroll-hint-container>
     <p class="text-sm text-gray-medium mb-8">
       v1 also adds endpoints the old API never had — compositions, draft, party, per-map
       and per-role player breakdowns, friend/foe, matchups, leaderboards and the talent
@@ -176,6 +178,7 @@
     </ul>
 
     <h2 class="text-2xl mb-3">Removed</h2>
+    <scroll-hint-container :fit="true">
     <table class="min-w-0 w-full responsive-table mb-8">
       <thead>
         <tr>
@@ -214,6 +217,7 @@
         </tr>
       </tbody>
     </table>
+    </scroll-hint-container>
 
     <h2 class="text-2xl mb-3">Response changes that will bite</h2>
 
@@ -283,6 +287,7 @@ HTTP/1.1 200 OK              done — this is the data
     </p>
 
     <h4 class="text-sm uppercase tracking-wider text-lteal mb-2">3. Handle the failure cases</h4>
+    <scroll-hint-container :fit="true">
     <table class="min-w-0 w-full responsive-table mb-4">
       <thead>
         <tr>
@@ -309,6 +314,7 @@ HTTP/1.1 200 OK              done — this is the data
         </tr>
       </tbody>
     </table>
+    </scroll-hint-container>
 
     <h4 class="text-sm uppercase tracking-wider text-lteal mb-2">What this means for your code</h4>
     <ul class="list-disc list-inside text-sm space-y-1 mb-6">

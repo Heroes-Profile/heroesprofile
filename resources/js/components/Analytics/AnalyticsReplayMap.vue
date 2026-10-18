@@ -101,7 +101,7 @@
         :cx="hero.x" :cy="flip(hero.y)" :r="portrait / 2 + 1.4"
         fill="none" stroke="#f2b134" stroke-width="0.8"
       ></circle>
-      <!-- Which of several heroes this is (the Lost Vikings): its initial under the portrait -->
+      <!-- Which of several bodies this is (the Lost Vikings, Chen's elements...): its initial under the portrait -->
       <text
         v-if="hero.unit"
         :x="hero.x" :y="flip(hero.y) + portrait / 2 + 2.6"
@@ -114,7 +114,21 @@
 </template>
 
 <script>
-import { positionAt, positionsAt } from '../../utils/replayTracks.js';
+import { positionAt, positionsAt, MAIN_BODIES } from '../../utils/replayTracks.js';
+
+// Names for the extra bodies some heroes control; the hero's own body gets none. Any other hero
+// unit an Abathur player controls is his Ultimate Evolution clone.
+const BODY_NAMES = {
+  HeroOlaf: 'Olaf', HeroBaleog: 'Baleog', HeroErik: 'Erik',
+  HeroChenStorm: 'Storm', HeroChenEarth: 'Earth', HeroChenFire: 'Fire',
+  HeroDVaMech: 'Mech', HeroDVaPilot: 'Pilot',
+  SamuroMirrorImage: 'Mirror Image', AbathurEvolvedMonstrosity: 'Monstrosity',
+};
+
+function bodyName(unit) {
+  if (!unit || MAIN_BODIES.includes(unit)) return null;
+  return BODY_NAMES[unit] || 'Clone';
+}
 import { structureIcons, teamColor, tintMatrix } from '../../utils/mapAssets.js';
 
 const KIND = { TownTownHallL2: 'fort', TownTownHallL3: 'keep', KingsCore: 'core', VanndarStormpike: 'core', DrekThar: 'core' };
@@ -226,9 +240,8 @@ export default {
     },
     heroes() {
       return this.data.players.flatMap(p => positionsAt(this.tracks.get(p.idx), this.t).map(at => {
-        // HeroOlaf -> Olaf
-        const unit = at.unit ? at.unit.replace(/^Hero/, '') : null;
-        return { ...p, x: at.x, y: at.y, unit, label: (p.battletag ? p.battletag + ' - ' : '') + (unit || p.hero) };
+        const unit = bodyName(at.unit);
+        return { ...p, x: at.x, y: at.y, unit, label: (p.battletag ? p.battletag + ' - ' : '') + p.hero + (unit ? ' (' + unit + ')' : '') };
       }));
     },
     portraitClip() {

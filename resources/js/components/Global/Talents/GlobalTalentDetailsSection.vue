@@ -1,9 +1,9 @@
 <template>
   <div>
     <div id="table-container" ref="tablecontainer" class="w-auto  max-md:overflow-hidden w-[100vw] max-sm:text-xs  2xl:mx-auto  " style=" ">
-    <div id="resizeTable" ref="resizeTable" >
+    <div id="resizeTable" ref="scaledtables" class="max-md:inline-grid">
     <div v-for="level in talentlevels" ref="resizeTable">
-      <table :id="'responsivetable'+level" class="responsive-table  relative " :ref="'responsivetable'+level">
+      <table :id="'responsivetable'+level" class="responsive-table  relative max-md:w-full" :ref="'responsivetable'+level">
         <thead>
           <tr>
             <th :colspan="statfilter ? 5 : 4" class="text-center py-2 px-3 ">
@@ -53,6 +53,7 @@
 
 <script>
 import { statFilterLabel } from '../../../utils/statFilterLabel';
+import { scaleTableToFit } from '../../../utils/scaleTable';
 
 export default {
   name: 'GlobalTalentDetailsSection',
@@ -76,6 +77,11 @@ export default {
    
   },
   mounted() {
+    this.$nextTick(() => {
+      if (window.matchMedia('(max-width: 767px)').matches) {
+        this.tablewidth = scaleTableToFit(this.$refs.scaledtables, this.$refs.tablecontainer);
+      }
+    });
   },
   computed: {
   },

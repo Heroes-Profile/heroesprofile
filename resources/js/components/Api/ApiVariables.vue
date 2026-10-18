@@ -32,7 +32,8 @@
 
       <!-- Paired values carry a meaning the value itself does not show: `1` is
            NA, `sl` is Storm League. Bare lists just need to be readable. -->
-      <table v-if="variable.pairs" class="min-w-0 w-full responsive-table">
+      <scroll-hint-container v-if="variable.pairs" :fit="true">
+      <table class="min-w-0 w-full responsive-table">
         <thead>
           <tr>
             <th class="py-2 px-3 text-left text-sm">Pass</th>
@@ -46,6 +47,7 @@
           </tr>
         </tbody>
       </table>
+      </scroll-hint-container>
 
       <div v-else class="flex flex-wrap gap-2 items-center">
         <code

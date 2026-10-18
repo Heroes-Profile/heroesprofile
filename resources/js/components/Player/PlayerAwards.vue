@@ -63,7 +63,8 @@
       </template>
 
       <p v-if="!selectedAward && data.recent_awards.length == 0">No awards for the selected filters.</p>
-      <table v-if="tableRows.length" class="min-w-0 w-full responsive-table max-md:text-xs">
+      <div ref="tablecontainer" class="max-md:overflow-hidden">
+      <table v-if="tableRows.length" ref="responsivetable" class="min-w-0 w-full responsive-table max-md:text-xs">
         <thead>
           <tr>
             <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Game ID</th>
@@ -95,6 +96,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
     <div v-if="asyncLoading">
       <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
@@ -107,6 +109,7 @@
 
 <script>
   import moment from 'moment-timezone';
+  import { scaleTableToFit } from '../../utils/scaleTable';
 
   export default {
     name: 'PlayerAwards',
@@ -152,6 +155,11 @@
     mounted() {
       if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
         this.getData();
+      }
+    },
+    updated() {
+      if (window.matchMedia('(max-width: 767px)').matches) {
+        scaleTableToFit(this.$refs.responsivetable, this.$refs.tablecontainer);
       }
     },
     computed: {

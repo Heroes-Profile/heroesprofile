@@ -52,7 +52,7 @@
       Error: Reload page/filter
   </div>
   <div v-if="data && !isLoading">
-    <div class="flex justify-between max-w-[1500px] mx-auto">
+    <div class="flex justify-between max-w-[1500px] mx-auto max-md:flex-wrap max-md:gap-2 max-md:px-2">
         <span class="flex gap-4 mb-2"> 
           <single-select-filter
             :values="filters.heroes" 

@@ -2,7 +2,7 @@
   <div>
     <page-heading :heading="'Terms of Service'"></page-heading>
 
-    <div class="max-w-[1500px] mx-auto mt-10">
+    <div class="max-w-[1500px] mx-auto mt-10 px-4">
       <p>Last updated: June 2026</p>
       <br/>
 

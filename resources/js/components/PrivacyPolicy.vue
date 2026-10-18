@@ -2,7 +2,7 @@
   <div >
     <page-heading  :heading="'Privacy Policy'"></page-heading>
    
-    <div class="max-w-[1500px] mx-auto mt-10">
+    <div class="max-w-[1500px] mx-auto mt-10 px-4">
     <p>
       This site uses cookies to enhance your experience and provide personalized features.
       By using our site, you consent to the use of cookies in accordance with this policy.
