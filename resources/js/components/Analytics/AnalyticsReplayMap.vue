@@ -88,7 +88,7 @@
     ></rect>
 
     <!-- Heroes -->
-    <g v-for="hero in heroes" :key="'hero' + hero.idx" class="cursor-pointer" @click="select(hero.idx)">
+    <g v-for="hero in heroes" :key="'hero' + hero.idx + (hero.unit || '')" class="cursor-pointer" @click="select(hero.idx)">
       <circle :cx="hero.x" :cy="flip(hero.y)" :r="portrait / 2 + 0.6" :fill="teamColor(hero.team)"></circle>
       <image
         v-if="hero.short_name"
@@ -101,6 +101,12 @@
         :cx="hero.x" :cy="flip(hero.y)" :r="portrait / 2 + 1.4"
         fill="none" stroke="#f2b134" stroke-width="0.8"
       ></circle>
+      <!-- Which of several heroes this is (the Lost Vikings): its initial under the portrait -->
+      <text
+        v-if="hero.unit"
+        :x="hero.x" :y="flip(hero.y) + portrait / 2 + 2.6"
+        text-anchor="middle" font-size="3" font-weight="bold" fill="#fff" stroke="#000" stroke-width="0.4" paint-order="stroke"
+      >{{ hero.unit.charAt(0) }}</text>
       <title>{{ hero.label }}</title>
     </g>
   </svg>
@@ -108,7 +114,7 @@
 </template>
 
 <script>
-import { positionAt } from '../../utils/replayTracks.js';
+import { positionAt, positionsAt } from '../../utils/replayTracks.js';
 import { structureIcons, teamColor, tintMatrix } from '../../utils/mapAssets.js';
 
 const KIND = { TownTownHallL2: 'fort', TownTownHallL3: 'keep', KingsCore: 'core', VanndarStormpike: 'core', DrekThar: 'core' };
@@ -219,10 +225,11 @@ export default {
       return last ? [last[1], last[2]] : null;
     },
     heroes() {
-      return this.data.players.map(p => {
-        const at = positionAt(this.tracks.get(p.idx), this.t);
-        return at ? { ...p, x: at[0], y: at[1], label: (p.battletag ? p.battletag + ' - ' : '') + p.hero } : null;
-      }).filter(Boolean);
+      return this.data.players.flatMap(p => positionsAt(this.tracks.get(p.idx), this.t).map(at => {
+        // HeroOlaf -> Olaf
+        const unit = at.unit ? at.unit.replace(/^Hero/, '') : null;
+        return { ...p, x: at.x, y: at.y, unit, label: (p.battletag ? p.battletag + ' - ' : '') + (unit || p.hero) };
+      }));
     },
     portraitClip() {
       return 'da-portrait-' + this.$.uid;

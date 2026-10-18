@@ -195,6 +195,8 @@ class AnalyticsReplayService
             'structures' => $doc['structures'],
             'units' => array_values(array_filter($doc['units'], fn ($u) => $u['g'] !== 'Hero')),
             'lives' => $this->lives($doc),
+            'unit_tracks' => $doc['unit_tracks'] ?? [],
+            'selections' => $doc['selections'] ?? [],
             'team_levels' => $doc['team_levels'],
             'xp_breakdown' => $doc['xp_breakdown'],
             'objectives' => $doc['objectives'],
@@ -209,14 +211,24 @@ class AnalyticsReplayService
     }
 
     /**
-     * [player, born t, x, y, died t or null]: each hero life, from its spawn point. The parser only
+     * [player, born t, x, y, died t or null, unit id?]: each hero life, from its spawn point (the unit id only
+     * for a player with several heroes at once). The parser only
      * tags heroes it knows by name as hero units, so newer heroes (Xal'atath, Deathwing, Hogger and
      * others) have none; their lives come from their positions instead, split at each death.
      */
     private function lives(array $doc): array
     {
         $lives = [];
+        // Players with several heroes at once (the Lost Vikings): a life per hero unit, with its id
+        $multi = [];
+        foreach ($doc['unit_tracks'] ?? [] as $track) {
+            $multi[$track['p']] = true;
+            $lives[] = [$track['p'], $track['b'][0], $track['b'][1], $track['b'][2], $track['d'][0] ?? null, $track['id']];
+        }
         foreach ($doc['units'] as $unit) {
+            if (isset($multi[$unit['owner']])) {
+                continue;
+            }
             if ($unit['g'] === 'Hero' && $unit['owner'] >= 0) {
                 $lives[] = [$unit['owner'], $unit['b'][0], $unit['b'][1], $unit['b'][2], $unit['d'][0] ?? null];
             }

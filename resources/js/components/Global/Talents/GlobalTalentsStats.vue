@@ -28,7 +28,7 @@
     
         <div v-if="!selectedHero">
           <div class="flex justify-between max-w-[1500px] mx-auto md:px-4">
-            <hero-selection :heroes="heroes" @search="heroSearchQuery = $event"></hero-selection>
+            <hero-selection :heroes="heroes" linkbase="/Global/Talents" @search="heroSearchQuery = $event"></hero-selection>
           </div>
 
           <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
@@ -43,8 +43,9 @@
         </div>
 
         <div v-else>
-          <filters 
-          :onFilter="filterData" 
+          <filters
+          :key="filtersKey"
+          :onFilter="filterData"
           :filters="filters" 
           :isLoading="isTalentsLoading || isBuildsLoading"
 
@@ -222,6 +223,7 @@
        talentbuildtype: "Popular",
        tablewidth: null,
        showPatchNotes: false,
+       filtersKey: 0,
      }
    },
    created(){
@@ -253,12 +255,15 @@
    },
     mounted() {
       window.addEventListener('resize', this.updateWindowWidth);
+      window.addEventListener('popstate', this.restoreHistoryState);
+      history.replaceState(this.historyState(), '');
       if(!this.inputhero){
         this.getTalentBuildDataAll();
       }
     },
     beforeUnmount() {
       window.removeEventListener('resize', this.updateWindowWidth);
+      window.removeEventListener('popstate', this.restoreHistoryState);
     },
     computed: {
       isCompact() {
@@ -307,7 +312,7 @@
         document.title = `${this.selectedHero.name} Talent Stats & Builds | Heroes Profile`;
 
         let basePath = '/Global/Talents';
-        history.pushState(null, null, `${basePath}/${this.selectedHero.name}`);
+        history.pushState(this.historyState(), '', `${basePath}/${this.selectedHero.name}`);
         Promise.allSettled([
           this.getTalentData(),
           this.getTalentBuildData(),
@@ -468,7 +473,7 @@
         this.updateQueryString();
         this.getTalentBuildData();
       },
-      updateQueryString(){
+      updateQueryString(path = window.location.pathname){
         let queryString = `?timeframe_type=${this.timeframetype}`;
 
         if(this.timeframe){
@@ -504,9 +509,63 @@
         queryString += `&build_type=${this.talentbuildtype}`;
         queryString += `&mirror=${this.mirrormatch}`;
 
-        const currentUrl = window.location.href;
-        let currentPath = window.location.pathname;
-        history.pushState(null, null, `${currentPath}${queryString}`);
+        history.pushState(this.historyState(), '', `${path}${queryString}`);
+      },
+      // Saved with each history entry so back/forward can put the page back without a reload.
+      historyState(){
+        return JSON.parse(JSON.stringify({
+          hero: this.selectedHero ? this.selectedHero.name : null,
+          timeframetype: this.timeframetype,
+          timeframe: this.timeframe,
+          region: this.region,
+          statfilter: this.statfilter,
+          herolevel: this.herolevel,
+          gametype: this.gametype,
+          gamemap: this.gamemap,
+          playerrank: this.playerrank,
+          herorank: this.herorank,
+          rolerank: this.rolerank,
+          mirrormatch: this.mirrormatch,
+          talentbuildtype: this.talentbuildtype,
+        }));
+      },
+      restoreHistoryState(event){
+        const state = event.state;
+        if(!state){
+          window.location.reload();
+          return;
+        }
+
+        this.timeframetype = state.timeframetype;
+        this.timeframe = state.timeframe;
+        this.region = state.region;
+        this.statfilter = state.statfilter;
+        this.herolevel = state.herolevel;
+        this.gametype = state.gametype;
+        this.gamemap = state.gamemap;
+        this.playerrank = state.playerrank;
+        this.herorank = state.herorank;
+        this.rolerank = state.rolerank;
+        this.mirrormatch = state.mirrormatch;
+        this.talentbuildtype = state.talentbuildtype;
+        this.selectedHero = state.hero ? this.heroes.find(hero => hero.name === state.hero) : null;
+
+        this.talentdetaildata = null;
+        this.talentbuilddata = null;
+        this.showPatchNotes = false;
+        this.filtersKey++;
+
+        if(this.selectedHero){
+          document.title = `${this.selectedHero.name} Talent Stats & Builds | Heroes Profile`;
+          this.preloadTalentImages(this.selectedHero);
+          this.getTalentData();
+          this.getTalentBuildData();
+        }else{
+          document.title = 'Talent Stats & Builds | Heroes Profile';
+          if(!this.talentbuilddataall){
+            this.getTalentBuildDataAll();
+          }
+        }
       },
       preloadTalentImages(hero) {
         if(hero){
@@ -619,10 +678,7 @@
           // Update document title dynamically
           document.title = `${this.selectedHero.name} Talent Stats & Builds | Heroes Profile`;
 
-          let currentPath = window.location.pathname;
-          let newPath = currentPath.replace(/\/[^/]*$/, `/${this.selectedHero.name}`);
-          history.pushState(null, null, newPath);
-          this.updateQueryString();
+          this.updateQueryString(`/Global/Talents/${this.selectedHero.name}`);
 
           this.talentdetaildata = null;
           this.talentbuilddata = null;

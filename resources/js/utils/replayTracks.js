@@ -23,6 +23,9 @@ const EASE = 3; // seconds over which a walk eases onto the next exact point
 const MAX_DETOUR = 3; // a route around walls longer than this times the straight line isn't trusted
 
 // data.mounts: [t, player, 1] for a mount press, [t, player, 0] for anything that dismounts.
+// A player controlling several heroes at once (the Lost Vikings) has a life per hero unit: data.lives
+// rows carry the unit id, data.unit_tracks holds each unit's own exact positions, and data.selections
+// ([t, player, [unit ids]]) says which units a move order moved.
 export function buildTracks(data, { mode = 'follow', walkable = null, walkGrid = null } = {}) {
   const length = data.length_s;
   const byPlayer = new Map(data.players.map(p => [p.idx, []]));
@@ -55,9 +58,35 @@ export function buildTracks(data, { mode = 'follow', walkable = null, walkGrid =
   (data.mounts || []).forEach(([t, p, on]) => mounts.get(p)?.push(on ? [t + MOUNT_CAST, true] : [t, false]));
   mounts.forEach(list => list.sort((a, b) => a[0] - b[0]));
 
-  data.lives.forEach(([p, born, bx, by, died]) => {
+  const units = new Map((data.unit_tracks || []).map(u => [u.id, u]));
+  const selections = new Map();
+  (data.selections || []).forEach(([t, p, ids]) => {
+    if (!selections.has(p)) selections.set(p, []);
+    selections.get(p).push([t, new Set(ids)]);
+  });
+  // Was this unit selected when the order at time t was given?
+  const selectedAt = (p, id, t) => {
+    let current = null;
+    for (const [at, ids] of selections.get(p) || []) {
+      if (at > t) break;
+      current = ids;
+    }
+    return !!current?.has(id);
+  };
+
+  data.lives.forEach(([p, born, bx, by, died, unitId]) => {
     const end = died ?? length;
     const inLife = list => list.filter(a => a[0] >= born && a[0] <= end).sort((a, b) => a[0] - b[0]);
+    const unit = unitId != null ? units.get(unitId) : null;
+    if (unit) {
+      // One of several heroes: its own positions and death spot, and only the orders given while it was selected
+      const own = [...unit.pts, ...(unit.d ? [unit.d] : [])];
+      const anchors = dedupe([[born, bx, by], ...inLife(own)]);
+      const lifeMoves = inLife(moves.get(p) || []).filter(m => selectedAt(p, unitId, m[0]));
+      const lifeMounts = [[born, false], ...inLife(mounts.get(p) || [])];
+      byPlayer.get(p)?.push({ born, died, unit: unit.unit, path: walk(anchors, lifeMoves, lifeMounts, end, mode, walkGrid) });
+      return;
+    }
     const anchors = dedupe([[born, bx, by], ...inLife(exact.get(p) || [])]);
     const lifeMoves = inLife(moves.get(p) || []);
     // A new life starts on foot
@@ -86,6 +115,16 @@ export function buildTracks(data, { mode = 'follow', walkable = null, walkGrid =
 export function positionAt(lives, t) {
   const life = lives?.find(l => t >= l.born && (l.died === null || t <= l.died));
   return life ? sample(life.path, t) : null;
+}
+
+/** Every hero a player has alive at time t (several for the Lost Vikings): [{ unit, x, y }]. */
+export function positionsAt(lives, t) {
+  return (lives || [])
+    .filter(l => t >= l.born && (l.died === null || t <= l.died))
+    .map(l => {
+      const [x, y] = sample(l.path, t);
+      return { unit: l.unit || null, x, y };
+    });
 }
 
 function dedupe(anchors) {
