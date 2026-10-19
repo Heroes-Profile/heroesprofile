@@ -147,7 +147,7 @@
 import { markRaw } from 'vue';
 import analytics from '../../utils/analyticsFormat.js';
 import { buildTracks, positionAt } from '../../utils/replayTracks.js';
-import { loadWalkable, minimapFor, teamColor } from '../../utils/mapAssets.js';
+import { loadWalkable, minimapFor, teamColor, MAP_SHORTCUT_EXITS } from '../../utils/mapAssets.js';
 import { loadWalkGrid } from '../../utils/replayPathing.js';
 
 // The replay viewer's event feed and timeline markers, built once per game from its extract doc.
@@ -469,7 +469,8 @@ export default {
     },
     rebuild() {
       if (!this.data) return;
-      this.tracks = markRaw(buildTracks(this.data, { mode: this.mode, walkable: this.walkable, walkGrid: this.walkGrid }));
+      const shortcutExits = (this.minimap && MAP_SHORTCUT_EXITS[this.minimap.slug]) || [];
+      this.tracks = markRaw(buildTracks(this.data, { mode: this.mode, walkable: this.walkable, walkGrid: this.walkGrid, shortcutExits }));
     },
     toggle() {
       this.playing = !this.playing;
