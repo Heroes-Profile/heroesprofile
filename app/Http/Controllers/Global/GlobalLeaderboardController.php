@@ -17,6 +17,7 @@ use App\Models\MasterMMRDataSL;
 use App\Models\MasterMMRDataTL;
 use App\Models\MasterMMRDataUD;
 use App\Models\MatchPredictionPlayerStat;
+use App\Models\MatchPredictionSeason;
 use App\Models\SeasonDate;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
@@ -26,6 +27,7 @@ use App\Rules\SeasonInputValidation;
 use App\Rules\StackSizeInputValidation;
 use App\Rules\TierInputByIDValidation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
@@ -33,6 +35,15 @@ use Illuminate\Support\Facades\Validator;
 class GlobalLeaderboardController extends GlobalsInputValidationController
 {
     private $rankModifier = 0;
+
+    private const STORM_LEAGUE = 5;
+
+    // Match Prediction's games requirement, relaxed like CalculateLeaderboards' groups
+    private const PREDICTION_START_GAMES = 20;
+
+    private const PREDICTION_MIN_PLAYERS = 50;
+
+    private const PREDICTION_MIN_GAMES = 5;
 
     private const REAL_RANK_LEAGUES = [1 => 'bronze', 2 => 'silver', 3 => 'gold', 4 => 'platinum', 5 => 'diamond', 6 => 'master'];
 
@@ -219,22 +230,45 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 $item->rating = $item->win_rate;
             });
 
-            // $weeksDifference = $this->globalDataService->matchPredictionGetWeeksSinceSeasonStart();
-
             $authenticatedUser = Auth::user();
+            $players = $leaderboard->reject(fn ($item) => $this->globalDataService->isHiddenFrom($item->blizz_id, $item->region, $authenticatedUser))->values();
 
-            $filteredLeaderboard = $leaderboard->filter(function ($item) use ($authenticatedUser) {
-                if ($item->games_played < 20) {
-                    return false;
+            // Like CalculateLeaderboards: start at 20 predictions and, while fewer than 50 players qualify, lower it
+            // by one per week of the season down to 5. Each step is a group; a higher group always ranks above a lower one.
+            $predictionSeason = MatchPredictionSeason::find($season);
+            $weeks = 1;
+            if ($predictionSeason) {
+                $end = $predictionSeason->end_date ? Carbon::parse($predictionSeason->end_date) : Carbon::now();
+                $weeks = max(1, (int) floor(Carbon::parse($predictionSeason->start_date)->diffInDays($end) / 7));
+            }
+
+            $requirements = [];
+            $requirement = self::PREDICTION_START_GAMES;
+            while (true) {
+                $requirements[] = $requirement;
+                $qualifying = $players->where('games_played', '>=', $requirement)->count();
+                if ($qualifying >= self::PREDICTION_MIN_PLAYERS || $requirement <= self::PREDICTION_MIN_GAMES) {
+                    break;
                 }
+                $requirement = max($requirement - $weeks, self::PREDICTION_MIN_GAMES);
+            }
 
-                return ! $this->globalDataService->isHiddenFrom($item->blizz_id, $item->region, $authenticatedUser);
-            })->values();
+            $ranked = $players->map(function ($item) use ($requirements) {
+                $group = collect($requirements)->search(fn ($required) => $item->games_played >= $required);
+                if ($group === false) {
+                    return null;
+                }
+                $item->leaderboard_group = $group;
+                $item->min_games_required = $requirements[$group];
 
-            $sortedLeaderboard = $filteredLeaderboard->sortByDesc('rating');
+                return $item;
+            })->filter()
+                ->sort(fn ($a, $b) => [$a->leaderboard_group, $b->rating] <=> [$b->leaderboard_group, $a->rating])
+                ->values();
+
             $counter = 1;
 
-            $sortedLeaderboard->each(function ($item) use (&$counter) {
+            $ranked->each(function ($item) use (&$counter) {
                 $item->rank = $counter;
                 $item->split_battletag = explode('#', $item->battletag)[0];
                 $item->region_id = $item->region;
@@ -243,7 +277,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 unset($item->battlenet_accounts_id);
             });
 
-            $data = $sortedLeaderboard->values();
+            $data = $ranked;
         }
 
         return $data;
@@ -251,8 +285,10 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
     /**
      * The top players by real Storm League rank read off loading screens (battletags_real_ranks), each by
-     * their latest rank read in the season: Grandmasters by ladder position, then Master, then each league
-     * by division. Ties go to the rank read in more games.
+     * their latest rank read in the season, grouped by league: Master (Grandmasters first, by ladder
+     * position), then Diamond down to Bronze, each by division. Within a division, players with the Player
+     * leaderboard's games requirement come first by Storm League win rate, then everyone under it by games
+     * played; read count breaks what's left.
      */
     private function getRealRankLeaderboard($season, $region)
     {
@@ -261,7 +297,13 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             return [];
         }
 
-        $build = function () use ($seasonDates, $region) {
+        // The Player leaderboard's requirement: 5 games per week of the season so far (a past season's full length)
+        $weeks = $seasonDates->id == SeasonDate::max('id')
+            ? $this->globalDataService->getWeeksSinceSeasonStart()
+            : max(1, (int) round(Carbon::parse($seasonDates->start_date)->diffInDays(Carbon::parse($seasonDates->end_date)) / 7));
+        $minGames = $weeks * 5;
+
+        $build = function () use ($seasonDates, $region, $minGames) {
             $periods = BattletagRealRank::query()
                 ->where('last_game_date', '>=', $seasonDates->start_date)
                 ->where('last_game_date', '<', $seasonDates->end_date)
@@ -272,23 +314,48 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             // Each player's latest rank this season; unranked reads don't place anyone
             $latest = $periods->unique(fn ($period) => $period->blizz_id.'|'.$period->region)
                 ->reject(fn ($period) => $period->unranked || $period->league_tier === null)
-                ->sort(function ($a, $b) {
-                    return [$b->grandmaster, $b->league_tier, $a->grandmaster ? ($a->ladder_position ?? 1000) : 0, $a->division ?? 0, $b->read_count]
-                        <=> [$a->grandmaster, $a->league_tier, $b->grandmaster ? ($b->ladder_position ?? 1000) : 0, $b->division ?? 0, $a->read_count];
-                })
                 ->values();
+
+            // This season's Storm League games, every upload counted
+            $playerType = $this->globalDataService->getMMRTypeValue('player');
+            $games = collect();
+            foreach ($latest->pluck('blizz_id')->unique()->chunk(1000) as $blizzIds) {
+                $games = $games->concat(MasterGamesPlayedData::query()
+                    ->where('type_value', $playerType)
+                    ->where('stack_size', 0)
+                    ->where('season', $seasonDates->id)
+                    ->where('game_type', self::STORM_LEAGUE)
+                    ->whereIn('blizz_id', $blizzIds->values())
+                    ->get(['blizz_id', 'region', 'win', 'loss']));
+            }
+            $games = $games->keyBy(fn ($row) => $row->blizz_id.'|'.$row->region);
 
             $battletags = Battletag::whereIn('player_id', $latest->pluck('player_id')->unique())->pluck('battletag', 'player_id');
 
-            return $latest->map(fn ($period) => [
-                'battletag' => $battletags[$period->player_id] ?? null,
-                'blizz_id' => $period->blizz_id,
-                'region' => $period->region,
-                'league' => $period->grandmaster ? 'grandmaster' : self::REAL_RANK_LEAGUES[$period->league_tier],
-                'division' => $period->division,
-                'ladder_position' => $period->ladder_position,
-                'read_count' => $period->read_count,
-            ])->filter(fn ($row) => $row['battletag'] !== null)->values()->all();
+            return $latest->map(function ($period) use ($battletags, $games, $minGames) {
+                $record = $games->get($period->blizz_id.'|'.$period->region);
+                $wins = (int) ($record->win ?? 0);
+                $gamesPlayed = $wins + (int) ($record->loss ?? 0);
+
+                return [
+                    'battletag' => $battletags[$period->player_id] ?? null,
+                    'blizz_id' => $period->blizz_id,
+                    'region' => $period->region,
+                    'league' => $period->grandmaster ? 'grandmaster' : self::REAL_RANK_LEAGUES[$period->league_tier],
+                    'league_tier' => $period->league_tier,
+                    'grandmaster' => $period->grandmaster,
+                    'division' => $period->division,
+                    'ladder_position' => $period->ladder_position,
+                    'read_count' => $period->read_count,
+                    'games_played' => $gamesPlayed,
+                    'win_rate' => $gamesPlayed > 0 ? round($wins / $gamesPlayed * 100, 2) : null,
+                    'eligible' => $gamesPlayed >= $minGames,
+                ];
+            })
+                ->filter(fn ($row) => $row['battletag'] !== null)
+                ->sort(fn ($a, $b) => $this->compareRealRanks($a, $b))
+                ->values()
+                ->all();
         };
 
         // Local shares prod's cache table, so only production caches
@@ -308,11 +375,15 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         return collect($rows)
             ->reject(fn ($row) => $this->globalDataService->isHiddenFrom($row['blizz_id'], $row['region'], $authenticatedUser))
             ->take(2000)
-            ->map(function ($row) use (&$rank, $patreonAccounts, $regionNames) {
+            ->map(function ($row) use (&$rank, $patreonAccounts, $regionNames, $minGames) {
                 $key = $row['blizz_id'].'|'.$row['region'];
 
                 return array_merge($row, [
                     'rank' => ++$rank,
+                    // Groups by league, Master first: 0 Master ... 5 Bronze
+                    'leaderboard_group' => 6 - $row['league_tier'],
+                    'group_name' => ucfirst(self::REAL_RANK_LEAGUES[$row['league_tier']]),
+                    'min_games' => $minGames,
                     'split_battletag' => explode('#', $row['battletag'])[0],
                     'region_id' => $row['region'],
                     'region' => $regionNames[$row['region']],
@@ -321,6 +392,22 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 ]);
             })
             ->values();
+    }
+
+    /**
+     * Rank board order, best first: league, Grandmasters by ladder position, division, then players with the
+     * games requirement by win rate, then those under it by games played, then read count.
+     */
+    private function compareRealRanks(array $a, array $b): int
+    {
+        $score = fn ($row) => $row['eligible'] ? ($row['win_rate'] ?? 0) : $row['games_played'];
+
+        return [$b['grandmaster'], $b['league_tier']] <=> [$a['grandmaster'], $a['league_tier']]
+            ?: ($a['grandmaster'] ? ($a['ladder_position'] ?? 1000) <=> ($b['ladder_position'] ?? 1000) : 0)
+            ?: ($a['division'] ?? 0) <=> ($b['division'] ?? 0)
+            ?: $b['eligible'] <=> $a['eligible']
+            ?: $score($b) <=> $score($a)
+            ?: $b['read_count'] <=> $a['read_count'];
     }
 
     public function getLeaderboardRating(Request $request)

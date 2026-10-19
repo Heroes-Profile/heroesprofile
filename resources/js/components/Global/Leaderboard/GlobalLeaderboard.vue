@@ -31,10 +31,10 @@
             <li>Must have predicted 20 games in the game type and season</li>
           </ol>
         </div>
-        <div v-if="leaderboardtype != 'Match Prediction'" class="bg-teal p-[1em] pl-[2em] max-w-[1000px] max-md:text-sm">
+        <div class="bg-teal p-[1em] pl-[2em] max-w-[1000px] max-md:text-sm">
           <h4 class="font-bold uppercase pb-1">Leaderboard groups</h4>
-          <p class="pb-2">If fewer than 50 players meet the games played requirement, it is lowered by one game per week at a time until at least 50 players qualify, down to a minimum of 5 games. Each step down is a new group: Group A met the full requirement, Group B met the next step down, and so on. Each group shows the games it required.</p>
-          <p>Everyone in Group A ranks above everyone in Group B, even with a lower Heroes Profile Rating, so players who met the full requirement are never passed by players who have played fewer games. Within a group, players are ranked by Heroes Profile Rating.</p>
+          <p class="pb-2">If fewer than 50 players meet the {{ leaderboardtype == 'Match Prediction' ? 'predictions' : 'games played' }} requirement, it is lowered by one game per week at a time until at least 50 players qualify, down to a minimum of 5 games. Each step down is a new group: Group A met the full requirement, Group B met the next step down, and so on. Each group shows the games it required.</p>
+          <p>Everyone in Group A ranks above everyone in Group B, even with a lower {{ leaderboardtype == 'Match Prediction' ? 'prediction rate' : 'Heroes Profile Rating' }}, so players who met the full requirement are never passed by players who have played fewer games. Within a group, players are ranked by {{ leaderboardtype == 'Match Prediction' ? 'prediction rate' : 'Heroes Profile Rating' }}.</p>
         </div>
         <h3 v-if="leaderboardtype != 'Match Prediction'" class="font-bold text-2xl uppercase pb-2 max-md:text-base">Heroes Profile Rating formula</h3>
         <img v-if="leaderboardtype != 'Match Prediction'" class="max-w-[1000px] w-full" :src="'/images/miscellaneous/leaderboard_rating_calculation.png'"/>
@@ -46,7 +46,7 @@
         :gametypeinput="[gametype]"
         :regioninput="region"
         :gametypedefault="gametypedefault"
-        :defaultSeason="season"
+        :defaultSeason="leaderboardtype == 'Match Prediction' ? defaultseason : season"
         :defaultpredictionseason="leaderboardtype == 'Match Prediction' ? season : defaultpredictionseason"
         :leaderboardfiltertype="true"
         :leaderboardtypeinput="leaderboardtype"
@@ -72,7 +72,7 @@
       <div v-if="data">
         <div v-if="leaderboardtype == 'SL Rank'" class="my-5 bg-teal py-5 px-2">
           <infobox class="max-w-[1500px] mx-auto">
-            Real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is listed by the latest rank read for them this season: Grandmasters by ladder position, then Master, then each league by division. Ties go to the rank read in more games. Shows the top 2,000.
+            Real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is listed by the latest rank read for them this season, grouped by league: Grandmasters by ladder position, then Master, then each league by division. Within a division, players with at least {{ data.length ? data[0].min_games : 0 }} Storm League games this season (the Player leaderboard's games requirement) come first, by Storm League win rate; players under it follow, by games played. Ties go to the rank read in more games. Shows the top 2,000.
             <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
           </infobox>
         </div>
@@ -115,7 +115,7 @@
             <div ref="responsivetable" class="grid mx-auto" style="width: fit-content">
             <template v-for="group in groupedData" :key="group.group">
             <h3 v-if="showGroupHeadings" class="stack-header !mx-0 mt-6 first:mt-0 mb-2">
-              {{ groupName(group.group) }}<span v-if="group.minGamesRequired !== null">&nbsp;- At least {{ group.minGamesRequired.toLocaleString('en-US') }} games played</span>
+              {{ group.name ?? groupName(group.group) }}<span v-if="group.minGamesRequired !== null">&nbsp;- At least {{ group.minGamesRequired.toLocaleString('en-US') }} games played</span>
             </h3>
             <table class="responsive-table w-full relative ">
               <thead class=" top-0 w-full  z-40">
@@ -132,7 +132,7 @@
                   <th v-if="leaderboardtype == 'SL Rank'" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                     Storm League Rank
                   </th>
-                  <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
+                  <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
                     Win Rate %
                   </th>
                   <th v-if="leaderboardtype == 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
@@ -147,7 +147,7 @@
                   <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('tier_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'tier_id'}]">
                     Tier
                   </th>    
-                  <th v-if="leaderboardtype != 'SL Rank'" @click="sortTable('games_played')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'games_played'}]">
+                  <th @click="sortTable('games_played')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'games_played'}]">
                     Games Played
                   </th>     
 
@@ -205,11 +205,11 @@
                     </td>
                     <td>{{ row.region }}</td>
                     <td v-if="leaderboardtype == 'SL Rank'"><real-rank-badge :rank="row" :width="36" label="right"></real-rank-badge></td>
-                    <td v-if="leaderboardtype != 'SL Rank'">{{ row.win_rate.toFixed(2) }}</td>
+                    <td>{{ row.win_rate === null ? '-' : row.win_rate.toFixed(2) }}</td>
                     <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'">{{ row.rating.toFixed(2) }}</td>
                     <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'">{{ row.mmr.toLocaleString('en-US') }}</td>
                     <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'">{{ row.tier }}</td>
-                    <td v-if="leaderboardtype != 'SL Rank'">{{ row.games_played.toLocaleString('en-US') }}</td>
+                    <td>{{ row.games_played.toLocaleString('en-US') }}</td>
 
                     <td class="py-2 px-3 flex items-center gap-1" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role')">
                       <template v-if="row.most_played_hero">
@@ -378,7 +378,7 @@ export default {
       this.filteredData.forEach(row => {
         const key = row.leaderboard_group ?? 0;
         if (!groups.has(key)) {
-          groups.set(key, { group: key, minGamesRequired: row.min_games_required ?? null, rows: [] });
+          groups.set(key, { group: key, name: row.group_name ?? null, minGamesRequired: row.min_games_required ?? null, rows: [] });
         }
         groups.get(key).rows.push(row);
       });
@@ -468,6 +468,7 @@ export default {
       }
     },
     filterData(filteredData){
+      const previoustype = this.leaderboardtype;
       this.leaderboardtype = filteredData.single["Leaderboard Type"] ? filteredData.single["Leaderboard Type"] : this.leaderboardtype;
 
 
@@ -480,7 +481,9 @@ export default {
       if(this.leaderboardtype == "Match Prediction"){
         this.season = filteredData.single["Match Prediction Season"] ? filteredData.single["Match Prediction Season"] : this.matchpredictionseason;
       }else{
-        this.season = filteredData.single["Season"] ? filteredData.single["Season"] : this.season;
+        // Coming from Match Prediction, this.season is a prediction season id, not a game season
+        const fallbackseason = previoustype == "Match Prediction" ? this.defaultseason : this.season;
+        this.season = filteredData.single["Season"] ? filteredData.single["Season"] : fallbackseason;
       }
 
       this.region = filteredData.single["Regions"] ? filteredData.single["Regions"] : null;
