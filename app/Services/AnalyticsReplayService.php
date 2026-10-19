@@ -89,9 +89,13 @@ class AnalyticsReplayService
         $talentData = $this->globalDataService->getAllTalentsKeyed();
         $levels = ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'];
 
+        // Every season game, processed or not, so the Games tab can offer to process the rest
         return DB::connection('heroesprofile')->table('player')
             ->join('replay', 'replay.replayID', '=', 'player.replayID')
-            ->join('replay_deep', 'replay_deep.replayID', '=', 'replay.replayID')
+            ->leftJoin('replay_deep', function ($join) {
+                $join->on('replay_deep.replayID', '=', 'replay.replayID')
+                    ->where('replay_deep.extract_v', '>=', config('analytics.extract_v'));
+            })
             ->leftJoin('talents', function ($join) {
                 $join->on('talents.replayID', '=', 'replay.replayID')
                     ->on('talents.battletag', '=', 'player.battletag');
@@ -99,7 +103,6 @@ class AnalyticsReplayService
             ->where('player.blizz_id', $blizzId)
             ->where('replay.region', $region)
             ->where('replay.game_date', '>=', config('analytics.cutover'))
-            ->where('replay_deep.extract_v', '>=', config('analytics.extract_v'))
             ->when($filters['game_types'] !== [], fn ($q) => $q->whereIn('replay.game_type', $filters['game_types']))
             ->when($filters['maps'] !== [], fn ($q) => $q->whereIn('replay.game_map', $filters['maps']))
             ->when($filters['hero'] > 0, fn ($q) => $q->where('player.hero', $filters['hero']))
@@ -107,7 +110,7 @@ class AnalyticsReplayService
             ->get(array_merge([
                 'replay.replayID', 'replay.game_date', 'replay.game_type', 'replay.game_map', 'player.hero', 'player.winner',
                 'player.player_conservative_rating', 'player.player_change', 'player.hero_conservative_rating', 'player.hero_change',
-                'player.role_conservative_rating', 'player.role_change',
+                'player.role_conservative_rating', 'player.role_change', 'replay_deep.replayID as processed_id',
             ], array_map(fn ($level) => 'talents.'.$level, $levels)))
             ->map(function ($row) use ($heroes, $maps, $gameTypes, $talentData, $levels) {
                 $game = [
@@ -124,6 +127,7 @@ class AnalyticsReplayService
                     'hero_change' => $row->hero_change,
                     'role_mmr' => round(1800 + (40 * $row->role_conservative_rating)),
                     'role_change' => $row->role_change,
+                    'processed' => $row->processed_id !== null,
                 ];
                 foreach ($levels as $level) {
                     $game[$level] = $row->{$level} ? ($talentData[$row->{$level}] ?? null) : null;

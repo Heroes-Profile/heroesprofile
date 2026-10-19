@@ -126,15 +126,19 @@ export default {
             ticks: {
               display: true,
             },
+            title: { display: true, text: 'Experience' },
           },
+          // Levels on their own scale, on the right so the two don't read as one
           y1: {
+            position: 'right',
             beginAtZero: true,
             grid: {
-              display: true,
+              display: false,
             },
             ticks: {
               display: true,
             },
+            title: { display: true, text: 'Level' },
           },
         },
       },

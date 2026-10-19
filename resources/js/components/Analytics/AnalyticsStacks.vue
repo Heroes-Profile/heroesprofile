@@ -1,7 +1,8 @@
 <template>
   <div>
-    <h2 class="text-xl font-bold mb-2 text-teal">Stacks (experimental)</h2>
-    <infobox class="text-gray-light mb-4" :input="'How you do with and against premade parties. A team\'s stack is its biggest party: a team with a duo and three solo players is a 2-stack. Facing a stack means the enemy\'s biggest party was 3 or more and bigger than your team\'s. Global numbers come from the global sample under the same filters. Win rate differences are in percentage points (pts): 55% against a global 50% is +5 pts. Games where anyone\'s party size isn\'t known yet are left out.'"></infobox>
+    <analytics-heading :title="'Stacks (experimental)'">
+      How you do with and against premade parties. A team's stack is its biggest party: a team with a duo and three solo players is a 2-stack. Facing a stack means the enemy's biggest party was 3 or more and bigger than your team's. Global numbers come from the global sample under the same filters. Win rate differences are in percentage points (pts): 55% against a global 50% is +5 pts. Games where anyone's party size isn't known yet are left out.
+    </analytics-heading>
 
     <p v-if="!hasData" class="text-center text-gray-light">Party data is still being loaded for your games. Check back soon.</p>
 
@@ -12,79 +13,92 @@
         </div>
       </analytics-speech-bubble>
 
-      <h3 class="text-lg font-bold mb-1">Against enemy stacks</h3>
-      <table class="min-w-0 w-full responsive-table mb-6">
-        <thead>
-          <tr>
-            <th><span class="inline-flex items-center gap-1">Enemy's biggest party <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">The largest group that queued together on the enemy team. No party means all five queued alone.</p></slot></round-image></span></th>
-            <th>Your games</th>
-            <th>Your win rate</th>
-            <th><span class="inline-flex items-center gap-1">Global win rate <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Win rate of players in the global sample in the same kind of game, under the same filters.</p></slot></round-image></span></th>
-            <th><span class="inline-flex items-center gap-1">Difference <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Your win rate minus the global win rate, in percentage points. Positive means you win more than players overall in these games.</p></slot></round-image></span></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="row in enemyRows" :key="row.size">
-            <td>{{ partyLabel(row.size, true) }}</td>
-            <td>{{ row.you ? row.you.games : 0 }}</td>
-            <td>{{ row.you ? percent(row.you.win_rate) : '-' }}</td>
-            <td>{{ row.global ? percent(row.global.win_rate) : '-' }}</td>
-            <td>{{ difference(row) }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- Enemy stacks -->
+      <analytics-heading :title="'Against enemy stacks'" :takeaway="enemyTakeaway">
+        Win rate by the largest group that queued together on the enemy team; no party means all five queued alone. Global is players in the global sample in the same kind of game, under the same filters. Difference is your win rate minus the global one, in percentage points: positive means you win more than players overall in these games.
+      </analytics-heading>
+      <multi-series-chart class="max-w-[1200px] mx-auto" type="bar" format="percent" :reference="50" :referenceLabel="'50%'" :labels="enemyChart.labels" :yLabel="'Win rate'" :series="enemyChart.series"></multi-series-chart>
+      <analytics-numbers>
+        <table class="min-w-0 w-full responsive-table">
+          <thead>
+            <tr>
+              <th>Enemy's biggest party</th>
+              <th>Your games</th>
+              <th>Your win rate</th>
+              <th>Global win rate</th>
+              <th>Difference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in enemyPlayed" :key="row.size">
+              <td>{{ partyLabel(row.size, true) }}</td>
+              <td>{{ row.you.games }}</td>
+              <td>{{ percent(row.you.win_rate) }}</td>
+              <td>{{ row.global ? percent(row.global.win_rate) : '-' }}</td>
+              <td>{{ difference(row) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </analytics-numbers>
 
-      <h3 class="text-lg font-bold mb-1"><span class="inline-flex items-center gap-1">Stack advantage <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Win rate by how much bigger the enemy's biggest party was than your team's. Gaps beyond 3 count as ±3.</p></slot></round-image></span></h3>
+      <!-- Stack advantage -->
+      <analytics-heading :title="'Stack advantage'" :takeaway="advantageTakeaway">
+        Win rate by how much bigger the enemy's biggest party was than your team's. +3 is, say, a 5-stack against your duo; -2 is your 3-stack against an all-solo team. Even means both teams' biggest parties were the same size. Gaps beyond 3 count as ±3.
+      </analytics-heading>
       <multi-series-chart
-        class="max-w-[1200px] mx-auto mb-2"
+        class="max-w-[1200px] mx-auto mb-8"
         type="bar"
+        format="percent"
+        :reference="50"
+        :referenceLabel="'50%'"
         :labels="advantageLabels"
-        :yLabel="'Win rate %'"
-        :series="[
-          { label: 'You', data: advantage('you'), color: 'teal' },
-          { label: 'Global', data: advantage('global'), color: 'yellow' },
-        ]"
+        :xLabel="advantageAxis"
+        :yLabel="'Win rate'"
+        :series="advantageSeries"
       ></multi-series-chart>
-      <p class="text-center text-sm mb-6 text-gray-light">Enemy's biggest party minus your team's. +3 is, say, a 5-stack against your duo; -2 is your 3-stack against an all-solo team. Even means both teams' biggest parties were the same size.</p>
 
-      <h3 class="text-lg font-bold mb-1"><span class="inline-flex items-center gap-1">Your party size <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">The size of the party you queued in yourself, not your team's biggest party. Global compares players who queued in the same size of party.</p></slot></round-image></span></h3>
-      <table class="min-w-0 w-full responsive-table mb-6">
-        <thead>
-          <tr>
-            <th>You queued</th>
-            <th>Your games</th>
-            <th>Your win rate</th>
-            <th>Global win rate</th>
-            <th><span class="inline-flex items-center gap-1">Difference <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Your win rate minus the global win rate, in percentage points. Positive means you win more than players overall in these games.</p></slot></round-image></span></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="row in partyRows" :key="row.size">
-            <td>{{ partyLabel(row.size, false) }}</td>
-            <td>{{ row.you ? row.you.games : 0 }}</td>
-            <td>{{ row.you ? percent(row.you.win_rate) : '-' }}</td>
-            <td>{{ row.global ? percent(row.global.win_rate) : '-' }}</td>
-            <td>{{ difference(row) }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- Your party -->
+      <analytics-heading :title="'Your party size'" :takeaway="partyTakeaway">
+        The size of the party you queued in yourself, not your team's biggest party. Global compares players who queued in the same size of party. Difference is your win rate minus the global one, in percentage points.
+      </analytics-heading>
+      <multi-series-chart class="max-w-[1200px] mx-auto" type="bar" format="percent" :reference="50" :referenceLabel="'50%'" :labels="partyChart.labels" :yLabel="'Win rate'" :series="partyChart.series"></multi-series-chart>
+      <analytics-numbers>
+        <table class="min-w-0 w-full responsive-table">
+          <thead>
+            <tr>
+              <th>You queued</th>
+              <th>Your games</th>
+              <th>Your win rate</th>
+              <th>Global win rate</th>
+              <th>Difference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in partyPlayed" :key="row.size">
+              <td>{{ partyLabel(row.size, false) }}</td>
+              <td>{{ row.you.games }}</td>
+              <td>{{ percent(row.you.win_rate) }}</td>
+              <td>{{ row.global ? percent(row.global.win_rate) : '-' }}</td>
+              <td>{{ difference(row) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </analytics-numbers>
 
-      <h3 class="text-lg font-bold mb-1">How teams beat bigger stacks</h3>
-      <p class="text-sm text-gray-light mb-2">
-        Global teams that faced a bigger enemy stack of 3+: how the teams that won played compared with the teams that lost
-        ({{ beatTeams.toLocaleString('en-US') }} teams). These are differences in what winning teams did, not proof that each one causes the win.
-      </p>
-      <infobox class="text-gray-light mb-2" :input="'Each number is a team average per player (per game, or a share where shown with %). Difference is how much better the winners were, relative to the losers: winners dying 30% less than losers shows as +30%. Only behaviours where the winners did better are listed, biggest gap first. The last two columns are your own averages in games facing a stack and in all your other games, so you can see where your play slips. The winner and loser columns always use every hero, even with a hero filter, because they need a large sample; your own columns follow the filters.'"></infobox>
+      <!-- What winners did -->
+      <analytics-heading :title="'How teams beat bigger stacks'" :takeaway="beatTakeaway">
+        Global teams that faced a bigger enemy stack of 3+: how the teams that won played compared with the teams that lost. These are differences in what winning teams did, not proof that each one causes the win. Each number is a team average per player (per game, or a share where shown with %). Difference is how much better the winners were, relative to the losers: winners dying 30% less than losers shows as +30%. Only behaviours where the winners did better are listed, biggest gap first. Confidence: High is a gap of 20%+ with at least 300 winning and 300 losing teams, Medium 10%+ with at least 100 each, Low anything less, so treat it as a hint. The last two columns are your own averages in games facing a stack and in all your other games (including ones where your team had the bigger or equal stack), so you can see where your play slips. The winner and loser columns always use every hero, even with a hero filter, because they need a large sample; your own columns follow the filters.
+      </analytics-heading>
       <table class="min-w-0 w-full responsive-table mb-6">
         <thead>
           <tr>
             <th>Suggestion</th>
-            <th><span class="inline-flex items-center gap-1">Teams that won <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Average for teams that beat a bigger enemy stack.</p></slot></round-image></span></th>
-            <th><span class="inline-flex items-center gap-1">Teams that lost <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Average for teams that lost to a bigger enemy stack.</p></slot></round-image></span></th>
-            <th><span class="inline-flex items-center gap-1">Difference <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">How much better the winners were than the losers, as a percent of the losers' value.</p></slot></round-image></span></th>
-            <th><span class="inline-flex items-center gap-1">Confidence <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">High: gap of 20%+ with at least 300 winning and 300 losing teams. Medium: 10%+ with at least 100 each. Low: anything less, so treat it as a hint.</p></slot></round-image></span></th>
-            <th><span class="inline-flex items-center gap-1">You vs stacks <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Your own average in games where the enemy's biggest party was 3+ and bigger than your team's.</p></slot></round-image></span></th>
-            <th><span class="inline-flex items-center gap-1">You otherwise <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000"><slot><p class="text-sm p-2 text-left">Your own average in all your other games, including ones where your team had the bigger or equal stack.</p></slot></round-image></span></th>
+            <th>Teams that won</th>
+            <th>Teams that lost</th>
+            <th>Difference</th>
+            <th>Confidence</th>
+            <th>You vs stacks</th>
+            <th>You otherwise</th>
           </tr>
         </thead>
         <tbody>
@@ -155,6 +169,60 @@ export default {
         you: (this.data.party_size || []).find(r => r.who === 'you' && Number(r.party) === size),
         global: (this.data.party_size || []).find(r => r.who === 'global' && Number(r.party) === size),
       }));
+    },
+    // Only party sizes you've played
+    enemyPlayed() {
+      return this.enemyRows.filter(r => r.you && Number(r.you.games) > 0);
+    },
+    partyPlayed() {
+      return this.partyRows.filter(r => r.you && Number(r.you.games) > 0);
+    },
+    enemyChart() {
+      return this.winRateChart(this.enemyPlayed, true);
+    },
+    partyChart() {
+      return this.winRateChart(this.partyPlayed, false);
+    },
+    advantageSeries() {
+      return [
+        { label: 'You', data: this.advantage('you'), color: 'teal', n: this.advantageGames('you') },
+        { label: 'Global', data: this.advantage('global'), color: 'yellow', n: this.advantageGames('global') },
+      ];
+    },
+    advantageAxis() {
+      return "Enemy's biggest party minus your team's";
+    },
+    // Where you most out- and under-perform players overall
+    enemyTakeaway() {
+      const rows = this.enemyPlayed.filter(r => r.global);
+      if (!rows.length) return null;
+      const gap = r => Number(r.you.win_rate) - Number(r.global.win_rate);
+      const worst = rows.reduce((a, b) => (gap(b) < gap(a) ? b : a));
+      const best = rows.reduce((a, b) => (gap(b) > gap(a) ? b : a));
+      if (best === worst) {
+        return 'Against ' + this.partyLabel(best.size, true).toLowerCase() + ' you are ' + this.difference(best) + ' on players overall.';
+      }
+      return 'You do best against ' + this.partyLabel(best.size, true).toLowerCase() + ' (' + this.difference(best) + ' on players overall) and worst against ' + this.partyLabel(worst.size, true).toLowerCase() + ' (' + this.difference(worst) + ').';
+    },
+    advantageTakeaway() {
+      const bigger = who => {
+        const rows = (this.data.advantage || []).filter(r => r.who === who && Number(r.diff) > 0);
+        const games = rows.reduce((t, r) => t + Number(r.games), 0);
+        return games ? (100 * rows.reduce((t, r) => t + Number(r.games) * Number(r.win_rate), 0)) / games : null;
+      };
+      const you = bigger('you');
+      if (you === null) return null;
+      return 'When the enemy has the bigger stack you win ' + this.round(you) + '%' + this.versus(you, bigger('global'), '%') + '.';
+    },
+    partyTakeaway() {
+      if (!this.partyPlayed.length) return null;
+      const best = this.partyPlayed.reduce((a, b) => (Number(b.you.win_rate) > Number(a.you.win_rate) ? b : a));
+      return 'You win most queueing ' + this.partyLabel(best.size, false).toLowerCase() + ' (' + this.percent(best.you.win_rate) + ' over ' + best.you.games + ' games).';
+    },
+    beatTakeaway() {
+      const top = this.suggestions[0];
+      if (!top) return null;
+      return 'Across ' + this.beatTeams.toLocaleString('en-US') + ' teams, the biggest gap: ' + top.advice.replace(/\.$/, '').toLowerCase() + ' (+' + this.round(top.relative * 100, 0) + '%).';
     },
     beatTeams() {
       return (this.data.beat_stacks || []).reduce((sum, r) => sum + Number(r.teams), 0);
@@ -237,6 +305,22 @@ export default {
       const points = (Number(row.you.win_rate) - Number(row.global.win_rate)) * 100;
       return (points >= 0 ? '+' : '') + this.round(points, 1) + ' pts';
     },
+    winRateChart(rows, enemy) {
+      const rate = r => (r ? this.round(Number(r.win_rate) * 100, 1) : null);
+      return {
+        labels: rows.map(r => this.partyLabel(r.size, enemy)),
+        series: [
+          { label: 'You', data: rows.map(r => rate(r.you)), color: 'teal', n: rows.map(r => Number(r.you.games)) },
+          { label: 'Global', data: rows.map(r => rate(r.global)), color: 'yellow', n: rows.map(r => (r.global ? Number(r.global.games) : null)) },
+        ],
+      };
+    },
+    advantageGames(who) {
+      return [-3, -2, -1, 0, 1, 2, 3].map(diff => {
+        const row = (this.data.advantage || []).find(r => r.who === who && Number(r.diff) === diff);
+        return row ? Number(row.games) : null;
+      });
+    },
     advantage(who) {
       return [-3, -2, -1, 0, 1, 2, 3].map(diff => {
         const row = (this.data.advantage || []).find(r => r.who === who && Number(r.diff) === diff);
@@ -248,9 +332,6 @@ export default {
         return '-';
       }
       return metric.share ? this.round(Number(value) * 100, 1) + '%' : this.round(Number(value), 2);
-    },
-    confidenceClass(level) {
-      return level === 'High' ? 'text-teal' : level === 'Medium' ? 'text-yellow' : 'text-red';
     },
   },
 };

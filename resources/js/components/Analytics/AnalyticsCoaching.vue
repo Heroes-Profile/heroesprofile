@@ -1,7 +1,8 @@
 <template>
   <div>
-    <h2 class="text-xl font-bold mb-2 text-teal">Coaching (experimental)</h2>
-    <infobox class="mb-2" :input="'Coaching looks for 14 habits (signals) in your processed games, like dying after a fight is already lost or walking without mounting, and compares your rate with other players under the same filters. Each signal has two ratings. Signal says how strongly that habit goes with winning or losing across all players: High means strong evidence, Medium some, Low not enough yet. Your sample says how many of your games back your number: High is 30+, Medium 10-29, Low under 10. The tips focus on signals that are both rated Medium or High and where most players do better than you. Click any signal for recent examples, each linked into the replay viewer.'"></infobox>
+    <analytics-heading :title="'Coaching (experimental)'">
+      Coaching looks for 14 habits (signals) in your processed games, like dying after a fight is already lost or walking without mounting, and compares your rate with other players under the same filters. Each signal has two ratings. Signal says how strongly that habit goes with winning or losing across all players: High means strong evidence, Medium some, Low not enough yet. Your sample says how many of your games back your number: High is 30+, Medium 10-29, Low under 10. The tips focus on signals that are both rated Medium or High and where most players do better than you. Click any signal for recent examples, each linked into the replay viewer.
+    </analytics-heading>
     <p v-if="computedAt" class="text-sm text-gray-light mb-4">Signal ratings updated {{ computedAt }}.</p>
 
     <p v-if="!mine.games" class="text-center text-gray-light">No coaching data for these filters yet. It's built nightly from processed games.</p>
@@ -16,8 +17,13 @@
 
       <!-- Your last game: this one game's signals against your usual, and its flagged moments -->
       <template v-if="lastGame">
-        <h3 class="text-lg font-bold mb-1">Your last game</h3>
-        <infobox class="mb-2" :input="'Your most recent game under these filters, broken down signal by signal. Your usual is your average over your earlier games; a value counts as better or worse than usual only when it is further from that average than your games normally vary. Coaching is rebuilt overnight, so a game you just played shows up here the day after it is processed. Check the game below is the one you expect.'"></infobox>
+        <analytics-heading :title="'Your last game'" :takeaway="lastGameTakeaway">
+          Your most recent game under these filters, broken down signal by signal. Your usual is your average over your earlier games; a value counts as better or worse than usual only when it is further from that average than your games normally vary. Coaching is rebuilt overnight, so a game you just played shows up here the day after it is processed. Check the game below is the one you expect.
+        </analytics-heading>
+        <!-- Coaching is rebuilt once a day, so the newest games can be missing -->
+        <p v-if="notYet > 0" class="text-sm bg-darken rounded p-3 mb-2 border-l-4 border-yellow">
+          This isn't your most recent game: {{ notYet }} newer {{ notYet === 1 ? "game hasn't" : "games haven't" }} been added to coaching yet. Coaching updates once a day; check back after {{ nextUpdate }}.
+        </p>
         <div class="flex flex-wrap items-center justify-between gap-4 bg-darken rounded p-3 mb-2">
           <div>
             <span class="font-bold">{{ heroName(lastGame.hero_id) }}</span> on {{ mapName(lastGame.game_map) }}
@@ -61,7 +67,7 @@
               <td>{{ format(row, row.game) }}</td>
               <td>{{ format(row, row.usual) }}</td>
               <td>{{ format(row, row.median) }}</td>
-              <td><span :class="lastVerdictClass(row.verdict)">{{ row.verdict }}</span></td>
+              <td><span :class="verdictClass(row.direction)">{{ row.verdict }}</span></td>
             </tr>
           </tbody>
         </table>
@@ -94,11 +100,12 @@
       </template>
 
       <!-- Are you improving: your last few games against your earlier ones, per signal -->
-      <div class="flex flex-wrap items-center justify-between gap-4 mb-2">
-        <h3 class="text-lg font-bold">Are you improving?</h3>
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <analytics-heading :title="'Are you improving?'" :takeaway="progressTakeaway">
+          Your average over your last {{ recentCount }} games compared with your average over your earlier games under these filters, for each signal rated Medium or High. Improving or Worse only shows when the change is bigger than your usual swing, worked out from how much your earlier games vary (shown under each verdict); anything smaller is About the same, because a few games are mostly noise. Signals marked (working on) are the ones the summary above tells you to work on. Click a signal for a chart of up to your last 20 games. New games appear here the day after they are processed.
+        </analytics-heading>
         <tab-button :tab1text="'Last 3 games'" :tab2text="'Last 5 games'" :ignoreclick="true" @tab-click="setRecentCount" :overridedefaultside="recentCount === 3 ? 'left' : 'right'"></tab-button>
       </div>
-      <infobox class="mb-2" :input="'Your average over your last ' + recentCount + ' games compared with your average over your earlier games under these filters, for each signal rated Medium or High. Improving or Worse only shows when the change is bigger than your usual swing, worked out from how much your earlier games vary; anything smaller is About the same, because a few games are mostly noise. Hover a verdict to see that swing. Signals marked (working on) are the ones the summary above tells you to work on. Click a signal for a chart of up to your last 20 games. New games appear here the day after they are processed.'"></infobox>
       <p v-if="recentGames.length < recentCount + 5" class="text-center text-gray-light mb-8">
         Not enough games yet: this needs at least {{ recentCount + 5 }} processed games under these filters (you have {{ recentGames.length }}).
       </p>
@@ -136,7 +143,10 @@
               <td>{{ format(row, row.earlier) }}</td>
               <td>{{ format(row, row.recent) }}</td>
               <td>{{ changeText(row) }}</td>
-              <td :title="'Usual swing for ' + recentCount + ' games: ' + format(row, row.swing)"><span :class="verdictClass(row.verdict)">{{ row.verdict }}</span></td>
+              <td>
+                <span :class="verdictClass(row.direction)">{{ row.verdict }}</span>
+                <div class="text-sm text-gray-light font-normal">usual swing {{ format(row, row.swing) }}</div>
+              </td>
             </tr>
             <tr v-if="progressSelected === row.key">
               <td colspan="5">
@@ -152,8 +162,9 @@
         </tbody>
       </table>
 
-      <h3 class="text-lg font-bold mb-1">All signals</h3>
-      <infobox class="mb-2" :input="'Every signal, whatever its rating. Shares are a percentage of chances (fights, objectives, travel time); counts are per game; Camp duty is in percentage points above or below the norm for your hero. Hover a rating for the numbers behind it, or click a signal for details and examples.'"></infobox>
+      <analytics-heading :title="'All signals'" :takeaway="allTakeaway">
+        Every signal, whatever its rating. Shares are a percentage of chances (fights, objectives, travel time); counts are per game; Camp duty is in percentage points above or below the norm for your hero. The Standing bar runs from worse (left) to better (right), with the global median marked in the middle. Click a signal for the numbers behind its ratings, who you are compared with, and recent examples.
+      </analytics-heading>
       <table class="min-w-0 w-full responsive-table">
         <thead>
           <tr>
@@ -209,7 +220,17 @@
               </td>
               <td>{{ format(signal, signal.value) }}</td>
               <td>{{ signal.median === null ? '-' : format(signal, signal.median) }}</td>
-              <td :title="signal.basis">{{ signal.percentile === null ? '-' : standingText(signal) }}</td>
+              <td :title="signal.basis">
+                <template v-if="signal.percentile === null">-</template>
+                <template v-else>
+                  <!-- Worse to better, median tick in the middle -->
+                  <div class="relative h-2 bg-lighten rounded min-w-[80px] my-2" :title="standingText(signal)">
+                    <div class="absolute -top-1 h-4 w-px bg-gray-medium left-1/2"></div>
+                    <div class="absolute top-1/2 w-3 h-3 rounded-full -translate-x-1/2 -translate-y-1/2" :class="playersAhead(signal) > 50 ? 'bg-red' : 'bg-teal'" :style="{ left: standingPosition(signal) + '%' }"></div>
+                  </div>
+                  <div class="text-sm">{{ standingText(signal) }}</div>
+                </template>
+              </td>
               <td :title="evidenceText(signal)">
                 <span :class="confidenceClass(signal.confidence)">{{ signal.confidence }}</span>
               </td>
@@ -229,6 +250,7 @@
                   </span>
                 </div>
                 <p v-if="signal.basis" class="text-sm text-gray-light mb-2">Compared with {{ signal.basis }}.</p>
+                <p class="text-sm text-gray-light mb-2">Your sample: {{ signal.sampleGames || 0 }} games.</p>
                 <p v-if="!examples(signal).length" class="text-sm">No recent examples.</p>
                 <table v-if="examples(signal).length" class="min-w-0 w-full responsive-table">
                   <thead>
@@ -352,6 +374,16 @@ export default {
     stats() {
       return Object.fromEntries((this.data.signals || []).map(s => [s.signal, s]));
     },
+    notYet() {
+      return Number(((this.data.not_yet || [])[0] || {}).games || 0);
+    },
+    // The nightly rebuild runs at 14:00 UTC; shown in the player's own time
+    nextUpdate() {
+      const next = new Date();
+      next.setUTCHours(14, 0, 0, 0);
+      if (next <= new Date()) next.setUTCDate(next.getUTCDate() + 1);
+      return next.toLocaleString(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' });
+    },
     computedAt() {
       const any = (this.data.signals || [])[0];
       return any ? moment.utc(any.computed_at).local().format('MMM D, YYYY') : null;
@@ -409,13 +441,9 @@ export default {
           if (raw === null || raw === undefined || raw === '') return null;
           const game = Number(raw);
           const earlier = this.recentGames.slice(1).map(g => g[GAME_COLUMN[r.key]]).filter(v => v !== null && v !== undefined && v !== '').map(Number);
-          if (earlier.length < 5) return { ...r, game, usual: null, verdict: '-' };
-          const usual = earlier.reduce((a, b) => a + b, 0) / earlier.length;
-          const sd = Math.sqrt(earlier.reduce((t, v) => t + (v - usual) ** 2, 0) / (earlier.length - 1));
-          const diff = game - usual;
-          const threshold = Math.max(sd, Math.abs(usual) * 0.01, 1e-6);
-          const better = r.better === 'lower' ? diff < 0 : diff > 0;
-          return { ...r, game, usual, verdict: Math.abs(diff) <= threshold ? 'Typical' : better ? 'Better' : 'Worse' };
+          if (earlier.length < 5) return { ...r, game, usual: null, verdict: '-', direction: null };
+          const c = this.againstEarlier(r, [game], earlier);
+          return { ...r, game, usual: c.usual, direction: c.direction, verdict: { better: 'Better', worse: 'Worse', same: 'Typical' }[c.direction] };
         })
         .filter(Boolean);
     },
@@ -438,20 +466,30 @@ export default {
           if (recent.length < Math.min(n, 2) || earlier.length < 5) {
             return null;
           }
-          const mean = list => list.reduce((a, b) => a + b, 0) / list.length;
-          const earlierMean = mean(earlier);
-          const sd = Math.sqrt(earlier.reduce((t, v) => t + (v - earlierMean) ** 2, 0) / (earlier.length - 1));
-          // The usual swing of a few-game average: one standard error, from your earlier games
-          const swing = sd / Math.sqrt(recent.length);
-          const diff = mean(recent) - earlierMean;
-          const better = r.better === 'lower' ? diff < 0 : diff > 0;
-          // A floor of 1% of the earlier average, so a signal that never varies doesn't flag rounding noise
-          const threshold = Math.max(swing, Math.abs(earlierMean) * 0.01, 1e-6);
-          const verdict = Math.abs(diff) <= threshold ? 'About the same' : better ? 'Improving' : 'Worse';
-          return { ...r, earlier: earlierMean, recent: mean(recent), diff, swing, verdict, focus: this.workKeys.includes(r.key) };
+          const c = this.againstEarlier(r, recent, earlier);
+          const verdict = { better: 'Improving', worse: 'Worse', same: 'About the same' }[c.direction];
+          return { ...r, earlier: c.usual, recent: c.mean, diff: c.diff, swing: c.swing, direction: c.direction, verdict, focus: this.workKeys.includes(r.key) };
         })
         .filter(Boolean)
         .sort((a, b) => Number(b.focus) - Number(a.focus));
+    },
+    lastGameTakeaway() {
+      const count = d => this.lastGameRows.filter(r => r.direction === d).length;
+      if (!this.lastGameRows.some(r => r.direction)) return null;
+      return 'Better than your usual on ' + count('better') + ' signals, worse on ' + count('worse') + '.';
+    },
+    progressTakeaway() {
+      if (!this.progressRows.length) return null;
+      const names = d => this.progressRows.filter(r => r.direction === d).map(r => r.name.toLowerCase());
+      const [up, down] = [names('better'), names('worse')];
+      if (!up.length && !down.length) return 'Your last ' + this.recentCount + ' games look like your earlier ones on every signal.';
+      return [up.length ? 'Improving: ' + up.join(', ') + '.' : '', down.length ? 'Slipping: ' + down.join(', ') + '.' : ''].filter(Boolean).join(' ');
+    },
+    allTakeaway() {
+      const rated = this.rows.filter(r => r.percentile !== null);
+      if (!rated.length) return null;
+      const ahead = rated.filter(r => this.playersAhead(r) <= 50).length;
+      return 'You are at or above the median on ' + ahead + ' of ' + rated.length + ' signals.';
     },
     // What the announcer says: up to two things to work on, and your best area
     summary() {
@@ -554,13 +592,32 @@ export default {
       }
       return sign + this.round(row.diff, 2) + ' / game';
     },
-    verdictClass(verdict) {
-      return verdict === 'Improving' ? 'text-teal' : verdict === 'Worse' ? 'text-red' : 'text-gray-light';
+    // Recent values (one game, or the last few) against your earlier games. The usual swing of an
+    // n-game average is one standard error of the earlier games; a floor of 1% of the earlier
+    // average stops a signal that never varies from flagging rounding noise.
+    againstEarlier(signal, recent, earlier) {
+      const mean = list => list.reduce((a, b) => a + b, 0) / list.length;
+      const usual = mean(earlier);
+      const sd = Math.sqrt(earlier.reduce((t, v) => t + (v - usual) ** 2, 0) / (earlier.length - 1));
+      const swing = sd / Math.sqrt(recent.length);
+      const diff = mean(recent) - usual;
+      const better = signal.better === 'lower' ? diff < 0 : diff > 0;
+      const direction = Math.abs(diff) <= Math.max(swing, Math.abs(usual) * 0.01, 1e-6) ? 'same' : better ? 'better' : 'worse';
+      return { usual, mean: mean(recent), diff, swing, direction };
+    },
+    verdictClass(direction) {
+      return direction === 'better' ? 'text-teal' : direction === 'worse' ? 'text-red' : 'text-gray-light';
+    },
+    // Where the standing marker sits, worse to better; ties split down the middle
+    standingPosition(signal) {
+      const behind = this.playersBehind(signal);
+      const same = Math.max(0, 100 - this.playersAhead(signal) - behind);
+      return Math.max(2, Math.min(98, behind + same / 2));
     },
     // Your last 20 games for one signal, oldest first, with a 5-game rolling average
     trend(row) {
       const games = this.recentGames
-        .map(g => ({ date: g.game_date, value: g[GAME_COLUMN[row.key]] }))
+        .map(g => ({ date: g.game_date, value: g[GAME_COLUMN[row.key]], win: this.isWin(g) }))
         .filter(g => g.value !== null && g.value !== undefined && g.value !== '')
         .slice(0, 20)
         .reverse();
@@ -570,17 +627,15 @@ export default {
         const window = values.slice(Math.max(0, i - 4), i + 1);
         return window.length < 3 ? null : this.round(window.reduce((a, b) => a + b, 0) / window.length, 2);
       });
-      return { labels: games.map(g => moment.tz(g.date, 'Atlantic/Reykjavik').clone().tz(moment.tz.guess()).format('MM/DD')), values, rolling };
+      return { labels: games.map(g => moment.tz(g.date, 'Atlantic/Reykjavik').clone().tz(moment.tz.guess()).format('MM/DD')), values, rolling, wins: games.map(g => g.win) };
     },
     trendSeries(row) {
       const t = this.trend(row);
       return [
-        { label: 'Each game', data: t.values, color: 'teal' },
+        // Each game's dot is teal for a win, red for a loss
+        { label: 'Each game (teal win, red loss)', data: t.values, color: 'teal', points: t.wins.map(win => (win ? 'teal' : 'red')) },
         { label: '5-game average', data: t.rolling, color: 'yellow', dashed: true },
       ];
-    },
-    confidenceClass(level) {
-      return level === 'High' ? 'text-teal' : level === 'Medium' ? 'text-yellow' : 'text-red';
     },
     examples(signal) {
       return (this.data.events || [])
@@ -589,9 +644,6 @@ export default {
     },
     isWin(game) {
       return game.win === true || game.win === 'true' || Number(game.win) === 1;
-    },
-    lastVerdictClass(verdict) {
-      return verdict === 'Better' ? 'text-teal' : verdict === 'Worse' ? 'text-red' : 'text-gray-light';
     },
     // The signal a flagged moment belongs to
     eventSignal(event) {

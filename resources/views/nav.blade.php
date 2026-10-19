@@ -78,11 +78,11 @@
                                 <a href="/Match/Search" >Replay Search</a>
                                 <a href="/Tools/RandomizeMe" >Randomize Me</a>
                                 <a href="/Tools/Activity" >Activity Graphs</a>
-                                @if (! empty($bladeGlobals['xalatathRecapAvailable']))
-                                <a href="/Event/Xalatath" >Xal'atath Recap</a>
-                                @endif
                                 @if (Auth::check() && app(\App\Services\AnalyticsService::class)->isAllowed(Auth::user()))
                                 <a href="/Analytics" >Analytics - Pre Alpha</a>
+                                @endif
+                                @if (! empty($bladeGlobals['xalatathRecapAvailable']))
+                                <a href="/Event/Xalatath" >Xal'atath Recap</a>
                                 @endif
                                 @if (\App\Services\Twitch\TwitchAccess::visible())
                                 <a href="/Twitch" >Twitch Streamers (Beta)</a>
@@ -141,6 +141,23 @@
                             <div class="nav-dropdown  ">
                                 <div class="nav-dropdown-inner-wrapper ">
                                     {{-- ... (mainSearchAccount dropdown items) --}}
+                                    @if (Auth::check() && app(\App\Services\AnalyticsService::class)->isAllowed(Auth::user()))
+                                    <div class="nav-flyout-wrapper">
+                                        <a href="/Analytics" class="flex justify-between items-center bg-teal font-bold"><span><i class="fas fa-chart-line mr-2"></i>Analytics</span> <span class="nav-flyout-arrow ml-4">›</span></a>
+                                        <div class="nav-flyout">
+                                            <div class="nav-dropdown-inner-wrapper rounded-b-lg rounded-r-lg">
+                                                <a href="/Analytics?tab=deaths">Deaths</a>
+                                                <a href="/Analytics?tab=map">Map &amp; Positions</a>
+                                                <a href="/Analytics?tab=timelines">Timelines &amp; Objectives</a>
+                                                <a href="/Analytics?tab=activity">Activity</a>
+                                                <a href="/Analytics?tab=sessions">Sessions</a>
+                                                <a href="/Analytics?tab=coaching">Coaching</a>
+                                                <a href="/Analytics?tab=stacks">Stacks</a>
+                                                <a href="/Analytics?tab=games">Games</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endif
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" >Profile</a>
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/FriendFoe" >Friends and Foes</a>
                                     <nav-search-flyout

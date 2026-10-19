@@ -23,8 +23,27 @@ export default {
       if (seconds === null || seconds === undefined) {
         return '-';
       }
-      const s = Math.round(Number(seconds));
-      return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+      const s = Math.round(Math.abs(Number(seconds)));
+      return (Number(seconds) < 0 ? '-' : '') + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+    },
+    // +0:12 / -0:12: ahead or behind
+    signedClock(seconds) {
+      if (seconds === null || seconds === undefined) return '-';
+      return (seconds < 0 ? '-' : '+') + this.clock(Math.abs(seconds));
+    },
+    orDash(value) {
+      return value === null || value === undefined ? '-' : value;
+    },
+    // ", more than most players (21%)" style comparison for a one-line takeaway; empty without a global value
+    versus(mine, global, unit = '', margin = 3) {
+      if (global === null || global === undefined || mine === null || mine === undefined) return '';
+      if (mine > global + margin) return ', more than most players (' + this.round(global) + unit + ')';
+      if (mine < global - margin) return ', less than most players (' + this.round(global) + unit + ')';
+      return ', about the same as most players';
+    },
+    // High / Medium / Low ratings (Coaching, Stacks)
+    confidenceClass(level) {
+      return level === 'High' ? 'text-teal' : level === 'Medium' ? 'text-yellow' : 'text-red';
     },
     heroName(id) {
       const hero = (this.heroes || []).find(h => h.code === Number(id));

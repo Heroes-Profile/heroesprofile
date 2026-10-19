@@ -7,8 +7,11 @@
       :infoText2="'Pre-alpha: this is in very early development. Numbers, views and features will change, and some may be wrong or missing.'"
     ></page-heading>
 
+    <!-- Remounted when a tab picks a map, so the filter shows it -->
     <filters
+      :key="filtersKey"
       :onFilter="filterData"
+      :gamemapinput="gamemap.length ? gamemap : null"
       :filters="filters"
       :isLoading="isLoading"
       :gametypedefault="gametype"
@@ -20,39 +23,47 @@
     ></filters>
 
     <div class="max-w-[1500px] mx-auto px-4 mt-4">
-      <!-- Processing status -->
-      <div class="flex flex-wrap justify-center gap-4 mb-4">
-        <stat-box class="w-[30%] max-md:w-[48%]" :title="'Season Games'" :value="status.total.toLocaleString('en-US')"></stat-box>
-        <stat-box class="w-[30%] max-md:w-[48%]" :title="'Processed'" :value="status.done.toLocaleString('en-US')" color="teal"></stat-box>
-        <stat-box class="w-[30%] max-md:w-[48%]" :title="'Complete'" :value="percent + '%'" color="yellow"></stat-box>
-      </div>
-
+      <!-- Processing status: one line, so the tab's own numbers come first -->
       <div class="text-center mb-6">
         <div v-if="processing" class="max-w-[600px] mx-auto">
-          <p>Processing your games: {{ status.done }} of {{ status.total }} done. This page updates as they finish.</p>
-          <p class="text-sm text-gray-light">You can leave this page; processing carries on, and your progress shows here when you come back.</p>
+          <p class="text-sm">Processing your games: {{ status.done }} of {{ status.total }} done. You can leave this page; it carries on.</p>
           <stat-bar-box class="w-full" size="full" :title="'Progress'" :value="percent" :displaytext="status.done + ' of ' + status.total"></stat-bar-box>
         </div>
-        <custom-button
-          v-else-if="status.done < status.total"
-          @click="request"
-          :text="'Process my games'"
-          :alt="'Process my games'"
-          :loading="requesting"
-          :disabled="requesting"
-          :ignoreclick="true"
-        ></custom-button>
+        <div v-else class="flex flex-wrap items-center justify-center gap-3 text-sm">
+          <span>{{ status.done.toLocaleString('en-US') }} of {{ status.total.toLocaleString('en-US') }} season games processed ({{ percent }}%)</span>
+          <custom-button
+            v-if="status.done < status.total"
+            @click="request"
+            :text="'Process my games'"
+            :alt="'Process my games'"
+            size="small"
+            :loading="requesting"
+            :disabled="requesting"
+            :ignoreclick="true"
+          ></custom-button>
+        </div>
         <p v-if="error" class="mt-4 text-red">{{ error }}</p>
       </div>
 
       <!-- Analytics -->
       <div v-if="status.done > 0">
-        <multi-tab-button class="mb-6" :options="tabs" v-model="activeTab"></multi-tab-button>
+        <!-- Phones get a dropdown; the eight tabs don't fit across -->
+        <multi-tab-button class="mb-2 max-md:hidden" :options="tabs" v-model="activeTab"></multi-tab-button>
+        <div class="md:hidden flex justify-center mb-2">
+          <single-select-filter
+            :values="tabOptions"
+            :text="'Section'"
+            :defaultValue="activeTab"
+            :disabledeselectfilters="true"
+            @input-changed="activeTab = $event.value"
+          ></single-select-filter>
+        </div>
+        <p class="text-center text-sm mb-6"><a class="link cursor-pointer" @click="toMethodology">How is this calculated?</a></p>
 
         <p v-if="tabError" class="text-center text-red mb-4">{{ tabError }}</p>
         <div v-if="!isLoading && tabData">
-          <analytics-deaths v-if="activeTab === 'deaths'" :data="tabData" :maps="maps" :heroes="filters.heroes" :game-maps="filters.game_maps"></analytics-deaths>
-          <analytics-positions v-else-if="activeTab === 'map'" :data="tabData" :maps="maps" :heroes="filters.heroes" :game-maps="filters.game_maps"></analytics-positions>
+          <analytics-deaths v-if="activeTab === 'deaths'" :data="tabData" :maps="maps" :heroes="filters.heroes" :game-maps="filters.game_maps" :selected-maps="gamemap" @pick-map="pickMap"></analytics-deaths>
+          <analytics-positions v-else-if="activeTab === 'map'" :data="tabData" :maps="maps" :heroes="filters.heroes" :game-maps="filters.game_maps" :selected-maps="gamemap" @pick-map="pickMap"></analytics-positions>
           <analytics-timelines v-else-if="activeTab === 'timelines'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-timelines>
           <analytics-activity v-else-if="activeTab === 'activity'" :data="tabData" :maps="maps" :heroes="filters.heroes" :filter-params="filterParams"></analytics-activity>
           <analytics-sessions v-else-if="activeTab === 'sessions'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-sessions>
@@ -75,12 +86,14 @@
       :authenticated="true"
     ></analytics-games>
 
-    <!-- How the open tab's numbers are made -->
-    <analytics-paper
-      v-if="status.done > 0 && !isLoading && tabData"
-      :key="activeTab"
-      :tab="activeTab"
-    ></analytics-paper>
+    <!-- How the open tab's numbers are made; the wrapper is what "How is this calculated?" scrolls to -->
+    <div ref="methodology">
+      <analytics-paper
+        v-if="status.done > 0 && !isLoading && tabData"
+        :key="activeTab"
+        :tab="activeTab"
+      ></analytics-paper>
+    </div>
   </div>
 </template>
 
@@ -125,6 +138,7 @@ export default {
       isLoading: false,
       gametype: this.gametypedefault,
       gamemap: [],
+      filtersKey: 0,
       hero: null,
     };
   },
@@ -161,13 +175,29 @@ export default {
     tabData() {
       return this.tabCache[this.cacheKey()];
     },
+    // Written plainly like the other pages' URLs (game_type=sl,qm); game types only when not the player's default
+    queryString() {
+      const defaultTypes = [...(this.gametypedefault || [])].sort().join(',');
+      let queryString = `?tab=${this.activeTab}`;
+      if (this.gametype.length && [...this.gametype].sort().join(',') !== defaultTypes) {
+        queryString += `&game_type=${this.gametype}`;
+      }
+      if (this.gamemap.length) {
+        queryString += `&game_map=${this.gamemap}`;
+      }
+      if (this.hero) {
+        queryString += `&hero=${this.hero}`;
+      }
+      return queryString;
+    },
+    tabOptions() {
+      return this.tabs.map(t => ({ code: t.key, name: t.label }));
+    },
   },
   watch: {
     activeTab(tab) {
       // ?tab= in the URL, so a tab can be linked to and comes back on reload
-      const params = new URLSearchParams(window.location.search);
-      params.set('tab', tab);
-      history.pushState(null, null, `${window.location.pathname}?${params.toString()}`);
+      history.pushState(null, null, `${window.location.pathname}${this.queryString}`);
       this.loadTab();
     },
   },
@@ -184,7 +214,21 @@ export default {
       this.gamemap = filteredData.multi['Map'] ? Array.from(filteredData.multi['Map']) : [];
       const heroId = filteredData.single['Heroes'] ? filteredData.single['Heroes'] : null;
       this.hero = heroId ? this.filters.heroes.find(h => h.code === heroId)?.name : null;
+      this.applyFilters();
+    },
+    // A map picked inside a tab: the same as picking it in the Map filter
+    pickMap(name) {
+      this.gamemap = [name];
+      this.filtersKey++;
+      this.applyFilters();
+    },
+    applyFilters() {
+      // In the URL like the tab, so a filtered view can be linked and survives a reload
+      history.replaceState(null, null, `${window.location.pathname}${this.queryString}`);
       this.loadTab();
+    },
+    toMethodology() {
+      this.$refs.methodology?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     },
     cacheKey() {
       return [this.activeTab, this.status.done, this.gametype.join(','), this.gamemap.join(','), this.hero || ''].join('|');

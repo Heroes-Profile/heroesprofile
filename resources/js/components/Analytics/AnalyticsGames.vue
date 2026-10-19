@@ -1,6 +1,12 @@
 <template>
   <div>
-    <p v-if="data.games.length === 0" class="text-center">No processed games match these filters.</p>
+    <p v-if="data.games.length === 0" class="text-center">No season games match these filters.</p>
+
+    <div v-if="data.games.length" class="flex flex-wrap justify-center gap-4 mb-8">
+      <stat-box class="w-[30%] max-md:w-[48%]" :title="'Games'" :value="data.games.length.toLocaleString('en-US')" color="teal"></stat-box>
+      <stat-box class="w-[30%] max-md:w-[48%]" :title="'Wins - Losses'" :value="wins + ' - ' + (data.games.length - wins)" color="yellow"></stat-box>
+      <stat-box class="w-[30%] max-md:w-[48%]" :title="'Win Rate'" :value="share(wins, data.games.length)" color="teal"></stat-box>
+    </div>
 
     <!-- Same place and size as the Talent Builder's layout toggle -->
     <div v-else class="flex justify-end max-w-[1500px] mx-auto mb-2">
@@ -16,10 +22,22 @@
           <game-summary-box :data="game"></game-summary-box>
           <div class="flex justify-end mt-1">
             <custom-button
+              v-if="isProcessed(game)"
               :href="'/Analytics/Match/Single/' + game.replayID"
               :text="'Watch Replay'"
               :alt="'Watch this game in the replay viewer'"
               size="small"
+            ></custom-button>
+            <custom-button
+              v-else
+              :text="processButtonText(game)"
+              :alt="'Process this game'"
+              size="small"
+              color="teal"
+              :loading="isQueued(game)"
+              :disabled="isQueued(game)"
+              :ignoreclick="true"
+              @click="process(game)"
             ></custom-button>
           </div>
         </div>
@@ -31,20 +49,21 @@
         <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
           <thead>
             <tr>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">Game ID</th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">Game Date</th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">Game Type</th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">Game Map</th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">Hero</th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">Winner</th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">Talents</th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">Replay</th>
+              <th>Game ID</th>
+              <th>Game Date</th>
+              <th>Game Type</th>
+              <th>Game Map</th>
+              <th>Hero</th>
+              <th>Result</th>
+              <th>Player MMR</th>
+              <th>Talents</th>
+              <th>Replay</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in data.games" :key="row.replayID">
               <td>
-                <a class="link" :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a>
+                <a class="link" :href="'/Analytics/Match/Single/' + row.replayID">{{ row.replayID }}</a>
               </td>
               <td>
                 {{ formatDate(row.game_date) }}
@@ -59,7 +78,11 @@
                 <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
               </td>
               <td>
-                {{ row.winner == 1 ? 'True' : 'False' }}
+                <span :class="row.winner == 1 ? 'text-teal' : 'text-red'">{{ row.winner == 1 ? 'Win' : 'Loss' }}</span>
+              </td>
+              <td>
+                {{ row.player_mmr.toLocaleString('en-US') }}
+                <span v-if="row.player_change !== null" class="text-sm" :class="row.player_change >= 0 ? 'text-teal' : 'text-red'">({{ (row.player_change >= 0 ? '+' : '') + Number(row.player_change).toFixed(2) }})</span>
               </td>
               <td>
                 <div class="flex gap-x-1 mx-2 items-center">
@@ -74,10 +97,22 @@
               </td>
               <td>
                 <custom-button
+                  v-if="isProcessed(row)"
                   :href="'/Analytics/Match/Single/' + row.replayID"
                   :text="'Watch'"
                   :alt="'Watch this game in the replay viewer'"
                   size="small"
+                ></custom-button>
+                <custom-button
+                  v-else
+                  :text="processButtonText(row)"
+                  :alt="'Process this game'"
+                  size="small"
+                  color="teal"
+                  :loading="isQueued(row)"
+                  :disabled="isQueued(row)"
+                  :ignoreclick="true"
+                  @click="process(row)"
                 ></custom-button>
               </td>
             </tr>
@@ -92,9 +127,11 @@
 import { scaleTableToFit } from '../../utils/scaleTable';
 import moment from 'moment-timezone';
 import Cookies from 'js-cookie';
+import analytics from '../../utils/analyticsFormat.js';
 
 export default {
   name: 'AnalyticsGames',
+  mixins: [analytics],
   props: {
     data: Object,
     maps: Object,
@@ -106,14 +143,66 @@ export default {
   },
   data() {
     return {
+      // replayID: 'queued' while a Process request runs, 'ready' once it's done, 'error' if it failed
+      processState: {},
+      processTimer: null,
       windowWidth: window.innerWidth,
       compact: this.playermatchtablestyle == 1,
     };
   },
+  computed: {
+    wins() {
+      return this.data.games.filter(g => g.winner == 1).length;
+    },
+  },
   mounted() {
     this.$nextTick(() => this.scaleTable());
   },
+  beforeUnmount() {
+    clearInterval(this.processTimer);
+  },
   methods: {
+    isProcessed(game) {
+      return game.processed || this.processState[game.replayID] === 'ready';
+    },
+    isQueued(game) {
+      return this.processState[game.replayID] === 'queued';
+    },
+    processButtonText(game) {
+      const state = this.processState[game.replayID];
+      return state === 'queued' ? 'Processing' : state === 'error' ? 'Try again' : 'Process';
+    },
+    async process(game) {
+      this.processState = { ...this.processState, [game.replayID]: 'queued' };
+      try {
+        await this.$axios.post('/Analytics/Match/Single/' + game.replayID + '/Process');
+        this.pollProcessing();
+      } catch (e) {
+        this.processState = { ...this.processState, [game.replayID]: 'error' };
+      }
+    },
+    // One timer for every game being processed; stops when none are left
+    pollProcessing() {
+      if (this.processTimer) return;
+      this.processTimer = setInterval(async () => {
+        const queued = Object.keys(this.processState).filter(id => this.processState[id] === 'queued');
+        if (!queued.length) {
+          clearInterval(this.processTimer);
+          this.processTimer = null;
+          return;
+        }
+        for (const id of queued) {
+          try {
+            const response = await this.$axios.get('/Analytics/Match/Single/' + id + '/Status');
+            if (response.data.ready) {
+              this.processState = { ...this.processState, [id]: 'ready' };
+            }
+          } catch (e) {
+            // Keep waiting; the next round tries again
+          }
+        }
+      }, 5000);
+    },
     // Like the Talent Builder's layout toggle: a cookie for everyone, and the account setting when logged in
     setStyle(side) {
       this.compact = side === 'right';

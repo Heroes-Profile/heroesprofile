@@ -12,6 +12,7 @@
     :xalatath-event="{{ json_encode(! empty($bladeGlobals['xalatathEvent'])) }}"
     :void-stage="{{ json_encode(! empty($bladeGlobals['xalatathEvent']) && ! ($void_corruption_optout ?? false) ? $bladeGlobals['xalatathEvent']['stage'] : 0) }}"
     :xalatath-ending="{{ json_encode(! empty($bladeGlobals['xalatathEnding'])) }}"
+    :analytics-allowed="{{ json_encode(Auth::check() && app(\App\Services\AnalyticsService::class)->isAllowed(Auth::user())) }}"
   >
   </main-page>
 @endsection
