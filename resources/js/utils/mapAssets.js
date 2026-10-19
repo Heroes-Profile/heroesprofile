@@ -24,13 +24,29 @@ export function structureIcons(minimap) {
   }));
 }
 
+// Where a map's shortcuts put a hero out, from the units in each map's Objects file: Haunted Mines' ladders
+// (each leads down to an underground one or back up), Warhead Junction's two waygates (each to the other) and
+// Towers of Doom's waygate near the middle (both bases' late-game waygates lead to it).
+export const MAP_SHORTCUT_EXITS = {
+  haunted_mines: [[128, 211], [128, 156], [97, 180], [159, 188], [144, 103], [168, 64], [144, 25], [120, 64]],
+  warhead_junction: [[124, 84], [124, 164]],
+  towers_of_doom: [[124, 82]],
+};
+
 export function teamColor(team) {
   return team === -1 ? NEUTRAL_COLOR : TEAM_COLORS[team] ?? TEAM_COLORS[1];
 }
 
+// The green the game tints Abathur's hat with on the minimap while his Symbiote rides an ally
+export const SYMBIOTE_COLOR = '#40a018';
+
 /** feColorMatrix values that multiply the game's white icons by a team's colour. */
 export function tintMatrix(team) {
-  const hex = teamColor(team);
+  return tintMatrixFor(teamColor(team));
+}
+
+/** feColorMatrix values that multiply the game's white icons by a colour. */
+export function tintMatrixFor(hex) {
   const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.substr(i, 2), 16) / 255);
   return `${r} 0 0 0 0  0 ${g} 0 0 0  0 0 ${b} 0 0  0 0 0 1 0`;
 }

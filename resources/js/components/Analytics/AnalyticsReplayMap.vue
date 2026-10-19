@@ -23,6 +23,9 @@
       <filter v-for="team in [0, 1, -1]" :key="'f' + team" :id="tintId(team)" color-interpolation-filters="sRGB">
         <feColorMatrix type="matrix" :values="tintMatrix(team)"></feColorMatrix>
       </filter>
+      <filter :id="tintId('symbiote')" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" :values="symbioteTint"></feColorMatrix>
+      </filter>
       <clipPath :id="portraitClip" clipPathUnits="objectBoundingBox">
         <circle cx="0.5" cy="0.5" r="0.5"></circle>
       </clipPath>
@@ -88,7 +91,7 @@
     ></rect>
 
     <!-- Heroes -->
-    <g v-for="hero in heroes" :key="'hero' + hero.idx + (hero.unit || '')" class="cursor-pointer" @click="select(hero.idx)">
+    <g v-for="hero in heroes" :key="'hero' + hero.idx + (hero.unit || '')" class="cursor-pointer" :opacity="hero.symbiote ? 0.45 : 1" @click="select(hero.idx)">
       <circle :cx="hero.x" :cy="flip(hero.y)" :r="portrait / 2 + 0.6" :fill="teamColor(hero.team)"></circle>
       <image
         v-if="hero.short_name"
@@ -109,12 +112,22 @@
       >{{ hero.unit.charAt(0) }}</text>
       <title>{{ hero.label }}</title>
     </g>
+
+    <!-- Abathur's Symbiote: his hat on top of the ally it rides, green as the game draws it on the minimap -->
+    <image
+      v-for="(sym, index) in symbiotes"
+      :key="'sym' + index"
+      href="/images/analytics/minimaps/icons/abathur_hat.png"
+      :x="sym.x - portrait * 0.6" :y="flip(sym.y) - portrait * 1.25" :width="portrait * 1.2" :height="portrait * 1.2"
+      :filter="'url(#' + tintId('symbiote') + ')'"
+      class="pointer-events-none"
+    ></image>
   </svg>
   </div>
 </template>
 
 <script>
-import { positionAt, positionsAt, MAIN_BODIES } from '../../utils/replayTracks.js';
+import { positionAt, positionsAt, symbiotesAt, MAIN_BODIES } from '../../utils/replayTracks.js';
 
 // Names for the extra bodies some heroes control; the hero's own body gets none. Any other hero
 // unit an Abathur player controls is his Ultimate Evolution clone.
@@ -129,7 +142,7 @@ function bodyName(unit) {
   if (!unit || MAIN_BODIES.includes(unit)) return null;
   return BODY_NAMES[unit] || 'Clone';
 }
-import { structureIcons, teamColor, tintMatrix } from '../../utils/mapAssets.js';
+import { structureIcons, teamColor, tintMatrix, tintMatrixFor, SYMBIOTE_COLOR } from '../../utils/mapAssets.js';
 
 const KIND = { TownTownHallL2: 'fort', TownTownHallL3: 'keep', KingsCore: 'core', VanndarStormpike: 'core', DrekThar: 'core' };
 
@@ -239,10 +252,19 @@ export default {
       return last ? [last[1], last[2]] : null;
     },
     heroes() {
+      const riding = new Set(this.symbiotes.map(sym => sym.abathur));
       return this.data.players.flatMap(p => positionsAt(this.tracks.get(p.idx), this.t).map(at => {
         const unit = bodyName(at.unit);
-        return { ...p, x: at.x, y: at.y, unit, label: (p.battletag ? p.battletag + ' - ' : '') + p.hero + (unit ? ' (' + unit + ')' : '') };
+        // Abathur himself is faded while his Symbiote is out on an ally
+        const symbiote = riding.has(p.idx) && !unit;
+        return { ...p, x: at.x, y: at.y, unit, symbiote, label: (p.battletag ? p.battletag + ' - ' : '') + p.hero + (unit ? ' (' + unit + ')' : '') };
       }));
+    },
+    symbiotes() {
+      return symbiotesAt(this.data.symbiotes, this.tracks, this.t);
+    },
+    symbioteTint() {
+      return tintMatrixFor(SYMBIOTE_COLOR);
     },
     portraitClip() {
       return 'da-portrait-' + this.$.uid;

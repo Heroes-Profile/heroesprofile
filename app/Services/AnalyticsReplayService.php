@@ -19,6 +19,25 @@ class AnalyticsReplayService
     // Stop / hold: the only command that doesn't dismount
     private const STOP_LINK = 23;
 
+    /**
+     * Abilities that move a hero further than it could walk, by ability_links' ability_id: whether it
+     * disappears and reappears ('teleport') or crosses the map in a straight line ('flight'), roughly how
+     * many seconds after the press it goes, and a flight's speed in map units per second. The timings are
+     * approximate; the hero's next exact position fixes where it really ended up.
+     */
+    private const TRAVEL = [
+        'Hearthstone' => ['teleport', 6, 0],
+        'AbathurDeepTunnel' => ['teleport', 1, 0],
+        'DehakaBrushstalker' => ['teleport', 2, 0],
+        'BrightwingPhaseShift' => ['teleport', 1.5, 0],
+        'ZagaraExitNydusWorm' => ['teleport', 0.5, 0],
+        'DeathwingDragonflight' => ['teleport', 2, 0],
+        'L90ETCStageDive' => ['teleport', 1.5, 0],
+        'FalstadFlight' => ['flight', 1, 25],
+        'JunkratRocketRide' => ['flight', 1.5, 30],
+        'IllidanTheHunt' => ['flight', 0.25, 30],
+    ];
+
     public function __construct(
         private GlobalDataService $globalDataService,
         private AnalyticsService $analytics,
@@ -122,7 +141,7 @@ class AnalyticsReplayService
             return null;
         }
 
-        $replay = Cache::remember('analytics:replay:v'.config('analytics.extract_v').'.4:'.$replayId, now()->addDay(), function () use ($replayId) {
+        $replay = Cache::remember('analytics:replay:v'.config('analytics.extract_v').'.5:'.$replayId, now()->addDay(), function () use ($replayId) {
             try {
                 $raw = Storage::disk(self::DISK)->get('doc/'.$replayId.'.json.gz');
             } catch (UnableToReadFile) {
@@ -205,6 +224,8 @@ class AnalyticsReplayService
             'disconnects' => $doc['disconnects'],
             'minion_deaths' => $doc['minion_deaths'],
             'mounts' => $this->mounts($doc),
+            'travel' => $this->travel($doc),
+            'symbiotes' => $doc['symbiotes'] ?? [],
             'camera' => $doc['camera'],
             'pings' => $doc['pings'],
         ];
@@ -295,24 +316,70 @@ class AnalyticsReplayService
         return $out;
     }
 
-    /** Mount ability links for a build, from the newest mapped build at or before it. */
+    /**
+     * [t, player, kind, delay, speed, x, y] for each press of a TRAVEL ability; x and y are its target
+     * point, or -1 when it targets a unit or nothing (the viewer then uses the next exact position).
+     */
+    private function travel(array $doc): array
+    {
+        $links = $this->travelLinks(isset($doc['build']) ? (int) $doc['build'] : null);
+        $out = [];
+        foreach ($doc['commands'] ?? [] as [$t, $player, $link, , $x, $y]) {
+            $kind = self::TRAVEL[$links[$link] ?? ''] ?? null;
+            if ($kind !== null) {
+                $out[] = [$t, $player, $kind[0], $kind[1], $kind[2], $x, $y];
+            }
+        }
+        usort($out, fn ($a, $b) => $a[0] <=> $b[0]);
+
+        return $out;
+    }
+
+    /** The build's ability links mapping, from the newest mapped build at or before it. */
+    private function mappedBuild(?int $build): ?int
+    {
+        $builds = AbilityLink::query()->distinct()->orderBy('build')->pluck('build')->all();
+        if ($builds === []) {
+            return null;
+        }
+        $mapped = $builds[0];
+        foreach ($builds as $candidate) {
+            if ($build !== null && $candidate <= $build) {
+                $mapped = $candidate;
+            }
+        }
+
+        return $mapped;
+    }
+
+    /** Mount ability links for a build. Travel abilities in the Mount slot (Deep Tunnel, Flight...) aren't mounts. */
     private function mountLinks(?int $build): array
     {
-        return Cache::remember('analytics:mount_links:'.($build ?? 0), now()->addDay(), function () use ($build) {
-            $builds = AbilityLink::query()->distinct()->orderBy('build')->pluck('build')->all();
-            if ($builds === []) {
+        return Cache::remember('analytics:mount_links:v2:'.($build ?? 0), now()->addDay(), function () use ($build) {
+            $mapped = $this->mappedBuild($build);
+            if ($mapped === null) {
                 return [];
-            }
-            $mapped = $builds[0];
-            foreach ($builds as $candidate) {
-                if ($build !== null && $candidate <= $build) {
-                    $mapped = $candidate;
-                }
             }
 
             return AbilityLink::where('build', $mapped)
                 ->where(fn ($q) => $q->where('slot', 'Mount')->orWhere('ability_id', 'Mount'))
+                ->whereNotIn('ability_id', array_keys(self::TRAVEL))
                 ->pluck('abil_link')->map(fn ($link) => (int) $link)->all();
+        });
+    }
+
+    /** abil_link => ability_id for the TRAVEL abilities in a build. */
+    private function travelLinks(?int $build): array
+    {
+        return Cache::remember('analytics:travel_links:'.($build ?? 0), now()->addDay(), function () use ($build) {
+            $mapped = $this->mappedBuild($build);
+            if ($mapped === null) {
+                return [];
+            }
+
+            return AbilityLink::where('build', $mapped)
+                ->whereIn('ability_id', array_keys(self::TRAVEL))
+                ->pluck('ability_id', 'abil_link')->mapWithKeys(fn ($id, $link) => [(int) $link => $id])->all();
         });
     }
 

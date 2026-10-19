@@ -9,7 +9,10 @@
 // so a path that strays further than that is pulled in.
 //
 // The speeds were tuned against held-out exact positions from real games (follow: median error 3.7
-// map units); dashes, blinks and Hearthstone handling tested no better and were left out.
+// map units); short dashes and blinks tested no better and were left out. A hero that turns up further
+// away than it could have walked didn't walk: it used a travel ability (Hearthstone, Deep Tunnel, Fly...),
+// which data.travel lists, or a map shortcut (Haunted Mines' ladders, waygates), so it jumps or flies there
+// instead of sliding across the map.
 
 import { routeTo, lineWalkable, findPath } from './replayPathing.js';
 
@@ -21,14 +24,17 @@ const LAST_HIT_RANGE = 6;
 const TAKEDOWN_RANGE = 8;
 const EASE = 3; // seconds over which a walk eases onto the next exact point
 const MAX_DETOUR = 3; // a route around walls longer than this times the straight line isn't trusted
+const JUMP = 20; // map units further than a hero could walk before the next exact point counts as a jump
+const EXIT_RANGE = 40; // how near a map shortcut's exit the hero must turn up for the shortcut to explain it
 // A hero's own body, for heroes that also have extra ones
 export const MAIN_BODIES = ['HeroAbathur', 'HeroChen', 'HeroSamuro'];
 
 // data.mounts: [t, player, 1] for a mount press, [t, player, 0] for anything that dismounts.
+// data.travel: [t, player, kind, delay, speed, x, y] for each travel ability press; shortcutExits: [[x, y]] for the map.
 // A player controlling several heroes at once (the Lost Vikings) has a life per hero unit: data.lives
 // rows carry the unit id, data.unit_tracks holds each unit's own exact positions, and data.selections
 // ([t, player, [unit ids]]) says which units a move order moved.
-export function buildTracks(data, { mode = 'follow', walkable = null, walkGrid = null } = {}) {
+export function buildTracks(data, { mode = 'follow', walkable = null, walkGrid = null, shortcutExits = [] } = {}) {
   const length = data.length_s;
   const byPlayer = new Map(data.players.map(p => [p.idx, []]));
 
@@ -59,6 +65,12 @@ export function buildTracks(data, { mode = 'follow', walkable = null, walkGrid =
   const mounts = new Map(data.players.map(p => [p.idx, []]));
   (data.mounts || []).forEach(([t, p, on]) => mounts.get(p)?.push(on ? [t + MOUNT_CAST, true] : [t, false]));
   mounts.forEach(list => list.sort((a, b) => a[0] - b[0]));
+
+  const travel = new Map(data.players.map(p => [p.idx, []]));
+  (data.travel || []).forEach(([t, p, kind, delay, speed, x, y]) => {
+    travel.get(p)?.push([t, kind, delay, speed, x >= 0 ? x : null, y >= 0 ? y : null]);
+  });
+  const jumps = list => ({ travel: list, exits: shortcutExits });
 
   const units = new Map((data.unit_tracks || []).map(u => [u.id, u]));
   const selections = new Map();
@@ -98,14 +110,17 @@ export function buildTracks(data, { mode = 'follow', walkable = null, walkGrid =
       const main = MAIN_BODIES.includes(unit.unit);
       const lifeMoves = inLife(moves.get(p) || []).filter(m => selectedAt(p, unitId, m[0], main));
       const lifeMounts = [[born, false], ...inLife(mounts.get(p) || [])];
-      byPlayer.get(p)?.push({ born, died, unit: unit.unit, hidden: unit.hidden || [], path: walk(anchors, lifeMoves, lifeMounts, end, mode, walkGrid) });
+      // A player's travel abilities move its main body; the other bodies can still take shortcuts
+      const lifeTravel = main ? inLife(travel.get(p) || []) : [];
+      byPlayer.get(p)?.push({ born, died, unit: unit.unit, hidden: unit.hidden || [], path: walk(anchors, lifeMoves, lifeMounts, end, mode, walkGrid, jumps(lifeTravel)) });
       return;
     }
     const anchors = dedupe([[born, bx, by], ...inLife(exact.get(p) || [])]);
     const lifeMoves = inLife(moves.get(p) || []);
     // A new life starts on foot
     const lifeMounts = [[born, false], ...inLife(mounts.get(p) || [])];
-    const walkLife = points => walk(points, lifeMoves, lifeMounts, end, mode, walkGrid);
+    const lifeTravel = jumps(inLife(travel.get(p) || []));
+    const walkLife = points => walk(points, lifeMoves, lifeMounts, end, mode, walkGrid, lifeTravel);
 
     let path = walkLife(anchors);
 
@@ -143,6 +158,17 @@ export function positionsAt(lives, t) {
     });
 }
 
+/** [{ abathur, host, x, y }] for each Symbiote riding an allied hero at time t, at that hero's position. */
+export function symbiotesAt(symbiotes, tracks, t) {
+  return (symbiotes || [])
+    .filter(([born, died, , host]) => host >= 0 && t >= born && t < died)
+    .map(([, , abathur, host]) => {
+      const at = positionAt(tracks.get(host), t);
+      return at ? { abathur, host, x: at[0], y: at[1] } : null;
+    })
+    .filter(Boolean);
+}
+
 function dedupe(anchors) {
   return anchors.filter((a, i) => i === 0 || a[0] !== anchors[i - 1][0]);
 }
@@ -168,8 +194,50 @@ function glide(from, to, grid) {
   return way.slice(0, -1).map(([wx, wy], i) => [from[0] + (to[0] - from[0]) * (lengths[i] / total), wx, wy]);
 }
 
+// Further apart than any walk between the two points could cover
+function tooFar(from, to) {
+  return Math.hypot(to[1] - from[1], to[2] - from[2]) > JUMP + SPEED * MOUNT_SPEED * (to[0] - from[0]);
+}
+
+// The way from a segment's start to an exact point the hero couldn't have walked to: it goes on as before until a
+// travel ability pressed in between goes off, then teleports, or flies in a straight line, to the ability's target
+// (or the exact point when it has none). With no ability, it went through the map shortcut whose exit is nearest
+// where it turned up, or otherwise straight there, just in time to walk the rest.
+function jump(segment, to, { travel, exits }) {
+  const start = segment[0][0];
+  const until = to[0];
+  const press = [...travel].reverse().find(e => e[0] >= start - 1 && e[0] < until);
+  let at;
+  let dest;
+  let arrive;
+  if (press) {
+    const [t, kind, delay, speed, x, y] = press;
+    at = Math.min(Math.max(t + delay, start), until);
+    dest = x !== null ? [x, y] : [to[1], to[2]];
+    const [px, py] = sample(segment, at);
+    arrive = kind === 'flight' && speed > 0 ? Math.min(until, at + Math.hypot(dest[0] - px, dest[1] - py) / speed) : at;
+  } else {
+    let exit = null;
+    let best = EXIT_RANGE;
+    exits.forEach(([x, y]) => {
+      const d = Math.hypot(x - to[1], y - to[2]);
+      if (d < best) {
+        best = d;
+        exit = [x, y];
+      }
+    });
+    dest = exit || [to[1], to[2]];
+    at = Math.max(start, until - Math.max(STEP, Math.hypot(to[1] - dest[0], to[2] - dest[1]) / SPEED));
+    arrive = at;
+  }
+  const [px, py] = sample(segment, at);
+  const out = segment.filter(p => p[0] < at);
+  out.push([at, px, py], [Math.max(arrive, at + 0.01), dest[0], dest[1]]);
+  return out;
+}
+
 // Path samples [t, x, y] from the first anchor to the end of the life
-function walk(anchors, moves, mounts, end, mode, grid) {
+function walk(anchors, moves, mounts, end, mode, grid, jumps = { travel: [], exits: [] }) {
   const path = [];
   for (let i = 0; i < anchors.length; i++) {
     const from = anchors[i];
@@ -177,11 +245,19 @@ function walk(anchors, moves, mounts, end, mode, grid) {
     const until = to ? to[0] : end;
 
     if (mode !== 'follow') {
+      if (to && tooFar(from, to)) {
+        path.push(...jump([from], to, jumps));
+        continue;
+      }
       path.push(from, ...(to ? glide(from, to, grid) : []));
       continue;
     }
 
     const segment = follow(from, moves, mounts, until, grid);
+    if (to && until > from[0] && tooFar(from, to)) {
+      path.push(...jump(segment, to, jumps));
+      continue;
+    }
     if (to && until > from[0]) {
       // Ease onto the next exact point over the last few seconds
       const last = sample(segment, until);

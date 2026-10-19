@@ -21,7 +21,7 @@ return [
 
     // The parser's DeepExtract.Version. Games loaded at an older version are reprocessed on
     // the next request, and cached results are keyed on it.
-    'extract_v' => 4,
+    'extract_v' => 5,
 
     // Only games from the start of season 34 on are archived or analysed.
     'cutover' => '2026-10-02 16:00:01',
