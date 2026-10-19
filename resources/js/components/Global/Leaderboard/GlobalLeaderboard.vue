@@ -65,6 +65,7 @@
         :excludetimeframes="true"
         :includetier="true"
         :tierrankinput="tierrank"
+        :leagueinput="league"
         :disabledeselectfilters="true"
       >
       </filters>
@@ -72,7 +73,7 @@
       <div v-if="data">
         <div v-if="leaderboardtype == 'SL Rank'" class="my-5 bg-teal py-5 px-2">
           <infobox class="max-w-[1500px] mx-auto">
-            Real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is listed by the latest rank read for them this season, grouped by league: Grandmasters by ladder position, then Master, then each league by division. Within a division, players with at least {{ data.length ? data[0].min_games : 0 }} Storm League games this season (the Player leaderboard's games requirement) come first, by Storm League win rate; players under it follow, by games played. Ties go to the rank read in more games. Shows the top 2,000.
+            Real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is listed by the latest rank read for them this season, grouped by league: Grandmasters by ladder position, then Master, then each league by division. Within a division, players with at least {{ data.length ? data[0].min_games : 0 }} Storm League games this season (the Player leaderboard's games requirement) come first, by Storm League win rate; players under it follow, by games played. Ties go to the rank read in more games. Shows the top 500 in each league.
             <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
           </infobox>
         </div>
@@ -314,6 +315,7 @@ export default {
       ratingLoading: false,
       playerRatingGamesPlayed: null,
       tierrank: null,
+      league: null,
       rankchange: false,
       isfiltered: false,
       showPopup: true,
@@ -421,6 +423,10 @@ export default {
         queryString += `&region=${this.region}`;
       }
 
+      if(this.league && this.leaderboardtype == 'SL Rank'){
+        queryString += `&league=${this.league}`;
+      }
+
     
       if(this.tierrank){
         queryString += `&tier_rank=${this.convertRankIDtoName(this.tierrank)}`;
@@ -445,6 +451,7 @@ export default {
           role: this.role,
           region: this.region,
           tierrank: this.tierrank,
+          league: this.leaderboardtype == 'SL Rank' ? this.league : null,
         }, 
         {
         });
@@ -488,6 +495,7 @@ export default {
 
       this.region = filteredData.single["Regions"] ? filteredData.single["Regions"] : null;
       this.tierrank = filteredData.single["HP Rank"] ? filteredData.single["HP Rank"]  : null;
+      this.league = filteredData.single["League"] ? filteredData.single["League"] : null;
       this.sortKey = '';
       this.sortDir = 'desc';
       this.playerRating = null;
@@ -600,6 +608,10 @@ export default {
 
       if(this.urlparameters["region"]){
         this.region = this.urlparameters["region"];
+      }
+
+      if(this.urlparameters["league"]){
+        this.league = this.urlparameters["league"];
       }
 
       if(this.urlparameters["role"]){

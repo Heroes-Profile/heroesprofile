@@ -160,8 +160,16 @@
           <!-- Regions Single-->
           <single-select-filter :compact="compact" v-if="includesingleregion"
             :values="filters.regions" 
-            :text="'Regions'" 
+            :text="'Regions'"
             :defaultValue="region"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+
+          <!-- SL Rank League -->
+          <single-select-filter :compact="compact" v-if="leaderboardfiltertype && selectedSingleFilters['Leaderboard Type'] == 'SL Rank' && filters.sl_leagues"
+            :values="filters.sl_leagues"
+            :text="'League'"
+            :defaultValue="leagueinput"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
@@ -567,6 +575,7 @@
       groupSizeDefaultValue: [String, Array],
       groupsizemulti: Boolean,
       leaderboardtypeinput: String,
+      leagueinput: String,
       tierrankinput: [String, Number],
       rolerequired: Boolean,
       excludetimeframes: Boolean,
@@ -964,6 +973,10 @@
         if(this.tierrank){
           this.selectedSingleFilters['HP Rank'] = this.tierrank;
         }
+
+        if(this.leagueinput && type === 'SL Rank'){
+          this.selectedSingleFilters['League'] = this.leagueinput;
+        }
       },
       handleInputChange(eventPayload) {
         if(eventPayload.field == "Timeframe Type"){
@@ -1022,6 +1035,10 @@
             this.modifiedincludematchpredictionseason = false;
             this.modifiedincludegroupsize = true;
             this.modifiedincludetier = true;
+
+            if(eventPayload.value != "SL Rank"){
+              delete this.selectedSingleFilters['League'];
+            }
           }
    
 
@@ -1064,6 +1081,11 @@
             delete this.selectedSingleFilters['HP Rank'];
             delete this.selectedSingleFilters['Heroes'];
             delete this.selectedSingleFilters['Role'];
+
+            // The League dropdown remounts showing leagueinput
+            if(this.leagueinput){
+              this.selectedSingleFilters['League'] = this.leagueinput;
+            }
           }
         }
         if(eventPayload.field == "Group Size" && this.groupsizeadvanced){
