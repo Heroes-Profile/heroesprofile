@@ -1771,7 +1771,7 @@ class GlobalDataService
             ['code' => 'Hero', 'name' => 'Hero'],
             ['code' => 'Role', 'name' => 'Role'],
             ['code' => 'Match Prediction', 'name' => 'Match Prediction'],
-            ['code' => 'SL Rank', 'name' => 'Storm League Rank'],
+            ['code' => 'SL Rank', 'name' => 'SL Rank'],
         ];
 
         $filterData->group_size = [
