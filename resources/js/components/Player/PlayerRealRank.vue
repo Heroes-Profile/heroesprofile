@@ -14,11 +14,7 @@
     </h2>
 
     <div v-if="data.current" class="flex flex-col items-center">
-      <div class="relative" :style="{ width: badgeWidth(data.current.league, 200) + 'px' }">
-        <img v-if="badgeImage(data.current)" :src="badgeImage(data.current)" :alt="rankName(data.current)" class="w-full">
-        <span v-if="data.current.league == 'grandmaster' && data.current.ladder_position" class="absolute left-0 right-0 text-center font-bold text-white leading-none" :style="ladderStyle(badgeWidth('grandmaster', 200), data.current.ladder_position)">#{{ data.current.ladder_position }}</span>
-      </div>
-      <div class="text-2xl font-bold mt-2">{{ rankName(data.current) }}</div>
+      <real-rank-badge :rank="data.current" :width="200" label="below" label-class="text-2xl font-bold mt-2"></real-rank-badge>
       <div class="text-sm opacity-80">Last seen {{ formatDay(data.current.last_game_date) }}, read in {{ data.current.read_count.toLocaleString('en-US') }} {{ data.current.read_count == 1 ? 'game' : 'games' }}</div>
     </div>
 
@@ -26,11 +22,7 @@
       <h3 class="text-xl font-bold text-center">{{ data.season ? data.season : 'This season' }}</h3>
       <div class="flex flex-wrap justify-center gap-6 mt-3">
         <div v-for="(period, index) in data.periods" :key="index" class="flex flex-col items-center text-center w-[130px]">
-          <div class="relative" :style="{ width: badgeWidth(period.league, 80) + 'px' }">
-            <img v-if="badgeImage(period)" :src="badgeImage(period)" :alt="rankName(period)" class="w-full">
-            <span v-if="period.league == 'grandmaster' && period.ladder_position" class="absolute left-0 right-0 text-center font-bold text-white leading-none" :style="ladderStyle(badgeWidth('grandmaster', 80), period.ladder_position)">#{{ period.ladder_position }}</span>
-          </div>
-          <div class="font-bold">{{ rankName(period) }}</div>
+          <real-rank-badge :rank="period" :width="80" label="below" label-class="font-bold"></real-rank-badge>
           <div class="text-xs opacity-80">{{ formatDay(period.first_game_date) }} - {{ formatDay(period.last_game_date) }}</div>
           <div class="text-xs opacity-80">{{ period.read_count.toLocaleString('en-US') }} {{ period.read_count == 1 ? 'game' : 'games' }}</div>
         </div>
@@ -62,9 +54,6 @@
 <script>
 import moment from 'moment-timezone';
 
-// Image widths in public/images/ranks: league badges are 350 wide, Master 380, Grandmaster 420, all at the game's scale
-const IMAGE_WIDTHS = { master: 380, grandmaster: 420 };
-
 export default {
   name: 'PlayerRealRank',
   props: {
@@ -90,39 +79,6 @@ export default {
       }catch(error){
         //Do something here
       }
-    },
-    badgeImage(rank){
-      if(rank.league == 'unranked' || !rank.league){
-        return null;
-      }
-      if(rank.league == 'master' || rank.league == 'grandmaster'){
-        return '/images/ranks/' + rank.league + '.png';
-      }
-      return '/images/ranks/' + rank.league + '_' + rank.division + '.png';
-    },
-    // Keeps every badge at the game's relative scale: a league badge is `width` wide, Master and Grandmaster a little larger
-    badgeWidth(league, width){
-      return Math.round(width * (IMAGE_WIDTHS[league] || 350) / 350);
-    },
-    // The ladder number sits between the "Grand Master" label and the crown's tip.
-    // Longer numbers get a smaller font so "#999" still fits inside the disc (about half the badge's width).
-    ladderStyle(width, position){
-      const height = width * 440 / 420;
-      const characters = String(position).length + 1;
-      const fontSize = Math.min(height * 0.19, width * 0.44 / (0.62 * characters));
-      return { top: (height * 0.36 + (height * 0.19 - fontSize) / 2) + 'px', fontSize: fontSize + 'px', textShadow: '0 0 6px rgba(110, 180, 255, 0.9)' };
-    },
-    rankName(rank){
-      if(rank.league == 'unranked'){
-        return 'Unranked';
-      }
-      if(rank.league == 'grandmaster'){
-        return 'Grandmaster' + (rank.ladder_position ? ' #' + rank.ladder_position : '');
-      }
-      if(rank.league == 'master'){
-        return 'Master';
-      }
-      return rank.league.charAt(0).toUpperCase() + rank.league.slice(1) + ' ' + rank.division;
     },
     formatDay(dateString){
       return moment.tz(dateString, 'UTC').tz(moment.tz.guess()).format('MMM D, YYYY');
