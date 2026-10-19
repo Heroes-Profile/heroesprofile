@@ -75,9 +75,10 @@
           <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Hero'" class=" " text="View All Heroes"></custom-button>
         </div>
       </div>
+      <player-real-rank :blizzid="blizzid" :region="region"></player-real-rank>
       <div class="flex justify-center max-w-[1500px] mx-auto items-center max-md:flex-col">
       <div class="max-w-[1500px] mx-auto">
-        <h2 class="text-3xl font-bold py-5 text-center">Heroes Profile MMR 
+        <h2 class="text-3xl font-bold py-5 text-center">Heroes Profile MMR
           <round-image class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large">
             <slot>
               <div>
