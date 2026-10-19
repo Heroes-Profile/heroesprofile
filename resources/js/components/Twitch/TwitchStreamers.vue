@@ -8,6 +8,100 @@
         issues. Report problems at <a href="/Contact" class="link">heroesprofile.com/Contact</a> or zemill@heroesprofile.com.
       </div>
 
+      <div id="how-to-watch" class="bg-lighten rounded-lg mb-8 scroll-mt-4">
+        <button
+          @click="toggleHowTo"
+          class="w-full flex items-center gap-2 px-4 py-3 text-left text-lg font-semibold"
+          :aria-expanded="showHowTo ? 'true' : 'false'"
+        >
+          <span class="text-lteal text-sm">{{ showHowTo ? '▼' : '►' }}</span>
+          How to watch a stream with the extension
+        </button>
+
+        <div v-if="showHowTo" class="px-4 pb-4 text-sm">
+          <h3 class="font-semibold mb-1">On a computer</h3>
+          <ol class="list-decimal list-inside space-y-1 mb-4 text-gray-light">
+            <li>Open one of the live channels above on twitch.tv.</li>
+            <li>
+              Move your mouse over the video. A small Heroes Profile icon appears against the
+              <strong>right-hand edge of the player</strong>, about halfway down. It is easy to
+              miss, and it disappears again when you move the mouse away from the video.
+            </li>
+            <li>Click the icon. The panel opens over the stream.</li>
+            <li>Click the icon again, or the ✕ in the panel's title bar, to close it.</li>
+          </ol>
+          <div class="grid gap-4 sm:grid-cols-[2fr,1fr] items-start mb-4">
+            <figure>
+              <img
+                src="/images/twitch/extension-icon.webp"
+                alt="A Twitch stream with the Heroes Profile icon circled against the right edge of the video player"
+                class="rounded-lg border border-lighten w-full"
+                loading="lazy"
+              />
+              <figcaption class="text-xs text-gray-medium mt-1">
+                The icon sits against the right edge of the video, and only appears while your mouse
+                is over the player.
+              </figcaption>
+            </figure>
+
+            <figure>
+              <img
+                src="/images/twitch/extension-icon-zoom.webp"
+                alt="Close-up of the Heroes Profile icon on the edge of the Twitch player"
+                class="rounded-lg border border-lighten w-full"
+                loading="lazy"
+              />
+              <figcaption class="text-xs text-gray-medium mt-1">
+                Close up: look for the Heroes Profile logo.
+              </figcaption>
+            </figure>
+          </div>
+
+          <p class="mb-4 text-gray-light">
+            It works the same in theatre mode and fullscreen, and you can keep it open while you
+            watch.
+          </p>
+
+          <figure class="mb-4">
+            <img
+              src="/images/twitch/extension-open.webp"
+              alt="The Heroes Profile Live panel open over a stream, showing both teams with heroes, talents and win rates"
+              class="rounded-lg border border-lighten w-full max-w-[700px]"
+              loading="lazy"
+            />
+            <figcaption class="text-xs text-gray-medium mt-1">
+              The panel open on a stream, showing an example lobby.
+            </figcaption>
+          </figure>
+
+          <h3 class="font-semibold mb-1">On the Twitch mobile app</h3>
+          <p class="mb-4 text-gray-light">
+            Open the channel, then swipe across from the chat to the extensions panel below the
+            stream. The same lobby is shown in a single column.
+          </p>
+
+          <h3 class="font-semibold mb-1">What you will see</h3>
+          <ul class="list-disc list-inside space-y-1 mb-4 text-gray-light">
+            <li>Both teams, each in the column matching its side of the map in game.</li>
+            <li>Every player's hero, win rate and account level from Heroes Profile.</li>
+            <li>Talents as they are picked. Hover one to read what it does.</li>
+            <li><strong>Copy build</strong> copies a code you can paste into the game's chat to try that build yourself.</li>
+            <li>A player's name opens their Heroes Profile page in a new tab.</li>
+          </ul>
+
+          <h3 class="font-semibold mb-1">If it says "Waiting for the next game"</h3>
+          <p class="text-gray-light">
+            That is the normal idle state: it fills in once the streamer is in a lobby. Streamers can
+            also set a delay, so what you see can be up to 15 minutes behind the game to stop stream
+            sniping. Nothing appears at all if the streamer is not running the uploader.
+          </p>
+
+          <p class="mt-4 text-xs text-gray-medium">
+            Link to this guide: <a :href="howToUrl" class="link">{{ howToUrl }}</a>
+          </p>
+        </div>
+      </div>
+
       <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold flex items-center gap-2">
         <span class="inline-block w-2 h-2 rounded-full bg-red"></span>
         Live Now
@@ -99,6 +193,15 @@ export default {
   data(){
     return {
       infoText: "Heroes of the Storm streamers using the Heroes Profile Twitch extension. Live channels are listed first.",
+      // Opened by #how-to-watch, so the guide can be linked to directly.
+      showHowTo: false,
+      howToUrl: 'https://www.heroesprofile.com/Twitch#how-to-watch',
+    }
+  },
+  mounted(){
+    if(window.location.hash === '#how-to-watch'){
+      this.showHowTo = true;
+      this.$nextTick(() => document.getElementById('how-to-watch')?.scrollIntoView());
     }
   },
   computed: {
@@ -107,6 +210,11 @@ export default {
     },
   },
   methods: {
+    toggleHowTo(){
+      this.showHowTo = !this.showHowTo;
+      // Keeps the address bar on the shareable url without jumping the page.
+      history.replaceState(null, '', this.showHowTo ? '#how-to-watch' : window.location.pathname);
+    },
     profileUrl(streamer){
       return `/Player/${encodeURIComponent(streamer.battletag)}/${streamer.blizz_id}/${streamer.region}`;
     },

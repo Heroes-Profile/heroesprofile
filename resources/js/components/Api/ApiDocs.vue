@@ -167,7 +167,6 @@
 
             <template v-if="op.parameters.length">
               <h3 class="text-sm uppercase tracking-wider text-lteal mb-2">Parameters</h3>
-              <scroll-hint-container :fit="true">
               <table class="min-w-0 w-full responsive-table mb-4">
                 <thead>
                   <tr>
@@ -219,7 +218,6 @@
                   </tr>
                 </tbody>
               </table>
-              </scroll-hint-container>
             </template>
 
             <div class="mb-4">

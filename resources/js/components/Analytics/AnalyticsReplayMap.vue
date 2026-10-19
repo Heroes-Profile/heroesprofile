@@ -47,6 +47,15 @@
       :filter="'url(#' + tintId(icon.team) + ')'"
     ></image>
 
+    <!-- Map shortcuts while they're open: Haunted Mines' ladders, the waygates -->
+    <image
+      v-for="(marker, index) in shortcuts"
+      :key="'sc' + index"
+      :href="marker.src"
+      :x="marker.x - marker.size / 2" :y="flip(marker.y) - marker.size / 2" :width="marker.size" :height="marker.size"
+      :filter="'url(#' + tintId(-1) + ')'"
+    ></image>
+
     <!-- Camps: every camp of the game, flashing in the capturing team's colour -->
     <circle v-for="camp in campSpots" :key="'c' + camp.key" :cx="camp.x" :cy="flip(camp.y)" r="2.5" fill="none" stroke="#d98c40" stroke-width="0.6" stroke-opacity="0.6"></circle>
     <circle
@@ -142,7 +151,7 @@ function bodyName(unit) {
   if (!unit || MAIN_BODIES.includes(unit)) return null;
   return BODY_NAMES[unit] || 'Clone';
 }
-import { structureIcons, teamColor, tintMatrix, tintMatrixFor, SYMBIOTE_COLOR } from '../../utils/mapAssets.js';
+import { structureIcons, teamColor, tintMatrix, tintMatrixFor, SYMBIOTE_COLOR, shortcutOpenSpans, shortcutMarkers } from '../../utils/mapAssets.js';
 
 const KIND = { TownTownHallL2: 'fort', TownTownHallL3: 'keep', KingsCore: 'core', VanndarStormpike: 'core', DrekThar: 'core' };
 
@@ -262,6 +271,12 @@ export default {
     },
     symbiotes() {
       return symbiotesAt(this.data.symbiotes, this.tracks, this.t);
+    },
+    shortcutSpans() {
+      return this.minimap ? shortcutOpenSpans(this.minimap.slug, this.data.units, this.data.length_s) : [];
+    },
+    shortcuts() {
+      return this.minimap ? shortcutMarkers(this.minimap.slug, this.shortcutSpans, this.t) : [];
     },
     symbioteTint() {
       return tintMatrixFor(SYMBIOTE_COLOR);

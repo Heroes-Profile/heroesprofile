@@ -24,14 +24,51 @@ export function structureIcons(minimap) {
   }));
 }
 
-// Where a map's shortcuts put a hero out, from the units in each map's Objects file: Haunted Mines' ladders
-// (each leads down to an underground one or back up), Warhead Junction's two waygates (each to the other) and
-// Towers of Doom's waygate near the middle (both bases' late-game waygates lead to it).
-export const MAP_SHORTCUT_EXITS = {
-  haunted_mines: [[128, 211], [128, 156], [97, 180], [159, 188], [144, 103], [168, 64], [144, 25], [120, 64]],
-  warhead_junction: [[124, 84], [124, 164]],
-  towers_of_doom: [[124, 82]],
+// Map shortcuts, from the units in each map's Objects file, drawn with the game's minimap icons while they're open:
+// Haunted Mines' ladders (down on the surface, up underground; open while the mines are, from the mine boss
+// appearing until it dies), Warhead Junction's two waygates (each to the other) and Towers of Doom's (both bases'
+// lead to the one near the middle). exit: a hero can come out there.
+export const MAP_SHORTCUTS = {
+  haunted_mines: {
+    open: 'mines',
+    markers: [
+      ...[[128, 211], [128, 156], [97, 180], [159, 188]].map(([x, y]) => ({ icon: 'ladder_down', x, y, exit: true })),
+      ...[[144, 103], [168, 64], [144, 25], [120, 64]].map(([x, y]) => ({ icon: 'ladder_up', x, y, exit: true })),
+    ],
+  },
+  warhead_junction: {
+    open: 'always',
+    markers: [{ icon: 'teleporter', x: 124, y: 84, exit: true }, { icon: 'teleporter', x: 124, y: 164, exit: true }],
+  },
+  towers_of_doom: {
+    open: 'unknown',
+    markers: [{ icon: 'waygate_in', x: 56, y: 85, exit: false }, { icon: 'waygate_in', x: 192, y: 86, exit: false }, { icon: 'waygate_out', x: 124, y: 82, exit: true }],
+  },
 };
+
+// Where those shortcuts put a hero out: [[x, y]] by map slug
+export const MAP_SHORTCUT_EXITS = Object.fromEntries(Object.entries(MAP_SHORTCUTS)
+  .map(([slug, map]) => [slug, map.markers.filter(m => m.exit).map(m => [m.x, m.y])]));
+
+/** [from, to] spans when a map's shortcuts are open, from the game's map objective units. */
+export function shortcutOpenSpans(slug, units, length) {
+  const rule = MAP_SHORTCUTS[slug]?.open;
+  if (rule === 'always') return [[0, length]];
+  if (rule === 'mines') {
+    // The mine boss appears as the mines open and dies as they close (a placeholder lives at 0-0)
+    return (units || [])
+      .filter(u => u.name === 'UnderworldBoss' && !(u.b[0] === 0 && u.d && u.d[0] === 0))
+      .map(u => [u.b[0], u.d ? u.d[0] : length]);
+  }
+  return [];
+}
+
+/** The shortcut markers to draw at time t: { icon, x, y, src, size }. */
+export function shortcutMarkers(slug, spans, t) {
+  const map = MAP_SHORTCUTS[slug];
+  if (!map || !spans.some(([from, to]) => t >= from && t < to)) return [];
+  return map.markers.map(m => ({ ...m, src: `/images/analytics/minimaps/icons/${m.icon}.png`, size: m.icon.startsWith('ladder') ? 7 : 9 }));
+}
 
 export function teamColor(team) {
   return team === -1 ? NEUTRAL_COLOR : TEAM_COLORS[team] ?? TEAM_COLORS[1];
