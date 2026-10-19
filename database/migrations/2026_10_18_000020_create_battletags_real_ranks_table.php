@@ -21,6 +21,8 @@ return new class extends Migration
             $table->unsignedInteger('player_id');
             $table->unsignedBigInteger('blizz_id');
             $table->unsignedTinyInteger('region');
+            // The season_dates id the period's games are in; null for games no season covers yet
+            $table->unsignedInteger('season')->nullable();
 
             // league_tiers: 1 bronze to 6 master. Null when unranked. A grandmaster is master (6) with
             // grandmaster set and their place on the ladder in ladder_position.
@@ -43,8 +45,8 @@ return new class extends Migration
 
             $table->index(['blizz_id', 'region', 'last_game_date'], 'player_history');
             $table->index('player_id');
-            // The rank leaderboard reads a season's periods by date
-            $table->index('last_game_date', 'season_range');
+            // The rank leaderboard reads one season's periods
+            $table->index(['season', 'region'], 'season_region');
             $table->index('reporter');
         });
 

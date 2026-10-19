@@ -106,7 +106,9 @@ class RealRankService
                 return 'already have this game';
             }
 
-            if ($latest !== null && $this->sameRank($latest, $values) && $this->sameSeason($latest->last_game_date, $gameDate)) {
+            $season = $this->season($gameDate);
+
+            if ($latest !== null && $this->sameRank($latest, $values) && $latest->season === $season) {
                 if ($gameDate->lt($latest->first_game_date)) {
                     $latest->first_game_date = $gameDate;
                     $latest->first_replayID = $replayID;
@@ -125,6 +127,7 @@ class RealRankService
                 'player_id' => $account->player_id,
                 'blizz_id' => $account->blizz_id,
                 'region' => $region,
+                'season' => $season,
                 'first_replayID' => $replayID,
                 'first_game_date' => $gameDate,
                 'last_replayID' => $replayID,
@@ -176,12 +179,10 @@ class RealRankService
             && $period->unranked === $values['unranked'];
     }
 
-    /** Whether two game dates fall in the same Storm League season (season_dates). */
-    private function sameSeason(Carbon $a, Carbon $b): bool
+    /** The Storm League season (season_dates id) a game date falls in, or null when none covers it yet. */
+    private function season(Carbon $date): ?int
     {
-        $season = fn (Carbon $date) => SeasonDate::where('start_date', '<=', $date)->where('end_date', '>', $date)->value('id');
-
-        return $season($a) === $season($b);
+        return SeasonDate::where('start_date', '<=', $date)->where('end_date', '>', $date)->value('id');
     }
 
     /**

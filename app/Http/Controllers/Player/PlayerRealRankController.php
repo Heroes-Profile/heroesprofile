@@ -40,9 +40,9 @@ class PlayerRealRankController extends Controller
         $season = null;
         $periods = [];
         if ($latest) {
-            $season = SeasonDate::where('start_date', '<=', $latest->last_game_date)->where('end_date', '>', $latest->last_game_date)->first();
+            $season = $latest->season ? SeasonDate::find($latest->season) : null;
             $periods = BattletagRealRank::where('blizz_id', $blizz_id)->where('region', $region)
-                ->when($season, fn ($query) => $query->where('last_game_date', '>=', $season->start_date)->where('first_game_date', '<', $season->end_date))
+                ->where('season', $latest->season)
                 ->orderByDesc('last_game_date')
                 ->get()
                 ->map(fn ($period) => $this->format($period))
@@ -53,6 +53,8 @@ class PlayerRealRankController extends Controller
             'current' => $latest ? $this->format($latest) : null,
             'season' => $season ? $season->year.' Season '.(float) $season->season : null,
             'periods' => $periods,
+            // False when the latest rank read is from an earlier season, e.g. early in a new season
+            'current_season' => $latest !== null && $latest->season === (int) $this->globalDataService->getDefaultSeason(),
         ];
     }
 

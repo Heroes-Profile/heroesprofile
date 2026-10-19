@@ -305,8 +305,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
         $build = function () use ($seasonDates, $region, $minGames) {
             $periods = BattletagRealRank::query()
-                ->where('last_game_date', '>=', $seasonDates->start_date)
-                ->where('last_game_date', '<', $seasonDates->end_date)
+                ->where('season', $seasonDates->id)
                 ->when($region, fn ($query) => $query->where('region', $region))
                 ->orderByDesc('last_game_date')
                 ->get(['player_id', 'blizz_id', 'region', 'league_tier', 'division', 'grandmaster', 'ladder_position', 'unranked', 'read_count']);

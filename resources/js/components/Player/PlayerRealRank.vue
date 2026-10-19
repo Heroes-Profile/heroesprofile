@@ -14,6 +14,7 @@
     </h2>
 
     <div v-if="data.current" class="flex flex-col items-center">
+      <div v-if="!data.current_season" class="text-sm font-bold uppercase opacity-80 mb-2">Last season's rank<span v-if="data.season"> ({{ data.season }})</span></div>
       <real-rank-badge :rank="data.current" :width="200" label="below" label-class="text-2xl font-bold mt-2"></real-rank-badge>
       <div class="text-sm opacity-80">Last seen {{ formatDay(data.current.last_game_date) }}, read in {{ data.current.read_count.toLocaleString('en-US') }} {{ data.current.read_count == 1 ? 'game' : 'games' }}</div>
     </div>

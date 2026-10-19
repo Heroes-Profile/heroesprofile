@@ -17,7 +17,7 @@ class BattletagRealRank extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'player_id', 'blizz_id', 'region',
+        'player_id', 'blizz_id', 'region', 'season',
         'league_tier', 'division', 'grandmaster', 'ladder_position', 'unranked',
         'first_replayID', 'first_game_date', 'last_replayID', 'last_game_date', 'read_count',
         'reporter', 'uploader_version',
@@ -27,6 +27,7 @@ class BattletagRealRank extends Model
         'player_id' => 'integer',
         'blizz_id' => 'integer',
         'region' => 'integer',
+        'season' => 'integer',
         'league_tier' => 'integer',
         'division' => 'integer',
         'ladder_position' => 'integer',
