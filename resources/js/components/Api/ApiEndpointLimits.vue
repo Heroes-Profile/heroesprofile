@@ -47,7 +47,6 @@
       <div v-for="group in groups" :key="group.title" class="mb-10">
         <h2 class="text-2xl mb-3">{{ group.title }}</h2>
 
-        <scroll-hint-container :fit="true">
         <table class="min-w-0 w-full responsive-table">
           <thead>
             <tr>
@@ -68,7 +67,6 @@
             </tr>
           </tbody>
         </table>
-        </scroll-hint-container>
       </div>
 
       <p class="text-sm text-gray-medium">
