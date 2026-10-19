@@ -81,6 +81,9 @@ class GlobalDataService
 
     private $cachedSeasonsData = null;
 
+    /** Sections the Xal'atath recap snapshot writes; the recap shows once all are there. */
+    private const XALATATH_RECAP_SECTIONS = 17;
+
     private ?array $cachedHiddenFlair = null;
 
     private ?array $cachedRestrictedKeys = null;
@@ -163,7 +166,8 @@ class GlobalDataService
         }
 
         $loaded = Cache::remember('xalatath_recap_checked', 300, function () {
-            return DB::connection('heroesprofile')->table('xalatath_recap')->where('section', 'totals')->exists();
+            // Ready only once the snapshot has written every section, so a run still going can't be shown or cached.
+            return DB::connection('heroesprofile')->table('xalatath_recap')->count() >= self::XALATATH_RECAP_SECTIONS;
         });
 
         if ($loaded) {
