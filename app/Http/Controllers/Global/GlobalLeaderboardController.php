@@ -82,6 +82,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             'region' => ['sometimes', 'nullable', new RegionInputValidation],
             'role' => ['sometimes', 'nullable', new RoleInputValidation],
             'tierrank' => ['sometimes', 'nullable', new TierInputByIDValidation],
+            'league' => 'sometimes|nullable|in:grandmaster,master,diamond,platinum,gold,silver,bronze',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -95,7 +96,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         }
 
         if ($request['type'] == 'sl rank') {
-            return $this->getRealRankLeaderboard($request['season'], $this->globalDataService->getRegionFilterValues($request['region']));
+            return $this->getRealRankLeaderboard($request['season'], $this->globalDataService->getRegionFilterValues($request['region']), $request['league']);
         }
 
         $hero = $request['hero'];
@@ -290,7 +291,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
      * leaderboard's games requirement come first by Storm League win rate, then everyone under it by games
      * played; read count breaks what's left.
      */
-    private function getRealRankLeaderboard($season, $region)
+    private function getRealRankLeaderboard($season, $region, $league = null)
     {
         $seasonDates = SeasonDate::find($season);
         if (! $seasonDates) {
@@ -373,7 +374,9 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
         return collect($rows)
             ->reject(fn ($row) => $this->globalDataService->isHiddenFrom($row['blizz_id'], $row['region'], $authenticatedUser))
-            ->take(2000)
+            // Top 500 per league; rows are already in board order
+            ->groupBy('league_tier')
+            ->flatMap(fn ($league) => $league->take(500))
             ->map(function ($row) use (&$rank, $patreonAccounts, $regionNames, $minGames) {
                 $key = $row['blizz_id'].'|'.$row['region'];
 
@@ -390,6 +393,10 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                     'hp_owner' => $this->globalDataService->showOwnerFlair($row['blizz_id'], $row['region']),
                 ]);
             })
+            // After ranking so ranks stay board-wide; Master includes Grandmasters
+            ->when($league, fn ($board) => $board->filter(fn ($row) => $league === 'grandmaster'
+                ? $row['grandmaster']
+                : self::REAL_RANK_LEAGUES[$row['league_tier']] === $league))
             ->values();
     }
 

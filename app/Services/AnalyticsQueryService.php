@@ -37,7 +37,7 @@ class AnalyticsQueryService
         $threshold = $this->globalThreshold();
         // Coaching tables are rebuilt by a nightly BigQuery job (or by hand); refresh whenever they change
         $nightly = $tab === 'coaching' ? ':'.$this->coachingVersion() : '';
-        $key = 'analytics:tab:v'.config('analytics.extract_v').'.10:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
+        $key = 'analytics:tab:v'.config('analytics.extract_v').'.11:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
 
         return Cache::remember($key, now()->addDays(7), function () use ($tab, $blizzId, $region, $filters, $threshold) {
             $params = [
@@ -513,6 +513,14 @@ class AnalyticsQueryService
             'coaching' => [
                 'signals' => 'SELECT signal, rules_v, computed_at, player_games, early_effect_pts, early_n, consistency_r, players_10,
                     r_win, partial_r, percentiles, confidence FROM `{dataset}.coaching_signal_stats`',
+
+                // Processed games coaching hasn't picked up yet: it's rebuilt once a day
+                'not_yet' => 'SELECT COUNT(*) AS games FROM `{dataset}.player_match` p
+                    WHERE p.blizz_id = @blizz AND p.region = @region AND p.game_date >= @cutover
+                      AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR p.game_type IN UNNEST(@game_types))
+                      AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR p.game_map IN UNNEST(@maps))
+                      AND (@hero = 0 OR p.hero_id = @hero)
+                      AND p.replay_id NOT IN (SELECT replay_id FROM `{dataset}.coaching_player_game` WHERE blizz_id = @blizz AND region = @region)',
 
                 'mine' => 'SELECT COUNT(*) AS games, SUM(win) AS wins,
                     SUM(fights) AS fights, SUM(fights_present) AS fights_present, SUM(lost_absent) AS lost_absent,

@@ -46,7 +46,7 @@
         <i class="fas fa-list-ol" style="font-size: 100px;"></i>
 
         <h3 class="text-2xl mb-10 mt-2">Variety of Leaderboards</h3>
-        <p>View leaderboards based on Player, Hero, or Role using Heroes Profile Rating. Get talent builds, and navigate directly to player's profiles.</p>
+        <p>View leaderboards based on Player, Hero, or Role using Heroes Profile Rating, real in-game Storm League ranks, and the Match Prediction game. Get talent builds, and navigate directly to player's profiles.</p>
         
         <custom-button :href="'/Global/Leaderboard'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :size="'big'" class="mt-10" ></custom-button>
       </a>
@@ -67,10 +67,21 @@
         <i class="fas fa-address-card" style="font-size: 100px;"></i>
 
         <h3 class="text-2xl mb-10 mt-2">Player profile</h3>
-        <p>See all player stats in one place.  See data for individual maps or heroes played, match history and comparisons all from within a streamlined profile.</p>
+        <p>See all player stats in one place.  See data for individual maps or heroes played, match history, real in-game Storm League rank and comparisons all from within a streamlined profile.</p>
         <div class="flex mt-auto justify-center">
           <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="mt-auto"></search-component>
         </div>
+      </div>
+
+      <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
+
+        <i class="fas fa-chart-line" style="font-size: 100px;"></i>
+
+        <h3 class="text-2xl mb-10 mt-2">Player Analytics</h3>
+        <p class="mb-10">Deep analysis of your own season games from their replays: where and how you die, where you spend your time, how you do when ahead or behind, coaching on your habits, and a replay viewer for every game. Pre-alpha, for Patreon supporters.</p>
+
+        <custom-button v-if="analyticsAllowed" :href="'/Analytics'" :text="'Open Analytics'" :alt="'Open Analytics'" :size="'big'" class="mt-auto" :color="'teal'"></custom-button>
+        <custom-button v-else :href="'https://www.patreon.com/heroesprofile'" :text="'Support on Patreon'" :alt="'Support Heroes Profile on Patreon'" :size="'big'" class="mt-auto" :color="'teal'" :targetblank="true"></custom-button>
       </div>
     </div>
 
@@ -100,6 +111,8 @@ import Cookies from 'js-cookie';
       latestgamedate: String,
       xalatathEvent: Boolean,
       xalatathEnding: Boolean,
+      // Whether the signed-in player can open Analytics (Patreon supporters)
+      analyticsAllowed: Boolean,
       voidStage: {
         type: Number,
         default: 0,

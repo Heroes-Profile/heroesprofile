@@ -1606,6 +1606,16 @@ class GlobalDataService
             ['code' => 'CN', 'name' => 'CN'],
         ];
 
+        $filterData->sl_leagues = [
+            ['code' => 'grandmaster', 'name' => 'Grandmaster'],
+            ['code' => 'master', 'name' => 'Master'],
+            ['code' => 'diamond', 'name' => 'Diamond'],
+            ['code' => 'platinum', 'name' => 'Platinum'],
+            ['code' => 'gold', 'name' => 'Gold'],
+            ['code' => 'silver', 'name' => 'Silver'],
+            ['code' => 'bronze', 'name' => 'Bronze'],
+        ];
+
         $filterData->stat_filter = [
             ['code' => 'win_rate', 'name' => 'Win Rate'],
             ['code' => 'assists', 'name' => 'Assists'],

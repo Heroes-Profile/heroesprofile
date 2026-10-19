@@ -59,6 +59,13 @@
         <title>{{ p.title }}</title>
       </circle>
     </svg>
+    <!-- Heatmap scale: what the shading means, and how much it's based on -->
+    <div v-if="heatmap.length > 0" class="flex items-center justify-center gap-2 mt-2 text-xs">
+      <span>{{ heatLabels[0] }}</span>
+      <span class="inline-block w-32 h-2 rounded" :style="{ background: 'linear-gradient(to right, ' + heatColor + '26, ' + heatColor + ')' }"></span>
+      <span>{{ heatLabels[1] }}</span>
+      <span class="opacity-70">({{ heatTotal.toLocaleString('en-US') }} {{ heatUnit }})</span>
+    </div>
     <!-- Legend: top right over the map; below it on small screens. Hover (or tap) an entry to pick out its points. -->
     <div v-if="legendItems.length > 0" class="flex flex-wrap justify-center gap-4 mt-2 text-sm md:absolute md:top-2 md:right-2 md:mt-0 md:flex-col md:gap-1 md:bg-darken md:rounded md:p-2">
       <span
@@ -95,6 +102,9 @@ export default {
     heatmap: { type: Array, default: () => [] },
     cellSize: { type: Number, default: 4 },
     heatColor: { type: String, default: '#00d5d5' },
+    // The ends of the heatmap's scale
+    heatLabels: { type: Array, default: () => ['Less time', 'Most time'] },
+    heatUnit: { type: String, default: 'positions' },
   },
   data() {
     return {
@@ -147,6 +157,9 @@ export default {
     viewBox() {
       const e = this.extent;
       return `${e.minX} ${this.flip(e.maxY)} ${e.maxX - e.minX} ${e.maxY - e.minY}`;
+    },
+    heatTotal() {
+      return this.heatmap.reduce((sum, c) => sum + Number(c.n || 0), 0);
     },
     heat() {
       const max = Math.max(1, ...this.heatmap.map(c => c.n));
