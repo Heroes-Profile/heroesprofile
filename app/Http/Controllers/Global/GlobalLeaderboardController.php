@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Global;
 
 use App\Models\BannedLeaderboardAccounts;
 use App\Models\BattlenetAccount;
+use App\Models\Battletag;
+use App\Models\BattletagRealRank;
 use App\Models\HeroesDataTalent;
 use App\Models\Leaderboard;
 use App\Models\MasterGamesPlayedData;
@@ -15,6 +17,7 @@ use App\Models\MasterMMRDataSL;
 use App\Models\MasterMMRDataTL;
 use App\Models\MasterMMRDataUD;
 use App\Models\MatchPredictionPlayerStat;
+use App\Models\SeasonDate;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
 use App\Rules\RegionInputValidation;
@@ -30,6 +33,8 @@ use Illuminate\Support\Facades\Validator;
 class GlobalLeaderboardController extends GlobalsInputValidationController
 {
     private $rankModifier = 0;
+
+    private const REAL_RANK_LEAGUES = [1 => 'bronze', 2 => 'silver', 3 => 'gold', 4 => 'platinum', 5 => 'diamond', 6 => 'master'];
 
     public function show(Request $request)
     {
@@ -60,7 +65,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         $validationRules = [
             'season' => ['required', new SeasonInputValidation],
             'game_type' => ['required', new GameTypeInputValidation],
-            'type' => 'required|in:match prediction,player,hero,role',
+            'type' => 'required|in:match prediction,player,hero,role,sl rank',
             'groupsize' => ['required', new StackSizeInputValidation],
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
             'region' => ['sometimes', 'nullable', new RegionInputValidation],
@@ -76,6 +81,10 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
+        }
+
+        if ($request['type'] == 'sl rank') {
+            return $this->getRealRankLeaderboard($request['season'], $this->globalDataService->getRegionFilterValues($request['region']));
         }
 
         $hero = $request['hero'];
@@ -238,6 +247,80 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         }
 
         return $data;
+    }
+
+    /**
+     * The top players by real Storm League rank read off loading screens (battletags_real_ranks), each by
+     * their latest rank read in the season: Grandmasters by ladder position, then Master, then each league
+     * by division. Ties go to the rank read in more games.
+     */
+    private function getRealRankLeaderboard($season, $region)
+    {
+        $seasonDates = SeasonDate::find($season);
+        if (! $seasonDates) {
+            return [];
+        }
+
+        $build = function () use ($seasonDates, $region) {
+            $periods = BattletagRealRank::query()
+                ->where('last_game_date', '>=', $seasonDates->start_date)
+                ->where('last_game_date', '<', $seasonDates->end_date)
+                ->when($region, fn ($query) => $query->where('region', $region))
+                ->orderByDesc('last_game_date')
+                ->get(['player_id', 'blizz_id', 'region', 'league_tier', 'division', 'grandmaster', 'ladder_position', 'unranked', 'read_count']);
+
+            // Each player's latest rank this season; unranked reads don't place anyone
+            $latest = $periods->unique(fn ($period) => $period->blizz_id.'|'.$period->region)
+                ->reject(fn ($period) => $period->unranked || $period->league_tier === null)
+                ->sort(function ($a, $b) {
+                    return [$b->grandmaster, $b->league_tier, $a->grandmaster ? ($a->ladder_position ?? 1000) : 0, $a->division ?? 0, $b->read_count]
+                        <=> [$a->grandmaster, $a->league_tier, $b->grandmaster ? ($b->ladder_position ?? 1000) : 0, $b->division ?? 0, $a->read_count];
+                })
+                ->values();
+
+            $battletags = Battletag::whereIn('player_id', $latest->pluck('player_id')->unique())->pluck('battletag', 'player_id');
+
+            return $latest->map(fn ($period) => [
+                'battletag' => $battletags[$period->player_id] ?? null,
+                'blizz_id' => $period->blizz_id,
+                'region' => $period->region,
+                'league' => $period->grandmaster ? 'grandmaster' : self::REAL_RANK_LEAGUES[$period->league_tier],
+                'division' => $period->division,
+                'ladder_position' => $period->ladder_position,
+                'read_count' => $period->read_count,
+            ])->filter(fn ($row) => $row['battletag'] !== null)->values()->all();
+        };
+
+        // Local shares prod's cache table, so only production caches
+        $rows = $this->globalDataService->usesProductionCaching()
+            ? Cache::remember('real_rank_leaderboard|'.$season.'|'.$region, 600, $build)
+            : $build();
+
+        $patreonAccounts = BattlenetAccount::without(['patreonAccount', 'userSettings'])
+            ->whereHas('patreonAccount', fn ($query) => $query->where('site_flair', 1))
+            ->get(['blizz_id', 'region'])
+            ->keyBy(fn ($a) => $a->blizz_id.'|'.$a->region);
+        $authenticatedUser = Auth::user();
+        $regionNames = $this->globalDataService->getRegionIDtoString();
+
+        $rank = 0;
+
+        return collect($rows)
+            ->reject(fn ($row) => $this->globalDataService->isHiddenFrom($row['blizz_id'], $row['region'], $authenticatedUser))
+            ->take(2000)
+            ->map(function ($row) use (&$rank, $patreonAccounts, $regionNames) {
+                $key = $row['blizz_id'].'|'.$row['region'];
+
+                return array_merge($row, [
+                    'rank' => ++$rank,
+                    'split_battletag' => explode('#', $row['battletag'])[0],
+                    'region_id' => $row['region'],
+                    'region' => $regionNames[$row['region']],
+                    'patreon' => $patreonAccounts->has($key) && ! $this->globalDataService->isFlairHidden('patreon', $row['blizz_id'], $row['region']),
+                    'hp_owner' => $this->globalDataService->showOwnerFlair($row['blizz_id'], $row['region']),
+                ]);
+            })
+            ->values();
     }
 
     public function getLeaderboardRating(Request $request)

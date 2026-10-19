@@ -40,6 +40,7 @@ use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
 use App\Http\Controllers\Player\PlayerMatchHistory;
 use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerMMRController;
+use App\Http\Controllers\Player\PlayerRealRankController;
 use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\PreMatchController;
 use App\Http\Controllers\ProfileController;
@@ -180,6 +181,8 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('global/party', [GlobalPartyStatsController::class, 'getPartyStats']);
 
     Route::post('player', [PlayerController::class, 'getPlayerData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
+
+    Route::post('player/realrank', [PlayerRealRankController::class, 'getData'])->middleware(['checkIfPrivateProfileData']);
 
     Route::post('player/friendfoe', [FriendFoeController::class, 'getFriendFoeData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
     Route::post('player/friendfoe/search', [BattletagSearchController::class, 'friendFoeSearch'])->middleware('throttle:battletag-search');

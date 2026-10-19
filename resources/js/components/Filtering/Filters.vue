@@ -124,7 +124,7 @@
           
 
           <!-- Leaderboard Game Type Excluding UD -->
-          <single-select-filter :compact="compact" v-if="includesinglegametypeleaderboard"
+          <single-select-filter :compact="compact" v-if="includesinglegametypeleaderboard && selectedSingleFilters['Leaderboard Type'] != 'SL Rank'"
             :values="leaderboardGameTypes" 
             :text="'Game Type'" 
             @input-changed="handleInputChange" 
@@ -929,6 +929,11 @@
           this.modifiedincludetier = false;
           this.modifiedincludeseason = false;
           this.modifiedincludematchpredictionseason = true;
+        }else if(type === 'SL Rank'){
+          this.modifiedincludegroupsize = false;
+          this.modifiedincludetier = false;
+          this.modifiedincludeheroes = false;
+          this.modifiedincluderole = false;
         }
 
         if(this.modifiedGroupSizeDefaultValue){
@@ -1050,6 +1055,15 @@
             delete this.selectedSingleFilters['Heroes'];
             delete this.selectedSingleFilters['Role'];
 
+          }else if(eventPayload.value == "SL Rank"){
+            this.modifiedincludegroupsize = false;
+            this.modifiedincludetier = false;
+
+            delete this.selectedSingleFilters['Group Size'];
+            delete this.selectedMultiFilters['Group Size'];
+            delete this.selectedSingleFilters['HP Rank'];
+            delete this.selectedSingleFilters['Heroes'];
+            delete this.selectedSingleFilters['Role'];
           }
         }
         if(eventPayload.field == "Group Size" && this.groupsizeadvanced){

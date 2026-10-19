@@ -16,9 +16,9 @@
         </p>
       </template>
     </page-heading>
-    <div class="max-w-[1500px] mx-auto my-2 text-right">
+    <div v-if="leaderboardtype != 'SL Rank'" class="max-w-[1500px] mx-auto my-2 text-right">
       <custom-button @click="showLeaderboardRequirements = !showLeaderboardRequirements" :text="'Show Leaderboard Requirements'" :alt="'Show Leaderboard Requirements'" size="small" :ignoreclick="true"></custom-button></div>
-      <div v-if="showLeaderboardRequirements" class="flex flex-col items-center p-[2em] border w-auto ml-auto mr-auto max-w-[1500px] bg-teal mb-2">
+      <div v-if="showLeaderboardRequirements && leaderboardtype != 'SL Rank'" class="flex flex-col items-center p-[2em] border w-auto ml-auto mr-auto max-w-[1500px] bg-teal mb-2">
         <h3 class="font-bold md:text-2xl max-md:text-base uppercase">To be eligible for <span v-if="leaderboardtype == 'Match Prediction'">Match Prediction</span> leaderboards, the following conditions must be met:</h3>
         <div class="bg-teal p-[1em] pl-[2em] ">
           <ol v-if="leaderboardtype != 'Match Prediction'" class="list-disc max-md:text-sm">
@@ -70,13 +70,20 @@
       </filters>
       <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
       <div v-if="data">
+        <div v-if="leaderboardtype == 'SL Rank'" class="my-5 bg-teal py-5 px-2">
+          <infobox class="max-w-[1500px] mx-auto">
+            Real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is listed by the latest rank read for them this season: Grandmasters by ladder position, then Master, then each league by division. Ties go to the rank read in more games. Shows the top 2,000.
+            <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
+          </infobox>
+        </div>
+        <div v-if="leaderboardtype == 'Match Prediction'" class="my-5 bg-teal py-5 px-2">
+          <infobox class="max-w-[1500px] mx-auto">
+            Match Prediction leaderboard data is based on users making predictions about match outcomes through <a class="link" href="/Match/Prediction/Game" target="_blank">Match Prediction</a>
+          </infobox>
+        </div>
         <div class="flex">
  
           <div id="table-container" ref="tablecontainer" class="w-auto overflow-hidden w-[100vw] 2xl:mx-auto">
-
-            <div v-if="leaderboardtype == 'Match Prediction'" class="bg-gray-dark p-4 mb-4">
-              Match Prediction leaderboard data is based on users making predictions about match outcomes through <a class="link" href="/Match/Prediction/Game" target="_blank">Match Prediction</a>
-            </div>
 
             <div class="flex flex-wrap justify-between">
               <div class="mb-4 mx-4">
@@ -91,7 +98,7 @@
                 />
               </div>
 
-              <div v-if="season == defaultseason" class="max-w-[1500px] max-md:mx-4 flex justify-end mb-2 items-center gap-4 ml-auto">
+              <div v-if="season == defaultseason && leaderboardtype != 'SL Rank'" class="max-w-[1500px] max-md:mx-4 flex justify-end mb-2 items-center gap-4 ml-auto">
                 <custom-button @click="calculateHPRating(user)" text="Calculate my HP Rating" alt="Calculate my HP Rating" size="small" :ignoreclick="true" :disabled="!user" :title="user ? null : 'Log in with Battle.net to use'" :loading="ratingLoading"></custom-button>
                 <span v-if="playerRating">
                   {{ ratingText(playerRating, playerRatingGamesPlayed) }}
@@ -122,22 +129,25 @@
                   <th @click="sortTable('region_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'region_id'}]">
                     Region
                   </th>
-                  <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
+                  <th v-if="leaderboardtype == 'SL Rank'" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                    Storm League Rank
+                  </th>
+                  <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
                     Win Rate %
                   </th>
                   <th v-if="leaderboardtype == 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
                     Prediction Rate %
                   </th>
-                  <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('rating')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'rating'}]">
+                  <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('rating')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'rating'}]">
                     Heroes Profile Rating
                   </th>      
-                  <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('mmr')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'mmr'}]">
+                  <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('mmr')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'mmr'}]">
                     HP {{ leaderboardtype }} MMR
                   </th> 
-                  <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('tier_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'tier_id'}]">
+                  <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('tier_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'tier_id'}]">
                     Tier
                   </th>    
-                  <th @click="sortTable('games_played')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'games_played'}]">
+                  <th v-if="leaderboardtype != 'SL Rank'" @click="sortTable('games_played')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'games_played'}]">
                     Games Played
                   </th>     
 
@@ -194,11 +204,12 @@
                       </div>
                     </td>
                     <td>{{ row.region }}</td>
-                    <td>{{ row.win_rate.toFixed(2) }}</td>
-                    <td v-if="leaderboardtype != 'Match Prediction'">{{ row.rating.toFixed(2) }}</td>
-                    <td v-if="leaderboardtype != 'Match Prediction'">{{ row.mmr.toLocaleString('en-US') }}</td>
-                    <td v-if="leaderboardtype != 'Match Prediction'">{{ row.tier }}</td>
-                    <td>{{ row.games_played.toLocaleString('en-US') }}</td>
+                    <td v-if="leaderboardtype == 'SL Rank'"><real-rank-badge :rank="row" :width="36" label="right"></real-rank-badge></td>
+                    <td v-if="leaderboardtype != 'SL Rank'">{{ row.win_rate.toFixed(2) }}</td>
+                    <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'">{{ row.rating.toFixed(2) }}</td>
+                    <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'">{{ row.mmr.toLocaleString('en-US') }}</td>
+                    <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'">{{ row.tier }}</td>
+                    <td v-if="leaderboardtype != 'SL Rank'">{{ row.games_played.toLocaleString('en-US') }}</td>
 
                     <td class="py-2 px-3 flex items-center gap-1" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role')">
                       <template v-if="row.most_played_hero">

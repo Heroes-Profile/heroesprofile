@@ -43,6 +43,8 @@ return new class extends Migration
 
             $table->index(['blizz_id', 'region', 'last_game_date'], 'player_history');
             $table->index('player_id');
+            // The rank leaderboard reads a season's periods by date
+            $table->index('last_game_date', 'season_range');
             $table->index('reporter');
         });
 
