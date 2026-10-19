@@ -43,6 +43,10 @@ Allow: /Twitch/Guidelines$
 Allow: /Github/Change/Log$
 Allow: /Community/Support$
 
+# Xal'atath event recap, and the shared player cards (X/Twitter only unfurls what robots.txt allows)
+Allow: /Event/Xalatath$
+Allow: /Event/Xalatath/Card/
+
 # Filter combinations are unbounded. Longer than "Allow: /Global/", so it wins.
 Disallow: /*?
 Disallow: /Global/*?
