@@ -2,6 +2,13 @@
 
 use Illuminate\Support\Str;
 
+// With a CA set, verify the server's certificate and name. HEROESPROFILE_DB_HOST must be
+// the instance's .sql.goog name from its certificate, not the IP. TLS is also what lets
+// caching_sha2_password log in on a cold auth cache.
+$sslVerify = env('MYSQL_ATTR_SSL_CA') && extension_loaded('pdo_mysql')
+    ? [PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true]
+    : [];
+
 return [
 
     /*
@@ -36,12 +43,11 @@ return [
     'connections' => [
         'heroesprofile' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
+            'host' => env('HEROESPROFILE_DB_HOST'),
+            'port' => env('HEROESPROFILE_DB_PORT', '3306'),
             'database' => env('HEROESPROFILE_DB_DATABASE'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -50,7 +56,7 @@ return [
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            ]) + $sslVerify : [],
         ],
         /*
          * The API site's own schema: accounts, API keys, subscriptions, and the
@@ -62,12 +68,11 @@ return [
          */
         'heroesprofile_api' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
+            'host' => env('HEROESPROFILE_DB_HOST'),
+            'port' => env('HEROESPROFILE_DB_PORT', '3306'),
             'database' => env('HEROESPROFILE_DB_DATABASE_API'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_0900_ai_ci',
             'prefix' => '',
@@ -76,7 +81,7 @@ return [
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            ]) + $sslVerify : [],
         ],
 
         /*
@@ -85,12 +90,11 @@ return [
          */
         'heroesprofile_processing' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
+            'host' => env('HEROESPROFILE_DB_HOST'),
+            'port' => env('HEROESPROFILE_DB_PORT', '3306'),
             'database' => env('HEROESPROFILE_DB_DATABASE_PROCESSING', 'heroesprofile_processing'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -99,17 +103,16 @@ return [
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            ]) + $sslVerify : [],
         ],
 
         'heroesprofile_globals' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
+            'host' => env('HEROESPROFILE_DB_HOST'),
+            'port' => env('HEROESPROFILE_DB_PORT', '3306'),
             'database' => env('HEROESPROFILE_DB_DATABASE_GLOBALS'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -118,17 +121,16 @@ return [
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            ]) + $sslVerify : [],
         ],
 
         'heroesprofile_ngs' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
+            'host' => env('HEROESPROFILE_DB_HOST'),
+            'port' => env('HEROESPROFILE_DB_PORT', '3306'),
             'database' => env('HEROESPROFILE_DB_DATABASE_NGS'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -137,7 +139,7 @@ return [
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            ]) + $sslVerify : [],
         ],
 
         /*
@@ -146,12 +148,11 @@ return [
         */
         'heroesprofile_ngs_dev' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
+            'host' => env('HEROESPROFILE_DB_HOST'),
+            'port' => env('HEROESPROFILE_DB_PORT', '3306'),
             'database' => env('HEROESPROFILE_DB_DATABASE_NGS_DEV'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -160,17 +161,16 @@ return [
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            ]) + $sslVerify : [],
         ],
 
         'heroesprofile_ccl' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
+            'host' => env('HEROESPROFILE_DB_HOST'),
+            'port' => env('HEROESPROFILE_DB_PORT', '3306'),
             'database' => env('HEROESPROFILE_DB_DATABASE_CCL'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -179,17 +179,16 @@ return [
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            ]) + $sslVerify : [],
         ],
 
         'heroesprofile_mcl' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
+            'host' => env('HEROESPROFILE_DB_HOST'),
+            'port' => env('HEROESPROFILE_DB_PORT', '3306'),
             'database' => env('HEROESPROFILE_DB_DATABASE_MCL'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -198,17 +197,16 @@ return [
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            ]) + $sslVerify : [],
         ],
 
         'heroesprofile_hi' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
+            'host' => env('HEROESPROFILE_DB_HOST'),
+            'port' => env('HEROESPROFILE_DB_PORT', '3306'),
             'database' => env('HEROESPROFILE_DB_DATABASE_HI'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -217,17 +215,16 @@ return [
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            ]) + $sslVerify : [],
         ],
 
         'heroesprofile_hi_nc' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
+            'host' => env('HEROESPROFILE_DB_HOST'),
+            'port' => env('HEROESPROFILE_DB_PORT', '3306'),
             'database' => env('HEROESPROFILE_DB_DATABASE_HI_NC'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -236,17 +233,16 @@ return [
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            ]) + $sslVerify : [],
         ],
 
         'heroesprofile_esports_other' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
+            'host' => env('HEROESPROFILE_DB_HOST'),
+            'port' => env('HEROESPROFILE_DB_PORT', '3306'),
             'database' => env('HEROESPROFILE_DB_DATABASE_HGC_MORE'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -255,17 +251,16 @@ return [
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            ]) + $sslVerify : [],
         ],
 
         'heroesprofile_cache' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
+            'host' => env('HEROESPROFILE_DB_HOST'),
+            'port' => env('HEROESPROFILE_DB_PORT', '3306'),
             'database' => env('HEROESPROFILE_DB_CACHE_DATABASE'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -274,16 +269,15 @@ return [
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            ]) + $sslVerify : [],
         ],
         'heroesprofile_logs' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
+            'host' => env('HEROESPROFILE_DB_HOST'),
+            'port' => env('HEROESPROFILE_DB_PORT', '3306'),
             'database' => env('HEROESPROFILE_DB_LOGGING_DATABASE'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -292,7 +286,7 @@ return [
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            ]) + $sslVerify : [],
         ],
     ],
 
