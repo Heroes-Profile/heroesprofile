@@ -44,7 +44,7 @@ COPY ports.conf /etc/apache2/ports.conf
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # Enable site and Apache modules
-RUN a2ensite 000-default && a2enmod rewrite
+RUN a2ensite 000-default && a2enmod rewrite headers
 
 # Cloud Run already logs every request; Apache's copy on stdout only doubles the bill.
 RUN a2disconf other-vhosts-access-log
