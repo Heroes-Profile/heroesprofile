@@ -13,6 +13,7 @@ use App\Models\ReplayDraftOrder;
 use App\Models\ReplayFingerprint;
 use App\Models\SeasonGameVersion;
 use App\Models\Talent;
+use App\Support\GameLength;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -162,7 +163,7 @@ class MatchPredictionGameController extends Controller
 
         $replayData->game_map = $maps[$replayData->game_map];
 
-        $totalSeconds = $replayData->game_length - 70;
+        $totalSeconds = GameLength::played($replayData->game_length, $gameType);
         $minutes = floor($totalSeconds / 60);
         $seconds = $totalSeconds % 60;
         $replayData->timeFormat = "$minutes minutes $seconds seconds";

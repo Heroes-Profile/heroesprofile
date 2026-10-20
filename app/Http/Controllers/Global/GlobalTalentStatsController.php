@@ -12,6 +12,7 @@ use App\Rules\HeroInputValidation;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
 use App\Services\GlobalQueryService;
+use App\Support\GameLength;
 use App\Support\GlobalCacheFreshness;
 use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
@@ -181,6 +182,10 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ->select('heroes.name', 'global_hero_talents_details.hero as id', 'global_hero_talents_details.win_loss', 'global_hero_talents_details.talent', 'global_hero_talents_details.level')
             ->selectRaw('SUM(global_hero_talents_details.games_played) as games_played')
             ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
+                if ($statFilter === 'game_time') {
+                    return $query->selectRaw('SUM(global_hero_talents_details.game_time) - SUM(global_hero_talents_details.games_played * '.GameLength::offsetSql('global_hero_talents_details.game_type').') as total_filter_type');
+                }
+
                 $column = str_replace('`', '``', $statFilter);
 
                 return $query->selectRaw("SUM(`global_hero_talents_details`.`{$column}`) as total_filter_type");
@@ -745,6 +750,10 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ->select('global_hero_talents.win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
             ->selectRaw('SUM(global_hero_talents.games_played) AS games_played')
             ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
+                if ($statFilter === 'game_time') {
+                    return $query->selectRaw('SUM(global_hero_talents.game_time) - SUM(global_hero_talents.games_played * '.GameLength::offsetSql('global_hero_talents.game_type').') as total_filter_type');
+                }
+
                 $column = str_replace('`', '``', $statFilter);
 
                 return $query->selectRaw("SUM(`global_hero_talents`.`{$column}`) as total_filter_type");

@@ -3,7 +3,11 @@
 namespace App\Support;
 
 /**
- * Match length as seconds, for the public API.
+ * Match length: the in-game clock the site shows, and seconds for the public API.
+ *
+ * A replay's stored length runs past the in-game clock: the wait before the
+ * gates open plus about 18 seconds after the core dies. ARAM opens its gates at
+ * 75 seconds instead of 38, so it runs longer.
  *
  * The site's match controller formats length for display — `12 minutes 7
  * seconds` — after subtracting the pre-game period. Every other public endpoint
@@ -16,6 +20,35 @@ namespace App\Support;
  */
 class GameLength
 {
+    public const OFFSET = 56;
+
+    public const ARAM_OFFSET = 93;
+
+    private const ARAM = 6;
+
+    public static function offset(mixed $gameType): int
+    {
+        return (int) $gameType === self::ARAM ? self::ARAM_OFFSET : self::OFFSET;
+    }
+
+    /** The in-game length of a stored replay length. Esports games have no game type: pass null. */
+    public static function played(mixed $storedLength, mixed $gameType): int
+    {
+        return max(0, (int) $storedLength - self::offset($gameType));
+    }
+
+    /** The same offset in SQL, from a game type column. */
+    public static function offsetSql(string $gameTypeColumn): string
+    {
+        return 'CASE WHEN '.$gameTypeColumn.' = '.self::ARAM.' THEN '.self::ARAM_OFFSET.' ELSE '.self::OFFSET.' END';
+    }
+
+    /** In-game length in SQL, from the stored length and game type columns. */
+    public static function playedSql(string $lengthColumn, string $gameTypeColumn): string
+    {
+        return 'GREATEST(CAST('.$lengthColumn.' AS SIGNED) - '.self::offsetSql($gameTypeColumn).', 0)';
+    }
+
     /** Left untouched if it is not a string this recognises. */
     public static function seconds(mixed $length): mixed
     {

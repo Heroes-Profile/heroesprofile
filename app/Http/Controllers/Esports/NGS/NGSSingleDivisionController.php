@@ -8,6 +8,7 @@ use App\Models\NGS\NGSTeam;
 use App\Models\NGS\Replay;
 use App\Rules\NGSDivisionInputValidation;
 use App\Rules\NGSSeasonInputValidation;
+use App\Support\GameLength;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -376,7 +377,7 @@ class NGSSingleDivisionController extends Controller
             'kills' => $results->sum('kills'),
             'assists' => $results->sum('assists'),
             'total_games' => $results->count() / 10,
-            'length_to_30' => round((($results->avg('game_length') / 60) / 30) * 100),
+            'length_to_30' => round(((GameLength::played($results->avg('game_length'), null) / 60) / 30) * 100),
             'matches' => $matches,
             'teams' => $teams,
             'heroes' => $heroes->sortBy('name')->values(),

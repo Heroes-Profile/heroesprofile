@@ -12,6 +12,7 @@ use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\RegionInputValidation;
 use App\Rules\TimeframeMinorInputValidation;
+use App\Support\GameLength;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -334,7 +335,7 @@ class MatchSearchController extends Controller
                     'game_date' => $replay->game_date,
                     'game_type' => $gameTypes[$replay->game_type] ?? null,
                     'game_map' => $maps[$replay->game_map] ?? null,
-                    'game_length' => max(0, $replay->game_length - 70),
+                    'game_length' => GameLength::played($replay->game_length, $replay->game_type),
                     'region' => $regions[$replay->region] ?? null,
                     'game_version' => $replay->game_version,
                     'winner' => $winningTeam,

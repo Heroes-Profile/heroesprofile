@@ -18,6 +18,7 @@ use App\Models\Replay;
 use App\Rules\DateInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\SeasonInputValidation;
+use App\Support\GameLength;
 use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -462,7 +463,7 @@ class PlayerController extends Controller
             'games_mvp' => 'scores.match_award = 1',
             'time_on_fire_games' => 'scores.time_on_fire IS NOT NULL',
             'time_on_fire_total' => 'scores.time_on_fire',
-            'total_time_played' => 'replay.game_length',
+            'total_time_played' => GameLength::playedSql('replay.game_length', 'replay.game_type'),
         ];
 
         $roles = [
