@@ -8,6 +8,7 @@ use App\Models\GlobalHeroStackSize;
 use App\Models\GlobalHeroStats;
 use App\Models\GlobalHeroStatsBans;
 use App\Models\SeasonGameVersion;
+use App\Support\GameLength;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -25,6 +26,9 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
     use HandlesAsyncGlobalQueries;
 
     public const MINIMUM_PATCH = '2.47.0.75589';
+
+    // Bump when the cached data changes shape or maths, so old entries are skipped.
+    private const HERO_STATS_CACHE_VERSION = 1;
 
     public function show(Request $request)
     {
@@ -80,7 +84,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
-        $cacheKey = $this->globalCacheKey('GlobalHeroStats', $gameVersionIDs, $request->all());
+        $cacheKey = $this->globalCacheKey('GlobalHeroStats', $gameVersionIDs, $request->all(), self::HERO_STATS_CACHE_VERSION);
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeGlobalHeroData');
     }
@@ -134,6 +138,11 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                 ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
                 ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
                 ->when(! empty($statFilter) && $statFilter !== 'win_rate', function ($query) use ($statFilter) {
+                    // Game time is stored as replay length; shown as the in-game clock
+                    if ($statFilter === 'game_time') {
+                        return $query->selectRaw('SUM(global_hero_stats.game_time) - SUM(global_hero_stats.games_played * '.GameLength::offsetSql('global_hero_stats.game_type').') as total_filter_type');
+                    }
+
                     return $query->selectRaw("SUM(global_hero_stats.$statFilter) as total_filter_type");
                 })
                 ->filterByGameVersion($gameVersionIDs)

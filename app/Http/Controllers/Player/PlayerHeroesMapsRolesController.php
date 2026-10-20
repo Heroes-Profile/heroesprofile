@@ -22,6 +22,7 @@ use App\Rules\HeroInputValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use App\Services\GlobalQueryService;
+use App\Support\GameLength;
 use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -188,7 +189,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 'game_date',
                 'game_map',
                 'game_type',
-                DB::raw('CAST(game_length AS SIGNED) - 70 as game_length'),
+                DB::raw(GameLength::playedSql('game_length', 'game_type').' as game_length'),
                 'stack_size',
                 'mastery_taunt',
                 'new_role',
@@ -994,11 +995,6 @@ class PlayerHeroesMapsRolesController extends Controller
         $stat = str_replace('max_', '', $request['stat']);
         $value = (int) $request['value'];
 
-        // Pages show game length 70 seconds shorter than stored (see the select above).
-        if ($stat === 'game_length') {
-            $value += 70;
-        }
-
         $result = Replay::join('player', 'player.replayID', '=', 'replay.replayID')
             ->join('scores', function ($join) {
                 $join->on('scores.replayID', '=', 'replay.replayID')
@@ -1038,7 +1034,12 @@ class PlayerHeroesMapsRolesController extends Controller
             ->when(! is_null($hero), function ($query) use ($hero) {
                 return $query->where('hero', $hero);
             })
-            ->where($stat, $value)
+            ->when($stat === 'game_length', function ($query) use ($value) {
+                // Pages show the in-game length (see the select above)
+                return $query->whereRaw(GameLength::playedSql('game_length', 'game_type').' = ?', [$value]);
+            }, function ($query) use ($stat, $value) {
+                return $query->where($stat, $value);
+            })
             ->select('replay.replayID')
             // ->toSql();
             ->first();

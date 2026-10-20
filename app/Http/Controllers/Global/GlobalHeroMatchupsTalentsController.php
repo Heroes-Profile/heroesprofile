@@ -19,6 +19,9 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
 
     public const MINIMUM_PATCH = '2.55.12.94786';
 
+    // Bump when the cached data changes shape or maths, so old entries are skipped.
+    private const MATCHUP_TALENTS_CACHE_VERSION = 1;
+
     public function show(Request $request, $hero = null, $allyenemy = null)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -131,7 +134,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
 
-        $cacheKey = $this->globalCacheKey('GlobalHeroMatchupsTalents', $gameVersionIDs, $request->all());
+        $cacheKey = $this->globalCacheKey('GlobalHeroMatchupsTalents', $gameVersionIDs, $request->all(), self::MATCHUP_TALENTS_CACHE_VERSION);
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeHeroMatchupsTalentsData');
     }

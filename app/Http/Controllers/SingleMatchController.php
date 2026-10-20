@@ -7,6 +7,7 @@ use App\Models\BattlenetAccount;
 use App\Models\BattletagNotAllowedDownloadReplay;
 use App\Models\ReplayExperienceBreakdownBlob;
 use App\Rules\ReplayIDValidation;
+use App\Support\GameLength;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -320,7 +321,7 @@ class SingleMatchController extends Controller
         }
 
         $groupedData = $result->groupBy('replayID')->map(function ($replayGroup) use ($result, $talentData, $heroData, $maps, $replayID, $replayDownloadBlocked) {
-            $totalSeconds = $replayGroup[0]->game_length - 70;
+            $totalSeconds = GameLength::played($replayGroup[0]->game_length, $this->esport ? null : $replayGroup[0]->game_type);
             $minutes = floor($totalSeconds / 60);
             $seconds = $totalSeconds % 60;
             $timeFormat = "$minutes minutes $seconds seconds";

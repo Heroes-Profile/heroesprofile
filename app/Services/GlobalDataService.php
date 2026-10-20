@@ -61,6 +61,9 @@ class GlobalDataService
     /** The furthest back any page reaches. Each page sets its own `MINIMUM_PATCH`. */
     public const MINIMUM_GLOBALS_PATCH_OLDEST = '2.47.0.75589';
 
+    // Bump when the cached data changes shape or maths, so old entries are skipped.
+    private const HERO_WIN_RATES_ALL_CACHE_VERSION = 1;
+
     /**
      * Hour (America/New_York) at/after which the leaderboard "weeks since season start" value
      * rolls over to the new day. The CalculateLeaderboards batch runs ~4am-12pm EST and freezes
@@ -2135,7 +2138,7 @@ class GlobalDataService
 
         // Its own prefix: the Hero Stats page caches a different shape under GlobalHeroStats,
         // and the two collided whenever the filters matched.
-        $cacheKey = GlobalCacheKey::for('GlobalHeroWinRatesAll', $gameVersionIDs, $parameters);
+        $cacheKey = GlobalCacheKey::for('GlobalHeroWinRatesAll', $gameVersionIDs, $parameters, self::HERO_WIN_RATES_ALL_CACHE_VERSION);
 
         $cache = Cache::store('database');
         $window = $this->calculateCacheWindow($gameVersion);

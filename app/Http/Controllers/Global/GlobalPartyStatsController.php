@@ -15,6 +15,9 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
 {
     use HandlesAsyncGlobalQueries;
 
+    // Bump when the cached data changes shape or maths, so old entries are skipped.
+    private const PARTY_STATS_CACHE_VERSION = 1;
+
     public function show(Request $request)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -72,7 +75,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
 
-        $cacheKey = $this->globalCacheKey('GlobalPartyStats', $gameVersionIDs, $request->all());
+        $cacheKey = $this->globalCacheKey('GlobalPartyStats', $gameVersionIDs, $request->all(), self::PARTY_STATS_CACHE_VERSION);
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executePartyStats');
     }
