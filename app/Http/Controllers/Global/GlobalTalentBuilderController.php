@@ -19,6 +19,11 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
 
     public const MINIMUM_PATCH = '2.47.0.75589';
 
+    // Bump when the cached data changes shape or maths, so old entries are skipped.
+    private const BUILDER_CACHE_VERSION = 1;
+
+    private const BUILDER_REPLAYS_CACHE_VERSION = 1;
+
     public function show(Request $request, $hero = null)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -119,7 +124,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         }
 
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
-        $cacheKey = $this->globalCacheKey('GlobalTalentsBuilder', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
+        $cacheKey = $this->globalCacheKey('GlobalTalentsBuilder', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all(), self::BUILDER_CACHE_VERSION);
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeTalentBuilderData');
     }
@@ -410,7 +415,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
 
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         // Its own prefix: GlobalTalentsBuilder holds the builder's win rates, a different shape.
-        $cacheKey = $this->globalCacheKey('GlobalTalentsBuilderReplays', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
+        $cacheKey = $this->globalCacheKey('GlobalTalentsBuilderReplays', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all(), self::BUILDER_REPLAYS_CACHE_VERSION);
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeReplayData');
     }

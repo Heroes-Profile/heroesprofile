@@ -17,6 +17,11 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
     public const MINIMUM_PATCH = '2.47.0.75589';
 
+    // Bump when the cached data changes shape or maths, so old entries are skipped.
+    private const COMPOSITION_STATS_CACHE_VERSION = 1;
+
+    private const TOP_HEROES_CACHE_VERSION = 1;
+
     public function show(Request $request)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -74,7 +79,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
 
-        $cacheKey = $this->globalCacheKey('GlobalCompositionStats', $gameVersionIDs, $request->all());
+        $cacheKey = $this->globalCacheKey('GlobalCompositionStats', $gameVersionIDs, $request->all(), self::COMPOSITION_STATS_CACHE_VERSION);
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeCompositionsData');
     }
@@ -186,7 +191,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
 
-        $cacheKey = $this->globalCacheKey('GlobalCompositionTopHeroes', $gameVersionIDs, $request->all());
+        $cacheKey = $this->globalCacheKey('GlobalCompositionTopHeroes', $gameVersionIDs, $request->all(), self::TOP_HEROES_CACHE_VERSION);
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeTopHeroData');
     }

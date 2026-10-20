@@ -17,6 +17,11 @@ class GlobalDrafterController extends GlobalsInputValidationController
 
     public const MINIMUM_PATCH = '2.52.0.81700';
 
+    // Bump when the cached data changes shape or maths, so old entries are skipped.
+    private const DRAFT_ORDER_CACHE_VERSION = 1;
+
+    private const COMPOSITION_CACHE_VERSION = 1;
+
     public function show(Request $request)
     {
         return view('Drafter.drafter')
@@ -42,7 +47,7 @@ class GlobalDrafterController extends GlobalsInputValidationController
 
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
-        $cacheKey = $this->globalCacheKey('DrafterDraftOrder', $gameVersionIDs, $request->all());
+        $cacheKey = $this->globalCacheKey('DrafterDraftOrder', $gameVersionIDs, $request->all(), self::DRAFT_ORDER_CACHE_VERSION);
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeDraftOrderData');
     }
@@ -100,7 +105,7 @@ class GlobalDrafterController extends GlobalsInputValidationController
         // Only the roles picked so far change the answer, so key on those rather than the heroes
         $keyParameters = $request->except('team_picks');
         $keyParameters['team_roles'] = $this->getTeamRoleIDs($request['team_picks']);
-        $cacheKey = $this->globalCacheKey('DrafterComposition', $gameVersionIDs, $keyParameters);
+        $cacheKey = $this->globalCacheKey('DrafterComposition', $gameVersionIDs, $keyParameters, self::COMPOSITION_CACHE_VERSION);
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeCompositionData');
     }

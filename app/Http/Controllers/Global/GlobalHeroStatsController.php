@@ -26,6 +26,9 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
     public const MINIMUM_PATCH = '2.47.0.75589';
 
+    // Bump when the cached data changes shape or maths, so old entries are skipped.
+    private const HERO_STATS_CACHE_VERSION = 1;
+
     public function show(Request $request)
     {
 
@@ -80,7 +83,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
-        $cacheKey = $this->globalCacheKey('GlobalHeroStats', $gameVersionIDs, $request->all());
+        $cacheKey = $this->globalCacheKey('GlobalHeroStats', $gameVersionIDs, $request->all(), self::HERO_STATS_CACHE_VERSION);
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeGlobalHeroData');
     }

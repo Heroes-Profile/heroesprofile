@@ -169,8 +169,8 @@ trait HandlesAsyncGlobalQueries
      * @param  array<int, int|string>  $gameVersionIds
      * @param  array<string, mixed>  $parameters  Usually `$request->all()`.
      */
-    protected function globalCacheKey(string $prefix, array $gameVersionIds, array $parameters): string
+    protected function globalCacheKey(string $prefix, array $gameVersionIds, array $parameters, int $version = 1): string
     {
-        return GlobalCacheKey::for($prefix, $gameVersionIds, $parameters);
+        return GlobalCacheKey::for($prefix, $gameVersionIds, $parameters, $version);
     }
 }

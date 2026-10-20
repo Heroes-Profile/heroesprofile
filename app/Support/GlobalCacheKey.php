@@ -31,10 +31,19 @@ class GlobalCacheKey
     /**
      * @param  array<int, int|string>  $gameVersionIds
      * @param  array<string, mixed>  $parameters  Usually `$request->all()`.
+     * @param  int  $version  Bump when the cached shape or maths changes, so old entries are skipped.
      */
-    public static function for(string $prefix, array $gameVersionIds, array $parameters): string
+    public static function for(string $prefix, array $gameVersionIds, array $parameters, int $version = 1): string
     {
-        return $prefix.'|'.implode(',', $gameVersionIds).'|'.hash('sha256', json_encode(self::normalize($parameters)));
+        return self::prefix($prefix, $version).'|'.implode(',', $gameVersionIds).'|'.hash('sha256', json_encode(self::normalize($parameters)));
+    }
+
+    /**
+     * Version 1 adds nothing, so keys written before versioning stay valid.
+     */
+    public static function prefix(string $prefix, int $version = 1): string
+    {
+        return $version > 1 ? $prefix.'|v'.$version : $prefix;
     }
 
     /**

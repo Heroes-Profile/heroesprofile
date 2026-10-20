@@ -24,6 +24,11 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
     public const MINIMUM_PATCH = '2.50.0.79155';
 
+    // Bump when the cached data changes shape or maths, so old entries are skipped.
+    private const TALENT_STATS_CACHE_VERSION = 1;
+
+    private const BUILDS_CACHE_VERSION = 2;
+
     public function show(Request $request, $hero = null)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -88,13 +93,13 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             $versionIds = $this->gameVersionIds($gameVersion);
 
             $initialTalentData = $this->cachedGlobalResult(
-                $this->globalCacheKey('GlobalHeroTalentStats', $versionIds, $parameters),
+                $this->globalCacheKey('GlobalHeroTalentStats', $versionIds, $parameters, self::TALENT_STATS_CACHE_VERSION),
                 $gameVersion,
                 'executeGlobalHeroTalentData',
                 $parameters
             );
             $initialBuildData = $this->cachedGlobalResult(
-                $this->globalCacheKey('GlobalHeroTalentStatsBuilds', $versionIds, $buildParameters),
+                $this->globalCacheKey('GlobalHeroTalentStatsBuilds', $versionIds, $buildParameters, self::BUILDS_CACHE_VERSION),
                 $gameVersion,
                 'executeGlobalHeroTalentBuildData',
                 $buildParameters
@@ -142,7 +147,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
 
-        $cacheKey = $this->globalCacheKey('GlobalHeroTalentStats', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
+        $cacheKey = $this->globalCacheKey('GlobalHeroTalentStats', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all(), self::TALENT_STATS_CACHE_VERSION);
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeGlobalHeroTalentData');
     }
@@ -281,7 +286,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
 
-        $cacheKey = $this->globalCacheKey('GlobalHeroTalentStatsBuilds', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
+        $cacheKey = $this->globalCacheKey('GlobalHeroTalentStatsBuilds', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all(), self::BUILDS_CACHE_VERSION);
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeGlobalHeroTalentBuildData');
     }
@@ -295,7 +300,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $timeframe = [$this->globalDataService->getDefaultTimeframe()];
 
         // Top build only: the page shows nothing else. Renamed so the full 7-build payload isn't served from cache.
-        $allCacheKey = 'GlobalHeroTalentStatsBuildsAllTop|'.hash('sha256', json_encode([
+        $allCacheKey = GlobalCacheKey::prefix('GlobalHeroTalentStatsBuildsAllTop', self::BUILDS_CACHE_VERSION).'|'.hash('sha256', json_encode([
             'timeframe_type' => $timeframeType,
             'timeframe' => $timeframe,
             'talentbuildtype' => $talentbuildType,
@@ -335,7 +340,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                     'mirror' => '0',
                 ]);
 
-                $cacheKey = $this->globalCacheKey('GlobalHeroTalentStatsBuilds', $versionIds, $heroRequest->all());
+                $cacheKey = $this->globalCacheKey('GlobalHeroTalentStatsBuilds', $versionIds, $heroRequest->all(), self::BUILDS_CACHE_VERSION);
 
                 $cached = $cache->get($cacheKey);
                 $result[$heroModel->name][$gameType] = $cached === null ? null : collect($cached)->take(1)->values();
@@ -402,7 +407,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             $childRequest = $this->talentBuildChildRequest($request, $heroModel->name);
 
             $children[$heroModel->name] = [
-                'cache_key' => $this->globalCacheKey('GlobalHeroTalentStatsBuilds', $versionIds, $childRequest),
+                'cache_key' => $this->globalCacheKey('GlobalHeroTalentStatsBuilds', $versionIds, $childRequest, self::BUILDS_CACHE_VERSION),
                 'request' => $childRequest,
             ];
         }
@@ -410,7 +415,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         // Built like every other global key: transport parameters (api_token, mode) are
         // ignored, and the version ids are part of it so a new patch gets a new batch.
         return app(GlobalQueryService::class)->dispatchBatch(
-            GlobalCacheKey::for('GlobalHeroTalentStatsBuildsAllFiltered', $versionIds, $request->all()),
+            GlobalCacheKey::for('GlobalHeroTalentStatsBuildsAllFiltered', $versionIds, $request->all(), self::BUILDS_CACHE_VERSION),
             $children,
             static::class,
             'executeGlobalHeroTalentBuildData',
@@ -538,7 +543,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             $winRate = $gamesPlayed > 0 ? $wins / $gamesPlayed : 0;
 
             // Add win rate to the item (as object properties)
-            $item->games_played = $gamesPlayed;
+            $item->games_played = (int) round($gamesPlayed);
             $item->win_rate = round($winRate * 100, 2);
             $item->hero = $heroModel;
             $item->level_one = isset($talentData[$item->level_one]) ? $talentData[$item->level_one] : null;
@@ -754,26 +759,15 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ->filterByHeroLevel($heroLevel)
             ->excludeMirror($mirror)
             ->filterByRegion($region)
+            // Every game on each build's level 1-10 path: the pick shares at 13, 16 and 20 need the other choices too.
             ->where(function ($outerQuery) use ($builds) {
-                foreach ($builds as $build) {
-                    $buildLevels = [
-                        ['thirteen' => 0, 'sixteen' => 0, 'twenty' => 0],
-                        ['thirteen' => $build->level_thirteen, 'sixteen' => 0, 'twenty' => 0],
-                        ['thirteen' => $build->level_thirteen, 'sixteen' => $build->level_sixteen, 'twenty' => 0],
-                        ['thirteen' => $build->level_thirteen, 'sixteen' => $build->level_sixteen, 'twenty' => $build->level_twenty],
-                    ];
-
-                    foreach ($buildLevels as $levels) {
-                        $outerQuery->orWhere(function ($q) use ($build, $levels) {
-                            $q->where('level_one', $build->level_one)
-                                ->where('level_four', $build->level_four)
-                                ->where('level_seven', $build->level_seven)
-                                ->where('level_ten', $build->level_ten)
-                                ->where('level_thirteen', $levels['thirteen'])
-                                ->where('level_sixteen', $levels['sixteen'])
-                                ->where('level_twenty', $levels['twenty']);
-                        });
-                    }
+                foreach ($builds->unique(fn ($build) => $build->level_one.'-'.$build->level_four.'-'.$build->level_seven.'-'.$build->level_ten) as $build) {
+                    $outerQuery->orWhere(function ($q) use ($build) {
+                        $q->where('level_one', $build->level_one)
+                            ->where('level_four', $build->level_four)
+                            ->where('level_seven', $build->level_seven)
+                            ->where('level_ten', $build->level_ten);
+                    });
                 }
             })
             ->groupBy('global_hero_talents.win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
@@ -793,55 +787,66 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 ];
             });
 
-        // Group results by build key
+        // A game that ended before level 20 counts towards a build by the share of players on its
+        // path who went on to pick that build's remaining talents, so it adds up to one game across
+        // every build it could have become rather than one game in each.
         $buildDataMap = [];
-        foreach ($query as $row) {
-            // Match to the full build (not progressive levels)
-            $buildKey = $row->level_one.'-'.$row->level_four.'-'.$row->level_seven.'-'.
-                        $row->level_ten.'-'.$row->level_thirteen.'-'.$row->level_sixteen.'-'.
-                        $row->level_twenty;
+        foreach ($builds as $build) {
+            $fullBuildKey = $build->level_one.'-'.$build->level_four.'-'.$build->level_seven.'-'.
+                            $build->level_ten.'-'.$build->level_thirteen.'-'.$build->level_sixteen.'-'.
+                            $build->level_twenty;
 
-            // Find which original build this row belongs to by checking if it matches any progressive level
-            foreach ($builds as $build) {
-                $fullBuildKey = $build->level_one.'-'.$build->level_four.'-'.$build->level_seven.'-'.
-                                $build->level_ten.'-'.$build->level_thirteen.'-'.$build->level_sixteen.'-'.
-                                $build->level_twenty;
+            $pathRows = $query->filter(fn ($row) => $row->level_one == $build->level_one &&
+                $row->level_four == $build->level_four &&
+                $row->level_seven == $build->level_seven &&
+                $row->level_ten == $build->level_ten);
 
-                // Check if this row matches this build's first 4 levels
-                if ($row->level_one == $build->level_one &&
-                    $row->level_four == $build->level_four &&
-                    $row->level_seven == $build->level_seven &&
-                    $row->level_ten == $build->level_ten) {
+            $share = function ($picked, $reached) use ($pathRows) {
+                $reachedGames = $pathRows->filter($reached)->sum('games_played');
 
-                    // Check if it matches any of the progressive levels
-                    $matchesProgressiveLevel = (
-                        ($row->level_thirteen == 0 && $row->level_sixteen == 0 && $row->level_twenty == 0) ||
-                        ($row->level_thirteen == $build->level_thirteen && $row->level_sixteen == 0 && $row->level_twenty == 0) ||
-                        ($row->level_thirteen == $build->level_thirteen && $row->level_sixteen == $build->level_sixteen && $row->level_twenty == 0) ||
-                        ($row->level_thirteen == $build->level_thirteen && $row->level_sixteen == $build->level_sixteen && $row->level_twenty == $build->level_twenty)
-                    );
+                return $reachedGames > 0 ? $pathRows->filter($picked)->sum('games_played') / $reachedGames : 0;
+            };
 
-                    if ($matchesProgressiveLevel) {
-                        if (! isset($buildDataMap[$fullBuildKey])) {
-                            $buildDataMap[$fullBuildKey] = [
-                                'wins' => 0,
-                                'losses' => 0,
-                                'total_filter_type' => 0,
-                            ];
-                        }
+            $shareThirteen = $share(
+                fn ($row) => $row->level_thirteen == $build->level_thirteen,
+                fn ($row) => $row->level_thirteen != 0
+            );
+            $shareSixteen = $share(
+                fn ($row) => $row->level_thirteen == $build->level_thirteen && $row->level_sixteen == $build->level_sixteen,
+                fn ($row) => $row->level_thirteen == $build->level_thirteen && $row->level_sixteen != 0
+            );
+            $shareTwenty = $share(
+                fn ($row) => $row->level_thirteen == $build->level_thirteen && $row->level_sixteen == $build->level_sixteen && $row->level_twenty == $build->level_twenty,
+                fn ($row) => $row->level_thirteen == $build->level_thirteen && $row->level_sixteen == $build->level_sixteen && $row->level_twenty != 0
+            );
 
-                        $buildDataMap[$fullBuildKey]['wins'] += ($row->win_loss == 1 ? $row->games_played : 0);
-                        $buildDataMap[$fullBuildKey]['losses'] += ($row->win_loss == 0 ? $row->games_played : 0);
-                        $buildDataMap[$fullBuildKey]['total_filter_type'] += $statFilter !== 'win_rate' ? ($row->total_filter_type ?? 0) : 0;
-                    }
+            $buildDataMap[$fullBuildKey] = [
+                'wins' => 0,
+                'losses' => 0,
+                'total_filter_type' => 0,
+            ];
+
+            foreach ($pathRows as $row) {
+                if ($row->level_thirteen == 0) {
+                    $weight = $shareThirteen * $shareSixteen * $shareTwenty;
+                } elseif ($row->level_thirteen != $build->level_thirteen) {
+                    continue;
+                } elseif ($row->level_sixteen == 0) {
+                    $weight = $shareSixteen * $shareTwenty;
+                } elseif ($row->level_sixteen != $build->level_sixteen) {
+                    continue;
+                } elseif ($row->level_twenty == 0) {
+                    $weight = $shareTwenty;
+                } elseif ($row->level_twenty == $build->level_twenty) {
+                    $weight = 1;
+                } else {
+                    continue;
                 }
-            }
-        }
 
-        // Round values
-        foreach ($buildDataMap as $key => $data) {
-            $buildDataMap[$key]['wins'] = round($data['wins']);
-            $buildDataMap[$key]['losses'] = round($data['losses']);
+                $buildDataMap[$fullBuildKey]['wins'] += $row->win_loss == 1 ? $row->games_played * $weight : 0;
+                $buildDataMap[$fullBuildKey]['losses'] += $row->win_loss == 0 ? $row->games_played * $weight : 0;
+                $buildDataMap[$fullBuildKey]['total_filter_type'] += $statFilter !== 'win_rate' ? ($row->total_filter_type ?? 0) * $weight : 0;
+            }
         }
 
         return $buildDataMap;
