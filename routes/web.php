@@ -225,6 +225,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 
     Route::get('Esports', [EsportsController::class, 'show']);
 
+    Route::permanentRedirect('NGS', '/Esports/NGS');
     Route::get('Esports/NGS', [NGSController::class, 'show']);
     Route::get('Esports/NGS/Division/{division}', [NGSSingleDivisionController::class, 'show']);
 
