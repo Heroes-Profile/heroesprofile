@@ -526,7 +526,17 @@
         <h2 class="recap-heading">Your Contribution</h2>
         <div v-if="contribution">
           <!-- The card as it downloads; downloadCard() draws the same layout -->
-          <div class="void-contribution-card max-w-[1000px] rounded-lg p-5 md:p-8 grid md:grid-cols-[220px_minmax(0,1fr)] gap-6">
+          <!-- Never played or faced her: a short banner instead of the full card -->
+          <div v-if="cardEmpty" class="void-contribution-card max-w-[700px] rounded-lg p-4 md:p-5 flex items-center gap-4">
+            <img class="w-16 md:w-20 shrink-0" :src="`/images/event/xalatath/xalatath-logo-stage-${final.stage}.svg`" alt="" />
+            <div class="min-w-0">
+              <div class="text-xs uppercase tracking-widest xalatath-title">Xal'atath Void Corruption<span v-if="mode !== 'all'"> · {{ modeLabel }}</span></div>
+              <div class="text-2xl md:text-3xl font-bold">{{ contribution.battletag }}</div>
+              <div class="text-lg">{{ noGamesLine }}</div>
+              <div class="text-xs opacity-60 mt-2">heroesprofile.com/Event/Xalatath</div>
+            </div>
+          </div>
+          <div v-else class="void-contribution-card max-w-[1000px] rounded-lg p-5 md:p-8 grid md:grid-cols-[220px_minmax(0,1fr)] gap-6">
             <div class="flex flex-col items-center text-center">
               <img class="w-40 md:w-52" :src="`/images/event/xalatath/xalatath-logo-stage-${final.stage}.svg`" alt="" />
             </div>
@@ -575,10 +585,19 @@
                   </div>
                 </div>
               </template>
-              <div v-else class="text-lg mb-4">Never played her{{ mode !== 'all' ? ` in ${modeLabel}` : '' }}. The Void noticed.</div>
+              <template v-else>
+                <div class="text-lg mb-4">{{ noGamesLine }}</div>
+                <!-- Estimated from her share of your team's deaths in each game she was against you -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 max-w-[600px]">
+                  <div v-for="tile in facedTiles" :key="tile.label" class="xalatath-recap-card p-3 text-center">
+                    <div class="text-xs uppercase opacity-75">{{ tile.label }}</div>
+                    <div class="text-xl font-bold tabular-nums">{{ tile.value }}</div>
+                  </div>
+                </div>
+              </template>
 
               <!-- Estimated from her share of your team's deaths in each game she was against you -->
-              <div v-if="card.faced && card.faced.games" class="text-sm mt-2">
+              <div v-if="card.games > 0 && card.faced && card.faced.games" class="text-sm mt-2">
                 <div class="text-xs uppercase opacity-75 mb-1">Facing her</div>
                 Faced her in <span class="font-bold">{{ format(card.faced.games) }}</span> games:
                 <span class="font-bold">&asymp; {{ format(card.faced.involved) }}</span> deaths involving her,
@@ -1149,6 +1168,25 @@ export default {
       }
       return c.views ? (c.views[this.mode] || c.views.all) : c;
     },
+    // Never played her and never faced her in this mode.
+    cardEmpty() {
+      const c = this.card;
+      return !!c && !(c.games > 0) && !(c.faced && c.faced.games);
+    },
+    noGamesLine() {
+      const where = this.mode !== 'all' ? ` in ${this.modeLabel}` : '';
+      return this.cardEmpty
+        ? `Never played her${where}, never faced her. The Void noticed.`
+        : `Never played her${where}. She played you instead.`;
+    },
+    facedTiles() {
+      const faced = (this.card && this.card.faced) || {};
+      return [
+        { label: 'Games faced', value: this.format(faced.games) },
+        { label: 'Deaths involving her', value: `≈ ${this.format(faced.involved)}` },
+        { label: 'Her killing blows', value: `≈ ${this.format(faced.killing_blows)}` },
+      ];
+    },
     contributionMates() {
       const c = this.card || {};
       return [
@@ -1610,20 +1648,41 @@ export default {
         Promise.all(mates.map((mate) => (mate.hero ? this.loadImage(`/images/heroes/${mate.hero.short_name}.png`) : null))),
       ]);
 
+      const x = 340;
+      const title = `XAL'ATATH VOID CORRUPTION${this.mode !== 'all' ? ` · ${this.modeLabel.toUpperCase()}` : ''}`;
+
+      // Never played or faced her: logo and text centred vertically, like the on-page banner.
+      if (this.cardEmpty) {
+        if (logo) {
+          ctx.drawImage(logo, 50, 212, 240, 250);
+        }
+        ctx.fillStyle = '#c9a8ff';
+        ctx.font = 'bold 22px sans-serif';
+        ctx.fillText(title, x, 275);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 54px sans-serif';
+        ctx.fillText(battletag, x, 340);
+        ctx.font = '30px sans-serif';
+        ctx.fillText(this.noGamesLine, x, 390);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.font = '20px sans-serif';
+        ctx.fillText('heroesprofile.com/Event/Xalatath', x, 435);
+        return canvas;
+      }
+
       // Left: logo and stage.
       if (logo) {
         ctx.drawImage(logo, 50, 120, 240, 250);
       }
 
-      const x = 340;
       ctx.fillStyle = '#c9a8ff';
       ctx.font = 'bold 22px sans-serif';
-      ctx.fillText(`XAL'ATATH VOID CORRUPTION${this.mode !== 'all' ? ` · ${this.modeLabel.toUpperCase()}` : ''}`, x, 70);
+      ctx.fillText(title, x, 70);
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 54px sans-serif';
       ctx.fillText(battletag, x, 130);
 
-      if (c.faced && c.faced.games) {
+      if (c.games > 0 && c.faced && c.faced.games) {
         ctx.font = '20px sans-serif';
         ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
         ctx.fillText(`Faced her in ${this.format(c.faced.games)} games: ≈${this.format(c.faced.involved)} deaths involving her, ≈${this.format(c.faced.killing_blows)} to her killing blow`, x, 252);
@@ -1681,8 +1740,28 @@ export default {
           });
         });
       } else {
-        ctx.font = '32px sans-serif';
-        ctx.fillText('Never played her. The Void noticed.', x, 190);
+        ctx.font = '30px sans-serif';
+        ctx.fillText(this.noGamesLine, x, 180);
+
+        // Faced tiles, same as the on-page card.
+        this.facedTiles.forEach((tile, i) => {
+          const left = x + i * 280;
+          ctx.fillStyle = 'rgba(58, 20, 112, 0.35)';
+          ctx.strokeStyle = '#5b21b6';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.roundRect(left, 225, 260, 120, 8);
+          ctx.fill();
+          ctx.stroke();
+          ctx.textAlign = 'center';
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+          ctx.font = 'bold 16px sans-serif';
+          ctx.fillText(tile.label.toUpperCase(), left + 130, 265);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 42px sans-serif';
+          ctx.fillText(tile.value, left + 130, 318);
+          ctx.textAlign = 'left';
+        });
       }
 
       ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
