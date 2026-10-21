@@ -104,9 +104,11 @@ class SendSubscriptionEmails
             return;
         }
 
-        // A swap rewrites the items collection. Resumes also arrive as `updated`, and
-        // deliberately get nothing.
-        if (array_key_exists('items', $previous) || array_key_exists('plan', $previous)) {
+        // Only a different price counts. Renewals and resumes also rewrite `items` (the
+        // period dates live on the item), and deliberately get nothing.
+        $previousPrice = $this->priceId($previous) ?? ($previous['plan']['id'] ?? null);
+
+        if (is_string($previousPrice) && $previousPrice !== $this->priceId($object)) {
             $this->tellAdmin('Plan changed', $account, $this->planName($object), null);
 
             $account->notify(new SubscriptionStarted($this->planName($object), changed: true));
@@ -165,15 +167,23 @@ class SendSubscriptionEmails
     /** Tier name for the subscription's price, when we recognise it. */
     private function planName(array $object): ?string
     {
-        $price = $object['items']['data'][0]['price']['id'] ?? null;
+        $price = $this->priceId($object);
 
-        if (! is_string($price)) {
+        if ($price === null) {
             return null;
         }
 
         $planId = $this->plans->planIdForPrice($price);
 
         return $planId === null ? null : ($this->plans->all()[$planId]['name'] ?? null);
+    }
+
+    /** Price on the first item, for a subscription or its `previous_attributes`. */
+    private function priceId(array $object): ?string
+    {
+        $price = $object['items']['data'][0]['price']['id'] ?? null;
+
+        return is_string($price) ? $price : null;
     }
 
     private function endOfPeriod(array $object): ?Carbon
