@@ -11,6 +11,7 @@ use App\Notifications\Api\AccountTerminated;
 use App\Notifications\Api\AccountWarned;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Laravel\Cashier\Cashier;
 use Throwable;
 
 /**
@@ -24,7 +25,8 @@ use Throwable;
  * - **suspend** — reversible. Every key stops working on both sites; the
  *   subscription keeps running, because a suspension is meant to last days and
  *   making them re-enter payment details to come back turns a warning into
- *   something much larger than intended.
+ *   something much larger than intended. Optionally it cancels the subscription
+ *   too and refunds the unused time, for someone who is not coming back to it.
  * - **terminate** — permanent, and the subscription is cancelled immediately.
  *   No refund (terms §9), but charging again for something they can never use is
  *   indefensible and invites a chargeback.
@@ -71,6 +73,43 @@ class AccountEnforcementService
         $this->notify($account, new AccountSuspended($reason));
 
         return $action;
+    }
+
+    /**
+     * A suspension that also ends the subscription now and refunds the unused part of
+     * the last payment. The outcome is appended to the action's notes so the history
+     * shows what was refunded.
+     *
+     * @return array{action: ApiAccountAction, cancelled: bool, refunded_cents: ?int, refund_failed: bool}
+     */
+    public function suspendWithRefund(
+        ApiAccount $account,
+        string $reason,
+        ?string $notes = null,
+        ?int $performedBy = null,
+    ): array {
+        $action = $this->withdraw($account, ApiAccount::SUSPENSION, $reason, $notes, $performedBy);
+
+        $outcome = $this->cancelAndRefund($account);
+
+        $summary = match (true) {
+            ! $outcome['cancelled'] => $outcome['refund_failed']
+                ? 'Cancel and refund failed in Stripe. Subscription still running.'
+                : 'No subscription to cancel.',
+            $outcome['refund_failed'] => 'Subscription cancelled. Refund failed in Stripe — refund by hand.',
+            $outcome['refunded_cents'] > 0 => 'Subscription cancelled. Refunded '.Cashier::formatAmount($outcome['refunded_cents']).'.',
+            default => 'Subscription cancelled. Nothing to refund.',
+        };
+
+        $action->update(['notes' => trim(($notes ?? '')."\n\n".$summary)]);
+
+        $this->notify($account, new AccountSuspended(
+            $reason,
+            subscriptionCancelled: $outcome['cancelled'],
+            refundedCents: $outcome['refund_failed'] ? null : $outcome['refunded_cents'],
+        ));
+
+        return ['action' => $action] + $outcome;
     }
 
     public function terminate(
@@ -229,6 +268,65 @@ class AccountEnforcementService
 
             return false;
         }
+    }
+
+    /**
+     * Ends the subscription now and refunds the last payment pro rata for the time left
+     * in the period. No proration on the cancel itself: that would leave a Stripe credit
+     * on top of the refund, applied if they ever subscribe again.
+     *
+     * A cancel that fails stops here with nothing done. A refund that fails after the
+     * cancel went through is reported so it can be issued by hand.
+     *
+     * @return array{cancelled: bool, refunded_cents: ?int, refund_failed: bool}
+     */
+    private function cancelAndRefund(ApiAccount $account): array
+    {
+        $subscription = $account->subscription(ApiAccount::SUBSCRIPTION);
+
+        if ($subscription === null || $subscription->ended()) {
+            return ['cancelled' => false, 'refunded_cents' => null, 'refund_failed' => false];
+        }
+
+        try {
+            // Read before cancelling, while the period is still the live one.
+            $periodStart = $subscription->currentPeriodStart();
+            $periodEnd = $subscription->currentPeriodEnd();
+            $invoice = $subscription->asStripeSubscription(['latest_invoice.payments'])->latest_invoice;
+
+            $subscription->noProrate()->cancelNow();
+        } catch (Throwable $e) {
+            report($e);
+
+            return ['cancelled' => false, 'refunded_cents' => null, 'refund_failed' => true];
+        }
+
+        $paid = (int) ($invoice?->amount_paid ?? 0);
+        $intent = collect($invoice?->payments?->data ?? [])
+            ->first(fn ($payment) => $payment->status === 'paid')
+            ?->payment?->payment_intent;
+
+        if ($paid <= 0 || $intent === null || $periodStart === null || $periodEnd === null) {
+            return ['cancelled' => true, 'refunded_cents' => 0, 'refund_failed' => false];
+        }
+
+        $length = $periodEnd->getTimestamp() - $periodStart->getTimestamp();
+        $left = min($length, max(0, $periodEnd->getTimestamp() - now()->getTimestamp()));
+        $amount = $length > 0 ? intdiv($paid * $left, $length) : 0;
+
+        if ($amount <= 0) {
+            return ['cancelled' => true, 'refunded_cents' => 0, 'refund_failed' => false];
+        }
+
+        try {
+            $account->refund(is_string($intent) ? $intent : $intent->id, ['amount' => $amount]);
+        } catch (Throwable $e) {
+            report($e);
+
+            return ['cancelled' => true, 'refunded_cents' => $amount, 'refund_failed' => true];
+        }
+
+        return ['cancelled' => true, 'refunded_cents' => $amount, 'refund_failed' => false];
     }
 
     /**

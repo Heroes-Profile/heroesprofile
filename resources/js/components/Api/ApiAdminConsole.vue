@@ -412,6 +412,11 @@
           </label>
           <input v-model="actionRespondBy" type="date" class="p-2 bg-darken mb-4 block" />
 
+          <label v-if="!detail.enforcement.suspended" class="flex items-center gap-2 text-sm mb-4">
+            <input v-model="actionRefund" type="checkbox" :disabled="busy" />
+            When suspending, also cancel their subscription, refund the unused time and remove d_approved
+          </label>
+
           <div class="flex flex-wrap gap-3">
             <button
               @click="act('info')"
@@ -455,7 +460,7 @@
           <p class="text-xs text-gray-medium mt-3">
             An info request only sends them an email asking about their project. A warning
             changes nothing about their access either. Suspending stops their keys on both
-            sites and leaves billing running. Closing the account also cancels their
+            sites and leaves billing running, unless you tick the refund box. Closing the account also cancels their
             subscription, and that cannot be restarted for them — they would have to subscribe
             again themselves.
           </p>
@@ -571,6 +576,7 @@ export default {
       actionReason: '',
       actionNotes: '',
       actionRespondBy: '',
+      actionRefund: false,
       approveNotes: '',
       editingApprovalId: null,
       approvalNotes: '',
@@ -766,6 +772,10 @@ export default {
         return 'Send this warning? They get an email and a banner. Nothing about their access changes.';
       }
 
+      if(action === 'suspend' && this.actionRefund){
+        return 'Suspend this account, cancel their subscription now and refund the unused part of their last payment? Their keys stop working on both sites immediately and d_approved is removed. You cannot restart the subscription for them.';
+      }
+
       if(action === 'suspend'){
         return 'Suspend this account? Their keys stop working on both sites immediately. Billing keeps running.';
       }
@@ -802,8 +812,19 @@ export default {
         payload.respond_by = this.actionRespondBy;
       }
 
+      if(action === 'suspend' && this.actionRefund){
+        payload.refund = true;
+      }
+
       try {
         const response = await this.$axios.post('/api/v1/admin/accounts/' + this.detail.account.id + '/' + action, payload);
+
+        // Subscription and flags changed too, so reload the whole account.
+        if(response.data.refund){
+          await this.load(this.detail.account.id);
+          this.notice = this.refundNotice(response.data.refund);
+          return;
+        }
 
         this.detail.enforcement = response.data.enforcement;
         this.detail.history = response.data.history;
@@ -821,6 +842,21 @@ export default {
       } finally {
         this.busy = false;
       }
+    },
+    refundNotice(refund){
+      if(!refund.cancelled){
+        return refund.failed
+          ? 'Account suspended, but cancelling in Stripe failed. Their subscription is still running — cancel and refund it by hand.'
+          : 'Account suspended. They had no subscription to cancel.';
+      }
+
+      if(refund.failed){
+        return 'Account suspended and subscription cancelled, but the ' + refund.refunded + ' refund failed in Stripe. Refund it by hand.';
+      }
+
+      return refund.refunded
+        ?'Account suspended, subscription cancelled and ' + refund.refunded + ' refunded.'
+        : 'Account suspended and subscription cancelled. Nothing was left to refund.';
     },
     async saveNote(){
       this.busy = true;
@@ -879,6 +915,7 @@ export default {
       this.actionReason = '';
       this.actionNotes = '';
       this.actionRespondBy = '';
+      this.actionRefund = false;
       this.approveNotes = '';
       this.editingApprovalId = null;
       this.approvalNotes = '';
