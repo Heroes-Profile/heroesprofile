@@ -161,6 +161,7 @@ class PlayerLobbyStatsService
                 'replay.game_map AS game_map',
                 'player.hero AS hero',
                 'player.winner AS winner',
+                'player.party AS party',
                 DB::raw('ROW_NUMBER() OVER (PARTITION BY player.blizz_id, replay.region, replay.game_type ORDER BY replay.replayID DESC) AS row_num'),
             ])
             ->whereIn('player.blizz_id', $blizzIds)
@@ -198,6 +199,8 @@ class PlayerLobbyStatsService
                             'winner' => (int) $row->winner === 1,
                             'hero' => $hero ? ['id' => $hero->id, 'name' => $hero->name, 'short_name' => $hero->short_name] : null,
                             'game_map' => $map ? ['name' => $map->name, 'sanitized_map_name' => $map->sanitized_map_name] : null,
+                            // Raw party value; the controller turns it into a colour.
+                            'party' => $row->party,
                         ];
                     })
                     ->values()

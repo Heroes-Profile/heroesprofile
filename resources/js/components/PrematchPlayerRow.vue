@@ -13,7 +13,10 @@
         </div>
 
         <div class="flex-1 min-w-0 text-left">
-          <a class="link text-lteal block truncate" :href="profileLink" @click.stop="this.$redirectToProfile(player.battletag, player.blizz_id, player.region, false)">{{ player.battletag }}</a>
+          <div class="flex items-center gap-1 min-w-0">
+            <img v-if="party" class="w-5 shrink-0" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${party}.png`" alt="Party">
+            <a class="link text-lteal block truncate" :href="profileLink" @click.stop="this.$redirectToProfile(player.battletag, player.blizz_id, player.region, false)">{{ player.battletag }}</a>
+          </div>
           <div class="text-xs text-gray-medium">Lvl {{ player.account_level }}</div>
           <div class="flex gap-[2px] mt-1">
             <span v-for="game in games" :key="game.replayID" :class="['inline-block w-2 h-2 rounded-sm', game.winner ? 'bg-teal' : 'bg-red']"></span>
@@ -35,6 +38,7 @@
         <div v-for="game in games" :key="game.replayID" class="flex items-center gap-2 py-1 border-t border-lighten">
           <hero-image-wrapper v-if="game.hero" :size="'small'" :hero="game.hero"></hero-image-wrapper>
           <span class="flex-1 min-w-0 truncate">{{ game.hero ? game.hero.name : '' }} <span class="text-gray-medium">· {{ game.game_map ? game.game_map.name : '' }}</span></span>
+          <img v-if="game.party" class="w-4 shrink-0" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${game.party}.png`" alt="Party">
           <span :class="game.winner ? 'text-lteal' : 'text-lred'">{{ game.winner ? 'Win' : 'Loss' }}</span>
           <span class="text-xs text-gray-medium min-w-[9em] text-right whitespace-nowrap">{{ timeAgo(game.game_date) }}</span>
         </div>
@@ -77,6 +81,9 @@ export default {
     },
     games() {
       return this.player.recent_games ? this.player.recent_games[this.mode] : [];
+    },
+    party() {
+      return this.player.recent_games ? this.player.recent_games.party : null;
     },
     wins() {
       return this.games.filter(game => game.winner).length;

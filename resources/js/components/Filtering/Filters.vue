@@ -97,6 +97,15 @@
             infolink="/FAQ#patch-history"
           ></multi-select-filter>
 
+          <!-- Rank Source -->
+          <single-select-filter :compact="compact" v-if="includeranksource"
+            :values="filters.rank_source"
+            :text="'Rank Source'"
+            @input-changed="handleInputChange"
+            :defaultValue="ranksourceinput || 'hp'"
+            :disabledeselectfilters="true"
+          ></single-select-filter>
+
           <!-- Current Game Type Multiselect-->
           <multi-select-filter :compact="compact" v-if="modifiedincludegametype"
             :values="filters.game_types" 
@@ -173,6 +182,14 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
 
+          <!-- SL Rank -->
+          <multi-select-filter :compact="compact" v-if="includeranksource && rankSourceSL && filters.sl_leagues"
+            :values="filters.sl_leagues"
+            :text="'SL Rank'"
+            :defaultValue="slrankinput"
+            @input-changed="handleInputChange"
+          ></multi-select-filter>
+
           <!-- Stat Type Filter -->
           <single-select-filter :compact="compact" v-if="showStatTypeFilter"
             :values="filters.stat_filter"
@@ -184,7 +201,7 @@
           ></single-select-filter>
 
           <!-- Hero Level -->
-          <multi-select-filter :compact="compact" v-if="includeherolevel && toggleExtraFilters"
+          <multi-select-filter :compact="compact" v-if="includeherolevel && toggleExtraFilters && !rankSourceSL"
             :values="filters.hero_level" 
             :text="'Hero Level'" 
             :defaultValue="herolevel"
@@ -323,7 +340,7 @@
           ></single-select-filter>
 
           <!-- Player Rank -->
-          <multi-select-filter :compact="compact" v-if="includeplayerrank"
+          <multi-select-filter :compact="compact" v-if="includeplayerrank && !rankSourceSL"
             :values="filters.rank_tiers" 
             :text="'HP Player Rank'"
             :showrankinfo="true"
@@ -332,7 +349,7 @@
           ></multi-select-filter>
 
           <!-- Hero Rank -->
-          <multi-select-filter :compact="compact" v-if="includeherorank && toggleExtraFilters"
+          <multi-select-filter :compact="compact" v-if="includeherorank && toggleExtraFilters && !rankSourceSL"
             :values="filters.rank_tiers" 
             :text="'HP Hero Rank'" 
             :showrankinfo="true"
@@ -341,7 +358,7 @@
           ></multi-select-filter>
 
           <!-- Role Rank -->
-          <multi-select-filter :compact="compact" v-if="includerolerank && toggleExtraFilters"
+          <multi-select-filter :compact="compact" v-if="includerolerank && toggleExtraFilters && !rankSourceSL"
             :values="filters.rank_tiers" 
             :text="'HP Role Rank'" 
             :showrankinfo="true"
@@ -552,6 +569,7 @@
       overrideGroupSizeRemoval: Boolean,
       includetimeframetypewithlastupdate: Boolean,
       includetier: Boolean,
+      includeranksource: Boolean,
       filters: {
         type: Object,
         required: true
@@ -576,6 +594,8 @@
       groupsizemulti: Boolean,
       leaderboardtypeinput: String,
       leagueinput: String,
+      ranksourceinput: String,
+      slrankinput: Array,
       tierrankinput: [String, Number],
       rolerequired: Boolean,
       excludetimeframes: Boolean,
@@ -633,6 +653,7 @@
         seasonvalue: null,
         modifiedincludetier: null,
         modifiedincludeseason: null,
+        rankSourceSL: false,
         ffBattletag: null,
         ffBlizzid: null,
         ffRegion: null,
@@ -715,6 +736,13 @@
 
       if(this.leaderboardfiltertype && this.leaderboardtypeinput){
         this.initializeLeaderboardFilters();
+      }
+
+      if(this.includeranksource){
+        this.selectedSingleFilters['Rank Source'] = this.ranksourceinput || 'hp';
+        if(this.ranksourceinput === 'sl'){
+          this.setRankSource('sl');
+        }
       }
 
       this.ffBattletag = this.ffbattletaginput || null;
@@ -902,6 +930,44 @@
         const selected = Array.isArray(value) ? value : (value ? [value] : []);
         return selected.length > 0 && !selected.includes('All');
       },
+      // SL Rank reads the real-rank tables: Storm League only, with no HP ranks, hero level or group size
+      setRankSource(source) {
+        this.rankSourceSL = (source === 'sl');
+        this.modifiedincludegametype = this.rankSourceSL ? false : this.includegametype;
+        this.modifiedincludegroupsize = this.rankSourceSL ? false : this.includegroupsize;
+
+        if(this.rankSourceSL){
+          this.selectedMultiFilters['Game Type'] = ['sl'];
+          delete this.selectedMultiFilters['HP Player Rank'];
+          delete this.selectedMultiFilters['HP Hero Rank'];
+          delete this.selectedMultiFilters['HP Role Rank'];
+          delete this.selectedMultiFilters['Hero Level'];
+          delete this.selectedSingleFilters['Group Size'];
+          delete this.selectedMultiFilters['Group Size'];
+          this.statfilterdisabled = false;
+
+          // The SL Rank dropdown remounts showing slrankinput
+          if(this.slrankinput){
+            this.selectedMultiFilters['SL Rank'] = this.slrankinput;
+          }
+        }else{
+          delete this.selectedMultiFilters['SL Rank'];
+
+          // The HP dropdowns remount showing their inputs; Game Type sends its own
+          if(this.playerrankinput){
+            this.selectedMultiFilters['HP Player Rank'] = this.playerrankinput;
+          }
+          if(this.herorankinput){
+            this.selectedMultiFilters['HP Hero Rank'] = this.herorankinput;
+          }
+          if(this.rolerankinput){
+            this.selectedMultiFilters['HP Role Rank'] = this.rolerankinput;
+          }
+          if(this.herolevelinput){
+            this.selectedMultiFilters['Hero Level'] = this.herolevelinput;
+          }
+        }
+      },
       initializeLeaderboardFilters() {
         const type = this.leaderboardtypeinput;
         this.selectedSingleFilters['Leaderboard Type'] = type;
@@ -1010,6 +1076,10 @@
           }
         }
 
+
+        if(eventPayload.field == "Rank Source"){
+          this.setRankSource(eventPayload.value);
+        }
 
         if(eventPayload.field == "Chart Type" && eventPayload.value == "Hero Level"){
           this.modifiedincludeminimumaccountlevel = false;

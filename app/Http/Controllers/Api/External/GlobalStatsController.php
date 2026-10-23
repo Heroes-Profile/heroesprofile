@@ -419,6 +419,15 @@ class GlobalStatsController extends Controller
         // handled another. Pass an explicit list only to override that.
         ?array $arrays = null
     ): Response {
+        // The SL rank view is site-only for now: dropped before the target or the cache key sees it.
+        foreach (['rank_source', 'sl_rank'] as $siteOnly) {
+            $request->query->remove($siteOnly);
+            $request->request->remove($siteOnly);
+            if ($request->isJson()) {
+                $request->json()->remove($siteOnly);
+            }
+        }
+
         $routeName = $request->route()?->getName();
         $arrays ??= ApiSpecConfig::multiForRoute($routeName);
 

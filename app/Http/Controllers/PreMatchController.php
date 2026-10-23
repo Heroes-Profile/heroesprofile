@@ -7,6 +7,7 @@ use App\Models\Prematch;
 use App\Rules\PrematchIDValidation;
 use App\Services\PlayerLobbyStatsService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -212,11 +213,89 @@ class PreMatchController extends Controller
             ];
         }
 
-        $data = Prematch::select('blizz_id', 'region')->where('prematch_replayID', $request['prematchid'])->get();
+        $data = Prematch::select('team', 'blizz_id', 'region')->where('prematch_replayID', $request['prematchid'])->get();
 
         $lobbyStats = app(PlayerLobbyStatsService::class);
         $hidden = $lobbyStats->hiddenKeys($data, Auth::user());
+        $players = $data->reject(fn ($player) => isset($hidden[PlayerLobbyStatsService::key($player)]));
 
-        return $lobbyStats->recentGames($data->reject(fn ($player) => isset($hidden[PlayerLobbyStatsService::key($player)])));
+        return $this->markParties($players, $lobbyStats->recentGames($players));
+    }
+
+    /**
+     * Teammates who shared a party in any of their recent games get the same colour,
+     * like the match page. Each game played in that party is marked with it too.
+     * Raw party values are not sent to the page.
+     *
+     * @param  Collection<int, object>  $players
+     * @param  array<string, array<string, array>>  $recentGames
+     * @return array<string, array<string, mixed>>
+     */
+    private function markParties(Collection $players, array $recentGames): array
+    {
+        $partyColors = ['red', 'blue', 'teal', 'orange', 'brown', 'purple'];
+        $colorCounter = 0;
+        $playerColors = [];
+        $gameColors = [];
+
+        foreach ($players->groupBy('team') as $teamPlayers) {
+            // "replayID|party" => teammates in that party
+            $members = [];
+            foreach ($teamPlayers as $player) {
+                $key = PlayerLobbyStatsService::key($player);
+                foreach ($recentGames[$key] ?? [] as $games) {
+                    foreach ($games as $game) {
+                        // Cached before party was added
+                        $party = $game['party'] ?? null;
+                        if ($party != '' && $party != 0) {
+                            $members[$game['replayID'].'|'.$party][$key] = true;
+                        }
+                    }
+                }
+            }
+
+            $shared = array_filter($members, fn ($keys) => count($keys) > 1);
+
+            // A with B in one game and B with C in another is one party
+            $groups = [];
+            foreach ($shared as $keys) {
+                $merged = $keys;
+                foreach ($groups as $index => $group) {
+                    if (array_intersect_key($group, $keys)) {
+                        $merged += $group;
+                        unset($groups[$index]);
+                    }
+                }
+                $groups[] = $merged;
+            }
+
+            foreach ($groups as $group) {
+                $color = $partyColors[$colorCounter++ % count($partyColors)];
+                foreach (array_keys($group) as $key) {
+                    $playerColors[$key] = $color;
+                }
+            }
+
+            foreach ($shared as $replayParty => $keys) {
+                $replayID = explode('|', $replayParty)[0];
+                foreach (array_keys($keys) as $key) {
+                    $gameColors[$key][$replayID] = $playerColors[$key];
+                }
+            }
+        }
+
+        $marked = [];
+        foreach ($recentGames as $key => $modes) {
+            foreach ($modes as $mode => $games) {
+                $marked[$key][$mode] = array_map(function ($game) use ($gameColors, $key) {
+                    $game['party'] = $gameColors[$key][$game['replayID']] ?? null;
+
+                    return $game;
+                }, $games);
+            }
+            $marked[$key]['party'] = $playerColors[$key] ?? null;
+        }
+
+        return $marked;
     }
 }

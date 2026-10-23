@@ -24,6 +24,7 @@ use App\Models\Replay;
 use App\Models\SeasonDate;
 use App\Models\SeasonGameVersion;
 use App\Models\XalatathData;
+use App\Rules\SlRankInputValidation;
 use App\Support\GlobalCacheFreshness;
 use App\Support\GlobalCacheKey;
 use App\Support\GlobalCacheWindow;
@@ -1791,6 +1792,11 @@ class GlobalDataService
             ['code' => 'SL Rank', 'name' => 'SL Rank'],
         ];
 
+        $filterData->rank_source = [
+            ['code' => 'hp', 'name' => 'HP Rank'],
+            ['code' => 'sl', 'name' => 'SL Rank'],
+        ];
+
         $filterData->group_size = [
             ['code' => 'All', 'name' => 'All'],
             ['code' => 'Solo', 'name' => 'Solo'],
@@ -2094,6 +2100,19 @@ class GlobalDataService
         return array_map(function ($region) {
             return $this->getRegionStringToID()[$region];
         }, $regions);
+    }
+
+    public function getRealLeagueTierFilterValues($slRanks)
+    {
+        if (empty($slRanks)) {
+            return [];
+        }
+
+        if (! is_array($slRanks)) {
+            $slRanks = explode(',', $slRanks);
+        }
+
+        return array_map(fn ($slRank) => SlRankInputValidation::TIERS[$slRank], $slRanks);
     }
 
     public function getGameMapFilterValues($game_maps)

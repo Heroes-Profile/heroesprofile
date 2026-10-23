@@ -60,6 +60,8 @@
           :herorankinput="herorank"
           :rolerankinput="rolerank"
           :mirrormatchinput="mirrormatch"
+          :ranksourceinput="ranksource"
+          :slrankinput="slrank"
 
 
 
@@ -76,11 +78,19 @@
           :includeherorank="true"
           :includerolerank="true"
           :includemirror="true"
+          :includeranksource="true"
           :advancedfiltering="advancedfiltering"
 
           >
         </filters>
         <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
+
+        <div v-if="isSLRank" class="my-5 bg-teal py-5 px-2">
+          <infobox class="max-w-[1500px] mx-auto">
+            SL Rank uses real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP Rank.
+            <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
+          </infobox>
+        </div>
 
   
         <div v-if="talentdetaildata" class="mx-auto  md:px-4">
@@ -220,6 +230,8 @@
        herorank: null,
        rolerank: null,
        mirrormatch: 0,
+       ranksource: 'hp',
+       slrank: null,
        talentbuildtype: "Popular",
        tablewidth: null,
        showPatchNotes: false,
@@ -266,6 +278,9 @@
       window.removeEventListener('popstate', this.restoreHistoryState);
     },
     computed: {
+      isSLRank() {
+        return this.ranksource === 'sl';
+      },
       isCompact() {
         return this.localLayout === 'compact' && this.windowWidth >= 768;
       },
@@ -344,6 +359,8 @@
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
             mirror: this.mirrormatch,
+            rank_source: this.isSLRank ? 'sl' : null,
+            sl_rank: this.isSLRank ? this.slrank : null,
           },
           {
             cancelToken: this.cancelTalentsTokenSource.token,
@@ -385,7 +402,9 @@
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
             mirror: this.mirrormatch,
-            talentbuildtype: this.talentbuildtype
+            talentbuildtype: this.talentbuildtype,
+            rank_source: this.isSLRank ? 'sl' : null,
+            sl_rank: this.isSLRank ? this.slrank : null,
           },
           {
             cancelToken: this.cancelBuildsTokenSource.token,
@@ -456,6 +475,8 @@
         this.rolerank = filteredData.multi["HP Role Rank"] ? Array.from(filteredData.multi["HP Role Rank"]) : null;
         this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
         this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.defaultbuildtype;
+        this.ranksource = filteredData.single["Rank Source"] ? filteredData.single["Rank Source"] : 'hp';
+        this.slrank = this.isSLRank && filteredData.multi["SL Rank"] ? Array.from(filteredData.multi["SL Rank"]) : null;
 
         this.talentdetaildata = null;
         this.talentbuilddata  = null;
@@ -505,6 +526,14 @@
           queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
         }
 
+        if(this.isSLRank){
+          queryString += `&rank_source=sl`;
+
+          if(this.slrank){
+            queryString += `&sl_rank=${this.slrank}`;
+          }
+        }
+
         queryString += `&statfilter=${this.statfilter}`;
         queryString += `&build_type=${this.talentbuildtype}`;
         queryString += `&mirror=${this.mirrormatch}`;
@@ -526,6 +555,8 @@
           herorank: this.herorank,
           rolerank: this.rolerank,
           mirrormatch: this.mirrormatch,
+          ranksource: this.ranksource,
+          slrank: this.slrank,
           talentbuildtype: this.talentbuildtype,
         }));
       },
@@ -547,6 +578,8 @@
         this.herorank = state.herorank;
         this.rolerank = state.rolerank;
         this.mirrormatch = state.mirrormatch;
+        this.ranksource = state.ranksource || 'hp';
+        this.slrank = state.slrank || null;
         this.talentbuildtype = state.talentbuildtype;
         this.selectedHero = state.hero ? this.heroes.find(hero => hero.name === state.hero) : null;
 
@@ -668,6 +701,18 @@
 
         if (this.urlparameters["mirror"]) {
           this.mirrormatch = this.urlparameters["mirror"];
+        }
+
+        if (this.urlparameters["rank_source"]) {
+          this.ranksource = this.urlparameters["rank_source"];
+        }
+
+        if (this.isSLRank) {
+          this.gametype = ['sl'];
+        }
+
+        if (this.urlparameters["sl_rank"] && this.isSLRank) {
+          this.slrank = this.urlparameters["sl_rank"].split(',');
         }
       },
       handleInputChange(eventPayload){
