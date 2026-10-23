@@ -404,7 +404,9 @@ export default {
     },
     queryString(){      
       let queryString = `?type=${this.leaderboardtype}`;
-      queryString += `&group_size=${this.groupsize}`;
+      if(this.leaderboardtype != 'SL Rank' && this.leaderboardtype != 'Match Prediction'){
+        queryString += `&group_size=${this.groupsize}`;
+      }
 
       if(this.hero){
         queryString += `&hero=${this.hero}`;

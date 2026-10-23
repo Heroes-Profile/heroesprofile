@@ -174,6 +174,11 @@ class GlobalStatsController extends Controller
     {
         $type = $request->input('type', 'player');
 
+        // The SL rank board is site-only for now
+        if (is_string($type) && strtolower(trim($type)) === 'sl rank') {
+            return $this->unsupported('type=sl rank', 'The SL rank board is not available through the API.');
+        }
+
         // The controller interpolates it into a cache key and a `where`, so a list
         // is a 500 there rather than a refusal.
         if ($request->filled('game_type') && (is_array($request->input('game_type')) || str_contains($request->input('game_type'), ','))) {
@@ -419,6 +424,15 @@ class GlobalStatsController extends Controller
         // handled another. Pass an explicit list only to override that.
         ?array $arrays = null
     ): Response {
+        // The SL rank view is site-only for now: dropped before the target or the cache key sees it.
+        foreach (['rank_source', 'sl_rank'] as $siteOnly) {
+            $request->query->remove($siteOnly);
+            $request->request->remove($siteOnly);
+            if ($request->isJson()) {
+                $request->json()->remove($siteOnly);
+            }
+        }
+
         $routeName = $request->route()?->getName();
         $arrays ??= ApiSpecConfig::multiForRoute($routeName);
 

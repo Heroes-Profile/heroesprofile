@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Laravel\Cashier\Cashier;
 
 class AdminConsoleController extends Controller
 {
@@ -287,12 +288,17 @@ class AdminConsoleController extends Controller
         return response()->json($this->standing($account->refresh()));
     }
 
-    /** Reversible. Keys stop working on both sites; the subscription keeps running. */
-    public function suspend(Request $request, int $id, AccountEnforcementService $enforcement)
+    /**
+     * Reversible. Keys stop working on both sites; the subscription keeps running
+     * unless `refund` is set, which cancels it, refunds the unused time and removes
+     * the Developer approval.
+     */
+    public function suspend(Request $request, int $id, AccountEnforcementService $enforcement, ApiKeyResolver $keys)
     {
         $validated = $request->validate([
             'reason' => ['required', 'string', 'max:'.self::REASON_MAX],
             'notes' => ['nullable', 'string', 'max:2000'],
+            'refund' => ['sometimes', 'boolean'],
         ]);
 
         $account = $this->target($id);
@@ -307,9 +313,34 @@ class AdminConsoleController extends Controller
             return $reason;
         }
 
-        $enforcement->suspend($account, $reason, $validated['notes'] ?? null, $this->actorId());
+        if (! ($validated['refund'] ?? false)) {
+            $enforcement->suspend($account, $reason, $validated['notes'] ?? null, $this->actorId());
 
-        return response()->json($this->standing($account->refresh()));
+            return response()->json($this->standing($account->refresh()));
+        }
+
+        $outcome = $enforcement->suspendWithRefund($account, $reason, $validated['notes'] ?? null, $this->actorId());
+
+        if ($account->d_approved) {
+            DB::connection('heroesprofile_api')->transaction(function () use ($account) {
+                $account->forceFill(['d_approved' => false])->save();
+
+                $this->recordApproval($account, ApiAccountApproval::FLAG, [
+                    'flag' => 'd_approved',
+                    'granted' => false,
+                ]);
+            });
+
+            $keys->forgetAccount($account->id);
+        }
+
+        return response()->json($this->standing($account->refresh()) + [
+            'refund' => [
+                'cancelled' => $outcome['cancelled'],
+                'refunded' => $outcome['refunded_cents'] ? Cashier::formatAmount($outcome['refunded_cents']) : null,
+                'failed' => $outcome['refund_failed'],
+            ],
+        ]);
     }
 
     /**

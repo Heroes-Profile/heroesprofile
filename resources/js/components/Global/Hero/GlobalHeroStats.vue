@@ -24,6 +24,8 @@
       :rolerankinput="rolerank"
       :talentbuildtypeinput="talentbuildtype"
       :mirrormatchinput="mirrormatch"
+      :ranksourceinput="ranksource"
+      :slrankinput="slrank"
 
       :gametypedefault="gametypedefault"
       :includetimeframetype="true"
@@ -44,12 +46,20 @@
       :groupsizemulti="true"
       :groupSizeDefaultValue="groupsize"
       :includetalentbuildtype="true"
+      :includeranksource="true"
       :advancedfiltering="advancedfiltering"
       :buildtypedefault="defaultbuildtype"
   
       >
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
+
+    <div v-if="isSLRank" class="my-5 bg-teal py-5 px-2">
+      <infobox class="max-w-[1500px] mx-auto">
+        In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.
+        <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
+      </infobox>
+    </div>
     
     <div v-if="this.data.data">
       <div class="max-w-[1500px] mx-auto flex justify-between mb-2">
@@ -258,6 +268,8 @@ export default {
       rolerank: null,
       mirrormatch: 0,
       groupsize: [],
+      ranksource: 'hp',
+      slrank: null,
       talentbuildtype: null,
       loadingStates: {},
       tablewidth: null,
@@ -277,6 +289,9 @@ export default {
   	this.getData();
   },
   computed: {
+    isSLRank(){
+      return this.ranksource === 'sl';
+    },
     showStatTypeColumn(){
       if(this.statfilter && this.statfilter != "win_rate" && !this.isLoading){
         return true;
@@ -313,7 +328,8 @@ export default {
         !this.herolevel &&
         this.statfilter === 'win_rate' &&
         this.mirrormatch == 0 &&
-        !this.groupSizeActive
+        !this.groupSizeActive &&
+        !this.isSLRank
       );
 
     },
@@ -373,6 +389,14 @@ export default {
         queryString += `&group_size=${this.groupsize.join(',')}`;
       }
 
+      if(this.isSLRank){
+        queryString += `&rank_source=sl`;
+
+        if(this.slrank){
+          queryString += `&sl_rank=${this.slrank}`;
+        }
+      }
+
       queryString += `&statfilter=${this.statfilter}`;
       queryString += `&build_type=${this.talentbuildtype}`;
       queryString += `&mirror=${this.mirrormatch}`;
@@ -410,6 +434,8 @@ export default {
           role_league_tier: this.rolerank,
           mirror: this.mirrormatch,
           groupsize: this.groupsize,
+          rank_source: this.isSLRank ? 'sl' : null,
+          sl_rank: this.isSLRank ? this.slrank : null,
         },
         {
           cancelToken: this.cancelTokenSource.token,
@@ -453,7 +479,9 @@ export default {
           hero_league_tier: this.herorank,
           role_league_tier: this.rolerank,
           mirror: this.mirrormatch,
-          talentbuildtype: this.talentbuildtype
+          talentbuildtype: this.talentbuildtype,
+          rank_source: this.isSLRank ? 'sl' : null,
+          sl_rank: this.isSLRank ? this.slrank : null,
         },
         {
           cancelToken: this.cancelTokenSource.token,
@@ -504,6 +532,8 @@ export default {
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
       this.groupsize = filteredData.multi["Group Size"] ? Array.from(filteredData.multi["Group Size"]) : [];
       this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.talentbuildtype;
+      this.ranksource = filteredData.single["Rank Source"] ? filteredData.single["Rank Source"] : 'hp';
+      this.slrank = this.isSLRank && filteredData.multi["SL Rank"] ? Array.from(filteredData.multi["SL Rank"]) : null;
 
       if(this.groupSizeActive && this.statfilter != 'win_rate'){
         this.statfilter = 'win_rate';
@@ -659,6 +689,18 @@ export default {
 
       if (this.urlparameters["mirror"]) {
         this.mirrormatch = this.urlparameters["mirror"];
+      }
+
+      if (this.urlparameters["rank_source"]) {
+        this.ranksource = this.urlparameters["rank_source"];
+      }
+
+      if (this.isSLRank) {
+        this.gametype = ['sl'];
+      }
+
+      if (this.urlparameters["sl_rank"] && this.isSLRank) {
+        this.slrank = this.urlparameters["sl_rank"].split(',');
       }
 
       if (this.urlparameters["group_size"]) {

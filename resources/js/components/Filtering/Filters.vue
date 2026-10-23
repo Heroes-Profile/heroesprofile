@@ -173,6 +173,7 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
 
+
           <!-- Stat Type Filter -->
           <single-select-filter :compact="compact" v-if="showStatTypeFilter"
             :values="filters.stat_filter"
@@ -184,7 +185,7 @@
           ></single-select-filter>
 
           <!-- Hero Level -->
-          <multi-select-filter :compact="compact" v-if="includeherolevel && toggleExtraFilters"
+          <multi-select-filter :compact="compact" v-if="includeherolevel && toggleExtraFilters && !rankSourceSL"
             :values="filters.hero_level" 
             :text="'Hero Level'" 
             :defaultValue="herolevel"
@@ -322,17 +323,26 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
 
-          <!-- Player Rank -->
+          <!-- Player Rank; with includeranksource, an HP | In-Game switch picks HP tiers or in-game SL ranks -->
           <multi-select-filter :compact="compact" v-if="includeplayerrank"
-            :values="filters.rank_tiers" 
-            :text="'HP Player Rank'"
+            :values="rankSourceSL ? filters.sl_leagues : filters.rank_tiers"
+            :text="includeranksource ? 'Player Rank' : 'HP Player Rank'"
+            :field="rankSourceSL ? 'SL Rank' : 'HP Player Rank'"
             :showrankinfo="true"
-            :defaultValue="playerrank"
+            :toggletabs="includeranksource ? ['HP', 'In-Game'] : null"
+            :toggleside="rankSourceSL ? 'right' : 'left'"
+            :defaultValue="playerRankDefault"
             @input-changed="handleInputChange"
-          ></multi-select-filter>
+            @toggle-click="(side) => handleInputChange({ field: 'Rank Source', value: side === 'right' ? 'sl' : 'hp', type: 'single' })"
+          >
+            <!-- Replaces the HP rank explanation while In-Game is on -->
+            <div v-if="rankSourceSL">
+              <p class="max-sm:text-xs">In-game rank is the Storm League rank Blizzard shows on the loading screen, read by players using the Heroes Profile uploader's opt-in rank reader. Each player counts in the rank they had going into that game. Only players whose rank was read count, so sample sizes are smaller than HP rank.</p>
+            </div>
+          </multi-select-filter>
 
           <!-- Hero Rank -->
-          <multi-select-filter :compact="compact" v-if="includeherorank && toggleExtraFilters"
+          <multi-select-filter :compact="compact" v-if="includeherorank && toggleExtraFilters && !rankSourceSL"
             :values="filters.rank_tiers" 
             :text="'HP Hero Rank'" 
             :showrankinfo="true"
@@ -341,7 +351,7 @@
           ></multi-select-filter>
 
           <!-- Role Rank -->
-          <multi-select-filter :compact="compact" v-if="includerolerank && toggleExtraFilters"
+          <multi-select-filter :compact="compact" v-if="includerolerank && toggleExtraFilters && !rankSourceSL"
             :values="filters.rank_tiers" 
             :text="'HP Role Rank'" 
             :showrankinfo="true"
@@ -552,6 +562,7 @@
       overrideGroupSizeRemoval: Boolean,
       includetimeframetypewithlastupdate: Boolean,
       includetier: Boolean,
+      includeranksource: Boolean,
       filters: {
         type: Object,
         required: true
@@ -576,6 +587,8 @@
       groupsizemulti: Boolean,
       leaderboardtypeinput: String,
       leagueinput: String,
+      ranksourceinput: String,
+      slrankinput: Array,
       tierrankinput: [String, Number],
       rolerequired: Boolean,
       excludetimeframes: Boolean,
@@ -597,6 +610,8 @@
         role: String,
         gamemap: Array,
         playerrank: Array,
+        // Set once: the Player Rank switch clears its own selection
+        playerRankDefault: null,
         tierrank: String,
         herorank: Array,
         rolerank: Array,
@@ -633,6 +648,7 @@
         seasonvalue: null,
         modifiedincludetier: null,
         modifiedincludeseason: null,
+        rankSourceSL: false,
         ffBattletag: null,
         ffBlizzid: null,
         ffRegion: null,
@@ -717,6 +733,17 @@
         this.initializeLeaderboardFilters();
       }
 
+      if(this.includeranksource){
+        this.selectedSingleFilters['Rank Source'] = this.ranksourceinput || 'hp';
+        if(this.ranksourceinput === 'sl'){
+          this.setRankSource('sl');
+          if(this.slrankinput){
+            this.selectedMultiFilters['SL Rank'] = this.slrankinput;
+          }
+        }
+      }
+      this.playerRankDefault = this.rankSourceSL ? this.slrankinput : this.playerrank;
+
       this.ffBattletag = this.ffbattletaginput || null;
       this.ffBlizzid = this.ffblizzidinput || null;
       this.ffRegion = this.ffregioninput || null;
@@ -729,7 +756,7 @@
     },
     mounted() {
 
-      if(this.playerrankinput){
+      if(this.playerrankinput && !this.rankSourceSL){
         this.selectedMultiFilters["HP Player Rank"] = this.playerrankinput;
       }
 
@@ -902,6 +929,36 @@
         const selected = Array.isArray(value) ? value : (value ? [value] : []);
         return selected.length > 0 && !selected.includes('All');
       },
+      // SL Rank reads the real-rank tables: Storm League only, with no HP ranks, hero level or group size
+      setRankSource(source) {
+        this.rankSourceSL = (source === 'sl');
+        this.modifiedincludegametype = this.rankSourceSL ? false : this.includegametype;
+        this.modifiedincludegroupsize = this.rankSourceSL ? false : this.includegroupsize;
+
+        if(this.rankSourceSL){
+          this.selectedMultiFilters['Game Type'] = ['sl'];
+          delete this.selectedMultiFilters['HP Player Rank'];
+          delete this.selectedMultiFilters['HP Hero Rank'];
+          delete this.selectedMultiFilters['HP Role Rank'];
+          delete this.selectedMultiFilters['Hero Level'];
+          delete this.selectedSingleFilters['Group Size'];
+          delete this.selectedMultiFilters['Group Size'];
+          this.statfilterdisabled = false;
+        }else{
+          delete this.selectedMultiFilters['SL Rank'];
+
+          // The HP dropdowns remount showing their inputs; Game Type sends its own. Player Rank stays mounted and clears itself.
+          if(this.herorankinput){
+            this.selectedMultiFilters['HP Hero Rank'] = this.herorankinput;
+          }
+          if(this.rolerankinput){
+            this.selectedMultiFilters['HP Role Rank'] = this.rolerankinput;
+          }
+          if(this.herolevelinput){
+            this.selectedMultiFilters['Hero Level'] = this.herolevelinput;
+          }
+        }
+      },
       initializeLeaderboardFilters() {
         const type = this.leaderboardtypeinput;
         this.selectedSingleFilters['Leaderboard Type'] = type;
@@ -1010,6 +1067,10 @@
           }
         }
 
+
+        if(eventPayload.field == "Rank Source"){
+          this.setRankSource(eventPayload.value);
+        }
 
         if(eventPayload.field == "Chart Type" && eventPayload.value == "Hero Level"){
           this.modifiedincludeminimumaccountlevel = false;

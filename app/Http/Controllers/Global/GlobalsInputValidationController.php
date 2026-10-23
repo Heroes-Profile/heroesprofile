@@ -11,6 +11,7 @@ use App\Rules\HeroInputValidation;
 use App\Rules\HeroLevelInputValidation;
 use App\Rules\RegionInputValidation;
 use App\Rules\RoleInputValidation;
+use App\Rules\SlRankInputValidation;
 use App\Rules\StackSizeInputValidation;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\TierInputByIDValidation;
@@ -40,6 +41,8 @@ class GlobalsInputValidationController extends Controller
             'mirror' => 'sometimes|in:null,0,1',
             'minimum_games' => 'sometimes|nullable|integer',
             'group_size' => ['sometimes', 'nullable', new StackSizeInputValidation],
+            'rank_source' => 'sometimes|nullable|in:hp,sl',
+            'sl_rank' => ['sometimes', 'nullable', new SlRankInputValidation],
         ];
     }
 
@@ -60,6 +63,8 @@ class GlobalsInputValidationController extends Controller
             'role_league_tier' => ['sometimes', 'nullable', new TierInputByIDValidation],
             'mirror' => 'sometimes|in:null,0,1',
             'groupsize' => ['sometimes', 'nullable', new StackSizeInputValidation],
+            'rank_source' => 'sometimes|nullable|in:hp,sl',
+            'sl_rank' => ['sometimes', 'nullable', new SlRankInputValidation],
         ];
     }
 

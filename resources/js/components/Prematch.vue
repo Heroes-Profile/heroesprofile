@@ -40,7 +40,7 @@
       </div>
     </div>
 
-    <p class="text-xs text-gray-medium text-center mt-4">Faded players have fewer than 25 games in this mode. Squares are their last 10 games, newest first.</p>
+    <p class="text-xs text-gray-medium text-center mt-4">Faded players have fewer than 25 games in this mode. Squares are their last 10 games, newest first. Teammates with the same party icon partied together in their recent QM, SL or ARAM games.</p>
   </div>
   <div v-else-if="isLoading">
     <loading-component></loading-component>

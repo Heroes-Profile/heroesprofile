@@ -7,6 +7,8 @@ use App\Models\GlobalHeroChange;
 use App\Models\GlobalHeroStackSize;
 use App\Models\GlobalHeroStats;
 use App\Models\GlobalHeroStatsBans;
+use App\Models\GlobalHeroStatsBansRealRank;
+use App\Models\GlobalHeroStatsRealRank;
 use App\Models\SeasonGameVersion;
 use App\Support\GameLength;
 use Illuminate\Http\Request;
@@ -109,6 +111,10 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
         $role = $request['role'];
 
+        if ($request['rank_source'] === 'sl') {
+            return $this->executeGlobalHeroRealRankData($request, $gameVersionIDs, $gameMap, $mirror, $region, $statFilter, $hero, $role);
+        }
+
         $groupSize = $this->getGroupSizeFilterValues($request['groupsize']);
 
         if ($groupSize) {
@@ -192,6 +198,49 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         }
 
         return $this->combineData($data, $statFilter, $banData, $changeData, $hero, $role);
+    }
+
+    /**
+     * Real Storm League ranks: Storm League only, no HP tiers, hero level, group size or win rate change.
+     */
+    private function executeGlobalHeroRealRankData(Request $request, $gameVersionIDs, $gameMap, $mirror, $region, $statFilter, $hero, $role)
+    {
+        $realLeagueTier = $this->globalDataService->getRealLeagueTierFilterValues($request['sl_rank']);
+
+        $data = GlobalHeroStatsRealRank::query()
+            ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats_real_rank.hero')
+            ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats_real_rank.win_loss', 'heroes.new_role as role')
+            ->selectRaw('SUM(global_hero_stats_real_rank.games_played) as games_played')
+            ->when(! empty($statFilter) && $statFilter !== 'win_rate', function ($query) use ($statFilter) {
+                if ($statFilter === 'game_time') {
+                    return $query->selectRaw('SUM(global_hero_stats_real_rank.game_time) - SUM(global_hero_stats_real_rank.games_played * '.GameLength::OFFSET.') as total_filter_type');
+                }
+
+                return $query->selectRaw("SUM(global_hero_stats_real_rank.$statFilter) as total_filter_type");
+            })
+            ->filterByGameVersion($gameVersionIDs)
+            ->filterByRealLeagueTier($realLeagueTier)
+            ->filterByGameMap($gameMap)
+            ->excludeMirror($mirror)
+            ->filterByRegion($region)
+            ->groupBy('global_hero_stats_real_rank.hero', 'global_hero_stats_real_rank.win_loss')
+            ->orderBy('heroes.name', 'asc')
+            ->orderBy('global_hero_stats_real_rank.win_loss', 'asc')
+            ->get();
+
+        $banData = GlobalHeroStatsBansRealRank::query()
+            ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats_bans_real_rank.hero')
+            ->select('heroes.name', 'heroes.id as hero_id')
+            ->selectRaw('SUM(global_hero_stats_bans_real_rank.bans) as bans')
+            ->filterByGameVersion($gameVersionIDs)
+            ->filterByRealLeagueTier($realLeagueTier)
+            ->filterByGameMap($gameMap)
+            ->filterByRegion($region)
+            ->groupBy('global_hero_stats_bans_real_rank.hero')
+            ->orderBy('heroes.name', 'asc')
+            ->get();
+
+        return $this->combineData($data, $statFilter, $banData, null, $hero, $role);
     }
 
     /**

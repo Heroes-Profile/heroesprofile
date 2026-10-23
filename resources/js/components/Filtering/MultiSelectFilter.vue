@@ -22,6 +22,7 @@
 
       
       <span class="h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 flex relative" :class="compact ? 'min-w-0 w-full' : 'md:min-w-[200px]'">
+        <span v-if="toggletabs" class="uppercase whitespace-nowrap font-bold px-1 flex no-wrap">{{ toggleside === 'right' ? toggletabs[1] : toggletabs[0] }}</span>
         <span v-if="selectedOptions.length <= 3" v-for="name in selectedOptionsName" class="uppercase whitespace-nowrap  font-bold  bg-teal rounded px-1 mx-1 flex no-wrap">{{ name }}</span>
         <span v-else-if="selectedOptions.length > 3" class="uppercase whitespace-nowrap  font-bold  bg-teal rounded px-1 mx-1 flex no-wrap">{{ selectedOptions.length }} of {{ values.length }} selected</span>
       </span>
@@ -29,6 +30,12 @@
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
     <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">
       <div class="space-y-2 p-2">
+        <div v-if="toggletabs" class="flex justify-center">
+          <tab-button :tab1text="toggletabs[0]" :tab2text="toggletabs[1]" :ignoreclick="true" :small="true"
+            :overridedefaultside="toggleside"
+            @tab-click="handleToggle"
+          ></tab-button>
+        </div>
         <div class="whitespace-nowrap">
           <input 
           type="checkbox" 
@@ -75,6 +82,11 @@
       infolink: String,
       // Returns an option's group from its code. Once one is picked, the other groups grey out.
       groupby: Function,
+      // Name sent with input-changed when it differs from the label
+      field: String,
+      // Two labels for a switch at the top of the dropdown; flipping it clears the selection and emits toggle-click
+      toggletabs: Array,
+      toggleside: { type: String, default: 'left' },
     },
     data(){
       return {
@@ -84,7 +96,7 @@
     },
     created(){
       if(this.text == "Timeframes" || this.text == "Game Type"){
-        this.$emit('input-changed', { field: this.text, value: this.selectedOptions, type: 'multi' });
+        this.$emit('input-changed', { field: this.field || this.text, value: this.selectedOptions, type: 'multi' });
       }
     },
     mounted() {
@@ -127,7 +139,7 @@
         this.selectedOptions = [...newVal];
       },
       selectedOptions: function (newVal) {
-        this.$emit('input-changed', { field: this.text, value: newVal, type: 'multi' });
+        this.$emit('input-changed', { field: this.field || this.text, value: newVal, type: 'multi' });
       },
       showOptions: function (newVal) {
       if(this.trackclosure && !newVal){
@@ -146,6 +158,13 @@
         if (dropdown && !dropdown.contains(event.target)) {
           this.showOptions = false;
         }
+      },
+      handleToggle(side) {
+        if(side === this.toggleside){
+          return;
+        }
+        this.selectedOptions = [];
+        this.$emit('toggle-click', side);
       },
       valuesInGroup(group) {
         return this.values.filter(value => this.groupby(value.code) === group);
