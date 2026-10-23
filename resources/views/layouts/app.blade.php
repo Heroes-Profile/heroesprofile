@@ -136,18 +136,20 @@
           The backend is currently offline. Some features may not be available.  Please contact zemill@heroesprofile.com
         </div>
       @endif
-      <div class="bg-[#1f2229] text-sm px-4 md:px-8 py-6 flex flex-wrap items-center justify-between gap-4 max-md:flex-col max-md:text-center">
-        <div>
-          @if(isset($maxReplayID) && ! (isset($isBackendOff) && $isBackendOff))
-            Patch {{ $latestPatch }}<span class="mx-3">|</span>{{ is_numeric($maxReplayID) ? number_format($maxReplayID) : $maxReplayID }} replays
-          @endif
+      <div class="bg-[#1f2229] text-sm px-4 md:px-8 py-6">
+        <div class="max-w-[1920px] mx-auto flex flex-wrap items-center justify-between gap-4 max-md:flex-col max-md:text-center">
+          <div>
+            @if(isset($maxReplayID) && ! (isset($isBackendOff) && $isBackendOff))
+              Patch {{ $latestPatch }}<span class="mx-3">|</span>{{ is_numeric($maxReplayID) ? number_format($maxReplayID) : $maxReplayID }} replays
+            @endif
+          </div>
+          <div class="space-x-3">
+            <a href="/FAQ" class="underline">FAQ</a>
+            <a href="/Privacy/Policy" class="underline">Privacy Policy</a>
+            <a href="/Terms/Of/Service" class="underline">Terms of Service</a>
+          </div>
+          <div>Skill Tree Development, LLC<span class="mx-3">|</span><a href="https://heroesprofile.com">Heroes Profile</a></div>
         </div>
-        <div class="space-x-3">
-          <a href="/FAQ" class="underline">FAQ</a>
-          <a href="/Privacy/Policy" class="underline">Privacy Policy</a>
-          <a href="/Terms/Of/Service" class="underline">Terms of Service</a>
-        </div>
-        <div>Skill Tree Development, LLC<span class="mx-3">|</span><a href="https://heroesprofile.com">Heroes Profile</a></div>
       </div>
       <footer-popup-disclaimer></footer-popup-disclaimer>
     </footer>

@@ -6,7 +6,7 @@
     </div>
 
 
-    <div class="text-center pt-16 pb-20 px-4">
+    <div class="text-center pt-10 pb-8 px-4">
       <div class="flex items-center justify-center font-logo text-4xl md:text-8xl">
         Heroes
         <img class="w-[1.667em] mx-[0.333em]" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo"/>
@@ -19,7 +19,7 @@
     </div>
 
 
-    <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[1920px] mx-auto px-4 md:px-8 pb-20">
+    <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[1920px] mx-auto px-4 md:px-8 pb-8">
 
       <div :class="cardClasses">
         <i class="fa-solid fa-globe text-[80px]"></i>
@@ -70,11 +70,13 @@
     </div>
 
 
-    <div class="mt-auto bg-[#272a34] text-sm px-4 md:px-8 py-6 space-y-2">
-      <p>Heroes Profile uses data from Heroes Profile API.  Heroes Profile API uploads are in open Heroes of the Storm replay database with user uploaded replay data.
-        Currently, Heroes Profile has pulled {{ getValueLocal(maxreplayid) }} replays up to and including data from patch
-      {{ latestpatch }} and date/time <format-date :input="latestgamedate"></format-date> and incorporated them into our dataset.</p>
-      <p>For more information on Heroes Profile API navigate to <a class="underline" href="/Api">heroesprofile.com/Api</a></p>
+    <div class="mt-auto bg-[#272a34] text-sm px-4 md:px-8 py-6">
+      <div class="max-w-[1920px] mx-auto space-y-2">
+        <p>Heroes Profile uses data from Heroes Profile API.  Heroes Profile API uploads are in open Heroes of the Storm replay database with user uploaded replay data.
+          Currently, Heroes Profile has pulled {{ getValueLocal(maxreplayid) }} replays up to and including data from patch
+        {{ latestpatch }} and date/time <format-date :input="latestgamedate"></format-date> and incorporated them into our dataset.</p>
+        <p>For more information on Heroes Profile API navigate to <a class="underline" href="/Api">heroesprofile.com/Api</a></p>
+      </div>
     </div>
   </div>
 </template>
