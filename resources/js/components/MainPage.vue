@@ -7,15 +7,7 @@
 
 
     <div class="text-center py-10">
-      <div v-if="xalatathEvent" class="flex items-center justify-center font-logo text-4xl md:text-8xl m-4 max-md:px-4">
-        Heroes
-        <!-- Hex side corners sit ~58% down the image, so nudge it up to line them up with the words -->
-        <img class="w-28 md:w-56 max-w-[320px] mx-3 md:mx-8 -translate-y-[8%] js-void-logo" :src="logoSrc" alt="Heroes Profile Logo"/>
-        Profile
-      </div>
-      <img v-else class="block m-4 mr-auto ml-auto max-md:px-4 md:w-2/5 md:max-w-6xl pl-25" :src="logoSrc" alt="Heroes Profile Logo"/>
-
-      <a v-if="xalatathEnding" href="/Event/Xalatath" class="inline-block mb-6 xalatath-title underline hover:opacity-80">The Void has receded. See what Xal'atath left behind <i class="fas fa-chevron-right ml-1"></i></a>
+      <img class="block m-4 mr-auto ml-auto max-md:px-4 md:w-2/5 md:max-w-6xl pl-25" src="/images/logo/full_deathwing.png" alt="Heroes Profile Logo"/>
 
       <div class="block text-center mx-auto align-items-center justify-center flex">
         <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
@@ -109,14 +101,8 @@ import Cookies from 'js-cookie';
       maxreplayid: Number,
       latestpatch: String,
       latestgamedate: String,
-      xalatathEvent: Boolean,
-      xalatathEnding: Boolean,
       // Whether the signed-in player can open Analytics (Patreon supporters)
       analyticsAllowed: Boolean,
-      voidStage: {
-        type: Number,
-        default: 0,
-      },
     },
     data(){
       return {
@@ -137,12 +123,6 @@ import Cookies from 'js-cookie';
     mounted() {
     },
     computed: {
-      logoSrc() {
-        if (!this.xalatathEvent) {
-          return '/images/logo/full_deathwing.png';
-        }
-        return `/images/event/xalatath/xalatath-logo-stage-${this.voidStage}.svg`;
-      },
     },
     watch: {
     },

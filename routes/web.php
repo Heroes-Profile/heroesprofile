@@ -30,6 +30,7 @@ use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\Esports\NutCup\NutCupController;
 use App\Http\Controllers\Esports\Other\EsportOtherController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\FlairController;
 use App\Http\Controllers\GithubChangeController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
@@ -66,7 +67,6 @@ use App\Http\Controllers\Tools\AutoBattlerController;
 use App\Http\Controllers\Tools\RandomizeMeController;
 use App\Http\Controllers\TwitchPageController;
 use App\Http\Controllers\UploadController;
-use App\Http\Controllers\XalatathEventController;
 use App\Http\Controllers\XalatathRecapController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -366,8 +366,5 @@ Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587
 Route::get('/Animation/Deathwing', [AnimationsController::class, 'showDeathwing']);
 Route::get('/Animation/Tassadar', [AnimationsController::class, 'showTassadar']);
 
-// Polled by the header scoreboard every 30s; kept out of the logging group.
-Route::get('/Event/Xalatath/Totals', [XalatathEventController::class, 'totals'])->middleware('throttle:xalatath-totals');
-Route::get('/Flair/State', [XalatathEventController::class, 'flairState'])->middleware('throttle:flair-state');
-Route::post('/Event/Xalatath/Eye', [XalatathEventController::class, 'claimEye'])->middleware('throttle:xalatath-eye');
+Route::get('/Flair/State', [FlairController::class, 'state'])->middleware('throttle:flair-state');
 Route::post('/Event/Xalatath/Card', [XalatathRecapController::class, 'uploadCard'])->middleware('throttle:xalatath-card');

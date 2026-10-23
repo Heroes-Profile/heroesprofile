@@ -91,12 +91,6 @@ class BattleNetController extends Controller
             Cookie::queue(Cookie::forget('darkmode_pending'));
         }
 
-        // Found the Xal'atath eye while logged out.
-        if ($request->session()->pull('void_eye_pending')) {
-            $this->globalDataService->awardVoidEye($battlenetAccount);
-            $request->session()->flash('void_eye_awarded', true);
-        }
-
         return redirect()->intended('/Profile/Settings');
     }
 

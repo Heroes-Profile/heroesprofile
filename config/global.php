@@ -51,22 +51,14 @@ return [
     | Xal'atath Void Corruption event
     |--------------------------------------------------------------------------
     |
-    | Header scoreboard plus site corruption stages. Thresholds are total
-    | Xal'atath games played plus bans to reach stages 1 through 5.
+    | The event is over. These dates scope the recap page's queries.
     |
     */
 
     'xalatath_event' => [
-        'enabled' => env('XALATATH_EVENT_ENABLED', false),
-        'stage_thresholds' => env('XALATATH_EVENT_STAGE_THRESHOLDS', '1000,5000,15000,30000,50000'),
-        // Testing only (ignored in production): show the hidden eye on every page.
-        'eye_every_page' => env('XALATATH_EYE_EVERY_PAGE', false),
         // UTC. 17:40 = 1:40 PM EDT, estimated from the earliest replay (EU ARAM 65537819 loading in).
         'starts_at' => env('XALATATH_EVENT_STARTS_AT', '2026-09-28 17:40:00'),
-        // The live event shuts off at this time. The ending banner and splash show for
-        // recap_days after it, once the xalatath_recap snapshot has been loaded.
         'ends_at' => env('XALATATH_EVENT_ENDS_AT'),
-        'recap_days' => (int) env('XALATATH_EVENT_RECAP_DAYS', 7),
     ],
 
     /*

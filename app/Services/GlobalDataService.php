@@ -23,7 +23,6 @@ use App\Models\Player;
 use App\Models\Replay;
 use App\Models\SeasonDate;
 use App\Models\SeasonGameVersion;
-use App\Models\XalatathData;
 use App\Rules\SlRankInputValidation;
 use App\Support\GlobalCacheFreshness;
 use App\Support\GlobalCacheKey;
@@ -35,7 +34,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class GlobalDataService
@@ -103,41 +101,6 @@ class GlobalDataService
         });
     }
 
-    private function getXalatathThresholds(): Collection
-    {
-        return collect(explode(',', (string) config('global.xalatath_event.stage_thresholds')))
-            ->map(fn ($threshold) => (int) trim($threshold))
-            ->filter(fn ($threshold) => $threshold > 0)
-            ->sort()
-            ->values()
-            ->take(5);
-    }
-
-    public function getXalatathEvent()
-    {
-        $thresholds = $this->getXalatathThresholds();
-
-        if ($this->getXalatathEndedPreview()) {
-            return null;
-        }
-
-        $previewStage = $this->getXalatathPreviewStage();
-
-        if ($previewStage !== null) {
-            return $this->buildXalatathState($this->fakeXalatathTotals($previewStage, $thresholds), [], $thresholds);
-        }
-
-        if (! filter_var(config('global.xalatath_event.enabled'), FILTER_VALIDATE_BOOLEAN) || $this->hasXalatathEventEnded()) {
-            return null;
-        }
-
-        $byGameType = Cache::remember('global_xalatath_event', 30, function () {
-            return XalatathData::all()->keyBy('game_type')->toArray();
-        });
-
-        return $this->buildXalatathState($this->sumXalatathTotals($byGameType), $byGameType, $thresholds);
-    }
-
     public function getXalatathEventEndsAt(): ?Carbon
     {
         $endsAt = config('global.xalatath_event.ends_at');
@@ -157,10 +120,6 @@ class GlobalDataService
      */
     public function isXalatathRecapAvailable(): bool
     {
-        if ($this->getXalatathEndedPreview()) {
-            return true;
-        }
-
         if (! $this->hasXalatathEventEnded()) {
             return false;
         }
@@ -182,30 +141,6 @@ class GlobalDataService
     }
 
     /**
-     * Final totals for the ending banner and splash, shown for recap_days after the end.
-     */
-    public function getXalatathEnding(): ?array
-    {
-        if ($this->getXalatathEndedPreview()) {
-            $thresholds = $this->getXalatathThresholds();
-
-            return $this->buildXalatathState($this->fakeXalatathTotals(5, $thresholds), [], $thresholds);
-        }
-
-        if (! $this->isXalatathRecapAvailable()) {
-            return null;
-        }
-
-        $recapDays = (int) config('global.xalatath_event.recap_days');
-
-        if (now()->gte($this->getXalatathEventEndsAt()->copy()->addDays($recapDays))) {
-            return null;
-        }
-
-        return $this->getXalatathFinalState();
-    }
-
-    /**
      * Every xalatath_recap section, decoded: ['totals' => [...rows], 'stages' => [...], ...].
      */
     public function getXalatathRecap(): array
@@ -219,7 +154,7 @@ class GlobalDataService
 
     /**
      * Snapshot data never changes once the event is over and loaded, so it's cached forever.
-     * Before that (local ?void_ended preview) it's read fresh, so a partial load isn't frozen.
+     * Before that it's read fresh, so a partial load isn't frozen.
      */
     public function rememberXalatathRecap(string $key, callable $callback)
     {
@@ -279,52 +214,6 @@ class GlobalDataService
             'previousThreshold' => $stage > 0 ? $thresholds[$stage - 1] : 0,
             'nextThreshold' => $thresholds[$stage] ?? null,
         ];
-    }
-
-    /**
-     * Local testing: ?void_stage=0-5 fakes the event at that stage and sticks in the
-     * session until ?void_stage=off. Never available in production.
-     */
-    private function getXalatathPreviewStage(): ?int
-    {
-        $request = request();
-
-        if (app()->isProduction() || ! $request->hasSession()) {
-            return null;
-        }
-
-        $param = $request->query('void_stage');
-
-        if ($param === 'off') {
-            $request->session()->forget('void_stage_preview');
-        } elseif ($param !== null && ctype_digit((string) $param) && (int) $param <= 5) {
-            $request->session()->put('void_stage_preview', (int) $param);
-        }
-
-        return $request->session()->get('void_stage_preview');
-    }
-
-    /**
-     * Local testing: ?void_ended=1 shows the ending banner, splash and recap links until
-     * ?void_ended=off. Never available in production.
-     */
-    private function getXalatathEndedPreview(): bool
-    {
-        $request = request();
-
-        if (app()->isProduction() || ! $request->hasSession()) {
-            return false;
-        }
-
-        $param = $request->query('void_ended');
-
-        if ($param === 'off') {
-            $request->session()->forget('void_ended_preview');
-        } elseif ($param === '1') {
-            $request->session()->put('void_ended_preview', true);
-        }
-
-        return (bool) $request->session()->get('void_ended_preview');
     }
 
     /**
@@ -418,97 +307,6 @@ class GlobalDataService
         return BattlenetAccountFlair::where('battlenet_accounts_id', $account->battlenet_accounts_id)
             ->where('flair', BattlenetAccountFlair::XALATATH_EYE)
             ->exists();
-    }
-
-    public function awardVoidEye(BattlenetAccount $account): BattlenetAccountFlair
-    {
-        $flair = BattlenetAccountFlair::firstOrCreate(
-            ['battlenet_accounts_id' => $account->battlenet_accounts_id, 'flair' => BattlenetAccountFlair::XALATATH_EYE],
-            ['awarded_at' => now(), 'ad_free_until' => now()->addMonths(3)]
-        );
-
-        Cache::forget('global_void_eye_holders');
-
-        return $flair;
-    }
-
-    public function voidEyeVisitorKey(Request $request): string
-    {
-        return Auth::check()
-            ? 'acct:'.Auth::user()->battlenet_accounts_id
-            : 'sess:'.$request->session()->getId();
-    }
-
-    /**
-     * Where this visitor's hidden eye sits on this page today, or null if it isn't here.
-     * Each visitor gets their own pages and positions, rotating daily.
-     */
-    public function getVoidEyeSpot(bool $eventActive): ?array
-    {
-        $request = request();
-
-        if (! $eventActive || ! $request->isMethod('get') || $request->expectsJson() || ! $request->hasSession()) {
-            return null;
-        }
-
-        // Testing: XALATATH_EYE_EVERY_PAGE shows it on every page, even after it's been found. Never in production.
-        $everyPage = ! app()->isProduction() && filter_var(config('global.xalatath_event.eye_every_page'), FILTER_VALIDATE_BOOLEAN);
-
-        if (! $everyPage && $request->session()->get('void_eye_pending')) {
-            return null;
-        }
-
-        if (! $everyPage && Auth::check() && $this->hasClaimedVoidEye(Auth::user())) {
-            return null;
-        }
-
-        $visitor = $this->voidEyeVisitorKey($request);
-        $today = now()->toDateString();
-        $path = '/'.ltrim($request->path(), '/');
-        $hash = hash_hmac('sha256', $visitor.'|'.$today.'|'.strtolower($path), config('app.key'));
-
-        // Roughly 1 in 12 pages for this visitor today.
-        if (! $everyPage && hexdec(substr($hash, 0, 6)) % 12 !== 0) {
-            return null;
-        }
-
-        $top = 15 + hexdec(substr($hash, 6, 4)) % 70;
-        $left = 4 + hexdec(substr($hash, 10, 4)) % 90;
-
-        $token = Crypt::encryptString(json_encode([
-            'visitor' => $visitor,
-            'path' => $path,
-            'expires' => now()->addHours(12)->timestamp,
-        ]));
-
-        return ['top' => $top, 'left' => $left, 'token' => $token];
-    }
-
-    private function fakeXalatathTotals(int $stage, Collection $thresholds): array
-    {
-        $floor = $stage > 0 ? ($thresholds[$stage - 1] ?? 0) : 0;
-        $ceiling = $thresholds[$stage] ?? $floor;
-        $corruption = $stage === 0 ? intdiv($ceiling, 2) : ($stage >= 5 ? $floor : intdiv($floor + $ceiling, 2));
-
-        $bans = intdiv($corruption, 4);
-        $games = $corruption - $bans;
-
-        return [
-            'games_played' => $games,
-            'wins' => intdiv($games * 47, 100),
-            'bans' => $bans,
-            'takedowns' => $games * 14,
-            'deaths' => $games * 5,
-            'siege_damage' => $games * 42000,
-            'spell_damage' => $games * 61000,
-            'multikill' => intdiv($games, 3),
-            'teamfight_hero_damage' => $games * 38000,
-            'on_fire_time' => $games * 90,
-            'highest_kill_streak' => 23,
-            'escapes' => $games * 2,
-            'outnumbered_deaths' => $games * 2,
-            'time_spent_dead' => $games * 140,
-        ];
     }
 
     /** How long the restricted set is trusted. Bans are written outside this app, so nothing else clears it. */
@@ -715,9 +513,6 @@ class GlobalDataService
             'headeralert' => $this->getHeaderAlert(),
             'heroes' => $this->getHeroes()->sortBy('name')->values(),
             'maps' => $this->getMaps(),
-            'xalatathEvent' => $xalatathEvent = $this->getXalatathEvent(),
-            'voidEyeSpot' => $this->getVoidEyeSpot((bool) $xalatathEvent),
-            'xalatathEnding' => $this->getXalatathEnding(),
             'xalatathRecapAvailable' => $this->isXalatathRecapAvailable(),
         ];
 

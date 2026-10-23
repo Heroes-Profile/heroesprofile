@@ -1,4 +1,4 @@
-// Xal'atath's whispers. Shown live by VoidWhispers and kept on the recap page.
+// Xal'atath's whispers, shown on the recap page.
 export default [
   'You check these numbers as if they could save you.',
   'Every replay you upload feeds the Void. Thank you.',
