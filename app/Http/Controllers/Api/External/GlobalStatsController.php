@@ -174,6 +174,11 @@ class GlobalStatsController extends Controller
     {
         $type = $request->input('type', 'player');
 
+        // The SL rank board is site-only for now
+        if (is_string($type) && strtolower(trim($type)) === 'sl rank') {
+            return $this->unsupported('type=sl rank', 'The SL rank board is not available through the API.');
+        }
+
         // The controller interpolates it into a cache key and a `where`, so a list
         // is a 500 there rather than a refusal.
         if ($request->filled('game_type') && (is_array($request->input('game_type')) || str_contains($request->input('game_type'), ','))) {

@@ -323,18 +323,23 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
 
-          <!-- Player Rank; with includeranksource, an HP | Real switch picks HP tiers or real SL ranks -->
+          <!-- Player Rank; with includeranksource, an HP | In-Game switch picks HP tiers or in-game SL ranks -->
           <multi-select-filter :compact="compact" v-if="includeplayerrank"
             :values="rankSourceSL ? filters.sl_leagues : filters.rank_tiers"
             :text="includeranksource ? 'Player Rank' : 'HP Player Rank'"
             :field="rankSourceSL ? 'SL Rank' : 'HP Player Rank'"
-            :showrankinfo="!rankSourceSL"
-            :toggletabs="includeranksource ? ['HP', 'Real'] : null"
+            :showrankinfo="true"
+            :toggletabs="includeranksource ? ['HP', 'In-Game'] : null"
             :toggleside="rankSourceSL ? 'right' : 'left'"
             :defaultValue="playerRankDefault"
             @input-changed="handleInputChange"
             @toggle-click="(side) => handleInputChange({ field: 'Rank Source', value: side === 'right' ? 'sl' : 'hp', type: 'single' })"
-          ></multi-select-filter>
+          >
+            <!-- Replaces the HP rank explanation while In-Game is on -->
+            <div v-if="rankSourceSL">
+              <p class="max-sm:text-xs">In-game rank is the Storm League rank Blizzard shows on the loading screen, read by players using the Heroes Profile uploader's opt-in rank reader. Each player counts in the rank they had going into that game. Only players whose rank was read count, so sample sizes are smaller than HP rank.</p>
+            </div>
+          </multi-select-filter>
 
           <!-- Hero Rank -->
           <multi-select-filter :compact="compact" v-if="includeherorank && toggleExtraFilters && !rankSourceSL"
