@@ -394,11 +394,11 @@ $uploaderRoutes = function (string $name): void {
 };
 
 /*
-| The same calls at two sets of paths. The desktop uploader from 3.0.3 calls them
+| The same calls at two sets of paths. The desktop uploader from 3.0.5 calls them
 | under uploader/ (named api.uploader.*, which keeps them out of the published
 | spec). The paths without it are what the retired WPF uploader (2.x, reporting
-| version 2.4.0.0), uploader 3.0.0-3.0.2 and the electron uploader call; they're
-| to be retired about a month after 3.0.3 ships, once the 3.x installs have
+| version 2.4.0.0), uploader 3.0.0-3.0.4 and the electron uploader call; they're
+| to be retired about a month after 3.0.5 ships, once the 3.x installs have
 | updated - remove this one line then. The WPF uploader's last update (2.9.1)
 | uploads nothing and sends its users to the download page.
 */
