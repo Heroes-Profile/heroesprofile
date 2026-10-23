@@ -362,34 +362,48 @@ Route::delete('ngs/games/{replayID}', [NgsController::class, 'deleteGames'])
 | seconds.
 */
 
-Route::post('upload/heroesprofile/{source}', [UploadController::class, 'store'])
-    ->middleware(['throttle:upload', 'throttle:upload-daily'])
-    ->name('api.external.upload');
+$uploaderRoutes = function (string $name): void {
+    Route::post('upload/heroesprofile/{source}', [UploadController::class, 'store'])
+        ->middleware(['throttle:upload', 'throttle:upload-daily'])
+        ->name($name.'upload');
+
+    /*
+    | The uploader's other keyless calls, each carrying the ceiling its old route
+    | had. `replays/parsed` and `prematch` answer plain text rather than JSON: the
+    | client string-compares the first and Int32.TryParses the second, so an
+    | envelope on either would kill the feature silently. Do not "fix" them.
+    */
+
+    Route::get('replays/fingerprints/{fingerprint}', [UploadController::class, 'fingerprint'])
+        ->middleware('throttle:replay-fingerprints')
+        ->name($name.'replays.fingerprint');
+
+    Route::get('replays/parsed', [UploadController::class, 'parsed'])
+        ->middleware('throttle:replay-parsed')
+        ->name($name.'replays.parsed');
+
+    Route::post('prematch', [PreMatchController::class, 'store'])
+        ->middleware('throttle:prematch')
+        ->name($name.'prematch');
+
+    // The mode, from the game's first storm save. Shares the lobby call's ceiling.
+    Route::post('prematch/{prematchID}/mode', [PreMatchController::class, 'mode'])
+        ->whereNumber('prematchID')
+        ->middleware('throttle:prematch')
+        ->name($name.'prematch.mode');
+};
 
 /*
-| The uploader's other keyless calls, each carrying the ceiling its old route
-| had. `replays/parsed` and `prematch` answer plain text rather than JSON: the
-| client string-compares the first and Int32.TryParses the second, so an
-| envelope on either would kill the feature silently. Do not "fix" them.
+| The same calls at two sets of paths. The desktop uploader from 3.0.3 calls them
+| under uploader/ (named api.uploader.*, which keeps them out of the published
+| spec). The paths without it are what the retired WPF uploader (2.x, reporting
+| version 2.4.0.0), uploader 3.0.0-3.0.2 and the electron uploader call; they're
+| to be retired about a month after 3.0.3 ships, once the 3.x installs have
+| updated - remove this one line then. The WPF uploader's last update (2.9.1)
+| uploads nothing and sends its users to the download page.
 */
-
-Route::get('replays/fingerprints/{fingerprint}', [UploadController::class, 'fingerprint'])
-    ->middleware('throttle:replay-fingerprints')
-    ->name('api.external.replays.fingerprint');
-
-Route::get('replays/parsed', [UploadController::class, 'parsed'])
-    ->middleware('throttle:replay-parsed')
-    ->name('api.external.replays.parsed');
-
-Route::post('prematch', [PreMatchController::class, 'store'])
-    ->middleware('throttle:prematch')
-    ->name('api.external.prematch');
-
-// The mode, from the game's first storm save. Shares the lobby call's ceiling.
-Route::post('prematch/{prematchID}/mode', [PreMatchController::class, 'mode'])
-    ->whereNumber('prematchID')
-    ->middleware('throttle:prematch')
-    ->name('api.external.prematch.mode');
+$uploaderRoutes('api.external.');
+Route::prefix('uploader')->group(fn () => $uploaderRoutes('api.uploader.'));
 
 /*
 | Loading-screen samples from the uploader's opt-in rank reader (its "Ranks"
