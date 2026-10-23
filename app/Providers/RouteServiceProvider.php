@@ -34,6 +34,8 @@ class RouteServiceProvider extends ServiceProvider
         'api.external.replays.parsed',
         'api.external.prematch',
         'api.external.prematch.mode',
+        // The same calls under uploader/, where the desktop uploader moved in 3.0.3 (routes/api-external.php).
+        'api.uploader.*',
         // The first four under their old paths, for clients that never updated.
         'api.legacy.*',
     ];

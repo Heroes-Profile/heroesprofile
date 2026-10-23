@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -14,7 +15,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::connection('heroesprofile_globals')->create('global_hero_stats_real_rank', function (Blueprint $table) {
-            $table->increments('global_hero_stats_real_rank_id');
+            $table->bigInteger('global_hero_stats_real_rank_id');
             $table->integer('game_version');
             $table->tinyInteger('real_league_tier');
             $table->tinyInteger('game_map');
@@ -61,9 +62,15 @@ return new class extends Migration
             $table->integer('regen_globes')->nullable();
             $table->integer('games_played')->unsigned()->default(0);
 
+            $table->primary(['global_hero_stats_real_rank_id', 'game_version']);
             $table->unique(['game_version', 'real_league_tier', 'game_map', 'hero', 'mirror', 'region', 'win_loss'], 'unique');
             $table->index(['game_version', 'real_league_tier', 'game_map', 'hero', 'mirror', 'region', 'win_loss', 'games_played'], 'primary_gamesPlayed');
         });
+
+        // Partitioned by game_version like the other global tables; BackendServerApplication's AddNewPartition
+        // splits a new p_<id> off p_future for each new patch
+        DB::connection('heroesprofile_globals')->statement('ALTER TABLE `global_hero_stats_real_rank` MODIFY `global_hero_stats_real_rank_id` BIGINT NOT NULL AUTO_INCREMENT');
+        DB::connection('heroesprofile_globals')->statement('ALTER TABLE `global_hero_stats_real_rank` PARTITION BY RANGE (`game_version`) (PARTITION p_270 VALUES LESS THAN (271), PARTITION p_future VALUES LESS THAN MAXVALUE)');
     }
 
     public function down(): void
