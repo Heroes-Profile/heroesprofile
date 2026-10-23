@@ -15,7 +15,7 @@ class EnsureBattlenetAuthenticated
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, ?string $mode = null): Response
     {
 
         // $user = BattlenetAccount::find(1);
@@ -30,7 +30,8 @@ class EnsureBattlenetAuthenticated
             ]));
         }
 
-        if (! Auth::check()) {
+        // optional: the page handles logged-out visitors itself
+        if (! Auth::check() && $mode !== 'optional') {
             return redirect()->guest('/Authenticate/Battlenet');
         }
 

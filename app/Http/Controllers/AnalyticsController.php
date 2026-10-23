@@ -18,8 +18,8 @@ use Illuminate\View\View;
 
 /**
  * Analytics for the logged-in Battle.net account's own season games, for current Patreon
- * supporters (and the testing allowlist); everyone else gets a 404. The replay viewer below
- * is open to any Battle.net login.
+ * supporters (and the testing allowlist). Everyone else gets the info page, and 404s from the
+ * data endpoints. The replay viewer below is open to any Battle.net login.
  */
 class AnalyticsController extends Controller
 {
@@ -34,7 +34,15 @@ class AnalyticsController extends Controller
 
     public function show(Request $request): View
     {
-        $user = $this->allowedUser();
+        $user = Auth::user();
+
+        if (! $user || ! $this->analytics->isAllowed($user)) {
+            return view('Analytics.analyticsInfo')->with([
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'loggedIn' => (bool) $user,
+                'patreonLinked' => (bool) $user?->patreonAccount,
+            ]);
+        }
 
         return view('Analytics.analytics')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),

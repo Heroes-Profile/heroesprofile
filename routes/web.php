@@ -175,8 +175,9 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 
     // Analytics for the logged-in account's own season games, and the replay viewer for any season
     // match (allowlisted for now)
+    // Non-patrons and logged-out visitors get the info page
+    Route::get('Analytics', [AnalyticsController::class, 'show'])->middleware('ensureBattlenetAuth:optional');
     Route::middleware('ensureBattlenetAuth')->group(function () {
-        Route::get('Analytics', [AnalyticsController::class, 'show']);
         Route::get('Analytics/Status', [AnalyticsController::class, 'status'])->middleware('throttle:60,1');
         Route::post('Analytics/Request', [AnalyticsController::class, 'request'])->middleware('throttle:10,1');
         Route::post('Analytics/Data/{tab}', [AnalyticsController::class, 'data'])->whereAlpha('tab')->middleware('throttle:60,1');
