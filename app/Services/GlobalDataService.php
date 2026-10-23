@@ -973,7 +973,14 @@ class GlobalDataService
         // Any timeframe that includes the live patch is still receiving games: a major
         // patch or a multi-build selection included, not only the latest build on its own.
         if (in_array($latestPatch, $timeframe, true)) {
-            return $this->recentPatchWindow($sinceLatest);
+            $window = $this->recentPatchWindow($sinceLatest);
+
+            // The live patch on its own is a small query: stale after an hour at most
+            if (count(array_unique($timeframe)) === 1 && $window->fresh > 60 * 60) {
+                return new GlobalCacheWindow($window->ttl, 60 * 60);
+            }
+
+            return $window;
         }
 
         // The build it replaced keeps getting late uploads for a while. Found from the
