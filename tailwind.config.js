@@ -49,7 +49,7 @@ module.exports = {
       // => @media (min-width: 1536px) { ... }
     },
     fontFamily: {
-      'sans' : ['Open Sans'],
+      'sans' : ['Roboto', 'sans-serif'],
       'logo' : ['Ruslan Display'],
     },
     extend: {},

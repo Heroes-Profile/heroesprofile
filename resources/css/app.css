@@ -2,11 +2,11 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-  @import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Ruslan+Display&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Ruslan+Display&display=swap');
 
 
 
-html{background-color:lightgrey; font-family: 'Open Sans', sans-serif; box-sizing:border-box;}
+html{background-color:lightgrey; font-family: 'Roboto', sans-serif; box-sizing:border-box;}
 
 .expandable-dropdown {
   min-width: 150px;  /* Adjust based on your needs */
@@ -109,17 +109,6 @@ body{
   .main-navigation-wrapper .nav-item > .nav-dropdown{
     top:calc(100% - 10px);
   }
-  .nav-item:not(:first-child)::before{
-   content: '';
-   flex:none;
-   box-sizing:content-box;
-   width:2px;
-   height:1.75em;
-   padding:0;
-   margin-right:20px;
-   font-size:1em;
-   background:currentColor;
-  }
   .nav-dropdown{
       @apply group-hover:block;
   }
@@ -142,10 +131,7 @@ body{
 
 }
 nav .search-component{
-  @apply text-xs py-2;
-}
-.dark-mode nav .search-component input{
-  border:1px solid gray;
+  @apply text-sm py-0;
 }
 
 .nav-dropdown a{

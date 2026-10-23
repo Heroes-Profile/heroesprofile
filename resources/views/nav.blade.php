@@ -1,4 +1,4 @@
-<div class="max-md:bg-gray-dark max-md:fixed max-md:z-40 max-md:w-full">
+<div class="md:hidden max-md:bg-[#23252f] max-md:fixed max-md:z-40 max-md:w-full">
     <div class="flex p-2 px-4 justify-between">
 <a class=" flex items-center font-logo text-2xl md:hidden" href="/">
                 Heroes
@@ -12,18 +12,18 @@
 </div>
 
 <div id="main-menu" class="  main-navigation-wrapper"> <!-- max-md:hidden  - This needs to hide/show on click of the button but only on mobile - either detect mobile with vue, or have a class that is added/taken away that only applies to mobile -->
-    <nav class="bg-gray-dark text-white z-50 relative md:px-4 text-sm max-md:pt-2">
+    <nav class="bg-[#23252f] text-white z-50 relative md:px-8 md:py-3 text-sm max-md:pt-2">
       <button  id="mobile-nav-close" class="hidden bg-blue rounded-lg px-3 py-1 min-w-[44px] min-h-[40px] text-lg ml-auto  mr-2" aria-label="Close menu">x</button>
        
-        <div class="flex items-center justify-between flex-wrap  max-md:flex-col" >
+        <div class="flex items-center justify-between flex-wrap max-w-[1920px] mx-auto max-md:flex-col" >
              
             <a class=" flex items-center font-logo text-2xl" href="/">
                 Heroes
                 <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
                 Profile
             </a>
-            <div class="flex items-center justify-between flex-wrap  text-sm md:ml-auto max-md:flex-col">
-                <div class="flex items-center md:space-x-5 md:justify-end flex-wrap md:flex-nowrap md:pr-5 max-md:flex-col max-md:w-full ">
+            <div class="flex items-center justify-between flex-wrap  text-sm md:flex-1 md:ml-12 max-md:flex-col">
+                <div class="flex items-center md:space-x-6 flex-wrap md:flex-nowrap md:pr-5 max-md:flex-col max-md:w-full ">
                     
                     <div class="relative group inline-block nav-item">
                         <a class=" cursor-pointer">Global Hero Stats</a>
@@ -93,9 +93,8 @@
                             </div>
                         </div>
                     </div>
+
                     <a class=" nav-item" href="/Esports">Community Esports</a>
-
-
 
                     <div class="relative group inline-block nav-item">
                         <a class=" cursor-pointer">Help</a>
@@ -114,6 +113,9 @@
                     </div>
 
                     
+
+                    
+
                     <div class="relative group inline-block nav-item">
                         <a class=" cursor-pointer">Donate</a>
                         <div class="nav-dropdown ">
@@ -127,6 +129,7 @@
                     </div>
 
                     
+
                         @if(isset($mainSearchAccount))
                         <div class="relative group inline-block nav-item ">
                             <a class="cursor-pointer">
@@ -214,20 +217,20 @@
                 </div>
                 <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="mt-auto md:hidden"></search-component>
                 {{-- Distinct white or grey line show the seperation here  --}}
-                <div class="flex space-x-5 bg-lighten p-3 mx-2 max-md:order-1 max-md:mt-auto">
-                    <custom-button :href="'/Api'" :text="'API'" :alt="'API'"  :size="'small'" :color="'teal'"></custom-button>
-                    <custom-button :href="'/Upload'" :text="'Replay Uploader'" :alt="'Replay Uploader'"  :size="'small'" :color="'blue'"></custom-button>
-                    <custom-button :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Remove Ads / Patreon'" :alt="'Patreon'"  :size="'small'" :color="'red'"></custom-button>
+                <div class="flex gap-3 md:ml-auto max-md:order-1 max-md:mt-auto max-md:p-3">
+                    <custom-button class="font-semibold" :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'"></custom-button>
+                    <custom-button class="font-semibold" :href="'/Upload'" :text="'Replay Uploader'" :alt="'Replay Uploader'" :color="'teal'"></custom-button>
+                    <custom-button class="font-semibold" :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Remove Ads / Patreon'" :alt="'Patreon'" :color="'red'"></custom-button>
                 </div>
 
 
                 <dark-mode-toggle class="md:ml-4 max-md:my-4" :darkmode="{{ json_encode(! empty($bladeGlobals['darkmode'])) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></dark-mode-toggle>
 
                 @if($isAuthenticated)
-                    <div class="relative group inline-block  md:ml-auto md:pl-5 max-md:my-4 max-md:flex items-center">
-                            <div class="flex items-center cursor-pointer md:mr-5">
+                    <div class="relative group inline-block md:ml-4 max-md:my-4 max-md:flex items-center">
+                            <div class="flex items-center cursor-pointer">
                                 <img 
-                                class="card-img-top relative hover:opacity-75 w-12 h-12 rounded-full" 
+                                class="card-img-top relative hover:opacity-75 w-10 h-10 rounded" 
                                 src="/images/heroes/auto_select.jpg" 
                                 alt="Settings">
                             </div>
@@ -250,7 +253,7 @@
 
 
                 @else
-                    <custom-button class="md:ml-4 max-md:my-4" :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :size="'small'"></custom-button>
+                    <custom-button class="md:ml-4 max-md:my-4 font-semibold" :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :color="'teal'"></custom-button>
                 @endif
              
             </div>
@@ -258,11 +261,11 @@
     </nav>
     
 </div>
-<nav class="relative flex justify-end md:mr-8 alt-acct-nav max-md:flex-wrap  ">
+<nav class="relative flex justify-end items-center md:gap-4 max-w-[1920px] mx-auto md:px-8 md:py-4 alt-acct-nav max-md:flex-wrap">
   @foreach($altSearchAccounts as $index => $account)
     @if($account)
-      <div class="relative group inline-block  md:p-4 md:mx-4 text-sm  ">
-        <a data-battletag="{{ $account['battletag'] }}" class="mobile-secondary-nav-open cursor-pointer">{{ $account['battletag'] }}@if(isset($regions[$account['region']])) ({{ $regions[$account['region']] }})@endif</a>
+      <div class="relative group inline-block text-sm">
+        <a data-battletag="{{ $account['battletag'] }}" class="mobile-secondary-nav-open cursor-pointer md:block md:bg-teal md:hover:bg-lteal md:rounded md:px-5 md:py-2 transition-colors">{{ $account['battletag'] }}@if(isset($regions[$account['region']]))<span class="text-[0.7em] ml-2">{{ $regions[$account['region']] }}</span>@endif</a>
         <div data-battletag="{{ $account['battletag'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[200px] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
             <div class="nav-dropdown-inner-wrapper rounded-none">
               <div  class="mobile-secondary-nav-name flex justify-between md:hidden max-md:text-xs md:p-3 bg-teal">{{ $account['battletag'] }}@if(isset($regions[$account['region']])) ({{ $regions[$account['region']] }})@endif <button class="close-secondary-nav">x</button></div>
@@ -325,6 +328,6 @@
       </div>
     @endif
   @endforeach
-  <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="max-md:hidden mt-auto"></search-component>
+  <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="max-md:hidden md:w-96"></search-component>
 </nav>
 <mobile-nav-hack></mobile-nav-hack>

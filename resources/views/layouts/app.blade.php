@@ -106,22 +106,11 @@
     <style>.void-eye-img{ background-image: url('{{ asset('images/event/xalatath/void-eye.svg') }}'); }</style>
 
 </head>
-<body class="bg-black text-white {{ $bladeGlobals ? $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' : 'light-mode' }}">
+<body class="bg-[#14182a] bg-[radial-gradient(ellipse_1000px_900px_at_50%_150px,#1c2f5a,#14182a)] bg-no-repeat text-white {{ $bladeGlobals ? $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' : 'light-mode' }}">
   <div id="app" class="relative flex flex-col align-stretch " style="min-height:100vh; ">
   <div class="max-md:h-[75px]"></div>
     <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" ></horizontal-banner-ad>
 
-
-    @if(isset($headeralert) && $headeralert !== null)
-      {{-- Admin-written HTML from header_alert, so it can carry links. --}}
-      <div class="bg-red text-sm text-center p-1 max-md:hidden">
-          {!! $headeralert !!}
-      </div>
-      <details class="group bg-red text-sm text-center px-4 py-2 md:hidden">
-          <summary class="cursor-pointer list-none">Site update. <span class="link group-open:hidden">Read more</span></summary>
-          {!! $headeralert !!}
-      </details>
-    @endif
 
     @include('nav', [
     'isAuthenticated' => Auth::check(),
@@ -129,6 +118,10 @@
     'altSearchAccounts' => [$alt_search_account1, $alt_search_account2, $alt_search_account3],
     'regions' => $bladeGlobals["regions"],
     ])
+
+    @if(isset($headeralert) && $headeralert !== null && request()->cookie('header_alert_dismissed') !== md5($headeralert))
+      <header-alert :alert="{{ json_encode($headeralert) }}" :dismiss-key="{{ json_encode(md5($headeralert)) }}"></header-alert>
+    @endif
     
 
     <rich-media-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></rich-media-ad>
@@ -137,44 +130,27 @@
 
     <dynamic-banner-ad  :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" :index="{{ json_encode(1) }}" :mobile-override="{{ json_encode(false) }}"></dynamic-banner-ad>
 
-    <div class="mt-auto">
-      <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal mt-[2em] w-full px-4">
-        <div class="footer container-boxed py-10">
-          <div class="container container-flex mx-auto">
-            <div class="logo ">
-              <a class="text-blue-600 hover:text-blue-800 flex justify-center items-center font-logo text-2xl py-5 mx-auto text-center" href="/">
-                Heroes
-                <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
-                Profile
-              </a>
-            </div>
-            <div class="content ">
-              <div class="footer-nav">
-              </div>
-              
-              @if(isset($isBackendOff) && $isBackendOff)
-                  <div class="bg-red text-sm text-center p-1">
-                      The backend is currently offline. Some features may not be available.  Please contact zemill@heroesprofile.com
-                  </div>
-              @elseif(isset($maxReplayID))
-                  <div>{{ $maxReplayID }} replays | Patch {{ $latestPatch }} | Up to date as of: <format-date :input="'{{ $latestGameDate }}'"></format-date></div>
-              @endif
-
-              
-              <p class="text-xs space-x-3">
-                <a href="/FAQ" class="underline">FAQ</a>
-                <a href="/Privacy/Policy" class="underline">Privacy Policy</a>
-                <a href="/Terms/Of/Service" class="underline">Terms of Service</a>
-              </p>
-              <div class="copyright">Skill Tree Development, LLC | <a href="https://heroesprofile.com">Heroes Profile</a></div>
-            </div>
-          </div>
-          <div class="disclaimer">
-            <footer-popup-disclaimer></footer-popup-disclaimer>
-          </div>
+    <footer class="mt-auto @yield('footer_gap', 'pt-[2em]')">
+      @if(isset($isBackendOff) && $isBackendOff)
+        <div class="bg-red text-sm text-center p-1">
+          The backend is currently offline. Some features may not be available.  Please contact zemill@heroesprofile.com
         </div>
+      @endif
+      <div class="bg-[#1f2229] text-sm px-4 md:px-8 py-6 flex flex-wrap items-center justify-between gap-4 max-md:flex-col max-md:text-center">
+        <div>
+          @if(isset($maxReplayID) && ! (isset($isBackendOff) && $isBackendOff))
+            Patch {{ $latestPatch }}<span class="mx-3">|</span>{{ is_numeric($maxReplayID) ? number_format($maxReplayID) : $maxReplayID }} replays
+          @endif
+        </div>
+        <div class="space-x-3">
+          <a href="/FAQ" class="underline">FAQ</a>
+          <a href="/Privacy/Policy" class="underline">Privacy Policy</a>
+          <a href="/Terms/Of/Service" class="underline">Terms of Service</a>
+        </div>
+        <div>Skill Tree Development, LLC<span class="mx-3">|</span><a href="https://heroesprofile.com">Heroes Profile</a></div>
       </div>
-    </div>
+      <footer-popup-disclaimer></footer-popup-disclaimer>
+    </footer>
   </div>
 
   @stack('scripts')

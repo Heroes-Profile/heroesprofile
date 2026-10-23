@@ -2,10 +2,13 @@
   
   <div class="search-component mt-auto py-4">
     <div class="flex items-stretch">
-      <input type="text" class="form-control variable-text rounded-l p-2" :placeholder="labelText" :aria-label="labelText" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton">
+      <div class="relative flex-1">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-lteal pointer-events-none"></i>
+        <input type="text" class="form-control variable-text rounded-l p-2 pl-10 w-full" :placeholder="labelText" :aria-label="labelText" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton">
+      </div>
       <button
         v-if="buttonText"
-        class="btn btn-outline-secondary bg-teal hover:bg-lteal rounded-r p-2"
+        class="btn btn-outline-secondary bg-red hover:bg-lred rounded-r px-6 py-2 font-semibold shadow-[0_0_12px_rgba(179,54,22,0.5)]"
         type="button"
         :disabled="!isInputValid"
         @click="clickedButton"
@@ -25,7 +28,6 @@
     },
     props: {
       type: String,
-
     },
     data(){
       return {

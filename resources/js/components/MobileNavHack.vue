@@ -128,10 +128,21 @@ mobileNavButtons.forEach(function(button){
                 }
             });
             closeButton.addEventListener('click', function () {
-               
+
                     elementToToggle.style.display = 'none';
                     closeButton.style.display = 'none';
-                
+
+            });
+
+            // The mobile menu's inline display would otherwise stick when the window is widened
+            window.addEventListener('resize', function () {
+                if(!isSmallScreen()){
+                    elementToToggle.style.display = '';
+                    closeButton.style.display = '';
+                    document.querySelectorAll('.nav-dropdown').forEach(function(dropdown){
+                        dropdown.style.display = '';
+                    });
+                }
             });
         });
   },
