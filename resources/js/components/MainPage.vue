@@ -78,10 +78,10 @@
         <i class="fas fa-chart-line" style="font-size: 100px;"></i>
 
         <h3 class="text-2xl mb-10 mt-2">Player Analytics</h3>
-        <p class="mb-10">Deep analysis of your own season games from their replays: where and how you die, where you spend your time, how you do when ahead or behind, coaching on your habits, and a replay viewer for every game. Pre-alpha, for Patreon supporters.</p>
+        <p class="mb-10">Deep analysis of your own season games from their replays: where and how you die, where you spend your time, how you do when ahead or behind, coaching on your habits, and a replay viewer for every game. Pre-alpha: open to Patreon supporters while we test it.</p>
 
         <custom-button v-if="analyticsAllowed" :href="'/Analytics'" :text="'Open Analytics'" :alt="'Open Analytics'" :size="'big'" class="mt-auto" :color="'teal'"></custom-button>
-        <custom-button v-else :href="'https://www.patreon.com/heroesprofile'" :text="'Support on Patreon'" :alt="'Support Heroes Profile on Patreon'" :size="'big'" class="mt-auto" :color="'teal'" :targetblank="true"></custom-button>
+        <custom-button v-else :href="'/Analytics'" :text="'Learn More'" :alt="'Learn more about Analytics'" :size="'big'" class="mt-auto" :color="'teal'"></custom-button>
       </div>
     </div>
 

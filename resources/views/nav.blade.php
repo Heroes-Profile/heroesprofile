@@ -78,9 +78,7 @@
                                 <a href="/Match/Search" >Replay Search</a>
                                 <a href="/Tools/RandomizeMe" >Randomize Me</a>
                                 <a href="/Tools/Activity" >Activity Graphs</a>
-                                @if (Auth::check() && app(\App\Services\AnalyticsService::class)->isAllowed(Auth::user()))
                                 <a href="/Analytics" >Analytics - Pre Alpha</a>
-                                @endif
                                 @if (! empty($bladeGlobals['xalatathRecapAvailable']))
                                 <a href="/Event/Xalatath" >Xal'atath Recap</a>
                                 @endif
@@ -157,6 +155,8 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @else
+                                    <a href="/Analytics" class="bg-teal font-bold"><i class="fas fa-chart-line mr-2"></i>Analytics</a>
                                     @endif
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" >Profile</a>
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/FriendFoe" >Friends and Foes</a>
