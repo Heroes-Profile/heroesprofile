@@ -56,7 +56,7 @@
 
     <div v-if="isSLRank" class="my-5 bg-teal py-5 px-2">
       <infobox class="max-w-[1500px] mx-auto">
-        SL Rank uses real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP Rank.
+        Real player rank uses in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.
         <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
       </infobox>
     </div>

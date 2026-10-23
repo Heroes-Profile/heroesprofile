@@ -97,15 +97,6 @@
             infolink="/FAQ#patch-history"
           ></multi-select-filter>
 
-          <!-- Rank Source -->
-          <single-select-filter :compact="compact" v-if="includeranksource"
-            :values="filters.rank_source"
-            :text="'Rank Source'"
-            @input-changed="handleInputChange"
-            :defaultValue="ranksourceinput || 'hp'"
-            :disabledeselectfilters="true"
-          ></single-select-filter>
-
           <!-- Current Game Type Multiselect-->
           <multi-select-filter :compact="compact" v-if="modifiedincludegametype"
             :values="filters.game_types" 
@@ -182,13 +173,6 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
 
-          <!-- SL Rank -->
-          <multi-select-filter :compact="compact" v-if="includeranksource && rankSourceSL && filters.sl_leagues"
-            :values="filters.sl_leagues"
-            :text="'SL Rank'"
-            :defaultValue="slrankinput"
-            @input-changed="handleInputChange"
-          ></multi-select-filter>
 
           <!-- Stat Type Filter -->
           <single-select-filter :compact="compact" v-if="showStatTypeFilter"
@@ -339,13 +323,17 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
 
-          <!-- Player Rank -->
-          <multi-select-filter :compact="compact" v-if="includeplayerrank && !rankSourceSL"
-            :values="filters.rank_tiers" 
-            :text="'HP Player Rank'"
-            :showrankinfo="true"
-            :defaultValue="playerrank"
+          <!-- Player Rank; with includeranksource, an HP | Real switch picks HP tiers or real SL ranks -->
+          <multi-select-filter :compact="compact" v-if="includeplayerrank"
+            :values="rankSourceSL ? filters.sl_leagues : filters.rank_tiers"
+            :text="includeranksource ? 'Player Rank' : 'HP Player Rank'"
+            :field="rankSourceSL ? 'SL Rank' : 'HP Player Rank'"
+            :showrankinfo="!rankSourceSL"
+            :toggletabs="includeranksource ? ['HP', 'Real'] : null"
+            :toggleside="rankSourceSL ? 'right' : 'left'"
+            :defaultValue="playerRankDefault"
             @input-changed="handleInputChange"
+            @toggle-click="(side) => handleInputChange({ field: 'Rank Source', value: side === 'right' ? 'sl' : 'hp', type: 'single' })"
           ></multi-select-filter>
 
           <!-- Hero Rank -->
@@ -617,6 +605,8 @@
         role: String,
         gamemap: Array,
         playerrank: Array,
+        // Set once: the Player Rank switch clears its own selection
+        playerRankDefault: null,
         tierrank: String,
         herorank: Array,
         rolerank: Array,
@@ -742,8 +732,12 @@
         this.selectedSingleFilters['Rank Source'] = this.ranksourceinput || 'hp';
         if(this.ranksourceinput === 'sl'){
           this.setRankSource('sl');
+          if(this.slrankinput){
+            this.selectedMultiFilters['SL Rank'] = this.slrankinput;
+          }
         }
       }
+      this.playerRankDefault = this.rankSourceSL ? this.slrankinput : this.playerrank;
 
       this.ffBattletag = this.ffbattletaginput || null;
       this.ffBlizzid = this.ffblizzidinput || null;
@@ -757,7 +751,7 @@
     },
     mounted() {
 
-      if(this.playerrankinput){
+      if(this.playerrankinput && !this.rankSourceSL){
         this.selectedMultiFilters["HP Player Rank"] = this.playerrankinput;
       }
 
@@ -945,18 +939,10 @@
           delete this.selectedSingleFilters['Group Size'];
           delete this.selectedMultiFilters['Group Size'];
           this.statfilterdisabled = false;
-
-          // The SL Rank dropdown remounts showing slrankinput
-          if(this.slrankinput){
-            this.selectedMultiFilters['SL Rank'] = this.slrankinput;
-          }
         }else{
           delete this.selectedMultiFilters['SL Rank'];
 
-          // The HP dropdowns remount showing their inputs; Game Type sends its own
-          if(this.playerrankinput){
-            this.selectedMultiFilters['HP Player Rank'] = this.playerrankinput;
-          }
+          // The HP dropdowns remount showing their inputs; Game Type sends its own. Player Rank stays mounted and clears itself.
           if(this.herorankinput){
             this.selectedMultiFilters['HP Hero Rank'] = this.herorankinput;
           }

@@ -1792,11 +1792,6 @@ class GlobalDataService
             ['code' => 'SL Rank', 'name' => 'SL Rank'],
         ];
 
-        $filterData->rank_source = [
-            ['code' => 'hp', 'name' => 'HP Rank'],
-            ['code' => 'sl', 'name' => 'SL Rank'],
-        ];
-
         $filterData->group_size = [
             ['code' => 'All', 'name' => 'All'],
             ['code' => 'Solo', 'name' => 'Solo'],
