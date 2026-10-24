@@ -1,7 +1,9 @@
 <template>
-  <div v-if="!esport" class="relative mb-1.5">
-  <a :href="getHref()" :class="['group/row relative flex flex-wrap items-center justify-between gap-y-4 rounded-lg overflow-hidden 2xl:flex-nowrap', data.winner === 1 ? 'bg-surface-2' : 'bg-surface-1']">
+  <div v-if="!esport" class="group/replay relative mb-1.5">
+  <div :class="['group/row relative flex flex-wrap items-center justify-between gap-y-4 rounded-lg overflow-hidden 2xl:flex-nowrap', data.winner === 1 ? 'bg-surface-2' : 'bg-surface-1']">
     <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
+    <!-- The whole row opens the match; talents, player names and the replay icons sit on top of it -->
+    <a :href="getHref()" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
     <div class="relative flex-1 lg:max-w-[410px] min-w-[300px] self-stretch flex items-center pl-6 py-4">
       <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="data.winner === 1 ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
       <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"></div>
@@ -37,26 +39,27 @@
       </template>
     </div>
 
-    <div class="relative flex flex-wrap gap-1.5 items-center px-4 w-full 2xl:w-[362px] shrink-0 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded-lg">
+    <div class="relative z-[2] flex flex-wrap gap-1.5 items-center px-4 w-full 2xl:w-[362px] shrink-0 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded-lg">
       <template v-for="level in talentLevels" :key="level">
         <talent-image-wrapper v-if="data[level]" :talent="data[level]" :size="'medium'"></talent-image-wrapper>
         <div v-else class="w-[42px] h-[42px] shrink-0 rounded-lg bg-surface-3"></div>
       </template>
     </div>
 
-    <div v-if="data.players && data.players.length" class="relative flex gap-2 pl-4 2xl:pl-1.5 pr-12 py-4 w-full 2xl:w-[362px] shrink-0">
+    <div v-if="data.players && data.players.length" class="relative z-[2] flex gap-2 pl-4 2xl:pl-1.5 pr-12 py-4 w-full 2xl:w-[362px] shrink-0">
       <div v-for="(team, teamIndex) in data.players" :key="teamIndex" class="flex flex-col gap-1.5 w-[150px]">
         <div v-for="(player, playerIndex) in team" :key="playerIndex" class="flex gap-1 h-4 items-center">
           <span class="w-4 h-4 shrink-0"><img v-if="player.party" class="w-4 h-4" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${player.party}.png`" alt=""/></span>
           <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name"/>
           <!-- The profile's own player comes first -->
-          <span :class="['flex-1 min-w-0 truncate text-sm font-medium', teamIndex === 0 && playerIndex === 0 ? 'text-white' : 'text-subtext']">{{ player.check ? 'Hidden' : player.battletag }}</span>
+          <span v-if="player.check" class="flex-1 min-w-0 truncate text-sm font-medium text-subtext">Hidden</span>
+          <a v-else :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="$redirectToProfile(player.battletag, player.blizz_id, player.region, false)" :title="player.battletag" :class="['flex-1 min-w-0 truncate text-sm font-medium hover:text-lteal hover:underline', teamIndex === 0 && playerIndex === 0 ? 'text-white' : 'text-subtext']">{{ player.battletag }}</a>
         </div>
       </div>
     </div>
-  </a>
+  </div>
 
-  <div v-if="data.downloadable || isWatchableGame" class="absolute right-2 top-2 flex flex-col gap-2">
+  <div v-if="data.downloadable || isWatchableGame" class="absolute z-[3] right-2 top-2 flex flex-col gap-2 transition-opacity md:opacity-0 md:group-hover/replay:opacity-100 md:focus-within:opacity-100">
     <a v-if="data.downloadable && replayViewerAllowed && !replayDownloadBlocked" class="hover:text-lteal" :href="'/Match/Single/' + data.replayID + '/Download'" title="Download Replay"><i class="fa-solid fa-download"></i></a>
     <span v-else-if="data.downloadable && !replayViewerAllowed" class="opacity-60 cursor-not-allowed" title="Log in to download replays"><i class="fa-solid fa-download"></i></span>
     <a v-if="isWatchableGame && replayViewerAllowed" class="hover:text-lteal" :href="'/Analytics/Match/Single/' + data.replayID" title="Watch Replay"><i class="fa-solid fa-video"></i></a>

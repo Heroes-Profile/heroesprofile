@@ -359,6 +359,8 @@ class GlobalDataService
     /**
      * Both teams for a recent match, the player and their team first, with party
      * numbers turned into the same icon colours the single match page uses.
+     * Within a team: the player on top, then the rest of their party, then each
+     * other party together, then solo players.
      * Private and banned players are hidden the way the single match page hides them.
      */
     public function formatMatchPlayers(array $players, $playerTeam, $blizz_id, $region, $heroData): array
@@ -385,7 +387,23 @@ class GlobalDataService
 
                 return $player;
             })
-            ->sortBy(fn ($player) => ($player['team'] == $playerTeam ? 0 : 2) + ($player['blizz_id'] == $blizz_id ? 0 : 1))
+            ->pipe(function ($players) use ($playerTeam, $blizz_id, $partyColors) {
+                $ownParty = $players->firstWhere('blizz_id', $blizz_id)['party'] ?? null;
+
+                return $players->sortBy(function ($player) use ($playerTeam, $blizz_id, $partyColors, $ownParty) {
+                    if ($player['party'] === null) {
+                        $partyOrder = 9;
+                    } elseif ($player['party'] === $ownParty) {
+                        $partyOrder = 0;
+                    } else {
+                        $partyOrder = 1 + array_search($player['party'], $partyColors);
+                    }
+
+                    $teamOrder = $player['team'] == $playerTeam ? 0 : 1000;
+
+                    return $player['blizz_id'] == $blizz_id ? $teamOrder : $teamOrder + 10 + $partyOrder * 10;
+                });
+            })
             ->map(function ($player) {
                 if ($player['check']) {
                     $player['blizz_id'] = null;

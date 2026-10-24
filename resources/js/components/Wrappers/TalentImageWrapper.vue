@@ -6,7 +6,7 @@
         <div class="space-y-2.5 mt-2.5">
           <p v-for="(part, index) in descriptionParts" :key="index">
             <template v-if="part.label">
-              <i v-if="part.quest" class="fa-solid fa-exclamation text-quest mr-1"></i>
+              <img v-if="part.quest" class="inline-block w-4 h-4 mr-1 align-[-0.15em]" src="/images/miscellaneous/quest-icon.png" alt="">
               <span :class="part.quest ? 'text-quest' : 'font-bold'">{{ part.label }}:</span>
             </template>
             {{ part.text }}
