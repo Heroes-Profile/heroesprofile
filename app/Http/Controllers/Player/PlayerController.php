@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use App\Models\Battletag;
+use App\Models\BattletagNotAllowedDownloadReplay;
 use App\Models\GameType;
 use App\Models\MasterMMRDataAR;
 use App\Models\MasterMMRDataHL;
@@ -65,6 +66,10 @@ class PlayerController extends Controller
 
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
+            // Download and Watch Replay on the recent matches, as on the single match page
+            'replayViewerAllowed' => Auth::check(),
+            'analyticsCutover' => config('analytics.cutover'),
+            'replayDownloadBlocked' => Auth::check() && BattletagNotAllowedDownloadReplay::where('battletag', Auth::user()->battletag)->exists(),
         ]);
     }
 
@@ -156,6 +161,12 @@ class PlayerController extends Controller
             $cachedData->delete();
             $cachedData = null;
         }
+
+        // Recent matches stored before they carried both teams, K/D/A and length
+        if ($cachedData && ! $this->matchesHaveDetails($cachedData->matches)) {
+            $cachedData->delete();
+            $cachedData = null;
+        }
         if (! $cachedData) {
             $this->calculateProfile($blizz_id, $region, $game_type, $season);
 
@@ -216,6 +227,8 @@ class PlayerController extends Controller
     {
         $paramsHash = hash('sha256', json_encode(GlobalCacheKey::normalize([
             'page' => 'profile',
+            // Bump when the stored shape changes, so older entries are rebuilt
+            'version' => 2,
             'blizz_id' => $blizz_id,
             'region' => $region,
             'game_type' => $game_type,
@@ -332,6 +345,12 @@ class PlayerController extends Controller
                 'player.hero_change AS hero_change',
                 'player.role_conservative_rating AS role_conservative_rating',
                 'player.role_change AS role_change',
+                'player.team AS team',
+                'replay.date_added AS date_added',
+                DB::raw(GameLength::playedSql('replay.game_length', 'replay.game_type').' AS game_length'),
+                'scores.kills AS kills',
+                'scores.deaths AS deaths',
+                'scores.assists AS assists',
                 'talents.level_one AS level_one',
                 'talents.level_four AS level_four',
                 'talents.level_seven AS level_seven',
@@ -343,6 +362,31 @@ class PlayerController extends Controller
             ->orderByDesc('replay.game_date')
             ->limit(5)
             ->get();
+
+        $matchPlayers = DB::table('player')
+            ->join('battletags', 'battletags.player_id', '=', 'player.battletag')
+            ->whereIn('player.replayID', $matches->pluck('replayID'))
+            ->get([
+                'player.replayID',
+                'player.blizz_id',
+                'player.hero',
+                'player.team',
+                'player.party',
+                'battletags.battletag',
+            ])
+            ->groupBy('replayID');
+
+        $matches = $matches->map(function ($match) use ($matchPlayers) {
+            $match->players = ($matchPlayers[$match->replayID] ?? collect())->map(fn ($player) => [
+                'battletag' => $player->battletag,
+                'blizz_id' => $player->blizz_id,
+                'hero' => $player->hero,
+                'team' => $player->team,
+                'party' => $player->party,
+            ])->values();
+
+            return $match;
+        });
 
         if ($cachedData) {
             $existingMatches = collect(json_decode($cachedData->matches, true));
@@ -549,9 +593,9 @@ class PlayerController extends Controller
             $minutes = floor($averageTimeOnFireInSeconds / 60);
             $seconds = $averageTimeOnFireInSeconds % 60;
 
-            $returnData->average_time_on_fire = "{$minutes} minutes, {$seconds} seconds";
+            $returnData->average_time_on_fire = "{$minutes}m, {$seconds}s";
         } else {
-            $returnData->average_time_on_fire = '0 minutes, 0 seconds';
+            $returnData->average_time_on_fire = '0m, 0s';
         }
 
         $hero_data = null;
@@ -781,7 +825,7 @@ class PlayerController extends Controller
             $matches = $data->matches;
         }
 
-        $returnData->matchData = collect($matches)->sortByDesc('game_date')->map(function ($match) use ($maps, $heroData, $talentData) {
+        $returnData->matchData = collect($matches)->sortByDesc('game_date')->map(function ($match) use ($maps, $heroData, $talentData, $blizz_id, $region) {
             $match['game_type'] = $this->globalDataService->getGameTypeIDtoString()[$match['game_type']];
             $match['game_map'] = $maps[$match['game_map']];
             $match['hero'] = $heroData[$match['hero']];
@@ -840,12 +884,26 @@ class PlayerController extends Controller
                 $match["{$type}_change"] = round($match["{$type}_change"], 2);
             }
 
+            // Matches cached before these fields existed don't have them
+            if (! empty($match['players'])) {
+                $match['players'] = $this->globalDataService->formatMatchPlayers($match['players'], $match['team'], $blizz_id, $region, $heroData);
+            }
+            $match['downloadable'] = $this->globalDataService->replayFileIsRetained($match['date_added'] ?? null);
+            unset($match['date_added']);
+
             return $match;
         })->values();
 
         $returnData->weekday_data = $data->weekday_data ? json_decode($data->weekday_data, true) : null;
 
         return $returnData;
+    }
+
+    private function matchesHaveDetails($matches): bool
+    {
+        $matches = is_string($matches) ? json_decode($matches, true) : $matches;
+
+        return collect($matches)->every(fn ($match) => array_key_exists('players', (array) $match));
     }
 
     /**

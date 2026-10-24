@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
+use App\Models\BattletagNotAllowedDownloadReplay;
 use App\Models\GameType;
 use App\Models\Map;
 use App\Models\PlayerStatsCache;
@@ -13,6 +14,7 @@ use App\Rules\HeroInputByIDValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use App\Services\GlobalQueryService;
+use App\Support\GameLength;
 use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -98,6 +100,8 @@ class PlayerMatchHistory extends Controller
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
             'showcustomgames' => $showcustomgames,
             'urlparameters' => $request->query(),
+            'analyticsCutover' => config('analytics.cutover'),
+            'replayDownloadBlocked' => Auth::check() && BattletagNotAllowedDownloadReplay::where('battletag', Auth::user()->battletag)->exists(),
         ]);
     }
 
@@ -410,6 +414,70 @@ class PlayerMatchHistory extends Controller
         );
 
         return $returnData;
+    }
+
+    /**
+     * Both teams, game length and whether the replay can still be downloaded, for the
+     * matches on one page. Kept out of the shared page cache because hidden players
+     * depend on the viewer and replay files expire.
+     */
+    public function getMatchDetails(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'blizz_id' => 'required|integer',
+            'region' => 'required|integer',
+            'replayIDs' => 'required|array|max:100',
+            'replayIDs.*' => 'integer',
+        ]);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        $blizz_id = $request['blizz_id'];
+        $region = $request['region'];
+        $showCustomGames = $this->globalDataService->showcustomgames(null, $blizz_id, $region);
+
+        // Only games this player was in
+        $replays = DB::table('replay')
+            ->join('player', 'player.replayID', '=', 'replay.replayID')
+            ->whereIn('replay.replayID', $request['replayIDs'])
+            ->where('player.blizz_id', $blizz_id)
+            ->where('replay.region', $region)
+            ->when(! $showCustomGames, fn ($query) => $query->where('replay.game_type', '<>', 0))
+            ->get(['replay.replayID', 'replay.game_type', 'replay.game_length', 'replay.date_added', 'player.team'])
+            ->keyBy('replayID');
+
+        $players = $replays->isEmpty() ? collect() : DB::table('player')
+            ->join('battletags', 'battletags.player_id', '=', 'player.battletag')
+            ->whereIn('player.replayID', $replays->keys())
+            ->get([
+                'player.replayID',
+                'player.blizz_id',
+                'player.hero',
+                'player.team',
+                'player.party',
+                'battletags.battletag',
+            ])
+            ->groupBy('replayID');
+
+        $heroData = $this->globalDataService->getHeroes()->keyBy('id');
+
+        return $replays->map(fn ($replay) => [
+            'game_length' => GameLength::played($replay->game_length, $replay->game_type),
+            'downloadable' => $this->globalDataService->replayFileIsRetained($replay->date_added),
+            'players' => $this->globalDataService->formatMatchPlayers(
+                ($players[$replay->replayID] ?? collect())->map(fn ($player) => (array) $player)->all(),
+                $replay->team,
+                $blizz_id,
+                $region,
+                $heroData
+            ),
+        ]);
     }
 
     private function paramsHash(Request $request): string

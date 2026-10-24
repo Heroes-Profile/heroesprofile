@@ -1,16 +1,9 @@
 <template>
-  <div class="relative grid overflow-hidden variable-background rounded ring-inset ring-[1px] variable-ring">
-    <span class="invisible" aria-hidden="true">&nbsp;</span>
-    <span ref="fill" :class="fillClasses" :style="{ width }" aria-hidden="true"></span>
-    <span ref="textMeasure" class="absolute invisible flex items-center whitespace-nowrap px-2 tabular-nums" aria-hidden="true">
-      {{ mainText }}<span :class="suffixClass">{{ suffix }}</span>
-    </span>
-    <span v-if="textFitsInside"
-      class="absolute inset-y-0 left-0 z-10 flex items-center px-2 text-white whitespace-nowrap tabular-nums">
-      {{ mainText }}<span :class="suffixClass">{{ suffix }}</span>
-    </span>
-    <span v-else class="absolute inset-y-0 z-10 flex items-center pl-1 variable-text whitespace-nowrap tabular-nums"
-      :style="{ left: width }">
+  <div class="flex items-center gap-4 min-w-0">
+    <div :class="['flex-1 min-w-0 rounded bg-surface-3 overflow-hidden', size === 'big' ? 'h-[30px]' : 'h-4']" aria-hidden="true">
+      <div :class="['h-full', colorClasses[color] || colorClasses.blue]" :style="{ width }"></div>
+    </div>
+    <span :class="['shrink-0 font-semibold text-header whitespace-nowrap tabular-nums', { 'text-2xl': size === 'big' }]">
       {{ mainText }}<span :class="suffixClass">{{ suffix }}</span>
     </span>
   </div>
@@ -40,12 +33,12 @@ export default {
         return Object.hasOwn(colorClasses, value);
       },
     },
-    divider: { type: Boolean, default: true },
+    // 'big' is the 30px bar, for a headline stat
+    size: { type: String, default: null },
   },
   data() {
     return {
-      textFitsInside: false,
-      resizeObserver: null,
+      colorClasses,
     };
   },
   computed: {
@@ -62,37 +55,6 @@ export default {
       return this.displayText !== null && this.displayText !== undefined
         ? String(this.displayText)
         : String(this.value);
-    },
-    fillClasses() {
-      return [
-        'absolute inset-y-0 left-0 rounded-l',
-        colorClasses[this.color] || colorClasses.blue,
-        this.numericValue === 100 ? 'rounded-r' : '',
-        this.divider && this.numericValue > 0 && this.numericValue < 100
-          ? 'border-r-2 border-black'
-          : '',
-      ];
-    },
-  },
-  mounted() {
-    this.$nextTick(this.updateTextPlacement);
-
-    this.resizeObserver = new ResizeObserver(() => {
-      this.updateTextPlacement();
-    });
-    this.resizeObserver.observe(this.$refs.fill);
-    this.resizeObserver.observe(this.$refs.textMeasure);
-  },
-  beforeUnmount() {
-    this.resizeObserver?.disconnect();
-  },
-  methods: {
-    updateTextPlacement() {
-      const fill = this.$refs.fill;
-      const text = this.$refs.textMeasure;
-      if (!fill || !text) return;
-
-      this.textFitsInside = fill.clientWidth >= text.offsetWidth;
     },
   },
 };

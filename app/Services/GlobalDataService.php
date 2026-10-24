@@ -353,6 +353,48 @@ class GlobalDataService
         return ! ($state === 'private' && $isOwner);
     }
 
+    /**
+     * Both teams for a recent match, the player and their team first, with party
+     * numbers turned into the same icon colours the single match page uses.
+     * Private and banned players are hidden the way the single match page hides them.
+     */
+    public function formatMatchPlayers(array $players, $playerTeam, $blizz_id, $region, $heroData): array
+    {
+        $partyColors = ['red', 'blue', 'teal', 'orange', 'brown', 'purple'];
+        $parties = [];
+        $viewer = Auth::user();
+
+        return collect($players)
+            ->map(function ($player) use ($heroData, $partyColors, &$parties, $region, $viewer) {
+                $hidden = $this->isHiddenFrom($player['blizz_id'], $region, $viewer);
+
+                $player['check'] = $hidden;
+                $player['region'] = $hidden ? null : $region;
+                $player['battletag'] = $hidden ? null : explode('#', $player['battletag'])[0];
+                $player['hero'] = $heroData[$player['hero']] ?? null;
+
+                if ($player['party'] != '' && $player['party'] != 0) {
+                    $parties[$player['party']] ??= $partyColors[count($parties)] ?? null;
+                    $player['party'] = $parties[$player['party']];
+                } else {
+                    $player['party'] = null;
+                }
+
+                return $player;
+            })
+            ->sortBy(fn ($player) => ($player['team'] == $playerTeam ? 0 : 2) + ($player['blizz_id'] == $blizz_id ? 0 : 1))
+            ->map(function ($player) {
+                if ($player['check']) {
+                    $player['blizz_id'] = null;
+                }
+
+                return $player;
+            })
+            ->groupBy('team')
+            ->values()
+            ->toArray();
+    }
+
     /** Called when an account's privacy changes, so it takes effect immediately. */
     public function forgetRestrictedAccount($blizzId, $region): void
     {

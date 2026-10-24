@@ -1,7 +1,7 @@
 <template>
-  <div v-if="data" class="max-w-[1500px] mx-auto px-4">
-    <h2 class="text-3xl font-bold py-5 text-center">Storm League Rank
-      <round-image class="mt-2" size="small" icon="fas fa-info" title="info" popupsize="large">
+  <panel-box v-if="data" title="Storm League Rank">
+    <template #title>
+      <round-image size="small" icon="fas fa-info" title="info" popupsize="large">
         <slot>
           <div>
             <p class="max-sm:text-xs">This is the player's real in-game Storm League rank, not an estimate. Blizzard doesn't publish ranks, so we read them off the game itself.</p>
@@ -11,7 +11,7 @@
           </div>
         </slot>
       </round-image>
-    </h2>
+    </template>
 
     <div v-if="data.current" class="flex flex-col items-center">
       <div v-if="!data.current_season" class="text-sm font-bold uppercase opacity-80 mb-2">Last season's rank<span v-if="data.season"> ({{ data.season }})</span></div>
@@ -49,7 +49,7 @@
         <custom-button href="/Upload" text="Get the uploader" alt="Download the Heroes Profile replay uploader" color="teal"></custom-button>
       </div>
     </details>
-  </div>
+  </panel-box>
 </template>
 
 <script>
@@ -57,6 +57,7 @@ import moment from 'moment-timezone';
 
 export default {
   name: 'PlayerRealRank',
+  emits: ['loaded'],
   props: {
     blizzid: [String, Number],
     region: [String, Number],
@@ -77,6 +78,7 @@ export default {
           region: this.region,
         });
         this.data = response.data;
+        this.$emit('loaded', this.data);
       }catch(error){
         //Do something here
       }

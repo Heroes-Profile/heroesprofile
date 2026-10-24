@@ -1,17 +1,17 @@
 <template>
   <div id="filter-label" class="relative">
-    <div class="flex flex-col text-sm font-medium text-gray-700 p-2">
+    <div class="flex flex-col gap-1.5 text-sm font-medium text-subtext p-2">
       <span>{{ text }}</span>
       <div class="relative flex">
         <input
           type="text"
           v-model="search"
           placeholder="Enter battletag"
-          class="md:w-[200px] min-w-[100px] h-[40px] border-solid border-[1px] border-white bg-blue p-2 text-white focus:outline-none"
+          class="md:w-[200px] min-w-[100px] h-[40px] rounded-l !bg-teal p-2 text-white focus:outline-none"
           @keydown.enter.prevent="lookup"
           @input="results = []; error = null"
         />
-        <button type="button" class="h-[40px] bg-blue p-2 border-r-[1px] border-t-[1px] border-b-[1px] hover:bg-teal" :disabled="loading" @click="lookup">{{ loading ? '...' : 'Add' }}</button>
+        <button type="button" class="h-[40px] rounded-r bg-teal hover:bg-lteal border-l border-darken text-white px-3" :disabled="loading" @click="lookup">{{ loading ? '...' : 'Add' }}</button>
 
         <div v-if="results.length > 1" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="min-width:280px; max-height:340px; overflow-y:auto;">
           <div

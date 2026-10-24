@@ -1,5 +1,70 @@
 <template>
-  <div :class="[
+  <div v-if="!esport" class="relative mb-1.5">
+  <a :href="getHref()" :class="['group/row relative flex flex-wrap items-center justify-between gap-y-4 rounded-lg overflow-hidden 2xl:flex-nowrap', data.winner === 1 ? 'bg-surface-2' : 'bg-surface-1']">
+    <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
+    <div class="relative flex-1 lg:max-w-[410px] min-w-[300px] self-stretch flex items-center pl-6 py-4">
+      <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="data.winner === 1 ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
+      <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"></div>
+      <div class="absolute inset-y-0 left-0 w-1.5" :class="data.winner === 1 ? 'bg-win' : 'bg-red'"></div>
+
+      <div class="relative flex items-center gap-4">
+        <div class="[&_img]:!w-[82px] [&_img]:!h-[82px] [&_img]:!min-w-0 [&_.group]:!w-[82px] [&_.group]:!h-[82px]">
+          <hero-image-wrapper size="xl" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
+        </div>
+        <div class="flex flex-col gap-1.5 whitespace-nowrap">
+          <span class="font-bold">{{ data.game_map.name }}</span>
+          <div class="flex flex-col">
+            <span class="text-base font-medium text-header">{{ data.game_type.name }}</span>
+            <span v-if="data.game_length" class="text-sm">{{ Math.round(data.game_length / 60) }} minutes</span>
+          </div>
+          <span class="text-xs">{{ formatRowDate(data.game_date) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative flex gap-5 items-center px-4 w-[430px] shrink-0">
+      <div v-for="stat in mmrStats" :key="stat.title" class="flex flex-col gap-0.5 w-[118px]">
+        <span class="text-base font-medium text-subtext whitespace-nowrap">{{ stat.title }}</span>
+        <span class="text-2xl font-semibold">{{ stat.value.toLocaleString('en-US') }}</span>
+        <span v-if="stat.change !== null" class="text-sm font-medium" :class="stat.change >= 0 ? 'text-win' : 'text-red'">{{ stat.change > 0 ? '+' : '' }}{{ stat.change.toFixed(2) }}</span>
+      </div>
+    </div>
+
+    <div class="relative w-[126px] shrink-0 flex flex-col gap-0.5 items-center text-center">
+      <template v-if="data.kills !== undefined">
+        <span class="text-2xl font-semibold whitespace-nowrap"><span class="text-win">{{ data.kills }}</span> | <span class="font-normal text-red">{{ data.deaths }}</span> | <span class="font-normal">{{ data.assists }}</span></span>
+        <span class="text-sm font-medium text-subtext">{{ kda }} KDA</span>
+      </template>
+    </div>
+
+    <div class="relative flex gap-1.5 items-center px-4 w-[362px] shrink-0 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded-lg">
+      <template v-for="level in talentLevels" :key="level">
+        <talent-image-wrapper v-if="data[level]" :talent="data[level]" :size="'medium'"></talent-image-wrapper>
+        <div v-else class="w-[42px] h-[42px] shrink-0 rounded-lg bg-surface-3"></div>
+      </template>
+    </div>
+
+    <div v-if="data.players && data.players.length" class="relative flex gap-2 pl-1.5 pr-12 py-4 w-[362px] shrink-0">
+      <div v-for="(team, teamIndex) in data.players" :key="teamIndex" class="flex flex-col gap-1.5 w-[150px]">
+        <div v-for="(player, playerIndex) in team" :key="playerIndex" class="flex gap-1 h-4 items-center">
+          <span class="w-4 h-4 shrink-0"><img v-if="player.party" class="w-4 h-4" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${player.party}.png`" alt=""/></span>
+          <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name"/>
+          <!-- The profile's own player comes first -->
+          <span :class="['flex-1 min-w-0 truncate text-sm font-medium', teamIndex === 0 && playerIndex === 0 ? 'text-white' : 'text-subtext']">{{ player.check ? 'Hidden' : player.battletag }}</span>
+        </div>
+      </div>
+    </div>
+  </a>
+
+  <div v-if="data.downloadable || isWatchableGame" class="absolute right-2 top-2 flex flex-col gap-2">
+    <a v-if="data.downloadable && replayViewerAllowed && !replayDownloadBlocked" class="hover:text-lteal" :href="'/Match/Single/' + data.replayID + '/Download'" title="Download Replay"><i class="fa-solid fa-download"></i></a>
+    <span v-else-if="data.downloadable && !replayViewerAllowed" class="opacity-60 cursor-not-allowed" title="Log in to download replays"><i class="fa-solid fa-download"></i></span>
+    <a v-if="isWatchableGame && replayViewerAllowed" class="hover:text-lteal" :href="'/Analytics/Match/Single/' + data.replayID" title="Watch Replay"><i class="fa-solid fa-video"></i></a>
+    <span v-else-if="isWatchableGame" class="opacity-60 cursor-not-allowed" title="Log in with Battle.net to watch replays"><i class="fa-solid fa-video"></i></span>
+  </div>
+  </div>
+
+  <div v-else :class="[
   'relative ml-10 ',
   {
     'ml-10' : !esport
@@ -25,32 +90,11 @@
           :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"
           >    
 
-          <div v-if="!esport && esport != true" class=" bg-red-500 absolute -left-10 md:-bottom-[1em]">
-            <hero-image-wrapper size="xl" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
-          </div>
-
-          <div v-else-if="esport && esport == true" class="flex flex-wrap justify-between gap-2 w-full hover:backdrop-brightness-125 py-1 max-md:p-2">
+          <div class="flex flex-wrap justify-between gap-2 w-full hover:backdrop-brightness-125 py-1 max-md:p-2">
             <div v-for="(item, index) in data.heroes">
               <hero-image-wrapper  v-if="item" size="big" :hero="item.hero" :excludehover="true"></hero-image-wrapper>
             </div>
             <stat-box class="ml-auto md:w-[30%] md:mr-10" :title="'Teams'" :value="data.team_0_name + ' vs ' + data.team_1_name"></stat-box>
-          </div>
-
-          <div v-if="!esport && esport != true" class="flex w-full hover:backdrop-brightness-125 max-md:flex-col">
-            <div class="flex w-full md:ml-10 max-md:flex-col">
-              <stat-box :title="'HP Player MMR'" :value="data.player_mmr.toLocaleString('en-US')" :secondstat="data.player_change !== null ? data.player_change.toFixed(2) : null" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
-              <stat-box :title="'HP Hero MMR'" :value="data.hero_mmr.toLocaleString('en-US')" :secondstat="data.player_change !== null ? data.hero_change.toFixed(2): null" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
-              <stat-box :title="'HP Role MMR'" :value="data.role_mmr.toLocaleString('en-US')" :secondstat="data.player_change !== null ? data.role_change.toFixed(2) : null" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
-            </div>
-            <div class="flex gap-x-1 mx-2 items-center justify-start md:w-[450px] pl-2 max-md:flex-wrap">
-              <div class="flex-1"><talent-image-wrapper :talent="data.level_one" :size="'medium'"></talent-image-wrapper></div>
-              <div class="flex-1"><talent-image-wrapper :talent="data.level_four" :size="'medium'"></talent-image-wrapper></div>
-              <div class="flex-1"><talent-image-wrapper :talent="data.level_seven" :size="'medium'"></talent-image-wrapper></div>
-              <div class="flex-1"><talent-image-wrapper :talent="data.level_ten" :size="'medium'"></talent-image-wrapper></div>
-              <div class="flex-1"><talent-image-wrapper :talent="data.level_thirteen" :size="'medium'"></talent-image-wrapper></div>
-              <div class="flex-1"> <talent-image-wrapper :talent="data.level_sixteen" :size="'medium'"></talent-image-wrapper></div>
-              <div class="flex-1"><talent-image-wrapper :talent="data.level_twenty" :size="'medium'"></talent-image-wrapper></div>
-            </div>
           </div>
         </div>
     </a>
@@ -71,6 +115,10 @@
       esportLeague: String,
       esportSeries: String,
       tournament: String,
+      // Download and Watch Replay icons, with the single match page's rules
+      replayViewerAllowed: Boolean,
+      analyticsCutover: String,
+      replayDownloadBlocked: Boolean,
     },
     data(){
       return {
@@ -82,6 +130,24 @@
     mounted() {
     },
     computed: {
+      mmrStats(){
+        const hasChange = this.data.player_change !== null;
+        return [
+          { title: 'Player MMR', value: this.data.player_mmr, change: hasChange ? this.data.player_change : null },
+          { title: 'Hero MMR', value: this.data.hero_mmr, change: hasChange ? this.data.hero_change : null },
+          { title: 'Role MMR', value: this.data.role_mmr, change: hasChange ? this.data.role_change : null },
+        ];
+      },
+      kda(){
+        return parseFloat(((this.data.kills + this.data.assists) / Math.max(this.data.deaths, 1)).toFixed(2));
+      },
+      // A game from the season start on: the ones the replay viewer can show
+      isWatchableGame(){
+        return !!this.analyticsCutover && this.data.game_date >= this.analyticsCutover;
+      },
+      talentLevels(){
+        return ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'];
+      },
     },
     watch: {
     },
@@ -105,6 +171,14 @@
         const localDate = originalDate.clone().tz(moment.tz.guess());
 
         return localDate.format('MM/DD/YYYY h:mm:ss a');
+      },
+      // In the viewer's own date format and timezone, e.g. "October 22, 2026 at 10:57 PM" in the US
+      formatRowDate(dateString) {
+        return moment.utc(dateString).toDate().toLocaleString(undefined, {
+          dateStyle: 'long',
+          timeStyle: 'short',
+          timeZone: this.userTimezone,
+        });
       },
       getCaptions(){
         if(!this.esport){

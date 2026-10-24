@@ -1,6 +1,6 @@
 <template>
   <div id="filter-label" class="relative" :class="compact ? 'min-w-0 w-full' : 'max-md:w-[40%]'">
-    <div @click="showOptions = !showOptions" class="flex flex-col text-sm font-medium text-gray-700 cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'" @keydown="handleKeyPress" tabindex="0">
+    <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'" @keydown="handleKeyPress" tabindex="0">
       <span class="relative">
         <span class="relative">{{ this.text }}
           <round-image v-if="showrankinfo" class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large" mobileClick="true" style="position:absolute; bottom:0; right:-25px;">
@@ -12,7 +12,7 @@
           </round-image>
         </span>
       </span> 
-      <span class="h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2" :class="compact ? 'min-w-0 w-full' : 'md:w-[200px] min-w-[100px]'" ><span class="uppercase font-bold bg-teal rounded px-1 text-nowrap" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span></span>
+      <span class="h-[40px] overflow-hidden rounded bg-teal hover:bg-lteal text-white p-2 flex items-center" :class="compact ? 'min-w-0 w-full' : 'md:w-[200px] min-w-[100px]'" ><span class="uppercase font-bold bg-darken rounded px-1 text-nowrap" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span></span>
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
     <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">

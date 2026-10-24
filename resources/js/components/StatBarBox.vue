@@ -1,26 +1,15 @@
 <template>
-  <div :class="['inline-block m-1 items-center min-w-[5em]', widthClass,
+  <div :class="['inline-block m-1 min-w-[5em]', widthClass,
   {
-      'text-right items-right' : align === 'right',
+      'text-right' : align === 'right',
       'text-left' : align === 'left',
       'text-center' : align === 'center'
     }
   ]">
-       <h2 class="rounded  px-2 py-1 text-sm  uppercase "> {{ title }}</h2>
-    
+    <div v-if="title" class="text-sm text-header mb-1.5">{{ title }}</div>
     <stat-bar :value="value" :display-text="displaytext ? displaytext : value"
       :suffix="displaytext ? '' : '%'" suffix-class="text-xs"
-      :color="color" :divider="true"
-      :class="[
-        'rounded-l-lg',
-        widthClass,
-        {
-          'text-left': align === 'left' || (size === 'full' && align !== 'right' && align !== 'center'),
-          'text-right ml-auto': align === 'right',
-          'text-center': align === 'center',
-          'py-2': size === 'big',
-        }
-      ]"></stat-bar>
+      :color="color" :size="size === 'big' ? 'big' : null"></stat-bar>
   </div>
 </template>
 

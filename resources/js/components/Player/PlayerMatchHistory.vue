@@ -49,7 +49,7 @@
       </div>
       <div v-if="compact">
         <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
-          <game-summary-box v-for="(item, index) in data.data" :data="item"></game-summary-box>
+          <game-summary-box v-for="(item, index) in data.data" :key="item.replayID" :data="item" :replay-viewer-allowed="authenticated" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
         </div>
       </div>
       <div v-else>
@@ -167,6 +167,8 @@ export default {
       type: [String, Boolean]
     },
     authenticated: Boolean,
+    analyticsCutover: String,
+    replayDownloadBlocked: Boolean,
     urlparameters: {
       type: Object,
       default: () => ({}),
@@ -295,6 +297,7 @@ export default {
           },
         });
         this.data = response.data;
+        this.getMatchDetails();
       }catch(error){
         //Do something here
       }finally {
@@ -302,6 +305,26 @@ export default {
         this.isLoading = false;
         this.asyncLoading = false;
         this.$nextTick(() => this.scaleTable());
+      }
+    },
+    // Teams, length and download state for this page, per viewer, so outside the shared page cache
+    async getMatchDetails() {
+      const page = this.data;
+      if (!page || !page.data || !page.data.length) {
+        return;
+      }
+      try {
+        const response = await this.$axios.post("/api/v1/player/match/history/details", {
+          blizz_id: this.blizzid,
+          region: this.region,
+          replayIDs: page.data.map(item => item.replayID),
+        });
+        if (this.data !== page) {
+          return;
+        }
+        page.data.forEach(item => Object.assign(item, response.data[item.replayID] || {}));
+      } catch (error) {
+        // the rows still show without teams
       }
     },
     getHeroID() {

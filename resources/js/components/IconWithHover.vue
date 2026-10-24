@@ -36,13 +36,11 @@
       <div v-if="showTooltip" :style="tooltipStyle" :class="[
           'fixed text-xs z-50',
         {
-          'w-[12em]' : popupsize != 'large',
-          'w-[20em]' : popupsize == 'large'
+          'w-[14em]' : popupsize != 'large',
+          'w-[400px] max-w-[90vw]' : popupsize == 'large'
         }
         ]" >
-          <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 max-md:hidden', {
-
-          }]">
+          <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft tracking-normal text-left p-4 rounded-xl drop-shadow-md z-30 max-md:hidden">
 
             <slot></slot>
 
@@ -50,7 +48,6 @@
           </div>
 
 
-        <div class="popup-arrow max-md:hidden"></div>
       </div>
     </Teleport>
     <div v-if="!excludehover && !mobileClick" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center   md:mb-4', {}]">

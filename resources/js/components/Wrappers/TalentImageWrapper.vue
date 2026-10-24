@@ -1,10 +1,17 @@
 <template>
     <div :class="{ 'grayscale': isRemoved }">
       <round-image v-if="talent" :size="size" popupsize="large" mobileClick="true" :image="getTalentImage()">
-        <h2 v-if="isRemoved" class="text-yellow"><b>Talent no longer available</b></h2>
-        <h2><b>{{ displayTitle }}</b></h2>
-        <p>{{ this.removeNumbers(talent.hotkey) }}</p>
-        <p>{{ talent.description }}</p>
+        <h2 v-if="isRemoved" class="text-yellow font-bold mb-1">Talent no longer available</h2>
+        <h2 class="text-base font-bold text-white">{{ displayTitle }}</h2>
+        <div class="space-y-2.5 mt-2.5">
+          <p v-for="(part, index) in descriptionParts" :key="index">
+            <template v-if="part.label">
+              <i v-if="part.quest" class="fa-solid fa-exclamation text-quest mr-1"></i>
+              <span :class="part.quest ? 'text-quest' : 'font-bold'">{{ part.label }}:</span>
+            </template>
+            {{ part.text }}
+          </p>
+        </div>
       </round-image>
       <round-image v-else-if="talent != 0 && talent" :size="size" :image="'/images/talents/no-image.png'" tooltipdir="right">
         <h2>{{ "Talent removed or changed" }}</h2>
@@ -36,6 +43,21 @@ export default {
     isRemoved() {
       return this.talent && this.talent.status === 'removed';
     },
+    // Descriptions use double spaces between paragraphs, and quest steps are labelled ("Quest:", "Mythic Reward:")
+    descriptionParts() {
+      const labels = 'Repeatable Quest|Repeatable Reward|Mythic Quest|Mythic Reward|Quest|Reward|Passive|Gambit';
+      return (this.talent.description || '')
+        .split(new RegExp(`\\s{2,}|\\s(?<!Mythic |Repeatable )(?=(?:${labels}):)`))
+        .map(part => part.trim())
+        .filter(part => part)
+        .map(part => {
+          const match = part.match(new RegExp(`^(${labels}):\\s*(.*)$`));
+          if (!match) {
+            return { text: part };
+          }
+          return { label: match[1], text: match[2], quest: match[1] !== 'Passive' && match[1] !== 'Gambit' };
+        });
+    },
     displayTitle() {
       if (this.talent && this.talent.title && this.talent.title !== '') {
         return this.talent.title;
@@ -52,9 +74,6 @@ export default {
       }
       return `/images/talents/${this.talent.icon}`;
     },
-    removeNumbers(str) {
-      return str.replace(/\d+/g, '');
-    }
   }
 }
 </script>

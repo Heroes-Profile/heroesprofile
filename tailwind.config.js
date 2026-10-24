@@ -29,6 +29,18 @@ module.exports = {
       'lred' : '#e44a23',
       'black' : '#0F121D',
       'white' : '#ffffff',
+      // Redesign surfaces, darkest to lightest (Figma Background levels)
+      'page' : '#14182a',
+      'surface' : '#1f2229',
+      'surface-1' : '#23252f',
+      'surface-2' : '#272a34',
+      'surface-3' : '#303340',
+      'surface-4' : '#393e4d',
+      'header' : '#deffff',
+      'subtext' : '#9ca3af',
+      'soft' : '#c9cdd6',
+      'quest' : '#e4b800',
+      'win' : '#8cd9b8',
       'lighten' : 'rgba(255, 255, 255, 0.1)',
       'darken' : 'rgba(0,0,0,.3)'
     },

@@ -1,4 +1,4 @@
-<div class="md:hidden max-md:bg-[#23252f] max-md:fixed max-md:z-40 max-md:w-full">
+<div class="md:hidden max-md:bg-surface-1 max-md:fixed max-md:z-40 max-md:w-full">
     <div class="flex p-2 px-4 justify-between">
 <a class=" flex items-center font-logo text-2xl md:hidden" href="/">
                 Heroes
@@ -12,18 +12,18 @@
 </div>
 
 <div id="main-menu" class="  main-navigation-wrapper"> <!-- max-md:hidden  - This needs to hide/show on click of the button but only on mobile - either detect mobile with vue, or have a class that is added/taken away that only applies to mobile -->
-    <nav class="bg-[#23252f] text-white z-50 relative md:px-8 md:py-3 text-sm max-md:pt-2">
+    <nav class="bg-surface-1 text-white z-50 relative md:px-8 md:py-3 text-sm max-md:pt-2">
       <button  id="mobile-nav-close" class="hidden bg-blue rounded-lg px-3 py-1 min-w-[44px] min-h-[40px] text-lg ml-auto  mr-2" aria-label="Close menu">x</button>
        
-        <div class="flex items-center justify-between flex-wrap max-w-[1920px] mx-auto max-md:flex-col" >
+        <div class="flex items-center justify-between flex-wrap max-w-[1856px] mx-auto max-md:flex-col" >
              
             <a class=" flex items-center font-logo text-2xl" href="/">
                 Heroes
                 <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
                 Profile
             </a>
-            <div class="flex items-center justify-between flex-wrap  text-sm md:flex-1 md:ml-12 max-md:flex-col">
-                <div class="flex items-center md:space-x-6 flex-wrap md:flex-nowrap md:pr-5 max-md:flex-col max-md:w-full ">
+            <div class="flex items-center justify-between flex-wrap  text-sm md:flex-1 md:ml-8 max-md:flex-col">
+                <div class="flex items-center md:space-x-5 flex-wrap md:flex-nowrap max-md:flex-col max-md:w-full ">
                     
                     <div class="relative group inline-block nav-item">
                         <a class=" cursor-pointer">Global Hero Stats</a>
@@ -217,7 +217,7 @@
                 </div>
                 <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="mt-auto md:hidden"></search-component>
                 {{-- Distinct white or grey line show the seperation here  --}}
-                <div class="flex gap-3 md:ml-auto max-md:order-1 max-md:mt-auto max-md:p-3">
+                <div class="flex gap-3 md:ml-auto md:pl-4 max-md:order-1 max-md:mt-auto max-md:p-3">
                     <custom-button class="font-semibold" :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'"></custom-button>
                     <custom-button class="font-semibold" :href="'/Upload'" :text="'Replay Uploader'" :alt="'Replay Uploader'" :color="'teal'"></custom-button>
                     <custom-button class="font-semibold" :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Remove Ads / Patreon'" :alt="'Patreon'" :color="'red'"></custom-button>
@@ -261,7 +261,7 @@
     </nav>
     
 </div>
-<nav class="relative flex justify-end items-center md:gap-4 max-w-[1920px] mx-auto md:px-8 md:py-4 alt-acct-nav max-md:flex-wrap">
+<nav class="relative flex justify-end items-center md:gap-4 w-full max-w-[1920px] mx-auto md:px-8 md:py-4 alt-acct-nav max-md:flex-wrap">
   @foreach($altSearchAccounts as $index => $account)
     @if($account)
       <div class="relative group inline-block text-sm">

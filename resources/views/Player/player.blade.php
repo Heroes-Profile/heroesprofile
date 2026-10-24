@@ -14,5 +14,8 @@
     :regionsmap="{{ json_encode($bladeGlobals['regions']) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+    :replay-viewer-allowed="{{ json_encode($replayViewerAllowed) }}"
+    :analytics-cutover="{{ json_encode($analyticsCutover) }}"
+    :replay-download-blocked="{{ json_encode($replayDownloadBlocked) }}"
   ></player-stats>
 @endsection

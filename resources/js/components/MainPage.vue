@@ -70,8 +70,8 @@
     </div>
 
 
-    <div class="mt-auto bg-[#272a34] text-sm px-4 md:px-8 py-6">
-      <div class="max-w-[1920px] mx-auto space-y-2">
+    <div class="mt-auto bg-surface-2 text-sm px-4 md:px-8 py-6">
+      <div class="max-w-[1856px] mx-auto space-y-2">
         <p>Heroes Profile uses data from Heroes Profile API.  Heroes Profile API uploads are in open Heroes of the Storm replay database with user uploaded replay data.
           Currently, Heroes Profile has pulled {{ getValueLocal(maxreplayid) }} replays up to and including data from patch
         {{ latestpatch }} and date/time <format-date :input="latestgamedate"></format-date> and incorporated them into our dataset.</p>

@@ -1,39 +1,15 @@
 <template>
-  <div class="flex flex-col md:flex-row">
-    <a 
-    :class="[
-      staticClasses, ' rounded-l ', 
-      {
-      'bg-blue  hover:bg-lblue ring-inset ring-lblue ring-2' : selectedSide === 'left',
-      ' bg-gray-dark hover:bg-gray-light' : selectedSide === 'right'
-      }
-    
-      ]" 
-      
-      :alt="tab1alt"
+  <div class="inline-flex flex-col md:flex-row bg-surface-1 rounded p-1 gap-1">
+    <a
+      v-for="side in ['left', 'right']"
+      :key="side"
+      :class="[staticClasses, 'rounded', selectedSide === side ? 'bg-teal hover:bg-lteal text-white' : 'text-subtext hover:text-white hover:bg-surface-3']"
+      :alt="side === 'left' ? tab1alt : tab2alt"
       role="button"
-
-      @click="handleClick('left')"
-      >
-     {{tab1text}}
+      @click="handleClick(side)"
+    >
+      {{ side === 'left' ? tab1text : tab2text }}
     </a>
-    <a 
-    :class="[
-      staticClasses, 'rounded-r', 
-      {
-       'bg-blue  hover:bg-lblue ring-inset ring-lblue ring-2' : selectedSide === 'right',
-       ' bg-gray-dark hover:bg-gray-light' : selectedSide === 'left'
-      }
-      ]" 
-     
-      :alt="tab2alt"
-      role="button"
-       @click="handleClick('right')"
-     
-      >
-     {{tab2text}}
-    </a>
-
   </div>
 </template>
 
@@ -70,7 +46,7 @@
     },
     computed: {
       staticClasses() {
-        return 'transition-colors text-white inline-block ' + (this.small ? 'py-1 px-2 text-sm' : 'py-2 px-4 text-lg');
+        return 'transition-colors inline-block cursor-pointer text-center ' + (this.small ? 'py-1 px-2 text-sm' : 'py-1.5 px-4');
       },
     },
     watch: {

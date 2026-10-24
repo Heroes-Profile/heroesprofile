@@ -1,11 +1,11 @@
 <template>
-  <div class="md:w-[1000px]">
-    <div v-for="day in computedDays" :key="day.label" class="items-center gap-10 md:px-20 py-5 justify-center">
-      <div class="flex gap-10 text-s">
-        <span>{{ day.label }}</span>
-        <span>Total Games: {{ (day.wins + day.losses).toLocaleString('en-US') }}</span>
+  <div class="flex flex-col gap-3">
+    <div v-for="day in computedDays" :key="day.label" class="flex flex-col gap-1.5">
+      <div class="flex justify-between">
+        <span class="text-header">{{ day.label }}</span>
+        <span class="text-subtext">Games: {{ (day.wins + day.losses).toLocaleString('en-US') }}</span>
       </div>
-      <stat-bar-box size="big" :value="day.winRate.toFixed(2)" :color="day.color"></stat-bar-box>
+      <stat-bar :value="day.winRate.toFixed(2)" suffix="%" :color="$winRateColor(day.winRate)"></stat-bar>
     </div>
   </div>
 </template>
@@ -14,7 +14,6 @@
 import moment from 'moment-timezone';
 
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const DAY_COLORS = ['blue', 'teal', 'red', 'yellow', 'blue', 'red', 'teal'];
 
 export default {
   name: 'PlayerWeekdayWinRates',
@@ -55,12 +54,12 @@ export default {
     formatDays(totals) {
       return totals.map((day, i) => {
         const total = day.wins + day.losses;
+        const winRate = total > 0 ? (day.wins / total) * 100 : 0;
         return {
           label: DAY_NAMES[i],
-          color: DAY_COLORS[i],
           wins: day.wins,
           losses: day.losses,
-          winRate: total > 0 ? (day.wins / total) * 100 : 0,
+          winRate,
         };
       });
     },

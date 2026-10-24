@@ -27,6 +27,15 @@ app.config.globalProperties.$formatLoadMeta = formatLoadMeta;
 app.config.globalProperties.$formatResponseHeaders = formatResponseHeaders;
 app.config.globalProperties.$createLoadMeta = createLoadMeta;
 
+// Bar colour for a win rate: red under 45%, yellow under 50%, teal from 50%.
+app.config.globalProperties.$winRateColor = function (winRate) {
+  const value = Number(winRate);
+  if (value < 45) {
+    return 'red';
+  }
+  return value < 50 ? 'yellow' : 'teal';
+};
+
 app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, region, redirect = true) {
   let data = {
     battletag: battletag,

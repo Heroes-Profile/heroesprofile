@@ -1,6 +1,6 @@
 <template>
   <div id="filter-label" class="relative" :class="[compact ? 'min-w-0 w-full' : 'max-md:w-[40%]', { 'bg-red': highlighttimesframes }]">
-    <div @click="showOptions = !showOptions" class="flex flex-col text-sm font-medium text-gray-700 cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'">
+    <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'">
       <span class="relative">
         <span class="relative">{{ this.text }}
           <round-image v-if="infolink" class="mt-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000" style="position:absolute; bottom:0; right:-25px;">
@@ -21,10 +21,10 @@
 
 
       
-      <span class="h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 flex relative" :class="compact ? 'min-w-0 w-full' : 'md:min-w-[200px]'">
+      <span class="h-[40px] overflow-hidden rounded bg-teal hover:bg-lteal text-white p-2 flex items-center relative" :class="compact ? 'min-w-0 w-full' : 'md:min-w-[200px]'">
         <span v-if="toggletabs" class="uppercase whitespace-nowrap font-bold px-1 flex no-wrap">{{ toggleside === 'right' ? toggletabs[1] : toggletabs[0] }}</span>
-        <span v-if="selectedOptions.length <= 3" v-for="name in selectedOptionsName" class="uppercase whitespace-nowrap  font-bold  bg-teal rounded px-1 mx-1 flex no-wrap">{{ name }}</span>
-        <span v-else-if="selectedOptions.length > 3" class="uppercase whitespace-nowrap  font-bold  bg-teal rounded px-1 mx-1 flex no-wrap">{{ selectedOptions.length }} of {{ values.length }} selected</span>
+        <span v-if="selectedOptions.length <= 3" v-for="name in selectedOptionsName" class="uppercase whitespace-nowrap  font-bold  bg-darken rounded px-1 mx-1 flex no-wrap">{{ name }}</span>
+        <span v-else-if="selectedOptions.length > 3" class="uppercase whitespace-nowrap  font-bold  bg-darken rounded px-1 mx-1 flex no-wrap">{{ selectedOptions.length }} of {{ values.length }} selected</span>
       </span>
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->

@@ -31,6 +31,7 @@
         "@tiptap/starter-kit": "^3.31.4",
         "@tiptap/vue-3": "^3.31.4",
         "chart.js": "^4.4.0",
+        "html-to-image": "^1.11.13",
         "js-cookie": "^3.0.5",
         "moment-timezone": "^0.5.43"
     }

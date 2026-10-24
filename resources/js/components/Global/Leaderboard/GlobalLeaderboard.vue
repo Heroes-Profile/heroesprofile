@@ -209,7 +209,7 @@
                     <td>{{ row.win_rate === null ? '-' : row.win_rate.toFixed(2) }}</td>
                     <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'">{{ row.rating.toFixed(2) }}</td>
                     <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'">{{ row.mmr.toLocaleString('en-US') }}</td>
-                    <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'">{{ row.tier }}</td>
+                    <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'"><rank-tier-pill :tier="row.tier"></rank-tier-pill></td>
                     <td>{{ row.games_played.toLocaleString('en-US') }}</td>
 
                     <td class="py-2 px-3 flex items-center gap-1" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role')">

@@ -9,6 +9,8 @@
       'md:h-20': size === 'big',
       'md:w-[6em]': size === 'xl',
       'md:h-[6em]': size === 'xl',
+      // Square 64px tile with a light border
+      'block w-16 h-16 md:w-16 md:h-16': size === 'tile',
       'md:w-72': size === 'large',
       'md:h-[23em]': size === 'large',
       'overflow-hidden': size === 'large',
@@ -49,10 +51,12 @@
     </span>
   
     <img v-else loading="eager" :class="[
-      'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow max-sm:w-[2.5em] max-sm:h-[2.5em]  w-full h-10 min-w-10 max-md:h-10 max-md:w-10 max-w-none md:mr-auto  max-md: m-0',  
+      size === 'tile'
+        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-16 h-16 max-w-none rounded-lg border-2 border-header'
+        : 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow max-sm:w-[2.5em] max-sm:h-[2.5em]  w-full h-10 min-w-10 max-md:h-10 max-md:w-10 max-w-none md:mr-auto  max-md: m-0',
       { 
         
-        'rounded-full' : rectangle != true,
+        'rounded-full' : rectangle != true && size !== 'tile',
         //'max-md:w-20 max-md:h-20' : size != 'large', 
         'h-full max-md:max-w-[70%]': size === 'large',
         'w-auto': size === 'large',
@@ -72,22 +76,19 @@
       <div v-if="showTooltip" @mouseover="handleMouseOver" @mouseleave="scheduleHide" :style="tooltipStyle" :class="[
           'fixed text-xs z-50',
         {
-          'w-[12em]' : popupsize != 'large' && popupsize != 'xlarge' && popupsize != 'fit',
-          'w-[20em]' : popupsize == 'large',
-          'w-[28em]' : popupsize == 'xlarge',
-          'w-max max-w-[20em]' : popupsize == 'fit'
+          'w-[14em]' : popupsize != 'large' && popupsize != 'xlarge' && popupsize != 'fit',
+          'w-[400px] max-w-[90vw]' : popupsize == 'large',
+          'w-[32em] max-w-[90vw]' : popupsize == 'xlarge',
+          'w-max max-w-[24em]' : popupsize == 'fit'
         }
         ]" >
-        <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 ', {
-
-        }]">
+        <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft tracking-normal text-left p-4 rounded-xl drop-shadow-md z-30">
           <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
           <div class="bg-red" v-if="ispatreon">Patreon Subscriber</div>
           <div class="bg-[#4c1d95]" v-if="voideye">Marked by the Void</div>
           <div class="bg-teal" v-if="award">{{award.title}}</div>
           <slot></slot>
         </div>
-        <div v-if="!excludehover && tooltipPosition === 'top'" class="popup-arrow max-md:hidden"></div>
       </div>
     </Teleport>
     <div v-if="hasMobileText" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center   md:mb-4', {}]">

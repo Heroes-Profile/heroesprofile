@@ -1,49 +1,38 @@
 <template>
-  <div  class="flex py-0 px-10 md:px-20 items-center md:gap-20  md:text-left bg-teal flex-row max-md:py-2 max-md:mt-2 max-md:flex-wrap">
+  <div class="max-w-[1920px] w-full mx-auto px-4 md:px-8 py-6 flex items-end gap-6 md:gap-20 max-md:flex-wrap">
      <slot>
     </slot>
 
-    
-    <a v-if="headingImage" :href="headingImageUrl" target="_blank">
+
+    <a v-if="headingImage" :href="headingImageUrl" target="_blank" class="flex items-center gap-4">
       <img :src="headingImage" alt="" class="w-33 h-20"/>
-      <span v-if="battletag && !esport"  class="text-lg uppercase ">{{ battletag }}({{ regionstring  }}) </span> {{ heading }}
-      <span v-if="battletag && esport"  class="text-lg uppercase ">{{ battletag }} </span> {{ heading }}
+      <span v-if="battletag && !esport" class="text-lg uppercase">{{ battletag }}({{ regionstring }})</span>
+      <span v-if="battletag && esport" class="text-lg uppercase">{{ battletag }}</span>
+      <span class="text-2xl font-bold">{{ heading }}</span>
     </a>
 
-   
-
-    <h1 v-else class="text-xl md:text-3xl max-md:w-full">
-      <div>
-      <div class="flex items-center max-md:flex-col text-sm">
-        <a v-if="battletag" :href="`/Player/${battletag}/${blizzid}/${region}`" class="text-lg link md:mr-2">{{ battletag }}({{ regionstring  }}) </a>
-        <div v-if="isOwner && !ownerHidden" class="text-[20px] height-auto">
-          <!-- Owner -->
-          <icon-with-hover class="mt-3"  size="small"    icon="fas fa-crown"   title="info"  popupsize="small" style="color:gold">
-                <div>
-                  <p class="max-sm:text-xs">Site Owner</p>
-                </div>
-              </icon-with-hover>
-         
-        </div>
-        <div v-else-if="isPatreon" class="text-[20px] height-auto">
-         <!-- Patreon Subscriber -->
-         <icon-with-hover class="md:mt-3"  size="small"    icon="fas fa-star"   title="info"  popupsize="small" style="color:gold">
-                <div>
-                  <p class="max-sm:text-xs">Patreon Subscriber</p>
-                </div>
+    <h1 v-else class="max-md:w-full">
+      <div v-if="battletag" class="flex items-center gap-3 flex-wrap">
+        <a :href="`/Player/${battletag}/${blizzid}/${region}`" class="text-3xl md:text-4xl font-bold">{{ battletag }}</a>
+        <region-tag :region="regionstring"></region-tag>
+        <div class="flex items-center gap-1 text-[20px]">
+          <icon-with-hover v-if="isOwner && !ownerHidden" size="small" icon="fas fa-crown" title="info" popupsize="small" style="color:gold">
+            <div>
+              <p class="max-sm:text-xs">Site Owner</p>
+            </div>
           </icon-with-hover>
-
+          <icon-with-hover v-else-if="isPatreon" size="small" icon="fas fa-star" title="info" popupsize="small" style="color:gold">
+            <div>
+              <p class="max-sm:text-xs">Patreon Subscriber</p>
+            </div>
+          </icon-with-hover>
+          <void-eye-flair v-if="!esport && voidEye" class="-translate-y-[0.3em]" :force="true"></void-eye-flair>
         </div>
-        <div v-if="battletag && !esport && voidEye" class="flex text-[20px] height-auto">
-          <void-eye-flair class="mt-3 -ml-1 -translate-y-[0.45em]" :force="true"></void-eye-flair>
-        </div>
-
-        </div>
-        <slot name="aboveHeading"></slot>
-        <div class="heading">{{ heading }}</div>
       </div>
+      <slot name="aboveHeading"></slot>
+      <div :class="['heading', battletag ? 'text-base text-gray-medium mt-1' : 'text-3xl md:text-4xl font-bold']">{{ heading }}</div>
     </h1>
-    <div v-if="!hideText" class=" ">
+    <div v-if="!hideText" class="text-gray-medium md:ml-auto md:max-w-[50%]">
       <infobox :input="infoText1"></infobox>
       <infobox :input="infoText2"></infobox>
       <slot name="extraInfo"></slot>

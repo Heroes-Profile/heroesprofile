@@ -1,46 +1,36 @@
 <template>
   <div :class="[
-    ' inline-block m-1 max-md:mx-0 text-center min-w-[10em] flex items-center shadow-lg',
-  {
-   ' min-w-[16em]' : secondstat
-  }
+    'inline-block m-1 max-md:mx-0 min-w-[10em] bg-surface-1 rounded px-3 py-2 text-left',
+    accentClass,
+    {
+      'min-w-[16em]' : secondstat
+    }
   ]">
-    <div class="w-full" > 
-      <h2 :class="[
-      ' variable-background rounded-tl-xl text-blue px-2 py-1 text-xs text-center uppercase',
-        {
-          'rounded-tr-xl' : !secondstat
-        }
-        ]"> 
-      {{ title }}
-    </h2>
-
-      <div :class="[
-      'p-1 rounded-bl-xl text-center',  bgColor,
-      {
-        'rounded-br-xl' : !secondstat
-      }
-      ]" 
-      >
-        {{ value }}
+    <div class="flex gap-6">
+      <div class="flex flex-col min-w-0">
+        <span class="text-sm text-subtext whitespace-nowrap">{{ title }}</span>
+        <span class="text-xl font-semibold text-header">{{ value }}</span>
+      </div>
+      <div v-if="secondstat" class="flex flex-col min-w-0">
+        <span class="text-sm text-subtext whitespace-nowrap">{{ secondcaption }}</span>
+        <span :class="['text-xl font-semibold', changeClass]">{{ formattedChange }}</span>
       </div>
     </div>
-     <div v-if="secondstat" class="border-l-2 border-gray-light w-full"> 
-      <h2 class="variable-background rounded-tr-xl text-blue px-2 py-1 text-xs text-center uppercase"> 
-        {{secondcaption}}
-      </h2>
-
-      <div :class="[
-      'p-1 rounded-br-xl text-center',  bgColor
-      ]" >
-     {{ formattedChange }}
-      </div>
-    </div>
-
   </div>
 </template>
 
 <script>
+// The colour a page passes becomes a stripe down the left edge
+const ACCENTS = {
+  blue: 'border-l-4 border-blue',
+  lblue: 'border-l-4 border-lblue',
+  teal: 'border-l-4 border-teal',
+  red: 'border-l-4 border-red',
+  yellow: 'border-l-4 border-yellow',
+  purple: 'border-l-4 border-purple',
+  'gray-dark': 'border-l-4 border-gray-dark',
+};
+
   export default {
     name: 'StatBox',
     components: {
@@ -58,38 +48,24 @@
         type: [String, Number]
       },
     },
-    data(){
-      return {
-      }
-    },
-    created(){
-    },
-    mounted() {
-    },
     computed: {
-       bgColor() {
-
-        if(this.color){
-          return `bg-${this.color}`;
+      accentClass() {
+        return ACCENTS[this.color] || '';
+      },
+      changeClass() {
+        if(this.secondtype != 'mmrchange'){
+          return 'text-header';
+        }
+        return Number(this.secondstat) >= 0 ? 'text-win' : 'text-red';
+      },
+      formattedChange() {
+        if(this.secondtype == 'mmrchange'){
+          return this.secondstat > 0 ? `+${this.secondstat}` : this.secondstat;
         }
         else{
-          return 'bg-blue';
+          return this.secondstat;
         }
-        
+      },
     },
-    formattedChange() {
-      if(this.secondtype == 'mmrchange'){
-        return this.secondstat > 0 ? `+${this.secondstat}` : this.secondstat;
-      }
-      else{
-        return this.secondstat;
-      }
-      
-    },
-    },
-    watch: {
-    },
-    methods: {
-    }
   }
 </script>

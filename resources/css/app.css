@@ -215,10 +215,22 @@ table{
 }
 table td{flex:1;}
 .dark-mode table{
-  @apply bg-gray-dark text-white;
+  @apply bg-surface-1 text-white;
 }
 .dark-mode tr{
-  @apply even:bg-darken text-white;
+  @apply even:bg-surface-2 text-white;
+}
+.dark-mode tbody tr:not(.bg-hred):not(.bg-yellow):hover{
+  @apply bg-surface-3;
+}
+.dark-mode thead{
+  @apply bg-surface text-subtext;
+}
+.dark-mode th{
+  @apply border-gray-dark;
+}
+.dark-mode td{
+  border-right-color: rgba(255, 255, 255, 0.06);
 }
 .dark-mode tr.bg-hred {
   background-color: rgba(214, 142, 124, 0.5);
@@ -278,24 +290,6 @@ h1{
   color: black; /* Replace 'black' with any color you prefer */
 }
 
-
-
-.popup-arrow{
-
-
-
-    width: 0;
-    height: 0;
-    border-left: .5em solid transparent;
-    border-right: .5em solid transparent;
-    border-top: .5em solid #333;
-    text-align: center;
-    margin-left:auto;
-    margin-right:auto;
-
-
-
-}
 
 
 /* Menu */

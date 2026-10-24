@@ -17,6 +17,8 @@
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :urlparameters="{{ json_encode($urlparameters) }}"
+    :analytics-cutover="{{ json_encode($analyticsCutover) }}"
+    :replay-download-blocked="{{ json_encode($replayDownloadBlocked) }}"
   >  
   </player-match-history>
 @endsection
