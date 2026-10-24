@@ -1,27 +1,27 @@
 <template>
-  <div class="flex flex-wrap max-md:justify-center">
-    <div id="filter-label" class="relative">
+  <div class="flex flex-wrap max-md:w-full">
+    <div id="filter-label" class="relative max-md:w-full">
       <div class="flex items-end  text-sm font-medium text-subtext cursor-pointer p-2  transition-colors">
-        <div class="flex flex-col gap-1.5"><span>From Date</span>
+        <div class="flex flex-col gap-1.5 max-md:flex-1"><span>From Date</span>
         <input type="date"
           v-model="start"
           :max="end"
           @change="emitChange('From Date', start)"
-          class="w-[200px] h-[40px] overflow-hidden rounded-l !bg-teal hover:!bg-lteal p-2 text-white"
+          class="w-[200px] max-md:w-full h-[40px] overflow-hidden rounded-l !bg-teal hover:!bg-lteal p-2 text-white"
         ></div>
-        <button class="h-[40px] rounded-r bg-teal hover:bg-lteal border-l border-darken text-white px-3" @click="start = null; emitChange('From Date', null)">X</button>
+        <button class="h-[40px] w-10 shrink-0 rounded-r bg-teal hover:bg-lteal border-l border-darken text-white" @click="start = null; emitChange('From Date', null)">X</button>
       </div>
     </div>
-    <div id="filter-label" class="relative">
+    <div id="filter-label" class="relative max-md:w-full">
       <div class="flex items-end  text-sm font-medium text-subtext cursor-pointer p-2  transition-colors">
-        <div class="flex flex-col gap-1.5"><span>To Date</span>
+        <div class="flex flex-col gap-1.5 max-md:flex-1"><span>To Date</span>
         <input type="date"
           v-model="end"
           :min="start"
           @change="emitChange('To Date', end)"
-          class="w-[200px] h-[40px] overflow-hidden rounded-l !bg-teal hover:!bg-lteal p-2 text-white"
+          class="w-[200px] max-md:w-full h-[40px] overflow-hidden rounded-l !bg-teal hover:!bg-lteal p-2 text-white"
         ></div>
-        <button class="h-[40px] rounded-r bg-teal hover:bg-lteal border-l border-darken text-white px-3" @click="end = null; emitChange('To Date', null)">X</button>
+        <button class="h-[40px] w-10 shrink-0 rounded-r bg-teal hover:bg-lteal border-l border-darken text-white" @click="end = null; emitChange('To Date', null)">X</button>
       </div>
     </div>
   </div>

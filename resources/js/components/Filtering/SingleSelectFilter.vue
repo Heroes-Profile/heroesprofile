@@ -1,5 +1,5 @@
 <template>
-  <div id="filter-label" class="relative" :class="compact ? 'min-w-0 w-full' : 'max-md:w-[40%]'">
+  <div id="filter-label" class="relative" :class="compact ? 'min-w-0 w-full' : 'max-md:w-full'">
     <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'" @keydown="handleKeyPress" tabindex="0">
       <span class="relative">
         <span class="relative">{{ this.text }}

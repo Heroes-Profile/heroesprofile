@@ -1,11 +1,11 @@
 <div class="md:hidden max-md:bg-surface-1 max-md:fixed max-md:z-40 max-md:w-full">
-    <div class="flex p-2 px-4 justify-between">
-<a class=" flex items-center font-logo text-2xl md:hidden" href="/">
+    <div class="relative flex p-2 px-4 justify-center">
+<a class=" flex items-center font-logo text-lg sm:text-2xl md:hidden" href="/">
                 Heroes
-                <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
+                <img class="w-8 sm:w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
                 Profile
         </a>
-        <button  id="mobile-toggle" class="md:hidden bg-blue rounded-lg px-3 min-w-[44px] min-h-[40px] text-xl" aria-label="Open menu">=</button>
+        <button  id="mobile-toggle" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 bg-blue rounded-lg px-3 min-w-[44px] min-h-[40px] text-xl" aria-label="Open menu">=</button>
          
         
     </div>

@@ -40,7 +40,7 @@
           'w-[400px] max-w-[90vw]' : popupsize == 'large'
         }
         ]" >
-          <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft tracking-normal text-left p-4 rounded-xl drop-shadow-md z-30 max-md:hidden">
+          <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft tracking-normal text-left p-4 rounded-xl drop-shadow-md z-30">
 
             <slot></slot>
 
@@ -50,12 +50,6 @@
 
       </div>
     </Teleport>
-    <div v-if="!excludehover && !mobileClick" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center   md:mb-4', {}]">
-          
-          <slot></slot>
-          
-
-        </div>
 
    
   </div>

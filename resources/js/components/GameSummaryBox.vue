@@ -22,29 +22,29 @@
       </div>
     </div>
 
-    <div class="relative flex gap-5 items-center px-4 w-[430px] shrink-0">
-      <div v-for="stat in mmrStats" :key="stat.title" class="flex flex-col gap-0.5 w-[118px]">
-        <span class="text-base font-medium text-subtext whitespace-nowrap">{{ stat.title }}</span>
+    <div class="relative flex gap-5 items-center px-4 w-full 2xl:w-[430px] shrink-0">
+      <div v-for="stat in mmrStats" :key="stat.title" class="flex flex-col gap-0.5 flex-1 min-w-0 2xl:flex-none 2xl:w-[118px]">
+        <span class="text-sm 2xl:text-base font-medium text-subtext 2xl:whitespace-nowrap">{{ stat.title }}</span>
         <span class="text-2xl font-semibold">{{ stat.value.toLocaleString('en-US') }}</span>
         <span v-if="stat.change !== null" class="text-sm font-medium" :class="stat.change >= 0 ? 'text-win' : 'text-red'">{{ stat.change > 0 ? '+' : '' }}{{ stat.change.toFixed(2) }}</span>
       </div>
     </div>
 
-    <div class="relative w-[126px] shrink-0 flex flex-col gap-0.5 items-center text-center">
+    <div class="relative w-full 2xl:w-[126px] shrink-0 flex flex-col gap-0.5 max-2xl:items-start max-2xl:px-4 2xl:items-center 2xl:text-center">
       <template v-if="data.kills !== undefined">
         <span class="text-2xl font-semibold whitespace-nowrap"><span class="text-win">{{ data.kills }}</span> | <span class="font-normal text-red">{{ data.deaths }}</span> | <span class="font-normal">{{ data.assists }}</span></span>
         <span class="text-sm font-medium text-subtext">{{ kda }} KDA</span>
       </template>
     </div>
 
-    <div class="relative flex gap-1.5 items-center px-4 w-[362px] shrink-0 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded-lg">
+    <div class="relative flex flex-wrap gap-1.5 items-center px-4 w-full 2xl:w-[362px] shrink-0 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded-lg">
       <template v-for="level in talentLevels" :key="level">
         <talent-image-wrapper v-if="data[level]" :talent="data[level]" :size="'medium'"></talent-image-wrapper>
         <div v-else class="w-[42px] h-[42px] shrink-0 rounded-lg bg-surface-3"></div>
       </template>
     </div>
 
-    <div v-if="data.players && data.players.length" class="relative flex gap-2 pl-1.5 pr-12 py-4 w-[362px] shrink-0">
+    <div v-if="data.players && data.players.length" class="relative flex gap-2 pl-4 2xl:pl-1.5 pr-12 py-4 w-full 2xl:w-[362px] shrink-0">
       <div v-for="(team, teamIndex) in data.players" :key="teamIndex" class="flex flex-col gap-1.5 w-[150px]">
         <div v-for="(player, playerIndex) in team" :key="playerIndex" class="flex gap-1 h-4 items-center">
           <span class="w-4 h-4 shrink-0"><img v-if="player.party" class="w-4 h-4" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${player.party}.png`" alt=""/></span>

@@ -9,7 +9,7 @@
         <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
         <multi-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="seasonselection"></multi-select-filter>
         <date-range-filter :startDate="startdate" :endDate="enddate" @input-changed="handleInputChange"></date-range-filter>
-        <custom-button class="font-semibold px-6 mb-2 md:ml-auto max-md:w-full" :text="'Filter'" :alt="'Filter'" :color="'red'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
+        <custom-button class="font-semibold px-6 mb-2 md:ml-auto max-md:self-stretch max-md:mx-2" :text="'Filter'" :alt="'Filter'" :color="'red'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
         </div>
       </panel-box>
     </div>
@@ -51,7 +51,7 @@
               </div>
 
               <div class="grid grid-cols-2 gap-x-6 gap-y-1">
-                <stat-box v-for="stat in overviewStats" :key="stat.label" class="!m-0 !px-0" :title="stat.label" :value="stat.value"></stat-box>
+                <stat-box v-for="stat in overviewStats" :key="stat.label" class="!m-0 !px-0 !min-w-0" :title="stat.label" :value="stat.value"></stat-box>
               </div>
             </div>
           </div>
@@ -104,20 +104,21 @@
                 </div>
               </round-image>
             </template>
-            <div class="flex flex-col gap-2 overflow-x-auto">
-              <div class="flex gap-6 md:gap-12 items-center font-medium text-subtext min-w-[620px]">
+            <div class="flex flex-col gap-2">
+              <div class="flex gap-12 items-center font-medium text-subtext max-md:hidden">
                 <span class="w-[200px] shrink-0">Game mode</span>
                 <span class="flex-1">Win Rate</span>
                 <span class="flex-1 max-w-[200px]">HP Rank Tier</span>
                 <span class="flex-1 max-w-[100px] text-center">HP MMR</span>
               </div>
               <template v-for="mode in mmrModes" :key="mode.label">
-                <div class="h-px bg-gray-dark min-w-[620px]"></div>
-                <div class="flex gap-6 md:gap-12 items-center min-w-[620px]">
-                  <span class="w-[200px] shrink-0 font-semibold text-header truncate">{{ mode.label }}</span>
-                  <stat-bar class="flex-1 min-w-0" :value="mode.data ? mode.data.win_rate.toFixed(2) : '0.00'" suffix="%" :color="$winRateColor(mode.data ? mode.data.win_rate : 0)"></stat-bar>
-                  <span class="flex-1 max-w-[200px]"><rank-tier-pill v-if="mode.data" :tier="mode.data.rank_tier"></rank-tier-pill></span>
-                  <span class="flex-1 max-w-[100px] text-center font-semibold">{{ mode.data ? mode.data.mmr.toLocaleString('en-US') : 0 }}</span>
+                <div class="h-px bg-gray-dark"></div>
+                <!-- Phones stack each mode: name, then bar, then tier and MMR -->
+                <div class="flex flex-wrap md:flex-nowrap gap-x-6 md:gap-x-12 gap-y-2 items-center">
+                  <span class="w-full md:w-[200px] shrink-0 font-semibold text-header truncate">{{ mode.label }}</span>
+                  <stat-bar class="max-md:w-full md:flex-1 min-w-0" :value="mode.data ? mode.data.win_rate.toFixed(2) : '0.00'" suffix="%" :color="$winRateColor(mode.data ? mode.data.win_rate : 0)"></stat-bar>
+                  <span class="md:flex-1 md:max-w-[200px]"><rank-tier-pill v-if="mode.data" :tier="mode.data.rank_tier"></rank-tier-pill></span>
+                  <span class="md:flex-1 md:max-w-[100px] md:text-center font-semibold max-md:ml-auto">{{ mode.data ? mode.data.mmr.toLocaleString('en-US') : 0 }}</span>
                 </div>
               </template>
             </div>

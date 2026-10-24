@@ -53,6 +53,8 @@
     <img v-else loading="eager" :class="[
       size === 'tile'
         ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-16 h-16 max-w-none rounded-lg border-2 border-header'
+        : size === 'large'
+        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow max-w-none md:mr-auto max-md:w-40 max-md:h-auto'
         : 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow max-sm:w-[2.5em] max-sm:h-[2.5em]  w-full h-10 min-w-10 max-md:h-10 max-md:w-10 max-w-none md:mr-auto  max-md: m-0',
       { 
         
@@ -147,8 +149,12 @@ export default {
   },
   computed: {
     // Mobile shows the hover text inline under the image.
+    // Name-only portraits and tiles link elsewhere on tap, so phones show neither the inline text nor a popup
+    noMobileHover() {
+      return this.hidemobiletext || this.size === 'tile';
+    },
     hasMobileText() {
-      return !this.excludehover && !this.mobileClick && !this.hidemobiletext;
+      return !this.excludehover && !this.mobileClick && !this.noMobileHover && !this.icon;
     },
   },
   watch: {
@@ -170,7 +176,7 @@ export default {
     },
     handleMouseOver() {
       // Mobile already shows this text under the image, or hides it
-      if ((this.hasMobileText || (this.hidemobiletext && !this.mobileClick)) && this.isSmallScreen()) return;
+      if ((this.hasMobileText || (this.noMobileHover && !this.mobileClick)) && this.isSmallScreen()) return;
 
       clearTimeout(this.hideTimer);
       if (!this.showTooltip) {

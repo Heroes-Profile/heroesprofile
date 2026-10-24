@@ -26,7 +26,7 @@
               <p class="max-sm:text-xs">Patreon Subscriber</p>
             </div>
           </icon-with-hover>
-          <void-eye-flair v-if="!esport && voidEye" class="-translate-y-[0.3em]" :force="true"></void-eye-flair>
+          <void-eye-flair v-if="!esport && voidEye" class="md:-translate-y-[0.3em]" :force="true"></void-eye-flair>
         </div>
       </div>
       <slot name="aboveHeading"></slot>
