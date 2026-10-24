@@ -23,11 +23,17 @@ class GlobalsInputValidationController extends Controller
     /** Oldest patch a page offers. Each page overrides it with where its own data starts. */
     public const MINIMUM_PATCH = GlobalDataService::MINIMUM_GLOBALS_PATCH;
 
+    /** The page's floor, or the in-game rank floor when that view is asked for. */
+    protected function minimumPatch(): string
+    {
+        return request('rank_source') === 'sl' ? GlobalDataService::REAL_RANK_MINIMUM_PATCH : static::MINIMUM_PATCH;
+    }
+
     public function globalValidationRulesURLParam($timeframeType, $timeframe)
     {
         return [
             'timeframe_type' => 'sometimes|in:minor,major,major_grouped',
-            'timeframe' => ['sometimes', 'nullable', new GlobalTimeframeInputValidation($timeframeType, static::MINIMUM_PATCH)],
+            'timeframe' => ['sometimes', 'nullable', new GlobalTimeframeInputValidation($timeframeType, $this->minimumPatch())],
             'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
             'region' => ['sometimes', 'nullable', new RegionInputValidation],
             'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation($timeframeType, $timeframe)],
@@ -50,7 +56,7 @@ class GlobalsInputValidationController extends Controller
     {
         return [
             'timeframe_type' => 'required|in:minor,major,major_grouped',
-            'timeframe' => ['required', new GlobalTimeframeInputValidation($timeframeType, static::MINIMUM_PATCH)],
+            'timeframe' => ['required', new GlobalTimeframeInputValidation($timeframeType, $this->minimumPatch())],
             'game_type' => ['required', new GameTypeInputValidation],
             'region' => ['sometimes', 'nullable', new RegionInputValidation],
             'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation($timeframeType, $timeframe)],

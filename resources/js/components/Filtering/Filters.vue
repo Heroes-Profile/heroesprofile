@@ -81,7 +81,9 @@
           ></single-select-filter>
 
           <!-- Timeframes -->
+          <!-- Remounted on a rank source switch so a dropped pre-in-game timeframe isn't left selected -->
           <single-select-filter :compact="compact" v-if="includetimeframemodified && timeframetype == 'major' && !combinableMajorPatches.length"
+            :key="rankSourceSL ? 'timeframe-sl' : 'timeframe-hp'"
             :values="timeframes"
             :text="'Timeframes'"
             :defaultValue="timeframe[0]"
@@ -89,6 +91,7 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
           <multi-select-filter :compact="compact" v-else-if="includetimeframemodified"
+            :key="rankSourceSL ? 'timeframes-sl' : 'timeframes-hp'"
             :groupby="timeframeGroupOf"
             :values="timeframes"
             :text="'Timeframes'"
@@ -838,13 +841,20 @@
         return this.filters.stat_filter[0].code;
       },
       timeframes(){
+        let timeframes;
         if(this.timeframetype == "minor" || this.timeframetype == "last_update"){
-          return this.filters.timeframes;
+          timeframes = this.filters.timeframes;
         }else if(this.timeframetype == "major"){
-          return this.withPatchDates(this.filters.timeframes_grouped);
+          timeframes = this.withPatchDates(this.filters.timeframes_grouped);
         }else if(this.timeframetype == "major_grouped"){
-          return this.withPatchDates(this.filters.timeframes_sub_grouped);
+          timeframes = this.withPatchDates(this.filters.timeframes_sub_grouped);
         }
+
+        // In-game rank data starts at its own patch
+        if(timeframes && this.rankSourceSL && this.filters.real_rank_minimum_patch){
+          return timeframes.filter(timeframe => this.atOrAfterPatch(timeframe.code, this.filters.real_rank_minimum_patch));
+        }
+        return timeframes;
       },
       seasons(){
         if(this.minimumseason){
@@ -944,6 +954,17 @@
           delete this.selectedSingleFilters['Group Size'];
           delete this.selectedMultiFilters['Group Size'];
           this.statfilterdisabled = false;
+
+          // Drop timeframes from before in-game rank data; the newest one if nothing is left
+          const minimum = this.filters.real_rank_minimum_patch;
+          const selectedTimeframes = this.selectedMultiFilters['Timeframes'] || this.timeframe || [];
+          if(minimum && Array.isArray(selectedTimeframes)){
+            const kept = selectedTimeframes.filter(timeframe => this.atOrAfterPatch(timeframe, minimum));
+            if(kept.length !== selectedTimeframes.length){
+              this.timeframe = kept.length ? kept : this.getDefaultMinorBasedOnTimeframeType();
+              this.selectedMultiFilters['Timeframes'] = this.timeframe;
+            }
+          }
         }else{
           delete this.selectedMultiFilters['SL Rank'];
 
@@ -1217,6 +1238,17 @@
         const major = String(timeframe).split('.').slice(0, 2).join('.');
 
         return this.combinableMajorPatches.includes(major) ? this.combinableMajorPatches.join('+') : major;
+      },
+      // Whether a timeframe (build, sub patch or major patch) is on or after a minimum build: 2.57 counts for 2.57.0.98348
+      atOrAfterPatch(timeframe, minimum) {
+        const parts = String(timeframe).split('.').map(Number);
+        const floor = String(minimum).split('.').map(Number).slice(0, parts.length);
+        for(let i = 0; i < parts.length; i++){
+          if(parts[i] !== floor[i]){
+            return parts[i] > floor[i];
+          }
+        }
+        return true;
       },
       getDefaultMinorBasedOnTimeframeType() {
         if(this.timeframetype == "minor"){
