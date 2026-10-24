@@ -56,6 +56,9 @@ class GlobalDataService
      */
     public const MINIMUM_GLOBALS_PATCH = '2.53.0.83004';
 
+    /** First patch with in-game (real) rank globals; the In-Game rank view offers nothing older. */
+    public const REAL_RANK_MINIMUM_PATCH = '2.57.0.98348';
+
     /** The floor for site flair holders and the owner, who see further back. */
     public const MINIMUM_GLOBALS_PATCH_PRIVILEGED = '2.52.0.81700';
 
@@ -1790,6 +1793,8 @@ class GlobalDataService
             ['code' => 'Hero', 'name' => 'Hero'],
             ['code' => 'Role', 'name' => 'Role'],
         ];
+
+        $filterData->real_rank_minimum_patch = self::REAL_RANK_MINIMUM_PATCH;
 
         $filterData->leaderboard_type = [
             ['code' => 'Player', 'name' => 'Player'],
