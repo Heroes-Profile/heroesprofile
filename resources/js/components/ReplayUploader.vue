@@ -29,7 +29,7 @@
         <uploader-downloads class="text-sm mb-4" :show-ranks="true"></uploader-downloads>
 
         <p class="text-sm mb-4">
-          <strong>Windows, with rank reading</strong> is the same uploader plus an opt-in reader for the Storm
+          The <strong>with rank reading</strong> downloads are the same uploader plus an opt-in reader for the Storm
           League loading screen, which helps us get real in-game ranks onto Heroes Profile.
           <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>.
         </p>

@@ -291,11 +291,11 @@ export default {
             },
             {
               q: 'Can Heroes Profile show my real in-game rank?',
-              a: 'Yes, for Storm League. Ranks aren\'t in replay files, but the game shows every player\'s rank on the loading screen. The <strong>Windows, with rank reading</strong> version of the uploader can read them from there:'
+              a: 'Yes, for Storm League. Ranks aren\'t in replay files, but the game shows every player\'s rank on the loading screen. The <strong>with rank reading</strong> version of the uploader (Windows, macOS or Linux) can read them from there:'
                 + '<ol class="list-decimal pl-6 my-2 space-y-1"><li>Install it from the <a href="/Upload" class="link">Replay Uploader</a> page.</li>'
                 + '<li>In the uploader\'s Settings, turn on <strong>Read ranks from the loading screen</strong>. It\'s off until you do.</li>'
                 + '<li>Play Storm League. Once a game\'s replay is uploaded, the ranks read from its loading screen are stored and shown in the Storm League Rank section of each player\'s profile.</li></ol>'
-                + 'It only captures the game window, only during the loading screen, and only Storm League games are sent. A rank is only kept for a player who is in that game\'s replay, when the reader is confident the rank card is theirs, so you can also get a rank from someone else\'s games. Ranks are shown as read, with when they were last seen and in how many games, and can occasionally be wrong or out of date. Rank reading is Windows only for now. <a href="/Upload/Uploader#rank-reading" class="link">How rank reading works</a>.',
+                + 'It only captures the game window, only during the loading screen, and only Storm League games are sent. A rank is only kept for a player who is in that game\'s replay, when the reader is confident the rank card is theirs, so you can also get a rank from someone else\'s games. Ranks are shown as read, with when they were last seen and in how many games, and can occasionally be wrong or out of date. <a href="/Upload/Uploader#rank-reading" class="link">How rank reading works</a>.',
             },
             {
               q: 'What do the league tiers on global stats pages represent?',

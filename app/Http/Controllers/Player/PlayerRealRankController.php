@@ -43,7 +43,8 @@ class PlayerRealRankController extends Controller
             $season = $latest->season ? SeasonDate::find($latest->season) : null;
             $periods = BattletagRealRank::where('blizz_id', $blizz_id)->where('region', $region)
                 ->where('season', $latest->season)
-                ->orderByDesc('last_game_date')
+                // Oldest first, so the profile reads left to right like a timeline
+                ->orderBy('last_game_date')
                 ->get()
                 ->map(fn ($period) => $this->format($period))
                 ->all();
