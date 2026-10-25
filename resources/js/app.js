@@ -125,3 +125,29 @@ if (token) {
 } else {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
+
+// A page left open past its session gets 419 on every POST. Fetch a fresh token and retry once.
+let csrfRefresh = null;
+axios.interceptors.response.use(null, async (error) => {
+  const config = error.config;
+  if (!error.response || error.response.status !== 419 || !config || config.__csrfRetried) {
+    return Promise.reject(error);
+  }
+  config.__csrfRetried = true;
+
+  try {
+    // Concurrent 419s share one refresh
+    csrfRefresh = csrfRefresh || axios.get('/Session/CsrfToken').finally(() => { csrfRefresh = null; });
+    const freshToken = (await csrfRefresh).data.token;
+
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = freshToken;
+    if (token) {
+      token.content = freshToken;
+    }
+    config.headers['X-CSRF-TOKEN'] = freshToken;
+  } catch (refreshError) {
+    return Promise.reject(error);
+  }
+
+  return axios(config);
+});
