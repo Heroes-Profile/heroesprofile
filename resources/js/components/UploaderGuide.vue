@@ -51,11 +51,11 @@
       </div>
 
       <div id="rank-reading" class="bg-lighten rounded-lg p-6 text-sm space-y-4">
-        <h2 class="text-lg">Rank reading (Windows, opt-in)</h2>
+        <h2 class="text-lg">Rank reading (opt-in)</h2>
         <p>
           The game doesn't put your Storm League rank in the replay file, so Heroes Profile couldn't get
-          real in-game ranks from replays. It does show them on the loading screen, though. The "Windows, with rank
-          reading" download is the same uploader plus a reader for that loading screen.
+          real in-game ranks from replays. It does show them on the loading screen, though. The "with rank reading"
+          downloads, for Windows, macOS and Linux, are the same uploader plus a reader for that loading screen.
         </p>
         <ul class="list-disc list-inside space-y-1">
           <li>It's off until you turn on <strong>Read ranks from the loading screen</strong> in Settings.</li>
@@ -63,11 +63,13 @@
           <li>In Storm League games it reads each player's rank off the loading screen. Once the game's replay is uploaded, those ranks are sent to Heroes Profile, stored, and shown on each player's profile. Every other mode is thrown away and never sent.</li>
           <li>A rank is only kept for a player who is in that game's replay, and only when the reader is confident the rank card is theirs.</li>
           <li>Beta builds also send a few loading-screen card strips so we can keep improving the reader. When we have enough, the site tells them to stop.</li>
-          <li>Windows may draw a yellow outline around the game while it captures. On Windows 11 you can hide it in Settings. Windows 10 always shows it.</li>
+          <li>Windows: Windows 10 (2004) or later. Windows may draw a yellow outline around the game while it captures. On Windows 11 you can hide it in Settings. Windows 10 always shows it.</li>
+          <li>macOS: macOS 14 (Sonoma) or later. The first time it captures, macOS asks whether the uploader may record the screen: allow it under System Settings → Privacy &amp; Security → Screen Recording, then restart the uploader.</li>
+          <li>Linux: the game under Wine or Proton, on X11 or a Wayland desktop with XWayland (the usual setup).</li>
           <li>It updates on its own channel, so a normal install is never moved onto it, and the normal download doesn't include any of the capture code.</li>
         </ul>
         <p>
-          If you play Storm League on Windows, this is the one to install: your real rank, and the ranks of
+          If you play Storm League, this is the one to install: your real rank, and the ranks of
           everyone in your games, show up on Heroes Profile.
         </p>
       </div>
