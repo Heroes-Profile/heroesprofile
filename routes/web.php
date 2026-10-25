@@ -370,5 +370,9 @@ Route::get('/Animation/Tassadar', [AnimationsController::class, 'showTassadar'])
 // Polled by the header scoreboard every 30s; kept out of the logging group.
 Route::get('/Event/Xalatath/Totals', [XalatathEventController::class, 'totals'])->middleware('throttle:xalatath-totals');
 Route::get('/Flair/State', [XalatathEventController::class, 'flairState'])->middleware('throttle:flair-state');
+
+// Fresh token for a page left open past its session (app.js retries a 419 with it). Never cached.
+Route::get('/Session/CsrfToken', fn () => response()->json(['token' => csrf_token()])->header('Cache-Control', 'no-store, private'))
+    ->middleware('throttle:30,1');
 Route::post('/Event/Xalatath/Eye', [XalatathEventController::class, 'claimEye'])->middleware('throttle:xalatath-eye');
 Route::post('/Event/Xalatath/Card', [XalatathRecapController::class, 'uploadCard'])->middleware('throttle:xalatath-card');
