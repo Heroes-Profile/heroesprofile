@@ -9,7 +9,8 @@
 </template>
 
 <script>
-// Image widths in public/images/ranks: league badges are 350 wide, Master 380, Grandmaster 420, all at the game's scale
+// Image widths in public/images/ranks: league badges are 292 wide (cropped from the game's 350), Master 380, Grandmaster 420,
+// all at the game's scale
 const IMAGE_WIDTHS = { master: 380, grandmaster: 420 };
 
 export default {
@@ -48,7 +49,7 @@ export default {
       return rank.league.charAt(0).toUpperCase() + rank.league.slice(1) + ' ' + rank.division;
     },
     badgeWidth(){
-      return Math.round(this.width * (IMAGE_WIDTHS[this.rank.league] || 350) / 350);
+      return Math.round(this.width * (IMAGE_WIDTHS[this.rank.league] || 292) / 292);
     },
     // The ladder number sits between the "Grand Master" label and the crown's tip.
     // Longer numbers get a smaller font so "#999" still fits inside the disc (about half the badge's width).
