@@ -31,7 +31,8 @@
             <div class="text-sm text-gray-light">Game ended {{ formatDateTime(lastGame.game_date) }} &middot; Replay {{ lastGame.replay_id }}</div>
           </div>
           <custom-button
-            :href="'/Analytics/Match/Single/' + lastGame.replay_id"
+            v-if="replayLink(lastGame.replay_id)"
+            :href="replayLink(lastGame.replay_id)"
             :text="'Watch this game'"
             :alt="'Open this game in the replay viewer'"
             size="small"
@@ -88,7 +89,8 @@
               <td>{{ event.detail }}<template v-if="event.ref_hero_id"> ({{ heroName(event.ref_hero_id) }})</template></td>
               <td>
                 <custom-button
-                  :href="'/Analytics/Match/Single/' + event.replay_id + '?t=' + event.t_s"
+                  v-if="replayLink(event.replay_id)"
+                  :href="replayLink(event.replay_id) + '?t=' + event.t_s"
                   :text="'Watch'"
                   :alt="'Watch this moment in the replay viewer'"
                   size="small"
@@ -272,7 +274,8 @@
                       <td>{{ event.detail }}<template v-if="event.ref_hero_id"> ({{ heroName(event.ref_hero_id) }})</template></td>
                       <td>
                         <custom-button
-                          :href="'/Analytics/Match/Single/' + event.replay_id + '?t=' + event.t_s"
+                          v-if="replayLink(event.replay_id)"
+                          :href="replayLink(event.replay_id) + '?t=' + event.t_s"
                           :text="'Watch'"
                           :alt="'Watch this moment in the replay viewer'"
                           size="small"
@@ -357,6 +360,8 @@ export default {
     heroes: Array,
     // The page's current filters, so "global" is compared under the same ones
     filterParams: Object,
+    // A game's replay viewer link, or null when it has none (the public sample)
+    replayLink: { type: Function, default: replayId => '/Analytics/Match/Single/' + replayId },
   },
   data() {
     return {

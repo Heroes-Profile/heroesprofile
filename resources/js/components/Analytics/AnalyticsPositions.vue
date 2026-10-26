@@ -11,7 +11,7 @@
     <analytics-heading :title="'Where you are on the map'" :takeaway="mapTakeaway">
       Two heatmaps of your games on the selected map. A replay only records your hero's real position every several seconds, plus the spots where you died or picked up a regen globe. Most other recorded points are estimates: the spot you clicked to move or aim an ability. The first map uses only real positions, so it shows where your hero actually was. The second uses only the click targets. Each side of the map has its own heatmaps, since you start in a different base; the map with the most data is selected first.
     </analytics-heading>
-    <analytics-map-list v-if="selectedMap === null" class="mb-8" unit="positions" :rows="positionsByMap" :prompt="'Pick a map to see where you are on it. Everything on this tab then shows that map only.'" @pick="$emit('pick-map', $event)"></analytics-map-list>
+    <analytics-map-list v-if="selectedMap === null" class="mb-8" unit="positions" :rows="positionsByMap" :prompt="'Pick a map to see where you are on it. Everything on this tab then shows that map only.'" :pickable="pickableMaps" @pick="$emit('pick-map', $event)"></analytics-map-list>
     <template v-else>
     <p v-if="(selectedMaps || []).length > 1" class="text-center text-sm mb-2">Showing {{ mapName(selectedMap) }}, your most played of the maps you picked.</p>
     <div class="flex flex-wrap justify-center items-center gap-4 mb-4">
@@ -54,6 +54,8 @@ export default {
     gameMaps: Array,
     // The page's Map filter (map names)
     selectedMaps: { type: Array, default: () => [] },
+    // The maps that can be picked from the tiles; null for all
+    pickableMaps: { type: Array, default: null },
   },
   emits: ['pick-map'],
   data() {
