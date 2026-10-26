@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Global;
 
 use App\Models\BannedLeaderboardAccounts;
 use App\Models\BattlenetAccount;
-use App\Models\Battletag;
 use App\Models\BattletagRealRank;
 use App\Models\HeroesDataTalent;
 use App\Models\Leaderboard;
@@ -30,6 +29,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalLeaderboardController extends GlobalsInputValidationController
@@ -46,6 +46,8 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
     private const PREDICTION_MIN_GAMES = 5;
 
     private const REAL_RANK_LEAGUES = [1 => 'bronze', 2 => 'silver', 3 => 'gold', 4 => 'platinum', 5 => 'diamond', 6 => 'master'];
+
+    private const REAL_RANK_LEAGUE_SIZE = 500;
 
     public function show(Request $request)
     {
@@ -305,15 +307,48 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         $minGames = $weeks * 5;
 
         $build = function () use ($seasonDates, $region, $minGames) {
-            $periods = BattletagRealRank::query()
+            $periods = BattletagRealRank::query()->toBase()
                 ->where('season', $seasonDates->id)
                 ->when($region, fn ($query) => $query->where('region', $region))
-                ->orderByDesc('last_game_date')
-                ->get(['player_id', 'blizz_id', 'region', 'league_tier', 'division', 'grandmaster', 'ladder_position', 'unranked', 'read_count']);
+                ->select('player_id', 'blizz_id', 'region', 'league_tier', 'division', 'grandmaster', 'ladder_position', 'unranked', 'read_count')
+                ->selectRaw('ROW_NUMBER() OVER (PARTITION BY blizz_id, region ORDER BY last_game_date DESC) AS row_num');
 
             // Each player's latest rank this season; unranked reads don't place anyone
-            $latest = $periods->unique(fn ($period) => $period->blizz_id.'|'.$period->region)
-                ->reject(fn ($period) => $period->unranked || $period->league_tier === null)
+            $latest = DB::connection('heroesprofile')->query()
+                ->fromSub($periods, 'periods')
+                ->join('battletags', 'battletags.player_id', '=', 'periods.player_id')
+                ->where('periods.row_num', 1)
+                ->where('periods.unranked', 0)
+                ->whereNotNull('periods.league_tier')
+                ->get(['battletags.battletag', 'periods.blizz_id', 'periods.region', 'periods.league_tier', 'periods.division', 'periods.grandmaster', 'periods.ladder_position', 'periods.read_count'])
+                ->map(fn ($period) => [
+                    'battletag' => $period->battletag,
+                    'blizz_id' => (int) $period->blizz_id,
+                    'region' => (int) $period->region,
+                    'league_tier' => (int) $period->league_tier,
+                    'grandmaster' => (bool) $period->grandmaster,
+                    'division' => $period->division === null ? null : (int) $period->division,
+                    'ladder_position' => $period->ladder_position === null ? null : (int) $period->ladder_position,
+                    'read_count' => (int) $period->read_count,
+                ]);
+
+            // League and division come before games in board order, so only the divisions that reach each
+            // league's top 500 need games. Restricted accounts don't count toward it; the board drops them per viewer.
+            $restricted = $this->globalDataService->restrictedAccountKeys();
+            $latest = $latest->groupBy('league_tier')
+                ->flatMap(function ($league) use ($restricted) {
+                    $shown = 0;
+
+                    return $league->groupBy(fn ($period) => $period['grandmaster'] ? -1 : ($period['division'] ?? 0))
+                        ->sortKeys()
+                        ->takeWhile(function ($division) use (&$shown, $restricted) {
+                            $reached = $shown >= self::REAL_RANK_LEAGUE_SIZE;
+                            $shown += $division->reject(fn ($period) => isset($restricted[$period['blizz_id'].'|'.$period['region']]))->count();
+
+                            return ! $reached;
+                        })
+                        ->collapse();
+                })
                 ->values();
 
             // This season's Storm League games, every upload counted
@@ -330,29 +365,26 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             }
             $games = $games->keyBy(fn ($row) => $row->blizz_id.'|'.$row->region);
 
-            $battletags = Battletag::whereIn('player_id', $latest->pluck('player_id')->unique())->pluck('battletag', 'player_id');
-
-            return $latest->map(function ($period) use ($battletags, $games, $minGames) {
-                $record = $games->get($period->blizz_id.'|'.$period->region);
+            return $latest->map(function ($period) use ($games, $minGames) {
+                $record = $games->get($period['blizz_id'].'|'.$period['region']);
                 $wins = (int) ($record->win ?? 0);
                 $gamesPlayed = $wins + (int) ($record->loss ?? 0);
 
                 return [
-                    'battletag' => $battletags[$period->player_id] ?? null,
-                    'blizz_id' => $period->blizz_id,
-                    'region' => $period->region,
-                    'league' => $period->grandmaster ? 'grandmaster' : self::REAL_RANK_LEAGUES[$period->league_tier],
-                    'league_tier' => $period->league_tier,
-                    'grandmaster' => $period->grandmaster,
-                    'division' => $period->division,
-                    'ladder_position' => $period->ladder_position,
-                    'read_count' => $period->read_count,
+                    'battletag' => $period['battletag'],
+                    'blizz_id' => $period['blizz_id'],
+                    'region' => $period['region'],
+                    'league' => $period['grandmaster'] ? 'grandmaster' : self::REAL_RANK_LEAGUES[$period['league_tier']],
+                    'league_tier' => $period['league_tier'],
+                    'grandmaster' => $period['grandmaster'],
+                    'division' => $period['division'],
+                    'ladder_position' => $period['ladder_position'],
+                    'read_count' => $period['read_count'],
                     'games_played' => $gamesPlayed,
                     'win_rate' => $gamesPlayed > 0 ? round($wins / $gamesPlayed * 100, 2) : null,
                     'eligible' => $gamesPlayed >= $minGames,
                 ];
             })
-                ->filter(fn ($row) => $row['battletag'] !== null)
                 ->sort(fn ($a, $b) => $this->compareRealRanks($a, $b))
                 ->values()
                 ->all();
@@ -376,7 +408,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             ->reject(fn ($row) => $this->globalDataService->isHiddenFrom($row['blizz_id'], $row['region'], $authenticatedUser))
             // Top 500 per league; rows are already in board order
             ->groupBy('league_tier')
-            ->flatMap(fn ($league) => $league->take(500))
+            ->flatMap(fn ($league) => $league->take(self::REAL_RANK_LEAGUE_SIZE))
             ->map(function ($row) use (&$rank, $patreonAccounts, $regionNames, $minGames) {
                 $key = $row['blizz_id'].'|'.$row['region'];
 

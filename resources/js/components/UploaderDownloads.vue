@@ -13,6 +13,8 @@
       <div class="flex flex-wrap gap-2">
         <custom-button :href="link('Heroesprofile.Uploader-osx-arm64-Setup.pkg')" text="Apple Silicon (M1 and later)" alt="Download the macOS replay uploader for Apple Silicon" color="teal" :targetblank="true"></custom-button>
         <custom-button :href="link('Heroesprofile.Uploader-osx-x64-Setup.pkg')" text="Intel" alt="Download the macOS replay uploader for Intel Macs" color="teal" :targetblank="true"></custom-button>
+        <custom-button v-if="showRanks" :href="link('Heroesprofile.Uploader-osx-arm64-ranks-Setup.pkg')" text="Apple Silicon, with rank reading" alt="Download the macOS replay uploader with rank reading for Apple Silicon" color="teal" :targetblank="true"></custom-button>
+        <custom-button v-if="showRanks" :href="link('Heroesprofile.Uploader-osx-x64-ranks-Setup.pkg')" text="Intel, with rank reading" alt="Download the macOS replay uploader with rank reading for Intel Macs" color="teal" :targetblank="true"></custom-button>
       </div>
       <p class="text-xs text-gray-medium mt-2">
         The Mac builds aren't signed yet while we wait on Apple. The first time, right-click the installer
@@ -24,6 +26,7 @@
       <h3 class="mb-2">Linux</h3>
       <div class="flex flex-wrap gap-2">
         <custom-button :href="link('Heroesprofile.Uploader.AppImage')" text="AppImage" alt="Download the Linux replay uploader (AppImage)" color="teal" :targetblank="true"></custom-button>
+        <custom-button v-if="showRanks" :href="link('Heroesprofile.Uploader-linux-ranks.AppImage')" text="AppImage, with rank reading" alt="Download the Linux replay uploader with rank reading (AppImage)" color="teal" :targetblank="true"></custom-button>
         <custom-button :href="link('HeroesProfileUploader-linux-x64.tar.gz')" text="tar.gz (headless)" alt="Download the Linux replay uploader as a tar.gz" color="teal" :targetblank="true"></custom-button>
       </div>
     </div>
