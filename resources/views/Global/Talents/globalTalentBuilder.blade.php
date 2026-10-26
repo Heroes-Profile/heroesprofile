@@ -1,10 +1,10 @@
 @extends('layouts.app', $bladeGlobals)    
 
 @if ($userinput)
-  @section('title', $userinput["name"] . ' Talent Builder')
+  @section('title', $userinput["name"] . ' Talent Calculator & Builder')
   @section('meta_description', 'Build your own ' . $userinput["name"] . ' talent build for Heroes of the Storm and see how it performs, with win rates from real games on Heroes Profile.')
 @else
-  @section('title', 'Global Talent Builder')
+  @section('title', 'Talent Calculator & Builder')
   @section('meta_description', 'Heroes of the Storm talent builder and custom build creator. Build and customize your own hero talent builds. Analyze talent performance with real data to optimize your hero builds for success on Heroes Profile.')
 @endif
 

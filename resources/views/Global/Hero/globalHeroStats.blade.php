@@ -1,8 +1,8 @@
 @extends('layouts.app', $bladeGlobals)    
 
-@section('title', 'Global Hero Stats')
-@section('meta_keywords', 'heroes of the storm statistics, heroes of the storm stats, hots statistics, hero win rates, pick rate, ban rate, hero influence, win rate confidence, hero performance')
-@section('meta_description', 'Comprehensive Heroes of the Storm hero statistics and analytics. Explore global hero win rates, pick rates, ban rates, hero influence, and performance metrics. Filter and analyze Heroes of the Storm hero statistics to make informed decisions on Heroes Profile.')
+@section('title', 'Heroes of the Storm Tier List & Hero Win Rates')
+@section('meta_keywords', 'heroes of the storm tier list, hots tier list, heroes of the storm statistics, heroes of the storm stats, hots statistics, hero win rates, pick rate, ban rate, hero influence, win rate confidence, hero performance')
+@section('meta_description', 'Heroes of the Storm tier list from real games. Win rate, pick rate, ban rate and influence for every hero on the latest patch, filterable by rank, map and game mode.')
 
 @section('content')
   <global-hero-stats 

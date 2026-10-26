@@ -7,11 +7,11 @@
 
 
     <div class="text-center pt-10 pb-8 px-4">
-      <div class="flex items-center justify-center font-logo text-4xl md:text-8xl">
+      <h1 class="flex items-center justify-center font-logo text-4xl md:text-8xl normal-case">
         Heroes
-        <img class="w-[1.667em] mx-[0.333em]" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo"/>
+        <img class="w-[1.667em] mx-[0.333em]" src="/images/logo/heroesprofilelogo.png" alt=""/>
         Profile
-      </div>
+      </h1>
 
       <div ref="heroSearch" class="flex justify-center mt-10">
         <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="text-lg"></search-component>
