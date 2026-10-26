@@ -32,5 +32,23 @@
     :initialbuilddata="{{ json_encode($initialbuilddata) }}"
 
   >
+    {{-- Crawlers get the heading and builds in the HTML; Vue drops it on mount --}}
+    <div v-pre class="sr-only">
+      <h1 class="text-xl md:text-3xl">{{ $userinput ? $userinput["name"] . ' Builds & Talent Stats' : 'Hero Builds & Talent Stats' }}</h1>
+      @if ($userinput && $initialbuilddata)
+        <h2 class="heading mt-4 mb-2">Top {{ $userinput["name"] }} Builds, Patch {{ $defaulttimeframe[0] }}</h2>
+        <ol class="text-sm">
+          @foreach ($initialbuilddata as $build)
+            <li class="mb-1">
+              {{ collect(['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'])
+                  ->map(fn ($level) => data_get($build, $level . '.title') ?: data_get($build, $level . '.talent_name'))
+                  ->filter()
+                  ->implode(' / ') }}
+              - {{ data_get($build, 'win_rate') }}% win rate over {{ number_format(data_get($build, 'games_played')) }} games
+            </li>
+          @endforeach
+        </ol>
+      @endif
+    </div>
   </global-talents-stats>
 @endsection

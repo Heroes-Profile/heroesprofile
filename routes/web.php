@@ -177,6 +177,11 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     // match (allowlisted for now)
     // Non-patrons and logged-out visitors get the info page
     Route::get('Analytics', [AnalyticsController::class, 'show'])->middleware('ensureBattlenetAuth:optional');
+    // A frozen sample of one account's analytics, open to everyone
+    Route::get('Analytics/Sample', [AnalyticsController::class, 'sample']);
+    Route::post('Analytics/Sample/Data/{tab}', [AnalyticsController::class, 'sampleData'])->whereAlpha('tab')->middleware('throttle:60,1');
+    Route::get('Analytics/Sample/Match/Single', [AnalyticsController::class, 'sampleReplay']);
+    Route::get('Analytics/Sample/Match/Single/Data', [AnalyticsController::class, 'sampleReplayData'])->middleware('throttle:30,1');
     Route::middleware('ensureBattlenetAuth')->group(function () {
         Route::get('Analytics/Status', [AnalyticsController::class, 'status'])->middleware('throttle:60,1');
         Route::post('Analytics/Request', [AnalyticsController::class, 'request'])->middleware('throttle:10,1');

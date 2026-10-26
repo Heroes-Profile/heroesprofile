@@ -1,6 +1,6 @@
 <template>
     <div :class="{ 'grayscale': isRemoved }">
-      <round-image v-if="talent" :size="size" popupsize="large" mobileClick="true" :image="getTalentImage()">
+      <round-image v-if="talent" :size="size" popupsize="large" mobileClick="true" :image="getTalentImage()" :title="displayTitle">
         <h2 v-if="isRemoved" class="text-yellow"><b>Talent no longer available</b></h2>
         <h2><b>{{ displayTitle }}</b></h2>
         <p>{{ this.removeNumbers(talent.hotkey) }}</p>

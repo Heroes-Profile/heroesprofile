@@ -152,6 +152,8 @@ export default {
     heroes: Array,
     // The page's current filters as sent to /Analytics/Data
     filterParams: Object,
+    // Where tab data comes from: /Analytics/Data/, or the public sample's
+    dataUrl: { type: String, default: '/Analytics/Data/' },
   },
   data() {
     return {
@@ -341,7 +343,7 @@ export default {
       this.timeline = null;
       this.timelineLoading = true;
       try {
-        const response = await this.$axios.post('/Analytics/Data/ability', params);
+        const response = await this.$axios.post(this.dataUrl + 'ability', params);
         this.timelineCache[key] = response.data.timeline;
         if (this.isSelected(heroId, row)) {
           this.timeline = response.data.timeline;

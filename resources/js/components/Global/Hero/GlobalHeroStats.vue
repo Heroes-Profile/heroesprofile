@@ -2,7 +2,7 @@
   <div>
     <global-async-debug-banner page-label="Global Hero" />
 
-    <page-heading :infoText1="infoText" heading="Global Hero Statistics"></page-heading>
+    <page-heading :infoText1="infoText" heading="Hero Tier List & Win Rates"></page-heading>
     
     
 

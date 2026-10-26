@@ -13,7 +13,7 @@
         <img class="w-28 md:w-56 max-w-[320px] mx-3 md:mx-8 -translate-y-[8%] js-void-logo" :src="logoSrc" alt="Heroes Profile Logo"/>
         Profile
       </div>
-      <img v-else class="block m-4 mr-auto ml-auto max-md:px-4 md:w-2/5 md:max-w-6xl pl-25" :src="logoSrc" alt="Heroes Profile Logo"/>
+      <h1 v-else><img class="block m-4 mr-auto ml-auto max-md:px-4 md:w-2/5 md:max-w-6xl pl-25" :src="logoSrc" alt="Heroes Profile - Heroes of the Storm Stats"/></h1>
 
       <a v-if="xalatathEnding" href="/Event/Xalatath" class="inline-block mb-6 xalatath-title underline hover:opacity-80">The Void has receded. See what Xal'atath left behind <i class="fas fa-chevron-right ml-1"></i></a>
 

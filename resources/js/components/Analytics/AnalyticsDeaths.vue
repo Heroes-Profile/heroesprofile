@@ -17,7 +17,7 @@
         <p v-if="(selectedMaps || []).length > 1" class="text-center text-sm mb-2">Showing {{ mapName(shownMap) }}, where you die most of the maps you picked.</p>
         <analytics-map-view :map-name="mapName(shownMap)" :layout="layoutFor(shownMap)" :points="deathPoints" :legend="deathLegend"></analytics-map-view>
       </template>
-      <analytics-map-list v-else unit="deaths" :rows="deathsByMap" :prompt="'Pick a map to see where you die on it. Everything on this tab then shows that map only.'" @pick="$emit('pick-map', $event)"></analytics-map-list>
+      <analytics-map-list v-else unit="deaths" :rows="deathsByMap" :prompt="'Pick a map to see where you die on it. Everything on this tab then shows that map only.'" :pickable="pickableMaps" @pick="$emit('pick-map', $event)"></analytics-map-list>
     </div>
 
     <!-- Death context -->
@@ -95,6 +95,8 @@ export default {
     gameMaps: Array,
     // The page's Map filter (map names)
     selectedMaps: { type: Array, default: () => [] },
+    // The maps that can be picked from the tiles; null for all
+    pickableMaps: { type: Array, default: null },
   },
   emits: ['pick-map'],
   data() {

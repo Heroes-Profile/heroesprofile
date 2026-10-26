@@ -34,6 +34,15 @@ return [
     // Blizz IDs allowed to use it until access is opened up, comma-separated.
     'allowlist' => array_values(array_filter(array_map('intval', explode(',', (string) env('DEEP_ANALYTICS_ALLOWLIST', '67280'))))),
 
+    // The public sample page: one account's analytics frozen into resources/analytics-sample by
+    // `php artisan analytics:capture-sample`. maps are the ones visitors can pick.
+    'sample' => [
+        'blizz_id' => 67280,
+        'region' => 1,
+        'battletag' => 'Zemill',
+        'maps' => ['Battlefield of Eternity'],
+    ],
+
     // How long one account's request blocks another, in seconds.
     'request_lock_seconds' => 600,
 

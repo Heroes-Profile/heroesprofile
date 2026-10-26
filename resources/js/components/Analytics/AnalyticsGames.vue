@@ -22,14 +22,14 @@
           <game-summary-box :data="game"></game-summary-box>
           <div class="flex justify-end mt-1">
             <custom-button
-              v-if="isProcessed(game)"
-              :href="'/Analytics/Match/Single/' + game.replayID"
+              v-if="isProcessed(game) && replayLink(game.replayID)"
+              :href="replayLink(game.replayID)"
               :text="'Watch Replay'"
               :alt="'Watch this game in the replay viewer'"
               size="small"
             ></custom-button>
             <custom-button
-              v-else
+              v-else-if="!sample"
               :text="processButtonText(game)"
               :alt="'Process this game'"
               size="small"
@@ -63,7 +63,8 @@
           <tbody>
             <tr v-for="row in data.games" :key="row.replayID">
               <td>
-                <a class="link" :href="'/Analytics/Match/Single/' + row.replayID">{{ row.replayID }}</a>
+                <a v-if="replayLink(row.replayID)" class="link" :href="replayLink(row.replayID)">{{ row.replayID }}</a>
+                <template v-else>{{ row.replayID }}</template>
               </td>
               <td>
                 {{ formatDate(row.game_date) }}
@@ -97,14 +98,14 @@
               </td>
               <td>
                 <custom-button
-                  v-if="isProcessed(row)"
-                  :href="'/Analytics/Match/Single/' + row.replayID"
+                  v-if="isProcessed(row) && replayLink(row.replayID)"
+                  :href="replayLink(row.replayID)"
                   :text="'Watch'"
                   :alt="'Watch this game in the replay viewer'"
                   size="small"
                 ></custom-button>
                 <custom-button
-                  v-else
+                  v-else-if="!sample"
                   :text="processButtonText(row)"
                   :alt="'Process this game'"
                   size="small"
@@ -140,6 +141,9 @@ export default {
       type: [String, Boolean, Number],
     },
     authenticated: Boolean,
+    // The public sample: nothing to process, and only its one game has a replay
+    sample: Boolean,
+    replayLink: { type: Function, default: replayId => '/Analytics/Match/Single/' + replayId },
   },
   data() {
     return {
