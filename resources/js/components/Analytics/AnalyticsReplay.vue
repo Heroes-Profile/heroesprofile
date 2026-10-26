@@ -308,6 +308,8 @@ export default {
   props: {
     replayId: Number,
     urlparameters: { type: Object, default: () => ({}) },
+    // The public sample's game: already prepared, read from the sample files
+    sample: Boolean,
   },
   data() {
     return {
@@ -340,8 +342,10 @@ export default {
   async mounted() {
     window.addEventListener('keydown', this.onKey);
     try {
-      await this.ensureReady();
-      const response = await this.$axios.get('/Analytics/Match/Single/' + this.replayId + '/Data');
+      if (!this.sample) {
+        await this.ensureReady();
+      }
+      const response = await this.$axios.get(this.sample ? '/Analytics/Sample/Match/Single/Data' : '/Analytics/Match/Single/' + this.replayId + '/Data');
       this.data = response.data;
       this.selected = this.data.players.find(p => p.you)?.idx ?? null;
       [this.walkable, this.walkGrid] = await Promise.all([loadWalkable(this.minimap), loadWalkGrid(this.minimap)]);

@@ -11,6 +11,7 @@
     :maps="{{ json_encode($maps) }}"
     :urlparameters="{{ json_encode($urlparameters) }}"
     :playermatchtablestyle="{{ json_encode($playermatchtablestyle) }}"
+    :sample="{{ json_encode($sample ?? null) }}"
   >
   </analytics-page>
 @endsection

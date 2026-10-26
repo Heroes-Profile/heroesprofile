@@ -3,7 +3,9 @@
     <analytics-disclaimer-popup v-if="showDisclaimer" @popupclosed="showDisclaimer = false"></analytics-disclaimer-popup>
     <page-heading
       :heading="'Analytics (Pre-Alpha)'"
-      :infoText1="'Replay analysis of ' + battletag + '\'s season games (from Oct 2, 2026), compared with a sample of all games.'"
+      :infoText1="sample
+        ? 'A sample: replay analysis of ' + battletag + '\'s season games as of ' + sample.captured_at + ', compared with a sample of all games.'
+        : 'Replay analysis of ' + battletag + '\'s season games (from Oct 2, 2026), compared with a sample of all games.'"
       :infoText2="'Pre-alpha: this is in very early development. Numbers, views and features will change, and some may be wrong or missing.'"
     ></page-heading>
 
@@ -15,16 +17,16 @@
       :filters="filters"
       :isLoading="isLoading"
       :gametypedefault="gametype"
-      :includehero="true"
+      :includehero="!sample"
       :heroinput="getHeroID()"
-      :includegametypefull="true"
+      :includegametypefull="!sample"
       :includegamemap="true"
       :hideadvancedfilteringbutton="true"
     ></filters>
 
     <div class="max-w-[1500px] mx-auto px-4 mt-4">
       <!-- Processing status: one line, so the tab's own numbers come first -->
-      <div class="text-center mb-6">
+      <div v-if="!sample" class="text-center mb-6">
         <div v-if="processing" class="max-w-[600px] mx-auto">
           <p class="text-sm">Processing your games: {{ status.done }} of {{ status.total }} done. You can leave this page; it carries on.</p>
           <stat-bar-box class="w-full" size="full" :title="'Progress'" :value="percent" :displaytext="status.done + ' of ' + status.total"></stat-bar-box>
@@ -62,12 +64,12 @@
 
         <p v-if="tabError" class="text-center text-red mb-4">{{ tabError }}</p>
         <div v-if="!isLoading && tabData">
-          <analytics-deaths v-if="activeTab === 'deaths'" :data="tabData" :maps="maps" :heroes="filters.heroes" :game-maps="filters.game_maps" :selected-maps="gamemap" @pick-map="pickMap"></analytics-deaths>
-          <analytics-positions v-else-if="activeTab === 'map'" :data="tabData" :maps="maps" :heroes="filters.heroes" :game-maps="filters.game_maps" :selected-maps="gamemap" @pick-map="pickMap"></analytics-positions>
+          <analytics-deaths v-if="activeTab === 'deaths'" :data="tabData" :maps="maps" :heroes="filters.heroes" :game-maps="filters.game_maps" :selected-maps="gamemap" :pickable-maps="sample ? sample.maps : null" @pick-map="pickMap"></analytics-deaths>
+          <analytics-positions v-else-if="activeTab === 'map'" :data="tabData" :maps="maps" :heroes="filters.heroes" :game-maps="filters.game_maps" :selected-maps="gamemap" :pickable-maps="sample ? sample.maps : null" @pick-map="pickMap"></analytics-positions>
           <analytics-timelines v-else-if="activeTab === 'timelines'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-timelines>
-          <analytics-activity v-else-if="activeTab === 'activity'" :data="tabData" :maps="maps" :heroes="filters.heroes" :filter-params="filterParams"></analytics-activity>
+          <analytics-activity v-else-if="activeTab === 'activity'" :data="tabData" :maps="maps" :heroes="filters.heroes" :filter-params="filterParams" :data-url="dataUrl"></analytics-activity>
           <analytics-sessions v-else-if="activeTab === 'sessions'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-sessions>
-          <analytics-coaching v-else-if="activeTab === 'coaching'" :data="tabData" :maps="maps" :heroes="filters.heroes" :filter-params="filterParams"></analytics-coaching>
+          <analytics-coaching v-else-if="activeTab === 'coaching'" :data="tabData" :maps="maps" :heroes="filters.heroes" :filter-params="filterParams" :replay-link="replayLink"></analytics-coaching>
           <analytics-stacks v-else-if="activeTab === 'stacks'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-stacks>
         </div>
       </div>
@@ -83,7 +85,9 @@
       :maps="maps"
       :heroes="filters.heroes"
       :playermatchtablestyle="playermatchtablestyle"
-      :authenticated="true"
+      :authenticated="!sample"
+      :sample="!!sample"
+      :replay-link="replayLink"
     ></analytics-games>
 
     <!-- How the open tab's numbers are made; the wrapper is what "How is this calculated?" scrolls to -->
@@ -111,11 +115,13 @@ export default {
     urlparameters: { type: Object, default: () => ({}) },
     // The player's Match History style setting: cards (true) or table
     playermatchtablestyle: { type: [String, Boolean, Number], default: false },
+    // The public sample's details (captured_at, maps, replay_id); null on the real page
+    sample: { type: Object, default: null },
   },
   data() {
     return {
       // The pre-alpha notice, until it has been acknowledged in this browser
-      showDisclaimer: (() => { try { return !localStorage.getItem(ANALYTICS_DISCLAIMER_KEY); } catch (e) { return true; } })(),
+      showDisclaimer: !this.sample && (() => { try { return !localStorage.getItem(ANALYTICS_DISCLAIMER_KEY); } catch (e) { return true; } })(),
       status: { ...this.initialStatus },
       requesting: false,
       processing: Boolean(this.initialStatus.processing),
@@ -154,7 +160,7 @@ export default {
       this.loadTab();
     }
     // A request still running from an earlier visit
-    if (this.processing) {
+    if (this.processing && !this.sample) {
       this.startPolling();
     }
     document.addEventListener('visibilitychange', this.onVisible);
@@ -171,6 +177,9 @@ export default {
     },
     filterParams() {
       return { game_type: this.gametype, game_map: this.gamemap, hero: this.getHeroID() };
+    },
+    dataUrl() {
+      return this.sample ? '/Analytics/Sample/Data/' : '/Analytics/Data/';
     },
     tabData() {
       return this.tabCache[this.cacheKey()];
@@ -202,6 +211,11 @@ export default {
     },
   },
   methods: {
+    // Where a game's replay opens; the sample has only its one game
+    replayLink(replayId) {
+      if (!this.sample) return '/Analytics/Match/Single/' + replayId;
+      return replayId === this.sample.replay_id ? '/Analytics/Sample/Match/Single' : null;
+    },
     getHeroID() {
       if (this.hero) {
         const match = this.filters.heroes.find(h => h.name === this.hero);
@@ -241,7 +255,7 @@ export default {
       }
       this.isLoading = true;
       try {
-        const response = await this.$axios.post('/Analytics/Data/' + this.activeTab, this.filterParams);
+        const response = await this.$axios.post(this.dataUrl + this.activeTab, this.filterParams);
         this.tabCache = { ...this.tabCache, [key]: response.data };
       } catch (e) {
         this.tabError = 'Could not load this tab. Please try again in a minute.';

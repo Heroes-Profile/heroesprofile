@@ -18,6 +18,13 @@
       </ul>
 
       <p class="mb-4">
+        See what it looks like on a sample of Zemill's games.
+      </p>
+      <div class="flex justify-center mb-8">
+        <custom-button :href="'/Analytics/Sample'" :text="'See a sample'" :alt="'See a sample of Player Analytics'" :size="'big'"></custom-button>
+      </div>
+
+      <p class="mb-4">
         While we test it, Player Analytics is only open to Patreon supporters. To check it out, subscribe on Patreon at any tier, then link your Patreon account to your Heroes Profile account.
       </p>
       <p v-if="patreonLinked" class="mb-4">

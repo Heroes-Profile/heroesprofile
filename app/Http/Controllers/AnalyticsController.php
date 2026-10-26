@@ -9,6 +9,7 @@ use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
 use App\Services\AnalyticsQueryService;
 use App\Services\AnalyticsReplayService;
+use App\Services\AnalyticsSampleService;
 use App\Services\AnalyticsService;
 use App\Services\GlobalDataService;
 use Illuminate\Http\JsonResponse;
@@ -28,6 +29,7 @@ class AnalyticsController extends Controller
         private AnalyticsService $analytics,
         private AnalyticsQueryService $queries,
         private AnalyticsReplayService $replays,
+        private AnalyticsSampleService $sample,
     ) {
         parent::__construct($globalDataService);
     }
@@ -156,6 +158,77 @@ class AnalyticsController extends Controller
         $replay = $this->replays->replay($replayID, (int) $user->blizz_id);
         abort_unless($replay, 404);
         $replay['win_model'] = $this->queries->winModel();
+
+        return response()->json($replay);
+    }
+
+    // The public sample: the same page and replay viewer, read from the frozen files, for anyone
+    public function sample(Request $request): View
+    {
+        $meta = $this->sample->meta();
+        abort_unless($meta, 404);
+
+        // The Map filter offers only the maps the sample has
+        $filters = clone $this->globalDataService->getFilterData();
+        $filters->game_maps = collect($filters->game_maps)->whereIn('code', $meta['maps'])->values();
+
+        return view('Analytics.analytics')->with([
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'battletag' => $meta['battletag'],
+            'status' => $meta['status'],
+            'filters' => $filters,
+            'gametypedefault' => [],
+            'maps' => $this->globalDataService->getAllMapsKeyed()->map(fn ($map) => $map->name),
+            'urlparameters' => $request->query(),
+            'playermatchtablestyle' => $this->globalDataService->getPlayerMatchStyle(),
+            'sample' => $meta,
+        ]);
+    }
+
+    public function sampleData(Request $request, string $tab): JsonResponse
+    {
+        $meta = $this->sample->meta();
+        abort_unless($meta, 404);
+
+        // One sample map at most; anything else isn't in the files
+        $maps = $request->input('game_map');
+        $maps = is_array($maps) ? $maps : array_filter(explode(',', (string) $maps));
+        abort_if(count($maps) > 1, 404);
+        $map = $maps[0] ?? null;
+        abort_unless($map === null || in_array($map, $meta['maps'], true), 404);
+
+        if ($tab === 'ability') {
+            $ability = $request->validate([
+                'ability_hero' => ['required', 'integer', 'min:1'],
+                'ability_id' => ['required', 'string', 'max:100', 'regex:/^[A-Za-z0-9_]+$/'],
+            ]);
+            $data = $this->sample->ability((int) $ability['ability_hero'], $ability['ability_id'], $map);
+        } else {
+            abort_unless($tab === 'games' || in_array($tab, AnalyticsQueryService::TABS, true), 404);
+            $data = $this->sample->tab($tab, $map);
+        }
+        abort_unless($data, 404);
+
+        return response()->json($data);
+    }
+
+    public function sampleReplay(Request $request): View
+    {
+        $meta = $this->sample->meta();
+        abort_unless($meta && $meta['replay_id'], 404);
+
+        return view('Analytics.analyticsReplay')->with([
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'replayId' => $meta['replay_id'],
+            'urlparameters' => $request->query(),
+            'sample' => true,
+        ]);
+    }
+
+    public function sampleReplayData(): JsonResponse
+    {
+        $replay = $this->sample->replay();
+        abort_unless($replay, 404);
 
         return response()->json($replay);
     }
