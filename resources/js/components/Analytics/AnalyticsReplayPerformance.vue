@@ -47,11 +47,11 @@
             :class="{ 'bg-lighten': row.idx === selected }"
             @click="$emit('select', row.idx)"
           >
-            <td>
+            <td class="text-white border-white border" :class="row.won ? 'bg-teal' : 'bg-red'">
               <span class="inline-flex items-center gap-2">
                 <hero-image-wrapper v-if="row.player.short_name" :hero="{ name: row.player.hero, short_name: row.player.short_name }" :size="'small'"></hero-image-wrapper>
                 <span>{{ row.player.battletag || row.player.hero }}<span v-if="row.player.you"> (you)</span></span>
-                <span class="text-gray-light">{{ row.won ? 'Win' : 'Loss' }}</span>
+                <span>{{ row.won ? 'Win' : 'Loss' }}</span>
               </span>
             </td>
             <td class="min-w-[8em]"><stat-bar :value="row.overall ?? 0" :display-text="orDash(row.overall === null ? null : Math.round(row.overall))" color="teal"></stat-bar></td>
@@ -191,14 +191,14 @@ export default {
     }
   },
   computed: {
-    // Blue team first, in the viewer's order
+    // Highest overall first, unrated last
     rows() {
       if (!this.data) return [];
       const byIdx = Object.fromEntries(this.data.players.map(p => [p.idx, p]));
       return this.players
         .filter(p => byIdx[p.idx])
         .map(p => ({ ...byIdx[p.idx], player: p }))
-        .sort((a, b) => a.player.team - b.player.team || a.idx - b.idx);
+        .sort((a, b) => (b.overall ?? -1) - (a.overall ?? -1) || a.player.team - b.player.team || a.idx - b.idx);
     },
     current() {
       return this.rows.find(r => r.idx === this.selected) || null;
