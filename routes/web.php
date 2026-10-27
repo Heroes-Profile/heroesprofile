@@ -188,6 +188,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
         Route::post('Analytics/Data/{tab}', [AnalyticsController::class, 'data'])->whereAlpha('tab')->middleware('throttle:60,1');
         Route::get('Analytics/Match/Single/{replayID}', [AnalyticsController::class, 'replay'])->whereNumber('replayID');
         Route::get('Analytics/Match/Single/{replayID}/Data', [AnalyticsController::class, 'replayData'])->whereNumber('replayID')->middleware('throttle:30,1');
+        Route::get('Analytics/Match/Single/{replayID}/Performance', [AnalyticsController::class, 'replayPerformance'])->whereNumber('replayID')->middleware('throttle:30,1');
         Route::get('Analytics/Match/Single/{replayID}/Status', [AnalyticsController::class, 'replayStatus'])->whereNumber('replayID')->middleware('throttle:60,1');
         Route::post('Analytics/Match/Single/{replayID}/Process', [AnalyticsController::class, 'replayProcess'])->whereNumber('replayID')->middleware('throttle:10,1');
     });

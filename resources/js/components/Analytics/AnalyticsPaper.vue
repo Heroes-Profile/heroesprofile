@@ -367,6 +367,40 @@ export default {
           ],
         },
 
+        performance: {
+          title: 'Match performance: rating each player against the same hero on the same map',
+          version: 'Extract v5 · Coaching rules v1 · October 2026',
+          abstract: 'For one game, we measure each player on combat, survival, teamfights, objectives, positioning, ability use, movement and support, and place every measure among the same hero\'s games on the same map in the global sample that ended with the same result. Each measure is weighted by how strongly it goes with winning on that hero, and the weighted measures combine into a rating per area and an overall rating. The winners\' typical range is shown beside every measure.',
+          sections: [
+            { heading: 'Introduction', body: [
+              'A scoreboard says what happened in a game but not whether it was good for that hero on that map. This section answers that by comparing each player with many other games on the same hero and map, and weighs each number by how much it matters for winning on that hero.',
+            ] },
+            { heading: 'Data', shared: true, body: [
+              'This section uses the game\'s scoreboard (damage, healing, takedowns, deaths, crowd control, experience and more), and from the extract its fights, deaths, objectives and camps, hero positions, ability commands and travel. The measures are computed for the game the moment it is processed, by the same rules the nightly job uses for the global sample.',
+            ] },
+            { heading: 'Definitions', body: [
+              { list: [
+                'Counts and amounts are per minute of game (small counts are shown per 10 minutes), so short and long games compare fairly. Shares are of the relevant total (fights, objectives, travel time). Time to first heroic is in seconds. Games under 5 minutes are not rated.',
+                'Fight, objective and camp presence, overstaying, caught first, picked off alone, dying to the same hero again, caught at a bush, time to first heroic and travel without a mount are defined as on the Coaching tab.',
+                'Crowd control: seconds of stun, root and silence applied to enemy heroes.',
+                'Time in the enemy half: the share of the player\'s real (not estimated) positions after the first minute that are closer to the enemy base than to their own. Bases are where each team\'s heroes first appear.',
+                'Distance from teammates: the average distance, in map units, between the player and the centre of their teammates, from all positions averaged per 5 seconds, when at least two teammates have a position.',
+                'Ability use: casts per minute of each of the hero\'s basic, heroic, trait and activated abilities.',
+              ] },
+            ] },
+            { heading: 'Methods', body: [
+              'Comparison group. For each hero, map and result, the global sample (excluding custom games) gives the distribution of every measure, kept as 21 points at every 5%. When the hero has fewer than 30 such games on the map, the hero\'s games on every map with the same result are used instead, and the section says so.',
+              'Rating. A measure\'s percentile is where the player\'s value sits in that distribution, by straight-line interpolation between the 5% points; a value equal to several points (often zero) takes the middle of them. The rating is the percentile when more of the measure goes with winning on that hero, and 100 minus it when less does.',
+              'Weights. For every hero and measure, the correlation between the measure and winning across all the hero\'s sample games gives the direction (its sign) and the weight (its size). Measures with a correlation under 0.05 in size, or from fewer than 100 games, are shown but not rated.',
+              { formula: 'area rating = Σ |r_m| · rating_m / Σ |r_m|      overall = mean of the area ratings' },
+              'Winners usually: the 25th to 75th percentile of the measure in the hero\'s wins on the map (or on every map, as above).',
+            ] },
+            { heading: 'Limitations', body: [
+              'Some measures are partly results of winning rather than causes: a team that is ahead spends more time in the enemy half and destroys more structures. Comparing with games of the same result removes most of that, but not all. Correlations measure association, not cause. Most positions are estimated from orders, which loosens presence and distance measures, and the replay has no damage events, so the quality of individual trades cannot be measured. Distributions and weights are rebuilt nightly as the sample grows.',
+            ] },
+          ],
+        },
+
         games: {
           title: 'Processed games: inclusion criteria',
           version: 'Extract v3 · Coaching rules v1 · October 2026',
