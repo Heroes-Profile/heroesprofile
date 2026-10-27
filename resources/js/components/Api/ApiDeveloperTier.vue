@@ -17,6 +17,7 @@
           <li>How your app, bot, overlay or other tool works in real time</li>
           <li>Expected request volume and scale</li>
           <li>A quick workflow diagram or step-by-step flow from start to finish</li>
+          <li>How your project differs from Heroes Profile, and what it does that Heroes Profile doesn't</li>
         </ul>
       </div>
 
@@ -51,6 +52,9 @@ Project name:
 
 Summary of what I am building:
 [1-3 sentence summary]
+
+How this differs from Heroes Profile:
+[What your project offers that Heroes Profile doesn't. If it shows statistics Heroes Profile already has, explain why it isn't a rebuild of the same thing]
 
 What data I am pulling and how frequently:
 [Endpoints/data types]

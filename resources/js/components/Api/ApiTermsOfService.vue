@@ -150,7 +150,12 @@
           Read "Data provided by Heroes Profile", or wording that states as plainly that the data
           comes from Heroes Profile.
         </li>
-        <li>Include a working, visible link to https://www.heroesprofile.com/.</li>
+        <li>
+          Include a working, visible link to https://www.heroesprofile.com/. The link must pass
+          the referring site to us, so it may not use rel="noreferrer", a referrer policy of
+          "no-referrer", or any other means of hiding where the visitor came from. rel="noopener"
+          is fine.
+        </li>
         <li>
           Appear on the same page or screen as the data itself, and be visible without the reader
           having to open a menu, hover, scroll past unrelated content or visit a separate credits or
@@ -164,7 +169,9 @@
         </li>
         <li>
           Accompany the data wherever it goes. If your surface offers the data to your own users as
-          an image, embed, export or shared link, the attribution must travel with it.
+          an image, embed, export or shared link, the attribution must travel with it. Where a
+          link can't be included, such as in an image, the attribution must show the address
+          heroesprofile.com in text.
         </li>
       </ul>
       <p class="mb-3">

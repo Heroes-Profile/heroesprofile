@@ -55,6 +55,7 @@ use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerMMRController;
 use App\Http\Controllers\Player\PlayerRolesController;
 use App\Http\Controllers\Player\PlayerTalentsController;
+use App\Http\Controllers\PollController;
 use App\Http\Controllers\PreMatchController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
@@ -169,6 +170,9 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/Global/Compositions', [GlobalCompositionsController::class, 'show']);
 
     Route::get('/Global/Party', [GlobalPartyStatsController::class, 'show']);
+
+    // Community polls: anyone can view, voting needs a Battle.net login
+    Route::get('Poll/{slug}', [PollController::class, 'show'])->middleware('ensureBattlenetAuth:optional');
 
     // Logged in User Settings
     Route::get('Profile/Settings', [ProfileController::class, 'showSettings'])->middleware('ensureBattlenetAuth');

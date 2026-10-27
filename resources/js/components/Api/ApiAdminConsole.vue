@@ -504,6 +504,8 @@
 
       <api-admin-twitch></api-admin-twitch>
 
+      <api-admin-polls></api-admin-polls>
+
       <api-admin-card title="Recent Subscription Activity" storage-key="activity">
 
         <p v-if="!activity.length" class="text-sm text-gray-medium">Nothing yet.</p>
