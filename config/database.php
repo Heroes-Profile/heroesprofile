@@ -106,6 +106,27 @@ return [
             ]) + $sslVerify : [],
         ],
 
+        /*
+         * Community polls and their votes.
+         */
+        'heroesprofile_polls' => [
+            'driver' => 'mysql',
+            'host' => env('HEROESPROFILE_DB_HOST'),
+            'port' => env('HEROESPROFILE_DB_PORT', '3306'),
+            'database' => env('HEROESPROFILE_DB_DATABASE_POLLS', 'heroesprofile_polls'),
+            'username' => env('HEROESPROFILE_DB_USERNAME'),
+            'password' => env('HEROESPROFILE_DB_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) + $sslVerify : [],
+        ],
+
         'heroesprofile_globals' => [
             'driver' => 'mysql',
             'host' => env('HEROESPROFILE_DB_HOST'),
