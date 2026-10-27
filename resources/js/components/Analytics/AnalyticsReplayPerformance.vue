@@ -45,14 +45,12 @@
             :key="row.idx"
             class="cursor-pointer"
             :class="{ 'bg-lighten': row.idx === selected }"
-            @click="$emit('select', row.idx)"
+            @click="pick(row.idx)"
           >
             <td class="text-white border-white border" :class="row.won ? 'bg-teal' : 'bg-red'">
               <span class="inline-flex items-center gap-2">
                 <hero-image-wrapper v-if="row.player.short_name" :hero="{ name: row.player.hero, short_name: row.player.short_name }" :size="'small'"></hero-image-wrapper>
-                <span>{{ row.player.battletag || row.player.hero }}<span v-if="row.player.you"> (you)</span></span>
-                <span>{{ row.won ? 'Win' : 'Loss' }}</span>
-              </span>
+                <span>{{ row.player.battletag || row.player.hero }}<span v-if="row.player.you"> (you)</span></span>              </span>
             </td>
             <td class="min-w-[8em]"><stat-bar :value="row.overall ?? 0" :display-text="orDash(row.overall === null ? null : Math.round(row.overall))" color="teal"></stat-bar></td>
             <td v-for="area in areas" :key="area.key">{{ ratingText(row.areas[area.key]) }}</td>
@@ -60,7 +58,7 @@
         </tbody>
       </table>
 
-      <div v-if="current">
+      <div v-if="current" ref="breakdown" class="scroll-mt-4">
         <analytics-heading :title="currentName" :takeaway="playerTakeaway"></analytics-heading>
         <multi-tab-button :options="areaOptions" v-model="area" class="mb-3"></multi-tab-button>
         <p v-if="fellBack" class="text-sm mb-2">Some of these compare with {{ current.player.hero }}'s games on every map, because the sample has too few on this one.</p>
@@ -241,6 +239,11 @@ export default {
     },
   },
   methods: {
+    // Only clicks here scroll; picking on the map or scoreboard stays put
+    pick(idx) {
+      this.$emit('select', idx);
+      this.$nextTick(() => this.$refs.breakdown?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    },
     ratingText(block) {
       return block && block.rating !== null ? Math.round(block.rating) : '-';
     },
