@@ -186,7 +186,19 @@
 
       <div class="bg-lighten">
         <div class="p-10  max-w-[1500px] mx-auto  ">
-          <h2 class="text-3xl font-bold py-5">Match Scores</h2>
+          <div class="flex flex-wrap items-baseline gap-4 py-5">
+            <h2 class="text-3xl font-bold">Match Scores</h2>
+            <!-- Same rules as Watch Replay -->
+            <a v-if="isWatchableGame && replayViewerAllowed" class="link" :href="'/Analytics/Match/Single/' + replayid + '#analytic-performance'">How each player played</a>
+            <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
+              How each player played
+              <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
+                <slot>
+                  <p>You need to be logged in with Battle.net to see how each player played.</p>
+                </slot>
+              </round-image>
+            </span>
+          </div>
           <p>See advanced stats below</p>
          
        
