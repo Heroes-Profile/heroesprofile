@@ -7,6 +7,7 @@ use App\Models\Map;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
+use App\Services\AnalyticsPerformanceService;
 use App\Services\AnalyticsQueryService;
 use App\Services\AnalyticsReplayService;
 use App\Services\AnalyticsSampleService;
@@ -30,6 +31,7 @@ class AnalyticsController extends Controller
         private AnalyticsQueryService $queries,
         private AnalyticsReplayService $replays,
         private AnalyticsSampleService $sample,
+        private AnalyticsPerformanceService $performance,
     ) {
         parent::__construct($globalDataService);
     }
@@ -126,13 +128,16 @@ class AnalyticsController extends Controller
     // processing if nobody has yet
     public function replay(Request $request, int $replayID): View
     {
-        $this->loggedInUser();
+        $user = $this->loggedInUser();
         abort_unless($this->replays->isSeasonGame($replayID), 404);
 
         return view('Analytics.analyticsReplay')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'replayId' => $replayID,
             'urlparameters' => $request->query(),
+            // Match performance is for Patreon supporters; everyone else sees it greyed out
+            'performanceAllowed' => $this->analytics->isAllowed($user),
+            'patreonLinked' => (bool) $user->patreonAccount,
         ]);
     }
 
@@ -160,6 +165,16 @@ class AnalyticsController extends Controller
         $replay['win_model'] = $this->queries->winModel();
 
         return response()->json($replay);
+    }
+
+    // How each player in the game played, against the same hero on the same map (Patreon supporters)
+    public function replayPerformance(int $replayID): JsonResponse
+    {
+        $this->allowedUser();
+        $performance = $this->performance->forReplay($replayID);
+        abort_unless($performance, 404);
+
+        return response()->json($performance);
     }
 
     // The public sample: the same page and replay viewer, read from the frozen files, for anyone

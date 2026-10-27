@@ -138,6 +138,19 @@
 
         </div>
       </div>
+
+      <!-- How each player played, against the same hero on the same map -->
+      <template v-if="!sample">
+        <analytics-replay-performance
+          :replay-id="replayId"
+          :players="data.players"
+          :selected="selected"
+          :allowed="performanceAllowed"
+          :patreon-linked="patreonLinked"
+          @select="selected = $event"
+        ></analytics-replay-performance>
+        <analytics-paper v-if="performanceAllowed" :tab="'performance'"></analytics-paper>
+      </template>
       </template>
     </div>
   </div>
@@ -310,6 +323,9 @@ export default {
     urlparameters: { type: Object, default: () => ({}) },
     // The public sample's game: already prepared, read from the sample files
     sample: Boolean,
+    // Match performance: Patreon supporters only; everyone else sees it greyed out
+    performanceAllowed: Boolean,
+    patreonLinked: Boolean,
   },
   data() {
     return {
