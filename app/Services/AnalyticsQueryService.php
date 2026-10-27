@@ -726,13 +726,13 @@ class AnalyticsQueryService
      * @param  array<string, mixed>  $params
      * @return array<string, array<int, array<string, mixed>>>
      */
-    private function run(array $queries, array $params): array
+    public function run(array $queries, array $params): array
     {
         $client = $this->client ??= new BigQueryClient(['projectId' => config('analytics.bigquery_project')]);
         $dataset = config('analytics.bigquery_project').'.'.config('analytics.bigquery_dataset');
 
         // Element types for the array params, so an empty filter list is still ARRAY<INT64>
-        $types = array_intersect_key(['game_types' => 'INT64', 'maps' => 'INT64', 'builds' => 'INT64', 'keys' => 'STRING'], $params);
+        $types = array_intersect_key(['game_types' => 'INT64', 'maps' => 'INT64', 'builds' => 'INT64', 'keys' => 'STRING', 'heroes' => 'INT64'], $params);
 
         $jobs = [];
         foreach ($queries as $name => $sql) {
@@ -771,16 +771,7 @@ class AnalyticsQueryService
             return [];
         }
 
-        $mappedBuild = function (?int $build) use ($builds): int {
-            $match = $builds[0];
-            foreach ($builds as $candidate) {
-                if ($build !== null && $candidate <= $build) {
-                    $match = $candidate;
-                }
-            }
-
-            return $match;
-        };
+        $mappedBuild = fn (?int $build) => $this->mappedBuild($builds, $build);
 
         $needed = array_unique(array_map(fn ($row) => $mappedBuild($row['build'] === null ? null : (int) $row['build']), $rows));
         $links = AbilityLink::whereIn('build', $needed)
@@ -831,6 +822,50 @@ class AnalyticsQueryService
 
             return $entry;
         }, $named));
+    }
+
+    /**
+     * The ability_links mapping a game uses: its own build's, or the newest mapped build before it.
+     *
+     * @param  array<int, int>  $builds  mapped builds, ascending
+     */
+    private function mappedBuild(array $builds, ?int $build): int
+    {
+        $match = $builds[0];
+        foreach ($builds as $candidate) {
+            if ($build !== null && $candidate <= $build) {
+                $match = $candidate;
+            }
+        }
+
+        return $match;
+    }
+
+    /**
+     * Names for one game's ability links, by link, from its build's mapping. Links with no name
+     * are left out.
+     *
+     * @param  array<int, int>  $links
+     * @return array<int, array{ability_id: string, name: string, slot: ?string, icon: ?string}>
+     */
+    public function abilityNames(?int $build, array $links): array
+    {
+        $builds = AbilityLink::query()->distinct()->orderBy('build')->pluck('build')->all();
+        if ($builds === [] || $links === []) {
+            return [];
+        }
+
+        return AbilityLink::where('build', $this->mappedBuild($builds, $build))
+            ->whereIn('abil_link', $links)
+            ->whereNotNull('name')
+            ->get(['abil_link', 'ability_id', 'name', 'slot', 'icon'])
+            ->mapWithKeys(fn ($link) => [(int) $link->abil_link => [
+                'ability_id' => $link->ability_id,
+                'name' => $link->name,
+                'slot' => $link->slot,
+                'icon' => $link->icon,
+            ]])
+            ->all();
     }
 
     /**

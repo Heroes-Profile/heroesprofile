@@ -145,7 +145,39 @@ class AnalyticsReplayService
             return null;
         }
 
-        $replay = Cache::remember('analytics:replay:v'.config('analytics.extract_v').'.5:'.$replayId, now()->addDay(), function () use ($replayId) {
+        $replay = $this->trimmed($replayId);
+        if ($replay === null) {
+            return null;
+        }
+
+        // Mark the viewer's own player; no one's blizz ID leaves the server
+        $replay['players'] = array_map(function ($p) use ($blizzId) {
+            $p['you'] = $p['blizz_id'] === $blizzId;
+            unset($p['blizz_id']);
+
+            return $p;
+        }, $replay['players']);
+
+        return $replay;
+    }
+
+    /**
+     * Each player's index in the viewer, by blizz ID, so other data about the game can be matched to
+     * the viewer's players without blizz IDs leaving the server. Empty when the game isn't ready.
+     *
+     * @return array<int, int>
+     */
+    public function playerIndexes(int $replayId): array
+    {
+        $replay = $this->isReady($replayId) ? $this->trimmed($replayId) : null;
+
+        return $replay === null ? [] : array_column($replay['players'], 'idx', 'blizz_id');
+    }
+
+    /** @return array<string, mixed>|null */
+    private function trimmed(int $replayId): ?array
+    {
+        return Cache::remember('analytics:replay:v'.config('analytics.extract_v').'.5:'.$replayId, now()->addDay(), function () use ($replayId) {
             try {
                 $raw = Storage::disk(self::DISK)->get('doc/'.$replayId.'.json.gz');
             } catch (UnableToReadFile) {
@@ -160,19 +192,6 @@ class AnalyticsReplayService
 
             return $this->trim($replayId, $doc);
         });
-        if ($replay === null) {
-            return null;
-        }
-
-        // Mark the viewer's own player; no one's blizz ID leaves the server
-        $replay['players'] = array_map(function ($p) use ($blizzId) {
-            $p['you'] = $p['blizz_id'] === $blizzId;
-            unset($p['blizz_id']);
-
-            return $p;
-        }, $replay['players']);
-
-        return $replay;
     }
 
     private function trim(int $replayId, array $doc): array
