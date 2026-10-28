@@ -47,7 +47,7 @@
         <div class="flex flex-wrap gap-2 justify-center mt-10 mb-10">
           <a :href="item.link" v-for="(item, index) in data.heroes" >
             <hero-image-wrapper :size="'big'" :hero="item.hero">
-              <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+              <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
             </hero-image-wrapper>
           </a>
         </div>

@@ -34,7 +34,7 @@
       <div class="flex flex-wrap gap-2 mx-auto max-w-[1500px] my-4 justify-center mb-10">
         <a :href="`/Esports/NGS/Team/${item.team_name}?season=${modifiedseason}&division=${division}`" v-for="(item, index) in data.teams">
           <round-image :size="'big'" :image="item.image" :showTooltip="true" :hovertextstyleoverride="true">
-            <image-hover-box :title="item.team_name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+            <image-hover-box :title="item.team_name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
           </round-image>
         </a>
       </div>
@@ -54,7 +54,7 @@
 
         <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto my-10">
           <hero-image-wrapper v-for="(item, index) in data.heroes" :size="'big'" :hero="item.hero">
-            <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+            <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
           </hero-image-wrapper>
         </div>
       </div>
@@ -74,7 +74,7 @@
 
         <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto justify-center my-10">
           <map-image-wrapper v-for="(item, index) in data.maps" :size="'big'" :map="item.map">
-            <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+            <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
           </map-image-wrapper>
         </div>
       </div>

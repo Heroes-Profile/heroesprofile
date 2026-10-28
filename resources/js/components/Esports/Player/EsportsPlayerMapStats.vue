@@ -52,7 +52,7 @@ EsportsPlayerHeroStats<template>
 
         <div class="flex flex-wrap gap-2 justify-center mt-10">
           <hero-image-wrapper v-for="(item, index) in data.heroes" :size="'big'" :hero="item.hero">
-            <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+            <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
           </hero-image-wrapper>
         </div>
       </div>

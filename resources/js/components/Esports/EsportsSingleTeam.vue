@@ -125,7 +125,7 @@
 
         <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto mb-10">
           <hero-image-wrapper v-for="(item, index) in data.heroes" :size="'big'" :hero="item.hero">
-            <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+            <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
           </hero-image-wrapper>
         </div>
 
@@ -214,7 +214,7 @@
 
         <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto mb-10 pt-10 justify-center">
           <map-image-wrapper v-for="(item, index) in data.maps" :size="'big'" :map="item.game_map">
-            <image-hover-box :title="item.game_map.name"  :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+            <image-hover-box :title="item.game_map.name"  :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
           </map-image-wrapper>
         </div>
 

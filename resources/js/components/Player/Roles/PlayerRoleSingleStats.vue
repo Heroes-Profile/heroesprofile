@@ -54,7 +54,7 @@
           <div class="flex flex-wrap mx-auto gap-2 pt-5 justify-center">
             <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes">
               <hero-image-wrapper :hero="item.hero" size="big">
-                <image-hover-box :title="item.hero.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
+                <image-hover-box :title="item.hero.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
               </hero-image-wrapper>
             </a>
           </div>
@@ -76,7 +76,7 @@
           <div class="flex flex-wrap mx-auto gap-2 pt-5 justify-center">
             <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
               <map-image-wrapper :map="item.game_map" size="big">
-                <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
+                <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
               </map-image-wrapper>
             </a>
           </div>
