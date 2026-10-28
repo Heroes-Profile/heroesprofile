@@ -63,14 +63,21 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in results" :key="row.id">
-              <td class="py-2 px-3">{{ row.email }}</td>
-              <td class="py-2 px-3">{{ row.name }}</td>
-              <td class="py-2 px-3">{{ row.migrated ? 'Live' : 'Fixtures' }}</td>
-              <td class="py-2 px-3">
-                <a class="link" href="#" @click.prevent="load(row.id)">Open</a>
-              </td>
-            </tr>
+            <template v-for="row in results" :key="row.id">
+              <tr>
+                <td class="py-2 px-3">{{ row.email }}</td>
+                <td class="py-2 px-3">{{ row.name }}</td>
+                <td class="py-2 px-3">{{ row.migrated ? 'Live' : 'Fixtures' }}</td>
+                <td class="py-2 px-3">
+                  <a class="link" href="#" @click.prevent="load(row.id, 'search')">Open</a>
+                </td>
+              </tr>
+              <tr v-if="detailTarget === '#admin-detail-search' && detail.account.id === row.id">
+                <td colspan="4" class="p-0">
+                  <div id="admin-detail-search"></div>
+                </td>
+              </tr>
+            </template>
           </tbody>
         </table>
 
@@ -100,7 +107,7 @@
               <tr
                 v-for="row in sortedUsage"
                 :key="row.id"
-                @click="load(row.id, true)"
+                @click="load(row.id, 'usage')"
                 class="cursor-pointer"
                 :class="{ '!bg-teal !text-white': selectedUsageId === row.id }"
               >
@@ -126,6 +133,8 @@
         </div>
       </api-admin-card>
 
+      <div id="admin-detail-usage"></div>
+
       <api-admin-card title="Awaiting Approval" storage-key="pending" tight>
         <p class="text-sm text-gray-medium mb-4">
           Accounts with access that have never been approved, or whose project description changed
@@ -147,7 +156,7 @@
               <tr
                 v-for="row in pending"
                 :key="row.id"
-                @click="load(row.id, true)"
+                @click="load(row.id, 'pending')"
                 class="cursor-pointer"
                 :class="{ '!bg-teal !text-white': selectedUsageId === row.id }"
               >
@@ -165,7 +174,10 @@
         </div>
       </api-admin-card>
 
-      <template v-if="detail">
+      <div id="admin-detail-pending"></div>
+
+      <!-- Opens under the card it was clicked from; falls back here if that row is gone. -->
+      <Teleport v-if="detail" :to="detailTarget" :disabled="!detailTarget" defer>
         <api-admin-card ref="detail" :title="detail.account.email" storage-key="account" tight>
           <p class="text-sm text-gray-medium mb-4">{{ detail.account.name }} &middot; id {{ detail.account.id }}</p>
 
@@ -500,9 +512,11 @@
         <api-admin-card title="Endpoint Limits" storage-key="limits">
           <api-usage-table :usage="detail.usage"></api-usage-table>
         </api-admin-card>
-      </template>
+      </Teleport>
 
       <api-admin-twitch></api-admin-twitch>
+
+      <api-admin-polls></api-admin-polls>
 
       <api-admin-card title="Recent Subscription Activity" storage-key="activity">
 
@@ -569,6 +583,7 @@ export default {
       usageSortKey: 'cost_usd',
       usageSortDir: 'desc',
       loadingId: null,
+      detailFrom: null,
       metrics: null,
       busy: false,
       error: null,
@@ -591,6 +606,18 @@ export default {
     // The row being loaded takes the highlight straight away, not after the fetch.
     selectedUsageId(){
       return this.loadingId ?? this.detail?.account?.id ?? null;
+    },
+    detailTarget(){
+      if(!this.detail || !this.detailFrom){
+        return null;
+      }
+
+      // A new search can drop the row the detail was opened from.
+      if(this.detailFrom === 'search' && !this.results.some(row => row.id === this.detail.account.id)){
+        return null;
+      }
+
+      return '#admin-detail-' + this.detailFrom;
     },
     sortedUsage(){
       const key = this.usageSortKey;
@@ -680,7 +707,8 @@ export default {
         this.error = this.messageFrom(error);
       }
     },
-    async load(id, scroll = false){
+    // from is 'search', 'usage' or 'pending'; reloads leave it out and stay where they are.
+    async load(id, from = null){
       this.error = null;
       this.notice = null;
       // Text typed against the last account must not follow you to the next one.
@@ -691,8 +719,12 @@ export default {
         const response = await this.$axios.get('/api/v1/admin/accounts/' + id);
         this.detail = response.data;
 
+        if(from){
+          this.detailFrom = from;
+        }
+
         // The usage list can be long enough to push the detail off screen.
-        if(scroll){
+        if(from === 'usage' || from === 'pending'){
           this.$nextTick(() => this.$refs.detail?.$el.scrollIntoView({ behavior: 'smooth' }));
         }
       } catch (error) {

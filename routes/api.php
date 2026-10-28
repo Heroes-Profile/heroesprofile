@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Account\ApiKeyController;
 use App\Http\Controllers\Api\Account\BillingController;
 use App\Http\Controllers\Api\Account\TwitchController;
 use App\Http\Controllers\Api\Admin\AdminConsoleController;
+use App\Http\Controllers\Api\Admin\PollAdminController;
 use App\Http\Controllers\Api\Admin\TwitchAdminController;
 use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\ContactController;
@@ -42,6 +43,7 @@ use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerMMRController;
 use App\Http\Controllers\Player\PlayerRealRankController;
 use App\Http\Controllers\Player\PlayerTalentsController;
+use App\Http\Controllers\PollController;
 use App\Http\Controllers\PreMatchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
@@ -134,6 +136,13 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
         Route::post('twitch/{id}/listing', [TwitchAdminController::class, 'setListingHidden'])->whereNumber('id');
         Route::post('twitch/{id}/suspend', [TwitchAdminController::class, 'setSuspended'])->whereNumber('id');
         Route::post('twitch/{id}/comp', [TwitchAdminController::class, 'setComp'])->whereNumber('id');
+
+        // Community polls
+        Route::get('polls', [PollAdminController::class, 'index']);
+        Route::post('polls', [PollAdminController::class, 'store']);
+        Route::get('polls/{id}', [PollAdminController::class, 'show'])->whereNumber('id');
+        Route::post('polls/{id}', [PollAdminController::class, 'update'])->whereNumber('id');
+        Route::post('polls/{id}/close', [PollAdminController::class, 'close'])->whereNumber('id');
     });
 });
 
@@ -283,6 +292,8 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('esports/other/teams', [EsportOtherController::class, 'getTeamData']);
 
     Route::post('contact', [ContactController::class, 'submitMessage'])->middleware('throttle:contact');
+
+    Route::post('poll/{slug}/vote', [PollController::class, 'vote'])->middleware('throttle:10,1');
 
     Route::post('match/prediction/game', [MatchPredictionGameController::class, 'getReplayData']);
     Route::post('match/search', [MatchSearchController::class, 'getData'])->middleware(['throttle:match-search', 'restrictCustomGames:never']);

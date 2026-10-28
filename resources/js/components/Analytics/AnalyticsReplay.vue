@@ -142,6 +142,8 @@
       <!-- How each player played, against the same hero on the same map -->
       <template v-if="!sample">
         <analytics-replay-performance
+          id="analytic-performance"
+          class="scroll-mt-4"
           :replay-id="replayId"
           :players="data.players"
           :selected="selected"
@@ -379,6 +381,10 @@ export default {
           : 'Could not load this game. Please try again in a minute.';
     } finally {
       this.loading = false;
+    }
+    // The section only exists once the replay has loaded
+    if (window.location.hash === '#analytic-performance') {
+      this.$nextTick(() => document.getElementById('analytic-performance')?.scrollIntoView());
     }
   },
   beforeUnmount() {
