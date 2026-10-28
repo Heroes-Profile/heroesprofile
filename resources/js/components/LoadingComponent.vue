@@ -1,6 +1,13 @@
 <template>
+  <!-- One line above a page's skeleton, rather than covering the page -->
+  <div v-if="compact" class="flex flex-wrap items-center gap-3 text-sm text-soft">
+    <img class="logo-spin h-7 w-auto shrink-0" :src="overrideimage || '/images/logo/heroesprofilelogo.png'" alt="Loading" />
+    <span v-if="textoverride"><slot></slot></span>
+    <span v-else>Loading data...</span>
+    <span v-if="timer" class="text-subtext">~{{ countdown }} seconds remaining</span>
+  </div>
 
-  <div class="loading-container z-40 w-full min-h-[50vh] ">
+  <div v-else class="loading-container z-40 w-full min-h-[50vh] ">
     <img v-if="overrideimage" loading="eager" :src="overrideimage" alt="loading" />
     <img v-else loading="eager" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
     <div class="loading-text">
@@ -24,6 +31,7 @@
       textoverride: Boolean,
       overrideimage: String,
       timer: Boolean,
+      compact: Boolean,
       starttime: Number,
     },
     data(){

@@ -377,6 +377,10 @@ class GlobalDataService
                 $player['region'] = $hidden ? null : $region;
                 $player['battletag'] = $hidden ? null : explode('#', $player['battletag'])[0];
                 $player['hero'] = $heroData[$player['hero']] ?? null;
+                $player['hero_level'] = $hidden ? null : $this->heroLevelLabel($player['hero_level'] ?? null, $player['mastery_taunt'] ?? null);
+                $player['account_level'] = $hidden ? null : ($player['account_level'] ?? null);
+                $player['player_mmr'] = $hidden || ! isset($player['player_conservative_rating']) ? null : round(1800 + 40 * $player['player_conservative_rating']);
+                unset($player['mastery_taunt'], $player['player_conservative_rating']);
 
                 if ($player['party'] != '' && $player['party'] != 0) {
                     $parties[$player['party']] ??= $partyColors[count($parties)] ?? null;
@@ -414,6 +418,12 @@ class GlobalDataService
             ->groupBy('team')
             ->values()
             ->toArray();
+    }
+
+    /** Hero level as the single match page shows it: the mastery taunt's range when there is one. */
+    private function heroLevelLabel($heroLevel, $masteryTaunt)
+    {
+        return [1 => '15-25', 2 => '25-50', 3 => '50-75', 4 => '75-100', 5 => '100+'][$masteryTaunt] ?? $heroLevel;
     }
 
     /** Called when an account's privacy changes, so it takes effect immediately. */

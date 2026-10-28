@@ -13,7 +13,7 @@
       'block w-16 h-16 md:w-16 md:h-16': size === 'tile',
       'md:w-72': size === 'large',
       'md:h-[23em]': size === 'large',
-      'overflow-hidden': size === 'large',
+      'overflow-hidden rounded-lg': size === 'large',
       'inline-block' : icon,
       'flex flex-col': !icon,
       'md:w-[1.7em]': icon,
@@ -54,14 +54,12 @@
       size === 'tile'
         ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-16 h-16 max-w-none rounded-lg border-2 border-header'
         : size === 'large'
-        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow max-w-none md:mr-auto max-md:w-40 max-md:h-auto'
+        ? 'card-img-top object-cover object-center relative hover:brightness-125 hover:drop-shadow max-w-none rounded-lg md:w-full md:h-full max-md:w-40 max-md:h-auto'
         : 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow max-sm:w-[2.5em] max-sm:h-[2.5em]  w-full h-10 min-w-10 max-md:h-10 max-md:w-10 max-w-none md:mr-auto  max-md: m-0',
       { 
         
         'rounded-full' : rectangle != true && size !== 'tile',
         //'max-md:w-20 max-md:h-20' : size != 'large', 
-        'h-full max-md:max-w-[70%]': size === 'large',
-        'w-auto': size === 'large',
         'w-20': size === 'big', 
         'h-20': size === 'big',
         'w-[6em]': size === 'xl',

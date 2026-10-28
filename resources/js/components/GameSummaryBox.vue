@@ -48,12 +48,35 @@
 
     <div v-if="data.players && data.players.length" class="relative z-[2] flex gap-2 pl-4 2xl:pl-1.5 pr-12 py-4 w-full 2xl:w-[362px] shrink-0">
       <div v-for="(team, teamIndex) in data.players" :key="teamIndex" class="flex flex-col gap-1.5 w-[150px]">
-        <div v-for="(player, playerIndex) in team" :key="playerIndex" class="flex gap-1 h-4 items-center">
-          <span class="w-4 h-4 shrink-0"><img v-if="player.party" class="w-4 h-4" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${player.party}.png`" alt=""/></span>
-          <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name"/>
-          <!-- The profile's own player comes first -->
-          <span v-if="player.check" class="flex-1 min-w-0 truncate text-sm font-medium text-subtext">Hidden</span>
-          <a v-else :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="$redirectToProfile(player.battletag, player.blizz_id, player.region, false)" :title="player.battletag" :class="['flex-1 min-w-0 truncate text-sm font-medium hover:text-lteal hover:underline', teamIndex === 0 && playerIndex === 0 ? 'text-white' : 'text-subtext']">{{ player.battletag }}</a>
+        <!-- A party shares a bracket in its colour, over the first name and under the last, with the icon centred on it -->
+        <div v-for="group in partyGroups(team)" :key="group.start" :class="['relative flex gap-1', { '-my-0.5 py-1': group.party && group.players.length > 1 }]">
+          <span v-if="group.party && group.players.length > 1" class="absolute inset-y-0 left-[13px] w-6 border-l-2 border-y-2 rounded-l" :style="{ borderColor: partyColors[group.party] }"></span>
+          <span class="relative w-4 shrink-0 flex items-center justify-center">
+            <img v-if="group.party" class="relative w-4 h-4 translate-x-[6px]" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${group.party}.png`" alt=""/>
+          </span>
+          <div class="flex flex-col gap-1.5 flex-1 min-w-0">
+            <div v-for="(player, groupIndex) in group.players" :key="groupIndex" class="flex gap-1 h-4 items-center">
+              <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name"/>
+              <!-- The profile's own player comes first -->
+              <span v-if="player.check" class="flex-1 min-w-0 truncate text-sm font-medium text-subtext">Hidden</span>
+              <icon-with-hover v-else class="flex-1" popupsize="fit">
+                <template #trigger>
+                  <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="$redirectToProfile(player.battletag, player.blizz_id, player.region, false)" :class="['min-w-0 truncate text-sm font-medium hover:text-lteal hover:underline', teamIndex === 0 && group.start + groupIndex === 0 ? 'text-white' : 'text-subtext']">{{ player.battletag }}</a>
+                </template>
+                <div class="flex items-center gap-2 text-base font-bold text-white">
+                  <img v-if="player.hero" class="w-6 h-6 rounded-full object-cover" :src="`/images/heroes/${player.hero.short_name}.png`" alt=""/>
+                  <span class="min-w-0 break-words">{{ player.battletag }}</span>
+                  <img v-if="player.party" class="w-5 h-5" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${player.party}.png`" alt=""/>
+                </div>
+                <image-hover-box
+                  :paragraph-one="player.hero ? `Hero: ${player.hero.name}` : null"
+                  :paragraph-two="player.account_level != null ? `Account Level: ${player.account_level}` : null"
+                  :paragraph-three="player.hero_level != null ? `Hero Level: ${player.hero_level}` : null"
+                  :paragraph-four="player.player_mmr != null ? `Player MMR: ${player.player_mmr.toLocaleString('en-US')}` : null"
+                ></image-hover-box>
+              </icon-with-hover>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -126,6 +149,8 @@
     data(){
       return {
         userTimezone: moment.tz.guess(),
+      // Sampled from the party icons
+      partyColors: { red: '#ae2023', blue: '#2060ae', teal: '#6ddfe8', orange: '#ae5820', brown: '#cb7569', purple: '#9b2bed' },
       }
     },
     created(){
@@ -155,6 +180,18 @@
     watch: {
     },
     methods: {
+      // Runs of players in the same party; the backend already sorts party members together
+      partyGroups(team){
+        return team.reduce((groups, player, index) => {
+          const last = groups[groups.length - 1];
+          if(last && player.party && last.party === player.party){
+            last.players.push(player);
+          }else{
+            groups.push({ party: player.party, start: index, players: [player] });
+          }
+          return groups;
+        }, []);
+      },
       getHref(){
         if(this.esport){
           if(this.esportSeries){

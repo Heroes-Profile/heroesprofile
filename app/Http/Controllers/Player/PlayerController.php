@@ -372,7 +372,11 @@ class PlayerController extends Controller
                 'player.hero',
                 'player.team',
                 'player.party',
+                'player.hero_level',
+                'player.mastery_taunt',
+                'player.player_conservative_rating',
                 'battletags.battletag',
+                'battletags.account_level',
             ])
             ->groupBy('replayID');
 
@@ -383,6 +387,10 @@ class PlayerController extends Controller
                 'hero' => $player->hero,
                 'team' => $player->team,
                 'party' => $player->party,
+                'hero_level' => $player->hero_level,
+                'mastery_taunt' => $player->mastery_taunt,
+                'player_conservative_rating' => $player->player_conservative_rating,
+                'account_level' => $player->account_level,
             ])->values();
 
             return $match;
@@ -585,7 +593,7 @@ class PlayerController extends Controller
         $hours = floor(($totalSeconds % (3600 * 24)) / 3600);
         $minutes = floor(($totalSeconds % 3600) / 60);
         $seconds = $totalSeconds % 60;
-        $returnData->total_time_played = "{$days} days, {$hours} hours, {$minutes} minutes, {$seconds} seconds";
+        $returnData->total_time_played = "{$days}d, {$hours}h, {$minutes}m, {$seconds}s";
 
         if ($data->time_on_fire_games > 0) {
             $averageTimeOnFireInSeconds = $data->time_on_fire_total / $data->time_on_fire_games;
@@ -903,7 +911,13 @@ class PlayerController extends Controller
     {
         $matches = is_string($matches) ? json_decode($matches, true) : $matches;
 
-        return collect($matches)->every(fn ($match) => array_key_exists('players', (array) $match));
+        // Older caches lack the players, or their levels and MMR
+        return collect($matches)->every(function ($match) {
+            $match = (array) $match;
+
+            return array_key_exists('players', $match)
+                && (empty($match['players']) || array_key_exists('account_level', (array) $match['players'][0]));
+        });
     }
 
     /**

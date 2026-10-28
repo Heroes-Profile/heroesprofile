@@ -1,15 +1,16 @@
 <template>
   <div :class="[
-    'inline-block m-1 max-md:mx-0 min-w-[10em] bg-surface-1 rounded px-3 py-2 text-left',
+    'inline-block m-1 max-md:mx-0 min-w-[10em] rounded px-3 py-2 text-left',
+    tier ? '' : 'bg-surface-1',
     accentClass,
     {
       'min-w-[16em]' : secondstat
     }
-  ]">
+  ]" :style="tier ? tierStyle(tier) : null">
     <div class="flex gap-6">
-      <div class="flex flex-col min-w-0">
-        <span class="text-sm text-subtext whitespace-nowrap">{{ title }}</span>
-        <span class="text-xl font-semibold text-header">{{ value }}</span>
+      <div :class="['flex min-w-0', valueFirst ? 'flex-col-reverse' : 'flex-col']">
+        <span :class="['text-sm whitespace-nowrap', { 'text-subtext': !tier }]">{{ title }}</span>
+        <span :class="['text-xl font-semibold', { 'text-header': !tier }]">{{ value }}</span>
       </div>
       <div v-if="secondstat" class="flex flex-col min-w-0">
         <span class="text-sm text-subtext whitespace-nowrap">{{ secondcaption }}</span>
@@ -20,6 +21,8 @@
 </template>
 
 <script>
+import { tierStyle } from './RankTierPill.vue';
+
 // The colour a page passes becomes a stripe down the left edge
 const ACCENTS = {
   blue: 'border-l-4 border-blue',
@@ -47,6 +50,12 @@ const ACCENTS = {
       value: {
         type: [String, Number]
       },
+      // A rank ("Platinum 3") fills the box with that tier's colour
+      tier: String,
+      valueFirst: Boolean,
+    },
+    methods: {
+      tierStyle,
     },
     computed: {
       accentClass() {

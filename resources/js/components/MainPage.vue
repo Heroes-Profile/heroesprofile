@@ -43,7 +43,7 @@
       <div :class="cardClasses">
         <i class="fa-solid fa-database text-[80px]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Heroes Profile API</h3>
-        <p class="text-sm text-left mb-8">Heroes Profile API is a tool used to get Heroes of the Storm data parsed for HeroesProfile.com.</p>
+        <p class="text-sm text-left mb-8">Heroes Profile API provides access to parsed Heroes of the Storm data from HeroesProfile.com, including player stats, match details, and performance insights.</p>
         <div class="flex mt-auto">
           <custom-button :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
         </div>
@@ -61,7 +61,7 @@
       <div :class="cardClasses">
         <i class="fas fa-chart-line text-[80px]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Player Analytics</h3>
-        <p class="text-sm text-left mb-8">Deep analysis of your own season games from their replays: where and how you die, where you spend your time, how you do when ahead or behind, coaching on your habits, and a replay viewer for every game. Pre-alpha: open to Patreon supporters while we test it.</p>
+        <p class="text-sm text-left mb-8">Deep analysis of your season replays: where and how you die, time spent, performance ahead or behind, habit coaching, and a replay viewer for every game. Pre-alpha for Patreon supporters.</p>
         <div class="flex mt-auto">
           <custom-button v-if="analyticsAllowed" :href="'/Analytics'" :text="'Open Analytics'" :alt="'Open Analytics'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
           <custom-button v-else :href="'/Analytics'" :text="'Learn More'" :alt="'Learn more about Analytics'" :color="'teal'" class="flex-1 font-semibold"></custom-button>

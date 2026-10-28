@@ -2,7 +2,7 @@
     <div class="relative flex p-2 px-4 justify-center">
 <a class=" flex items-center font-logo text-lg sm:text-2xl md:hidden" href="/">
                 Heroes
-                <img class="w-8 sm:w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
+                <img class="nav-logo w-8 sm:w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
                 Profile
         </a>
         <button  id="mobile-toggle" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 bg-blue rounded-lg px-3 min-w-[44px] min-h-[40px] text-xl" aria-label="Open menu">=</button>
@@ -19,7 +19,7 @@
              
             <a class=" flex items-center font-logo text-2xl" href="/">
                 Heroes
-                <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
+                <img class="nav-logo w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
                 Profile
             </a>
             <div class="flex items-center justify-between flex-wrap  text-sm md:flex-1 md:ml-8 max-md:flex-col">

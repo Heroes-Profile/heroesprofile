@@ -5,11 +5,11 @@
 
     <div class="max-w-[1920px] mx-auto px-4 md:px-8">
       <panel-box>
-        <div class="flex flex-wrap items-end gap-2 max-md:flex-col max-md:items-center">
-        <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
-        <multi-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="seasonselection"></multi-select-filter>
-        <date-range-filter :startDate="startdate" :endDate="enddate" @input-changed="handleInputChange"></date-range-filter>
-        <custom-button class="font-semibold px-6 mb-2 md:ml-auto max-md:self-stretch max-md:mx-2" :text="'Filter'" :alt="'Filter'" :color="'red'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
+        <div class="-m-2 flex flex-wrap items-end gap-2 max-md:flex-col max-md:items-center">
+        <multi-select-filter class="md:flex-1" :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
+        <multi-select-filter class="md:flex-1" :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="seasonselection"></multi-select-filter>
+        <date-range-filter class="md:flex-[2] md:min-w-[34rem]" :startDate="startdate" :endDate="enddate" @input-changed="handleInputChange"></date-range-filter>
+        <custom-button class="font-semibold px-6 mb-2 mr-2 max-md:self-stretch max-md:mx-2" :text="'Filter'" :alt="'Filter'" :color="'red'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
         </div>
       </panel-box>
     </div>
@@ -29,8 +29,17 @@
         <!-- Player overview -->
         <panel-box ref="overviewCard" :inner="true" class="!gap-8">
           <div class="flex items-center gap-3">
-            <h2 class="text-3xl font-bold">{{ battletag }}</h2>
-            <region-tag :region="regionsmap[region]"></region-tag>
+            <icon-with-hover v-if="realRank && realRank.current && realRank.current.league != 'unranked'" popupsize="fit">
+              <template #trigger>
+                <real-rank-badge :rank="realRank.current" :width="48"></real-rank-badge>
+              </template>
+              <image-hover-box title="Storm League"></image-hover-box>
+              <real-rank-badge :rank="realRank.current" :width="96" label="below" label-class="text-subtext mt-1"></real-rank-badge>
+            </icon-with-hover>
+            <div class="flex flex-col">
+              <h2 class="text-3xl font-bold">{{ battletag }}</h2>
+              <region-tag :region="regionsmap[region]" :full="true"></region-tag>
+            </div>
             <div class="card-actions ml-auto flex gap-1 text-header">
               <button v-if="canCopyImage" type="button" class="p-1.5 hover:text-lteal" :title="cardCopied ? 'Copied' : 'Copy card image'" @click="copyCard"><i :class="cardCopied ? 'fa-solid fa-check' : 'fa-solid fa-copy'"></i></button>
               <button type="button" class="p-1.5 hover:text-lteal" title="Download card image" @click="downloadCard"><i class="fa-solid fa-download"></i></button>
@@ -41,7 +50,6 @@
             <div class="flex flex-col items-center gap-2 shrink-0">
               <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name" :excludehover="inputHero.name == 'Auto Select'" size="large"></hero-image-wrapper>
               <div class="font-bold text-subtext">Level: <span class="text-header">{{ data.account_level.toLocaleString('en-US') }}</span></div>
-              <real-rank-badge v-if="realRank && realRank.current" :rank="realRank.current" :width="64" label="below" label-class="text-sm font-bold"></real-rank-badge>
             </div>
 
             <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
@@ -157,8 +165,54 @@
       </panel-box>
 
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+    <!-- The page's layout with grey blocks while it loads; the nav logo spins meanwhile -->
+    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 mt-8 space-y-8">
+      <loading-component :compact="true" :textoverride="true">Large amount of data. Please be patient. Loading data...</loading-component>
+      <panel-box>
+        <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
+          <panel-box :inner="true" class="!gap-8 2xl:w-[780px]">
+            <h2 class="text-3xl font-bold">{{ battletag }}</h2>
+            <div class="flex gap-8 max-sm:flex-col">
+              <skeleton-box class="w-40 md:w-72 h-[23em] shrink-0 rounded-lg"></skeleton-box>
+              <div class="flex-1 flex flex-col gap-6">
+                <skeleton-box class="h-[30px]"></skeleton-box>
+                <div class="grid grid-cols-2 gap-x-6 gap-y-4">
+                  <skeleton-box v-for="index in 8" :key="index" class="h-11"></skeleton-box>
+                </div>
+              </div>
+            </div>
+            <div v-for="title in ['Heroes', 'Maps']" :key="title" class="flex flex-col gap-4">
+              <h3 class="text-2xl font-bold">{{ title }}</h3>
+              <div class="flex flex-wrap gap-6">
+                <div v-for="group in 3" :key="group" class="flex gap-3">
+                  <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded-lg"></skeleton-box>
+                </div>
+              </div>
+            </div>
+          </panel-box>
+
+          <div class="flex flex-col gap-6 min-w-0">
+            <div class="grid md:grid-cols-2 gap-6">
+              <panel-box v-for="title in ['Win Rate By Role', 'Party Size Win Rates']" :key="title" :inner="true" :title="title">
+                <skeleton-box v-for="index in 6" :key="index" class="h-10"></skeleton-box>
+              </panel-box>
+            </div>
+            <panel-box :inner="true" title="Heroes Profile MMR">
+              <skeleton-box v-for="index in 6" :key="index" class="h-9"></skeleton-box>
+            </panel-box>
+          </div>
+        </div>
+      </panel-box>
+
+      <div class="grid xl:grid-cols-2 gap-6">
+        <panel-box v-for="title in ['Storm League Rank', 'Week Day Win Rates']" :key="title" :title="title">
+          <skeleton-box class="h-[360px]"></skeleton-box>
+        </panel-box>
+      </div>
+
+      <panel-box title="Recent Matches" :divider="false">
+        <skeleton-box v-for="index in 5" :key="index" class="h-[136px] rounded-lg"></skeleton-box>
+      </panel-box>
     </div>
 
   </div>

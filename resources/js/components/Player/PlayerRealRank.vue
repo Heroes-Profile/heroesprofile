@@ -1,5 +1,8 @@
 <template>
-  <panel-box v-if="data" title="Storm League Rank">
+  <panel-box v-if="loading" title="Storm League Rank" :loading="true">
+    <skeleton-box class="h-[360px]"></skeleton-box>
+  </panel-box>
+  <panel-box v-else-if="data" title="Storm League Rank">
     <template #title>
       <round-image size="small" icon="fas fa-info" title="info" popupsize="large">
         <slot>
@@ -13,27 +16,35 @@
       </round-image>
     </template>
 
-    <div v-if="data.current" class="flex flex-col items-center">
-      <div v-if="!data.current_season" class="text-sm font-bold uppercase opacity-80 mb-2">Last season's rank<span v-if="data.season"> ({{ data.season }})</span></div>
-      <real-rank-badge :rank="data.current" :width="200" label="below" label-class="text-2xl font-bold mt-2"></real-rank-badge>
-      <div class="text-sm opacity-80">Last seen {{ formatDay(data.current.last_game_date) }}, read in {{ data.current.read_count.toLocaleString('en-US') }} {{ data.current.read_count == 1 ? 'game' : 'games' }}</div>
-    </div>
+    <template #right>
+      <span v-if="data.season" class="text-3xl font-bold text-header">{{ data.season }}</span>
+    </template>
 
-    <div v-if="data.periods && data.periods.length > 1" class="mt-6">
-      <h3 class="text-xl font-bold text-center">{{ data.season ? data.season : 'This season' }}</h3>
-      <div class="flex flex-wrap justify-center gap-6 mt-3">
-        <div v-for="(period, index) in data.periods" :key="index" class="flex flex-col items-center text-center w-[130px]">
-          <real-rank-badge :rank="period" :width="80" label="below" label-class="font-bold"></real-rank-badge>
-          <div class="text-xs opacity-80">{{ formatDay(period.first_game_date) }} - {{ formatDay(period.last_game_date) }}</div>
-          <div class="text-xs opacity-80">{{ period.read_count.toLocaleString('en-US') }} {{ period.read_count == 1 ? 'game' : 'games' }}</div>
-        </div>
+    <template v-if="data.current">
+      <div v-if="!data.current_season" class="text-sm font-bold uppercase text-subtext">Last season's rank</div>
+
+      <div class="flex flex-wrap items-center gap-4">
+        <h3 class="text-2xl font-bold">Rank History</h3>
+        <tab-button tab1text="7 days" tab2text="30 days" :ignoreclick="true" @tab-click="setRange"></tab-button>
       </div>
-    </div>
 
-    <div v-if="!data.current" class="text-center">No in-game rank has been read for this player yet.</div>
+      <div v-if="rankedPeriods.length" class="relative h-[260px]">
+        <canvas ref="chart"></canvas>
+      </div>
+      <div v-else class="text-subtext">Only an unranked badge has been read this season.</div>
 
-    <details class="bg-lighten rounded-lg text-sm max-w-[800px] mx-auto mt-8 group">
-      <summary class="px-6 py-4 flex justify-between items-center cursor-pointer list-none">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <stat-box v-if="peakName" class="!m-0 !min-w-0" :tier="peakName" :value-first="true" :title="'Peak'" :value="peakName"></stat-box>
+        <stat-box class="!m-0 !min-w-0" :tier="data.current.league == 'unranked' ? null : currentName" :value-first="true" :title="'Current'" :value="currentName"></stat-box>
+        <stat-box class="!m-0 !min-w-0" :value-first="true" :title="'Games'" :value="games.toLocaleString('en-US')"></stat-box>
+        <stat-box class="!m-0 !min-w-0" :value-first="true" :title="'Last seen'" :value="formatDay(data.current.last_game_date)"></stat-box>
+      </div>
+    </template>
+
+    <div v-else>No in-game rank has been read for this player yet.</div>
+
+    <details class="bg-surface-3 rounded-lg text-sm w-fit max-w-full group open:w-full">
+      <summary class="px-4 py-3 flex gap-4 justify-between items-center cursor-pointer list-none">
         <h3 class="text-lg">How to get your rank on Heroes Profile</h3>
         <i class="fas fa-chevron-down transition-transform group-open:rotate-180"></i>
       </summary>
@@ -46,14 +57,44 @@
         <p>Rank reading is off until you turn it on.
           <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>.
         </p>
-        <custom-button href="/Upload" text="Get the uploader" alt="Download the Heroes Profile replay uploader" color="teal"></custom-button>
+        <custom-button href="/Upload" text="Get The Uploader" alt="Download the Heroes Profile replay uploader" color="teal"></custom-button>
       </div>
     </details>
   </panel-box>
 </template>
 
 <script>
+import { markRaw } from 'vue';
+import { Chart, registerables } from 'chart.js';
 import moment from 'moment-timezone';
+import { rankName } from '../RealRankBadge.vue';
+
+Chart.register(...registerables);
+
+const LEAGUES = ['bronze', 'silver', 'gold', 'platinum', 'diamond'];
+const SHORT_NAMES = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold', platinum: 'Plat', diamond: 'Diamond' };
+
+// One step per division, Bronze 5 = 1 up to Diamond 1 = 25, then Master and Grandmaster
+function rankValue(rank) {
+  if (rank.league == 'grandmaster') {
+    return 27;
+  }
+  if (rank.league == 'master') {
+    return 26;
+  }
+  const league = LEAGUES.indexOf(rank.league);
+  return league < 0 || !rank.division ? null : league * 5 + (6 - rank.division);
+}
+
+function stepLabel(value) {
+  if (value == 27) {
+    return 'GM';
+  }
+  if (value == 26) {
+    return 'Master';
+  }
+  return SHORT_NAMES[LEAGUES[Math.floor((value - 1) / 5)]] + ' ' + (5 - (value - 1) % 5);
+}
 
 export default {
   name: 'PlayerRealRank',
@@ -65,10 +106,47 @@ export default {
   data(){
     return {
       data: null,
+      loading: true,
+      days: 7,
+      chart: null,
     }
   },
   mounted() {
     this.getData();
+  },
+  beforeUnmount() {
+    this.chart?.destroy();
+  },
+  computed: {
+    rankedPeriods(){
+      return (this.data?.periods || []).filter(period => rankValue(period) !== null);
+    },
+    peakName(){
+      const peak = this.rankedPeriods.reduce((best, period) => (!best || rankValue(period) > rankValue(best) ? period : best), null);
+      return peak ? rankName(peak) : null;
+    },
+    currentName(){
+      return this.data?.current ? rankName(this.data.current) : null;
+    },
+    games(){
+      return (this.data?.periods || []).reduce((total, period) => total + period.read_count, 0);
+    },
+    // Each day of the range, ending on the last day a rank was read, with the rank read latest that day
+    chartDays(){
+      if(!this.data?.current){
+        return [];
+      }
+      const end = this.localDay(this.data.current.last_game_date);
+      const days = [];
+      for(let offset = this.days - 1; offset >= 0; offset--){
+        const day = end.clone().subtract(offset, 'days');
+        const period = this.rankedPeriods
+          .filter(period => !this.localDay(period.first_game_date).isAfter(day) && !this.localDay(period.last_game_date).isBefore(day))
+          .reduce((latest, period) => (!latest || period.last_game_date > latest.last_game_date ? period : latest), null);
+        days.push({ day, rank: period, value: period ? rankValue(period) : null });
+      }
+      return days;
+    },
   },
   methods: {
     async getData(){
@@ -82,9 +160,105 @@ export default {
       }catch(error){
         //Do something here
       }
+      this.loading = false;
+      this.$nextTick(() => this.drawChart());
+    },
+    setRange(side){
+      this.days = side == 'left' ? 7 : 30;
+      this.$nextTick(() => this.drawChart());
+    },
+    localDay(dateString){
+      return moment.tz(dateString, 'UTC').tz(moment.tz.guess()).startOf('day');
     },
     formatDay(dateString){
       return moment.tz(dateString, 'UTC').tz(moment.tz.guess()).format('MMM D, YYYY');
+    },
+    drawChart(){
+      this.chart?.destroy();
+      this.chart = null;
+      const days = this.chartDays;
+      const values = days.map(day => day.value).filter(value => value !== null);
+      if(!values.length || !this.$refs.chart){
+        return;
+      }
+
+      // Whole leagues, so the bands read Plat 1 to Plat 5 rather than a single row
+      const low = Math.min(...values);
+      const high = Math.max(...values);
+      const min = low > 25 ? low : Math.floor((low - 1) / 5) * 5 + 1;
+      const max = high > 25 ? high : Math.ceil(high / 5) * 5;
+
+      const rankBands = {
+        id: 'rankBands',
+        beforeDraw(chart) {
+          // Under the rank labels too, out to the canvas edge
+          const { ctx, width, chartArea: { left }, scales: { y } } = chart;
+          ctx.save();
+          for(let value = min; value <= max; value++){
+            const top = y.getPixelForValue(value + 0.5);
+            ctx.fillStyle = (max - value) % 2 == 0 ? '#303340' : '#272a34';
+            ctx.fillRect(left, top, width - left, y.getPixelForValue(value - 0.5) - top);
+          }
+          ctx.restore();
+        },
+      };
+
+      this.chart = markRaw(new Chart(this.$refs.chart.getContext('2d'), {
+        type: 'line',
+        plugins: [rankBands],
+        data: {
+          labels: days.map(day => day.day.format('DD MMM.')),
+          datasets: [{
+            data: days.map(day => day.value),
+            borderColor: '#008b8b',
+            borderWidth: 2,
+            backgroundColor: 'rgba(0, 139, 139, 0.35)',
+            fill: 'start',
+            spanGaps: true,
+            pointRadius: 3,
+            pointHoverRadius: 5,
+            pointBackgroundColor: '#1f2229',
+            pointBorderColor: '#008b8b',
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#393e4d',
+              padding: 12,
+              displayColors: false,
+              callbacks: {
+                title: (items) => days[items[0].dataIndex].day.format('MMM D, YYYY'),
+                label: (item) => rankName(days[item.dataIndex].rank),
+              },
+            },
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              border: { display: false },
+              ticks: { color: '#9ca3af', font: { size: 11 }, maxRotation: 0, maxTicksLimit: window.matchMedia('(max-width: 767px)').matches ? 4 : 8 },
+            },
+            y: {
+              position: 'right',
+              min: min - 0.5,
+              max: max + 0.5,
+              grid: { display: false },
+              border: { display: false },
+              afterBuildTicks: (axis) => {
+                axis.ticks = [];
+                for(let value = min; value <= max; value++){
+                  axis.ticks.push({ value });
+                }
+              },
+              ticks: { padding: 16, color: '#9ca3af', callback: (value) => stepLabel(value) },
+            },
+          },
+        },
+      }));
     },
   }
 }

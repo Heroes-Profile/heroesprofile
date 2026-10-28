@@ -4,7 +4,7 @@
 
 <script>
 // Heroes Profile rank tiers (Bronze 5 to Grand Master), coloured as in the redesign's MMR card
-const COLORS = {
+export const TIER_COLORS = {
   Bronze: ['#a3684c', '#fff5e9'],
   Silver: ['#8a91ab', '#fcfbff'],
   Gold: ['#d5a94f', '#fef9e9'],
@@ -13,6 +13,13 @@ const COLORS = {
   Master: ['#7352c7', '#fff0ff'],
 };
 
+// Background and text colour for a tier or rank name ("Platinum 3", "Grandmaster #2")
+export function tierStyle(tier) {
+  const name = Object.keys(TIER_COLORS).find(key => String(tier).includes(key));
+  const [backgroundColor, color] = name ? TIER_COLORS[name] : ['#393e4d', '#ffffff'];
+  return { backgroundColor, color };
+}
+
 export default {
   name: 'RankTierPill',
   props: {
@@ -20,9 +27,7 @@ export default {
   },
   computed: {
     style() {
-      const name = Object.keys(COLORS).find(key => String(this.tier).includes(key));
-      const [background, color] = name ? COLORS[name] : ['#393e4d', '#ffffff'];
-      return { backgroundColor: background, color };
+      return tierStyle(this.tier);
     },
   },
 };

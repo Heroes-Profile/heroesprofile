@@ -9,6 +9,20 @@
 </template>
 
 <script>
+// "Platinum 3", "Master", "Grandmaster #2"
+export function rankName(rank) {
+  if (rank.league == 'unranked') {
+    return 'Unranked';
+  }
+  if (rank.league == 'grandmaster') {
+    return 'Grandmaster' + (rank.ladder_position ? ' #' + rank.ladder_position : '');
+  }
+  if (rank.league == 'master') {
+    return 'Master';
+  }
+  return rank.league.charAt(0).toUpperCase() + rank.league.slice(1) + ' ' + rank.division;
+}
+
 // Image widths in public/images/ranks: league badges are 292 wide (cropped from the game's 350), Master 380, Grandmaster 420,
 // all at the game's scale
 const IMAGE_WIDTHS = { master: 380, grandmaster: 420 };
@@ -36,17 +50,7 @@ export default {
       return '/images/ranks/' + league + '_' + this.rank.division + '.png';
     },
     name(){
-      const rank = this.rank;
-      if(rank.league == 'unranked'){
-        return 'Unranked';
-      }
-      if(rank.league == 'grandmaster'){
-        return 'Grandmaster' + (rank.ladder_position ? ' #' + rank.ladder_position : '');
-      }
-      if(rank.league == 'master'){
-        return 'Master';
-      }
-      return rank.league.charAt(0).toUpperCase() + rank.league.slice(1) + ' ' + rank.division;
+      return rankName(this.rank);
     },
     badgeWidth(){
       return Math.round(this.width * (IMAGE_WIDTHS[this.rank.league] || 292) / 292);

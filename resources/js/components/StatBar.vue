@@ -52,9 +52,12 @@ export default {
       return `${this.numericValue}%`;
     },
     mainText() {
-      return this.displayText !== null && this.displayText !== undefined
-        ? String(this.displayText)
-        : String(this.value);
+      if (this.displayText !== null && this.displayText !== undefined) {
+        return String(this.displayText);
+      }
+      // Two whole digits for a percentage, so 1.00% reads 01.00% and lines up with 58.47%
+      const text = String(this.value);
+      return this.suffix === '%' && /^\d(\.|$)/.test(text) ? '0' + text : text;
     },
   },
 };

@@ -7,7 +7,7 @@
     }
   ]">
     <div v-if="title" class="text-sm text-header mb-1.5">{{ title }}</div>
-    <stat-bar :value="value" :display-text="displaytext ? displaytext : value"
+    <stat-bar :value="value" :display-text="displaytext ? displaytext : null"
       :suffix="displaytext ? '' : '%'" suffix-class="text-xs"
       :color="color" :size="size === 'big' ? 'big' : null"></stat-bar>
   </div>

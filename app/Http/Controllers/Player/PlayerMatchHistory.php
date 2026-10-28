@@ -461,7 +461,11 @@ class PlayerMatchHistory extends Controller
                 'player.hero',
                 'player.team',
                 'player.party',
+                'player.hero_level',
+                'player.mastery_taunt',
+                'player.player_conservative_rating',
                 'battletags.battletag',
+                'battletags.account_level',
             ])
             ->groupBy('replayID');
 

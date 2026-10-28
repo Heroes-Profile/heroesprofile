@@ -1,8 +1,8 @@
 <template>
   <div
   :class="[
-      'relative group items-center md:w-10 md:h-10 ',  
-      { 
+      $slots.trigger ? 'relative inline-flex items-center min-w-0' : 'relative group items-center md:w-10 md:h-10 ',
+      $slots.trigger ? {} : { 
         block: size === 'big', 
         'md:w-20': size === 'big', 
         'md:h-20': size === 'big',
@@ -22,7 +22,9 @@
      ref="container"
      @mouseover="handleMouseOver" @mouseleave="hideTooltip">
        
-      <span class="bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em]  flex justify-center pl-[1px] items-center bold " v-if="circle" >
+      <!-- Anything can open the popup in place of the icon -->
+      <slot v-if="$slots.trigger" name="trigger"></slot>
+      <span class="bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em]  flex justify-center pl-[1px] items-center bold " v-else-if="circle" >
         <i :class="icon" ></i>
       </span>
       <span class=" rounded-full   flex justify-center pl-[1px] items-center bold " v-else >
@@ -36,8 +38,9 @@
       <div v-if="showTooltip" :style="tooltipStyle" :class="[
           'fixed text-xs z-50',
         {
-          'w-[14em]' : popupsize != 'large',
-          'w-[400px] max-w-[90vw]' : popupsize == 'large'
+          'w-[14em]' : popupsize != 'large' && popupsize != 'fit',
+          'w-[400px] max-w-[90vw]' : popupsize == 'large',
+          'w-max max-w-[24em]' : popupsize == 'fit'
         }
         ]" >
           <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft tracking-normal text-left p-4 rounded-xl drop-shadow-md z-30">

@@ -20,9 +20,39 @@ Object.entries(components).forEach(([path, definition]) => {
     app.component(path.split('/').pop().replace(/\.\w+$/, ''), definition.default);
 });
 
+// The nav logo spins while any request is in flight
+let requestsInFlight = 0;
+function loadingStarted() {
+  requestsInFlight++;
+  document.documentElement.classList.add('nav-logo-loading');
+}
+function loadingFinished() {
+  requestsInFlight = Math.max(requestsInFlight - 1, 0);
+  if (!requestsInFlight) {
+    document.documentElement.classList.remove('nav-logo-loading');
+  }
+}
+
+// Registered before the app mounts, so requests made on mount count too
+axios.interceptors.request.use((config) => {
+  loadingStarted();
+  return config;
+});
+axios.interceptors.response.use((response) => {
+  loadingFinished();
+  return response;
+}, (error) => {
+  loadingFinished();
+  return Promise.reject(error);
+});
+
 // Set up axios on Vue's prototype
 app.config.globalProperties.$axios = axios;
-app.config.globalProperties.$globalAsyncPost = (url, data, options = {}) => globalAsyncPost(axios, url, data, options);
+// The whole async query counts as loading, including the waits between status polls
+app.config.globalProperties.$globalAsyncPost = (url, data, options = {}) => {
+  loadingStarted();
+  return globalAsyncPost(axios, url, data, options).finally(loadingFinished);
+};
 app.config.globalProperties.$formatLoadMeta = formatLoadMeta;
 app.config.globalProperties.$formatResponseHeaders = formatResponseHeaders;
 app.config.globalProperties.$createLoadMeta = createLoadMeta;

@@ -443,6 +443,15 @@ h1{
   animation: flash 0.5s;
 }
 
+@keyframes nav-logo-spin {
+  to { transform: rotate(360deg); }
+}
+
+.nav-logo-loading .nav-logo,
+.logo-spin {
+  animation: nav-logo-spin 2.25s linear infinite;
+}
+
 @keyframes flash {
   0% { background-color: transparent; }
   50% { background-color: #008b8b; }
