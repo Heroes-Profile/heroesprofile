@@ -67,7 +67,7 @@
       <table v-if="tableRows.length" ref="responsivetable" class="min-w-0 w-full responsive-table max-md:text-xs">
         <thead>
           <tr>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Game ID</th>
+            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Match ID</th>
             <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Game Date</th>
             <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Game Type</th>
             <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Game Map</th>

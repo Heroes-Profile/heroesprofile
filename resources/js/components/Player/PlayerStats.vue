@@ -208,7 +208,10 @@
       </div>
 
       <panel-box title="Recent Matches" :divider="false">
-        <skeleton-box v-for="index in 5" :key="index" class="h-[136px] rounded-lg"></skeleton-box>
+        <div>
+          <game-summary-header></game-summary-header>
+          <game-summary-skeleton v-for="index in 5" :key="index"></game-summary-skeleton>
+        </div>
       </panel-box>
     </div>
 

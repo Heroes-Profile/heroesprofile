@@ -19,7 +19,7 @@
       role="button"
       @click.prevent="handleClick"
       >
-     <span v-if="!loading">{{ text }}</span>
+     <span v-if="!loading"><slot>{{ text }}</slot></span>
       <span v-else class="loading-text">
         <span v-for="(letter, index) in loadingText" :key="index" :style="{ animationDelay: index * 0.5 + 's' }">{{ letter }}</span>
       </span>

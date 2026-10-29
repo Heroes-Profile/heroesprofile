@@ -151,7 +151,7 @@
           <thead>
             <tr>
               <th>
-                Game ID
+                Match ID
               </th>        
               <th>
                 Round

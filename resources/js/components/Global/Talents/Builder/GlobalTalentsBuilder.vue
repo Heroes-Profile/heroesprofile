@@ -143,7 +143,7 @@
       <thead>
         <tr>
           <th width="200px">
-            Game ID
+            Match ID
           </th>
           <th>
             Talents

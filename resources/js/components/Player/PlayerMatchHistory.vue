@@ -29,23 +29,15 @@
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="data">
-      <div>
-        <ul class="pagination flex max-w-[1920px] mx-auto px-4 md:px-8 justify-between mb-2 text-sm">
-          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: !data.prev_page_url }">
-            <a class="page-link" @click.prevent="getData(data.current_page - 1)" href="#">
-              Previous
-            </a>
-          </li>
-          <!-- Left of Next, as the Talent Builder's layout toggle sits left of its Patch Notes button -->
-          <li class="ml-auto max-md:mx-auto flex items-center gap-4">
-            <tab-button :tab1text="'Table'" :tab2text="'Compact'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="compact ? 'right' : 'left'"></tab-button>
-            <span v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4" :class="{ disabled: !data.next_page_url }">
-              <a class="page-link" @click.prevent="getData(data.current_page + 1)" href="#">
-                Next
-              </a>
-            </span>
-          </li>
-        </ul>
+      <!-- Previous on the left, the layout toggle centred, Next on the right -->
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 grid grid-cols-[1fr_auto_1fr] items-center gap-4 text-sm">
+        <div>
+          <custom-button v-if="data.current_page != 1" size="small" color="teal" alt="Previous page" :disabled="!data.prev_page_url" :ignoreclick="true" @click="getData(data.current_page - 1)"><i class="fa-solid fa-arrow-left mr-2"></i>Previous</custom-button>
+        </div>
+        <tab-button :tab1text="'Table'" :tab2text="'Compact'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="compact ? 'right' : 'left'"></tab-button>
+        <div class="justify-self-end">
+          <custom-button v-if="data.current_page != data.last_page" size="small" color="teal" alt="Next page" :disabled="!data.next_page_url" :ignoreclick="true" @click="getData(data.current_page + 1)">Next<i class="fa-solid fa-arrow-right ml-2"></i></custom-button>
+        </div>
       </div>
       <div v-if="compact">
         <div class="max-w-[1920px] mx-auto px-4 md:px-8 py-4">
@@ -57,13 +49,14 @@
           </panel-box>
         </div>
       </div>
-      <div v-else>
-        <div id="table-container" ref="tablecontainer" class="w-auto   w-[100vw]   2xl:mx-auto  " style=" ">
-      <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
+      <div v-else class="max-w-[1920px] mx-auto px-4 md:px-8 py-4">
+        <panel-box>
+        <div id="table-container" ref="tablecontainer" class="min-w-0">
+      <table id="responsive-table" class="min-w-0 w-full responsive-table relative" ref="responsivetable">
         <thead>
           <tr>
             <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game ID
+              Match ID
             </th>
             <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Game Date
@@ -120,28 +113,56 @@
           </tr>
         </tbody>
       </table>
+        </div>
+        </panel-box>
       </div>
-      </div>
-      <div>
-        <ul class="pagination flex max-w-[1500px] mx-auto px-2 pt-2 justify-between mb-2 text-sm">
-          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: !data.prev_page_url }">
-            <a class="page-link" @click.prevent="getData(data.current_page - 1)" href="#">
-              Previous
-            </a>
-          </li>
-          <li v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: !data.next_page_url }">
-            <a class="page-link" @click.prevent="getData(data.current_page + 1)" href="#">
-              Next
-            </a>
-          </li>
-        </ul>
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 pb-4 flex justify-between text-sm">
+        <div>
+          <custom-button v-if="data.current_page != 1" size="small" color="teal" alt="Previous page" :disabled="!data.prev_page_url" :ignoreclick="true" @click="getData(data.current_page - 1)"><i class="fa-solid fa-arrow-left mr-2"></i>Previous</custom-button>
+        </div>
+        <div>
+          <custom-button v-if="data.current_page != data.last_page" size="small" color="teal" alt="Next page" :disabled="!data.next_page_url" :ignoreclick="true" @click="getData(data.current_page + 1)">Next<i class="fa-solid fa-arrow-right ml-2"></i></custom-button>
+        </div>
       </div>
     </div>
-    <div v-else-if="asyncLoading">
-      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
-    </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+    <!-- The page's layout with grey blocks while it loads, like the profile -->
+    <div v-else-if="isLoading || asyncLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 py-4 space-y-8">
+      <loading-component :compact="true" :textoverride="true">{{ asyncLoading ? 'This is taking longer than expected. A background task is computing your results. Please be patient.' : 'Loading data...' }}</loading-component>
+      <panel-box>
+        <div v-if="compact">
+          <game-summary-header></game-summary-header>
+          <game-summary-skeleton v-for="index in 8" :key="index"></game-summary-skeleton>
+        </div>
+        <div v-else class="min-w-0">
+          <table class="min-w-0 w-full responsive-table">
+            <thead>
+              <tr>
+                <th v-for="label in ['Match ID', 'Game Date', 'Game Type', 'Game Map', 'Hero', 'Winner', 'Talents']" :key="label" class="py-2 px-3 text-left text-sm">{{ label }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in 12" :key="row">
+                <td><skeleton-box class="w-20 h-4"></skeleton-box></td>
+                <td><skeleton-box class="w-36 h-4"></skeleton-box></td>
+                <td><skeleton-box class="w-24 h-4"></skeleton-box></td>
+                <td><skeleton-box class="w-32 h-4"></skeleton-box></td>
+                <td class="py-2 px-3">
+                  <div class="flex items-center gap-2">
+                    <skeleton-box class="w-10 h-10 shrink-0 !rounded-full"></skeleton-box>
+                    <skeleton-box class="w-20 h-4 max-md:hidden"></skeleton-box>
+                  </div>
+                </td>
+                <td><skeleton-box class="w-12 h-4"></skeleton-box></td>
+                <td>
+                  <div class="flex gap-x-1 mx-2 items-center">
+                    <skeleton-box v-for="talent in 7" :key="talent" class="w-10 h-10 shrink-0 !rounded-full"></skeleton-box>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </panel-box>
     </div>
   </div>
 </template>

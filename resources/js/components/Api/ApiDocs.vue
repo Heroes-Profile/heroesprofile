@@ -141,7 +141,7 @@
             <!-- The page this endpoint answers for. Faster than any description at
                  showing what the data is — go and look at it.
 
-                 Player and match pages are addressed by battletag or replay id, so
+                 Player and match pages are addressed by battletag or replay ID, so
                  those are shown as a pattern rather than linked: a link with the
                  placeholders still in it would just 404. -->
             <p v-if="op.sitePage" class="text-sm mb-4">

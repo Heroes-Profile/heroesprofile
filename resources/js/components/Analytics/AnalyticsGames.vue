@@ -49,7 +49,7 @@
         <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
           <thead>
             <tr>
-              <th>Game ID</th>
+              <th>Match ID</th>
               <th>Game Date</th>
               <th>Game Type</th>
               <th>Game Map</th>
