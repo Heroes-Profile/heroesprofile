@@ -61,7 +61,7 @@
               <span v-if="player.check" class="flex-1 min-w-0 truncate text-sm font-medium text-subtext">Hidden</span>
               <icon-with-hover v-else class="flex-1" popupsize="fit">
                 <template #trigger>
-                  <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="$redirectToProfile(player.battletag, player.blizz_id, player.region, false)" :class="['min-w-0 truncate text-sm font-medium hover:text-lteal hover:underline', teamIndex === 0 && group.start + groupIndex === 0 ? 'text-white' : 'text-subtext']">{{ player.battletag }}</a>
+                  <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="$redirectToProfile(player.battletag, player.blizz_id, player.region, false)" :class="['min-w-0 truncate text-sm font-medium hover:text-lteal hover:underline', player.own ? 'text-white' : 'text-subtext']">{{ player.battletag }}</a>
                 </template>
                 <div class="flex items-center gap-2 text-base font-bold text-white">
                   <img v-if="player.hero" class="w-6 h-6 rounded-full object-cover" :src="`/images/heroes/${player.hero.short_name}.png`" alt=""/>
@@ -150,7 +150,7 @@
       return {
         userTimezone: moment.tz.guess(),
       // Sampled from the party icons
-      partyColors: { red: '#ae2023', blue: '#2060ae', teal: '#6ddfe8', orange: '#ae5820', brown: '#cb7569', purple: '#9b2bed' },
+      partyColors: { purple: '#9b2bed', blue: '#2060ae', red: '#ae2023', yellow: '#c88b00' },
       }
     },
     created(){

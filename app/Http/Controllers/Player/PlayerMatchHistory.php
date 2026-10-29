@@ -476,7 +476,6 @@ class PlayerMatchHistory extends Controller
             'downloadable' => $this->globalDataService->replayFileIsRetained($replay->date_added),
             'players' => $this->globalDataService->formatMatchPlayers(
                 ($players[$replay->replayID] ?? collect())->map(fn ($player) => (array) $player)->all(),
-                $replay->team,
                 $blizz_id,
                 $region,
                 $heroData

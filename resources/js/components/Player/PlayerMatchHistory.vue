@@ -30,7 +30,7 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="data">
       <div>
-        <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
+        <ul class="pagination flex max-w-[1920px] mx-auto px-4 md:px-8 justify-between mb-2 text-sm">
           <li v-if="data.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: !data.prev_page_url }">
             <a class="page-link" @click.prevent="getData(data.current_page - 1)" href="#">
               Previous
@@ -48,8 +48,13 @@
         </ul>
       </div>
       <div v-if="compact">
-        <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
-          <game-summary-box v-for="(item, index) in data.data" :key="item.replayID" :data="item" :replay-viewer-allowed="authenticated" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
+        <div class="max-w-[1920px] mx-auto px-4 md:px-8 py-4">
+          <panel-box>
+            <div>
+              <game-summary-header></game-summary-header>
+              <game-summary-box v-for="(item, index) in data.data" :key="item.replayID" :data="item" :replay-viewer-allowed="authenticated" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
+            </div>
+          </panel-box>
         </div>
       </div>
       <div v-else>

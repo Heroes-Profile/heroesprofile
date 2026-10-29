@@ -152,14 +152,7 @@
 
       <panel-box v-if="data.matchData" title="Recent Matches" link-text="View Match History" :link-href="profileUrl + '/Match/History'" :divider="false">
         <div>
-          <!-- Same column widths and padding as the game-summary-box rows -->
-          <div class="flex justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext max-2xl:hidden">
-            <span class="flex-1 max-w-[410px] pl-6">Match</span>
-            <span class="w-[430px] shrink-0 px-4">Statistics</span>
-            <span class="w-[126px] shrink-0"></span>
-            <span class="w-[362px] shrink-0 px-4">Talents</span>
-            <span class="w-[362px] shrink-0 pl-1.5">Players</span>
-          </div>
+          <game-summary-header></game-summary-header>
           <game-summary-box v-for="(item, index) in data.matchData" :key="index" :data="item" :replay-viewer-allowed="replayViewerAllowed" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
         </div>
       </panel-box>

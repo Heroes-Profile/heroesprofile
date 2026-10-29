@@ -894,7 +894,7 @@ class PlayerController extends Controller
 
             // Matches cached before these fields existed don't have them
             if (! empty($match['players'])) {
-                $match['players'] = $this->globalDataService->formatMatchPlayers($match['players'], $match['team'], $blizz_id, $region, $heroData);
+                $match['players'] = $this->globalDataService->formatMatchPlayers($match['players'], $blizz_id, $region, $heroData);
             }
             $match['downloadable'] = $this->globalDataService->replayFileIsRetained($match['date_added'] ?? null);
             unset($match['date_added']);

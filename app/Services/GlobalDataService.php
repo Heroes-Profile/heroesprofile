@@ -38,6 +38,9 @@ use Illuminate\Support\Facades\DB;
 
 class GlobalDataService
 {
+    /** Party icon colours in the order each team's parties get them, as in game. */
+    public const PARTY_COLORS = [0 => ['blue', 'purple'], 1 => ['red', 'yellow']];
+
     /** Replays older than (max replay ID - this value) get stricter rate limits. */
     public const OLD_REPLAY_THRESHOLD = 1_000_000;
 
@@ -357,23 +360,25 @@ class GlobalDataService
     }
 
     /**
-     * Both teams for a recent match, the player and their team first, with party
-     * numbers turned into the same icon colours the single match page uses.
+     * Both teams for a recent match, team 0 then team 1, with party numbers turned
+     * into icon colours: the player's team gets the first set, the enemy the second.
      * Within a team: the player on top, then the rest of their party, then each
      * other party together, then solo players.
      * Private and banned players are hidden the way the single match page hides them.
      */
-    public function formatMatchPlayers(array $players, $playerTeam, $blizz_id, $region, $heroData): array
+    public function formatMatchPlayers(array $players, $blizz_id, $region, $heroData): array
     {
-        $partyColors = ['red', 'blue', 'teal', 'orange', 'brown', 'purple'];
-        $parties = [];
+        $ownTeam = collect($players)->firstWhere('blizz_id', $blizz_id)['team'] ?? 0;
+        $partyColors = [$ownTeam => self::PARTY_COLORS[0], 1 - $ownTeam => self::PARTY_COLORS[1]];
+        $parties = [0 => [], 1 => []];
         $viewer = Auth::user();
 
         return collect($players)
-            ->map(function ($player) use ($heroData, $partyColors, &$parties, $region, $viewer) {
+            ->map(function ($player) use ($heroData, $partyColors, &$parties, $blizz_id, $region, $viewer) {
                 $hidden = $this->isHiddenFrom($player['blizz_id'], $region, $viewer);
 
                 $player['check'] = $hidden;
+                $player['own'] = $player['blizz_id'] == $blizz_id;
                 $player['region'] = $hidden ? null : $region;
                 $player['battletag'] = $hidden ? null : explode('#', $player['battletag'])[0];
                 $player['hero'] = $heroData[$player['hero']] ?? null;
@@ -383,27 +388,29 @@ class GlobalDataService
                 unset($player['mastery_taunt'], $player['player_conservative_rating']);
 
                 if ($player['party'] != '' && $player['party'] != 0) {
-                    $parties[$player['party']] ??= $partyColors[count($parties)] ?? null;
-                    $player['party'] = $parties[$player['party']];
+                    $teamParties = &$parties[$player['team']];
+                    $teamParties[$player['party']] ??= $partyColors[$player['team']][count($teamParties)] ?? null;
+                    $player['party'] = $teamParties[$player['party']];
+                    unset($teamParties);
                 } else {
                     $player['party'] = null;
                 }
 
                 return $player;
             })
-            ->pipe(function ($players) use ($playerTeam, $blizz_id, $partyColors) {
+            ->pipe(function ($players) use ($blizz_id, $partyColors) {
                 $ownParty = $players->firstWhere('blizz_id', $blizz_id)['party'] ?? null;
 
-                return $players->sortBy(function ($player) use ($playerTeam, $blizz_id, $partyColors, $ownParty) {
+                return $players->sortBy(function ($player) use ($blizz_id, $partyColors, $ownParty) {
                     if ($player['party'] === null) {
                         $partyOrder = 9;
                     } elseif ($player['party'] === $ownParty) {
                         $partyOrder = 0;
                     } else {
-                        $partyOrder = 1 + array_search($player['party'], $partyColors);
+                        $partyOrder = 1 + array_search($player['party'], $partyColors[$player['team']]);
                     }
 
-                    $teamOrder = $player['team'] == $playerTeam ? 0 : 1000;
+                    $teamOrder = $player['team'] == 0 ? 0 : 1000;
 
                     return $player['blizz_id'] == $blizz_id ? $teamOrder : $teamOrder + 10 + $partyOrder * 10;
                 });
