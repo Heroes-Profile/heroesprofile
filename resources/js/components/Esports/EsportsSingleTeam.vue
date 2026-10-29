@@ -161,7 +161,7 @@
         </table>
 
       
-      <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
       <div class="bg-lighten p-10 mt-10">
         <div class=" max-w-[90em] ml-auto mr-auto">

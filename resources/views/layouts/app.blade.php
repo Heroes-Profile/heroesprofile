@@ -128,7 +128,7 @@
 
     @yield('content')
 
-    <dynamic-banner-ad  :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" :index="{{ json_encode(1) }}" :mobile-override="{{ json_encode(false) }}"></dynamic-banner-ad>
+    <dynamic-banner-ad  :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" :index="{{ json_encode(0) }}" :mobile-override="{{ json_encode(false) }}"></dynamic-banner-ad>
 
     <footer class="mt-auto @yield('footer_gap', 'pt-[2em]')">
       @if(isset($isBackendOff) && $isBackendOff)
