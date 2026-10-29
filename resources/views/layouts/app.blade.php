@@ -175,7 +175,7 @@
 
     @yield('content')
 
-    <dynamic-banner-ad  :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" :index="{{ json_encode(1) }}" :mobile-override="{{ json_encode(false) }}"></dynamic-banner-ad>
+    <dynamic-banner-ad  :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" :index="{{ json_encode(0) }}" :mobile-override="{{ json_encode(false) }}"></dynamic-banner-ad>
 
     <div class="mt-auto">
       <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal mt-[2em] w-full px-4">
