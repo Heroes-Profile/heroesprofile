@@ -48,13 +48,13 @@
 
     <div v-if="data.players && data.players.length" class="relative z-[2] flex gap-2 pl-4 2xl:pl-1.5 pr-12 py-4 w-full 2xl:w-[362px] shrink-0">
       <div v-for="(team, teamIndex) in data.players" :key="teamIndex" class="flex flex-col gap-1.5 w-[150px]">
-        <!-- A party shares a bracket in its colour, over the first name and under the last, with the icon centred on it -->
-        <div v-for="group in partyGroups(team)" :key="group.start" :class="['relative flex gap-1', { '-my-0.5 py-1': group.party && group.players.length > 1 }]">
-          <span v-if="group.party && group.players.length > 1" class="absolute inset-y-0 left-[13px] w-6 border-l-2 border-y-2 rounded-l" :style="{ borderColor: partyColors[group.party] }"></span>
-          <span class="relative w-4 shrink-0 flex items-center justify-center">
-            <img v-if="group.party" class="relative w-4 h-4 translate-x-[6px]" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${group.party}.png`" alt=""/>
+        <!-- A party's icon sits centred beside a line in its colour running down the group -->
+        <div v-for="group in partyGroups(team)" :key="group.start" class="flex items-center">
+          <span class="w-4 shrink-0 flex items-center justify-center">
+            <img v-if="group.party" class="w-4 h-4" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${group.party}.png`" alt=""/>
           </span>
-          <div class="flex flex-col gap-1.5 flex-1 min-w-0">
+          <span class="w-[2px] ml-[3px] self-stretch shrink-0 rounded-l-full" :style="group.party && group.players.length > 1 ? { backgroundColor: partyColors[group.party] } : null"></span>
+          <div class="flex flex-col gap-1.5 flex-1 min-w-0 ml-0.5">
             <div v-for="(player, groupIndex) in group.players" :key="groupIndex" class="flex gap-1 h-4 items-center">
               <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name"/>
               <!-- The profile's own player comes first -->

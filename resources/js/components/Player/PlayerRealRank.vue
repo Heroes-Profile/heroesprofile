@@ -57,7 +57,7 @@
         <p>Rank reading is off until you turn it on.
           <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>.
         </p>
-        <custom-button href="/Upload" text="Get The Uploader" alt="Download the Heroes Profile replay uploader" color="teal"></custom-button>
+        <custom-button href="/Upload" text="Get The Uploader" alt="Download the Heroes Profile replay uploader" color="blue"></custom-button>
       </div>
     </details>
   </panel-box>

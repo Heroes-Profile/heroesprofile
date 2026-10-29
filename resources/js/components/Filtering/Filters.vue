@@ -477,7 +477,7 @@
             :defaultValue="modifiedGroupSizeDefaultValue"
           ></multi-select-filter>
         </div>
-        <button :disabled="disabledFilter" @click="applyFilter" :class="compact ? 'bg-teal rounded text-white px-5 py-2 h-10 disabled:opacity-50 hover:bg-blue' : ['rounded text-white font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]', disabledFilter ? 'bg-gray-md' : 'bg-red hover:bg-lred']">
+        <button :disabled="disabledFilter" @click="applyFilter" :class="compact ? 'bg-teal rounded text-white px-5 py-2 h-10 disabled:opacity-50 hover:bg-blue' : ['rounded text-white font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]', disabledFilter ? 'bg-gray-md' : 'bg-blue hover:bg-lblue']">
           Filter
         </button>
 

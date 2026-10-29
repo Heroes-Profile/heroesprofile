@@ -29,16 +29,10 @@
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="data">
-      <!-- Previous on the left, the layout toggle centred, Next on the right -->
-      <div class="max-w-[1920px] mx-auto px-4 md:px-8 grid grid-cols-[1fr_auto_1fr] items-center gap-4 text-sm">
-        <div>
-          <custom-button v-if="data.current_page != 1" size="small" color="teal" alt="Previous page" :disabled="!data.prev_page_url" :ignoreclick="true" @click="getData(data.current_page - 1)"><i class="fa-solid fa-arrow-left mr-2"></i>Previous</custom-button>
-        </div>
-        <tab-button :tab1text="'Table'" :tab2text="'Compact'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="compact ? 'right' : 'left'"></tab-button>
-        <div class="justify-self-end">
-          <custom-button v-if="data.current_page != data.last_page" size="small" color="teal" alt="Next page" :disabled="!data.next_page_url" :ignoreclick="true" @click="getData(data.current_page + 1)">Next<i class="fa-solid fa-arrow-right ml-2"></i></custom-button>
-        </div>
-      </div>
+      <!-- The layout toggle sits between Previous and Next; `compact` means the game rows, labelled Expanded -->
+      <pagination-bar class="max-w-[1920px] mx-auto px-4 md:px-8" :current="data.current_page" :last="data.last_page" @page="getData">
+        <tab-button :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="compact ? 'right' : 'left'"></tab-button>
+      </pagination-bar>
       <div v-if="compact">
         <div class="max-w-[1920px] mx-auto px-4 md:px-8 py-4">
           <panel-box>
@@ -116,14 +110,7 @@
         </div>
         </panel-box>
       </div>
-      <div class="max-w-[1920px] mx-auto px-4 md:px-8 pb-4 flex justify-between text-sm">
-        <div>
-          <custom-button v-if="data.current_page != 1" size="small" color="teal" alt="Previous page" :disabled="!data.prev_page_url" :ignoreclick="true" @click="getData(data.current_page - 1)"><i class="fa-solid fa-arrow-left mr-2"></i>Previous</custom-button>
-        </div>
-        <div>
-          <custom-button v-if="data.current_page != data.last_page" size="small" color="teal" alt="Next page" :disabled="!data.next_page_url" :ignoreclick="true" @click="getData(data.current_page + 1)">Next<i class="fa-solid fa-arrow-right ml-2"></i></custom-button>
-        </div>
-      </div>
+      <pagination-bar class="max-w-[1920px] mx-auto px-4 md:px-8 pb-4" :current="data.current_page" :last="data.last_page" @page="getData"></pagination-bar>
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading || asyncLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 py-4 space-y-8">

@@ -54,7 +54,7 @@
         <h3 class="text-3xl font-semibold mt-6 mb-4">Player Profile</h3>
         <p class="text-sm text-left mb-8">See all player stats in one place.  See data for individual maps or heroes played, match history, real in-game Storm League rank and comparisons all from within a streamlined profile.</p>
         <div class="flex mt-auto">
-          <custom-button :text="'Find Player'" :alt="'Find Player'" :color="'teal'" :ignoreclick="true" class="flex-1 font-semibold" @click="focusSearch"></custom-button>
+          <custom-button :text="'Find Player'" :alt="'Find Player'" :color="'blue'" :ignoreclick="true" class="flex-1 font-semibold" @click="focusSearch"></custom-button>
         </div>
       </div>
 

@@ -34,8 +34,8 @@
     <div class="flex gap-2 pl-4 2xl:pl-1.5 pr-12 py-4 w-full 2xl:w-[362px] shrink-0">
       <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[150px]">
         <div v-for="player in 5" :key="player" class="flex gap-1 h-4 items-center">
-          <!-- Party icon slot, then hero icon and name -->
-          <span class="w-4 shrink-0"></span>
+          <!-- Party icon and line slot, then hero icon and name -->
+          <span class="w-[19px] shrink-0"></span>
           <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
           <skeleton-box class="flex-1 h-3"></skeleton-box>
         </div>

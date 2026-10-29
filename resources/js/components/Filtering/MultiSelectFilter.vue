@@ -22,10 +22,9 @@
 
       
       <span class="h-[40px] overflow-hidden rounded bg-teal hover:bg-lteal text-white p-2 flex items-center gap-2 relative min-w-0 w-full">
-        <span class="flex min-w-0 overflow-hidden">
-          <span v-if="toggletabs" class="uppercase whitespace-nowrap font-bold px-1 flex no-wrap">{{ toggleside === 'right' ? toggletabs[1] : toggletabs[0] }}</span>
-          <span v-if="selectedOptions.length <= 3" v-for="name in selectedOptionsName" class="uppercase whitespace-nowrap  font-bold  bg-darken rounded px-1 mx-1 flex no-wrap">{{ name }}</span>
-          <span v-else-if="selectedOptions.length > 3" class="uppercase whitespace-nowrap  font-bold  bg-darken rounded px-1 mx-1 flex no-wrap">{{ selectedOptions.length }} of {{ values.length }} selected</span>
+        <span class="flex min-w-0 gap-1">
+          <span v-if="toggletabs" class="uppercase whitespace-nowrap font-bold px-1 shrink-0">{{ toggleside === 'right' ? toggletabs[1] : toggletabs[0] }}</span>
+          <span v-if="selectedOptions.length" class="uppercase font-bold px-1 truncate min-w-0">{{ selectedOptions.length <= 3 ? selectedOptionsName.join(', ') : selectedOptions.length + ' of ' + values.length + ' selected' }}</span>
         </span>
         <i class="fa-solid fa-chevron-down ml-auto shrink-0 text-xs"></i>
       </span>
