@@ -41,8 +41,11 @@
               <region-tag :region="regionsmap[region]" :full="true"></region-tag>
             </div>
             <div class="card-actions ml-auto flex gap-1 text-header">
-              <button v-if="canCopyImage" type="button" class="p-1.5 hover:text-lteal" :title="cardCopied ? 'Copied' : 'Copy card image'" @click="copyCard"><i :class="cardCopied ? 'fa-solid fa-check' : 'fa-solid fa-copy'"></i></button>
-              <button type="button" class="p-1.5 hover:text-lteal" title="Download card image" @click="downloadCard"><i class="fa-solid fa-download"></i></button>
+              <loading-component v-if="cardDownloading" :compact="true" :textoverride="true">Processing image for download...</loading-component>
+              <template v-else>
+                <button v-if="canCopyImage" type="button" class="p-1.5 hover:text-lteal" :title="cardCopied ? 'Copied' : 'Copy card image'" @click="copyCard"><i :class="cardCopied ? 'fa-solid fa-check' : 'fa-solid fa-copy'"></i></button>
+                <button type="button" class="p-1.5 hover:text-lteal" title="Download card image" @click="downloadCard"><i class="fa-solid fa-download"></i></button>
+              </template>
             </div>
           </div>
 
@@ -216,6 +219,32 @@
 <script>
 import { toBlob } from 'html-to-image';
 
+// html-to-image can't pull Roboto through app.css's @import, so the card image
+// gets the latin Roboto faces embedded directly. Fetched once, on first use.
+let cardFontCss = null;
+function cardFonts() {
+  cardFontCss ??= (async () => {
+    const css = await (await fetch('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap')).text();
+    const faces = css.split('/* ').filter(block => block.startsWith('latin */')).map(block => block.slice('latin */'.length));
+    const embedded = await Promise.all(faces.map(async face => {
+      const url = face.match(/url\((.+?)\)/)[1];
+      const blob = await (await fetch(url)).blob();
+      const dataUrl = await new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+      return face.replace(url, dataUrl);
+    }));
+    return embedded.join('\n');
+  })().catch(() => {
+    // Without the font the card still renders, in the fallback font
+    cardFontCss = null;
+    return '';
+  });
+  return cardFontCss;
+}
+
   export default {
     name: 'PlayerStats',
     components: {
@@ -252,6 +281,7 @@ import { toBlob } from 'html-to-image';
         disableFilterInput: null,
         realRank: null,
         cardCopied: false,
+        cardDownloading: false,
         canCopyImage: typeof window.ClipboardItem !== 'undefined' && !!(navigator.clipboard && navigator.clipboard.write),
       }
     },
@@ -394,6 +424,36 @@ import { toBlob } from 'html-to-image';
           this.cancelTokenSource = null;
           this.isLoading = false;
           this.disableFilterInput = false;
+        }
+      },
+      // The overview card as it is on the page, without its own buttons.
+      async cardImage() {
+        return toBlob(this.$refs.overviewCard.$el, {
+          pixelRatio: 2,
+          fontEmbedCSS: await cardFonts(),
+          filter: (node) => !(node.classList && node.classList.contains('card-actions')),
+        });
+      },
+      async downloadCard() {
+        this.cardDownloading = true;
+        try {
+          const blob = await this.cardImage();
+          const link = document.createElement('a');
+          link.download = `heroesprofile-${this.battletag}.png`;
+          link.href = URL.createObjectURL(blob);
+          link.click();
+          URL.revokeObjectURL(link.href);
+        } finally {
+          this.cardDownloading = false;
+        }
+      },
+      async copyCard() {
+        try {
+          await navigator.clipboard.write([new ClipboardItem({ 'image/png': this.cardImage() })]);
+          this.cardCopied = true;
+          setTimeout(() => { this.cardCopied = false; }, 2000);
+        } catch (e) {
+          // clipboard refused the image
         }
       },
       cancelAxiosRequest() {
