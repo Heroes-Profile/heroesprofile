@@ -35,6 +35,17 @@
       <template v-else-if="data.length">
         <div class="flex flex-wrap gap-2 mb-6">
           <button
+            @click="activeYears = allYearsActive ? [] : [...availableYears]"
+            :class="[
+              'px-3 py-1 rounded text-sm font-medium border transition-colors',
+              allYearsActive
+                ? 'bg-teal text-white border-teal'
+                : 'bg-transparent text-gray-400 border-gray-600 hover:border-gray-400'
+            ]"
+          >
+            All
+          </button>
+          <button
             v-for="year in availableYears"
             :key="year"
             @click="toggleYear(year)"
@@ -56,6 +67,7 @@
           :pointHoverRadius="8"
           :projected="projectedCurrentMonth"
           :projectedLabel="'Expected (current month)'"
+          :markers="events"
         ></line-chart>
       </template>
     </div>
@@ -81,6 +93,13 @@ export default {
       pendingGametype: null,
       pendingRegion: null,
       activeYears: [],
+      events: [
+        { label: '2015-06', text: 'Heroes of the Storm Release (Jun 2, 2015)' },
+        { label: '2017-04', text: 'Heroes of the Storm 2.0 (Apr 25, 2017)' },
+        { label: '2018-12', text: 'HGC and Heroes of the Dorm cancellation (Dec 14, 2018)' },
+        { label: '2022-07', text: 'Heroes of the Storm enters maintenance mode (Jul 8, 2022)' },
+        { label: '2026-09', text: "BlizzCon Xal'atath announcement (Sep 12, 2026)" },
+      ],
     };
   },
   computed: {
@@ -92,6 +111,9 @@ export default {
     },
     availableYears() {
       return [...new Set(this.data.map(d => d.x_label.split('-')[0]))].sort();
+    },
+    allYearsActive() {
+      return this.availableYears.every(year => this.activeYears.includes(year));
     },
     filteredData() {
       return this.data.filter(d => this.activeYears.includes(d.x_label.split('-')[0]));

@@ -21,15 +21,46 @@ export default {
     // Expected value for the last point, drawn dashed from the point before it
     projected: { type: Number, default: null },
     projectedLabel: { type: String, default: 'Expected' },
+    // Dashed vertical lines: [{ label: x label to sit on, text }]
+    markers: { type: Array, default: () => [] },
   },
   data() {
     return {
       chart: null,
     };
   },
-  mounted() {    
+  mounted() {
+    const markerLines = {
+      id: 'markerLines',
+      afterDatasetsDraw: (chart) => {
+        const visible = this.markers.filter(marker => chart.data.labels.includes(marker.label));
+        const { top, bottom, right } = chart.chartArea;
+        const ctx = chart.ctx;
+        ctx.save();
+        ctx.strokeStyle = '#f87171';
+        ctx.fillStyle = '#f87171';
+        ctx.lineWidth = 2;
+        ctx.font = 'bold 14px sans-serif';
+        visible.forEach((marker, i) => {
+          const x = chart.scales.x.getPixelForValue(chart.data.labels.indexOf(marker.label));
+          ctx.setLineDash([6, 4]);
+          ctx.beginPath();
+          ctx.moveTo(x, top);
+          ctx.lineTo(x, bottom);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          // Alternate rows so neighbouring labels don't overlap; flip left near the right edge
+          const width = ctx.measureText(marker.text).width;
+          const textX = x + 6 + width > right ? x - 6 - width : x + 6;
+          ctx.fillText(marker.text, textX, top + 16 + (i % 2) * 18);
+        });
+        ctx.restore();
+      },
+    };
+
     this.chart = markRaw(new Chart(this.$refs.canvas.getContext('2d'), {
       type: 'line',
+      plugins: [markerLines],
       data: {
         labels: this.data.map(item => item.x_label),
         datasets: this.datasets(),
