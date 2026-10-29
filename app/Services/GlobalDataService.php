@@ -1165,6 +1165,39 @@ class GlobalDataService
         });
     }
 
+    /**
+     * Newest replay the player has for these filters, used to tell whether a cached
+     * profile page is stale. Held for a minute so paging and moving between profile
+     * pages don't rescan the player's history each time.
+     */
+    public function latestPlayerReplayId($blizz_id, $region, $game_type, $season, $startDate = null, $endDate = null): ?int
+    {
+        $key = 'player_latest_replay|'.hash('sha256', json_encode(GlobalCacheKey::normalize([
+            'blizz_id' => $blizz_id,
+            'region' => $region,
+            'game_type' => $game_type,
+            'season' => $season,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+        ])));
+
+        return Cache::store('database')->remember($key, 60, function () use ($blizz_id, $region, $game_type, $season, $startDate, $endDate) {
+            $gameTypeIds = $game_type
+                ? GameType::whereIn('short_name', (array) $game_type)->pluck('type_id')->toArray()
+                : null;
+
+            return DB::table('replay')
+                ->join('player', 'player.replayID', '=', 'replay.replayID')
+                ->where('player.blizz_id', $blizz_id)
+                ->where('replay.region', $region)
+                ->when($gameTypeIds, fn ($q) => $q->whereIn('game_type', $gameTypeIds))
+                ->tap(function ($q) use ($season, $startDate, $endDate) {
+                    $this->applySeasonsOrDateRange($q, $season, $startDate, $endDate);
+                })
+                ->max('replay.replayID');
+        });
+    }
+
     public function getSeasonFromDate($date)
     {
         return SeasonDate::select('id')->where('start_date', '<=', $date)->where('end_date', '>=', $date)->first()->id;

@@ -241,11 +241,13 @@ class PlayerMatchHistory extends Controller
         $pagination_page = $request['pagination_page'];
         $perPage = 100;
 
+        // Taken before the queries, so a game uploaded mid-query isn't stamped as included.
+        $latestReplayId = $this->getLatestReplayId($request) ?? 0;
+
         // Sorting needs every one of the player's games, so it runs on the narrow
         // tables; scores and talents are only read for the page being returned.
         $games = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->join('heroes', 'heroes.id', '=', 'player.hero')
             ->where('player.blizz_id', $blizz_id)
             ->whereIn('replay.game_type', $game_type)
             ->where('replay.region', $region)
@@ -256,7 +258,8 @@ class PlayerMatchHistory extends Controller
                 return $query->whereIn('replay.game_map', $game_map);
             })
             ->when(! is_null($role), function ($query) use ($role) {
-                return $query->where('heroes.new_role', $role);
+                return $query->join('heroes', 'heroes.id', '=', 'player.hero')
+                    ->where('heroes.new_role', $role);
             })
             ->when(! is_null($hero), function ($query) use ($hero) {
                 return $query->where('player.hero', $hero);
@@ -274,7 +277,26 @@ class PlayerMatchHistory extends Controller
                         ->where('ff.blizz_id', $ff_blizzid));
             });
 
-        $total = (clone $games)->count();
+        // The total is the same on every page, so it's kept apart from the page cache
+        // and only recounted once the player has a newer game.
+        $totalHash = $this->totalHash($request);
+        $cachedTotal = PlayerStatsCache::where('params_hash', $totalHash)->first();
+
+        if ($cachedTotal && (int) $cachedTotal->latest_replayID === $latestReplayId) {
+            $total = (int) json_decode($cachedTotal->data);
+        } else {
+            $total = (clone $games)->count();
+
+            PlayerStatsCache::updateOrCreate(
+                ['params_hash' => $totalHash],
+                [
+                    'blizz_id' => $blizz_id,
+                    'region' => $region,
+                    'latest_replayID' => $latestReplayId,
+                    'data' => json_encode($total),
+                ]
+            );
+        }
 
         $replayIds = $games
             ->orderByDesc('replay.game_date')
@@ -408,7 +430,7 @@ class PlayerMatchHistory extends Controller
             [
                 'blizz_id' => $request['blizz_id'],
                 'region' => $request['region'],
-                'latest_replayID' => $this->getLatestReplayId($request) ?? 0,
+                'latest_replayID' => $latestReplayId,
                 'data' => json_encode($returnData),
             ]
         );
@@ -487,6 +509,23 @@ class PlayerMatchHistory extends Controller
     {
         return hash('sha256', json_encode(GlobalCacheKey::normalize([
             'page' => 'match_history',
+            ...$this->filterParams($request),
+            'pagination_page' => $request['pagination_page'],
+            'links' => $request['links'],
+        ])));
+    }
+
+    private function totalHash(Request $request): string
+    {
+        return hash('sha256', json_encode(GlobalCacheKey::normalize([
+            'page' => 'match_history_total',
+            ...$this->filterParams($request),
+        ])));
+    }
+
+    private function filterParams(Request $request): array
+    {
+        return [
             'blizz_id' => $request['blizz_id'],
             'region' => $request['region'],
             'game_type' => $request['game_type'],
@@ -499,23 +538,18 @@ class PlayerMatchHistory extends Controller
             'stack_size' => $request['stack_size'],
             'ff_blizzid' => $request['ff_blizzid'],
             'ff_region' => $request['ff_region'],
-            'pagination_page' => $request['pagination_page'],
-            'links' => $request['links'],
-        ])));
+        ];
     }
 
     private function getLatestReplayId(Request $request): ?int
     {
-        $gameTypeIds = GameType::whereIn('short_name', (array) $request['game_type'])->pluck('type_id')->toArray();
-
-        return DB::table('replay')
-            ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->where('player.blizz_id', $request['blizz_id'])
-            ->where('replay.region', $request['region'])
-            ->whereIn('game_type', $gameTypeIds)
-            ->tap(function ($query) use ($request) {
-                $this->globalDataService->applySeasonsOrDateRange($query, $request['season'], $request['start_date'], $request['end_date']);
-            })
-            ->max('replay.replayID');
+        return $this->globalDataService->latestPlayerReplayId(
+            $request['blizz_id'],
+            $request['region'],
+            $request['game_type'],
+            $request['season'],
+            $request['start_date'],
+            $request['end_date']
+        );
     }
 }
