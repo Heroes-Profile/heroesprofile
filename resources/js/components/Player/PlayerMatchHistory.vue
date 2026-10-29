@@ -323,7 +323,7 @@ export default {
           },
         });
         this.data = response.data;
-        this.getMatchDetails();
+        this.$loadMatchDetails(this.data.data, this.blizzid, this.region);
       }catch(error){
         //Do something here
       }finally {
@@ -331,26 +331,6 @@ export default {
         this.isLoading = false;
         this.asyncLoading = false;
         this.$nextTick(() => this.scaleTable());
-      }
-    },
-    // Teams, length and download state for this page, per viewer, so outside the shared page cache
-    async getMatchDetails() {
-      const page = this.data;
-      if (!page || !page.data || !page.data.length) {
-        return;
-      }
-      try {
-        const response = await this.$axios.post("/api/v1/player/match/history/details", {
-          blizz_id: this.blizzid,
-          region: this.region,
-          replayIDs: page.data.map(item => item.replayID),
-        });
-        if (this.data !== page) {
-          return;
-        }
-        page.data.forEach(item => Object.assign(item, response.data[item.replayID] || {}));
-      } catch (error) {
-        // the rows still show without teams
       }
     },
     getHeroID() {

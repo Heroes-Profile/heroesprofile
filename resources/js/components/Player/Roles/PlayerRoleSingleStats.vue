@@ -64,7 +64,7 @@
       </div>
 
 
-      <line-chart v-if="seasonWinRateDataArray" class="max-w-[1500px] mx-auto" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" :title="`${battletag} Win Rate Data Per Season with ${role}`"></line-chart>
+      <line-chart v-if="seasonWinRateDataArray" class="max-w-[1500px] mx-auto" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" :point-radius="3" :point-hover-radius="5" :title="`${battletag} Win Rate Data Per Season with ${role}`"></line-chart>
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
       <div class="bg-lighten p-10 ">
@@ -118,7 +118,7 @@
       <div class="bg-lighten">
         <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto" v-if="data && data.latestGames">
           <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
-          <game-summary-box v-for="(item, index) in data.latestGames" :data="item"></game-summary-box>
+          <game-summary-box v-for="(item, index) in data.latestGames" :data="item" :replay-viewer-allowed="replayViewerAllowed" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
           <div class="max-w-[1500px] mx-auto text-right my-2 max-md:text-center">
             <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Match/History/?role=' + role" class="" text="View Match History"></custom-button>
           </div>
@@ -158,6 +158,9 @@
       isPatreon: Boolean,
       patreonUser: Boolean,
       gametypedefault: Array,
+      replayViewerAllowed: Boolean,
+      analyticsCutover: String,
+      replayDownloadBlocked: Boolean,
 
     },
     data(){
@@ -252,6 +255,7 @@
           });
 
           this.data = response.data[0];
+          this.$loadMatchDetails(this.data?.latestGames, this.blizzid, this.region);
         }catch(error){
           //Do something here
         }finally {

@@ -16,6 +16,9 @@
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
+    :replay-viewer-allowed="{{ json_encode($replayViewerAllowed) }}"
+    :analytics-cutover="{{ json_encode($analyticsCutover) }}"
+    :replay-download-blocked="{{ json_encode($replayDownloadBlocked) }}"
 
   ></player-map-single-stats>
 @endsection

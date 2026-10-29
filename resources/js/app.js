@@ -27,6 +27,24 @@ app.config.globalProperties.$formatLoadMeta = formatLoadMeta;
 app.config.globalProperties.$formatResponseHeaders = formatResponseHeaders;
 app.config.globalProperties.$createLoadMeta = createLoadMeta;
 
+// Teams, game length and download state for match rows. They depend on the viewer,
+// so they're fetched apart from the cached page data and merged into the rows.
+app.config.globalProperties.$loadMatchDetails = async function (games, blizzid, region) {
+  if (!games || !games.length) {
+    return;
+  }
+  try {
+    const response = await axios.post('/api/v1/player/match/history/details', {
+      blizz_id: blizzid,
+      region: region,
+      replayIDs: games.map(game => game.replayID),
+    });
+    games.forEach(game => Object.assign(game, response.data[game.replayID] || {}));
+  } catch (error) {
+    // the rows still show without teams
+  }
+};
+
 // Bar colour for a win rate: red under 45%, yellow under 50%, teal from 50%.
 app.config.globalProperties.$winRateColor = function (winRate) {
   const value = Number(winRate);

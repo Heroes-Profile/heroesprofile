@@ -69,13 +69,29 @@ export default {
         responsive: true,
         // Phones: taller plot, and few flat date labels so they don't crush it
         aspectRatio: window.matchMedia('(max-width: 767px)').matches ? 1.2 : 2,
+        // Styled like the Storm League rank chart
+        plugins: {
+          // The legend only names the dashed projected line; a single line needs none
+          legend: {
+            display: this.projected !== null,
+            labels: { color: '#9ca3af', boxWidth: 24 },
+          },
+          tooltip: {
+            backgroundColor: '#393e4d',
+            padding: 12,
+            displayColors: false,
+          },
+        },
         scales: {
           x: {
             grid: {
-              display: true,
+              display: false,
             },
+            border: { display: false },
             ticks: {
               display: true,
+              color: '#9ca3af',
+              font: { size: 11 },
               //maxTicksLimit: 10, // Limit the number of x-axis ticks to 100
               ...(window.matchMedia('(max-width: 767px)').matches ? {
                 maxTicksLimit: 3,
@@ -91,10 +107,13 @@ export default {
           y: {
             beginAtZero: false,
             grid: {
-              display: true,
+              color: 'rgba(255, 255, 255, 0.06)',
             },
+            border: { display: false },
             ticks: {
-              display: true, 
+              display: true,
+              color: '#9ca3af',
+              font: { size: 11 },
             },
           }
         }
@@ -126,11 +145,14 @@ export default {
       const datasets = [{
         label: this.title,
         data: totals,
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
+        backgroundColor: 'rgba(0, 139, 139, 0.35)',
+        borderColor: '#008b8b',
+        borderWidth: 2,
+        fill: 'start',
         pointRadius: this.pointRadius,
         pointHoverRadius: this.pointHoverRadius,
+        pointBackgroundColor: '#1f2229',
+        pointBorderColor: '#008b8b',
       }];
 
       if (this.projected !== null && totals.length) {
@@ -144,9 +166,9 @@ export default {
         datasets.push({
           label: this.projectedLabel,
           data: projectedData,
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1,
+          backgroundColor: 'transparent',
+          borderColor: '#008b8b',
+          borderWidth: 2,
           borderDash: [6, 4],
           pointRadius: this.pointRadius,
           pointHoverRadius: this.pointHoverRadius,

@@ -133,7 +133,7 @@ class PlayerTalentsController extends Controller
 
         return [
             'talentData' => $this->getHeroTalentData($result, $talentData),
-            'buildData' => $this->getHeroTalentBuildData($result, $heroData[$hero], $talentData),
+            'buildData' => $this->globalDataService->talentBuilds($result, $heroData[$hero], $talentData),
         ];
     }
 
@@ -191,69 +191,5 @@ class PlayerTalentsController extends Controller
         }
 
         return $formattedData;
-    }
-
-    private function getHeroTalentBuildData($result, $hero, $talentData)
-    {
-        $returnData = [];
-
-        foreach ($result as $replay) {
-            $level_one = $replay->level_one;
-            $level_four = $replay->level_four;
-            $level_seven = $replay->level_seven;
-            $level_ten = $replay->level_ten;
-            $level_thirteen = $replay->level_thirteen;
-            $level_sixteen = $replay->level_sixteen;
-            $level_twenty = $replay->level_twenty;
-
-            if ($level_one == 0 || $level_four == 0 || $level_seven == 0 || $level_ten == 0 || $level_thirteen == 0 || $level_sixteen == 0 || $level_twenty == 0) {
-                continue;
-            } elseif (! $talentData->has($level_one) || ! $talentData->has($level_four) || ! $talentData->has($level_seven) || ! $talentData->has($level_ten) || ! $talentData->has($level_thirteen) || ! $talentData->has($level_sixteen) || ! $talentData->has($level_twenty)) {
-                continue;
-            }
-            $key = $level_one.'|'.$level_four.'|'.$level_seven.'|'.$level_ten.'|'.$level_thirteen.'|'.$level_sixteen.'|'.$level_twenty;
-            if (! array_key_exists($key, $returnData)) {
-                $returnData[$key] = [];
-                $returnData[$key]['wins'] = 0;
-                $returnData[$key]['losses'] = 0;
-                $returnData[$key]['games_played'] = 0;
-
-                $returnData[$key]['level_one'] = $replay->level_one;
-                $returnData[$key]['level_four'] = $replay->level_four;
-                $returnData[$key]['level_seven'] = $replay->level_seven;
-                $returnData[$key]['level_ten'] = $replay->level_ten;
-                $returnData[$key]['level_thirteen'] = $replay->level_thirteen;
-                $returnData[$key]['level_sixteen'] = $replay->level_sixteen;
-                $returnData[$key]['level_twenty'] = $replay->level_twenty;
-            }
-
-            if ($replay->winner == 1) {
-                $returnData[$key]['wins']++;
-            } else {
-                $returnData[$key]['losses']++;
-            }
-            $returnData[$key]['games_played']++;
-
-        }
-
-        usort($returnData, function ($a, $b) {
-            return $b['games_played'] - $a['games_played'];
-        });
-
-        $returnData = array_slice($returnData, 0, 7);
-
-        foreach ($returnData as &$data) {
-            $data['level_one'] = $talentData[$data['level_one']];
-            $data['level_four'] = $talentData[$data['level_four']];
-            $data['level_seven'] = $talentData[$data['level_seven']];
-            $data['level_ten'] = $talentData[$data['level_ten']];
-            $data['level_thirteen'] = $talentData[$data['level_thirteen']];
-            $data['level_sixteen'] = $talentData[$data['level_sixteen']];
-            $data['level_twenty'] = $talentData[$data['level_twenty']];
-            $data['win_rate'] = round(($data['wins'] / $data['games_played']) * 100, 2);
-            $data['hero'] = $hero;
-        }
-
-        return $returnData;
     }
 }

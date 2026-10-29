@@ -92,48 +92,10 @@
               </div>
             </panel-box>
 
-            <!-- Party size -->
-            <panel-box :inner="true" title="Party Size Win Rates">
-              <div class="flex flex-col gap-3">
-                <div v-for="stack in partySizes" :key="stack.label" class="flex flex-col gap-1.5">
-                  <div class="flex justify-between">
-                    <span class="text-header">{{ stack.label }}</span>
-                    <span class="text-subtext">Games: {{ stack.games.toLocaleString('en-US') }}</span>
-                  </div>
-                  <stat-bar :value="stack.winRate.toFixed(2)" suffix="%" :color="$winRateColor(stack.winRate)"></stat-bar>
-                </div>
-              </div>
-            </panel-box>
+            <player-party-size-panel :data="data"></player-party-size-panel>
           </div>
 
-          <!-- Heroes Profile MMR -->
-          <panel-box :inner="true" title="Heroes Profile MMR" link-text="View HP MMR Breakdown" :link-href="profileUrl + '/MMR'">
-            <template #title>
-              <round-image size="small" icon="fas fa-info" title="info" popupsize="large">
-                <div>
-                  <p class="max-sm:text-xs">Heroes Profile MMR is a custom algorithm developed by Heroes Profile for approximating a player's skill. This MMR or rank does not correlate to your in-game rank or MMR.</p>
-                </div>
-              </round-image>
-            </template>
-            <div class="flex flex-col gap-2">
-              <div class="flex gap-12 items-center font-medium text-subtext max-md:hidden">
-                <span class="w-[200px] shrink-0">Game mode</span>
-                <span class="flex-1">Win Rate</span>
-                <span class="flex-1 max-w-[200px]">HP Rank Tier</span>
-                <span class="flex-1 max-w-[100px] text-center">HP MMR</span>
-              </div>
-              <template v-for="mode in mmrModes" :key="mode.label">
-                <div class="h-px bg-gray-dark"></div>
-                <!-- Phones stack each mode: name, then bar, then tier and MMR -->
-                <div class="flex flex-wrap md:flex-nowrap gap-x-6 md:gap-x-12 gap-y-2 items-center">
-                  <span class="w-full md:w-[200px] shrink-0 font-semibold text-header truncate">{{ mode.label }}</span>
-                  <stat-bar class="max-md:w-full md:flex-1 min-w-0" :value="mode.data ? mode.data.win_rate.toFixed(2) : '0.00'" suffix="%" :color="$winRateColor(mode.data ? mode.data.win_rate : 0)"></stat-bar>
-                  <span class="md:flex-1 md:max-w-[200px]"><rank-tier-pill v-if="mode.data" :tier="mode.data.rank_tier"></rank-tier-pill></span>
-                  <span class="md:flex-1 md:max-w-[100px] md:text-center font-semibold max-md:ml-auto">{{ mode.data ? mode.data.mmr.toLocaleString('en-US') : 0 }}</span>
-                </div>
-              </template>
-            </div>
-          </panel-box>
+          <player-mmr-panel :data="data" :link-href="profileUrl + '/MMR'"></player-mmr-panel>
         </div>
       </div>
       </panel-box>
@@ -363,29 +325,6 @@ function cardFonts() {
           { label: 'Ranged Assassin', value: this.data.ranged_assassin_win_rate },
           { label: 'Support', value: this.data.support_win_rate },
           { label: 'Tank', value: this.data.tank_win_rate },
-        ];
-      },
-      partySizes(){
-        return [
-          { label: 'Solo', key: 'one' },
-          { label: '2 - Stack', key: 'two' },
-          { label: '3 - Stack', key: 'three' },
-          { label: '4 - Stack', key: 'four' },
-          { label: '5 - Stack', key: 'five' },
-        ].map(stack => ({
-          label: stack.label,
-          games: this.data[`stack_${stack.key}_wins`] + this.data[`stack_${stack.key}_losses`],
-          winRate: this.data[`stack_${stack.key}_win_rate`],
-        }));
-      },
-      mmrModes(){
-        return [
-          { label: 'Quick Match', data: this.data.qm_mmr_data },
-          { label: 'Unranked Draft', data: this.data.ud_mmr_data },
-          { label: 'Hero League', data: this.data.hl_mmr_data },
-          { label: 'Team League', data: this.data.tl_mmr_data },
-          { label: 'Storm League', data: this.data.sl_mmr_data },
-          { label: 'ARAM', data: this.data.ar_mmr_data },
         ];
       },
       isOwner(){

@@ -266,6 +266,7 @@ class PlayerHeroesMapsRolesController extends Controller
         $seasonData = $this->globalDataService->getSeasonsData();
         $newSeasonData = null;
         $latestGames = null;
+        $topBuild = null;
         $mapWinRateFiltered = null;
         $heroWinRateFiltered = null;
 
@@ -311,6 +312,10 @@ class PlayerHeroesMapsRolesController extends Controller
                 $ar_mmr_data->rank_tier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers(6, $filterByType), $ar_mmr_data->mmr);
             }
 
+            if ($page == 'hero') {
+                $topBuild = $this->globalDataService->talentBuilds($result, $heroData[$hero], $talentData)[0] ?? null;
+            }
+
             $latestGames = $result->sortByDesc('game_date')->take(5)->values();
 
             $latestGames = $latestGames->map(function ($game) use ($heroData, $maps, $talentData, $gameTypes) {
@@ -319,10 +324,7 @@ class PlayerHeroesMapsRolesController extends Controller
                     $game['hero_level'],
                     $game['stack_size'],
                     $game['mastery_taunt'],
-                    $game['kills'],
-                    $game['assists'],
                     $game['takedowns'],
-                    $game['deaths'],
                     $game['highest_kill_streak'],
                     $game['hero_damage'],
                     $game['siege_damage'],
@@ -627,7 +629,7 @@ class PlayerHeroesMapsRolesController extends Controller
             $groupBy = 'new_role';
         }
 
-        $returnData = $result->groupBy($groupBy)->map(function ($heroStats, $index) use ($type, $battletag, $blizz_id, $region, $heroData, $qm_mmr_data, $ud_mmr_data, $hl_mmr_data, $tl_mmr_data, $sl_mmr_data, $ar_mmr_data, $newSeasonData, $mapData, $mapWinRateFiltered, $latestGames, $page, $heroWinRateFiltered, $heroDataStats, $maps) {
+        $returnData = $result->groupBy($groupBy)->map(function ($heroStats, $index) use ($type, $battletag, $blizz_id, $region, $heroData, $qm_mmr_data, $ud_mmr_data, $hl_mmr_data, $tl_mmr_data, $sl_mmr_data, $ar_mmr_data, $newSeasonData, $mapData, $mapWinRateFiltered, $latestGames, $topBuild, $page, $heroWinRateFiltered, $heroDataStats, $maps) {
             $deaths = $heroStats->sum('deaths');
             $avg_kills = $heroStats->avg('kills');
             $avg_takedowns = $heroStats->avg('takedowns');
@@ -853,6 +855,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 'hero_data_all_heroes' => $heroDataStats ? $heroDataStats->sortBy('name')->values() : null,
 
                 'latestGames' => $latestGames,
+                'top_build' => $topBuild,
             ];
         })->values()->sortBy('name')->values()->all();
 

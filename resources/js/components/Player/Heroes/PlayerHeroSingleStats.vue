@@ -21,191 +21,171 @@
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     
-    <div v-if="data">
-      <div class="flex md:p-20 gap-10 mx-auto justify-center items-between  max-md:flex-col max-md:items-center">
-        <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em] max-md:order-1 max-md:px-4">
-          <stat-box class="w-[48%] max-md:min-w-0" :title="'Wins'" :value="data.wins.toLocaleString('en-US')"></stat-box>
-          <stat-box class="w-[48%] max-md:min-w-0" :title="'Losses'" :value="data.losses.toLocaleString('en-US')"></stat-box>
-          <div class="w-full mx-auto text-center">
-            <stat-bar-box class="w-full mb-5" size="full" :title="'Win Rate'" :value="data.win_rate.toFixed(2)" color="teal"></stat-bar-box> 
-          </div>      
-          <stat-box class="w-[48%] max-md:min-w-0" :title="'KDR'" :value="data.kdr" color="red"></stat-box>          
-          <stat-box class="w-[48%] max-md:min-w-0" :title="'KDA'" :value="data.kda" color="red"></stat-box>                  
-        </div>
-        <div class="my-auto">
-          <hero-image-wrapper :rectangle="true" :hero="heroobject" :title="heroobject.name" size="large"></hero-image-wrapper>
-        </div>
+    <div v-if="data" class="max-w-[1920px] mx-auto px-4 md:px-8 mt-8 space-y-8">
 
-        <div class="flex flex-wrap max-w-[450px] text-left w-full items-between h-full justify-center max-md:justify-between mt-[1em] max-md:px-4">
-          <stat-box class="w-[48%] max-md:min-w-0 flex-1" :title="'Takedowns'" :value="data.sum_takedowns.toLocaleString('en-US')"></stat-box>
-          <stat-box class="w-[48%] max-md:min-w-0 " :title="'Kills'" :value="data.sum_kills.toLocaleString('en-US')"></stat-box>
-          <stat-box class="w-[48%] max-md:min-w-0 mt-4 mb-4" :title="'Assists'" color="teal" :value="data.sum_assists.toLocaleString('en-US')"></stat-box>
-          
-          <stat-box class="w-[48%] max-md:min-w-0 mt-4 mb-4" :title="'Deaths'" color="teal" :value="data.sum_deaths.toLocaleString('en-US')"></stat-box>
-          <stat-box class="w-[100%]" :title="'# Games'" color="red" :value="data.games_played.toLocaleString('en-US')"></stat-box>
-        </div>
+      <panel-box>
+      <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
 
-      </div>
+        <!-- Hero overview, laid out like the profile's player card -->
+        <panel-box :inner="true" class="!gap-8">
+          <h2 class="text-3xl font-bold">{{ heroobject.name }}</h2>
 
+          <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
+            <div class="shrink-0">
+              <hero-image-wrapper :rectangle="true" :hero="heroobject" :title="heroobject.name" size="large"></hero-image-wrapper>
+            </div>
 
-      <div class="max-w-[1500px] mx-auto text-right mb-2 max-md:text-center">
-        <custom-button :href="this.getTalentPageUrl()" class="flex-1 " text="View Talent Data"></custom-button>
-      </div>
-      
-      <div class="bg-lighten p-10 ">
-        <div class=" max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5 text-center">Maps played on {{ hero }}</h2>
-          <div class="flex flex-wrap justify-center">
-            <group-box :playerlink="true" :text="'Most Played'" :data="data.map_data_top_played.slice(0, 3)" color="blue"></group-box>
-            <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.map_data_top_win_rate.slice(0, 3)" color="teal"></group-box>
-            <group-box :playerlink="true" :text="'Latest Played'" :data="data.map_data_top_latest_played.slice(0, 3)" color="yellow"></group-box>
+            <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
+              <div class="flex flex-col gap-1">
+                <span class="text-header">Win Rate</span>
+                <stat-bar size="big" :value="data.win_rate.toFixed(2)" suffix="%" :color="$winRateColor(data.win_rate)"></stat-bar>
+              </div>
+
+              <div class="grid grid-cols-2 gap-x-6 gap-y-1">
+                <stat-box v-for="stat in overviewStats" :key="stat.label" class="!m-0 !px-0 !min-w-0" :title="stat.label" :value="stat.value"></stat-box>
+              </div>
+            </div>
           </div>
-          <div class="flex flex-wrap mx-auto gap-2 pt-5 justify-center">
-            <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
-              <map-image-wrapper :map="item.game_map" size="big">
-                <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
-              </map-image-wrapper>
-            </a>
+
+          <div class="flex flex-col gap-4">
+            <div class="flex justify-between items-baseline gap-3">
+              <h3 class="text-2xl font-bold">Most Played Build</h3>
+              <a class="underline text-header whitespace-nowrap" :href="getTalentPageUrl()">View Talent Data</a>
+            </div>
+            <div v-if="data.top_build" class="flex flex-wrap items-center gap-x-6 gap-y-3">
+              <div class="flex flex-wrap gap-1.5 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded-lg">
+                <talent-image-wrapper v-for="level in talentLevels" :key="level" :talent="data.top_build[level]" :size="'medium'"></talent-image-wrapper>
+              </div>
+              <div class="flex gap-6">
+                <stat-box class="!m-0 !px-0 !min-w-0" title="Games" :value="data.top_build.games_played.toLocaleString('en-US')"></stat-box>
+                <stat-box class="!m-0 !px-0 !min-w-0" title="Win Rate" :value="data.top_build.win_rate.toFixed(2) + '%'"></stat-box>
+              </div>
+            </div>
+            <!-- Results cached before builds were added have no top_build at all -->
+            <p v-else-if="data.top_build === null" class="text-subtext">No complete talent builds for these filters.</p>
           </div>
+
+          <div class="flex flex-col gap-4 w-fit max-w-full">
+            <h3 class="text-2xl font-bold">Maps</h3>
+            <div class="flex flex-wrap gap-6">
+              <group-box v-for="group in mapGroups" :key="group.label" class="!m-0" :playerlink="true" :text="group.label" :data="group.data"></group-box>
+            </div>
+          </div>
+        </panel-box>
+
+        <div class="flex flex-col gap-6 min-w-0">
+          <div class="grid md:grid-cols-2 gap-6">
+            <player-party-size-panel :data="data" prefix="stack_size_"></player-party-size-panel>
+
+            <panel-box :inner="true" title="Win Rate Per Season">
+              <line-chart v-if="seasonWinRateDataArray" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" :point-radius="3" :point-hover-radius="5" :title="`${battletag} Win Rate Data Per Season with ${heroobject.name}`"></line-chart>
+              <p v-else class="text-subtext">No season data for these filters.</p>
+            </panel-box>
+          </div>
+
+          <player-mmr-panel :data="data"></player-mmr-panel>
         </div>
       </div>
+      </panel-box>
 
-      <line-chart v-if="seasonWinRateDataArray" class="max-w-[1500px] mx-auto" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" :title="`${battletag} Win Rate Data Per Season with ${heroobject.name}`"></line-chart>
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
-      <div class="bg-lighten">
-        <div class="flex justify-center max-w-[1500px] mx-auto items-center max-md:flex-col">
-      <div class="max-w-[1500px] mx-auto">
-        <h2 class="text-3xl font-bold py-5 text-center">Heroes Profile MMR 
-          <round-image class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large">
-            <slot>
-              <div>
-                <p class="max-sm:text-xs">Heroes Profile MMR is a custom algorithm developed by Heroes Profile for approximating a player's skill. This MMR or rank does not correlate to your in-game rank or MMR.</p>
-              </div>
-            </slot>
-          </round-image>
-        </h2>
-        <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
-          <h4 class="text-right">Quick Match</h4>
-          <stat-bar-box :title="'Win Rate'" :value=" data.qm_mmr_data ? data.qm_mmr_data.win_rate.toFixed(2) : 0 "></stat-bar-box>
-          <stat-box title="HP Rank Tier" :value="data.qm_mmr_data ? data.qm_mmr_data.rank_tier : ''"></stat-box>
-          <stat-box :title="'HP MMR'" :value="data.qm_mmr_data ? data.qm_mmr_data.mmr.toLocaleString('en-US') : 0 "></stat-box>
+      <panel-box :title="'Maps Played On ' + heroobject.name">
+        <div class="flex flex-wrap gap-2">
+          <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
+            <map-image-wrapper :map="item.game_map" size="big">
+              <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
+            </map-image-wrapper>
+          </a>
         </div>
+      </panel-box>
 
-        <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
-          <h4 class="text-right">Unranked Draft</h4>
-          <stat-bar-box :title="'Win Rate'" :value=" data.ud_mmr_data ? data.ud_mmr_data.win_rate.toFixed(2) : 0 " color="teal"></stat-bar-box>
-          <stat-box title="HP Rank Tier" :value="data.ud_mmr_data ? data.ud_mmr_data.rank_tier : ''" color="teal"></stat-box>
-          <stat-box :title="'HP MMR'" :value="data.ud_mmr_data ? data.ud_mmr_data.mmr.toLocaleString('en-US') : 0 " color="teal"></stat-box>
+      <panel-box v-if="data.latestGames" title="Recent Matches" link-text="View Match History" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Match/History/?hero=' + heroobject.name" :divider="false">
+        <div>
+          <game-summary-header></game-summary-header>
+          <game-summary-box v-for="(item, index) in data.latestGames" :key="index" :data="item" :replay-viewer-allowed="replayViewerAllowed" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
         </div>
+      </panel-box>
 
-        <div class=" grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
-          <h4 class="text-right">Hero league</h4>
-          <stat-bar-box :title="'Win Rate'" :value=" data.hl_mmr_data ? data.hl_mmr_data.win_rate.toFixed(2) : 0 " color="red"></stat-bar-box>
-          <stat-box title="HP Rank Tier" :value="data.hl_mmr_data ? data.hl_mmr_data.rank_tier : ''" color="red"></stat-box>
-          <stat-box :title="'HP MMR'" :value="data.hl_mmr_data ? data.hl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="red"></stat-box>
-        </div>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
-
-        <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
-          <h4 class="text-right">Team league</h4>
-          <stat-bar-box :title="'Win Rate'" :value=" data.tl_mmr_data ? data.tl_mmr_data.win_rate.toFixed(2) : 0 " color="yellow"></stat-bar-box>
-          <stat-box title="HP Rank Tier" :value="data.tl_mmr_data ? data.tl_mmr_data.rank_tier : ''" color="yellow"></stat-box>
-          <stat-box :title="'HP MMR'" :value="data.tl_mmr_data ? data.tl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="yellow"></stat-box>
+      <panel-box title="Advanced Stats">
+        <div class="grid xl:grid-cols-2 gap-6 items-start">
+          <table v-for="(section, sectionIndex) in sections" :key="sectionIndex" class="min-w-0 w-full responsive-table max-md:text-xs">
+            <thead>
+              <tr>
+                <th class="py-2 px-3 text-left text-sm w-1/4">{{ section.title }}</th>
+                <th class="py-2 px-3 text-left text-sm w-1/4">Total</th>
+                <th class="py-2 px-3 text-left text-sm w-1/4">Average</th>
+                <th class="py-2 px-3 text-left text-sm w-1/4">Maximum</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
+                <td class="py-2 px-3">{{ row.label }}</td>
+                <td class="py-2 px-3">{{ formatValue(row.key, data["sum_" + row.key]) }}</td>
+                <td class="py-2 px-3">{{ formatValue(row.key, data["avg_" + row.key]) }}</td>
+                <td class="py-2 px-3">{{ formatValue(row.key, data["max_" + row.key]) }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-
-        <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
-         <h4 class="text-right"> Storm league</h4>
-         <stat-bar-box :title="'Win Rate'" :value=" data.sl_mmr_data ? data.sl_mmr_data.win_rate.toFixed(2) : 0 " color="gray-dark"></stat-bar-box>
-         <stat-box title="HP Rank Tier" :value="data.sl_mmr_data ? data.sl_mmr_data.rank_tier : ''" color="gray-dark"></stat-box>
-         <stat-box :title="'HP MMR'" :value="data.sl_mmr_data ? data.sl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="gray-dark"></stat-box>
-       </div>
-
-       <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
-        <h4 class="text-right">ARAM</h4>
-        <stat-bar-box :title="'Win Rate'" :value=" data.ar_mmr_data ? data.ar_mmr_data.win_rate.toFixed(2) : 0 "></stat-bar-box>
-        <stat-box title="HP Rank Tier" :value="data.ar_mmr_data ? data.ar_mmr_data.rank_tier : ''"></stat-box>
-        <stat-box :title="'HP MMR'" :value="data.ar_mmr_data ? data.ar_mmr_data.mmr.toLocaleString('en-US') : 0 "></stat-box>
-      </div>
-
-     
-
-     
-      </div>
-    
-      <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
-    </div>
-      </div>
-      <div class="flex justify-center max-w-[1500px] mx-auto items-center max-md:flex-col">
-    <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
-        <h2 class="text-3xl font-bold py-5">Party Size Win Rates</h2>
-        <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-          <div class="flex gap-10 text-s"><span>Solo</span><span>Total Games: {{ (data.stack_size_one_wins + data.stack_size_one_losses).toLocaleString('en-US') }} </span></div>
-          <stat-bar-box size="big" :value="data.stack_size_one_win_rate.toFixed(2) "></stat-bar-box>     
-        </div>
-        <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-          <div class="flex gap-10 text-s"><span>Two Stack</span><span>Total Games: {{ (data.stack_size_two_wins + data.stack_size_two_losses).toLocaleString('en-US') }} </span></div>
-          <stat-bar-box size="big" :value="data.stack_size_two_win_rate.toFixed(2) " color="teal"></stat-bar-box>     
-        </div>
-        <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-          <div class="flex gap-10 text-s"><span>Three Stack</span><span>Total Games: {{ (data.stack_size_three_wins + data.stack_size_three_losses).toLocaleString('en-US') }} </span></div>
-          <stat-bar-box size="big" :value="data.stack_size_three_win_rate.toFixed(2) " color="red"></stat-bar-box>     
-        </div>
-        <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-          <div class="flex gap-10 text-s"><span>Four Stack</span><span>Total Games: {{ (data.stack_size_four_wins + data.stack_size_four_losses).toLocaleString('en-US') }} </span></div>
-          <stat-bar-box size="big" :value="data.stack_size_four_win_rate.toFixed(2) " color="yellow"></stat-bar-box>     
-        </div>
-        <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-          <div class="flex gap-10 text-s"><span>Five Stack</span><span>Total Games: {{ (data.stack_size_five_wins + data.stack_size_five_losses).toLocaleString('en-US') }} </span></div>
-          <stat-bar-box size="big" :value="data.stack_size_five_win_rate.toFixed(2) "></stat-bar-box>     
-        </div>
-        
-        </div>
-        <dynamic-square-ad :patreon-user="patreonUser" :index="2"></dynamic-square-ad>
-      </div>
-
-      <div class="bg-lighten">
-        <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto" v-if="data && data.latestGames">
-          <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
-          <game-summary-box v-for="(item, index) in data.latestGames" :data="item"></game-summary-box>
-          <div class="max-w-[1500px] mx-auto text-right my-2 max-md:text-center">
-            <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Match/History/?hero=' + heroobject.name" class="" text="View Match History"></custom-button>
-          </div>
-        </div>
-      </div>
-
-      <div class="max-w-[1500px] mx-auto">
-        <h2 class="text-3xl font-bold py-5">Advanced Stats</h2>
-        <scroll-hint-container :fit="true">
-        <table class="max-md:text-xs max-w-full" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
-          <thead>
-            <tr>
-              <td class="teal">{{ section.title }}</td>
-              <td>Total</td>
-              <td>Average</td>
-              <td>Maximum</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-              <td width="25%" style="max-width:25%">{{ row.label }}</td>
-              <td width="25%">{{ formatValue(row.key, this.data["sum_" + row.key])}}</td>
-              <td width="25%">{{ formatValue(row.key, this.data["avg_" + row.key]) }}</td>
-              <td width="25%">{{ formatValue(row.key, this.data["max_" + row.key]) }}</td>
-            </tr>
-          </tbody>
-        </table>
-        </scroll-hint-container>
-      </div>
+      </panel-box>
     </div>
     <div v-else-if="typeof data === 'undefined'"  class="flex items-center justify-center">
       No data
     </div>
-    <div v-if="asyncLoading">
-      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
-    </div>
-    <div v-else-if="isLoading && !asyncLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+    <!-- The page's layout with grey blocks while it loads, like the profile -->
+    <div v-else-if="isLoading || asyncLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 mt-8 space-y-8">
+      <loading-component :compact="true" :textoverride="true">{{ asyncLoading ? 'This is taking longer than expected. A background task is computing your results. Please be patient.' : 'Loading data...' }}</loading-component>
+      <panel-box>
+        <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
+          <panel-box :inner="true" class="!gap-8 2xl:w-[780px]">
+            <h2 class="text-3xl font-bold">{{ heroobject.name }}</h2>
+            <div class="flex gap-8 max-sm:flex-col">
+              <skeleton-box class="w-40 md:w-72 h-[23em] shrink-0 rounded-lg"></skeleton-box>
+              <div class="flex-1 flex flex-col gap-6">
+                <skeleton-box class="h-[30px]"></skeleton-box>
+                <div class="grid grid-cols-2 gap-x-6 gap-y-4">
+                  <skeleton-box v-for="index in 10" :key="index" class="h-11"></skeleton-box>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col gap-4">
+              <h3 class="text-2xl font-bold">Most Played Build</h3>
+              <div class="flex flex-wrap gap-1.5">
+                <skeleton-box v-for="level in 7" :key="level" class="w-[42px] h-[42px] !rounded-lg"></skeleton-box>
+              </div>
+            </div>
+            <div class="flex flex-col gap-4">
+              <h3 class="text-2xl font-bold">Maps</h3>
+              <div class="flex flex-wrap gap-6">
+                <div v-for="group in 3" :key="group" class="flex gap-3">
+                  <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded-lg"></skeleton-box>
+                </div>
+              </div>
+            </div>
+          </panel-box>
+
+          <div class="flex flex-col gap-6 min-w-0">
+            <div class="grid md:grid-cols-2 gap-6">
+              <panel-box v-for="title in ['Party Size Win Rates', 'Win Rate Per Season']" :key="title" :inner="true" :title="title">
+                <skeleton-box v-for="index in 5" :key="index" class="h-10"></skeleton-box>
+              </panel-box>
+            </div>
+            <panel-box :inner="true" title="Heroes Profile MMR">
+              <skeleton-box v-for="index in 6" :key="index" class="h-9"></skeleton-box>
+            </panel-box>
+          </div>
+        </div>
+      </panel-box>
+
+      <panel-box title="Recent Matches" :divider="false">
+        <div>
+          <game-summary-header></game-summary-header>
+          <game-summary-skeleton v-for="index in 5" :key="index"></game-summary-skeleton>
+        </div>
+      </panel-box>
     </div>
 
   </div>
@@ -233,6 +213,9 @@
       isPatreon: Boolean,
       patreonUser: Boolean,
       gametypedefault: Array,
+      replayViewerAllowed: Boolean,
+      analyticsCutover: String,
+      replayDownloadBlocked: Boolean,
     },
     data(){
       return {
@@ -247,6 +230,7 @@
         modifiedgamemap: null,
         data: null,
         disableFilterInput: null,
+        talentLevels: ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'],
         sections: [
           {
             title: 'Combat',
@@ -336,6 +320,26 @@
       }
     },
     computed: {
+      overviewStats() {
+        return [
+          { label: 'Wins', value: this.data.wins.toLocaleString('en-US') },
+          { label: 'Losses', value: this.data.losses.toLocaleString('en-US') },
+          { label: 'KDR', value: this.data.kdr },
+          { label: 'KDA', value: this.data.kda },
+          { label: 'Kills', value: this.data.sum_kills.toLocaleString('en-US') },
+          { label: 'Deaths', value: this.data.sum_deaths.toLocaleString('en-US') },
+          { label: 'Assists', value: this.data.sum_assists.toLocaleString('en-US') },
+          { label: 'Takedowns', value: this.data.sum_takedowns.toLocaleString('en-US') },
+          { label: 'Games', value: this.data.games_played.toLocaleString('en-US') },
+        ];
+      },
+      mapGroups() {
+        return [
+          { label: 'Most Played', data: this.data.map_data_top_played.slice(0, 3) },
+          { label: 'Highest Win Rate', data: this.data.map_data_top_win_rate.slice(0, 3) },
+          { label: 'Latest Played', data: this.data.map_data_top_latest_played.slice(0, 3) },
+        ];
+      },
       seasonWinRateDataArray() {
         return this.data && this.data.season_win_rate_data ? Object.values(this.data.season_win_rate_data) : null;
       },
@@ -400,6 +404,7 @@
           });
 
           this.data = response.data[0];
+          this.$loadMatchDetails(this.data?.latestGames, this.blizzid, this.region);
         }catch(error){
           //Do something here
         }finally {
