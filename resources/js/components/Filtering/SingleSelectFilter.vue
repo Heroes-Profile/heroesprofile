@@ -12,7 +12,7 @@
           </round-image>
         </span>
       </span> 
-      <span class="h-[40px] overflow-hidden rounded bg-teal hover:bg-lteal text-white p-2 flex items-center gap-2 min-w-0 w-full">
+      <span class="h-[40px] overflow-hidden rounded bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 min-w-0 w-full">
         <span class="uppercase font-bold px-1 text-nowrap truncate min-w-0" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span>
         <i class="fa-solid fa-chevron-down ml-auto shrink-0 text-xs"></i>
       </span>

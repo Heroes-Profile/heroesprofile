@@ -7,11 +7,11 @@
           type="text"
           v-model="search"
           placeholder="Enter battletag"
-          class="md:w-[200px] min-w-[100px] h-[40px] rounded-l !bg-teal p-2 text-white focus:outline-none"
+          class="md:w-[200px] min-w-[100px] h-[40px] rounded-l !bg-surface-3 p-2 text-white focus:outline-none"
           @keydown.enter.prevent="lookup"
           @input="results = []; error = null"
         />
-        <button type="button" class="h-[40px] rounded-r bg-teal hover:bg-lteal border-l border-darken text-white px-3" :disabled="loading" @click="lookup">{{ loading ? '...' : 'Add' }}</button>
+        <button type="button" class="h-[40px] rounded-r bg-blue hover:bg-lblue border-l border-darken text-white px-3" :disabled="loading" @click="lookup">{{ loading ? '...' : 'Add' }}</button>
 
         <div v-if="results.length > 1" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="min-width:280px; max-height:340px; overflow-y:auto;">
           <div

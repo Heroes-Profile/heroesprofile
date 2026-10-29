@@ -32,9 +32,13 @@
       </div>
     </div>
 
-    <div class="relative w-full 2xl:w-[126px] shrink-0 flex flex-col gap-0.5 max-2xl:items-start max-2xl:px-4 2xl:items-center 2xl:text-center">
+    <div class="relative w-full 2xl:w-[140px] shrink-0 flex flex-col gap-0.5 max-2xl:items-start max-2xl:px-4 2xl:items-center 2xl:text-center">
       <template v-if="data.kills !== undefined">
-        <span class="text-2xl font-semibold whitespace-nowrap"><span class="text-win">{{ data.kills }}</span> | <span class="font-normal text-red">{{ data.deaths }}</span> | <span class="font-normal">{{ data.assists }}</span></span>
+        <!-- Same grid as the header's icons. Kills right-align against the first bar so their
+             ones digits line up row to row; deaths sit centred; assists start right after the second bar. -->
+        <span class="grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] w-[140px] text-2xl font-semibold whitespace-nowrap text-center tabular-nums">
+          <span class="text-right text-win">{{ data.kills }}</span><span>|</span><span class="font-normal text-red">{{ data.deaths }}</span><span>|</span><span class="text-left font-normal">{{ data.assists }}</span>
+        </span>
         <span class="text-sm font-medium text-subtext">{{ kda }} KDA</span>
       </template>
     </div>

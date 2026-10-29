@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <div class="w-full 2xl:w-[126px] shrink-0 flex flex-col gap-2 max-2xl:items-start max-2xl:px-4 2xl:items-center">
+    <div class="w-full 2xl:w-[140px] shrink-0 flex flex-col gap-2 max-2xl:items-start max-2xl:px-4 2xl:items-center">
       <skeleton-box class="w-20 h-6"></skeleton-box>
       <skeleton-box class="w-14 h-3"></skeleton-box>
     </div>
