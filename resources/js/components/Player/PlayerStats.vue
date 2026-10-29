@@ -5,11 +5,11 @@
 
     <div class="max-w-[1920px] mx-auto px-4 md:px-8">
       <panel-box>
-        <div class="-m-2 flex flex-wrap items-end gap-2 max-md:flex-col max-md:items-center">
-        <multi-select-filter class="md:flex-1" :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
-        <multi-select-filter class="md:flex-1" :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="seasonselection"></multi-select-filter>
-        <date-range-filter class="md:flex-[2] md:min-w-[34rem]" :startDate="startdate" :endDate="enddate" @input-changed="handleInputChange"></date-range-filter>
-        <custom-button class="font-semibold px-6 mb-2 mr-2 max-md:self-stretch max-md:mx-2" :text="'Filter'" :alt="'Filter'" :color="'red'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
+        <div class="filter-row">
+        <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
+        <multi-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="seasonselection"></multi-select-filter>
+        <date-range-filter :startDate="startdate" :endDate="enddate" @input-changed="handleInputChange"></date-range-filter>
+        <custom-button class="font-semibold text-center m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :text="'Filter'" :alt="'Filter'" :color="'red'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
         </div>
       </panel-box>
     </div>
@@ -143,12 +143,13 @@
         <panel-box v-if="data.weekday_data" title="Week Day Win Rates">
           <player-weekday-win-rates :data="data.weekday_data"></player-weekday-win-rates>
         </panel-box>
+        <!-- Week days are only shown to the profile's owner; everyone else gets an ad in their place -->
+        <div v-else class="flex items-center justify-center">
+          <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
+        </div>
       </div>
 
-      <div class="flex flex-wrap justify-center gap-6">
-        <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
-        <dynamic-square-ad :patreon-user="patreonUser" :index="2"></dynamic-square-ad>
-      </div>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
       <panel-box v-if="data.matchData" title="Recent Matches" link-text="View Match History" :link-href="profileUrl + '/Match/History'" :divider="false">
         <div>

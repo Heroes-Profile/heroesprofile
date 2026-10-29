@@ -20,6 +20,16 @@ html{background-color:lightgrey; font-family: 'Roboto', sans-serif; box-sizing:b
 .filter-label{
   color:black;
 }
+
+/* Shared filter bar: dropdowns fill the free space and wrap onto more rows as it narrows */
+.filter-row{
+  @apply -m-2 flex flex-wrap items-end;
+}
+.filter-row .filter-fill{
+  flex: 1 1 10rem;
+  min-width: 0;
+  width: auto;
+}
 .variable-text{
   @apply text-black;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div id="filter-label" class="relative" :class="compact ? 'min-w-0 w-full' : 'max-md:w-full'">
+  <div id="filter-label" class="relative" :class="compact ? 'min-w-0 w-full' : 'filter-fill max-md:w-full md:w-[200px]'">
     <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'" @keydown="handleKeyPress" tabindex="0">
       <span class="relative">
         <span class="relative">{{ this.text }}
@@ -12,7 +12,10 @@
           </round-image>
         </span>
       </span> 
-      <span class="h-[40px] overflow-hidden rounded bg-teal hover:bg-lteal text-white p-2 flex items-center" :class="compact ? 'min-w-0 w-full' : 'md:w-[200px] min-w-[100px]'" ><span class="uppercase font-bold bg-darken rounded px-1 text-nowrap" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span></span>
+      <span class="h-[40px] overflow-hidden rounded bg-teal hover:bg-lteal text-white p-2 flex items-center gap-2 min-w-0 w-full">
+        <span class="uppercase font-bold bg-darken rounded px-1 text-nowrap truncate min-w-0" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span>
+        <i class="fa-solid fa-chevron-down ml-auto shrink-0 text-xs"></i>
+      </span>
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
     <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">

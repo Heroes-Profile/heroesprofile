@@ -1,10 +1,10 @@
 <template>
-  <div :class="{ 'px-4': compact }">
+  <div :class="compact ? 'px-4' : 'max-w-[1920px] mx-auto md:px-8 mb-8'">
     <button v-if="!compact" class="md:hidden p-2 bg-blue w-full" @click="showMobile">Show Filters</button>
-    <div v-show="compact || showNav" :class="compact ? 'bg-lighten rounded p-3' : 'bg-gray-dark py-2 md:px-20 mb-[2em] max-md:fixed max-md:inset-0 max-md:z-50 max-md:h-[100dvh] max-md:overflow-y-auto max-md:flex max-md:px-4 max-md:flex-col'">
+    <div v-show="compact || showNav" :class="compact ? 'bg-lighten rounded p-3' : 'bg-surface md:rounded-lg p-4 md:p-6 max-md:fixed max-md:inset-0 max-md:z-50 max-md:h-[100dvh] max-md:overflow-y-auto max-md:flex max-md:flex-col'">
       <button v-if="!compact" class="md:hidden ml-auto text-2xl min-w-[44px] min-h-[44px]" aria-label="Close filters" @click="showMobile">x</button>
-      <div :class="compact ? 'flex flex-wrap items-end gap-3' : 'flex items-center justify-center max-md:flex-wrap max-md:flex-1 max-md:items-start max-md:justify-start max-md:flex-col'">
-        <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,160px),1fr))] flex-1 basis-[800px] gap-2 min-w-0' : 'flex flex-wrap items-center justify-center'">
+      <div :class="compact ? 'flex flex-wrap items-end gap-3' : 'filter-row'">
+        <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,160px),1fr))] flex-1 basis-[800px] gap-2 min-w-0' : 'contents'">
           <!--Hero or Role -->
           <single-select-filter :compact="compact" v-if="includeherorole"
             :values="filters.hero_role" 
@@ -407,15 +407,16 @@
           ></single-select-filter>
 
           <!-- Friend/Foe Battletag Search -->
-          <div v-if="!compact || matchhistorybattletagsearch" id="filter-label" class="relative">
-            <div v-if="matchhistorybattletagsearch" class="flex flex-col text-sm font-medium text-gray-700 p-2">
+          <div v-if="matchhistorybattletagsearch" id="filter-label" class="filter-fill relative max-md:w-full md:w-[200px]">
+            <div class="flex flex-col gap-1.5 text-sm font-medium text-subtext p-2">
               <span>Friend/Foe Player</span>
               <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-subtext pointer-events-none"></i>
                 <input
                   type="text"
                   v-model="ffBattletag"
                   placeholder="Enter battletag"
-                  class="md:w-[200px] min-w-[100px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 text-white focus:outline-none"
+                  class="w-full h-[40px] rounded !bg-surface-3 pl-9 pr-2 text-white placeholder:text-subtext focus:outline-none"
                   @input="ffBlizzid = null; ffRegion = null; ffSearchResults = []; ffSearchError = null"
                 />
                 <div v-if="ffSearchResults.length > 1" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="min-width:280px; max-height:340px; overflow-y:auto;">
@@ -440,7 +441,7 @@
           </div>
 
           <!-- Game Date -->
-          <div v-if="!compact || includegamedate" id="filter-label" class="relative">
+          <div v-if="includegamedate" id="filter-label" class="relative">
             <div v-if="includegamedate" class="flex items-end  text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors">
               <div class="flex flex-col"><span>From Date  </span>
               <input type="date" 
@@ -476,7 +477,7 @@
             :defaultValue="modifiedGroupSizeDefaultValue"
           ></multi-select-filter>
         </div>
-        <button :disabled="disabledFilter" @click="applyFilter" :class="compact ? 'bg-teal rounded text-white px-5 py-2 h-10 disabled:opacity-50 hover:bg-blue' : {'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10 max-md:sticky max-md:bottom-2': !disabledFilter, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full max-md:sticky max-md:bottom-2': disabledFilter}">
+        <button :disabled="disabledFilter" @click="applyFilter" :class="compact ? 'bg-teal rounded text-white px-5 py-2 h-10 disabled:opacity-50 hover:bg-blue' : ['rounded text-white font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]', disabledFilter ? 'bg-gray-md' : 'bg-red hover:bg-lred']">
           Filter
         </button>
 
