@@ -266,16 +266,13 @@ class PlayerAwardsController extends Controller
 
     private function getLatestReplayId(Request $request): ?int
     {
-        $gameTypeIds = GameType::whereIn('short_name', (array) $request['game_type'])->pluck('type_id')->toArray();
-
-        return DB::table('replay')
-            ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->where('player.blizz_id', $request['blizz_id'])
-            ->where('replay.region', $request['region'])
-            ->whereIn('game_type', $gameTypeIds)
-            ->tap(function ($query) use ($request) {
-                $this->globalDataService->applySeasonsOrDateRange($query, $request['season'], $request['start_date'], $request['end_date']);
-            })
-            ->max('replay.replayID');
+        return $this->globalDataService->latestPlayerReplayId(
+            $request['blizz_id'],
+            $request['region'],
+            $request['game_type'],
+            $request['season'],
+            $request['start_date'],
+            $request['end_date']
+        );
     }
 }

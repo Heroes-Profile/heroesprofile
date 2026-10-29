@@ -231,8 +231,6 @@ Route::prefix('v1')->middleware('web')->group(function () {
 
     Route::post('player/match/history', [PlayerMatchHistory::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
-    Route::post('player/match/history', [PlayerMatchHistory::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
-
     Route::post('esports/ngs/standings', [NGSController::class, 'getStandingData']);
     Route::post('esports/ngs/divisions', [NGSController::class, 'getDivisionData']);
     Route::post('esports/ngs/teams', [NGSController::class, 'getTeamsData']);

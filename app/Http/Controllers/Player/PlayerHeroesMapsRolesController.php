@@ -99,7 +99,7 @@ class PlayerHeroesMapsRolesController extends Controller
         $dbCache = PlayerStatsCache::where('params_hash', $paramsHash)->first();
 
         if ($dbCache) {
-            $latestReplayId = $this->getLatestReplayId(
+            $latestReplayId = $this->globalDataService->latestPlayerReplayId(
                 $request['blizz_id'],
                 $request['region'],
                 $request['game_type'],
@@ -879,7 +879,7 @@ class PlayerHeroesMapsRolesController extends Controller
             'minimumgames' => $request['minimumgames'],
         ])));
 
-        $latestReplayId = $this->getLatestReplayId(
+        $latestReplayId = $this->globalDataService->latestPlayerReplayId(
             $request['blizz_id'],
             $request['region'],
             $request['game_type'],
@@ -899,23 +899,6 @@ class PlayerHeroesMapsRolesController extends Controller
         );
 
         return $returnData;
-    }
-
-    private function getLatestReplayId($blizz_id, $region, $game_type, $season, $startDate = null, $endDate = null): ?int
-    {
-        $gameTypeIds = $game_type
-            ? GameType::whereIn('short_name', (array) $game_type)->pluck('type_id')->toArray()
-            : null;
-
-        return DB::table('replay')
-            ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->where('player.blizz_id', $blizz_id)
-            ->where('replay.region', $region)
-            ->when($gameTypeIds, fn ($q) => $q->whereIn('game_type', $gameTypeIds))
-            ->tap(function ($q) use ($season, $startDate, $endDate) {
-                $this->globalDataService->applySeasonsOrDateRange($q, $season, $startDate, $endDate);
-            })
-            ->max('replay.replayID');
     }
 
     public function getHeroDataForAll($hero, $data, $field = 'mmr')
