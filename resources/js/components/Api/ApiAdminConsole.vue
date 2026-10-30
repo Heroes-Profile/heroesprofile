@@ -97,9 +97,9 @@
           <table class="min-w-0 w-full responsive-table">
             <thead>
               <tr>
-                <th v-for="column in usageColumns" :key="column.key" @click="sortUsage(column.key)" class="py-2 px-3 text-left text-sm">
+                <th v-for="column in usageColumns" :key="column.key" @click="sortUsage(column.key)" class="py-2 px-3 text-left text-sm cursor-pointer">
                   {{ column.label }}
-                  <span v-if="usageSortKey === column.key">{{ usageSortDir === 'asc' ? '▲' : '▼' }}</span>
+                  <sort-indicator :column="column.key" :sort-key="usageSortKey" :sort-dir="usageSortDir"></sort-indicator>
                 </th>
               </tr>
             </thead>

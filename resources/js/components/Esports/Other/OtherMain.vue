@@ -44,31 +44,31 @@
           <thead>
             <tr>
               <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Match ID
+                Match ID<sort-indicator :column="'replayID'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>    
               <th @click="sortTable('series')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Series
+                Series<sort-indicator :column="'series'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>   
               <th @click="sortTable('region')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Region
+                Region<sort-indicator :column="'region'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>  
               <th @click="sortTable('tournament')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Tournament
+                Tournament<sort-indicator :column="'tournament'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>  
               <th @click="sortTable('season')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Season
+                Season<sort-indicator :column="'season'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>  
               <th @click="sortTable('team_0_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Team 1
+                Team 1<sort-indicator :column="'team_0_name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>  
               <th @click="sortTable('team_1_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Team 2
+                Team 2<sort-indicator :column="'team_1_name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th> 
               <th @click="sortTable('game_map')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Map
+                Map<sort-indicator :column="'game_map'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th> 
               <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Game Date
+                Game Date<sort-indicator :column="'game_date'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th> 
             </tr>
           </thead>

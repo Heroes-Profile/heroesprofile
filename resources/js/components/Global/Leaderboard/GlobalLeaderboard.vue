@@ -122,34 +122,34 @@
               <thead class=" top-0 w-full  z-40">
                 <tr class="">
                   <th @click="sortTable('rank')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                    {{ getHeaderRankText("rank") }}
+                    {{ getHeaderRankText("rank") }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
                   <th @click="sortTable('battletag')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'battletag'}]">
-                    Battletag
+                    Battletag<sort-indicator :column="'battletag'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>            
                   <th @click="sortTable('region_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'region_id'}]">
-                    Region
+                    Region<sort-indicator :column="'region_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
                   <th v-if="leaderboardtype == 'SL Rank'" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                     Storm League Rank
                   </th>
                   <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
-                    Win Rate %
+                    Win Rate %<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
                   <th v-if="leaderboardtype == 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
-                    Prediction Rate %
+                    Prediction Rate %<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
                   <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('rating')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'rating'}]">
-                    Heroes Profile Rating
+                    Heroes Profile Rating<sort-indicator :column="'rating'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>      
                   <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('mmr')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'mmr'}]">
-                    HP {{ leaderboardtype }} MMR
+                    HP {{ leaderboardtype }} MMR<sort-indicator :column="'mmr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th> 
                   <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('tier_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'tier_id'}]">
-                    Tier
+                    Tier<sort-indicator :column="'tier_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>    
                   <th @click="sortTable('games_played')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'games_played'}]">
-                    Games Played
+                    Games Played<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>     
 
 
@@ -164,8 +164,8 @@
                     <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                       Copy Build to Game
                     </th>  
-                    <th @click="sortTable('hero_build_games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                      Games Played With Build
+                    <th @click="sortTable('hero_build_games_played')" class="cursor-pointer py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                      Games Played With Build<sort-indicator :column="'hero_build_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                     </th>    
                   </template>
                 </tr>

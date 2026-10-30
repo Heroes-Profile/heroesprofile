@@ -273,7 +273,7 @@ tr.bg-yellow{
 
 
 th{
-  @apply text-left text-sm leading-4  tracking-wider cursor-pointer py-1 px-3 border-b;
+  @apply text-left text-sm leading-4  tracking-wider py-1 px-3 border-b;
 }
 
 td{

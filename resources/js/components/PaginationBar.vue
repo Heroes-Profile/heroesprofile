@@ -1,21 +1,17 @@
 <template>
-  <!-- Previous on the left, Next on the right; page numbers between them unless the slot fills that spot -->
-  <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-4 text-sm">
-    <div>
-      <custom-button v-if="current > 1" size="small" color="teal" alt="Previous page" :ignoreclick="true" @click="$emit('page', current - 1)"><i class="fa-solid fa-arrow-left mr-2"></i>Previous</custom-button>
-    </div>
-    <slot>
-      <div class="flex flex-wrap justify-center gap-1">
-        <template v-for="(page, index) in pages" :key="index">
-          <span v-if="page === null" class="px-1 text-subtext">…</span>
-          <button v-else type="button" :class="['min-w-[2rem] h-8 px-2 rounded', page === current ? 'bg-teal text-white' : 'text-subtext hover:text-white hover:bg-surface-3']" :aria-current="page === current ? 'page' : null" @click="page !== current && $emit('page', page)">{{ page }}</button>
-        </template>
-      </div>
-    </slot>
-    <div class="justify-self-end">
-      <custom-button v-if="current < last" size="small" color="teal" alt="Next page" :ignoreclick="true" @click="$emit('page', current + 1)">Next<i class="fa-solid fa-arrow-right ml-2"></i></custom-button>
-    </div>
-  </div>
+  <!-- A teal pill like tab-button: chevrons at the ends, the current page on a dark chip -->
+  <nav class="inline-flex items-center gap-1 bg-teal rounded-lg p-1 text-white" aria-label="Pages">
+    <button type="button" class="w-9 h-9 rounded-md hover:bg-lteal disabled:opacity-40 disabled:hover:bg-transparent" :disabled="current <= 1" aria-label="Previous page" @click="$emit('page', current - 1)"><i class="fa-solid fa-chevron-left"></i></button>
+    <template v-for="(page, index) in pages" :key="index">
+      <!-- A gap: click it to type any page number -->
+      <template v-if="page === null">
+        <input v-if="jumpIndex === index" :ref="setJumpInput" v-model="jumpValue" type="number" min="1" :max="last" class="w-14 h-9 rounded-md !bg-surface-1 text-white text-center focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none" aria-label="Go to page" @keydown.enter.prevent="jump" @keydown.esc="jumpIndex = null" @blur="jumpIndex = null"/>
+        <button v-else type="button" class="min-w-[2.25rem] h-9 px-1 rounded-md hover:bg-lteal" title="Go to page" aria-label="Go to page" @click="openJump(index)">…</button>
+      </template>
+      <button v-else type="button" :class="['min-w-[2.25rem] h-9 px-2 rounded-md', page === current ? 'bg-surface-1' : 'hover:bg-lteal']" :aria-current="page === current ? 'page' : null" @click="page !== current && $emit('page', page)">{{ page }}</button>
+    </template>
+    <button type="button" class="w-9 h-9 rounded-md hover:bg-lteal disabled:opacity-40 disabled:hover:bg-transparent" :disabled="current >= last" aria-label="Next page" @click="$emit('page', current + 1)"><i class="fa-solid fa-chevron-right"></i></button>
+  </nav>
 </template>
 
 <script>
@@ -25,6 +21,12 @@ export default {
   props: {
     current: { type: Number, required: true },
     last: { type: Number, required: true },
+  },
+  data() {
+    return {
+      jumpIndex: null,
+      jumpValue: '',
+    };
   },
   computed: {
     // The first and last page, two either side of the current one, null for each gap
@@ -37,6 +39,23 @@ export default {
       }
       const sorted = [...shown].sort((a, b) => a - b);
       return sorted.flatMap((page, index) => (index && page - sorted[index - 1] > 1 ? [null, page] : [page]));
+    },
+  },
+  methods: {
+    openJump(index) {
+      this.jumpValue = '';
+      this.jumpIndex = index;
+    },
+    setJumpInput(input) {
+      input?.focus();
+    },
+    // Out-of-range or empty input is ignored
+    jump() {
+      const page = parseInt(this.jumpValue, 10);
+      this.jumpIndex = null;
+      if (page >= 1 && page <= this.last && page !== this.current) {
+        this.$emit('page', page);
+      }
     },
   },
 };

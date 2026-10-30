@@ -1,9 +1,9 @@
 <template>
-  <div class="inline-flex flex-col md:flex-row bg-surface-1 rounded p-1 gap-1">
+  <div class="inline-flex flex-col md:flex-row bg-teal rounded-lg p-1 gap-1">
     <a
       v-for="side in ['left', 'right']"
       :key="side"
-      :class="[staticClasses, 'rounded', selectedSide === side ? 'bg-teal hover:bg-lteal text-white' : 'text-subtext hover:text-white hover:bg-surface-3']"
+      :class="[staticClasses, 'rounded-md text-white', selectedSide === side ? 'bg-surface-1' : 'hover:bg-lteal']"
       :alt="side === 'left' ? tab1alt : tab2alt"
       role="button"
       @click="handleClick(side)"

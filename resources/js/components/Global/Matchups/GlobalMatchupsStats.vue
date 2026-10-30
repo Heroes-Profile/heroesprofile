@@ -87,9 +87,9 @@
           <thead class="top-0 w-full sticky z-40">
           <tr>
             <th @click="sortTable('hero_name')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Hero
+              Hero<sort-indicator :column="'hero_name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('base_win_rate')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th @click="sortTable('base_win_rate')" class="cursor-pointer py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
               <div class="flex items-center">
                 <div>
                   Base Win Rate %
@@ -101,11 +101,11 @@
                     </div>
                   </slot>
                 </round-image>
-              </div>
+              </div><sort-indicator :column="'base_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th  class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               <div class="flex items-center">
-                <span @click="sortTable('win_rate_as_ally')">Win Rate as Ally % | </span><span @click="sortTable('ally_difference')">(Difference)</span>
+                <span class="cursor-pointer" @click="sortTable('win_rate_as_ally')">Win Rate as Ally %<sort-indicator column="win_rate_as_ally" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator> | </span><span class="cursor-pointer" @click="sortTable('ally_difference')">(Difference)<sort-indicator column="ally_difference" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
                 <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
                   <slot>
                     <div>
@@ -117,7 +117,7 @@
             </th>
             <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               <div class="flex items-center">
-                <span @click="sortTable('win_rate_against')">Win Rate Against {{ this.selectedHero.name }} % | </span><span @click="sortTable('enemy_difference')">(Difference)</span>
+                <span class="cursor-pointer" @click="sortTable('win_rate_against')">Win Rate Against {{ this.selectedHero.name }} %<sort-indicator column="win_rate_against" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator> | </span><span class="cursor-pointer" @click="sortTable('enemy_difference')">(Difference)<sort-indicator column="enemy_difference" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
                 <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
                   <slot>
                     <div>
@@ -128,10 +128,10 @@
               </div>
             </th>
             <th @click="sortTable('games_played_as_ally')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Games Played As Ally
+              Games Played As Ally<sort-indicator :column="'games_played_as_ally'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('games_played_against')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Games Played Against {{ this.selectedHero.name }}
+              Games Played Against {{ this.selectedHero.name }}<sort-indicator :column="'games_played_against'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
           </tr>
         </thead>

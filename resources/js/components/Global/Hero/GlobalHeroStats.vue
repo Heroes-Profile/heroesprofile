@@ -118,25 +118,25 @@
         <thead class="top-0 w-full sticky z-40">
           <tr>
             <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Hero
+              Hero<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate %
+              Win Rate %<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('confidence_interval')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate Confidence
+              Win Rate Confidence<sort-indicator :column="'confidence_interval'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th v-if="showWinRateChange" @click="sortTable('win_rate_change')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate Change
+              Win Rate Change<sort-indicator :column="'win_rate_change'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('popularity')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Popularity %
+              Popularity %<sort-indicator :column="'popularity'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('pick_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Pick Rate %
+              Pick Rate %<sort-indicator :column="'pick_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>   
             <th v-if="this.gametype.includes('sl') && !this.groupSizeActive" @click="sortTable('ban_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Ban Rate %
+              Ban Rate %<sort-indicator :column="'ban_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>    
             <th @click="sortTable('influence')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               <div class="flex items-center">
@@ -150,13 +150,13 @@
                     </div>
                   </slot>
                 </round-image>
-              </div>
+              </div><sort-indicator :column="'influence'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>                  
             <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Games Played
+              Games Played<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>       
             <th v-if="this.showStatTypeColumn" @click="sortTable('total_filter_type')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              {{ this.statfiltername }}
+              {{ this.statfiltername }}<sort-indicator :column="'total_filter_type'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th v-if="!this.groupSizeActive" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             </th>                              

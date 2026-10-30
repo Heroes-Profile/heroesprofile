@@ -29,10 +29,11 @@
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="data">
-      <!-- The layout toggle sits between Previous and Next; `compact` means the game rows, labelled Expanded -->
-      <pagination-bar class="max-w-[1920px] mx-auto px-4 md:px-8" :current="data.current_page" :last="data.last_page" @page="getData">
+      <!-- `compact` means the game rows, labelled Expanded -->
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-wrap justify-end items-center gap-4">
         <tab-button :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="compact ? 'right' : 'left'"></tab-button>
-      </pagination-bar>
+        <pagination-bar :current="data.current_page" :last="data.last_page" @page="getData"></pagination-bar>
+      </div>
       <div v-if="compact">
         <div class="max-w-[1920px] mx-auto px-4 md:px-8 py-4">
           <panel-box>
@@ -50,24 +51,24 @@
         <thead>
           <tr>
             <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Match ID
+              Match ID<sort-indicator column="replayID" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game Date
+              Game Date<sort-indicator column="game_date" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>            
             <th @click="sortTable('game_type_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game Type
+              Game Type<sort-indicator column="game_type_id" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('game_map')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game Map
+              Game Map<sort-indicator column="game_map" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('hero_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Hero
+              Hero<sort-indicator column="hero_id" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>    
             <th @click="sortTable('winner')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Winner
+              Winner<sort-indicator column="winner" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>    
-            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-default">
               Talents
             </th>                   
           </tr>
@@ -110,7 +111,9 @@
         </div>
         </panel-box>
       </div>
-      <pagination-bar class="max-w-[1920px] mx-auto px-4 md:px-8 pb-4" :current="data.current_page" :last="data.last_page" @page="getData"></pagination-bar>
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 pb-4 flex justify-end">
+        <pagination-bar :current="data.current_page" :last="data.last_page" @page="getData"></pagination-bar>
+      </div>
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading || asyncLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 py-4 space-y-8">
@@ -124,7 +127,7 @@
           <table class="min-w-0 w-full responsive-table">
             <thead>
               <tr>
-                <th v-for="label in ['Match ID', 'Game Date', 'Game Type', 'Game Map', 'Hero', 'Winner', 'Talents']" :key="label" class="py-2 px-3 text-left text-sm">{{ label }}</th>
+                <th v-for="label in ['Match ID', 'Game Date', 'Game Type', 'Game Map', 'Hero', 'Winner', 'Talents']" :key="label" class="py-2 px-3 text-left text-sm cursor-default">{{ label }}</th>
               </tr>
             </thead>
             <tbody>
@@ -236,14 +239,18 @@ export default {
   computed: {
     sortedData() {
       if (!this.sortKey) return this.data.data;
+      // Map, hero and game type sort by the name the column shows, not the object or id behind it
+      const value = (row) => ({
+        game_map: row.game_map?.name,
+        hero_id: row.hero?.name,
+        game_type_id: row.game_type?.name,
+      }[this.sortKey] ?? row[this.sortKey]);
+      const direction = this.sortDir === 'asc' ? 1 : -1;
       return this.data.data.slice().sort((a, b) => {
-        const valA = a[this.sortKey];
-        const valB = b[this.sortKey];
-        if (this.sortDir === 'asc') {
-          return valA < valB ? -1 : 1;
-        } else {
-          return valA > valB ? -1 : 1;
-        }
+        const valA = value(a);
+        const valB = value(b);
+        const order = typeof valA === 'string' ? valA.localeCompare(valB) : valA - valB;
+        return order * direction;
       });
     },
     isOwner(){

@@ -46,22 +46,6 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
 
-          <!-- Group Size -->
-          <single-select-filter :compact="compact" v-if="modifiedincludegroupsize && !groupsizeadvanced && !groupsizemulti"
-            :values="filters.group_size"
-            :text="'Group Size'"
-            @input-changed="handleInputChange"
-            :defaultValue="modifiedGroupSizeDefaultValue"
-            :disabledeselectfilters="disabledeselectfilters"
-          ></single-select-filter>
-
-          <multi-select-filter :compact="compact" v-if="modifiedincludegroupsize && !groupsizeadvanced && groupsizemulti"
-            :values="groupSizeOptions"
-            :text="'Group Size'"
-            @input-changed="handleInputChange"
-            :defaultValue="modifiedGroupSizeDefaultValue"
-          ></multi-select-filter>
-
           <!--<single-select-filter v-if="includecharttype" :values="filters.chart_type" :text="'Chart Type'" @input-changed="handleInputChange" :defaultValue="'Account Level'"></single-select-filter>-->
 
           <!-- Timeframe Type -->
@@ -125,6 +109,22 @@
           ></multi-select-filter>
 
           
+
+          <!-- Group Size -->
+          <single-select-filter :compact="compact" v-if="modifiedincludegroupsize && !groupsizeadvanced && !groupsizemulti"
+            :values="filters.group_size"
+            :text="'Group Size'"
+            @input-changed="handleInputChange"
+            :defaultValue="modifiedGroupSizeDefaultValue"
+            :disabledeselectfilters="disabledeselectfilters"
+          ></single-select-filter>
+
+          <multi-select-filter :compact="compact" v-if="modifiedincludegroupsize && !groupsizeadvanced && groupsizemulti"
+            :values="groupSizeOptions"
+            :text="'Group Size'"
+            @input-changed="handleInputChange"
+            :defaultValue="modifiedGroupSizeDefaultValue"
+          ></multi-select-filter>
 
           <!-- Leaderboard Game Type Excluding UD -->
           <single-select-filter :compact="compact" v-if="includesinglegametypeleaderboard && selectedSingleFilters['Leaderboard Type'] != 'SL Rank'"
@@ -406,10 +406,17 @@
             :defaultValue="mirrormatch"
           ></single-select-filter>
 
+          <!-- Game Date Range -->
+          <date-range-filter v-if="includegamedaterange"
+            :startDate="selectedStartDate"
+            :endDate="selectedEndDate"
+            @input-changed="handleDateRangeChange"
+          ></date-range-filter>
+
           <!-- Friend/Foe Battletag Search -->
           <div v-if="matchhistorybattletagsearch" id="filter-label" class="filter-fill relative max-md:w-full md:w-[200px]">
             <div class="flex flex-col gap-1.5 text-sm font-medium text-subtext p-2">
-              <span>Friend/Foe Player</span>
+              <span>Friend or Foe Player</span>
               <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-subtext pointer-events-none"></i>
                 <input
@@ -453,13 +460,6 @@
               <button class="h-[40px] bg-blue md:m-t-auto  p-2 border-r-[1px] border-t-[1px] border-b-[1px] hover:bg-teal" @click="resetGameDate()">X</button>
             </div>
           </div>
-
-          <!-- Game Date Range -->
-          <date-range-filter v-if="includegamedaterange"
-            :startDate="selectedStartDate"
-            :endDate="selectedEndDate"
-            @input-changed="handleDateRangeChange"
-          ></date-range-filter>
 
           <!-- Group Size (advanced, global pages) -->
           <single-select-filter :compact="compact" v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters && !groupsizemulti"

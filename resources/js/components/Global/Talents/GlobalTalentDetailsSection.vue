@@ -14,19 +14,19 @@
         <thead>
           <tr>
             <th @click="sortTable('sort', level)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Talent
+              Talent<sort-indicator :column="'sort'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['sort']"></sort-indicator>
             </th>
             <th @click="sortTable('win_rate', level)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate %
+              Win Rate %<sort-indicator :column="'win_rate'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['win_rate']"></sort-indicator>
             </th>
             <th @click="sortTable('popularity', level)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Popularity %
+              Popularity %<sort-indicator :column="'popularity'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['popularity']"></sort-indicator>
             </th>                
             <th @click="sortTable('games_played', level)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Games Played
+              Games Played<sort-indicator :column="'games_played'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['games_played']"></sort-indicator>
             </th>     
             <th v-if="statfilter && statfilter != 'win_rate'" @click="sortTable('total_filter_type', level)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              {{ statFilterLabel(statfilter) }}
+              {{ statFilterLabel(statfilter) }}<sort-indicator :column="'total_filter_type'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['total_filter_type']"></sort-indicator>
             </th>                            
           </tr>
         </thead>
@@ -70,6 +70,8 @@ export default {
       windowWidth: window.innerWidth,
       tablewidth: null,
       sortOrders: {},
+      // The column each talent level is currently sorted by
+      sortedColumns: {},
       talentlevels: [1, 4, 7, 10, 13, 16, 20],
     }
   },
@@ -97,6 +99,7 @@ export default {
         const currentOrder = this.sortOrders[level][columnKey] || 'asc';
         const newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
         this.sortOrders[level][columnKey] = newOrder;
+        this.sortedColumns = { ...this.sortedColumns, [level]: columnKey };
         this.talentdetaildata[level].sort((a, b) => {
           if (a[columnKey] < b[columnKey]) return newOrder === 'asc' ? -1 : 1;
           if (a[columnKey] > b[columnKey]) return newOrder === 'asc' ? 1 : -1;

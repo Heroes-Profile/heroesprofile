@@ -82,7 +82,7 @@
                 :class="['py-2', 'px-3', 'border-b', 'border-gray-200', 'text-left', 'text-sm', 'leading-4', 'text-gray-500', 'tracking-wider', column.sortable ? 'cursor-pointer' : '']"
                 @click="column.sortable ? sortTable(column.value) : null"
                 >
-                  {{ column.text }}
+                  {{ column.text }}<sort-indicator v-if="column.sortable" :column="column.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>        
             </tr>
           </thead>
