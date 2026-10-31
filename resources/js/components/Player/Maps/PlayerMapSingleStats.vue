@@ -28,7 +28,7 @@
           <h2 class="text-3xl font-bold">{{ map }}</h2>
 
           <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
-            <div class="shrink-0 w-40 md:w-60 aspect-[3/4] overflow-hidden rounded-lg">
+            <div class="shrink-0 w-40 md:w-60 aspect-[3/4] overflow-hidden rounded">
               <round-image class="!w-full !h-full" :image="`/images/maps/icon/${formatMapName(map)}`" :excludehover="true" size="large"></round-image>
             </div>
 
@@ -95,7 +95,7 @@
           <panel-box :inner="true" class="!gap-8 2xl:w-[780px]">
             <h2 class="text-3xl font-bold">{{ map }}</h2>
             <div class="flex gap-8 max-sm:flex-col">
-              <skeleton-box class="w-40 md:w-60 aspect-[3/4] shrink-0 rounded-lg"></skeleton-box>
+              <skeleton-box class="w-40 md:w-60 aspect-[3/4] shrink-0 rounded"></skeleton-box>
               <div class="flex-1 flex flex-col gap-6">
                 <skeleton-box class="h-[30px]"></skeleton-box>
                 <div class="grid grid-cols-2 gap-x-6 gap-y-4">
@@ -107,7 +107,7 @@
               <h3 class="text-2xl font-bold">Heroes</h3>
               <div class="flex flex-wrap gap-6">
                 <div v-for="group in 3" :key="group" class="flex gap-3">
-                  <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded-lg"></skeleton-box>
+                  <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
                 </div>
               </div>
             </div>

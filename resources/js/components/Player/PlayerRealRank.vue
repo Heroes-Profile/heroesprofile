@@ -43,7 +43,7 @@
 
     <div v-else>No in-game rank has been read for this player yet.</div>
 
-    <details class="bg-surface-3 rounded-lg text-sm w-fit max-w-full group open:w-full">
+    <details class="bg-surface-3 rounded text-sm w-fit max-w-full group open:w-full">
       <summary class="px-4 py-3 flex gap-4 justify-between items-center cursor-pointer list-none">
         <h3 class="text-lg">How to get your rank on Heroes Profile</h3>
         <i class="fas fa-chevron-down transition-transform group-open:rotate-180"></i>

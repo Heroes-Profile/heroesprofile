@@ -39,7 +39,7 @@
           v-if="currentStanding.dismissible"
           @click="dismissStanding"
           :disabled="dismissing"
-          class="mt-4 transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+          class="btn mt-4 bg-teal hover:bg-lteal disabled:bg-gray-medium"
         >
           {{ dismissing ? 'Saving…' : 'Got it' }}
         </button>
@@ -104,7 +104,7 @@
             <strong class="text-white">Live data needs an active subscription</strong> — this
             switch unlocks once you have one.
           </p>
-          <a href="/Api/Account/Billing" class="inline-block bg-blue hover:bg-lblue transition-colors text-white rounded py-2 px-4">
+          <a href="/Api/Account/Billing" class="btn inline-block bg-blue hover:bg-lblue">
             Choose a plan
           </a>
         </template>
@@ -127,7 +127,7 @@
         <button
           :disabled="!keys.length || activating"
           @click="activate"
-          class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+          class="btn bg-teal hover:bg-lteal disabled:bg-gray-medium"
         >
           {{ activating ? 'Activating…' : activateHeading }}
         </button>
@@ -192,7 +192,7 @@
         <button
           @click="saveName"
           :disabled="savingName"
-          class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+          class="btn bg-teal hover:bg-lteal disabled:bg-gray-medium"
         >
           {{ savingName ? 'Saving…' : 'Save' }}
         </button>
@@ -251,7 +251,7 @@
         <button
           @click="changePassword"
           :disabled="changingPassword"
-          class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+          class="btn bg-teal hover:bg-lteal disabled:bg-gray-medium"
         >
           {{ changingPassword ? 'Saving…' : 'Change password' }}
         </button>
@@ -310,7 +310,7 @@
         <button
           @click="saveProject"
           :disabled="savingProject"
-          class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+          class="btn bg-teal hover:bg-lteal disabled:bg-gray-medium"
         >
           {{ savingProject ? 'Saving…' : 'Save' }}
         </button>
@@ -376,7 +376,7 @@
           <button
             :disabled="isLoading || !keyName"
             type="submit"
-            class="transition-colors text-white rounded text-center bg-blue hover:bg-lblue py-2 px-4 my-2 disabled:bg-gray-medium"
+            class="btn bg-blue hover:bg-lblue my-2 disabled:bg-gray-medium"
           >
             Create Key
           </button>

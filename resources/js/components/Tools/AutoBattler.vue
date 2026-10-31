@@ -10,7 +10,7 @@
         <button
           v-if="allSlotsComplete"
           @click="downloadFiles"
-          class="bg-teal hover:bg-lteal text-white font-bold px-6 py-2 rounded"
+          class="btn bg-teal hover:bg-lteal font-bold px-6"
         >
           <i class="fa-solid fa-download mr-2"></i>Download Files
         </button>
@@ -25,7 +25,7 @@
             @click="selectSlot(team, index)"
             :title="slots[team][index].hero ? slots[team][index].hero.name : 'Player ' + playerNumber(team, index)"
             :class="[
-              'relative group w-20 h-20 max-md:w-14 max-md:h-14 m-2 max-md:m-1 rounded-2xl border bg-cover cursor-pointer',
+              'relative group w-20 h-20 max-md:w-14 max-md:h-14 m-2 max-md:m-1 rounded border bg-cover cursor-pointer',
               team === 1 ? 'bg-[rgba(33,61,122,0.2)]' : 'bg-[rgba(179,54,22,0.2)]',
               isActiveSlot(team, index) ? 'shadow-[0_0_0.5em_#ffd051] border-[#ffd051]' : 'border-[gray]',
               !slots[team][index].hero && !isActiveSlot(team, index) ? 'opacity-40 hover:opacity-100' : '',
@@ -35,14 +35,14 @@
             <div
               v-if="slots[team][index].hero"
               @click.stop="clearSlot(team, index)"
-              class="absolute top-0 right-0 hidden group-hover:flex items-center justify-center w-6 h-6 rounded-tr-2xl bg-darken hover:bg-red text-white text-sm"
+              class="absolute top-0 right-0 hidden group-hover:flex items-center justify-center w-6 h-6 rounded-tr bg-darken hover:bg-red text-white text-sm"
               title="Clear"
             >
               <i class="fa-solid fa-xmark"></i>
             </div>
             <div
               v-if="slots[team][index].talents"
-              class="absolute bottom-0 right-0 flex items-center justify-center w-6 h-6 rounded-br-2xl bg-teal text-white text-xs"
+              class="absolute bottom-0 right-0 flex items-center justify-center w-6 h-6 rounded-br bg-teal text-white text-xs"
               title="Talents locked in"
             >
               <i class="fa-solid fa-check"></i>

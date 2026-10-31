@@ -119,7 +119,7 @@
               <h3 class="text-2xl font-bold">{{ title }}</h3>
               <div class="flex flex-wrap gap-6">
                 <div v-for="group in 3" :key="group" class="flex gap-3">
-                  <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded-lg"></skeleton-box>
+                  <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
                 </div>
               </div>
             </div>

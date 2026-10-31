@@ -14,7 +14,7 @@
         Remember me
       </label>
 
-      <button type="submit" class="transition-colors text-white rounded text-center bg-blue hover:bg-lblue py-2 px-4 w-auto ml-auto my-2">Sign In</button>
+      <button type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto my-2">Sign In</button>
     </form>
 
     <div class="text-sm space-y-1">

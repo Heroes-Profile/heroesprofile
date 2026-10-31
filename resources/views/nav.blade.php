@@ -5,7 +5,7 @@
                 <img class="w-8 sm:w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
                 Profile
         </a>
-        <button  id="mobile-toggle" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 bg-blue rounded-lg px-3 min-w-[44px] min-h-[40px] text-xl" aria-label="Open menu">=</button>
+        <button  id="mobile-toggle" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 bg-blue rounded px-3 min-w-[44px] min-h-[40px] text-xl" aria-label="Open menu">=</button>
          
         
     </div>
@@ -13,7 +13,7 @@
 
 <div id="main-menu" class="  main-navigation-wrapper"> <!-- max-md:hidden  - This needs to hide/show on click of the button but only on mobile - either detect mobile with vue, or have a class that is added/taken away that only applies to mobile -->
     <nav id="main-nav" class="bg-surface-1 text-white z-50 relative md:px-8 md:py-3 text-sm max-md:pt-2">
-      <button  id="mobile-nav-close" class="hidden bg-blue rounded-lg px-3 py-1 min-w-[44px] min-h-[40px] text-lg ml-auto  mr-2" aria-label="Close menu">x</button>
+      <button  id="mobile-nav-close" class="hidden bg-blue rounded px-3 py-1 min-w-[44px] min-h-[40px] text-lg ml-auto  mr-2" aria-label="Close menu">x</button>
        
         <div class="flex items-start justify-center flex-wrap  mx-auto max-md:flex-col max-w-[1920px]" >
              <div class="flex justify-start items-start flex-wrap max-md:flex-col grow mr-auto max-md:ml-auto max-md:justify-center">
@@ -146,7 +146,7 @@
                                     <div class="nav-flyout-wrapper">
                                         <a href="/Analytics" class="flex justify-between items-center bg-teal font-bold"><span><i class="fas fa-chart-line mr-2"></i>Analytics</span> <span class="nav-flyout-arrow ml-4">›</span></a>
                                         <div class="nav-flyout">
-                                            <div class="nav-dropdown-inner-wrapper rounded-b-lg rounded-r-lg">
+                                            <div class="nav-dropdown-inner-wrapper rounded-b rounded-r">
                                                 <a href="/Analytics?tab=deaths">Deaths</a>
                                                 <a href="/Analytics?tab=map">Map &amp; Positions</a>
                                                 <a href="/Analytics?tab=timelines">Timelines &amp; Objectives</a>
@@ -175,7 +175,7 @@
                                     <div class="nav-flyout-wrapper">
                                         <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role" class="flex justify-between items-center">Roles <span class="nav-flyout-arrow ml-4">›</span></a>
                                         <div class="nav-flyout">
-                                            <div class="nav-dropdown-inner-wrapper rounded-b-lg rounded-r-lg">
+                                            <div class="nav-dropdown-inner-wrapper rounded-b rounded-r">
                                                 <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role">All Roles</a>
                                                 <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Bruiser">Bruiser</a>
                                                 <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Healer">Healer</a>
@@ -240,7 +240,7 @@
                                 alt="Settings">
                             </div>
                             <div class="md:absolute right-0 md:hidden md:group-hover:block z-50  ">
-                                <div class="md:bg-blue  rounded-b-lg rounded-tl-lg text-sm drop-shadow max-md:flex">
+                                <div class="md:bg-surface-1 rounded-b rounded-tl text-sm md:shadow-[0_0_10px_rgba(0,0,0,0.4)] max-md:flex">
                                   
                                 <span class="block px-4 py-2 border-b border-darken bg-gray-dark">
                                 {{ $mainSearchAccount['battletag_full'] }}
@@ -271,8 +271,8 @@
       <div id="alt-account-{{ $index }}" class="relative group inline-block text-sm">
         <a data-battletag="{{ $account['battletag'] }}" class="mobile-secondary-nav-open cursor-pointer md:block md:bg-teal md:hover:bg-lteal md:rounded md:px-5 md:py-2 transition-colors">{{ $account['battletag'] }}@if(isset($regions[$account['region']]))<span class="text-[0.7em] ml-2">{{ $regions[$account['region']] }}</span>@endif</a>
         <div data-battletag="{{ $account['battletag'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[200px] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
-            <div class="nav-dropdown-inner-wrapper rounded-none">
-              <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal">{{ $account['battletag'] }}@if(isset($regions[$account['region']])) ({{ $regions[$account['region']] }})@endif <button class="close-secondary-nav bg-blue rounded-lg px-3 py-1 min-w-[44px] min-h-[40px] text-lg" aria-label="Close menu">x</button></div>
+            <div class="nav-dropdown-inner-wrapper">
+              <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal">{{ $account['battletag'] }}@if(isset($regions[$account['region']])) ({{ $regions[$account['region']] }})@endif <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[44px] min-h-[40px] text-lg" aria-label="Close menu">x</button></div>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" >Profile</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" >Friends and Foes</a>
               <nav-search-flyout
@@ -287,7 +287,7 @@
               <div class="nav-flyout-wrapper">
                 <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role" class="flex justify-between items-center">Roles <span class="nav-flyout-arrow ml-4">›</span></a>
                 <div class="nav-flyout">
-                  <div class="nav-dropdown-inner-wrapper rounded-b-lg rounded-r-lg">
+                  <div class="nav-dropdown-inner-wrapper rounded">
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role">All Roles</a>
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Bruiser">Bruiser</a>
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Healer">Healer</a>

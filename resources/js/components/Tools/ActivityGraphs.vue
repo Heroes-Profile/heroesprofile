@@ -18,9 +18,10 @@
       <button
         :disabled="loading"
         @click="applyFilter"
+        class="btn"
         :class="loading
-          ? 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 max-md:mt-auto max-md:w-full'
-          : 'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10'"
+          ? 'bg-gray-md md:ml-10 mt-auto mb-2 max-md:mt-auto max-md:w-full'
+          : 'bg-teal md:ml-10 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10'"
       >
         Filter
       </button>

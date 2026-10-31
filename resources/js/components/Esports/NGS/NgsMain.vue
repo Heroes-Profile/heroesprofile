@@ -8,7 +8,7 @@
           <custom-button   @click="setButtonActive('standings')" :text="'Standings'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'standings' ? 'lblue' : ''" :active="standingsClicked" :ignoreclick="true"></custom-button>
         </div>
         <div class="md:border-r border-white max-md:border max-md:border-lighten">
-          <custom-button @click="setButtonActive('divisions')" :text="'Divisions'" :size="'big'" class=" rounded-none max-md:text-xs" :color="activeButton === 'divisions' ? 'lblue' : ''" :active="divisionsClicked" :ignoreclick="true"></custom-button>
+          <custom-button @click="setButtonActive('divisions')" :text="'Divisions'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'divisions' ? 'lblue' : ''" :active="divisionsClicked" :ignoreclick="true"></custom-button>
         </div>
         <div class="md:border-r border-white max-md:border max-md:border-lighten">
           <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'teams' ? 'lblue' : ''" :active="teamsClicked" :ignoreclick="true"></custom-button>
@@ -92,7 +92,7 @@
         <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="isLoading" @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading" @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
         </div>
         <ngs-standings v-if="standingData" :data="standingData" :season="season"></ngs-standings>
       </div>
@@ -100,7 +100,7 @@
       <div v-if="activeButton === 'divisions'">
         <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
         </div>
         <ngs-divisions v-if="divisionData" :data="divisionData" :season="season"></ngs-divisions>
       </div>
@@ -109,7 +109,7 @@
         <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
         </div>
         <esports-teams v-if="teamsData" :data="teamsData" :esport="'NGS'" :season="season"></esports-teams>
       </div>
@@ -117,7 +117,7 @@
       <div v-if="activeButton === 'playerSearch'">
         <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
           <input type="text" class="form-control search-input mr-3" :placeholder="'Search for NGS player'" :aria-label="'Search for NGS player'" v-model="userinput" @keyup.enter="filter()">
-          <custom-button @click="filter()" :text="'Search'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2  hover:bg-lteal" :ignoreclick="true"></custom-button>
+          <custom-button @click="filter()" :text="'Search'" :size="'medium'" class="bg-teal ml-10 hover:bg-lteal" :ignoreclick="true"></custom-button>
 
         </div>
         <div v-if="battletagresponse">
@@ -142,7 +142,7 @@
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <single-select-filter :values="filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
         </div>
 
         <div v-if="recentMatchesData">
@@ -181,7 +181,7 @@
         <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
         </div>
         <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
       </div>
@@ -198,7 +198,7 @@
               <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="selectedHero.id"></single-select-filter>
               <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
               <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-              <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+              <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
             </div>
 
             

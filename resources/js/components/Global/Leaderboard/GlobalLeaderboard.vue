@@ -95,7 +95,7 @@
                   id="search"
                   type="text"
                   placeholder="Search Battletag"
-                  class="p-2 border border-gray-300 rounded-md  text-black"
+                  class="p-2 border border-gray-300 rounded-control  text-black"
                 />
               </div>
 
@@ -178,7 +178,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td><div class="flex gap-1"><div v-if="rankchange" class="bg-blue text-white min-w-[2em] p-1 rounded-md text-center"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  group.rows.length - index }}</span></div><span class="p-1">{{ row.rank }}</span></div></td>
+                    <td><div class="flex gap-1"><div v-if="rankchange" class="bg-blue text-white min-w-[2em] p-1 rounded-control text-center"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  group.rows.length - index }}</span></div><span class="p-1">{{ row.rank }}</span></div></td>
                     <td>
                       <div class="flex items-center">
                         <a class="link mr-2" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`" >{{ row.split_battletag }}</a>

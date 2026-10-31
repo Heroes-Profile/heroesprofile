@@ -61,7 +61,7 @@
           ></single-select-filter>
 
 
-      <button :disabled="disableFilterInput" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
+      <button :disabled="disableFilterInput" @click="applyFilter"  class="btn" :class="{'bg-teal md:ml-10 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md md:ml-10 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
           Next Match
       </button>
 
@@ -87,14 +87,14 @@
 
       <div class="flex max-w-[1000px] mx-auto justify-center gap-10">
 
-        <div class="flex flex-col align-center border-2 rounded-md border-white " >
+        <div class="flex flex-col align-center border-2 rounded border-white " >
           <div class="min-h-[4em] ">
-            <button v-if="!disableWinnerSelect" :disabled="disableWinnerSelect" @click="chooseWinner(0)"  :class="{'bg-blue rounded text-white  px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto w-full max-md:mt-10 mx-auto': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
+            <button v-if="!disableWinnerSelect" :disabled="disableWinnerSelect" @click="chooseWinner(0)"  class="btn" :class="{'bg-blue  md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto w-full max-md:mt-10 mx-auto': !disableFilterInput, 'bg-gray-md md:ml-10 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
               {{ "Select Team 1 Winner" }}
             </button>
             <div v-else>
-              <div class="rounded-md bg-teal w-full text-center px-4 py-2" v-if="userchoiceteam == 0 && userchoiceresult && userchoiceresult.data == 1">CORRECT!</div>
-              <div class="rounded-md bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 0 && userchoiceresult && userchoiceresult.data == 0">WRONG</div>
+              <div class="rounded bg-teal w-full text-center px-4 py-2" v-if="userchoiceteam == 0 && userchoiceresult && userchoiceresult.data == 1">CORRECT!</div>
+              <div class="rounded bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 0 && userchoiceresult && userchoiceresult.data == 0">WRONG</div>
             </div>
           </div>
           <div class="px-2" v-if="data.draftData && data.replayBans?.[0]?.length">
@@ -116,14 +116,14 @@
           </div>
         </div>
         
-        <div class="flex flex-col align-center justify-center  border-2 rounded-md border-white ">
+        <div class="flex flex-col align-center justify-center  border-2 rounded border-white ">
           <div class="min-h-[4em]">
-            <button v-if="!disableWinnerSelect" :disabled="disableWinnerSelect" @click="chooseWinner(1)"  :class="{'bg-blue rounded text-white px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
+            <button v-if="!disableWinnerSelect" :disabled="disableWinnerSelect" @click="chooseWinner(1)"  class="btn" :class="{'bg-blue md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md md:ml-10 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
               {{ "Select Team 2 Winner" }}
             </button>
             <div v-else>
-              <div class="rounded-md bg-teal w-full text-center px-4 py-2" v-if="userchoiceteam == 1 && userchoiceresult && userchoiceresult.data == 1">CORRECT!</div>
-              <div class="rounded-md bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 1 && userchoiceresult && userchoiceresult.data == 0">WRONG</div>
+              <div class="rounded bg-teal w-full text-center px-4 py-2" v-if="userchoiceteam == 1 && userchoiceresult && userchoiceresult.data == 1">CORRECT!</div>
+              <div class="rounded bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 1 && userchoiceresult && userchoiceresult.data == 0">WRONG</div>
             </div>
           </div>
           <div class="px-2" v-if="data.draftData && data.replayBans?.[1]?.length">
@@ -148,7 +148,7 @@
     </div>
 
    
-    <div v-if="userchoiceresult" class="max-w-[1000px] text-center w-full mx-auto mt-2 bg-teal rounded-md p-4">
+    <div v-if="userchoiceresult" class="max-w-[1000px] text-center w-full mx-auto mt-2 bg-teal rounded p-4">
       See replay <a target="_blank" class="link" :href="'/Match/Single/' + userchoiceresult.replayID">{{ userchoiceresult.replayID }}</a> for more information
     </div>
 

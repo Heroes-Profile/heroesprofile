@@ -8,7 +8,7 @@
         <button
           @click="randomize"
           :disabled="loading"
-          class="bg-teal hover:bg-lteal text-white font-bold px-8 py-3 rounded text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          class="btn bg-teal hover:bg-lteal font-bold px-8 py-3 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <i class="fa-solid fa-shuffle mr-2"></i>
           {{ loading ? 'Randomizing...' : (hero ? 'Randomize Again' : 'Randomize!') }}

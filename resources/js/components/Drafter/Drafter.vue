@@ -37,24 +37,24 @@
         </label>
       </div>
       <div class="flex gap-4">
-        <button @click="startDraft(false)" class="bg-blue hover:bg-lblue text-white font-bold px-6 py-2 rounded uppercase">Start Draft</button>
-        <button @click="startDraft(true)" class="bg-red hover:bg-lred text-white font-bold px-6 py-2 rounded uppercase">Draft With No Data</button>
+        <button @click="startDraft(false)" class="btn bg-blue hover:bg-lblue font-bold px-6 uppercase">Start Draft</button>
+        <button @click="startDraft(true)" class="btn bg-red hover:bg-lred font-bold px-6 uppercase">Draft With No Data</button>
       </div>
     </div>
 
     <div v-else class="max-w-[1500px] mx-auto px-4 py-6">
       <div class="flex justify-between mb-4">
-        <button v-if="picks.length > 0" @click="undo" :disabled="isLoading" class="bg-blue hover:bg-lblue text-white font-bold px-6 py-2 rounded disabled:opacity-50">
+        <button v-if="picks.length > 0" @click="undo" :disabled="isLoading" class="btn bg-blue hover:bg-lblue font-bold px-6 disabled:opacity-50">
           <i class="fa-solid fa-reply mr-2"></i>Undo
         </button>
         <span v-else></span>
-        <button @click="showFilters = !showFilters" class="bg-blue hover:bg-lblue text-white font-bold px-6 py-2 rounded">
+        <button @click="showFilters = !showFilters" class="btn bg-blue hover:bg-lblue font-bold px-6">
           <i class="fa-solid fa-filter mr-2"></i>{{ showFilters ? 'Hide Filters' : 'Show Filters' }}
         </button>
       </div>
 
       <div class="flex gap-4 max-md:flex-col items-start">
-        <div v-for="team in ['team1', 'team2']" :key="team + '-bans'" :class="['border border-[gray] rounded-2xl p-2 text-xs uppercase', team === 'team1' ? 'order-1' : 'order-3 md:ml-auto']">
+        <div v-for="team in ['team1', 'team2']" :key="team + '-bans'" :class="['border border-[gray] rounded p-2 text-xs uppercase', team === 'team1' ? 'order-1' : 'order-3 md:ml-auto']">
           <span>Bans</span>
           <div class="flex">
             <div v-for="ban in [1, 2, 3]" :key="ban" :class="slotClasses(team, team + '-ban' + ban, 'w-16 h-16')" :style="slotStyle(team + '-ban' + ban)"></div>
@@ -62,7 +62,7 @@
         </div>
 
         <div class="flex flex-col items-center gap-2 order-2 flex-1">
-          <input type="text" v-model="searchQuery" class="w-60 border rounded p-2 text-black" placeholder="Search Heroes" />
+          <input type="text" v-model="searchQuery" class="w-60 border rounded-control p-2 text-black" placeholder="Search Heroes" />
           <div class="flex justify-center">
             <img
               v-for="role in roles"
@@ -253,7 +253,7 @@ export default {
     slotClasses(team, slotId, size) {
       const active = !this.draftComplete && this.pickOrder[this.currentPick] === slotId;
       return [
-        size, 'm-2 max-md:m-1 rounded-2xl border bg-cover',
+        size, 'm-2 max-md:m-1 rounded border bg-cover',
         team === 'team1' ? 'bg-[rgba(33,61,122,0.2)]' : 'bg-[rgba(179,54,22,0.2)]',
         active ? 'shadow-[0_0_0.5em_#ffd051] border-[#ffd051]' : 'border-[gray]',
         !active && !this.slotHero(slotId) ? 'opacity-20' : '',

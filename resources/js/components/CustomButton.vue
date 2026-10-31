@@ -7,9 +7,7 @@
         block: size === 'big', 
         'py-4': size === 'big', 
         'text-lg': size === 'big', 
-        'inline-block': size !== 'big', 
-        'py-2 px-4' : size !== 'small', 
-        'py-1 px-4' : size === 'small',
+        'py-1' : size === 'small',
         'text-sm' : size === 'small',
         'cursor-not-allowed': disabled
       }
@@ -48,7 +46,7 @@
     },
     data(){
       return {
-        staticClasses: 'transition-colors text-white rounded text-center',
+        staticClasses: 'btn',
 
       }
     },

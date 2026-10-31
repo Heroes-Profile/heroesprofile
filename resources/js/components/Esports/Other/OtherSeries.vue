@@ -4,7 +4,7 @@
     
     <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue flex-wrap max-md:text-xs">
       <div class="border-r border-white">
-        <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="rounded-none " :color="activeButton === 'teams' ? 'lblue' : ''" :active="teamsClicked" :ignoreclick="true"></custom-button>
+        <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="rounded-none" :color="activeButton === 'teams' ? 'lblue' : ''" :active="teamsClicked" :ignoreclick="true"></custom-button>
       </div>
 
       <div class="border-r border-white">
@@ -57,7 +57,7 @@
           <single-select-filter :values="seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter> 
           <single-select-filter :values="regions" :text="'Regions'" @input-changed="handleInputChange"></single-select-filter> 
           <single-select-filter :values="tournaments" :text="'Tournaments'" @input-changed="handleInputChange"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
         </div>
 
         <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
@@ -90,7 +90,7 @@
       <div v-if="activeButton === 'players'">
         <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
           <input type="text" class="form-control search-input mr-3" :placeholder="'Search for a player'" :aria-label="'Search for a player'" v-model="userinput" @keyup.enter="filter()">
-          <custom-button @click="filter()" :text="'Search'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2  hover:bg-lteal" :ignoreclick="true"></custom-button>
+          <custom-button @click="filter()" :text="'Search'" :size="'medium'" class="bg-teal ml-10 hover:bg-lteal" :ignoreclick="true"></custom-button>
 
         </div>
 
@@ -127,7 +127,7 @@
 
 
 
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
         </div>
         <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
       </div>
@@ -145,7 +145,7 @@
               <single-select-filter :values="regions" :text="'Regions'" @input-changed="handleInputChange"></single-select-filter>
               <single-select-filter :values="tournaments" :text="'Tournaments'" @input-changed="handleInputChange"></single-select-filter>
 
-              <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+              <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
             </div>
 
             

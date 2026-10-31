@@ -48,7 +48,7 @@
             <button
               :disabled="savingCard"
               @click="saveCard"
-              class="transition-colors text-white rounded text-center bg-blue hover:bg-lblue py-2 px-4 disabled:bg-gray-medium"
+              class="btn bg-blue hover:bg-lblue disabled:bg-gray-medium"
             >
               {{ savingCard ? 'Saving…' : 'Save Card' }}
             </button>
@@ -93,7 +93,7 @@
             <strong>Tell us about your project before subscribing.</strong>
             A name and a short description of what you are building.
           </p>
-          <a href="/Api/Account#project" class="inline-block mt-3 transition-colors text-white rounded bg-blue hover:bg-lblue py-2 px-4 text-sm">
+          <a href="/Api/Account#project" class="btn inline-block mt-3 bg-blue hover:bg-lblue text-sm">
             Add project details
           </a>
         </div>
@@ -127,7 +127,7 @@
               <a
                 v-else-if="!plan.purchasable"
                 href="/Api/DeveloperTier"
-                class="transition-colors text-white rounded bg-red hover:bg-lred py-2 px-4 w-full inline-block text-center"
+                class="btn bg-red hover:bg-lred w-full inline-block"
               >
                 Contact Us
               </a>
@@ -135,7 +135,7 @@
                 v-else
                 :disabled="!card || busy || projectmissing"
                 @click="subscribe(plan)"
-                class="transition-colors text-white rounded bg-blue hover:bg-lblue py-2 px-4 w-full disabled:bg-gray-medium"
+                class="btn bg-blue hover:bg-lblue w-full disabled:bg-gray-medium"
               >
                 {{ active ? 'Switch' : 'Subscribe' }}
               </button>

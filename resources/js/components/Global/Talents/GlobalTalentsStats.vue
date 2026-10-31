@@ -132,7 +132,7 @@
               <template #heading>
                 <span class="flex flex-wrap items-center gap-2">
                   {{ selectedHero.name }}
-                  <select class="bg-blue text-white rounded px-2 py-1" aria-label="Talent Build Type" :value="talentbuildtype" @change="buildtypechange({ value: $event.target.value })">
+                  <select class="bg-blue text-white rounded-control px-2 py-1" aria-label="Talent Build Type" :value="talentbuildtype" @change="buildtypechange({ value: $event.target.value })">
                     <option v-for="buildType in buildtypes" :key="buildType.code" :value="buildType.code">{{ buildType.name }}</option>
                   </select>
                   Talent Builds

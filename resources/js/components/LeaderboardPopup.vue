@@ -2,7 +2,7 @@
 
   <div class="modal-mask ">
       <div class="modal-wrapper ">
-        <div class="modal-container bg-blue rounded-lg p-10 max-md:p-4 max-w-[750px] w-[90%] text-sm">
+        <div class="modal-container bg-blue rounded p-10 max-md:p-4 max-w-[750px] w-[90%] text-sm">
 
           <div class="modal-header">
             <slot name="header">
@@ -57,7 +57,7 @@
             </div>
             <slot name="footer">
               <button 
-                class="bg-teal p-2 rounded-lg ml-auto disabled:opacity-50 disabled:cursor-not-allowed" 
+                class="bg-teal p-2 rounded ml-auto disabled:opacity-50 disabled:cursor-not-allowed" 
                 @click="closePopup"
                 :disabled="!agreedToConditions"
               >

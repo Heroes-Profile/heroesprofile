@@ -43,7 +43,7 @@
           'w-max max-w-[24em]' : popupsize == 'fit'
         }
         ]" >
-          <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft tracking-normal text-left p-4 rounded-xl drop-shadow-md z-30">
+          <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft tracking-normal text-left p-4 rounded drop-shadow-md z-30">
 
             <slot></slot>
 

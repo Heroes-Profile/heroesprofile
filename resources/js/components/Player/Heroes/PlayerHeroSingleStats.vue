@@ -53,7 +53,7 @@
               <a class="underline text-header whitespace-nowrap" :href="getTalentPageUrl()">View Talent Data</a>
             </div>
             <div v-if="data.top_build" class="flex flex-wrap items-center gap-x-6 gap-y-3">
-              <div class="flex flex-wrap gap-1.5 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded-lg">
+              <div class="flex flex-wrap gap-1.5 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded">
                 <talent-image-wrapper v-for="level in talentLevels" :key="level" :talent="data.top_build[level]" :size="'medium'"></talent-image-wrapper>
               </div>
               <div class="flex gap-6">
@@ -143,7 +143,7 @@
           <panel-box :inner="true" class="!gap-8 2xl:w-[780px]">
             <h2 class="text-3xl font-bold">{{ heroobject.name }}</h2>
             <div class="flex gap-8 max-sm:flex-col">
-              <skeleton-box class="w-40 md:w-72 h-[23em] shrink-0 rounded-lg"></skeleton-box>
+              <skeleton-box class="w-40 md:w-72 h-[23em] shrink-0 rounded"></skeleton-box>
               <div class="flex-1 flex flex-col gap-6">
                 <skeleton-box class="h-[30px]"></skeleton-box>
                 <div class="grid grid-cols-2 gap-x-6 gap-y-4">
@@ -154,14 +154,14 @@
             <div class="flex flex-col gap-4">
               <h3 class="text-2xl font-bold">Most Played Build</h3>
               <div class="flex flex-wrap gap-1.5">
-                <skeleton-box v-for="level in 7" :key="level" class="w-[42px] h-[42px] !rounded-lg"></skeleton-box>
+                <skeleton-box v-for="level in 7" :key="level" class="w-[42px] h-[42px] !rounded"></skeleton-box>
               </div>
             </div>
             <div class="flex flex-col gap-4">
               <h3 class="text-2xl font-bold">Maps</h3>
               <div class="flex flex-wrap gap-6">
                 <div v-for="group in 3" :key="group" class="flex gap-3">
-                  <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded-lg"></skeleton-box>
+                  <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
                 </div>
               </div>
             </div>

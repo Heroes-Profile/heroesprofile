@@ -11,7 +11,7 @@
         </p>
         <form method="POST" action="/Api/Terms/Accept">
           <input type="hidden" name="_token" :value="csrf">
-          <button type="submit" class="transition-colors text-white rounded text-center bg-blue hover:bg-lblue py-2 px-4">
+          <button type="submit" class="btn bg-blue hover:bg-lblue">
             I Accept These Terms
           </button>
         </form>

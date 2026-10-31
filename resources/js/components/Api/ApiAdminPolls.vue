@@ -9,7 +9,7 @@
     <div v-if="notice" class="bg-teal p-3 mb-4 text-sm">{{ notice }}</div>
 
     <div class="mb-4">
-      <button type="button" class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4" @click="startNew">New poll</button>
+      <button type="button" class="btn bg-teal hover:bg-lteal" @click="startNew">New poll</button>
     </div>
 
     <p v-if="!loading && !polls.length" class="text-sm text-gray-medium">No polls yet.</p>
@@ -52,17 +52,17 @@
       <div class="grid gap-3 md:grid-cols-2 mb-3">
         <label class="text-sm">
           Title
-          <input v-model="form.title" type="text" maxlength="255" class="text-black p-2 rounded w-full mt-1" />
+          <input v-model="form.title" type="text" maxlength="255" class="text-black p-2 rounded-control w-full mt-1" />
         </label>
         <label class="text-sm">
           Slug (the URL: lowercase letters, numbers, dashes)
-          <input v-model="form.slug" type="text" maxlength="100" class="text-black p-2 rounded w-full mt-1" />
+          <input v-model="form.slug" type="text" maxlength="100" class="text-black p-2 rounded-control w-full mt-1" />
         </label>
       </div>
 
       <label class="text-sm block mb-3">
         Description (shown above the options)
-        <textarea v-model="form.description" rows="6" class="text-black p-2 rounded w-full mt-1"></textarea>
+        <textarea v-model="form.description" rows="6" class="text-black p-2 rounded-control w-full mt-1"></textarea>
       </label>
 
       <div class="flex flex-wrap items-center gap-6 mb-4">
@@ -72,21 +72,21 @@
         </label>
         <label class="text-sm">
           Closes (UTC, empty = open until closed by hand)
-          <input v-model="form.closes_at" type="datetime-local" class="text-black p-2 rounded ml-2" />
+          <input v-model="form.closes_at" type="datetime-local" class="text-black p-2 rounded-control ml-2" />
         </label>
       </div>
 
       <h4 class="text-sm mb-2">Options</h4>
       <div v-for="(option, index) in form.options" :key="option.key" class="flex flex-wrap gap-2 mb-2">
-        <input v-model="option.label" type="text" maxlength="100" placeholder="Label" class="text-black p-2 rounded w-full md:w-1/3" />
-        <input v-model="option.description" type="text" maxlength="1000" placeholder="Description (optional)" class="text-black p-2 rounded flex-1 min-w-[200px]" />
+        <input v-model="option.label" type="text" maxlength="100" placeholder="Label" class="text-black p-2 rounded-control w-full md:w-1/3" />
+        <input v-model="option.description" type="text" maxlength="1000" placeholder="Description (optional)" class="text-black p-2 rounded-control flex-1 min-w-[200px]" />
         <button v-if="!form.has_votes" type="button" class="link text-sm" @click="form.options.splice(index, 1)">Remove</button>
       </div>
       <button v-if="!form.has_votes" type="button" class="link text-sm mb-4" @click="addOption">Add option</button>
       <p v-else class="text-xs text-gray-medium mb-4">This poll has votes, so options can only be reworded.</p>
 
       <div class="flex gap-2">
-        <button type="button" class="transition-colors text-white rounded bg-blue hover:bg-lblue py-2 px-4" :disabled="saving" @click="save">
+        <button type="button" class="btn bg-blue hover:bg-lblue" :disabled="saving" @click="save">
           {{ saving ? 'Saving' : 'Save' }}
         </button>
         <button type="button" class="link text-sm" @click="form = null">Cancel</button>

@@ -5,18 +5,18 @@
     
       <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue flex-wrap max-md:text-xs">
         <div class="border-r border-white">
-          <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="rounded-none " :color="activeButton === 'teams' ? 'lblue' : ''" :active="teamsClicked" :ignoreclick="true"></custom-button>
+          <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="rounded-none" :color="activeButton === 'teams' ? 'lblue' : ''" :active="teamsClicked" :ignoreclick="true"></custom-button>
         </div>
         <div class="border-r border-white">
-          <custom-button @click="setButtonActive('recentMatches')" :text="'Recent Matches'" :size="'big'" class="rounded-none " :color="activeButton === 'recentMatches' ? 'lblue' : ''" :active="recentMatchesClicked" :ignoreclick="true"></custom-button>
+          <custom-button @click="setButtonActive('recentMatches')" :text="'Recent Matches'" :size="'big'" class="rounded-none" :color="activeButton === 'recentMatches' ? 'lblue' : ''" :active="recentMatchesClicked" :ignoreclick="true"></custom-button>
         </div>
 
         <div class="border-r border-white">
-          <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="rounded-none " :color="activeButton === 'overallHeroStats' ? 'lblue' : ''" :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
+          <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="rounded-none" :color="activeButton === 'overallHeroStats' ? 'lblue' : ''" :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
         </div>
 
       <div class="">
-          <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="rounded-none " :color="activeButton === 'overallTalentStats' ? 'lblue' : ''" :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
+          <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="rounded-none" :color="activeButton === 'overallTalentStats' ? 'lblue' : ''" :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
         </div>
       </div>
 
@@ -60,7 +60,7 @@
       <div v-if="activeButton === 'teams'">
         <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
           <single-select-filter :values="filters.mcl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
         </div>
         <esports-organizations v-if="teamsData" :data="teamsData" :esport="'MastersClash'" :season="season"></esports-organizations>
       </div>
@@ -70,7 +70,7 @@
         <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
           <single-select-filter :values="filters.mcl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <single-select-filter :values="filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
         </div>
 
 
@@ -112,7 +112,7 @@
       <div v-if="activeButton === 'overallHeroStats'">
         <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
           <single-select-filter :values="filters.mcl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
         </div>
         <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
       </div>
@@ -128,7 +128,7 @@
             <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
               <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="selectedHero.id"></single-select-filter>
               <single-select-filter :values="filters.mcl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-              <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+              <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
             </div>
 
             

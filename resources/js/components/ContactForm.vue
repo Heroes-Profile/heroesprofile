@@ -17,7 +17,7 @@
         <!-- Honeypot field - hidden from users but visible to bots -->
         <input type="text" name="website" v-model="formData.website" style="display: none !important; visibility: hidden !important; position: absolute !important; left: -9999px !important;" tabindex="-1" autocomplete="off">
 
-        <button :disabled="isLoading" type="submit" class="transition-colors text-white rounded text-center bg-blue hover:bg-lblue py-2 px-4 w-auto ml-auto mr-2 my-2">Submit</button>
+        <button :disabled="isLoading" type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto mr-2 my-2">Submit</button>
       </form>
       <div v-if="emailSent" class="mx-auto max-w-[1500px] bg-teal p-4 text-center">
         <p>Email Sent Successfully!</p>

@@ -2,7 +2,7 @@
 
   <div class="modal-mask ">
       <div class="modal-wrapper ">
-        <div class="modal-container bg-blue rounded-lg p-10 max-w-[450px] w-[90%] text-sm">
+        <div class="modal-container bg-blue rounded p-10 max-w-[450px] w-[90%] text-sm">
 
           <div class="modal-header">
             <slot name="header">
@@ -25,7 +25,7 @@
 
           <div class="modal-footer flex">
             <slot name="footer">
-              <button class="bg-teal p-2 rounded-lg ml-auto" @click="closePopup">Close</button>
+              <button class="bg-teal p-2 rounded ml-auto" @click="closePopup">Close</button>
 
             </slot>
           </div>

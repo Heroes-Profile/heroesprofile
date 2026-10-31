@@ -3,7 +3,7 @@
     <page-heading :heading="'The New Replay Uploader'" :infoText1="infoText"></page-heading>
 
     <div class="mx-auto max-w-[900px] px-4 mt-6 mb-10 space-y-6">
-      <div class="bg-lighten rounded-lg p-6 text-sm space-y-4">
+      <div class="bg-lighten rounded p-6 text-sm space-y-4">
         <p>
           The Heroes Profile uploader has been rewritten. It's now one app for Windows, macOS and Linux,
           and it replaces the old Windows-only uploader. It looks and works the same: it watches your
@@ -17,7 +17,7 @@
         />
       </div>
 
-      <div class="bg-lighten rounded-lg p-6 text-sm space-y-4">
+      <div class="bg-lighten rounded p-6 text-sm space-y-4">
         <h2 class="text-lg">Moving from the old uploader</h2>
         <p>The old uploader won't update itself to the new one, so this is a one-time install.</p>
         <ol class="list-decimal list-inside space-y-1">
@@ -32,7 +32,7 @@
         </p>
       </div>
 
-      <div class="bg-lighten rounded-lg p-6 text-sm space-y-4">
+      <div class="bg-lighten rounded p-6 text-sm space-y-4">
         <h2 class="text-lg">What's new</h2>
         <ul class="list-disc list-inside space-y-1">
           <li>Windows, macOS (Apple Silicon and Intel) and Linux, all from the same app.</li>
@@ -45,12 +45,12 @@
         </ul>
       </div>
 
-      <div class="bg-lighten rounded-lg p-6 text-sm space-y-4">
+      <div class="bg-lighten rounded p-6 text-sm space-y-4">
         <h2 class="text-lg">Download</h2>
         <uploader-downloads :show-ranks="true"></uploader-downloads>
       </div>
 
-      <div id="rank-reading" class="bg-lighten rounded-lg p-6 text-sm space-y-4">
+      <div id="rank-reading" class="bg-lighten rounded p-6 text-sm space-y-4">
         <h2 class="text-lg">Rank reading (opt-in)</h2>
         <p>
           The game doesn't put your Storm League rank in the replay file, so Heroes Profile couldn't get
@@ -74,7 +74,7 @@
         </p>
       </div>
 
-      <div class="bg-lighten rounded-lg p-6 text-sm space-y-4">
+      <div class="bg-lighten rounded p-6 text-sm space-y-4">
         <h2 class="text-lg">Problems?</h2>
         <p>
           Open an issue on the

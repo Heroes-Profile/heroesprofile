@@ -1,5 +1,5 @@
 <template>
-  <details class="bg-lighten rounded-lg text-sm mt-2 mb-8 group">
+  <details class="bg-lighten rounded text-sm mt-2 mb-8 group">
     <summary class="px-4 py-2 flex justify-between items-center cursor-pointer list-none">
       <span>{{ label }}</span>
       <i class="fas fa-chevron-down transition-transform group-open:rotate-180"></i>

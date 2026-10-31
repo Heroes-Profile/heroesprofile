@@ -4,12 +4,12 @@
   <!-- While a dropdown is open, a click anywhere just closes it (which saves) instead of opening another setting -->
   <div v-if="dropdownOpen" class="fixed inset-0 z-40"></div>
   <div class="relative flex mx-auto w-full max-w-[1200px] mt-[2vh] h-[85vh]">
-    <div v-if="isLoading" class="absolute inset-0 z-50 rounded-lg overflow-hidden">
+    <div v-if="isLoading" class="absolute inset-0 z-50 rounded overflow-hidden">
       <loading-component :textoverride="true">Saving...</loading-component>
     </div>
 
     <!-- Left sidebar -->
-    <div class="w-[180px] shrink-0 bg-lighten rounded-l-lg flex flex-col">
+    <div class="w-[180px] shrink-0 bg-lighten rounded-l flex flex-col">
       <nav class="flex flex-col pt-4">
         <button
           v-for="tab in tabs"
@@ -24,9 +24,9 @@
     </div>
 
     <!-- Right panel -->
-    <div class="flex-1 bg-lighten rounded-r-lg border-l border-gray-600 overflow-y-auto">
+    <div class="flex-1 bg-lighten rounded-r border-l border-gray-600 overflow-y-auto">
       <transition name="fade">
-        <div v-if="settingsSaved" class="bg-teal text-white text-center py-2 text-sm rounded-tr-lg">
+        <div v-if="settingsSaved" class="bg-teal text-white text-center py-2 text-sm rounded-tr">
           Settings Saved
         </div>
       </transition>

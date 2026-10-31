@@ -3,7 +3,7 @@
   <div class="contents">
     <div id="filter-label" class="relative p-2 flex flex-col gap-1.5 text-sm font-medium text-subtext max-md:flex-[1_1_8rem]">
       <span>From Date</span>
-      <div class="relative h-[40px] w-[9.5rem] max-md:w-full rounded bg-surface-3 hover:bg-surface-4 text-white px-3 flex items-center gap-2">
+      <div class="relative h-[40px] w-[9.5rem] max-md:w-full rounded-control bg-surface-3 hover:bg-surface-4 text-white px-3 flex items-center gap-2">
         <span class="font-bold uppercase whitespace-nowrap">{{ start ? formatDate(start) : placeholder }}</span>
         <input type="date"
           v-model="start"
@@ -18,7 +18,7 @@
     </div>
     <div id="filter-label" class="relative p-2 flex flex-col gap-1.5 text-sm font-medium text-subtext max-md:flex-[1_1_8rem]">
       <span>To Date</span>
-      <div class="relative h-[40px] w-[9.5rem] max-md:w-full rounded bg-surface-3 hover:bg-surface-4 text-white px-3 flex items-center gap-2">
+      <div class="relative h-[40px] w-[9.5rem] max-md:w-full rounded-control bg-surface-3 hover:bg-surface-4 text-white px-3 flex items-center gap-2">
         <span class="font-bold uppercase whitespace-nowrap">{{ end ? formatDate(end) : placeholder }}</span>
         <input type="date"
           v-model="end"

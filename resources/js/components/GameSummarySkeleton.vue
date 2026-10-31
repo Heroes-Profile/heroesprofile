@@ -1,6 +1,6 @@
 <template>
   <!-- A game-summary-box row with empty slots, same column widths, while matches load -->
-  <div class="mb-1.5 flex flex-wrap items-center justify-between gap-y-4 rounded-lg overflow-hidden bg-surface-1 2xl:flex-nowrap">
+  <div class="mb-1.5 flex flex-wrap items-center justify-between gap-y-4 rounded overflow-hidden bg-surface-1 2xl:flex-nowrap">
     <div class="relative flex-1 md:max-w-[410px] min-w-[300px] self-stretch flex items-center pl-6 py-4">
       <div class="absolute inset-y-0 left-0 w-1.5 bg-surface-3"></div>
       <div class="flex items-center gap-4">
@@ -28,7 +28,7 @@
     </div>
 
     <div class="flex flex-wrap gap-1.5 items-center px-4 w-full 2xl:w-[362px] shrink-0">
-      <skeleton-box v-for="talent in 7" :key="talent" class="w-[42px] h-[42px] shrink-0 !rounded-lg"></skeleton-box>
+      <skeleton-box v-for="talent in 7" :key="talent" class="w-[42px] h-[42px] shrink-0 !rounded"></skeleton-box>
     </div>
 
     <div class="flex gap-2 pl-4 2xl:pl-1.5 pr-12 py-4 w-full 2xl:w-[362px] shrink-0">

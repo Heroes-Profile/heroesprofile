@@ -1,16 +1,16 @@
 <template>
   <!-- A teal pill like tab-button: chevrons at the ends, the current page on a dark chip -->
-  <nav class="inline-flex items-center gap-1 bg-teal rounded-lg p-1 text-white" aria-label="Pages">
-    <button type="button" class="w-9 h-9 rounded-md hover:bg-lteal disabled:opacity-40 disabled:hover:bg-transparent" :disabled="current <= 1" aria-label="Previous page" @click="$emit('page', current - 1)"><i class="fa-solid fa-chevron-left"></i></button>
+  <nav class="inline-flex items-center gap-1 bg-teal rounded p-1 text-white" aria-label="Pages">
+    <button type="button" class="w-9 h-9 rounded-control hover:bg-lteal disabled:opacity-40 disabled:hover:bg-transparent" :disabled="current <= 1" aria-label="Previous page" @click="$emit('page', current - 1)"><i class="fa-solid fa-chevron-left"></i></button>
     <template v-for="(page, index) in pages" :key="index">
       <!-- A gap: click it to type any page number -->
       <template v-if="page === null">
-        <input v-if="jumpIndex === index" :ref="setJumpInput" v-model="jumpValue" type="number" min="1" :max="last" class="w-14 h-9 rounded-md !bg-surface-1 text-white text-center focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none" aria-label="Go to page" @keydown.enter.prevent="jump" @keydown.esc="jumpIndex = null" @blur="jumpIndex = null"/>
-        <button v-else type="button" class="min-w-[2.25rem] h-9 px-1 rounded-md hover:bg-lteal" title="Go to page" aria-label="Go to page" @click="openJump(index)">…</button>
+        <input v-if="jumpIndex === index" :ref="setJumpInput" v-model="jumpValue" type="number" min="1" :max="last" class="w-14 h-9 rounded-control !bg-surface-1 text-white text-center focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none" aria-label="Go to page" @keydown.enter.prevent="jump" @keydown.esc="jumpIndex = null" @blur="jumpIndex = null"/>
+        <button v-else type="button" class="min-w-[2.25rem] h-9 px-1 rounded-control hover:bg-lteal" title="Go to page" aria-label="Go to page" @click="openJump(index)">…</button>
       </template>
-      <button v-else type="button" :class="['min-w-[2.25rem] h-9 px-2 rounded-md', page === current ? 'bg-surface-1' : 'hover:bg-lteal']" :aria-current="page === current ? 'page' : null" @click="page !== current && $emit('page', page)">{{ page }}</button>
+      <button v-else type="button" :class="['min-w-[2.25rem] h-9 px-2 rounded-control', page === current ? 'bg-surface-1' : 'hover:bg-lteal']" :aria-current="page === current ? 'page' : null" @click="page !== current && $emit('page', page)">{{ page }}</button>
     </template>
-    <button type="button" class="w-9 h-9 rounded-md hover:bg-lteal disabled:opacity-40 disabled:hover:bg-transparent" :disabled="current >= last" aria-label="Next page" @click="$emit('page', current + 1)"><i class="fa-solid fa-chevron-right"></i></button>
+    <button type="button" class="w-9 h-9 rounded-control hover:bg-lteal disabled:opacity-40 disabled:hover:bg-transparent" :disabled="current >= last" aria-label="Next page" @click="$emit('page', current + 1)"><i class="fa-solid fa-chevron-right"></i></button>
   </nav>
 </template>
 

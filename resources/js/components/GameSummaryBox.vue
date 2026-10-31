@@ -1,6 +1,6 @@
 <template>
   <div v-if="!esport" class="group/replay relative mb-1.5">
-  <div :class="['group/row relative flex flex-wrap items-center justify-between gap-y-4 rounded-lg overflow-hidden 2xl:flex-nowrap', data.winner === 1 ? 'bg-surface-2' : 'bg-surface-1']">
+  <div :class="['group/row relative flex flex-wrap items-center justify-between gap-y-4 rounded overflow-hidden 2xl:flex-nowrap', data.winner === 1 ? 'bg-surface-2' : 'bg-surface-1']">
     <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
     <!-- The whole row opens the match; talents, player names and the replay icons sit on top of it -->
     <a :href="getHref()" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
@@ -43,10 +43,10 @@
       </template>
     </div>
 
-    <div class="relative z-[2] flex flex-wrap gap-1.5 items-center px-4 w-full 2xl:w-[362px] shrink-0 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded-lg">
+    <div class="relative z-[2] flex flex-wrap gap-1.5 items-center px-4 w-full 2xl:w-[362px] shrink-0 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded">
       <template v-for="level in talentLevels" :key="level">
         <talent-image-wrapper v-if="data[level]" :talent="data[level]" :size="'medium'"></talent-image-wrapper>
-        <div v-else class="w-[42px] h-[42px] shrink-0 rounded-lg bg-surface-3"></div>
+        <div v-else class="w-[42px] h-[42px] shrink-0 rounded bg-surface-3"></div>
       </template>
     </div>
 
@@ -109,7 +109,7 @@
       ">{{ getCaptions() }}</div>
       <div
         :class="[
-          'flex border border-2 bg-cover bg-no-repeat bg-center  rounded-2xl border-red  md:pl-10',
+          'flex border border-2 bg-cover bg-no-repeat bg-center  rounded border-red  md:pl-10',
           {
             'border-white': !esport || data.winner !== 0,
             'border-hred': esport && data.winner === 0,

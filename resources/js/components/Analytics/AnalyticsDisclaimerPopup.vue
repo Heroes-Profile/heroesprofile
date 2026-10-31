@@ -2,7 +2,7 @@
   <!-- Same modal as NewUserPopup; shown until acknowledged in this browser -->
   <div class="modal-mask">
     <div class="modal-wrapper">
-      <div class="modal-container bg-blue rounded-lg p-10 max-w-[520px] w-[90%] text-sm">
+      <div class="modal-container bg-blue rounded p-10 max-w-[520px] w-[90%] text-sm">
         <div class="modal-header">
           <h3 class="text-xl font-bold">Analytics is in pre-alpha</h3>
         </div>
@@ -25,7 +25,7 @@
         </div>
 
         <div class="modal-footer flex">
-          <button class="bg-teal p-2 rounded-lg ml-auto" @click="closePopup">Got it</button>
+          <button class="bg-teal p-2 rounded ml-auto" @click="closePopup">Got it</button>
         </div>
       </div>
     </div>

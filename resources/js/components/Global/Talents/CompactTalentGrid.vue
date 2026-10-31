@@ -14,12 +14,12 @@
             <dt class="text-[10px] uppercase">Win Rate</dt>
             <dd>
               <stat-bar :value="talent.win_rate" :display-text="talent.win_rate.toFixed(2)" suffix="%"
-                color="blue" class="stat-bar-light rounded-l-lg w-full text-xs"></stat-bar>
+                color="blue" class="stat-bar-light rounded-l w-full text-xs"></stat-bar>
             </dd>
             <dt class="text-[10px] uppercase">Popularity</dt>
             <dd>
               <stat-bar :value="talent.popularity" :display-text="talent.popularity.toFixed(2)" suffix="%"
-                color="yellow" class="stat-bar-light rounded-l-lg w-full text-xs"></stat-bar>
+                color="yellow" class="stat-bar-light rounded-l w-full text-xs"></stat-bar>
             </dd>
           </dl>
           <div class="flex justify-between gap-2 mt-1 text-[10px]">

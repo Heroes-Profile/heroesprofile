@@ -4,7 +4,7 @@
 
     <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
       <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-      <custom-button :disabled="isLoading" @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+      <custom-button :disabled="isLoading" @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
     </div>
 
     <div v-if="data">

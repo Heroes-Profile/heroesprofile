@@ -11,13 +11,13 @@
       ></tab-button>
       <img :src="'/images/heroes/' + hero.short_name + '.png'" :alt="hero.name" class="w-16 h-16 rounded-full" />
       <h3 class="text-xl font-bold">{{ hero.name }}</h3>
-      <button @click="$emit('change-hero')" class="bg-blue hover:bg-lblue text-white px-4 py-2 rounded">
+      <button @click="$emit('change-hero')" class="btn bg-blue hover:bg-lblue">
         Change Hero
       </button>
       <button
         @click="lockIn"
         :disabled="!allSelected"
-        class="bg-teal hover:bg-lteal text-white font-bold px-6 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+        class="btn bg-teal hover:bg-lteal font-bold px-6 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Lock in Talents
       </button>

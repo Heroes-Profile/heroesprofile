@@ -296,7 +296,7 @@
           <button
             @click="approve"
             :disabled="busy"
-            class="transition-colors text-white rounded bg-blue hover:bg-lblue py-1 px-3 text-sm mb-4 disabled:bg-gray-medium"
+            class="btn bg-blue hover:bg-lblue py-1 px-3 text-sm mb-4 disabled:bg-gray-medium"
           >
             Approve
           </button>
@@ -414,7 +414,7 @@
           <button
             @click="saveNote"
             :disabled="busy || !actionNotes.trim()"
-            class="transition-colors text-white rounded bg-blue hover:bg-lblue py-1 px-3 text-sm mb-4 disabled:bg-gray-medium"
+            class="btn bg-blue hover:bg-lblue py-1 px-3 text-sm mb-4 disabled:bg-gray-medium"
           >
             Save note only
           </button>
@@ -433,14 +433,14 @@
             <button
               @click="act('info')"
               :disabled="busy"
-              class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+              class="btn bg-teal hover:bg-lteal disabled:bg-gray-medium"
             >
               Request info
             </button>
             <button
               @click="act('warn')"
               :disabled="busy"
-              class="transition-colors text-white rounded bg-yellow hover:bg-lyellow py-2 px-4 disabled:bg-gray-medium"
+              class="btn bg-yellow hover:bg-lyellow disabled:bg-gray-medium"
             >
               Warn
             </button>
@@ -448,14 +448,14 @@
               v-if="!detail.enforcement.terminated"
               @click="act('suspend')"
               :disabled="busy"
-              class="transition-colors text-white rounded bg-red hover:bg-lred py-2 px-4 disabled:bg-gray-medium"
+              class="btn bg-red hover:bg-lred disabled:bg-gray-medium"
             >
               Suspend
             </button>
             <button
               @click="act('terminate')"
               :disabled="busy"
-              class="transition-colors text-white rounded bg-red hover:bg-lred py-2 px-4 disabled:bg-gray-medium"
+              class="btn bg-red hover:bg-lred disabled:bg-gray-medium"
             >
               Close account
             </button>
@@ -463,7 +463,7 @@
               v-if="detail.enforcement.suspended"
               @click="act('reinstate')"
               :disabled="busy"
-              class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+              class="btn bg-teal hover:bg-lteal disabled:bg-gray-medium"
             >
               Reinstate
             </button>

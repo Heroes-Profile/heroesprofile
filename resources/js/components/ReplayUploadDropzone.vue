@@ -15,14 +15,14 @@
       <p class="mb-4 text-sm">Drop replays here, or choose them below.</p>
 
       <div class="flex flex-wrap gap-3 justify-center">
-        <label class="bg-teal hover:bg-lteal transition-colors text-white rounded text-center py-2 px-4 cursor-pointer text-sm">
+        <label class="btn bg-teal hover:bg-lteal cursor-pointer text-sm">
           <span>Select replays</span>
           <input type="file" class="hidden" multiple accept=".StormReplay" @change="onSelect" />
         </label>
 
         <label
           v-if="directorySupported"
-          class="bg-teal hover:bg-lteal transition-colors text-white rounded text-center py-2 px-4 cursor-pointer text-sm"
+          class="btn bg-teal hover:bg-lteal cursor-pointer text-sm"
         >
           <span>Select a folder</span>
           <input type="file" class="hidden" multiple webkitdirectory directory @change="onSelect" />

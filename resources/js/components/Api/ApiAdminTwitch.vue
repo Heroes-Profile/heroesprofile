@@ -6,8 +6,8 @@
     </p>
 
     <form @submit.prevent="load" class="flex flex-wrap gap-2 mb-4">
-      <input v-model="query" type="text" placeholder="Twitch name or battletag" class="text-black p-2 rounded flex-grow" />
-      <button type="submit" class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4">Search</button>
+      <input v-model="query" type="text" placeholder="Twitch name or battletag" class="text-black p-2 rounded-control flex-grow" />
+      <button type="submit" class="btn bg-teal hover:bg-lteal">Search</button>
     </form>
 
     <div v-if="error" class="bg-red p-3 mb-4 text-sm">{{ error }}</div>

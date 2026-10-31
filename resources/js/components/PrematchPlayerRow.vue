@@ -19,7 +19,7 @@
           </div>
           <div class="text-xs text-gray-medium">Lvl {{ player.account_level }}</div>
           <div class="flex gap-[2px] mt-1">
-            <span v-for="game in games" :key="game.replayID" :class="['inline-block w-2 h-2 rounded-sm', game.winner ? 'bg-teal' : 'bg-red']"></span>
+            <span v-for="game in games" :key="game.replayID" :class="['inline-block w-2 h-2 rounded', game.winner ? 'bg-teal' : 'bg-red']"></span>
           </div>
         </div>
 

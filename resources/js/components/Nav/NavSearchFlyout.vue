@@ -3,23 +3,23 @@
     <a :href="baseUrl" class="flex justify-between items-center">{{ label }} <span class="nav-flyout-arrow ml-4">›</span></a>
 
     <div v-show="open" class="nav-flyout">
-      <div class="nav-dropdown-inner-wrapper rounded-b-lg rounded-r-lg flex flex-col" style="max-height: 420px;">
-        <div class="px-2 pt-2 pb-1 border-b border-darken">
+      <div class="nav-dropdown-inner-wrapper rounded-b rounded-r flex flex-col" style="max-height: 420px;">
+        <div class="px-2 pt-2 pb-1 ">
           <input
             v-model="search"
             type="text"
             placeholder="Search"
-            class="w-full px-2 py-1 text-xs bg-gray-dark text-white border border-white/20 rounded focus:outline-none focus:border-teal"
+            class="w-full px-2 py-1 text-xs bg-gray-dark text-white border border-white/20 rounded-control focus:outline-none focus:border-teal"
             @click.stop
           />
         </div>
         <div class="overflow-y-auto flex-1">
-          <a :href="baseUrl" class="block px-4 py-2 border-b border-darken hover:bg-lighten text-sm">{{ allLabel }}</a>
+          <a :href="baseUrl" class="block px-4 py-2   hover:bg-lighten text-sm">{{ allLabel }}</a>
           <a
             v-for="item in filteredItems"
             :key="item.id"
             :href="baseUrl + '/' + encodeURIComponent(item.name)"
-            class="block px-4 py-2 border-b border-darken hover:bg-lighten text-sm whitespace-nowrap"
+            class="block px-4 py-2  hover:bg-lighten text-sm whitespace-nowrap"
           >{{ item.name }}</a>
           <div v-if="filteredItems.length === 0" class="px-4 py-2 text-xs text-gray-400">No results found</div>
         </div>

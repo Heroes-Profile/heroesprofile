@@ -47,7 +47,7 @@
             Sign in with the Twitch account you stream from. We only read your channel
             name — nothing is posted and no permissions are requested.
           </p>
-          <a href="/Api/Twitch/Link" class="transition-colors text-white rounded bg-blue hover:bg-lblue py-2 px-4 inline-block">
+          <a href="/Api/Twitch/Link" class="btn bg-blue hover:bg-lblue inline-block">
             Connect Twitch
           </a>
         </template>
@@ -79,11 +79,11 @@
           <form action="/Api/Twitch/Battlenet/Link" method="GET" class="flex flex-wrap gap-2 items-end">
             <div class="flex flex-col">
               <label class="text-sm mb-1" for="twitch-region">Region you play in</label>
-              <select id="twitch-region" name="region" v-model="region" class="text-black p-2 rounded">
+              <select id="twitch-region" name="region" v-model="region" class="text-black p-2 rounded-control">
                 <option v-for="(name, id) in regions" :key="id" :value="id">{{ name }}</option>
               </select>
             </div>
-            <button type="submit" class="transition-colors text-white rounded bg-blue hover:bg-lblue py-2 px-4">
+            <button type="submit" class="btn bg-blue hover:bg-lblue">
               {{ channel.battletag ? 'Reconnect Battle.net' : 'Connect Battle.net' }}
             </button>
           </form>
@@ -132,7 +132,7 @@
           <button
             @click="rotateKey"
             :disabled="rotating"
-            class="transition-colors text-white rounded bg-blue hover:bg-lblue py-2 px-4 disabled:bg-gray-medium"
+            class="btn bg-blue hover:bg-lblue disabled:bg-gray-medium"
           >
             {{ channel.has_key ? 'Replace Key' : 'Create Key' }}
           </button>
@@ -194,7 +194,7 @@
           <button
             @click="saveSettings"
             :disabled="savingSettings || !delayValid"
-            class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+            class="btn bg-teal hover:bg-lteal disabled:bg-gray-medium"
           >
             {{ savingSettings ? 'Saving…' : 'Save Settings' }}
           </button>
@@ -242,7 +242,7 @@
           <button
             @click="saveListing"
             :disabled="savingListing || (listingOptIn && !acceptTerms)"
-            class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+            class="btn bg-teal hover:bg-lteal disabled:bg-gray-medium"
           >
             {{ savingListing ? 'Saving…' : 'Save' }}
           </button>

@@ -63,7 +63,7 @@
       <section id="recap-stages" data-index="How the Nexus Fell" v-if="stages.length">
         <h2 class="recap-heading">How the Nexus Fell on Heroes Profile</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
-          <div v-for="stage in timelineStages" :key="stage.stage" :class="['rounded-md p-4 flex flex-col items-center text-center', { 'opacity-30': !stage.reached_at }]" :style="stageCardStyle(stage.stage)">
+          <div v-for="stage in timelineStages" :key="stage.stage" :class="['rounded p-4 flex flex-col items-center text-center', { 'opacity-30': !stage.reached_at }]" :style="stageCardStyle(stage.stage)">
             <img class="w-24 mb-2" :src="`/images/event/xalatath/xalatath-logo-stage-${stage.stage}.svg`" alt="" />
             <div class="font-bold">Stage {{ stage.stage }}</div>
             <div class="text-xs opacity-75">{{ stage.stage === 0 ? 'Event start' : `${format(stage.threshold)} games + bans` }}</div>
@@ -80,7 +80,7 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
           <!-- Stage 5 added no new colours (the site stayed in the stage 4 palette); its gradient was only the splash -->
-          <div v-for="stage in timelineStages" :key="'change-' + stage.stage" :class="['rounded-md p-3 h-96 flex flex-col overflow-hidden', { 'opacity-30': !stage.reached_at }]" :style="stageCardStyle(stage.stage === 5 ? 4 : stage.stage)">
+          <div v-for="stage in timelineStages" :key="'change-' + stage.stage" :class="['rounded p-3 h-96 flex flex-col overflow-hidden', { 'opacity-30': !stage.reached_at }]" :style="stageCardStyle(stage.stage === 5 ? 4 : stage.stage)">
             <div class="text-xs uppercase opacity-75 text-center mb-2">Stage {{ stage.stage }}</div>
             <!-- Top-aligned so the logos and samples line up across the row -->
             <div class="flex-1 min-h-0 flex flex-col items-center justify-start pt-2 text-center">
@@ -141,7 +141,7 @@
                 <!-- The colours for whichever side of the toggle is showing -->
                 <div class="grid grid-cols-[auto_1fr_auto] items-center gap-x-2 gap-y-1 mt-2">
                   <template v-for="swatch in paletteSwatches" :key="swatch.label">
-                    <span class="inline-block w-3 h-3 rounded-sm void-palette-mock" :style="{ backgroundColor: paletteOn ? swatch.after : swatch.before }"></span>
+                    <span class="inline-block w-3 h-3 rounded void-palette-mock" :style="{ backgroundColor: paletteOn ? swatch.after : swatch.before }"></span>
                     <span class="opacity-75 truncate">{{ swatch.label }}</span>
                     <span class="opacity-75 tabular-nums">{{ paletteOn ? swatch.after : swatch.before }}</span>
                   </template>
@@ -197,7 +197,7 @@
             </div>
           </div>
           <div class="flex items-end gap-[2px] h-24">
-            <div v-for="day in eyeDays" :key="day.date" class="w-3 bg-[#7b3fe4] rounded-t-sm" :style="{ height: percent(day.count, eyeDayMax) }" :title="`${day.date}: ${day.count}`"></div>
+            <div v-for="day in eyeDays" :key="day.date" class="w-3 bg-[#7b3fe4] rounded-t" :style="{ height: percent(day.count, eyeDayMax) }" :title="`${day.date}: ${day.count}`"></div>
           </div>
         </div>
         <div class="max-w-[900px] mt-4 text-sm leading-relaxed">
@@ -358,13 +358,13 @@
             <div v-for="hour in 24" :key="'h' + hour" class="text-center opacity-60">{{ shortHour(hour - 1) }}</div>
             <template v-for="(row, day) in heatmap.rows" :key="'d' + day">
               <div class="opacity-75 pr-1">{{ weekdayNames[day] }}</div>
-              <div v-for="(games, hour) in row" :key="day + '-' + hour" class="h-5 rounded-sm bg-[#7b3fe4]" :style="{ opacity: heatOpacity(games / heatmap.max) }" :title="`${weekdayNames[day]} ${hour12(hour)} - ${format(games)} games`"></div>
+              <div v-for="(games, hour) in row" :key="day + '-' + hour" class="h-5 rounded bg-[#7b3fe4]" :style="{ opacity: heatOpacity(games / heatmap.max) }" :title="`${weekdayNames[day]} ${hour12(hour)} - ${format(games)} games`"></div>
             </template>
           </div>
         </div>
         <div class="flex items-center gap-2 mt-3 text-xs">
           <span class="opacity-75">Fewer games</span>
-          <div v-for="step in [0, 0.25, 0.5, 0.75, 1]" :key="step" class="w-5 h-5 rounded-sm bg-[#7b3fe4]" :style="{ opacity: heatOpacity(step) }"></div>
+          <div v-for="step in [0, 0.25, 0.5, 0.75, 1]" :key="step" class="w-5 h-5 rounded bg-[#7b3fe4]" :style="{ opacity: heatOpacity(step) }"></div>
           <span class="opacity-75">More games</span>
         </div>
         <p v-if="heatmap.peak" class="mt-2 text-sm">The Void was hungriest on {{ heatmap.peak }}.</p>
@@ -527,7 +527,7 @@
         <div v-if="contribution">
           <!-- The card as it downloads; downloadCard() draws the same layout -->
           <!-- Never played or faced her: a short banner instead of the full card -->
-          <div v-if="cardEmpty" class="void-contribution-card max-w-[700px] rounded-lg p-4 md:p-5 flex items-center gap-4">
+          <div v-if="cardEmpty" class="void-contribution-card max-w-[700px] rounded p-4 md:p-5 flex items-center gap-4">
             <img class="w-16 md:w-20 shrink-0" :src="`/images/event/xalatath/xalatath-logo-stage-${final.stage}.svg`" alt="" />
             <div class="min-w-0">
               <div class="text-xs uppercase tracking-widest xalatath-title">Xal'atath Void Corruption<span v-if="mode !== 'all'"> · {{ modeLabel }}</span></div>
@@ -536,7 +536,7 @@
               <div class="text-xs opacity-60 mt-2">heroesprofile.com/Event/Xalatath</div>
             </div>
           </div>
-          <div v-else class="void-contribution-card max-w-[1000px] rounded-lg p-5 md:p-8 grid md:grid-cols-[220px_minmax(0,1fr)] gap-6">
+          <div v-else class="void-contribution-card max-w-[1000px] rounded p-5 md:p-8 grid md:grid-cols-[220px_minmax(0,1fr)] gap-6">
             <div class="flex flex-col items-center text-center">
               <img class="w-40 md:w-52" :src="`/images/event/xalatath/xalatath-logo-stage-${final.stage}.svg`" alt="" />
             </div>

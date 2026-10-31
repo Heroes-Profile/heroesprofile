@@ -1,7 +1,7 @@
 <template>
   <div :class="compact ? 'px-4' : 'max-w-[1920px] mx-auto md:px-8 mb-8'">
     <button v-if="!compact" class="md:hidden p-2 bg-blue w-full" @click="showMobile">Show Filters</button>
-    <div v-show="compact || showNav" :class="compact ? 'bg-lighten rounded p-3' : 'bg-surface md:rounded-lg p-4 md:p-6 max-md:fixed max-md:inset-0 max-md:z-50 max-md:h-[100dvh] max-md:overflow-y-auto max-md:flex max-md:flex-col'">
+    <div v-show="compact || showNav" :class="compact ? 'bg-lighten rounded p-3' : 'bg-surface md:rounded p-4 md:p-6 max-md:fixed max-md:inset-0 max-md:z-50 max-md:h-[100dvh] max-md:overflow-y-auto max-md:flex max-md:flex-col'">
       <button v-if="!compact" class="md:hidden ml-auto text-2xl min-w-[44px] min-h-[44px]" aria-label="Close filters" @click="showMobile">x</button>
       <div :class="compact ? 'flex flex-wrap items-end gap-3' : 'filter-row'">
         <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,160px),1fr))] flex-1 basis-[800px] gap-2 min-w-0' : 'contents'">
@@ -423,7 +423,7 @@
                   type="text"
                   v-model="ffBattletag"
                   placeholder="Enter battletag"
-                  class="w-full h-[40px] rounded !bg-surface-3 pl-9 pr-2 text-white placeholder:text-subtext focus:outline-none"
+                  class="w-full h-[40px] rounded-control !bg-surface-3 pl-9 pr-2 text-white placeholder:text-subtext focus:outline-none"
                   @input="ffBlizzid = null; ffRegion = null; ffSearchResults = []; ffSearchError = null"
                 />
                 <div v-if="ffSearchResults.length > 1" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="min-width:280px; max-height:340px; overflow-y:auto;">
@@ -477,7 +477,7 @@
             :defaultValue="modifiedGroupSizeDefaultValue"
           ></multi-select-filter>
         </div>
-        <button :disabled="disabledFilter" @click="applyFilter" :class="compact ? 'bg-blue rounded text-white px-5 py-2 h-10 disabled:opacity-50 hover:bg-lblue' : ['rounded text-white font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]', disabledFilter ? 'bg-gray-md' : 'bg-blue hover:bg-lblue']">
+        <button :disabled="disabledFilter" @click="applyFilter" class="btn" :class="compact ? 'bg-blue px-5 h-10 disabled:opacity-50 hover:bg-lblue' : ['font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]', disabledFilter ? 'bg-gray-md' : 'bg-blue hover:bg-lblue']">
           Filter
         </button>
 

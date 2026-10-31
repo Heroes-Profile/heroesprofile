@@ -3,7 +3,7 @@
     <page-heading :heading="'Embed the Replay Uploader'" :infoText1="infoText"></page-heading>
 
     <div class="mx-auto max-w-[900px] px-4 mt-6 mb-10 space-y-6">
-      <div class="bg-lighten rounded-lg p-6 text-sm space-y-4">
+      <div class="bg-lighten rounded p-6 text-sm space-y-4">
         <p>
           You can put the Heroes Profile web uploader on your own site with an iframe:
           replays go straight from the visitor's browser to Heroes Profile, and your page is told how
@@ -14,7 +14,7 @@
         </p>
       </div>
 
-      <div class="bg-lighten rounded-lg p-6 text-sm space-y-4">
+      <div class="bg-lighten rounded p-6 text-sm space-y-4">
         <h2 class="text-lg">Live demo</h2>
         <p>This is the widget exactly as it appears on another site. Replays dropped here are really uploaded.</p>
 
@@ -33,7 +33,7 @@
         </div>
       </div>
 
-      <div class="bg-lighten rounded-lg p-6 text-sm space-y-4">
+      <div class="bg-lighten rounded p-6 text-sm space-y-4">
         <h2 class="text-lg">1. Add the iframe and script</h2>
         <pre class="bg-darken p-3 text-xs overflow-x-auto">{{ iframeSnippet }}</pre>
 
@@ -52,7 +52,7 @@
         </p>
       </div>
 
-      <div class="bg-lighten rounded-lg p-6 text-sm space-y-4">
+      <div class="bg-lighten rounded p-6 text-sm space-y-4">
         <h2 class="text-lg">2. Listen for results (optional)</h2>
         <p>
           The widget posts a message to your page after every replay and once the queue is empty. Check
@@ -98,7 +98,7 @@
         </p>
       </div>
 
-      <div class="bg-lighten rounded-lg p-6 text-sm space-y-4">
+      <div class="bg-lighten rounded p-6 text-sm space-y-4">
         <h2 class="text-lg">Good to know</h2>
         <ul class="list-disc list-inside space-y-1">
           <li>Limits are per visitor: 60 replays a minute and 20,000 a day from one IP address. The widget waits out the minute limit on its own.</li>

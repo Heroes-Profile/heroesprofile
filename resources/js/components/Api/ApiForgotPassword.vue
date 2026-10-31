@@ -6,7 +6,7 @@
       <label for="email">Email:</label>
       <input class="form-control search-input text-black" type="email" id="email" name="email" v-model="email" required autofocus>
 
-      <button type="submit" class="transition-colors text-white rounded text-center bg-blue hover:bg-lblue py-2 px-4 w-auto ml-auto my-2">Send Reset Link</button>
+      <button type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto my-2">Send Reset Link</button>
     </form>
 
     <div class="text-sm">

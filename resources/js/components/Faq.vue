@@ -21,8 +21,8 @@
 
       <!-- FAQ Categories -->
       <div v-for="category in filteredCategories" :key="category.name" class="mb-8">
-        <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">{{ category.name }}</h2>
-        <div class="bg-lighten rounded-b-lg overflow-hidden">
+        <h2 class="bg-teal px-4 py-3 rounded-t text-lg font-semibold">{{ category.name }}</h2>
+        <div class="bg-lighten rounded-b overflow-hidden">
           <div
             v-for="(item, index) in category.items"
             :key="index"
@@ -46,8 +46,8 @@
 
       <!-- Patch & Season History -->
       <div id="patch-history" class="mt-10 mb-8">
-        <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">Patch &amp; Season History</h2>
-        <div class="bg-lighten rounded-b-lg p-4">
+        <h2 class="bg-teal px-4 py-3 rounded-t text-lg font-semibold">Patch &amp; Season History</h2>
+        <div class="bg-lighten rounded-b p-4">
           <scroll-hint-container :fit="true">
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
             <thead>
@@ -76,8 +76,8 @@
 
       <!-- Season Dates -->
       <div id="season-dates" class="mt-10 mb-8">
-        <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">Season Dates</h2>
-        <div class="bg-lighten rounded-b-lg p-4">
+        <h2 class="bg-teal px-4 py-3 rounded-t text-lg font-semibold">Season Dates</h2>
+        <div class="bg-lighten rounded-b p-4">
           <p class="text-sm text-gray-300 mb-3">Shown in your time zone.</p>
           <scroll-hint-container :fit="true">
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
@@ -102,8 +102,8 @@
 
       <!-- Match Awards -->
       <div id="awards" class="mt-10 mb-8">
-        <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">Match Awards</h2>
-        <div class="bg-lighten rounded-b-lg p-4">
+        <h2 class="bg-teal px-4 py-3 rounded-t text-lg font-semibold">Match Awards</h2>
+        <div class="bg-lighten rounded-b p-4">
           <scroll-hint-container :fit="true">
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
             <thead>
@@ -129,8 +129,8 @@
 
       <!-- Ask a Question -->
       <div class="mt-12 mb-8">
-        <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">Still have a question?</h2>
-        <div class="bg-lighten rounded-b-lg p-6">
+        <h2 class="bg-teal px-4 py-3 rounded-t text-lg font-semibold">Still have a question?</h2>
+        <div class="bg-lighten rounded-b p-6">
           <p class="text-gray-300 mb-4">
             Can't find what you're looking for? Send us a message and we'll get back to you.
             You can also email us directly at
@@ -175,7 +175,7 @@
               <button
                 :disabled="isLoading"
                 type="submit"
-                class="transition-colors text-white rounded text-center bg-blue hover:bg-lblue py-2 px-6"
+                class="btn bg-blue hover:bg-lblue px-6"
               >
                 {{ isLoading ? 'Sending...' : 'Send Question' }}
               </button>

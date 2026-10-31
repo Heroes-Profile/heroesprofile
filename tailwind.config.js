@@ -61,7 +61,12 @@ module.exports = {
       'sans' : ['Roboto', 'sans-serif'],
       'logo' : ['Ruslan Display'],
     },
-    extend: {},
+    extend: {
+      borderRadius: {
+        DEFAULT: '.7rem',
+        control: '.5rem',
+      },
+    },
   },
   plugins: [],
 }

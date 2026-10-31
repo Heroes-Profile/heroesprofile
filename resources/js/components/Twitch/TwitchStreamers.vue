@@ -8,7 +8,7 @@
         issues. Report problems at <a href="/Contact" class="link">heroesprofile.com/Contact</a> or zemill@heroesprofile.com.
       </div>
 
-      <div id="how-to-watch" class="bg-lighten rounded-lg mb-8 scroll-mt-4">
+      <div id="how-to-watch" class="bg-lighten rounded mb-8 scroll-mt-4">
         <button
           @click="toggleHowTo"
           class="w-full flex items-center gap-2 px-4 py-3 text-left text-lg font-semibold"
@@ -35,7 +35,7 @@
               <img
                 src="/images/twitch/extension-icon.webp"
                 alt="A Twitch stream with the Heroes Profile icon circled against the right edge of the video player"
-                class="rounded-lg border border-lighten w-full"
+                class="rounded border border-lighten w-full"
                 loading="lazy"
               />
               <figcaption class="text-xs text-gray-medium mt-1">
@@ -48,7 +48,7 @@
               <img
                 src="/images/twitch/extension-icon-zoom.webp"
                 alt="Close-up of the Heroes Profile icon on the edge of the Twitch player"
-                class="rounded-lg border border-lighten w-full"
+                class="rounded border border-lighten w-full"
                 loading="lazy"
               />
               <figcaption class="text-xs text-gray-medium mt-1">
@@ -66,7 +66,7 @@
             <img
               src="/images/twitch/extension-open.webp"
               alt="The Heroes Profile Live panel open over a stream, showing both teams with heroes, talents and win rates"
-              class="rounded-lg border border-lighten w-full max-w-[700px]"
+              class="rounded border border-lighten w-full max-w-[700px]"
               loading="lazy"
             />
             <figcaption class="text-xs text-gray-medium mt-1">
@@ -102,12 +102,12 @@
         </div>
       </div>
 
-      <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold flex items-center gap-2">
+      <h2 class="bg-teal px-4 py-3 rounded-t text-lg font-semibold flex items-center gap-2">
         <span class="inline-block w-2 h-2 rounded-full bg-red"></span>
         Live Now
         <span class="text-sm font-normal">({{ directory.live.length }})</span>
       </h2>
-      <div class="bg-lighten rounded-b-lg p-4 mb-8">
+      <div class="bg-lighten rounded-b p-4 mb-8">
         <p v-if="!directory.live.length" class="text-sm text-gray-medium">
           Nobody using the extension is live right now. Check back later.
         </p>
@@ -119,7 +119,7 @@
             :href="stream.url"
             target="_blank"
             rel="noopener"
-            class="bg-darken rounded-lg overflow-hidden hover:ring-2 hover:ring-teal transition"
+            class="bg-darken rounded overflow-hidden hover:ring-2 hover:ring-teal transition"
           >
             <div class="relative">
               <img
@@ -143,11 +143,11 @@
         </div>
       </div>
 
-      <h2 class="bg-blue px-4 py-3 rounded-t-lg text-lg font-semibold">
+      <h2 class="bg-blue px-4 py-3 rounded-t text-lg font-semibold">
         All Streamers
         <span class="text-sm font-normal">({{ directory.offline.length }} offline)</span>
       </h2>
-      <div class="bg-lighten rounded-b-lg p-4 mb-8">
+      <div class="bg-lighten rounded-b p-4 mb-8">
         <p v-if="!directory.offline.length" class="text-sm text-gray-medium">No other listed streamers yet.</p>
 
         <ul v-else class="grid gap-2 sm:grid-cols-2 md:grid-cols-4">
@@ -160,7 +160,7 @@
         </ul>
       </div>
 
-      <div class="bg-lighten rounded-lg p-6 mb-8 text-sm">
+      <div class="bg-lighten rounded p-6 mb-8 text-sm">
         <h2 class="text-lg mb-2">Stream Heroes of the Storm?</h2>
         <p class="mb-2">
           The Heroes Profile Twitch extension shows your viewers everyone in your game — heroes,

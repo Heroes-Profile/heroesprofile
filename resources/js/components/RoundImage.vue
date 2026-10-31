@@ -13,7 +13,7 @@
       'block w-16 h-16 md:w-16 md:h-16': size === 'tile',
       'md:w-72': size === 'large',
       'md:h-[23em]': size === 'large',
-      'overflow-hidden rounded-lg': size === 'large',
+      'overflow-hidden rounded': size === 'large',
       'inline-block' : icon,
       'flex flex-col': !icon,
       'md:w-[1.7em]': icon,
@@ -52,9 +52,9 @@
   
     <img v-else loading="eager" :class="[
       size === 'tile'
-        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-16 h-16 max-w-none rounded-lg border-2 border-header'
+        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-16 h-16 max-w-none rounded border-2 border-header'
         : size === 'large'
-        ? 'card-img-top object-cover object-center relative hover:brightness-125 hover:drop-shadow max-w-none rounded-lg md:w-full md:h-full max-md:w-40 max-md:h-auto'
+        ? 'card-img-top object-cover object-center relative hover:brightness-125 hover:drop-shadow max-w-none rounded md:w-full md:h-full max-md:w-40 max-md:h-auto'
         : 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow max-sm:w-[2.5em] max-sm:h-[2.5em]  w-full h-10 min-w-10 max-md:h-10 max-md:w-10 max-w-none md:mr-auto  max-md: m-0',
       { 
         
@@ -82,7 +82,7 @@
           'w-max max-w-[24em]' : popupsize == 'fit'
         }
         ]" >
-        <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft tracking-normal text-left p-4 rounded-xl drop-shadow-md z-30">
+        <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft tracking-normal text-left p-4 rounded drop-shadow-md z-30">
           <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
           <div class="bg-red" v-if="ispatreon">Patreon Subscriber</div>
           <div class="bg-[#4c1d95]" v-if="voideye">Marked by the Void</div>
@@ -91,7 +91,7 @@
         </div>
       </div>
     </Teleport>
-    <div v-if="hasMobileText" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center   md:mb-4', {}]">
+    <div v-if="hasMobileText" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded px-2 text-center   md:mb-4', {}]">
       <div class="bg-yellow flex items-center justify-center gap-2" v-if="hpowner"><i class="fas fa-crown" style="color:gold;"></i>Heroes Profile Owner</div>
       <div class="bg-red flex items-center justify-center gap-2" v-else-if="ispatreon"><i class="fas fa-star" style="color:gold"></i>Patreon Subscriber</div>
       <div class="bg-[#4c1d95] flex items-center justify-center gap-2" v-if="voideye"><void-eye-flair :force="true" :tooltip="false"></void-eye-flair>Marked by the Void</div>

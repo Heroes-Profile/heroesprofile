@@ -14,7 +14,7 @@
       <label for="password_confirmation">Confirm New Password:</label>
       <input class="form-control search-input text-black" type="password" id="password_confirmation" name="password_confirmation" required>
 
-      <button type="submit" class="transition-colors text-white rounded text-center bg-blue hover:bg-lblue py-2 px-4 w-auto ml-auto my-2">Reset Password</button>
+      <button type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto my-2">Reset Password</button>
     </form>
   </api-form-card>
 </template>
