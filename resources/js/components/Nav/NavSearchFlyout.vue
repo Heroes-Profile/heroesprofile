@@ -13,7 +13,7 @@
             @click.stop
           />
         </div>
-        <div class="overflow-y-auto flex-1">
+        <div class="nav-flyout-scroll overflow-y-auto flex-1">
           <a :href="baseUrl" class="block px-4 py-2   hover:bg-lighten text-sm">{{ allLabel }}</a>
           <a
             v-for="item in filteredItems"

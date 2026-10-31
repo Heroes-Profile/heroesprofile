@@ -8,7 +8,7 @@
       </div>
       <button
         v-if="buttonText"
-        class="btn btn-outline-secondary bg-blue hover:bg-lblue rounded-r-control px-6 py-2 font-semibold shadow-[0_0_12px_rgba(49,91,182,0.5)]"
+        class="btn btn-outline-secondary bg-blue hover:bg-lblue rounded-none rounded-r-control px-6 py-2 font-semibold shadow-[0_0_12px_rgba(49,91,182,0.5)]"
         type="button"
         :disabled="!isInputValid"
         @click="clickedButton"

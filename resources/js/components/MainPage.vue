@@ -19,8 +19,8 @@
     </div>
 
 
-    <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[1920px] mx-auto px-4 md:px-8 pb-8">
-
+    <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[1920px] mx-auto px-4 md:px-8 pb-8 mt-20">
+      <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[1920px]">
       <div :class="cardClasses">
         <i class="fa-solid fa-globe text-[80px]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Global Stats</h3>
@@ -39,7 +39,8 @@
           <custom-button :href="'/Global/Leaderboard'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
         </div>
       </div>
-
+</div>
+<div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[1920px]">
       <div :class="cardClasses">
         <i class="fa-solid fa-database text-[80px]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Heroes Profile API</h3>
@@ -48,7 +49,7 @@
           <custom-button :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
         </div>
       </div>
-
+      
       <div :class="cardClasses">
         <i class="fas fa-address-card text-[80px]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Player Profile</h3>
@@ -69,7 +70,7 @@
       </div>
     </div>
 
-
+</div>
     <div class="mt-auto bg-surface-2 text-sm px-4 md:px-8 py-6">
       <div class="max-w-[1856px] mx-auto space-y-2">
         <p>Heroes Profile uses data from Heroes Profile API.  Heroes Profile API uploads are in open Heroes of the Storm replay database with user uploaded replay data.
@@ -117,7 +118,7 @@ import Cookies from 'js-cookie';
     },
     computed: {
       cardClasses() {
-        return 'flex flex-col text-center w-full md:w-[calc(50%-1.25rem)] xl:w-[calc(33.333%-1.75rem)] 2xl:w-[calc(20%-2rem)]';
+        return 'flex flex-col text-center  w-[337px]';
       },
     },
     watch: {

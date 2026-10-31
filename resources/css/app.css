@@ -6,12 +6,12 @@
 
 
 
-html{background-color:lightgrey; font-family: 'Roboto', sans-serif; box-sizing:border-box;}
+html{background-color:lightgrey; font-family: 'Roboto', sans-serif; box-sizing:border-box; }
 
 /* Shared button look. Colour stays on the element (e.g. bg-teal hover:bg-lteal); utilities on the element override this. */
 @layer components {
   .btn{
-    @apply flex items-center justify-center text-white text-center rounded px-4 py-2 transition-colors cursor-pointer disabled:cursor-not-allowed;
+    @apply flex items-center justify-center text-white text-center whitespace-nowrap rounded px-4 py-2 transition-colors cursor-pointer disabled:cursor-not-allowed;
   }
 }
 
@@ -86,6 +86,21 @@ body{
 .nav-dropdown.nav-dropdown-flip {
   left: auto;
   right: 0;
+}
+/* Thin dark scrollbar for the flyout's scrolling list */
+.nav-flyout-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: theme('colors.surface-4') theme('colors.surface-1');
+}
+.nav-flyout-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.nav-flyout-scroll::-webkit-scrollbar-track {
+  background: theme('colors.surface-1');
+}
+.nav-flyout-scroll::-webkit-scrollbar-thumb {
+  background: theme('colors.surface-4');
+  border-radius: 3px;
 }
 @media (max-width: 1024px) {
   .nav-flyout {
