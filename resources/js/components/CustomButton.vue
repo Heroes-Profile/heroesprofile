@@ -9,7 +9,6 @@
         'text-lg': size === 'big', 
         'py-1' : size === 'small',
         'text-sm' : size === 'small',
-        'cursor-not-allowed': disabled
       }
       ]" 
       :href="disabled ? '#' : href" 

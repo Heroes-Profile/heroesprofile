@@ -5,7 +5,7 @@
       <i class="fas fa-chevron-down text-xs"></i>
     </button>
     <div v-if="open" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg font-normal" style="width: 220px; max-height: 340px; overflow-y: auto;">
-      <input v-model="search" type="text" placeholder="Search hero..." class="w-full px-2 py-1 text-xs bg-gray-dark text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
+      <input v-model="search" type="text" placeholder="Search hero..." class="w-full px-2 py-1 text-xs bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
       <div
         v-for="h in filteredHeroes"
         :key="h.id"

@@ -88,9 +88,9 @@
 
   <div v-if="data.downloadable || isWatchableGame" class="absolute z-[3] right-2 top-2 flex flex-col gap-2 transition-opacity md:opacity-0 md:group-hover/replay:opacity-100 md:focus-within:opacity-100">
     <a v-if="data.downloadable && replayViewerAllowed && !replayDownloadBlocked" class="hover:text-lteal" :href="'/Match/Single/' + data.replayID + '/Download'" title="Download Replay"><i class="fa-solid fa-download"></i></a>
-    <span v-else-if="data.downloadable && !replayViewerAllowed" class="opacity-60 cursor-not-allowed" title="Log in to download replays"><i class="fa-solid fa-download"></i></span>
+    <span v-else-if="data.downloadable && !replayViewerAllowed" class="opacity-60" title="Log in to download replays"><i class="fa-solid fa-download"></i></span>
     <a v-if="isWatchableGame && replayViewerAllowed" class="hover:text-lteal" :href="'/Analytics/Match/Single/' + data.replayID" title="Watch Replay"><i class="fa-solid fa-video"></i></a>
-    <span v-else-if="isWatchableGame" class="opacity-60 cursor-not-allowed" title="Log in with Battle.net to watch replays"><i class="fa-solid fa-video"></i></span>
+    <span v-else-if="isWatchableGame" class="opacity-60" title="Log in with Battle.net to watch replays"><i class="fa-solid fa-video"></i></span>
   </div>
   </div>
 

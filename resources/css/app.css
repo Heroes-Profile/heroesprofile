@@ -11,7 +11,7 @@ html{background-color:lightgrey; font-family: 'Roboto', sans-serif; box-sizing:b
 /* Shared button look. Colour stays on the element (e.g. bg-teal hover:bg-lteal); utilities on the element override this. */
 @layer components {
   .btn{
-    @apply flex items-center justify-center text-white text-center whitespace-nowrap rounded px-4 py-2 transition-colors cursor-pointer disabled:cursor-not-allowed;
+    @apply flex items-center justify-center text-white text-center whitespace-nowrap rounded px-4 py-3 transition-colors cursor-pointer disabled:cursor-default;
   }
 }
 
@@ -44,7 +44,7 @@ html{background-color:lightgrey; font-family: 'Roboto', sans-serif; box-sizing:b
   @apply text-white;
 }
 .dark-mode input{
-  @apply text-white bg-gray-dark;
+  @apply text-white bg-field;
 }
 
 .variable-hover{
@@ -72,6 +72,7 @@ body{
   z-index: 60;
   min-width: 200px;
   padding-left: 2px;
+  
 }
 .nav-flyout-wrapper:hover .nav-flyout {
   display: block;
@@ -87,19 +88,23 @@ body{
   left: auto;
   right: 0;
 }
+/* Flyouts sit one shade lighter than the dropdown they open from */
+.nav-flyout .nav-dropdown-inner-wrapper {
+  @apply bg-surface-4;
+}
 /* Thin dark scrollbar for the flyout's scrolling list */
 .nav-flyout-scroll {
   scrollbar-width: thin;
-  scrollbar-color: theme('colors.surface-4') theme('colors.surface-1');
+  scrollbar-color: rgba(255, 255, 255, 0.25) theme('colors.surface-4');
 }
 .nav-flyout-scroll::-webkit-scrollbar {
   width: 6px;
 }
 .nav-flyout-scroll::-webkit-scrollbar-track {
-  background: theme('colors.surface-1');
+  background: theme('colors.surface-4');
 }
 .nav-flyout-scroll::-webkit-scrollbar-thumb {
-  background: theme('colors.surface-4');
+  background: rgba(255, 255, 255, 0.25);
   border-radius: 3px;
 }
 @media (max-width: 1024px) {
@@ -113,7 +118,9 @@ body{
 
 /* Navigation */
 .nav-dropdown{
+  
   @apply absolute  left-0 hidden  z-50 md:pt-3  min-w-[200px] max-md:relative;
+  
 }
 .nav-dropdown a{
   text-wrap:nowrap;
@@ -128,6 +135,8 @@ body{
   @apply max-md:w-full text-center;
 }
 .nav-dropdown-inner-wrapper{
+  padding-bottom:.1em;
+  padding-top:.1em;
   @apply bg-surface-1 text-sm shadow-[0_0_8px_rgba(0,0,0,0.4)] text-left max-md:flex-wrap;
 }
 

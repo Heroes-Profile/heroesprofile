@@ -57,7 +57,7 @@
             </div>
             <slot name="footer">
               <button 
-                class="bg-teal p-2 rounded ml-auto disabled:opacity-50 disabled:cursor-not-allowed" 
+                class="bg-teal p-2 rounded ml-auto disabled:opacity-50" 
                 @click="closePopup"
                 :disabled="!agreedToConditions"
               >

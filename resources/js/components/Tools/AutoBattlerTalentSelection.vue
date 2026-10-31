@@ -17,7 +17,7 @@
       <button
         @click="lockIn"
         :disabled="!allSelected"
-        class="btn bg-teal hover:bg-lteal font-bold px-6 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="btn bg-teal hover:bg-lteal font-bold px-6 disabled:opacity-50"
       >
         Lock in Talents
       </button>

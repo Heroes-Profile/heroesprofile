@@ -29,7 +29,7 @@
           <span v-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && user && !data.replay_download_blocked" class="link max-md:hidden" @click="downloadReplay(data, replayid)">
             Download Replay
           </span>
-          <span v-else-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && !user" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed max-md:hidden">
+          <span v-else-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && !user" class="inline-flex items-center gap-1 opacity-60 max-md:hidden">
             Download Replay
             <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
               <slot>
@@ -39,7 +39,7 @@
           </span>
           <!-- Replay viewer: season games; needs a Battle.net login, like Download Replay -->
           <a v-if="isWatchableGame && replayViewerAllowed" class="link" :href="'/Analytics/Match/Single/' + replayid">Watch Replay</a>
-          <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
+          <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60">
             Watch Replay
             <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
               <slot>
@@ -190,7 +190,7 @@
             <h2 class="text-3xl font-bold">Match Scores</h2>
             <!-- Same rules as Watch Replay -->
             <a v-if="isWatchableGame && replayViewerAllowed" class="link" :href="'/Analytics/Match/Single/' + replayid + '#analytic-performance'">How each player played</a>
-            <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
+            <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60">
               How each player played
               <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
                 <slot>

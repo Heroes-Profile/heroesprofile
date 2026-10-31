@@ -13,9 +13,7 @@
         Profile
       </h1>
 
-      <div ref="heroSearch" class="flex justify-center mt-10">
-        <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="text-lg"></search-component>
-      </div>
+     
     </div>
 
 

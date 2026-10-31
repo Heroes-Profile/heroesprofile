@@ -36,6 +36,7 @@ module.exports = {
       'surface-2' : '#272a34',
       'surface-3' : '#303340',
       'surface-4' : '#393e4d',
+      'field' : '#2b2e3a', // input backgrounds: header hue, a little lighter
       'header' : '#deffff',
       'subtext' : '#9ca3af',
       'soft' : '#c9cdd6',

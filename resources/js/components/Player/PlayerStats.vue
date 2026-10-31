@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <page-heading :heading="'Profile Data'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
+    <div class="flex"><page-heading :heading="'Profile Data'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
     </page-heading>
 
     <div class="max-w-[1920px] mx-auto px-4 md:px-8">
@@ -12,6 +12,7 @@
         <custom-button class="font-semibold text-center m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :text="'Filter'" :alt="'Filter'" :color="'blue'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
         </div>
       </panel-box>
+    </div>
     </div>
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>

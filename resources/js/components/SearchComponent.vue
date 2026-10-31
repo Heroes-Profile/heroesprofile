@@ -4,13 +4,12 @@
     <div class="flex items-stretch">
       <div class="relative flex-1">
         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-lteal pointer-events-none"></i>
-        <input type="text" class="form-control variable-text rounded-l-control p-2 pl-10 w-full" :placeholder="labelText" :aria-label="labelText" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton">
+        <input ref="input" type="text" :class="['form-control variable-text rounded-l-control px-4 py-3 pl-10 w-full', { 'ring-2 ring-inset ring-teal outline-none': showEmptyPrompt }]" :placeholder="labelText" :aria-label="labelText" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton" @blur="showEmptyPrompt = false">
       </div>
       <button
         v-if="buttonText"
-        class="btn btn-outline-secondary bg-blue hover:bg-lblue rounded-none rounded-r-control px-6 py-2 font-semibold shadow-[0_0_12px_rgba(49,91,182,0.5)]"
+        class="btn btn-outline-secondary bg-blue hover:bg-lblue rounded-none rounded-r-control font-semibold"
         type="button"
-        :disabled="!isInputValid"
         @click="clickedButton"
       >
         {{ buttonText }}
@@ -35,6 +34,7 @@
         buttonText: "Find Player",
         labelText: "Enter a battletag",
         prohibitedCharacters: ['*', '?', '%', '\'', '"', '(', ')', ';', '<', '>', '=', '|', '\\'],
+        showEmptyPrompt: false,
       }
     },
     created(){
@@ -63,9 +63,18 @@
       }
     },
     watch: {
+      userinput() {
+        this.showEmptyPrompt = false;
+      },
     },
     methods: {
       clickedButton(){
+        if (!this.userinput || this.userinput.trim().length === 0) {
+          // Nothing typed: point the user at the box instead of disabling the button
+          this.showEmptyPrompt = true;
+          this.$refs.input.focus();
+          return;
+        }
         if (!this.isInputValid) {
           return;
         }
