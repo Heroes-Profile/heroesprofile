@@ -20,9 +20,11 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
     public const MINIMUM_PATCH = '2.47.0.75589';
 
     // Bump when the cached data changes shape or maths, so old entries are skipped.
-    private const BUILDER_CACHE_VERSION = 1;
+    private const BUILDER_CACHE_VERSION = 2;
 
     private const BUILDER_REPLAYS_CACHE_VERSION = 1;
+
+    private const PATH_COLUMNS = ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'];
 
     public function show(Request $request, $hero = null)
     {
@@ -109,15 +111,8 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             $selectedtalents = [];
         }
 
-        $level_one = $selectedtalents[1] ?? null;
-        $level_four = $selectedtalents[4] ?? null;
-        $level_seven = $selectedtalents[7] ?? null;
-        $level_ten = $selectedtalents[10] ?? null;
-        $level_thirteen = $selectedtalents[13] ?? null;
-        $level_sixteen = $selectedtalents[16] ?? null;
-        $level_twenty = $selectedtalents[20] ?? null;
-
-        if (! $level_one && ! $level_four && ! $level_seven && ! $level_ten && ! $level_thirteen && ! $level_sixteen && ! $level_twenty) {
+        // The site's build paths chart wants every build, so it runs with nothing picked too
+        if (! array_filter($selectedtalents) && ! $request->boolean('build_paths')) {
             $talents = HeroesDataTalent::where('hero_name', $hero_name)->orderBy('level', 'ASC')->orderBy('sort', 'ASC')->get();
 
             return ['talentData' => $this->formatTalentData($talents, [])];
@@ -181,7 +176,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
                     'games_played' => 0,
                     'win_rate' => 0,
                 ],
-            ];
+            ] + ($request->boolean('build_paths') ? ['paths' => []] : []);
         }
 
         $data = GlobalHeroTalents::query()
@@ -300,6 +295,14 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             }
         }
 
+        // Nothing picked: the talents and build stay blank as before, only the paths are filled
+        if (! $level_one && ! $level_four && ! $level_seven && ! $level_ten && ! $level_thirteen && ! $level_sixteen && ! $level_twenty) {
+            return [
+                'talentData' => $this->formatTalentData(HeroesDataTalent::where('hero_name', $hero_name)->orderBy('level', 'ASC')->orderBy('sort', 'ASC')->limit(100)->get(), []),
+                'paths' => $this->buildPaths($data),
+            ];
+        }
+
         $buildsData = GlobalHeroTalents::query()
             ->join('heroesprofile_globals.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
             ->select('global_hero_talents.win_loss')
@@ -369,7 +372,38 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         return [
             'talentData' => $this->formatTalentData($talents, $transformedData),
             'buildData' => $buildReturnData,
-        ];
+        ] + ($request->boolean('build_paths') ? ['paths' => $this->buildPaths($data)] : []);
+    }
+
+    /**
+     * Every distinct talent path in the data, with its games and win rate.
+     * A game that ended early stops at its last picked talent.
+     */
+    private function buildPaths($data): array
+    {
+        $paths = [];
+        foreach ($data as $value) {
+            $talents = [];
+            foreach (self::PATH_COLUMNS as $column) {
+                if (! $value[$column]) {
+                    break;
+                }
+                $talents[] = (int) $value[$column];
+            }
+            if (! $talents) {
+                continue;
+            }
+            $key = implode('|', $talents);
+            $paths[$key]['talents'] = $talents;
+            $paths[$key]['games'] = ($paths[$key]['games'] ?? 0) + $value['games_played'];
+            $paths[$key]['wins'] = ($paths[$key]['wins'] ?? 0) + ($value['win_loss'] == 1 ? $value['games_played'] : 0);
+        }
+
+        return array_values(array_map(fn ($path) => [
+            'talents' => $path['talents'],
+            'games_played' => (int) $path['games'],
+            'win_rate' => $path['games'] > 0 ? round($path['wins'] / $path['games'] * 100, 2) : 0,
+        ], $paths));
     }
 
     public function getReplayData(Request $request)
