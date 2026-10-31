@@ -75,6 +75,10 @@
 
     <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
 
+    <!-- The chart takes the talent columns' width -->
+    <div :class="effectiveStyle === 'horizontal' ? 'w-fit mx-auto' : 'max-w-[1500px] mx-auto'">
+    <talent-build-paths v-if="paths && paths.length" :data="data" :paths="paths" v-model:open="pathsOpen"></talent-build-paths>
+
     <div :class="effectiveStyle === 'horizontal' ? 'flex px-3 gap-5 mx-auto justify-center' : 'flex px-3 gap-5 mx-auto justify-center flex-wrap flex-col max-w-[1500px]'">
       <talent-builder-column :data="data['1']" :level="1" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
       <talent-builder-column :data="data['4']" :level="4" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
@@ -83,6 +87,7 @@
       <talent-builder-column :data="data['13']" :level="13" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
       <talent-builder-column :data="data['16']" :level="16" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
       <talent-builder-column :data="data['20']" :level="20" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
+    </div>
     </div>
     <div class=" my-5 bg-teal py-5 px-2">
       <infobox class="max-w-[1500px] mx-auto " :input="'Build win rate and how many players have played that exact build. Win rate for builds to level 20 are inflated because teams that make it to level 20 win more. Therefore it is not an accurate representation of a builds viabllity. See table below for that calculation'"></infobox>
@@ -207,6 +212,8 @@
         data: null,
         replays: null,
         builddata: null,
+        paths: null,
+        pathsOpen: false,
         infoText1: "Pick a talent in any tier below to start. The tool will calculate talent win rates dynamically as you change your build choices.",
         infoText2: "Build win chance and win rate, along with games played by the build can be found below the talents.",
         clickedData: {
@@ -326,6 +333,7 @@
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
             mirror: this.mirrormatch,
+            build_paths: true,
           },
           {
             cancelToken: this.cancelTokenSource.token,
@@ -334,10 +342,11 @@
           if(response.data.status == "failure to validate inputs"){
             throw new Error("Failure to validate inputs");
           }
-          
+
           this.data = response.data.talentData;
           this.replays = response.data.replays;
           this.builddata = response.data.buildData;
+          this.paths = response.data.paths;
         }catch(error){
           this.dataError = true;
         }finally {
