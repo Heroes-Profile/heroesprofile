@@ -28,40 +28,9 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
     public const MINIMUM_PATCH = '2.50.0.79155';
 
     // Bump when the cached data changes shape or maths, so old entries are skipped.
-    private const TALENT_STATS_CACHE_VERSION = 2;
+    private const TALENT_STATS_CACHE_VERSION = 1;
 
     private const BUILDS_CACHE_VERSION = 2;
-
-    // A talent's worst/best build ignores combos with fewer games than this, and pulls each
-    // combo's win rate toward the talent's own rate as if it had this many extra games.
-    private const BUILD_RANGE_MIN_GAMES = 25;
-
-    // How many of the under-minimum combos to list under Other builds, most played first.
-    private const BUILD_RANGE_OTHER_LISTED = 5;
-
-    // Changing the minimum changes the cached results, so it's part of the cache key.
-    private const TALENT_STATS_CACHE_KEY_VERSION = self::TALENT_STATS_CACHE_VERSION * 1000 + self::BUILD_RANGE_MIN_GAMES;
-
-    // The other tiers that make up a talent's "build" in the worst/best columns.
-    private const BUILD_RANGE_PAIRS = [
-        1 => [4, 7],
-        4 => [1, 7],
-        7 => [1, 4],
-        10 => [1, 4, 7],
-        13 => [10, 16],
-        16 => [13, 20],
-        20 => [1, 4, 7, 10, 13, 16],
-    ];
-
-    private const LEVEL_COLUMNS = [
-        1 => 'level_one',
-        4 => 'level_four',
-        7 => 'level_seven',
-        10 => 'level_ten',
-        13 => 'level_thirteen',
-        16 => 'level_sixteen',
-        20 => 'level_twenty',
-    ];
 
     public function show(Request $request, $hero = null)
     {
@@ -127,7 +96,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             $versionIds = $this->gameVersionIds($gameVersion);
 
             $initialTalentData = $this->cachedGlobalResult(
-                $this->globalCacheKey('GlobalHeroTalentStats', $versionIds, $parameters, self::TALENT_STATS_CACHE_KEY_VERSION),
+                $this->globalCacheKey('GlobalHeroTalentStats', $versionIds, $parameters, self::TALENT_STATS_CACHE_VERSION),
                 $gameVersion,
                 'executeGlobalHeroTalentData',
                 $parameters
@@ -181,7 +150,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
 
-        $cacheKey = $this->globalCacheKey('GlobalHeroTalentStats', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all(), self::TALENT_STATS_CACHE_KEY_VERSION);
+        $cacheKey = $this->globalCacheKey('GlobalHeroTalentStats', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all(), self::TALENT_STATS_CACHE_VERSION);
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeGlobalHeroTalentData');
     }
@@ -298,152 +267,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             })->sortBy('sort')->filter()->values()->toArray();
         });
 
-        $talentRates = $data->map(fn ($rows) => collect($rows)->pluck('win_rate', 'talentInfo.talent_id')->all())->all();
-        $ranges = $this->talentBuildRanges($hero, $gameVersionIds, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $realLeagueTier, $talentRates);
-
-        return $data->map(fn ($rows, $level) => array_map(
-            fn ($row) => $row + ['build_range' => $ranges[$level][$row['talentInfo']['talent_id']] ?? null],
-            $rows
-        ));
-    }
-
-    /**
-     * Each talent's worst and best build: its win rate with every combination of the other
-     * tiers in BUILD_RANGE_PAIRS, from the full talent paths in global_hero_talents.
-     * Returns [level][talent_id] => ['worst' => ..., 'best' => ...], or nothing for a talent
-     * with fewer than two combos at all.
-     */
-    private function talentBuildRanges($hero, $gameVersionIds, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $realLeagueTier, array $talentRates): array
-    {
-        $model = is_null($realLeagueTier) ? GlobalHeroTalents::class : GlobalHeroTalentsRealRank::class;
-        $table = (new $model)->getTable();
-        $columns = array_values(self::LEVEL_COLUMNS);
-
-        $paths = $model::query()
-            ->join('heroesprofile_globals.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', "{$table}.talent_combination_id")
-            ->select(array_merge(["{$table}.win_loss"], $columns))
-            ->selectRaw("SUM({$table}.games_played) AS games_played")
-            ->filterByGameVersion($gameVersionIds)
-            ->filterByHero($hero)
-            ->tap(fn ($query) => $this->applyRankFilters($query, $realLeagueTier, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $heroLevel))
-            ->filterByGameMap($gameMap)
-            ->excludeMirror($mirror)
-            ->filterByRegion($region)
-            ->groupBy(array_merge(["{$table}.win_loss"], $columns))
-            ->toBase()
-            ->get();
-
-        // Wins and games per talent per combination of its paired tiers. A game that ended
-        // before one of those tiers is set aside and shared out below.
-        $combos = [];
-        $partial = [];
-        $totals = [];
-        foreach ($paths as $path) {
-            foreach (self::BUILD_RANGE_PAIRS as $level => $pairs) {
-                $talent = $path->{self::LEVEL_COLUMNS[$level]};
-                if (! $talent) {
-                    continue;
-                }
-                $picks = array_map(fn ($pair) => (int) $path->{self::LEVEL_COLUMNS[$pair]}, $pairs);
-                $key = implode('|', $picks);
-                if (in_array(0, $picks)) {
-                    $bucket = &$partial[$level][$talent][$key];
-                } else {
-                    $bucket = &$combos[$level][$talent][$key];
-                }
-                $bucket['games'] = ($bucket['games'] ?? 0) + $path->games_played;
-                $bucket['wins'] = ($bucket['wins'] ?? 0) + ($path->win_loss == 1 ? $path->games_played : 0);
-                unset($bucket);
-                $totals[$level][$talent]['games'] = ($totals[$level][$talent]['games'] ?? 0) + $path->games_played;
-                $totals[$level][$talent]['wins'] = ($totals[$level][$talent]['wins'] ?? 0) + ($path->win_loss == 1 ? $path->games_played : 0);
-            }
-        }
-
-        // Same as the builds table: an early-ending game counts toward each combination it could
-        // have become, by the share of finished games on its path that went on to pick it.
-        $finished = $combos;
-        foreach ($partial as $level => $talents) {
-            foreach ($talents as $talent => $earlyGames) {
-                foreach ($earlyGames as $key => $early) {
-                    $known = array_filter(explode('|', $key), fn ($pick) => $pick !== '0');
-                    $matches = array_filter(
-                        $finished[$level][$talent] ?? [],
-                        fn ($combo, $comboKey) => array_intersect_assoc($known, explode('|', $comboKey)) === $known,
-                        ARRAY_FILTER_USE_BOTH
-                    );
-                    $reached = array_sum(array_column($matches, 'games'));
-                    if ($reached == 0) {
-                        continue;
-                    }
-                    foreach ($matches as $comboKey => $combo) {
-                        $share = $combo['games'] / $reached;
-                        $combos[$level][$talent][$comboKey]['games'] += $early['games'] * $share;
-                        $combos[$level][$talent][$comboKey]['wins'] += $early['wins'] * $share;
-                    }
-                }
-            }
-        }
-
-        $weight = self::BUILD_RANGE_MIN_GAMES;
-        $ranges = [];
-        foreach ($combos as $level => $talents) {
-            foreach ($talents as $talent => $builds) {
-                $talentRate = ($talentRates[$level][$talent] ?? 50) / 100;
-                $scored = [];
-                $all = [];
-                $keptGames = 0;
-                $keptWins = 0;
-                $small = [];
-                foreach ($builds as $key => $build) {
-                    $talents = array_map(fn ($pair, $id) => ['level' => $pair, 'talent_id' => (int) $id], self::BUILD_RANGE_PAIRS[$level], explode('|', $key));
-                    $shrunk = [
-                        'win_rate' => round(($build['wins'] + $weight * $talentRate) / ($build['games'] + $weight) * 100, 2),
-                        'games_played' => (int) round($build['games']),
-                        'talents' => $talents,
-                    ];
-                    $all[] = $shrunk;
-                    if ($build['games'] < $weight) {
-                        $small[] = ['win_rate' => round($build['wins'] / $build['games'] * 100, 2)] + $shrunk;
-
-                        continue;
-                    }
-                    $keptGames += $build['games'];
-                    $keptWins += $build['wins'];
-                    $scored[] = $shrunk;
-                }
-
-                // Too few combos over the minimum: rank them all instead, and the page warns about it
-                $lowSample = count($scored) < 2;
-                if ($lowSample) {
-                    if (count($all) < 2) {
-                        continue;
-                    }
-                    $scored = $all;
-                }
-                usort($scored, fn ($a, $b) => $a['win_rate'] <=> $b['win_rate']);
-
-                // Everything the worst/best leave out: small combos and early games with no finished match
-                $otherGames = $totals[$level][$talent]['games'] - $keptGames;
-                $other = ! $lowSample && round($otherGames) >= 1 ? [
-                    'win_rate' => round(($totals[$level][$talent]['wins'] - $keptWins) / $otherGames * 100, 2),
-                    'games_played' => (int) round($otherGames),
-                    'builds' => collect($small)->sortByDesc('games_played')->take(self::BUILD_RANGE_OTHER_LISTED)->values()->all(),
-                ] : null;
-
-                $ranges[$level][$talent] = [
-                    'worst' => $scored[0],
-                    'best' => end($scored),
-                    'other' => $other,
-                    'games_played' => (int) round($totals[$level][$talent]['games']),
-                    'combinations' => count($builds),
-                    'combinations_kept' => count($builds) - count($small),
-                    'low_sample' => $lowSample,
-                    'min_games' => self::BUILD_RANGE_MIN_GAMES,
-                ];
-            }
-        }
-
-        return $ranges;
+        return $data;
     }
 
     public function getGlobalHeroTalentBuildData(Request $request)
