@@ -332,6 +332,6 @@
       </div>
     @endif
   @endforeach
-  <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="max-md:hidden md:w-96 {{ request()->is('/') ? 'invisible' : '' }}"></search-component>
+  <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="max-md:hidden md:w-96"></search-component>
 </nav>
 <mobile-nav-hack></mobile-nav-hack>

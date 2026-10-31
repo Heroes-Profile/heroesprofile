@@ -119,7 +119,7 @@ body{
   text-wrap:nowrap;
   display:flex;
   white-space:nowrap;
-  max-md:flex-col;
+ 
 }
 
 .nav-item{
@@ -142,7 +142,7 @@ body{
     top:calc(100% - 10px);
   }
   .nav-dropdown{
-      @apply group-hover:block;
+      @apply group-hover:block rounded;
   }
   .nav-dropdown-inner-wrapper{
      @apply rounded;
@@ -159,7 +159,7 @@ nav .search-component{
 }
 
 .nav-dropdown a{
-  @apply block px-4 py-2  hover:bg-lighten;
+  @apply block px-4 py-3 m-2 hover:bg-lighten rounded;
 }
 .nav-dropdown a.remove-account {
   @apply hover:bg-gray-dark/80;

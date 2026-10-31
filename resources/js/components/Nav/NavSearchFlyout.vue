@@ -9,7 +9,7 @@
             v-model="search"
             type="text"
             placeholder="Search"
-            class="w-full px-2 py-1 text-xs bg-gray-dark text-white border border-white/20 rounded-control focus:outline-none focus:border-teal"
+            class="w-full px-2 py-2 text-sm bg-gray-dark text-white rounded-control focus:outline-none focus:border-teal text-sm"
             @click.stop
           />
         </div>
