@@ -725,7 +725,7 @@
             if(tablewrapper){
               // On mobile we prefer native horizontal scroll for readability.
               // Fixed-column tables scroll too, so every section keeps the same column widths.
-              if (this.windowWidth <= 768 || table.classList.contains('fixed-column-table')) {
+              if (this.windowWidth <= 1024 || table.classList.contains('fixed-column-table')) {
                 table.style.transformOrigin = '';
                 table.style.transform = '';
                 tablewrapper.style.height = '';

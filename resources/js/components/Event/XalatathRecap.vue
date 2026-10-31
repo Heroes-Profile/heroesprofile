@@ -62,7 +62,7 @@
       <!-- Stage timeline -->
       <section id="recap-stages" data-index="How the Nexus Fell" v-if="stages.length">
         <h2 class="recap-heading">How the Nexus Fell on Heroes Profile</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
           <div v-for="stage in timelineStages" :key="stage.stage" :class="['rounded-md p-4 flex flex-col items-center text-center', { 'opacity-30': !stage.reached_at }]" :style="stageCardStyle(stage.stage)">
             <img class="w-24 mb-2" :src="`/images/event/xalatath/xalatath-logo-stage-${stage.stage}.svg`" alt="" />
             <div class="font-bold">Stage {{ stage.stage }}</div>
@@ -78,7 +78,7 @@
           <h3 class="text-sm uppercase tracking-widest xalatath-title">What Changed</h3>
           <multi-tab-button :options="changeOptions" :model-value="paletteOn ? 'after' : 'before'" @update:model-value="setChangeView"></multi-tab-button>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
           <!-- Stage 5 added no new colours (the site stayed in the stage 4 palette); its gradient was only the splash -->
           <div v-for="stage in timelineStages" :key="'change-' + stage.stage" :class="['rounded-md p-3 h-96 flex flex-col overflow-hidden', { 'opacity-30': !stage.reached_at }]" :style="stageCardStyle(stage.stage === 5 ? 4 : stage.stage)">
             <div class="text-xs uppercase opacity-75 text-center mb-2">Stage {{ stage.stage }}</div>
@@ -376,7 +376,7 @@
         <p class="mb-4 text-sm opacity-75">Her best single games for every stat. Click a record to see the top 10.</p>
         <div v-for="group in recordGroups" :key="group.title" class="mb-5">
           <h3 class="text-sm uppercase tracking-widest xalatath-title mb-2">{{ group.title }}</h3>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 items-start">
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 items-start">
             <details v-for="item in group.records" :key="item.record" class="xalatath-recap-card group">
               <summary class="px-3 py-2 flex justify-between items-center gap-3 cursor-pointer list-none">
                 <div class="min-w-0">

@@ -112,7 +112,7 @@
           Nobody using the extension is live right now. Check back later.
         </p>
 
-        <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div v-else class="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
           <a
             v-for="stream in directory.live"
             :key="stream.login"
@@ -150,7 +150,7 @@
       <div class="bg-lighten rounded-b-lg p-4 mb-8">
         <p v-if="!directory.offline.length" class="text-sm text-gray-medium">No other listed streamers yet.</p>
 
-        <ul v-else class="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        <ul v-else class="grid gap-2 sm:grid-cols-2 md:grid-cols-4">
           <li v-for="streamer in directory.offline" :key="streamer.login" class="bg-darken rounded p-3">
             <a :href="streamer.url" target="_blank" rel="noopener" class="link font-semibold">{{ streamer.display_name }}</a>
             <div v-if="streamer.battletag && streamer.blizz_id" class="text-xs mt-1">

@@ -140,7 +140,7 @@
             text-decoration: underline;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .columns { flex-direction: column; }
             .divider-v { width: 100%; height: 2px; }
         }

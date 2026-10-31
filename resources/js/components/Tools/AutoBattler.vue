@@ -148,11 +148,11 @@ export default {
       loadingTalents: false,
       talentError: null,
       talentStyle: this.talentbuilderstyle || 'vertical',
-      isMobile: window.innerWidth < 768,
+      isMobile: window.innerWidth < 1024,
     };
   },
   mounted() {
-    this._onResize = () => { this.isMobile = window.innerWidth < 768; };
+    this._onResize = () => { this.isMobile = window.innerWidth < 1024; };
     window.addEventListener('resize', this._onResize);
   },
   beforeUnmount() {

@@ -1,5 +1,5 @@
 <template>
-  <section v-if="tiers.some(tier => tier.talents.length)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-2" aria-label="Talent statistics">
+  <section v-if="tiers.some(tier => tier.talents.length)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-2" aria-label="Talent statistics">
     <article v-for="tier in tiers" :key="tier.level" class="min-w-0">
       <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Level {{ tier.level }}</h2>
       <div class="rounded-b overflow-hidden variable-background variable-text">

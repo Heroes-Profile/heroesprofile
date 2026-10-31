@@ -1318,7 +1318,7 @@
       },
       isMobileView() {
         // Same breakpoint as Tailwind's md
-        return !window.matchMedia('(min-width: 768px)').matches;
+        return !window.matchMedia('(min-width: 1024px)').matches;
       },
       checkScreenWidth() {
         // Show on desktop; close it when going back to mobile (e.g. rotating a phone) so it doesn't cover the page

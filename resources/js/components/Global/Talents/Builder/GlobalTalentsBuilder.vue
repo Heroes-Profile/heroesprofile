@@ -233,7 +233,7 @@
         rolerank: null,
         mirrormatch: 0,
         showReplayList: false,
-        isMobile: window.innerWidth < 768,
+        isMobile: window.innerWidth < 1024,
         localStyle: 'vertical',
         localLoad: 'auto',
         showPatchNotes: false,
@@ -256,7 +256,7 @@
       }
     },
     mounted() {
-      this._onResize = () => { this.isMobile = window.innerWidth < 768; };
+      this._onResize = () => { this.isMobile = window.innerWidth < 1024; };
       window.addEventListener('resize', this._onResize);
     },
     beforeUnmount() {

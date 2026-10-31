@@ -80,7 +80,7 @@ body{
   left: auto;
   right: 0;
 }
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .nav-flyout {
     display: none !important;
   }
@@ -109,7 +109,7 @@ body{
   @apply bg-blue   text-sm drop-shadow text-left max-md:flex-wrap;
 }
 
-@media (min-width:768px){
+@media (min-width:1024px){
   /* The bar is centred on the label, so it stays put when a label wraps to two lines */
   .main-navigation-wrapper .nav-item{
     display:flex;
@@ -151,7 +151,7 @@ nav .search-component{
   @apply hover:bg-gray-dark/80;
 }
 
-@media (max-width:768px){
+@media (max-width:1024px){
 
 
     .main-navigation-wrapper{
@@ -324,7 +324,7 @@ h1{
 
   display: flex;
 }
-@media (min-width:768px){
+@media (min-width:1024px){
   .stack-single{
     width: 5em;
     font-size:.8em;
@@ -336,7 +336,7 @@ h1{
   margin-left: 0.5em;
 }
 
-@media (min-width:768px){
+@media (min-width:1024px){
   .stack-single.stack-solo {
     width: 2em;
   }
@@ -644,10 +644,8 @@ thead{border-color:transparent;}
 .xalatath-recap .hover\:bg-gray-light:hover{ background-color: #3a1470; }
 .void-gazette-index{ column-gap: 2.5rem; }
 .void-gazette-index li{ padding: 0.15rem 0; }
-@media (min-width: 768px){ .void-gazette-index{ column-count: 2; } }
-@media (min-width: 1024px){ .void-gazette-index{ column-count: 3; } }
-@media (min-width: 768px){ .void-gazette-columns{ column-count: 2; } }
-@media (min-width: 1024px){ .void-gazette-columns{ column-count: 3; } }
+@media (min-width:1024px){ .void-gazette-index{ column-count: 3; } }
+@media (min-width:1024px){ .void-gazette-columns{ column-count: 3; } }
 .void-contribution-card{
   background: radial-gradient(circle at 50% 40%, #3a1470 0%, #08030f 85%);
   border: 1px solid #5b21b6;

@@ -1,7 +1,7 @@
 <template>
   <!-- A game-summary-box row with empty slots, same column widths, while matches load -->
   <div class="mb-1.5 flex flex-wrap items-center justify-between gap-y-4 rounded-lg overflow-hidden bg-surface-1 2xl:flex-nowrap">
-    <div class="relative flex-1 lg:max-w-[410px] min-w-[300px] self-stretch flex items-center pl-6 py-4">
+    <div class="relative flex-1 md:max-w-[410px] min-w-[300px] self-stretch flex items-center pl-6 py-4">
       <div class="absolute inset-y-0 left-0 w-1.5 bg-surface-3"></div>
       <div class="flex items-center gap-4">
         <skeleton-box class="w-[82px] h-[82px] shrink-0 !rounded-full"></skeleton-box>

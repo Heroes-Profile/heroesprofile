@@ -282,7 +282,7 @@
         return this.ranksource === 'sl';
       },
       isCompact() {
-        return this.localLayout === 'compact' && this.windowWidth >= 768;
+        return this.localLayout === 'compact' && this.windowWidth >= 1024;
       },
       filteredDropdownHeroes() {
         const q = this.heroDropdownSearch.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();

@@ -159,7 +159,7 @@ export default {
   },
   methods: {
     isSmallScreen() {
-      return window.innerWidth <= 768; // You can adjust the threshold as needed
+      return window.innerWidth <= 1024; // You can adjust the threshold as needed
     },
     scheduleHide() {
       if (this.hidedelay === 0) {

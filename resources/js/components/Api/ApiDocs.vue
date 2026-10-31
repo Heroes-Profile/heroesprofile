@@ -20,7 +20,7 @@
         Bounded to the viewport and scrollable in its own right. Sticky alone
         pins it, and anything past the fold then has nothing left to scroll.
       -->
-      <nav class="hidden lg:block w-200 shrink-0 sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto pr-2">
+      <nav class="hidden md:block w-200 shrink-0 sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto pr-2">
         <input
           v-model="search"
           type="text"

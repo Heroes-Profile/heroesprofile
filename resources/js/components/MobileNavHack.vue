@@ -14,7 +14,7 @@ export default {
   },
   created(){
     function isSmallScreen() {
-  return window.innerWidth <= 768; // You can adjust the threshold as needed
+  return window.innerWidth <= 1024; // You can adjust the threshold as needed
 }
 
       // Dropdowns open to the right, and their flyouts to the right of that. Near the

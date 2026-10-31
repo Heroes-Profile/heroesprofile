@@ -73,7 +73,7 @@ export default {
     }
   },
   created(){
-    if(this.infoTextTotalCharacters > 250 && window.innerWidth < 768){
+    if(this.infoTextTotalCharacters > 250 && window.innerWidth < 1024){
       this.hideText = true;
     }
   },

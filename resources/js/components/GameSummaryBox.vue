@@ -4,7 +4,7 @@
     <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
     <!-- The whole row opens the match; talents, player names and the replay icons sit on top of it -->
     <a :href="getHref()" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
-    <div class="relative flex-1 lg:max-w-[410px] min-w-[300px] self-stretch flex items-center pl-6 py-4">
+    <div class="relative flex-1 md:max-w-[410px] min-w-[300px] self-stretch flex items-center pl-6 py-4">
       <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="data.winner === 1 ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
       <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"></div>
       <div class="absolute inset-y-0 left-0 w-1.5" :class="data.winner === 1 ? 'bg-win' : 'bg-red'"></div>
