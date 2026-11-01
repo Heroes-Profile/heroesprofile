@@ -302,8 +302,9 @@
             },
           });
 
+          // Rows show once their teams are in
+          await this.$loadMatchDetails(response.data[0]?.latestGames, this.blizzid, this.region);
           this.data = response.data[0];
-          this.$loadMatchDetails(this.data?.latestGames, this.blizzid, this.region);
         }catch(error){
           //Do something here
         }finally {

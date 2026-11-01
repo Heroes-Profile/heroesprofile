@@ -227,8 +227,9 @@ export default {
             }
           },
         });
+        // Rows show once their teams are in
+        await this.$loadMatchDetails(response.data.data, this.blizzid, this.region);
         this.data = response.data;
-        this.$loadMatchDetails(this.data.data, this.blizzid, this.region);
       }catch(error){
         //Do something here
       }finally {
