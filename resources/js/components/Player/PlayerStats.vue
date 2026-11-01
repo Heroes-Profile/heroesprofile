@@ -1,9 +1,11 @@
 <template>
   <div class="">
-    <div class="flex"><page-heading :heading="'Profile Data'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
+    <div class="flex max-w-[1920px] mx-auto">
+      <div class="">
+      <page-heading :heading="'Profile Data'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
     </page-heading>
-
-    <div class="max-w-[1920px] mx-auto px-4 md:px-8">
+</div>
+    <div class="max-w-[1920px] mx-auto px-4 md:px-8 w-full">
       <panel-box>
         <div class="filter-row">
         <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
