@@ -30,7 +30,7 @@
           <h2 class="text-3xl font-bold">{{ role }}</h2>
 
           <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
-            <div class="shrink-0 w-40 md:w-60">
+            <div class="shrink-0 w-40 md:w-72 self-center [&_img]:!object-contain">
               <round-image :image="`/images/roles/${role.toLowerCase()}.PNG`" :excludehover="true" size="large"></round-image>
             </div>
 
@@ -47,7 +47,10 @@
           </div>
 
           <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
-            <h3 class="text-2xl font-bold">{{ section.title }}</h3>
+            <div class="flex justify-between items-baseline gap-6">
+              <h3 class="text-2xl font-bold">{{ section.title }}</h3>
+              <a class="text-header whitespace-nowrap hover:underline" :href="profileUrl + section.allPath">{{ section.allText }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+            </div>
             <div class="flex flex-wrap gap-6">
               <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :playerlink="true" :text="group.label" :data="group.data"></group-box>
             </div>
@@ -57,39 +60,36 @@
         <div class="flex flex-col gap-6 min-w-0">
           <player-party-size-panel :data="data" prefix="stack_size_"></player-party-size-panel>
 
-          <panel-box :inner="true" title="Win Rate Per Season">
-            <line-chart v-if="seasonWinRateDataArray" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" :point-radius="3" :point-hover-radius="5" :title="`${battletag} Win Rate Data Per Season with ${role}`"></line-chart>
-            <p v-else class="text-subtext">No season data for these filters.</p>
-          </panel-box>
+          <div class="grid md:grid-cols-2 gap-6">
+            <panel-box :inner="true" :title="'Heroes Played As ' + role">
+              <div class="flex flex-wrap gap-2">
+                <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes" :key="index">
+                  <hero-image-wrapper :hero="item.hero">
+                    <image-hover-box :title="item.hero.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
+                  </hero-image-wrapper>
+                </a>
+              </div>
+            </panel-box>
+
+            <panel-box :inner="true" :title="'Maps Played As ' + role">
+              <div class="flex flex-wrap gap-2">
+                <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
+                  <map-image-wrapper :map="item.game_map">
+                    <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
+                  </map-image-wrapper>
+                </a>
+              </div>
+            </panel-box>
+          </div>
         </div>
       </div>
       </panel-box>
 
+      <player-season-win-rate-panel :data="data" :title="`${battletag} Win Rate Data Per Season with ${role}`"></player-season-win-rate-panel>
+
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
-      <panel-box :title="'Heroes Played As ' + role">
-        <div class="flex flex-wrap gap-2">
-          <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes" :key="index">
-            <hero-image-wrapper :hero="item.hero" size="big">
-              <image-hover-box :title="item.hero.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
-            </hero-image-wrapper>
-          </a>
-        </div>
-      </panel-box>
-
-      <panel-box :title="'Maps Played As ' + role">
-        <div class="flex flex-wrap gap-2">
-          <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
-            <map-image-wrapper :map="item.game_map" size="big">
-              <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
-            </map-image-wrapper>
-          </a>
-        </div>
-      </panel-box>
-
-      <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
-
-      <panel-box v-if="data.latestGames" title="Recent Matches" link-text="View Match History" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Match/History/?role=' + role" :divider="false">
+      <panel-box v-if="data.latestGames" title="Recent Matches" link-text="Match History" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Match/History/?role=' + role" :divider="false">
         <div>
           <game-summary-header></game-summary-header>
           <game-summary-box v-for="(item, index) in data.latestGames" :key="index" :data="item" :replay-viewer-allowed="replayViewerAllowed" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
@@ -129,17 +129,25 @@
             <panel-box :inner="true" title="Party Size Win Rates">
               <skeleton-box v-for="index in 5" :key="index" class="h-10"></skeleton-box>
             </panel-box>
-            <panel-box :inner="true" title="Win Rate Per Season">
-              <skeleton-box class="h-[260px]"></skeleton-box>
-            </panel-box>
+            <div class="grid md:grid-cols-2 gap-6">
+              <panel-box v-for="title in ['Heroes Played As ' + role, 'Maps Played As ' + role]" :key="title" :inner="true" :title="title">
+                <div class="flex flex-wrap gap-2">
+                  <skeleton-box v-for="tile in 12" :key="tile" class="w-10 h-10 !rounded-full"></skeleton-box>
+                </div>
+              </panel-box>
+            </div>
           </div>
         </div>
+      </panel-box>
+
+      <panel-box title="Win Rate Per Season">
+        <skeleton-box class="h-72"></skeleton-box>
       </panel-box>
 
       <panel-box title="Recent Matches" :divider="false">
         <div>
           <game-summary-header></game-summary-header>
-          <game-summary-skeleton v-for="index in 5" :key="index"></game-summary-skeleton>
+          <game-summary-skeleton v-for="index in 7" :key="index"></game-summary-skeleton>
         </div>
       </panel-box>
     </div>
@@ -214,20 +222,20 @@
       },
       topSections() {
         return [
-          { title: 'Heroes', groups: [
+          { title: 'Heroes', allText: 'All Heroes', allPath: '/Hero', groups: [
             { label: 'Most Played', data: this.data.hero_data_top_played.slice(0, 3) },
             { label: 'Highest Win Rate', data: this.data.hero_data_top_win_rate.slice(0, 3) },
             { label: 'Latest Played', data: this.data.hero_data_top_latest_played.slice(0, 3) },
           ] },
-          { title: 'Maps', groups: [
+          { title: 'Maps', allText: 'All Maps', allPath: '/Map', groups: [
             { label: 'Most Played', data: this.data.map_data_top_played.slice(0, 3) },
             { label: 'Highest Win Rate', data: this.data.map_data_top_win_rate.slice(0, 3) },
             { label: 'Latest Played', data: this.data.map_data_top_latest_played.slice(0, 3) },
           ] },
         ];
       },
-      seasonWinRateDataArray() {
-        return this.data && this.data.season_win_rate_data ? Object.values(this.data.season_win_rate_data) : null;
+      profileUrl() {
+        return '/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region;
       },
       gameTypesWithAll() {
         const newValue = { code: 'All', name: 'All' };

@@ -1,5 +1,5 @@
 <template>
-  <panel-box :inner="true" title="Heroes Profile MMR" :link-text="linkHref ? 'View HP MMR Breakdown' : null" :link-href="linkHref">
+  <panel-box :inner="true" title="Heroes Profile MMR" :link-text="linkHref ? 'HP MMR Breakdown' : null" :link-href="linkHref">
     <template #title>
       <round-image size="small" icon="fas fa-info" title="info" popupsize="large">
         <div>

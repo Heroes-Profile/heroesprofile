@@ -46,69 +46,13 @@
       </div>
       <div v-else class="max-w-[1920px] mx-auto px-4 md:px-8 py-4">
         <panel-box>
-        <div id="table-container" ref="tablecontainer" class="min-w-0">
-      <table id="responsive-table" class="min-w-0 w-full responsive-table relative" ref="responsivetable">
-        <thead>
-          <tr>
-            <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Match ID<sort-indicator column="replayID" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>
-            <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game Date<sort-indicator column="game_date" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>            
-            <th @click="sortTable('game_type_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game Type<sort-indicator column="game_type_id" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>
-            <th @click="sortTable('game_map')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game Map<sort-indicator column="game_map" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>
-            <th @click="sortTable('hero_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Hero<sort-indicator column="hero_id" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>    
-            <th @click="sortTable('winner')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Winner<sort-indicator column="winner" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>    
-            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-default">
-              Talents
-            </th>                   
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row, index) in sortedData" :key="index">
-            <td>
-              <a class="link" :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a>
-            </td>
-            <td>
-              {{ formatDate(row.game_date) }}
-            </td>
-            <td>
-              {{ row.game_type.name }}
-            </td>
-            <td>
-              {{ row.game_map.name }}
-            </td>
-            <td class="py-2 px-3  flex items-center gap-1">
-              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
-            </td>
-            <td>
-              {{ row.winner == 1 ? 'True' : 'False' }}
-            </td>
-            <td>
-
-              <div class="flex gap-x-1 mx-2 items-center">
-                <talent-image-wrapper v-if="row.level_one && row.level_one !=0" :talent="row.level_one" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_four && row.level_four !=0" :talent="row.level_four" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_seven && row.level_seven !=0" :talent="row.level_seven" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_ten && row.level_ten !=0" :talent="row.level_ten" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_thirteen && row.level_thirteen !=0" :talent="row.level_thirteen" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_sixteen && row.level_sixteen !=0" :talent="row.level_sixteen" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_twenty && row.level_twenty !=0" :talent="row.level_twenty" :size="'small'"></talent-image-wrapper>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-        </div>
+          <!-- Wide rows scroll sideways on narrow screens -->
+          <div class="overflow-x-auto">
+            <div class="min-w-max w-full">
+              <game-summary-header :compact="true" :sort-key="sortKey" :sort-dir="sortDir" @sort="sortTable"></game-summary-header>
+              <game-summary-box v-for="item in sortedData" :key="item.replayID" :compact="true" :data="item" :replay-viewer-allowed="authenticated" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
+            </div>
+          </div>
         </panel-box>
       </div>
       <div class="max-w-[1920px] mx-auto px-4 md:px-8 pb-4 flex justify-end">
@@ -123,34 +67,11 @@
           <game-summary-header></game-summary-header>
           <game-summary-skeleton v-for="index in 8" :key="index"></game-summary-skeleton>
         </div>
-        <div v-else class="min-w-0">
-          <table class="min-w-0 w-full responsive-table">
-            <thead>
-              <tr>
-                <th v-for="label in ['Match ID', 'Game Date', 'Game Type', 'Game Map', 'Hero', 'Winner', 'Talents']" :key="label" class="py-2 px-3 text-left text-sm cursor-default">{{ label }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in 12" :key="row">
-                <td><skeleton-box class="w-20 h-4"></skeleton-box></td>
-                <td><skeleton-box class="w-36 h-4"></skeleton-box></td>
-                <td><skeleton-box class="w-24 h-4"></skeleton-box></td>
-                <td><skeleton-box class="w-32 h-4"></skeleton-box></td>
-                <td class="py-2 px-3">
-                  <div class="flex items-center gap-2">
-                    <skeleton-box class="w-10 h-10 shrink-0 !rounded-full"></skeleton-box>
-                    <skeleton-box class="w-20 h-4 max-md:hidden"></skeleton-box>
-                  </div>
-                </td>
-                <td><skeleton-box class="w-12 h-4"></skeleton-box></td>
-                <td>
-                  <div class="flex gap-x-1 mx-2 items-center">
-                    <skeleton-box v-for="talent in 7" :key="talent" class="w-10 h-10 shrink-0 !rounded-full"></skeleton-box>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div v-else class="overflow-x-auto">
+          <div class="min-w-max w-full">
+            <game-summary-header :compact="true"></game-summary-header>
+            <game-summary-skeleton v-for="row in 12" :key="row" :compact="true"></game-summary-skeleton>
+          </div>
         </div>
       </panel-box>
     </div>
@@ -158,7 +79,6 @@
 </template>
 
 <script>
-import { scaleTableToFit } from '../../utils/scaleTable';
 import moment from 'moment-timezone';
 import Cookies from 'js-cookie';
 
@@ -192,7 +112,6 @@ export default {
   },
   data(){
     return {
-      windowWidth: window.innerWidth,
       compact: this.playermatchtablestyle == 1,
       cancelTokenSource: null,
       userTimezone: moment.tz.guess(),
@@ -270,14 +189,6 @@ export default {
       if (this.authenticated) {
         this.$axios.post('/api/v1/profile/save/settings', { playerhistorytable: this.compact }).catch(() => {});
       }
-      this.$nextTick(() => this.scaleTable());
-    },
-    // Narrow screens scale the table to fit
-    scaleTable() {
-      const responsivetable = this.$refs.responsivetable;
-      if (responsivetable && this.windowWidth < 1500) {
-        scaleTableToFit(responsivetable, this.$refs.tablecontainer);
-      }
     },
     async getData(page){      
      if (this.isLoading || page < 1 || (this.data && page > this.data.last_page)) {
@@ -324,7 +235,6 @@ export default {
         this.cancelTokenSource = null;
         this.isLoading = false;
         this.asyncLoading = false;
-        this.$nextTick(() => this.scaleTable());
       }
     },
     getHeroID() {
@@ -367,12 +277,6 @@ export default {
         this.sortDir = 'desc';
       }
       this.sortKey = key;
-    },
-    formatDate(dateString) {
-      const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
-      const localDate = originalDate.clone().tz(moment.tz.guess());
-
-      return localDate.format('MM/DD/YYYY h:mm:ss a');
     },
   }
 }

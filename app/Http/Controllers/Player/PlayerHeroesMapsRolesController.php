@@ -14,7 +14,6 @@ use App\Models\MasterMMRDataUD;
 use App\Models\MMRTypeID;
 use App\Models\PlayerStatsCache;
 use App\Models\Replay;
-use App\Models\SeasonDate;
 use App\Rules\DateInputValidation;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
@@ -43,7 +42,7 @@ class PlayerHeroesMapsRolesController extends Controller
         'structure_damage', 'stunning_enemies', 'summon_damage', 'takedowns',
         'teamfight_damage_taken', 'teamfight_escapes', 'teamfight_healing',
         'teamfight_hero_damage', 'time_cc_enemy_heroes', 'time_on_fire', 'time_spent_dead',
-        'town_kills', 'vengeance', 'watch_tower_captures',
+        'town_kills', 'vengeance', 'watch_tower_captures', 'meta_experience',
     ];
 
     public function getData(Request $request)
@@ -149,6 +148,30 @@ class PlayerHeroesMapsRolesController extends Controller
         $startDate = $request['start_date'];
         $endDate = $request['end_date'];
 
+        // Everything but the season and date range, which the season history ignores
+        $applyFilters = function ($query) use ($region, $game_type, $blizz_id, $type, $page, $hero, $role, $game_map) {
+            $query->where('region', $region)
+                ->where(function ($query) use ($game_type) {
+                    if (is_null($game_type)) {
+                        $query->whereNot('game_type', 0);
+                    } else {
+                        $query->whereIn('game_type', $game_type);
+                    }
+                })
+                ->where('blizz_id', $blizz_id)
+                ->when(($type == 'single' && $page == 'hero') || ($type == 'all' && $hero), function ($query) use ($hero) {
+                    return $query->where('hero', $hero);
+                })
+                ->when($type == 'single' && $page == 'role', function ($query) use ($role) {
+                    return $query->where('new_role', $role);
+                })
+                ->when($game_map, function ($query) use ($game_map) {
+                    return is_array($game_map)
+                        ? $query->whereIn('game_map', $game_map)
+                        : $query->where('game_map', $game_map);
+                });
+        };
+
         $result = Replay::join('player', 'player.replayID', '=', 'replay.replayID')
             ->join('scores', function ($join) {
                 $join->on('scores.replayID', '=', 'replay.replayID')
@@ -159,26 +182,7 @@ class PlayerHeroesMapsRolesController extends Controller
                     ->on('talents.battletag', '=', 'player.battletag');
             })
             ->join('heroes', 'heroes.id', '=', 'player.hero')
-            ->where('region', $region)
-            ->where(function ($query) use ($game_type) {
-                if (is_null($game_type)) {
-                    $query->whereNot('game_type', 0);
-                } else {
-                    $query->whereIn('game_type', $game_type);
-                }
-            })
-            ->where('blizz_id', $blizz_id)
-            ->when(($type == 'single' && $page == 'hero') || ($type == 'all' && $hero), function ($query) use ($hero) {
-                return $query->where('hero', $hero);
-            })
-            ->when($type == 'single' && $page == 'role', function ($query) use ($role) {
-                return $query->where('new_role', $role);
-            })
-            ->when($game_map, function ($query) use ($game_map) {
-                return is_array($game_map)
-                    ? $query->whereIn('game_map', $game_map)
-                    : $query->where('game_map', $game_map);
-            })
+            ->tap($applyFilters)
             ->tap(function ($query) use ($season, $startDate, $endDate) {
                 $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
             })
@@ -265,6 +269,7 @@ class PlayerHeroesMapsRolesController extends Controller
 
         $seasonData = $this->globalDataService->getSeasonsData();
         $newSeasonData = null;
+        $seasonHistory = null;
         $latestGames = null;
         $topBuild = null;
         $mapWinRateFiltered = null;
@@ -316,7 +321,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 $topBuild = $this->globalDataService->talentBuilds($result, $heroData[$hero], $talentData)[0] ?? null;
             }
 
-            $latestGames = $result->sortByDesc('game_date')->take(5)->values();
+            $latestGames = $result->sortByDesc('game_date')->take(7)->values();
 
             $latestGames = $latestGames->map(function ($game) use ($heroData, $maps, $talentData, $gameTypes) {
                 $game = clone $game;
@@ -431,6 +436,8 @@ class PlayerHeroesMapsRolesController extends Controller
                     'win_rate' => round($winRate, 2),
                 ];
             })->sortBy('id');
+
+            $seasonHistory = $this->seasonHistory($applyFilters, $seasonData);
 
             $mapData = $mapData->map(function ($games, $map) use ($battletag, $blizz_id, $region, $maps) {
                 $gamesPlayed = $games->count();
@@ -629,7 +636,7 @@ class PlayerHeroesMapsRolesController extends Controller
             $groupBy = 'new_role';
         }
 
-        $returnData = $result->groupBy($groupBy)->map(function ($heroStats, $index) use ($type, $battletag, $blizz_id, $region, $heroData, $qm_mmr_data, $ud_mmr_data, $hl_mmr_data, $tl_mmr_data, $sl_mmr_data, $ar_mmr_data, $newSeasonData, $mapData, $mapWinRateFiltered, $latestGames, $topBuild, $page, $heroWinRateFiltered, $heroDataStats, $maps) {
+        $returnData = $result->groupBy($groupBy)->map(function ($heroStats, $index) use ($type, $battletag, $blizz_id, $region, $heroData, $qm_mmr_data, $ud_mmr_data, $hl_mmr_data, $tl_mmr_data, $sl_mmr_data, $ar_mmr_data, $newSeasonData, $seasonHistory, $mapData, $mapWinRateFiltered, $latestGames, $topBuild, $page, $heroWinRateFiltered, $heroDataStats, $maps) {
             $deaths = $heroStats->sum('deaths');
             $avg_kills = $heroStats->avg('kills');
             $avg_takedowns = $heroStats->avg('takedowns');
@@ -843,6 +850,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 'sum_time_on_fire' => $heroStats->sum('time_on_fire'),
                 'sum_game_length' => $heroStats->sum('game_length'),
                 'season_win_rate_data' => $newSeasonData,
+                'season_history' => $seasonHistory,
 
                 'map_data' => $mapData ? $mapData->sortBy('name')->values() : null,
                 'map_data_top_played' => $mapData ? $mapData->sortByDesc('games_played')->values() : null,
@@ -934,6 +942,54 @@ class PlayerHeroesMapsRolesController extends Controller
         return null;
     }
 
+    /**
+     * Win rate per season over all of the player's seasons, ignoring the season and date
+     * filters. Runs from their first season to their latest; seasons in between with no
+     * games have a null win rate.
+     */
+    private function seasonHistory(callable $applyFilters, $seasons): array
+    {
+        $games = Replay::join('player', 'player.replayID', '=', 'replay.replayID')
+            ->join('heroes', 'heroes.id', '=', 'player.hero')
+            ->tap($applyFilters)
+            ->select('game_date', 'winner')
+            ->toBase()
+            ->get();
+
+        $seasons = collect($seasons)->sortBy('id')->values();
+        $totals = [];
+        foreach ($games as $game) {
+            $season = $seasons->first(fn ($season) => $game->game_date >= $season->start_date && $game->game_date <= $season->end_date);
+            if (! $season) {
+                continue;
+            }
+            $totals[$season->id]['games'] = ($totals[$season->id]['games'] ?? 0) + 1;
+            $totals[$season->id]['wins'] = ($totals[$season->id]['wins'] ?? 0) + ($game->winner == 1 ? 1 : 0);
+        }
+
+        if (! $totals) {
+            return [];
+        }
+
+        return $seasons
+            ->whereBetween('id', [min(array_keys($totals)), max(array_keys($totals))])
+            ->map(function ($season) use ($totals) {
+                $games = $totals[$season->id]['games'] ?? 0;
+                $wins = $totals[$season->id]['wins'] ?? 0;
+
+                return [
+                    'id' => $season->id,
+                    'x_label' => 'S'.$season->season.' '.$season->year,
+                    'games_played' => $games,
+                    'wins' => $wins,
+                    'losses' => $games - $wins,
+                    'win_rate' => $games ? round($wins / $games * 100, 2) : null,
+                ];
+            })
+            ->values()
+            ->all();
+    }
+
     public function findMatch(Request $request)
     {
         // return response()->json($request->all());
@@ -946,6 +1002,8 @@ class PlayerHeroesMapsRolesController extends Controller
             'hero' => ['sometimes', 'nullable', new HeroInputValidation],
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
             'season' => ['sometimes', 'nullable', new SeasonInputValidation],
+            'start_date' => ['sometimes', 'nullable', new DateInputValidation],
+            'end_date' => ['sometimes', 'nullable', new DateInputValidation],
             // Used as a column name, so only the stats the page offers.
             'stat' => ['required', 'string', Rule::in(array_map(fn ($stat) => 'max_'.$stat, self::FINDABLE_STATS))],
             'value' => 'required|integer',
@@ -976,8 +1034,15 @@ class PlayerHeroesMapsRolesController extends Controller
         $minimum_games = $request['minimumgames'];
         $page = $request['page'];
         $role = $request['role'];
-        $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
+        // The single map page names its one map; the other pages send the multi-select
+        if ($type == 'single' && $page == 'map') {
+            $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
+        } else {
+            $game_map = $request['game_map'] ? $this->globalDataService->getGameMapFilterValues((array) $request['game_map']) : null;
+        }
         $season = $request['season'];
+        $startDate = $request['start_date'];
+        $endDate = $request['end_date'];
         $stat = str_replace('max_', '', $request['stat']);
         $value = (int) $request['value'];
 
@@ -1005,17 +1070,13 @@ class PlayerHeroesMapsRolesController extends Controller
             ->when($type == 'single' && $page == 'role', function ($query) use ($role) {
                 return $query->where('new_role', $role);
             })
-            ->when($type == 'single' && $page == 'map', function ($query) use ($game_map) {
-                return $query->where('game_map', $game_map);
+            ->when($game_map, function ($query) use ($game_map) {
+                return is_array($game_map)
+                    ? $query->whereIn('game_map', $game_map)
+                    : $query->where('game_map', $game_map);
             })
-            ->when(! is_null($season), function ($query) use ($season) {
-                $seasonDate = SeasonDate::find($season);
-                if ($seasonDate) {
-                    return $query->where('game_date', '>=', $seasonDate->start_date)
-                        ->where('game_date', '<', $seasonDate->end_date);
-                }
-
-                return $query;
+            ->tap(function ($query) use ($season, $startDate, $endDate) {
+                $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
             })
             ->when(! is_null($hero), function ($query) use ($hero) {
                 return $query->where('hero', $hero);

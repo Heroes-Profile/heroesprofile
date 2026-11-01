@@ -47,10 +47,32 @@
             </div>
           </div>
 
+          <div class="flex flex-col gap-4 w-fit max-w-full">
+            <h3 class="text-2xl font-bold">Maps</h3>
+            <div class="flex flex-wrap gap-6">
+              <group-box v-for="group in mapGroups" :key="group.label" class="!m-0" :playerlink="true" :text="group.label" :data="group.data"></group-box>
+            </div>
+          </div>
+
+          <details class="bg-surface-3 rounded text-sm w-fit max-w-full group open:w-full">
+            <summary class="px-4 py-3 flex gap-4 justify-between items-center cursor-pointer list-none">
+              <h3 class="text-lg">Maps played on {{ heroobject.name }}</h3>
+              <i class="fas fa-chevron-down transition-transform group-open:rotate-180"></i>
+            </summary>
+            <!-- Zero width so the list wraps to the card instead of widening it -->
+            <div class="w-0 min-w-full flex flex-wrap gap-2 px-4 pb-4">
+              <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
+                <map-image-wrapper :map="item.game_map" size="big">
+                  <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
+                </map-image-wrapper>
+              </a>
+            </div>
+          </details>
+
           <div class="flex flex-col gap-4">
             <div class="flex justify-between items-baseline gap-3">
               <h3 class="text-2xl font-bold">Most Played Build</h3>
-              <a class="underline text-header whitespace-nowrap" :href="getTalentPageUrl()">View Talent Data</a>
+              <a class="text-header whitespace-nowrap hover:underline" :href="getTalentPageUrl()">Talent Data<i class="fas fa-chevron-right text-sm ml-3"></i></a>
             </div>
             <div v-if="data.top_build" class="flex flex-wrap items-center gap-x-6 gap-y-3">
               <div class="flex flex-wrap gap-1.5 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded">
@@ -65,42 +87,21 @@
             <p v-else-if="data.top_build === null" class="text-subtext">No complete talent builds for these filters.</p>
           </div>
 
-          <div class="flex flex-col gap-4 w-fit max-w-full">
-            <h3 class="text-2xl font-bold">Maps</h3>
-            <div class="flex flex-wrap gap-6">
-              <group-box v-for="group in mapGroups" :key="group.label" class="!m-0" :playerlink="true" :text="group.label" :data="group.data"></group-box>
-            </div>
-          </div>
         </panel-box>
 
         <div class="flex flex-col gap-6 min-w-0">
-          <div class="grid md:grid-cols-2 gap-6">
-            <player-party-size-panel :data="data" prefix="stack_size_"></player-party-size-panel>
-
-            <panel-box :inner="true" title="Win Rate Per Season">
-              <line-chart v-if="seasonWinRateDataArray" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" :point-radius="3" :point-hover-radius="5" :title="`${battletag} Win Rate Data Per Season with ${heroobject.name}`"></line-chart>
-              <p v-else class="text-subtext">No season data for these filters.</p>
-            </panel-box>
-          </div>
+          <player-party-size-panel :data="data" prefix="stack_size_"></player-party-size-panel>
 
           <player-mmr-panel :data="data"></player-mmr-panel>
         </div>
       </div>
       </panel-box>
 
+      <player-season-win-rate-panel :data="data" :title="`${battletag} Win Rate Data Per Season with ${heroobject.name}`"></player-season-win-rate-panel>
+
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
-      <panel-box :title="'Maps Played On ' + heroobject.name">
-        <div class="flex flex-wrap gap-2">
-          <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
-            <map-image-wrapper :map="item.game_map" size="big">
-              <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
-            </map-image-wrapper>
-          </a>
-        </div>
-      </panel-box>
-
-      <panel-box v-if="data.latestGames" title="Recent Matches" link-text="View Match History" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Match/History/?hero=' + heroobject.name" :divider="false">
+      <panel-box v-if="data.latestGames" title="Recent Matches" link-text="Match History" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Match/History/?hero=' + heroobject.name" :divider="false">
         <div>
           <game-summary-header></game-summary-header>
           <game-summary-box v-for="(item, index) in data.latestGames" :key="index" :data="item" :replay-viewer-allowed="replayViewerAllowed" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
@@ -125,7 +126,10 @@
                 <td class="py-2 px-3">{{ row.label }}</td>
                 <td class="py-2 px-3">{{ formatValue(row.key, data["sum_" + row.key]) }}</td>
                 <td class="py-2 px-3">{{ formatValue(row.key, data["avg_" + row.key]) }}</td>
-                <td class="py-2 px-3">{{ formatValue(row.key, data["max_" + row.key]) }}</td>
+                <td class="py-2 px-3">
+                  <span v-if="data['max_' + row.key]" class="link" title="Navigate to this match" @click="navigateToMaxStatMatch(row.key, data['max_' + row.key])">{{ formatValue(row.key, data["max_" + row.key]) }}</span>
+                  <template v-else>{{ formatValue(row.key, data["max_" + row.key]) }}</template>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -152,12 +156,6 @@
               </div>
             </div>
             <div class="flex flex-col gap-4">
-              <h3 class="text-2xl font-bold">Most Played Build</h3>
-              <div class="flex flex-wrap gap-1.5">
-                <skeleton-box v-for="level in 7" :key="level" class="w-[42px] h-[42px] !rounded"></skeleton-box>
-              </div>
-            </div>
-            <div class="flex flex-col gap-4">
               <h3 class="text-2xl font-bold">Maps</h3>
               <div class="flex flex-wrap gap-6">
                 <div v-for="group in 3" :key="group" class="flex gap-3">
@@ -165,14 +163,18 @@
                 </div>
               </div>
             </div>
+            <div class="flex flex-col gap-4">
+              <h3 class="text-2xl font-bold">Most Played Build</h3>
+              <div class="flex flex-wrap gap-1.5">
+                <skeleton-box v-for="level in 7" :key="level" class="w-[42px] h-[42px] !rounded"></skeleton-box>
+              </div>
+            </div>
           </panel-box>
 
           <div class="flex flex-col gap-6 min-w-0">
-            <div class="grid md:grid-cols-2 gap-6">
-              <panel-box v-for="title in ['Party Size Win Rates', 'Win Rate Per Season']" :key="title" :inner="true" :title="title">
-                <skeleton-box v-for="index in 5" :key="index" class="h-10"></skeleton-box>
-              </panel-box>
-            </div>
+            <panel-box :inner="true" title="Party Size Win Rates">
+              <skeleton-box v-for="index in 5" :key="index" class="h-10"></skeleton-box>
+            </panel-box>
             <panel-box :inner="true" title="Heroes Profile MMR">
               <skeleton-box v-for="index in 6" :key="index" class="h-9"></skeleton-box>
             </panel-box>
@@ -180,14 +182,24 @@
         </div>
       </panel-box>
 
+      <panel-box title="Win Rate Per Season">
+        <skeleton-box class="h-72"></skeleton-box>
+      </panel-box>
+
       <panel-box title="Recent Matches" :divider="false">
         <div>
           <game-summary-header></game-summary-header>
-          <game-summary-skeleton v-for="index in 5" :key="index"></game-summary-skeleton>
+          <game-summary-skeleton v-for="index in 7" :key="index"></game-summary-skeleton>
         </div>
       </panel-box>
     </div>
 
+    <div v-if="matchIsLoading">
+      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+    </div>
+    <div v-if="matchNotFound" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red text-white px-4 py-2 rounded z-50">
+      Couldn't find the match for that value.
+    </div>
   </div>
 </template>
 
@@ -230,6 +242,8 @@
         modifiedgamemap: null,
         data: null,
         disableFilterInput: null,
+        matchIsLoading: false,
+        matchNotFound: false,
         talentLevels: ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'],
         sections: [
           {
@@ -340,9 +354,7 @@
           { label: 'Latest Played', data: this.data.map_data_top_latest_played.slice(0, 3) },
         ];
       },
-      seasonWinRateDataArray() {
-        return this.data && this.data.season_win_rate_data ? Object.values(this.data.season_win_rate_data) : null;
-      },
+
       gameTypesWithAll() {
         const newValue = { code: 'All', name: 'All' };
         const updatedList = [...this.filters.game_types_full];
@@ -466,6 +478,49 @@
           this.data = null;
           this.getData();
         }
+      },
+      async navigateToMaxStatMatch(stat, value){
+        // Opened during the click so popup blockers allow it; pointed at the match once found
+        const tab = window.open('', '_blank');
+        this.matchIsLoading = true;
+        try{
+          const response = await this.$axios.post("/api/v1/player/find/max/stat/match", {
+            battletag: this.battletag,
+            blizz_id: this.blizzid,
+            region: this.region,
+            game_type: this.modifiedgametype,
+            season: this.modifiedseason,
+            start_date: this.startdate,
+            end_date: this.enddate,
+            game_map: this.modifiedgamemap,
+            hero: this.hero,
+            page: "hero",
+            stat: 'max_' + stat,
+            value: Math.round(value),
+            type: "all",
+          });
+          // A replay id, or null (or a failure body) when no match holds that value.
+          const replayID = Number(response.data);
+
+          if (Number.isInteger(replayID) && replayID > 0 && tab) {
+            tab.location.href = `/Match/Single/${replayID}`;
+          } else if (Number.isInteger(replayID) && replayID > 0) {
+            window.location.href = `/Match/Single/${replayID}`;
+          } else {
+            tab?.close();
+            this.showMatchNotFound();
+          }
+        }catch(error){
+          tab?.close();
+          this.showMatchNotFound();
+        }
+        this.matchIsLoading = false;
+      },
+      showMatchNotFound() {
+        this.matchNotFound = true;
+        setTimeout(() => {
+          this.matchNotFound = false;
+        }, 3000);
       },
       getTalentPageUrl(){
         return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region  + "/Talents/" + this.hero;

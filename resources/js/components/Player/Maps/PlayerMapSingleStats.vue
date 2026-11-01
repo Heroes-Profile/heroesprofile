@@ -54,14 +54,11 @@
 
         <div class="flex flex-col gap-6 min-w-0">
           <player-party-size-panel :data="data" prefix="stack_size_"></player-party-size-panel>
-
-          <panel-box :inner="true" title="Win Rate Per Season">
-            <line-chart v-if="seasonWinRateDataArray" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" :point-radius="3" :point-hover-radius="5" :title="`${battletag} Win Rate Data Per Season on ${map}`"></line-chart>
-            <p v-else class="text-subtext">No season data for these filters.</p>
-          </panel-box>
         </div>
       </div>
       </panel-box>
+
+      <player-season-win-rate-panel :data="data" :title="`${battletag} Win Rate Data Per Season on ${map}`"></player-season-win-rate-panel>
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
@@ -77,7 +74,7 @@
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
-      <panel-box v-if="data.latestGames" title="Recent Matches" link-text="View Match History" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Match/History/?game_map=' + map" :divider="false">
+      <panel-box v-if="data.latestGames" title="Recent Matches" link-text="Match History" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Match/History/?game_map=' + map" :divider="false">
         <div>
           <game-summary-header></game-summary-header>
           <game-summary-box v-for="(item, index) in data.latestGames" :key="index" :data="item" :replay-viewer-allowed="replayViewerAllowed" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
@@ -117,17 +114,18 @@
             <panel-box :inner="true" title="Party Size Win Rates">
               <skeleton-box v-for="index in 5" :key="index" class="h-10"></skeleton-box>
             </panel-box>
-            <panel-box :inner="true" title="Win Rate Per Season">
-              <skeleton-box class="h-[260px]"></skeleton-box>
-            </panel-box>
           </div>
         </div>
+      </panel-box>
+
+      <panel-box title="Win Rate Per Season">
+        <skeleton-box class="h-72"></skeleton-box>
       </panel-box>
 
       <panel-box title="Recent Matches" :divider="false">
         <div>
           <game-summary-header></game-summary-header>
-          <game-summary-skeleton v-for="index in 5" :key="index"></game-summary-skeleton>
+          <game-summary-skeleton v-for="index in 7" :key="index"></game-summary-skeleton>
         </div>
       </panel-box>
     </div>
@@ -207,9 +205,6 @@ export default {
         { label: 'Highest Win Rate', data: this.data.hero_data_top_win_rate.slice(0, 3) },
         { label: 'Latest Played', data: this.data.hero_data_top_latest_played.slice(0, 3) },
       ];
-    },
-    seasonWinRateDataArray() {
-      return this.data && this.data.season_win_rate_data ? Object.values(this.data.season_win_rate_data) : null;
     },
     gameTypesWithAll() {
       const newValue = { code: 'All', name: 'All' };

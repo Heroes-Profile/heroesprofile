@@ -1,6 +1,27 @@
 <template>
+  <!-- The compact rows' columns; Game Type and Game ID sort -->
+  <div v-if="compact" class="flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
+    <span class="w-[320px] shrink-0 pl-5 cursor-default">Match</span>
+    <span class="w-[160px] shrink-0 px-4 cursor-pointer" @click="$emit('sort', 'game_type_id')">Game Type<sort-indicator column="game_type_id" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+    <span class="w-[140px] shrink-0 px-4 cursor-pointer" @click="$emit('sort', 'replayID')">Game ID<sort-indicator column="replayID" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+    <span class="w-[130px] shrink-0 px-4">Player</span>
+    <span class="w-[140px] shrink-0 grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] items-center justify-items-center">
+      <icon-with-hover v-for="(stat, index) in kdaStats" :key="stat.icon" :style="{ gridColumn: index * 2 + 1 }" popupsize="fit">
+        <template #trigger>
+          <span class="group/kda">
+            <img :src="`/images/scorescreen/${stat.icon}.png`" :alt="stat.label" class="w-6 h-6 group-hover/kda:hidden"/>
+            <img :src="`/images/scorescreen/${stat.icon}_hover.png`" alt="" class="w-6 h-6 hidden group-hover/kda:block"/>
+          </span>
+        </template>
+        <div>
+          <p class="max-sm:text-xs">{{ stat.label }}</p>
+        </div>
+      </icon-with-hover>
+    </span>
+    <span class="w-[426px] shrink-0 px-4">Talents</span>
+  </div>
   <!-- Same column widths and padding as the game-summary-box rows -->
-  <div class="flex justify-between items-center pb-4 mb-4 border-b border-gray-dark font-medium text-subtext max-2xl:hidden">
+  <div v-else class="flex justify-between items-center pb-4 mb-4 border-b border-gray-dark font-medium text-subtext max-2xl:hidden">
     <span class="flex-1 max-w-[410px] pl-6">Match</span>
     <span class="w-[430px] shrink-0 px-4">Statistics</span>
     <!-- The in-game scoreboard icons, in the same order as the row's kills | deaths | assists -->
@@ -25,6 +46,12 @@
 <script>
 export default {
   name: 'GameSummaryHeader',
+  props: {
+    compact: Boolean,
+    sortKey: String,
+    sortDir: String,
+  },
+  emits: ['sort'],
   data() {
     return {
       kdaStats: [

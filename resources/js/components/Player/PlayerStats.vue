@@ -73,7 +73,7 @@
           <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
             <div class="flex justify-between items-baseline">
               <h3 class="text-2xl font-bold">{{ section.title }}</h3>
-              <a class="underline text-header" :href="profileUrl + section.allPath">{{ section.allText }}</a>
+              <a class="text-header whitespace-nowrap hover:underline" :href="profileUrl + section.allPath">{{ section.allText }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
             </div>
             <div class="flex flex-wrap gap-6">
               <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :playerlink="true" :text="group.label" :data="group.data"></group-box>
@@ -86,7 +86,7 @@
         <div class="flex flex-col gap-6 min-w-0">
           <div class="grid md:grid-cols-2 gap-6">
             <!-- Win rate by role -->
-            <panel-box :inner="true" title="Win Rate By Role" link-text="View all roles" :link-href="profileUrl + '/Role'">
+            <panel-box :inner="true" title="Win Rate By Role" link-text="All Roles" :link-href="profileUrl + '/Role'">
               <div class="flex flex-col gap-3">
                 <div v-for="role in roleWinRates" :key="role.label" class="flex flex-col gap-1.5">
                   <span class="text-header">{{ role.label }}</span>
@@ -119,7 +119,7 @@
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
-      <panel-box v-if="data.matchData" title="Recent Matches" link-text="View Match History" :link-href="profileUrl + '/Match/History'" :divider="false">
+      <panel-box v-if="data.matchData" title="Recent Matches" link-text="Match History" :link-href="profileUrl + '/Match/History'" :divider="false">
         <div>
           <game-summary-header></game-summary-header>
           <game-summary-box v-for="(item, index) in data.matchData" :key="index" :data="item" :replay-viewer-allowed="replayViewerAllowed" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
@@ -175,7 +175,7 @@
       <panel-box title="Recent Matches" :divider="false">
         <div>
           <game-summary-header></game-summary-header>
-          <game-summary-skeleton v-for="index in 5" :key="index"></game-summary-skeleton>
+          <game-summary-skeleton v-for="index in 7" :key="index"></game-summary-skeleton>
         </div>
       </panel-box>
     </div>

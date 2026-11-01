@@ -3,7 +3,7 @@
     <template v-if="title">
       <div class="flex flex-wrap justify-between items-baseline gap-x-4 gap-y-1">
         <h3 class="text-2xl font-bold flex items-center gap-2">{{ title }}<slot name="title"></slot></h3>
-        <a v-if="linkHref" class="underline text-header whitespace-nowrap" :href="linkHref">{{ linkText }}</a>
+        <a v-if="linkHref" class="text-header whitespace-nowrap hover:underline" :href="linkHref">{{ linkText }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
         <slot name="right"></slot>
         <img v-if="loading" class="logo-spin h-7 w-auto shrink-0 ml-auto self-center" src="/images/logo/heroesprofilelogo.png" alt="Loading" />
       </div>

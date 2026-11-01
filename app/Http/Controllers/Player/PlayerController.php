@@ -28,6 +28,11 @@ use Illuminate\Support\Facades\Validator;
 
 class PlayerController extends Controller
 {
+    // Bump when the cached profile changes shape or maths: profile_page rows on another
+    // version are deleted and rebuilt, and multi-season/date-range entries get a new hash.
+    // Starts at 3 because those hashes already used 1 and 2.
+    private const PROFILE_CACHE_VERSION = 4;
+
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
         $validationRules = [
@@ -152,6 +157,11 @@ class PlayerController extends Controller
             ->where('season', $season)
             ->first();
 
+        if ($cachedData && $cachedData->cache_version != self::PROFILE_CACHE_VERSION) {
+            $cachedData->delete();
+            $cachedData = null;
+        }
+
         if ($cachedData && is_null($cachedData->weekday_data)) {
             $cachedData->delete();
             $cachedData = null;
@@ -227,8 +237,7 @@ class PlayerController extends Controller
     {
         $paramsHash = hash('sha256', json_encode(GlobalCacheKey::normalize([
             'page' => 'profile',
-            // Bump when the stored shape changes, so older entries are rebuilt
-            'version' => 2,
+            'version' => self::PROFILE_CACHE_VERSION,
             'blizz_id' => $blizz_id,
             'region' => $region,
             'game_type' => $game_type,
@@ -360,7 +369,7 @@ class PlayerController extends Controller
                 'talents.level_twenty AS level_twenty',
             ])
             ->orderByDesc('replay.game_date')
-            ->limit(5)
+            ->limit(7)
             ->get();
 
         $matchPlayers = DB::table('player')
@@ -399,7 +408,7 @@ class PlayerController extends Controller
         if ($cachedData) {
             $existingMatches = collect(json_decode($cachedData->matches, true));
             $mergedMatches = $existingMatches->merge($matches);
-            $matches = $mergedMatches->sortByDesc('game_date')->take(5);
+            $matches = $mergedMatches->sortByDesc('game_date')->take(7);
         }
 
         $matches = $matches->values();
@@ -470,6 +479,7 @@ class PlayerController extends Controller
             $dataToSave->region = $region;
             $dataToSave->game_type = $game_type;
             $dataToSave->season = $season;
+            $dataToSave->cache_version = self::PROFILE_CACHE_VERSION;
         } else {
             $dataToSave = $cachedData;
         }

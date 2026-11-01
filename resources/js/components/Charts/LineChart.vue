@@ -23,6 +23,17 @@ export default {
     projectedLabel: { type: String, default: 'Expected' },
     // Dashed vertical lines: [{ label: x label to sit on, text }]
     markers: { type: Array, default: () => [] },
+    // A 0-100% y axis with % ticks
+    percent: { type: Boolean, default: false },
+    // Dim the x labels of points with no value
+    dimEmpty: { type: Boolean, default: false },
+    // Show only this many points, ending before endIndex; changing endIndex slides the chart
+    visibleCount: { type: Number, default: null },
+    endIndex: { type: Number, default: null },
+    // Width to height on desktop; phones keep their taller plot
+    aspectRatio: { type: Number, default: 2 },
+    // The season chart's look: a line per point, alternating y bands, y labels on the right
+    gridded: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -58,9 +69,91 @@ export default {
       },
     };
 
+    const dim = index => this.dimEmpty && this.data[index]?.[this.dataAttribute] == null;
+
+    // Shading drawn under the line: every other y band, and the full column of each empty point
+    const backdrop = {
+      id: 'backdrop',
+      beforeDatasetsDraw: (chart) => {
+        const { left, right, top, bottom } = chart.chartArea;
+        const ctx = chart.ctx;
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(left, top, right - left, bottom - top);
+        ctx.clip();
+        if (this.gridded) {
+          const ticks = chart.scales.y.ticks;
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+          for (let i = ticks.length - 1; i > 0; i -= 2) {
+            const y1 = chart.scales.y.getPixelForValue(ticks[i].value);
+            const y2 = chart.scales.y.getPixelForValue(ticks[i - 1].value);
+            ctx.fillRect(left, y1, right - left, y2 - y1);
+          }
+        }
+        if (this.dimEmpty) {
+          // Each run of empty points, from the last point with a value to the next one
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+          const empty = index => this.data[index]?.[this.dataAttribute] == null;
+          for (let index = 0; index < this.data.length; index++) {
+            if (!empty(index) || (index > 0 && empty(index - 1))) {
+              continue;
+            }
+            let last = index;
+            while (last + 1 < this.data.length && empty(last + 1)) {
+              last++;
+            }
+            const x1 = chart.scales.x.getPixelForValue(index > 0 ? index - 1 : index - 0.5);
+            const x2 = chart.scales.x.getPixelForValue(last + 1 < this.data.length ? last + 1 : last + 0.5);
+            ctx.fillRect(x1, top, x2 - x1, bottom - top);
+            ctx.save();
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('No data', (x1 + x2) / 2, top + 18);
+            ctx.restore();
+          }
+        }
+        ctx.restore();
+      },
+    };
+    const xTicks = this.visibleCount ? {
+      // Linear x so the window can sit between points mid-slide
+      type: 'linear',
+      ...this.windowRange(),
+      // A tick on every point in view; Chart.js would start them at the half-step edge
+      afterBuildTicks: (axis) => {
+        axis.ticks = [];
+        for (let value = Math.ceil(axis.min); value <= Math.floor(axis.max); value++) {
+          axis.ticks.push({ value });
+        }
+      },
+      ticks: {
+        autoSkip: false,
+        maxRotation: 0,
+        color: (context) => dim(context.tick.value) ? 'rgba(156, 163, 175, 0.4)' : '#9ca3af',
+        font: { size: 11 },
+        callback: value => Number.isInteger(value) ? this.data[value]?.x_label ?? '' : '',
+      },
+    } : {
+      ticks: {
+        display: true,
+        color: (context) => dim(context.index) ? 'rgba(156, 163, 175, 0.4)' : '#9ca3af',
+        font: { size: 11 },
+        ...(window.matchMedia('(max-width: 767px)').matches ? {
+          maxTicksLimit: 3,
+          maxRotation: 0,
+          // Date only; the time makes neighbouring labels overlap
+          callback(value) {
+            const label = this.getLabelForValue(value);
+            return typeof label === 'string' ? label.slice(0, 10) : label;
+          },
+        } : {}),
+      },
+    };
+
     this.chart = markRaw(new Chart(this.$refs.canvas.getContext('2d'), {
       type: 'line',
-      plugins: [markerLines],
+      plugins: [backdrop, markerLines],
       data: {
         labels: this.data.map(item => item.x_label),
         datasets: this.datasets(),
@@ -68,7 +161,7 @@ export default {
       options: {
         responsive: true,
         // Phones: taller plot, and few flat date labels so they don't crush it
-        aspectRatio: window.matchMedia('(max-width: 767px)').matches ? 1.2 : 2,
+        aspectRatio: window.matchMedia('(max-width: 767px)').matches ? 1.2 : this.aspectRatio,
         // Styled like the Storm League rank chart
         plugins: {
           // The legend only names the dashed projected line; a single line needs none
@@ -80,33 +173,24 @@ export default {
             backgroundColor: '#393e4d',
             padding: 12,
             displayColors: false,
+            ...(this.visibleCount ? { callbacks: { title: items => this.data[items[0].parsed.x]?.x_label } } : {}),
           },
         },
         scales: {
           x: {
             grid: {
-              display: false,
+              display: this.gridded,
+              color: 'rgba(255, 255, 255, 0.08)',
             },
             border: { display: false },
-            ticks: {
-              display: true,
-              color: '#9ca3af',
-              font: { size: 11 },
-              //maxTicksLimit: 10, // Limit the number of x-axis ticks to 100
-              ...(window.matchMedia('(max-width: 767px)').matches ? {
-                maxTicksLimit: 3,
-                maxRotation: 0,
-                // Date only; the time makes neighbouring labels overlap
-                callback(value) {
-                  const label = this.getLabelForValue(value);
-                  return typeof label === 'string' ? label.slice(0, 10) : label;
-                },
-              } : {}),
-            },
+            ...xTicks,
           },
           y: {
+            position: this.gridded ? 'right' : 'left',
             beginAtZero: false,
+            ...(this.percent ? { min: 0, max: 100 } : {}),
             grid: {
+              display: !this.gridded,
               color: 'rgba(255, 255, 255, 0.06)',
             },
             border: { display: false },
@@ -114,6 +198,7 @@ export default {
               display: true,
               color: '#9ca3af',
               font: { size: 11 },
+              ...(this.percent ? { callback: value => value + '%' } : {}),
             },
           }
         }
@@ -127,8 +212,12 @@ export default {
     projected() {
       this.refresh();
     },
+    endIndex() {
+      this.slide();
+    },
   },
   beforeUnmount() {
+    cancelAnimationFrame(this.slideFrame);
     this.chart?.destroy();
   },
   methods: {
@@ -138,13 +227,45 @@ export default {
       }
       this.chart.data.labels = this.data.map(item => item.x_label);
       this.chart.data.datasets = this.datasets();
+      if (this.visibleCount) {
+        cancelAnimationFrame(this.slideFrame);
+        Object.assign(this.chart.options.scales.x, this.windowRange());
+      }
       this.chart.update();
+    },
+    // Half a step either side so the end points aren't cut in half
+    windowRange() {
+      const end = this.endIndex ?? this.data.length;
+      return { min: Math.max(0, end - this.visibleCount) - 0.5, max: end - 0.5 };
+    },
+    // Eases the x range to the new window instead of redrawing
+    slide() {
+      if (!this.chart || !this.visibleCount) {
+        return;
+      }
+      cancelAnimationFrame(this.slideFrame);
+      const from = this.chart.options.scales.x.min;
+      const to = this.windowRange().min;
+      const started = performance.now();
+      const step = (now) => {
+        const progress = Math.min(1, (now - started) / 300);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        // Re-read each frame: update() replaces the resolved options object
+        const scale = this.chart.options.scales.x;
+        scale.min = from + (to - from) * eased;
+        scale.max = scale.min + this.visibleCount;
+        this.chart.update('none');
+        if (progress < 1) {
+          this.slideFrame = requestAnimationFrame(step);
+        }
+      };
+      this.slideFrame = requestAnimationFrame(step);
     },
     datasets() {
       const totals = this.data.map(item => item[this.dataAttribute]);
       const datasets = [{
         label: this.title,
-        data: totals,
+        data: this.visibleCount ? totals.map((y, x) => ({ x, y })) : totals,
         backgroundColor: 'rgba(0, 139, 139, 0.35)',
         borderColor: '#008b8b',
         borderWidth: 2,
