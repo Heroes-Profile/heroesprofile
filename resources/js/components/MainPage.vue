@@ -87,10 +87,10 @@
 
 
     <div class="bg-teal p-5">
-      <p c>Heroes Profile uses data from Heroes Profile API.  Heroes Profile API uploads are in open Heroes of the Storm replay database with user uploaded replay data.
-        Currently, Heroes Profile has pulled {{ getValueLocal(maxreplayid) }} replays up to and including data from patch
-      {{ latestpatch }} and date/time <format-date :input="latestgamedate"></format-date> and incorporated them into our dataset.</p>
-      <p>For more information on Heroes Profile API navigate to <a class="link" href="/Api">heroesprofile.com/Api</a></p>
+      <p>Heroes Profile uses data from the Heroes Profile API, an open Heroes of the Storm replay database built from user-uploaded replays.
+        So far, Heroes Profile has pulled {{ getValueLocal(maxreplayid) }} replays into its dataset, up to and including patch
+      {{ latestpatch }} and games played through <format-date :input="latestgamedate"></format-date>.</p>
+      <p>For more information on the Heroes Profile API, visit <a class="link" href="/Api">heroesprofile.com/Api</a>.</p>
       
     </div>
   </div>

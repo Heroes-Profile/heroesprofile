@@ -119,7 +119,7 @@ class FriendFoeController extends Controller
         $dbCache = FriendFoeCache::where('params_hash', $paramsHash)->first();
 
         if ($dbCache) {
-            $latestReplayId = $this->getLatestReplayId(
+            $latestReplayId = $this->globalDataService->latestPlayerReplayId(
                 $request['blizz_id'],
                 $request['region'],
                 $request['game_type'],
@@ -342,7 +342,7 @@ class FriendFoeController extends Controller
             ];
         }
 
-        $latestReplayId = $this->getLatestReplayId(
+        $latestReplayId = $this->globalDataService->latestPlayerReplayId(
             $blizz_id,
             $region,
             $request['game_type'],
@@ -376,23 +376,5 @@ class FriendFoeController extends Controller
         );
 
         return $finalResults;
-    }
-
-    private function getLatestReplayId($blizz_id, $region, $game_type, $season, $startDate = null, $endDate = null): ?int
-    {
-        $gameTypeIds = $game_type
-            ? GameType::whereIn('short_name', (array) $game_type)->pluck('type_id')->toArray()
-            : null;
-
-        $query = DB::table('replay')
-            ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->where('player.blizz_id', $blizz_id)
-            ->where('replay.region', $region)
-            ->when($gameTypeIds, fn ($q) => $q->whereIn('game_type', $gameTypeIds))
-            ->tap(function ($q) use ($season, $startDate, $endDate) {
-                $this->globalDataService->applySeasonsOrDateRange($q, $season, $startDate, $endDate);
-            });
-
-        return $query->max('replay.replayID');
     }
 }
