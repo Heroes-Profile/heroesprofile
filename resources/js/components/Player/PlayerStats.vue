@@ -89,7 +89,7 @@
             <panel-box :inner="true" title="Win Rate By Role" link-text="All Roles" :link-href="profileUrl + '/Role'">
               <div class="flex flex-col gap-3">
                 <div v-for="role in roleWinRates" :key="role.label" class="flex flex-col gap-1.5">
-                  <span class="text-header">{{ role.label }}</span>
+                  <a class="text-header w-fit hover:underline" :href="profileUrl + '/Role/' + role.label">{{ role.label }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
                   <stat-bar :value="role.value.toFixed(2)" suffix="%" :color="$winRateColor(role.value)"></stat-bar>
                 </div>
               </div>

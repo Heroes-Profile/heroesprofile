@@ -5,7 +5,10 @@
       :onFilter="filterData" 
       :filters="filters" 
       :isLoading="isLoading"
-      :gametypedefault="gametypedefault"
+      :gametypedefault="startingGameType"
+      :playertypeinput="type"
+      :heroinput="hero"
+      :roleinput="role"
       :includesinglegametypefull="true"
       :playerheroroletype="true"
       :hideadvancedfilteringbutton="true"
@@ -139,6 +142,7 @@ export default {
       type: [String, Boolean]
     },
     gametypedefault: Array,
+    urlparameters: { type: Object, default: () => ({}) },
     battletag: String,
     blizzid: {
       type: [String, Number]
@@ -165,11 +169,25 @@ export default {
       sortDir: 'desc',
       leaguedata: null,
       type: "Player",
+      // Hero id and role name
+      hero: null,
+      role: null,
       infoText: "",
     }
   },
   created(){
-    this.gametype = this.gametypedefault[0];
+    this.gametype = this.startingGameType[0];
+
+    // ?hero= or ?role= by name, from the hero and role pages' MMR panels
+    const hero = this.filters.heroes.find(item => item.name === this.urlparameters?.hero);
+    const role = this.filters.role.find(item => item.code === this.urlparameters?.role);
+    if (hero) {
+      this.type = 'Hero';
+      this.hero = hero.code;
+    } else if (role) {
+      this.type = 'Role';
+      this.role = role.code;
+    }
   },
   mounted() {
     if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
@@ -177,6 +195,11 @@ export default {
     }
   },
   computed: {
+    // A ?game_type= from an MMR panel link wins over the saved default
+    startingGameType() {
+      const requested = this.urlparameters?.game_type;
+      return requested && this.filters.game_types_full.some(type => type.code === requested) ? [requested] : this.gametypedefault;
+    },
     reversedData() {
       if (!Array.isArray(this.data)) {
         console.error("this.data is not an array.");

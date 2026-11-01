@@ -43,6 +43,7 @@ class PlayerMMRController extends Controller
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'playerloadsetting' => $this->globalDataService->getPlayerLoadSettings(),
             'gametypedefault' => $this->globalDataService->getMMRGameTypeDefault(),
+            'urlparameters' => $request->query(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,

@@ -60,6 +60,8 @@
         <div class="flex flex-col gap-6 min-w-0">
           <player-party-size-panel :data="data" prefix="stack_size_"></player-party-size-panel>
 
+          <player-mmr-panel :data="data" :link-href="profileUrl + '/MMR'" :link-query="{ role: role }"></player-mmr-panel>
+
           <div class="grid md:grid-cols-2 gap-6">
             <panel-box :inner="true" :title="'Heroes Played As ' + role">
               <div class="flex flex-wrap gap-2">
@@ -128,6 +130,9 @@
           <div class="flex flex-col gap-6 min-w-0">
             <panel-box :inner="true" title="Party Size Win Rates">
               <skeleton-box v-for="index in 5" :key="index" class="h-10"></skeleton-box>
+            </panel-box>
+            <panel-box :inner="true" title="Heroes Profile MMR">
+              <skeleton-box v-for="index in 6" :key="index" class="h-9"></skeleton-box>
             </panel-box>
             <div class="grid md:grid-cols-2 gap-6">
               <panel-box v-for="title in ['Heroes Played As ' + role, 'Maps Played As ' + role]" :key="title" :inner="true" :title="title">

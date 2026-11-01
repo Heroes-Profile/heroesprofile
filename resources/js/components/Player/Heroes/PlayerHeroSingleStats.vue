@@ -92,7 +92,7 @@
         <div class="flex flex-col gap-6 min-w-0">
           <player-party-size-panel :data="data" prefix="stack_size_"></player-party-size-panel>
 
-          <player-mmr-panel :data="data"></player-mmr-panel>
+          <player-mmr-panel :data="data" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/MMR'" :link-query="{ hero: heroobject.name }"></player-mmr-panel>
         </div>
       </div>
       </panel-box>

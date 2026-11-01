@@ -10,6 +10,7 @@
     :region="{{ json_encode($region) }}" 
     :filters="{{ json_encode($filters) }}" 
     :gametypedefault="{{ json_encode($gametypedefault) }}"
+    :urlparameters="{{ json_encode($urlparameters) }}"
     :regionsmap="{{ json_encode($bladeGlobals['regions']) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"

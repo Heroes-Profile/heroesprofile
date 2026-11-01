@@ -1,5 +1,5 @@
 <template>
-  <panel-box :inner="true" title="Heroes Profile MMR" :link-text="linkHref ? 'HP MMR Breakdown' : null" :link-href="linkHref">
+  <panel-box :inner="true" title="Heroes Profile MMR" :link-text="linkHref ? 'HP MMR Breakdown' : null" :link-href="linkHref ? breakdownHref() : null">
     <template #title>
       <round-image size="small" icon="fas fa-info" title="info" popupsize="large">
         <div>
@@ -18,7 +18,8 @@
         <div class="h-px bg-gray-dark"></div>
         <!-- Phones stack each mode: name, then bar, then tier and MMR -->
         <div class="flex flex-wrap md:flex-nowrap gap-x-6 md:gap-x-12 gap-y-2 items-center">
-          <span class="w-full md:w-[200px] shrink-0 font-semibold text-header truncate">{{ mode.label }}</span>
+          <a v-if="linkHref" class="w-full md:w-[200px] shrink-0 font-semibold text-header truncate hover:underline" :href="modeHref(mode)">{{ mode.label }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+          <span v-else class="w-full md:w-[200px] shrink-0 font-semibold text-header truncate">{{ mode.label }}</span>
           <stat-bar class="max-md:w-full md:flex-1 min-w-0" :value="mode.data ? mode.data.win_rate.toFixed(2) : '0.00'" suffix="%" :color="$winRateColor(mode.data ? mode.data.win_rate : 0)"></stat-bar>
           <span class="md:flex-1 md:max-w-[200px]"><rank-tier-pill v-if="mode.data" :tier="mode.data.rank_tier"></rank-tier-pill></span>
           <span class="md:flex-1 md:max-w-[100px] md:text-center font-semibold max-md:ml-auto">{{ mode.data ? mode.data.mmr.toLocaleString('en-US') : 0 }}</span>
@@ -35,16 +36,27 @@ export default {
     // Holds qm_mmr_data, ud_mmr_data and so on, as the profile and single hero data both do
     data: Object,
     linkHref: String,
+    // Extra query for the mode links, such as { hero: 'Li-Ming' }
+    linkQuery: { type: Object, default: () => ({}) },
+  },
+  methods: {
+    breakdownHref(query = {}) {
+      const params = new URLSearchParams({ ...query, ...this.linkQuery }).toString();
+      return params ? this.linkHref + '?' + params : this.linkHref;
+    },
+    modeHref(mode) {
+      return this.breakdownHref({ game_type: mode.code });
+    },
   },
   computed: {
     mmrModes(){
       return [
-        { label: 'Quick Match', data: this.data.qm_mmr_data },
-        { label: 'Unranked Draft', data: this.data.ud_mmr_data },
-        { label: 'Hero League', data: this.data.hl_mmr_data },
-        { label: 'Team League', data: this.data.tl_mmr_data },
-        { label: 'Storm League', data: this.data.sl_mmr_data },
-        { label: 'ARAM', data: this.data.ar_mmr_data },
+        { label: 'Quick Match', code: 'qm', data: this.data.qm_mmr_data },
+        { label: 'Unranked Draft', code: 'ud', data: this.data.ud_mmr_data },
+        { label: 'Hero League', code: 'hl', data: this.data.hl_mmr_data },
+        { label: 'Team League', code: 'tl', data: this.data.tl_mmr_data },
+        { label: 'Storm League', code: 'sl', data: this.data.sl_mmr_data },
+        { label: 'ARAM', code: 'ar', data: this.data.ar_mmr_data },
       ];
     },
   },

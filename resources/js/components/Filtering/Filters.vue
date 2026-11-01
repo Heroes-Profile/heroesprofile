@@ -18,7 +18,7 @@
             :values="filters.type" 
             :text="'Type'"
             @input-changed="handleInputChange" 
-            :defaultValue="'Player'"
+            :defaultValue="playertypeinput || 'Player'"
           ></single-select-filter>
 
           <!-- Leaderboard -->
@@ -590,6 +590,8 @@
       groupSizeDefaultValue: [String, Array],
       groupsizemulti: Boolean,
       leaderboardtypeinput: String,
+      // Player, Hero or Role for the playerheroroletype Type filter
+      playertypeinput: String,
       leagueinput: String,
       ranksourceinput: String,
       slrankinput: Array,
@@ -735,6 +737,10 @@
 
       if(this.leaderboardfiltertype && this.leaderboardtypeinput){
         this.initializeLeaderboardFilters();
+      }
+
+      if(this.playerheroroletype && this.playertypeinput){
+        this.initializePlayerTypeFilters();
       }
 
       if(this.includeranksource){
@@ -979,6 +985,19 @@
           if(this.herolevelinput){
             this.selectedMultiFilters['Hero Level'] = this.herolevelinput;
           }
+        }
+      },
+      // Opens on a hero or role, with its dropdown showing, the way choosing it under Type does
+      initializePlayerTypeFilters() {
+        this.selectedSingleFilters['Type'] = this.playertypeinput;
+        if(this.playertypeinput === 'Hero' && this.heroinput){
+          this.modifiedincludeheroes = true;
+          this.swapHeroesFilter = true;
+          this.selectedSingleFilters['Heroes'] = this.heroinput;
+        }else if(this.playertypeinput === 'Role' && this.roleinput){
+          this.modifiedincluderole = true;
+          this.swapRolesFilter = true;
+          this.selectedSingleFilters['Role'] = this.roleinput;
         }
       },
       initializeLeaderboardFilters() {
