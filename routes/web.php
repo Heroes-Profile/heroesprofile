@@ -313,10 +313,10 @@ Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
     Route::get('/Register', [ApiRegisterController::class, 'show']);
     Route::post('/Register', [ApiRegisterController::class, 'register'])->middleware('throttle:contact');
 
-    // Signed, and deliberately outside the auth group: mail clients open links in
-    // whatever browser they like, rarely the one holding the session.
+    // Signed (checked in the controller), and deliberately outside the auth group:
+    // mail clients open links in whatever browser they like, rarely the one holding
+    // the session.
     Route::get('/Email/Verify/{id}/{hash}', [ApiEmailVerificationController::class, 'verify'])
-        ->middleware('signed')
         ->name('api.verification.verify');
 
     Route::get('/Password/Forgot', [ApiPasswordResetController::class, 'showRequestForm']);

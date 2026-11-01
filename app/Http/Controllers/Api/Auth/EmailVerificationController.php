@@ -16,6 +16,14 @@ class EmailVerificationController extends Controller
      */
     public function verify(Request $request, string $id, string $hash)
     {
+        // Not the `signed` middleware: its bare 403 leaves someone with an expired
+        // link no way forward.
+        if (! $request->hasValidSignature()) {
+            return redirect('/Api/Login')->withErrors([
+                'email' => 'That verification link has expired. Log in to send a new one.',
+            ]);
+        }
+
         $account = ApiAccount::find($id);
 
         if ($account === null || ! hash_equals($hash, sha1($account->getEmailForVerification()))) {
