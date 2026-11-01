@@ -69,7 +69,7 @@
         <div class="error-code">{{ $errorCode ?? 403 }}</div>
         <div class="error-title">{{ $errorTitle ?? 'Access Denied' }}</div>
         <div class="error-message">
-            {{ $message ?? 'Your IP address has been banned from accessing this site.' }}
+            {{ $message ?? 'You do not have permission to view this page.' }}
         </div>
         
         @if(isset($ban_reason) || isset($banned_date))
