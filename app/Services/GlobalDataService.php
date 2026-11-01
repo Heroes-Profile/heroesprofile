@@ -2037,8 +2037,9 @@ class GlobalDataService
             $maxMmr = $minMmr + $split;
         }
 
-        for ($i = ($minMmr + $split); $i <= $maxMmr; $i += $split) {
-            $result[ucfirst($rankTierName).' '.$counter] = $i;
+        // Rounded so float drift can't push the top step past $maxMmr and drop "Tier 1".
+        for ($i = ($minMmr + $split); round($i, 2) <= $maxMmr; $i += $split) {
+            $result[ucfirst($rankTierName).' '.$counter] = round($i, 2);
             $counter--;
         }
 
