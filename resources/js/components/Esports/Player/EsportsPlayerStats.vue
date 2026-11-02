@@ -1,6 +1,7 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="heading" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
+    <page-heading :heading="heading" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
       <div class="flex justify-center max-w-[1500px] mx-auto">

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="'Auto Battler'"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+    <page-heading :heading="'Auto Battler'"></page-heading>
 
     <div class="max-w-[1500px] mx-auto px-4 py-6">
       <auto-battler-setup-guide></auto-battler-setup-guide>

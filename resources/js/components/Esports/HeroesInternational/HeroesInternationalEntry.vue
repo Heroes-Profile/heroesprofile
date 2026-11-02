@@ -1,6 +1,7 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="'Heroes International'"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
+    <page-heading :heading="'Heroes International'"></page-heading>
     <div class="flex   p-20 bg-lighten flex-wrap justify-center">
 
       <div class="text-center md:w-[15%] mb-15 mx-5">

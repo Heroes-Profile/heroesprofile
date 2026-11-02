@@ -1,13 +1,11 @@
 <template>
   <div>
-    <page-heading :infoText1="hero + ' stats for ' + battletag" heading="Hero Stats" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
-      <hero-image-wrapper :hero="heroobject" :size="'big'"></hero-image-wrapper>
-      <template #aboveHeading>
-        <hero-heading-select :heroes="heroes" :value="heroobject.id" @hero-changed="changeHero($event)"></hero-heading-select>
-      </template>
-    </page-heading>
-
-    <div class="max-w-[1920px] mx-auto px-4 md:px-8">
+    <div class="flex max-w-[1920px] mx-auto">
+      <div class="">
+        <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="hero + ' stats for ' + battletag" -->
+        <page-heading heading="Hero Stats" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+      </div>
+    <div class="max-w-[1920px] mx-auto px-4 md:px-8 w-full">
       <panel-box>
         <div class="filter-row">
           <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
@@ -17,6 +15,7 @@
           <custom-button class="font-semibold text-center m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :text="'Filter'" :alt="'Filter'" :color="'blue'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
         </div>
       </panel-box>
+    </div>
     </div>
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
@@ -28,7 +27,9 @@
 
         <!-- Hero overview, laid out like the profile's player card -->
         <panel-box :inner="true" class="!gap-8">
-          <h2 class="text-3xl font-bold">{{ heroobject.name }}</h2>
+          <h2 class="text-3xl font-bold">
+            <hero-heading-select :heroes="heroes" :value="heroobject.id" textclass="" @hero-changed="changeHero($event)"></hero-heading-select>
+          </h2>
 
           <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
             <div class="shrink-0">

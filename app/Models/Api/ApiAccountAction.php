@@ -24,6 +24,11 @@ class ApiAccountAction extends Model
     /** Internal only. Nothing is sent and standing does not change. */
     public const NOTE = 'note';
 
+    /** Internal only. Markers in their global stats switched on or off. */
+    public const POISON_ON = 'poison_on';
+
+    public const POISON_OFF = 'poison_off';
+
     /** Retired: the console's Mark reviewed button, replaced by approvals. Old rows remain. */
     public const REVIEW = 'review';
 

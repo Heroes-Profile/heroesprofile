@@ -1,6 +1,7 @@
 <template>
   <div>    
-    <page-heading :infoText1="`${esport == 'HeroesInternational' ? 'Heroes International' : esport} ${team} Match History`" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="`${esport == 'HeroesInternational' ? 'Heroes International' : esport} ${team} Match History`" -->
+    <page-heading :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
       <table class="mt-10 max-md:text-xs">

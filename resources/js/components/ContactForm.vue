@@ -1,6 +1,7 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" heading="Contact"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
+    <page-heading heading="Contact"></page-heading>
 
     <div>
       <!-- Contact form -->

@@ -1,23 +1,30 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="'Heroes Profile MMR Data'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
-    <filters 
-      :onFilter="filterData" 
-      :filters="filters" 
-      :isLoading="isLoading"
-      :gametypedefault="startingGameType"
-      :playertypeinput="type"
-      :heroinput="hero"
-      :roleinput="role"
-      :includesinglegametypefull="true"
-      :playerheroroletype="true"
-      :hideadvancedfilteringbutton="true"
-      :rolerequired="true"
-      :herorequired="true"
-      :includemultiseason="true"
-      :includegamedaterange="true"
-      >
-    </filters>
+    <div class="flex max-w-[1920px] mx-auto">
+      <div class="">
+      <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+      <page-heading :heading="'Heroes Profile MMR Data'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+      </div>
+      <div class="w-full">
+      <filters 
+        :onFilter="filterData" 
+        :filters="filters" 
+        :isLoading="isLoading"
+        :gametypedefault="startingGameType"
+        :playertypeinput="type"
+        :heroinput="hero"
+        :roleinput="role"
+        :includesinglegametypefull="true"
+        :playerheroroletype="true"
+        :hideadvancedfilteringbutton="true"
+        :rolerequired="true"
+        :herorequired="true"
+        :includemultiseason="true"
+        :includegamedaterange="true"
+        >
+      </filters>
+      </div>
+    </div>
     
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 

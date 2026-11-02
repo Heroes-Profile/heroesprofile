@@ -1,18 +1,19 @@
 <template>
-  <div class="relative text-lg" @mouseleave="open = false">
-    <button type="button" class="inline-flex items-center gap-2 focus:underline focus:outline-none" aria-label="Change Hero" :aria-expanded="open" @click="open = !open">
+  <div class="relative" :class="textclass" @mouseleave="open = false">
+    <button type="button" class="inline-flex items-center gap-2 focus:underline focus:outline-none" :aria-label="'Change ' + label" :aria-expanded="open" @click="open = !open">
       <span>{{ selectedName }}</span>
       <i class="fas fa-chevron-down text-xs"></i>
     </button>
-    <div v-if="open" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg font-normal" style="width: 220px; max-height: 340px; overflow-y: auto;">
-      <input v-model="search" type="text" placeholder="Search hero..." class="w-full px-2 py-1 text-xs bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
+    <div v-if="open" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg font-normal tracking-normal" style="width: 220px; max-height: 340px; overflow-y: auto;">
+      <input v-if="type !== 'role'" v-model="search" type="text" :placeholder="'Search ' + label.toLowerCase() + '...'" class="w-full px-2 py-1 text-xs bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
       <div
         v-for="h in filteredHeroes"
-        :key="h.id"
+        :key="keyOf(h)"
         class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-lighten text-sm"
         @click="selectHero(h)"
       >
-        <hero-image-wrapper :hero="h" :includehover="false" class="flex-shrink-0"></hero-image-wrapper>
+        <hero-image-wrapper v-if="type === 'hero'" :hero="h" :includehover="false" class="flex-shrink-0"></hero-image-wrapper>
+        <round-image v-else-if="type === 'role'" :image="`/images/roles/${h.name.toLowerCase()}.PNG`" :excludehover="true" class="flex-shrink-0"></round-image>
         <span>{{ h.name }}</span>
       </div>
     </div>
@@ -24,8 +25,17 @@ export default {
   name: 'HeroHeadingSelect',
   emits: ['hero-changed'],
   props: {
+    // Heroes by default. With type 'role' or 'map', the filters' { code, name } lists, matched and emitted by name.
     heroes: Array,
     value: [Number, String],
+    type: {
+      type: String,
+      default: 'hero',
+    },
+    textclass: {
+      type: String,
+      default: 'text-lg',
+    },
   },
   data() {
     return {
@@ -34,8 +44,11 @@ export default {
     };
   },
   computed: {
+    label() {
+      return { hero: 'Hero', role: 'Role', map: 'Map' }[this.type];
+    },
     selectedName() {
-      const hero = this.heroes.find(h => h.id == this.value);
+      const hero = this.heroes.find(h => this.keyOf(h) == this.value);
       return hero ? hero.name : '';
     },
     filteredHeroes() {
@@ -45,10 +58,13 @@ export default {
     },
   },
   methods: {
+    keyOf(item) {
+      return this.type === 'hero' ? item.id : item.name;
+    },
     selectHero(hero) {
       this.open = false;
       this.search = '';
-      this.$emit('hero-changed', hero.id);
+      this.$emit('hero-changed', this.keyOf(hero));
     },
   },
 };

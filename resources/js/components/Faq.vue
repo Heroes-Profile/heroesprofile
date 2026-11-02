@@ -1,6 +1,7 @@
 <template>
   <div>
-    <page-heading :heading="'FAQ'" :infoText1="'Frequently asked questions about Heroes Profile. Can\'t find your answer? Ask us below.'"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="'Frequently asked questions about Heroes Profile. Can\'t find your answer? Ask us below.'" -->
+    <page-heading :heading="'FAQ'"></page-heading>
 
     <div class="mx-auto max-w-[1000px] px-4 mt-6">
 

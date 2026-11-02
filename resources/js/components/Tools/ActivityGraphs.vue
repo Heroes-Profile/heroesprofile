@@ -1,6 +1,7 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="'Activity Graphs'"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+    <page-heading :heading="'Activity Graphs'"></page-heading>
 
     <div class="flex justify-center max-w-[1500px] mx-auto flex-wrap max-md:flex-col max-md:items-center">
       <single-select-filter

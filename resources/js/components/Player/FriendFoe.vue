@@ -1,23 +1,29 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="'Friend vs Foe'"  :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
-
-    <filters 
-      :onFilter="filterData" 
-      :filters="filters" 
-      :isLoading="friendIsLoading || enemyIsLoading"
-      :gametypedefault="gametype"
-      :includehero="true"
-      :includegamemap="true"
-      :includegametypefull="true"
-      :includemultiseason="true"
-      :includegamedaterange="true"
-      :includegroupsize="true"
-      :hideadvancedfilteringbutton="true"
-      :groupSizeDefaultValue="'All'"
-      :overrideGroupSizeRemoval="true"
-      >
-    </filters>
+    <div class="flex max-w-[1920px] mx-auto">
+      <div class="">
+      <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+      <page-heading :heading="'Friend vs Foe'"  :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+      </div>
+      <div class="w-full">
+      <filters 
+        :onFilter="filterData" 
+        :filters="filters" 
+        :isLoading="friendIsLoading || enemyIsLoading"
+        :gametypedefault="gametype"
+        :includehero="true"
+        :includegamemap="true"
+        :includegametypefull="true"
+        :includemultiseason="true"
+        :includegamedaterange="true"
+        :includegroupsize="true"
+        :hideadvancedfilteringbutton="true"
+        :groupSizeDefaultValue="'All'"
+        :overrideGroupSizeRemoval="true"
+        >
+      </filters>
+      </div>
+    </div>
     
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 

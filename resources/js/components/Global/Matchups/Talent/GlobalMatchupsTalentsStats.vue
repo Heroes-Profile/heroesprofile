@@ -1,7 +1,8 @@
 <template>
   <div>
     <global-async-debug-banner page-label="Global Matchups Talents" />
-    <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="'Hero Matchup Talents Statistics'"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" :infoText2="infoText2" -->
+    <page-heading :heading="'Hero Matchup Talents Statistics'"></page-heading>
     <filters 
     :onFilter="filterData" 
     :filters="filters" 

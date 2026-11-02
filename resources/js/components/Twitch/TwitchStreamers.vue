@@ -1,6 +1,7 @@
 <template>
   <div>
-    <page-heading :heading="'Streamers on Twitch'" :infoText1="infoText"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+    <page-heading :heading="'Streamers on Twitch'"></page-heading>
 
     <div class="mx-auto max-w-[1200px] px-4 mt-6">
       <div class="bg-lighten border-l-4 border-yellow rounded p-3 mb-6 text-sm">

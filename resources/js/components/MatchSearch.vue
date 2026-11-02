@@ -1,6 +1,7 @@
 <template>
   <div>
-    <page-heading :heading="'Replay Search'" :infoText1="infoText"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+    <page-heading :heading="'Replay Search'"></page-heading>
 
     <!-- Blocks the page while a battletag lookup runs -->
     <div v-if="playerSearching" class="fixed inset-0 z-[60] bg-black/80 flex items-center justify-center">

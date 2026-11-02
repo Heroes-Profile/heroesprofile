@@ -136,6 +136,10 @@ return new class extends Migration
             $table->string('suspension_type', 20)->nullable();
             $table->text('suspension_reason')->nullable();
             $table->unsignedInteger('suspended_by')->nullable();
+
+            // Set while the account's global stats carry markers (PoisonPill), so
+            // data republished elsewhere can be traced back to it. Never shown to them.
+            $table->timestamp('poisoned_at')->nullable();
         });
     }
 

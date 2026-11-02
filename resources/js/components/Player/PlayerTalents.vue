@@ -1,28 +1,34 @@
 <template>
   <div>
-    <page-heading heading="Talent Statistics" :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
-      <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
-      <template v-if="selectedHero" #aboveHeading>
-        <hero-heading-select :heroes="heroes" :value="selectedHero.id" @hero-changed="changeHero($event)"></hero-heading-select>
-      </template>
-    </page-heading>
-    
+    <div class="flex max-w-[1920px] mx-auto">
+      <div class="">
+        <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" -->
+        <page-heading heading="Talent Statistics" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
+          <template v-if="selectedHero" #aboveHeading>
+            <hero-heading-select :heroes="heroes" :value="selectedHero.id" @hero-changed="changeHero($event)"></hero-heading-select>
+          </template>
+        </page-heading>
+      </div>
+      <div v-if="selectedHero" class="w-full">
+        <filters
+          :onFilter="filterData"
+          :filters="filters"
+          :isLoading="isLoading"
+          :gametypedefault="gametype"
+          :includegametypefull="true"
+          :includemultiseason="true"
+          :includegamemap="true"
+          :hideadvancedfilteringbutton="true"
+          :includegamedaterange="true"
+          >
+        </filters>
+      </div>
+    </div>
+
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes"></hero-selection>
     </div>
     <div v-else>
-      <filters 
-        :onFilter="filterData" 
-        :filters="filters" 
-        :isLoading="isLoading"
-        :gametypedefault="gametype"
-        :includegametypefull="true"
-        :includemultiseason="true"
-        :includegamemap="true"
-        :hideadvancedfilteringbutton="true"
-        :includegamedaterange="true"
-        >
-      </filters>
       <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
       <div  v-if="talentdetaildata" class="container mx-auto md:px-4">

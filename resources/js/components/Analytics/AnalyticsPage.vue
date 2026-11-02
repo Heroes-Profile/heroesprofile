@@ -1,12 +1,11 @@
 <template>
   <div>
     <analytics-disclaimer-popup v-if="showDisclaimer" @popupclosed="showDisclaimer = false"></analytics-disclaimer-popup>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="sample
+        ? 'A sample: replay analysis of ' + battletag + '\'s season games as of ' + sample.captured_at + ', compared with a sample of all games.'
+        : 'Replay analysis of ' + battletag + '\'s season games (from Oct 2, 2026), compared with a sample of all games.'" :infoText2="'Pre-alpha: this is in very early development. Numbers, views and features will change, and some may be wrong or missing.'" -->
     <page-heading
       :heading="'Analytics (Pre-Alpha)'"
-      :infoText1="sample
-        ? 'A sample: replay analysis of ' + battletag + '\'s season games as of ' + sample.captured_at + ', compared with a sample of all games.'
-        : 'Replay analysis of ' + battletag + '\'s season games (from Oct 2, 2026), compared with a sample of all games.'"
-      :infoText2="'Pre-alpha: this is in very early development. Numbers, views and features will change, and some may be wrong or missing.'"
     ></page-heading>
 
     <!-- Remounted when a tab picks a map, so the filter shows it -->

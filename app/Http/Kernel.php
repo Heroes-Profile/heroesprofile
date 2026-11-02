@@ -18,6 +18,7 @@ use App\Http\Middleware\EnsureApiAdmin;
 use App\Http\Middleware\EnsureBattlenetAuthenticated;
 use App\Http\Middleware\LogApiRequest;
 use App\Http\Middleware\LogIPAndUserAgent;
+use App\Http\Middleware\PoisonApiResponse;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\RequireApiAdmin;
@@ -164,6 +165,7 @@ class Kernel extends HttpKernel
         'blockSuspendedApi' => BlockSuspendedApiAccount::class,
         'api.quota' => EnforceApiQuota::class,
         'api.fixtures' => ServeApiFixtures::class,
+        'api.poison' => PoisonApiResponse::class,
         'api.ngs' => RequireNgsAccess::class,
         'api.admin' => RequireApiAdmin::class,
         'api.ngs.upload.validate' => ValidateNgsUpload::class,

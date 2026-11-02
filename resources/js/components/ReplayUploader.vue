@@ -1,8 +1,8 @@
 <template>
   <div>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="'Upload replays from your browser, or install the uploader and have it done for you as you play.'" -->
     <page-heading
       heading="Upload Replays"
-      :infoText1="'Upload replays from your browser, or install the uploader and have it done for you as you play.'"
     ></page-heading>
 
     <div class="mx-auto max-w-[1300px] px-4 mt-6 grid gap-6 md:grid-cols-2 items-start">

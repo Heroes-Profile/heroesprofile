@@ -1,6 +1,7 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="'Drafter'"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+    <page-heading :heading="'Drafter'"></page-heading>
 
     <div v-show="!started || showFilters">
       <filters

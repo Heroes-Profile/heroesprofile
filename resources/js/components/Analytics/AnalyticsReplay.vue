@@ -1,9 +1,8 @@
 <template>
   <div>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="data ? (data.game_map || 'Unknown map') + ' - ' + clock(data.length_s) : 'Loading game'" :infoText2="'Pre-alpha: this is in very early development. Things will change, and some of what you see may be wrong or missing.'" -->
     <page-heading
       :heading="'Replay Viewer (Pre-Alpha)'"
-      :infoText1="data ? (data.game_map || 'Unknown map') + ' - ' + clock(data.length_s) : 'Loading game'"
-      :infoText2="'Pre-alpha: this is in very early development. Things will change, and some of what you see may be wrong or missing.'"
     ></page-heading>
 
     <!-- Page level, like the Talent Builder, so it fills the screen width -->

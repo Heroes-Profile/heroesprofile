@@ -1,32 +1,37 @@
 <template>
   <div>
-    <page-heading  :heading="'Match History'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
-
-    <filters
-      :onFilter="filterData"
-      :onFfSearching="setFfSearching"
-      :filters="filters"
-      :isLoading="isLoading"
-      :gametypedefault="gametype"
-      :minimumgamesdefault="'0'"
-      :includehero="true"
-      :includerole="true"
-      :heroinput="getHeroID()"
-      :roleinput="role"
-      :includegametypefull="showcustomgames ? false : true"
-      :includegametypefullcustom="showcustomgames"
-      :includemultiseason="true"
-      :includegamedaterange="true"
-      :includegamemap="true"
-      :includegroupsize="true"
-      :groupSizeDefaultValue="'All'"
-      :hideadvancedfilteringbutton="true"
-      :matchhistorybattletagsearch="true"
-      :ffbattletaginput="ffBattletag"
-      :ffblizzidinput="ffBlizzid"
-      :ffregioninput="ffRegion || region"
-      >
-    </filters>
+    <div class="flex max-w-[1920px] mx-auto">
+      <div class="">
+      <page-heading  :heading="'Match History'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+      </div>
+      <div class="w-full">
+      <filters
+        :onFilter="filterData"
+        :onFfSearching="setFfSearching"
+        :filters="filters"
+        :isLoading="isLoading"
+        :gametypedefault="gametype"
+        :minimumgamesdefault="'0'"
+        :includehero="true"
+        :includerole="true"
+        :heroinput="getHeroID()"
+        :roleinput="role"
+        :includegametypefull="showcustomgames ? false : true"
+        :includegametypefullcustom="showcustomgames"
+        :includemultiseason="true"
+        :includegamedaterange="true"
+        :includegamemap="true"
+        :includegroupsize="true"
+        :groupSizeDefaultValue="'All'"
+        :hideadvancedfilteringbutton="true"
+        :matchhistorybattletagsearch="true"
+        :ffbattletaginput="ffBattletag"
+        :ffblizzidinput="ffBlizzid"
+        :ffregioninput="ffRegion || region"
+        >
+      </filters>
+      </div>
+    </div>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="data">
       <!-- `compact` means the game rows, labelled Expanded -->

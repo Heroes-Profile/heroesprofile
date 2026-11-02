@@ -114,6 +114,8 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
         Route::post('accounts/search', [AdminConsoleController::class, 'search']);
         Route::get('accounts/{id}', [AdminConsoleController::class, 'account']);
         Route::post('accounts/{id}/flag', [AdminConsoleController::class, 'setFlag']);
+        Route::post('accounts/{id}/poison', [AdminConsoleController::class, 'setPoison']);
+        Route::get('poison/trace', [AdminConsoleController::class, 'poisonTrace']);
         Route::post('accounts/{id}/approvals/{approvalId}/notes', [AdminConsoleController::class, 'approvalNotes'])
             ->whereNumber(['id', 'approvalId']);
 

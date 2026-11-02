@@ -1,12 +1,11 @@
 <template>
   <div>
-    <page-heading :infoText1="'Role data for ' + battletag + ' on ' + role" :heading="'Role Stats: '+ role" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
-      <slot>
-        <round-image :image="`/images/roles/${role.toLowerCase()}.PNG`" :excludehover="true"></round-image>
-      </slot>
-    </page-heading>
-
-    <div class="max-w-[1920px] mx-auto px-4 md:px-8">
+    <div class="flex max-w-[1920px] mx-auto">
+      <div class="">
+        <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="'Role data for ' + battletag + ' on ' + role" -->
+        <page-heading :heading="'Role Stats: '+ role" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+      </div>
+    <div class="max-w-[1920px] mx-auto px-4 md:px-8 w-full">
       <panel-box>
         <div class="filter-row">
           <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
@@ -16,6 +15,7 @@
           <custom-button class="font-semibold text-center m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :text="'Filter'" :alt="'Filter'" :color="'blue'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
         </div>
       </panel-box>
+    </div>
     </div>
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
@@ -27,7 +27,9 @@
 
         <!-- Role overview, laid out like the profile's player card -->
         <panel-box :inner="true" class="!gap-8">
-          <h2 class="text-3xl font-bold">{{ role }}</h2>
+          <h2 class="text-3xl font-bold">
+            <hero-heading-select type="role" :heroes="filters.role" :value="role" textclass="" @hero-changed="changeRole($event)"></hero-heading-select>
+          </h2>
 
           <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
             <div class="shrink-0 w-40 md:w-72 self-center [&_img]:!object-contain">
@@ -270,6 +272,9 @@
     watch: {
     },
     methods: {
+      changeRole(role) {
+        window.location.href = `/Player/${this.battletag}/${this.blizzid}/${this.region}/Role/${role}`;
+      },
       async getData(){
         this.disableFilterInput = true;
         this.isLoading = true;

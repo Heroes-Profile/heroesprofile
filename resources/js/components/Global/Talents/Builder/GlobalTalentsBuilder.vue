@@ -1,7 +1,8 @@
 <template>
   <div>
     <global-async-debug-banner page-label="Global Talent Builder" />
-    <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="selectedHero ? selectedHero.name + ' Talent Calculator & Builder' : 'Talent Calculator & Builder'"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" :infoText2="infoText2" -->
+    <page-heading :heading="selectedHero ? selectedHero.name + ' Talent Calculator & Builder' : 'Talent Calculator & Builder'"></page-heading>
 
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes"></hero-selection>

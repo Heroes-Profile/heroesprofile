@@ -4,7 +4,8 @@
       <leaderboard-popup @popupclosed="showPopup = false"></leaderboard-popup>
     </div>
 
-    <page-heading :infoText1="infoText1" :heading="'Leaderboard'">
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
+    <page-heading :heading="'Leaderboard'">
       <template #extraInfo>
         <p class="text-sm max-md:text-sm">
           Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards.

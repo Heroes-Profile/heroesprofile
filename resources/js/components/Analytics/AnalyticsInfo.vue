@@ -1,8 +1,8 @@
 <template>
   <div>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="'Deep replay analysis of your own season games.'" -->
     <page-heading
       :heading="'Analytics (Pre-Alpha)'"
-      :infoText1="'Deep replay analysis of your own season games.'"
     ></page-heading>
 
     <div class="max-w-[900px] mx-auto px-4 mt-4 mb-10">

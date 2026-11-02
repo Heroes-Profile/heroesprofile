@@ -1,7 +1,8 @@
 <template>
   <div>
     <global-async-debug-banner page-label="Global Compositions" />
-    <page-heading :infoText1="infoText" :heading="'Compositional Statistics'"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+    <page-heading :heading="'Compositional Statistics'"></page-heading>
     <filters 
       :onFilter="filterData" 
       :filters="filters" 

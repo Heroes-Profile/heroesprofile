@@ -1,7 +1,8 @@
 <template>
   <div>
     <global-async-debug-banner page-label="Global Matchups" />
-    <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Counters & Matchups' : 'Hero Counters & Matchups'">
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+    <page-heading :heading="selectedHero ? selectedHero.name + ' Counters & Matchups' : 'Hero Counters & Matchups'">
       <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
         <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
         <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 220px; max-height: 340px; overflow-y: auto;">

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="'Randomize Me'"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+    <page-heading :heading="'Randomize Me'"></page-heading>
 
     <div v-if="!loading">
       <div class="max-w-[900px] mx-auto px-4 py-10">

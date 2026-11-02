@@ -1,6 +1,7 @@
 <template>
   <div>
-    <page-heading :heading="poll.title" :infoText1="statusText"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="statusText" -->
+    <page-heading :heading="poll.title"></page-heading>
 
     <div class="max-w-[900px] mx-auto px-4 mt-4 mb-10">
       <p v-if="poll.description" class="mb-6 whitespace-pre-line">{{ poll.description }}</p>
