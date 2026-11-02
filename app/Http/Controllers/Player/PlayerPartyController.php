@@ -50,6 +50,7 @@ class PlayerPartyController extends Controller
             'gametypedefault' => $this->globalDataService->getPlayerGameTypeDefault(),
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
+            'urlparameters' => $request->query(),
         ]);
     }
 

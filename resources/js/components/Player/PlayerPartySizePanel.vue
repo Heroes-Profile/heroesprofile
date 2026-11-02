@@ -1,5 +1,5 @@
 <template>
-  <panel-box :inner="true" title="Party Size Win Rates">
+  <panel-box :inner="true" title="Party Size Win Rates" :link-text="linkText" :link-href="linkHref">
     <div class="flex flex-col gap-3">
       <div v-for="stack in partySizes" :key="stack.label" class="flex flex-col gap-1.5">
         <div class="flex justify-between">
@@ -22,6 +22,8 @@ export default {
       type: String,
       default: 'stack_',
     },
+    linkText: String,
+    linkHref: String,
   },
   computed: {
     partySizes(){

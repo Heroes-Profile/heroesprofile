@@ -1,14 +1,14 @@
 <template>
   <!-- Every season, not just the filtered ones: the latest on the right, 10 at a time, sliding one season per click -->
   <panel-box title="Win Rate Per Season">
-    <template v-if="seasons.length">
-      <line-chart :data="seasons" :visible-count="windowSize" :end-index="end" :aspect-ratio="3.1" :gridded="true" :dataAttribute="'win_rate'" :point-radius="3" :point-hover-radius="5" :percent="true" :dim-empty="true" :title="title"></line-chart>
-      <div class="flex justify-between text-sm">
-        <button v-if="end > windowSize" type="button" class="text-subtext hover:text-white" aria-label="Older seasons" @click="shift(-1)"><i class="fas fa-chevron-left"></i></button>
-        <span v-else></span>
-        <button v-if="end < seasons.length" type="button" class="text-subtext hover:text-white" aria-label="Newer seasons" @click="shift(1)"><i class="fas fa-chevron-right"></i></button>
-      </div>
-    </template>
+    <div v-if="seasons.length" class="relative text-sm">
+      <line-chart :data="seasons" :visible-count="windowSize" :end-index="end" :aspect-ratio="3.1" :gridded="true" :dataAttribute="'win_rate'" top-attribute="games_played" top-label="Games" :point-radius="3" :point-hover-radius="5" :percent="true" :dim-empty="true" :title="title"></line-chart>
+      <!-- Arrows at both ends of the games row and the season labels -->
+      <template v-for="row in ['top-1', 'bottom-0']" :key="row">
+        <button v-if="end > windowSize" type="button" :class="['absolute left-0 text-subtext hover:text-white', row]" aria-label="Older seasons" @click="shift(-1)"><i class="fas fa-chevron-left"></i></button>
+        <button v-if="end < seasons.length" type="button" :class="['absolute right-0 text-subtext hover:text-white', row]" aria-label="Newer seasons" @click="shift(1)"><i class="fas fa-chevron-right"></i></button>
+      </template>
+    </div>
     <p v-else class="text-subtext">No season data for these filters.</p>
   </panel-box>
 </template>

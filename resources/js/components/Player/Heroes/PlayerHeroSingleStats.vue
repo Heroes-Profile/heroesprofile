@@ -90,7 +90,7 @@
         </panel-box>
 
         <div class="flex flex-col gap-6 min-w-0">
-          <player-party-size-panel :data="data" prefix="stack_size_"></player-party-size-panel>
+          <player-party-size-panel :data="data" prefix="stack_size_" link-text="Party Stats" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Party?hero=' + heroobject.name"></player-party-size-panel>
 
           <player-mmr-panel :data="data" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/MMR'" :link-query="{ hero: heroobject.name }"></player-mmr-panel>
         </div>
@@ -112,27 +112,29 @@
 
       <panel-box title="Advanced Stats">
         <div class="grid xl:grid-cols-2 gap-6 items-start">
-          <table v-for="(section, sectionIndex) in sections" :key="sectionIndex" class="min-w-0 w-full responsive-table max-md:text-xs">
-            <thead>
-              <tr>
-                <th class="py-2 px-3 text-left text-sm w-1/4">{{ section.title }}</th>
-                <th class="py-2 px-3 text-left text-sm w-1/4">Total</th>
-                <th class="py-2 px-3 text-left text-sm w-1/4">Average</th>
-                <th class="py-2 px-3 text-left text-sm w-1/4">Maximum</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-                <td class="py-2 px-3">{{ row.label }}</td>
-                <td class="py-2 px-3">{{ formatValue(row.key, data["sum_" + row.key]) }}</td>
-                <td class="py-2 px-3">{{ formatValue(row.key, data["avg_" + row.key]) }}</td>
-                <td class="py-2 px-3">
-                  <span v-if="data['max_' + row.key]" class="link" title="Navigate to this match" @click="navigateToMaxStatMatch(row.key, data['max_' + row.key])">{{ formatValue(row.key, data["max_" + row.key]) }}</span>
-                  <template v-else>{{ formatValue(row.key, data["max_" + row.key]) }}</template>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-for="(column, columnIndex) in sectionColumns" :key="columnIndex" class="flex flex-col gap-6 min-w-0">
+            <table v-for="section in visibleSections(column)" :key="section.title" class="min-w-0 w-full responsive-table max-md:text-xs">
+              <thead>
+                <tr>
+                  <th class="py-2 px-3 text-left text-sm w-[31%]">{{ section.title }}</th>
+                  <th class="py-2 px-3 text-left text-sm w-[23%]">Total</th>
+                  <th class="py-2 px-3 text-left text-sm w-[23%]">Average</th>
+                  <th class="py-2 px-3 text-left text-sm w-[23%]">Maximum</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in section.visibleRows" :key="row.key">
+                  <td class="py-2 px-3">{{ row.label }}</td>
+                  <td class="py-2 px-3">{{ formatValue(row.key, data["sum_" + row.key]) }}</td>
+                  <td class="py-2 px-3">{{ formatValue(row.key, data["avg_" + row.key], true) }}</td>
+                  <td class="py-2 px-3">
+                    <span v-if="data['max_' + row.key]" class="text-header whitespace-nowrap cursor-pointer hover:underline" title="Navigate to this match" @click="navigateToMaxStatMatch(row.key, data['max_' + row.key])">{{ formatValue(row.key, data["max_" + row.key]) }}<i class="fas fa-chevron-right text-sm ml-3"></i></span>
+                    <template v-else>{{ formatValue(row.key, data["max_" + row.key]) }}</template>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </panel-box>
     </div>
@@ -245,80 +247,85 @@
         matchIsLoading: false,
         matchNotFound: false,
         talentLevels: ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'],
-        sections: [
-          {
-            title: 'Combat',
-            rows: [
-              { label: 'Kills', key: 'kills' },
-              { label: 'Assists', key: 'assists' },
-              { label: 'Takedowns', key: 'takedowns' },
-              { label: 'Deaths', key: 'deaths' },
-            ],
-          },
-          {
-            title: 'Player',
-            rows: [
-              { label: 'Regeneration Globes', key: 'regen_globes' },
-              { label: 'Hero Damage', key: 'hero_damage' },
-              { label: 'Physical Damage Done', key: 'physical_damage' },
-              { label: 'Spell Damage Done', key: 'spell_damage' },
-              { label: 'Damage Taken', key: 'damage_taken' },
-              { label: 'Time Spent Dead', key: 'time_spent_dead' },
-              { label: 'Enemy Silence Duration', key: 'silencing_enemies' },
-              { label: 'Enemy Rooted Duration', key: 'rooting_enemies' },
-              { label: 'Enemy Stunned Duration', key: 'stunning_enemies' },
-              { label: 'Escapes', key: 'escapes' },
-              { label: 'Vengeances', key: 'vengeance' },
-              { label: 'Outnumbered Deaths', key: 'outnumbered_deaths' },
-            ],
-          },
-          {
-            title: 'Siege',
-            rows: [
-              { label: 'Siege Damage', key: 'siege_damage' },
-              { label: 'Structure Damage', key: 'structure_damage' },
-              { label: 'Minion Damage', key: 'minion_damage' },
-              { label: 'Lane Merc. Damage', key: 'creep_damage' },
-              { label: 'Summon Damage', key: 'summon_damage' },
-            ],
-          },
-          {
-            title: 'Macro',
-            rows: [
-              { label: 'Experience Contribution', key: 'experience_contribution' },
-              { label: 'Merc. Camp Captures', key: 'merc_camp_captures' },
-              { label: 'Watch Tower Captures', key: 'watch_tower_captures' },
-              { label: 'Team Exp.', key: 'meta_experience' },
-              { label: 'Game Length', key: 'game_length' },
-            ],
-          },
-          {
-            title: 'Team Fight',
-            rows: [
-              { label: 'Teamfight Damage Taken', key: 'teamfight_damage_taken' },
-              { label: 'Teamfight Hero Damage', key: 'teamfight_hero_damage' },
-              { label: 'Teamfight Escapes', key: 'teamfight_escapes' },
-              { label: 'Teamfight Healing', key: 'teamfight_healing' },
-            ],
-          },
-          {
-            title: 'Defense/ Healing',
-            rows: [
-              { label: 'Healing', key: 'healing' },
-              { label: 'Self Healing', key: 'self_healing' },
-              { label: 'Clutch Heals', key: 'clutch_heals' },
-              { label: 'Ally Protection', key: 'protection_allies' },
-              { label: 'Crowd Control Enemies', key: 'time_cc_enemy_heroes' },
-            ],
-          },
-          {
-            title: 'Other',
-            rows: [
-              { label: 'Town Kills', key: 'town_kills' },
-              { label: 'Kill Streak', key: 'highest_kill_streak' },
-              { label: 'Multikills', key: 'multikill' },
-            ],
-          },
+        // Left and right columns on wide screens; heroSpecific rows hide when no game has them
+        sectionColumns: [
+          [
+            {
+              title: 'Damage',
+              rows: [
+                { label: 'Siege', key: 'siege_damage' },
+                { label: 'Structure', key: 'structure_damage' },
+                { label: 'Minion', key: 'minion_damage' },
+                { label: 'Lane Merc. Damage', key: 'creep_damage' },
+                { label: 'Summon', key: 'summon_damage', heroSpecific: true },
+              ],
+            },
+            {
+              title: 'Combat',
+              rows: [
+                { label: 'Kills', key: 'kills' },
+                { label: 'Assists', key: 'assists' },
+                { label: 'Takedowns', key: 'takedowns' },
+                { label: 'Deaths', key: 'deaths' },
+              ],
+            },
+            {
+              title: 'Team Fight',
+              rows: [
+                { label: 'Teamfight Damage Taken', key: 'teamfight_damage_taken' },
+                { label: 'Teamfight Hero Damage', key: 'teamfight_hero_damage' },
+                { label: 'Teamfight Escapes', key: 'teamfight_escapes' },
+                { label: 'Teamfight Healing', key: 'teamfight_healing', heroSpecific: true },
+              ],
+            },
+            {
+              title: 'Defense / Healing',
+              rows: [
+                { label: 'Healing', key: 'healing', heroSpecific: true },
+                { label: 'Self Healing', key: 'self_healing', heroSpecific: true },
+                { label: 'Clutch Heals', key: 'clutch_heals', heroSpecific: true },
+                { label: 'Ally Protection', key: 'protection_allies', heroSpecific: true },
+                { label: 'Crowd Control Enemies', key: 'time_cc_enemy_heroes', heroSpecific: true },
+              ],
+            },
+          ],
+          [
+            {
+              title: 'Player',
+              rows: [
+                { label: 'Regeneration Globes', key: 'regen_globes' },
+                { label: 'Hero Damage', key: 'hero_damage' },
+                { label: 'Physical Damage Done', key: 'physical_damage', heroSpecific: true },
+                { label: 'Spell Damage Done', key: 'spell_damage', heroSpecific: true },
+                { label: 'Damage Taken', key: 'damage_taken' },
+                { label: 'Time Spent Dead', key: 'time_spent_dead' },
+                { label: 'Enemy Silence Duration', key: 'silencing_enemies', heroSpecific: true },
+                { label: 'Enemy Rooted Duration', key: 'rooting_enemies', heroSpecific: true },
+                { label: 'Enemy Stunned Duration', key: 'stunning_enemies', heroSpecific: true },
+                { label: 'Escapes', key: 'escapes' },
+                { label: 'Vengeances', key: 'vengeance' },
+                { label: 'Outnumbered Deaths', key: 'outnumbered_deaths' },
+              ],
+            },
+            {
+              title: 'Macro',
+              rows: [
+                { label: 'Experience Contribution', key: 'experience_contribution' },
+                { label: 'Merc. Camp Captures', key: 'merc_camp_captures' },
+                { label: 'Watch Tower Captures', key: 'watch_tower_captures' },
+                { label: 'Team Exp.', key: 'meta_experience' },
+                { label: 'Game Length', key: 'game_length' },
+              ],
+            },
+            {
+              title: 'Other',
+              rows: [
+                { label: 'Town Kills', key: 'town_kills' },
+                { label: 'Kill Streak', key: 'highest_kill_streak' },
+                { label: 'Multikills', key: 'multikill' },
+              ],
+            },
+          ],
         ],
 
       }
@@ -526,42 +533,32 @@
       getTalentPageUrl(){
         return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region  + "/Talents/" + this.hero;
       },
-      formatValue(key, value){
-        var returnValue = null;
-
-        if(!value){
-          returnValue = 0;
-        }else if(value < 1000){
-          returnValue = value.toFixed(2);
-        }else{
-          returnValue = Math.round(value).toLocaleString('en-US');
-        }
+      visibleSections(column){
+        return column
+          .map(section => ({ ...section, visibleRows: section.rows.filter(row => !row.heroSpecific || this.data['max_' + row.key] > 0) }))
+          .filter(section => section.visibleRows.length);
+      },
+      // Whole numbers, except averages under 1,000 which keep up to 2 decimals
+      formatValue(key, value, average = false){
+        value = value || 0;
 
         if (key == "game_length") {
-          let valueInSeconds = value;
-          const days = Math.floor(valueInSeconds / (24 * 3600));
-          valueInSeconds %= 24 * 3600;
-          const hours = Math.floor(valueInSeconds / 3600);
-          valueInSeconds %= 3600;
-          const minutes = Math.floor(valueInSeconds / 60);
-          const secs = Math.floor(valueInSeconds % 60);
-
-          let returnValue = "";
-
-          if (days > 0) {
-            returnValue += `${days} days, `;
-          }
-          if (hours > 0) {
-            returnValue += `${hours} hours, `;
-          }
-          if (minutes > 0) {
-            returnValue += `${minutes} minutes, `;
-          }
-          returnValue += `${secs} seconds`;
-
-          return returnValue;
+          let seconds = Math.floor(value);
+          const parts = [];
+          [[86400, 'd'], [3600, 'h'], [60, 'm']].forEach(([size, unit]) => {
+            const count = Math.floor(seconds / size);
+            seconds %= size;
+            if (count || parts.length) {
+              parts.push(count + unit);
+            }
+          });
+          return [...parts, seconds + 's'].join(', ');
         }
-        return returnValue;
+
+        if (average && value < 1000) {
+          return value.toLocaleString('en-US', { maximumFractionDigits: 2 });
+        }
+        return Math.round(value).toLocaleString('en-US');
       },
     }
   }

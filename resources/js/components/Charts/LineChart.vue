@@ -34,6 +34,9 @@ export default {
     aspectRatio: { type: Number, default: 2 },
     // The season chart's look: a line per point, alternating y bands, y labels on the right
     gridded: { type: Boolean, default: false },
+    // A row of each point's value of this attribute above the plot, named by topLabel
+    topAttribute: { type: String, default: null },
+    topLabel: { type: String, default: '' },
   },
   data() {
     return {
@@ -116,6 +119,33 @@ export default {
         ctx.restore();
       },
     };
+    const topRow = {
+      id: 'topRow',
+      afterDraw: (chart) => {
+        if (!this.topAttribute) {
+          return;
+        }
+        const { left, right, top } = chart.chartArea;
+        const ctx = chart.ctx;
+        const y = top / 2;
+        ctx.save();
+        ctx.font = '11px sans-serif';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#9ca3af';
+        ctx.fillText(this.topLabel, chart.scales.y.left + 4, y);
+        ctx.beginPath();
+        ctx.rect(left, 0, right - left, top);
+        ctx.clip();
+        ctx.textAlign = 'center';
+        this.data.forEach((item, index) => {
+          const value = item[this.topAttribute] ?? 0;
+          ctx.fillStyle = value ? '#9ca3af' : 'rgba(156, 163, 175, 0.4)';
+          ctx.fillText(value.toLocaleString(), chart.scales.x.getPixelForValue(index), y);
+        });
+        ctx.restore();
+      },
+    };
+
     const xTicks = this.visibleCount ? {
       // Linear x so the window can sit between points mid-slide
       type: 'linear',
@@ -153,7 +183,7 @@ export default {
 
     this.chart = markRaw(new Chart(this.$refs.canvas.getContext('2d'), {
       type: 'line',
-      plugins: [backdrop, markerLines],
+      plugins: [backdrop, markerLines, topRow],
       data: {
         labels: this.data.map(item => item.x_label),
         datasets: this.datasets(),
@@ -162,6 +192,8 @@ export default {
         responsive: true,
         // Phones: taller plot, and few flat date labels so they don't crush it
         aspectRatio: window.matchMedia('(max-width: 767px)').matches ? 1.2 : this.aspectRatio,
+        // Room for the top row, and for arrows laid over either end
+        layout: { padding: this.topAttribute ? { top: 28, left: 20, right: 20 } : 0 },
         // Styled like the Storm League rank chart
         plugins: {
           // The legend only names the dashed projected line; a single line needs none

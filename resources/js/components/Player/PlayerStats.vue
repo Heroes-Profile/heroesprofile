@@ -95,7 +95,7 @@
               </div>
             </panel-box>
 
-            <player-party-size-panel :data="data"></player-party-size-panel>
+            <player-party-size-panel :data="data" link-text="Party Stats" :link-href="profileUrl + '/Party'"></player-party-size-panel>
           </div>
 
           <player-mmr-panel :data="data" :link-href="profileUrl + '/MMR'"></player-mmr-panel>

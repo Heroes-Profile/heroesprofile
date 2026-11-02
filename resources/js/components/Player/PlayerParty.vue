@@ -7,6 +7,7 @@
       :filters="filters"
       :isLoading="isLoading"
       :gametypedefault="gametype"
+      :heroinput="hero"
       :includehero="true"
       :includegamemap="true"
       :includegametypefull="true"
@@ -54,6 +55,7 @@ export default {
     regionsmap: Object,
     isPatreon: Boolean,
     patreonUser: Boolean,
+    urlparameters: [Object, Array],
   },
   data(){
     return {
@@ -74,6 +76,12 @@ export default {
   },
   created(){
     this.gametype = this.gametypedefault;
+
+    // ?hero= by name, from the hero page's party size panel
+    const hero = this.filters.heroes.find(item => item.name === this.urlparameters?.hero);
+    if (hero) {
+      this.hero = hero.code;
+    }
   },
   mounted() {
     if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){

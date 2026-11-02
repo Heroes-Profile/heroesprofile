@@ -259,8 +259,14 @@ table td{flex:1;}
 .dark-mode thead{
   @apply bg-surface text-subtext;
 }
+.dark-mode thead tr{
+  @apply text-subtext;
+}
+/* Figma table header: medium-weight 16px subtext over a faint line */
 .dark-mode th{
-  @apply border-gray-dark;
+  @apply text-base font-medium;
+  letter-spacing: inherit;
+  border-bottom-color: rgba(173, 162, 191, 0.25);
 }
 .dark-mode td{
   border-right-color: rgba(255, 255, 255, 0.06);
