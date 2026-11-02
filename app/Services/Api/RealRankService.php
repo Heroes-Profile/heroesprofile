@@ -19,6 +19,11 @@ use Illuminate\Support\Facades\DB;
  * periods (battletags_real_ranks): the same rank again in the same season extends the latest period; a
  * different rank, or a new season, starts a new one. Ranks are stored as read - how far to trust one is
  * worked out when it's shown.
+ *
+ * "Unranked" (a card with no division badge) isn't kept. The loading screen opens on everyone's chosen
+ * portrait border and swaps in their rank after, and on some players' screens a ranked player's swap never
+ * came while the uploader captured (Varylux#1314, 2026-10-31: Gold 1 to one uploader, their Basic Border to
+ * another in the same game). No badge can't tell unranked from not shown. Uploaders from 3.0.8 don't send it.
  */
 class RealRankService
 {
@@ -86,6 +91,9 @@ class RealRankService
         if (max((float) ($rank['nameConfidence'] ?? 0), (float) ($rank['heroConfidence'] ?? 0)) < self::MIN_CONFIDENCE) {
             return 'card not identified';
         }
+        if ($league === 'Unranked') {
+            return 'unranked not kept';
+        }
 
         $values = $this->rankValues($league, $rank['division'] ?? null, $rank['ladderPosition'] ?? null);
         if ($values === null) {
@@ -142,15 +150,13 @@ class RealRankService
     }
 
     /**
-     * The columns for a rank as the uploader names it, or null when it isn't one.
+     * The columns for a rank as the uploader names it, or null when it isn't one (Unranked included: see
+     * the class comment).
      *
      * @return array{league_tier: int|null, division: int|null, grandmaster: bool, ladder_position: int|null, unranked: bool}|null
      */
     public function rankValues(string $league, mixed $division, mixed $ladderPosition): ?array
     {
-        if ($league === 'Unranked') {
-            return ['league_tier' => null, 'division' => null, 'grandmaster' => false, 'ladder_position' => null, 'unranked' => true];
-        }
         if (! isset(self::LEAGUES[$league])) {
             return null;
         }
