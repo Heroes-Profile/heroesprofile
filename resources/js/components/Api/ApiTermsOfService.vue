@@ -17,7 +17,7 @@
         </form>
       </div>
 
-      <p class="text-sm text-gray-medium mb-6">Last updated: October 2026</p>
+      <p class="text-sm text-gray-medium mb-6">Last updated: November 2026</p>
 
       <p class="mb-6">
         Skill Tree Development, LLC (referred to as Heroes Profile in this document) operates the
@@ -213,6 +213,33 @@
           reconstruct a hidden profile, or to work around the privacy setting by any other route.
         </li>
       </ul>
+      <p class="mb-3">
+        <strong>Individual players.</strong> You may show an individual player's data when someone
+        looks that player up, for example on a profile page, through a bot command, or on the
+        player's own stream overlay. You may not use Heroes Profile data to investigate, track or
+        expose individual players. In particular, you may not:
+      </p>
+      <ul class="list-disc ml-6 mb-3 space-y-1">
+        <li>
+          Link accounts to each other or to a person. That includes matching a smurf or alternate
+          account to a main account, and matching a battletag to a Discord account, social media
+          account or real-world identity.
+        </li>
+        <li>
+          Build profiles, lists or watch lists of particular players, or monitor the games of a
+          player who has not asked you to, such as by following which accounts they queue with or
+          when they play.
+        </li>
+        <li>
+          Name, accuse or expose players for cheating, botting, win-trading, account sharing or any
+          other misconduct, whether publicly or privately to other people. Report suspected
+          misconduct to Blizzard.
+        </li>
+      </ul>
+      <p class="mb-3">
+        Heroes Profile data cannot prove that a player has cheated or broken any rule, and you must
+        not present it as if it could.
+      </p>
       <p class="mb-6">
         Aggregate statistics that do not identify an individual player are not affected by a player
         going private.
@@ -278,9 +305,9 @@
       <h3 class="text-xl mb-2">7. Your Users</h3>
       <p class="mb-6">
         You are responsible for how the people who use your project use the Heroes Profile data you
-        show them. Your own terms must bind your users to at least the restrictions in sections 3, 4
-        and 6 — in particular, no redistribution of the data, no scraping your surface to extract it,
-        and no using it to harass anyone. If your users breach those restrictions, we will look to
+        show them. Your own terms must bind your users to at least the restrictions in sections 3, 4,
+        5 and 6 — in particular, no redistribution of the data, no scraping your surface to extract
+        it, no using it to track or expose individual players, and no using it to harass anyone. If your users breach those restrictions, we will look to
         you.
       </p>
 

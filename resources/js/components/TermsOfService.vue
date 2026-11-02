@@ -3,7 +3,7 @@
     <page-heading :heading="'Terms of Service'"></page-heading>
 
     <div class="max-w-[1500px] mx-auto mt-10 px-4">
-      <p>Last updated: June 2026</p>
+      <p>Last updated: November 2026</p>
       <br/>
 
       <h3>1. Acceptance of Terms</h3>
@@ -58,8 +58,22 @@
         <li>Scrape, crawl, or systematically extract data from the Site using bots or automated scripts</li>
         <li>Attempt to reverse-engineer, copy, or reproduce Site code or database contents</li>
         <li>Use data from this Site to harass or harm other players</li>
+        <li>
+          Use data from this Site to link accounts to each other or to a person, such as matching a smurf
+          or alternate account to a main account, or a battletag to a Discord account, social media account
+          or real-world identity
+        </li>
+        <li>Use data from this Site to build profiles, lists or watch lists of particular players, or to monitor their games</li>
+        <li>
+          Use data from this Site to name, accuse or expose players for cheating, botting, win-trading,
+          account sharing or any other misconduct. Report suspected misconduct to Blizzard
+        </li>
         <li>Attempt to circumvent any rate limiting, access controls, or security measures</li>
       </ul>
+      <p class="mt-2">
+        Data on this Site cannot prove that a player has cheated or broken any rule, and must not be
+        presented as if it could.
+      </p>
       <p class="mt-2">
         Violation of these rules may result in your access to the Site being restricted or terminated.
       </p>
