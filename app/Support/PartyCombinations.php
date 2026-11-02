@@ -35,6 +35,17 @@ class PartyCombinations
         '50000' => '1 team of 5',
     ];
 
+    /** The section each ally code is listed under on the party pages. */
+    public const SECTIONS = [
+        '00005' => 'solo',
+        '00023' => 'double',
+        '00041' => 'double_double',
+        '00302' => 'triple',
+        '00320' => 'triple_double',
+        '04001' => 'quadruple',
+        '50000' => 'quintuple',
+    ];
+
     /** Unrecognised codes read as five solos, which is what the controller did. */
     public const FALLBACK = '5 Solo';
 

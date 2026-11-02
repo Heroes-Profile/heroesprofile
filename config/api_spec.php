@@ -148,6 +148,7 @@ return [
             'api.external.players.friendfoe',
             'api.external.players.heroes',
             'api.external.players.heroes.single',
+            'api.external.players.lookup',
             'api.external.players.maps',
             'api.external.players.maps.single',
             'api.external.players.matches',
@@ -158,6 +159,7 @@ return [
             'api.external.players.mmr.history.heroes',
             'api.external.players.mmr.history.roles',
             'api.external.players.mmr.roles',
+            'api.external.players.party',
             'api.external.players.privacy.changes',
             'api.external.players.roles',
             'api.external.players.roles.single',
@@ -343,6 +345,14 @@ return [
             'parameters' => [
                 'game_type' => ['multi' => true, 'description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.', 'example' => 'Storm League'],
             ],
+        ],
+
+        'api.external.players.lookup' => [
+            'summary' => 'Who a battletag is: blizz_id, account level and profile link, with no stats.',
+            'description' => 'The cheap way to resolve a battletag to a `blizz_id`, and what the old API\'s `/Player` returned. Use `players` for career totals.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}',
+            'uses' => ['player'],
+            'parameters' => [],
         ],
 
         'api.external.players.awards' => [
@@ -556,6 +566,18 @@ return [
                 'hero' => ['description' => 'Restrict to one hero by name.'],
                 'game_map' => ['multi' => true, 'description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
                 'groupsize' => ['enum' => ['All', 'Solo', 'Duo', '3 Players', '4 Players', '5 Players'], 'description' => 'Party size the player queued at. `All`, or omitted, for every party size.'],
+            ],
+        ],
+
+        'api.external.players.party' => [
+            'summary' => 'Win rates by the party setup of this player\'s team against the enemy team\'s.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/Party',
+            'uses' => ['player', 'player_dates'],
+            'async' => true,
+            'parameters' => [
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
+                'hero' => ['description' => 'Only games where this player was on this hero, by name.'],
+                'game_map' => ['multi' => true, 'description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
             ],
         ],
 

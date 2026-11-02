@@ -62,12 +62,15 @@ class ApiEndpointRegistrySeeder extends Seeder
         ['ngs_teams', 'NGS/Teams', 'NGS Public Data', 7, 9, 50, 100, 1000, 10000, 1000000, 0],
         ['randomize_me', 'Tools/RandomizeMe', 'Tools', 9, 1, 1000000, 1000000, 1000000, 1000000, 0, 0],
         ['patches', 'Patches', 'General', 1, 1, 1000000, 1000000, 1000000, 1000000, 0, 0],
-        ['player', 'Player', 'Player Data', 4, 1, 10000, 25000, 50000, 250000, 250000, 250000],
+        // The full profile query. The old API's cheap `/Player` lookup, and its
+        // allowance, is now player_lookup.
+        ['player', 'Player', 'Player Data', 4, 1, 25, 500, 5000, 50000, 250000, 250000],
         ['player_awards', 'Player/Awards', 'Player Data', 4, 15, 25, 500, 5000, 50000, 0, 0],
         ['player_awards_games', 'Player/Awards/Games', 'Player Data', 4, 16, 25, 500, 5000, 50000, 0, 0],
         ['player_friendfoe', 'Player/FriendFoe', 'Player Data', 4, 13, 25, 500, 5000, 50000, 0, 0],
         ['player_hero_all', 'Player/Hero/All', 'Player Data', 4, 4, 25, 500, 5000, 50000, 0, 0],
         ['player_hero_single', 'Player/Hero/Single', 'Player Data', 4, 5, 25, 500, 5000, 50000, 0, 0],
+        ['player_lookup', 'Player/Lookup', 'Player Data', 4, 18, 10000, 25000, 50000, 250000, 250000, 250000],
         ['player_map_all', 'Player/Map/All', 'Player Data', 4, 9, 25, 500, 5000, 50000, 0, 0],
         ['player_map_single', 'Player/Map/Single', 'Player Data', 4, 10, 25, 500, 5000, 50000, 0, 0],
         ['player_match_history', 'Player/Match/History', 'Player Data', 4, 11, 25, 500, 5000, 50000, 0, 0],
@@ -78,6 +81,7 @@ class ApiEndpointRegistrySeeder extends Seeder
         ['player_mmr_history', 'Player/MMR History', 'Player MMR Data', 5, 2, 10000, 25000, 50000, 250000, 100000, 100000],
         ['player_mmr_history_hero', 'Player/MMR/Hero History', 'Player MMR Data', 5, 3, 10000, 25000, 50000, 250000, 100000, 100000],
         ['player_mmr_history_role', 'Player/MMR/Role History', 'Player MMR Data', 5, 4, 10000, 25000, 50000, 250000, 100000, 100000],
+        ['player_party', 'Player/Party', 'Player Data', 4, 17, 25, 500, 5000, 50000, 0, 0],
         ['player_prematch', 'Player/PreMatch', 'Player Miscellaneous', 6, 1, 1000, 10000, 25000, 100000, 0, 0],
         // Generous on every plan, NGS and Heroes Lounge included: polling this is
         // an obligation the terms impose, so no tier should be rate-limited out of

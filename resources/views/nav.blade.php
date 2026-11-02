@@ -160,6 +160,7 @@
                                     @endif
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" >Profile</a>
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/FriendFoe" >Friends and Foes</a>
+                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Party" >Party</a>
                                     <nav-search-flyout
                                         :battletag="'{{ $mainSearchAccount['battletag'] }}'"
                                         :blizz-id="{{ $mainSearchAccount['blizz_id'] }}"
@@ -271,6 +272,7 @@
               <div  class="mobile-secondary-nav-name flex justify-between md:hidden max-md:text-xs md:p-3 bg-teal">{{ $account['battletag'] }}@if(isset($regions[$account['region']])) ({{ $regions[$account['region']] }})@endif <button class="close-secondary-nav">x</button></div>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" >Profile</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" >Friends and Foes</a>
+              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Party" >Party</a>
               <nav-search-flyout
                 :battletag="'{{ $account['battletag'] }}'"
                 :blizz-id="{{ $account['blizz_id'] }}"

@@ -122,7 +122,7 @@ class ApiVariables
                 'name' => 'teamoneparty',
                 'also' => 'teamtwoparty, ally_combo, enemy_combo',
                 'used_by' => 'Party statistics',
-                'summary' => 'A party composition code. Five digits, one per group size, read left to right as five-stack, quad, triple, double, solo — each digit being the number of *players* in groups of that size, so every code sums to five. `00023` is two players in a duo plus three solos. These are also the keys of the `/party` response and the values of its `ally_combo` and `enemy_combo` fields.',
+                'summary' => 'A party composition code. Five digits, one per group size, read left to right as five-stack, quad, triple, double, solo — each digit being the number of *players* in groups of that size, so every code sums to five. `00023` is two players in a duo plus three solos. These are also the keys of the `/party` and `/players/party` responses and the values of their `ally_combo` and `enemy_combo` fields. In `/players/party`, `ally_combo` is the player\'s own team.',
                 'pairs' => PartyCombinations::all(),
             ],
             [

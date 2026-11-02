@@ -11,8 +11,10 @@ use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
 use App\Http\Controllers\Player\PlayerMatchHistory;
 use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerMMRController;
+use App\Http\Controllers\Player\PlayerPartyController;
 use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Middleware\ServeApiFixtures;
+use App\Models\Battletag;
 use App\Services\PlayerMmrService;
 use App\Support\ApiParameters;
 use Carbon\Carbon;
@@ -68,6 +70,54 @@ class PlayerController extends Controller
         'map' => 'game_map',
         'role' => 'role',
     ];
+
+    /**
+     * Who a battletag is, without any stats — what the old API's `/Player`
+     * returned. `players` now runs the full profile query, so this is the cheap
+     * call for resolving a blizz_id.
+     */
+    public function lookup(Request $request): Response
+    {
+        if ($request->filled('region')) {
+            [$ids, $unknown] = ApiParameters::regionIds($request->input('region'));
+
+            if ($unknown !== []) {
+                return $this->error('unknown_region', 'Not a recognised region: '.implode(', ', $unknown).'. Use NA, EU, KR or CN.', 422);
+            }
+
+            $request->merge(['region' => $ids[0] ?? null]);
+        }
+
+        $validated = $request->validate([
+            'battletag' => ['required', 'string'],
+            'region' => ['required', 'integer', 'in:1,2,3,5'],
+        ]);
+
+        // Test mode checks the parameters and never looks the player up.
+        if (ServeApiFixtures::validating($request)) {
+            return ServeApiFixtures::validated();
+        }
+
+        $blizzId = $this->globalDataService->getBlizzIDGivenFullBattletag($validated['battletag'], $validated['region']);
+
+        if ($blizzId === null) {
+            return $this->error('player_not_found', 'No player found for that battletag and region.', 404);
+        }
+
+        if ($this->globalDataService->isRestrictedAccount($blizzId, $validated['region'])) {
+            return $this->error('player_unavailable', 'That player has made their profile private.', 403);
+        }
+
+        $region = (int) $validated['region'];
+
+        return response()->json([
+            'blizz_id' => (int) $blizzId,
+            'battletag' => $validated['battletag'],
+            'region' => $region,
+            'account_level' => (int) Battletag::where('blizz_id', $blizzId)->where('region', $region)->max('account_level'),
+            'profile' => 'https://www.heroesprofile.com/Player/'.explode('#', $validated['battletag'])[0].'/'.$blizzId.'/'.$region,
+        ]);
+    }
 
     public function profile(Request $request): Response
     {
@@ -184,6 +234,20 @@ class PlayerController extends Controller
         return $this->delegate($request, FriendFoeController::class, 'getFriendFoeData', [
             // Required here, unlike `players/matchups`, which reads its absence as
             // every game type. This one puts it straight into a whereIn().
+            'game_type' => self::DEFAULT_GAME_TYPES,
+        ], [
+            'hero' => 'id',
+            'game_type' => 'array',
+            'game_map' => 'array',
+            'season' => 'array',
+        ]);
+    }
+
+    /** Win rates by this player's party setup against the enemy's. */
+    public function party(Request $request): Response
+    {
+        return $this->delegate($request, PlayerPartyController::class, 'getPartyData', [
+            // Goes straight into a whereIn().
             'game_type' => self::DEFAULT_GAME_TYPES,
         ], [
             'hero' => 'id',

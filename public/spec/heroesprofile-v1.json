@@ -87315,6 +87315,161 @@
                 ]
             }
         },
+        "/players/lookup": {
+            "get": {
+                "summary": "Who a battletag is: blizz_id, account level and profile link, with no stats.",
+                "operationId": "api.external.players.lookup",
+                "parameters": [
+                    {
+                        "name": "battletag",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Full battletag including the discriminator.",
+                        "example": "Zemill#1940"
+                    },
+                    {
+                        "name": "region",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "NA",
+                                "EU",
+                                "KR",
+                                "CN",
+                                "1",
+                                "2",
+                                "3",
+                                "5"
+                            ]
+                        },
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "blizz_id": {
+                                            "type": "integer",
+                                            "description": "Blizzard account id. Stable per region, and not a battletag."
+                                        },
+                                        "battletag": {
+                                            "type": "string"
+                                        },
+                                        "region": {
+                                            "type": "integer",
+                                            "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                                        },
+                                        "account_level": {
+                                            "type": "integer"
+                                        },
+                                        "profile": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "blizz_id",
+                                        "battletag",
+                                        "region",
+                                        "account_level",
+                                        "profile"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `terms_not_accepted`, `subscription_inactive`, `project_details_required`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-endpoint-key": "player_lookup",
+                "x-site-page": "/Player/{battletag}/{blizz_id}/{region}",
+                "tags": [
+                    "Player Stats"
+                ]
+            }
+        },
         "/players/maps": {
             "get": {
                 "summary": "Per-map performance for one player.",
@@ -94660,6 +94815,1912 @@
                 },
                 "x-endpoint-key": "player_mmr_role",
                 "x-site-page": "/Player/{battletag}/{blizz_id}/{region}/MMR",
+                "tags": [
+                    "Player Stats"
+                ]
+            }
+        },
+        "/players/party": {
+            "get": {
+                "summary": "Win rates by the party setup of this player's team against the enemy team's.",
+                "operationId": "api.external.players.party",
+                "parameters": [
+                    {
+                        "name": "battletag",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Full battletag including the discriminator.",
+                        "example": "Zemill#1940"
+                    },
+                    {
+                        "name": "region",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "NA",
+                                "EU",
+                                "KR",
+                                "CN",
+                                "1",
+                                "2",
+                                "3",
+                                "5"
+                            ]
+                        },
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
+                    },
+                    {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
+                        "name": "game_type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.",
+                        "example": "Storm League"
+                    },
+                    {
+                        "name": "hero",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only games where this player was on this hero, by name."
+                    },
+                    {
+                        "name": "game_map",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Filter to one map, or several comma-separated, by name.",
+                        "example": "Alterac Pass"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "solo": {
+                                            "type": "object",
+                                            "properties": {
+                                                "00005|00005": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00005|00023": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00005|00041": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00005|00302": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00005|00320": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "integer",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00005|04001": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00005|50000": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "00005|00005",
+                                                "00005|00023",
+                                                "00005|00041",
+                                                "00005|00302",
+                                                "00005|00320",
+                                                "00005|04001",
+                                                "00005|50000"
+                                            ]
+                                        },
+                                        "double": {
+                                            "type": "object",
+                                            "properties": {
+                                                "00023|00005": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00023|00023": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00023|00041": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00023|00302": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00023|00320": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "integer",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00023|04001": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00023|50000": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "00023|00005",
+                                                "00023|00023",
+                                                "00023|00041",
+                                                "00023|00302",
+                                                "00023|00320",
+                                                "00023|04001",
+                                                "00023|50000"
+                                            ]
+                                        },
+                                        "double_double": {
+                                            "type": "object",
+                                            "properties": {
+                                                "00041|00005": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00041|00023": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00041|00041": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "integer",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00041|00302": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "integer",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00041|00320": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00041|04001": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00041|50000": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "integer",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "00041|00005",
+                                                "00041|00023",
+                                                "00041|00041",
+                                                "00041|00302",
+                                                "00041|00320",
+                                                "00041|04001",
+                                                "00041|50000"
+                                            ]
+                                        },
+                                        "triple": {
+                                            "type": "object",
+                                            "properties": {
+                                                "00302|00005": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00302|00023": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00302|00041": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00302|00302": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00302|00320": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "integer",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00302|04001": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00302|50000": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "00302|00005",
+                                                "00302|00023",
+                                                "00302|00041",
+                                                "00302|00302",
+                                                "00302|00320",
+                                                "00302|04001",
+                                                "00302|50000"
+                                            ]
+                                        },
+                                        "triple_double": {
+                                            "type": "object",
+                                            "properties": {
+                                                "00320|00005": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00320|00023": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "integer",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00320|00041": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "integer",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00320|00302": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "integer",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00320|00320": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "integer",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00320|04001": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "integer",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "00320|50000": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "00320|00005",
+                                                "00320|00023",
+                                                "00320|00041",
+                                                "00320|00302",
+                                                "00320|00320",
+                                                "00320|04001",
+                                                "00320|50000"
+                                            ]
+                                        },
+                                        "quadruple": {
+                                            "type": "object",
+                                            "properties": {
+                                                "04001|00005": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "04001|00023": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "04001|00041": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "04001|00302": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "04001|00320": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "integer",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "04001|04001": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "04001|50000": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "04001|00005",
+                                                "04001|00023",
+                                                "04001|00041",
+                                                "04001|00302",
+                                                "04001|00320",
+                                                "04001|04001",
+                                                "04001|50000"
+                                            ]
+                                        },
+                                        "quintuple": {
+                                            "type": "object",
+                                            "properties": {
+                                                "50000|00005": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "50000|00023": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "integer",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "50000|00041": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "integer",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "50000|00302": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "50000|00320": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "50000|04001": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                },
+                                                "50000|50000": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ally_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "enemy_combo": {
+                                                            "type": "string"
+                                                        },
+                                                        "wins": {
+                                                            "type": "integer"
+                                                        },
+                                                        "losses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "win_rate": {
+                                                            "type": "number",
+                                                            "description": "Percentage, 0 to 100."
+                                                        },
+                                                        "stack_size_name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ally_combo",
+                                                        "enemy_combo",
+                                                        "wins",
+                                                        "losses",
+                                                        "win_rate",
+                                                        "stack_size_name"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "50000|00005",
+                                                "50000|00023",
+                                                "50000|00041",
+                                                "50000|00302",
+                                                "50000|00320",
+                                                "50000|04001",
+                                                "50000|50000"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "solo",
+                                        "double",
+                                        "double_double",
+                                        "triple",
+                                        "triple_double",
+                                        "quadruple",
+                                        "quintuple"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "202": {
+                        "description": "The result was not cached. Poll the job for it — polling costs no quota.",
+                        "headers": {
+                            "Location": {
+                                "description": "Where to collect the result.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Retry-After": {
+                                "description": "Suggested seconds between polls.",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "job_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "job_id"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `terms_not_accepted`, `subscription_inactive`, `project_details_required`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `query_too_large`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-endpoint-key": "player_party",
+                "x-site-page": "/Player/{battletag}/{blizz_id}/{region}/Party",
                 "tags": [
                     "Player Stats"
                 ]
