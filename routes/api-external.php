@@ -56,6 +56,10 @@ Route::get('players', [PlayerController::class, 'profile'])
     ->middleware(['api.fixtures:player', 'api.quota:player'])
     ->name('api.external.players');
 
+Route::get('players/lookup', [PlayerController::class, 'lookup'])
+    ->middleware(['api.fixtures:player_lookup', 'api.quota:player_lookup'])
+    ->name('api.external.players.lookup');
+
 Route::get('players/awards', [PlayerController::class, 'awards'])
     ->middleware(['api.fixtures:player_awards', 'api.quota:player_awards'])
     ->name('api.external.players.awards');
@@ -137,6 +141,10 @@ Route::get('players/matchups', [PlayerController::class, 'matchups'])
 Route::get('players/friendfoe', [PlayerController::class, 'friendFoe'])
     ->middleware(['api.fixtures:player_friendfoe', 'api.quota:player_friendfoe'])
     ->name('api.external.players.friendfoe');
+
+Route::get('players/party', [PlayerController::class, 'party'])
+    ->middleware(['api.fixtures:player_party', 'api.quota:player_party'])
+    ->name('api.external.players.party');
 
 /*
 | Privacy feed. Every other endpoint refuses a private player at the point of the

@@ -134,30 +134,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         foreach ($data as $row) {
             $total += $row->wins + $row->losses;
 
-            $comboType = '';
-            switch ($row->team_ally_stack_value) {
-                case '00005':
-                    $comboType = 'solo';
-                    break;
-                case '00023':
-                    $comboType = 'double';
-                    break;
-                case '00041':
-                    $comboType = 'double_double';
-                    break;
-                case '00302':
-                    $comboType = 'triple';
-                    break;
-                case '00320':
-                    $comboType = 'triple_double';
-                    break;
-                case '04001':
-                    $comboType = 'quadruple';
-                    break;
-                case '50000':
-                    $comboType = 'quintuple';
-                    break;
-            }
+            $comboType = PartyCombinations::SECTIONS[$row->team_ally_stack_value] ?? '';
 
             if ($comboType) {
                 $combo = $row->team_ally_stack_value.'|'.$row->team_enemy_stack_value;
