@@ -1,0 +1,408 @@
+{
+    "solo": {
+        "00005|00005": {
+            "ally_combo": "00005",
+            "enemy_combo": "00005",
+            "wins": 350,
+            "losses": 286,
+            "win_rate": 55.03,
+            "stack_size_name": "5 Solo"
+        },
+        "00005|00023": {
+            "ally_combo": "00005",
+            "enemy_combo": "00023",
+            "wins": 98,
+            "losses": 99,
+            "win_rate": 49.75,
+            "stack_size_name": "1 Double, 3 Solo"
+        },
+        "00005|00041": {
+            "ally_combo": "00005",
+            "enemy_combo": "00041",
+            "wins": 7,
+            "losses": 8,
+            "win_rate": 46.67,
+            "stack_size_name": "2 Double, 1 Solo"
+        },
+        "00005|00302": {
+            "ally_combo": "00005",
+            "enemy_combo": "00302",
+            "wins": 35,
+            "losses": 34,
+            "win_rate": 50.72,
+            "stack_size_name": "1 Triple, 2 Solo"
+        },
+        "00005|00320": {
+            "ally_combo": "00005",
+            "enemy_combo": "00320",
+            "wins": 1,
+            "losses": 4,
+            "win_rate": 20,
+            "stack_size_name": "1 Triple, 1 Double"
+        },
+        "00005|04001": {
+            "ally_combo": "00005",
+            "enemy_combo": "04001",
+            "wins": 9,
+            "losses": 14,
+            "win_rate": 39.13,
+            "stack_size_name": "1 Quad, 1 Solo"
+        },
+        "00005|50000": {
+            "ally_combo": "00005",
+            "enemy_combo": "50000",
+            "wins": 5,
+            "losses": 8,
+            "win_rate": 38.46,
+            "stack_size_name": "1 team of 5"
+        }
+    },
+    "double": {
+        "00023|00005": {
+            "ally_combo": "00023",
+            "enemy_combo": "00005",
+            "wins": 174,
+            "losses": 173,
+            "win_rate": 50.14,
+            "stack_size_name": "5 Solo"
+        },
+        "00023|00023": {
+            "ally_combo": "00023",
+            "enemy_combo": "00023",
+            "wins": 88,
+            "losses": 84,
+            "win_rate": 51.16,
+            "stack_size_name": "1 Double, 3 Solo"
+        },
+        "00023|00041": {
+            "ally_combo": "00023",
+            "enemy_combo": "00041",
+            "wins": 16,
+            "losses": 10,
+            "win_rate": 61.54,
+            "stack_size_name": "2 Double, 1 Solo"
+        },
+        "00023|00302": {
+            "ally_combo": "00023",
+            "enemy_combo": "00302",
+            "wins": 39,
+            "losses": 29,
+            "win_rate": 57.35,
+            "stack_size_name": "1 Triple, 2 Solo"
+        },
+        "00023|00320": {
+            "ally_combo": "00023",
+            "enemy_combo": "00320",
+            "wins": 3,
+            "losses": 3,
+            "win_rate": 50,
+            "stack_size_name": "1 Triple, 1 Double"
+        },
+        "00023|04001": {
+            "ally_combo": "00023",
+            "enemy_combo": "04001",
+            "wins": 13,
+            "losses": 11,
+            "win_rate": 54.17,
+            "stack_size_name": "1 Quad, 1 Solo"
+        },
+        "00023|50000": {
+            "ally_combo": "00023",
+            "enemy_combo": "50000",
+            "wins": 17,
+            "losses": 21,
+            "win_rate": 44.74,
+            "stack_size_name": "1 team of 5"
+        }
+    },
+    "double_double": {
+        "00041|00005": {
+            "ally_combo": "00041",
+            "enemy_combo": "00005",
+            "wins": 31,
+            "losses": 23,
+            "win_rate": 57.41,
+            "stack_size_name": "5 Solo"
+        },
+        "00041|00023": {
+            "ally_combo": "00041",
+            "enemy_combo": "00023",
+            "wins": 15,
+            "losses": 8,
+            "win_rate": 65.22,
+            "stack_size_name": "1 Double, 3 Solo"
+        },
+        "00041|00041": {
+            "ally_combo": "00041",
+            "enemy_combo": "00041",
+            "wins": 1,
+            "losses": 3,
+            "win_rate": 25,
+            "stack_size_name": "2 Double, 1 Solo"
+        },
+        "00041|00302": {
+            "ally_combo": "00041",
+            "enemy_combo": "00302",
+            "wins": 14,
+            "losses": 6,
+            "win_rate": 70,
+            "stack_size_name": "1 Triple, 2 Solo"
+        },
+        "00041|00320": {
+            "ally_combo": "00041",
+            "enemy_combo": "00320",
+            "wins": 4,
+            "losses": 3,
+            "win_rate": 57.14,
+            "stack_size_name": "1 Triple, 1 Double"
+        },
+        "00041|04001": {
+            "ally_combo": "00041",
+            "enemy_combo": "04001",
+            "wins": 5,
+            "losses": 6,
+            "win_rate": 45.45,
+            "stack_size_name": "1 Quad, 1 Solo"
+        },
+        "00041|50000": {
+            "ally_combo": "00041",
+            "enemy_combo": "50000",
+            "wins": 1,
+            "losses": 4,
+            "win_rate": 20,
+            "stack_size_name": "1 team of 5"
+        }
+    },
+    "triple": {
+        "00302|00005": {
+            "ally_combo": "00302",
+            "enemy_combo": "00005",
+            "wins": 131,
+            "losses": 125,
+            "win_rate": 51.17,
+            "stack_size_name": "5 Solo"
+        },
+        "00302|00023": {
+            "ally_combo": "00302",
+            "enemy_combo": "00023",
+            "wins": 69,
+            "losses": 65,
+            "win_rate": 51.49,
+            "stack_size_name": "1 Double, 3 Solo"
+        },
+        "00302|00041": {
+            "ally_combo": "00302",
+            "enemy_combo": "00041",
+            "wins": 20,
+            "losses": 12,
+            "win_rate": 62.5,
+            "stack_size_name": "2 Double, 1 Solo"
+        },
+        "00302|00302": {
+            "ally_combo": "00302",
+            "enemy_combo": "00302",
+            "wins": 36,
+            "losses": 34,
+            "win_rate": 51.43,
+            "stack_size_name": "1 Triple, 2 Solo"
+        },
+        "00302|00320": {
+            "ally_combo": "00302",
+            "enemy_combo": "00320",
+            "wins": 6,
+            "losses": 6,
+            "win_rate": 50,
+            "stack_size_name": "1 Triple, 1 Double"
+        },
+        "00302|04001": {
+            "ally_combo": "00302",
+            "enemy_combo": "04001",
+            "wins": 13,
+            "losses": 9,
+            "win_rate": 59.09,
+            "stack_size_name": "1 Quad, 1 Solo"
+        },
+        "00302|50000": {
+            "ally_combo": "00302",
+            "enemy_combo": "50000",
+            "wins": 11,
+            "losses": 10,
+            "win_rate": 52.38,
+            "stack_size_name": "1 team of 5"
+        }
+    },
+    "triple_double": {
+        "00320|00005": {
+            "ally_combo": "00320",
+            "enemy_combo": "00005",
+            "wins": 7,
+            "losses": 17,
+            "win_rate": 29.17,
+            "stack_size_name": "5 Solo"
+        },
+        "00320|00023": {
+            "ally_combo": "00320",
+            "enemy_combo": "00023",
+            "wins": 10,
+            "losses": 10,
+            "win_rate": 50,
+            "stack_size_name": "1 Double, 3 Solo"
+        },
+        "00320|00041": {
+            "ally_combo": "00320",
+            "enemy_combo": "00041",
+            "wins": 3,
+            "losses": 1,
+            "win_rate": 75,
+            "stack_size_name": "2 Double, 1 Solo"
+        },
+        "00320|00302": {
+            "ally_combo": "00320",
+            "enemy_combo": "00302",
+            "wins": 7,
+            "losses": 3,
+            "win_rate": 70,
+            "stack_size_name": "1 Triple, 2 Solo"
+        },
+        "00320|00320": {
+            "ally_combo": "00320",
+            "enemy_combo": "00320",
+            "wins": 3,
+            "losses": 0,
+            "win_rate": 100,
+            "stack_size_name": "1 Triple, 1 Double"
+        },
+        "00320|04001": {
+            "ally_combo": "00320",
+            "enemy_combo": "04001",
+            "wins": 5,
+            "losses": 5,
+            "win_rate": 50,
+            "stack_size_name": "1 Quad, 1 Solo"
+        },
+        "00320|50000": {
+            "ally_combo": "00320",
+            "enemy_combo": "50000",
+            "wins": 4,
+            "losses": 2,
+            "win_rate": 66.67,
+            "stack_size_name": "1 team of 5"
+        }
+    },
+    "quadruple": {
+        "04001|00005": {
+            "ally_combo": "04001",
+            "enemy_combo": "00005",
+            "wins": 88,
+            "losses": 69,
+            "win_rate": 56.05,
+            "stack_size_name": "5 Solo"
+        },
+        "04001|00023": {
+            "ally_combo": "04001",
+            "enemy_combo": "00023",
+            "wins": 49,
+            "losses": 50,
+            "win_rate": 49.49,
+            "stack_size_name": "1 Double, 3 Solo"
+        },
+        "04001|00041": {
+            "ally_combo": "04001",
+            "enemy_combo": "00041",
+            "wins": 14,
+            "losses": 17,
+            "win_rate": 45.16,
+            "stack_size_name": "2 Double, 1 Solo"
+        },
+        "04001|00302": {
+            "ally_combo": "04001",
+            "enemy_combo": "00302",
+            "wins": 26,
+            "losses": 21,
+            "win_rate": 55.32,
+            "stack_size_name": "1 Triple, 2 Solo"
+        },
+        "04001|00320": {
+            "ally_combo": "04001",
+            "enemy_combo": "00320",
+            "wins": 8,
+            "losses": 12,
+            "win_rate": 40,
+            "stack_size_name": "1 Triple, 1 Double"
+        },
+        "04001|04001": {
+            "ally_combo": "04001",
+            "enemy_combo": "04001",
+            "wins": 14,
+            "losses": 9,
+            "win_rate": 60.87,
+            "stack_size_name": "1 Quad, 1 Solo"
+        },
+        "04001|50000": {
+            "ally_combo": "04001",
+            "enemy_combo": "50000",
+            "wins": 10,
+            "losses": 17,
+            "win_rate": 37.04,
+            "stack_size_name": "1 team of 5"
+        }
+    },
+    "quintuple": {
+        "50000|00005": {
+            "ally_combo": "50000",
+            "enemy_combo": "00005",
+            "wins": 32,
+            "losses": 31,
+            "win_rate": 50.79,
+            "stack_size_name": "5 Solo"
+        },
+        "50000|00023": {
+            "ally_combo": "50000",
+            "enemy_combo": "00023",
+            "wins": 57,
+            "losses": 57,
+            "win_rate": 50,
+            "stack_size_name": "1 Double, 3 Solo"
+        },
+        "50000|00041": {
+            "ally_combo": "50000",
+            "enemy_combo": "00041",
+            "wins": 11,
+            "losses": 9,
+            "win_rate": 55,
+            "stack_size_name": "2 Double, 1 Solo"
+        },
+        "50000|00302": {
+            "ally_combo": "50000",
+            "enemy_combo": "00302",
+            "wins": 38,
+            "losses": 26,
+            "win_rate": 59.38,
+            "stack_size_name": "1 Triple, 2 Solo"
+        },
+        "50000|00320": {
+            "ally_combo": "50000",
+            "enemy_combo": "00320",
+            "wins": 9,
+            "losses": 4,
+            "win_rate": 69.23,
+            "stack_size_name": "1 Triple, 1 Double"
+        },
+        "50000|04001": {
+            "ally_combo": "50000",
+            "enemy_combo": "04001",
+            "wins": 19,
+            "losses": 8,
+            "win_rate": 70.37,
+            "stack_size_name": "1 Quad, 1 Solo"
+        },
+        "50000|50000": {
+            "ally_combo": "50000",
+            "enemy_combo": "50000",
+            "wins": 21,
+            "losses": 17,
+            "win_rate": 55.26,
+            "stack_size_name": "1 team of 5"
+        }
+    }
+}

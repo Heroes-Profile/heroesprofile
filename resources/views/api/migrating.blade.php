@@ -99,7 +99,7 @@
         <tr><td class="py-2 px-3">/Heroes/Matchups</td><td class="py-2 px-3">/v1/heroes/matchups</td><td class="py-2 px-3">Now split into <code>ally</code>, <code>enemy</code> and <code>combined</code>. May answer 202</td></tr>
         <tr><td class="py-2 px-3">/Heroes/Talents/Details</td><td class="py-2 px-3">/v1/heroes/talents/details</td><td class="py-2 px-3">Now keyed by talent tier — <code>1</code>, <code>4</code>, <code>7</code> … <code>20</code>. May answer 202</td></tr>
         <tr><td class="py-2 px-3">/Heroes/Talents/Builds</td><td class="py-2 px-3">/v1/heroes/talents/builds</td><td class="py-2 px-3">A list of builds. <code>talentbuildtype</code> now selects the ranking. May answer 202</td></tr>
-        <tr><td class="py-2 px-3">/Player</td><td class="py-2 px-3">/v1/players</td><td class="py-2 px-3">Now one object of career aggregates rather than a row array</td></tr>
+        <tr><td class="py-2 px-3">/Player</td><td class="py-2 px-3">/v1/players/lookup</td><td class="py-2 px-3"><strong>Same information as before</strong> — <code>blizz_id</code>, <code>battletag</code>, <code>region</code>, <code>account_level</code> and the <code>profile</code> link. <code>region</code> is now a number. For career totals, use <code>/v1/players</code>, which has a much smaller allowance</td></tr>
         <tr><td class="py-2 px-3">/Player/Replays</td><td class="py-2 px-3">/v1/players/matches</td><td class="py-2 px-3"><strong>Paginated.</strong> Rows are under <code>data</code>, with <code>current_page</code> and <code>total</code> beside it. Now carries the full stat line</td></tr>
         <tr><td class="py-2 px-3">/Player/Hero/All</td><td class="py-2 px-3">/v1/players/heroes</td><td class="py-2 px-3">Still a list. Hero is a nested object now, not an id</td></tr>
         <tr><td class="py-2 px-3">/Player/Hero/Single</td><td class="py-2 px-3">/v1/players/heroes/single</td><td class="py-2 px-3">As above, narrowed to one hero</td></tr>
@@ -141,6 +141,11 @@
         over time, one entry per match, alongside the tier bands it moved through.
         <code>/v1/players/mmr</code> itself is unchanged in meaning from the old
         <code>/Player/MMR</code>
+      </li>
+      <li>
+        <code class="text-lteal">/v1/players</code> — a player's career totals, the same
+        figures as their profile page. The old <code>/Player</code> only identified the
+        player; that is now <code>/v1/players/lookup</code>
       </li>
       <li>
         <code class="text-lteal">Names instead of codes.</code> <code>game_type</code>

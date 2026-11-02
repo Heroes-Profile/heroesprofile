@@ -369,6 +369,11 @@ class CaptureApiSamples extends Command
                 $pairs[$original] = $replacement;
                 $pairs[rawurlencode($original)] = rawurlencode($replacement);
                 $pairs[urlencode($original)] = urlencode($replacement);
+
+                // Profile links carry the name without its #number.
+                if ($field === 'battletag' && str_contains($original, '#')) {
+                    $pairs[explode('#', $original)[0]] = explode('#', $replacement)[0];
+                }
             }
         }
 
