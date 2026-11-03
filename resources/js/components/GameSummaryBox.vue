@@ -43,7 +43,7 @@
     <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
     <!-- The whole row opens the match; talents, player names and the replay icons sit on top of it -->
     <a :href="getHref()" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
-    <div class="relative flex-1 md:max-w-[410px] min-w-[300px] self-stretch flex items-center pl-6 py-4">
+    <div class="relative flex-1 md:max-w-[410px] min-w-[300px] self-stretch flex items-center max-md:justify-center pl-6 py-4">
       <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="data.winner === 1 ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
       <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"></div>
       <div class="absolute inset-y-0 left-0 w-1.5" :class="data.winner === 1 ? 'bg-win' : 'bg-red'"></div>
@@ -64,14 +64,14 @@
     </div>
 
     <div class="relative flex gap-5 items-center px-4 w-full 2xl:w-[430px] shrink-0">
-      <div v-for="stat in mmrStats" :key="stat.title" class="flex flex-col gap-0.5 flex-1 min-w-0 2xl:flex-none 2xl:w-[118px]">
+      <div v-for="stat in mmrStats" :key="stat.title" class="flex flex-col gap-0.5 flex-1 min-w-0 max-md:items-center max-md:text-center 2xl:flex-none 2xl:w-[118px]">
         <span class="text-sm 2xl:text-base font-medium text-subtext 2xl:whitespace-nowrap">{{ stat.title }}</span>
         <span class="text-2xl font-semibold">{{ stat.value.toLocaleString('en-US') }}</span>
         <span v-if="stat.change !== null" class="text-sm font-medium" :class="stat.change >= 0 ? 'text-win' : 'text-red'">{{ stat.change > 0 ? '+' : '' }}{{ stat.change.toFixed(2) }}</span>
       </div>
     </div>
 
-    <div class="relative w-full 2xl:w-[140px] shrink-0 flex flex-col gap-0.5 max-2xl:items-start max-2xl:px-4 2xl:items-center 2xl:text-center">
+    <div class="relative w-full 2xl:w-[140px] shrink-0 flex flex-col gap-0.5 max-2xl:items-start max-md:items-center max-2xl:px-4 2xl:items-center 2xl:text-center">
       <template v-if="data.kills !== undefined">
         <!-- Same grid as the header's icons. Kills right-align against the first bar so their
              ones digits line up row to row; deaths sit centred; assists start right after the second bar. -->
@@ -82,14 +82,14 @@
       </template>
     </div>
 
-    <div class="relative z-[2] flex flex-wrap gap-1.5 items-center px-4 w-full 2xl:w-[362px] shrink-0 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded">
+    <div class="relative z-[2] flex flex-wrap gap-1.5 items-center max-md:justify-center px-4 w-full 2xl:w-[362px] shrink-0 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded">
       <template v-for="level in talentLevels" :key="level">
         <talent-image-wrapper v-if="data[level]" :talent="data[level]" :size="'medium'"></talent-image-wrapper>
         <div v-else class="w-[42px] h-[42px] shrink-0 rounded bg-surface-3"></div>
       </template>
     </div>
 
-    <div v-if="data.players && data.players.length" class="relative z-[2] flex gap-2 pl-4 2xl:pl-1.5 pr-12 py-4 w-full 2xl:w-[362px] shrink-0">
+    <div v-if="data.players && data.players.length" class="relative z-[2] flex gap-2 max-md:justify-center pl-4 2xl:pl-1.5 pr-12 max-md:pr-4 py-4 w-full 2xl:w-[362px] shrink-0">
       <div v-for="(team, teamIndex) in data.players" :key="teamIndex" class="flex flex-col gap-1.5 w-[150px]">
         <!-- A party's icon sits centred beside a line in its colour running down the group -->
         <div v-for="group in partyGroups(team)" :key="group.start" class="flex items-center">
