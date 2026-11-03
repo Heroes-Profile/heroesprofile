@@ -23,9 +23,11 @@ export function rankName(rank) {
   return rank.league.charAt(0).toUpperCase() + rank.league.slice(1) + ' ' + rank.division;
 }
 
-// Image widths in public/images/ranks: league badges are 292 wide (cropped from the game's 350), Master 380, Grandmaster 420,
+// Image widths in public/images/ranks: league badges are 292 wide (cropped from the game's 350), Master and Grandmaster 380,
 // all at the game's scale
-const IMAGE_WIDTHS = { master: 380, grandmaster: 420 };
+const IMAGE_WIDTHS = { master: 380, grandmaster: 380 };
+// Bump when the badge art changes so Cloudflare and browsers fetch the new files
+const IMAGE_VERSION = 2;
 
 export default {
   name: 'RealRankBadge',
@@ -45,9 +47,9 @@ export default {
         return null;
       }
       if(league == 'master' || league == 'grandmaster'){
-        return '/images/ranks/' + league + '.png';
+        return '/images/ranks/' + league + '.png?v=' + IMAGE_VERSION;
       }
-      return '/images/ranks/' + league + '_' + this.rank.division + '.png';
+      return '/images/ranks/' + league + '_' + this.rank.division + '.png?v=' + IMAGE_VERSION;
     },
     name(){
       return rankName(this.rank);
@@ -59,7 +61,7 @@ export default {
     // Longer numbers get a smaller font so "#999" still fits inside the disc (about half the badge's width).
     ladderStyle(){
       const width = this.badgeWidth;
-      const height = width * 440 / 420;
+      const height = width;
       const characters = String(this.rank.ladder_position).length + 1;
       const fontSize = Math.min(height * 0.19, width * 0.44 / (0.62 * characters));
       return { top: (height * 0.36 + (height * 0.19 - fontSize) / 2) + 'px', fontSize: fontSize + 'px', textShadow: '0 0 6px rgba(110, 180, 255, 0.9)' };
