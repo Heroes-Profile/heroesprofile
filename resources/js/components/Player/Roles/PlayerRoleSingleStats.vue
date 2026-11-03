@@ -53,7 +53,7 @@
               <h3 class="text-2xl font-bold">{{ section.title }}</h3>
               <a class="text-header whitespace-nowrap hover:underline" :href="profileUrl + section.allPath">{{ section.allText }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
             </div>
-            <div class="flex flex-wrap gap-6">
+            <div class="flex flex-wrap gap-6 max-md:justify-center">
               <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :playerlink="true" :text="group.label" :data="group.data"></group-box>
             </div>
           </div>
@@ -68,7 +68,7 @@
             <panel-box :inner="true" :title="'Heroes Played As ' + role">
               <div class="flex flex-wrap gap-2">
                 <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes" :key="index">
-                  <hero-image-wrapper :hero="item.hero">
+                  <hero-image-wrapper :hero="item.hero" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" link-text="View Hero">
                     <image-hover-box :title="item.hero.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
                   </hero-image-wrapper>
                 </a>
@@ -78,7 +78,7 @@
             <panel-box :inner="true" :title="'Maps Played As ' + role">
               <div class="flex flex-wrap gap-2">
                 <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
-                  <map-image-wrapper :map="item.game_map">
+                  <map-image-wrapper :map="item.game_map" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" link-text="View Map">
                     <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
                   </map-image-wrapper>
                 </a>
@@ -121,7 +121,7 @@
             </div>
             <div v-for="title in ['Heroes', 'Maps']" :key="title" class="flex flex-col gap-4">
               <h3 class="text-2xl font-bold">{{ title }}</h3>
-              <div class="flex flex-wrap gap-6">
+              <div class="flex flex-wrap gap-6 max-md:justify-center">
                 <div v-for="group in 3" :key="group" class="flex gap-3">
                   <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
                 </div>

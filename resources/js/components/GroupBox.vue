@@ -57,7 +57,7 @@
         </a>
 
         <a v-else-if="!esport && playerlink && item.hero" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name">
-          <hero-image-wrapper size="tile" :hero="item.hero">
+          <hero-image-wrapper size="tile" :hero="item.hero" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" link-text="View Hero">
             <image-hover-box :title="item.hero.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
           </hero-image-wrapper>
         </a>
@@ -80,7 +80,7 @@
 
         <!--Map Section -->
         <a v-if="!esport && playerlink && item.game_map" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name">
-          <map-image-wrapper size="tile" :map="item.game_map">
+          <map-image-wrapper size="tile" :map="item.game_map" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" link-text="View Map">
             <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
           </map-image-wrapper>
         </a>

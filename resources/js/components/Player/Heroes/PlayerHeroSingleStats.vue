@@ -50,7 +50,7 @@
 
           <div class="flex flex-col gap-4 w-fit max-w-full">
             <h3 class="text-2xl font-bold">Maps</h3>
-            <div class="flex flex-wrap gap-6">
+            <div class="flex flex-wrap gap-6 max-md:justify-center">
               <group-box v-for="group in mapGroups" :key="group.label" class="!m-0" :playerlink="true" :text="group.label" :data="group.data"></group-box>
             </div>
           </div>
@@ -61,9 +61,9 @@
               <i class="fas fa-chevron-down transition-transform group-open:rotate-180"></i>
             </summary>
             <!-- Zero width so the list wraps to the card instead of widening it -->
-            <div class="w-0 min-w-full flex flex-wrap gap-2 px-4 pb-4">
+            <div class="w-0 min-w-full flex flex-wrap gap-2 max-md:justify-center px-4 pb-4">
               <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
-                <map-image-wrapper :map="item.game_map" size="big">
+                <map-image-wrapper :map="item.game_map" size="big" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" link-text="View Map">
                   <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
                 </map-image-wrapper>
               </a>
@@ -160,7 +160,7 @@
             </div>
             <div class="flex flex-col gap-4">
               <h3 class="text-2xl font-bold">Maps</h3>
-              <div class="flex flex-wrap gap-6">
+              <div class="flex flex-wrap gap-6 max-md:justify-center">
                 <div v-for="group in 3" :key="group" class="flex gap-3">
                   <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
                 </div>

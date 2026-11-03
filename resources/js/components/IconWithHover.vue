@@ -35,7 +35,7 @@
      
     <!-- Rendered under body so scrolling table wrappers can't clip it -->
     <Teleport to="body">
-      <div v-if="showTooltip" :style="tooltipStyle" :class="[
+      <div v-if="showTooltip" ref="popup" :style="tooltipStyle" :class="[
           'fixed text-xs z-50',
         {
           'w-[14em]' : popupsize != 'large' && popupsize != 'fit',
@@ -103,17 +103,26 @@ export default {
       return window.innerWidth <= 1024; // You can adjust the threshold as needed
     },
     handleMouseOver() {
-      if (!this.showTooltip) {
-        // Fixed position goes stale once anything scrolls
-        window.addEventListener('scroll', this.hideTooltip, true);
-      }
-      const rect = this.$refs.container.getBoundingClientRect();
-      this.tooltipStyle = {
-        left: `${rect.left + (rect.width / 2)}px`,
-        bottom: `${window.innerHeight - rect.top + 8}px`,
-        transform: 'translateX(-50%)',
-      };
+      if (this.showTooltip) return;
+      // Fixed position goes stale once anything scrolls
+      window.addEventListener('scroll', this.hideTooltip, true);
+      // Hidden for the first frame while keepOnScreen measures it
+      this.tooltipStyle = { left: '0px', top: '0px', visibility: 'hidden' };
       this.showTooltip = true;
+      this.$nextTick(this.keepOnScreen);
+    },
+    // Centred over the icon, but slid back inside the window near either edge, and below the icon near the top
+    keepOnScreen() {
+      const popup = this.$refs.popup;
+      if (!popup || !this.$refs.container) return;
+      const rect = this.$refs.container.getBoundingClientRect();
+      const width = popup.offsetWidth;
+      const margin = 8;
+      const left = Math.min(Math.max(rect.left + (rect.width / 2) - (width / 2), margin), window.innerWidth - width - margin);
+      const vertical = rect.top - popup.offsetHeight - margin < 0
+        ? { top: `${rect.bottom + margin}px` }
+        : { bottom: `${window.innerHeight - rect.top + margin}px` };
+      this.tooltipStyle = { left: `${left}px`, ...vertical };
     },
     hideTooltip() {
       this.showTooltip = false;

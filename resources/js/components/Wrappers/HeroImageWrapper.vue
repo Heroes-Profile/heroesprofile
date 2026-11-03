@@ -15,6 +15,8 @@
       :mobileClick="mobileClick"
       :hidemobiletext="!hasSlotContent"
       :popupsize="popupsize || 'fit'"
+      :href="href"
+      :link-text="linkText"
     >
       <slot>
         <div v-if="!hasSlotContent">
@@ -45,6 +47,8 @@ export default {
     voideye: Boolean,
     popupsize: String,
     mobileClick: Boolean,
+    href: String,
+    linkText: String,
   },
   data(){
     return {

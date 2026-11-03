@@ -49,7 +49,7 @@
 
           <div class="flex flex-col gap-4 w-fit max-w-full">
             <h3 class="text-2xl font-bold">Heroes</h3>
-            <div class="flex flex-wrap gap-6">
+            <div class="flex flex-wrap gap-6 max-md:justify-center">
               <group-box v-for="group in heroGroups" :key="group.label" class="!m-0" :playerlink="true" :text="group.label" :data="group.data"></group-box>
             </div>
           </div>
@@ -68,7 +68,7 @@
       <panel-box :title="'Heroes Played On ' + map">
         <div class="flex flex-wrap gap-2">
           <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes" :key="index">
-            <hero-image-wrapper :hero="item.hero" size="big">
+            <hero-image-wrapper :hero="item.hero" size="big" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" link-text="View Hero">
               <image-hover-box :title="item.hero.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
             </hero-image-wrapper>
           </a>
@@ -105,7 +105,7 @@
             </div>
             <div class="flex flex-col gap-4">
               <h3 class="text-2xl font-bold">Heroes</h3>
-              <div class="flex flex-wrap gap-6">
+              <div class="flex flex-wrap gap-6 max-md:justify-center">
                 <div v-for="group in 3" :key="group" class="flex gap-3">
                   <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
                 </div>

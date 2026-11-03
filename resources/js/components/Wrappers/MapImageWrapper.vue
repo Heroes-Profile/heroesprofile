@@ -1,6 +1,6 @@
 <template>
   <div>
-    <round-image :size="size" :image="getMapImage()" :title="map.name" :excludehover="hovertextstyleoverride">
+    <round-image :size="size" :image="getMapImage()" :title="map.name" :excludehover="hovertextstyleoverride" :href="href" :link-text="linkText">
       <slot>
         <div v-if="!hasSlotContent">
           <h2>{{ map.name }}</h2>
@@ -19,6 +19,8 @@ export default {
     map: Object,
     size: String,
     hovertextstyleoverride: Boolean,
+    href: String,
+    linkText: String,
   },
   data(){
     return {

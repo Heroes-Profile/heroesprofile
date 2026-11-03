@@ -23,7 +23,7 @@
     }
   ]"
   
-  @mouseover="handleMouseOver" @mouseleave="scheduleHide">
+  @mouseover="handleMouseOver" @mouseleave="scheduleHide" @click="handleTap">
 
     <!-- On mobile the inline text block below shows these icons beside their labels instead -->
     <div :class="['absolute z-10 bottom-0 right-0 w-9', { 'max-md:hidden': hasMobileText }]"  v-if="award">
@@ -55,7 +55,7 @@
         ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-16 h-16 max-w-none rounded border-2 border-header'
         : size === 'large'
         ? 'card-img-top object-cover object-center relative hover:brightness-125 hover:drop-shadow max-w-none rounded md:w-full md:h-full max-md:w-40 max-md:h-auto'
-        : 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow max-sm:w-[2.5em] max-sm:h-[2.5em]  w-full h-10 min-w-10 max-md:h-10 max-md:w-10 max-w-none md:mr-auto  max-md: m-0',
+        : 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow max-sm:w-[2.5em] max-sm:h-[2.5em] max-sm:min-w-[2.5em] w-full h-10 min-w-10 max-md:h-10 max-md:w-10 max-w-none md:mr-auto  max-md: m-0',
       { 
         
         'rounded-full' : rectangle != true && size !== 'tile',
@@ -88,6 +88,7 @@
           <div class="bg-[#4c1d95]" v-if="voideye">Marked by the Void</div>
           <div class="bg-teal" v-if="award">{{award.title}}</div>
           <slot></slot>
+          <custom-button v-if="tapped" class="mt-2" :href="href" :text="linkText" size="small"></custom-button>
         </div>
       </div>
     </Teleport>
@@ -126,8 +127,11 @@ export default {
     hidedelay: {
       type: Number,
       default: 0,
-    }
-    
+    },
+    // Phones open the popup on tap instead of following the link, with a button to it
+    href: String,
+    linkText: String,
+
   },
   data(){
     return {
@@ -135,6 +139,7 @@ export default {
       tooltipPosition: 'top',
       tooltipStyle: {},
       hideTimer: null,
+      tapped: false,
     }
   },
   created(){
@@ -152,7 +157,7 @@ export default {
       return this.hidemobiletext || this.size === 'tile';
     },
     hasMobileText() {
-      return !this.excludehover && !this.mobileClick && !this.noMobileHover && !this.icon;
+      return !this.excludehover && !this.mobileClick && !this.href && !this.noMobileHover && !this.icon;
     },
   },
   watch: {
@@ -161,20 +166,29 @@ export default {
     isSmallScreen() {
       return window.innerWidth <= 1024; // You can adjust the threshold as needed
     },
+    handleTap(event) {
+      if (!this.href || !this.isSmallScreen()) return;
+      event.preventDefault();
+      this.tapped = true;
+      this.handleMouseOver();
+    },
     scheduleHide() {
-      if (this.hidedelay === 0) {
+      // Long enough to reach the popup's button after a tap
+      const delay = this.tapped ? Math.max(this.hidedelay, 1000) : this.hidedelay;
+      if (delay === 0) {
         this.hideTooltip();
       } else {
-        this.hideTimer = setTimeout(() => { this.hideTooltip(); }, this.hidedelay);
+        this.hideTimer = setTimeout(() => { this.hideTooltip(); }, delay);
       }
     },
     hideTooltip() {
       this.showTooltip = false;
+      this.tapped = false;
       window.removeEventListener('scroll', this.hideTooltip, true);
     },
     handleMouseOver() {
       // Mobile already shows this text under the image, or hides it
-      if ((this.hasMobileText || (this.noMobileHover && !this.mobileClick)) && this.isSmallScreen()) return;
+      if ((this.hasMobileText || (this.noMobileHover && !this.mobileClick && !this.href)) && this.isSmallScreen()) return;
 
       clearTimeout(this.hideTimer);
       if (!this.showTooltip) {
