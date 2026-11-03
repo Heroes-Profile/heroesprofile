@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <!-- Chart.js sizes the canvas from this wrapper; it must be relative and hold only the canvas -->
+  <div class="relative">
     <canvas ref="canvas" width="1500" height="750"></canvas>
   </div>
 </template>
@@ -181,6 +182,7 @@ export default {
       },
     };
 
+    this.phoneQuery = window.matchMedia('(max-width: 767px)');
     this.chart = markRaw(new Chart(this.$refs.canvas.getContext('2d'), {
       type: 'line',
       plugins: [backdrop, markerLines, topRow],
@@ -191,7 +193,7 @@ export default {
       options: {
         responsive: true,
         // Phones: taller plot, and few flat date labels so they don't crush it
-        aspectRatio: window.matchMedia('(max-width: 767px)').matches ? 1.2 : this.aspectRatio,
+        aspectRatio: this.phoneQuery.matches ? 1.2 : this.aspectRatio,
         // Room for the top row, and for arrows laid over either end
         layout: { padding: this.topAttribute ? { top: 28, left: 20, right: 20 } : 0 },
         // Styled like the Storm League rank chart
@@ -236,6 +238,18 @@ export default {
         }
       }
     }));
+
+    // Follow the container as it grows or shrinks: switch between the phone and desktop shapes at the
+    // breakpoint, and redraw so a resize Chart.js held back (it waits out animations) is applied
+    this.resizeObserver = new ResizeObserver(() => {
+      cancelAnimationFrame(this.resizeFrame);
+      this.resizeFrame = requestAnimationFrame(() => {
+        this.chart.options.aspectRatio = this.phoneQuery.matches ? 1.2 : this.aspectRatio;
+        this.chart.resize();
+        this.chart.update('none');
+      });
+    });
+    this.resizeObserver.observe(this.$el.parentElement);
   },
   watch: {
     data() {
@@ -250,6 +264,8 @@ export default {
   },
   beforeUnmount() {
     cancelAnimationFrame(this.slideFrame);
+    cancelAnimationFrame(this.resizeFrame);
+    this.resizeObserver?.disconnect();
     this.chart?.destroy();
   },
   methods: {

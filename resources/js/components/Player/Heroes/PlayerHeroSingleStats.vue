@@ -75,17 +75,18 @@
               <h3 class="text-2xl font-bold">Most Played Build</h3>
               <a class="text-header whitespace-nowrap hover:underline" :href="getTalentPageUrl()">Talent Data<i class="fas fa-chevron-right text-sm ml-3"></i></a>
             </div>
-            <div v-if="data.top_build" class="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <tab-button class="self-start" tab1text="All Seasons" tab2text="This Season" :ignoreclick="true" @tab-click="buildThisSeason = $event === 'right'" :overridedefaultside="buildThisSeason ? 'right' : 'left'"></tab-button>
+            <div v-if="topBuild" class="flex flex-wrap items-center gap-x-6 gap-y-3">
               <div class="flex flex-wrap gap-1.5 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded">
-                <talent-image-wrapper v-for="level in talentLevels" :key="level" :talent="data.top_build[level]" :size="'medium'"></talent-image-wrapper>
+                <talent-image-wrapper v-for="level in talentLevels" :key="level" :talent="topBuild[level]" :size="'medium'"></talent-image-wrapper>
               </div>
               <div class="flex gap-6">
-                <stat-box class="!m-0 !px-0 !min-w-0" title="Games" :value="data.top_build.games_played.toLocaleString('en-US')"></stat-box>
-                <stat-box class="!m-0 !px-0 !min-w-0" title="Win Rate" :value="data.top_build.win_rate.toFixed(2) + '%'"></stat-box>
+                <stat-box class="!m-0 !px-0 !min-w-0" title="Games" :value="topBuild.games_played.toLocaleString('en-US')"></stat-box>
+                <stat-box class="!m-0 !px-0 !min-w-0" title="Win Rate" :value="topBuild.win_rate.toFixed(2) + '%'"></stat-box>
               </div>
             </div>
             <!-- Results cached before builds were added have no top_build at all -->
-            <p v-else-if="data.top_build === null" class="text-subtext">No complete talent builds for these filters.</p>
+            <p v-else-if="topBuild === null" class="text-subtext">No complete talent builds {{ buildThisSeason ? 'this season' : 'for these filters' }}.</p>
           </div>
 
         </panel-box>
@@ -247,6 +248,8 @@
         disableFilterInput: null,
         matchIsLoading: false,
         matchNotFound: false,
+        // Most Played Build from this season's games only
+        buildThisSeason: false,
         talentLevels: ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'],
         // Left and right columns on wide screens; heroSpecific rows hide when no game has them
         sectionColumns: [
@@ -342,6 +345,9 @@
       }
     },
     computed: {
+      topBuild() {
+        return this.buildThisSeason ? this.data?.top_build_season : this.data?.top_build;
+      },
       overviewStats() {
         return [
           { label: 'Wins', value: this.data.wins.toLocaleString('en-US') },

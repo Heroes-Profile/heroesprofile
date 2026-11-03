@@ -196,7 +196,7 @@
                     <td><div class="flex justify-center gap-1"><div v-if="rankchange" class="bg-blue text-white min-w-[2em] p-1 rounded-control text-center"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  group.rows.length - index }}</span></div><span class="p-1">{{ row.rank }}</span></div></td>
                     <td>
                       <div class="flex items-center justify-center">
-                        <a class="group/bt inline-flex items-center mr-2" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`" >{{ row.split_battletag }}<i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                        <a class="group/bt inline-flex items-center mr-2" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`" ><span class="group-hover/bt:underline">{{ row.split_battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                         <div class="" v-if="row.hp_owner">
                           <icon-with-hover class="mt-3"  size="small"    icon="fas fa-crown"   title="info"  popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
                             <slot>

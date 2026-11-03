@@ -153,7 +153,6 @@ export default {
   data(){
     return {
       showTooltip: false,
-      tooltipPosition: 'top',
       tooltipStyle: {},
       hideTimer: null,
       tapped: false,
@@ -238,52 +237,28 @@ export default {
       if ((this.hasMobileText || (this.noMobileHover && !this.mobileClick && !this.href)) && this.isSmallScreen()) return;
 
       clearTimeout(this.hideTimer);
-      if (!this.showTooltip) {
-        popupOpened(this.hideTooltip);
-        // Fixed position goes stale once anything scrolls
-        window.addEventListener('scroll', this.hideTooltip, true);
-      }
+      if (this.showTooltip) return;
+      popupOpened(this.hideTooltip);
+      // Fixed position goes stale once anything scrolls
+      window.addEventListener('scroll', this.hideTooltip, true);
+      // Hidden for the first frame while calculateTooltipPosition measures it
+      this.tooltipStyle = { left: '0px', top: '0px', visibility: 'hidden' };
       this.showTooltip = true;
-      this.calculateTooltipPosition();
+      this.$nextTick(this.calculateTooltipPosition);
     },
+    // Above the icon (below it near the top of the window), centred but slid back inside the window near either edge
     calculateTooltipPosition() {
-      if (!this.$refs.container) return;
-
+      const popup = this.$refs.popup;
+      if (!popup || !this.$refs.container) return;
       const rect = this.$refs.container.getBoundingClientRect();
-      const tooltipWidth = this.popupsize === 'xlarge' ? 448 : (this.popupsize === 'large' || this.popupsize === 'fit') ? 320 : 192;
-      const tooltipHeight = 120; // approximate height of tooltip popup
-      const halfTooltip = tooltipWidth / 2;
-      const screenWidth = window.innerWidth;
-
-      const leftEdgeWhenCentered = rect.left + (rect.width / 2) - halfTooltip;
-      const rightEdgeWhenCentered = rect.left + (rect.width / 2) + halfTooltip;
-      const tooCloseToTop = rect.top < tooltipHeight;
-
-      if (tooCloseToTop) {
-        // Not enough space above — show below instead
-        this.tooltipPosition = 'bottom';
-      } else if (leftEdgeWhenCentered < 10) {
-        this.tooltipPosition = 'right';
-      } else if (rightEdgeWhenCentered > screenWidth - 10) {
-        this.tooltipPosition = 'left';
-      } else {
-        this.tooltipPosition = 'top';
-      }
-
+      const width = popup.offsetWidth;
+      const margin = 8;
+      const left = Math.min(Math.max(rect.left + (rect.width / 2) - (width / 2), margin), window.innerWidth - width - margin);
       // The gap is padding on the popup itself, an invisible strip that keeps the pointer inside on its way over
-      const gap = '8px';
-      const centerX = rect.left + (rect.width / 2);
-      const centerY = rect.top + (rect.height / 2);
-
-      if (this.tooltipPosition === 'top') {
-        this.tooltipStyle = { left: `${centerX}px`, bottom: `${window.innerHeight - rect.top}px`, transform: 'translateX(-50%)', paddingBottom: gap };
-      } else if (this.tooltipPosition === 'bottom') {
-        this.tooltipStyle = { left: `${centerX}px`, top: `${rect.bottom}px`, transform: 'translateX(-50%)', paddingTop: gap };
-      } else if (this.tooltipPosition === 'right') {
-        this.tooltipStyle = { left: `${rect.right}px`, top: `${centerY}px`, transform: 'translateY(-50%)', paddingLeft: gap };
-      } else {
-        this.tooltipStyle = { right: `${screenWidth - rect.left}px`, top: `${centerY}px`, transform: 'translateY(-50%)', paddingRight: gap };
-      }
+      const vertical = rect.top - popup.offsetHeight - margin < 0
+        ? { top: `${rect.bottom}px`, paddingTop: `${margin}px` }
+        : { bottom: `${window.innerHeight - rect.top}px`, paddingBottom: `${margin}px` };
+      this.tooltipStyle = { left: `${left}px`, ...vertical };
     }
   }
 }

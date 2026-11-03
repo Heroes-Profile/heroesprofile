@@ -272,6 +272,7 @@ class PlayerHeroesMapsRolesController extends Controller
         $seasonHistory = null;
         $latestGames = null;
         $topBuild = null;
+        $topBuildSeason = null;
         $mapWinRateFiltered = null;
         $heroWinRateFiltered = null;
 
@@ -319,6 +320,11 @@ class PlayerHeroesMapsRolesController extends Controller
 
             if ($page == 'hero') {
                 $topBuild = $this->globalDataService->talentBuilds($result, $heroData[$hero], $talentData)[0] ?? null;
+
+                // The same from this season's games only
+                $currentSeason = collect($seasonData)->first();
+                $seasonGames = $result->filter(fn ($game) => $game->game_date >= $currentSeason->start_date && $game->game_date <= $currentSeason->end_date);
+                $topBuildSeason = $this->globalDataService->talentBuilds($seasonGames, $heroData[$hero], $talentData)[0] ?? null;
             }
 
             $latestGames = $result->sortByDesc('game_date')->take(7)->values();
@@ -636,7 +642,7 @@ class PlayerHeroesMapsRolesController extends Controller
             $groupBy = 'new_role';
         }
 
-        $returnData = $result->groupBy($groupBy)->map(function ($heroStats, $index) use ($type, $battletag, $blizz_id, $region, $heroData, $qm_mmr_data, $ud_mmr_data, $hl_mmr_data, $tl_mmr_data, $sl_mmr_data, $ar_mmr_data, $newSeasonData, $seasonHistory, $mapData, $mapWinRateFiltered, $latestGames, $topBuild, $page, $heroWinRateFiltered, $heroDataStats, $maps) {
+        $returnData = $result->groupBy($groupBy)->map(function ($heroStats, $index) use ($type, $battletag, $blizz_id, $region, $heroData, $qm_mmr_data, $ud_mmr_data, $hl_mmr_data, $tl_mmr_data, $sl_mmr_data, $ar_mmr_data, $newSeasonData, $seasonHistory, $mapData, $mapWinRateFiltered, $latestGames, $topBuild, $topBuildSeason, $page, $heroWinRateFiltered, $heroDataStats, $maps) {
             $deaths = $heroStats->sum('deaths');
             $avg_kills = $heroStats->avg('kills');
             $avg_takedowns = $heroStats->avg('takedowns');
@@ -867,6 +873,7 @@ class PlayerHeroesMapsRolesController extends Controller
 
                 'latestGames' => $latestGames,
                 'top_build' => $topBuild,
+                'top_build_season' => $topBuildSeason,
             ];
         })->values()->sortBy('name')->values()->all();
 
