@@ -29,7 +29,7 @@
               <li v-for="(feature, index) in features[plan.key]" :key="index">
                 <span v-if="feature.startsWith('Direct endpoint')" class="inline-flex items-center gap-2">
                   {{ feature }}
-                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">{{ directIntegrationInfo }}</p></slot>
                   </round-image>
                 </span>
@@ -67,7 +67,7 @@
             <td>
               <span class="inline-flex items-center gap-2">
                 Direct endpoint integration
-                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">{{ directIntegrationInfo }}</p></slot>
                 </round-image>
               </span>
@@ -88,7 +88,7 @@
             <td>
               <span class="inline-flex items-center gap-2">
                 Active jobs
-                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">{{ activeJobsInfo }}</p></slot>
                 </round-image>
               </span>

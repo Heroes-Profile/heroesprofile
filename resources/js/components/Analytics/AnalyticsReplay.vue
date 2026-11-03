@@ -47,7 +47,7 @@
             ></custom-button>
             <span class="inline-flex items-center gap-1">
               Movement
-              <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+              <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                 <slot><p class="text-sm p-2 text-left">Replays only record exact positions now and then (position updates, spawns, globe pickups, deaths). Follow move orders walks heroes toward where they were ordered to move, faster while mounted and around walls; Smooth glides them between exact positions, also around walls. Follow is the more accurate of the two.</p></slot>
               </round-image>
             </span>

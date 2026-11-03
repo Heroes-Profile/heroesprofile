@@ -46,7 +46,7 @@
               <th>
                 <span class="inline-flex items-center gap-1">
                   Your usual
-                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">Your average over your earlier games under these filters (up to 200). Needs at least 5 earlier games.</p></slot>
                   </round-image>
                 </span>
@@ -55,7 +55,7 @@
               <th>
                 <span class="inline-flex items-center gap-1">
                   Against your usual
-                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">Better or Worse when this game is further from your usual than one game normally swings (the spread of your earlier games). Otherwise Typical.</p></slot>
                   </round-image>
                 </span>
@@ -120,7 +120,7 @@
             <th>
               <span class="inline-flex items-center gap-1">
                 Change
-                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">Last {{ recentCount }} minus earlier games. Whether up is good depends on the signal: for deaths and missed fights, a minus is better.</p></slot>
                 </round-image>
               </span>
@@ -128,7 +128,7 @@
             <th>
               <span class="inline-flex items-center gap-1">
                 Verdict
-                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">Improving or Worse when the change is bigger than your usual swing for {{ recentCount }} games (your earlier games' spread divided by the square root of {{ recentCount }}). Otherwise About the same.</p></slot>
                 </round-image>
               </span>
@@ -174,7 +174,7 @@
             <th>
               <span class="inline-flex items-center gap-1">
                 You
-                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">Your rate across all your processed games under these filters.</p></slot>
                 </round-image>
               </span>
@@ -182,7 +182,7 @@
             <th>
               <span class="inline-flex items-center gap-1">
                 Global median
-                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">The middle player in the global sample under these filters: half of players are above it, half below. Click a signal to see who it is compared with.</p></slot>
                 </round-image>
               </span>
@@ -190,7 +190,7 @@
             <th>
               <span class="inline-flex items-center gap-1">
                 Standing
-                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">Where you rank among those players, taking into account which way is better for that signal (fewer deaths, more presence).</p></slot>
                 </round-image>
               </span>
@@ -198,7 +198,7 @@
             <th>
               <span class="inline-flex items-center gap-1">
                 Signal
-                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">How strongly this habit goes with winning or losing across all players, re-checked nightly. High: it passes all three tests (linked to win rate beyond deaths, a 3+ point win-rate effect when it happens in the first 10 minutes, and consistent from game to game). Medium: one of the first two. Low: neither yet.</p></slot>
                 </round-image>
               </span>
@@ -206,7 +206,7 @@
             <th>
               <span class="inline-flex items-center gap-1">
                 Your sample
-                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">How many of your games back your number. High: 30+, Medium: 10-29, Low: under 10. Some signals only count certain games (maps with bushes, games with mounts, strong camp heroes).</p></slot>
                 </round-image>
               </span>
@@ -246,7 +246,7 @@
                 <div class="text-sm text-gray-light mb-2">
                   <span class="inline-flex items-center gap-1">
                     {{ evidenceText(signal) }}
-                    <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                    <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                       <slot><p class="text-sm p-2 text-left">Early-game effect: how much win rate changes when this happens in the first 10 minutes, in games that were equally close on deaths at that point (3+ points counts). Link beyond deaths: how closely players' rate tracks their win rate once deaths per game are accounted for (r from -1 to 1; 0.15+ in either direction counts). Habit consistency: how similar a player's odd and even games are (0.2+ counts).</p></slot>
                     </round-image>
                   </span>

@@ -3,7 +3,7 @@
     <h2 class="text-xl font-bold text-teal">
       <span class="inline-flex items-center gap-1">
         {{ title }}
-        <round-image v-if="$slots.default" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+        <round-image v-if="$slots.default" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
           <div class="text-sm p-2 text-left"><slot></slot></div>
         </round-image>
       </span>

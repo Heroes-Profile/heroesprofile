@@ -3,7 +3,7 @@
     <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'">
       <span class="relative">
         <span class="relative">{{ this.text }}
-          <round-image v-if="infolink" class="mt-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000" style="position:absolute; bottom:0; right:-25px;">
+          <round-image v-if="infolink" class="mt-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" style="position:absolute; bottom:0; right:-25px;">
             <div>
               <p class="max-sm:text-xs">Timeframes correspond to game patches. <a :href="infolink" target="_blank" class="link">View the full patch & season history.</a></p>
             </div>

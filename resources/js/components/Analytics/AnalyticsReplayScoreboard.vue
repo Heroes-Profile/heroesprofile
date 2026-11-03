@@ -26,7 +26,7 @@
     <div class="flex flex-col items-center justify-center min-w-[9em]">
       <span class="inline-flex items-center gap-1">
         <span class="font-mono text-lg">{{ clock(t) }}</span>
-        <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+        <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
           <slot><p class="text-sm p-2 text-left">The big numbers are team levels, with progress to the next level below. A number over a portrait is seconds until that hero respawns.</p></slot>
         </round-image>
       </span>

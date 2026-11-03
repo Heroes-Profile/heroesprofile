@@ -10,7 +10,7 @@
       ></custom-button>
       <span class="font-mono">{{ clock(t) }} / {{ clock(length) }}</span>
       <multi-tab-button :options="speedOptions" :modelValue="speed" @update:modelValue="$emit('speed', $event)"></multi-tab-button>
-      <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+      <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
         <slot><p class="text-sm p-2 text-left">The ticks above the slider are the events shown in the event feed. Click one to jump to 5 seconds before it.</p></slot>
       </round-image>
     </div>

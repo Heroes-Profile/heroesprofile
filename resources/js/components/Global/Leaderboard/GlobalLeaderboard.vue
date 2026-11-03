@@ -7,7 +7,7 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
     <page-heading :heading="'Leaderboard'">
       <template #headingInfo>
-        <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+        <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
           <p class="font-normal">
             Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards.
             The main uploader can be found at
@@ -133,7 +133,7 @@
                   </th>
                   <th v-if="leaderboardtype == 'SL Rank'" class="py-2 px-3  text-center text-sm leading-4">
                     <span class="inline-flex items-center gap-2">Storm League Rank
-                      <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                      <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                         <p class="font-normal normal-case">
                           Real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is listed by the latest rank read for them this season, grouped by league: Grandmasters by ladder position, then Master, then each league by division. Within a division, players with at least {{ data.length ? data[0].min_games : 0 }} Storm League games this season (the Player leaderboard's games requirement) come first, by Storm League win rate; players under it follow, by games played. Ties go to the rank read in more games. Shows the top 500 in each league.
                           <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
@@ -149,7 +149,7 @@
                   </th>
                   <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('rating')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'rating'}]">
                     <span class="inline-flex items-center gap-2">HP Rating<sort-indicator :column="'rating'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-                      <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000" @click.stop>
+                      <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" @click.stop>
                         <p class="font-normal normal-case">
                           Heroes Profile Rating ranks players by combining their MMR, win rate and games played this season, each measured against the other players on this leaderboard. Games played is capped relative to the top players, so playing lots of games alone can't carry someone to the top.
                           The exact formula is under Leaderboard Requirements, and the <a class="link" href="/FAQ">FAQ</a> explains why it is used instead of MMR.

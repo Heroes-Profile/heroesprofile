@@ -103,7 +103,7 @@
               <button type="button" class="underline text-sm" @click="scrollToBuilds">Scroll To Builds</button>
               <div class="flex items-center gap-2 max-md:hidden">
                 <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" :overridedefaultside="isCompact ? 'right' : 'left'" @tab-click="setLayout"></tab-button>
-                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <p class="max-sm:text-xs">Your default layout can be set in your <a href="/Profile/Settings" class="link">Profile Settings</a>.</p>
                 </round-image>
               </div>

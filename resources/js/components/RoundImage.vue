@@ -23,7 +23,7 @@
     }
   ]"
   
-  @mouseover="handleMouseOver" @mouseleave="scheduleHide" @click="handleTap">
+  @mouseover="handleMouseOver" @mouseleave="scheduleHide" @click="handleClick">
 
     <!-- On mobile the inline text block below shows these icons beside their labels instead -->
     <div :class="['absolute z-10 bottom-0 right-0 w-9', { 'max-md:hidden': hasMobileText }]"  v-if="award">
@@ -46,7 +46,8 @@
       <img :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${party}.png`"/>
     </div>
     
-    <span class="bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em]  flex justify-center pl-[1px] items-center bold " v-if="icon" >
+    <!-- Looks pressed in while pinned open -->
+    <span :class="['bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em] flex justify-center pl-[1px] items-center font-bold transition', { 'bg-surface-1 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] translate-y-px': pinned }]" v-if="icon" >
       <i :class="icon" ></i>
     </span>
   
@@ -73,7 +74,7 @@
     
     <!-- Rendered under body so scrolling table wrappers can't clip it -->
     <Teleport to="body">
-      <div v-if="showTooltip" @mouseover="handleMouseOver" @mouseleave="scheduleHide" :style="tooltipStyle" :class="[
+      <div v-if="showTooltip" ref="popup" @mouseover="handleMouseOver" @mouseleave="scheduleHide" :style="tooltipStyle" :class="[
           'fixed text-xs z-50',
         {
           'w-[14em]' : popupsize != 'large' && popupsize != 'xlarge' && popupsize != 'fit',
@@ -124,9 +125,10 @@ export default {
     mobileClick: false,
     // Name-only hero portraits link elsewhere on tap, so phones show neither the inline text nor a popup
     hidemobiletext: Boolean,
+    // Grace before closing, so a quick or slightly off move between icon and popup doesn't close it
     hidedelay: {
       type: Number,
-      default: 0,
+      default: 150,
     },
     // Phones open the popup on tap instead of following the link, with a button to it
     href: String,
@@ -140,6 +142,8 @@ export default {
       tooltipStyle: {},
       hideTimer: null,
       tapped: false,
+      // Clicked open; stays until a click outside or Esc
+      pinned: false,
     }
   },
   created(){
@@ -147,8 +151,7 @@ export default {
   mounted() {
   },
   beforeUnmount() {
-    clearTimeout(this.hideTimer);
-    window.removeEventListener('scroll', this.hideTooltip, true);
+    this.hideTooltip();
   },
   computed: {
     // Mobile shows the hover text inline under the image.
@@ -166,15 +169,39 @@ export default {
     isSmallScreen() {
       return window.innerWidth <= 1024; // You can adjust the threshold as needed
     },
-    handleTap(event) {
-      if (!this.href || !this.isSmallScreen()) return;
-      event.preventDefault();
-      this.tapped = true;
+    // Info icons pin open on click; linked tiles on phones open instead of following the link
+    handleClick(event) {
+      if (this.href && this.isSmallScreen()) {
+        event.preventDefault();
+        this.tapped = true;
+      } else if (!this.icon) {
+        return;
+      } else if (this.pinned) {
+        this.hideTooltip();
+        return;
+      }
       this.handleMouseOver();
+      this.pin();
+    },
+    pin() {
+      if (this.pinned) return;
+      this.pinned = true;
+      // After this click has finished, so it doesn't count as a click outside
+      setTimeout(() => {
+        document.addEventListener('click', this.handleOutsideClick, true);
+        document.addEventListener('keydown', this.handleEscape);
+      });
+    },
+    handleOutsideClick(event) {
+      if (this.$refs.container?.contains(event.target) || this.$refs.popup?.contains(event.target)) return;
+      this.hideTooltip();
+    },
+    handleEscape(event) {
+      if (event.key === 'Escape') this.hideTooltip();
     },
     scheduleHide() {
-      // Long enough to reach the popup's button after a tap
-      const delay = this.tapped ? Math.max(this.hidedelay, 1000) : this.hidedelay;
+      if (this.pinned) return;
+      const delay = this.hidedelay;
       if (delay === 0) {
         this.hideTooltip();
       } else {
@@ -182,9 +209,13 @@ export default {
       }
     },
     hideTooltip() {
+      clearTimeout(this.hideTimer);
       this.showTooltip = false;
       this.tapped = false;
+      this.pinned = false;
       window.removeEventListener('scroll', this.hideTooltip, true);
+      document.removeEventListener('click', this.handleOutsideClick, true);
+      document.removeEventListener('keydown', this.handleEscape);
     },
     handleMouseOver() {
       // Mobile already shows this text under the image, or hides it
@@ -222,18 +253,19 @@ export default {
         this.tooltipPosition = 'top';
       }
 
-      const gap = 8;
+      // The gap is padding on the popup itself, an invisible strip that keeps the pointer inside on its way over
+      const gap = '8px';
       const centerX = rect.left + (rect.width / 2);
       const centerY = rect.top + (rect.height / 2);
 
       if (this.tooltipPosition === 'top') {
-        this.tooltipStyle = { left: `${centerX}px`, bottom: `${window.innerHeight - rect.top + gap}px`, transform: 'translateX(-50%)' };
+        this.tooltipStyle = { left: `${centerX}px`, bottom: `${window.innerHeight - rect.top}px`, transform: 'translateX(-50%)', paddingBottom: gap };
       } else if (this.tooltipPosition === 'bottom') {
-        this.tooltipStyle = { left: `${centerX}px`, top: `${rect.bottom + gap}px`, transform: 'translateX(-50%)' };
+        this.tooltipStyle = { left: `${centerX}px`, top: `${rect.bottom}px`, transform: 'translateX(-50%)', paddingTop: gap };
       } else if (this.tooltipPosition === 'right') {
-        this.tooltipStyle = { left: `${rect.right + gap}px`, top: `${centerY}px`, transform: 'translateY(-50%)' };
+        this.tooltipStyle = { left: `${rect.right}px`, top: `${centerY}px`, transform: 'translateY(-50%)', paddingLeft: gap };
       } else {
-        this.tooltipStyle = { right: `${screenWidth - rect.left + gap}px`, top: `${centerY}px`, transform: 'translateY(-50%)' };
+        this.tooltipStyle = { right: `${screenWidth - rect.left}px`, top: `${centerY}px`, transform: 'translateY(-50%)', paddingRight: gap };
       }
     }
   }

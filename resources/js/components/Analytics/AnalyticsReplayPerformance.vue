@@ -70,7 +70,7 @@
               <th>
                 <span class="inline-flex items-center gap-1">
                   Rating
-                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">Where this game sits among the hero's games on this map with the same result, turned so higher is better: 50 is typical, 90 is better than 9 in 10. Blank when the number doesn't go with winning on this hero, or the sample has too few games.</p></slot>
                   </round-image>
                 </span>

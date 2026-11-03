@@ -20,11 +20,12 @@
       }
       ]"
      ref="container"
-     @mouseover="handleMouseOver" @mouseleave="hideTooltip">
+     @mouseover="handleMouseOver" @mouseleave="scheduleHide" @click="handleClick">
        
       <!-- Anything can open the popup in place of the icon -->
       <slot v-if="$slots.trigger" name="trigger"></slot>
-      <span class="bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em]  flex justify-center pl-[1px] items-center bold " v-else-if="circle" >
+      <!-- Looks pressed in while pinned open -->
+      <span :class="['bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em] flex justify-center pl-[1px] items-center font-bold transition', { 'bg-surface-1 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] translate-y-px': pinned }]" v-else-if="circle" >
         <i :class="icon" ></i>
       </span>
       <span class=" rounded-full   flex justify-center pl-[1px] items-center bold " v-else >
@@ -35,7 +36,7 @@
      
     <!-- Rendered under body so scrolling table wrappers can't clip it -->
     <Teleport to="body">
-      <div v-if="showTooltip" ref="popup" :style="tooltipStyle" :class="[
+      <div v-if="showTooltip" ref="popup" @mouseover="handleMouseOver" @mouseleave="scheduleHide" :style="tooltipStyle" :class="[
           'fixed text-xs z-50',
         {
           'w-[14em]' : popupsize != 'large' && popupsize != 'fit',
@@ -84,6 +85,9 @@ export default {
     return {
       showTooltip: false,
       tooltipStyle: {},
+      hideTimer: null,
+      // Clicked open; stays until a click outside or Esc
+      pinned: false,
     }
   },
   created(){
@@ -91,7 +95,7 @@ export default {
   mounted() {
   },
   beforeUnmount() {
-    window.removeEventListener('scroll', this.hideTooltip, true);
+    this.hideTooltip();
   },
   computed: {
 
@@ -103,6 +107,7 @@ export default {
       return window.innerWidth <= 1024; // You can adjust the threshold as needed
     },
     handleMouseOver() {
+      clearTimeout(this.hideTimer);
       if (this.showTooltip) return;
       // Fixed position goes stale once anything scrolls
       window.addEventListener('scroll', this.hideTooltip, true);
@@ -119,14 +124,44 @@ export default {
       const width = popup.offsetWidth;
       const margin = 8;
       const left = Math.min(Math.max(rect.left + (rect.width / 2) - (width / 2), margin), window.innerWidth - width - margin);
-      const vertical = rect.top - popup.offsetHeight - margin < 0
-        ? { top: `${rect.bottom + margin}px` }
-        : { bottom: `${window.innerHeight - rect.top + margin}px` };
+      // The gap is padding on the popup itself, an invisible strip that keeps the pointer inside on its way over
+      const vertical = rect.top - popup.offsetHeight < 0
+        ? { top: `${rect.bottom}px`, paddingTop: `${margin}px` }
+        : { bottom: `${window.innerHeight - rect.top}px`, paddingBottom: `${margin}px` };
       this.tooltipStyle = { left: `${left}px`, ...vertical };
     },
+    // Short grace so a quick or slightly off move between icon and popup doesn't close it
+    scheduleHide() {
+      if (this.pinned) return;
+      this.hideTimer = setTimeout(this.hideTooltip, 150);
+    },
+    handleClick() {
+      if (this.pinned) {
+        this.hideTooltip();
+        return;
+      }
+      this.handleMouseOver();
+      this.pinned = true;
+      // After this click has finished, so it doesn't count as a click outside
+      setTimeout(() => {
+        document.addEventListener('click', this.handleOutsideClick, true);
+        document.addEventListener('keydown', this.handleEscape);
+      });
+    },
+    handleOutsideClick(event) {
+      if (this.$refs.container?.contains(event.target) || this.$refs.popup?.contains(event.target)) return;
+      this.hideTooltip();
+    },
+    handleEscape(event) {
+      if (event.key === 'Escape') this.hideTooltip();
+    },
     hideTooltip() {
+      clearTimeout(this.hideTimer);
       this.showTooltip = false;
+      this.pinned = false;
       window.removeEventListener('scroll', this.hideTooltip, true);
+      document.removeEventListener('click', this.handleOutsideClick, true);
+      document.removeEventListener('keydown', this.handleEscape);
     }
   }
 }

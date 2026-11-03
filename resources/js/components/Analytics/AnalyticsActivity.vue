@@ -47,7 +47,7 @@
               <th>
                 <span class="inline-flex items-center gap-1">
                   Presses per game
-                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">Every key press or order for this ability, averaged over all your games on this hero. Pressing the key again while it's on cooldown still adds a press.</p></slot>
                   </round-image>
                 </span>
@@ -55,7 +55,7 @@
               <th>
                 <span class="inline-flex items-center gap-1">
                   Casts per game
-                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">Presses grouped into estimated uses: repeats within 2 seconds count once, and presses while a single-charge ability is likely still on cooldown don't count. Abilities whose cooldown gets reduced or reset can be undercounted.</p></slot>
                   </round-image>
                 </span>
@@ -63,7 +63,7 @@
               <th>
                 <span class="inline-flex items-center gap-1">
                   Global presses
-                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">The global columns are the same figures from a sample of other players' games on this hero, under the same filters.</p></slot>
                   </round-image>
                 </span>
@@ -72,7 +72,7 @@
               <th>
                 <span class="inline-flex items-center gap-1">
                   Games used in
-                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">Share of your games on this hero where you pressed this ability at least once.</p></slot>
                   </round-image>
                 </span>
@@ -81,7 +81,7 @@
               <th>
                 <span class="inline-flex items-center gap-1">
                   First use
-                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">Average game time of your first press, over the games where you used it.</p></slot>
                   </round-image>
                 </span>
@@ -121,7 +121,7 @@
                     <div class="text-center text-sm text-gray-light">
                       <span class="inline-flex items-center gap-1">
                         {{ row.name }} over the game. Click a legend item to show or hide it, e.g. your deaths and takedowns.
-                        <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                        <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                           <slot><p class="text-sm p-2 text-left">Per game is the average count in that game minute, over your games on this hero still running at that minute; games where you didn't press it count as 0. Your lines stop once fewer than 5 of your games were still running at that minute, since one or two games aren't a fair average. Deaths and takedowns use the right axis.</p></slot>
                         </round-image>
                       </span>
