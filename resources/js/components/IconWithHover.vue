@@ -60,6 +60,8 @@
 </template>
 
 <script>
+import { popupOpened, popupClosed } from './RoundImage.vue';
+
 export default {
   name: 'IconWithHover',
   components: {
@@ -109,6 +111,7 @@ export default {
     handleMouseOver() {
       clearTimeout(this.hideTimer);
       if (this.showTooltip) return;
+      popupOpened(this.hideTooltip);
       // Fixed position goes stale once anything scrolls
       window.addEventListener('scroll', this.hideTooltip, true);
       // Hidden for the first frame while keepOnScreen measures it
@@ -159,6 +162,7 @@ export default {
       clearTimeout(this.hideTimer);
       this.showTooltip = false;
       this.pinned = false;
+      popupClosed(this.hideTooltip);
       window.removeEventListener('scroll', this.hideTooltip, true);
       document.removeEventListener('click', this.handleOutsideClick, true);
       document.removeEventListener('keydown', this.handleEscape);

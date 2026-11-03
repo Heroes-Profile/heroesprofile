@@ -104,6 +104,21 @@
 </template>
 
 <script>
+// One popup open at a time, across RoundImage and IconWithHover: opening one closes the other at once,
+// skipping its grace period, so moving between icons swaps popups instead of showing two
+let closeOpenPopup = null;
+export function popupOpened(close) {
+  if (closeOpenPopup && closeOpenPopup !== close) {
+    closeOpenPopup();
+  }
+  closeOpenPopup = close;
+}
+export function popupClosed(close) {
+  if (closeOpenPopup === close) {
+    closeOpenPopup = null;
+  }
+}
+
 export default {
   name: 'RoundImage',
   components: {
@@ -213,6 +228,7 @@ export default {
       this.showTooltip = false;
       this.tapped = false;
       this.pinned = false;
+      popupClosed(this.hideTooltip);
       window.removeEventListener('scroll', this.hideTooltip, true);
       document.removeEventListener('click', this.handleOutsideClick, true);
       document.removeEventListener('keydown', this.handleEscape);
@@ -223,6 +239,7 @@ export default {
 
       clearTimeout(this.hideTimer);
       if (!this.showTooltip) {
+        popupOpened(this.hideTooltip);
         // Fixed position goes stale once anything scrolls
         window.addEventListener('scroll', this.hideTooltip, true);
       }
