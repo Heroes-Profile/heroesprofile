@@ -30,7 +30,7 @@
         </div>
       </div>
       <slot name="aboveHeading"></slot>
-      <div :class="['heading', battletag ? 'text-base text-gray-medium mt-1' : 'text-3xl md:text-4xl font-bold']">{{ heading }}</div>
+      <div :class="['heading flex items-center gap-3', battletag ? 'text-base text-gray-medium mt-1' : 'text-3xl md:text-4xl font-bold']">{{ heading }}<slot name="headingInfo"></slot></div>
     </h1>
     <div v-if="!hideText" class="text-gray-medium md:ml-auto md:max-w-[50%]">
       <infobox :input="infoText1"></infobox>

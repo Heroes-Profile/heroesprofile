@@ -30,7 +30,7 @@
       </span>
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
-    <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">
+    <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded overflow-hidden shadow-lg expandable-dropdown z-50">
       <div class="space-y-2 p-2">
         <div v-if="toggletabs" class="flex justify-center">
           <tab-button :tab1text="toggletabs[0]" :tab2text="toggletabs[1]" :ignoreclick="true" :small="true"

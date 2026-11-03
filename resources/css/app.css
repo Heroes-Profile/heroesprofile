@@ -262,10 +262,7 @@ table td{flex:1;}
 .dark-mode thead tr{
   @apply text-subtext;
 }
-/* Figma table header: medium-weight 16px subtext over a faint line */
 .dark-mode th{
-  @apply text-base font-medium;
-  letter-spacing: inherit;
   border-bottom-color: rgba(173, 162, 191, 0.25);
 }
 .dark-mode td{
@@ -303,6 +300,12 @@ tr.bg-yellow{
 
 th{
   @apply text-left text-sm leading-4  tracking-wider py-1 px-3 border-b;
+}
+/* Figma table header: medium-weight 16px over a line, the same in both modes so only the colours change.
+   Under the mode class so it beats the text-sm each table puts on its headers */
+.dark-mode th, .light-mode th{
+  @apply text-base font-medium;
+  letter-spacing: inherit;
 }
 
 td{

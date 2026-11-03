@@ -6,40 +6,47 @@
 
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
     <page-heading :heading="'Leaderboard'">
-      <template #extraInfo>
-        <p class="text-sm max-md:text-sm">
-          Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards.
-          The main uploader can be found at
-          <a class="link" href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases" target="_blank" rel="noopener noreferrer">Heroes Profile Uploader</a>
-          while the secondary uploader that works on platforms other than Windows can be found at
-          <a class="link" href="https://github.com/Heroes-Profile/heroesprofile-electron-uploader/releases" target="_blank" rel="noopener noreferrer">Heroes Profile Electron Uploader</a>.
-          For any questions, please contact zemill@heroesprofile.com.
-        </p>
+      <template #headingInfo>
+        <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+          <p class="font-normal">
+            Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards.
+            The main uploader can be found at
+            <a class="link" href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases" target="_blank" rel="noopener noreferrer">Heroes Profile Uploader</a>
+            while the secondary uploader that works on platforms other than Windows can be found at
+            <a class="link" href="https://github.com/Heroes-Profile/heroesprofile-electron-uploader/releases" target="_blank" rel="noopener noreferrer">Heroes Profile Electron Uploader</a>.
+            For any questions, please contact zemill@heroesprofile.com.
+          </p>
+        </round-image>
       </template>
     </page-heading>
-    <div v-if="leaderboardtype != 'SL Rank'" class="max-w-[1500px] mx-auto my-2 text-right">
-      <custom-button @click="showLeaderboardRequirements = !showLeaderboardRequirements" :text="'Show Leaderboard Requirements'" :alt="'Show Leaderboard Requirements'" size="small" :ignoreclick="true"></custom-button></div>
-      <div v-if="showLeaderboardRequirements && leaderboardtype != 'SL Rank'" class="flex flex-col items-center p-[2em] border w-auto ml-auto mr-auto max-w-[1500px] bg-teal mb-2">
-        <h3 class="font-bold md:text-2xl max-md:text-base uppercase">To be eligible for <span v-if="leaderboardtype == 'Match Prediction'">Match Prediction</span> leaderboards, the following conditions must be met:</h3>
-        <div class="bg-teal p-[1em] pl-[2em] ">
-          <ol v-if="leaderboardtype != 'Match Prediction'" class="list-disc max-md:text-sm">
-            <li>Account level must be greater than or equal to 250.</li>
-            <li> Must have played at least {{ weeksSinceStartScalar }} times the number of weeks since the season started. (Currently that is {{ weekssincestart * weeksSinceStartScalar }} games).</li>
-            <li>Must have a win rate greater than or equal to 50%.</li>
-          </ol>
-          <ol v-else>
-            <!--<li> Must have predicted at least {{ matchPredictionWeeksSinceStartScalar }} times the number of weeks since the season started. (Currently that is {{ weekssincestart * matchPredictionWeeksSinceStartScalar }} games)</li>-->
-            <li>Must have predicted 20 games in the game type and season</li>
-          </ol>
-        </div>
-        <div class="bg-teal p-[1em] pl-[2em] max-w-[1000px] max-md:text-sm">
-          <h4 class="font-bold uppercase pb-1">Leaderboard groups</h4>
-          <p class="pb-2">If fewer than 50 players meet the {{ leaderboardtype == 'Match Prediction' ? 'predictions' : 'games played' }} requirement, it is lowered by one game per week at a time until at least 50 players qualify, down to a minimum of 5 games. Each step down is a new group: Group A met the full requirement, Group B met the next step down, and so on. Each group shows the games it required.</p>
+    <!-- Opens over the filters and table -->
+    <div v-if="leaderboardtype != 'SL Rank'" class="relative max-w-[1920px] mx-auto px-4 md:px-8 -mt-2 mb-6">
+      <button type="button" class="bg-surface-3 rounded px-4 py-2 text-sm flex items-center gap-3" :aria-expanded="showLeaderboardRequirements" @click="showLeaderboardRequirements = !showLeaderboardRequirements">
+        Leaderboard Requirements<i :class="['fas fa-chevron-down text-xs transition-transform', { 'rotate-180': showLeaderboardRequirements }]"></i>
+      </button>
+      <div v-if="showLeaderboardRequirements" class="absolute z-40 left-4 md:left-8 top-full mt-2 w-[640px] max-w-[calc(100vw-2rem)] max-h-[75vh] overflow-y-auto bg-surface-3 rounded p-6 shadow-lg flex flex-col gap-4 text-sm">
+        <h3 class="font-bold text-base">To be eligible for <span v-if="leaderboardtype == 'Match Prediction'">Match Prediction</span> leaderboards, the following conditions must be met:</h3>
+        <ol v-if="leaderboardtype != 'Match Prediction'" class="list-disc ml-5 space-y-1">
+          <li>Account level must be greater than or equal to 250.</li>
+          <li>Must have played at least {{ weeksSinceStartScalar }} times the number of weeks since the season started. (Currently that is {{ weekssincestart * weeksSinceStartScalar }} games).</li>
+          <li>Must have a win rate greater than or equal to 50%.</li>
+        </ol>
+        <ol v-else class="list-disc ml-5">
+          <!--<li> Must have predicted at least {{ matchPredictionWeeksSinceStartScalar }} times the number of weeks since the season started. (Currently that is {{ weekssincestart * matchPredictionWeeksSinceStartScalar }} games)</li>-->
+          <li>Must have predicted 20 games in the game type and season</li>
+        </ol>
+        <div class="flex flex-col gap-2">
+          <h4 class="font-bold">Leaderboard groups</h4>
+          <p>If fewer than 50 players meet the {{ leaderboardtype == 'Match Prediction' ? 'predictions' : 'games played' }} requirement, it is lowered by one game per week at a time until at least 50 players qualify, down to a minimum of 5 games. Each step down is a new group: Group A met the full requirement, Group B met the next step down, and so on. Each group shows the games it required.</p>
           <p>Everyone in Group A ranks above everyone in Group B, even with a lower {{ leaderboardtype == 'Match Prediction' ? 'prediction rate' : 'Heroes Profile Rating' }}, so players who met the full requirement are never passed by players who have played fewer games. Within a group, players are ranked by {{ leaderboardtype == 'Match Prediction' ? 'prediction rate' : 'Heroes Profile Rating' }}.</p>
         </div>
-        <h3 v-if="leaderboardtype != 'Match Prediction'" class="font-bold text-2xl uppercase pb-2 max-md:text-base">Heroes Profile Rating formula</h3>
-        <img v-if="leaderboardtype != 'Match Prediction'" class="max-w-[1000px] w-full" :src="'/images/miscellaneous/leaderboard_rating_calculation.png'"/>
+        <template v-if="leaderboardtype != 'Match Prediction'">
+          <h4 class="font-bold">Heroes Profile Rating formula</h4>
+          <!-- Black on white; inverted and screened so only the white text shows on the panel -->
+          <img class="w-full invert mix-blend-screen" :src="'/images/miscellaneous/leaderboard_rating_calculation.png'" alt="Heroes Profile Rating formula"/>
+        </template>
       </div>
+    </div>
       <filters 
         :onFilter="filterData" 
         :filters="filters" 
@@ -72,106 +79,113 @@
       </filters>
       <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
       <div v-if="data">
-        <div v-if="leaderboardtype == 'SL Rank'" class="my-5 bg-teal py-5 px-2">
-          <infobox class="max-w-[1500px] mx-auto">
-            Real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is listed by the latest rank read for them this season, grouped by league: Grandmasters by ladder position, then Master, then each league by division. Within a division, players with at least {{ data.length ? data[0].min_games : 0 }} Storm League games this season (the Player leaderboard's games requirement) come first, by Storm League win rate; players under it follow, by games played. Ties go to the rank read in more games. Shows the top 500 in each league.
-            <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
-          </infobox>
-        </div>
         <div v-if="leaderboardtype == 'Match Prediction'" class="my-5 bg-teal py-5 px-2">
           <infobox class="max-w-[1500px] mx-auto">
             Match Prediction leaderboard data is based on users making predictions about match outcomes through <a class="link" href="/Match/Prediction/Game" target="_blank">Match Prediction</a>
           </infobox>
         </div>
-        <div class="flex">
- 
-          <div id="table-container" ref="tablecontainer" class="w-auto overflow-hidden w-[100vw] 2xl:mx-auto">
-
-            <div class="flex flex-wrap justify-between">
-              <div class="mb-4 mx-4">
-                <label for="search" class="sr-only form-control text-black rounded-l p-2">Search Battletag:</label>
-                <input
-                  v-model="searchTerm"
-                  @input="performSearch"
-                  id="search"
-                  type="text"
-                  placeholder="Search Battletag"
-                  class="p-2 border border-gray-300 rounded-control  text-black"
-                />
-              </div>
-
-              <div v-if="season == defaultseason && leaderboardtype != 'SL Rank'" class="max-w-[1500px] max-md:mx-4 flex justify-end mb-2 items-center gap-4 ml-auto">
-                <custom-button @click="calculateHPRating(user)" text="Calculate my HP Rating" alt="Calculate my HP Rating" size="small" :ignoreclick="true" :disabled="!user" :title="user ? null : 'Log in with Battle.net to use'" :loading="ratingLoading"></custom-button>
-                <span v-if="playerRating">
-                  {{ ratingText(playerRating, playerRatingGamesPlayed) }}
-                </span>
-                <span v-else-if="playerRating == 0">
-                 No data for the selected filters
-                </span>
-              </div>
+        <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+          <div class="flex flex-wrap items-center gap-4">
+            <div class="relative w-full sm:w-72">
+              <label for="search" class="sr-only">Search Battletag:</label>
+              <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-teal text-sm"></i>
+              <input
+                v-model="searchTerm"
+                @input="performSearch"
+                id="search"
+                type="text"
+                placeholder="Search battletag"
+                class="w-full bg-field text-white rounded-control pl-9 pr-3 py-2 text-sm"
+              />
             </div>
 
+            <div v-if="season == defaultseason && leaderboardtype != 'SL Rank'" class="flex flex-wrap items-center justify-end gap-4 ml-auto">
+              <span v-if="playerRating" class="text-sm">
+                {{ ratingText(playerRating, playerRatingGamesPlayed) }}
+              </span>
+              <span v-else-if="playerRating == 0" class="text-sm">
+                No data for the selected filters
+              </span>
+              <custom-button class="h-10" @click="calculateHPRating(user)" text="Calculate My HP Rating" alt="Calculate My HP Rating" :ignoreclick="true" :disabled="!user" :title="user ? null : 'Log in with Battle.net to use'" :loading="ratingLoading"></custom-button>
+            </div>
+          </div>
 
+          <panel-box>
+          <div id="table-container" ref="tablecontainer" class="overflow-hidden">
             <!-- Shrinks to fit the screen like a single table would (wrapping cell text first), and every group
                  table stretches to the same width so headings line up and the small-screen scaling covers them all -->
-            <div ref="responsivetable" class="grid mx-auto" style="width: fit-content">
+            <div ref="responsivetable" class="grid min-w-full" style="width: fit-content">
             <template v-for="group in groupedData" :key="group.group">
             <h3 v-if="showGroupHeadings" class="stack-header !mx-0 mt-6 first:mt-0 mb-2">
               {{ group.name ?? groupName(group.group) }}<span v-if="group.minGamesRequired !== null">&nbsp;- At least {{ group.minGamesRequired.toLocaleString('en-US') }} games played</span>
             </h3>
-            <table class="responsive-table w-full relative ">
+            <table class="min-w-0 w-full responsive-table relative">
               <thead class=" top-0 w-full  z-40">
                 <tr class="">
-                  <th @click="sortTable('rank')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('rank')" class="py-2 px-3  text-center text-sm leading-4 cursor-pointer">
                     {{ getHeaderRankText("rank") }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
-                  <th @click="sortTable('battletag')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'battletag'}]">
+                  <th @click="sortTable('battletag')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'battletag'}]">
                     Battletag<sort-indicator :column="'battletag'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>            
-                  <th @click="sortTable('region_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'region_id'}]">
+                  <th @click="sortTable('region_id')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'region_id'}]">
                     Region<sort-indicator :column="'region_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
-                  <th v-if="leaderboardtype == 'SL Rank'" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                    Storm League Rank
+                  <th v-if="leaderboardtype == 'SL Rank'" class="py-2 px-3  text-center text-sm leading-4">
+                    <span class="inline-flex items-center gap-2">Storm League Rank
+                      <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                        <p class="font-normal normal-case">
+                          Real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is listed by the latest rank read for them this season, grouped by league: Grandmasters by ladder position, then Master, then each league by division. Within a division, players with at least {{ data.length ? data[0].min_games : 0 }} Storm League games this season (the Player leaderboard's games requirement) come first, by Storm League win rate; players under it follow, by games played. Ties go to the rank read in more games. Shows the top 500 in each league.
+                          <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
+                        </p>
+                      </round-image>
+                    </span>
                   </th>
-                  <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
-                    Win Rate %<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                  <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'win_rate'}]">
+                    Win Rate&nbsp;%<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
-                  <th v-if="leaderboardtype == 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
-                    Prediction Rate %<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                  <th v-if="leaderboardtype == 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'win_rate'}]">
+                    Prediction Rate&nbsp;%<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
-                  <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('rating')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'rating'}]">
-                    Heroes Profile Rating<sort-indicator :column="'rating'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                  <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('rating')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'rating'}]">
+                    <span class="inline-flex items-center gap-2">HP Rating<sort-indicator :column="'rating'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                      <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000" @click.stop>
+                        <p class="font-normal normal-case">
+                          Heroes Profile Rating ranks players by combining their MMR, win rate and games played this season, each measured against the other players on this leaderboard. Games played is capped relative to the top players, so playing lots of games alone can't carry someone to the top.
+                          The exact formula is under Leaderboard Requirements, and the <a class="link" href="/FAQ">FAQ</a> explains why it is used instead of MMR.
+                        </p>
+                      </round-image>
+                    </span>
                   </th>      
-                  <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('mmr')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'mmr'}]">
+                  <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('mmr')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'mmr'}]">
                     HP {{ leaderboardtype }} MMR<sort-indicator :column="'mmr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th> 
-                  <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('tier_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'tier_id'}]">
+                  <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('tier_id')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'tier_id'}]">
                     Tier<sort-indicator :column="'tier_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>    
-                  <th @click="sortTable('games_played')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'games_played'}]">
+                  <th @click="sortTable('games_played')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'games_played'}]">
                     Games Played<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>     
 
 
-                  <th v-if="leaderboardtype == 'Player' || leaderboardtype == 'Role' " class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                  <th v-if="leaderboardtype == 'Player' || leaderboardtype == 'Role' " class="py-2 px-3  text-center text-sm leading-4">
                     Most Played Hero
                   </th>    
 
                   <template v-else-if="leaderboardtype == 'Hero'">
-                    <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                    <th class="py-2 px-3  text-center text-sm leading-4">
                       Most Played Build
                     </th>  
-                    <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                    <th class="py-2 px-3  text-center text-sm leading-4">
                       Copy Build to Game
                     </th>  
-                    <th @click="sortTable('hero_build_games_played')" class="cursor-pointer py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                      Games Played With Build<sort-indicator :column="'hero_build_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                    <th @click="sortTable('hero_build_games_played')" class="cursor-pointer py-2 px-3  text-center text-sm leading-4">
+                      Played<sort-indicator :column="'hero_build_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                     </th>    
                   </template>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="text-center">
                 <template v-for="(row, index) in group.rows">
                   <tr v-if="!patreonUser && group.offset + index != 0 && (group.offset + index) % 50 === 0">
                     <td colspan="10" class="align-content-center">
@@ -179,10 +193,10 @@
                     </td>
                   </tr>
                   <tr>
-                    <td><div class="flex gap-1"><div v-if="rankchange" class="bg-blue text-white min-w-[2em] p-1 rounded-control text-center"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  group.rows.length - index }}</span></div><span class="p-1">{{ row.rank }}</span></div></td>
+                    <td><div class="flex justify-center gap-1"><div v-if="rankchange" class="bg-blue text-white min-w-[2em] p-1 rounded-control text-center"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  group.rows.length - index }}</span></div><span class="p-1">{{ row.rank }}</span></div></td>
                     <td>
-                      <div class="flex items-center">
-                        <a class="link mr-2" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`" >{{ row.split_battletag }}</a>
+                      <div class="flex items-center justify-center">
+                        <a class="group/bt inline-flex items-center mr-2" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`" >{{ row.split_battletag }}<i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                         <div class="" v-if="row.hp_owner">
                           <icon-with-hover class="mt-3"  size="small"    icon="fas fa-crown"   title="info"  popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
                             <slot>
@@ -218,21 +232,21 @@
                         <hero-image-wrapper :hero="row.most_played_hero">
                           <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played:' + row.hero_build_games_played"></image-hover-box>
                         </hero-image-wrapper>
-                       <span class="max-md:hidden"> {{ row.most_played_hero.name }}</span>
+                       <span class="max-md:hidden font-bold"> {{ row.most_played_hero.name }}</span>
                       </template>
                     </td>
 
 
                     <template v-else-if="leaderboardtype == 'Hero'">
                       <td class="py-2 px-3 ">
-                        <div class="flex flex-wrap gap-4">
-                          <talent-image-wrapper :talent="row.level_one"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_four"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_seven"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_ten"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_thirteen"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_sixteen"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_twenty"></talent-image-wrapper>
+                        <div class="flex flex-nowrap justify-center gap-1.5 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded">
+                          <talent-image-wrapper :talent="row.level_one" :size="'medium'"></talent-image-wrapper>
+                          <talent-image-wrapper :talent="row.level_four" :size="'medium'"></talent-image-wrapper>
+                          <talent-image-wrapper :talent="row.level_seven" :size="'medium'"></talent-image-wrapper>
+                          <talent-image-wrapper :talent="row.level_ten" :size="'medium'"></talent-image-wrapper>
+                          <talent-image-wrapper :talent="row.level_thirteen" :size="'medium'"></talent-image-wrapper>
+                          <talent-image-wrapper :talent="row.level_sixteen" :size="'medium'"></talent-image-wrapper>
+                          <talent-image-wrapper :talent="row.level_twenty" :size="'medium'"></talent-image-wrapper>
                         </div>
                       </td>
                       <td class="py-2 px-3">
@@ -255,10 +269,23 @@
             </template>
             </div>
           </div>
-      </div>
+          </panel-box>
+        </div>
     </div>
-    <div v-else-if="isLoading">
-      <loading-component></loading-component>
+    <!-- The page's layout with grey blocks while it loads, like the profile -->
+    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <loading-component :compact="true" :textoverride="true">Loading leaderboard...</loading-component>
+      <div class="flex flex-wrap items-center gap-4">
+        <skeleton-box class="h-10 w-full sm:w-72"></skeleton-box>
+        <skeleton-box v-if="leaderboardtype != 'SL Rank'" class="h-10 w-56 ml-auto"></skeleton-box>
+      </div>
+      <panel-box>
+        <skeleton-box class="h-8 w-80 max-w-full"></skeleton-box>
+        <div class="flex flex-col gap-1">
+          <skeleton-box class="h-8"></skeleton-box>
+          <skeleton-box v-for="index in 15" :key="index" class="h-10"></skeleton-box>
+        </div>
+      </panel-box>
     </div>
   </div>
 </template>
@@ -471,7 +498,7 @@ export default {
         this.isLoading = false;
         this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
-          if (responsivetable && this.windowWidth < 1500) {
+          if (responsivetable) {
             scaleTableToFit(responsivetable, this.$refs.tablecontainer);
           }
         });
