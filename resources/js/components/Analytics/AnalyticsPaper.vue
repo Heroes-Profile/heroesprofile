@@ -246,6 +246,7 @@ export default {
             { heading: 'Definitions', body: [
               { list: [
                 'Session: a run of consecutive games in which no more than 30 minutes pass between the end of one game and the start of the next (a replay records when the game ended; the start is that minus the game length). Sessions are built from all your processed games; the filters then choose which games are counted, each at its real place in its session.',
+                'How you played by game number in a session: deaths, overstaying lost fights and caught first (each defined as on the Coaching tab) as totals per 10 minutes of game across the games at that place; fight presence and objective presence as the average of each game\'s share; time dead as the average share of each game spent dead (from the scoreboard). They come from the nightly coaching run, so a game joins these lines the day after it is processed; win rate counts it straight away.',
                 'Sessions and games per session: sessions containing at least one game that matches the filters, and their average length in games (all games, matching or not).',
                 'Win rate after a win (or loss): win rate in games whose previous game in the same session was a win (or loss). The first game of a session has no previous game and is excluded.',
                 'Disconnect: a leave event by any player more than 30 seconds before the game ended, whether or not the player rejoined.',
@@ -255,7 +256,8 @@ export default {
             ] },
             { heading: 'Methods', body: [
               'Sessions. All your processed games are ordered by start time, whatever the filters. A new session starts when more than 30 minutes pass between the end of one game and the start of the next. A replay records when the game ended, so each start is that time minus the game length. Games matching the filters are then counted at their position in their session.',
-              'Win rate by session position is computed for the 1st to 5th game of a session and for all later games combined. Win rate after a win (or loss) uses every game that follows a win (or loss) within the same session.',
+              'Win rate and how you played by session position are computed for the 1st to 5th game of a session and for all later games combined. Win rate after a win (or loss) uses every game that follows a win (or loss) within the same session.',
+              'Drop-off. The summary compares your first two games of a session with your 4th game and later, when each side has at least 10 games. It reports a measure as worse when win rate falls by 5 points or more, fight or objective presence falls by 5 points or more, time dead rises by 2 points or more, deaths rise by 15% or more, or overstaying or being caught first rises by 20% or more; otherwise it reports no drop-off.',
               'Time of day and day of week use your browser\'s local time zone, in four-hour blocks. Game length is grouped into under 15, 15-20, 20-25 and 25+ minutes.',
               'Disconnects. A leave event counts as a disconnect unless it occurs in the last 30 seconds of the game (the normal end-of-game exit); a later rejoin does not remove it. Games are classed by whether you, another teammate, or an enemy disconnected (a game can be in more than one class), and the win rate is reported for each class and for games with no disconnect at all.',
             ] },

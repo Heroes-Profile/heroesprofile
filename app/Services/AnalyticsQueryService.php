@@ -36,8 +36,8 @@ class AnalyticsQueryService
         $processed = $this->analytics->status($blizzId, $region)['done'];
         $threshold = $this->globalThreshold();
         // Coaching tables are rebuilt by a nightly BigQuery job (or by hand); refresh whenever they change
-        $nightly = $tab === 'coaching' ? ':'.$this->coachingVersion() : '';
-        $key = 'analytics:tab:v'.config('analytics.extract_v').'.11:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
+        $nightly = in_array($tab, ['coaching', 'sessions'], true) ? ':'.$this->coachingVersion() : '';
+        $key = 'analytics:tab:v'.config('analytics.extract_v').'.12:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
 
         return Cache::remember($key, now()->addDays(7), function () use ($tab, $blizzId, $region, $filters, $threshold) {
             $params = [
@@ -682,13 +682,18 @@ class AnalyticsQueryService
             ],
 
             'sessions' => [
-                // Every game, so sessions aren't split by games the filters hide; in_filter marks the ones the stats use
+                // Every game, so sessions aren't split by games the filters hide; in_filter marks the ones the stats use.
+                // How you played in each comes from the nightly coaching rows (null until the game is in them)
                 'games' => '
                     SELECT p.replay_id, FORMAT_DATETIME("%Y-%m-%dT%H:%M:%S", m.game_date) AS game_date, m.length_s, m.game_map, p.hero_id, p.winner,
                       (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR p.game_type IN UNNEST(@game_types))
                         AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR p.game_map IN UNNEST(@maps))
-                        AND (@hero = 0 OR p.hero_id = @hero) AS in_filter
+                        AND (@hero = 0 OR p.hero_id = @hero) AS in_filter,
+                      c.deaths, c.overstay, c.caught_first, SAFE_DIVIDE(c.fights_present, c.fights) AS fight_presence,
+                      SAFE_DIVIDE(c.obj_present, c.obj_events) AS objective_presence, SAFE_DIVIDE(s.time_spent_dead, m.length_s) AS time_dead
                     FROM `{dataset}.player_match` p JOIN `{dataset}.match` m ON m.replay_id = p.replay_id AND m.game_date >= @cutover
+                    LEFT JOIN `{dataset}.coaching_player_game` c ON c.replay_id = p.replay_id AND c.blizz_id = p.blizz_id AND c.game_date >= @cutover
+                    LEFT JOIN `{dataset}.player_scores` s ON s.replay_id = p.replay_id AND s.blizz_id = p.blizz_id AND s.game_date >= @cutover
                     WHERE p.game_date >= @cutover AND p.blizz_id = @blizz AND p.region = @region
                     ORDER BY m.game_date',
 
