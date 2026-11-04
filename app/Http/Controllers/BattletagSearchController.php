@@ -139,7 +139,7 @@ class BattletagSearchController extends Controller
             ->whereIn('replay.region', $regionIds)
             ->whereIn('replay.game_date', $stats->pluck('latest')->unique()->values()->all())
             ->where('replay.game_type', '<>', 0)
-            ->select('player.blizz_id', 'replay.region', 'replay.game_date', 'player.hero', 'replay.game_map')
+            ->select('player.blizz_id', 'replay.region', 'replay.replayID', 'replay.game_date', 'player.hero', 'replay.game_map')
             ->get()
             ->filter(fn ($row) => isset($stats[$rowKey($row)]) && $row->game_date == $stats[$rowKey($row)]->latest)
             ->unique($rowKey)
@@ -161,6 +161,9 @@ class BattletagSearchController extends Controller
             $item->totalGamesPlayed = $games;
             $item->latestMap = $maps[$latest[$key]->game_map ?? null] ?? null;
             $item->latestHero = $heroData[$latest[$key]->hero ?? null] ?? null;
+            $item->latestReplayID = $latest[$key]->replayID ?? null;
+            // Latest non-custom game
+            $item->latest_game = $stats[$key]->latest;
             $item->battletagShort = explode('#', $item->battletag)[0];
             $item->regionName = $regions[$item->region] ?? null;
 

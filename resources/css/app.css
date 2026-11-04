@@ -493,6 +493,16 @@ h1{
   animation: logo-spin 2.25s linear infinite;
 }
 
+/* Battletag search: a bar sweeping the placeholder rows */
+@keyframes table-scan {
+  from { top: 2rem; }
+  to { top: calc(100% - 3rem); }
+}
+
+.table-scan {
+  animation: table-scan 1.4s ease-in-out infinite alternate;
+}
+
 @keyframes flash {
   0% { background-color: transparent; }
   50% { background-color: #008b8b; }
