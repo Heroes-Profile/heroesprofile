@@ -73,6 +73,8 @@
         <a href="/Api/Login" class="hover:text-lteal">Login</a>
         <custom-button :href="'/Api/Register'" :text="'Register'" :alt="'Register'" :size="'small'"></custom-button>
       @endif
+
+      <dark-mode-toggle :darkmode="{{ json_encode($darkmode) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></dark-mode-toggle>
     </div>
   </div>
 </nav>

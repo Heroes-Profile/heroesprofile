@@ -59,7 +59,7 @@
               <td>
                 {{ endpoint.name }}
                 <span class="block text-xs text-gray-medium">{{ endpoint.endpoint }}</span>
-                <span v-if="endpoint.rate_note" class="block text-xs text-blue">{{ endpoint.rate_note }}</span>
+                <span v-if="endpoint.rate_note" class="block text-xs text-lteal">{{ endpoint.rate_note }}</span>
               </td>
               <td v-for="plan in plans" :key="plan.key" class="text-center">
                 {{ endpoint.limits[plan.key] }}

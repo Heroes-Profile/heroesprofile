@@ -631,18 +631,22 @@ class GlobalDataService
         });
     }
 
-    public function getBladeGlobals()
+    public function getDarkMode()
     {
         $darkModeCookie = request()->cookie('darkmode') === '1' ? '1' : '0';
-        $darkModeValue = $darkModeCookie;
 
         if (Auth::check()) {
-            $user = Auth::user();
+            $darkmode = Auth::user()->userSettings->firstWhere('setting', 'darkmode');
 
-            $darkmode = $user->userSettings->firstWhere('setting', 'darkmode');
-
-            $darkModeValue = $darkmode ? $darkmode->value : $darkModeCookie;
+            return $darkmode ? $darkmode->value : $darkModeCookie;
         }
+
+        return $darkModeCookie;
+    }
+
+    public function getBladeGlobals()
+    {
+        $darkModeValue = $this->getDarkMode();
 
         $regions = $this->getRegionIDtoString();
         $latestGame = $this->getLatestGameDate();
