@@ -11,21 +11,20 @@
         <stat-box class="w-[23%] max-md:w-[48%]" :title="'Win Rate After a Loss'" :value="winRate(afterResult(false))" color="red"></stat-box>
       </div>
 
-      <!-- Sessions / tilt -->
-      <analytics-heading :title="'Sessions'" :takeaway="sessionTakeaway">
-        How your results change with when and how long you play. Every number on this tab is a plain win rate from your own games under the current filters, so it describes your history rather than proving a cause.
+      <!-- Sessions: does your play drop off the longer you play -->
+      <analytics-heading :title="'Do you play worse the longer you play?'" :takeaway="dropTakeaway">
         A session is a run of games with no break longer than 30 minutes between the end of one game and the start of the next. Sessions are built from all your games, then only the games matching the current filters are counted, at their place in the session.
-        Each bar is your win rate in the 1st, 2nd, 3rd... game of a session; Game 6+ combines every later game. Win Rate After a Win (or Loss) uses only games whose previous game in the same session was a win (or loss), so the first game of each session is not counted. A falling line or a low after-a-loss rate can be a sign of tilt or fatigue.
+        Each point is your 1st, 2nd, 3rd... game of a session; Game 6+ combines every later game. Besides win rate, it shows how you played: deaths, overstaying lost fights and being caught first per 10 minutes of game, time spent dead, and your presence at fights and at your team's objectives. These come from the nightly coaching run, so games processed today join tomorrow. The answer compares your first two games of a session with your 4th game on.
       </analytics-heading>
-      <multi-series-chart
-        class="mb-8"
-        type="bar"
-        format="percent"
-        :reference="50"
-        :labels="positionLabels"
-        :title="'Win rate by game number in a session'"
-        :series="positionSeries"
-      ></multi-series-chart>
+      <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <multi-series-chart type="line" format="percent" :min="0" :max="100" :reference="50" :labels="positionLabels" :title="'Win rate and presence by game number in a session'" :series="positionShareSeries"></multi-series-chart>
+        <multi-series-chart type="line" format="number" :labels="positionLabels" :title="'Per 10 minutes, by game number in a session'" :series="positionRateSeries"></multi-series-chart>
+      </div>
+
+      <!-- Tilt -->
+      <analytics-heading :title="'After a win or a loss'" :takeaway="sessionTakeaway">
+        Win Rate After a Win (or Loss) uses only games whose previous game in the same session was a win (or loss), so the first game of each session is not counted. A low after-a-loss rate can be a sign of tilt.
+      </analytics-heading>
 
       <!-- Time of day -->
       <analytics-heading :title="'When you play'" :takeaway="timeTakeaway">
@@ -77,6 +76,18 @@
 import analytics from '../../utils/analyticsFormat.js';
 
 const SESSION_BREAK_SECONDS = 30 * 60;
+// The drop-off answer compares your first two games of a session with your 4th game on, each side needing this many games
+const DROP_MIN_GAMES = 10;
+// How you played, by game number in a session: shares averaged per game, counts per 10 minutes of game.
+// worse: which way is worse; gap: the change that counts as a drop-off (points for shares, a share of the early value for counts)
+const SESSION_MEASURES = [
+  { key: 'fight_presence', label: 'Fight presence', kind: 'share', worse: -1, gap: 5, color: 'blue' },
+  { key: 'objective_presence', label: 'Objective presence', kind: 'share', worse: -1, gap: 5, color: 'yellow' },
+  { key: 'time_dead', label: 'Time dead', kind: 'share', worse: 1, gap: 2, color: 'red' },
+  { key: 'deaths', label: 'Deaths', kind: 'rate', worse: 1, gap: 0.15, color: 'red' },
+  { key: 'overstay', label: 'Overstaying lost fights', kind: 'rate', worse: 1, gap: 0.2, color: 'yellow' },
+  { key: 'caught_first', label: 'Caught first', kind: 'rate', worse: 1, gap: 0.2, color: 'blue' },
+];
 // Fewest games a bucket needs before a takeaway calls it best or worst
 const TAKEAWAY_MIN_GAMES = 5;
 
@@ -140,8 +151,35 @@ export default {
         return games.filter(g => g.in_filter);
       });
     },
-    positionSeries() {
-      return [{ label: 'You', data: this.bySessionPosition.map(games => this.winRatePercent(games)), color: 'teal', n: this.bySessionPosition.map(games => games.length) }];
+    positionShareSeries() {
+      return [
+        { label: 'Win rate', data: this.bySessionPosition.map(games => this.winRatePercent(games)), color: 'teal', n: this.bySessionPosition.map(games => games.length) },
+        ...SESSION_MEASURES.filter(m => m.kind === 'share').map(m => this.measureSeries(m)),
+      ];
+    },
+    positionRateSeries() {
+      return SESSION_MEASURES.filter(m => m.kind === 'rate').map(m => this.measureSeries(m));
+    },
+    // Your first two games of a session against your 4th game on: what got worse
+    dropTakeaway() {
+      const early = this.bySessionPosition.slice(0, 2).flat();
+      const late = this.bySessionPosition.slice(3).flat();
+      if (early.length < DROP_MIN_GAMES || late.length < DROP_MIN_GAMES) {
+        return 'Not enough long sessions yet: this needs ' + DROP_MIN_GAMES + ' games from the 4th game of a session on.';
+      }
+      const changes = [];
+      const winDrop = this.winRatePercent(early) - this.winRatePercent(late);
+      if (winDrop >= 5) changes.push('win rate ' + this.winRatePercent(early) + '% to ' + this.winRatePercent(late) + '%');
+      SESSION_MEASURES.forEach(m => {
+        const [a, b] = [this.measureValue(early, m), this.measureValue(late, m)];
+        if (a === null || b === null) return;
+        const change = (b - a) * m.worse;
+        if (m.kind === 'share' ? change >= m.gap : a > 0 && change / a >= m.gap) {
+          changes.push(m.label.toLowerCase() + ' ' + this.measureText(a, m) + ' to ' + this.measureText(b, m) + (m.kind === 'rate' ? ' per 10 min' : ''));
+        }
+      });
+      if (!changes.length) return 'No drop-off: from your 4th game of a session on you play about as well as in your first two.';
+      return 'From your 4th game of a session on, compared with your first two: ' + changes.join(', ') + '.';
     },
     hourBuckets() {
       return [0, 4, 8, 12, 16, 20].map(start => ({
@@ -203,6 +241,29 @@ export default {
     },
   },
   methods: {
+    // Games at one place in a session that have this measure (the newest wait for the nightly run)
+    measureValue(games, m) {
+      const used = games.filter(g => g[m.key] !== null && g[m.key] !== undefined);
+      if (!used.length) return null;
+      if (m.kind === 'share') return (100 * used.reduce((sum, g) => sum + Number(g[m.key]), 0)) / used.length;
+      const seconds = used.reduce((sum, g) => sum + Number(g.length_s), 0);
+      return seconds ? (600 * used.reduce((sum, g) => sum + Number(g[m.key]), 0)) / seconds : null;
+    },
+    measureText(value, m) {
+      return m.kind === 'share' ? this.round(value) + '%' : this.round(value, 2);
+    },
+    measureSeries(m) {
+      return {
+        label: m.label,
+        data: this.bySessionPosition.map(games => {
+          const value = this.measureValue(games, m);
+          return value === null ? null : this.round(value, m.kind === 'share' ? 1 : 2);
+        }),
+        color: m.color,
+        dashed: m.kind === 'share',
+        n: this.bySessionPosition.map(games => games.filter(g => g[m.key] !== null && g[m.key] !== undefined).length),
+      };
+    },
     afterResult(won) {
       return this.sessions.flatMap(s => s.slice(1).filter((g, i) => g.in_filter && s[i].winner === won));
     },
