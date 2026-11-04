@@ -11,24 +11,24 @@
           </thead>
         <thead>
           <tr>
-            <th class="text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th class="text-center text-sm leading-4 cursor-pointer">
               <slot name="heading">Talents</slot>
             </th>
-            <th class="whitespace-nowrap text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th class="whitespace-nowrap text-center text-sm leading-4 cursor-pointer">
               Games
             </th>                
-            <th class="whitespace-nowrap py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th class="whitespace-nowrap py-2 px-3 text-center text-sm leading-4 cursor-pointer">
               Win Chance %
             </th>        
-            <th v-if="statfilter && statfilter != 'win_rate'" class="whitespace-nowrap py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="statfilter && statfilter != 'win_rate'" class="whitespace-nowrap py-2 px-3 text-center text-sm leading-4 cursor-pointer">
               {{ statFilterLabel(statfilter) }}
             </th>                           
-            <th class="text-right text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th class="text-right text-sm leading-4 cursor-pointer">
               Copy Build top Game
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center">
           <tr v-for="(row, index) in talentbuilddata" :key="row">
             <td class="py-2 px-3">
               <div class="flex flex-wrap md:flex-nowrap gap-4">

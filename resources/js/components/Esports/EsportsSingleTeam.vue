@@ -57,10 +57,10 @@
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="text-center">
             <tr v-for="(row, index) in data.players" :key="index">
               <td>
-                <a class="link" :href="row.playerlink">{{ row.battletag }}</a>
+                <a class="group/bt inline-flex items-center" :href="row.playerlink"><span class="group-hover/bt:underline">{{ row.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
               </td>
               <td>
                 {{ row.games_played }}
@@ -85,7 +85,7 @@
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
-      <div class="bg-lighten p-10 ">
+      <div class="bg-surface rounded p-6 md:p-10 mx-4 md:mx-8 mb-6">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Hero Enemies and Allies</h2>
           <div class="flex flex-wrap justify-center">
@@ -95,7 +95,7 @@
         </div>
       </div>
 
-      <div class="bg-lighten p-10">
+      <div class="bg-surface rounded p-6 md:p-10 mx-4 md:mx-8 mb-6">
         <div class=" max-w-[90em] ml-auto mr-auto mb-10">
           <h2 class="text-3xl font-bold py-5 text-center">Enemy Teams</h2>
           <div class="flex flex-wrap justify-center gap-10">
@@ -135,18 +135,18 @@
         <table class="max-w-[800px] md:min-w-[800px] mt-10 max-md:text-xs">
           <thead>
             <tr >
-              <th @click="sortTable('hero_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('hero_id')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'hero_id' }">
                 Hero<sort-indicator :column="'hero_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>
-              <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
                 Win Rate %<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>            
-              <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
                 Games Played<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>              
             </tr>
           </thead>
-          <tbody>
+          <tbody class="text-center">
             <tr class="@apply even:bg-gray-xlight" v-for="(row, index) in sortedData" :key="index">
               <td class="py-2 px-3 flex items-center  max-md:justify-center gap-1">
                 <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
@@ -164,7 +164,7 @@
       
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
-      <div class="bg-lighten p-10 mt-10">
+      <div class="bg-surface rounded p-6 md:p-10 mx-4 md:mx-8 mt-10 mb-6">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">{{ team }} Hero Ban Data</h2>
           <div class="flex flex-wrap justify-center">
@@ -203,7 +203,7 @@
 
 
 
-      <div class="bg-lighten p-10 ">
+      <div class="bg-surface rounded p-6 md:p-10 mx-4 md:mx-8 mb-6">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Maps played by {{ team }}</h2>
           <div class="flex flex-wrap justify-center">
@@ -237,7 +237,7 @@
 
 
       </div>
-      <div class="bg-lighten ">
+      <div class="bg-surface rounded mx-4 md:mx-8 mb-6">
 
         <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
@@ -263,7 +263,7 @@
     </div>
 
     <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="isLoadingImageUrl"></loading-component>
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true" :overrideimage="isLoadingImageUrl"></loading-component><table-skeleton></table-skeleton></div>
     </div>
 
   </div>

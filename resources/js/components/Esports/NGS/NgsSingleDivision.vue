@@ -43,7 +43,7 @@
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
-      <div class="bg-lighten p-10 ">
+      <div class="bg-surface rounded p-6 md:p-10 mx-4 md:mx-8 mb-6">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Heroes</h2>
           <div class="flex flex-wrap justify-center">
@@ -99,7 +99,7 @@
 
     </div>
     <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component>
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true" :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component><table-skeleton></table-skeleton></div>
     </div>
   </div>
 </template>

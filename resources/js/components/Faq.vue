@@ -7,48 +7,53 @@
 
       <!-- Search -->
       <div class="mb-8">
-        <input
-          v-model="search"
-          type="text"
-          placeholder="Search FAQ..."
-          class="form-control search-input w-full text-black"
-        />
+        <div class="relative">
+          <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-teal text-sm"></i>
+          <input
+            v-model="search"
+            type="text"
+            placeholder="Search FAQ"
+            aria-label="Search FAQ"
+            class="w-full bg-field text-white rounded-control pl-9 pr-3 py-2 text-sm"
+          />
+        </div>
       </div>
 
       <!-- No results -->
-      <div v-if="filteredCategories.length === 0" class="text-center text-gray-400 py-10">
+      <div v-if="filteredCategories.length === 0" class="text-center text-subtext py-10">
         No results found for "{{ search }}". Try a different keyword or ask us below.
       </div>
 
       <!-- FAQ Categories -->
       <div v-for="category in filteredCategories" :key="category.name" class="mb-8">
-        <h2 class="bg-teal px-4 py-3 rounded-t text-lg font-semibold">{{ category.name }}</h2>
-        <div class="bg-lighten rounded-b overflow-hidden">
+        <panel-box :title="category.name">
+        <div class="overflow-hidden -mx-4 md:-mx-6 -mb-4 md:-mb-6">
           <div
             v-for="(item, index) in category.items"
             :key="index"
-            class="border-b border-gray-700 last:border-b-0"
+            class="border-b border-gray-dark last:border-b-0"
           >
             <button
               @click="toggle(category.name, index)"
               class="w-full text-left px-6 py-4 flex justify-between items-center hover:bg-white/5 transition-colors"
             >
               <span class="font-medium pr-4">{{ item.q }}</span>
-              <span class="shrink-0 text-teal-400 text-xl leading-none">
+              <span class="shrink-0 text-teal text-xl leading-none">
                 {{ isOpen(category.name, index) ? '−' : '+' }}
               </span>
             </button>
-            <div v-if="isOpen(category.name, index)" class="px-6 pb-5 text-gray-300 leading-relaxed">
+            <div v-if="isOpen(category.name, index)" class="px-6 pb-5 text-soft leading-relaxed">
               <div v-html="item.a"></div>
             </div>
           </div>
         </div>
+        </panel-box>
       </div>
 
       <!-- Patch & Season History -->
       <div id="patch-history" class="mt-10 mb-8">
-        <h2 class="bg-teal px-4 py-3 rounded-t text-lg font-semibold">Patch &amp; Season History</h2>
-        <div class="bg-lighten rounded-b p-4">
+        <panel-box title="Patch &amp; Season History">
+        <div>
           <scroll-hint-container :fit="true">
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
             <thead>
@@ -73,13 +78,14 @@
           </table>
           </scroll-hint-container>
         </div>
+        </panel-box>
       </div>
 
       <!-- Season Dates -->
       <div id="season-dates" class="mt-10 mb-8">
-        <h2 class="bg-teal px-4 py-3 rounded-t text-lg font-semibold">Season Dates</h2>
-        <div class="bg-lighten rounded-b p-4">
-          <p class="text-sm text-gray-300 mb-3">Shown in your time zone.</p>
+        <panel-box title="Season Dates">
+        <div>
+          <p class="text-sm text-soft mb-3">Shown in your time zone.</p>
           <scroll-hint-container :fit="true">
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
             <thead>
@@ -99,12 +105,13 @@
           </table>
           </scroll-hint-container>
         </div>
+        </panel-box>
       </div>
 
       <!-- Match Awards -->
       <div id="awards" class="mt-10 mb-8">
-        <h2 class="bg-teal px-4 py-3 rounded-t text-lg font-semibold">Match Awards</h2>
-        <div class="bg-lighten rounded-b p-4">
+        <panel-box title="Match Awards">
+        <div>
           <scroll-hint-container :fit="true">
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
             <thead>
@@ -126,13 +133,14 @@
           </table>
           </scroll-hint-container>
         </div>
+        </panel-box>
       </div>
 
       <!-- Ask a Question -->
       <div class="mt-12 mb-8">
-        <h2 class="bg-teal px-4 py-3 rounded-t text-lg font-semibold">Still have a question?</h2>
-        <div class="bg-lighten rounded-b p-6">
-          <p class="text-gray-300 mb-4">
+        <panel-box title="Still have a question?">
+        <div>
+          <p class="text-soft mb-4">
             Can't find what you're looking for? Send us a message and we'll get back to you.
             You can also email us directly at
             <a href="mailto:Zemill@heroesprofile.com" class="link">Zemill@heroesprofile.com</a>.
@@ -141,7 +149,7 @@
           <form @submit.prevent="submitQuestion" class="flex flex-col gap-3">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label class="block mb-1 text-sm text-gray-300">Battletag</label>
+                <label class="block mb-1 text-sm text-soft">Battletag</label>
                 <input
                   v-model="formData.battletag"
                   type="text"
@@ -150,7 +158,7 @@
                 />
               </div>
               <div>
-                <label class="block mb-1 text-sm text-gray-300">Email</label>
+                <label class="block mb-1 text-sm text-soft">Email</label>
                 <input
                   v-model="formData.email"
                   type="email"
@@ -160,7 +168,7 @@
               </div>
             </div>
             <div>
-              <label class="block mb-1 text-sm text-gray-300">Your Question</label>
+              <label class="block mb-1 text-sm text-soft">Your Question</label>
               <textarea
                 v-model="formData.message"
                 class="form-control search-input w-full text-black"
@@ -180,11 +188,12 @@
               >
                 {{ isLoading ? 'Sending...' : 'Send Question' }}
               </button>
-              <span v-if="emailSent" class="text-teal-400">Message sent! We'll be in touch.</span>
+              <span v-if="emailSent" class="text-teal">Message sent! We'll be in touch.</span>
             </div>
             <p v-if="sendError" class="bg-red p-3 rounded">{{ sendError }}</p>
           </form>
         </div>
+        </panel-box>
       </div>
 
     </div>

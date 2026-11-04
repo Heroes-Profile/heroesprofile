@@ -3,20 +3,26 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
     <page-heading :heading="'Randomize Me'"></page-heading>
 
-    <div v-if="!loading">
-      <div class="max-w-[900px] mx-auto px-4 py-10">
+    <div class="max-w-[900px] mx-auto px-4 py-10">
       <div class="flex justify-center mb-10">
-        <button
-          @click="randomize"
-          :disabled="loading"
-          class="btn bg-teal hover:bg-lteal font-bold px-8 py-3 text-lg disabled:opacity-50"
-        >
+        <custom-button color="teal" :ignoreclick="true" :disabled="loading" :alt="'Randomize'" @click="randomize">
           <i class="fa-solid fa-shuffle mr-2"></i>
           {{ loading ? 'Randomizing...' : (hero ? 'Randomize Again' : 'Randomize!') }}
-        </button>
+        </custom-button>
       </div>
 
-      <div v-if="error" class="text-center text-red-400 mb-6">{{ error }}</div>
+      <!-- The result's layout with grey blocks while it loads -->
+      <div v-if="loading" class="flex flex-col items-center gap-8">
+        <skeleton-box class="w-[200px] h-[120px]"></skeleton-box>
+        <skeleton-box class="w-40 h-7"></skeleton-box>
+        <panel-box class="w-full">
+          <div class="flex flex-wrap gap-4 justify-center">
+            <skeleton-box v-for="talent in 7" :key="talent" class="w-[50px] h-[50px]"></skeleton-box>
+          </div>
+        </panel-box>
+      </div>
+
+      <div v-else-if="error" class="text-center text-red mb-6">{{ error }}</div>
 
 
       <div v-else-if="hero" class="flex flex-col items-center gap-8">
@@ -25,8 +31,8 @@
           <h2 class="text-2xl font-bold mt-4">{{ hero.name }}</h2>
         </div>
 
-        <div v-if="build" class="w-full">
-          <div class="py-2 px-3">
+        <panel-box v-if="build" class="w-full">
+          <div>
             <div class="flex flex-wrap gap-4 justify-center">
               <talent-image-wrapper :talent="build.level_one"></talent-image-wrapper>
               <talent-image-wrapper :talent="build.level_four"></talent-image-wrapper>
@@ -37,27 +43,23 @@
               <talent-image-wrapper :talent="build.level_twenty"></talent-image-wrapper>
             </div>
             <div class="flex flex-wrap flex-col md:flex-row items-center justify-center gap-2 mt-2">
-              <span class="text-sm text-gray-400">{{ copyString }}</span>
+              <span class="text-sm text-subtext">{{ copyString }}</span>
               <i
-                :class="['fa-solid fa-copy cursor-pointer', copied ? 'text-teal-400' : 'text-gray-400', 'hover:text-white']"
+                :class="['fa-solid fa-copy cursor-pointer', copied ? 'text-teal' : 'text-subtext', 'hover:text-white']"
                 :title="copied ? 'COPIED' : 'COPY TO CLIPBOARD'"
                 @click="copyToClipboard"
               ></i>
             </div>
-            <div class="flex flex-wrap gap-4 mt-3 text-sm text-gray-400 justify-center">
-              <span v-if="build.game_type"><span class="text-gray-500">Mode:</span> {{ build.game_type }}</span>
-              <span v-if="build.region"><span class="text-gray-500">Region:</span> {{ build.region }}</span>
-              <span v-if="build.game_map"><span class="text-gray-500">Map:</span> {{ build.game_map }}</span>
+            <div class="flex flex-wrap gap-4 mt-3 text-sm justify-center">
+              <span v-if="build.game_type"><span class="text-subtext">Mode:</span> {{ build.game_type }}</span>
+              <span v-if="build.region"><span class="text-subtext">Region:</span> {{ build.region }}</span>
+              <span v-if="build.game_map"><span class="text-subtext">Map:</span> {{ build.game_map }}</span>
             </div>
           </div>
-        </div>
+        </panel-box>
 
-        <div v-else-if="!loading" class="text-gray-500 text-center">No complete build found for this hero.</div>
+        <div v-else class="text-subtext text-center">No complete build found for this hero.</div>
       </div>
-      </div>
-    </div>
-    <div v-if="loading">
-      <loading-component></loading-component>
     </div>
 
     

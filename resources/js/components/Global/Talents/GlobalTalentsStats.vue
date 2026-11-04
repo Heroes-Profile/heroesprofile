@@ -23,6 +23,14 @@
         <template v-if="selectedHero" #aboveHeading>
           <hero-heading-select :heroes="heroes" :value="selectedHero.id" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
         </template>
+        <template v-if="isSLRank" #headingInfo>
+          <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+            <p class="font-normal">
+              In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.
+              <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
+            </p>
+          </round-image>
+        </template>
       </page-heading>
 
 
@@ -86,16 +94,8 @@
         </filters>
         <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-        <div v-if="isSLRank" class="my-5 bg-teal py-5 px-2">
-          <infobox class="max-w-[1500px] mx-auto">
-            In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.
-            <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
-          </infobox>
-        </div>
-
-  
-        <div v-if="talentdetaildata" class="mx-auto  md:px-4">
-          <div class="flex flex-wrap justify-between items-center gap-2 mb-2 max-w-[1500px] mx-auto">
+        <div v-if="talentdetaildata" class="max-w-[1920px] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+          <div class="flex flex-wrap justify-between items-center gap-2">
             <div>
               <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
             </div>
@@ -112,12 +112,15 @@
 
           <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :class="{ '!max-w-none': isCompact }" :version="timeframe[0]"></patch-notes-panel>
           <compact-talent-grid v-if="isCompact" :talent-data="talentdetaildata" :stat-filter="statfilter"></compact-talent-grid>
-          <global-talent-details-section v-else class="mx-auto" :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
+          <panel-box v-else>
+            <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
+          </panel-box>
         </div>
-        <div v-else-if="isTalentsLoading">
-          <loading-component v-if="determineIfVeryLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Very large amount of data.<br/>Compiling can take 5-10 minutes.<br/>Please be patient.<br/>Loading Data...</loading-component>
-          <loading-component v-else-if="determineIfLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
-          <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
+        <div v-else-if="isTalentsLoading" class="max-w-[1920px] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+          <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
+          <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
+          <loading-component v-else :compact="true" :textoverride="true">Loading talent stats...</loading-component>
+          <table-skeleton></table-skeleton>
         </div>
         <div v-else-if="dataError" class="flex items-center justify-center">
           Error: Reload page/filter
@@ -126,9 +129,8 @@
         <dynamic-banner-ad :patreon-user="patreonUser" :index="4" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
 
-        <div v-if="talentbuilddata" class="flex justify-between max-w-[1500px] mx-auto mt-6">
-          <div id="builds" class="w-full min-w-0">
-            <h2 v-if="!isCompact" class="heading mb-4 text-center">Talent Builds</h2>
+        <div v-if="talentbuilddata" class="max-w-[1920px] w-full mx-auto px-4 md:px-8 mt-6">
+          <panel-box id="builds" :title="isCompact ? null : 'Talent Builds'">
             <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]">
               <template #heading>
                 <span class="flex flex-wrap items-center gap-2">
@@ -142,20 +144,19 @@
             </global-talent-builds-section>
             <div class="mt-4">
               Create your own builds at
-              <a :href="'/Global/Talents/Builder/' + selectedHero.name" class="link" target="_blank">
-                {{ '/Global/Talents/Builder/' + selectedHero.name }}
+              <a :href="'/Global/Talents/Builder/' + selectedHero.name" class="group/bt inline-flex items-center" target="_blank" rel="noopener">
+                <span class="group-hover/bt:underline">{{ '/Global/Talents/Builder/' + selectedHero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i>
               </a>
             </div>
-          </div>
+          </panel-box>
         </div>
         <div v-else-if="!isTalentsLoading && dataError" class="flex items-center justify-center">
           Error: Reload page/filter
         </div>
 
-        <div v-else-if="isBuildsLoading">
-          <loading-component v-if="determineIfVeryLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Very large amount of data.<br/>Compiling can take 5-10 minutes.<br/>Please be patient.<br/>Loading Data...</loading-component>
-          <loading-component v-else-if="determineIfLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
-          <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
+        <div v-else-if="isBuildsLoading" class="max-w-[1920px] w-full mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
+          <loading-component :compact="true" :textoverride="true">Loading talent builds...</loading-component>
+          <table-skeleton :rows="5" :heading="true"></table-skeleton>
         </div>
       </div>
   </div>

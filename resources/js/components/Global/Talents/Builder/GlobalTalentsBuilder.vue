@@ -44,16 +44,17 @@
   </div>
 
 
-  <div v-if="isLoading">
-    <loading-component @cancel-request="cancelAxiosRequest" v-if="determineIfVeryLargeData()" :textoverride="true">Very large amount of data.<br/>Compiling can take 5-10 minutes.<br/>Please be patient.<br/>Loading Data...</loading-component>
-    <loading-component @cancel-request="cancelAxiosRequest" v-else-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
-    <loading-component @cancel-request="cancelAxiosRequest" v-else></loading-component>
+  <div v-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+    <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
+    <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
+    <loading-component v-else :compact="true" :textoverride="true">Loading talents...</loading-component>
+    <table-skeleton :rows="7"></table-skeleton>
   </div>
   <div v-else-if="dataError" class="flex items-center justify-center">
       Error: Reload page/filter
   </div>
   <div v-if="data && !isLoading">
-    <div class="flex justify-between max-w-[1500px] mx-auto max-md:flex-wrap max-md:gap-2 max-md:px-2">
+    <div class="flex justify-between max-w-[1920px] mx-auto px-4 md:px-8 max-md:flex-wrap max-md:gap-2">
         <span class="flex gap-4 mb-2"> 
           <single-select-filter
             :values="filters.heroes" 
@@ -90,33 +91,35 @@
       <talent-builder-column :data="data['20']" :level="20" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
     </div>
     </div>
-    <div class=" my-5 bg-teal py-5 px-2">
-      <infobox class="max-w-[1500px] mx-auto " :input="'Build win rate and how many players have played that exact build. Win rate for builds to level 20 are inflated because teams that make it to level 20 win more. Therefore it is not an accurate representation of a builds viabllity. See table below for that calculation'"></infobox>
-
-
-      <infobox class="max-w-[1500px] mx-auto " :input="'Calculated build win chance tries to gauge what the builds win rate will be at any point during the game.'"></infobox>
-    </div>
-    <table v-if="builddata" class="">
+    <div class="max-w-[1920px] mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
+    <panel-box title="Selected Build">
+      <template #title>
+        <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+          <p class="font-normal">Build win rate and how many players have played that exact build. Win rate for builds to level 20 are inflated because teams that make it to level 20 win more. Therefore it is not an accurate representation of a builds viabllity. See table below for that calculation</p>
+          <p class="font-normal mt-2">Calculated build win chance tries to gauge what the builds win rate will be at any point during the game.</p>
+        </round-image>
+      </template>
+    <table v-if="builddata" class="min-w-0 w-full responsive-table">
       <thead>
         <tr>
-          <th>
+          <th class="py-2 px-3 text-center text-sm leading-4">
             Talents
           </th>
-          <th>
+          <th class="py-2 px-3 text-center text-sm leading-4">
             Copy Build to Game
           </th>
-          <th>
+          <th class="py-2 px-3 text-center text-sm leading-4">
             Games Played with Build
           </th>
-          <th>
+          <th class="py-2 px-3 text-center text-sm leading-4">
             Win rate
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="text-center">
         <tr>
           <td>
-            <div class="flex gap-x-1 mx-2 items-center">
+            <div class="flex gap-x-1 mx-2 items-center justify-center">
               <talent-image-wrapper v-if="builddata.level_one" :talent="builddata.level_one" :size="'medium'"></talent-image-wrapper>
               <talent-image-wrapper v-if="builddata.level_four" :talent="builddata.level_four" :size="'medium'"></talent-image-wrapper>
               <talent-image-wrapper v-if="builddata.level_seven" :talent="builddata.level_seven" :size="'medium'"></talent-image-wrapper>
@@ -139,30 +142,35 @@
         </tr>
       </tbody>
     </table>
+    </panel-box>
 
-    <div class=" my-5 bg-teal py-5 px-2"><infobox class="max-w-[1500px] mx-auto " :input="'Possible Replays do not take into account Hero Level, Player Rank, Hero Rank, Role Rank, or Mirror Match Filter options'"></infobox></div>
-
-    <div class="max-w-[1500px] mx-auto mb-4">
+    <panel-box title="Matching Replays">
+      <template #title>
+        <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+          <p class="font-normal">Possible Replays do not take into account Hero Level, Player Rank, Hero Rank, Role Rank, or Mirror Match Filter options</p>
+        </round-image>
+      </template>
+    <div>
       <custom-button @click="showReplayList = !showReplayList" :text="'Get list of replays matching talent selection'" :alt="'Get list of replays matching talent selection'" size="small" :ignoreclick="true"></custom-button>
     </div>
-    <table class="" v-if="showReplayList">
+    <table class="min-w-0 w-full responsive-table" v-if="showReplayList">
       <thead>
         <tr>
-          <th width="200px">
+          <th class="py-2 px-3 text-center text-sm leading-4 w-[200px]">
             Match ID
           </th>
-          <th>
+          <th class="py-2 px-3 text-center text-sm leading-4">
             Talents
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="text-center">
         <tr v-for="(row, index) in replays" :key="index">
           <td>
-            <a class="link" :href="`/Match/Single/${row.replayID}`">{{ row.replayID}}</a>
+            <a class="group/bt inline-flex items-center" :href="`/Match/Single/${row.replayID}`"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
           </td>
           <td>
-            <div class="flex gap-x-1 mx-2 items-center">
+            <div class="flex gap-x-1 mx-2 items-center justify-center">
               <talent-image-wrapper :talent="row.level_one" :size="'medium'"></talent-image-wrapper>
               <talent-image-wrapper :talent="row.level_four" :size="'medium'"></talent-image-wrapper>
               <talent-image-wrapper :talent="row.level_seven" :size="'medium'"></talent-image-wrapper>
@@ -175,6 +183,8 @@
         </tr>
       </tbody>
     </table>
+    </panel-box>
+    </div>
   </div>
 
 

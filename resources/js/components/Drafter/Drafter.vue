@@ -63,7 +63,7 @@
         </div>
 
         <div class="flex flex-col items-center gap-2 order-2 flex-1">
-          <input type="text" v-model="searchQuery" class="w-60 border rounded-control p-2 text-black" placeholder="Search Heroes" />
+          <input type="text" v-model="searchQuery" class="w-60 bg-field text-white rounded-control px-3 py-2 text-sm" placeholder="Search Heroes" />
           <div class="flex justify-center">
             <img
               v-for="role in roles"
@@ -84,7 +84,12 @@
         </div>
 
         <div class="flex-1 min-w-0 order-2">
-          <loading-component v-if="isLoading"></loading-component>
+          <div v-if="isLoading" class="flex flex-col gap-4">
+            <loading-component :compact="true" :textoverride="true">Loading draft options...</loading-component>
+            <div class="flex flex-wrap justify-center gap-2">
+              <skeleton-box v-for="hero in 30" :key="hero" class="w-16 h-16 !rounded-full"></skeleton-box>
+            </div>
+          </div>
           <div v-else-if="dataError" class="text-center text-red py-10">Failed to load draft data. Please try again.</div>
           <div v-else-if="draftComplete" class="text-center text-gray-medium py-10">Draft complete.</div>
           <div v-else class="flex flex-wrap justify-center">

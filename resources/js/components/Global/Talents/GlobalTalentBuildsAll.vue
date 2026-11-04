@@ -3,13 +3,13 @@
     <table ref="responsivetable" class="w-full text-sm">
       <thead>
         <tr>
-          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Hero</th>
-          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Quick Match</th>
-          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Storm League</th>
-          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">ARAM</th>
+          <th class="py-2 px-3 text-center text-sm leading-4">Hero</th>
+          <th class="py-2 px-3 text-center text-sm leading-4">Quick Match</th>
+          <th class="py-2 px-3 text-center text-sm leading-4">Storm League</th>
+          <th class="py-2 px-3 text-center text-sm leading-4">ARAM</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="text-center">
         <tr v-for="hero in heroes" :key="hero.id" class="border-t border-gray-700">
           <td class="py-2 px-3 whitespace-nowrap">
             <div class="flex items-center">

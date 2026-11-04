@@ -4,27 +4,19 @@
     <page-heading :heading="'CCL'" :heading-image="'/images/CCL/600-600-HHE_CCL_Logo_rectangle.png'" :heading-image-url="'/Esports/CCL'"></page-heading>
 
       <!---You are going to have to design this better, I am going to use buttons for now -->
-      <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue flex-wrap max-md:text-xs">
-        <div class="border-r border-white">
-          <custom-button @click="setButtonActive('organizations')" :text="'Organizations'" :size="'big'" class="rounded-none" :color="activeButton === 'organizations' ? 'lblue' : ''" :active="organizationsClicked" :ignoreclick="true"></custom-button>
-        </div>
+      <div class="flex flex-wrap justify-center gap-1 bg-teal rounded p-1 w-fit max-w-[calc(100%-2rem)] mx-auto mb-6 max-md:text-xs">
+        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'organizations' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('organizations')">Organizations</button>
 
-        <div class="border-r border-white">
-          <custom-button @click="setButtonActive('recentMatches')" :text="'Recent Matches'" :size="'big'" class="rounded-none" :color="activeButton === 'recentMatches' ? 'lblue' : ''" :active="recentMatchesClicked" :ignoreclick="true"></custom-button>
-        </div>
+        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'recentMatches' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('recentMatches')">Recent Matches</button>
 
-        <div class="border-r border-white">
-          <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="rounded-none" :active="overallHeroStatsClicked" :color="activeButton === 'overallHeroStats' ? 'lblue' : ''" :ignoreclick="true"></custom-button>
-        </div>
+        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallHeroStats' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('overallHeroStats')">Overall Hero Stats</button>
 
-      <div class="">
-          <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="rounded-none" :active="overallTalentStatsClicked" :color="activeButton === 'overallTalentStats' ? 'lblue' : ''" :ignoreclick="true"></custom-button>
-        </div>
+      <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallTalentStats' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('overallTalentStats')">Overall Talent Stats</button>
       </div>
 
 
     <div v-if="!activeButton">
-      <div class="flex   p-20 bg-lighten flex-wrap justify-center">
+      <div class="flex p-10 md:p-20 bg-surface rounded max-w-[1500px] mx-4 md:mx-auto flex-wrap justify-center">
 
         <div class="text-center md:w-[15%] mb-15 mx-5">
           <i class="fas fa-users" style="font-size: 100px"></i>
@@ -135,7 +127,7 @@
 
     </div>
     <div v-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="'/images/CCL/600-600-HHE_CCL_Logo_rectangle.png'"></loading-component>
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true" :overrideimage="'/images/CCL/600-600-HHE_CCL_Logo_rectangle.png'"></loading-component><table-skeleton></table-skeleton></div>
     </div>
   </div>
 </template>

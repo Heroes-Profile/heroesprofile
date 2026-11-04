@@ -3,36 +3,36 @@
     <table id="responsive-table" class="responsive-table  relative  " ref="responsivetable">
       <thead>
         <tr>
-          <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('replayID')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'replayID' }">
             Match ID<sort-indicator :column="'replayID'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>
-          <th @click="sortTable('team_0_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer ">
+          <th @click="sortTable('team_0_name')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'team_0_name' }">
             Team 1<sort-indicator :column="'team_0_name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>
-          <th @click="sortTable('team_1_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('team_1_name')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'team_1_name' }">
             Team 2<sort-indicator :column="'team_1_name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>
           <th>
             Game
           </th>
-          <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('game_date')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'game_date' }">
             Game Date<sort-indicator :column="'game_date'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>            
-          <th @click="sortTable('game_map')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('game_map')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'game_map' }">
             Game Map<sort-indicator :column="'game_map'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>
-          <th @click="sortTable('hero_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('hero_id')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'hero_id' }">
             Heroes<sort-indicator :column="'hero_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>                        
         </tr>
       </thead>
-        <tbody>
+        <tbody class="text-center">
           <tr v-for="(row, index) in sortedData" :key="index">
             <td v-if="tournament">
-              <a class="link" :href="`/Esports/${getUrlValue(esport)}/Match/Single/${row.replayID}/?tournament=${tournament}`">{{ row.replayID }}</a>
+              <a class="group/bt inline-flex items-center" :href="`/Esports/${getUrlValue(esport)}/Match/Single/${row.replayID}/?tournament=${tournament}`"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
             </td>
             <td v-else>
-              <a class="link" :href="`/Esports/${getUrlValue(esport)}/Match/Single/${row.replayID}`">{{ row.replayID }}</a>
+              <a class="group/bt inline-flex items-center" :href="`/Esports/${getUrlValue(esport)}/Match/Single/${row.replayID}`"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
             </td>
             <td class="">
               {{ row.team_0_name ? row.team_0_name : row.team_0_id }}

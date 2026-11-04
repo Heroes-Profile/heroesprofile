@@ -28,12 +28,13 @@
       </button>
     </div>
 
-    <div v-if="loading">
-      <loading-component></loading-component>
+    <div v-if="loading" class="max-w-[1500px] mx-auto px-4 py-10 flex flex-col gap-6">
+      <loading-component :compact="true" :textoverride="true">Loading activity...</loading-component>
+      <skeleton-box class="h-[400px] w-full"></skeleton-box>
     </div>
 
     <div v-else class="max-w-[1500px] mx-auto px-4 py-10">
-      <div v-if="error" class="text-center text-red-400 py-20">{{ error }}</div>
+      <div v-if="error" class="text-center text-red py-20">{{ error }}</div>
       <template v-else-if="data.length">
         <div class="flex flex-wrap gap-2 mb-6">
           <button
@@ -42,7 +43,7 @@
               'px-3 py-1 rounded text-sm font-medium border transition-colors',
               allYearsActive
                 ? 'bg-teal text-white border-teal'
-                : 'bg-transparent text-gray-400 border-gray-600 hover:border-gray-400'
+                : 'bg-transparent text-subtext border-gray-dark hover:border-gray-medium'
             ]"
           >
             All
@@ -55,7 +56,7 @@
               'px-3 py-1 rounded text-sm font-medium border transition-colors',
               activeYears.includes(year)
                 ? 'bg-teal text-white border-teal'
-                : 'bg-transparent text-gray-400 border-gray-600 hover:border-gray-400'
+                : 'bg-transparent text-subtext border-gray-dark hover:border-gray-medium'
             ]"
           >
             {{ year }}

@@ -13,36 +13,36 @@
       <table class="">
         <thead>
           <tr>
-            <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('replayID')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'replayID' }">
               Match ID<sort-indicator :column="'replayID'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('game_date')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'game_date' }">
               Game Date<sort-indicator :column="'game_date'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>            
-            <th @click="sortTable('game_map')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('game_map')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'game_map' }">
               Game Map<sort-indicator :column="'game_map'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('team_0_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('team_0_name')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'team_0_name' }">
               Team 1<sort-indicator :column="'team_0_name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('team_1_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('team_1_name')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'team_1_name' }">
               Team 2<sort-indicator :column="'team_1_name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('round')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('round')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'round' }">
               Round<sort-indicator :column="'round'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('game')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('game')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'game' }">
               Game<sort-indicator :column="'game'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3 text-center text-sm leading-4">
               Heroes
             </th>                      
           </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center">
           <tr v-for="(row, index) in sortedData" :key="index">
             <td>
-              <a class="link" :href="'/Esports/NGS/Match/Single/' + row.replayID">{{ row.replayID }}</a>
+              <a class="group/bt inline-flex items-center" :href="'/Esports/NGS/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
             </td>
             <td>
               {{ formatDate(row.game_date) }}
@@ -51,10 +51,10 @@
               {{ row.game_map.name }}
             </td>
             <td>
-              <a class="link" :href="`/Esports/${esport}/Team/${row.team_0_name}?season=${modifiedseason}&division=${division}`" >{{ row.team_0_name }}</a>
+              <a class="group/bt inline-flex items-center" :href="`/Esports/${esport}/Team/${row.team_0_name}?season=${modifiedseason}&division=${division}`"><span class="group-hover/bt:underline">{{ row.team_0_name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
             </td>
             <td>
-              <a class="link" :href="`/Esports/${esport}/Team/${row.team_1_name}?season=${modifiedseason}&division=${division}`" >{{ row.team_1_name }}</a>
+              <a class="group/bt inline-flex items-center" :href="`/Esports/${esport}/Team/${row.team_1_name}?season=${modifiedseason}&division=${division}`"><span class="group-hover/bt:underline">{{ row.team_1_name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
             </td>
             <td>
               {{ row.round }}
@@ -72,7 +72,7 @@
       </table>
     </div>
     <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="isLoadingImageUrl"></loading-component>
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true" :overrideimage="isLoadingImageUrl"></loading-component><table-skeleton></table-skeleton></div>
     </div>
   </div>
 </template>

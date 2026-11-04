@@ -38,8 +38,8 @@
       >
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
-    <div v-if="compositiondata">
-      <div class="flex justify-between max-w-[1500px] mx-auto">
+    <div v-if="compositiondata" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <div class="flex justify-between">
         <span></span>
         <span>
           <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
@@ -48,28 +48,29 @@
 
       <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
 
-      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
-      <table id="responsive-table" class="responsive-table  relative max-w-[1500px]" ref="responsivetable">
+      <panel-box>
+      <div id="table-container" ref="tablecontainer" class="overflow-hidden">
+      <table id="responsive-table" class="min-w-0 w-full responsive-table relative" ref="responsivetable">
      
     
         <thead>
           <tr>
-            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3 text-center text-sm leading-4">
               Composition
             </th>
-            <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
               Win Rate %<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>            
-            <th @click="sortTable('popularity')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('popularity')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'popularity' }">
               Popularity %<sort-indicator :column="'popularity'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
               Games Played<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>       
             <th></th>          
           </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center">
           <template v-for="(row, index) in sortedData">
             <tr>
               <td >
@@ -98,29 +99,29 @@
             </tr>
             <tr v-if="row.compositionheroes">
               <td colspan=5>
-                <table class="min-w-0 ml-0 max-md:text-[.5em]  ">
+                <table class="min-w-0 w-full max-md:text-[.5em]">
                   <thead>
                     <tr>
-                      <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                      <th class="py-2 px-3 text-center text-sm leading-4">
                         Top {{ row.role_one.name }}
                       </th>
-                      <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                      <th class="py-2 px-3 text-center text-sm leading-4">
                         Top {{ row.role_two.name }}
                       </th>
-                      <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                      <th class="py-2 px-3 text-center text-sm leading-4">
                         Top {{ row.role_three.name }}
                       </th>
-                      <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                      <th class="py-2 px-3 text-center text-sm leading-4">
                         Top {{ row.role_four.name }}
                       </th>
-                      <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                      <th class="py-2 px-3 text-center text-sm leading-4">
                         Top {{ row.role_five.name }}
                       </th>
                     </tr>
    
                   </thead>
-                  <tbody>
-                    <tr v-for="index in range" class="mr-2">
+                  <tbody class="text-center">
+                    <tr v-for="index in range">
                       <td>
                         <hero-image-wrapper v-if="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)" :hero="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(1, row, row.compositionheroes[row.role_one.name], index) ? getHeroData(1, row, row.compositionheroes[row.role_one.name], index).name : "" }}</span>
                       </td>
@@ -150,9 +151,11 @@
         </tbody>
       </table>
       </div>
+      </panel-box>
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <loading-component :compact="true" :textoverride="true">Loading compositions...</loading-component>
+      <table-skeleton></table-skeleton>
     </div>
     <div v-else-if="dataError" class="flex items-center justify-center">
       Error: Reload page/filter
@@ -288,7 +291,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         this.isLoading = false;
         this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
-          if (responsivetable && this.windowWidth < 1500) {
+          if (responsivetable) {
             this.tablewidth = scaleTableToFit(responsivetable, this.$refs.tablecontainer);
           }
         });

@@ -3,27 +3,29 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
     <page-heading heading="Contact"></page-heading>
 
-    <div>
+    <div class="max-w-[1000px] mx-auto px-4 mt-6 flex flex-col gap-4">
+      <panel-box>
       <!-- Contact form -->
-      <form @submit.prevent="submitForm" class="flex flex-col max-w-[1500px] mx-auto p-4 gap-2">
-        <label for="name">Battletag:</label>
-        <input class="form-control search-input mr-3 text-black" type="text" id="name" v-model="formData.battletag" required>
+      <form @submit.prevent="submitForm" class="flex flex-col gap-2">
+        <label for="name" class="text-sm text-subtext">Battletag</label>
+        <input class="w-full bg-field text-white rounded-control px-3 py-2 text-sm mb-2" type="text" id="name" v-model="formData.battletag" required>
 
-        <label for="email">Email:</label>
-        <input class="form-control search-input mr-3 text-black" type="email" id="email" v-model="formData.email" required>
+        <label for="email" class="text-sm text-subtext">Email</label>
+        <input class="w-full bg-field text-white rounded-control px-3 py-2 text-sm mb-2" type="email" id="email" v-model="formData.email" required>
 
-        <label for="message">Message:</label>
-        <textarea class="form-control search-input mr-3 text-black" id="message" v-model="formData.message" required></textarea>
+        <label for="message" class="text-sm text-subtext">Message</label>
+        <textarea class="w-full bg-field text-white rounded-control px-3 py-2 text-sm min-h-[10em]" id="message" v-model="formData.message" required></textarea>
 
         <!-- Honeypot field - hidden from users but visible to bots -->
         <input type="text" name="website" v-model="formData.website" style="display: none !important; visibility: hidden !important; position: absolute !important; left: -9999px !important;" tabindex="-1" autocomplete="off">
 
-        <button :disabled="isLoading" type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto mr-2 my-2">Submit</button>
+        <button :disabled="isLoading" type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto mt-2">Submit</button>
       </form>
-      <div v-if="emailSent" class="mx-auto max-w-[1500px] bg-teal p-4 text-center">
+      </panel-box>
+      <div v-if="emailSent" class="bg-teal rounded p-4 text-center">
         <p>Email Sent Successfully!</p>
       </div>
-      <div v-if="sendError" class="mx-auto max-w-[1500px] bg-red p-4 text-center">
+      <div v-if="sendError" class="bg-red rounded p-4 text-center">
         <p>{{ sendError }}</p>
       </div>
 

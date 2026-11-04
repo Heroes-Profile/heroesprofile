@@ -15,7 +15,7 @@
 
 
     <div v-if="!user"  class="max-w-[1000px] mx-auto">
-      <div class="bg-gray-dark p-4">
+      <div class="bg-surface rounded p-4">
         Log in to track your prediction stats and rank on the leaderboard
       </div>
     </div>
@@ -24,8 +24,8 @@
       
       <div v-if="practicemode" class="bg-red p-4" >PRACTICE MODE ({{ 10 - totalGamesPlayedPractice }} practices left)</div>
       <div v-else>
-        <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase"> {{ truncatedBattletag }} - {{ seasonLabel(statsSeason) }}</h2>
-        <div class="bg-gray-dark p-4">
+        <h2 class="text-sm text-center uppercase font-semibold text-subtext"> {{ truncatedBattletag }} - {{ seasonLabel(statsSeason) }}</h2>
+        <div class="bg-surface rounded p-4">
           <div class="flex justify-center">
             <single-select-filter
               :values="statsSeasons"
@@ -44,7 +44,7 @@
     </div>
 
     <div class="max-w-[1000px] mx-auto">
-      <div class="bg-gray-dark p-4">
+      <div class="bg-surface rounded p-4">
         Leaderboards can be found at <a class="link" :href="'/Global/Leaderboard?type=Match%20Prediction&season=' + currentSeason" target="_blank">Leaderboards</a>
       </div>
     </div>
@@ -68,15 +68,20 @@
 
     </div>
 
-    <div v-if="isLoading">
-      <loading-component></loading-component>
+    <div v-if="isLoading" class="max-w-[1000px] mx-auto px-4 mt-6 flex flex-col gap-6">
+      <loading-component :compact="true" :textoverride="true">Loading match...</loading-component>
+      <skeleton-box class="h-14 w-full"></skeleton-box>
+      <div class="grid grid-cols-2 gap-10">
+        <skeleton-box class="h-64"></skeleton-box>
+        <skeleton-box class="h-64"></skeleton-box>
+      </div>
     </div>
 
 
 
     <div v-if="data" class="">
 
-      <div class="w-full max-w-[1000px] bg-blue rounded flex justify-between gap-2 mx-auto p-4 mb-4">
+      <div class="w-full max-w-[1000px] bg-surface rounded flex flex-wrap justify-between gap-2 mx-auto p-4 mb-4">
         <span>{{ data.replayData.game_map.name }}</span>
         <span>HP Rank: {{ data.rank }}</span>
         <span>Region: {{ data.replayData.regionString }}</span>
@@ -88,7 +93,7 @@
 
       <div class="flex max-w-[1000px] mx-auto justify-center gap-10">
 
-        <div class="flex flex-col align-center border-2 rounded border-white " >
+        <div class="flex flex-col align-center bg-surface rounded p-4" >
           <div class="min-h-[4em] ">
             <button v-if="!disableWinnerSelect" :disabled="disableWinnerSelect" @click="chooseWinner(0)"  class="btn" :class="{'bg-blue  md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto w-full max-md:mt-10 mx-auto': !disableFilterInput, 'bg-gray-md md:ml-10 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
               {{ "Select Team 1 Winner" }}
@@ -99,7 +104,7 @@
             </div>
           </div>
           <div class="px-2" v-if="data.draftData && data.replayBans?.[0]?.length">
-            <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 1 Bans</h2>
+            <h2 class="text-sm text-center uppercase font-semibold text-subtext">Team 1 Bans</h2>
             <div class="flex justify-center gap-5 p-4 max-md:flex-col">
               <template v-for="(item, index) in data.replayBans[0]" :key="index">
                 <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" size="big" ></hero-image-wrapper >
@@ -108,7 +113,7 @@
             </div>
           </div>
           <div class="px-2">
-            <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 1 Picks</h2>
+            <h2 class="text-sm text-center uppercase font-semibold text-subtext">Team 1 Picks</h2>
             <div class="flex justify-center gap-5 p-4 max-md:flex-col">
               <template v-for="(item, index) in teamZeroPicks" :key="index">
                 <hero-image-wrapper v-if="item.hero" :hero="item.hero" size="big" ></hero-image-wrapper >
@@ -117,7 +122,7 @@
           </div>
         </div>
         
-        <div class="flex flex-col align-center justify-center  border-2 rounded border-white ">
+        <div class="flex flex-col align-center justify-center bg-surface rounded p-4">
           <div class="min-h-[4em]">
             <button v-if="!disableWinnerSelect" :disabled="disableWinnerSelect" @click="chooseWinner(1)"  class="btn" :class="{'bg-blue md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md md:ml-10 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
               {{ "Select Team 2 Winner" }}
@@ -128,7 +133,7 @@
             </div>
           </div>
           <div class="px-2" v-if="data.draftData && data.replayBans?.[1]?.length">
-            <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 2 Bans</h2>
+            <h2 class="text-sm text-center uppercase font-semibold text-subtext">Team 2 Bans</h2>
             <div class="flex justify-center gap-5 p-4 max-md:flex-col">
             <template v-for="(item, index) in data.replayBans[1]" :key="index">
               <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" size="big" ></hero-image-wrapper >
@@ -138,7 +143,7 @@
         </div>
         
         <div class="px-2">
-          <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 2 Picks</h2>
+          <h2 class="text-sm text-center uppercase font-semibold text-subtext">Team 2 Picks</h2>
           <div class="flex justify-center gap-5 p-4 max-md:flex-col">
             <template v-for="(item, index) in teamOnePicks" :key="index">
               <hero-image-wrapper :hero="item.hero" size="big" ></hero-image-wrapper >

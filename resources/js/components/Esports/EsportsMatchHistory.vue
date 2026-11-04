@@ -7,24 +7,24 @@
       <table class="mt-10 max-md:text-xs">
         <thead>
           <tr>
-            <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('replayID')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'replayID' }">
               Match ID<sort-indicator :column="'replayID'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('game_date')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'game_date' }">
               Game Date<sort-indicator :column="'game_date'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>     
-            <th @click="sortTable('game_map')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('game_map')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'game_map' }">
               Game Map<sort-indicator :column="'game_map'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>                 
-            <th @click="sortTable('enemy')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('enemy')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'enemy' }">
               Opponent<sort-indicator :column="'enemy'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th> 
           </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center">
           <tr v-for="(row, index) in sortedData" :key="index">
             <td>
-              <a class="link" :href="getMatchUrl(row.replayID)">{{ row.replayID }}</a>
+              <a class="group/bt inline-flex items-center" :href="getMatchUrl(row.replayID)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
             </td>
             <td>
               {{ formatDate(row.game_date) }}
@@ -41,7 +41,7 @@
       </table>
     </div>
     <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="getLoadingImage()"></loading-component>
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true" :overrideimage="getLoadingImage()"></loading-component><table-skeleton></table-skeleton></div>
     </div>
   </div>
 </template>

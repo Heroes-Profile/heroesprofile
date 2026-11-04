@@ -55,9 +55,9 @@
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-    <div v-if="data">
-      <div class="flex justify-between max-w-[1500px] mx-auto">
-        <span class="flex gap-4 mb-2"> 
+    <div v-if="data" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <div class="flex justify-between">
+        <span class="flex gap-4">
           <single-select-filter
             :values="filters.heroes" 
             :text="'Change Hero'" 
@@ -72,29 +72,30 @@
 
       <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
 
-      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw] max-sm:text-xs   2xl:mx-auto  " style=" ">
-       <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
+      <panel-box>
+      <div id="table-container" ref="tablecontainer" class="overflow-hidden max-sm:text-xs">
+       <table id="responsive-table" class="min-w-0 w-full responsive-table relative" ref="responsivetable">
       
           <thead>
             <tr>
               <th 
                 v-for="column in dynamicColumns" 
                 :key="column.value" 
-                :class="['py-2', 'px-3', 'border-b', 'border-gray-200', 'text-left', 'text-sm', 'leading-4', 'text-gray-500', 'tracking-wider', column.sortable ? 'cursor-pointer' : '']"
+                :class="['py-2 px-3 text-center text-sm leading-4', column.sortable ? 'cursor-pointer' : '', { 'bg-teal text-white': column.sortable && sortKey === column.value }]"
                 @click="column.sortable ? sortTable(column.value) : null"
                 >
                   {{ column.text }}<sort-indicator v-if="column.sortable" :column="column.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>        
             </tr>
           </thead>
-          <tbody>
+          <tbody class="text-center">
             <tr v-for="row in sortedData" :key="row.rank">
               <td v-for="column in dynamicColumns" :key="column.value" class="">
                 <div v-if="column.value === 'battletag'">
-                  <a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row[column.value] }}</a>
+                  <a class="group/bt inline-flex items-center" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank" rel="noopener"><span class="group-hover/bt:underline">{{ row[column.value] }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                 </div>
                 <div v-else-if="column.value === 'most_played_hero'">
-                  <div  v-if="row.most_played_hero" class="flex gap-x-2 items-center">
+                  <div  v-if="row.most_played_hero" class="flex gap-x-2 items-center justify-center">
                     <hero-image-wrapper :hero="row.most_played_hero">
                       <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played:' + row.hero_build_games_played"></image-hover-box>
                     </hero-image-wrapper>
@@ -107,14 +108,14 @@
             </tr>
           </tbody>
         </table>
-        
       </div>
-
+      </panel-box>
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" v-if="determineIfVeryLargeData()" :textoverride="true">Very large amount of data.<br/>Compiling can take 5-10 minutes.<br/>Please be patient.<br/>Loading Data...</loading-component>
-      <loading-component @cancel-request="cancelAxiosRequest" v-else-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
-      <loading-component @cancel-request="cancelAxiosRequest" v-else></loading-component>
+    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
+      <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
+      <loading-component v-else :compact="true" :textoverride="true">Loading map stats...</loading-component>
+      <table-skeleton></table-skeleton>
     </div>
     <div v-else-if="dataError" class="flex items-center justify-center">
       Error: Reload page/filter
@@ -283,7 +284,7 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
           this.isLoading = false;
           this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
-          if (responsivetable && this.windowWidth < 1500) {
+          if (responsivetable) {
             this.tablewidth = scaleTableToFit(responsivetable, this.$refs.tablecontainer);
           }
         });

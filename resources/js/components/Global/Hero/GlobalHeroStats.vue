@@ -3,7 +3,16 @@
     <global-async-debug-banner page-label="Global Hero" />
 
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-    <page-heading heading="Hero Tier List & Win Rates"></page-heading>
+    <page-heading heading="Hero Tier List & Win Rates">
+      <template v-if="isSLRank" #headingInfo>
+        <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+          <p class="font-normal">
+            In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.
+            <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
+          </p>
+        </round-image>
+      </template>
+    </page-heading>
     
     
 
@@ -55,15 +64,8 @@
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="isSLRank" class="my-5 bg-teal py-5 px-2">
-      <infobox class="max-w-[1500px] mx-auto">
-        In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.
-        <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
-      </infobox>
-    </div>
-    
-    <div v-if="this.data.data">
-      <div class="max-w-[1500px] mx-auto flex justify-between mb-2">
+    <div v-if="this.data.data" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <div class="flex justify-between">
         <div>
           <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
         </div>
@@ -75,71 +77,71 @@
       <div v-if="togglechart">
         <bubble-chart :heroData="this.data.data"></bubble-chart>
       </div>
-      <div>
-        <div id="table-container" ref="tablecontainer" class="w-auto   w-[100vw]   2xl:mx-auto  " style=" ">
-      <table id="responsive-table" class="responsive-table  relative" ref="responsivetable">
+      <panel-box>
+        <div id="table-container" ref="tablecontainer" class="overflow-hidden">
+      <table id="responsive-table" class="min-w-0 w-full responsive-table relative" ref="responsivetable">
         <thead>
           <tr>
-            <th class="py-2 px-3 border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3 text-center text-sm leading-4">
               Avg
             </th>
-            <th class="py-2 px-3 border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3 text-center text-sm leading-4">
               {{ getValueFixed(data.average_win_rate) }}
             </th>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3 text-center text-sm leading-4">
               {{ "&#177;" }}{{ getValueFixed(data.average_confidence_interval)}}
             </th>
-            <th v-if="showWinRateChange" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th v-if="showWinRateChange" class="py-2 px-3 text-center text-sm leading-4">
               {{ getValueFixed(data.average_positive_win_rate_change) }}{{ "|" }}{{ getValueFixed(data.average_negative_win_rate_change) }}
             </th>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3 text-center text-sm leading-4">
               {{ getValueFixed(data.average_popularity) }}
             </th>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3 text-center text-sm leading-4">
               {{ getValueFixed(data.average_pick_rate) }}
             </th>
-            <th v-if="this.gametype.includes('sl') && !this.groupSizeActive" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th v-if="this.gametype.includes('sl') && !this.groupSizeActive" class="py-2 px-3 text-center text-sm leading-4">
               {{ getValueFixed(data.average_ban_rate) }}
             </th>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3 text-center text-sm leading-4">
               {{ getValueLocal(data.average_positive_influence) }}{{ "|" }}{{ getValueLocal(data.average_negative_influence) }}
             </th>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3 text-center text-sm leading-4">
               {{ getValueLocal(data.average_games_played) }}
             </th>
 
-            <th  v-if="this.showStatTypeColumn"  class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th  v-if="this.showStatTypeColumn"  class="py-2 px-3 text-center text-sm leading-4">
               {{ getValueLocal(getValueFixed(data.average_total_filter_type)) }}
             </th>
 
-            <th v-if="!this.groupSizeActive" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th v-if="!this.groupSizeActive" class="py-2 px-3 text-center text-sm leading-4">
             </th>
           </tr>
         </thead>
         <thead class="top-0 w-full sticky z-40">
           <tr>
-            <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('name')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'name' }">
               Hero<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
               Win Rate %<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('confidence_interval')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('confidence_interval')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'confidence_interval' }">
               Win Rate Confidence<sort-indicator :column="'confidence_interval'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th v-if="showWinRateChange" @click="sortTable('win_rate_change')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="showWinRateChange" @click="sortTable('win_rate_change')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate_change' }">
               Win Rate Change<sort-indicator :column="'win_rate_change'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('popularity')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('popularity')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'popularity' }">
               Popularity %<sort-indicator :column="'popularity'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('pick_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('pick_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'pick_rate' }">
               Pick Rate %<sort-indicator :column="'pick_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>   
-            <th v-if="this.gametype.includes('sl') && !this.groupSizeActive" @click="sortTable('ban_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="this.gametype.includes('sl') && !this.groupSizeActive" @click="sortTable('ban_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'ban_rate' }">
               Ban Rate %<sort-indicator :column="'ban_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>    
-            <th @click="sortTable('influence')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('influence')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'influence' }">
               <div class="flex items-center">
                 <div class="">
                   Influence
@@ -153,22 +155,22 @@
                 </round-image>
               </div><sort-indicator :column="'influence'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>                  
-            <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
               Games Played<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>       
-            <th v-if="this.showStatTypeColumn" @click="sortTable('total_filter_type')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="this.showStatTypeColumn" @click="sortTable('total_filter_type')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'total_filter_type' }">
               {{ this.statfiltername }}<sort-indicator :column="'total_filter_type'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th v-if="!this.groupSizeActive" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="!this.groupSizeActive" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">
             </th>                              
           </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center">
           <template v-for="(row, index) in sortedData">
             <tr>
               <td class="py-2 px-3 flex items-center gap-1 max-md:w-[150px]">
-                <a class="flex w-full items-center max-md:justify-center" :href="getGlobalTalentsURL(row)" >
-                  <hero-image-wrapper class="mr-2" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block">{{ row.name }}</span>
+                <a class="group/bt flex w-full items-center justify-center" :href="getGlobalTalentsURL(row)" >
+                  <hero-image-wrapper class="mr-2" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block font-bold group-hover/bt:underline">{{ row.name }}</span>
                 </a>
               </td>
               <td class="  ">{{ getValueFixed(row.win_rate) }}</td>
@@ -204,12 +206,14 @@
         </tbody>
       </table>
     </div>
+      </panel-box>
     </div>
-    </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" v-if="determineIfVeryLargeData()" :textoverride="true">Very large amount of data.<br/>Compiling can take 5-10 minutes.<br/>Please be patient.<br/>Loading Data...</loading-component>
-      <loading-component @cancel-request="cancelAxiosRequest" v-else-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
-      <loading-component @cancel-request="cancelAxiosRequest" v-else></loading-component>
+    <!-- The page's layout with grey blocks while it loads, like the leaderboard -->
+    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
+      <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
+      <loading-component v-else :compact="true" :textoverride="true">Loading hero stats...</loading-component>
+      <table-skeleton></table-skeleton>
     </div>
     <div v-else-if="dataError" class="flex flex-col items-center justify-center">
       Error: Reload page/filter
@@ -451,7 +455,7 @@ export default {
         this.isLoading = false;
         this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
-          if (responsivetable && this.windowWidth < 1500) {
+          if (responsivetable) {
             this.tablewidth = scaleTableToFit(responsivetable, this.$refs.tablecontainer);
           }
         });
@@ -502,7 +506,7 @@ export default {
         this.isLoading = false;
         this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
-          if (responsivetable && this.windowWidth < 1500) {
+          if (responsivetable) {
             this.tablewidth = scaleTableToFit(responsivetable, this.$refs.tablecontainer);
           }
         });

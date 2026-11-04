@@ -57,18 +57,15 @@
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-    <div v-if="allyenemydata" class="flex flex-wrap gap-4  ">
-
-
-
-      <div >
+    <div v-if="allyenemydata" class="max-w-[1920px] mx-auto px-4 md:px-8">
+      <div class="flex flex-col gap-6">
         <div class="flex justify-center">
         <group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)" :type="'Matchups'" color="blue"></group-box>
         <group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)" :type="'Matchups'" color="red"></group-box>
       </div>
 
-      <div class="flex justify-between max-w-[1500px] mx-auto">
-        <span class="flex gap-4 mb-2"> 
+      <div class="flex justify-between">
+        <span class="flex gap-4"> 
           <single-select-filter
             :values="filters.heroes" 
             :text="'Change Hero'" 
@@ -83,15 +80,16 @@
 
       <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
 
-      <div id="table-container" ref="tablecontainer" class="w-[100vw] max-md:overflow-hidden 2xl:mx-auto" style=" ">
-        <table id="responsive-table" class="responsive-table  relative" ref="responsivetable">
+      <panel-box>
+      <div id="table-container" ref="tablecontainer" class="max-md:overflow-hidden">
+        <table id="responsive-table" class="min-w-0 w-full responsive-table relative" ref="responsivetable">
           <thead class="top-0 w-full sticky z-40">
           <tr>
-            <th @click="sortTable('hero_name')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('hero_name')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'hero_name' }">
               Hero<sort-indicator :column="'hero_name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('base_win_rate')" class="cursor-pointer py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
-              <div class="flex items-center">
+            <th @click="sortTable('base_win_rate')" class="cursor-pointer py-2 px-3 text-center text-sm leading-4" :class="{ 'bg-teal text-white': sortKey === 'base_win_rate' }">
+              <div class="flex items-center justify-center">
                 <div>
                   Base Win Rate %
                 </div>
@@ -104,8 +102,8 @@
                 </round-image>
               </div><sort-indicator :column="'base_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th  class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              <div class="flex items-center">
+            <th class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate_as_ally' || sortKey === 'ally_difference' }">
+              <div class="flex items-center justify-center">
                 <span class="cursor-pointer" @click="sortTable('win_rate_as_ally')">Win Rate as Ally %<sort-indicator column="win_rate_as_ally" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator> | </span><span class="cursor-pointer" @click="sortTable('ally_difference')">(Difference)<sort-indicator column="ally_difference" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
                 <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
                   <slot>
@@ -116,8 +114,8 @@
                 </round-image>
               </div>
             </th>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              <div class="flex items-center">
+            <th class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate_against' || sortKey === 'enemy_difference' }">
+              <div class="flex items-center justify-center">
                 <span class="cursor-pointer" @click="sortTable('win_rate_against')">Win Rate Against {{ this.selectedHero.name }} %<sort-indicator column="win_rate_against" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator> | </span><span class="cursor-pointer" @click="sortTable('enemy_difference')">(Difference)<sort-indicator column="enemy_difference" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
                 <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
                   <slot>
@@ -128,20 +126,20 @@
                 </round-image>
               </div>
             </th>
-            <th @click="sortTable('games_played_as_ally')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played_as_ally')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played_as_ally' }">
               Games Played As Ally<sort-indicator :column="'games_played_as_ally'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('games_played_against')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played_against')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played_against' }">
               Games Played Against {{ this.selectedHero.name }}<sort-indicator :column="'games_played_against'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center">
           <tr v-for="(row, index) in sortedData" :key="index">
             <td class="py-2 px-3 ">
-              <div class="flex items-center ">
+              <div class="flex items-center justify-center">
                 <hero-image-wrapper :hero="row.ally ? row.ally.hero : row.enemy.hero " ></hero-image-wrapper>
-                <span class="ml-left px-3 hidden md:block">{{ row.ally && row.ally.hero ? row.ally.hero.name : row.enemy.hero.name }}</span>
+                <span class="ml-left px-3 hidden md:block font-bold">{{ row.ally && row.ally.hero ? row.ally.hero.name : row.enemy.hero.name }}</span>
               </div>
             </td>
             <td class="py-2 px-3 ">
@@ -165,10 +163,12 @@
         </tbody>
       </table>
       </div>
+      </panel-box>
     </div>
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <loading-component :compact="true" :textoverride="true">Loading matchups...</loading-component>
+      <table-skeleton></table-skeleton>
     </div>
     <div v-else-if="dataError" class="flex items-center justify-center">
       Error: Reload page/filter

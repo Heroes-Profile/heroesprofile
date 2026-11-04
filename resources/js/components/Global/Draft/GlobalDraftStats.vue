@@ -53,9 +53,9 @@
         <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
    
-        <div v-if="draftdata">
-          <div class="flex justify-between max-w-[1500px] mx-auto">
-            <span class="flex gap-4 mb-2">
+        <div v-if="draftdata" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+          <div class="flex justify-between">
+            <span class="flex gap-4">
               <single-select-filter
                 :values="filters.heroes" 
                 :text="'Change Hero'" 
@@ -69,28 +69,29 @@
           </div>
 
           <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
-          <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]  max-sm:text-xs 2xl:mx-auto  " style=" ">
-            <table id="responsive-table" class="responsive-table  relative max-sm:text-xs" ref="responsivetable">
+          <panel-box>
+          <div id="table-container" ref="tablecontainer" class="overflow-hidden max-sm:text-xs">
+            <table id="responsive-table" class="min-w-0 w-full responsive-table relative max-sm:text-xs" ref="responsivetable">
               <thead>
                 <tr>
-                  <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                  <th class="py-2 px-3 text-center text-sm leading-4">
                     Pick Order
                   </th>
-                  <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                  <th class="py-2 px-3 text-center text-sm leading-4">
                     Pick/Ban Rate % at position
                   </th>            
-                  <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                  <th class="py-2 px-3 text-center text-sm leading-4">
                     Team Wins
                   </th>
-                  <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                  <th class="py-2 px-3 text-center text-sm leading-4">
                     Team Losses
                   </th>
-                  <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                  <th class="py-2 px-3 text-center text-sm leading-4">
                     Team Win Rate %
                   </th>                 
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="text-center">
                 <tr 
                   v-for="row in draftdata" 
                   :key="row.pick_number"
@@ -107,9 +108,11 @@
               </tbody>
             </table>
           </div>
+          </panel-box>
         </div>
-        <div v-else-if="isLoading">
-          <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+        <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+          <loading-component :compact="true" :textoverride="true">Loading draft stats...</loading-component>
+          <table-skeleton :rows="16"></table-skeleton>
         </div>
         <div v-else-if="dataError" class="flex items-center justify-center">
           Error: Reload page/filter

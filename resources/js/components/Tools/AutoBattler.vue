@@ -57,7 +57,7 @@
               <input
                 type="text"
                 v-model="searchQuery"
-                class="w-60 border rounded p-2 text-black"
+                class="w-60 bg-field text-white rounded-control px-3 py-2 text-sm"
                 placeholder="Search Heroes"
               />
               <div class="flex justify-center">
@@ -87,8 +87,8 @@
           </div>
 
           <div v-else-if="mode === 'talents'">
-            <div v-if="loadingTalents">
-              <loading-component></loading-component>
+            <div v-if="loadingTalents" class="py-10">
+              <loading-component :compact="true" :textoverride="true">Loading talents...</loading-component>
             </div>
             <div v-else-if="talentError" class="text-center text-red py-10">{{ talentError }}</div>
             <auto-battler-talent-selection

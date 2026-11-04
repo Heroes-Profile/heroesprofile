@@ -33,7 +33,7 @@
 
 
 
-      <div class="bg-lighten p-10 ">
+      <div class="bg-surface rounded p-6 md:p-10 mx-4 md:mx-8 mb-6">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Heroes played by {{ battletag }}</h2>
           <div class="flex flex-wrap justify-center">
@@ -57,18 +57,18 @@
         <table class="">
           <thead>
             <tr>
-              <th @click="sortTable('hero_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('hero_id')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'hero_id' }">
                 Hero<sort-indicator :column="'hero_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>
-              <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
                 Win Rate %<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>            
-              <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
                 Games Played<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>              
             </tr>
           </thead>
-          <tbody>
+          <tbody class="text-center">
             <tr v-for="(row, index) in sortedData" :key="index">
               <td>
                 <a :href="row.link">
@@ -105,7 +105,7 @@
       </div>
 
 
-      <div class="bg-lighten p-10">
+      <div class="bg-surface rounded p-6 md:p-10 mx-4 md:mx-8 mb-6">
 
         <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
@@ -126,7 +126,7 @@
 
     </div>
     <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="getLoadingImage()"></loading-component>
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true" :overrideimage="getLoadingImage()"></loading-component><table-skeleton></table-skeleton></div>
     </div>
   </div>
 </template>

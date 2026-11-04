@@ -44,40 +44,40 @@
         <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
           <thead>
             <tr>
-              <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('replayID')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'replayID' }">
                 Match ID<sort-indicator :column="'replayID'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>    
-              <th @click="sortTable('series')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('series')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'series' }">
                 Series<sort-indicator :column="'series'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>   
-              <th @click="sortTable('region')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('region')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'region' }">
                 Region<sort-indicator :column="'region'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>  
-              <th @click="sortTable('tournament')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('tournament')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'tournament' }">
                 Tournament<sort-indicator :column="'tournament'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>  
-              <th @click="sortTable('season')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('season')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'season' }">
                 Season<sort-indicator :column="'season'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>  
-              <th @click="sortTable('team_0_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('team_0_name')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'team_0_name' }">
                 Team 1<sort-indicator :column="'team_0_name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>  
-              <th @click="sortTable('team_1_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('team_1_name')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'team_1_name' }">
                 Team 2<sort-indicator :column="'team_1_name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th> 
-              <th @click="sortTable('game_map')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('game_map')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'game_map' }">
                 Map<sort-indicator :column="'game_map'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th> 
-              <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('game_date')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'game_date' }">
                 Game Date<sort-indicator :column="'game_date'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th> 
             </tr>
           </thead>
-          <tbody>
+          <tbody class="text-center">
             <template v-for="(row, index) in sortedData">
               <tr>
                 <td>
-                  <a class="link" :href="`./Other/${row.series}/Match/Single/${row.replayID}`" >{{ row.replayID }}</a>
+                  <a class="group/bt inline-flex items-center" :href="`./Other/${row.series}/Match/Single/${row.replayID}`"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                 </td>
                 <td>
                   {{ row.series }}
@@ -131,7 +131,7 @@
 
     
     <div v-if="isLoading">
-      <loading-component></loading-component>
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true"></loading-component><table-skeleton></table-skeleton></div>
     </div>
   </div>
 </template>

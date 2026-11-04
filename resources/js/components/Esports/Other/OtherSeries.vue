@@ -3,28 +3,20 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
     <page-heading :heading="''" :heading-image="'/images/EsportOther/' + this.series.icon" :heading-image-url="'/Esports/Other/' + this.series.name"></page-heading>
     
-    <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue flex-wrap max-md:text-xs">
-      <div class="border-r border-white">
-        <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="rounded-none" :color="activeButton === 'teams' ? 'lblue' : ''" :active="teamsClicked" :ignoreclick="true"></custom-button>
-      </div>
+    <div class="flex flex-wrap justify-center gap-1 bg-teal rounded p-1 w-fit max-w-[calc(100%-2rem)] mx-auto mb-6 max-md:text-xs">
+      <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'teams' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('teams')">Teams</button>
 
-      <div class="border-r border-white">
-        <custom-button @click="setButtonActive('players')" :text="'Players'" :size="'big'" class="rounded-none" :color="activeButton === 'Players' ? 'lblue' : ''" :active="playersClicked" :ignoreclick="true"></custom-button>
-      </div>
+      <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'players' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('players')">Players</button>
 
-      <div class="border-r border-white">
-        <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="rounded-none" :active="overallHeroStatsClicked" :color="activeButton === 'overallHeroStats' ? 'lblue' : ''" :ignoreclick="true"></custom-button>
-      </div>
+      <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallHeroStats' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('overallHeroStats')">Overall Hero Stats</button>
 
-      <div class="">
-        <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="rounded-none" :active="overallTalentStatsClicked" :color="activeButton === 'overallTalentStats' ? 'lblue' : ''" :ignoreclick="true"></custom-button>
-      </div>
+      <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallTalentStats' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('overallTalentStats')">Overall Talent Stats</button>
     </div>
 
 
     
     <div v-if="!activeButton">
-      <div class="flex   p-20 bg-lighten flex-wrap justify-center">
+      <div class="flex p-10 md:p-20 bg-surface rounded max-w-[1500px] mx-4 md:mx-auto flex-wrap justify-center">
         <div class="text-center md:w-[15%] mb-15 mx-5">
           <i class="fas fa-users" style="font-size: 100px"></i>
           <h3>Teams</h3>
@@ -70,16 +62,16 @@
           <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
             <thead>
               <tr>
-                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                <th class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">
                   Team
                 </th>               
               </tr>
             </thead>
-            <tbody>
+            <tbody class="text-center">
               <template v-for="(row, index) in filteredTeams">
                 <tr>
                   <td>
-                    <a class="link" :href="'./' + series.name + '/Team/' + row">{{ row }}</a>
+                    <a class="group/bt inline-flex items-center" :href="'./' + series.name + '/Team/' + row"><span class="group-hover/bt:underline">{{ row }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                   </td>
                 </tr>
               </template>
@@ -100,16 +92,16 @@
           <table id="responsive-table" class="responsive-table  relative min-w-[30em]" ref="responsivetable">
             <thead>
               <tr>
-                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                <th class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">
                   Player
                 </th>               
               </tr>
             </thead>
-            <tbody>
+            <tbody class="text-center">
               <template v-for="(row, index) in battletagresponse">
                 <tr>
                   <td>
-                    <a class="link" :href="'./' + series.name + '/Player/' + row.battletag + '/' + row.blizz_id">{{ row.battletag }}</a>
+                    <a class="group/bt inline-flex items-center" :href="'./' + series.name + '/Player/' + row.battletag + '/' + row.blizz_id"><span class="group-hover/bt:underline">{{ row.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                   </td>
                 </tr>
               </template>
@@ -162,7 +154,7 @@
     </div>
 
     <div v-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="'/Esports/Other/' + this.series.name"></loading-component>
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true" :overrideimage="'/Esports/Other/' + this.series.name"></loading-component><table-skeleton></table-skeleton></div>
     </div>
   </div>
 </template>

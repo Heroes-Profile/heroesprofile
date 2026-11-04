@@ -4,19 +4,19 @@
   <!-- While a dropdown is open, a click anywhere just closes it (which saves) instead of opening another setting -->
   <div v-if="dropdownOpen" class="fixed inset-0 z-40"></div>
   <div class="relative flex mx-auto w-full max-w-[1200px] mt-[2vh] h-[85vh]">
-    <div v-if="isLoading" class="absolute inset-0 z-50 rounded overflow-hidden">
-      <loading-component :textoverride="true">Saving...</loading-component>
+    <div v-if="isLoading" class="absolute inset-0 z-50 rounded overflow-hidden bg-page/70 flex items-center justify-center">
+      <loading-component :compact="true" :textoverride="true">Saving...</loading-component>
     </div>
 
     <!-- Left sidebar -->
-    <div class="w-[180px] shrink-0 bg-lighten rounded-l flex flex-col">
+    <div class="w-[180px] shrink-0 bg-surface-1 rounded-l flex flex-col">
       <nav class="flex flex-col pt-4">
         <button
           v-for="tab in tabs"
           :key="tab.key"
           @click="activeTab = tab.key"
           class="text-left px-6 py-4 text-sm font-medium transition-colors"
-          :class="activeTab === tab.key ? 'bg-teal text-white' : 'text-gray-300 hover:bg-gray-700'"
+          :class="activeTab === tab.key ? 'bg-teal text-white' : 'text-soft hover:bg-surface-3'"
         >
           {{ tab.label }}
         </button>
@@ -24,7 +24,7 @@
     </div>
 
     <!-- Right panel -->
-    <div class="flex-1 bg-lighten rounded-r border-l border-gray-600 overflow-y-auto">
+    <div class="flex-1 bg-surface rounded-r overflow-y-auto">
       <transition name="fade">
         <div v-if="settingsSaved" class="bg-teal text-white text-center py-2 text-sm rounded-tr">
           Settings Saved
@@ -33,7 +33,7 @@
 
       <!-- General -->
       <div v-if="activeTab === 'general'" class="p-8">
-        <h2 class="text-xl font-bold mb-6 text-teal">General</h2>
+        <h2 class="text-2xl font-bold mb-6">General</h2>
         <div class="space-y-6">
           <div>
             <h3 class="mb-2">Table Style</h3>
@@ -41,7 +41,7 @@
           </div>
           <div>
             <h3 class="mb-1">Account Visibility</h3>
-            <p class="text-sm text-gray-400 mb-3">Control whether your profile is visible to other users.</p>
+            <p class="text-sm text-subtext mb-3">Control whether your profile is visible to other users.</p>
             <single-select-filter class="w-fit"
               :values="privateOptions"
               :text="'Account Visibility'"
@@ -57,7 +57,7 @@
 
       <!-- Global Pages -->
       <div v-if="activeTab === 'global'" class="p-8">
-        <h2 class="text-xl font-bold mb-6 text-teal">Global Pages</h2>
+        <h2 class="text-2xl font-bold mb-6">Global Pages</h2>
         <div class="space-y-6">
           <div>
             <h3 class="mb-2">Default Multi-Select Game Type</h3>
@@ -126,7 +126,7 @@
 
       <!-- Player -->
       <div v-if="activeTab === 'player'" class="p-8">
-        <h2 class="text-xl font-bold mb-6 text-teal">Player</h2>
+        <h2 class="text-2xl font-bold mb-6">Player</h2>
         <div class="space-y-6">
           <div>
             <h3 class="mb-2">Match History Style</h3>
@@ -140,7 +140,7 @@
           </div>
           <div>
             <h3 class="mb-2">Default Player Pages Game Type</h3>
-            <p class="text-sm text-gray-400 mb-2">Nothing ticked shows every game type. HP MMR uses the first one ticked, or Storm League.</p>
+            <p class="text-sm text-subtext mb-2">Nothing ticked shows every game type. HP MMR uses the first one ticked, or Storm League.</p>
             <div class="w-fit">
               <multi-select-filter
                 :values="filters.game_types_full"
@@ -182,15 +182,15 @@
 
       <!-- Flair -->
       <div v-if="activeTab === 'flair'" class="p-8">
-        <h2 class="text-xl font-bold mb-6 text-teal">Flair</h2>
-        <p class="text-sm text-gray-400 mb-6">Choose which flair shows next to your battletag. Hidden flair is hidden for everyone.</p>
+        <h2 class="text-2xl font-bold mb-6">Flair</h2>
+        <p class="text-sm text-subtext mb-6">Choose which flair shows next to your battletag. Hidden flair is hidden for everyone.</p>
         <div class="space-y-6">
           <div v-for="flair in flairOptions" :key="flair.key">
             <h3 class="mb-1 flex items-center gap-2">
               <i v-if="flair.icon" :class="flair.icon" :style="flair.iconStyle"></i>
               {{ flair.label }}
             </h3>
-            <p class="text-sm text-gray-400 mb-3">{{ flair.description }}</p>
+            <p class="text-sm text-subtext mb-3">{{ flair.description }}</p>
             <tab-button tab1text="Show" tab2text="Hide" :ignoreclick="true" @tab-click="(side) => flairsetting(flair.key, side)" :overridedefaultside="flairSides[flair.key]"></tab-button>
           </div>
         </div>
@@ -198,11 +198,11 @@
 
       <!-- Connections -->
       <div v-if="activeTab === 'connections'" class="p-8">
-        <h2 class="text-xl font-bold mb-6 text-teal">Connections</h2>
+        <h2 class="text-2xl font-bold mb-6">Connections</h2>
         <div class="space-y-8">
           <div class="">
             <h3 class="mb-1">Patreon</h3>
-            <p class="text-sm text-gray-400 mb-3">Link your Patreon account to unlock supporter features.</p>
+            <p class="text-sm text-subtext mb-3">Link your Patreon account to unlock supporter features.</p>
             <div class="flex items-center gap-4">
               <span v-if="user.patreon_account" class="bg-teal px-3 py-1 rounded text-sm">Connected</span>
               <custom-button
@@ -228,7 +228,7 @@
       </div>
     </div>
   </div>
-  <div class="mx-auto w-full max-w-[1200px] mt-4 px-2 text-sm text-gray-400">
+  <div class="mx-auto w-full max-w-[1200px] mt-4 px-2 text-sm text-subtext">
     To request new settings, please contact us directly at
     <a href="mailto:Zemill@heroesprofile.com" class="link">Zemill@heroesprofile.com</a>,
     or open a discussion on

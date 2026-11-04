@@ -16,7 +16,7 @@
         <div class="mb-4">
           <h1 class="max-md:text-[1.5em]">{{ formatDate(data.game_date) }}</h1>
         </div>
-        <div class="w-full max-w-[1000px] bg-blue rounded flex justify-between gap-2 mx-auto p-4 mb-4">
+        <div class="w-full max-w-[1000px] bg-surface/90 rounded flex flex-wrap justify-between gap-2 mx-auto p-4 mb-4">
           <span>{{ data.game_map.name }}</span>
           <span v-if="!esport">
             {{ data.game_type }}
@@ -26,9 +26,7 @@
           </span>
           <span>{{ data.game_length }}</span>
           <!-- Download requires login for all (esport and non-esport); blocked battletags get no control -->
-          <span v-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && user && !data.replay_download_blocked" class="link max-md:hidden" @click="downloadReplay(data, replayid)">
-            Download Replay
-          </span>
+          <a v-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && user && !data.replay_download_blocked" class="group/bt inline-flex items-center cursor-pointer max-md:hidden" role="button" @click="downloadReplay(data, replayid)"><span class="group-hover/bt:underline">Download Replay</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
           <span v-else-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && !user" class="inline-flex items-center gap-1 opacity-60 max-md:hidden">
             Download Replay
             <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
@@ -38,7 +36,7 @@
             </round-image>
           </span>
           <!-- Replay viewer: season games; needs a Battle.net login, like Download Replay -->
-          <a v-if="isWatchableGame && replayViewerAllowed" class="link" :href="'/Analytics/Match/Single/' + replayid">Watch Replay</a>
+          <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center" :href="'/Analytics/Match/Single/' + replayid"><span class="group-hover/bt:underline">Watch Replay</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
           <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60">
             Watch Replay
             <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
@@ -145,29 +143,29 @@
       </div>
     </div>
 
-      <div v-if="esport && esport != 'Other'" class="max-w-[1500px] mx-auto mb-10">
-        
-        <table class="min-w-[1000px] max-w-[1000px]">
+      <div v-if="esport && esport != 'Other'" class="max-w-[1500px] mx-auto mb-10 px-4">
+        <panel-box title="Series Games">
+        <table class="min-w-0 w-full responsive-table">
           <thead>
             <tr>
-              <th>
+              <th class="py-2 px-3 text-center text-sm leading-4">
                 Match ID
-              </th>        
-              <th>
+              </th>
+              <th class="py-2 px-3 text-center text-sm leading-4">
                 Round
-              </th>     
-              <th>
+              </th>
+              <th class="py-2 px-3 text-center text-sm leading-4">
                 Game
-              </th> 
-              <th>
+              </th>
+              <th class="py-2 px-3 text-center text-sm leading-4">
                 Game Map
-              </th>                      
+              </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="text-center">
             <tr v-for="(row, index) in data.match_games" :key="index">
               <td width="25%">
-                <a v-if="esport" class="link" :href="`/Esports/${esport}/Match/Single/${row.replayID}${tournament ? '?tournament=' + tournament : ''}`">{{ row.replayID }}</a>
+                <a v-if="esport" class="group/bt inline-flex items-center" :href="`/Esports/${esport}/Match/Single/${row.replayID}${tournament ? '?tournament=' + tournament : ''}`"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
               </td>
               <td width="25%">{{ row.round }}</td>
               <td width="25%">{{ row.game }}</td>
@@ -179,17 +177,17 @@
             </tr>
           </tbody>
         </table>
-
+        </panel-box>
       </div>
 
       <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-      <div class="bg-lighten">
-        <div class="p-10  max-w-[1500px] mx-auto  ">
-          <div class="flex flex-wrap items-baseline gap-4 py-5">
-            <h2 class="text-3xl font-bold">Match Scores</h2>
+      <div class="max-w-[1500px] mx-auto px-4 my-6">
+        <panel-box>
+          <div class="flex flex-wrap items-baseline gap-4">
+            <h2 class="text-2xl font-bold">Match Scores</h2>
             <!-- Same rules as Watch Replay -->
-            <a v-if="isWatchableGame && replayViewerAllowed" class="link" :href="'/Analytics/Match/Single/' + replayid + '#analytic-performance'">How each player played</a>
+            <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center text-header" :href="'/Analytics/Match/Single/' + replayid + '#analytic-performance'"><span class="group-hover/bt:underline">How each player played</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
             <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60">
               How each player played
               <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
@@ -199,7 +197,7 @@
               </round-image>
             </span>
           </div>
-          <p>See advanced stats below</p>
+          <p class="text-subtext">See advanced stats below</p>
          
        
           
@@ -252,34 +250,33 @@
               </a>
             </div>
           </template>
-        </div>
+        </panel-box>
       </div>
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
-      <div v-if="data.draft_order && data.draft_order.length > 0" class="md:p-10 text-center max-w-[2000px] mx-auto max-sm:text-xs">
-        Draft Order
-
-        <table class="md:min-w-[600px] max-w-[600px] mt-2">
+      <div v-if="data.draft_order && data.draft_order.length > 0" class="max-w-[1500px] mx-auto px-4 my-6 max-sm:text-xs">
+        <panel-box title="Draft Order">
+        <table class="min-w-0 w-full responsive-table">
           <thead>
             <tr>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3 text-center text-sm leading-4">
                 Hero
               </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3 text-center text-sm leading-4">
                 Draft Order
               </th>            
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3 text-center text-sm leading-4">
                 Type
               </th>                
             </tr>
           </thead>
-          <tbody>
+          <tbody class="text-center">
             <tr v-for="(row, index) in data.draft_order" :key="index" class="">      
               <td width="25%">
-                <div v-if="row.hero != 'No Pick'" class="flex gap-4 items-center">
+                <div v-if="row.hero != 'No Pick'" class="flex gap-4 items-center justify-center">
                   <hero-image-wrapper :size="'medium'" :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
                 </div>
-                <div v-else class="flex gap-4 items-center">
+                <div v-else class="flex gap-4 items-center justify-center">
                   <round-image :size="'medium'" :image="'/images/talents/no-image.png'"><h2>No Pick</h2></round-image><span class="max-md:hidden">No Pick</span>
                 </div>
               </td>
@@ -288,13 +285,14 @@
             </tr>
           </tbody>
         </table>
+        </panel-box>
       </div>
 
 
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
-      <div class="p-10 max-md:px-2 max-w-[1500px] mx-auto">
-       <h2 class="text-3xl font-bold py-5">Talents</h2>
+      <div class="max-w-[1500px] mx-auto px-4 max-md:px-2 my-6">
+       <panel-box title="Talents">
        <div class="flex flex-wrap gap-20 justify-around">
         <div class="max-md:w-full">
           <div class="w-full  mb-10" v-for="(item, index) in data.players[0]" :key="index">
@@ -355,22 +353,19 @@
        
      </div>
    </div>
-
+       </panel-box>
  </div>
   <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
 
-<div v-if="data.experience_breakdown" class="bg-lighten p-10 max-md:px-2 text-center overflow-x-hidden">
-  <div class="flex flex-wrap justify-center max-w-[2000px] mx-auto w-full">
-    <div class="w-full">
-      <dual-line-chart :data="data.experience_breakdown" :winner="data.winner"></dual-line-chart>
-    </div>
-  </div>
+<div v-if="data.experience_breakdown" class="max-w-[1500px] mx-auto px-4 max-md:px-2 my-6 overflow-x-hidden">
+  <panel-box title="Experience">
+    <dual-line-chart :data="data.experience_breakdown" :winner="data.winner"></dual-line-chart>
+  </panel-box>
 </div>
 
 
-<div v-if="!esport" class=" max-sm:text-sm max-w-[1500px] mx-auto my-5">
-
-  Team 1 Advanced HP MMR data
+<div v-if="!esport" class=" max-sm:text-sm max-w-[1500px] mx-auto px-4 my-6">
+  <panel-box title="Team 1 Advanced HP MMR">
 
   <scroll-hint-container class="2xl:mx-auto">
 
@@ -392,7 +387,7 @@
         <td >HP Role MMR</td>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="text-center">
       <tr v-for="(item, index) in data.players[0]" :key="index">
         <td class="bg-blue text-white border-white border">
           <div class="flex gap-2 items-center">
@@ -418,12 +413,12 @@
     </tbody>
   </table>
 </scroll-hint-container>
+  </panel-box>
 </div>
 
 
-<div  v-if="!esport" class="  max-sm:text-sm max-w-[1500px] mx-auto my-5">
-
-  Team 2 Advanced HP MMR data
+<div  v-if="!esport" class="  max-sm:text-sm max-w-[1500px] mx-auto px-4 my-6">
+  <panel-box title="Team 2 Advanced HP MMR">
 
   <scroll-hint-container class="2xl:mx-auto">
 
@@ -445,7 +440,7 @@
         <td>HP Role MMR</td>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="text-center">
       <tr v-for="(item, index) in data.players[1]" :key="index">
         <td class="bg-blue text-white border-white border">
           <div class="flex gap-2 items-center">
@@ -471,13 +466,16 @@
     </tbody>
   </table>
 </scroll-hint-container>
+  </panel-box>
 </div>
 
 <dynamic-banner-ad :patreon-user="patreonUser" :index="5" :mobile-override="false"></dynamic-banner-ad>
 
-<div class="max-sm:text-sm max-w-[1500px] mx-auto my-5">
-  <custom-button class="mb-2" @click="flipAdvancedStats = !flipAdvancedStats" :text="flipAdvancedStats ? 'Show Stats as Rows' : 'Show Players as Rows'" :alt="'Flip Advanced Stats'" size="small" :ignoreclick="true"></custom-button>
-  <div>Team 1 Advanced Stats</div>
+<div class="max-sm:text-sm max-w-[1500px] mx-auto px-4 my-6">
+  <panel-box title="Team 1 Advanced Stats">
+  <template #right>
+    <custom-button class="ml-auto" @click="flipAdvancedStats = !flipAdvancedStats" :text="flipAdvancedStats ? 'Show Stats as Rows' : 'Show Players as Rows'" :alt="'Flip Advanced Stats'" size="small" :ignoreclick="true"></custom-button>
+  </template>
 
   <scroll-hint-container class="2xl:mx-auto" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
 
@@ -517,11 +515,11 @@
   </tbody>
 </table>
 </scroll-hint-container>
+  </panel-box>
 </div>
-<div class="max-sm:text-sm max-w-[1500px] mx-auto my-5">
 <dynamic-banner-ad :patreon-user="patreonUser" :index="6" :mobile-override="false"></dynamic-banner-ad>
-
-  Team 2 Advanced Stats
+<div class="max-sm:text-sm max-w-[1500px] mx-auto px-4 my-6">
+  <panel-box title="Team 2 Advanced Stats">
   <scroll-hint-container class="2xl:mx-auto" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
   <table :id="'responsive-table-' +sectionIndex" :ref="'responsivetable'+sectionIndex" :class="['responsive-table', 'relative', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1, 'fixed-column-table': flipAdvancedStats }]" :style="flipAdvancedStats ? { width: flippedTableWidth(section) } : null" >
     <thead v-if="!flipAdvancedStats">
@@ -562,14 +560,22 @@
   </tbody>
 </table>
 </scroll-hint-container>
+  </panel-box>
 </div>
 
 
 
 </div>
-<div v-else-if="isLoading">
-  <loading-component v-if="esport" @cancel-request="cancelAxiosRequest" :overrideimage="getLoadingImage()"></loading-component>
-  <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
+<!-- The page's layout with grey blocks while it loads -->
+<div v-else-if="isLoading" class="max-w-[1500px] mx-auto px-4 mt-6 flex flex-col gap-6">
+  <loading-component v-if="esport" :compact="true" :textoverride="true" :overrideimage="getLoadingImage()">Loading match...</loading-component>
+  <loading-component v-else :compact="true" :textoverride="true">Loading match...</loading-component>
+  <skeleton-box class="h-14 w-full max-w-[1000px] mx-auto"></skeleton-box>
+  <div class="grid md:grid-cols-2 gap-6">
+    <table-skeleton :rows="5"></table-skeleton>
+    <table-skeleton :rows="5"></table-skeleton>
+  </div>
+  <table-skeleton :rows="10" :heading="true"></table-skeleton>
 </div>
 </div>
 

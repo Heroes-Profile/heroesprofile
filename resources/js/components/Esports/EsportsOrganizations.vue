@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex   p-20 bg-lighten flex-wrap justify-center">
+    <div class="flex p-10 md:p-20 bg-surface rounded max-w-[1500px] mx-4 md:mx-auto flex-wrap justify-center">
 
 
       <div class="text-center md:w-[15%] mb-15 mx-5 mb-20"  v-for="(row, index) in data" :key="index">

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="table-container" ref="tablecontainer" class="w-auto  max-md:overflow-hidden w-[100vw] max-sm:text-xs  2xl:mx-auto  " style=" ">
+    <div id="table-container" ref="tablecontainer" class="max-md:overflow-hidden w-full max-sm:text-xs">
     <div id="resizeTable" ref="scaledtables" class="max-md:inline-grid">
     <div v-for="level in talentlevels" ref="resizeTable">
       <table :id="'responsivetable'+level" class="responsive-table  relative max-md:w-full" :ref="'responsivetable'+level">
@@ -13,24 +13,24 @@
         </thead>
         <thead>
           <tr>
-            <th @click="sortTable('sort', level)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('sort', level)" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortedColumns[level] === 'sort' }">
               Talent<sort-indicator :column="'sort'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['sort']"></sort-indicator>
             </th>
-            <th @click="sortTable('win_rate', level)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('win_rate', level)" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortedColumns[level] === 'win_rate' }">
               Win Rate %<sort-indicator :column="'win_rate'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['win_rate']"></sort-indicator>
             </th>
-            <th @click="sortTable('popularity', level)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('popularity', level)" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortedColumns[level] === 'popularity' }">
               Popularity %<sort-indicator :column="'popularity'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['popularity']"></sort-indicator>
             </th>                
-            <th @click="sortTable('games_played', level)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played', level)" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortedColumns[level] === 'games_played' }">
               Games Played<sort-indicator :column="'games_played'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['games_played']"></sort-indicator>
             </th>     
-            <th v-if="statfilter && statfilter != 'win_rate'" @click="sortTable('total_filter_type', level)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="statfilter && statfilter != 'win_rate'" @click="sortTable('total_filter_type', level)" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortedColumns[level] === 'total_filter_type' }">
               {{ statFilterLabel(statfilter) }}<sort-indicator :column="'total_filter_type'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['total_filter_type']"></sort-indicator>
             </th>                            
           </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center">
           <tr v-for="row in talentdetaildata[level]" :key="row.talentInfo.talent_id">
             <td class="py-2 px-3  w-[35%]">
               <div class="flex items-center">

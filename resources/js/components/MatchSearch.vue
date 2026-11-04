@@ -1,7 +1,13 @@
 <template>
   <div>
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-    <page-heading :heading="'Replay Search'"></page-heading>
+    <page-heading :heading="'Replay Search'">
+      <template #headingInfo>
+        <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+          <p class="font-normal">Searches replays played since {{ formatDay(oldestdate) }} (the current and previous season), newest first, {{ pageSize }} at a time. Several heroes or players use their OR / AND switch. HP MMR and rank filters (under Advanced Filters) must all hold for the same player: with heroes on OR, one player on any chosen hero; on AND, the player on every chosen hero. Ranks use the current league boundaries for each game type.</p>
+        </round-image>
+      </template>
+    </page-heading>
 
     <!-- Blocks the page while a battletag lookup runs -->
     <div v-if="playerSearching" class="fixed inset-0 z-[60] bg-black/80 flex items-center justify-center">
@@ -29,31 +35,30 @@
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div class="max-w-[1500px] mx-auto px-4 max-md:px-2">
-      <p class="text-sm mb-2">Searches replays played since {{ formatDay(oldestdate) }} (the current and previous season), newest first, {{ pageSize }} at a time. Several heroes or players use their OR / AND switch. HP MMR and rank filters (under Advanced Filters) must all hold for the same player: with heroes on OR, one player on any chosen hero; on AND, the player on every chosen hero. Ranks use the current league boundaries for each game type.</p>
-
-      <p v-if="errors.length" class="text-red mb-2">{{ errors.join(' ') }}</p>
+    <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <p v-if="errors.length" class="text-red">{{ errors.join(' ') }}</p>
 
       <template v-if="rows">
         <p v-if="rows.length == 0 && !isLoading && !nextBeforeReplayID">No replays match those filters.</p>
-        <div v-if="rows.length" class="w-full overflow-x-auto">
+        <panel-box v-if="rows.length">
+        <div class="w-full overflow-x-auto">
           <table class="min-w-0 w-full responsive-table max-md:text-xs">
             <thead>
               <tr>
-                <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Match ID</th>
-                <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Game Date</th>
-                <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Game Type</th>
-                <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Game Map</th>
-                <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Length</th>
-                <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Region</th>
-                <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Version</th>
-                <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Team 1</th>
-                <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Team 2</th>
+                <th class="py-2 px-3 text-center text-sm leading-4">Match ID</th>
+                <th class="py-2 px-3 text-center text-sm leading-4">Game Date</th>
+                <th class="py-2 px-3 text-center text-sm leading-4">Game Type</th>
+                <th class="py-2 px-3 text-center text-sm leading-4">Game Map</th>
+                <th class="py-2 px-3 text-center text-sm leading-4">Length</th>
+                <th class="py-2 px-3 text-center text-sm leading-4">Region</th>
+                <th class="py-2 px-3 text-center text-sm leading-4">Version</th>
+                <th class="py-2 px-3 text-center text-sm leading-4">Team 1</th>
+                <th class="py-2 px-3 text-center text-sm leading-4">Team 2</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="text-center">
               <tr v-for="row in rows" :key="row.replayID">
-                <td><a class="link" :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a></td>
+                <td><a class="group/bt inline-flex items-center" :href="'/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></td>
                 <td>{{ formatDate(row.game_date) }}</td>
                 <td>{{ row.game_type ? row.game_type.name : '' }}</td>
                 <td>{{ row.game_map ? row.game_map.name : '' }}</td>
@@ -61,7 +66,7 @@
                 <td>{{ row.region }}</td>
                 <td>{{ row.game_version }}</td>
                 <td v-for="team in [0, 1]" :key="team">
-                  <div class="flex items-center gap-1 max-md:flex-wrap">
+                  <div class="flex items-center justify-center gap-1 max-md:flex-wrap">
                     <hero-image-wrapper v-for="(hero, heroIndex) in row.heroes[team]" :key="heroIndex" :hero="hero" :mobileClick="true"></hero-image-wrapper>
                     <span v-if="row.winner === team" class="bg-teal rounded px-1 text-xs ml-1">Won</span>
                   </div>
@@ -70,8 +75,9 @@
             </tbody>
           </table>
         </div>
+        </panel-box>
 
-        <div v-if="nextBeforeReplayID && !isLoading" class="flex flex-col items-center gap-2 my-4">
+        <div v-if="nextBeforeReplayID && !isLoading" class="flex flex-col items-center gap-2">
           <!-- A search that ran out of time before filling a page says how far it got -->
           <p v-if="!pageFull && searchedBackTo" class="text-sm">
             {{ rows.length ? 'Found ' + rows.length.toLocaleString('en-US') + ' so far.' : 'No matches yet.' }} Searched back to {{ formatDay(searchedBackTo) }}.
@@ -80,9 +86,10 @@
         </div>
       </template>
 
-      <div v-if="isLoading">
-        <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
-      </div>
+      <template v-if="isLoading">
+        <loading-component :compact="true" :textoverride="true">Searching replays...</loading-component>
+        <table-skeleton v-if="!rows || !rows.length"></table-skeleton>
+      </template>
     </div>
   </div>
 </template>

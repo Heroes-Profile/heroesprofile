@@ -4,36 +4,22 @@
     <page-heading :heading="'NGS'" :heading-image="'/images/NGS/600-600-ngs_large_header.png'" :heading-image-url="'/Esports/NGS'"></page-heading>
 
       
-      <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue flex-wrap max-md:text-xs">
-        <div class="md:border-r border-white max-md:border max-md:border-lighten">
-          <custom-button   @click="setButtonActive('standings')" :text="'Standings'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'standings' ? 'lblue' : ''" :active="standingsClicked" :ignoreclick="true"></custom-button>
-        </div>
-        <div class="md:border-r border-white max-md:border max-md:border-lighten">
-          <custom-button @click="setButtonActive('divisions')" :text="'Divisions'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'divisions' ? 'lblue' : ''" :active="divisionsClicked" :ignoreclick="true"></custom-button>
-        </div>
-        <div class="md:border-r border-white max-md:border max-md:border-lighten">
-          <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'teams' ? 'lblue' : ''" :active="teamsClicked" :ignoreclick="true"></custom-button>
-        </div>
+      <div class="flex flex-wrap justify-center gap-1 bg-teal rounded p-1 w-fit max-w-[calc(100%-2rem)] mx-auto mb-6 max-md:text-xs">
+        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'standings' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('standings')">Standings</button>
+        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'divisions' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('divisions')">Divisions</button>
+        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'teams' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('teams')">Teams</button>
 
-        <div class="md:border-r border-white max-md:border max-md:border-lighten">
-          <custom-button @click="setButtonActive('playerSearch')" :text="'Player Search'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'playerSearch' ? 'lblue' : ''" :active="playerSearchClicked" :ignoreclick="true"></custom-button>
-        </div>
+        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'playerSearch' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('playerSearch')">Player Search</button>
 
-        <div class="md:border-r border-white max-md:border max-md:border-lighten">
-          <custom-button @click="setButtonActive('recentMatches')" :text="'Recent Matches'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'recentMatches' ? 'lblue' : ''" :active="recentMatchesClicked" :ignoreclick="true"></custom-button>
-        </div>
+        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'recentMatches' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('recentMatches')">Recent Matches</button>
 
-        <div class="md:border-r border-white max-md:border max-md:border-lighten">
-          <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'overallHeroStats' ? 'lblue' : ''" :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
-        </div>
+        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallHeroStats' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('overallHeroStats')">Overall Hero Stats</button>
 
-      <div class=" border-white max-md:border max-md:border-lighten">
-          <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'overallTalentStats' ? 'lblue' : ''" :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
-        </div>
+      <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallTalentStats' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('overallTalentStats')">Overall Talent Stats</button>
       </div>
 
 
-    <div class=" bg-lighten" v-if="!activeButton">
+    <div class="bg-surface rounded max-w-[1500px] mx-4 md:mx-auto" v-if="!activeButton">
       <div class="flex mx-auto max-w-[1500px]  md:p-20 flex-wrap justify-center max-md:pt-4 gap-10">
         
         <div class="text-center md:w-[15em] mb-15  max-md:mb-10 ">
@@ -212,7 +198,7 @@
 
     </div>
     <div v-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component>
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true" :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component><table-skeleton></table-skeleton></div>
     </div>
   </div>
 </template>
