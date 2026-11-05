@@ -222,7 +222,7 @@
       <ul class="list-disc ml-6 mb-3 space-y-1">
         <li>
           Link accounts to each other or to a person. That includes matching a smurf or alternate
-          account to a main account, and matching a battletag to a Discord account, social media
+          account to a main account, and matching a BattleTag to a Discord account, social media
           account or real-world identity.
         </li>
         <li>
@@ -359,7 +359,7 @@
         derived from Heroes Profile data in papers, theses, preprints, posters and talks, and in
         the tables and figures they contain. These results may stay published permanently, and you
         may publish them after your licence has ended. They must not identify individual players,
-        so battletags, account IDs and player-level rows must not appear in them.
+        so BattleTags, account IDs and player-level rows must not appear in them.
       </p>
       <p class="mb-3">
         <strong>Attribution.</strong> In place of section 4, a research publication must cite
@@ -377,7 +377,7 @@
       <p class="mb-3">
         <strong>Private players.</strong> Data that you hold only for research and never display
         does not have to be deleted when a player goes private. Instead, within 24 hours of the
-        privacy change feed reporting the change, you must replace that player's battletag, account
+        privacy change feed reporting the change, you must replace that player's BattleTag, account
         ID and any other identifier with a random identifier, and keep no lookup table or any other
         means of reversing the replacement. Takedown requests are handled the same way, within 7
         days. Data you display on any surface remains fully subject to section 5.

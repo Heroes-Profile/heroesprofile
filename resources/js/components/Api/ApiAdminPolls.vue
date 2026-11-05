@@ -108,7 +108,7 @@
         <table class="min-w-0 w-full responsive-table text-sm">
           <thead>
             <tr>
-              <th class="py-2 px-3 text-left">Battletag</th>
+              <th class="py-2 px-3 text-left">BattleTag</th>
               <th class="py-2 px-3 text-left">Picked</th>
               <th class="py-2 px-3 text-left">Comment</th>
               <th class="py-2 px-3 text-left">Updated</th>

@@ -7,7 +7,7 @@
       <panel-box>
       <!-- Contact form -->
       <form @submit.prevent="submitForm" class="flex flex-col gap-2">
-        <label for="name" class="text-sm text-subtext">Battletag</label>
+        <label for="name" class="text-sm text-subtext">BattleTag</label>
         <input class="w-full bg-field text-white rounded-control px-3 py-2 text-sm mb-2" type="text" id="name" v-model="formData.battletag" required>
 
         <label for="email" class="text-sm text-subtext">Email</label>

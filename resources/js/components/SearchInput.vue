@@ -1,7 +1,7 @@
 <template>
   <!-- The site's search box: magnifying glass inside a field. Use with v-model.
        collapsible: just the glass until clicked; closes again when left empty. -->
-  <button v-if="collapsible && !open" type="button" class="text-teal hover:text-lteal px-1" :aria-label="placeholder" :title="placeholder" @click="expand">
+  <button v-if="collapsible && !open && !modelValue" type="button" class="text-teal hover:text-lteal px-1" :aria-label="placeholder" :title="placeholder" @click="expand">
     <i class="fas fa-magnifying-glass text-sm"></i>
   </button>
   <div v-else v-bind="$attrs" class="relative">

@@ -72,7 +72,7 @@
       <p class="mb-3">
         Statistics and profile data served by the API come from replay files voluntarily uploaded by
         the community, which we then store and aggregate in our database. Most of what the API
-        returns is aggregate statistics that identify no one. The rest — battletags, player profiles,
+        returns is aggregate statistics that identify no one. The rest — BattleTags, player profiles,
         match history and per-player match performance — is tied to a named account.
       </p>
       <p class="mb-3">
@@ -82,7 +82,7 @@
         player from the response.
       </p>
       <p class="mb-6">
-        We do not link your API account information with battletags or with anything else returned by
+        We do not link your API account information with BattleTags or with anything else returned by
         the API. Your account and the data you retrieve are held separately.
       </p>
 

@@ -13,7 +13,7 @@
 
     <p>
       We use cookies to save your most recently viewed pages and to remember your selected
-      "primary" battletag. Additionally, cookies help us determine whether you've seen the
+      "primary" BattleTag. Additionally, cookies help us determine whether you've seen the
       initial site popup message. These small pieces of data are stored on your local computer
       to remember your settings. We do not store personal data in cookies, and the information
       stored is solely for enhancing your site experience.

@@ -422,7 +422,7 @@
                 <input
                   type="text"
                   v-model="ffBattletag"
-                  placeholder="Enter battletag"
+                  placeholder="Enter BattleTag"
                   class="w-full h-[40px] rounded-control !bg-surface-3 pl-9 pr-2 text-white placeholder:text-subtext focus:outline-none"
                   @input="ffBlizzid = null; ffRegion = null; ffSearchResults = []; ffSearchError = null"
                 />

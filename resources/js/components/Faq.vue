@@ -150,7 +150,7 @@
           <form @submit.prevent="submitQuestion" class="flex flex-col gap-3">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label class="block mb-1 text-sm text-soft">Battletag</label>
+                <label class="block mb-1 text-sm text-soft">BattleTag</label>
                 <input
                   v-model="formData.battletag"
                   type="text"
@@ -248,7 +248,7 @@ export default {
             },
             {
               q: 'How do I find my player profile?',
-              a: 'Use the search bar at the top of the site and type in your Battletag (e.g. <code>Zemill#1940</code>). Once found, you can view your match history, hero stats, MMR, maps, matchups, and more. Make sure you\'ve uploaded your replays first so your data appears.',
+              a: 'Use the search bar at the top of the site and type in your BattleTag (e.g. <code>Zemill#1940</code>). Once found, you can view your match history, hero stats, MMR, maps, matchups, and more. Make sure you\'ve uploaded your replays first so your data appears.',
             },
             {
               q: 'Is Heroes Profile free to use?',
@@ -285,7 +285,7 @@ export default {
             },
             {
               q: 'How do I make my profile private?',
-              a: 'Log in with your Battle.net account, go to <a href="/Profile/Settings" class="link">Profile Settings</a>, and set your Account Visibility to Private. Your Battletag will still appear in other players\' match history (since it is part of the replay file), but your individual profile page will not be publicly accessible.',
+              a: 'Log in with your Battle.net account, go to <a href="/Profile/Settings" class="link">Profile Settings</a>, and set your Account Visibility to Private. Your BattleTag will still appear in other players\' match history (since it is part of the replay file), but your individual profile page will not be publicly accessible.',
             },
           ],
         },
@@ -393,7 +393,7 @@ export default {
                 + '<p class="mt-2"><b>Filters</b></p><ul class="list-disc list-inside mt-1 space-y-1">'
                 + '<li><b>Game Type, Regions, Map, Game Version, From/To Date</b>: narrow to those games. Game Version only lists patches from the search window.</li>'
                 + '<li><b>Heroes</b>: pick one or more. With several, the <b>OR / AND</b> switch chooses between games with any of them or games with every one of them, on either team.</li>'
-                + '<li><b>Players</b>: type a battletag and press Add. If several accounts match, choose the right one. Private profiles cannot be searched for. With several players, <b>OR / AND</b> works the same way as heroes.</li></ul>'
+                + '<li><b>Players</b>: type a BattleTag and press Add. If several accounts match, choose the right one. Private profiles cannot be searched for. With several players, <b>OR / AND</b> works the same way as heroes.</li></ul>'
                 + '<p class="mt-2"><b>Advanced Filters</b></p><ul class="list-disc list-inside mt-1 space-y-1">'
                 + '<li><b>HP Player, Hero and Role MMR</b> minimum and maximum, using the rating each player had in that game.</li>'
                 + '<li><b>HP Player, Hero and Role Rank</b> (Bronze to Master). Ranks use the current league boundaries for each game type. HP Hero Rank appears once you pick a hero, since each hero has its own boundaries.</li>'

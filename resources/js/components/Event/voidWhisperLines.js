@@ -8,7 +8,7 @@ export default [
   'Refresh the page. I will still be here.',
   'The Nexus bends. Soon it breaks.',
   'You call it a losing streak. I call it tribute.',
-  'Keep searching for your battletag. The Void already knows it.',
+  'Keep searching for your BattleTag. The Void already knows it.',
   'Balance patches cannot seal what has already awakened.',
   'Pick a counter if you like. It amuses me.',
   'Your talents are adequate. Your fate is not.',

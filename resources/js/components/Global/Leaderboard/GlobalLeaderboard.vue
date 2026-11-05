@@ -8,7 +8,11 @@
     <page-heading :heading="'Leaderboard'">
       <template #headingInfo>
         <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-          <p class="font-normal">
+          <p v-if="leaderboardtype == 'Match Prediction'" class="font-normal">
+            Match Prediction leaderboard data is based on users making predictions about match outcomes through
+            <a href="/Match/Prediction/Game" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">Match Prediction</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
+          </p>
+          <p v-else class="font-normal">
             Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards.
             The main uploader can be found at
             <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases" target="_blank" rel="noopener noreferrer" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">Heroes Profile Uploader</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
@@ -79,27 +83,9 @@
       </filters>
       <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
       <div v-if="data">
-        <div v-if="leaderboardtype == 'Match Prediction'" class="my-5 bg-teal py-5 px-2">
-          <infobox class="max-w-[1500px] mx-auto">
-            Match Prediction leaderboard data is based on users making predictions about match outcomes through <a class="link" href="/Match/Prediction/Game" target="_blank">Match Prediction</a>
-          </infobox>
-        </div>
         <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
-          <div class="flex flex-wrap items-center gap-4">
-            <div class="relative w-full sm:w-72">
-              <label for="search" class="sr-only">Search Battletag:</label>
-              <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-teal text-sm"></i>
-              <input
-                v-model="searchTerm"
-                @input="performSearch"
-                id="search"
-                type="text"
-                placeholder="Search battletag"
-                class="w-full bg-field text-white rounded-control pl-9 pr-3 py-2 text-sm"
-              />
-            </div>
-
-            <div v-if="season == defaultseason && leaderboardtype != 'SL Rank'" class="flex flex-wrap items-center justify-end gap-4 ml-auto">
+          <div v-if="season == defaultseason && leaderboardtype != 'SL Rank'" class="flex flex-wrap items-center gap-4">
+            <div class="flex flex-wrap items-center justify-end gap-4 ml-auto">
               <span v-if="playerRating" class="text-sm">
                 {{ ratingText(playerRating, playerRatingGamesPlayed) }}
               </span>
@@ -125,8 +111,11 @@
                   <th @click="sortTable('rank')" class="py-2 px-3  text-center text-sm leading-4 cursor-pointer">
                     {{ getHeaderRankText("rank") }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
-                  <th @click="sortTable('battletag')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'battletag'}]">
-                    Battletag<sort-indicator :column="'battletag'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                  <th :class="['py-2 px-3  text-center text-sm leading-4',{ 'bg-teal text-white': sortKey === 'battletag'}]">
+                    <div class="flex items-center justify-center gap-3">
+                      <span class="cursor-pointer" @click="sortTable('battletag')">Player<sort-indicator :column="'battletag'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                      <search-input v-model="searchTerm" placeholder="Search BattleTag" :collapsible="true" class="w-40"></search-input>
+                    </div>
                   </th>            
                   <th @click="sortTable('region_id')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'region_id'}]">
                     Region<sort-indicator :column="'region_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
@@ -227,33 +216,21 @@
                     <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'"><rank-tier-pill :tier="row.tier"></rank-tier-pill></td>
                     <td>{{ row.games_played.toLocaleString('en-US') }}</td>
 
-                    <td class="py-2 px-3 flex items-center gap-1" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role')">
-                      <template v-if="row.most_played_hero">
+                    <td class="py-2 px-3" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role')">
+                      <div v-if="row.most_played_hero" class="flex justify-center">
                         <hero-image-wrapper :hero="row.most_played_hero">
                           <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played:' + row.hero_build_games_played"></image-hover-box>
                         </hero-image-wrapper>
-                       <span class="max-md:hidden font-bold"> {{ row.most_played_hero.name }}</span>
-                      </template>
+                      </div>
                     </td>
 
 
                     <template v-else-if="leaderboardtype == 'Hero'">
                       <td class="py-2 px-3 ">
-                        <div class="flex flex-nowrap justify-center gap-1.5">
-                          <talent-image-wrapper :talent="row.level_one" size="talent"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_four" size="talent"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_seven" size="talent"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_ten" size="talent"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_thirteen" size="talent"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_sixteen" size="talent"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_twenty" size="talent"></talent-image-wrapper>
-                        </div>
+                        <build-code v-if="row.level_one" :build="row" :hero="row.hero" show="talents"></build-code>
                       </td>
                       <td class="py-2 px-3">
-                        <div v-if="row.level_one">
-                          {{ this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero) }}
-                          <custom-button @click="copyToClipboard(row)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true"></custom-button>
-                        </div>
+                        <build-code v-if="row.level_one" :build="row" :hero="row.hero" show="code"></build-code>
                      
                       </td>
                       <td>
@@ -275,17 +252,11 @@
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <loading-component :compact="true" :textoverride="true">Loading leaderboard...</loading-component>
-      <div class="flex flex-wrap items-center gap-4">
-        <skeleton-box class="h-10 w-full sm:w-72"></skeleton-box>
-        <skeleton-box v-if="leaderboardtype != 'SL Rank'" class="h-10 w-56 ml-auto"></skeleton-box>
+      <div v-if="leaderboardtype != 'SL Rank' && leaderboardtype != 'Match Prediction'" class="flex justify-end">
+        <skeleton-box class="h-10 w-56"></skeleton-box>
       </div>
-      <panel-box>
-        <skeleton-box class="h-8 w-80 max-w-full"></skeleton-box>
-        <div class="flex flex-col gap-1">
-          <skeleton-box class="h-8"></skeleton-box>
-          <skeleton-box v-for="index in 15" :key="index" class="h-10"></skeleton-box>
-        </div>
-      </panel-box>
+      <!-- Shaped like the table for this leaderboard type -->
+      <table-skeleton :heading="true" :rows="12" :columns="skeletonColumns"></table-skeleton>
     </div>
   </div>
 </template>
@@ -376,6 +347,19 @@ export default {
   mounted() {
   },
   computed: {
+    skeletonColumns() {
+      const lead = ['stat', 'stat', 'stat'];
+      switch (this.leaderboardtype) {
+        case 'Hero':
+          return [...lead, 'stat', 'stat', 'stat', 'pill', 'stat', 'talentrow', 'copy', 'stat'];
+        case 'Match Prediction':
+          return [...lead, 'stat', 'stat'];
+        case 'SL Rank':
+          return [...lead, 'badge', 'stat', 'stat'];
+        default:
+          return [...lead, 'stat', 'stat', 'stat', 'pill', 'stat', 'avatar'];
+      }
+    },
     sortedData() {
       if (!this.sortKey) return this.data;
       return this.data.slice().sort((a, b) => {
@@ -551,23 +535,6 @@ export default {
         this.rankchange = false;
       }
       this.sortKey = key;
-    },
-    getCopyBuildToGame(level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, hero) {
-      return "[T" + 
-        (level_one ? level_one.sort : '0') + 
-        (level_four ? level_four.sort : '0') + 
-        (level_seven ? level_seven.sort : '0') + 
-        (level_ten ? level_ten.sort : '0') + 
-        (level_thirteen ? level_thirteen.sort : '0') + 
-        (level_sixteen ? level_sixteen.sort : '0') + 
-        (level_twenty ? level_twenty.sort : '0') +
-        "," + hero.build_copy_name + "]"
-    },
-    copyToClipboard(row) {
-      const textToCopy = this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero);
-      navigator.clipboard.writeText(textToCopy).then(function() {
-      }).catch(function(err) {
-      });
     },
     groupName(group){
       return `Group ${String.fromCharCode(65 + group)}`;

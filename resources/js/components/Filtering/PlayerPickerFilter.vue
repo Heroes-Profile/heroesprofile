@@ -6,7 +6,7 @@
         <input
           type="text"
           v-model="search"
-          placeholder="Enter battletag"
+          placeholder="Enter BattleTag"
           class="md:w-[200px] min-w-[100px] h-[40px] rounded-l-control !bg-surface-3 p-2 text-white focus:outline-none"
           @keydown.enter.prevent="lookup"
           @input="results = []; error = null"

@@ -301,24 +301,10 @@
               <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
               <div class="min-w-0">
                 {{ item.battletag }} - {{ item.hero.name }}
-                <div class="flex flex-wrap items-center gap-2 mb-2">
-
-                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
-                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
-                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
-                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
-                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
-                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
-                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
-
-                  
-                </div>
+                <build-code class="mb-2" :build="item.talents" :hero="item.hero" show="talents" align="start"></build-code>
               </div>
             </a>
-            <div class="text-xs text-right">
-             {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
-             <custom-button class="text-xs" @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
-           </div>
+            <build-code :build="item.talents" :hero="item.hero" show="code" align="end"></build-code>
          </div>
 
        </div>
@@ -329,25 +315,10 @@
             <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
             <div class="min-w-0">
               {{ item.battletag }} - {{ item.hero.name }}
-              <div class="flex flex-wrap items-center gap-2 mb-2">
-                
-
-                <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
-                <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
-                <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
-                <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
-                <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
-                <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
-                <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
-
-                
-              </div>
+              <build-code class="mb-2" :build="item.talents" :hero="item.hero" show="talents" align="start"></build-code>
             </div>
           </a>
-          <div class="text-xs text-right">
-           {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
-           <custom-button class="text-xs" @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
-         </div>
+          <build-code :build="item.talents" :hero="item.hero" show="code" align="end"></build-code>
        </div>
 
        
@@ -915,25 +886,6 @@
       }else{
         this.sortDirectionHpScore = this.sortDirectionHpScore === 'desc' ? 'asc' : 'desc';
       }
-    },
-    getCopyBuildToGame(level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, hero) {
-      return "[T" + 
-      (level_one ? level_one.sort : '0') + 
-      (level_four ? level_four.sort : '0') + 
-      (level_seven ? level_seven.sort : '0') + 
-      (level_ten ? level_ten.sort : '0') + 
-      (level_thirteen ? level_thirteen.sort : '0') + 
-      (level_sixteen ? level_sixteen.sort : '0') + 
-      (level_twenty ? level_twenty.sort : '0') +
-      "," + hero.build_copy_name + "]"
-    },
-    copyToClipboard(item) {
-      const textToCopy = this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero);
-      navigator.clipboard.writeText(textToCopy).then(function() {
-        
-      }).catch(function(err) {
-        
-      });
     },
     formatDate(dateString) {
       const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC

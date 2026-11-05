@@ -6,7 +6,7 @@
     </p>
 
     <form @submit.prevent="load" class="flex flex-wrap gap-2 mb-4">
-      <input v-model="query" type="text" placeholder="Twitch name or battletag" class="text-black p-2 rounded-control flex-grow" />
+      <input v-model="query" type="text" placeholder="Twitch name or BattleTag" class="text-black p-2 rounded-control flex-grow" />
       <button type="submit" class="btn bg-teal hover:bg-lteal">Search</button>
     </form>
 

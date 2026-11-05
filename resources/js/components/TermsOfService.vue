@@ -60,7 +60,7 @@
         <li>Use data from this Site to harass or harm other players</li>
         <li>
           Use data from this Site to link accounts to each other or to a person, such as matching a smurf
-          or alternate account to a main account, or a battletag to a Discord account, social media account
+          or alternate account to a main account, or a BattleTag to a Discord account, social media account
           or real-world identity
         </li>
         <li>Use data from this Site to build profiles, lists or watch lists of particular players, or to monitor their games</li>

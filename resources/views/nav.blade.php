@@ -216,7 +216,7 @@
                         @endif
                     
                 </div>
-                <search-component id="nav-search" :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="mt-auto md:hidden"></search-component>
+                <search-component id="nav-search" :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="mt-auto md:hidden"></search-component>
              
               
             </div>
@@ -334,6 +334,6 @@
       </div>
     @endif
   @endforeach
-  <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="max-md:hidden"></search-component>
+  <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="max-md:hidden"></search-component>
 </nav>
 <mobile-nav-hack></mobile-nav-hack>

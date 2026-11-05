@@ -183,7 +183,7 @@
       <!-- Flair -->
       <div v-if="activeTab === 'flair'" class="p-8">
         <h2 class="text-2xl font-bold mb-6">Flair</h2>
-        <p class="text-sm text-subtext mb-6">Choose which flair shows next to your battletag. Hidden flair is hidden for everyone.</p>
+        <p class="text-sm text-subtext mb-6">Choose which flair shows next to your BattleTag. Hidden flair is hidden for everyone.</p>
         <div class="space-y-6">
           <div v-for="flair in flairOptions" :key="flair.key">
             <h3 class="mb-1 flex items-center gap-2">

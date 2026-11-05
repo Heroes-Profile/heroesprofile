@@ -130,8 +130,7 @@
             </div>
           </td>
           <td class="py-2 px-3 ">
-            {{ this.getCopyBuildToGame(builddata.level_one, builddata.level_four, builddata.level_seven, builddata.level_ten, builddata.level_thirteen, builddata.level_sixteen, builddata.level_twenty, selectedHero) }}
-            <custom-button @click="copyToClipboard(builddata)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
+            <build-code :build="builddata" :hero="selectedHero" show="code" align="start"></build-code>
           </td>
           <td>
             {{ builddata.games_played.toLocaleString('en-US') }}
@@ -482,23 +481,6 @@
         this.replays = null;
         this.builddata = null;
         this.getData();
-      },
-      getCopyBuildToGame(level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, hero) {
-        return "[T" + 
-        (level_one ? level_one.sort : '0') + 
-        (level_four ? level_four.sort : '0') + 
-        (level_seven ? level_seven.sort : '0') + 
-        (level_ten ? level_ten.sort : '0') + 
-        (level_thirteen ? level_thirteen.sort : '0') + 
-        (level_sixteen ? level_sixteen.sort : '0') + 
-        (level_twenty ? level_twenty.sort : '0') +
-        "," + hero.build_copy_name + "]"
-      },
-      copyToClipboard(row) {
-        const textToCopy = this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, this.selectedHero);
-        navigator.clipboard.writeText(textToCopy).then(function() {
-        }).catch(function(err) {
-        });
       },
       determineIfLargeData(){
         if(this.timeframetype == "major" || this.timeframetype == "major_grouped"  || this.timeframe.length >= 3){

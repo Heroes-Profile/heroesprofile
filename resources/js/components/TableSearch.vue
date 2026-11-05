@@ -11,7 +11,7 @@
       <table class="min-w-0 w-full responsive-table relative">
         <thead>
           <tr>
-            <th class="py-2 px-3 text-center text-sm leading-4">Battletag</th>
+            <th class="py-2 px-3 text-center text-sm leading-4">BattleTag</th>
             <th class="py-2 px-3 text-center text-sm leading-4">Region</th>
             <th class="py-2 px-3 text-center text-sm leading-4">Games Played</th>
             <th class="py-2 px-3 text-center text-sm leading-4">Latest Hero</th>

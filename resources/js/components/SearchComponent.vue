@@ -32,7 +32,7 @@
       return {
         userinput: "",
         buttonText: "Find Player",
-        labelText: "Enter a battletag",
+        labelText: "Enter a BattleTag",
         prohibitedCharacters: ['*', '?', '%', '\'', '"', '(', ')', ';', '<', '>', '=', '|', '\\'],
         showEmptyPrompt: false,
       }
