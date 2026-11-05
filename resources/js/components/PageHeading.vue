@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-[1920px] w-full mx-auto px-4 md:px-8 py-6 md:pt-0 flex items-end gap-6 md:gap-20 max-md:flex-wrap">
+  <div :class="['max-w-[1920px] w-full mx-auto px-4 py-6 md:pt-0 flex items-end gap-6 md:gap-20 max-md:flex-wrap', hasInfo ? 'md:px-8' : 'md:pl-8 md:pr-0']">
      <slot>
     </slot>
 
@@ -12,10 +12,11 @@
     </a>
 
     <h1 v-else class="max-md:w-full">
-      <div v-if="battletag" class="flex items-center gap-3 flex-wrap">
+      <div v-if="battletag" class="flex items-center gap-3 flex-wrap md:flex-nowrap">
         <a :href="`/Player/${battletag}/${blizzid}/${region}`" class="text-3xl md:text-4xl font-bold">{{ battletag }}</a>
         <region-tag :region="regionstring"></region-tag>
-        <div class="flex items-center gap-1 text-[20px]">
+      </div>
+      <div v-if="battletag" class="flex items-center gap-1 text-[20px] mt-1">
           <icon-with-hover v-if="isOwner && !ownerHidden" size="small" icon="fas fa-crown" title="info" popupsize="small" style="color:gold">
             <div>
               <p class="max-sm:text-xs">Site Owner</p>
@@ -27,17 +28,16 @@
             </div>
           </icon-with-hover>
           <void-eye-flair v-if="!esport && voidEye" class="md:-translate-y-[0.3em]" :force="true"></void-eye-flair>
-        </div>
       </div>
       <slot name="aboveHeading"></slot>
       <div :class="['heading flex items-center gap-3', battletag ? 'text-base text-gray-medium mt-1' : 'text-3xl md:text-4xl font-bold']">{{ heading }}<slot name="headingInfo"></slot></div>
     </h1>
-    <div v-if="!hideText" class="text-gray-medium md:ml-auto md:max-w-[50%]">
+    <div v-if="hasInfo && !hideText" class="text-gray-medium md:ml-auto md:max-w-[50%]">
       <infobox :input="infoText1"></infobox>
       <infobox :input="infoText2"></infobox>
       <slot name="extraInfo"></slot>
     </div>
-    <div class="ml-auto" v-else>
+    <div class="ml-auto" v-else-if="hasInfo">
       <custom-button @click="hideText = !hideText" text="Read more" alt="Show Header Information" size="small" :ignoreclick="true"></custom-button>
     </div>
   </div>
@@ -83,6 +83,9 @@ export default {
     infoTextTotalCharacters() {
       const combinedText = (this.infoText1 || '') + (this.infoText2 || '');
       return combinedText.length;
+    },
+    hasInfo() {
+      return !!(this.infoText1 || this.infoText2 || this.$slots.extraInfo);
     },
     voidEye() {
       return hasVoidEye(this.blizzid, this.region);

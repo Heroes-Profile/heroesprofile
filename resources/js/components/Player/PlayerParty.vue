@@ -25,15 +25,13 @@
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="asyncLoading">
-      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
-    </div>
-
     <div v-if="partydata" class="max-w-[1500px] mx-auto">
       <party-stats-display :partydata="partydata" teamlabel="Your Team"></party-stats-display>
     </div>
-    <div v-else-if="isLoading && !asyncLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+    <div v-else-if="isLoading || asyncLoading" class="max-w-[1500px] mx-auto px-4 flex flex-col gap-6">
+      <loading-component v-if="asyncLoading" :compact="true" :textoverride="true">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
+      <loading-component v-else :compact="true" :textoverride="true">Loading party stats...</loading-component>
+      <party-stats-skeleton></party-stats-skeleton>
     </div>
     <div v-else-if="dataError" class="flex items-center justify-center">
       Error: Reload page/filter

@@ -99,8 +99,17 @@
         'maps' => collect($bladeGlobals['maps'] ?? [])->map(fn ($map) => ['id' => $map->map_id, 'name' => $map->name])->values(),
       ];
     @endphp
+    {{-- Who has the void eye, and whether the owner crown is hidden. Read by voidEye.js. --}}
+    @php
+      $globalDataService = app(\App\Services\GlobalDataService::class);
+      $flairState = [
+        'void_eye' => $globalDataService->getVoidEyeHolders(),
+        'owner_hidden' => $globalDataService->isFlairHidden('owner', 67280, 1),
+      ];
+    @endphp
     <script>
       window.navLists = {!! json_encode($navLists, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
+      window.flairState = {!! json_encode($flairState, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>.void-eye-img{ background-image: url('{{ asset('images/event/xalatath/void-eye.svg') }}'); }</style>

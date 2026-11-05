@@ -157,10 +157,6 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(30)->by('twitch-broadcaster:'.ClientIpService::getClientIp($request));
         });
 
-        RateLimiter::for('flair-state', function (Request $request) {
-            return Limit::perMinute(30)->by('flair-state:'.(Auth::id() ?? ClientIpService::getClientIp($request)));
-        });
-
         // Recap card uploads: one PNG per account, overwritten on each share.
         RateLimiter::for('xalatath-card', function (Request $request) {
             return Limit::perMinute(5)->by('xalatath-card:'.(Auth::id() ?? ClientIpService::getClientIp($request)));

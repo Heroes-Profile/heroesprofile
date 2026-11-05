@@ -38,6 +38,8 @@ export default {
     // A row of each point's value of this attribute above the plot, named by topLabel
     topAttribute: { type: String, default: null },
     topLabel: { type: String, default: '' },
+    // Names the value in the tooltip ("HP Quick Match MMR: 2,706") in place of the chart title
+    tooltipLabel: { type: String, default: null },
   },
   data() {
     return {
@@ -166,19 +168,22 @@ export default {
         callback: value => Number.isInteger(value) ? this.data[value]?.x_label ?? '' : '',
       },
     } : {
+      // A few flat labels instead of one per point; the tooltip still has the full label
       ticks: {
         display: true,
         color: (context) => dim(context.index) ? 'rgba(156, 163, 175, 0.4)' : '#9ca3af',
         font: { size: 11 },
-        ...(window.matchMedia('(max-width: 767px)').matches ? {
-          maxTicksLimit: 3,
-          maxRotation: 0,
-          // Date only; the time makes neighbouring labels overlap
-          callback(value) {
-            const label = this.getLabelForValue(value);
-            return typeof label === 'string' ? label.slice(0, 10) : label;
-          },
-        } : {}),
+        autoSkip: true,
+        maxRotation: 0,
+        maxTicksLimit: window.matchMedia('(max-width: 767px)').matches ? 3 : 10,
+        // Timestamps as a short date in the viewer's locale, e.g. "Mar 4, 2017"; month labels as they are
+        callback(value) {
+          const label = this.getLabelForValue(value);
+          const date = typeof label === 'string' && label.match(/^(\d{4})-(\d{2})-(\d{2})/);
+          return date
+            ? new Date(date[1], date[2] - 1, date[3]).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+            : label;
+        },
       },
     };
 
@@ -207,7 +212,10 @@ export default {
             backgroundColor: '#393e4d',
             padding: 12,
             displayColors: false,
-            ...(this.visibleCount ? { callbacks: { title: items => this.data[items[0].parsed.x]?.x_label } } : {}),
+            callbacks: {
+              title: items => this.tooltipTitle(this.visibleCount ? this.data[items[0].parsed.x]?.x_label : items[0].label),
+              ...(this.tooltipLabel ? { label: item => `${this.tooltipLabel}: ${item.formattedValue}` } : {}),
+            },
           },
         },
         scales: {
@@ -280,6 +288,13 @@ export default {
         Object.assign(this.chart.options.scales.x, this.windowRange());
       }
       this.chart.update();
+    },
+    // Timestamps ("2017-05-22 03:29:30", UTC) in the viewer's locale and timezone; other labels as they are
+    tooltipTitle(label) {
+      if (typeof label !== 'string' || !/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(label)) {
+        return label;
+      }
+      return new Date(label.replace(' ', 'T') + 'Z').toLocaleString(undefined, { dateStyle: 'long', timeStyle: 'short' });
     },
     // Half a step either side so the end points aren't cut in half
     windowRange() {

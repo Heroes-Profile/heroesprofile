@@ -115,7 +115,7 @@ class PlayerAwardsController extends Controller
             ];
         }
 
-        if (config('app.env') !== 'production') {
+        if (! $this->globalDataService->usesProductionCaching()) {
             return response()->json($this->executeGetData($request));
         }
 
@@ -129,6 +129,10 @@ class PlayerAwardsController extends Controller
             if (! $latestReplayId || $dbCache->latest_replayID >= $latestReplayId) {
                 return response()->json(json_decode($dbCache->data, true));
             }
+        }
+
+        if (! $this->globalDataService->isGlobalAsyncEnabled()) {
+            return response()->json($this->executeGetData($request));
         }
 
         return app(GlobalQueryService::class)->dispatchAsync(

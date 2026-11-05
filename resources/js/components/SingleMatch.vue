@@ -391,7 +391,7 @@
       <tr v-for="(item, index) in data.players[0]" :key="index">
         <td class="bg-blue text-white border-white border">
           <div class="flex gap-2 items-center">
-            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'">{{ item.battletag }}</a><span v-else>Hidden</span>
+            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ item.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a><span v-else>Hidden</span>
           </div>
         </td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
@@ -444,7 +444,7 @@
       <tr v-for="(item, index) in data.players[1]" :key="index">
         <td class="bg-blue text-white border-white border">
           <div class="flex gap-2 items-center">
-            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'">{{ item.battletag }}</a><span v-else>Hidden</span>
+            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ item.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a><span v-else>Hidden</span>
           </div>
         </td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
@@ -486,7 +486,7 @@
         <td >{{ section.title }}</td>
         <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">
           <div class="flex gap-2 items-center">
-            <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)">{{ player.battletag }}</a>
+            <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
           </div>
         </td>
     </tr>
@@ -507,7 +507,7 @@
     <tr v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">
       <td>
         <div class="flex gap-2 items-center">
-          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)">{{ player.battletag }}</a>
+          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
         </div>
       </td>
       <td v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ formatValue(player.score[row.key]) }}</td>
@@ -531,7 +531,7 @@
 
         >
         <div class="flex gap-2 items-center">
-          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)">{{ player.battletag }}</a>
+          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
         </div>
       </td>
     </tr>
@@ -552,7 +552,7 @@
     <tr v-for="(player, playerIndex) in data.players[1]" :key="playerIndex">
       <td>
         <div class="flex gap-2 items-center">
-          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)">{{ player.battletag }}</a>
+          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
         </div>
       </td>
       <td v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ formatValue(player.score[row.key]) }}</td>

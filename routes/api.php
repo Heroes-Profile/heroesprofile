@@ -220,6 +220,8 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('player/talents/', [PlayerTalentsController::class, 'getPlayerTalentData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
     Route::post('player/talents/build', [PlayerTalentsController::class, 'getPlayerTalentData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
+    Route::post('player/talents/build/heroes', [PlayerTalentsController::class, 'getPlayerTalentBuildHeroes'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
+    Route::post('player/talents/build/hero', [PlayerTalentsController::class, 'getPlayerTalentBuildHero'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
     Route::post('player/mmr', [PlayerMMRController::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
     Route::post('player/awards', [PlayerAwardsController::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);

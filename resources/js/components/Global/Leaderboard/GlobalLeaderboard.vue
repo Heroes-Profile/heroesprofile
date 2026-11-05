@@ -11,9 +11,9 @@
           <p class="font-normal">
             Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards.
             The main uploader can be found at
-            <a class="link" href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases" target="_blank" rel="noopener noreferrer">Heroes Profile Uploader</a>
+            <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases" target="_blank" rel="noopener noreferrer" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">Heroes Profile Uploader</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
             while the secondary uploader that works on platforms other than Windows can be found at
-            <a class="link" href="https://github.com/Heroes-Profile/heroesprofile-electron-uploader/releases" target="_blank" rel="noopener noreferrer">Heroes Profile Electron Uploader</a>.
+            <a href="https://github.com/Heroes-Profile/heroesprofile-electron-uploader/releases" target="_blank" rel="noopener noreferrer" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">Heroes Profile Electron Uploader</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>.
             For any questions, please contact zemill@heroesprofile.com.
           </p>
         </round-image>
@@ -136,7 +136,7 @@
                       <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                         <p class="font-normal normal-case">
                           Real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is listed by the latest rank read for them this season, grouped by league: Grandmasters by ladder position, then Master, then each league by division. Within a division, players with at least {{ data.length ? data[0].min_games : 0 }} Storm League games this season (the Player leaderboard's games requirement) come first, by Storm League win rate; players under it follow, by games played. Ties go to the rank read in more games. Shows the top 500 in each league.
-                          <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
+                          <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">How rank reading works</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
                         </p>
                       </round-image>
                     </span>
@@ -152,7 +152,7 @@
                       <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" @click.stop>
                         <p class="font-normal normal-case">
                           Heroes Profile Rating ranks players by combining their MMR, win rate and games played this season, each measured against the other players on this leaderboard. Games played is capped relative to the top players, so playing lots of games alone can't carry someone to the top.
-                          The exact formula is under Leaderboard Requirements, and the <a class="link" href="/FAQ">FAQ</a> explains why it is used instead of MMR.
+                          The exact formula is under Leaderboard Requirements, and the <a href="/FAQ" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">FAQ</span><i class="fas fa-chevron-right text-xs ml-2"></i></a> explains why it is used instead of MMR.
                         </p>
                       </round-image>
                     </span>
@@ -239,14 +239,14 @@
 
                     <template v-else-if="leaderboardtype == 'Hero'">
                       <td class="py-2 px-3 ">
-                        <div class="flex flex-nowrap justify-center gap-1.5 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded">
-                          <talent-image-wrapper :talent="row.level_one" :size="'medium'"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_four" :size="'medium'"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_seven" :size="'medium'"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_ten" :size="'medium'"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_thirteen" :size="'medium'"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_sixteen" :size="'medium'"></talent-image-wrapper>
-                          <talent-image-wrapper :talent="row.level_twenty" :size="'medium'"></talent-image-wrapper>
+                        <div class="flex flex-nowrap justify-center gap-1.5">
+                          <talent-image-wrapper :talent="row.level_one" size="talent"></talent-image-wrapper>
+                          <talent-image-wrapper :talent="row.level_four" size="talent"></talent-image-wrapper>
+                          <talent-image-wrapper :talent="row.level_seven" size="talent"></talent-image-wrapper>
+                          <talent-image-wrapper :talent="row.level_ten" size="talent"></talent-image-wrapper>
+                          <talent-image-wrapper :talent="row.level_thirteen" size="talent"></talent-image-wrapper>
+                          <talent-image-wrapper :talent="row.level_sixteen" size="talent"></talent-image-wrapper>
+                          <talent-image-wrapper :talent="row.level_twenty" size="talent"></talent-image-wrapper>
                         </div>
                       </td>
                       <td class="py-2 px-3">

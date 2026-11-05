@@ -70,7 +70,7 @@
         </div>
         <div v-if="selectedHeroData" class="mt-3 p-3 rounded bg-darken">
           <div class="flex items-center gap-2 mb-2">
-            <img :src="`/images/heroes/${selectedHeroData.short_name}.png`" :alt="selectedHeroData.name" class="w-8 h-8 rounded-full" @error="useFallbackImage" />
+            <img :src="`/images/heroes/${selectedHeroData.short_name}.png`" :alt="selectedHeroData.name" class="w-8 h-8 rounded-full bg-surface-3 text-[0px]" @error="useFallbackImage" />
             <span class="font-semibold">{{ selectedHeroData.name }}</span>
             <span :class="badgeFor(selectedHeroData.type).color" class="text-sm">{{ badgeFor(selectedHeroData.type).glyph }} {{ badgeFor(selectedHeroData.type).label }}</span>
           </div>
@@ -127,7 +127,7 @@
             </div>
             <div v-if="selectedBugFixHeroData" class="mt-3 p-3 rounded bg-darken">
               <div class="flex items-center gap-2 mb-2">
-                <img :src="`/images/heroes/${selectedBugFixHeroData.short_name}.png`" :alt="selectedBugFixHeroData.name" class="w-8 h-8 rounded-full" @error="useFallbackImage" />
+                <img :src="`/images/heroes/${selectedBugFixHeroData.short_name}.png`" :alt="selectedBugFixHeroData.name" class="w-8 h-8 rounded-full bg-surface-3 text-[0px]" @error="useFallbackImage" />
                 <span class="font-semibold">{{ selectedBugFixHeroData.name }}</span>
               </div>
               <ul class="list-disc list-inside text-sm space-y-1">

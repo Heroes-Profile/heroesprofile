@@ -3,18 +3,22 @@
     <table ref="responsivetable" class="w-full text-sm">
       <thead>
         <tr>
-          <th class="py-2 px-3 text-center text-sm leading-4">Hero</th>
+          <th class="py-2 px-3 text-center text-sm leading-4">
+            <div class="flex items-center justify-center gap-3">
+              <span>Hero</span>
+              <search-input v-model="heroSearch" placeholder="Search hero" :collapsible="true" class="w-40"></search-input>
+            </div>
+          </th>
           <th class="py-2 px-3 text-center text-sm leading-4">Quick Match</th>
           <th class="py-2 px-3 text-center text-sm leading-4">Storm League</th>
           <th class="py-2 px-3 text-center text-sm leading-4">ARAM</th>
         </tr>
       </thead>
       <tbody class="text-center">
-        <tr v-for="hero in heroes" :key="hero.id" class="border-t border-gray-700">
-          <td class="py-2 px-3 whitespace-nowrap">
-            <div class="flex items-center">
-              <hero-image-wrapper class="mr-2" :hero="hero" :includehover="false"></hero-image-wrapper>
-              <span class="hidden md:block">{{ hero.name }}</span>
+        <tr v-for="hero in shownHeroes" :key="hero.id" class="border-t border-gray-700">
+          <td class="py-2 px-3">
+            <div class="flex justify-center">
+              <hero-image-wrapper :hero="hero" :includehover="false"></hero-image-wrapper>
             </div>
           </td>
           <td v-for="gt in ['qm', 'sl', 'ar']" :key="gt" class="py-2 px-3">
@@ -63,7 +67,14 @@ export default {
   data() {
     return {
       copiedState: {},
+      heroSearch: '',
     };
+  },
+  computed: {
+    shownHeroes() {
+      const search = this.heroSearch.trim().toLowerCase();
+      return search ? this.heroes.filter(hero => hero.name.toLowerCase().includes(search)) : this.heroes;
+    },
   },
   mounted() {
     this.$nextTick(() => {

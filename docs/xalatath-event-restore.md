@@ -33,7 +33,7 @@ Hand-merge the edited files below, since the redesign will have changed them.
 | File | What to put back |
 |---|---|
 | `app/Services/GlobalDataService.php` | `getXalatathThresholds`, `getXalatathEvent`, `getXalatathEnding`, the `?void_stage` / `?void_ended` local previews (`getXalatathPreviewStage`, `getXalatathEndedPreview`, plus the preview branch at the top of `isXalatathRecapAvailable`), `awardVoidEye`, `voidEyeVisitorKey`, `getVoidEyeSpot`, `fakeXalatathTotals`; the `XalatathData` and `Crypt` imports; blade globals `xalatathEvent`, `voidEyeSpot` and `xalatathEnding` in `getBladeGlobals()` |
-| `routes/web.php` | `GET /Event/Xalatath/Totals` → `totals`, `POST /Event/Xalatath/Eye` → `claimEye`. `/Flair/State` now lives in `FlairController::state`, so delete `flairState` from the restored `XalatathEventController` rather than having two |
+| `routes/web.php` | `GET /Event/Xalatath/Totals` → `totals`, `POST /Event/Xalatath/Eye` → `claimEye`. There is no `/Flair/State` route any more: the layout writes `window.flairState` and `voidEye.js` reads it, so delete `flairState` from the restored `XalatathEventController` |
 | `app/Providers/RouteServiceProvider.php` | Throttles `xalatath-totals` and `xalatath-eye` (10/min each, keyed by user or IP) |
 | `app/Http/Controllers/Auth/BattleNetController.php` | After login: pull `void_eye_pending` from the session, call `awardVoidEye`, flash `void_eye_awarded` |
 | `app/Providers/ViewServiceProvider.php` | `$view->with('void_corruption_optout', request()->cookie('void_corruption_optout') === '1')` |

@@ -188,7 +188,7 @@ class PlayerMatchHistory extends Controller
             return response()->json(['status' => 'private'], 403);
         }
 
-        if (config('app.env') !== 'production') {
+        if (! $this->globalDataService->usesProductionCaching()) {
             return response()->json($this->executeGetData($request));
         }
 
@@ -202,6 +202,10 @@ class PlayerMatchHistory extends Controller
             if (! $latestReplayId || $dbCache->latest_replayID >= $latestReplayId) {
                 return response()->json(json_decode($dbCache->data, true));
             }
+        }
+
+        if (! $this->globalDataService->isGlobalAsyncEnabled()) {
+            return response()->json($this->executeGetData($request));
         }
 
         return app(GlobalQueryService::class)->dispatchAsync(

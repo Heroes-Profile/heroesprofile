@@ -52,56 +52,54 @@
       </div>
 
       <template v-if="selectedAward">
-        <div v-if="awardGamesLoading">
-          <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
-        </div>
+        <loading-component v-if="awardGamesLoading" :compact="true" :textoverride="true">Loading {{ selectedAward.title }} games...</loading-component>
         <template v-else-if="awardGames">
           <p v-if="awardGames.data.length == 0">No {{ selectedAward.title }} games for the selected filters.</p>
-          <ul v-if="awardGames.last_page > 1" class="pagination flex justify-between mb-2 text-sm">
-            <li v-if="awardGames.current_page != 1" class="page-item underline underline-offset-4 mr-auto">
-              <a class="page-link" @click.prevent="getAwardGames(awardGames.current_page - 1)" href="#">Previous</a>
-            </li>
-            <li v-if="awardGames.current_page != awardGames.last_page" class="page-item underline underline-offset-4 ml-auto">
-              <a class="page-link" @click.prevent="getAwardGames(awardGames.current_page + 1)" href="#">Next</a>
-            </li>
-          </ul>
+          <div v-if="awardGames.last_page > 1" class="flex justify-end mb-4">
+            <pagination-bar :current="awardGames.current_page" :last="awardGames.last_page" @page="getAwardGames"></pagination-bar>
+          </div>
         </template>
       </template>
 
       <p v-if="!selectedAward && data.recent_awards.length == 0">No awards for the selected filters.</p>
-      <div ref="tablecontainer" class="max-md:overflow-hidden">
-      <table v-if="tableRows.length" ref="responsivetable" class="min-w-0 w-full responsive-table max-md:text-xs">
-        <thead>
-          <tr>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Match ID</th>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Game Date</th>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Game Type</th>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Game Map</th>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Hero</th>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Award</th>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">Winner</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="row in tableRows" :key="row.replayID">
-            <td><a class="link" :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a></td>
-            <td>{{ formatDate(row.game_date) }}</td>
-            <td>{{ row.game_type.name }}</td>
-            <td>{{ row.game_map.name }}</td>
-            <td>
-              <div class="flex items-center gap-1">
-                <hero-image-wrapper :hero="row.hero" :mobileClick="true"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
+      <!-- Styled like the match history's compact rows -->
+      <panel-box v-if="tableRows.length">
+        <!-- Wide rows scroll sideways on narrow screens -->
+        <div class="overflow-x-auto">
+          <div class="min-w-max w-full">
+            <div class="flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
+              <span class="w-[320px] shrink-0 pl-5">Match</span>
+              <span class="w-[160px] shrink-0 px-4">Game Type</span>
+              <span class="w-[140px] shrink-0 px-4">Game ID</span>
+              <span class="w-[300px] shrink-0 px-4">Award</span>
+            </div>
+            <div v-for="(row, index) in tableRows" :key="row.replayID" :class="['group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
+              <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
+              <a :href="'/Match/Single/' + row.replayID" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
+              <div class="relative w-[320px] shrink-0 self-stretch flex items-center pl-5 py-2.5">
+                <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="row.winner == 1 ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
+                <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="{ backgroundImage: `url('/images/maps/match/match-${row.game_map.sanitized_map_name}.jpg')` }"></div>
+                <div class="absolute inset-y-0 left-0 w-1.5" :class="row.winner == 1 ? 'bg-win' : 'bg-red'"></div>
+                <div class="relative flex items-center gap-4">
+                  <hero-image-wrapper size="row" :hero="row.hero" :excludehover="true"></hero-image-wrapper>
+                  <div class="flex flex-col whitespace-nowrap">
+                    <span class="font-bold">{{ row.game_map.name }}</span>
+                    <span class="text-xs">{{ formatRowDate(row.game_date) }}</span>
+                  </div>
+                </div>
               </div>
-            </td>
-            <td>
-              <div class="flex items-center gap-2">
-                <img :src="`/images/awards/${row.award.icon}_${row.winner == 1 ? 'blue' : 'red'}.png`" :alt="row.award.title" class="w-8 h-8" /><span class="max-md:hidden">{{ row.award.title }}</span>
+              <span class="relative w-[160px] shrink-0 px-4 font-medium text-header">{{ row.game_type.name }}</span>
+              <span class="relative z-[2] w-[140px] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="'/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
+              <div class="relative w-[300px] shrink-0 px-4 flex items-center gap-3">
+                <img :src="`/images/awards/${row.award.icon}_${row.winner == 1 ? 'blue' : 'red'}.png`" :alt="row.award.title" class="w-10 h-10" />
+                <span class="font-medium">{{ row.award.title }}</span>
               </div>
-            </td>
-            <td>{{ row.winner == 1 ? 'True' : 'False' }}</td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+          </div>
+        </div>
+      </panel-box>
+      <div v-if="selectedAward && awardGames && !awardGamesLoading && awardGames.last_page > 1" class="flex justify-end mt-4">
+        <pagination-bar :current="awardGames.current_page" :last="awardGames.last_page" @page="goToAwardPage"></pagination-bar>
       </div>
     </div>
     <div v-if="asyncLoading">
@@ -115,7 +113,6 @@
 
 <script>
   import moment from 'moment-timezone';
-  import { scaleTableToFit } from '../../utils/scaleTable';
 
   export default {
     name: 'PlayerAwards',
@@ -161,11 +158,6 @@
     mounted() {
       if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
         this.getData();
-      }
-    },
-    updated() {
-      if (window.matchMedia('(max-width: 767px)').matches) {
-        scaleTableToFit(this.$refs.responsivetable, this.$refs.tablecontainer);
       }
     },
     computed: {
@@ -313,11 +305,18 @@
         this.clearAward();
         this.getData();
       },
-      formatDate(dateString) {
-        const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik');
-        const localDate = originalDate.clone().tz(moment.tz.guess());
-
-        return localDate.format('MM/DD/YYYY h:mm:ss a');
+      // In the viewer's own date format and timezone, like the match history rows
+      formatRowDate(dateString) {
+        return moment.utc(dateString).toDate().toLocaleString(undefined, {
+          dateStyle: 'long',
+          timeStyle: 'short',
+          timeZone: moment.tz.guess(),
+        });
+      },
+      // From the bottom bar, bring the top of the list back into view
+      goToAwardPage(page) {
+        this.getAwardGames(page);
+        this.$nextTick(() => this.$refs.gamestable?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
       },
     }
   }

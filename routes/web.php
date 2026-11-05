@@ -30,7 +30,6 @@ use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\Esports\NutCup\NutCupController;
 use App\Http\Controllers\Esports\Other\EsportOtherController;
 use App\Http\Controllers\FaqController;
-use App\Http\Controllers\FlairController;
 use App\Http\Controllers\GithubChangeController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
@@ -378,8 +377,6 @@ Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587
 
 Route::get('/Animation/Deathwing', [AnimationsController::class, 'showDeathwing']);
 Route::get('/Animation/Tassadar', [AnimationsController::class, 'showTassadar']);
-
-Route::get('/Flair/State', [FlairController::class, 'state'])->middleware('throttle:flair-state');
 
 // Fresh token for a page left open past its session (app.js retries a 419 with it). Never cached.
 Route::get('/Session/CsrfToken', fn () => response()->json(['token' => csrf_token()])->header('Cache-Control', 'no-store, private'))

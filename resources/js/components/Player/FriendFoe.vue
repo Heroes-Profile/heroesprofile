@@ -27,26 +27,28 @@
     
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="asyncLoading">
-      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
-    </div>
-
     <div v-if="frienddata && enemydata" class="gap-1 mx-auto  flex justify-center max-w-[1500px] max-md:flex-col max-md:text-sm max-md:max-w-[100vw]">
       <div ref="friendcontainer" class="max-md:overflow-hidden">
         <table ref="friendtable" class="min-w-0 max-w-[750px]">
           <thead >
+            <tr>
+              <th colspan="5" class="py-2 px-3 text-center text-base font-bold tracking-wider">Friends</th>
+            </tr>
             <tr >
-              <th  @click="sortTableFriend('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
-                Player<sort-indicator :column="'battletag'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider w-[25%]">
+                <div class="flex items-center gap-3">
+                  <span class="cursor-pointer" @click="sortTableFriend('battletag')">Player<sort-indicator :column="'battletag'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator></span>
+                  <search-input v-model="friendSearch" placeholder="Search player" :collapsible="true" class="w-40"></search-input>
+                </div>
               </th>
-              <th @click="sortTableFriend('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[35%]">
+              <th @click="sortTableFriend('hero')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[35%]">
                 Favorite Hero<sort-indicator :column="'hero'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>            
               <th @click="sortTableFriend('total_games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[20%]">
-                Games Played <br/>With<sort-indicator :column="'total_games_played'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
+                Games<sort-indicator :column="'total_games_played'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>
               <th  @click="sortTableFriend('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%] ">
-                Win Rate with Friend<sort-indicator :column="'win_rate'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
+                Win Rate with<sort-indicator :column="'win_rate'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>
               <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider w-[10%]">
                 Matches
@@ -55,30 +57,35 @@
           </thead>
 
           <tbody>
-            <tr v-for="row in sortedDataFriends" :key="row.blizz_id">
+            <tr v-for="row in shownFriends" :key="row.blizz_id">
               <td class="py-2 px-3 ">
                 <div class="flex items-center">
-                  <a class="link mr-2" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
-                  <div class="" v-if="row.hp_owner">
-                    <i class="fas fa-crown text" style="color:gold;"></i>
-                  </div>
-                  <div class="" v-else-if="row.patreon">
-                    <i class="fas fa-star" style="color:gold"></i>
-                  </div>
-                  <void-eye-flair :blizz-id="row.blizz_id" :region="row.region" :tooltip="false"></void-eye-flair>
+                  <a @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ row.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                  <icon-with-hover v-if="row.hp_owner" class="[&>span]:h-full" size="small" icon="fas fa-crown" title="info" popupsize="small" style="color:gold">
+                    <div>
+                      <p class="max-sm:text-xs">Site Owner</p>
+                    </div>
+                  </icon-with-hover>
+                  <icon-with-hover v-else-if="row.patreon" class="[&>span]:h-full" size="small" icon="fas fa-star" title="info" popupsize="small" style="color:gold">
+                    <div>
+                      <p class="max-sm:text-xs">Patreon Subscriber</p>
+                    </div>
+                  </icon-with-hover>
+                  <void-eye-flair :blizz-id="row.blizz_id" :region="row.region"></void-eye-flair>
 
                 </div>
               </td>
-              <td class="py-2 px-3 flex items-center gap-1">
-                <hero-image-wrapper :hero="row.heroData.hero">
-                  <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
-                </hero-image-wrapper>
-               <span class="max-md:hidden"> {{ row.heroData.hero.name }} </span>
+              <td class="py-2 px-3">
+                <div class="flex justify-center">
+                  <hero-image-wrapper :hero="row.heroData.hero">
+                    <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
+                  </hero-image-wrapper>
+                </div>
               </td>
               <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString('en-US') }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3">
-                <a class="link" :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`">Matches</a>
+                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">Matches</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
               </td>
             </tr>
           </tbody>
@@ -88,17 +95,23 @@
         <table ref="enemytable" class="min-w-0 max-w-[750px]">
           <thead class="bg-red">
             <tr>
-              <th @click="sortTableEnemy('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
-                Player<sort-indicator :column="'battletag'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
+              <th colspan="5" class="py-2 px-3 text-center text-base font-bold tracking-wider">Foes</th>
+            </tr>
+            <tr>
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider w-[25%]">
+                <div class="flex items-center gap-3">
+                  <span class="cursor-pointer" @click="sortTableEnemy('battletag')">Player<sort-indicator :column="'battletag'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator></span>
+                  <search-input v-model="enemySearch" placeholder="Search player" :collapsible="true" class="w-40"></search-input>
+                </div>
               </th>
-              <th @click="sortTableEnemy('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[35%]">
+              <th @click="sortTableEnemy('hero')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[35%]">
                 Favorite Hero<sort-indicator :column="'hero'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>            
               <th @click="sortTableEnemy('total_games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[20%]">
-                Games Played <br/>Against<sort-indicator :column="'total_games_played'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
+                Games<sort-indicator :column="'total_games_played'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>
               <th @click="sortTableEnemy('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
-                Foe's Win Rate Against {{ battletag }}<sort-indicator :column="'win_rate'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
+                Win Rate Against<sort-indicator :column="'win_rate'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>
               <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider w-[10%]">
                 Matches
@@ -107,41 +120,49 @@
           </thead>
 
           <tbody>
-            <tr v-for="row in sortedDataEnemies" :key="row.blizz_id">
+            <tr v-for="row in shownEnemies" :key="row.blizz_id">
               <td class="py-2 px-3 ">
 
                 <div class="flex items-center">
-                  <a class="link mr-2" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
-                  <div class="" v-if="row.hp_owner">
-                    <i class="fas fa-crown text" style="color:gold;"></i>
-                  </div>
-                  <div class="" v-else-if="row.patreon">
-                    <i class="fas fa-star" style="color:gold"></i>
-                  </div>
-                  <void-eye-flair :blizz-id="row.blizz_id" :region="row.region" :tooltip="false"></void-eye-flair>
+                  <a @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ row.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                  <icon-with-hover v-if="row.hp_owner" class="[&>span]:h-full" size="small" icon="fas fa-crown" title="info" popupsize="small" style="color:gold">
+                    <div>
+                      <p class="max-sm:text-xs">Site Owner</p>
+                    </div>
+                  </icon-with-hover>
+                  <icon-with-hover v-else-if="row.patreon" class="[&>span]:h-full" size="small" icon="fas fa-star" title="info" popupsize="small" style="color:gold">
+                    <div>
+                      <p class="max-sm:text-xs">Patreon Subscriber</p>
+                    </div>
+                  </icon-with-hover>
+                  <void-eye-flair :blizz-id="row.blizz_id" :region="row.region"></void-eye-flair>
 
                 </div>
               </td>
 
-              <td class="py-2 px-3 flex items-center gap-1">
-                <hero-image-wrapper :hero="row.heroData.hero">
-                  <h2>{{ row.heroData.hero.name }}</h2>
-                  <p>Games Played: {{ row.hero_games.toLocaleString('en-US') }}</p>
-                </hero-image-wrapper>
-                <span class="max-md:hidden">{{ row.heroData.hero.name }} </span>
+              <td class="py-2 px-3">
+                <div class="flex justify-center">
+                  <hero-image-wrapper :hero="row.heroData.hero">
+                    <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
+                  </hero-image-wrapper>
+                </div>
               </td>
               <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString('en-US') }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3">
-                <a class="link" :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`">Matches</a>
+                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">Matches</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-    <div v-else-if="(friendIsLoading || enemyIsLoading) && !asyncLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+    <div v-else-if="friendIsLoading || enemyIsLoading || asyncLoading" class="max-w-[1500px] mx-auto px-4 flex flex-col gap-6">
+      <loading-component v-if="asyncLoading" :compact="true" :textoverride="true">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
+      <loading-component v-else :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
+      <div class="grid md:grid-cols-2 gap-6">
+        <table-skeleton v-for="side in 2" :key="side" :bare="true" :rows="10" :columns="['text', 'avatar', 'text', 'text', 'text']"></table-skeleton>
+      </div>
     </div>
   </div>
 </template>
@@ -181,6 +202,8 @@ export default {
 
       enemySortKey: '',
       enemySortDir: 'desc',
+      friendSearch: '',
+      enemySearch: '',
 
       gametype: null,
       gamemap: null,
@@ -224,6 +247,12 @@ export default {
     }
   },
   computed: {
+    shownFriends() {
+      return this.filterByBattletag(this.sortedDataFriends, this.friendSearch);
+    },
+    shownEnemies() {
+      return this.filterByBattletag(this.sortedDataEnemies, this.enemySearch);
+    },
     sortedDataFriends() {
       if (!this.friendSortKey) return this.frienddata;
       return this.frienddata.slice().sort((a, b) => {
@@ -258,6 +287,10 @@ export default {
   watch: {
   },
   methods: {
+    filterByBattletag(rows, search) {
+      const term = search.trim().toLowerCase();
+      return term ? rows.filter(row => row.battletag.toLowerCase().includes(term)) : rows;
+    },
     async getData(type){
       let cancelTokenSource;
 

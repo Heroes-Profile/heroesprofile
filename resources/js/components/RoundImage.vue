@@ -2,7 +2,8 @@
   <div
   ref="container"
   :class="[
-    'relative group items-center md:w-10 md:h-10 ',  
+    'relative group items-center',
+    { 'md:w-10 md:h-10': !['match', 'row', 'talent'].includes(size) },
     { 
       block: size === 'big', 
       'md:w-20': size === 'big', 
@@ -11,6 +12,9 @@
       'md:h-[6em]': size === 'xl',
       // Square 64px tile with a light border
       'block w-16 h-16 md:w-16 md:h-16': size === 'tile',
+      // Fixed at every width: match rows (82px), compact rows (42px), talent icons (42px)
+      'block w-[82px] h-[82px] md:w-[82px] md:h-[82px]': size === 'match',
+      'block w-[42px] h-[42px] md:w-[42px] md:h-[42px]': size === 'row' || size === 'talent',
       'md:w-72': size === 'large',
       'md:h-[23em]': size === 'large',
       'overflow-hidden rounded': size === 'large',
@@ -51,15 +55,23 @@
       <i :class="icon" ></i>
     </span>
   
+    <!-- A grey box until the image arrives; the browser's own alt text is collapsed (it can't be centred) -->
     <img v-else loading="eager" :class="[
+      { 'bg-surface-3 text-[0px]': !imageLoaded },
       size === 'tile'
         ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-16 h-16 max-w-none rounded border-2 border-header'
+        : size === 'match'
+        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-[82px] h-[82px] max-w-none'
+        : size === 'row'
+        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-[42px] h-[42px] max-w-none'
+        : size === 'talent'
+        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-[42px] h-[42px] max-w-none rounded'
         : size === 'large'
         ? 'card-img-top object-cover object-center relative hover:brightness-125 hover:drop-shadow max-w-none rounded md:w-full md:h-full max-md:w-40 max-md:h-auto'
         : 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow max-sm:w-[2.5em] max-sm:h-[2.5em] max-sm:min-w-[2.5em] w-full h-10 min-w-10 max-md:h-10 max-md:w-10 max-w-none md:mr-auto  max-md: m-0',
       { 
         
-        'rounded-full' : rectangle != true && size !== 'tile',
+        'rounded-full' : rectangle != true && size !== 'tile' && size !== 'talent',
         //'max-md:w-20 max-md:h-20' : size != 'large', 
         'w-20': size === 'big', 
         'h-20': size === 'big',
@@ -70,7 +82,11 @@
       }
       ]"   
       :src="image" 
-      :alt="title">
+      :alt="title"
+      @load="imageLoaded = true"
+      @error="imageLoaded = true">
+    <!-- The name centred on the grey box meanwhile, on sizes big enough to hold it -->
+    <span v-if="!icon && !imageLoaded && namedPlaceholder" class="absolute inset-0 flex items-center justify-center text-center text-xs leading-tight px-2 text-subtext pointer-events-none">{{ title }}</span>
     
     <!-- Rendered under body so scrolling table wrappers can't clip it -->
     <Teleport to="body">
@@ -158,6 +174,7 @@ export default {
       tapped: false,
       // Clicked open; stays until a click outside or Esc
       pinned: false,
+      imageLoaded: false,
     }
   },
   created(){
@@ -173,11 +190,17 @@ export default {
     noMobileHover() {
       return this.hidemobiletext || this.size === 'tile';
     },
+    namedPlaceholder() {
+      return ['big', 'xl', 'tile', 'match', 'large'].includes(this.size);
+    },
     hasMobileText() {
       return !this.excludehover && !this.mobileClick && !this.href && !this.noMobileHover && !this.icon;
     },
   },
   watch: {
+    image() {
+      this.imageLoaded = false;
+    },
   },
   methods: {
     isSmallScreen() {

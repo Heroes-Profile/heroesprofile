@@ -30,7 +30,7 @@
 
     <div v-if="data">
 
-      <line-chart class="max-w-[1500px] mx-auto px-4" :data="reversedData" :dataAttribute="'mmr'" :title="`${battletag} HP MMR Graph for ${gametype}`"></line-chart>
+      <line-chart class="max-w-[1500px] mx-auto px-4" :data="reversedData" :dataAttribute="'mmr'" :title="`${battletag} HP MMR Graph for ${gametype}`" :tooltip-label="`HP ${gameTypeName} MMR`"></line-chart>
 
       <div class="max-w-[1500px] mx-auto mt-2 px-4">
         {{ this.gametype.toUpperCase() }} - League Tier Breakdowns | HP Player MMR: {{ data[0].mmr }}
@@ -65,70 +65,71 @@
           </tr>
         </tbody>
       </table>
-      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
-      <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
-        <thead>
-          <tr>
-            <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Match ID<sort-indicator :column="'replayID'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>
-            <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game Date<sort-indicator :column="'game_date'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>            
-            <th @click="sortTable('mmr_date_parsed')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              HP MMR Date Parsed<sort-indicator :column="'mmr_date_parsed'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>
-            <th @click="sortTable('hero_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Hero<sort-indicator :column="'hero_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>
-            <th @click="sortTable('mmr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              HP MMR<sort-indicator :column="'mmr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>    
-            <th @click="sortTable('mmr_change')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              HP MMR Change<sort-indicator :column="'mmr_change'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>      
-            <th @click="sortTable('winner')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Winner<sort-indicator :column="'winner'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>                 
-          </tr>
-        </thead>
-        <tbody>
-          <template v-for="(row, index) in sortedData">
-            <tr v-if="!patreonUser && index != 0 && index % 50 === 0">
-              <td colspan="7" class="align-content-center">
-                <dynamic-banner-ad :patreon-user="patreonUser" :index="index + 3" :mobile-override="false"></dynamic-banner-ad>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <a class="link" :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a>
-              </td>
-              <td>
-                {{ formatDate(row.game_date) }}
-              </td>
-              <td>
-                {{ formatDate(row.mmr_date_parsed) }}
-              </td>
-              <td class="py-2 px-3  flex items-center gap-1">
-                <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
-              </td>
-              <td>
-                {{ row.mmr.toLocaleString('en-US') }}
-              </td>
-              <td>
-                {{ row.mmr_change.toFixed(2) }}
-              </td>
-              <td>
-                {{ row.winner }}
-              </td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
+      <!-- All rows are already loaded; the bar only picks which 100 to show -->
+      <div v-if="lastPage > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 mt-6 flex justify-end">
+        <pagination-bar :current="currentPage" :last="lastPage" @page="goToPage"></pagination-bar>
+      </div>
+      <!-- Styled like the match history's compact rows -->
+      <div ref="tablecontainer" class="max-w-[1920px] mx-auto px-4 md:px-8 py-4">
+        <panel-box>
+          <!-- Wide rows scroll sideways on narrow screens -->
+          <div class="overflow-x-auto">
+            <div class="min-w-max w-full">
+              <div class="flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
+                <span class="w-[340px] shrink-0 pl-5 cursor-pointer" @click="sortTable('game_date')">Match<sort-indicator column="game_date" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[140px] shrink-0 px-4 cursor-pointer" @click="sortTable('replayID')">Game ID<sort-indicator column="replayID" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[260px] shrink-0 px-4 cursor-pointer" @click="sortTable('mmr_date_parsed')">HP MMR Date Parsed<sort-indicator column="mmr_date_parsed" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[140px] shrink-0 px-4 text-center cursor-pointer" @click="sortTable('mmr')">HP MMR<sort-indicator column="mmr" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[180px] shrink-0 px-4 text-center cursor-pointer" @click="sortTable('mmr_change')">HP MMR Change<sort-indicator column="mmr_change" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[120px] shrink-0 px-4 text-center cursor-pointer" @click="sortTable('winner')">Result<sort-indicator column="winner" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+              </div>
+              <template v-for="(row, index) in pagedData" :key="row.replayID">
+                <div v-if="!patreonUser && index != 0 && index % 50 === 0" class="my-2">
+                  <dynamic-banner-ad :patreon-user="patreonUser" :index="index + 3" :mobile-override="false"></dynamic-banner-ad>
+                </div>
+                <div :class="['group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
+                  <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
+                  <a :href="'/Match/Single/' + row.replayID" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
+                  <div class="relative w-[340px] shrink-0 self-stretch flex items-center pl-5 py-2.5">
+                    <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="row.winner === 'True' ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
+                    <div class="absolute inset-y-0 left-0 w-1.5" :class="row.winner === 'True' ? 'bg-win' : 'bg-red'"></div>
+                    <div class="relative flex items-center gap-4">
+                      <hero-image-wrapper size="row" :hero="row.hero" :excludehover="true"></hero-image-wrapper>
+                      <div class="flex flex-col whitespace-nowrap">
+                        <span class="font-bold">{{ row.hero.name }}</span>
+                        <span class="text-xs">{{ formatRowDate(row.game_date) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span class="relative z-[2] w-[140px] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="'/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
+                  <span class="relative w-[260px] shrink-0 px-4 text-sm text-subtext whitespace-nowrap">{{ formatRowDate(row.mmr_date_parsed) }}</span>
+                  <span class="relative w-[140px] shrink-0 px-4 text-center text-2xl font-semibold">{{ row.mmr.toLocaleString('en-US') }}</span>
+                  <div class="relative z-[2] w-[180px] shrink-0 px-4 flex items-center justify-center gap-2">
+                    <span class="font-medium" :class="row.mmr_change >= 0 ? 'text-win' : 'text-red'">{{ row.mmr_change > 0 ? '+' : '' }}{{ row.mmr_change.toFixed(2) }}</span>
+                    <!-- Down after a win or up after a loss: the FAQ explains why -->
+                    <round-image v-if="isUnexpectedChange(row)" class="text-xs" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+                      <p class="font-normal">HP MMR measures your skill against everyone else, so it can {{ row.winner === 'True' ? 'drop after a win against much lower rated players' : 'rise after a loss against much higher rated players' }}. The system is finding the bracket you belong in, not only rewarding wins.</p>
+                      <a href="/FAQ#mmr-change-direction" class="group/bt inline-flex items-center mt-2 font-normal"><span class="group-hover/bt:underline">Read more in the FAQ</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
+                    </round-image>
+                  </div>
+                  <span class="relative w-[120px] shrink-0 px-4 text-center font-medium" :class="row.winner === 'True' ? 'text-win' : 'text-red'">{{ row.winner === 'True' ? 'Win' : 'Loss' }}</span>
+                </div>
+              </template>
+            </div>
+          </div>
+        </panel-box>
+      </div>
+      <div v-if="lastPage > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 pb-4 flex justify-end">
+        <pagination-bar :current="currentPage" :last="lastPage" @page="goToPage($event, true)"></pagination-bar>
+      </div>
     </div>
-    </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+    <!-- The graph, tier line, league table and match table in grey while it loads -->
+    <div v-else-if="isLoading" class="max-w-[1500px] mx-auto px-4 flex flex-col gap-6">
+      <loading-component :compact="true" :textoverride="true">Loading HP MMR...</loading-component>
+      <skeleton-box class="w-full aspect-[2/1]"></skeleton-box>
+      <skeleton-box class="h-5 w-96 max-w-full"></skeleton-box>
+      <table-skeleton :bare="true" :rows="7" :columns="['text', 'text', 'text']"></table-skeleton>
+      <table-skeleton :rows="10" :columns="['portrait', 'text', 'text', 'stat', 'stat', 'stat']"></table-skeleton>
     </div>
 
   </div>
@@ -136,7 +137,6 @@
 </template>
 
 <script>
-import { scaleTableToFit } from '../../utils/scaleTable';
 import moment from 'moment-timezone';
 
 export default {
@@ -163,7 +163,6 @@ export default {
   },
   data(){
     return {
-      windowWidth: window.innerWidth,
       cancelTokenSource: null,
       userTimezone: moment.tz.guess(),
       isLoading: false,
@@ -174,6 +173,8 @@ export default {
       data: null,
       sortKey: '',
       sortDir: 'desc',
+      currentPage: 1,
+      pageSize: 100,
       leaguedata: null,
       type: "Player",
       // Hero id and role name
@@ -226,6 +227,16 @@ export default {
         }
       });
     },
+    gameTypeName() {
+      return this.filters.game_types_full.find(type => type.code === this.gametype)?.name ?? this.gametype.toUpperCase();
+    },
+    lastPage() {
+      return Math.max(1, Math.ceil((this.data ? this.data.length : 0) / this.pageSize));
+    },
+    pagedData() {
+      const start = (this.currentPage - 1) * this.pageSize;
+      return this.sortedData.slice(start, start + this.pageSize);
+    },
     isOwner(){
       if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
         return true;
@@ -238,6 +249,7 @@ export default {
   methods: {
     async getData(){
       this.isLoading = true;
+      this.currentPage = 1;
 
       if (this.cancelTokenSource) {
         this.cancelTokenSource.cancel('Request canceled');
@@ -268,12 +280,6 @@ export default {
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
-        this.$nextTick(() => {
-        const responsivetable = this.$refs.responsivetable;
-          if (responsivetable && this.windowWidth < 1500) {
-            scaleTableToFit(responsivetable, this.$refs.tablecontainer);
-          }
-        });
       }
     },
     cancelAxiosRequest() {
@@ -304,6 +310,17 @@ export default {
         this.sortDir = 'desc';
       }
       this.sortKey = key;
+      this.currentPage = 1;
+    },
+    isUnexpectedChange(row) {
+      return (row.winner === 'True' && row.mmr_change < 0) || (row.winner === 'False' && row.mmr_change > 0);
+    },
+    // From the bottom bar, bring the top of the table back into view
+    goToPage(page, fromBottom = false) {
+      this.currentPage = Math.min(Math.max(page, 1), this.lastPage);
+      if (fromBottom) {
+        this.$nextTick(() => this.$refs.tablecontainer?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+      }
     },
     printLeagueName(tier, tierID){
       if(tier){
@@ -334,11 +351,13 @@ export default {
 
       return false;
     },
-    formatDate(dateString) {
-      const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
-      const localDate = originalDate.clone().tz(moment.tz.guess());
-
-      return localDate.format('MM/DD/YYYY h:mm:ss a');
+    // In the viewer's own date format and timezone, like the match history rows
+    formatRowDate(dateString) {
+      return moment.utc(dateString).toDate().toLocaleString(undefined, {
+        dateStyle: 'long',
+        timeStyle: 'short',
+        timeZone: this.userTimezone,
+      });
     },
   }
 }

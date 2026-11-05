@@ -5,7 +5,7 @@
         <span class="relative">{{ this.text }}
           <round-image v-if="infolink" class="mt-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" style="position:absolute; bottom:0; right:-25px;">
             <div>
-              <p class="max-sm:text-xs">Timeframes correspond to game patches. <a :href="infolink" target="_blank" class="link">View the full patch & season history.</a></p>
+              <p class="max-sm:text-xs">Timeframes correspond to game patches. <a :href="infolink" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">View the full patch & season history.</span><i class="fas fa-chevron-right text-xs ml-2"></i></a></p>
             </div>
           </round-image>
           <round-image v-if="showrankinfo" class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large" mobileClick="true" style="position:absolute; bottom:0; right:-25px;">

@@ -50,32 +50,30 @@
         <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
         <thead>
           <tr>
-            <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Hero<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+            <th class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider">
+              <div class="flex items-center justify-center gap-3">
+                <span class="cursor-pointer" @click="sortTable('name')">Hero<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <search-input v-model="heroSearch" placeholder="Search hero" :collapsible="true" class="w-40"></search-input>
+              </div>
             </th>    
-            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              <span class="cursor-pointer" @click="sortTable('win_rate')">
-                Win Rate<sort-indicator column="win_rate" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </span>
-              |
-              <span class="cursor-pointer" @click="sortTable('games_played')">
-                Total Games<sort-indicator column="games_played" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </span>
+            <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              Win Rate<sort-indicator column="win_rate" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+            </th>
+            <th @click="sortTable('games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              Total Games<sort-indicator column="games_played" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('kda')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               <div class="">
-                KDA <br/>
-                Kills/Deaths/Takedowns
+                KDA
               </div><sort-indicator :column="'kda'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>  
             <th @click="sortTable('kdr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               <div class="">
-                KDR <br/>
-                Kills/Deaths
+                KDR
               </div><sort-indicator :column="'kdr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <template   v-for="stat in stats">
-              <th  v-if="stat.selected" @click="sortTable(stat.value)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <template   v-for="stat in selectedStats">
+              <th  v-if="stat.selected" @click="sortTable(stat.value)" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 {{ stat.name }}<sort-indicator :column="stat.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>
             </template> 
@@ -83,19 +81,20 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="row in sortedData" :key="row.id">
-            <td class="py-2 px-3 "><a :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.name }}</span></a></td>
-            <td class="py-2 px-3 "><stat-bar-box :title="'Win Rate'" :value="row.win_rate" :color="getWinRateColor(row.win_rate)"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
-            <td class="py-2 px-3 ">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
-            <td class="py-2 px-3 ">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
+          <tr v-for="row in shownData" :key="row.id">
+            <td class="py-2 px-3"><a class="flex justify-center" :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper size="big" :hero="row.hero" :href="getPlayerHeroPageUrl(row.name)" link-text="View Hero"></hero-image-wrapper></a></td>
+            <td class="py-2 px-3"><div class="min-w-[8em]"><div class="text-sm font-semibold text-header tabular-nums mb-1.5">{{ row.win_rate }}<span class="text-xs">%</span></div><stat-bar :value="row.win_rate" display-text="" :color="getWinRateColor(row.win_rate)"></stat-bar></div></td>
+            <td class="py-2 px-3 text-center">{{ (row.wins + row.losses) }}</td>
+            <td class="py-2 px-3 ">{{ row.kda }}</td>
+            <td class="py-2 px-3 ">{{ row.kdr }}</td>
             
-            <template v-for="stat in stats" >
+            <template v-for="stat in selectedStats" >
               <td 
                 v-if="stat.selected" 
                 :class="{ flash: stat.flash }"
-                class="py-2 px-3 text-right">
+                class="py-2 px-3 text-center">
                 <div v-if="statContainsMax(stat)">
-                  <span class="link" @click="navigateToMaxStatMatch(row.hero, stat.value, row[stat.value])" title="Navigate to this match">{{ showStatValue(stat.value, row[stat.value]) }}</span>
+                  <a class="group/bt inline-flex items-center cursor-pointer" role="button" @click="navigateToMaxStatMatch(row.hero, stat.value, row[stat.value])" title="Navigate to this match"><span class="group-hover/bt:underline">{{ showStatValue(stat.value, row[stat.value]) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                 </div>
                 <div v-else-if="statisranktier(stat)">
                   {{ row[stat.value] }}
@@ -112,11 +111,13 @@
       </table>
       </div>
     </div>
-    <div v-if="asyncLoading">
-      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
-    </div>
-    <div v-if="isLoading && !asyncLoading">
-        <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
+    <div v-else-if="isLoading || asyncLoading" class="max-w-[1500px] mx-auto px-4 flex flex-col gap-6">
+      <loading-component v-if="asyncLoading" :compact="true" :textoverride="true">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
+      <loading-component v-else :compact="true" :textoverride="true" :timer="true" :starttime="timertime">Large amount of data. Please be patient.</loading-component>
+      <div>
+        <skeleton-box class="h-14 rounded-b-none"></skeleton-box>
+        <table-skeleton :bare="true" :rows="10" :columns="['icon', 'bar', 'stat', 'text', 'text', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
+      </div>
     </div>
     <div v-if="matchIsLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
@@ -168,18 +169,19 @@ export default {
       hero: null,
       minimumgames: 0,
       searchQuery: '',
+      heroSearch: '',
       gamemap: null,
       season: null,
       startdate: null,
       enddate: null,
       stats: [
-        { name: "Avg Assists", value: 'avg_assists', selected: false, flash: false},
+        { name: "Avg Assists", value: 'avg_assists', selected: true, flash: false},
         { name: "Avg Clutch Heals", value: 'avg_clutch_heals', selected: false, flash: false},
         { name: "Avg Creep Damage", value: 'avg_creep_damage', selected: false, flash: false},
-        { name: "Avg Damage Taken", value: 'avg_damage_taken', selected: false, flash: false},
-        { name: "Avg Deaths", value: 'avg_deaths', selected: false, flash: false},
+        { name: "Avg Damage Taken", value: 'avg_damage_taken', selected: true, flash: false},
+        { name: "Avg Deaths", value: 'avg_deaths', selected: true, flash: false},
         { name: "Avg Escapes", value: 'avg_escapes', selected: false, flash: false},
-        { name: "Avg Experience Contribution", value: 'avg_experience_contribution', selected: false, flash: false},
+        { name: "Avg Experience Contribution", value: 'avg_experience_contribution', selected: true, flash: false},
         { name: "Avg First to Ten", value: 'avg_first_to_ten', selected: false, flash: false},
         { name: "Avg Game Length", value: 'avg_game_length', selected: false, flash: false},
         { name: "Avg Healing", value: 'avg_healing', selected: false, flash: false},
@@ -212,7 +214,7 @@ export default {
         { name: "Avg Town Kills", value: 'avg_town_kills', selected: false, flash: false},
         { name: "Avg Vengeance", value: 'avg_vengeance', selected: false, flash: false},
         { name: "Avg Watch Tower Captures", value: 'avg_watch_tower_captures', selected: false, flash: false},
-        { name: "Avg Total Healing", value: 'combined_healing', selected: true, flash: false},
+        { name: "Avg Total Healing", value: 'combined_healing', selected: false, flash: false},
         { name: "KDA", value: 'kda', selected: false, flash: false},
         { name: "KDR", value: 'kdr', selected: false, flash: false},
         { name: "Losses", value: 'losses', selected: false, flash: false},
@@ -295,8 +297,18 @@ export default {
     filteredStats() {
       return this.stats.filter(stat => stat.name.toLowerCase().includes(this.searchQuery.toLowerCase()));
     },
+    shownData() {
+      const search = this.heroSearch.trim().toLowerCase();
+      return search ? this.sortedData.filter(row => row.name.toLowerCase().includes(search)) : this.sortedData;
+    },
     selectedStatsCount() {
       return this.stats.filter(stat => stat.selected).length;
+    },
+    // Same order as the in-game scoreboard, then anything else picked
+    selectedStats() {
+      const order = ['avg_kills', 'avg_assists', 'avg_deaths', 'avg_siege_damage', 'avg_hero_damage', 'avg_damage_taken', 'avg_experience_contribution'];
+      const rank = stat => (order.includes(stat.value) ? order.indexOf(stat.value) : order.length);
+      return this.stats.filter(stat => stat.selected).sort((a, b) => rank(a) - rank(b));
     },
     sortedData() {
       if (!this.sortKey) return this.data;

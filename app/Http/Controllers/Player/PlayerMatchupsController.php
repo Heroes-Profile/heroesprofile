@@ -5,17 +5,22 @@ namespace App\Http\Controllers\Player;
 use App\Http\Controllers\Controller;
 use App\Models\GameType;
 use App\Models\Map;
+use App\Models\PlayerStatsCache;
 use App\Rules\DateInputValidation;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
 use App\Rules\SeasonInputValidation;
+use App\Services\GlobalQueryService;
+use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class PlayerMatchupsController extends Controller
 {
+    private const CACHE_TTL_SECONDS = 1200;
+
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
         $validationRules = [
@@ -53,15 +58,6 @@ class PlayerMatchupsController extends Controller
 
     public function getMatchupData(Request $request)
     {
-
-        // return response()->json($request->all());
-
-        $validator = \Validator::make($request->only(['blizz_id', 'region', 'battletag']), [
-            'blizz_id' => 'required|integer',
-            'region' => 'required|integer',
-            'battletag' => 'required|string',
-        ]);
-
         $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
@@ -84,6 +80,37 @@ class PlayerMatchupsController extends Controller
             ];
         }
 
+        if (! $this->globalDataService->usesProductionCaching()) {
+            return response()->json($this->executeMatchupData($request));
+        }
+
+        $paramsHash = $this->paramsHash($request);
+
+        $dbCache = PlayerStatsCache::where('params_hash', $paramsHash)->first();
+
+        if ($dbCache) {
+            $latestReplayId = $this->getLatestReplayId($request);
+
+            if (! $latestReplayId || $dbCache->latest_replayID >= $latestReplayId) {
+                return response()->json(json_decode($dbCache->data, true));
+            }
+        }
+
+        if (! $this->globalDataService->isGlobalAsyncEnabled()) {
+            return response()->json($this->executeMatchupData($request));
+        }
+
+        return app(GlobalQueryService::class)->dispatchAsync(
+            'PlayerMatchupData|'.$paramsHash,
+            static::class,
+            'executeMatchupData',
+            $request->all(),
+            self::CACHE_TTL_SECONDS
+        );
+    }
+
+    public function executeMatchupData(Request $request)
+    {
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
         $battletag = $request['battletag'];
@@ -202,6 +229,46 @@ class PlayerMatchupsController extends Controller
             return strcmp($a['name'], $b['name']);
         });
 
-        return ['tabledata' => $returnData, 'top_five_heroes' => $topFiveAllyHeroes, 'top_five_enemies' => $topFiveEnemyHeroes];
+        $returnData = ['tabledata' => $returnData, 'top_five_heroes' => $topFiveAllyHeroes, 'top_five_enemies' => $topFiveEnemyHeroes];
+
+        PlayerStatsCache::updateOrCreate(
+            ['params_hash' => $this->paramsHash($request)],
+            [
+                'blizz_id' => $request['blizz_id'],
+                'region' => $request['region'],
+                'latest_replayID' => $this->getLatestReplayId($request) ?? 0,
+                'data' => json_encode($returnData),
+            ]
+        );
+
+        return $returnData;
+    }
+
+    private function paramsHash(Request $request): string
+    {
+        return hash('sha256', json_encode(GlobalCacheKey::normalize([
+            'page' => 'matchups',
+            'blizz_id' => $request['blizz_id'],
+            'region' => $request['region'],
+            'battletag' => $request['battletag'],
+            'game_type' => $request['game_type'],
+            'season' => $request['season'],
+            'start_date' => $request['start_date'],
+            'end_date' => $request['end_date'],
+            'hero' => $request['hero'],
+            'game_map' => $request['game_map'],
+        ])));
+    }
+
+    private function getLatestReplayId(Request $request): ?int
+    {
+        return $this->globalDataService->latestPlayerReplayId(
+            $request['blizz_id'],
+            $request['region'],
+            $request['game_type'],
+            $request['season'],
+            $request['start_date'],
+            $request['end_date']
+        );
     }
 }

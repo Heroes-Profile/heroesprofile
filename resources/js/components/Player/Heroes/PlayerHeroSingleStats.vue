@@ -77,8 +77,8 @@
             </div>
             <tab-button class="self-start" tab1text="All Seasons" tab2text="This Season" :ignoreclick="true" @tab-click="buildThisSeason = $event === 'right'" :overridedefaultside="buildThisSeason ? 'right' : 'left'"></tab-button>
             <div v-if="topBuild" class="flex flex-wrap items-center gap-x-6 gap-y-3">
-              <div class="flex flex-wrap gap-1.5 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded">
-                <talent-image-wrapper v-for="level in talentLevels" :key="level" :talent="topBuild[level]" :size="'medium'"></talent-image-wrapper>
+              <div class="flex flex-wrap gap-1.5">
+                <talent-image-wrapper v-for="level in talentLevels" :key="level" :talent="topBuild[level]" size="talent"></talent-image-wrapper>
               </div>
               <div class="flex gap-6">
                 <stat-box class="!m-0 !px-0 !min-w-0" title="Games" :value="topBuild.games_played.toLocaleString('en-US')"></stat-box>

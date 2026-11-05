@@ -9,9 +9,7 @@
       <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"></div>
       <div class="absolute inset-y-0 left-0 w-1.5" :class="data.winner === 1 ? 'bg-win' : 'bg-red'"></div>
       <div class="relative flex items-center gap-4">
-        <div class="[&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_.group]:!w-[42px] [&_.group]:!h-[42px]">
-          <hero-image-wrapper :hero="data.hero" :excludehover="true"></hero-image-wrapper>
-        </div>
+        <hero-image-wrapper size="row" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
         <div class="flex flex-col whitespace-nowrap">
           <span class="font-bold">{{ data.game_map.name }}</span>
           <span class="text-xs">{{ formatRowDate(data.game_date) }}</span>
@@ -19,7 +17,7 @@
       </div>
     </div>
     <span class="relative w-[160px] shrink-0 px-4 font-medium text-header">{{ data.game_type.name }}</span>
-    <span class="relative z-[2] w-[140px] shrink-0 px-4"><a class="underline hover:text-lteal" :href="getHref()">{{ data.replayID }}</a></span>
+    <span class="relative z-[2] w-[140px] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="getHref()"><span class="group-hover/bt:underline">{{ data.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
     <div class="relative w-[130px] shrink-0 px-4 flex flex-col">
       <span class="text-2xl font-semibold">{{ data.player_mmr.toLocaleString('en-US') }}</span>
       <span v-if="data.player_change !== null" class="text-sm font-medium" :class="data.player_change >= 0 ? 'text-win' : 'text-red'">{{ data.player_change > 0 ? '+' : '' }}{{ data.player_change.toFixed(2) }}</span>
@@ -32,9 +30,9 @@
         <span class="text-sm font-medium text-subtext">{{ kda }} KDA</span>
       </template>
     </div>
-    <div class="relative z-[2] w-[426px] flex gap-1.5 items-center px-4 pr-20 shrink-0 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded">
+    <div class="relative z-[2] w-[426px] flex gap-1.5 items-center px-4 pr-20 shrink-0">
       <template v-for="level in talentLevels" :key="level">
-        <talent-image-wrapper v-if="data[level]" :talent="data[level]" :size="'medium'"></talent-image-wrapper>
+        <talent-image-wrapper v-if="data[level]" :talent="data[level]" size="talent"></talent-image-wrapper>
         <div v-else class="w-[42px] h-[42px] shrink-0 rounded bg-surface-3"></div>
       </template>
     </div>
@@ -49,9 +47,7 @@
       <div class="absolute inset-y-0 left-0 w-1.5" :class="data.winner === 1 ? 'bg-win' : 'bg-red'"></div>
 
       <div class="relative flex items-center gap-4">
-        <div class="[&_img]:!w-[82px] [&_img]:!h-[82px] [&_img]:!min-w-0 [&_.group]:!w-[82px] [&_.group]:!h-[82px]">
-          <hero-image-wrapper size="xl" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
-        </div>
+        <hero-image-wrapper size="match" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
         <div class="flex flex-col gap-1.5 whitespace-nowrap">
           <span class="font-bold">{{ data.game_map.name }}</span>
           <div class="flex flex-col">
@@ -82,9 +78,9 @@
       </template>
     </div>
 
-    <div class="relative z-[2] flex flex-wrap gap-1.5 items-center max-md:justify-center px-4 w-full 2xl:w-[362px] shrink-0 [&_img]:!w-[42px] [&_img]:!h-[42px] [&_img]:!min-w-0 [&_img]:!rounded">
+    <div class="relative z-[2] flex flex-wrap gap-1.5 items-center max-md:justify-center px-4 w-full 2xl:w-[362px] shrink-0">
       <template v-for="level in talentLevels" :key="level">
-        <talent-image-wrapper v-if="data[level]" :talent="data[level]" :size="'medium'"></talent-image-wrapper>
+        <talent-image-wrapper v-if="data[level]" :talent="data[level]" size="talent"></talent-image-wrapper>
         <div v-else class="w-[42px] h-[42px] shrink-0 rounded bg-surface-3"></div>
       </template>
     </div>
@@ -99,7 +95,7 @@
           <span class="w-[2px] ml-[3px] self-stretch shrink-0 rounded-l-full" :style="group.party && group.players.length > 1 ? { backgroundColor: partyColors[group.party] } : null"></span>
           <div class="flex flex-col gap-1.5 flex-1 min-w-0 ml-0.5">
             <div v-for="(player, groupIndex) in group.players" :key="groupIndex" class="flex gap-1 h-4 items-center">
-              <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name"/>
+              <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover bg-surface-3 text-[0px]" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name"/>
               <!-- The profile's own player comes first -->
               <span v-if="player.check" class="flex-1 min-w-0 truncate text-sm font-medium text-subtext">Hidden</span>
               <icon-with-hover v-else class="flex-1" popupsize="fit">
@@ -107,7 +103,7 @@
                   <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="$redirectToProfile(player.battletag, player.blizz_id, player.region, false)" :class="['min-w-0 truncate text-sm font-medium hover:text-lteal hover:underline', player.own ? 'text-white' : 'text-subtext']">{{ player.battletag }}</a>
                 </template>
                 <div class="flex items-center gap-2 text-base font-bold text-white">
-                  <img v-if="player.hero" class="w-6 h-6 rounded-full object-cover" :src="`/images/heroes/${player.hero.short_name}.png`" alt=""/>
+                  <img v-if="player.hero" class="w-6 h-6 rounded-full object-cover bg-surface-3 text-[0px]" :src="`/images/heroes/${player.hero.short_name}.png`" alt=""/>
                   <span class="min-w-0 break-words">{{ player.battletag }}</span>
                   <img v-if="player.party" class="w-5 h-5" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${player.party}.png`" alt=""/>
                 </div>

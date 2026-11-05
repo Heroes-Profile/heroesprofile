@@ -490,7 +490,7 @@
               <td class="py-2 px-3">{{ row.rank }}</td>
               <td class="py-2 px-3">
                 <div class="flex items-center">
-                  <a class="link mr-2" target="_blank" rel="noopener" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`">{{ row.battletag }}</a>
+                  <a target="_blank" rel="noopener" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" class="group/bt inline-flex items-center mr-2"><span class="group-hover/bt:underline">{{ row.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                   <div v-if="row.hp_owner">
                     <icon-with-hover class="mt-3" size="small" icon="fas fa-crown" title="info" popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
                       <slot>

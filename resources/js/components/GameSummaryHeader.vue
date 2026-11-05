@@ -6,17 +6,7 @@
     <span class="w-[140px] shrink-0 px-4 cursor-pointer" @click="$emit('sort', 'replayID')">Game ID<sort-indicator column="replayID" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
     <span class="w-[130px] shrink-0 px-4">Player</span>
     <span class="w-[140px] shrink-0 grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] items-center justify-items-center">
-      <icon-with-hover v-for="(stat, index) in kdaStats" :key="stat.icon" :style="{ gridColumn: index * 2 + 1 }" popupsize="fit">
-        <template #trigger>
-          <span class="group/kda">
-            <img :src="`/images/scorescreen/${stat.icon}.png`" :alt="stat.label" class="w-6 h-6 group-hover/kda:hidden"/>
-            <img :src="`/images/scorescreen/${stat.icon}_hover.png`" alt="" class="w-6 h-6 hidden group-hover/kda:block"/>
-          </span>
-        </template>
-        <div>
-          <p class="max-sm:text-xs">{{ stat.label }}</p>
-        </div>
-      </icon-with-hover>
+      <kda-icon v-for="(stat, index) in kdaStats" :key="stat" :stat="stat" :style="{ gridColumn: index * 2 + 1 }"></kda-icon>
     </span>
     <span class="w-[426px] shrink-0 px-4">Talents</span>
   </div>
@@ -26,17 +16,7 @@
     <span class="w-[430px] shrink-0 px-4">Statistics</span>
     <!-- The in-game scoreboard icons, in the same order as the row's kills | deaths | assists -->
     <span class="w-[140px] shrink-0 grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] items-center justify-items-center">
-      <icon-with-hover v-for="(stat, index) in kdaStats" :key="stat.icon" :style="{ gridColumn: index * 2 + 1 }" popupsize="fit">
-        <template #trigger>
-          <span class="group/kda">
-            <img :src="`/images/scorescreen/${stat.icon}.png`" :alt="stat.label" class="w-6 h-6 group-hover/kda:hidden"/>
-            <img :src="`/images/scorescreen/${stat.icon}_hover.png`" alt="" class="w-6 h-6 hidden group-hover/kda:block"/>
-          </span>
-        </template>
-        <div>
-          <p class="max-sm:text-xs">{{ stat.label }}</p>
-        </div>
-      </icon-with-hover>
+      <kda-icon v-for="(stat, index) in kdaStats" :key="stat" :stat="stat" :style="{ gridColumn: index * 2 + 1 }"></kda-icon>
     </span>
     <span class="w-[362px] shrink-0 px-4">Talents</span>
     <span class="w-[362px] shrink-0 pl-1.5">Players</span>
@@ -54,11 +34,7 @@ export default {
   emits: ['sort'],
   data() {
     return {
-      kdaStats: [
-        { icon: 'kills', label: 'Kills' },
-        { icon: 'deaths', label: 'Deaths' },
-        { icon: 'assists', label: 'Assists' },
-      ],
+      kdaStats: ['kills', 'deaths', 'assists'],
     };
   },
 };

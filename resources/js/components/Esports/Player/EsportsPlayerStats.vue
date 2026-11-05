@@ -71,8 +71,8 @@
           <tbody class="text-center">
             <tr v-for="(row, index) in sortedData" :key="index">
               <td>
-                <a :href="row.link">
-                  <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
+                <a class="group/bt inline-flex items-center gap-2" :href="row.link">
+                  <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="group-hover/bt:underline">{{ row.hero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i>
                 </a>
               </td>
               <td>

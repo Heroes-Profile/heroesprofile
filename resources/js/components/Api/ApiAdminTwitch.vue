@@ -29,7 +29,7 @@
         <tbody>
           <tr v-for="channel in channels" :key="channel.id">
             <td class="py-2 px-3">
-              <a :href="'https://www.twitch.tv/' + channel.twitch_login" target="_blank" rel="noopener" class="link">{{ channel.twitch_login }}</a>
+              <a :href="'https://www.twitch.tv/' + channel.twitch_login" target="_blank" rel="noopener" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ channel.twitch_login }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
               <div class="text-xs text-gray-medium">{{ channel.battletag || 'no player linked' }}</div>
             </td>
             <td class="py-2 px-3">{{ channel.email || '— unlinked —' }}</td>

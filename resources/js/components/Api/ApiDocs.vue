@@ -189,8 +189,7 @@
                       <template v-if="p.schema && p.schema.enum">
                         <a
                           v-if="listedInVariables(p)"
-                          :href="'#variable-' + p.name"
-                          class="link block text-xs"                        >{{ p.schema.enum.length }} values — see Variables</a>
+                          :href="'#variable-' + p.name" class="group/bt inline-flex items-center text-xs"><span class="group-hover/bt:underline">{{ p.schema.enum.length }} values — see Variables</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                         <div v-else class="text-xs break-all max-w-[240px]">{{ p.schema.enum.join(', ') }}</div>
                       </template>
                     </td>

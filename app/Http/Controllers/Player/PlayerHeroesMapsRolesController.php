@@ -76,7 +76,7 @@ class PlayerHeroesMapsRolesController extends Controller
             }
         }
 
-        if (config('app.env') !== 'production') {
+        if (! $this->globalDataService->usesProductionCaching()) {
             return response()->json($this->executeGetData($request));
         }
 
@@ -113,6 +113,10 @@ class PlayerHeroesMapsRolesController extends Controller
         }
 
         $cacheKey = 'PlayerStatsData|'.$paramsHash;
+
+        if (! $this->globalDataService->isGlobalAsyncEnabled()) {
+            return response()->json($this->executeGetData($request));
+        }
 
         return app(GlobalQueryService::class)->dispatchAsync(
             $cacheKey,

@@ -27,7 +27,7 @@
           <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
             <p class="font-normal">
               In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.
-              <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
+              <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">How rank reading works</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
             </p>
           </round-image>
         </template>
@@ -44,8 +44,9 @@
 
           <div class="max-w-[1500px] mx-auto md:px-4 mt-8 w-full">
             <h2 class="heading mb-4">Most Popular Builds for Latest Patch Per Hero and Game Type</h2>
-            <div v-if="!talentbuilddataall" class="text-sm text-gray-400 flex items-center gap-2">
-              <i class="fas fa-spinner fa-spin"></i> Loading all talent builds...
+            <div v-if="!talentbuilddataall" class="flex flex-col gap-4">
+              <loading-component :compact="true" :textoverride="true">Loading all talent builds...</loading-component>
+              <table-skeleton :bare="true" :rows="10" :columns="['avatar', 'talents', 'talents', 'talents']"></table-skeleton>
             </div>
             <global-talent-builds-all v-else :heroes="filteredHeroesForTable" :talentbuilddataall="talentbuilddataall"></global-talent-builds-all>
           </div>
@@ -104,7 +105,7 @@
               <div class="flex items-center gap-2 max-md:hidden">
                 <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" :overridedefaultside="isCompact ? 'right' : 'left'" @tab-click="setLayout"></tab-button>
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                  <p class="max-sm:text-xs">Your default layout can be set in your <a href="/Profile/Settings" class="link">Profile Settings</a>.</p>
+                  <p class="max-sm:text-xs">Your default layout can be set in your <a href="/Profile/Settings" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">Profile Settings</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>.</p>
                 </round-image>
               </div>
             </div>

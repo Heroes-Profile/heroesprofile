@@ -173,7 +173,7 @@
               <td class="py-2 px-3 text-sm">Plan</td>
               <td class="py-2 px-3">
                 {{ account.plans.length ? account.plans.join(', ') : 'None' }}
-                <a class="link text-sm ml-2" href="/Api/Account/Billing">Billing</a>
+                <a href="/Api/Account/Billing" class="group/bt inline-flex items-center text-sm ml-2"><span class="group-hover/bt:underline">Billing</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
               </td>
             </tr>
           </tbody>

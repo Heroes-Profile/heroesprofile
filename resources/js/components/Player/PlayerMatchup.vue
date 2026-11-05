@@ -32,48 +32,53 @@
     <table class="max-md:text-xs">
       <thead>
         <tr>
-          <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-            Hero<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+          <th class="py-2 px-3 text-center text-sm leading-4 text-gray-500 tracking-wider">
+            <div class="flex items-center justify-center gap-3">
+              <span class="cursor-pointer" @click="sortTable('name')">Hero<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+              <search-input v-model="heroSearch" placeholder="Search hero" :collapsible="true" class="w-40"></search-input>
+            </div>
           </th>
-          <th @click="sortTable('ally_win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('ally_win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Win Rate as Ally %<sort-indicator :column="'ally_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>            
-          <th @click="sortTable('enemy_win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('enemy_win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Win Rate Against Hero %<sort-indicator :column="'enemy_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>
-          <th @click="sortTable('ally_games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('ally_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Games Played As Ally<sort-indicator :column="'ally_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>
-          <th @click="sortTable('enemy_games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('enemy_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Games Played Against<sort-indicator :column="'enemy_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>                 
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(row, index) in sortedData" :key="index">
+        <tr v-for="row in shownData" :key="row.hero.id">
           <td class="py-2 px-3">
-            <a class="link flex items-center gap-1" :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/' + row.hero.name">
-              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
+            <a class="flex justify-center" :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/' + row.hero.name">
+              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>
             </a>
           </td>
-           <td class="py-2 px-3 ">
+           <td class="py-2 px-3 text-center">
             {{ row.ally_games_played ? (row.ally_win_rate ?? 0).toFixed(2) : "No data" }}
           </td>
-          <td class="py-2 px-3 ">
+          <td class="py-2 px-3 text-center">
             {{ row.enemy_games_played ? (row.enemy_win_rate ?? 0).toFixed(2) : "No data" }}
           </td>
-          <td class="py-2 px-3 ">
+          <td class="py-2 px-3 text-center">
             {{ row.ally_games_played ? row.ally_games_played.toLocaleString('en-US') : "No data" }}
           </td>
-          <td class="py-2 px-3 ">
+          <td class="py-2 px-3 text-center">
             {{ row.enemy_games_played ? row.enemy_games_played.toLocaleString('en-US') : "No data" }}
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-  <div v-else-if="isLoading">
-    <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+  <div v-else-if="isLoading || asyncLoading" class="max-w-[1500px] mx-auto px-4 flex flex-col gap-6">
+    <loading-component v-if="asyncLoading" :compact="true" :textoverride="true">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
+    <loading-component v-else :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
+    <table-skeleton :bare="true" :rows="10" :columns="['avatar', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
   </div>
 
 
@@ -103,6 +108,8 @@
       return {
         cancelTokenSource: null,
         isLoading: false,
+        asyncLoading: false,
+        heroSearch: '',
         infotext: "Hero Matchups provide information on which heroes " + this.battletag + " is good with and against",
         gametype: null,
         data: null,
@@ -137,6 +144,10 @@
           }
         });
       },
+      shownData() {
+        const search = this.heroSearch.trim().toLowerCase();
+        return search ? this.sortedData.filter(row => row.hero.name.toLowerCase().includes(search)) : this.sortedData;
+      },
       isOwner(){
         if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
           return true;
@@ -156,7 +167,7 @@
         this.cancelTokenSource = this.$axios.CancelToken.source();
       
         try{
-          const response = await this.$axios.post("/api/v1/player/matchups", {
+          const response = await this.$globalAsyncPost("/api/v1/player/matchups", {
             blizz_id: this.blizzid,
             region: this.region,
             battletag: this.battletag,
@@ -169,6 +180,11 @@
           },
           {
             cancelToken: this.cancelTokenSource.token,
+            onLoadStatus: (status, meta) => {
+              if (meta.phase === 'polling') {
+                this.asyncLoading = true;
+              }
+            },
           });
           this.data = response.data.tabledata;
           this.topfiveheroes = response.data.top_five_heroes;
@@ -178,6 +194,7 @@
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
+          this.asyncLoading = false;
         }
       },
       cancelAxiosRequest() {

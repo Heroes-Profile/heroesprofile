@@ -31,7 +31,8 @@
           <div
             v-for="(item, index) in category.items"
             :key="index"
-            class="border-b border-gray-dark last:border-b-0"
+            :id="item.id"
+            class="border-b border-gray-dark last:border-b-0 scroll-mt-24"
           >
             <button
               @click="toggle(category.name, index)"
@@ -68,7 +69,7 @@
               <tr v-for="(row, i) in patchHistory" :key="i">
                 <td style="padding:3px 8px;">{{ row.season }}</td>
                 <td style="padding:3px 8px;">
-                  <a v-if="row.patch_notes_url" :href="row.patch_notes_url" target="_blank" class="link">{{ row.game_version }}</a>
+                  <a v-if="row.patch_notes_url" :href="row.patch_notes_url" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ row.game_version }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                   <span v-else>{{ row.game_version }}</span>
                 </td>
                 <td style="padding:3px 8px;">{{ formatDate(row.start_date) }}</td>
@@ -320,6 +321,7 @@ export default {
               a: 'We periodically recalculate MMR across all uploaded games to improve accuracy. As our algorithms improve and more data is uploaded, recalculation gives all players a more accurate rating. We announce these recalculations when they happen — check our Reddit posts or GitHub for updates.',
             },
             {
+              id: 'mmr-change-direction',
               q: 'Why did my MMR go down after a win (or up after a loss)?',
               a: 'Heroes Profile MMR is not an infinitely scaling metric — it\'s a measure of your skill relative to everyone else. If your MMR dropped after a win, it means the system detected you were playing against players with significantly lower MMR than yours. The algorithm sees a high-MMR player winning against low-MMR opponents and interprets that as a sign your current rating may be too high, so it nudges it down slightly. The reverse is also true — losing to much higher-MMR players can push your rating up. This is by design: the system is always trying to find the bracket you truly belong in, not just reward you for winning.',
             },
@@ -507,6 +509,7 @@ export default {
   },
   mounted() {
     this.loadRecaptcha();
+    this.openFromHash();
   },
   computed: {
     filteredCategories() {
@@ -527,6 +530,19 @@ export default {
   methods: {
     formatDate(dateStr) {
       return new Date(dateStr).toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' });
+    },
+    // /FAQ#some-id opens that question and scrolls to it
+    openFromHash() {
+      const id = window.location.hash.slice(1);
+      if (!id) return;
+      for (const category of this.categories) {
+        const index = category.items.findIndex(item => item.id === id);
+        if (index !== -1) {
+          this.openItems = { ...this.openItems, [`${category.name}-${index}`]: true };
+          this.$nextTick(() => document.getElementById(id)?.scrollIntoView({ block: 'start' }));
+          return;
+        }
+      }
     },
     toggle(catName, index) {
       const key = `${catName}-${index}`;

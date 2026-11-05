@@ -75,11 +75,10 @@
           <td class="py-2 px-3 text-right align-top">
             <a
               v-if="file.replayID"
-              class="link"
+             
               :href="'/Match/Single/' + file.replayID"
               :target="newTab ? '_blank' : null"
-              :rel="newTab ? 'noopener' : null"
-            >{{ file.status }}</a>
+              :rel="newTab ? 'noopener' : null" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ file.status }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
             <span v-else>{{ file.status }}</span>
           </td>
         </tr>
