@@ -32,7 +32,8 @@ class ViewServiceProvider extends ServiceProvider
                 $valid = is_array($account)
                     && (new BattletagInputProhibitCharacters)->passes('battletag', $account['battletag'] ?? null)
                     && ctype_digit((string) ($account['blizz_id'] ?? ''))
-                    && isset($regions[(int) ($account['region'] ?? 0)]);
+                    // NGS players have no region
+                    && (($account['league'] ?? null) === 'NGS' || isset($regions[(int) ($account['region'] ?? 0)]));
 
                 return $valid ? $account : null;
             };

@@ -378,6 +378,7 @@ class NGSSingleDivisionController extends Controller
             'assists' => $results->sum('assists'),
             'total_games' => $results->count() / 10,
             'length_to_30' => round(((GameLength::played($results->avg('game_length'), null) / 60) / 30) * 100),
+            'avg_game_length' => GameLength::played($results->avg('game_length'), null),
             'matches' => $matches,
             'teams' => $teams,
             'heroes' => $heroes->sortBy('name')->values(),

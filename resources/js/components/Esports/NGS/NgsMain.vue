@@ -1,21 +1,21 @@
 <template>
   <div>
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
-    <page-heading :heading="'NGS'" :heading-image="'/images/NGS/600-600-ngs_large_header.png'" :heading-image-url="'/Esports/NGS'"></page-heading>
+    <page-heading :heading="''" :heading-image="'/images/NGS/ngs_large.png'" :heading-image-url="'/Esports/NGS'"></page-heading>
 
       
       <div class="flex flex-wrap justify-center gap-1 bg-teal rounded p-1 w-fit max-w-[calc(100%-2rem)] mx-auto mb-6 max-md:text-xs">
-        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'standings' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('standings')">Standings</button>
-        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'divisions' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('divisions')">Divisions</button>
-        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'teams' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('teams')">Teams</button>
+        <button type="button" :disabled="isLoading && activeButton !== 'standings'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'standings' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('standings')">Standings</button>
+        <button type="button" :disabled="isLoading && activeButton !== 'divisions'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'divisions' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('divisions')">Divisions</button>
+        <button type="button" :disabled="isLoading && activeButton !== 'teams'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'teams' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('teams')">Teams</button>
 
-        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'playerSearch' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('playerSearch')">Player Search</button>
+        <button type="button" :disabled="isLoading && activeButton !== 'playerSearch'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'playerSearch' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('playerSearch')">Player Search</button>
 
-        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'recentMatches' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('recentMatches')">Recent Matches</button>
+        <button type="button" :disabled="isLoading && activeButton !== 'recentMatches'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'recentMatches' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('recentMatches')">Recent Matches</button>
 
-        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallHeroStats' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('overallHeroStats')">Overall Hero Stats</button>
+        <button type="button" :disabled="isLoading && activeButton !== 'overallHeroStats'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallHeroStats' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('overallHeroStats')">Overall Hero Stats</button>
 
-      <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallTalentStats' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('overallTalentStats')">Overall Talent Stats</button>
+      <button type="button" :disabled="isLoading && activeButton !== 'overallTalentStats'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallTalentStats' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('overallTalentStats')">Overall Talent Stats</button>
       </div>
 
 
@@ -107,21 +107,9 @@
           <custom-button @click="filter()" :text="'Search'" :size="'medium'" class="bg-teal ml-10 hover:bg-lteal" :ignoreclick="true"></custom-button>
 
         </div>
-        <div v-if="battletagresponse">
-          <div v-if="battletagresponse.length > 1">
-            <div 
-              class="bg-blue p-4 rounded mb-4 w-[500px] flex flex-col items-center cursor-pointer" 
-              v-for="(item, index) in battletagresponse" 
-              :key="index" 
-            >
-              <div>{{ item.battletagShort }} ({{ item.regionName }})</div>
-              <div>{{ item.latest_game }}</div>
-              <div>Games Played: {{ item.totalGamesPlayed }}</div>
-              <div>{{ item.latestMap.name }}</div>
-              <div><hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper></div>
-            </div>
-          </div>
-        </div>
+        <!-- The main site's search: the table scans while it runs, then lists the matches; a single match opens straight away -->
+        <table-search v-if="searchRun && !searchFoundNone" :key="searchRun" :query="searchedFor" :results="battletagresponse" :profile-url="ngsPlayerUrl" :match-url="item => '/Esports/NGS/Match/Single/' + item.latestReplayID" loader-image="/images/NGS/no-image-clipped.png" :show-region="false" @select="item => openNgsPlayer(item)" @none="searchFoundNone = true"></table-search>
+        <p v-else-if="searchFoundNone" class="text-center text-subtext mt-10">No NGS player found for {{ searchedFor }}.</p>
       </div>
 
       <div v-if="activeButton === 'recentMatches'">
@@ -133,32 +121,14 @@
         </div>
 
         <div v-if="recentMatchesData">
-          <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
-            <li v-if="recentMatchesData.pagination.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
-              <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
-                Previous
-              </a>
-            </li>
-            <li v-if="recentMatchesData.pagination.current_page != recentMatchesData.pagination.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: !recentMatchesData.pagination.next_page_url }">
-              <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page + 1)" href="#">
-                Next
-              </a>
-            </li>
-          </ul>
+          <div v-if="recentMatchesData.pagination.last_page > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 flex justify-end">
+            <pagination-bar :current="recentMatchesData.pagination.current_page" :last="recentMatchesData.pagination.last_page" @page="getRecentMatches"></pagination-bar>
+          </div>
          
           <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'NGS'"></esports-recent-matches>
-          <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
-            <li v-if="recentMatchesData.pagination.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
-              <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
-                Previous
-              </a>
-            </li>
-            <li v-if="recentMatchesData.pagination.current_page != recentMatchesData.pagination.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: !recentMatchesData.pagination.next_page_url }">
-              <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page + 1)" href="#">
-                Next
-              </a>
-            </li>
-          </ul>
+          <div v-if="recentMatchesData.pagination.last_page > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 flex justify-end">
+            <pagination-bar :current="recentMatchesData.pagination.current_page" :last="recentMatchesData.pagination.last_page" @page="getRecentMatches"></pagination-bar>
+          </div>
         </div>
 
       </div>
@@ -197,13 +167,83 @@
       </div>
 
     </div>
-    <div v-if="isLoading">
-      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true" :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component><table-skeleton></table-skeleton></div>
+    <!-- Player Search shows its own scanning table instead -->
+    <div v-if="isLoading && activeButton !== 'playerSearch'">
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <loading-component :compact="true" :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component>
+        <!-- Standings: a block per division, its title bar over a rank / team / five-number table -->
+        <template v-if="activeButton === 'standings'">
+          <div v-for="division in 3" :key="division" class="bg-surface rounded overflow-hidden">
+            <div class="bg-surface-3 px-3 py-2.5"><skeleton-box class="h-4 w-32 !bg-surface-1"></skeleton-box></div>
+            <table-skeleton :bare="true" :rows="8" :columns="['rank', 'name', 'stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
+          </div>
+        </template>
+        <!-- Divisions: one row per division with its games played -->
+        <table-skeleton v-else-if="activeButton === 'divisions'" :bare="true" :rows="7" :columns="['stat', 'stat']"></table-skeleton>
+        <!-- Recent Matches: expanded rows with the map, the two teams and each team's heroes -->
+        <panel-box v-else-if="activeButton === 'recentMatches'">
+          <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
+            <div class="flex flex-col gap-2 w-[300px] shrink-0">
+              <skeleton-box class="h-4 w-40"></skeleton-box>
+              <skeleton-box class="h-4 w-32"></skeleton-box>
+              <skeleton-box class="h-3 w-36"></skeleton-box>
+              <skeleton-box class="h-3 w-28"></skeleton-box>
+            </div>
+            <div class="flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-6">
+              <div class="flex flex-row-reverse items-center gap-3">
+                <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
+                <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <skeleton-box class="h-8 w-20"></skeleton-box>
+                <skeleton-box class="h-3 w-28"></skeleton-box>
+              </div>
+              <div class="flex items-center gap-3">
+                <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
+                <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
+              </div>
+            </div>
+            <div class="flex gap-2 w-[340px] max-w-full shrink-0">
+              <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[150px]">
+                <div v-for="player in 5" :key="player" class="flex items-center gap-1">
+                  <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
+                  <skeleton-box class="h-3 w-24"></skeleton-box>
+                </div>
+              </div>
+            </div>
+          </div>
+        </panel-box>
+        <!-- Overall Hero Stats: hero with name, then win rate, popularity, ban rate and games -->
+        <div v-else-if="activeButton === 'overallHeroStats'" class="max-w-[1000px] w-full mx-auto">
+          <table-skeleton :bare="true" :rows="12" :columns="['hero', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
+        </div>
+        <!-- Overall Talent Stats: a block per talent level, then the builds table -->
+        <div v-else-if="activeButton === 'overallTalentStats'" class="flex flex-col items-center">
+          <div v-for="level in 3" :key="level" class="w-full bg-surface overflow-hidden">
+            <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-20"></skeleton-box></div>
+            <table-skeleton :bare="true" :rows="3" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
+          </div>
+          <div class="w-full max-w-[800px] bg-surface overflow-hidden">
+            <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-16"></skeleton-box></div>
+            <table-skeleton :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
+          </div>
+        </div>
+        <!-- Teams: the name filter over a wrapping grid of round team logos -->
+        <div v-else-if="activeButton === 'teams'" class="flex flex-col items-center gap-6">
+          <skeleton-box class="h-10 w-72 max-w-full"></skeleton-box>
+          <div class="max-w-[1500px] w-full flex flex-wrap justify-center gap-4">
+            <skeleton-box v-for="team in 45" :key="team" class="w-20 h-20 !rounded-full"></skeleton-box>
+          </div>
+        </div>
+        <table-skeleton v-else></table-skeleton>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+const NGS_TABS = ['standings', 'divisions', 'teams', 'playerSearch', 'recentMatches', 'overallHeroStats', 'overallTalentStats'];
+
 export default {
   name: 'NgsMain',
   components: {
@@ -213,6 +253,7 @@ export default {
     filters: Object,
     heroes: Object,
     talentimages: Object,
+    urlparameters: [Object, Array],
   },
   data() {
     return {
@@ -236,6 +277,10 @@ export default {
 
       userinput: null,
       battletagresponse: null,
+      // Bumped per search so the scanning table starts fresh
+      searchRun: 0,
+      searchedFor: '',
+      searchFoundNone: false,
     };
   },
   created(){
@@ -243,11 +288,13 @@ export default {
     this.season = this.defaultseason;
   },
   mounted() {
+    // ?tab= opens that tab straight away
+    const tab = this.urlparameters?.tab;
+    if (NGS_TABS.includes(tab)) {
+      this.setButtonActive(tab);
+    }
   },
   computed: {
-    isBattletagReponseValid(){
-      return this.battletagresponse[0] && this.battletagresponse[0].battletag && this.battletagresponse[0].blizz_id !== undefined && this.battletagresponse[0].region !== undefined;
-    },
     standingsClicked() {
       return this.activeButton === 'standings';
     },
@@ -354,6 +401,10 @@ export default {
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
       ;
+      this.battletagresponse = null;
+      this.searchFoundNone = false;
+      this.searchedFor = this.userinput;
+      this.searchRun++;
       try{
         const response = await this.$axios.post("/api/v1/esports/ngs/player/search", {
           userinput: this.userinput
@@ -361,23 +412,19 @@ export default {
         {
           cancelToken: this.cancelTokenSource.token,
         });
-        this.battletagresponse = response.data;
-        if(this.isBattletagReponseValid) {
-          if(this.battletagresponse.length == 1){
-            this.redirectToProfile(this.battletagresponse[0].battletag, this.battletagresponse[0].blizz_id, this.battletagresponse[0].region);
-          }
-        } else {
-          //Do something here
-        }
+        // table-search opens a single match itself and reports none
+        this.battletagresponse = Array.isArray(response.data) ? response.data : [];
       }catch(error){
-        //Do something here
+        if (!this.$axios.isCancel(error)) {
+          this.battletagresponse = [];
+        }
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
       }
     },
     async getRecentMatches(page){
-      if (this.isLoading || page < 1 || (this.recentMatchesData && page > this.recentMatchesData.last_page)) {
+      if (this.isLoading || page < 1 || (this.recentMatchesData && page > this.recentMatchesData.pagination.last_page)) {
         return;
       }
 
@@ -464,7 +511,15 @@ export default {
       }
     },
     setButtonActive(buttonName) {
+      // One tab loads at a time; the others wait until it's done
+      if (this.isLoading) {
+        return;
+      }
       this.activeButton = buttonName;
+      // The open tab goes in the URL, so it can be linked to or reloaded
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', buttonName);
+      history.replaceState(history.state, '', url);
       this.season = this.defaultseason;
       this.division = null;
 
@@ -528,9 +583,12 @@ export default {
       this.selectedHero = hero;
       this.getTalentStats();
     },
-    redirectToProfile(battletag, blizz_id, region) {
-      window.location.href = '/Esports/NGS/Player/' + battletag.split('#')[0] + "/" + blizz_id;
-    }
+    ngsPlayerUrl(item) {
+      return '/Esports/NGS/Player/' + item.battletag.split('#')[0] + '/' + item.blizz_id;
+    },
+    openNgsPlayer(item) {
+      window.location.href = this.ngsPlayerUrl(item);
+    },
   }
 }
 </script>

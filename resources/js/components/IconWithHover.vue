@@ -13,8 +13,9 @@
         'overflow-hidden': size === 'large',
         'inline-block' : icon,
         'flex flex-col': !icon,
-        'md:w-[1.7em]': icon,
-        'md:h-[1.7em]': icon,
+        // The circle badge sizes itself (1.7em of its own text size)
+        'md:w-[1.7em]': icon && !circle,
+        'md:h-[1.7em]': icon && !circle,
         
         
       }
@@ -25,7 +26,7 @@
       <!-- Anything can open the popup in place of the icon -->
       <slot v-if="$slots.trigger" name="trigger"></slot>
       <!-- Looks pressed in while pinned open -->
-      <span :class="['bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em] flex justify-center pl-[1px] items-center font-bold transition', { 'bg-surface-1 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] translate-y-px': pinned }]" v-else-if="circle" >
+      <span :class="['bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em] flex justify-center items-center font-bold tracking-normal leading-none transition', { 'bg-surface-1 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] translate-y-px': pinned }]" v-else-if="circle" >
         <i :class="icon" ></i>
       </span>
       <span class=" rounded-full   flex justify-center pl-[1px] items-center bold " v-else >

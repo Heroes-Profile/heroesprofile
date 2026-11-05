@@ -496,7 +496,7 @@ class GlobalDataService
     }
 
     /** Hero level as the single match page shows it: the mastery taunt's range when there is one. */
-    private function heroLevelLabel($heroLevel, $masteryTaunt)
+    public function heroLevelLabel($heroLevel, $masteryTaunt)
     {
         return [1 => '15-25', 2 => '25-50', 3 => '50-75', 4 => '75-100', 5 => '100+'][$masteryTaunt] ?? $heroLevel;
     }
@@ -995,6 +995,16 @@ class GlobalDataService
     public function getAllTalentsKeyed()
     {
         return Cache::remember('heroes_data_talents_all_statuses_keyed', 3600, fn () => HeroesDataTalent::withAllStatuses()->get()->keyBy('talent_id'));
+    }
+
+    /** Whether an account has NGS games, for the nav's NGS link. NGS is an NA league. */
+    public function isNgsPlayer($blizz_id, $region): bool
+    {
+        if ((int) $region !== 1 || ! ctype_digit((string) $blizz_id)) {
+            return false;
+        }
+
+        return Cache::remember('ngs_player_'.$blizz_id, 3600, fn () => DB::table('heroesprofile_ngs.player')->where('blizz_id', $blizz_id)->exists());
     }
 
     /** Every map, playable or not, keyed by map_id. */

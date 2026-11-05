@@ -248,6 +248,17 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('esports/other/{series}/player/search', [EsportOtherController::class, 'playerSearch']);
 
     Route::post('esports/ngs/matches', [EsportsController::class, 'getRecentMatchData']);
+    Route::post('esports/ngs/player/friendfoe', [EsportsController::class, 'getNGSPlayerFriendFoe']);
+    Route::post('esports/ngs/player/matchups', [EsportsController::class, 'getNGSPlayerMatchups']);
+    Route::post('esports/ngs/player/talents', [EsportsController::class, 'getNGSPlayerTalents']);
+    Route::post('esports/ngs/player/talents/builds', [EsportsController::class, 'getNGSPlayerTalentBuilds']);
+    Route::post('esports/ngs/player/heroes', [EsportsController::class, 'getNGSPlayerHeroes']);
+    Route::post('esports/ngs/player/maps', [EsportsController::class, 'getNGSPlayerMaps']);
+    Route::post('esports/ngs/player/roles', [EsportsController::class, 'getNGSPlayerRoles']);
+    Route::post('esports/ngs/player/role', [EsportsController::class, 'getNGSPlayerRole']);
+    Route::post('esports/ngs/player/hero', [EsportsController::class, 'getNGSPlayerHero']);
+    Route::post('esports/ngs/player/map', [EsportsController::class, 'getNGSPlayerMap']);
+    Route::post('esports/ngs/player/match/history', [EsportsController::class, 'getNGSPlayerMatchHistory']);
     Route::post('esports/ngs/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
     Route::post('esports/ngs/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
 

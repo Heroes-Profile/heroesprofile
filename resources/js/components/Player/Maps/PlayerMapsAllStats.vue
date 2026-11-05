@@ -3,11 +3,12 @@
     <div class="flex max-w-[1920px] mx-auto">
       <div class="">
       <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="'All Map data for ' + battletag + '. Click a map to see individual map statistics'" -->
-      <page-heading :heading="'Map Stats'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+      <page-heading v-if="esport" :heading="'Map Stats'" :battletag="battletag" :esport="esport" heading-image="/images/NGS/ngs_large.png" heading-image-url="/Esports/NGS"></page-heading>
+      <page-heading v-else :heading="'Map Stats'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
       </div>
       <div class="w-full">
-      <filters 
-        :onFilter="filterData" 
+      <filters v-if="!esport"
+        :onFilter="filterData"  
         :filters="filters" 
         :isLoading="isLoading"
         :gametypedefault="gametype"
@@ -20,6 +21,13 @@
         :includehero="true"
         >
       </filters>
+      <panel-box v-else-if="esport && ngsFilterOptions">
+        <div class="filter-row justify-center">
+          <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" @dropdown-closed="getNgsData" :trackclosure="true" :defaultValue="ngsSeason"></single-select-filter>
+          <single-select-filter :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" @dropdown-closed="getNgsData" :trackclosure="true" :defaultValue="ngsDivision"></single-select-filter>
+          <single-select-filter :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" @dropdown-closed="getNgsData" :trackclosure="true" :defaultValue="ngsTeam"></single-select-filter>
+        </div>
+      </panel-box>
       </div>
     </div>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
@@ -101,8 +109,8 @@
 </div>
     </div>
     <div v-else-if="isLoading || asyncLoading" class="max-w-[1500px] mx-auto px-4 flex flex-col gap-6">
-      <loading-component v-if="asyncLoading" :compact="true" :textoverride="true">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
-      <loading-component v-else :compact="true" :textoverride="true" :timer="true" :starttime="timertime">Large amount of data. Please be patient.</loading-component>
+      <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="esport ? '/images/NGS/no-image-clipped.png' : undefined">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
+      <loading-component v-else :compact="true" :textoverride="true" :timer="!esport" :starttime="timertime" :overrideimage="esport ? '/images/NGS/no-image-clipped.png' : undefined">Large amount of data. Please be patient.</loading-component>
       <div>
         <skeleton-box class="h-14 rounded-b-none"></skeleton-box>
         <table-skeleton :bare="true" :rows="10" :columns="['text', 'bar', 'stat', 'text', 'text', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
@@ -134,13 +142,20 @@ export default {
     isPatreon: Boolean,
     patreonUser: Boolean,
     gametypedefault: Array,
+    // 'NGS' on the NGS player pages, with the season, division and team from the URL
+    esport: String,
+    esportfilters: Object,
 
   },
   data(){
     return {
       windowWidth: window.innerWidth,
       cancelTokenSource: null,
-      showOptions: false,
+      ngsSeason: this.esportfilters?.season ?? null,
+      ngsDivision: this.esportfilters?.division ?? null,
+      ngsTeam: this.esportfilters?.team ?? null,
+      ngsFilterOptions: null,
+showOptions: false,
       isLoading: false,
       asyncLoading: false,
       infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
@@ -245,11 +260,21 @@ export default {
     this.gametype = this.gametypedefault;
   },
   mounted() {
-    if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
+    if(this.esport){
+      this.getNgsData();
+      return;
+    }
+if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
         this.getData();
       }
   },
   computed: {
+    ngsTeamOptions() {
+      return [{ code: null, name: 'All' }, ...(this.ngsFilterOptions?.teams || []).map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
+    },
+    ngsPlayerUrl() {
+      return `/Esports/NGS/Player/${this.battletag}/${this.blizzid}`;
+    },
     timertime(){
       return parseInt(this.accountlevel * 3 * .003);
     },
@@ -291,7 +316,41 @@ export default {
   watch: {
   },
   methods: {
-    async getData(type){
+    ngsParams(extra = {}) {
+      return { battletag: this.battletag, blizz_id: this.blizzid, season: this.ngsSeason, division: this.ngsDivision, team: this.ngsTeam, ...extra };
+    },
+    ngsFilterChange(eventPayload) {
+      const field = { Seasons: 'ngsSeason', Divisions: 'ngsDivision', Teams: 'ngsTeam' }[eventPayload.field];
+      if (field) {
+        this[field] = eventPayload.value;
+      }
+      const params = new URLSearchParams();
+      if (this.ngsSeason) params.set('season', this.ngsSeason);
+      if (this.ngsDivision) params.set('division', this.ngsDivision);
+      if (this.ngsTeam) params.set('team', this.ngsTeam);
+      const query = params.toString();
+      history.pushState({}, '', window.location.pathname + (query ? `?${query}` : ''));
+    },
+    async getNgsData(){
+      this.data = null;
+      this.isLoading = true;
+      try{
+        const response = await this.$axios.post("/api/v1/esports/ngs/player/maps", this.ngsParams());
+        this.ngsFilterOptions = response.data.filters;
+        this.data = response.data.rows;
+      }catch(error){
+        //Do something here
+      }finally {
+        this.isLoading = false;
+        this.$nextTick(() => {
+          const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            scaleTableToFit(responsivetable, this.$refs.tablecontainer);
+          }
+        });
+      }
+    },
+async getData(type){
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -374,6 +433,9 @@ export default {
       return this.gametype.includes(game_type);
     },
     getPlayerMapPageUrl(map){
+      if (this.esport) {
+        return `${this.ngsPlayerUrl}/Map/${map}${window.location.search}`;
+      }
       return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/Map/" + map;
     },
     isDisabled(stat) {

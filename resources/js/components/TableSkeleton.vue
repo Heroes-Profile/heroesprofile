@@ -4,7 +4,7 @@
     <skeleton-box v-if="heading" class="h-8 w-80 max-w-full"></skeleton-box>
     <div v-if="columns.length" class="flex flex-col">
       <div class="grid gap-6 px-3 py-5 border-b border-gray-dark" :style="gridStyle">
-        <skeleton-box v-for="(column, index) in columns" :key="index" :class="['h-4', column === 'num' ? 'w-2/3 ml-auto' : ['icon', 'avatar', 'stat', 'pill', 'talentrow', 'copy'].includes(column) ? 'w-2/3 mx-auto' : 'w-3/4']"></skeleton-box>
+        <skeleton-box v-for="(column, index) in columns" :key="index" :class="['h-4', column === 'num' ? 'w-2/3 ml-auto' : ['icon', 'avatar', 'stat', 'rank', 'pill', 'talentrow', 'copy', 'code'].includes(column) ? 'w-2/3 mx-auto' : 'w-3/4']"></skeleton-box>
       </div>
       <div v-for="row in rows" :key="row" :class="['grid gap-6 px-3 py-4 items-center', { 'bg-surface-1': row % 2 === 0 }]" :style="gridStyle">
         <template v-for="(column, index) in columns" :key="index">
@@ -14,6 +14,11 @@
           </div>
           <skeleton-box v-else-if="column === 'icon'" class="w-20 h-20 mx-auto !rounded-full"></skeleton-box>
           <skeleton-box v-else-if="column === 'avatar'" class="w-10 h-10 mx-auto !rounded-full"></skeleton-box>
+          <!-- A hero portrait with the name beside it -->
+          <div v-else-if="column === 'hero'" class="flex items-center gap-2">
+            <skeleton-box class="w-10 h-10 shrink-0 !rounded-full"></skeleton-box>
+            <skeleton-box class="h-4 w-24 max-w-full"></skeleton-box>
+          </div>
           <!-- A build: seven talent squares with its copy code and button underneath -->
           <div v-else-if="column === 'talents'" class="flex flex-col items-center gap-2">
             <div class="flex gap-1.5">
@@ -31,7 +36,12 @@
             <skeleton-box class="h-4 w-32 max-w-full"></skeleton-box>
           </div>
           <div v-else-if="column === 'talentrow'" class="flex gap-1.5 justify-center">
-            <skeleton-box v-for="level in 7" :key="level" class="w-9 h-9 shrink-0 !rounded-full"></skeleton-box>
+            <skeleton-box v-for="level in 7" :key="level" class="w-[42px] h-[42px] shrink-0"></skeleton-box>
+          </div>
+          <!-- A build's copy code with its copy icon -->
+          <div v-else-if="column === 'code'" class="flex items-center justify-center gap-2">
+            <skeleton-box class="h-4 w-32 max-w-full"></skeleton-box>
+            <skeleton-box class="w-4 h-4 shrink-0"></skeleton-box>
           </div>
           <div v-else-if="column === 'copy'" class="flex flex-col items-center gap-2">
             <skeleton-box class="h-4 w-40 max-w-full"></skeleton-box>
@@ -47,6 +57,8 @@
           </div>
           <skeleton-box v-else-if="column === 'num'" class="h-4 w-16 ml-auto"></skeleton-box>
           <skeleton-box v-else-if="column === 'stat'" class="h-4 w-16 mx-auto"></skeleton-box>
+          <skeleton-box v-else-if="column === 'rank'" class="h-4 w-6 mx-auto"></skeleton-box>
+          <skeleton-box v-else-if="column === 'name'" class="h-4 w-3/5"></skeleton-box>
           <skeleton-box v-else class="h-4 w-3/4"></skeleton-box>
         </template>
       </div>
@@ -67,7 +79,7 @@ export default {
       default: 15,
     },
     heading: Boolean,
-    // Cell shapes per column: portrait, icon (80px), avatar (40px), talents (a build), talentrow, copy, pill, badge, bar, pair, num (right-aligned), stat (centred), or text.
+    // Cell shapes per column: portrait, icon (80px), avatar (40px), hero (portrait and name), talents (a build), talentrow, copy, code (copy code and icon), pill, badge, rank, name (wide, left), bar, pair, num (right-aligned), stat (centred), or text.
     columns: {
       type: Array,
       default: () => [],
@@ -78,7 +90,7 @@ export default {
   computed: {
     gridStyle() {
       // Icon-only columns are narrow in the real tables
-      const widths = { avatar: 'minmax(0, 0.4fr)', talentrow: 'minmax(0, 2fr)', badge: 'minmax(0, 1.5fr)' };
+      const widths = { avatar: 'minmax(0, 0.4fr)', hero: 'minmax(0, 1.6fr)', rank: 'minmax(0, 0.4fr)', name: 'minmax(0, 3fr)', talentrow: 'minmax(0, 2fr)', badge: 'minmax(0, 1.5fr)' };
       return { gridTemplateColumns: this.columns.map(column => widths[column] ?? 'minmax(0, 1fr)').join(' ') };
     },
   },

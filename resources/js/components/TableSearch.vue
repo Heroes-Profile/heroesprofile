@@ -1,7 +1,7 @@
 <template>
   <!-- A player table is scanned while the search runs, then the matches drop in -->
   <div class="max-w-[1500px] mx-auto w-full px-4 mt-10 pb-10">
-    <loading-component v-if="phase === 'searching'" class="mb-4" :compact="true" :textoverride="true">Searching for {{ query }}...</loading-component>
+    <loading-component v-if="phase === 'searching'" class="mb-4" :compact="true" :textoverride="true" :overrideimage="loaderImage">Searching for {{ query }}...</loading-component>
     <p v-else class="text-center text-subtext text-sm mb-4">
       <template v-if="phase === 'choose'">{{ results.length }} players named {{ query }}. Pick one.</template>
       <template v-else-if="phase === 'picked'">Opening profile...</template>
@@ -11,8 +11,8 @@
       <table class="min-w-0 w-full responsive-table relative">
         <thead>
           <tr>
-            <th class="py-2 px-3 text-center text-sm leading-4">BattleTag</th>
-            <th class="py-2 px-3 text-center text-sm leading-4">Region</th>
+            <th class="py-2 px-3 text-center text-sm leading-4">Player</th>
+            <th v-if="showRegion" class="py-2 px-3 text-center text-sm leading-4">Region</th>
             <th class="py-2 px-3 text-center text-sm leading-4">Games Played</th>
             <th class="py-2 px-3 text-center text-sm leading-4">Latest Hero</th>
             <th class="py-2 px-3 text-center text-sm leading-4">Latest Game</th>
@@ -22,7 +22,7 @@
         <tbody v-if="phase === 'searching'" class="text-center">
           <tr v-for="row in SKELETON_ROWS" :key="row">
             <td><skeleton-box class="w-32 h-4 mx-auto"></skeleton-box></td>
-            <td><skeleton-box class="w-12 h-4 mx-auto"></skeleton-box></td>
+            <td v-if="showRegion"><skeleton-box class="w-12 h-4 mx-auto"></skeleton-box></td>
             <td><skeleton-box class="w-16 h-4 mx-auto"></skeleton-box></td>
             <td><skeleton-box class="w-10 h-10 mx-auto !rounded-full"></skeleton-box></td>
             <td><skeleton-box class="w-28 h-4 mx-auto"></skeleton-box></td>
@@ -37,13 +37,13 @@
             @click="pick(index)"
           >
             <td>
-              <a class="group/bt inline-flex items-center" :href="`/Player/${item.battletagShort}/${item.blizz_id}/${item.region}`" @click.prevent.stop="pick(index)"><span class="group-hover/bt:underline">{{ item.battletagShort }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+              <a class="group/bt inline-flex items-center" :href="profileUrl(item)" @click.prevent.stop="pick(index)"><span class="group-hover/bt:underline">{{ item.battletagShort }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
             </td>
-            <td>{{ item.regionName }}</td>
+            <td v-if="showRegion">{{ item.regionName }}</td>
             <td>{{ Number(item.totalGamesPlayed).toLocaleString('en-US') }}</td>
             <td><hero-image-wrapper v-if="item.latestHero" class="flex justify-center" :hero="item.latestHero"></hero-image-wrapper></td>
             <td>
-              <a v-if="item.latestReplayID" class="group/bt inline-flex items-center" :href="`/Match/Single/${item.latestReplayID}`" target="_blank" rel="noopener" @click.stop><span class="group-hover/bt:underline">{{ item.latest_game }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+              <a v-if="item.latestReplayID" class="group/bt inline-flex items-center" :href="matchUrl(item)" target="_blank" rel="noopener" @click.stop><span class="group-hover/bt:underline">{{ item.latest_game }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
               <template v-else>{{ item.latest_game }}</template>
             </td>
           </tr>
@@ -56,7 +56,7 @@
 
     <!-- Covers the page and stays while the profile loads -->
     <div :class="['fixed inset-0 z-[100] bg-page pointer-events-none transition-opacity duration-500 flex items-center', fadeOut ? 'opacity-100' : 'opacity-0']">
-      <loading-component v-if="fadeOut"></loading-component>
+      <loading-component v-if="fadeOut" :overrideimage="loaderImage"></loading-component>
     </div>
   </div>
 </template>
@@ -73,6 +73,26 @@ export default {
     query: String,
     // null while the search runs
     results: Array,
+    // Off where every result is in one region (NGS is all NA)
+    showRegion: {
+      type: Boolean,
+      default: true,
+    },
+    // The loaders' spinning logo, e.g. the NGS one on NGS pages; the site's own when left out
+    loaderImage: {
+      type: String,
+      default: null,
+    },
+    // Where Latest Game links to, e.g. the NGS match page instead of the main one
+    matchUrl: {
+      type: Function,
+      default: item => `/Match/Single/${item.latestReplayID}`,
+    },
+    // Where a result's name links to, e.g. the NGS player page instead of the main profile
+    profileUrl: {
+      type: Function,
+      default: item => `/Player/${item.battletagShort}/${item.blizz_id}/${item.region}`,
+    },
   },
   emits: ['select', 'none'],
   data() {

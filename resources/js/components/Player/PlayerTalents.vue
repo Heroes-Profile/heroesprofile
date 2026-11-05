@@ -3,13 +3,23 @@
     <div class="flex max-w-[1920px] mx-auto">
       <div class="">
         <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" -->
-        <page-heading heading="Talent Statistics" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
+        <page-heading v-if="esport" heading="Talent Statistics" :battletag="battletag" :esport="esport" heading-image="/images/NGS/ngs_large.png" heading-image-url="/Esports/NGS"></page-heading>
+        <page-heading v-else heading="Talent Statistics" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
           <template v-if="selectedHero" #aboveHeading>
             <hero-heading-select :heroes="heroes" :value="selectedHero.id" @hero-changed="changeHero($event)"></hero-heading-select>
           </template>
         </page-heading>
       </div>
-      <div v-if="selectedHero" class="w-full">
+      <div v-if="esport" class="w-full">
+        <panel-box v-if="ngsFilterOptions" :key="ngsFilterKey">
+        <div class="filter-row justify-center">
+          <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" @dropdown-closed="ngsFilterApply" :trackclosure="true" :defaultValue="ngsSeason"></single-select-filter>
+          <single-select-filter :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" @dropdown-closed="ngsFilterApply" :trackclosure="true" :defaultValue="ngsDivision"></single-select-filter>
+          <single-select-filter :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" @dropdown-closed="ngsFilterApply" :trackclosure="true" :defaultValue="ngsTeam"></single-select-filter>
+        </div>
+      </panel-box>
+      </div>
+      <div v-else-if="selectedHero" class="w-full">
         <filters
           :onFilter="filterData"
           :filters="filters"
@@ -31,13 +41,14 @@
       <!-- The player's most played build per hero, like the list on /Global/Talents -->
       <div class="max-w-[1500px] mx-auto md:px-4 mt-8 w-full flex flex-col gap-4">
         <div class="flex flex-wrap items-center justify-between gap-4">
-          <h2 class="heading">Most Played Builds Per Hero and Game Type</h2>
-          <tab-button :tab1text="'All Time'" :tab2text="'Current Season'" :ignoreclick="true" @tab-click="setBuildsRange" :overridedefaultside="buildsCurrentSeason ? 'right' : 'left'"></tab-button>
+          <h2 class="heading">{{ esport ? 'Most Played Builds Per Hero' : 'Most Played Builds Per Hero and Game Type' }}</h2>
+          <tab-button :key="esport ? 'ngs-' + ngsRangeSide : 'range'" :tab1text="'All Time'" :tab2text="'Current Season'" :ignoreclick="true" @tab-click="setBuildsRange" :overridedefaultside="esport ? ngsRangeSide : (buildsCurrentSeason ? 'right' : 'left')"></tab-button>
         </div>
-        <loading-component v-if="isBuildsLoading" :compact="true" :textoverride="true">Loading talent builds{{ buildsTotal ? ` (${buildsLoaded} of ${buildsTotal} heroes)` : '' }}...</loading-component>
+        <loading-component v-if="isBuildsLoading" :compact="true" :textoverride="true" :overrideimage="esport ? '/images/NGS/no-image-clipped.png' : undefined">Loading talent builds{{ buildsTotal ? ` (${buildsLoaded} of ${buildsTotal} heroes)` : '' }}...</loading-component>
         <p v-if="buildsError" class="text-sm text-subtext">Couldn't load talent builds. Reload the page to try again.</p>
-        <global-talent-builds-all v-else-if="heroesWithBuilds.length" :key="buildsCurrentSeason ? 'season' : 'all'" :heroes="heroesWithBuilds" :talentbuilddataall="talentbuilddataall"></global-talent-builds-all>
+        <global-talent-builds-all v-else-if="heroesWithBuilds.length" :key="buildsCurrentSeason ? 'season' : 'all'" :heroes="heroesWithBuilds" :talentbuilddataall="talentbuilddataall" :game-types="esport ? [{ key: 'ngs', label: 'NGS' }] : undefined"></global-talent-builds-all>
         <table-skeleton v-else-if="isBuildsLoading" :bare="true" :rows="10" :columns="['avatar', 'talents', 'talents', 'talents']"></table-skeleton>
+        <p v-else-if="talentbuilddataall && esport" class="text-sm text-subtext">No NGS builds for these filters.</p>
         <p v-else-if="talentbuilddataall" class="text-sm text-subtext">No builds {{ buildsCurrentSeason ? 'this season' : 'yet' }} for Quick Match, Storm League or ARAM.</p>
       </div>
     </div>
@@ -46,20 +57,28 @@
 
       <div  v-if="talentdetaildata" class="container mx-auto md:px-4">
         <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
-        <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
+        <global-talent-details-section :talentdetaildata="talentdetaildata" :esport="esport ? 'true' : undefined" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
       </div>
-      <div v-else-if="isLoading">
-        <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+      <!-- The talent tables' layout with grey blocks while they load, like Overall Talent Stats on the NGS page -->
+      <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <loading-component :compact="true" :overrideimage="esport ? '/images/NGS/no-image-clipped.png' : undefined"></loading-component>
+        <div class="container mx-auto md:px-4 flex flex-col items-center">
+          <div v-for="level in 7" :key="level" class="w-full bg-surface overflow-hidden">
+            <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-20"></skeleton-box></div>
+            <table-skeleton :bare="true" :rows="3" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
+          </div>
+          <div class="w-full max-w-[800px] bg-surface overflow-hidden mt-6">
+            <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-16"></skeleton-box></div>
+            <table-skeleton :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
+          </div>
+        </div>
       </div>
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
       <div  v-if="talentbuilddata" class="cmx-auto md:px-4 w-auto flex flex-col items-center">
         {{ this.selectedHero.name }} {{ "Talent Builds"}}
-        <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="'Popular'" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
-      </div>
-      <div v-else-if="isLoading">
-        <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+        <global-talent-builds-section :talentbuilddata="talentbuilddata" :esport="esport ? 'true' : undefined" :buildtype="'Popular'" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
       </div>
     </div>
   </div>
@@ -88,7 +107,9 @@ export default {
     isPatreon: Boolean,
     patreonUser: Boolean,
     gametypedefault: Array,
-
+    // 'NGS' on the NGS player pages, with the season, division and team from the URL
+    esport: String,
+    esportfilters: Object,
   },
   data(){
     return {
@@ -110,6 +131,12 @@ export default {
       buildsTotal: 0,
       buildsError: false,
       buildsCurrentSeason: false,
+      // Bumped when the toggle sets the season, so the Seasons dropdown shows it
+      ngsFilterKey: 0,
+      ngsSeason: this.esportfilters?.season ?? null,
+      ngsDivision: this.esportfilters?.division ?? null,
+      ngsTeam: this.esportfilters?.team ?? null,
+      ngsFilterOptions: null,
     }
   },
   created(){
@@ -127,6 +154,22 @@ export default {
     }
   },
   computed: {
+    ngsTeamOptions() {
+      return [{ code: null, name: 'All' }, ...(this.ngsFilterOptions?.teams || []).map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
+    },
+    ngsPlayerUrl() {
+      return `/Esports/NGS/Player/${this.battletag}/${this.blizzid}`;
+    },
+    ngsLatestSeason() {
+      // The first entry is All
+      return this.ngsFilterOptions?.seasons?.[1]?.code ?? null;
+    },
+    ngsRangeSide() {
+      return this.ngsLatestSeason && String(this.ngsSeason) === this.ngsLatestSeason ? 'right' : 'left';
+    },
+    playerUrl() {
+      return this.esport ? this.ngsPlayerUrl : `/Player/${this.battletag}/${this.blizzid}/${this.region}`;
+    },
     // Heroes the player has a build for, narrowed by the hero picker's search
     heroesWithBuilds() {
       if (!this.talentbuilddataall) return [];
@@ -144,6 +187,30 @@ export default {
   watch: {
   },
   methods: {
+    ngsParams(extra = {}) {
+      return { battletag: this.battletag, blizz_id: this.blizzid, season: this.ngsSeason, division: this.ngsDivision, team: this.ngsTeam, ...extra };
+    },
+    ngsFilterChange(eventPayload) {
+      const field = { Seasons: 'ngsSeason', Divisions: 'ngsDivision', Teams: 'ngsTeam' }[eventPayload.field];
+      if (field) {
+        this[field] = eventPayload.value;
+      }
+      const params = new URLSearchParams();
+      if (this.ngsSeason) params.set('season', this.ngsSeason);
+      if (this.ngsDivision) params.set('division', this.ngsDivision);
+      if (this.ngsTeam) params.set('team', this.ngsTeam);
+      const query = params.toString();
+      history.pushState({}, '', window.location.pathname + (query ? `?${query}` : ''));
+    },
+    ngsFilterApply(){
+      if (this.selectedHero) {
+        this.talentdetaildata = null;
+        this.talentbuilddata = null;
+        this.getData();
+      } else {
+        this.getBuildsAll();
+      }
+    },
     async getData(){
       try{
         this.isLoading = true;
@@ -153,7 +220,9 @@ export default {
         }
         this.cancelTokenSource = this.$axios.CancelToken.source();
 
-        const response = await this.$axios.post("/api/v1/player/talents", {
+        const response = this.esport
+          ? await this.$axios.post("/api/v1/esports/ngs/player/talents", this.ngsParams({ hero: this.selectedHero.name }), { cancelToken: this.cancelTokenSource.token })
+          : await this.$axios.post("/api/v1/player/talents", {
           hero: this.selectedHero.name,
           battletag: this.battletag,
           region: this.region,
@@ -167,6 +236,9 @@ export default {
         {
           cancelToken: this.cancelTokenSource.token,
         });
+        if (this.esport) {
+          this.ngsFilterOptions = response.data.filters;
+        }
         this.talentdetaildata = response.data.talentData
         this.talentbuilddata = response.data.buildData;
       }catch(error){
@@ -197,7 +269,12 @@ export default {
       };
 
       try{
-        const response = await this.$axios.post("/api/v1/player/talents/build/heroes", params, { cancelToken: source.token });
+        const response = this.esport
+          ? await this.$axios.post("/api/v1/esports/ngs/player/talents/builds", this.ngsParams(), { cancelToken: source.token })
+          : await this.$axios.post("/api/v1/player/talents/build/heroes", params, { cancelToken: source.token });
+        if (this.esport) {
+          this.ngsFilterOptions = response.data.filters;
+        }
         if (!Array.isArray(response.data?.heroes)) {
           throw new Error("Failure to validate inputs");
         }
@@ -242,6 +319,17 @@ export default {
       }
     },
     setBuildsRange(side){
+      // NGS: Current Season is the newest NGS season the player has games in, set through the Seasons filter
+      if (this.esport) {
+        const season = side === 'right' ? this.ngsLatestSeason : null;
+        if (season === this.ngsSeason) {
+          return;
+        }
+        this.ngsFilterChange({ field: 'Seasons', value: season });
+        this.ngsFilterKey++;
+        this.ngsFilterApply();
+        return;
+      }
       const currentSeason = side === 'right';
       if (currentSeason !== this.buildsCurrentSeason) {
         this.buildsCurrentSeason = currentSeason;
@@ -258,13 +346,13 @@ export default {
       this.preloadTalentImages(hero);
 
       let currentPath = window.location.pathname;
-      history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
+      history.pushState(null, null, `${currentPath}/${this.selectedHero.name}${window.location.search}`);
       this.getData();
     },
     changeHero(heroId) {
       this.selectedHero = this.heroes.find(hero => hero.id === heroId);
       this.preloadTalentImages(this.selectedHero);
-      history.pushState(null, null, `/Player/${this.battletag}/${this.blizzid}/${this.region}/Talents/${this.selectedHero.name}`);
+      history.pushState(null, null, `${this.playerUrl}/Talents/${this.selectedHero.name}${window.location.search}`);
       this.talentdetaildata = null;
       this.talentbuilddata = null;
       this.getData();
@@ -290,7 +378,7 @@ export default {
       }
     },
     redirectChangeHero(){
-      window.location.href = `/Player/${this.battletag}/${this.blizzid}/${this.region}/Talents`;
+      window.location.href = `${this.playerUrl}/Talents${window.location.search}`;
     }
   }
 }

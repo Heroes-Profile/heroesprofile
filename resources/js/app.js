@@ -54,60 +54,84 @@ app.config.globalProperties.$winRateColor = function (winRate) {
   return value < 50 ? 'yellow' : 'teal';
 };
 
-app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, region, redirect = true) {
-  let data = {
-    battletag: battletag,
-    blizz_id: blizz_id,
-    region: region,
-    date: new Date().toISOString(),
-  };
-  if(battletag && blizz_id && region){
-   const existingAccounts = [
-      JSON.parse(Cookies.get('alt_search_account1') || 'null'),
-      JSON.parse(Cookies.get('alt_search_account2') || 'null'),
-      JSON.parse(Cookies.get('alt_search_account3') || 'null'),
-    ];
+// NGS names a team that quits "Team (Withdrawn S22)". Returns the real name and the season it withdrew in, if any.
+app.config.globalProperties.$ngsTeam = function (teamName) {
+  const match = String(teamName ?? '').match(/^(.*?)\s*\(Withdrawn S(\d+)\)\s*$/i);
+  return match ? { name: match[1], withdrawnSeason: match[2] } : { name: teamName, withdrawnSeason: null };
+};
 
-    const accountIndex = existingAccounts.findIndex((account) => {
-      return account && account.battletag === data.battletag && account.blizz_id === data.blizz_id;
+// The header's three recent players. An NGS player is stored with league 'NGS' and no region,
+// and is a separate entry from the same player's main-site one.
+function rememberSearchAccount(data) {
+  const existingAccounts = [
+    JSON.parse(Cookies.get('alt_search_account1') || 'null'),
+    JSON.parse(Cookies.get('alt_search_account2') || 'null'),
+    JSON.parse(Cookies.get('alt_search_account3') || 'null'),
+  ];
+
+  const accountIndex = existingAccounts.findIndex((account) => {
+    return account && account.battletag === data.battletag && account.blizz_id === data.blizz_id
+      && (account.league || null) === (data.league || null);
+  });
+
+  if (accountIndex >= 0) {
+    existingAccounts[accountIndex].region = data.region;
+    existingAccounts[accountIndex].date = data.date;
+  } else {
+    // Find the oldest account or use the first available slot
+    const oldestAccountIndex = existingAccounts.findIndex((account) => {
+      return !account;
     });
 
-      if (accountIndex >= 0) {
-        existingAccounts[accountIndex].region = region;
-        existingAccounts[accountIndex].date = data.date;
-      } else {
-        // Find the oldest account or use the first available slot
-        const oldestAccountIndex = existingAccounts.findIndex((account) => {
-          return !account;
-        });
-
-        if (oldestAccountIndex >= 0) {
-          // Use the first available slot
-          existingAccounts[oldestAccountIndex] = data;
-        } else {
-          // Find the oldest account and overwrite it
-          const oldestAccount = existingAccounts.reduce((oldest, current) => {
-            if (!oldest || new Date(current.date) < new Date(oldest.date)) {
-              return current;
-            }
-            return oldest;
-          }, null);
-
-          if (oldestAccount) {
-            Object.assign(oldestAccount, data);
-          }
+    if (oldestAccountIndex >= 0) {
+      // Use the first available slot
+      existingAccounts[oldestAccountIndex] = data;
+    } else {
+      // Find the oldest account and overwrite it
+      const oldestAccount = existingAccounts.reduce((oldest, current) => {
+        if (!oldest || new Date(current.date) < new Date(oldest.date)) {
+          return current;
         }
+        return oldest;
+      }, null);
+
+      if (oldestAccount) {
+        Object.keys(oldestAccount).forEach((key) => delete oldestAccount[key]);
+        Object.assign(oldestAccount, data);
       }
-      existingAccounts.forEach((account, index) => {
-        if (account) {
-          Cookies.set('alt_search_account' + (index + 1), JSON.stringify(account), { sameSite: 'Strict', path: '/', expires: 90 });
-        }
-      });
+    }
+  }
+  existingAccounts.forEach((account, index) => {
+    if (account) {
+      Cookies.set('alt_search_account' + (index + 1), JSON.stringify(account), { sameSite: 'Strict', path: '/', expires: 90 });
+    }
+  });
+}
+
+app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, region, redirect = true) {
+  if(battletag && blizz_id && region){
+    rememberSearchAccount({
+      battletag: battletag,
+      blizz_id: blizz_id,
+      region: region,
+      date: new Date().toISOString(),
+    });
   }
     if(redirect){
       window.location.href = '/Player/' + battletag + "/" + blizz_id + "/" + region;
     }
 };
+
+// Any NGS player page puts that player in the header
+const ngsPlayerPage = window.location.pathname.match(/^\/Esports\/NGS\/Player\/([^/]+)\/(\d+)/);
+if (ngsPlayerPage) {
+  rememberSearchAccount({
+    battletag: decodeURIComponent(ngsPlayerPage[1]),
+    blizz_id: ngsPlayerPage[2],
+    league: 'NGS',
+    date: new Date().toISOString(),
+  });
+}
 
 
 app.use(flareVue);

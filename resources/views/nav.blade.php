@@ -268,12 +268,100 @@
 </div>
 <nav id="alt-account-nav" class="relative flex justify-end items-center md:gap-4 w-full max-w-[1920px] mx-auto md:px-8 md:py-4 alt-acct-nav max-md:flex-wrap">
   @foreach($altSearchAccounts as $index => $account)
-    @if($account)
+    @if($account && ($account['league'] ?? null) === 'NGS')
+      @php($ngsPlayerUrl = '/Esports/NGS/Player/'.rawurlencode($account['battletag']).'/'.$account['blizz_id'])
+      <div id="alt-account-{{ $index }}" class="relative group inline-block text-sm">
+        <a data-battletag="{{ $account['battletag'] }} NGS" class="mobile-secondary-nav-open btn md:bg-teal md:hover:bg-lteal inline-flex items-center">{{ $account['battletag'] }}<img src="/images/NGS/ngs.png" alt="NGS" class="h-[1.4em] w-auto ml-2 brightness-0 invert"></a>
+        <div data-battletag="{{ $account['battletag'] }} NGS" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[200px] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
+            <div class="nav-dropdown-inner-wrapper">
+              <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal"><span class="inline-flex items-center">{{ $account['battletag'] }}<img src="/images/NGS/ngs.png" alt="NGS" class="h-[1.4em] w-auto ml-2 brightness-0 invert"></span> <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[44px] min-h-[40px] text-lg" aria-label="Close menu">x</button></div>
+              <!-- The league's own pages, where a player's menu has Analytics -->
+              <div class="nav-flyout-wrapper">
+                <a href="/Esports/NGS" class="flex justify-between items-center bg-[#f26b30] font-bold"><img src="/images/NGS/ngs.png" alt="NGS" class="inline-block align-middle h-[1.1em] w-auto brightness-0 invert"> <span class="nav-flyout-arrow ml-4">›</span></a>
+                <div class="nav-flyout">
+                  <div class="nav-dropdown-inner-wrapper rounded-b rounded-r">
+                    <a href="/Esports/NGS?tab=standings">Standings</a>
+                    <a href="/Esports/NGS?tab=divisions">Divisions</a>
+                    <a href="/Esports/NGS?tab=teams">Teams</a>
+                    <a href="/Esports/NGS?tab=playerSearch">Player Search</a>
+                    <a href="/Esports/NGS?tab=recentMatches">Recent Matches</a>
+                    <a href="/Esports/NGS?tab=overallHeroStats">Overall Hero Stats</a>
+                    <a href="/Esports/NGS?tab=overallTalentStats">Overall Talent Stats</a>
+                  </div>
+                </div>
+              </div>
+              <a href="{{ $ngsPlayerUrl }}">Profile</a>
+              <a href="{{ $ngsPlayerUrl }}/FriendFoe">Friends and Foes</a>
+              <nav-search-flyout
+                list="heroes"
+                :label="'Heroes'"
+                :base-url-override="'{{ $ngsPlayerUrl }}/Hero'"
+                :all-label="'All Heroes'"
+              ></nav-search-flyout>
+              <div class="nav-flyout-wrapper">
+                <a href="{{ $ngsPlayerUrl }}/Role" class="flex justify-between items-center">Roles <span class="nav-flyout-arrow ml-4">›</span></a>
+                <div class="nav-flyout">
+                  <div class="nav-dropdown-inner-wrapper rounded">
+                    <a href="{{ $ngsPlayerUrl }}/Role">All Roles</a>
+                    <a href="{{ $ngsPlayerUrl }}/Role/Bruiser">Bruiser</a>
+                    <a href="{{ $ngsPlayerUrl }}/Role/Healer">Healer</a>
+                    <a href="{{ $ngsPlayerUrl }}/Role/Melee%20Assassin">Melee Assassin</a>
+                    <a href="{{ $ngsPlayerUrl }}/Role/Ranged%20Assassin">Ranged Assassin</a>
+                    <a href="{{ $ngsPlayerUrl }}/Role/Support">Support</a>
+                    <a href="{{ $ngsPlayerUrl }}/Role/Tank">Tank</a>
+                  </div>
+                </div>
+              </div>
+              <nav-search-flyout
+                list="maps"
+                :label="'Maps'"
+                :base-url-override="'{{ $ngsPlayerUrl }}/Map'"
+                :all-label="'All Maps'"
+              ></nav-search-flyout>
+              <a href="{{ $ngsPlayerUrl }}/Matchups">Matchups</a>
+              <nav-search-flyout
+                list="heroes"
+                :label="'Talents'"
+                :base-url-override="'{{ $ngsPlayerUrl }}/Talents'"
+                :all-label="'All Talents'"
+              ></nav-search-flyout>
+              <a href="{{ $ngsPlayerUrl }}/Match/History">Match History</a>
+              <a href="{{ $ngsPlayerUrl }}/Match/Latest">Latest Match</a>
+              <a href="#" class="remove-account text-right bg-gray-dark hover:bg-gray-md">
+                <remove-battletag-nav
+                  :index="{{ $index }}"
+                >
+                </remove-battletag-nav>
+              </a>
+            </div>
+        </div>
+      </div>
+    @elseif($account)
       <div id="alt-account-{{ $index }}" class="relative group inline-block text-sm">
         <a data-battletag="{{ $account['battletag'] }}" class="mobile-secondary-nav-open btn md:bg-teal md:hover:bg-lteal ">{{ $account['battletag'] }}@if(isset($regions[$account['region']]))<span class="text-[0.7em] ml-2">{{ $regions[$account['region']] }}</span>@endif</a>
         <div data-battletag="{{ $account['battletag'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[200px] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
             <div class="nav-dropdown-inner-wrapper">
               <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal">{{ $account['battletag'] }}@if(isset($regions[$account['region']])) ({{ $regions[$account['region']] }})@endif <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[44px] min-h-[40px] text-lg" aria-label="Close menu">x</button></div>
+              {{-- An NGS player's NGS pages, where the player's own menu has Analytics --}}
+              @if (app(\App\Services\GlobalDataService::class)->isNgsPlayer($account['blizz_id'], $account['region']))
+              @php($ngsAltUrl = '/Esports/NGS/Player/'.rawurlencode($account['battletag']).'/'.$account['blizz_id'])
+              <div class="nav-flyout-wrapper">
+                <a href="{{ $ngsAltUrl }}" class="flex justify-between items-center bg-[#f26b30] font-bold"><img src="/images/NGS/ngs.png" alt="NGS" class="inline-block align-middle h-[1.1em] w-auto brightness-0 invert"> <span class="nav-flyout-arrow ml-4">›</span></a>
+                <div class="nav-flyout">
+                  <div class="nav-dropdown-inner-wrapper rounded-b rounded-r">
+                    <a href="{{ $ngsAltUrl }}">Profile</a>
+                    <a href="{{ $ngsAltUrl }}/FriendFoe">Friends and Foes</a>
+                    <a href="{{ $ngsAltUrl }}/Hero">Heroes</a>
+                    <a href="{{ $ngsAltUrl }}/Role">Roles</a>
+                    <a href="{{ $ngsAltUrl }}/Map">Maps</a>
+                    <a href="{{ $ngsAltUrl }}/Matchups">Matchups</a>
+                    <a href="{{ $ngsAltUrl }}/Talents">Talents</a>
+                    <a href="{{ $ngsAltUrl }}/Match/History">Match History</a>
+                    <a href="{{ $ngsAltUrl }}/Match/Latest">Latest Match</a>
+                  </div>
+                </div>
+              </div>
+              @endif
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" >Profile</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" >Friends and Foes</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Party" >Party</a>

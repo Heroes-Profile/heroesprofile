@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div v-for="(division, divisionName) in data" :key="divisionName" class="max-w-[1500px] mx-auto flex justify-start mb-2 mt-4">
+    <p v-if="teamSearch.trim() && !Object.keys(shownData).length" class="max-w-[1500px] mx-auto mt-4 text-subtext">No teams match "{{ teamSearch }}".</p>
+    <div v-for="(division, divisionName) in shownData" :key="divisionName" class="max-w-[1500px] mx-auto flex justify-start mb-2 mt-4">
       <table class="min-w-0 w-full responsive-table max-md:text-xs">
         <thead>
           <tr class="bg-surface-3">
@@ -11,8 +12,12 @@
           <tr>
             <th class="py-2 px-3 text-center max-md:text-xs md:text-sm leading-4">
             </th>
-            <th class="py-2 px-3 text-center max-md:text-xs md:text-sm leading-4">
-              Team
+            <th class="py-2 px-3 text-left max-md:text-xs md:text-sm leading-4">
+              <!-- One search for every division, so it finds a team wherever it plays -->
+              <div class="flex items-center gap-3">
+                <span>Team</span>
+                <search-input v-model="teamSearch" placeholder="Search team" :collapsible="true" class="w-40"></search-input>
+              </div>
             </th>            
             <th class="py-2 px-3 text-center max-md:text-xs md:text-sm leading-4">
               Points
@@ -34,7 +39,12 @@
         <tbody class="text-center">
           <tr v-for="(team, teamData) in division" :key="teamData.team_name">
             <td class="max-md:max-w-[15px] max-md:p-1">{{ team.rank }}</td>
-            <td class="max-md:max-w-[100px]"><a class="group/bt inline-flex items-center max-md:break-words" :href="`/Esports/NGS/Team/${team.team_name}?season=${season}&division=${divisionName}`"><span class="group-hover/bt:underline">{{ team.team_name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></td>
+            <td class="max-md:max-w-[100px] text-left">
+              <div class="flex items-center gap-2">
+                <a class="group/bt inline-flex items-center max-md:break-words" :href="`/Esports/NGS/Team/${encodeURIComponent($ngsTeam(team.team_name).name)}?season=${season}&division=${divisionName}`"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                <round-image v-if="$ngsTeam(team.team_name).withdrawnSeason" class="text-xs" size="small" icon="fa-solid fa-ban" title="Withdrawn" popupsize="small" mobileClick="true"><p class="font-normal">Withdrew from the league in Season {{ $ngsTeam(team.team_name).withdrawnSeason }}.</p></round-image>
+              </div>
+            </td>
             <td>{{ team.points }}</td>
             <td>{{ team.dominations }}</td>
             <td>{{ team.games_won }}</td>
@@ -59,6 +69,7 @@ export default {
   },
   data(){
     return {
+      teamSearch: '',
     }
   },
   created(){
@@ -66,6 +77,21 @@ export default {
   mounted() {
   },
   computed: {
+    // Divisions with the teams matching the search; divisions with none drop out while searching
+    shownData() {
+      const search = this.teamSearch.trim().toLowerCase();
+      if (!search || !this.data) {
+        return this.data;
+      }
+      const shown = {};
+      for (const [divisionName, division] of Object.entries(this.data)) {
+        const teams = Object.values(division).filter(team => this.$ngsTeam(team.team_name).name.toLowerCase().includes(search));
+        if (teams.length) {
+          shown[divisionName] = teams;
+        }
+      }
+      return shown;
+    },
   },
   watch: {
   },

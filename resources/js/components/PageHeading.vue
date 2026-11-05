@@ -5,10 +5,11 @@
 
 
     <a v-if="headingImage" :href="headingImageUrl" target="_blank" class="flex items-center gap-4">
-      <img :src="headingImage" alt="" class="w-33 h-20"/>
+      <img :src="headingImage" :alt="heading || ''" class="w-33 h-20 object-contain"/>
       <span v-if="battletag && !esport" class="text-lg uppercase">{{ battletag }}({{ regionstring }})</span>
       <span v-if="battletag && esport" class="text-lg uppercase">{{ battletag }}</span>
-      <span class="text-2xl font-bold">{{ heading }}</span>
+      <!-- Left out when the logo already says it -->
+      <span v-if="heading" class="text-2xl font-bold">{{ heading }}</span>
     </a>
 
     <h1 v-else class="max-md:w-full">

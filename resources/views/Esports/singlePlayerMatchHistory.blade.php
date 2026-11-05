@@ -13,6 +13,9 @@
     :season="{{ json_encode($season) }}" 
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :tournament="{{ json_encode($tournament) }}"
+    :esportfilters="{{ json_encode($esportfilters ?? null) }}"
+    :playermatchtablestyle="{{ json_encode($playermatchtablestyle ?? null) }}"
+    :authenticated="{{ json_encode(auth()->check()) }}"
 
   >  
   </esports-player-match-history>

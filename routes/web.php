@@ -256,6 +256,17 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('Esports/Other/{series}/Team/{team}/Match/History', [EsportOtherController::class, 'showTeamMatchHistory']);
 
     Route::get('Esports/{esport}/Team/{team}', [EsportsController::class, 'showSingleTeam']);
+    Route::get('Esports/NGS/Player/{battletag}/{blizz_id}/FriendFoe', [EsportsController::class, 'showNGSPlayerFriendFoe']);
+    Route::get('Esports/NGS/Player/{battletag}/{blizz_id}/Matchups', [EsportsController::class, 'showNGSPlayerMatchups']);
+    Route::get('Esports/NGS/Player/{battletag}/{blizz_id}/Talents', [EsportsController::class, 'showNGSPlayerTalents']);
+    Route::get('Esports/NGS/Player/{battletag}/{blizz_id}/Talents/{hero}', [EsportsController::class, 'showNGSPlayerTalents']);
+    Route::get('Esports/NGS/Player/{battletag}/{blizz_id}/Hero', [EsportsController::class, 'showNGSPlayerHeroes']);
+    Route::get('Esports/NGS/Player/{battletag}/{blizz_id}/Hero/{hero}', [EsportsController::class, 'showNGSPlayerHero']);
+    Route::get('Esports/NGS/Player/{battletag}/{blizz_id}/Map', [EsportsController::class, 'showNGSPlayerMaps']);
+    Route::get('Esports/NGS/Player/{battletag}/{blizz_id}/Map/{map}', [EsportsController::class, 'showNGSPlayerMap']);
+    Route::get('Esports/NGS/Player/{battletag}/{blizz_id}/Role', [EsportsController::class, 'showNGSPlayerRoles']);
+    Route::get('Esports/NGS/Player/{battletag}/{blizz_id}/Role/{role}', [EsportsController::class, 'showNGSPlayerRole']);
+    Route::get('Esports/NGS/Player/{battletag}/{blizz_id}/Match/Latest', [EsportsController::class, 'showNGSPlayerLatestMatch']);
     Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}', [EsportsController::class, 'showPlayer']);
     Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Hero/{hero}', [EsportsController::class, 'showPlayerHero']);
     Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Map/{game_map}', [EsportsController::class, 'showPlayerMap']);

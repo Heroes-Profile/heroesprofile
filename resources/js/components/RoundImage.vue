@@ -3,7 +3,7 @@
   ref="container"
   :class="[
     'relative group items-center',
-    { 'md:w-10 md:h-10': !['match', 'row', 'talent'].includes(size) },
+    { 'md:w-10 md:h-10': !icon && !['match', 'row', 'talent'].includes(size) },
     { 
       block: size === 'big', 
       'md:w-20': size === 'big', 
@@ -18,10 +18,9 @@
       'md:w-72': size === 'large',
       'md:h-[23em]': size === 'large',
       'overflow-hidden rounded': size === 'large',
-      'inline-block' : icon,
       'flex flex-col': !icon,
-      'md:w-[1.7em]': icon,
-      'md:h-[1.7em]': icon,
+      // Badges size themselves (the circle is 1.7em of its own text size)
+      'inline-flex': icon,
       
       
     }
@@ -51,13 +50,13 @@
     </div>
     
     <!-- Looks pressed in while pinned open -->
-    <span :class="['bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em] flex justify-center pl-[1px] items-center font-bold transition', { 'bg-surface-1 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] translate-y-px': pinned }]" v-if="icon" >
+    <span :class="['bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em] flex justify-center items-center font-bold tracking-normal leading-none transition', { 'bg-surface-1 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] translate-y-px': pinned }]" v-if="icon" >
       <i :class="icon" ></i>
     </span>
   
     <!-- A grey box until the image arrives; the browser's own alt text is collapsed (it can't be centred) -->
     <img v-else loading="eager" :class="[
-      { 'bg-surface-3 text-[0px]': !imageLoaded },
+      { 'bg-surface-3 text-[0px]': !imageLoaded || imageFailed },
       size === 'tile'
         ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-16 h-16 max-w-none rounded border-2 border-header'
         : size === 'match'
@@ -84,9 +83,9 @@
       :src="image" 
       :alt="title"
       @load="imageLoaded = true"
-      @error="imageLoaded = true">
-    <!-- The name centred on the grey box meanwhile, on sizes big enough to hold it -->
-    <span v-if="!icon && !imageLoaded && namedPlaceholder" class="absolute inset-0 flex items-center justify-center text-center text-xs leading-tight px-2 text-subtext pointer-events-none">{{ title }}</span>
+      @error="imageFailed = true">
+    <!-- The name centred on the grey box meanwhile (or for good, if the image failed), on sizes big enough to hold it -->
+    <span v-if="!icon && (!imageLoaded || imageFailed) && namedPlaceholder" class="absolute inset-0 flex items-center justify-center text-center text-xs leading-tight px-2 text-subtext pointer-events-none">{{ title }}</span>
     
     <!-- Rendered under body so scrolling table wrappers can't clip it -->
     <Teleport to="body">
@@ -175,6 +174,7 @@ export default {
       // Clicked open; stays until a click outside or Esc
       pinned: false,
       imageLoaded: false,
+      imageFailed: false,
     }
   },
   created(){
@@ -200,6 +200,7 @@ export default {
   watch: {
     image() {
       this.imageLoaded = false;
+      this.imageFailed = false;
     },
   },
   methods: {

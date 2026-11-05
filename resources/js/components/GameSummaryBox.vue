@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!esport" :class="['group/replay relative', compact ? 'mb-1' : 'mb-1.5']">
+  <div v-if="!esport || data.hero" :class="['group/replay relative', compact ? 'mb-1' : 'mb-1.5']">
   <!-- One line per game: the match history's Compact view -->
   <div v-if="compact" class="group/row relative flex items-center justify-between rounded overflow-hidden group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2">
     <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
@@ -16,13 +16,19 @@
         </div>
       </div>
     </div>
-    <span class="relative w-[160px] shrink-0 px-4 font-medium text-header">{{ data.game_type.name }}</span>
+    <span class="relative w-[160px] shrink-0 px-4 font-medium text-header">{{ esport ? `Game ${data.game} · Round ${data.round}` : data.game_type.name }}</span>
     <span class="relative z-[2] w-[140px] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="getHref()"><span class="group-hover/bt:underline">{{ data.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
-    <div class="relative w-[130px] shrink-0 px-4 flex flex-col">
+    <!-- Esports games: their team against the other, where a ranked game shows MMR -->
+    <div v-if="esport" class="relative w-[270px] shrink-0 px-4 flex flex-col min-w-0">
+      <span class="font-semibold truncate">{{ $ngsTeam(data.own_team).name }}</span>
+      <span class="text-sm text-subtext truncate">vs {{ $ngsTeam(data.opponent_team).name }}</span>
+    </div>
+    <div v-else class="relative w-[130px] shrink-0 px-4 flex flex-col">
       <span class="text-2xl font-semibold">{{ data.player_mmr.toLocaleString('en-US') }}</span>
       <span v-if="data.player_change !== null" class="text-sm font-medium" :class="data.player_change >= 0 ? 'text-win' : 'text-red'">{{ data.player_change > 0 ? '+' : '' }}{{ data.player_change.toFixed(2) }}</span>
     </div>
-    <div class="relative w-[140px] shrink-0 flex flex-col items-center text-center">
+    <!-- Esports rows give this space to the teams -->
+    <div v-if="!esport" class="relative w-[140px] shrink-0 flex flex-col items-center text-center">
       <template v-if="data.kills !== undefined">
         <span class="grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] w-[140px] text-2xl font-semibold whitespace-nowrap tabular-nums">
           <span class="text-right text-win">{{ data.kills }}</span><span>|</span><span class="font-normal text-red">{{ data.deaths }}</span><span>|</span><span class="text-left font-normal">{{ data.assists }}</span>
@@ -51,7 +57,7 @@
         <div class="flex flex-col gap-1.5 whitespace-nowrap">
           <span class="font-bold">{{ data.game_map.name }}</span>
           <div class="flex flex-col">
-            <span class="text-base font-medium text-header">{{ data.game_type.name }}</span>
+            <span class="text-base font-medium text-header">{{ esport ? `Game ${data.game} · Round ${data.round}` : data.game_type.name }}</span>
             <span v-if="data.game_length" class="text-sm">{{ Math.round(data.game_length / 60) }} minutes</span>
           </div>
           <span class="text-xs">{{ formatRowDate(data.game_date) }}</span>
@@ -59,7 +65,13 @@
       </div>
     </div>
 
-    <div class="relative flex gap-5 items-center px-4 w-full 2xl:w-[430px] shrink-0">
+    <!-- Esports games: their team against the other, where a ranked game shows MMR -->
+    <div v-if="esport" class="relative flex flex-col gap-0.5 justify-center px-4 w-full 2xl:w-[430px] shrink-0 max-md:items-center max-md:text-center">
+      <span class="text-sm 2xl:text-base font-medium text-subtext">{{ data.winner === 1 ? 'Won' : 'Lost' }} with</span>
+      <span class="text-xl font-semibold truncate">{{ $ngsTeam(data.own_team).name }}</span>
+      <span class="text-sm text-subtext truncate">vs {{ $ngsTeam(data.opponent_team).name }}</span>
+    </div>
+    <div v-else class="relative flex gap-5 items-center px-4 w-full 2xl:w-[430px] shrink-0">
       <div v-for="stat in mmrStats" :key="stat.title" class="flex flex-col gap-0.5 flex-1 min-w-0 max-md:items-center max-md:text-center 2xl:flex-none 2xl:w-[118px]">
         <span class="text-sm 2xl:text-base font-medium text-subtext 2xl:whitespace-nowrap">{{ stat.title }}</span>
         <span class="text-2xl font-semibold">{{ stat.value.toLocaleString('en-US') }}</span>
@@ -100,7 +112,7 @@
               <span v-if="player.check" class="flex-1 min-w-0 truncate text-sm font-medium text-subtext">Hidden</span>
               <icon-with-hover v-else class="flex-1" popupsize="fit">
                 <template #trigger>
-                  <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="$redirectToProfile(player.battletag, player.blizz_id, player.region, false)" :class="['min-w-0 truncate text-sm font-medium hover:text-lteal hover:underline', player.own ? 'text-white' : 'text-subtext']">{{ player.battletag }}</a>
+                  <a :href="player.link || `/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="!player.link && $redirectToProfile(player.battletag, player.blizz_id, player.region, false)" :class="['group/bt min-w-0 inline-flex items-center text-sm font-medium hover:text-lteal', player.own ? 'text-white' : 'text-subtext']"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-[10px] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                 </template>
                 <div class="flex items-center gap-2 text-base font-bold text-white">
                   <img v-if="player.hero" class="w-6 h-6 rounded-full object-cover bg-surface-3 text-[0px]" :src="`/images/heroes/${player.hero.short_name}.png`" alt=""/>

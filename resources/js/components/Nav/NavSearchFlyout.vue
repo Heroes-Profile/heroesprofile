@@ -1,6 +1,6 @@
 <template>
   <div class="nav-flyout-wrapper" @mouseenter="open = true" @mouseleave="open = false">
-    <a :href="baseUrl" class="flex justify-between items-center">{{ label }} <span class="nav-flyout-arrow ml-4">›</span></a>
+    <a :href="headingUrl || baseUrl" class="flex justify-between items-center">{{ label }} <span class="nav-flyout-arrow ml-4">›</span></a>
 
     <div v-show="open" class="nav-flyout">
       <div class="nav-dropdown-inner-wrapper rounded-b rounded-r flex flex-col" style="max-height: 420px;">
@@ -14,7 +14,7 @@
           />
         </div>
         <div class="nav-flyout-scroll overflow-y-auto flex-1">
-          <a :href="baseUrl" class="block px-4 py-2   hover:bg-lighten text-sm">{{ allLabel }}</a>
+          <a v-if="allLabel" :href="baseUrl" class="block px-4 py-2   hover:bg-lighten text-sm">{{ allLabel }}</a>
           <a
             v-for="item in filteredItems"
             :key="item.id"
@@ -42,6 +42,8 @@ export default {
     subpath: { type: String, default: '' },
     allLabel: { type: String, default: '' },
     baseUrlOverride: { type: String, default: '' },
+    // For lists with no "all" page: where the heading goes instead (leave allLabel empty to drop that row)
+    headingUrl: { type: String, default: '' },
   },
   data() {
     return {

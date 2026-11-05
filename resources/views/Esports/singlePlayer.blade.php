@@ -10,6 +10,7 @@
     :series="{{ isset($series) ? json_encode($series) : 'null' }}" 
     :seriesimage="{{ isset($seriesimage) ? json_encode($seriesimage) : 'null' }}" 
     :division="{{ json_encode($division) }}" 
+    :team="{{ json_encode($team ?? null) }}" 
     :battletag="{{ json_encode($battletag) }}" 
     :blizz_id="{{ json_encode($blizz_id) }}" 
     :season="{{ json_encode($season) }}" 

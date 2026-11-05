@@ -122,7 +122,7 @@ export default {
   computed: {
     headingImage(){
       if(this.esport == "NGS"){
-        return "/images/NGS/600-600-ngs_large_header.png"
+        return "/images/NGS/ngs_large.png"
       }else if(this.esport == "CCL"){
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }else if(this.esport == "MastersClash"){
@@ -158,6 +158,10 @@ export default {
         return "Heroes International";
       }else if(this.esport == "Other"){
         return;
+      }
+      // The NGS logo already says NGS
+      if(this.esport == 'NGS'){
+        return '';
       }
       return this.esport;
     },

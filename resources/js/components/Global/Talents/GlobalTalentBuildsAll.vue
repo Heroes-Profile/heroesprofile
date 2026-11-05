@@ -9,9 +9,7 @@
               <search-input v-model="heroSearch" placeholder="Search hero" :collapsible="true" class="w-40"></search-input>
             </div>
           </th>
-          <th class="py-2 px-3 text-center text-sm leading-4">Quick Match</th>
-          <th class="py-2 px-3 text-center text-sm leading-4">Storm League</th>
-          <th class="py-2 px-3 text-center text-sm leading-4">ARAM</th>
+          <th v-for="gt in gameTypes" :key="gt.key" class="py-2 px-3 text-center text-sm leading-4">{{ gt.label }}</th>
         </tr>
       </thead>
       <tbody class="text-center">
@@ -21,8 +19,8 @@
               <hero-image-wrapper :hero="hero" :includehover="false"></hero-image-wrapper>
             </div>
           </td>
-          <td v-for="gt in ['qm', 'sl', 'ar']" :key="gt" class="py-2 px-3">
-            <build-code v-if="firstBuild(hero.name, gt)" :build="firstBuild(hero.name, gt)" :hero="firstBuild(hero.name, gt).hero"></build-code>
+          <td v-for="gt in gameTypes" :key="gt.key" class="py-2 px-3">
+            <build-code v-if="firstBuild(hero.name, gt.key)" :build="firstBuild(hero.name, gt.key)" :hero="firstBuild(hero.name, gt.key).hero"></build-code>
             <span v-else class="text-subtext">—</span>
           </td>
         </tr>
@@ -44,6 +42,11 @@ export default {
     talentbuilddataall: {
       type: Object,
       required: true,
+    },
+    // One column per game type; the NGS player page has a single NGS column
+    gameTypes: {
+      type: Array,
+      default: () => [{ key: 'qm', label: 'Quick Match' }, { key: 'sl', label: 'Storm League' }, { key: 'ar', label: 'ARAM' }],
     },
   },
   data() {

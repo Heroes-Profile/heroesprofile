@@ -10,6 +10,7 @@
     :defaultseason="{{ json_encode($defaultseason) }}" 
     :filters="{{ json_encode($filters) }}"
     :talentimages="{{ json_encode($talentimages) }}" 
+    :urlparameters="{{ json_encode($urlparameters) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
 
   >
