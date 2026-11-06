@@ -5,6 +5,15 @@
       <button v-if="!compact" class="md:hidden ml-auto text-2xl min-w-[44px] min-h-[44px]" aria-label="Close filters" @click="showMobile">x</button>
       <div :class="compact ? 'flex flex-wrap items-end gap-3' : 'filter-row'">
         <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,160px),1fr))] flex-1 basis-[800px] gap-2 min-w-0' : 'contents'">
+          <!-- A page's own pickers (esports seasons, divisions, teams, ...): { text, values, defaultValue, show } -->
+          <template v-for="extra in extrafilters" :key="extra.text">
+            <single-select-filter :compact="compact" v-if="extra.show !== false"
+              :values="extra.values"
+              :text="extra.text"
+              :defaultValue="extra.defaultValue"
+              @input-changed="handleExtraChange"
+            ></single-select-filter>
+          </template>
           <!--Hero or Role -->
           <single-select-filter :compact="compact" v-if="includeherorole"
             :values="filters.hero_role" 
@@ -48,45 +57,24 @@
 
           <!--<single-select-filter v-if="includecharttype" :values="filters.chart_type" :text="'Chart Type'" @input-changed="handleInputChange" :defaultValue="'Account Level'"></single-select-filter>-->
 
-          <!-- Timeframe Type -->
-          <single-select-filter :compact="compact" v-if="includetimeframetype"
-            :values="filters.timeframe_type" 
-            :text="'Timeframe Type'" 
-            :defaultValue="timeframetype" 
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-
-          <!-- Timeframe Type -->
-          <single-select-filter :compact="compact" v-if="includetimeframetypewithlastupdate"
-            :values="timeframeTypeWithLastUpdate" 
-            :text="'Timeframe Type'" 
-            :defaultValue="timeframetype" 
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-
-          <!-- Timeframes -->
+          <!-- Timeframes: builds under their major and sub patch. What's ticked decides the timeframe type sent. -->
           <!-- Remounted on a rank source switch so a dropped pre-in-game timeframe isn't left selected -->
-          <single-select-filter :compact="compact" v-if="includetimeframemodified && timeframetype == 'major' && !combinableMajorPatches.length"
-            :key="rankSourceSL ? 'timeframe-sl' : 'timeframe-hp'"
-            :values="timeframes"
-            :text="'Timeframes'"
-            :defaultValue="timeframe[0]"
-            :disabledeselectfilters="true"
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-          <multi-select-filter :compact="compact" v-else-if="includetimeframemodified"
+          <!-- Wide enough to show a whole build number -->
+          <multi-select-filter :compact="compact" v-if="includetimeframe" class="md:!min-w-[17rem]"
             :key="rankSourceSL ? 'timeframes-sl' : 'timeframes-hp'"
             :groupby="timeframeGroupOf"
+            :headings="timeframeHeadingsOf"
             :values="timeframes"
             :text="'Timeframes'"
-            :defaultValue="timeframe"
+            :defaultValue="timeframeDefault"
+            :selectedlabel="timeframe.join(', ')"
             @input-changed="handleInputChange"
             infolink="/FAQ#patch-history"
           ></multi-select-filter>
 
           <!-- Current Game Type Multiselect-->
           <multi-select-filter :compact="compact" v-if="modifiedincludegametype"
-            :values="filters.game_types" 
+            :values="globalGameTypes" 
             :text="'Game Type'" 
             @input-changed="handleInputChange" 
             :defaultValue="gametype"
@@ -240,6 +228,7 @@
           <!-- Seasons Multiselect -->
           <multi-select-filter :compact="compact" v-if="includemultiseason"
             :values="seasons"
+            :groupbyyear="true"
             :text="'Season'"
             :defaultValue="multiSeasonValue"
             @input-changed="handleInputChange"
@@ -312,7 +301,7 @@
           <single-select-filter :compact="compact" v-if="includesinglegamemap"
             :values="filters.game_maps" 
             :text="'Map'" 
-            :defaultValue="gamemap[0]"
+            :defaultValue="gamemap ? gamemap[0] : null"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
@@ -476,6 +465,7 @@
             @input-changed="handleInputChange"
             :defaultValue="modifiedGroupSizeDefaultValue"
           ></multi-select-filter>
+          <slot></slot>
         </div>
         <button :disabled="disabledFilter" @click="applyFilter" class="btn" :class="compact ? 'bg-blue px-5 h-10 disabled:opacity-50 hover:bg-lblue' : ['font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]', disabledFilter ? 'bg-gray-md' : 'bg-blue hover:bg-lblue']">
           Filter
@@ -492,7 +482,6 @@
 </template>
 
 <script>
-  import { earliestPatchDate } from '../../utils/patchAge';
 
   export default {
     name: 'Filters',
@@ -526,7 +515,6 @@
       includegroupsize: Boolean,
       groupsizeadvanced: Boolean,
       includecharttype: Boolean,
-      includetimeframetype: Boolean,
       includetimeframe: Boolean,
       includeseason: Boolean,
       includeregion: Boolean,
@@ -564,7 +552,6 @@
       includegameversion: Boolean,
       defaultseasons: Array,
       overrideGroupSizeRemoval: Boolean,
-      includetimeframetypewithlastupdate: Boolean,
       includetier: Boolean,
       includeranksource: Boolean,
       filters: {
@@ -598,6 +585,11 @@
       tierrankinput: [String, Number],
       rolerequired: Boolean,
       excludetimeframes: Boolean,
+      // For pages with no game type picker, like esports
+      excludegametype: Boolean,
+      extrafilters: { type: Array, default: () => [] },
+      // Called with each extrafilters change, for pickers that depend on each other
+      onChange: Function,
       disablefilter: Boolean,
       disabledeselectfilters: Boolean,
       matchhistorybattletagsearch: Boolean,
@@ -650,7 +642,10 @@
         statfilterdisabled: false,
         swapHeroesFilter: false,
         swapRolesFilter: false,
-        includetimeframemodified: null,
+        // Ticked builds; timeframetype and timeframe are their shortest form
+        timeframeBuilds: [],
+        // What the dropdown starts on; only set on load and on a rank source switch
+        timeframeDefault: [],
         seasonvalue: null,
         modifiedincludetier: null,
         modifiedincludeseason: null,
@@ -664,15 +659,10 @@
       }
     },
     created(){
-      this.timeframetype = this.timeframetypeinput ? this.timeframetypeinput : this.defaultTimeFrameType;
-
-      if(this.timeframetype == "last_update"){
-        this.includetimeframemodified = false;
-      }else{
-        this.includetimeframemodified = this.includetimeframe;
-      }
-
-      this.timeframe = this.timeframeinput ? this.timeframeinput : this.getDefaultMinorBasedOnTimeframeType();
+      this.timeframetype = this.timeframetypeinput && this.timeframeinput ? this.timeframetypeinput : 'major_grouped';
+      this.timeframe = this.timeframetypeinput && this.timeframeinput ? this.timeframeinput : this.getDefaultMinorBasedOnTimeframeType();
+      this.timeframeBuilds = this.buildsOf(this.timeframetype, this.timeframe);
+      this.timeframeDefault = this.timeframeBuilds;
       this.gametype = this.gametypeinput ? this.gametypeinput : this.gametypedefault;
       this.region = this.regioninput ? this.regioninput : null;
       this.statfilter = this.statfilterinput ? this.statfilterinput : this.defaultStatType;
@@ -701,11 +691,7 @@
 
       this.selectedSingleFilters["Timeframe Type"] = this.timeframetype;
       this.selectedMultiFilters["Game Type"] = this.gametype;
-      this.selectedMultiFilters["Timeframes"] = this.getDefaultMinorBasedOnTimeframeType();
-      // The single select does not emit its starting value
-      if(this.timeframetype == "major"){
-        this.selectedMultiFilters["Timeframes"] = this.timeframe;
-      }
+      this.selectedMultiFilters["Timeframes"] = this.timeframe;
       this.selectedSingleFilters["Stat Filter"] = this.defaultStatType;
 
       this.toggleExtraFilters = this.advancedfiltering;
@@ -811,30 +797,20 @@
 
         return false;
       },
-      timeframeTypeWithLastUpdate(){
-        const updatedTimeframeTypes = [...this.filters.timeframe_type];
-        //updatedTimeframeTypes.push({ code: 'last_update', name: 'Last Update' });
-        return updatedTimeframeTypes;
-      },
       combinableMajorPatches(){
         return this.filters.combinable_major_patches || [];
-      },
-      defaultTimeFrameType(){
-        return this.filters.timeframe_type[1].code;
       },
       disabledFilter(){
         if(this.isLoading){
           return true;
         }
 
-        if(!this.selectedMultiFilters.hasOwnProperty('Game Type')){
+        if(!this.excludegametype && !this.selectedMultiFilters.hasOwnProperty('Game Type')){
           return true;
         }
 
         if(!this.excludetimeframes){
-          (3);
-
-          if(!this.selectedMultiFilters.hasOwnProperty('Timeframes') && this.selectedSingleFilters["Timeframe Type"] != "last_update"){
+          if(!this.selectedMultiFilters.hasOwnProperty('Timeframes')){
             return true;
           }
         }
@@ -848,14 +824,7 @@
         return this.filters.stat_filter[0].code;
       },
       timeframes(){
-        let timeframes;
-        if(this.timeframetype == "minor" || this.timeframetype == "last_update"){
-          timeframes = this.filters.timeframes;
-        }else if(this.timeframetype == "major"){
-          timeframes = this.withPatchDates(this.filters.timeframes_grouped);
-        }else if(this.timeframetype == "major_grouped"){
-          timeframes = this.withPatchDates(this.filters.timeframes_sub_grouped);
-        }
+        const timeframes = this.filters.timeframes;
 
         // In-game rank data starts at its own patch
         if(timeframes && this.rankSourceSL && this.filters.real_rank_minimum_patch){
@@ -884,6 +853,10 @@
         const updatedList = [...this.filters.seasons];
         updatedList.unshift(newValue);
         return updatedList;
+      },
+      // The global stats pages don't offer Unranked Draft
+      globalGameTypes(){
+        return this.filters.game_types.filter(gameType => gameType.code !== 'ud');
       },
       leaderboardGameTypes(){
         if(!this.seasonvalue || this.seasonvalue >= 26){
@@ -931,13 +904,6 @@
       }
     },
     methods: {
-      // Patch groups carry no date of their own; they date from their earliest build.
-      withPatchDates(groups){
-        return (groups || []).map(group => ({
-          ...group,
-          date_added: earliestPatchDate(group.code, this.filters.timeframes),
-        }));
-      },
       // Whether a Group Size selection actually narrows anything. `All` means the
       // unfiltered table rather than a stack size, so it counts as no filter even
       // when picked alongside real sizes. Takes the string the single select emits
@@ -964,12 +930,11 @@
 
           // Drop timeframes from before in-game rank data; the newest one if nothing is left
           const minimum = this.filters.real_rank_minimum_patch;
-          const selectedTimeframes = this.selectedMultiFilters['Timeframes'] || this.timeframe || [];
-          if(minimum && Array.isArray(selectedTimeframes)){
-            const kept = selectedTimeframes.filter(timeframe => this.atOrAfterPatch(timeframe, minimum));
-            if(kept.length !== selectedTimeframes.length){
-              this.timeframe = kept.length ? kept : this.getDefaultMinorBasedOnTimeframeType();
-              this.selectedMultiFilters['Timeframes'] = this.timeframe;
+          if(minimum){
+            const kept = this.timeframeBuilds.filter(timeframe => this.atOrAfterPatch(timeframe, minimum));
+            if(kept.length !== this.timeframeBuilds.length){
+              this.setTimeframeBuilds(kept.length ? kept : this.timeframes.slice(0, 1).map(timeframe => timeframe.code));
+              this.timeframeDefault = this.timeframeBuilds;
             }
           }
         }else{
@@ -1076,22 +1041,20 @@
           this.selectedSingleFilters['League'] = this.leagueinput;
         }
       },
-      handleInputChange(eventPayload) {
-        if(eventPayload.field == "Timeframe Type"){
-          if(eventPayload.value == 'last_update'){
-            this.includetimeframemodified = false;
-            delete this.selectedMultiFilters["Timeframes"];
-          }else{
-            this.timeframetype = eventPayload.value;
-            this.timeframe = this.getDefaultMinorBasedOnTimeframeType();
-            this.selectedMultiFilters["Timeframes"] = this.timeframe;
-            this.includetimeframemodified = true;
-          }
+      handleExtraChange(eventPayload) {
+        if (eventPayload.value === '' || eventPayload.value === null) {
+          delete this.selectedSingleFilters[eventPayload.field];
+        } else {
+          this.selectedSingleFilters[eventPayload.field] = eventPayload.value;
         }
-
-        // A major patch is picked one at a time, but pages read Timeframes as a list
-        if(eventPayload.field == "Timeframes" && eventPayload.type === 'single'){
-          eventPayload = { field: "Timeframes", value: eventPayload.value === '' ? [] : [eventPayload.value], type: 'multi' };
+        if (this.onChange) {
+          this.onChange(eventPayload);
+        }
+      },
+      handleInputChange(eventPayload) {
+        if(eventPayload.field == "Timeframes"){
+          this.setTimeframeBuilds(eventPayload.value);
+          return;
         }
 
         if(eventPayload.type === 'single') {
@@ -1254,6 +1217,46 @@
       },
       // Timeframes can only be picked together within one major patch. While a major
       // patch is new, it and the one before it count as one group.
+      // Builds sit under their sub patch, sub patches under their major patch
+      timeframeHeadingsOf(timeframe) {
+        const parts = String(timeframe).split('.');
+        return [
+          { key: parts.slice(0, 2).join('.'), name: parts.slice(0, 2).join('.') + ' (Major)' },
+          { key: parts.slice(0, 3).join('.'), name: parts.slice(0, 3).join('.') + ' (Sub Patch)' },
+        ];
+      },
+      // A major or sub patch's builds; builds are themselves
+      buildsOf(type, timeframes) {
+        if(type == 'major' || type == 'major_grouped'){
+          return this.filters.timeframes
+            .map(timeframe => timeframe.code)
+            .filter(code => timeframes.some(timeframe => String(code).startsWith(timeframe + '.')));
+        }
+        return [...timeframes];
+      },
+      // Sends whole major patches, else whole sub patches, else builds
+      setTimeframeBuilds(builds) {
+        this.timeframeBuilds = builds;
+
+        const ticked = new Set(builds);
+        const shortest = (depth) => {
+          const groups = [...new Set(builds.map(build => String(build).split('.').slice(0, depth).join('.')))];
+          const whole = groups.every(group => this.buildsOf('major', [group]).every(build => ticked.has(build)));
+          return whole ? groups : null;
+        };
+
+        const majors = builds.length ? shortest(2) : null;
+        const subs = builds.length && !majors ? shortest(3) : null;
+        this.timeframetype = majors ? 'major' : (subs ? 'major_grouped' : 'minor');
+        this.timeframe = majors || subs || [...builds];
+
+        this.selectedSingleFilters['Timeframe Type'] = this.timeframetype;
+        if(this.timeframe.length){
+          this.selectedMultiFilters['Timeframes'] = this.timeframe;
+        }else{
+          delete this.selectedMultiFilters['Timeframes'];
+        }
+      },
       timeframeGroupOf(timeframe) {
         const major = String(timeframe).split('.').slice(0, 2).join('.');
 
@@ -1281,7 +1284,7 @@
         return '';
       },
       async applyFilter() {
-        if ((this.selectedMultiFilters.hasOwnProperty('Timeframes') || this.selectedSingleFilters["Timeframe Type"] == "last_update") && this.selectedMultiFilters.hasOwnProperty('Game Type')) {
+        if ((this.excludetimeframes || this.selectedMultiFilters.hasOwnProperty('Timeframes')) && (this.excludegametype || this.selectedMultiFilters.hasOwnProperty('Game Type'))) {
           if (this.matchhistorybattletagsearch && this.ffBattletag && !this.ffBlizzid) {
             await this.resolveFfPlayer();
             if (!this.ffBlizzid) return;

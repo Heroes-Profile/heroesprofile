@@ -6,24 +6,35 @@
         <page-heading v-if="esport" :heading="'Role Stats: ' + role" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
         <page-heading v-else :heading="'Role Stats: '+ role" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
       </template>
-    <div class="max-w-[1920px] mx-auto px-4 md:px-8 w-full">
-      <panel-box :filters="true" v-if="esport && ngsFilterOptions">
-        <div class="filter-row justify-center">
-          <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" :defaultValue="ngsSeason"></single-select-filter>
-          <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" :defaultValue="ngsDivision"></single-select-filter>
-          <single-select-filter :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" :defaultValue="ngsTeam"></single-select-filter>
-          <button :disabled="isLoading" @click="applyFilter" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
-        </div>
-      </panel-box>
-      <panel-box :filters="true" v-else-if="!esport">
-        <div class="filter-row">
-          <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
-          <multi-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="seasonselection"></multi-select-filter>
-          <date-range-filter :startDate="startdate" :endDate="enddate" @input-changed="handleInputChange"></date-range-filter>
-          <single-select-filter :values="gameMapWithAll" :text="'Game Map'" @input-changed="handleInputChange" :trackclosure="true" :defaultValue="'All'" :disabled="disableFilterInput"></single-select-filter>
-          <custom-button data-filter-apply class="font-semibold text-center h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :text="'Filter'" :alt="'Filter'" :color="'blue'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
-        </div>
-      </panel-box>
+    <div class="w-full">
+      <filters v-if="esport && ngsFilterOptions"
+        :filters="filters"
+        :isLoading="isLoading"
+        :onFilter="() => applyFilter()"
+        :onChange="ngsFilterChange"
+        :extrafilters="[
+          { text: 'Seasons', values: ngsFilterOptions.seasons, defaultValue: ngsSeason },
+          { text: 'Divisions', values: ngsFilterOptions.divisions, defaultValue: ngsDivision, show: !!(ngsFilterOptions.divisions) },
+          { text: 'Teams', values: ngsTeamOptions, defaultValue: ngsTeam },
+        ]"
+        :excludetimeframes="true"
+        :excludegametype="true"
+        :hideadvancedfilteringbutton="true"
+      >
+      </filters>
+      <filters v-else-if="!esport"
+        :onFilter="filterData"
+        :filters="filters"
+        :isLoading="isLoading"
+        :gametypedefault="gametypedefault"
+        :defaultseasons="seasonselection"
+        :includegametypefull="true"
+        :includemultiseason="true"
+        :includegamedaterange="true"
+        :includesinglegamemap="true"
+        :hideadvancedfilteringbutton="true"
+      >
+      </filters>
     </div>
     </player-page-top>
 
@@ -320,12 +331,6 @@
         updatedList.unshift(newValue);
         return updatedList;
       },
-      gameMapWithAll() {
-        const newValue = { code: 'All', name: 'All' };
-        const updatedList = [...this.filters.game_maps];
-        updatedList.unshift(newValue);
-        return updatedList;
-      },
       isOwner(){
         if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
           return true;
@@ -420,42 +425,13 @@
           this.cancelTokenSource.cancel('Request canceled by user');
         }
       },
-      handleInputChange(eventPayload) {
-        if(eventPayload.field == "Game Type"){
-          this.modifiedgametype = eventPayload.value.length ? [...eventPayload.value] : null;
-        }
-
-        this.handleSeasonOrDateChange(eventPayload);
-
-        if(eventPayload.field == "Game Map"){
-          if(eventPayload.value == "All"){
-            this.modifiedgamemap = null;
-          }else{
-            this.modifiedgamemap = eventPayload.value;
-          }
-        }
-      },
-      // Seasons and the date range are one or the other
-      handleSeasonOrDateChange(eventPayload) {
-        if(eventPayload.field == "Season"){
-          this.modifiedseason = eventPayload.value.length ? [...eventPayload.value] : null;
-          if(eventPayload.value.length){
-            this.startdate = null;
-            this.enddate = null;
-          }
-        }
-
-        if(eventPayload.field == "From Date" || eventPayload.field == "To Date"){
-          if(eventPayload.field == "From Date"){
-            this.startdate = eventPayload.value;
-          }else{
-            this.enddate = eventPayload.value;
-          }
-          if(eventPayload.value && this.modifiedseason){
-            this.modifiedseason = null;
-            this.seasonselection = [];
-          }
-        }
+      filterData(filteredData){
+        this.modifiedgametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : null;
+        this.modifiedseason = filteredData.multi.Season ? Array.from(filteredData.multi.Season) : null;
+        this.startdate = filteredData.single["From Date"] || null;
+        this.enddate = filteredData.single["To Date"] || null;
+        this.modifiedgamemap = filteredData.single.Map || null;
+        this.applyFilter();
       },
       applyFilter(){
         if(!this.isLoading){

@@ -6,6 +6,7 @@
 
 @section('content')
   <esports-player-map-stats 
+    :filters="{{ json_encode($filters) }}"
     :esport="{{ json_encode($esport) }}" 
     :series="{{ isset($series) ? json_encode($series) : 'null' }}" 
     :seriesimage="{{ isset($seriesimage) ? json_encode($seriesimage) : 'null' }}" 

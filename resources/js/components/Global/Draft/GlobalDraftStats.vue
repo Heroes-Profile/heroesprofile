@@ -39,7 +39,6 @@
           :rolerankinput="rolerank"
 
           :gametypedefault="gametypedefault"
-          :includetimeframetype="true"
           :includetimeframe="true"
           :includeregion="true"
           :includeherolevel="true"

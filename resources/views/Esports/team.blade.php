@@ -15,6 +15,7 @@
     :region="{{ isset($reghion) ? json_encode($region) : 'null' }}" 
     :tournament="{{ json_encode($tournament) }}" 
     :image="{{ json_encode($image) }}" 
+    :filters="{{ json_encode($filters) }}" 
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
 
   ></esports-single-team>

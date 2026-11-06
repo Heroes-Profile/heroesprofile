@@ -4,11 +4,20 @@
     <page-heading :heading="heading" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
-      <div class="flex justify-center max-w-[1500px] mx-auto">
-        <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="modifiedseason"></single-select-filter>
-        <single-select-filter v-if="esport == 'NGS'" :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" :defaultValue="modifieddivision"></single-select-filter>
-        <button :disabled="isLoading" @click="handleDropdownClosed" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
-      </div>
+      <filters
+        :filters="filters"
+        :isLoading="isLoading"
+        :onFilter="() => handleDropdownClosed()"
+        :onChange="handleInputChange"
+        :extrafilters="[
+          { text: 'Seasons', values: data.seasons, defaultValue: modifiedseason },
+          { text: 'Divisions', values: data.divisions, defaultValue: modifieddivision, show: esport == 'NGS' },
+        ]"
+        :excludetimeframes="true"
+        :excludegametype="true"
+        :hideadvancedfilteringbutton="true"
+      >
+      </filters>
 
 
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
@@ -88,6 +97,7 @@ export default {
   components: {
   },
   props: {
+  	filters: Object,
   	esport: String,
     series: String,
     division: String, 

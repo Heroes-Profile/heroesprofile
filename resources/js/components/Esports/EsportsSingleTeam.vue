@@ -3,15 +3,20 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
     <page-heading :battletag="team" :esport="esport" :heading="heading" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
-    <div v-if="filterSeasons" class="max-w-[1920px] mx-auto px-4 md:px-8">
-      <panel-box :filters="true">
-        <div class="filter-row justify-center">
-          <single-select-filter :values="filterSeasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="modifiedseason"></single-select-filter>
-          <single-select-filter v-if="esport == 'NGS'" :values="filterDivisions" :text="'Divisions'" @input-changed="handleInputChange" :defaultValue="modifieddivision"></single-select-filter>
-          <button :disabled="isLoading" @click="handleDropdownClosed" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
-        </div>
-      </panel-box>
-    </div>
+    <filters v-if="filterSeasons"
+      :filters="filters"
+      :isLoading="isLoading"
+      :onFilter="() => handleDropdownClosed()"
+      :onChange="handleInputChange"
+      :extrafilters="[
+        { text: 'Seasons', values: filterSeasons, defaultValue: modifiedseason },
+        { text: 'Divisions', values: filterDivisions, defaultValue: modifieddivision, show: !!(esport == 'NGS') },
+      ]"
+      :excludetimeframes="true"
+      :excludegametype="true"
+      :hideadvancedfilteringbutton="true"
+    >
+    </filters>
 
     <!-- Laid out like the player profile -->
     <div v-if="data" class="max-w-[1920px] mx-auto px-4 md:px-8 mt-8 space-y-8">
@@ -216,6 +221,7 @@ export default {
   components: {
   },
   props: {
+    filters: Object,
     esport: String,
     division: String, 
     team: String,

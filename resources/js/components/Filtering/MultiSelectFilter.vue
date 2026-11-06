@@ -24,7 +24,7 @@
       <span class="h-[40px] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 relative min-w-0 w-full">
         <span class="flex min-w-0 gap-1">
           <span v-if="toggletabs" class="uppercase whitespace-nowrap font-bold px-1 shrink-0">{{ toggleside === 'right' ? toggletabs[1] : toggletabs[0] }}</span>
-          <span v-if="selectedOptions.length" class="uppercase font-bold px-1 truncate min-w-0">{{ selectedOptions.length <= 3 ? selectedOptionsName.join(', ') : selectedOptions.length + ' of ' + values.length + ' selected' }}</span>
+          <span v-if="selectedOptions.length" class="uppercase font-bold px-1 truncate min-w-0">{{ selectedlabel || (selectedOptions.length <= 3 ? selectedOptionsName.join(', ') : selectedOptions.length + ' of ' + values.length + ' selected') }}</span>
         </span>
         <i class="fa-solid fa-chevron-down ml-auto shrink-0 text-xs"></i>
       </span>
@@ -38,7 +38,8 @@
             @tab-click="handleToggle"
           ></tab-button>
         </div>
-        <div class="whitespace-nowrap">
+        <!-- Heading checkboxes stand in for Select All -->
+        <div v-if="!headings && !groupbyyear" class="whitespace-nowrap">
           <input 
           type="checkbox" 
           id="select-all" 
@@ -49,18 +50,32 @@
           <label for="select-all" class="ml-2 text-sm variable-text">Select All</label>
         </div>
         <div class="max-h-80 overflow-y-auto"> 
-          <div v-for="value in values" :key="value.code" class="whitespace-nowrap" :class="{ 'md:flex md:items-center md:py-[3px]': hasPatchDates, 'opacity-40': !isSelectable(value.code) }">
+          <template v-for="row in rows" :key="row.key">
+          <div v-if="row.heading" class="whitespace-nowrap py-1" :class="[indentClass(row.depth), { 'opacity-40': !row.codes.some(code => isSelectable(code)) }]">
             <input
             type="checkbox"
-            :id="value.code"
-            :value="value.code"
-            v-model="selectedOptions"
-            :disabled="!isSelectable(value.code)"
+            :id="row.key"
+            :checked="row.codes.every(code => selectedOptions.includes(code))"
+            :indeterminate="row.codes.some(code => selectedOptions.includes(code)) && !row.codes.every(code => selectedOptions.includes(code))"
+            :disabled="!row.codes.some(code => isSelectable(code))"
+            @click="toggleHeading(row)"
             class="form-checkbox h-5 w-5 text-indigo-600"
             >
-            <label :for="value.code" class="ml-2 text-sm variable-text">{{ value.name }}</label>
-            <span v-if="value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="'Added ' + patchDate(value.date_added)">{{ patchAge(value.date_added) }}</span>
+            <label :for="row.key" class="ml-2 text-sm font-bold variable-text">{{ row.name }}</label>
           </div>
+          <div v-else class="whitespace-nowrap" :class="[indentClass(row.depth), { 'md:flex md:items-center md:py-[3px]': hasPatchDates, 'opacity-40': !isSelectable(row.value.code) }]">
+            <input
+            type="checkbox"
+            :id="row.value.code"
+            :value="row.value.code"
+            v-model="selectedOptions"
+            :disabled="!isSelectable(row.value.code)"
+            class="form-checkbox h-5 w-5 text-indigo-600"
+            >
+            <label :for="row.value.code" class="ml-2 text-sm variable-text">{{ groupbyyear ? String(row.value.name).split(' ').slice(1).join(' ') : row.value.name }}</label>
+            <span v-if="row.value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="'Added ' + patchDate(row.value.date_added)">{{ patchAge(row.value.date_added) }}</span>
+          </div>
+          </template>
         </div>
       </div>
     </div>
@@ -84,6 +99,12 @@
       infolink: String,
       // Returns an option's group from its code. Once one is picked, the other groups grey out.
       groupby: Function,
+      // Returns an option's headings, outermost first: [{ key, name }]. Options are listed indented under them.
+      headings: Function,
+      // Lists "2026 Season 3"-style options under a heading per year
+      groupbyyear: Boolean,
+      // Replaces the closed dropdown's list of picked names
+      selectedlabel: String,
       // Name sent with input-changed when it differs from the label
       field: String,
       // Two labels for a switch at the top of the dropdown; flipping it clears the selection and emits toggle-click
@@ -121,6 +142,30 @@
           }
         }
         return false;
+      },
+      // Options with their headings in between, each heading holding the codes under it
+      rows() {
+        const headingsOf = this.headings
+          || (this.groupbyyear ? code => this.yearHeadingOf(code) : null);
+        if(!headingsOf){
+          return (this.values || []).map(value => ({ key: 'value-' + value.code, value, depth: 0 }));
+        }
+
+        const rows = [];
+        let open = [];
+        (this.values || []).forEach(value => {
+          const headings = headingsOf(value.code);
+          headings.forEach((heading, depth) => {
+            if(open[depth]?.key !== 'heading-' + heading.key){
+              const row = { key: 'heading-' + heading.key, heading: true, name: heading.name, depth, codes: [] };
+              rows.push(row);
+              open = [...open.slice(0, depth), row];
+            }
+          });
+          open.slice(0, headings.length).forEach(row => row.codes.push(value.code));
+          rows.push({ key: 'value-' + value.code, value, depth: headings.length });
+        });
+        return rows;
       },
       hasPatchDates() {
         return (this.values || []).some(value => value.date_added);
@@ -173,6 +218,23 @@
       },
       isSelectable(code) {
         return this.selectableValues.some(value => value.code === code);
+      },
+      yearHeadingOf(code) {
+        const year = String(this.values.find(value => value.code === code)?.name || '').split(' ')[0];
+        return year ? [{ key: 'year-' + year, name: year }] : [];
+      },
+      indentClass(depth) {
+        return ['', 'pl-6', 'pl-12'][depth] || '';
+      },
+      toggleHeading(row) {
+        if(row.codes.every(code => this.selectedOptions.includes(code))){
+          this.selectedOptions = this.selectedOptions.filter(code => !row.codes.includes(code));
+          return;
+        }
+
+        // Nothing picked yet, so any heading's options are allowed
+        const allowed = this.selectedOptions.length ? row.codes.filter(code => this.isSelectable(code)) : row.codes;
+        this.selectedOptions = [...this.selectedOptions, ...allowed.filter(code => !this.selectedOptions.includes(code))];
       },
       toggleAll() {
         let selectable = this.selectableValues;

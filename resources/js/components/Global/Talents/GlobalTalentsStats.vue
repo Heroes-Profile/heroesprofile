@@ -77,7 +77,6 @@
 
 
           :gametypedefault="gametypedefault"
-          :includetimeframetypewithlastupdate="true"
           :includetimeframe="true"
           :includeregion="true"
           :includestatfilter="true"

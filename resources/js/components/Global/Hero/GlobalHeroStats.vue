@@ -38,7 +38,6 @@
       :slrankinput="slrank"
 
       :gametypedefault="gametypedefault"
-      :includetimeframetype="true"
       :includetimeframe="true"
       :includeregion="true"
       :includestatfilter="true"
@@ -82,7 +81,8 @@
       <table id="responsive-table" class="min-w-0 w-full responsive-table relative" ref="responsivetable">
         <thead>
           <tr>
-            <th class="py-2 px-3 text-center text-sm leading-4">
+            <th class="py-2 px-3"></th>
+            <th class="py-2 px-3 text-left text-sm leading-4">
               Avg
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
@@ -120,7 +120,10 @@
         </thead>
         <thead class="top-0 w-full sticky z-40">
           <tr>
-            <th @click="sortTable('name')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'name' }">
+            <th @click="sortTable('rank')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'rank' }">
+              {{ rankChanged ? 'Sorted Rank|(Rank)' : 'Rank' }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+            </th>
+            <th @click="sortTable('name')" class="py-2 px-3 text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'name' }">
               Hero<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
@@ -168,8 +171,9 @@
         <tbody class="text-center">
           <template v-for="(row, index) in sortedData">
             <tr>
+              <td class="py-2 px-3"><div class="flex justify-center gap-1"><div v-if="rankChanged" class="bg-blue text-white min-w-[2em] p-1 rounded-control text-center">{{ sortDir == 'desc' ? index + 1 : sortedData.length - index }}</div><span class="p-1">{{ row.rank }}</span></div></td>
               <td class="py-2 px-3 flex items-center gap-1 max-md:w-[150px]">
-                <a class="group/bt flex w-full items-center justify-center" :href="getGlobalTalentsURL(row)" >
+                <a class="group/bt flex w-full items-center justify-start" :href="getGlobalTalentsURL(row)" >
                   <hero-image-wrapper class="mr-2" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block font-bold group-hover/bt:underline">{{ row.name }}</span>
                 </a>
               </td>
@@ -198,7 +202,7 @@
               </td>
             </tr>
             <tr v-if="toggletalentbuilds[row.name] && talentbuilddata[row.name]">
-              <td colspan="11">
+              <td colspan="12">
                 <global-talent-builds-section v-if="toggletalentbuilds[row.name] && talentbuilddata[row.name]" :talentbuilddata="talentbuilddata[row.name]" :buildtype="selectedbuildtype"></global-talent-builds-section>
               </td>
             </tr> 
@@ -338,6 +342,10 @@ export default {
       );
 
     },
+    // Sorting by anything but the default order gives each row a new position
+    rankChanged() {
+      return !!this.sortKey && this.sortKey !== 'rank' && this.sortKey !== (this.statfilter === 'win_rate' ? 'win_rate' : 'total_filter_type');
+    },
     sortedData() {
       const rows = Array.isArray(this.data?.data) ? this.data.data.filter(row => row) : [];
       if (!this.sortKey) return rows;
@@ -446,6 +454,9 @@ export default {
           cancelToken: this.cancelTokenSource.token,
         });
 
+        // The API returns heroes in rank order
+        let rank = 0;
+        (response.data?.data || []).forEach(row => { if (row) row.rank = ++rank; });
         this.data = response.data;
         this.loadingStates = this.sortedData.map(() => false);
       }catch(error){

@@ -3,15 +3,22 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
     <page-heading :heading="heading" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
 
+    <filters v-if="data"
+      :filters="filters"
+      :isLoading="isLoading"
+      :onFilter="() => handleDropdownClosed()"
+      :onChange="handleInputChange"
+      :extrafilters="[
+        { text: 'Seasons', values: data.seasons, defaultValue: modifiedseason },
+        { text: 'Divisions', values: data.divisions, defaultValue: modifieddivision, show: !!(data.divisions) },
+        { text: 'Teams', values: teamOptions, defaultValue: modifiedteam, show: !!(teamOptions.length) },
+      ]"
+      :excludetimeframes="true"
+      :excludegametype="true"
+      :hideadvancedfilteringbutton="true"
+    >
+    </filters>
     <div v-if="data" class="max-w-[1920px] mx-auto px-4 md:px-8 space-y-8">
-      <panel-box :filters="true">
-        <div class="filter-row justify-center">
-          <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="modifiedseason"></single-select-filter>
-          <single-select-filter v-if="data.divisions" :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" :defaultValue="modifieddivision"></single-select-filter>
-          <single-select-filter v-if="teamOptions.length" :values="teamOptions" :text="'Teams'" @input-changed="handleInputChange" :defaultValue="modifiedteam"></single-select-filter>
-          <button :disabled="isLoading" @click="handleDropdownClosed" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
-        </div>
-      </panel-box>
 
       <!-- Laid out like the profile page, from this league's games only -->
       <panel-box>
@@ -205,6 +212,7 @@ export default {
   components: {
   },
   props: {
+  	filters: Object,
   	esport: String,
     series: String,
     division: String, 

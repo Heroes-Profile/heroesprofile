@@ -76,28 +76,55 @@
 
 
       <div v-if="activeButton === 'standings'">
-        <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box :filters="true"><div class="filter-row justify-center">
-          <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
-          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <button :disabled="isLoading" @click="filter()" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
-        </div></panel-box></div>
+        <filters
+          :filters="filters"
+          :isLoading="isLoading"
+          :onFilter="() => filter()"
+          :onChange="handleInputChange"
+          :extrafilters="[
+            { text: 'Divisions', values: filters.ngs_divisions },
+            { text: 'Seasons', values: filters.ngs_seasons, defaultValue: defaultseason },
+          ]"
+          :excludetimeframes="true"
+          :excludegametype="true"
+          :hideadvancedfilteringbutton="true"
+        >
+        </filters>
         <ngs-standings v-if="standingData" :data="standingData" :season="season"></ngs-standings>
       </div>
 
       <div v-if="activeButton === 'divisions'">
-        <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box :filters="true"><div class="filter-row justify-center">
-          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <button :disabled="isLoading" @click="filter()" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
-        </div></panel-box></div>
+        <filters
+          :filters="filters"
+          :isLoading="isLoading"
+          :onFilter="() => filter()"
+          :onChange="handleInputChange"
+          :extrafilters="[
+            { text: 'Seasons', values: filters.ngs_seasons, defaultValue: defaultseason },
+          ]"
+          :excludetimeframes="true"
+          :excludegametype="true"
+          :hideadvancedfilteringbutton="true"
+        >
+        </filters>
         <ngs-divisions v-if="divisionData" :data="divisionData" :season="season"></ngs-divisions>
       </div>
 
       <div v-if="activeButton === 'teams'">
-        <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box :filters="true"><div class="filter-row justify-center">
-          <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
-          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <button :disabled="isLoading" @click="filter()" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
-        </div></panel-box></div>
+        <filters
+          :filters="filters"
+          :isLoading="isLoading"
+          :onFilter="() => filter()"
+          :onChange="handleInputChange"
+          :extrafilters="[
+            { text: 'Divisions', values: filters.ngs_divisions },
+            { text: 'Seasons', values: filters.ngs_seasons, defaultValue: defaultseason },
+          ]"
+          :excludetimeframes="true"
+          :excludegametype="true"
+          :hideadvancedfilteringbutton="true"
+        >
+        </filters>
         <esports-teams v-if="teamsData" :data="teamsData" :esport="'NGS'" :season="season"></esports-teams>
       </div>
 
@@ -113,12 +140,21 @@
       </div>
 
       <div v-if="activeButton === 'recentMatches'">
-        <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box :filters="true"><div class="filter-row justify-center">
-          <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
-          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <single-select-filter :values="filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
-          <button :disabled="isLoading" @click="filter()" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
-        </div></panel-box></div>
+        <filters
+          :filters="filters"
+          :isLoading="isLoading"
+          :onFilter="() => filter()"
+          :onChange="handleInputChange"
+          :extrafilters="[
+            { text: 'Divisions', values: filters.ngs_divisions },
+            { text: 'Seasons', values: filters.ngs_seasons, defaultValue: defaultseason },
+            { text: 'Heroes', values: filters.heroes },
+          ]"
+          :excludetimeframes="true"
+          :excludegametype="true"
+          :hideadvancedfilteringbutton="true"
+        >
+        </filters>
 
         <div v-if="recentMatchesData">
           <div v-if="recentMatchesData.pagination.last_page > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 flex justify-end">
@@ -135,11 +171,20 @@
 
 
       <div v-if="activeButton === 'overallHeroStats'">
-        <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box :filters="true"><div class="filter-row justify-center">
-          <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
-          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <button :disabled="isLoading" @click="filter()" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
-        </div></panel-box></div>
+        <filters
+          :filters="filters"
+          :isLoading="isLoading"
+          :onFilter="() => filter()"
+          :onChange="handleInputChange"
+          :extrafilters="[
+            { text: 'Divisions', values: filters.ngs_divisions },
+            { text: 'Seasons', values: filters.ngs_seasons, defaultValue: defaultseason },
+          ]"
+          :excludetimeframes="true"
+          :excludegametype="true"
+          :hideadvancedfilteringbutton="true"
+        >
+        </filters>
         <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
       </div>
 
@@ -151,12 +196,21 @@
 
         <div v-else>
           <div v-if="talentStatsData">
-            <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box :filters="true"><div class="filter-row justify-center">
-              <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="selectedHero.id"></single-select-filter>
-              <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
-              <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-              <button :disabled="isLoading" @click="filter()" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
-            </div></panel-box></div>
+            <filters
+              :filters="filters"
+              :isLoading="isLoading"
+              :onFilter="() => filter()"
+              :onChange="handleInputChange"
+              :extrafilters="[
+                { text: 'Heroes', values: this.filters.heroes, defaultValue: selectedHero.id },
+                { text: 'Divisions', values: filters.ngs_divisions },
+                { text: 'Seasons', values: filters.ngs_seasons, defaultValue: defaultseason },
+              ]"
+              :excludetimeframes="true"
+              :excludegametype="true"
+              :hideadvancedfilteringbutton="true"
+            >
+            </filters>
 
             
             <esports-talent-stats :talentdetaildata="talentStatsData.talentData" :talentbuilddata="talentStatsData.buildData" :talentimages="talentimages" :selectedHero="selectedHero"></esports-talent-stats>

@@ -15,7 +15,6 @@
     :playerrankinput="playerrank"
 
     :gametypedefault="gametypedefault"
-    :includetimeframetype="true"
     :includetimeframe="true"
     :includegametype="true"
     :includegamemap="true"

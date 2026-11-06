@@ -59,6 +59,7 @@ class EsportsController extends Controller
     public function showPlayerMatchHistory(Request $request)
     {
         return $this->showEsportPlayerPage($request, 'Esports.singlePlayerMatchHistory', [
+            'filters' => $this->globalDataService->getFilterData(),
             'playermatchtablestyle' => $this->globalDataService->getPlayerMatchStyle(),
         ]);
     }
@@ -108,6 +109,7 @@ class EsportsController extends Controller
         return view('Esports.team')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'filters' => $this->globalDataService->getFilterData(),
                 'esport' => $esport,
                 'team' => $team,
                 'season' => $request['season'],
@@ -154,6 +156,7 @@ class EsportsController extends Controller
         return view('Esports.singlePlayer')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'filters' => $this->globalDataService->getFilterData(),
                 'esport' => $esport,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
@@ -203,6 +206,7 @@ class EsportsController extends Controller
         return view('Esports.singlePlayerHero')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'filters' => $this->globalDataService->getFilterData(),
                 'esport' => $esport,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
@@ -251,6 +255,7 @@ class EsportsController extends Controller
         return view('Esports.singlePlayerMap')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'filters' => $this->globalDataService->getFilterData(),
                 'esport' => $esport,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,

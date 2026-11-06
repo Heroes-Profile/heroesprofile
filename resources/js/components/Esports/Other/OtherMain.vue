@@ -9,21 +9,26 @@
       <esports-organizations :data="withoutHGCSeries" :esport="'Other'"></esports-organizations>
     </div>
 
-    <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box :filters="true"><div class="filter-row justify-center">
-      <single-select-filter :values="seriesvalues" :text="'Series'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter :values="regions" :text="'Regions'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter :values="tournaments" :text="'Tournaments'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter :values="seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter :values="teams" :text="'Teams'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter :values="filters.game_maps" :text="'Map'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter :values="filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
-
-
+    <filters
+      :filters="filters"
+      :isLoading="isLoading"
+      :onFilter="() => filter()"
+      :onChange="handleInputChange"
+      :extrafilters="[
+        { text: 'Series', values: seriesvalues },
+        { text: 'Regions', values: regions },
+        { text: 'Tournaments', values: tournaments },
+        { text: 'Seasons', values: seasons },
+        { text: 'Teams', values: teams },
+        { text: 'Map', values: filters.game_maps },
+        { text: 'Heroes', values: filters.heroes },
+      ]"
+      :excludetimeframes="true"
+      :excludegametype="true"
+      :hideadvancedfilteringbutton="true"
+    >
       <input type="text" class="form-control variable-text rounded-l-control p-2" :placeholder="'Search for player'" :aria-label="'filter'" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="filter()">
-
-      <button :disabled="isLoading" @click="filter()" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
-
-    </div></panel-box></div>
+    </filters>
 
     <div v-if="data">
       <div v-if="data.last_page > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 flex justify-end">

@@ -28,7 +28,8 @@
     
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="data">
+    <p v-if="data === ''" class="text-center text-subtext mt-10">No data for this player and filters</p>
+    <div v-else-if="data">
 
       <line-chart class="max-w-[1500px] mx-auto px-4" :data="reversedData" :dataAttribute="'mmr'" :title="`${battletag} HP MMR Graph for ${gametype}`" :tooltip-label="`HP ${gameTypeName} MMR`"></line-chart>
 
@@ -276,7 +277,7 @@ export default {
         {
           cancelToken: this.cancelTokenSource.token,
         });
-        this.data = response.data.tableData;
+        this.data = response.data.tableData || '';
         this.leaguedata = response.data.leagueData;
       }catch(error){
         //Do something here

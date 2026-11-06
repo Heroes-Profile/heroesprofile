@@ -3,30 +3,20 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
     <page-heading :heading="'Activity Graphs'"></page-heading>
 
-    <div class="flex justify-center max-w-[1500px] mx-auto flex-wrap max-md:flex-col max-md:items-center">
-      <single-select-filter
-        :values="gameTypesWithAll"
-        :text="'Game Type'"
-        :defaultValue="'All'"
-        @input-changed="handleGameTypeChange"
-      ></single-select-filter>
-      <single-select-filter
-        :values="regionsWithAll"
-        :text="'Region'"
-        :defaultValue="'All'"
-        @input-changed="handleRegionChange"
-      ></single-select-filter>
-      <button
-        :disabled="loading"
-        @click="applyFilter"
-        class="btn"
-        :class="loading
-          ? 'bg-gray-md md:ml-10 mt-auto mb-2 max-md:mt-auto max-md:w-full'
-          : 'bg-teal md:ml-10 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10'"
-      >
-        Filter
-      </button>
-    </div>
+    <filters
+      :filters="filters"
+      :isLoading="loading"
+      :onFilter="() => applyFilter()"
+      :onChange="payload => payload.field == 'Game Type' ? handleGameTypeChange(payload) : handleRegionChange(payload)"
+      :extrafilters="[
+        { text: 'Game Type', values: gameTypesWithAll, defaultValue: 'All' },
+        { text: 'Region', values: regionsWithAll, defaultValue: 'All' },
+      ]"
+      :excludetimeframes="true"
+      :excludegametype="true"
+      :hideadvancedfilteringbutton="true"
+    >
+    </filters>
 
     <div v-if="loading" class="max-w-[1500px] mx-auto px-4 py-10 flex flex-col gap-6">
       <loading-component :compact="true" :textoverride="true">Loading activity...</loading-component>

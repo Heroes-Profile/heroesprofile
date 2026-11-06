@@ -22,14 +22,21 @@
       :includehero="true"
       >
     </filters>
-      <panel-box :filters="true" v-else-if="esport && ngsFilterOptions">
-        <div class="filter-row justify-center">
-          <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" :defaultValue="ngsSeason"></single-select-filter>
-          <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" :defaultValue="ngsDivision"></single-select-filter>
-          <single-select-filter :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" :defaultValue="ngsTeam"></single-select-filter>
-          <button :disabled="isLoading" @click="getNgsData" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
-        </div>
-      </panel-box>
+      <filters v-else-if="esport && ngsFilterOptions"
+        :filters="filters"
+        :isLoading="isLoading"
+        :onFilter="() => getNgsData()"
+        :onChange="ngsFilterChange"
+        :extrafilters="[
+          { text: 'Seasons', values: ngsFilterOptions.seasons, defaultValue: ngsSeason },
+          { text: 'Divisions', values: ngsFilterOptions.divisions, defaultValue: ngsDivision, show: !!(ngsFilterOptions.divisions) },
+          { text: 'Teams', values: ngsTeamOptions, defaultValue: ngsTeam },
+        ]"
+        :excludetimeframes="true"
+        :excludegametype="true"
+        :hideadvancedfilteringbutton="true"
+      >
+      </filters>
       </div>
     </player-page-top>
   <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>

@@ -314,6 +314,7 @@ class EsportOtherController extends Controller
         return view('Esports.singlePlayerHero')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'filters' => $this->globalDataService->getFilterData(),
                 'esport' => 'Other',
                 'series' => $series,
                 'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon ?? 'heroesprofilelogo.png',
@@ -358,6 +359,7 @@ class EsportOtherController extends Controller
         return view('Esports.singlePlayerMap')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'filters' => $this->globalDataService->getFilterData(),
                 'esport' => 'Other',
                 'series' => $series,
                 'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon ?? 'heroesprofilelogo.png',

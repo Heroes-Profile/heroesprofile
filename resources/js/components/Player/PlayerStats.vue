@@ -5,15 +5,19 @@
       <page-heading :heading="'Profile Data'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
     </page-heading>
 </template>
-    <div class="max-w-[1920px] mx-auto px-4 md:px-8 w-full">
-      <panel-box :filters="true">
-        <div class="filter-row">
-        <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
-        <multi-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="seasonselection"></multi-select-filter>
-        <date-range-filter :startDate="startdate" :endDate="enddate" @input-changed="handleInputChange"></date-range-filter>
-        <custom-button data-filter-apply class="font-semibold text-center h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :text="'Filter'" :alt="'Filter'" :color="'blue'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
-        </div>
-      </panel-box>
+    <div class="w-full">
+      <filters
+        :onFilter="filterData"
+        :filters="filters"
+        :isLoading="isLoading"
+        :gametypedefault="gametypedefault"
+        :defaultseasons="seasonselection"
+        :includegametypefull="true"
+        :includemultiseason="true"
+        :includegamedaterange="true"
+        :hideadvancedfilteringbutton="true"
+      >
+      </filters>
     </div>
     </player-page-top>
 
@@ -406,31 +410,12 @@ function cardFonts() {
           this.cancelTokenSource.cancel('Request canceled by user');
         }
       },
-      handleInputChange(eventPayload) {
-        if(eventPayload.field == "Game Type"){
-          this.modifiedgametype = eventPayload.value.length ? [...eventPayload.value] : null;
-        }
-
-        // Seasons and the date range are one or the other
-        if(eventPayload.field == "Season"){
-          this.modifiedseason = eventPayload.value.length ? [...eventPayload.value] : null;
-          if(eventPayload.value.length){
-            this.startdate = null;
-            this.enddate = null;
-          }
-        }
-
-        if(eventPayload.field == "From Date" || eventPayload.field == "To Date"){
-          if(eventPayload.field == "From Date"){
-            this.startdate = eventPayload.value;
-          }else{
-            this.enddate = eventPayload.value;
-          }
-          if(eventPayload.value && this.modifiedseason){
-            this.modifiedseason = null;
-            this.seasonselection = [];
-          }
-        }
+      filterData(filteredData){
+        this.modifiedgametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : null;
+        this.modifiedseason = filteredData.multi.Season ? Array.from(filteredData.multi.Season) : null;
+        this.startdate = filteredData.single["From Date"] || null;
+        this.enddate = filteredData.single["To Date"] || null;
+        this.applyFilter();
       },
       applyFilter(){
         if(!this.isLoading){

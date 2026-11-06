@@ -7,12 +7,15 @@ use App\Models\GameType;
 use App\Models\Hero;
 use App\Models\LeagueBreakdown;
 use App\Models\MMRTypeID;
+use App\Models\PlayerStatsCache;
 use App\Rules\DateInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
+use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -80,15 +83,10 @@ class PlayerMMRController extends Controller
             ];
         }
 
-        $blizz_id = $request['blizz_id'];
-        $region = $request['region'];
         $game_type = GameType::where('short_name', $request['game_type'])->pluck('type_id')->first();
         $hero = $request['hero'] ? $this->globalDataService->getHeroesByID()[$request['hero']] : null;
         $type = $request['type'];
         $role = $request['role'];
-        $season = $request['season'];
-        $startDate = $request['start_date'];
-        $endDate = $request['end_date'];
 
         if ($type == 'Hero' && $hero == null) {
             return [
@@ -106,73 +104,26 @@ class PlayerMMRController extends Controller
             ];
         }
 
-        $result = DB::table('replay')
-            ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->select([
-                'replay.replayID AS replayID',
-                'replay.game_date as game_date',
-                'replay.game_map AS game_map',
-                'replay.mmr_ran AS mmr_ran',
-                'player.winner AS winner',
-                'player.hero AS hero',
-                'player.player_conservative_rating AS player_conservative_rating',
-                'player.player_change AS player_change',
-                'player.hero_conservative_rating AS hero_conservative_rating',
-                'player.hero_change AS hero_change',
-                'player.role_conservative_rating AS role_conservative_rating',
-                'player.role_change AS role_change',
-                'player.mmr_date_parsed as mmr_date_parsed',
-            ])
-            ->where('blizz_id', $blizz_id)
-            ->where('game_type', $game_type)
-            ->where('region', $region)
-            ->when(! is_null($hero), function ($query) use ($hero) {
-                return $query->where('hero', $hero->id);
-            })
-            ->when(! is_null($role), function ($query) use ($role) {
-                return $query->whereIn('hero', Hero::select('id')->where('new_role', $role)->get()->toArray());
-            })
-            ->tap(function ($query) use ($season, $startDate, $endDate) {
-                $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
-            })
-            // ->toSql();
-            ->orderByDesc('mmr_date_parsed')
-            ->get();
+        $rows = $this->ratedRows($request, $game_type, $hero, $role, $type);
 
-        if (count($result) == 0) {
+        // No games, or every match still waiting on its rating: nothing to place.
+        if ($rows->isEmpty()) {
             return;
         }
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
-        $modifiedResult = $result->map(function ($item) use ($heroData, $type) {
-            if ($item->mmr_ran == -1) {
-                return null;
-            }
+        $modifiedResult = $rows->map(function ($item) use ($heroData) {
             $item->hero_id = $item->hero;
             $item->hero = $heroData[$item->hero];
-
-            if ($type == 'Player') {
-                $item->mmr = round(1800 + 40 * $item->player_conservative_rating);
-                $item->mmr_change = round($item->player_change, 2);
-            } elseif ($type == 'Hero') {
-                $item->mmr = round(1800 + 40 * $item->hero_conservative_rating);
-                $item->mmr_change = round($item->hero_change, 2);
-            } elseif ($type == 'Role') {
-                $item->mmr = round(1800 + 40 * $item->role_conservative_rating);
-                $item->mmr_change = round($item->role_change, 2);
-            }
-
+            $item->mmr = round(1800 + 40 * $item->rating);
+            $item->mmr_change = round($item->change, 2);
             $item->winner = $item->winner == 1 ? 'True' : 'False';
             $item->x_label = $item->game_date;
+            unset($item->rating, $item->change);
 
             return $item;
-        })->filter()->values();
-
-        // Every match still waiting on its rating: nothing to place.
-        if ($modifiedResult->isEmpty()) {
-            return;
-        }
+        })->values();
 
         $mmrType = 0;
         if ($type == 'Player') {
@@ -259,5 +210,120 @@ class PlayerMMRController extends Controller
         $extendedLeagueBreakdown = collect($leagueBreakdownArray);
 
         return ['tableData' => $modifiedResult, 'leagueData' => $extendedLeagueBreakdown];
+    }
+
+    // Rated games, newest first. A game's rating never changes once set, so the cache only adds games newer than its watermark.
+    private function ratedRows(Request $request, $game_type, $hero, $role, string $type): Collection
+    {
+        if (! $this->globalDataService->usesProductionCaching()) {
+            return $this->compactRows($this->rowsAfter($request, $game_type, $hero, $role, null)->where('mmr_ran', '!=', -1), $type);
+        }
+
+        $paramsHash = $this->paramsHash($request);
+        $latestReplayId = $this->globalDataService->latestPlayerReplayId(
+            $request['blizz_id'], $request['region'], $request['game_type'], $request['season'], $request['start_date'], $request['end_date']
+        );
+
+        $dbCache = PlayerStatsCache::where('params_hash', $paramsHash)->first();
+        $rows = $dbCache ? collect(json_decode($dbCache->data)) : collect();
+        $after = $dbCache ? (int) $dbCache->latest_replayID : null;
+
+        if ($dbCache && (! $latestReplayId || $after >= $latestReplayId)) {
+            return $rows;
+        }
+
+        $fetched = $this->rowsAfter($request, $game_type, $hero, $role, $after);
+        $pending = $fetched->where('mmr_ran', -1);
+
+        $rows = $this->compactRows($fetched->where('mmr_ran', '!=', -1), $type)->keyBy('replayID')
+            ->union($rows->keyBy('replayID'))
+            ->sortByDesc('mmr_date_parsed')
+            ->values();
+
+        // Games still waiting on a rating get fetched again next time
+        $watermark = $pending->isNotEmpty()
+            ? $pending->min('replayID') - 1
+            : max((int) $latestReplayId, (int) $fetched->max('replayID'), (int) $after);
+
+        PlayerStatsCache::updateOrCreate(
+            ['params_hash' => $paramsHash],
+            [
+                'blizz_id' => $request['blizz_id'],
+                'region' => $request['region'],
+                'latest_replayID' => $watermark,
+                'data' => json_encode($rows),
+            ]
+        );
+
+        return $rows;
+    }
+
+    private function rowsAfter(Request $request, $game_type, $hero, $role, ?int $afterReplayId): Collection
+    {
+        return DB::table('replay')
+            ->join('player', 'player.replayID', '=', 'replay.replayID')
+            ->select([
+                'replay.replayID AS replayID',
+                'replay.game_date as game_date',
+                'replay.game_map AS game_map',
+                'replay.mmr_ran AS mmr_ran',
+                'player.winner AS winner',
+                'player.hero AS hero',
+                'player.player_conservative_rating AS player_conservative_rating',
+                'player.player_change AS player_change',
+                'player.hero_conservative_rating AS hero_conservative_rating',
+                'player.hero_change AS hero_change',
+                'player.role_conservative_rating AS role_conservative_rating',
+                'player.role_change AS role_change',
+                'player.mmr_date_parsed as mmr_date_parsed',
+            ])
+            ->where('blizz_id', $request['blizz_id'])
+            ->where('game_type', $game_type)
+            ->where('region', $request['region'])
+            ->when(! is_null($hero), function ($query) use ($hero) {
+                return $query->where('hero', $hero->id);
+            })
+            ->when(! is_null($role), function ($query) use ($role) {
+                return $query->whereIn('hero', Hero::select('id')->where('new_role', $role)->get()->toArray());
+            })
+            ->when($afterReplayId, fn ($query) => $query->where('replay.replayID', '>', $afterReplayId))
+            ->tap(function ($query) use ($request) {
+                $this->globalDataService->applySeasonsOrDateRange($query, $request['season'], $request['start_date'], $request['end_date']);
+            })
+            ->orderByDesc('mmr_date_parsed')
+            ->get();
+    }
+
+    // Only the rating for this page's type is kept
+    private function compactRows(Collection $rows, string $type): Collection
+    {
+        $column = ['Player' => 'player', 'Hero' => 'hero', 'Role' => 'role'][$type];
+
+        return $rows->map(fn ($row) => (object) [
+            'replayID' => $row->replayID,
+            'game_date' => $row->game_date,
+            'game_map' => $row->game_map,
+            'winner' => $row->winner,
+            'hero' => $row->hero,
+            'mmr_date_parsed' => $row->mmr_date_parsed,
+            'rating' => $row->{$column.'_conservative_rating'},
+            'change' => $row->{$column.'_change'},
+        ])->values();
+    }
+
+    private function paramsHash(Request $request): string
+    {
+        return hash('sha256', json_encode(GlobalCacheKey::normalize([
+            'page' => 'mmr',
+            'blizz_id' => $request['blizz_id'],
+            'region' => $request['region'],
+            'game_type' => $request['game_type'],
+            'type' => $request['type'],
+            'hero' => $request['hero'],
+            'role' => $request['role'],
+            'season' => $request['season'],
+            'start_date' => $request['start_date'],
+            'end_date' => $request['end_date'],
+        ])));
     }
 }
