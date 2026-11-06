@@ -23,7 +23,7 @@
                 Profile
             </a>
             <div id="nav-content" class="ml-auto flex justify-between flex-wrap  text-sm md:flex-1 md:ml-8 max-md:flex-col max-md:ml-0 max-md:w-full">
-                <div id="nav-links" class=" grow-1 flex items-left md:space-x-5 flex-wrap md:flex-nowrap max-md:flex-col max-md:w-full ">
+                <div id="nav-links" class=" grow-1 flex items-left md:space-x-5 md:ml-auto flex-wrap md:flex-nowrap max-md:flex-col max-md:w-full ">
                     
                     <div id="nav-global-stats" class="relative group inline-block nav-item">
                         <a class=" cursor-pointer">Global Hero Stats</a>
