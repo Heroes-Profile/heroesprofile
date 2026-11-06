@@ -31,6 +31,7 @@ use App\Http\Controllers\Global\GlobalQueryStatusController;
 use App\Http\Controllers\Global\GlobalQueryWorkerController;
 use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
+use App\Http\Controllers\HelpChatController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\MatchPredictionGameController;
 use App\Http\Controllers\MatchSearchController;
@@ -323,6 +324,9 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('contact', [ContactController::class, 'submitMessage'])->middleware('throttle:contact');
 
     Route::post('poll/{slug}/vote', [PollController::class, 'vote'])->middleware('throttle:10,1');
+    // Help: search for anyone, then the logged-in assistant; the controller holds its daily limit
+    Route::post('help/search', [HelpChatController::class, 'search'])->middleware('throttle:30,1');
+    Route::post('help/chat', [HelpChatController::class, 'ask'])->middleware(['ensureBattlenetAuth:optional', 'throttle:10,1']);
 
     Route::post('match/prediction/game', [MatchPredictionGameController::class, 'getReplayData']);
     Route::post('match/search', [MatchSearchController::class, 'getData'])->middleware(['throttle:match-search', 'restrictCustomGames:never']);

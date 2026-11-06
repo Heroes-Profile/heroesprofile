@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Award;
+use App\Services\FaqMatcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -53,6 +54,9 @@ class FaqController extends Controller
             'patchHistory' => $patchHistory,
             'awards' => $awards,
             'seasonDates' => $seasonDates,
+            'faqCategories' => config('faq.categories'),
+            'faqStopwords' => FaqMatcher::STOPWORDS,
+            'faqPages' => config('faq.pages'),
         ]);
     }
 }
