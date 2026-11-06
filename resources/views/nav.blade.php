@@ -269,19 +269,21 @@
 <nav id="alt-account-nav" class="relative flex justify-end items-center md:gap-4 w-full max-w-[1920px] mx-auto md:px-8 md:py-4 alt-acct-nav max-md:flex-wrap">
   {{-- League row colours, from each league's logo --}}
   @php($esportRowColours = ['NGS' => 'bg-[#f26b30]', 'CCL' => 'bg-gradient-to-r from-[#d42a0e] via-[#f07c12] to-[#f7c51e]', 'MastersClash' => 'bg-[#5a5ad6]', 'hi' => 'bg-[#6b6b6b]', 'hi_nc' => 'bg-[#6b6b6b]', 'Other' => 'bg-lblue'])
+  {{-- Other series, each from its own logo; any series not listed keeps Other's colour --}}
+  @php($esportSeriesColours = ['Agon League' => 'bg-[#c4161c]', 'All Hallows Cup' => 'bg-[#e5531a]', 'Bloodlust' => 'bg-[#a3121b]', 'Brazilian Championship' => 'bg-[#009c3b]', 'DreamHack' => 'bg-[#e4572e]', 'Gold Series' => 'bg-[#a8790f]', 'HeroesHype' => 'bg-[#6a4fb3]', 'HGC' => 'bg-[#1f5fae]', 'King of the Storm' => 'bg-[#6b2fa3]', 'Machines of War Showdown' => 'bg-[#1e6fc4]', 'Nexus Contest' => 'bg-[#1d3f8f]', 'Nexus Games' => 'bg-[#1565c0]', 'Toasty and Gladman' => 'bg-[#2a8fb8]', 'ZOTAC Cup' => 'bg-[#f39a1e]'])
   @foreach($altSearchAccounts as $index => $account)
     @if($account && isset($account['esport_nav']))
       @php($esportNav = $account['esport_nav'])
       @php($esportPlayerUrl = $esportNav['url'])
       @php($esportQuery = $esportNav['query'])
       <div id="alt-account-{{ $index }}" class="relative group inline-block text-sm">
-        <a data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="mobile-secondary-nav-open btn md:bg-teal md:hover:bg-lteal inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="h-[1.4em] w-auto ml-2 brightness-0 invert"></a>
+        <a data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="mobile-secondary-nav-open btn md:bg-teal md:hover:bg-lteal inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></a>
         <div data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[200px] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
             <div class="nav-dropdown-inner-wrapper">
-              <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal"><span class="inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="h-[1.4em] w-auto ml-2 brightness-0 invert"></span> <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[44px] min-h-[40px] text-lg" aria-label="Close menu">x</button></div>
+              <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal"><span class="inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></span> <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[44px] min-h-[40px] text-lg" aria-label="Close menu">x</button></div>
               <!-- The league's own pages, where a player's menu has Analytics -->
               <div class="nav-flyout-wrapper">
-                <a href="{{ $esportNav['main'] }}" class="flex justify-between items-center {{ $esportRowColours[$esportNav['key']] }} font-bold"><span class="whitespace-nowrap"><img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="inline-block align-middle h-[1.1em] w-auto brightness-0 invert">@if($esportNav['label'])<span class="ml-2 inline-block max-w-[9rem] truncate align-middle" title="{{ $esportNav['name'] }}">{{ $esportNav['name'] }}</span>@endif</span> <span class="nav-flyout-arrow ml-4">›</span></a>
+                <a href="{{ $esportNav['main'] }}" class="flex justify-between items-center {{ $esportNav['key'] === 'Other' ? ($esportSeriesColours[$esportNav['name']] ?? $esportRowColours['Other']) : $esportRowColours[$esportNav['key']] }} font-bold"><span class="whitespace-nowrap"><img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="inline-block align-middle h-[1.1em] w-auto {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}">@if($esportNav['label'])<span class="ml-2 inline-block max-w-[9rem] truncate align-middle" title="{{ $esportNav['name'] }}">{{ $esportNav['name'] }}</span>@endif</span> <span class="nav-flyout-arrow ml-4">›</span></a>
                 <div class="nav-flyout">
                   <div class="nav-dropdown-inner-wrapper rounded-b rounded-r">
                     {{-- The full name, which the row cuts short --}}
