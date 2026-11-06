@@ -5,7 +5,9 @@
     <div class="max-w-[1920px] mx-auto px-4 md:px-8">
       <panel-box>
         <div class="filter-row justify-center">
-          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="filter" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
+          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="modifiedseason"></single-select-filter>
+          <single-select-filter :values="teamOptions" :text="'Teams'" @input-changed="handleInputChange" :defaultValue="modifiedteam"></single-select-filter>
+          <button :disabled="isLoading" @click="filter" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div>
       </panel-box>
     </div>
@@ -16,7 +18,7 @@
         <pagination-bar :current="data.pagination.current_page" :last="data.pagination.last_page" @page="getData"></pagination-bar>
       </div>
       <esports-recent-matches v-if="data.data.length" :data="data.data" :esport="'NGS'"></esports-recent-matches>
-      <p v-else class="text-center text-subtext mt-10">No games in Division {{ division }} for Season {{ modifiedseason }}.</p>
+      <p v-else class="text-center text-subtext mt-10">No games in Division {{ division }} for Season {{ modifiedseason }}<template v-if="modifiedteam"> for {{ $ngsTeam(modifiedteam).name }}</template>.</p>
       <div v-if="data.pagination.last_page > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 pb-4 flex justify-end">
         <pagination-bar :current="data.pagination.current_page" :last="data.pagination.last_page" @page="getData"></pagination-bar>
       </div>
@@ -66,6 +68,7 @@ export default {
     esport: String,
     defaultseason: Number,
     season: [String, Number],
+    team: String,
     filters: Object,
     division: String,
     patreonUser: Boolean,
@@ -76,12 +79,21 @@ export default {
       isLoading: false,
       data: null,
       modifiedseason: null,
+      modifiedteam: null,
+      teams: [],
     }
   },
+  computed: {
+    teamOptions() {
+      return [{ code: null, name: 'All' }, ...this.teams.map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
+    },
+  },
   created(){
-    // A number, as the season list's codes are, so the dropdown shows a season from the URL
+    // Use the list's own code so the dropdown's strict match finds it
     const season = this.season ?? this.defaultseason;
-    this.modifiedseason = season == null ? null : Number(season);
+    const match = (this.filters?.ngs_seasons ?? []).find(value => String(value.code) === String(season));
+    this.modifiedseason = match ? match.code : season;
+    this.modifiedteam = this.team || null;
   },
   mounted() {
     this.getData(1);
@@ -103,10 +115,12 @@ export default {
         const response = await this.$axios.post("/api/v1/esports/ngs/matches", {
           season: this.modifiedseason,
           division: this.division,
+          team: this.modifiedteam,
           pagination_page: page,
           esport: "NGS",
         }, { cancelToken: this.cancelTokenSource.token });
         this.data = response.data;
+        this.teams = response.data.teams || [];
       }catch(error){
         //Do something here
       }finally {
@@ -118,11 +132,14 @@ export default {
       if(eventPayload.field == "Seasons"){
         this.modifiedseason = eventPayload.value;
       }
-      let newURL = `/Esports/NGS/Division/${this.division}/Match/History`;
-      if (this.modifiedseason) {
-        newURL += `?season=${this.modifiedseason}`;
+      if(eventPayload.field == "Teams"){
+        this.modifiedteam = eventPayload.value || null;
       }
-      history.pushState({}, "", newURL);
+      const params = new URLSearchParams();
+      if (this.modifiedseason) params.set('season', this.modifiedseason);
+      if (this.modifiedteam) params.set('team', this.modifiedteam);
+      const query = params.toString();
+      history.pushState({}, "", `/Esports/NGS/Division/${this.division}/Match/History${query ? '?' + query : ''}`);
     },
     filter(){
       this.data = null;

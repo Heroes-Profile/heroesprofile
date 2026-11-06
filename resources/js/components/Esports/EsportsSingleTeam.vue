@@ -3,267 +3,208 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
     <page-heading :battletag="team" :esport="esport" :heading="heading" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
-    <div v-if="data">
-      <div class="flex justify-center max-w-[1500px] mx-auto">
-        <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
-        <single-select-filter v-if="esport == 'NGS'" :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifieddivision"></single-select-filter>
-      </div>
-      <span v-if="esport == 'Other'" class="text-2xl uppercase block text-center mt-5 mb-5">
-            {{ team }}
-          </span>
-      <div class="flex md:p-20 gap-10 mx-auto justify-center items-between  max-md:flex-col max-md:items-center md:pt-2 ">
-       
-        <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em] max-md:order-1">
-          <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins.toLocaleString('en-US')"></stat-box>
-          <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses.toLocaleString('en-US')"></stat-box>
-
-          <stat-bar-box class="w-full" size="full" :title="'Win Rate'" :value="data.win_rate.toFixed(2)"></stat-bar-box>
-          <stat-box class="w-[48%]" :title="'KDR'" :value="data.kdr" color="yellow"></stat-box>          
-          <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
+    <div v-if="filterSeasons" class="max-w-[1920px] mx-auto px-4 md:px-8">
+      <panel-box>
+        <div class="filter-row justify-center">
+          <single-select-filter :values="filterSeasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="modifiedseason"></single-select-filter>
+          <single-select-filter v-if="esport == 'NGS'" :values="filterDivisions" :text="'Divisions'" @input-changed="handleInputChange" :defaultValue="modifieddivision"></single-select-filter>
+          <button :disabled="isLoading" @click="handleDropdownClosed" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div>
-        <div class="my-auto">
-          
-          <round-image :title="team" :image="data.icon_url" size="large" :rectangle="true"></round-image>
-        </div>
-        <div class="flex-1 flex flex-wrap max-w-[400px] text-left w-full items-between max-md:order-2">
-          <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString('en-US')"></stat-box>
-          <stat-box class="w-[48%]" :title="'Kills'" :value="data.kills.toLocaleString('en-US')"></stat-box>
+      </panel-box>
+    </div>
 
-          <stat-box class="w-full" :title="'Total Time spent dead'" :value="data.time_spent_dead"></stat-box>
-          <stat-box class="w-[48%]" :title="'Assists'" :value="data.assists" color="teal"></stat-box>          
-          <stat-box class="w-[48%]" :title="'Deaths'" :value="data.deaths" color="teal"></stat-box>          
-        </div>
-      </div>
+    <!-- Laid out like the player profile -->
+    <div v-if="data" class="max-w-[1920px] mx-auto px-4 md:px-8 mt-8 space-y-8">
+      <panel-box>
+        <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
 
-      <div>
+          <!-- Team overview -->
+          <panel-box :inner="true" class="!gap-8">
+            <div class="flex flex-col">
+              <h2 class="text-3xl font-bold">{{ teamName(team) }}</h2>
+              <span v-if="subtitle" class="text-subtext">{{ subtitle }}</span>
+            </div>
+            <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
+              <div class="shrink-0 w-40 md:w-60 aspect-square flex items-center justify-center">
+                <img class="max-w-full max-h-full object-contain text-[0px]" :src="data.icon_url || isLoadingImageUrl" :alt="teamName(team)"/>
+              </div>
+              <div class="flex-1 min-w-0 w-full grid grid-cols-2 gap-x-6 gap-y-1 content-start">
+                <stat-box v-for="stat in overviewStats" :key="stat.label" class="!m-0 !px-0 !min-w-0" :title="stat.label" :value="stat.value"></stat-box>
+              </div>
+            </div>
+            <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
+              <h3 class="text-2xl font-bold">{{ section.title }} <span class="text-sm font-normal text-subtext">5+ games</span></h3>
+              <div class="flex flex-wrap gap-6 max-md:justify-center">
+                <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :text="group.label" :data="group.data"></group-box>
+              </div>
+            </div>
+            <p class="flex flex-wrap gap-2"><span class="text-subtext">Total Time Spent Dead:</span><span class="text-header">{{ data.time_spent_dead }}</span></p>
+          </panel-box>
 
-        <table class="mb-10 max-md:text-xs">
-          <thead>
-            <tr>
-              <th>
-                Player
-              </th>
-              <th>
-                Games Played
-              </th>
-              <th>
-                Most Played Hero
-              </th>
-              <th>
-                Win Rate on Hero %
-              </th>
-              <th>
-                Preferred Role
-              </th>
-            </tr>
-          </thead>
-          <tbody class="text-center">
-            <tr v-for="(row, index) in data.players" :key="index">
-              <td>
-                <a class="group/bt inline-flex items-center" :href="row.playerlink"><span class="group-hover/bt:underline">{{ row.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
-              </td>
-              <td>
-                {{ row.games_played }}
-              </td>
-              <td>
-                <a :href="row.herolink">
-                  <hero-image-wrapper :hero="row.most_played_hero"></hero-image-wrapper>
+          <div class="flex flex-col gap-6 min-w-0">
+            <!-- The roster, with each player's most played hero -->
+            <panel-box v-if="playerList.length" :inner="true" title="Players">
+              <div class="flex flex-col gap-2">
+                <div v-for="(row, index) in playerList" :key="index" class="flex items-center gap-3 rounded bg-surface-2 px-3 py-2">
+                  <a v-if="row.most_played_hero" class="shrink-0" :href="row.herolink">
+                    <hero-image-wrapper :hero="row.most_played_hero">
+                      <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Win Rate on Hero: ' + row.win_rate_on_hero + '%'"></image-hover-box>
+                    </hero-image-wrapper>
+                  </a>
+                  <div class="flex flex-col min-w-0 flex-1">
+                    <a class="group/bt font-semibold truncate" :href="row.playerlink"><span class="group-hover/bt:underline">{{ row.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                    <span v-if="row.most_played_role" class="text-sm text-subtext">{{ row.most_played_role }}</span>
+                  </div>
+                  <span class="shrink-0 text-sm text-subtext">{{ row.games_played }} games</span>
+                </div>
+              </div>
+            </panel-box>
+
+            <panel-box v-if="data.enemy_teams && data.enemy_teams.length" :inner="true" title="Teams Lost Against">
+              <div class="flex flex-col gap-2">
+                <a v-for="(enemy, index) in data.enemy_teams" :key="index" :href="enemy.enemy_link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
+                  <img v-if="enemy.icon_url" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0px]" :src="enemy.icon_url" :alt="teamName(enemy.team_name || enemy.team)"/>
+                  <div class="flex flex-col min-w-0 flex-1">
+                    <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ teamName(enemy.team_name || enemy.team) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></span>
+                    <span class="text-sm text-subtext">{{ enemy.inputhover }}</span>
+                  </div>
                 </a>
-              </td>
-              <td>
-                {{ row.win_rate_on_hero }}
-              </td>
-              <td>
-                {{ row.most_played_role }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </div>
+            </panel-box>
 
-
-      </div>
+            <panel-box v-if="(data.heroes_won_against || []).length || (data.heroes_lost_against || []).length" :inner="true" title="Heroes Played Against">
+              <div class="flex flex-col gap-4">
+                <group-box v-if="data.heroes_won_against.length" class="!m-0" :useinputforhover="true" :text="'Most Won Against'" :data="data.heroes_won_against.slice(0, 5)"></group-box>
+                <group-box v-if="data.heroes_lost_against.length" class="!m-0" :useinputforhover="true" :text="'Most Lost Against'" :data="data.heroes_lost_against.slice(0, 5)"></group-box>
+              </div>
+            </panel-box>
+          </div>
+        </div>
+      </panel-box>
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
-      <div class="bg-surface rounded p-6 md:p-10 mx-4 md:mx-8 mb-6">
-        <div class=" max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5 text-center">Hero Enemies and Allies</h2>
-          <div class="flex flex-wrap justify-center">
-            <group-box :useinputforhover="true" :text="'Top Heroes Won Against'" :data="data.heroes_won_against.slice(0,5)" color="blue"></group-box>
-            <group-box :useinputforhover="true" :text="'Top Heroes Lost Against'" :data="data.heroes_lost_against.slice(0,5)" color="red"></group-box>
+      <div class="grid xl:grid-cols-2 gap-6 items-start">
+        <panel-box title="Heroes Played">
+          <div class="flex flex-wrap gap-2">
+            <hero-image-wrapper v-for="(item, index) in data.heroes" :key="index" size="big" :hero="item.hero">
+              <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+            </hero-image-wrapper>
           </div>
-        </div>
+        </panel-box>
+        <panel-box title="Maps Played">
+          <div class="flex flex-wrap gap-2">
+            <map-image-wrapper v-for="(item, index) in data.maps" :key="index" size="big" :map="item.game_map">
+              <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+            </map-image-wrapper>
+          </div>
+        </panel-box>
       </div>
 
-      <div class="bg-surface rounded p-6 md:p-10 mx-4 md:mx-8 mb-6">
-        <div class=" max-w-[90em] ml-auto mr-auto mb-10">
-          <h2 class="text-3xl font-bold py-5 text-center">Enemy Teams</h2>
-          <div class="flex flex-wrap justify-center gap-10">
-            <a :href="team.enemy_link"  v-for="(team, index) in data.enemy_teams" :key="index" class="text-center flex flex-col align-middle min-w-[8em] ">
-              <span v-if="esport == 'Other'">
-                {{ team.team }}
-              </span>
-              <round-image :size="'big'" :title="team.team" :image="team.icon_url" :hovertextstyleoverride="true" class="ml-auto mr-auto">
-                <image-hover-box :title="team.team_name" :paragraph-one="team.inputhover"></image-hover-box>
-              </round-image>
-            </a>
+      <div class="grid xl:grid-cols-2 gap-6 items-start">
+        <panel-box :title="'Heroes Banned by ' + teamName(team)">
+          <div class="flex flex-wrap gap-2">
+            <hero-image-wrapper v-for="(item, index) in data.team_ban_date" :key="index" size="big" :hero="item.hero">
+              <image-hover-box :title="item.name" :paragraph-one="item.inputhover"></image-hover-box>
+            </hero-image-wrapper>
           </div>
-        </div>
+        </panel-box>
+        <panel-box :title="'Heroes Banned Against ' + teamName(team)">
+          <div class="flex flex-wrap gap-2">
+            <hero-image-wrapper v-for="(item, index) in data.enemy_ban_date" :key="index" size="big" :hero="item.hero">
+              <image-hover-box :title="item.name" :paragraph-one="item.inputhover"></image-hover-box>
+            </hero-image-wrapper>
+          </div>
+        </panel-box>
       </div>
 
-
-      <div class=" p-10 ">
-        <div class=" max-w-[90em] ml-auto mr-auto mb-10">
-          <h2 class="text-3xl font-bold py-5 text-center">Heroes played by {{ team }}</h2>
-          <div class="flex flex-wrap justify-center">
-            <group-box :text="'Most Played'" :data="data.hero_top_three_most_played" color="blue"></group-box>
-            <group-box :text="'Highest Win Rate'" :data="data.hero_top_three_highest_win_rate" color="teal"></group-box>
-            <group-box :text="'Lowest Win Rate'" :data="data.hero_top_three_lowest_win_rate" color="red"></group-box>
+      <div class="grid xl:grid-cols-2 gap-6 items-start">
+        <panel-box title="Heroes">
+          <table class="min-w-0 w-full responsive-table max-md:text-xs">
+            <thead>
+              <tr>
+                <th @click="sortTable('hero_id')" class="py-2 px-3 text-left text-sm cursor-pointer">Hero<sort-indicator :column="'hero_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+                <th @click="sortTable('win_rate')" class="py-2 px-3 text-left text-sm cursor-pointer">Win Rate %<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+                <th @click="sortTable('games_played')" class="py-2 px-3 text-left text-sm cursor-pointer">Games Played<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, index) in sortedData" :key="index">
+                <td class="py-2 px-3"><div class="flex items-center gap-2"><hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span></div></td>
+                <td class="py-2 px-3">{{ row.win_rate }}</td>
+                <td class="py-2 px-3">{{ row.games_played }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </panel-box>
+        <panel-box v-if="esport != 'Other'" :title="'Maps Banned by ' + teamName(team)">
+          <div class="flex flex-wrap gap-2">
+            <map-image-wrapper v-for="(item, index) in data.maps_banned" :key="index" size="big" :map="item.game_map">
+              <image-hover-box :title="item.game_map.name" :paragraph-one="item.inputhover"></image-hover-box>
+            </map-image-wrapper>
           </div>
-        </div>
-
-
-
-        <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto mb-10">
-          <hero-image-wrapper v-for="(item, index) in data.heroes" :size="'big'" :hero="item.hero">
-            <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
-          </hero-image-wrapper>
-        </div>
-
+        </panel-box>
       </div>
 
-        <table class="max-w-[800px] md:min-w-[800px] mt-10 max-md:text-xs">
-          <thead>
-            <tr >
-              <th @click="sortTable('hero_id')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'hero_id' }">
-                Hero<sort-indicator :column="'hero_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </th>
-              <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
-                Win Rate %<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </th>            
-              <th @click="sortTable('games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
-                Games Played<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </th>              
-            </tr>
-          </thead>
-          <tbody class="text-center">
-            <tr class="@apply even:bg-gray-xlight" v-for="(row, index) in sortedData" :key="index">
-              <td class="py-2 px-3 flex items-center  max-md:justify-center gap-1">
-                <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
-              </td>
-              <td>
-                {{ row.win_rate }}
-              </td>
-              <td>
-                {{ row.games_played }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-      
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
-      <div class="bg-surface rounded p-6 md:p-10 mx-4 md:mx-8 mt-10 mb-6">
-        <div class=" max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5 text-center">{{ team }} Hero Ban Data</h2>
-          <div class="flex flex-wrap justify-center">
-            <group-box :useinputforhover="true" :text="`Most Banned by ${team}`" :data="data.team_ban_date.slice(0,5)" color="blue"></group-box>
-          </div>
-        </div>
-
-
-
-        <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto mb-10">
-          <hero-image-wrapper v-for="(item, index) in data.team_ban_date" :size="'big'" :hero="item.hero">
-            <image-hover-box :title="item.name" :paragraph-one="item.inputhover"></image-hover-box>
-          </hero-image-wrapper>
-        </div>
-
+      <div class="flex justify-between items-baseline gap-6">
+        <h2 class="text-2xl font-bold">Recent Matches</h2>
+        <a class="text-header whitespace-nowrap hover:underline" :href="matchHistoryUrl">Match History<i class="fas fa-chevron-right text-sm ml-3"></i></a>
       </div>
-
-
-      <div class=" p-10 mt-10">
-        <div class=" max-w-[90em] ml-auto mr-auto">
-          <div class="flex flex-wrap justify-center">
-            <group-box :useinputforhover="true" :text="`Most Banned Against ${team}`" :data="data.enemy_ban_date.slice(0,5)" color="red"></group-box>
-          </div>
-        </div>
-
-
-
-        <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto mb-10">
-          <hero-image-wrapper v-for="(item, index) in data.enemy_ban_date" :size="'big'" :hero="item.hero">
-            <image-hover-box :title="item.name" :paragraph-one="item.inputhover"></image-hover-box>
-          </hero-image-wrapper>
-        </div>
-
-      </div>
-
-
-
-
-      <div class="bg-surface rounded p-6 md:p-10 mx-4 md:mx-8 mb-6">
-        <div class=" max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5 text-center">Maps played by {{ team }}</h2>
-          <div class="flex flex-wrap justify-center">
-            <group-box :text="'Lowest Win Rate'" :data="data.map_top_three_lowest_win_rate" color="red"></group-box>
-            <group-box :text="'Most Played'" :data="data.map_top_three_most_played" color="blue"></group-box>
-            <group-box :text="'Highest Win Rate'" :data="data.map_top_three_highest_win_rate" color="teal"></group-box>
-          </div>
-        </div>
-
-        <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto mb-10 pt-10 justify-center">
-          <map-image-wrapper v-for="(item, index) in data.maps" :size="'big'" :map="item.game_map">
-            <image-hover-box :title="item.game_map.name"  :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
-          </map-image-wrapper>
-        </div>
-
-      </div>
-
-
-      <div v-if="esport != 'Other'" class="p-10">
-        <div class=" max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5 text-center">Maps banned by {{ team }}</h2>
-          <div class="flex flex-wrap justify-center">
-            <group-box :useinputforhover="true" :text="'Maps Banned'" :data="data.maps_banned" color="blue"></group-box>
-          </div>
-        </div>
-        <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto mb-10 pt-10 justify-center">
-          <map-image-wrapper v-for="(item, index) in data.maps_banned" :size="'big'" :map="item.game_map">
-            <image-hover-box :title="item.game_map.name" :paragraph-one="item.inputhover"></image-hover-box>
-          </map-image-wrapper>
-        </div>
-
-
-      </div>
-      <div class="bg-surface rounded mx-4 md:mx-8 mb-6">
-
-        <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
-          <game-summary-box 
-            v-for="(item, index) in data.matches" 
-            :esport="true" 
-            :esport-league="esport"
-            :esport-series="series"
-            :tournament="tournament"
-            :data="item"
-          ></game-summary-box>
-          <div class="flex justify-end mt-4">
-            <custom-button 
-              :href="`/Esports/${esport}${esport === 'Other' ? `/${series}` : ''}/Team/${team}/Match/History${season ? `?season=${season}` : ''}${esport === 'NGS' && division ? `&division=${division}` : ''}${esport === 'HeroesInternational' && tournament ? `?tournament=${tournament}` : ''}`" 
-              class="ml-auto" 
-              text="View Match History">
-            </custom-button>
-        </div>
-        </div>
-      </div>
-
-
+    </div>
+    <!-- The league pages' own recent match rows -->
+    <div v-if="data" class="mt-4 pb-8">
+      <esports-recent-matches v-if="recentMatches.length" :data="recentMatches" :esport="recentMatchesEsport" :series="series" :tournament="tournament" :always-expanded="true"></esports-recent-matches>
+      <p v-else class="max-w-[1920px] mx-auto px-4 md:px-8 text-subtext">No recent games.</p>
     </div>
 
-    <div v-else-if="isLoading">
-      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true" :overrideimage="isLoadingImageUrl"></loading-component><table-skeleton></table-skeleton></div>
+    <!-- The page's layout with grey blocks while it loads, like the profile -->
+    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 mt-8 space-y-8">
+      <loading-component :compact="true" :overrideimage="isLoadingImageUrl"></loading-component>
+      <panel-box>
+        <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
+          <panel-box :inner="true" class="!gap-8 2xl:w-[780px]">
+            <div class="flex flex-col gap-2">
+              <h2 class="text-3xl font-bold">{{ teamName(team) }}</h2>
+              <skeleton-box class="h-4 w-40"></skeleton-box>
+            </div>
+            <div class="flex gap-8 max-sm:flex-col">
+              <skeleton-box class="w-40 md:w-60 aspect-square shrink-0 rounded"></skeleton-box>
+              <div class="flex-1 grid grid-cols-2 gap-x-6 gap-y-4 content-start">
+                <skeleton-box v-for="index in 10" :key="index" class="h-11"></skeleton-box>
+              </div>
+            </div>
+            <div v-for="title in ['Heroes', 'Maps']" :key="title" class="flex flex-col gap-4">
+              <h3 class="text-2xl font-bold">{{ title }}</h3>
+              <div class="flex flex-wrap gap-6">
+                <div v-for="group in 3" :key="group" class="flex gap-3">
+                  <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
+                </div>
+              </div>
+            </div>
+          </panel-box>
+          <div class="flex flex-col gap-6 min-w-0">
+            <panel-box :inner="true" title="Players">
+              <skeleton-box v-for="index in 6" :key="index" class="h-14"></skeleton-box>
+            </panel-box>
+            <panel-box :inner="true" title="Teams Lost Against">
+              <skeleton-box v-for="index in 3" :key="index" class="h-14"></skeleton-box>
+            </panel-box>
+          </div>
+        </div>
+      </panel-box>
+      <div v-for="pair in [['Heroes Played', 'Maps Played'], ['Heroes Banned', 'Heroes Banned Against']]" :key="pair[0]" class="grid xl:grid-cols-2 gap-6">
+        <panel-box v-for="title in pair" :key="title" :title="title">
+          <div class="flex flex-wrap gap-2">
+            <skeleton-box v-for="tile in 16" :key="tile" class="w-16 h-16 !rounded-full"></skeleton-box>
+          </div>
+        </panel-box>
+      </div>
+      <h2 class="text-2xl font-bold">Recent Matches</h2>
+      <div class="flex flex-col gap-2 pb-8">
+        <skeleton-box v-for="row in 6" :key="row" class="h-16"></skeleton-box>
+      </div>
     </div>
 
   </div>
@@ -285,6 +226,7 @@ export default {
     image: String,
     series: String,
     seriesimage: String,
+    patreonUser: Boolean,
   },
   data(){
     return {
@@ -295,7 +237,9 @@ export default {
       modifiedseason: null,
       modifieddivision: null,
       cancelTokenSource: null,
-      teach: null
+      filterSeasons: null,
+      filterDivisions: null,
+      recentMatches: [],
     }
   },
   created(){
@@ -370,6 +314,61 @@ export default {
       }
       return this.esport;
     },
+    subtitle() {
+      return [
+        this.modifiedseason ? 'Season ' + this.modifiedseason : null,
+        this.esport == 'NGS' && this.modifieddivision ? 'Division ' + this.modifieddivision : null,
+        this.series,
+      ].filter(Boolean).join(' · ');
+    },
+    // The API keys players by battletag
+    playerList() {
+      return Object.values(this.data.players || {}).sort((a, b) => b.games_played - a.games_played);
+    },
+    overviewStats() {
+      const number = value => Number(value).toLocaleString('en-US');
+      return [
+        { label: 'Wins', value: number(this.data.wins) },
+        { label: 'Losses', value: number(this.data.losses) },
+        { label: 'Win Rate', value: Number(this.data.win_rate).toFixed(2) + '%' },
+        { label: 'Games', value: number(this.data.total_games) },
+        { label: 'KDR', value: this.data.kdr },
+        { label: 'KDA', value: this.data.kda },
+        { label: 'Takedowns', value: number(this.data.takedowns) },
+        { label: 'Kills', value: number(this.data.kills) },
+        { label: 'Assists', value: number(this.data.assists) },
+        { label: 'Deaths', value: number(this.data.deaths) },
+      ];
+    },
+    topSections() {
+      return [
+        { title: 'Heroes', groups: [
+          { label: 'Most Played', data: this.data.hero_top_three_most_played },
+          { label: 'Highest Win Rate', data: this.data.hero_top_three_highest_win_rate },
+          { label: 'Lowest Win Rate', data: this.data.hero_top_three_lowest_win_rate },
+        ] },
+        { title: 'Maps', groups: [
+          { label: 'Most Played', data: this.data.map_top_three_most_played },
+          { label: 'Highest Win Rate', data: this.data.map_top_three_highest_win_rate },
+          { label: 'Lowest Win Rate', data: this.data.map_top_three_lowest_win_rate },
+        ] },
+      ];
+    },
+    // The recent match rows' league key; HI splits main and Nations Cup
+    recentMatchesEsport() {
+      if (this.esport == 'HeroesInternational') {
+        return this.tournament == 'nationscup' ? 'hi_nc' : 'hi';
+      }
+      return this.esport;
+    },
+    matchHistoryUrl() {
+      const params = new URLSearchParams();
+      if (this.modifiedseason) params.set('season', this.modifiedseason);
+      if (this.esport === 'NGS' && this.modifieddivision) params.set('division', this.modifieddivision);
+      if (this.esport === 'HeroesInternational' && this.tournament) params.set('tournament', this.tournament);
+      const query = params.toString();
+      return `/Esports/${this.esport}${this.esport === 'Other' ? `/${this.series}` : ''}/Team/${this.team}/Match/History${query ? '?' + query : ''}`;
+    },
     sortedData() {
       if (!this.sortKey) return this.data.heroes;
       return this.data.heroes.slice().sort((a, b) => {
@@ -400,18 +399,40 @@ export default {
         url = "/api/v1/esports/other/single/team";
       }
       try{
-        const response = await this.$axios.post(url, {
+        // Other series come from their own controller
+        const teamGames = this.esport == 'Other' ? this.$axios.post("/api/v1/esports/other/team/match/history", {
           esport: this.esport,
           series: this.series,
-          division: this.modifieddivision,
-          team: this.team,
           season: this.modifiedseason,
+          team: this.team,
+          pagination_page: 1,
+        }, { cancelToken: this.cancelTokenSource.token }) : this.$axios.post("/api/v1/esports/single/team/matches", {
+          esport: this.esport,
           tournament: this.tournament,
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
-        });
+          season: this.modifiedseason,
+          division: this.esport == 'NGS' ? this.modifieddivision : null,
+          team: ['NGS', 'MastersClash'].includes(this.esport) ? this.team : null,
+          team_name: ['NGS', 'MastersClash'].includes(this.esport) ? null : this.team,
+          pagination_page: 1,
+        }, { cancelToken: this.cancelTokenSource.token });
+        const [response, matches] = await Promise.all([
+          this.$axios.post(url, {
+            esport: this.esport,
+            series: this.series,
+            division: this.modifieddivision,
+            team: this.team,
+            season: this.modifiedseason,
+            tournament: this.tournament,
+          },
+          {
+            cancelToken: this.cancelTokenSource.token,
+          }),
+          teamGames,
+        ]);
+        this.recentMatches = ((matches && matches.data.data) || []).slice(0, 7);
         this.data = response.data;
+        this.filterSeasons = response.data.seasons;
+        this.filterDivisions = response.data.divisions;
       }catch(error){
       //Do something here
       }finally {
@@ -463,8 +484,8 @@ export default {
       }
       this.sortKey = key;
     },
-    matchUrl(){
-
+    teamName(name) {
+      return this.esport == 'NGS' ? this.$ngsTeam(name).name : name;
     },
   }
 }

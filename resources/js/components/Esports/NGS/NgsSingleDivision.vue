@@ -5,7 +5,8 @@
     <div v-if="seasons" class="max-w-[1920px] mx-auto px-4 md:px-8">
       <panel-box>
         <div class="filter-row justify-center">
-          <single-select-filter :values="seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
+          <single-select-filter :values="seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="modifiedseason"></single-select-filter>
+          <button :disabled="isLoading" @click="handleDropdownClosed" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div>
       </panel-box>
     </div>

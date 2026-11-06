@@ -4,13 +4,13 @@
     <page-heading :heading="''" :heading-image="'/images/EsportOther/' + this.series.icon" :heading-image-url="'/Esports/Other/' + this.series.name"></page-heading>
     
     <div class="flex flex-wrap justify-center gap-1 bg-teal rounded p-1 w-fit max-w-[calc(100%-2rem)] mx-auto mb-6 max-md:text-xs">
-      <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'teams' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('teams')">Teams</button>
+      <button type="button" :disabled="isLoading && activeButton !== 'teams'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'teams' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('teams')">Teams</button>
 
-      <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'players' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('players')">Players</button>
+      <button type="button" :disabled="isLoading && activeButton !== 'players'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'players' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('players')">Players</button>
 
-      <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallHeroStats' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('overallHeroStats')">Overall Hero Stats</button>
+      <button type="button" :disabled="isLoading && activeButton !== 'overallHeroStats'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallHeroStats' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('overallHeroStats')">Overall Hero Stats</button>
 
-      <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallTalentStats' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('overallTalentStats')">Overall Talent Stats</button>
+      <button type="button" :disabled="isLoading && activeButton !== 'overallTalentStats'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallTalentStats' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('overallTalentStats')">Overall Talent Stats</button>
     </div>
 
 
@@ -46,12 +46,12 @@
     </div>
     <div v-else>
       <div v-if="activeButton === 'teams'">
-        <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
+        <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box><div class="filter-row justify-center">
           <single-select-filter :values="seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter> 
           <single-select-filter :values="regions" :text="'Regions'" @input-changed="handleInputChange"></single-select-filter> 
           <single-select-filter :values="tournaments" :text="'Tournaments'" @input-changed="handleInputChange"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
-        </div>
+          <button :disabled="isLoading" @click="filter()" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+        </div></panel-box></div>
 
         <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
           <input type="text" class="form-control search-input mr-3" :placeholder="'Search For Team'" :aria-label="'Search For Team'" v-model="userinput">
@@ -112,7 +112,7 @@
       </div>
       
       <div v-if="activeButton === 'overallHeroStats'">
-        <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
+        <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box><div class="filter-row justify-center">
           <single-select-filter :values="seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="regions" :text="'Regions'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="tournaments" :text="'Tournaments'" @input-changed="handleInputChange"></single-select-filter>
@@ -120,8 +120,8 @@
 
 
 
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
-        </div>
+          <button :disabled="isLoading" @click="filter()" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+        </div></panel-box></div>
         <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
       </div>
 
@@ -133,13 +133,13 @@
 
         <div v-else>
           <div v-if="talentStatsData">
-            <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
+            <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box><div class="filter-row justify-center">
               <single-select-filter :values="seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter>
               <single-select-filter :values="regions" :text="'Regions'" @input-changed="handleInputChange"></single-select-filter>
               <single-select-filter :values="tournaments" :text="'Tournaments'" @input-changed="handleInputChange"></single-select-filter>
 
-              <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
-            </div>
+              <button :disabled="isLoading" @click="filter()" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+            </div></panel-box></div>
 
             
             <esports-talent-stats :talentdetaildata="talentStatsData.talentData" :talentbuilddata="talentStatsData.buildData" :talentimages="talentimages" :selectedHero="selectedHero"></esports-talent-stats>
@@ -154,12 +154,40 @@
     </div>
 
     <div v-if="isLoading">
-      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true" :overrideimage="'/Esports/Other/' + this.series.name"></loading-component><table-skeleton></table-skeleton></div>
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <loading-component :compact="true" :overrideimage="'/Esports/Other/' + this.series.name"></loading-component>
+        <!-- Teams: a one-column list of names -->
+        <div v-if="activeButton === 'teams'" class="max-w-[500px] w-full mx-auto">
+          <table-skeleton :bare="true" :rows="12" :columns="['name']"></table-skeleton>
+        </div>
+        <!-- Players: a one-column list of names -->
+        <div v-else-if="activeButton === 'players'" class="max-w-[500px] w-full mx-auto">
+          <table-skeleton :bare="true" :rows="12" :columns="['name']"></table-skeleton>
+        </div>
+        <!-- Overall Hero Stats: hero with name, then win rate, popularity, ban rate and games -->
+        <div v-else-if="activeButton === 'overallHeroStats'" class="max-w-[1000px] w-full mx-auto">
+          <table-skeleton :bare="true" :rows="12" :columns="['avatar', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
+        </div>
+        <!-- Overall Talent Stats: a block per talent level, then the builds table -->
+        <div v-else-if="activeButton === 'overallTalentStats'" class="flex flex-col items-center">
+          <div v-for="level in 3" :key="level" class="w-full bg-surface overflow-hidden">
+            <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-20"></skeleton-box></div>
+            <table-skeleton :bare="true" :rows="3" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
+          </div>
+          <div class="w-full max-w-[800px] bg-surface overflow-hidden">
+            <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-16"></skeleton-box></div>
+            <table-skeleton :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
+          </div>
+        </div>
+        <table-skeleton v-else></table-skeleton>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+const OTHER_TABS = ['teams', 'players', 'overallHeroStats', 'overallTalentStats'];
+
 export default {
   name: 'OtherSeries',
   components: {
@@ -175,6 +203,7 @@ export default {
     tournaments: Array,
     heroes: Object,
     talentimages: Object,
+    urlparameters: [Object, Array],
   },
   data(){
     return {
@@ -194,6 +223,11 @@ export default {
   created(){
   },
   mounted() {
+    // ?tab= opens that tab straight away
+    const tab = this.urlparameters?.tab;
+    if (OTHER_TABS.includes(tab)) {
+      this.setButtonActive(tab);
+    }
   },
   computed: {
     filteredTeams() {
@@ -327,7 +361,15 @@ export default {
     },
 
     setButtonActive(buttonName) {
+      // One tab loads at a time; the others wait until it's done
+      if (this.isLoading) {
+        return;
+      }
       this.activeButton = buttonName;
+      // The open tab goes in the URL, so it can be linked to or reloaded
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', buttonName);
+      history.replaceState(history.state, '', url);
       this.selectedHero = null;
       if(this.activeButton === 'teams'){
         this.teamsData = null;

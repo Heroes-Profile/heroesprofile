@@ -43,7 +43,7 @@ export default {
       type: Object,
       required: true,
     },
-    // One column per game type; the NGS player page has a single NGS column
+    // One column per game type; esports player pages have a single league column
     gameTypes: {
       type: Array,
       default: () => [{ key: 'qm', label: 'Quick Match' }, { key: 'sl', label: 'Storm League' }, { key: 'ar', label: 'ARAM' }],

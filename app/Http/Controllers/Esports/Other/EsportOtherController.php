@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Esports\Other;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Esports\EsportsController;
 use App\Models\Esports\Other\Battletag;
 use App\Models\Esports\Other\OtherTeam;
 use App\Models\Esports\Other\Replay;
@@ -164,6 +165,7 @@ class EsportOtherController extends Controller
                 'regions' => $regions,
                 'tournaments' => $tournaments,
                 'tournament' => null,
+                'urlparameters' => $request->query(),
 
             ]);
     }
@@ -274,6 +276,7 @@ class EsportOtherController extends Controller
                 'blizz_id' => $blizz_id,
                 'season' => $request['season'],
                 'division' => $request['division'],
+                'team' => $request['team'],
                 'tournament' => null,
             ]);
     }
@@ -406,43 +409,10 @@ class EsportOtherController extends Controller
             ]);
     }
 
-    public function showPlayerMatchHistory(Request $request, $series, $battletag, $blizz_id)
+    /** The league player pages' match history, under Other's series. */
+    public function showPlayerMatchHistory(Request $request)
     {
-        $validationRules = [
-            'series' => 'required|string',
-            'battletag' => 'required|string',
-            'blizz_id' => 'required|integer',
-        ];
-
-        $otherValidationRules = [
-            'season' => 'nullable|numeric',
-        ];
-
-        $validator = Validator::make(compact('series', 'battletag', 'blizz_id'), $validationRules);
-        $otherValidator = Validator::make($request->all(), $otherValidationRules);
-
-        if ($validator->fails()) {
-            if (config('app.env') === 'production') {
-                return \Redirect::to('/');
-            } else {
-                return [
-                    'data' => $request->all(),
-                    'status' => 'failure to validate inputs',
-                ];
-            }
-        }
-
-        return view('Esports.singlePlayerMatchHistory')->with([
-            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-            'battletag' => $battletag,
-            'blizz_id' => $blizz_id,
-            'esport' => 'Other',
-            'series' => $series,
-            'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon ?? 'heroesprofilelogo.png',
-            'filters' => $this->globalDataService->getFilterData(),
-            'season' => $request['season'],
-            'tournament' => null,
-        ]);
+        return app(EsportsController::class)->showPlayerMatchHistory($request);
     }
 
     public function getAllMatches(Request $request)
@@ -534,21 +504,115 @@ class EsportOtherController extends Controller
             ->when($this->hero, function ($query) {
                 return $query->where($this->schema.'.player.hero', $this->hero);
             })
-            ->orderByDesc('game_date')// ;
-
-        // $sql = $result->toSql();
-        // $bindings = $result->getBindings();
-        // dd(vsprintf(str_replace('?', '%s', $sql), $bindings));
+            ->select($this->schema.'.replay.replayID', $this->schema.'.replay.game_date')
+            ->groupBy($this->schema.'.replay.replayID', $this->schema.'.replay.game_date')
+            ->orderByDesc($this->schema.'.replay.game_date')
             ->paginate($perPage, ['*'], 'page', $pagination_page);
 
-        $modifiedResult = $result->map(function ($item) use ($maps) {
+        return [
+            'data' => $this->allMatchRows($result->pluck('replayID')->all(), $maps),
+            'current_page' => $result->currentPage(),
+            'last_page' => $result->lastPage(),
+            'per_page' => $result->perPage(),
+            'total' => $result->total(),
+        ];
+    }
 
-            $item->game_map = isset($maps[$item->game_map]) ? $maps[$item->game_map]['name'] : 'Unknown Map';
+    /** The recent-match rows' shape for these games, newest first, each with its series, tournament and region. */
+    private function allMatchRows(array $replayIDs, $maps): array
+    {
+        if (! $replayIDs) {
+            return [];
+        }
 
-            return $item;
-        });
+        $rows = DB::table($this->schema.'.replay')
+            ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
+            ->leftJoin($this->schema.'.battletags', $this->schema.'.battletags.player_id', '=', $this->schema.'.player.battletag')
+            ->leftJoin($this->schema.'.teams', $this->schema.'.teams.team_id', '=', $this->schema.'.player.team_id')
+            ->select([
+                $this->schema.'.replay.replayID',
+                $this->schema.'.replay.series',
+                $this->schema.'.replay.tournament',
+                $this->schema.'.replay.season',
+                $this->schema.'.replay.region',
+                $this->schema.'.replay.game_date',
+                $this->schema.'.replay.game_map',
+                $this->schema.'.replay.game',
+                $this->schema.'.replay.round',
+                $this->schema.'.replay.team_0_name',
+                $this->schema.'.replay.team_1_name',
+                $this->schema.'.player.hero',
+                $this->schema.'.player.team',
+                $this->schema.'.player.winner',
+                $this->schema.'.player.blizz_id',
+                $this->schema.'.battletags.battletag AS battletag_name',
+                $this->schema.'.teams.team_name AS side_team_name',
+            ])
+            ->whereIn($this->schema.'.replay.replayID', $replayIDs)
+            ->get()
+            ->groupBy('replayID');
 
-        return $result;
+        $heroData = $this->globalDataService->getHeroes()->keyBy('id');
+        $icons = Series::pluck('icon', 'name');
+        $regions = DB::table($this->schema.'.regions')->pluck('name', 'region_id');
+
+        $matches = [];
+        foreach ($replayIDs as $replayID) {
+            $group = $rows->get($replayID);
+            if (! $group) {
+                continue;
+            }
+            $first = $group->first();
+
+            $heroes = [];
+            for ($i = 0; $i < 10; $i++) {
+                $heroes[$i] = isset($group[$i], $group[$i]->hero, $heroData[$group[$i]->hero]) ? $heroData[$group[$i]->hero] : null;
+            }
+
+            // Keyed by the players' own side, as replay.team_0_name doesn't always sit on side 0
+            $teams = [[], []];
+            $sideNames = [null, null];
+            $winner = null;
+            foreach ($group as $row) {
+                if (array_key_exists($row->team, $sideNames) && $sideNames[$row->team] === null && $row->side_team_name) {
+                    $sideNames[$row->team] = $row->side_team_name;
+                }
+                if (isset($row->hero, $heroData[$row->hero]) && isset($teams[$row->team])) {
+                    $teams[$row->team][] = [
+                        'hero' => $heroData[$row->hero],
+                        'battletag' => $row->battletag_name ? explode('#', $row->battletag_name)[0] : null,
+                        'blizz_id' => $row->blizz_id,
+                    ];
+                }
+                if ($row->winner == 1) {
+                    $winner = (int) $row->team;
+                }
+            }
+
+            // Other's pages show the series icon for every team
+            $image = '/images/EsportOther/'.($icons[$first->series] ?? 'heroesprofilelogo.png');
+
+            $matches[] = [
+                'replayID' => $first->replayID,
+                'series' => $first->series,
+                'tournament' => $first->tournament,
+                'season' => $first->season,
+                'region_name' => $regions[$first->region] ?? null,
+                'game_date' => $first->game_date,
+                'game_map' => $maps[$first->game_map] ?? null,
+                'game' => $first->game,
+                'round' => $first->round,
+                'team_0_name' => $first->team_0_name,
+                'team_1_name' => $first->team_1_name,
+                'heroes' => $heroes,
+                'teams' => $teams,
+                'team_images' => [$image, $image],
+                'side_names' => $sideNames,
+                'winner' => $winner,
+            ];
+        }
+
+        return $matches;
     }
 
     public function getTeamData(Request $request)
@@ -1514,11 +1578,9 @@ class EsportOtherController extends Controller
         return $returnData;
     }
 
+    /** A series' games, a page at a time, as the league pages' recent match rows; optionally one team's. */
     public function getTeamMatchHistoryData(Request $request)
     {
-
-        // return response()->json($request->all());
-
         $validationRules = [
             'esport' => 'required|in:Other',
             'series' => 'required|string',
@@ -1538,50 +1600,100 @@ class EsportOtherController extends Controller
 
         $this->esport = $request['esport'];
         $this->schema = 'heroesprofile_ml';
-
         $this->season = $request['season'];
-
-        $tournament = $request['tournament'];
-
         $this->series = $request['series'];
+        $this->team_name = $request['team'];
 
-        $team = $request['team'];
-        $team_id = null;
-
-        $pagination_page = $request['pagination_page'];
-        $perPage = 10000;
-
-        $result = DB::table($this->schema.'.replay')
-            ->when($this->season, function ($query) {
-                $query->where(function ($query) {
-                    $query->where($this->schema.'.replay.season', $this->season);
-                });
-            })
+        $results = DB::table($this->schema.'.replay')
+            ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
+            ->leftJoin($this->schema.'.battletags', $this->schema.'.battletags.player_id', '=', $this->schema.'.player.battletag')
+            ->leftJoin($this->schema.'.teams', $this->schema.'.teams.team_id', '=', $this->schema.'.player.team_id')
+            ->select([
+                $this->schema.'.replay.replayID',
+                $this->schema.'.replay.game_date',
+                $this->schema.'.replay.game_map',
+                $this->schema.'.replay.game',
+                $this->schema.'.replay.round',
+                $this->schema.'.replay.team_0_name',
+                $this->schema.'.replay.team_1_name',
+                $this->schema.'.player.hero',
+                $this->schema.'.player.team',
+                $this->schema.'.player.winner',
+                $this->schema.'.player.blizz_id',
+                $this->schema.'.battletags.battletag AS battletag_name',
+                $this->schema.'.teams.team_name AS side_team_name',
+            ])
             ->where($this->schema.'.replay.series', $this->series)
-            ->when($this->team, function ($query) {
+            ->when($this->season, function ($query) {
+                return $query->where($this->schema.'.replay.season', $this->season);
+            })
+            ->when($this->team_name, function ($query) {
                 return $query->where(function ($query) {
-                    $query->where('teams.team_name', $this->team_name);
+                    $query->where($this->schema.'.replay.team_0_name', $this->team_name)
+                        ->orWhere($this->schema.'.replay.team_1_name', $this->team_name);
                 });
             })
-            ->orderByDesc('game_date')
-            ->paginate($perPage, ['*'], 'page', $pagination_page);
+            ->orderByDesc($this->schema.'.replay.game_date')
+            ->orderBy($this->schema.'.replay.replayID')
+            ->paginate(1000, ['*'], 'page', $request['pagination_page']);
 
-        $maps = Map::all();
-        $maps = $maps->keyBy('map_id');
+        $heroData = $this->globalDataService->getHeroes()->keyBy('id');
+        $maps = Map::all()->keyBy('map_id');
 
-        $modifiedResult = $result->map(function ($item) use ($maps, $team) {
+        // Other's pages show the series icon for every team
+        $image = '/images/EsportOther/'.(Series::where('name', $this->series)->value('icon') ?? 'heroesprofilelogo.png');
 
-            $item->game_map = isset($maps[$item->game_map]) ? $maps[$item->game_map]['name'] : 'Unknown Map';
+        $matches = $results->groupBy('replayID')->map(function ($group) use ($heroData, $maps, $image) {
+            $heroes = [];
+            for ($i = 0; $i < 10; $i++) {
+                $heroes[$i] = isset($group[$i], $group[$i]->hero, $heroData[$group[$i]->hero]) ? $heroData[$group[$i]->hero] : null;
+            }
 
-            $temp_team = strtolower($team);
-            $team_team_one = strtolower($item->team_0_name);
+            // Keyed by the players' own side, as replay.team_0_name doesn't always sit on side 0
+            $teams = [[], []];
+            $sideNames = [null, null];
+            $winner = null;
+            foreach ($group as $row) {
+                if (array_key_exists($row->team, $sideNames) && $sideNames[$row->team] === null && $row->side_team_name) {
+                    $sideNames[$row->team] = $row->side_team_name;
+                }
+                if (isset($row->hero, $heroData[$row->hero]) && isset($teams[$row->team])) {
+                    $teams[$row->team][] = [
+                        'hero' => $heroData[$row->hero],
+                        'battletag' => $row->battletag_name ? explode('#', $row->battletag_name)[0] : null,
+                        'blizz_id' => $row->blizz_id,
+                    ];
+                }
+                if ($row->winner == 1) {
+                    $winner = (int) $row->team;
+                }
+            }
 
-            $item->enemy = $temp_team == $team_team_one ? $item->team_1_name : $item->team_0_name;
+            return [
+                'replayID' => $group[0]->replayID,
+                'game_date' => $group[0]->game_date,
+                'game_map' => $maps[$group[0]->game_map] ?? null,
+                'game' => $group[0]->game,
+                'round' => $group[0]->round,
+                'team_0_name' => $group[0]->team_0_name,
+                'team_1_name' => $group[0]->team_1_name,
+                'heroes' => $heroes,
+                'teams' => $teams,
+                'team_images' => [$image, $image],
+                'side_names' => $sideNames,
+                'winner' => $winner,
+            ];
+        })->values()->all();
 
-            return $item;
-        });
-
-        return $result;
+        return [
+            'data' => $matches,
+            'pagination' => [
+                'current_page' => $results->currentPage(),
+                'per_page' => $results->perPage(),
+                'total' => $results->total(),
+                'last_page' => $results->lastPage(),
+            ],
+        ];
     }
 
     public function getDataSinglePlayerMatchHistory(Request $request)

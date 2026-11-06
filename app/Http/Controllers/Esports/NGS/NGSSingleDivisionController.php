@@ -53,6 +53,7 @@ class NGSSingleDivisionController extends Controller
 
         $validationRules = [
             'season' => ['sometimes', 'nullable', new NGSSeasonInputValidation],
+            'team' => 'nullable|string',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -75,6 +76,7 @@ class NGSSingleDivisionController extends Controller
                 'filters' => $this->globalDataService->getFilterData(),
                 'division' => $division,
                 'season' => $request['season'],
+                'team' => $request['team'],
                 'esport' => 'NGS',
             ]);
     }

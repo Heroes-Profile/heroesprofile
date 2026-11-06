@@ -12,6 +12,7 @@
     :talentimages="{{ json_encode($talentimages) }}" 
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :tournament="{{ json_encode($tournament) }}"
+    :urlparameters="{{ json_encode($urlparameters) }}"
 
   ></heroes-international-nations-cup>
 @endsection

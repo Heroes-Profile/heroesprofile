@@ -8,6 +8,7 @@
   <nut-cup-main 
     :filters="{{ json_encode($filters) }}"
     :talentimages="{{ json_encode($talentimages) }}" 
+    :urlparameters="{{ json_encode($urlparameters) }}"
     :heroes="{{ json_encode($heroes) }}" 
   >
   </nut-cup-main>

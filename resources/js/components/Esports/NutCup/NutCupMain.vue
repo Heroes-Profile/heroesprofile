@@ -6,9 +6,9 @@
       <!---You are going to have to design this better, I am going to use buttons for now -->
       <div class="flex flex-wrap justify-center gap-1 bg-teal rounded p-1 w-fit max-w-[calc(100%-2rem)] mx-auto mb-6 max-md:text-xs">
 
-        <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallHeroStats' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('overallHeroStats')">Overall Hero Stats</button>
+        <button type="button" :disabled="isLoading && activeButton !== 'overallHeroStats'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallHeroStats' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('overallHeroStats')">Overall Hero Stats</button>
 
-      <button type="button" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallTalentStats' ? 'bg-surface-1' : 'hover:bg-lteal']" @click="setButtonActive('overallTalentStats')">Overall Talent Stats</button>
+      <button type="button" :disabled="isLoading && activeButton !== 'overallTalentStats'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallTalentStats' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('overallTalentStats')">Overall Talent Stats</button>
       </div>
 
 
@@ -32,10 +32,10 @@
     <div v-else>
 
       <div v-if="activeButton === 'overallHeroStats'">
-        <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
+        <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box><div class="filter-row justify-center">
           <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="season"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
-        </div>
+          <button :disabled="isLoading" @click="filter()" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+        </div></panel-box></div>
         <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
       </div>
 
@@ -47,11 +47,11 @@
 
         <div v-else>
           <div v-if="talentStatsData">
-            <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
+            <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box><div class="filter-row justify-center">
               <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="selectedHero.id"></single-select-filter>
               <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="season"></single-select-filter>
-              <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
-            </div>
+              <button :disabled="isLoading" @click="filter()" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+            </div></panel-box></div>
 
             
             <esports-talent-stats :talentdetaildata="talentStatsData.talentData" :talentbuilddata="talentStatsData.buildData" :talentimages="talentimages" :selectedHero="selectedHero"></esports-talent-stats>
@@ -63,12 +63,32 @@
 
     </div>
     <div v-if="isLoading">
-      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true" :overrideimage="'/images/NutCup/logo-circular.png'"></loading-component><table-skeleton></table-skeleton></div>
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <loading-component :compact="true" :overrideimage="'/images/NutCup/logo-circular.png'"></loading-component>
+        <!-- Overall Hero Stats: hero with name, then win rate, popularity, ban rate and games -->
+        <div v-if="activeButton === 'overallHeroStats'" class="max-w-[1000px] w-full mx-auto">
+          <table-skeleton :bare="true" :rows="12" :columns="['avatar', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
+        </div>
+        <!-- Overall Talent Stats: a block per talent level, then the builds table -->
+        <div v-else-if="activeButton === 'overallTalentStats'" class="flex flex-col items-center">
+          <div v-for="level in 3" :key="level" class="w-full bg-surface overflow-hidden">
+            <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-20"></skeleton-box></div>
+            <table-skeleton :bare="true" :rows="3" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
+          </div>
+          <div class="w-full max-w-[800px] bg-surface overflow-hidden">
+            <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-16"></skeleton-box></div>
+            <table-skeleton :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
+          </div>
+        </div>
+        <table-skeleton v-else></table-skeleton>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+const NUTCUP_TABS = ['overallHeroStats', 'overallTalentStats'];
+
 export default {
   name: 'NutCupMain',
   components: {
@@ -77,6 +97,7 @@ export default {
     talentimages: Object,
     filters: Object,
     heroes: Object,
+    urlparameters: [Object, Array],
   },
   data() {
     return {
@@ -97,6 +118,11 @@ export default {
     this.season = 2;
   },
   mounted() {
+    // ?tab= opens that tab straight away
+    const tab = this.urlparameters?.tab;
+    if (NUTCUP_TABS.includes(tab)) {
+      this.setButtonActive(tab);
+    }
   },
   computed: {
     overallHeroStatsClicked() {
@@ -165,7 +191,15 @@ export default {
       }
     },
     setButtonActive(buttonName) {
+      // One tab loads at a time; the others wait until it's done
+      if (this.isLoading) {
+        return;
+      }
       this.activeButton = buttonName;
+      // The open tab goes in the URL, so it can be linked to or reloaded
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', buttonName);
+      history.replaceState(history.state, '', url);
       this.season = 2;
       
       if(this.activeButton === 'overallHeroStats'){

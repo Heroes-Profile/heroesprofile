@@ -1,14 +1,15 @@
 <template>
   <div>
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
-    <page-heading :heading="heading" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <page-heading :heading="heading" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
 
     <div v-if="data" class="max-w-[1920px] mx-auto px-4 md:px-8 space-y-8">
       <panel-box>
         <div class="filter-row justify-center">
-          <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
-          <single-select-filter v-if="esport == 'NGS'" :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifieddivision"></single-select-filter>
-          <single-select-filter v-if="teamFilterAvailable && teamOptions.length" :values="teamOptions" :text="'Teams'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedteam"></single-select-filter>
+          <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="modifiedseason"></single-select-filter>
+          <single-select-filter v-if="data.divisions" :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" :defaultValue="modifieddivision"></single-select-filter>
+          <single-select-filter v-if="teamOptions.length" :values="teamOptions" :text="'Teams'" @input-changed="handleInputChange" :defaultValue="modifiedteam"></single-select-filter>
+          <button :disabled="isLoading" @click="handleDropdownClosed" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div>
       </panel-box>
 
@@ -39,7 +40,7 @@
             <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
               <div class="flex justify-between items-baseline gap-6">
                 <h3 class="text-2xl font-bold">{{ section.title }}</h3>
-                <a v-if="esport == 'NGS'" class="text-header whitespace-nowrap hover:underline" :href="ngsPageUrl(section.allPath)">{{ section.allText }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+                <a class="text-header whitespace-nowrap hover:underline" :href="ngsPageUrl(section.allPath)">{{ section.allText }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
               </div>
               <div class="flex flex-wrap gap-6 max-md:justify-center">
                 <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :esport="esport" :playerlink="true" :text="group.label" :data="group.data"></group-box>
@@ -71,10 +72,10 @@
 
             <div class="grid md:grid-cols-2 gap-6">
               <!-- Win rate by role -->
-              <panel-box v-if="data.role_win_rates && data.role_win_rates.length" :inner="true" title="Win Rate By Role" :link-text="esport == 'NGS' ? 'All Roles' : undefined" :link-href="esport == 'NGS' ? ngsPageUrl('/Role') : undefined">
+              <panel-box v-if="data.role_win_rates && data.role_win_rates.length" :inner="true" title="Win Rate By Role"  link-text="All Roles" :link-href="ngsPageUrl('/Role')">
                 <div class="flex flex-col gap-3">
                   <div v-for="role in data.role_win_rates" :key="role.role" class="flex flex-col gap-1.5">
-                    <span class="text-header"><a v-if="esport == 'NGS'" class="hover:underline" :href="ngsPageUrl('/Role/' + role.role)">{{ role.role }}<i class="fas fa-chevron-right text-sm ml-3"></i></a><template v-else>{{ role.role }}</template> <span class="text-sm text-subtext">· {{ role.games_played }} games</span></span>
+                    <span class="text-header"><a class="hover:underline" :href="ngsPageUrl('/Role/' + role.role)">{{ role.role }}<i class="fas fa-chevron-right text-sm ml-3"></i></a> <span class="text-sm text-subtext">· {{ role.games_played }} games</span></span>
                     <stat-bar :value="role.win_rate.toFixed(2)" suffix="%" :color="$winRateColor(role.win_rate)"></stat-bar>
                   </div>
                 </div>
@@ -88,6 +89,8 @@
                 </div>
               </panel-box>
             </div>
+
+            <player-mmr-panel v-if="data.ccl_mmr_data" :data="data" :modes="[{ label: 'CCL', code: 'ccl', data: data.ccl_mmr_data }]" :tiers="false"></player-mmr-panel>
           </div>
         </div>
       </panel-box>
@@ -149,7 +152,7 @@
 
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 space-y-8">
-      <loading-component :compact="true" :overrideimage="getLoadingImage()"></loading-component>
+      <loading-component :compact="true" :overrideimage="league.loaderImage"></loading-component>
       <panel-box>
         <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
           <panel-box :inner="true" class="!gap-8 2xl:w-[780px]">
@@ -245,40 +248,9 @@ export default {
     this.getData();
   },
   computed: {
-    headingImage(){
-      if(this.esport == "NGS"){
-        return "/images/NGS/ngs_large.png"
-      }else if(this.esport == "CCL"){
-        return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
-      }else if(this.esport == "MastersClash"){
-        return "/images/MCL/no-image.png"
-      }else if(this.esport == "Other"){
-        return "/images/EsportOther/" + this.seriesimage;
-      }
-    },
-    headingImageUrl(){
-      if(this.esport == "NGS"){
-        return "/Esports/NGS"
-      }else if(this.esport == "CCL"){
-        return "/Esports/CCL"
-      }else if(this.esport == "MastersClash"){
-        return "/Esports/MastersClash"
-      }else if(this.esport == "Other"){
-        return "/Esports/Other/" + this.series; 
-      }
-    },
-    isLoadingImageUrl(){
-     if(this.esport == "NGS"){
-        return "/images/NGS/no-image-clipped.png"
-      }else if(this.esport == "CCL"){
-        return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
-      }else if(this.esport == "MastersClash"){
-        return "/images/MCL/no-image.png"
-      }else if(this.esport == "HeroesInternational"){
-        return "/images/HI/heroes_international.png";
-      }else if(this.esport == "Other"){
-        return "/images/EsportOther/" + this.seriesimage;
-      }
+    // Images, URL root and HI's tournament query for this league
+    league() {
+      return this.$esportLeague(this.esport, { tournament: this.tournament, series: this.series, seriesimage: this.seriesimage });
     },
     infoText1(){
       if(this.esport == "NGS"){
@@ -292,22 +264,17 @@ export default {
       }
     },
     heading(){
-      if(this.esport == 'HeroesInternational'){
-        return "Heroes International";
-      }else if(this.esport == "Other"){
+      if(this.esport == "Other"){
         return;
       }
       // The NGS logo already says NGS
       if(this.esport == 'NGS'){
         return '';
       }
-      return this.esport;
-    },
-    teamFilterAvailable() {
-      return this.esport == 'NGS' || this.esport == 'MastersClash';
+      return this.league.name;
     },
     leagueLabel() {
-      return { NGS: 'Nexus Gaming Series', CCL: 'CCL', MastersClash: 'Masters Clash', HeroesInternational: 'Heroes International' }[this.esport] ?? this.series ?? this.esport;
+      return this.esport == 'NGS' ? 'Nexus Gaming Series' : this.league.name;
     },
     overviewStats() {
       return [
@@ -360,21 +327,15 @@ export default {
       this.cancelTokenSource = this.$axios.CancelToken.source();
 
 
-      var url = "/api/v1/esports/single/player";
-      
-      if(this.series){
-        url = "/api/v1/esports/other/single/player";
-      }
-
       try{
-        const response = await this.$axios.post(url, {
+        const response = await this.$axios.post("/api/v1/esports/single/player", {
           esport: this.esport,
           series: this.series,
           division: this.modifieddivision,
           battletag: this.battletag,
           blizz_id: this.blizz_id,
           season: this.modifiedseason,
-          team: this.teamFilterAvailable ? this.modifiedteam : null,
+          team: this.modifiedteam,
           tournament: this.tournament,
         }, 
         {
@@ -410,15 +371,8 @@ export default {
           this.modifiedteam = eventPayload.value;
         }
 
-      const params = new URLSearchParams();
-      if (this.modifiedseason) params.set('season', this.modifiedseason);
-      if (this.modifieddivision) params.set('division', this.modifieddivision);
-      if (this.modifiedteam) params.set('team', this.modifiedteam);
-      const query = params.toString();
-      let newURL = `/Esports/${this.esport}/Player/${this.battletag}/${this.blizz_id}` + (query ? `?${query}` : '');
-
       // Update the browser's URL without reloading the page
-      history.pushState({}, "", newURL);
+      history.pushState({}, "", this.ngsPageUrl(''));
     },
     handleDropdownClosed(){
       this.data = null;
@@ -432,32 +386,17 @@ export default {
       }
       this.sortKey = key;
     },
-    getLoadingImage(){
-      if(this.esport == "NGS"){
-        return "/images/NGS/no-image-clipped.png"
-      }else if(this.esport == "CCL"){
-        return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
-      }else if(this.esport == "Other"){
-        return "/images/EsportOther/" + this.seriesimage;
-      }
-    },
-    // One of the player's other NGS pages, keeping the season, division and team picked here
+    // One of the player's other pages in this league, keeping the filters picked here
     ngsPageUrl(path){
-      const params = new URLSearchParams();
+      const params = new URLSearchParams(this.league.params);
       if (this.modifiedseason) params.set('season', this.modifiedseason);
       if (this.modifieddivision) params.set('division', this.modifieddivision);
       if (this.modifiedteam) params.set('team', this.modifiedteam);
       const query = params.toString();
-      return `/Esports/NGS/Player/${this.battletag}/${this.blizz_id}${path}` + (query ? `?${query}` : '');
+      return `${this.league.root}/Player/${this.battletag}/${this.blizz_id}${path}` + (query ? `?${query}` : '');
     },
     getMatchHistoryUrl(){
-      if(this.esport == 'Other'){
-        return `/Esports/${this.esport}/${this.series}/Player/${this.battletag}/${this.blizz_id}/Match/History`;
-      }else if(this.esport == 'HeroesInternational'){
-        return `/Esports/${this.esport}/Player/${this.battletag}/${this.blizz_id}/Match/History?tournament=${this.tournament}`;
-      }
-
-      return `/Esports/${this.esport}/Player/${this.battletag}/${this.blizz_id}/Match/History`;
+      return `${this.league.root}/Player/${this.battletag}/${this.blizz_id}/Match/History${this.league.query}`;
     },
   }
 }

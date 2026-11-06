@@ -3,15 +3,16 @@
     <div class="flex max-md:flex-col max-w-[1920px] mx-auto">
       <div class="">
         <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="hero + ' stats for ' + battletag" -->
-        <page-heading v-if="esport" heading="Hero Stats" :battletag="battletag" :esport="esport" heading-image="/images/NGS/ngs_large.png" heading-image-url="/Esports/NGS"></page-heading>
+        <page-heading v-if="esport" heading="Hero Stats" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
         <page-heading v-else heading="Hero Stats" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
       </div>
     <div class="max-w-[1920px] mx-auto px-4 md:px-8 w-full">
       <panel-box v-if="esport && ngsFilterOptions">
         <div class="filter-row justify-center">
-          <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" @dropdown-closed="applyFilter" :trackclosure="true" :defaultValue="ngsSeason"></single-select-filter>
-          <single-select-filter :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" @dropdown-closed="applyFilter" :trackclosure="true" :defaultValue="ngsDivision"></single-select-filter>
-          <single-select-filter :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" @dropdown-closed="applyFilter" :trackclosure="true" :defaultValue="ngsTeam"></single-select-filter>
+          <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" :defaultValue="ngsSeason"></single-select-filter>
+          <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" :defaultValue="ngsDivision"></single-select-filter>
+          <single-select-filter :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" :defaultValue="ngsTeam"></single-select-filter>
+          <button :disabled="isLoading" @click="applyFilter" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div>
       </panel-box>
       <panel-box v-else-if="!esport">
@@ -29,7 +30,7 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     
     <div v-if="data && esport && !data.games_played" class="flex items-center justify-center mt-8">
-      No {{ heroobject.name }} games in NGS for these filters.
+      No {{ heroobject.name }} games in {{ league.name }} for these filters.
     </div>
     <div v-else-if="data" class="max-w-[1920px] mx-auto px-4 md:px-8 mt-8 space-y-8">
 
@@ -103,7 +104,7 @@
         </panel-box>
 
         <div class="flex flex-col gap-6 min-w-0">
-          <!-- NGS: the teams they played it for, and the heroes they beat and lost to on it -->
+          <!-- Esports: the teams they played it for, and the heroes they beat and lost to on it -->
           <panel-box v-if="esport && data.teams_played_for && data.teams_played_for.length" :inner="true" title="Teams Played For">
             <div class="flex flex-col gap-2">
               <a v-for="team in data.teams_played_for" :key="team.team_name + team.season" :href="team.link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
@@ -141,7 +142,7 @@
       <panel-box v-if="esport && data.latestGames && data.latestGames.length" title="Recent Matches" link-text="Match History" :link-href="ngsPlayerUrl + '/Match/History' + ngsQuery" :divider="false">
         <div>
           <game-summary-header :esport="true"></game-summary-header>
-          <game-summary-box v-for="(item, index) in data.latestGames" :key="index" :esport="true" :esport-league="esport" :data="item"></game-summary-box>
+          <game-summary-box v-for="(item, index) in data.latestGames" :key="index" :esport="true" :esport-league="esport" :esport-series="esportfilters?.series" :tournament="esportfilters?.tournament" :data="item"></game-summary-box>
         </div>
       </panel-box>
       <panel-box v-else-if="!esport && data.latestGames" title="Recent Matches" link-text="Match History" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Match/History/?hero=' + heroobject.name" :divider="false">
@@ -186,7 +187,7 @@
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading || asyncLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 mt-8 space-y-8">
-      <loading-component :compact="true" :textoverride="true" :overrideimage="esport ? '/images/NGS/no-image-clipped.png' : undefined">{{ asyncLoading ? 'This is taking longer than expected. A background task is computing your results. Please be patient.' : 'Loading data...' }}</loading-component>
+      <loading-component :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ asyncLoading ? 'This is taking longer than expected. A background task is computing your results. Please be patient.' : 'Loading data...' }}</loading-component>
       <panel-box>
         <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
           <panel-box :inner="true" class="!gap-8 2xl:w-[780px]">
@@ -291,7 +292,7 @@
       replayViewerAllowed: Boolean,
       analyticsCutover: String,
       replayDownloadBlocked: Boolean,
-      // 'NGS' on the NGS player pages, with the season, division and team from the URL
+      // The league on its esports player pages (NGS, CCL, MastersClash, HeroesInternational, Other), with its filters from the URL
       esport: String,
       esportfilters: Object,
     },
@@ -428,7 +429,7 @@
         ];
       },
       mapGroups() {
-        // NGS has no latest-played lists; its profile shows the lowest win rates there
+        // Esports has no latest-played lists; its profile shows the lowest win rates there
         return [
           { label: 'Most Played', data: this.data.map_data_top_played.slice(0, 3) },
           { label: 'Highest Win Rate', data: this.data.map_data_top_win_rate.slice(0, 3) },
@@ -437,14 +438,17 @@
             : { label: 'Latest Played', data: this.data.map_data_top_latest_played.slice(0, 3) },
         ];
       },
+      league() {
+        return this.esport ? this.$esportLeague(this.esport, this.esportfilters) : null;
+      },
       ngsTeamOptions() {
         return [{ code: null, name: 'All' }, ...(this.ngsFilterOptions?.teams || []).map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
       },
       ngsPlayerUrl() {
-        return `/Esports/NGS/Player/${this.battletag}/${this.blizzid}`;
+        return `${this.league.root}/Player/${this.battletag}/${this.blizzid}`;
       },
       ngsQuery() {
-        const params = new URLSearchParams();
+        const params = new URLSearchParams(this.league.params);
         if (this.ngsSeason) params.set('season', this.ngsSeason);
         if (this.ngsDivision) params.set('division', this.ngsDivision);
         if (this.ngsTeam) params.set('team', this.ngsTeam);
@@ -491,7 +495,8 @@
 
         if (this.esport) {
           try{
-            const response = await this.$axios.post("/api/v1/esports/ngs/player/hero", {
+            const response = await this.$axios.post(`${this.league.api}/hero`, {
+              ...this.league.params,
               battletag: this.battletag,
               blizz_id: this.blizzid,
               season: this.ngsSeason,

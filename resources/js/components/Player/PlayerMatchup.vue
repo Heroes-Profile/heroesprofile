@@ -4,7 +4,7 @@
     <div class="flex max-w-[1920px] mx-auto">
       <div class="">
       <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infotext" -->
-      <page-heading v-if="esport" :heading="'Matchups'" :battletag="battletag" :esport="esport" heading-image="/images/NGS/ngs_large.png" heading-image-url="/Esports/NGS"></page-heading>
+      <page-heading v-if="esport" :heading="'Matchups'" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
       <page-heading v-else :heading="'Matchups'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
       </div>
       <div class="w-full">
@@ -23,9 +23,10 @@
     </filters>
       <panel-box v-else-if="esport && ngsFilterOptions">
         <div class="filter-row justify-center">
-          <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" @dropdown-closed="getNgsData" :trackclosure="true" :defaultValue="ngsSeason"></single-select-filter>
-          <single-select-filter :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" @dropdown-closed="getNgsData" :trackclosure="true" :defaultValue="ngsDivision"></single-select-filter>
-          <single-select-filter :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" @dropdown-closed="getNgsData" :trackclosure="true" :defaultValue="ngsTeam"></single-select-filter>
+          <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" :defaultValue="ngsSeason"></single-select-filter>
+          <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" :defaultValue="ngsDivision"></single-select-filter>
+          <single-select-filter :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" :defaultValue="ngsTeam"></single-select-filter>
+          <button :disabled="isLoading" @click="getNgsData" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div>
       </panel-box>
       </div>
@@ -63,7 +64,7 @@
       <tbody>
         <tr v-for="row in shownData" :key="row.hero.id">
           <td class="py-2 px-3">
-            <a class="flex justify-center" :href="(esport ? ngsPlayerUrl : '/Player/' + battletag + '/' + blizzid + '/' + region) + '/Hero/' + row.hero.name">
+            <a class="flex justify-center" :href="(esport ? ngsPlayerUrl : '/Player/' + battletag + '/' + blizzid + '/' + region) + '/Hero/' + row.hero.name + (league ? league.query : '')">
               <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>
             </a>
           </td>
@@ -84,8 +85,8 @@
     </table>
   </div>
   <div v-else-if="isLoading || asyncLoading" class="max-w-[1500px] mx-auto px-4 flex flex-col gap-6">
-    <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="esport ? '/images/NGS/no-image-clipped.png' : undefined">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
-    <loading-component v-else :compact="true" :textoverride="true" :overrideimage="esport ? '/images/NGS/no-image-clipped.png' : undefined">Large amount of data. Please be patient.</loading-component>
+    <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
+    <loading-component v-else :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">Large amount of data. Please be patient.</loading-component>
     <table-skeleton :bare="true" :rows="10" :columns="['avatar', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
   </div>
 
@@ -111,7 +112,7 @@
       patreonUser: Boolean,
       gametypedefault: Array,
       regionsmap: Object,
-    // 'NGS' on the NGS player pages, with the season, division and team from the URL
+    // The league on its esports player pages (NGS, CCL, MastersClash, HeroesInternational, Other), with its filters from the URL
     esport: String,
     esportfilters: Object,
     },
@@ -151,11 +152,14 @@
       }
     },
     computed: {
+    league() {
+      return this.esport ? this.$esportLeague(this.esport, this.esportfilters) : null;
+    },
     ngsTeamOptions() {
       return [{ code: null, name: 'All' }, ...(this.ngsFilterOptions?.teams || []).map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
     },
     ngsPlayerUrl() {
-      return `/Esports/NGS/Player/${this.battletag}/${this.blizzid}`;
+      return `${this.league.root}/Player/${this.battletag}/${this.blizzid}`;
     },
       sortedData() {
         if (!this.sortKey) return this.data;
@@ -184,14 +188,14 @@
     },
     methods: {
     ngsParams(extra = {}) {
-      return { battletag: this.battletag, blizz_id: this.blizzid, season: this.ngsSeason, division: this.ngsDivision, team: this.ngsTeam, ...extra };
+      return { ...this.league.params, battletag: this.battletag, blizz_id: this.blizzid, season: this.ngsSeason, division: this.ngsDivision, team: this.ngsTeam, ...extra };
     },
     ngsFilterChange(eventPayload) {
       const field = { Seasons: 'ngsSeason', Divisions: 'ngsDivision', Teams: 'ngsTeam' }[eventPayload.field];
       if (field) {
         this[field] = eventPayload.value;
       }
-      const params = new URLSearchParams();
+      const params = new URLSearchParams(this.league.params);
       if (this.ngsSeason) params.set('season', this.ngsSeason);
       if (this.ngsDivision) params.set('division', this.ngsDivision);
       if (this.ngsTeam) params.set('team', this.ngsTeam);
@@ -202,7 +206,7 @@
         this.data = null;
         this.isLoading = true;
         try{
-          const response = await this.$axios.post("/api/v1/esports/ngs/player/matchups", this.ngsParams());
+          const response = await this.$axios.post(`${this.league.api}/matchups`, this.ngsParams());
           this.ngsFilterOptions = response.data.filters;
           this.data = response.data.tabledata;
           this.topfiveheroes = response.data.top_five_heroes;

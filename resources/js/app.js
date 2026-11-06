@@ -60,7 +60,35 @@ app.config.globalProperties.$ngsTeam = function (teamName) {
   return match ? { name: match[1], withdrawnSeason: match[2] } : { name: teamName, withdrawnSeason: null };
 };
 
-// The header's three recent players. An NGS player is stored with league 'NGS' and no region,
+// An esports player page's league, from its esport and esportfilters (HI's tournament, Other's series and icon).
+// params go on every request and link, so HI keeps ?tournament=.
+app.config.globalProperties.$esportLeague = function (esport, esportfilters) {
+  const tournament = esportfilters?.tournament;
+  const series = esportfilters?.series;
+  const leagues = {
+    NGS: { name: 'NGS', headingImage: '/images/NGS/ngs_large.png', loaderImage: '/images/NGS/no-image-clipped.png' },
+    CCL: { name: 'CCL', headingImage: '/images/CCL/600-600-HHE_CCL_Logo_rectangle.png' },
+    MastersClash: { name: 'Masters Clash', headingImage: '/images/MCL/no-image.png' },
+    HeroesInternational: { name: tournament === 'nationscup' ? 'Nations Cup' : 'Heroes International', headingImage: '/images/HI/heroes_international.png' },
+    Other: { name: series, headingImage: '/images/EsportOther/' + (esportfilters?.seriesimage || 'heroesprofilelogo.png') },
+  };
+  const league = leagues[esport];
+  const root = esport === 'Other' ? `/Esports/Other/${encodeURIComponent(series)}` : `/Esports/${esport}`;
+  const params = tournament ? { tournament } : {};
+  const query = tournament ? `?tournament=${tournament}` : '';
+  return {
+    ...league,
+    loaderImage: league.loaderImage ?? league.headingImage,
+    root,
+    headingImageUrl: root + query,
+    api: esport === 'Other' ? `/api/v1/esports/other/${encodeURIComponent(series)}/player` : `/api/v1/esports/${esport.toLowerCase()}/player`,
+    params,
+    query,
+  };
+};
+
+// The header's three recent players. An esports player is stored with its league ('NGS', 'CCL',
+// 'MastersClash', 'HeroesInternational' + tournament, 'Other' + series) and no region,
 // and is a separate entry from the same player's main-site one.
 function rememberSearchAccount(data) {
   const existingAccounts = [
@@ -71,7 +99,9 @@ function rememberSearchAccount(data) {
 
   const accountIndex = existingAccounts.findIndex((account) => {
     return account && account.battletag === data.battletag && account.blizz_id === data.blizz_id
-      && (account.league || null) === (data.league || null);
+      && (account.league || null) === (data.league || null)
+      && (account.tournament || null) === (data.tournament || null)
+      && (account.series || null) === (data.series || null);
   });
 
   if (accountIndex >= 0) {
@@ -122,13 +152,24 @@ app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, 
     }
 };
 
-// Any NGS player page puts that player in the header
-const ngsPlayerPage = window.location.pathname.match(/^\/Esports\/NGS\/Player\/([^/]+)\/(\d+)/);
-if (ngsPlayerPage) {
+// Any esports player page puts that player in the header. HI needs its tournament.
+const esportPlayerPage = window.location.pathname.match(/^\/Esports\/(NGS|CCL|MastersClash|HeroesInternational)\/Player\/([^/]+)\/(\d+)/);
+const otherPlayerPage = window.location.pathname.match(/^\/Esports\/Other\/([^/]+)\/Player\/([^/]+)\/(\d+)/);
+const esportTournament = new URLSearchParams(window.location.search).get('tournament');
+if (esportPlayerPage && (esportPlayerPage[1] !== 'HeroesInternational' || ['main', 'nationscup'].includes(esportTournament))) {
   rememberSearchAccount({
-    battletag: decodeURIComponent(ngsPlayerPage[1]),
-    blizz_id: ngsPlayerPage[2],
-    league: 'NGS',
+    battletag: decodeURIComponent(esportPlayerPage[2]),
+    blizz_id: esportPlayerPage[3],
+    league: esportPlayerPage[1],
+    ...(esportPlayerPage[1] === 'HeroesInternational' ? { tournament: esportTournament } : {}),
+    date: new Date().toISOString(),
+  });
+} else if (otherPlayerPage) {
+  rememberSearchAccount({
+    battletag: decodeURIComponent(otherPlayerPage[2]),
+    blizz_id: otherPlayerPage[3],
+    league: 'Other',
+    series: decodeURIComponent(otherPlayerPage[1]),
     date: new Date().toISOString(),
   });
 }

@@ -9,7 +9,7 @@
       <esports-organizations :data="withoutHGCSeries" :esport="'Other'"></esports-organizations>
     </div>
 
-    <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
+    <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box><div class="filter-row justify-center">
       <single-select-filter :values="seriesvalues" :text="'Series'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter :values="regions" :text="'Regions'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter :values="tournaments" :text="'Tournaments'" @input-changed="handleInputChange"></single-select-filter>
@@ -21,108 +21,19 @@
 
       <input type="text" class="form-control variable-text rounded-l-control p-2" :placeholder="'Search for player'" :aria-label="'filter'" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="filter()">
 
-      <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal ml-10 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+      <button :disabled="isLoading" @click="filter()" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
 
-    </div>
+    </div></panel-box></div>
 
     <div v-if="data">
-      <div>
-        <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
-          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: !data.prev_page_url }">
-            <a class="page-link" @click.prevent="getMatches(data.current_page - 1)" href="#">
-              Previous
-            </a>
-          </li>
-          <li v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: !data.next_page_url }">
-            <a class="page-link" @click.prevent="getMatches(data.current_page + 1)" href="#">
-              Next
-            </a>
-          </li>
-        </ul>
+      <div v-if="data.last_page > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 flex justify-end">
+        <pagination-bar :current="data.current_page" :last="data.last_page" @page="getMatches"></pagination-bar>
       </div>
-      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[25vw] max-md:w-full   2xl:mx-auto  " style=" ">
-        <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
-          <thead>
-            <tr>
-              <th @click="sortTable('replayID')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'replayID' }">
-                Match ID<sort-indicator :column="'replayID'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </th>    
-              <th @click="sortTable('series')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'series' }">
-                Series<sort-indicator :column="'series'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </th>   
-              <th @click="sortTable('region')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'region' }">
-                Region<sort-indicator :column="'region'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </th>  
-              <th @click="sortTable('tournament')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'tournament' }">
-                Tournament<sort-indicator :column="'tournament'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </th>  
-              <th @click="sortTable('season')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'season' }">
-                Season<sort-indicator :column="'season'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </th>  
-              <th @click="sortTable('team_0_name')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'team_0_name' }">
-                Team 1<sort-indicator :column="'team_0_name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </th>  
-              <th @click="sortTable('team_1_name')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'team_1_name' }">
-                Team 2<sort-indicator :column="'team_1_name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </th> 
-              <th @click="sortTable('game_map')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'game_map' }">
-                Map<sort-indicator :column="'game_map'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </th> 
-              <th @click="sortTable('game_date')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'game_date' }">
-                Game Date<sort-indicator :column="'game_date'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </th> 
-            </tr>
-          </thead>
-          <tbody class="text-center">
-            <template v-for="(row, index) in sortedData">
-              <tr>
-                <td>
-                  <a class="group/bt inline-flex items-center" :href="`./Other/${row.series}/Match/Single/${row.replayID}`"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
-                </td>
-                <td>
-                  {{ row.series }}
-                </td>
-                <td>
-                  {{ getRegionNameByCode(row.region) }}
-                </td>
-                <td>
-                  {{ row.tournament }}
-                </td>
-                <td>
-                  {{ row.season }}
-                </td>
-                <td>
-                  {{ row.team_1_name }}
-                </td>
-                <td>
-                  {{ row.team_0_name }}
-                </td>
-                <td>
-                  {{ row.game_map }}
-                </td>
-                <td>
-                  <format-date :input="row.game_date"></format-date>
-                </td>
-              </tr>
-              
-            </template>
-          </tbody>
-        </table>
-      </div>
+      <esports-recent-matches v-if="data.data.length" :data="data.data" :esport="'Other'"></esports-recent-matches>
+      <p v-else class="text-center text-subtext mt-10">No games match these filters.</p>
 
-      <div>
-        <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
-          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: !data.prev_page_url }">
-            <a class="page-link" @click.prevent="getMatches(data.current_page - 1)" href="#">
-              Previous
-            </a>
-          </li>
-          <li v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: !data.next_page_url }">
-            <a class="page-link" @click.prevent="getMatches(data.current_page + 1)" href="#">
-              Next
-            </a>
-          </li>
-        </ul>
+      <div v-if="data.last_page > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 flex justify-end">
+        <pagination-bar :current="data.current_page" :last="data.last_page" @page="getMatches"></pagination-bar>
       </div>
 
 
@@ -131,14 +42,47 @@
 
     
     <div v-if="isLoading">
-      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true"></loading-component><table-skeleton></table-skeleton></div>
+      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <loading-component :compact="true"></loading-component>
+        <!-- The recent match rows, in grey -->
+        <panel-box>
+          <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
+            <div class="flex flex-col gap-2 w-[300px] shrink-0">
+              <skeleton-box class="h-4 w-40"></skeleton-box>
+              <skeleton-box class="h-4 w-32"></skeleton-box>
+              <skeleton-box class="h-3 w-36"></skeleton-box>
+              <skeleton-box class="h-3 w-28"></skeleton-box>
+            </div>
+            <div class="flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-6">
+              <div class="flex flex-row-reverse items-center gap-3">
+                <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
+                <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <skeleton-box class="h-8 w-20"></skeleton-box>
+                <skeleton-box class="h-3 w-28"></skeleton-box>
+              </div>
+              <div class="flex items-center gap-3">
+                <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
+                <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
+              </div>
+            </div>
+            <div class="flex gap-2 w-[340px] max-w-full shrink-0">
+              <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[150px]">
+                <div v-for="player in 5" :key="player" class="flex items-center gap-1">
+                  <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
+                  <skeleton-box class="h-3 w-24"></skeleton-box>
+                </div>
+              </div>
+            </div>
+          </div>
+        </panel-box>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { scaleTableToFit } from '../../../utils/scaleTable';
-
 export default {
   name: 'OtherMain',
   components: {
@@ -159,8 +103,6 @@ export default {
     return {
       isLoading: false,
       data: null,
-      sortKey: '',
-      sortDir: 'desc',
 
       inputseries: null,
       region: null,
@@ -184,18 +126,6 @@ export default {
         code: seriesItem.series_id,
         name: seriesItem.name
       }));
-    },
-    sortedData() {
-      if (!this.sortKey) return this.data.data;
-      return this.data.data.slice().sort((a, b) => {
-        const valA = a[this.sortKey];
-        const valB = b[this.sortKey];
-        if (this.sortDir === 'asc') {
-          return valA < valB ? -1 : 1;
-        } else {
-          return valA > valB ? -1 : 1;
-        }
-      });
     }
   },
   mounted() {
@@ -203,6 +133,9 @@ export default {
   },
   methods: {
     async getMatches(page){
+      if (this.isLoading || page < 1) {
+        return;
+      }
       this.data = null;
       this.isLoading = true;
       try{
@@ -226,20 +159,7 @@ export default {
         //Do something here
       }finally {
         this.isLoading = false;
-        this.$nextTick(() => {
-          if (window.matchMedia('(max-width: 767px)').matches) {
-            scaleTableToFit(this.$refs.responsivetable, this.$refs.tablecontainer);
-          }
-        });
       }
-    },
-    sortTable(key) {
-      if (key === this.sortKey) {
-        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
-      } else {
-        this.sortDir = 'desc';
-      }
-      this.sortKey = key;
     },
     
     handleInputChange(eventPayload) {
@@ -263,11 +183,6 @@ export default {
     filter(){
       this.getMatches(1);
     },
-    getRegionNameByCode(code) {
-      const region = this.regions.find(region => region.code === code);
-      return region ? region.name : null;
-    }
-
   },
   
 }

@@ -11,7 +11,7 @@
       <div class="flex gap-12 items-center font-medium text-subtext max-md:hidden">
         <span class="w-[200px] shrink-0">Game mode</span>
         <span class="flex-1">Win Rate</span>
-        <span class="flex-1 max-w-[200px]">HP Rank Tier</span>
+        <span v-if="tiers" class="flex-1 max-w-[200px]">HP Rank Tier</span>
         <span class="flex-1 max-w-[100px] text-center">HP MMR</span>
       </div>
       <template v-for="mode in mmrModes" :key="mode.label">
@@ -21,7 +21,7 @@
           <a v-if="linkHref" class="w-full md:w-[200px] shrink-0 font-semibold text-header truncate hover:underline" :href="modeHref(mode)">{{ mode.label }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
           <span v-else class="w-full md:w-[200px] shrink-0 font-semibold text-header truncate">{{ mode.label }}</span>
           <stat-bar class="max-md:w-full md:flex-1 min-w-0" :value="mode.data ? mode.data.win_rate.toFixed(2) : '0.00'" suffix="%" :color="$winRateColor(mode.data ? mode.data.win_rate : 0)"></stat-bar>
-          <span class="md:flex-1 md:max-w-[200px]"><rank-tier-pill v-if="mode.data" :tier="mode.data.rank_tier"></rank-tier-pill></span>
+          <span v-if="tiers" class="md:flex-1 md:max-w-[200px]"><rank-tier-pill v-if="mode.data" :tier="mode.data.rank_tier"></rank-tier-pill></span>
           <span class="md:flex-1 md:max-w-[100px] md:text-center font-semibold max-md:ml-auto">{{ mode.data ? mode.data.mmr.toLocaleString('en-US') : 0 }}</span>
         </div>
       </template>
@@ -38,6 +38,9 @@ export default {
     linkHref: String,
     // Extra query for the mode links, such as { hero: 'Li-Ming' }
     linkQuery: { type: Object, default: () => ({}) },
+    // Rows to show instead of the six game modes, as { label, code, data }
+    modes: { type: Array, default: null },
+    tiers: { type: Boolean, default: true },
   },
   methods: {
     breakdownHref(query = {}) {
@@ -50,6 +53,7 @@ export default {
   },
   computed: {
     mmrModes(){
+      if (this.modes) return this.modes;
       return [
         { label: 'Quick Match', code: 'qm', data: this.data.qm_mmr_data },
         { label: 'Unranked Draft', code: 'ud', data: this.data.ud_mmr_data },

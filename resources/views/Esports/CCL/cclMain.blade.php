@@ -12,6 +12,7 @@
     :talentimages="{{ json_encode($talentimages) }}" 
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :organizations="{{ json_encode($organizations) }}"
+    :urlparameters="{{ json_encode($urlparameters) }}"
   >
   </ccl-main>
 @endsection

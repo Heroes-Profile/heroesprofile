@@ -25,6 +25,7 @@
             <div class="relative flex flex-col gap-1.5 whitespace-nowrap">
               <span class="font-bold">{{ row.game_map ? row.game_map.name : '' }}</span>
               <span class="text-base font-medium text-header">Game {{ row.game }} · Round {{ row.round }}</span>
+              <span v-if="rowContext(row)" class="text-xs text-subtext">{{ rowContext(row) }}</span>
               <span class="text-xs">{{ formatRowDate(row.game_date) }}</span>
               <span class="relative z-[2] text-sm">
                 {{ leagueName }} Match ID
@@ -59,7 +60,7 @@
                 <div class="flex flex-col gap-1.5 flex-1 min-w-0 ml-0.5">
                   <div v-for="(player, playerIndex) in teamPlayers(row, team)" :key="playerIndex" class="flex gap-1 h-4 items-center">
                     <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover bg-surface-3 text-[0px]" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name" :title="player.hero.name"/>
-                    <a v-if="player.battletag" :href="playerUrl(player)" class="group/bt min-w-0 inline-flex items-center text-sm font-medium text-subtext hover:text-lteal"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-[10px] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                    <a v-if="player.battletag" :href="playerUrl(row, player)" class="group/bt min-w-0 inline-flex items-center text-sm font-medium text-subtext hover:text-lteal"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-[10px] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                     <span v-else class="min-w-0 truncate text-sm font-medium text-subtext">{{ player.hero ? player.hero.name : '' }}</span>
                   </div>
                 </div>
@@ -90,6 +91,7 @@
               <div class="relative flex flex-col whitespace-nowrap">
                 <span class="font-bold">{{ row.game_map ? row.game_map.name : '' }}</span>
                 <span class="text-xs">{{ formatRowDate(row.game_date) }}</span>
+                <span v-if="rowContext(row)" class="text-xs text-subtext">{{ rowContext(row) }}</span>
               </div>
             </div>
             <span class="relative w-[180px] shrink-0 px-4 font-medium text-header">Game {{ row.game }} · Round {{ row.round }}</span>
@@ -126,6 +128,8 @@ export default {
   props: {
     data: Array,
     esport: String,
+    // Other's series, for its links and name
+    series: String,
     tournament: String,
     // A short list on another page: always Expanded, without the toggle
     alwaysExpanded: Boolean,
@@ -141,10 +145,10 @@ export default {
   computed: {
     // Each team's series wins after each game, by team name, worked out from the games on
     // this page. A series is the games of one round between the same two teams.
-    series() {
+    seriesScores() {
       const groups = {};
       for (const row of this.data || []) {
-        const key = [row.round, ...[this.teamName(row, 0), this.teamName(row, 1)].sort()].join('|');
+        const key = [row.series, row.tournament, row.round, ...[this.teamName(row, 0), this.teamName(row, 1)].sort()].join('|');
         (groups[key] ??= []).push(row);
       }
 
@@ -169,7 +173,7 @@ export default {
       return { after, left };
     },
     leagueName() {
-      return LEAGUE_NAMES[this.esport] ?? this.esport;
+      return this.esport === 'Other' ? (this.series ?? '') : (LEAGUE_NAMES[this.esport] ?? this.esport);
     },
   },
   methods: {
@@ -180,18 +184,18 @@ export default {
       this.$axios.post('/api/v1/profile/save/settings', { playerhistorytable: this.expanded }).catch(() => {});
     },
     matchUrl(row) {
-      const base = `/Esports/${this.getUrlValue(this.esport)}/Match/Single/${row.replayID}`;
+      const base = `/Esports/${this.getUrlValue(this.esport, row)}/Match/Single/${row.replayID}`;
       return this.tournament ? `${base}/?tournament=${this.tournament}` : base;
     },
     mapArt(row) {
       return row.game_map ? { backgroundImage: `url('/images/maps/match/match-${row.game_map.sanitized_map_name}.jpg')` } : null;
     },
     seriesScore(row, team) {
-      return this.series.after[row.replayID]?.[this.teamName(row, team)] ?? 0;
+      return this.seriesScores.after[row.replayID]?.[this.teamName(row, team)] ?? 0;
     },
     // [left side, right side] for this row, the same way round for every game of its series
     sidesOf(row) {
-      return this.series.left[row.replayID] ?? [0, 1];
+      return this.seriesScores.left[row.replayID] ?? [0, 1];
     },
     teamName(row, team) {
       if (row.side_names && row.side_names[team]) {
@@ -205,8 +209,12 @@ export default {
     teamPlayers(row, team) {
       return row.teams ? row.teams[team] : [];
     },
-    playerUrl(player) {
-      return `/Esports/${this.getUrlValue(this.esport)}/Player/${player.battletag}/${player.blizz_id}`;
+    playerUrl(row, player) {
+      return `/Esports/${this.getUrlValue(this.esport, row)}/Player/${player.battletag}/${player.blizz_id}`;
+    },
+    // A list mixing Other's series says which one each game is from
+    rowContext(row) {
+      return [row.series, row.tournament, row.region_name].filter(Boolean).join(' · ');
     },
     // In the viewer's own date format and timezone, like the match history rows
     formatRowDate(dateString) {
@@ -216,9 +224,12 @@ export default {
         timeZone: moment.tz.guess(),
       });
     },
-    getUrlValue(esport){
+    getUrlValue(esport, row){
       if(esport == "hi" || esport == "hi_nc"){
         return "HeroesInternational";
+      }
+      if(esport == "Other"){
+        return `Other/${row?.series ?? this.series}`;
       }
 
       return esport;

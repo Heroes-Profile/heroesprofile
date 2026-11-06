@@ -9,6 +9,7 @@
     :heroes="{{ json_encode($heroes) }}" 
     :filters="{{ json_encode($filters) }}"
     :talentimages="{{ json_encode($talentimages) }}" 
+    :urlparameters="{{ json_encode($urlparameters) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :series="{{ json_encode($series) }}"
     :seasons="{{ json_encode($seasons) }}"

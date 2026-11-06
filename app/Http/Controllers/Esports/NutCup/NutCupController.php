@@ -15,6 +15,7 @@ class NutCupController extends Controller
                 'heroes' => $this->globalDataService->getHeroes(),
                 'filters' => $this->globalDataService->getFilterData(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
+                'urlparameters' => $request->query(),
             ]);
     }
 }

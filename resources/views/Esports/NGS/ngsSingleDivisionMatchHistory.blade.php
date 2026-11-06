@@ -7,6 +7,7 @@
     :filters="{{ json_encode($filters) }}"
     :division="{{ json_encode($division) }}"
     :season="{{ json_encode($season) }}"
+    :team="{{ json_encode($team) }}"
     :esport="{{ json_encode($esport) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
 
