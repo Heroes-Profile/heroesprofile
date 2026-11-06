@@ -69,21 +69,32 @@ export default {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
+    height: 100dvh;
     background-color: rgba(0, 0, 0, 0.9);
-    display: table;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
     transition: opacity 0.3s ease;
 }
 
 .modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
 .modal-container {
   
   margin: 0px auto;
-  
+  max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px);
+  display: flex;
+  flex-direction: column;
   
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
@@ -97,6 +108,9 @@ export default {
 
 .modal-body {
   margin: 20px 0;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .modal-default-button {
