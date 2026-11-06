@@ -14,7 +14,7 @@
         <img
           src="/images/miscellaneous/uploader.png"
           alt="The Heroes Profile replay uploader"
-          class="w-full"
+          class="w-full rounded-[8px]"
         />
       </div>
 
