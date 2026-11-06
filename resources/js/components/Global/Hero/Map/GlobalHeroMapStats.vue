@@ -97,7 +97,7 @@
                 <div v-else-if="column.value === 'most_played_hero'">
                   <div  v-if="row.most_played_hero" class="flex gap-x-2 items-center justify-center">
                     <hero-image-wrapper :hero="row.most_played_hero">
-                      <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played:' + row.hero_build_games_played"></image-hover-box>
+                      <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played: ' + row.hero_build_games_played"></image-hover-box>
                     </hero-image-wrapper>
                   </div>
                 </div>

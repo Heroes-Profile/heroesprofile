@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="flex max-w-[1920px] mx-auto">
-      <div class="">
+    <player-page-top>
+      <template #heading>
         <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" -->
         <page-heading v-if="esport" heading="Talent Statistics" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
         <page-heading v-else heading="Talent Statistics" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
@@ -9,14 +9,14 @@
             <hero-heading-select :heroes="heroes" :value="selectedHero.id" @hero-changed="changeHero($event)"></hero-heading-select>
           </template>
         </page-heading>
-      </div>
+      </template>
       <div v-if="esport" class="w-full">
-        <panel-box v-if="ngsFilterOptions" :key="ngsFilterKey">
+        <panel-box :filters="true" v-if="ngsFilterOptions" :key="ngsFilterKey">
         <div class="filter-row justify-center">
           <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" :defaultValue="ngsSeason"></single-select-filter>
           <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" :defaultValue="ngsDivision"></single-select-filter>
           <single-select-filter :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" :defaultValue="ngsTeam"></single-select-filter>
-          <button :disabled="isLoading" @click="ngsFilterApply" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+          <button :disabled="isLoading" @click="ngsFilterApply" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div>
       </panel-box>
       </div>
@@ -34,14 +34,14 @@
           >
         </filters>
       </div>
-    </div>
+    </player-page-top>
 
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes" @search="heroSearchQuery = $event"></hero-selection>
 
       <!-- The player's most played build per hero, like the list on /Global/Talents -->
       <div class="max-w-[1500px] mx-auto md:px-4 mt-8 w-full flex flex-col gap-4">
-        <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="flex flex-wrap items-center justify-between gap-4 max-md:justify-center max-md:text-center">
           <h2 class="heading">{{ esport ? 'Most Played Builds Per Hero' : 'Most Played Builds Per Hero and Game Type' }}</h2>
           <tab-button :key="esport ? 'ngs-' + ngsRangeSide : 'range'" :tab1text="'All Time'" :tab2text="'Current Season'" :ignoreclick="true" @tab-click="setBuildsRange" :overridedefaultside="esport ? ngsRangeSide : (buildsCurrentSeason ? 'right' : 'left')"></tab-button>
         </div>

@@ -4,12 +4,12 @@
     <page-heading :heading="heading" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
 
     <div v-if="data" class="max-w-[1920px] mx-auto px-4 md:px-8 space-y-8">
-      <panel-box>
+      <panel-box :filters="true">
         <div class="filter-row justify-center">
           <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="modifiedseason"></single-select-filter>
           <single-select-filter v-if="data.divisions" :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" :defaultValue="modifieddivision"></single-select-filter>
           <single-select-filter v-if="teamOptions.length" :values="teamOptions" :text="'Teams'" @input-changed="handleInputChange" :defaultValue="modifiedteam"></single-select-filter>
-          <button :disabled="isLoading" @click="handleDropdownClosed" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+          <button :disabled="isLoading" @click="handleDropdownClosed" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div>
       </panel-box>
 

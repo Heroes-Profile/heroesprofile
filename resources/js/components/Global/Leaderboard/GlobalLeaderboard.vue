@@ -219,7 +219,7 @@
                     <td class="py-2 px-3" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role')">
                       <div v-if="row.most_played_hero" class="flex justify-center">
                         <hero-image-wrapper :hero="row.most_played_hero">
-                          <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played:' + row.hero_build_games_played"></image-hover-box>
+                          <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played: ' + row.hero_build_games_played"></image-hover-box>
                         </hero-image-wrapper>
                       </div>
                     </td>

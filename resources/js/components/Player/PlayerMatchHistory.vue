@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="flex max-w-[1920px] mx-auto">
-      <div class="">
+    <player-page-top>
+      <template #heading>
       <page-heading  :heading="'Match History'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
-      </div>
+      </template>
       <div class="w-full">
       <filters
         :onFilter="filterData"
@@ -31,7 +31,7 @@
         >
       </filters>
       </div>
-    </div>
+    </player-page-top>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="data">
       <!-- `compact` means the game rows, labelled Expanded -->
@@ -53,7 +53,7 @@
         <panel-box>
           <!-- Wide rows scroll sideways on narrow screens -->
           <div class="overflow-x-auto">
-            <div class="min-w-max w-full">
+            <div class="md:min-w-max w-full">
               <game-summary-header :compact="true" :sort-key="sortKey" :sort-dir="sortDir" @sort="sortTable"></game-summary-header>
               <game-summary-box v-for="item in sortedData" :key="item.replayID" :compact="true" :data="item" :replay-viewer-allowed="authenticated" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
             </div>
@@ -73,7 +73,7 @@
           <game-summary-skeleton v-for="index in 8" :key="index"></game-summary-skeleton>
         </div>
         <div v-else class="overflow-x-auto">
-          <div class="min-w-max w-full">
+          <div class="md:min-w-max w-full">
             <game-summary-header :compact="true"></game-summary-header>
             <game-summary-skeleton v-for="row in 12" :key="row" :compact="true"></game-summary-skeleton>
           </div>

@@ -30,27 +30,8 @@
       </div>
 
       <div :class="cardClasses">
-        <i class="fas fa-list-ol text-[80px]"></i>
-        <h3 class="text-3xl font-semibold mt-6 mb-4">Leaderboards</h3>
-        <p class="text-sm text-left mb-8">View leaderboards based on Player, Hero, or Role using Heroes Profile Rating, real in-game Storm League ranks, and the Match Prediction game. Get talent builds, and navigate directly to player's profiles.</p>
-        <div class="flex mt-auto">
-          <custom-button :href="'/Global/Leaderboard'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
-        </div>
-      </div>
-</div>
-<div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[1920px]">
-      <div :class="cardClasses">
-        <i class="fa-solid fa-database text-[80px]"></i>
-        <h3 class="text-3xl font-semibold mt-6 mb-4">Heroes Profile API</h3>
-        <p class="text-sm text-left mb-8">Heroes Profile API provides access to parsed Heroes of the Storm data from HeroesProfile.com, including player stats, match details, and performance insights.</p>
-        <div class="flex mt-auto">
-          <custom-button :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
-        </div>
-      </div>
-      
-      <div :class="cardClasses">
         <i class="fas fa-address-card text-[80px]"></i>
-        <h3 class="text-3xl font-semibold mt-6 mb-4">Player Profile</h3>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">Player Profiles</h3>
         <p class="text-sm text-left mb-8">See all player stats in one place.  See data for individual maps or heroes played, match history, real in-game Storm League rank and comparisons all from within a streamlined profile.</p>
         <div class="flex mt-auto">
           <custom-button :text="'Find Player'" :alt="'Find Player'" :color="'teal'" :ignoreclick="true" class="flex-1 font-semibold" @click="focusSearch"></custom-button>
@@ -64,6 +45,25 @@
         <div class="flex mt-auto">
           <custom-button v-if="analyticsAllowed" :href="'/Analytics'" :text="'Open Analytics'" :alt="'Open Analytics'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
           <custom-button v-else :href="'/Analytics'" :text="'Learn More'" :alt="'Learn more about Analytics'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
+        </div>
+      </div>
+</div>
+<div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[1920px]">
+      <div :class="cardClasses">
+        <i class="fas fa-list-ol text-[80px]"></i>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">Leaderboards</h3>
+        <p class="text-sm text-left mb-8">View leaderboards based on Player, Hero, or Role using Heroes Profile Rating, real in-game Storm League ranks, and the Match Prediction game. Get talent builds, and navigate directly to player's profiles.</p>
+        <div class="flex mt-auto">
+          <custom-button :href="'/Global/Leaderboard'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
+        </div>
+      </div>
+      
+      <div :class="cardClasses">
+        <i class="fa-solid fa-database text-[80px]"></i>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">Heroes Profile API</h3>
+        <p class="text-sm text-left mb-8">Heroes Profile API provides access to parsed Heroes of the Storm data from HeroesProfile.com, including player stats, match details, and performance insights.</p>
+        <div class="flex mt-auto">
+          <custom-button :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
         </div>
       </div>
     </div>

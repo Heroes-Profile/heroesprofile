@@ -28,20 +28,19 @@
   
   @mouseover="handleMouseOver" @mouseleave="scheduleHide" @click="handleClick">
 
-    <!-- On mobile the inline text block below shows these icons beside their labels instead -->
-    <div :class="['absolute z-10 bottom-0 right-0 w-9', { 'max-md:hidden': hasMobileText }]"  v-if="award">
+    <div :class="['absolute z-10 bottom-0 right-0 w-9']"  v-if="award">
       <img :src="awardicon"/>
     </div>
-    <div :class="['absolute -top-2 left-0 z-10', { 'max-md:hidden': hasMobileText }]" v-if="hpowner">
+    <div :class="['absolute -top-2 left-0 z-10']" v-if="hpowner">
       <!-- {{ "HP Owner" }} -->
       <i class="fas fa-crown text" style="color:gold;"></i>
     </div>
 
-    <div :class="['absolute z-10 -top-2 left-0', { 'max-md:hidden': hasMobileText }]" v-else-if="ispatreon">
+    <div :class="['absolute z-10 -top-2 left-0']" v-else-if="ispatreon">
       <!-- {{ "Patreon Subscriber" }} -->
       <i class="fas fa-star" style="color:gold"></i>
     </div>
-    <div :class="['absolute z-10 bottom-0 -left-2 text-xl leading-none', { 'max-md:hidden': hasMobileText }]" v-if="voideye">
+    <div :class="['absolute z-10 bottom-0 -left-2 text-xl leading-none']" v-if="voideye">
       <void-eye-flair :force="true" :tooltip="false"></void-eye-flair>
     </div>
     <div class="absolute z-10 -top-2 -right-2 w-8" v-if="party">
@@ -84,8 +83,10 @@
       :alt="title"
       @load="imageLoaded = true"
       @error="imageFailed = true">
+    <!-- Phones collapse an unloaded image to its alt text, so a grey circle the image's size holds its place -->
+    <span v-if="!icon && !imageLoaded && !imageFailed && !rectangle && !['match', 'row', 'talent', 'tile', 'large'].includes(size)" :class="['md:hidden block mx-auto rounded-full bg-surface-3', size === 'big' ? 'w-20 h-20 max-sm:w-[2.5em] max-sm:h-[2.5em]' : size === 'xl' ? 'w-[6em] h-[6em]' : 'w-10 h-10 max-sm:w-[2.5em] max-sm:h-[2.5em]']"></span>
     <!-- The name centred on the grey box meanwhile (or for good, if the image failed), on sizes big enough to hold it -->
-    <span v-if="!icon && (!imageLoaded || imageFailed) && namedPlaceholder" class="absolute inset-0 flex items-center justify-center text-center text-xs leading-tight px-2 text-subtext pointer-events-none">{{ title }}</span>
+    <span v-if="!icon && (!imageLoaded || imageFailed) && namedPlaceholder" class="max-md:hidden absolute inset-0 flex items-center justify-center text-center text-xs leading-tight px-2 text-subtext pointer-events-none">{{ title }}</span>
     
     <!-- Rendered under body so scrolling table wrappers can't clip it -->
     <Teleport to="body">
@@ -108,13 +109,6 @@
         </div>
       </div>
     </Teleport>
-    <div v-if="hasMobileText" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded px-2 text-center   md:mb-4', {}]">
-      <div class="bg-yellow flex items-center justify-center gap-2" v-if="hpowner"><i class="fas fa-crown" style="color:gold;"></i>Heroes Profile Owner</div>
-      <div class="bg-red flex items-center justify-center gap-2" v-else-if="ispatreon"><i class="fas fa-star" style="color:gold"></i>Patreon Subscriber</div>
-      <div class="bg-[#4c1d95] flex items-center justify-center gap-2" v-if="voideye"><void-eye-flair :force="true" :tooltip="false"></void-eye-flair>Marked by the Void</div>
-      <slot></slot>
-      <div class="bg-teal flex items-center justify-center gap-2" v-if="award"><img v-if="awardicon" :src="awardicon" class="w-7 h-7" alt="" />{{award.title}}</div>
-    </div>
   </div>
 </template>
 
@@ -185,16 +179,12 @@ export default {
     this.hideTooltip();
   },
   computed: {
-    // Mobile shows the hover text inline under the image.
-    // Name-only portraits and tiles link elsewhere on tap, so phones show neither the inline text nor a popup
+    // Name-only portraits and tiles link elsewhere on tap, so phones don't open a popup for them
     noMobileHover() {
       return this.hidemobiletext || this.size === 'tile';
     },
     namedPlaceholder() {
       return ['big', 'xl', 'tile', 'match', 'large'].includes(this.size);
-    },
-    hasMobileText() {
-      return !this.excludehover && !this.mobileClick && !this.href && !this.noMobileHover && !this.icon;
     },
   },
   watch: {
@@ -257,8 +247,8 @@ export default {
       document.removeEventListener('keydown', this.handleEscape);
     },
     handleMouseOver() {
-      // Mobile already shows this text under the image, or hides it
-      if ((this.hasMobileText || (this.noMobileHover && !this.mobileClick && !this.href)) && this.isSmallScreen()) return;
+      // Phones open the popup on tap; name-only portraits and tiles skip it
+      if (this.noMobileHover && !this.mobileClick && !this.href && this.isSmallScreen()) return;
 
       clearTimeout(this.hideTimer);
       if (this.showTooltip) return;

@@ -32,9 +32,9 @@
     <div v-else>
 
       <div v-if="activeButton === 'overallHeroStats'">
-        <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box><div class="filter-row justify-center">
+        <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box :filters="true"><div class="filter-row justify-center">
           <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="season"></single-select-filter>
-          <button :disabled="isLoading" @click="filter()" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+          <button :disabled="isLoading" @click="filter()" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div></panel-box></div>
         <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
       </div>
@@ -47,10 +47,10 @@
 
         <div v-else>
           <div v-if="talentStatsData">
-            <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box><div class="filter-row justify-center">
+            <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box :filters="true"><div class="filter-row justify-center">
               <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="selectedHero.id"></single-select-filter>
               <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="season"></single-select-filter>
-              <button :disabled="isLoading" @click="filter()" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+              <button :disabled="isLoading" @click="filter()" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
             </div></panel-box></div>
 
             

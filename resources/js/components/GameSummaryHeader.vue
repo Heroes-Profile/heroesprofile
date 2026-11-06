@@ -1,6 +1,6 @@
 <template>
   <!-- The compact rows' columns; Game Type and Game ID sort -->
-  <div v-if="compact" class="flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
+  <div v-if="compact" class="max-md:hidden flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
     <span class="w-[320px] shrink-0 pl-5 cursor-default">Match</span>
     <span v-if="esport" class="w-[160px] shrink-0 px-4 cursor-default">Game</span>
     <span v-else class="w-[160px] shrink-0 px-4 cursor-pointer" @click="$emit('sort', 'game_type_id')">Game Type<sort-indicator column="game_type_id" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>

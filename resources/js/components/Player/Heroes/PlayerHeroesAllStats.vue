@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="flex max-w-[1920px] mx-auto">
-      <div class="">
+    <player-page-top>
+      <template #heading>
       <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="'All Heroes data for ' + battletag + '. Click a hero to see individual hero statistics'" -->
       <page-heading v-if="esport" :heading="'Hero Stats'" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
       <page-heading v-else :heading="'Hero Stats'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
-      </div>
+      </template>
       <div class="w-full">
       <filters v-if="!esport"
         :onFilter="filterData"  
@@ -22,16 +22,16 @@
         :includehero="true"
         >
       </filters>
-      <panel-box v-else-if="esport && ngsFilterOptions">
+      <panel-box :filters="true" v-else-if="esport && ngsFilterOptions">
         <div class="filter-row justify-center">
           <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" :defaultValue="ngsSeason"></single-select-filter>
           <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" :defaultValue="ngsDivision"></single-select-filter>
           <single-select-filter :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" :defaultValue="ngsTeam"></single-select-filter>
-          <button :disabled="isLoading" @click="getNgsData" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+          <button :disabled="isLoading" @click="getNgsData" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div>
       </panel-box>
       </div>
-    </div>
+    </player-page-top>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     
     <div v-if="data">
@@ -43,12 +43,12 @@
           <div class="absolute left-0 mt-2 w-full variable-background border border-gray-300 rounded shadow-lg text-black z-50 flex flex-wrap  p-2 ">
             <input class="w-full p-2" type="text" v-model="searchQuery" placeholder="Search..." />
               <div v-for="(stat, index) in filteredStats" :class="[
-              'flex-1 min-w-[24%] border-gray border p-1 cursor-pointer variable-hover',
+              'flex-1 min-w-[24%] border-gray border cursor-pointer variable-hover',
               {
                 'bg-teal text-white' : stat.selected
               } ]
               ">
-                <label class="cursor-pointer"><input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
+                <label class="cursor-pointer block h-full p-1"><input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
               {{ stat.name }}</label>
             </div>
           </div>
@@ -71,12 +71,12 @@
             <th @click="sortTable('games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Total Games<sort-indicator column="games_played" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('kda')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('kda')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               <div class="">
                 KDA
               </div><sort-indicator :column="'kda'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>  
-            <th @click="sortTable('kdr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('kdr')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               <div class="">
                 KDR
               </div><sort-indicator :column="'kdr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
@@ -94,8 +94,8 @@
             <td class="py-2 px-3"><a class="flex justify-center" :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper size="big" :hero="row.hero" :href="getPlayerHeroPageUrl(row.name)" link-text="View Hero"></hero-image-wrapper></a></td>
             <td class="py-2 px-3"><div class="min-w-[8em]"><div class="text-sm font-semibold text-header tabular-nums mb-1.5">{{ row.win_rate }}<span class="text-xs">%</span></div><stat-bar :value="row.win_rate" display-text="" :color="getWinRateColor(row.win_rate)"></stat-bar></div></td>
             <td class="py-2 px-3 text-center">{{ (row.wins + row.losses) }}</td>
-            <td class="py-2 px-3 ">{{ row.kda }}</td>
-            <td class="py-2 px-3 ">{{ row.kdr }}</td>
+            <td class="max-md:hidden py-2 px-3 ">{{ row.kda }}</td>
+            <td class="max-md:hidden py-2 px-3 ">{{ row.kdr }}</td>
             
             <template v-for="stat in selectedStats" >
               <td 
@@ -125,12 +125,10 @@
       <loading-component v-else :compact="true" :textoverride="true" :timer="!esport" :starttime="timertime" :overrideimage="league?.loaderImage">Large amount of data. Please be patient.</loading-component>
       <div>
         <skeleton-box class="h-14 rounded-b-none"></skeleton-box>
-        <table-skeleton :bare="true" :rows="10" :columns="['icon', 'bar', 'stat', 'text', 'text', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
+        <table-skeleton :bare="true" :rows="10" :columns="['icon', 'bar', 'stat', 'text', 'text', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat']" :mobile-columns="['icon', 'bar', 'stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
       </div>
     </div>
-    <div v-if="matchIsLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
-    </div>
+    <match-lookup v-if="matchIsLoading" :text="matchLookupText"></match-lookup>
     <div v-if="matchNotFound" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red text-white px-4 py-2 rounded z-50">
       Couldn't find the match for that value.
     </div>
@@ -170,6 +168,7 @@ export default {
       isLoading: false,
       asyncLoading: false,
       matchIsLoading: false,
+      matchLookupText: '',
       matchNotFound: false,
       cancelTokenSource: null,
       ngsSeason: this.esportfilters?.season ?? null,
@@ -291,6 +290,12 @@ infoText: "Select a hero below to view detailed stats for that hero. Use the sea
     }
   },
   created(){
+    // Phones start with fewer columns: kills, deaths, siege and hero damage
+    if (window.matchMedia('(max-width: 1023px)').matches) {
+      this.stats.forEach(stat => {
+        if (['avg_assists', 'avg_damage_taken', 'avg_experience_contribution'].includes(stat.value)) stat.selected = false;
+      });
+    }
     this.gametype = this.gametypedefault;
   },
   mounted() {
@@ -508,6 +513,7 @@ async getData(type){
       return stat.value.toLowerCase().includes('tier');
     },
     async navigateToMaxStatMatch(hero, stat, value){
+      this.matchLookupText = `Finding replay with ${stat.replace(/_/g, ' ')} for hero ${hero.name}`;
       this.matchIsLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/player/find/max/stat/match", {
@@ -526,6 +532,7 @@ async getData(type){
 
         if (Number.isInteger(replayID) && replayID > 0) {
           window.location.href = `/Match/Single/${replayID}`;
+          return;
         } else {
           this.showMatchNotFound();
         }

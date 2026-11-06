@@ -1019,6 +1019,7 @@ class PlayerHeroesMapsRolesController extends Controller
             'start_date' => ['sometimes', 'nullable', new DateInputValidation],
             'end_date' => ['sometimes', 'nullable', new DateInputValidation],
             // Used as a column name, so only the stats the page offers.
+            'role' => ['sometimes', 'nullable', new RoleInputValidation],
             'stat' => ['required', 'string', Rule::in(array_map(fn ($stat) => 'max_'.$stat, self::FINDABLE_STATS))],
             'value' => 'required|integer',
         ];
@@ -1081,8 +1082,9 @@ class PlayerHeroesMapsRolesController extends Controller
             ->when($type == 'single' && $page == 'hero', function ($query) use ($hero) {
                 return $query->where('hero', $hero);
             })
-            ->when($type == 'single' && $page == 'role', function ($query) use ($role) {
-                return $query->where('new_role', $role);
+            ->when($role, function ($query) use ($role) {
+                return $query->join('heroes', 'heroes.id', '=', 'player.hero')
+                    ->where('heroes.new_role', $role);
             })
             ->when($game_map, function ($query) use ($game_map) {
                 return is_array($game_map)

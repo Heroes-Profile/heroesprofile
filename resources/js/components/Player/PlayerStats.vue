@@ -1,21 +1,21 @@
 <template>
   <div class="">
-    <div class="flex max-md:flex-col max-w-[1920px] mx-auto">
-      <div class="">
+    <player-page-top>
+      <template #heading>
       <page-heading :heading="'Profile Data'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
     </page-heading>
-</div>
+</template>
     <div class="max-w-[1920px] mx-auto px-4 md:px-8 w-full">
-      <panel-box>
+      <panel-box :filters="true">
         <div class="filter-row">
         <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
         <multi-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="seasonselection"></multi-select-filter>
         <date-range-filter :startDate="startdate" :endDate="enddate" @input-changed="handleInputChange"></date-range-filter>
-        <custom-button class="font-semibold text-center h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :text="'Filter'" :alt="'Filter'" :color="'blue'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
+        <custom-button data-filter-apply class="font-semibold text-center h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :text="'Filter'" :alt="'Filter'" :color="'blue'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
         </div>
       </panel-box>
     </div>
-    </div>
+    </player-page-top>
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 

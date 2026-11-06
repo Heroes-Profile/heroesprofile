@@ -1,6 +1,14 @@
 <template>
   <!-- The compact game-summary-box row, same column widths -->
-  <div v-if="compact" class="mb-1 flex items-center justify-between rounded overflow-hidden bg-surface-1">
+  <div v-if="compact" class="md:hidden mb-1 flex items-center gap-3 rounded overflow-hidden bg-surface-1 pl-5 pr-3 py-2.5">
+    <skeleton-box class="w-[42px] h-[42px] shrink-0 !rounded-full"></skeleton-box>
+    <div class="flex-1 min-w-0 flex flex-col gap-1.5">
+      <div class="flex justify-between gap-2"><skeleton-box class="w-32 h-4"></skeleton-box><skeleton-box class="w-8 h-4"></skeleton-box></div>
+      <skeleton-box class="w-40 max-w-full h-3"></skeleton-box>
+      <skeleton-box class="w-48 max-w-full h-3"></skeleton-box>
+    </div>
+  </div>
+  <div v-if="compact" class="max-md:hidden mb-1 flex items-center justify-between rounded overflow-hidden bg-surface-1">
     <div class="relative w-[320px] shrink-0 self-stretch flex items-center pl-5 py-2.5">
       <div class="absolute inset-y-0 left-0 w-1.5 bg-surface-3"></div>
       <div class="flex items-center gap-4">

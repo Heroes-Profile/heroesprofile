@@ -9,7 +9,7 @@
       <esports-organizations :data="withoutHGCSeries" :esport="'Other'"></esports-organizations>
     </div>
 
-    <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box><div class="filter-row justify-center">
+    <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box :filters="true"><div class="filter-row justify-center">
       <single-select-filter :values="seriesvalues" :text="'Series'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter :values="regions" :text="'Regions'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter :values="tournaments" :text="'Tournaments'" @input-changed="handleInputChange"></single-select-filter>
@@ -21,7 +21,7 @@
 
       <input type="text" class="form-control variable-text rounded-l-control p-2" :placeholder="'Search for player'" :aria-label="'filter'" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="filter()">
 
-      <button :disabled="isLoading" @click="filter()" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+      <button :disabled="isLoading" @click="filter()" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
 
     </div></panel-box></div>
 

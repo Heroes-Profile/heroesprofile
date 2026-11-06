@@ -1,7 +1,12 @@
 <template>
   <div v-if="!esport || data.hero" :class="['group/replay relative', compact ? 'mb-1' : 'mb-1.5']">
+  <!-- Phones: the compact row as two short lines -->
+  <match-row-mobile v-if="compact" class="md:hidden !mb-0" bg="group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2" :href="getHref()" :hero="data.hero" :title="data.game_map.name" :date="formatRowDate(data.game_date)" :winner="data.winner === 1" :result="data.winner === 1 ? 'Win' : 'Loss'" :map-art="data.game_map.sanitized_map_name">
+    <template v-if="esport">Game {{ data.game }} · Round {{ data.round }} · {{ $ngsTeam(data.own_team).name }} vs {{ $ngsTeam(data.opponent_team).name }}</template>
+    <template v-else>{{ data.game_type.name }} · <span class="text-white font-medium">{{ data.player_mmr.toLocaleString('en-US') }}</span><span v-if="data.player_change !== null" :class="data.player_change >= 0 ? 'text-win' : 'text-red'"> ({{ data.player_change > 0 ? '+' : '' }}{{ data.player_change.toFixed(2) }})</span><template v-if="data.kills !== undefined"> · {{ data.kills }}/{{ data.deaths }}/{{ data.assists }}</template></template>
+  </match-row-mobile>
   <!-- One line per game: the match history's Compact view -->
-  <div v-if="compact" class="group/row relative flex items-center justify-between rounded overflow-hidden group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2">
+  <div v-if="compact" class="max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2">
     <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
     <a :href="getHref()" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
     <div class="relative w-[320px] shrink-0 self-stretch flex items-center pl-5 py-2.5">
@@ -134,8 +139,8 @@
   </div>
 
   <div v-if="data.downloadable || isWatchableGame" :class="['absolute z-[3] flex transition-opacity', compact ? 'right-4 top-1/2 -translate-y-1/2 flex-row-reverse gap-4' : 'right-2 top-2 flex-col gap-2']" class="md:opacity-0 md:group-hover/replay:opacity-100 md:focus-within:opacity-100">
-    <a v-if="data.downloadable && replayViewerAllowed && !replayDownloadBlocked" class="hover:text-lteal" :href="'/Match/Single/' + data.replayID + '/Download'" title="Download Replay"><i class="fa-solid fa-download"></i></a>
-    <span v-else-if="data.downloadable && !replayViewerAllowed" class="opacity-60" title="Log in to download replays"><i class="fa-solid fa-download"></i></span>
+    <a v-if="data.downloadable && replayViewerAllowed && !replayDownloadBlocked" class="max-md:hidden hover:text-lteal" :href="'/Match/Single/' + data.replayID + '/Download'" title="Download Replay"><i class="fa-solid fa-download"></i></a>
+    <span v-else-if="data.downloadable && !replayViewerAllowed" class="max-md:hidden opacity-60" title="Log in to download replays"><i class="fa-solid fa-download"></i></span>
     <a v-if="isWatchableGame && replayViewerAllowed" class="hover:text-lteal" :href="'/Analytics/Match/Single/' + data.replayID" title="Watch Replay"><i class="fa-solid fa-video"></i></a>
     <span v-else-if="isWatchableGame" class="opacity-60" title="Log in with Battle.net to watch replays"><i class="fa-solid fa-video"></i></span>
   </div>

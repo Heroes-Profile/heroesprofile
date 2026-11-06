@@ -74,15 +74,19 @@
     <!-- One line per game, like the match history's compact rows -->
     <panel-box v-else>
       <div class="overflow-x-auto">
-        <div class="min-w-max w-full">
-          <div class="flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
+        <div class="md:min-w-max w-full">
+          <div class="max-md:hidden flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
             <span class="w-[320px] shrink-0 pl-5">Match</span>
             <span class="w-[180px] shrink-0 px-4">Game</span>
             <span class="w-[160px] shrink-0 px-4">{{ leagueName }} Match ID</span>
             <span class="w-[560px] shrink-0 px-4">Teams</span>
             <span class="w-[240px] shrink-0 px-4">Series</span>
           </div>
-          <div v-for="(row, index) in data" :key="row.replayID" :class="['group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
+          <template v-for="(row, index) in data" :key="row.replayID">
+            <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="matchUrl(row)" :title="row.game_map ? row.game_map.name : ''" :date="formatRowDate(row.game_date)" :map-art="row.game_map ? row.game_map.sanitized_map_name : null">
+              {{ teamName(row, sidesOf(row)[0]) }} <span class="text-white font-medium">{{ seriesScore(row, sidesOf(row)[0]) }} – {{ seriesScore(row, sidesOf(row)[1]) }}</span> {{ teamName(row, sidesOf(row)[1]) }} · Game {{ row.game }} · Round {{ row.round }}
+            </match-row-mobile>
+<div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
             <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
             <a :href="matchUrl(row)" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
             <div class="relative w-[320px] shrink-0 self-stretch flex items-center pl-5 py-2.5">
@@ -108,6 +112,7 @@
             </div>
             <span class="relative w-[240px] shrink-0 px-4 text-sm tabular-nums">{{ seriesScore(row, sidesOf(row)[0]) }} – {{ seriesScore(row, sidesOf(row)[1]) }} <span class="text-subtext">after game {{ row.game }}</span></span>
           </div>
+</template>
         </div>
       </div>
     </panel-box>

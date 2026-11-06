@@ -538,16 +538,7 @@
 
 </div>
 <!-- The page's layout with grey blocks while it loads -->
-<div v-else-if="isLoading" class="max-w-[1500px] mx-auto px-4 mt-6 flex flex-col gap-6">
-  <loading-component v-if="esport" :compact="true" :textoverride="true" :overrideimage="getLoadingImage()">Loading match...</loading-component>
-  <loading-component v-else :compact="true" :textoverride="true">Loading match...</loading-component>
-  <skeleton-box class="h-14 w-full max-w-[1000px] mx-auto"></skeleton-box>
-  <div class="grid md:grid-cols-2 gap-6">
-    <table-skeleton :rows="5"></table-skeleton>
-    <table-skeleton :rows="5"></table-skeleton>
-  </div>
-  <table-skeleton :rows="10" :heading="true"></table-skeleton>
-</div>
+<match-skeleton v-else-if="isLoading" :overrideimage="esport ? getLoadingImage() : undefined"></match-skeleton>
 </div>
 
 </template>

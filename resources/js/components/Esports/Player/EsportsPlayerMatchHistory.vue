@@ -1,20 +1,20 @@
 <template>
   <div>
-    <div class="flex max-w-[1920px] mx-auto">
-      <div class="">
+    <player-page-top>
+      <template #heading>
         <page-heading heading="Match History" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
-      </div>
+      </template>
       <div class="w-full">
-        <panel-box v-if="ngsFilterOptions">
+        <panel-box :filters="true" v-if="ngsFilterOptions">
           <div class="filter-row justify-center">
             <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" :defaultValue="ngsSeason"></single-select-filter>
             <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" :defaultValue="ngsDivision"></single-select-filter>
             <single-select-filter :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" :defaultValue="ngsTeam"></single-select-filter>
-            <button :disabled="isLoading" @click="ngsFilterApply" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+            <button :disabled="isLoading" @click="ngsFilterApply" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
           </div>
         </panel-box>
       </div>
-    </div>
+    </player-page-top>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="data">
       <!-- `compact` means the game rows, labelled Expanded -->
@@ -35,7 +35,7 @@
         <panel-box>
           <!-- Wide rows scroll sideways on narrow screens -->
           <div class="overflow-x-auto">
-            <div class="min-w-max w-full">
+            <div class="md:min-w-max w-full">
               <game-summary-header :compact="true" :esport="true" :sort-key="sortKey" :sort-dir="sortDir" @sort="sortTable"></game-summary-header>
               <game-summary-box v-for="item in sortedRows" :key="item.replayID" :compact="true" :esport="true" :esport-league="esport" :esport-series="esportfilters?.series" :tournament="esportfilters?.tournament" :data="item"></game-summary-box>
             </div>
@@ -55,7 +55,7 @@
           <game-summary-skeleton v-for="index in 8" :key="index"></game-summary-skeleton>
         </div>
         <div v-else class="overflow-x-auto">
-          <div class="min-w-max w-full">
+          <div class="md:min-w-max w-full">
             <game-summary-header :compact="true" :esport="true"></game-summary-header>
             <game-summary-skeleton v-for="row in 12" :key="row" :compact="true"></game-summary-skeleton>
           </div>

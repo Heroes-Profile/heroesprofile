@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="flex max-w-[1920px] mx-auto">
-      <div class="">
+    <player-page-top>
+      <template #heading>
       <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
       <page-heading :heading="'Awards'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
-      </div>
+      </template>
       <div class="w-full">
       <filters
         :onFilter="filterData"
@@ -21,7 +21,7 @@
         >
       </filters>
       </div>
-    </div>
+    </player-page-top>
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
@@ -51,29 +51,30 @@
         <custom-button v-if="selectedAward" @click="clearAward" :text="'Show Recent Awards'" :alt="'Show Recent Awards'" size="small" :ignoreclick="true"></custom-button>
       </div>
 
-      <template v-if="selectedAward">
-        <loading-component v-if="awardGamesLoading" :compact="true" :textoverride="true">Loading {{ selectedAward.title }} games...</loading-component>
-        <template v-else-if="awardGames">
-          <p v-if="awardGames.data.length == 0">No {{ selectedAward.title }} games for the selected filters.</p>
-          <div v-if="awardGames.last_page > 1" class="flex justify-end mb-4">
-            <pagination-bar :current="awardGames.current_page" :last="awardGames.last_page" @page="getAwardGames"></pagination-bar>
-          </div>
-        </template>
+      <!-- One award's games, or every award's (Recent Awards), a page at a time -->
+      <loading-component v-if="awardGamesLoading" :compact="true" :textoverride="true">Loading {{ selectedAward ? selectedAward.title + ' games' : 'recent awards' }}...</loading-component>
+      <template v-else-if="awardGames">
+        <p v-if="awardGames.data.length == 0">{{ selectedAward ? 'No ' + selectedAward.title + ' games' : 'No awards' }} for the selected filters.</p>
+        <div v-if="awardGames.last_page > 1" class="flex justify-end mb-4">
+          <pagination-bar :current="awardGames.current_page" :last="awardGames.last_page" @page="getAwardGames"></pagination-bar>
+        </div>
       </template>
-
-      <p v-if="!selectedAward && data.recent_awards.length == 0">No awards for the selected filters.</p>
       <!-- Styled like the match history's compact rows -->
       <panel-box v-if="tableRows.length">
         <!-- Wide rows scroll sideways on narrow screens -->
         <div class="overflow-x-auto">
-          <div class="min-w-max w-full">
-            <div class="flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
+          <div class="md:min-w-max w-full">
+            <div class="max-md:hidden flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
               <span class="w-[320px] shrink-0 pl-5">Match</span>
               <span class="w-[160px] shrink-0 px-4">Game Type</span>
               <span class="w-[140px] shrink-0 px-4">Game ID</span>
               <span class="w-[300px] shrink-0 px-4">Award</span>
             </div>
-            <div v-for="(row, index) in tableRows" :key="row.replayID" :class="['group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
+            <template v-for="(row, index) in tableRows" :key="row.replayID">
+            <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="'/Match/Single/' + row.replayID" :hero="row.hero" :title="row.game_map.name" :date="formatRowDate(row.game_date)" :winner="row.winner == 1" :result="row.winner == 1 ? 'Win' : 'Loss'" :map-art="row.game_map.sanitized_map_name">
+              <span class="text-white font-medium">{{ row.award.title }}</span> · {{ row.game_type.name }}
+            </match-row-mobile>
+<div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
               <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
               <a :href="'/Match/Single/' + row.replayID" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
               <div class="relative w-[320px] shrink-0 self-stretch flex items-center pl-5 py-2.5">
@@ -95,6 +96,7 @@
                 <span class="font-medium">{{ row.award.title }}</span>
               </div>
             </div>
+</template>
           </div>
         </div>
       </panel-box>
@@ -169,10 +171,7 @@
         return this.data.awards.filter(award => award.title.toLowerCase().includes(search) || (award.description || '').toLowerCase().includes(search));
       },
       tableRows(){
-        if(this.selectedAward){
-          return this.awardGames && !this.awardGamesLoading ? this.awardGames.data : [];
-        }
-        return this.data.recent_awards;
+        return this.awardGames && !this.awardGamesLoading ? this.awardGames.data : [];
       },
       isOwner(){
         if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
@@ -222,6 +221,16 @@
           this.isLoading = false;
           this.asyncLoading = false;
         }
+        if (this.data) {
+          this.loadRecentAwards();
+        }
+      },
+      // Recent Awards: every award's games, newest first
+      loadRecentAwards(){
+        this.awardGames = null;
+        this.awardGamesRequestId++;
+        this.awardGamesLoading = false;
+        this.getAwardGames(1);
       },
       async getAwardGames(page){
         if (this.awardGamesLoading || page < 1 || (this.awardGames && page > this.awardGames.last_page)) {
@@ -249,7 +258,7 @@
             season: this.season,
             start_date: this.startdate,
             end_date: this.enddate,
-            award_id: this.selectedAward.award_id,
+            award_id: this.selectedAward ? this.selectedAward.award_id : null,
             pagination_page: page,
           },
           {
@@ -283,9 +292,7 @@
       },
       clearAward(){
         this.selectedAward = null;
-        this.awardGames = null;
-        this.awardGamesRequestId++;
-        this.awardGamesLoading = false;
+        this.loadRecentAwards();
       },
       cancelAxiosRequest() {
         if (this.cancelTokenSource) {
@@ -302,7 +309,10 @@
         this.enddate = filteredData.single["To Date"] || null;
 
         this.data = null;
-        this.clearAward();
+        // getData loads Recent Awards for the new filters once it's done
+        this.selectedAward = null;
+        this.awardGames = null;
+        this.awardGamesRequestId++;
         this.getData();
       },
       // In the viewer's own date format and timezone, like the match history rows

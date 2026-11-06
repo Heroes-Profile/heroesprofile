@@ -177,8 +177,9 @@ nav .search-component{
 @media (max-width:1024px){
 
 
+    /* Pinned to the screen, so it opens where you are rather than at the top of the page */
     .main-navigation-wrapper{
-      @apply min-h-[100vh] absolute w-full hidden ;
+      @apply fixed inset-0 z-50 overflow-y-auto hidden ;
     }
     .main-navigation-wrapper nav{
       @apply min-h-[100vh]  flex-col ;
@@ -186,8 +187,9 @@ nav .search-component{
     .nav-item{
       @apply border-b border-white;
     }
+    /* Flat full-width rows with a divider, not the desktop's rounded buttons */
     .nav-dropdown a{
-     @apply border-t border-white;
+     @apply m-0 rounded-none border-t border-white/20 px-6 py-5;
     }
     .nav-dropdown:not(.nav-dropdown-secondary-nav){
       @apply mt-4;

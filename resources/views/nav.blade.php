@@ -15,14 +15,14 @@
     <nav id="main-nav" class="bg-surface-1 text-white z-50 relative md:px-8 md:py-3 text-sm max-md:pt-2">
       <button  id="mobile-nav-close" class="hidden bg-blue rounded px-3 py-1 min-w-[44px] min-h-[40px] text-lg ml-auto  mr-2" aria-label="Close menu">x</button>
        
-        <div class="flex items-start justify-center flex-wrap  mx-auto max-md:flex-col max-w-[1920px]" >
-             <div class="flex justify-start items-start flex-wrap max-md:flex-col grow mr-auto max-md:ml-auto max-md:justify-center">
-            <a id="nav-logo" class=" flex items-center font-logo text-2xl md:mt-[6px]" href="/">
+        <div class="flex items-start justify-center flex-wrap  mx-auto max-md:flex-col max-md:items-stretch max-w-[1920px]" >
+             <div class="flex justify-start items-start flex-wrap max-md:flex-col max-md:items-stretch grow mr-auto max-md:mr-0 max-md:w-full max-md:justify-center">
+            <a id="nav-logo" class=" flex items-center font-logo text-2xl md:mt-[6px] max-md:self-center max-md:mb-2" href="/">
                 Heroes
                 <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
                 Profile
             </a>
-            <div id="nav-content" class="ml-auto flex justify-between flex-wrap  text-sm md:flex-1 md:ml-8 max-md:flex-col">
+            <div id="nav-content" class="ml-auto flex justify-between flex-wrap  text-sm md:flex-1 md:ml-8 max-md:flex-col max-md:ml-0 max-md:w-full">
                 <div id="nav-links" class=" grow-1 flex items-left md:space-x-5 flex-wrap md:flex-nowrap max-md:flex-col max-md:w-full ">
                     
                     <div id="nav-global-stats" class="relative group inline-block nav-item">
@@ -216,7 +216,7 @@
                         @endif
                     
                 </div>
-                <search-component id="nav-search" :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="mt-auto md:hidden"></search-component>
+                <search-component id="nav-search" :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="!mt-4 mx-4 md:hidden"></search-component>
              
               
             </div>
@@ -277,13 +277,13 @@
       @php($esportPlayerUrl = $esportNav['url'])
       @php($esportQuery = $esportNav['query'])
       <div id="alt-account-{{ $index }}" class="relative group inline-block text-sm">
-        <a data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="mobile-secondary-nav-open btn md:bg-teal md:hover:bg-lteal inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></a>
+        <a data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="mobile-secondary-nav-open btn md:bg-teal md:hover:bg-lteal inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="max-md:hidden h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></a>
         <div data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[200px] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
             <div class="nav-dropdown-inner-wrapper">
               <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal"><span class="inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></span> <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[44px] min-h-[40px] text-lg" aria-label="Close menu">x</button></div>
               <!-- The league's own pages, where a player's menu has Analytics -->
               <div class="nav-flyout-wrapper">
-                <a href="{{ $esportNav['main'] }}" class="flex justify-between items-center {{ $esportNav['key'] === 'Other' ? ($esportSeriesColours[$esportNav['name']] ?? $esportRowColours['Other']) : $esportRowColours[$esportNav['key']] }} font-bold"><span class="whitespace-nowrap"><img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="inline-block align-middle h-[1.1em] w-auto {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}">@if($esportNav['label'])<span class="ml-2 inline-block max-w-[9rem] truncate align-middle" title="{{ $esportNav['name'] }}">{{ $esportNav['name'] }}</span>@endif</span> <span class="nav-flyout-arrow ml-4">›</span></a>
+                <a href="{{ $esportNav['main'] }}" class="flex justify-between items-center {{ $esportNav['key'] === 'Other' ? ($esportSeriesColours[$esportNav['name']] ?? $esportRowColours['Other']) : $esportRowColours[$esportNav['key']] }} font-bold"><span class="whitespace-nowrap"><img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="inline-block align-middle h-[1.1em] w-auto {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}">@if($esportNav['label'])<span class="ml-2 inline-block max-w-[9rem] max-md:max-w-none truncate align-middle" title="{{ $esportNav['name'] }}">{{ $esportNav['name'] }}</span>@endif</span> <span class="nav-flyout-arrow ml-4">›</span></a>
                 <div class="nav-flyout">
                   <div class="nav-dropdown-inner-wrapper rounded-b rounded-r">
                     {{-- The full name, which the row cuts short --}}

@@ -1,5 +1,13 @@
 <template>
-  <div :class="[inner ? 'bg-surface-1' : 'bg-surface', 'rounded p-4 md:p-6 flex flex-col gap-4 min-w-0']">
+  <!-- A filter panel: on mobile it hides behind Show Filters and opens full screen, like Filters.vue -->
+  <div v-if="filters">
+    <button class="md:hidden p-2 bg-blue w-full" @click="showNav = !showNav">Show Filters</button>
+    <div v-show="showNav" :class="[inner ? 'bg-surface-1' : 'bg-surface', 'md:rounded p-4 md:p-6 flex flex-col gap-4 min-w-0 max-md:fixed max-md:inset-0 max-md:z-50 max-md:h-[100dvh] max-md:overflow-y-auto']" @click="closeOnApply">
+      <button class="md:hidden ml-auto text-2xl min-w-[44px] min-h-[44px]" aria-label="Close filters" @click="showNav = false">x</button>
+      <slot></slot>
+    </div>
+  </div>
+  <div v-else :class="[inner ? 'bg-surface-1' : 'bg-surface', 'rounded p-4 md:p-6 flex flex-col gap-4 min-w-0']">
     <template v-if="title">
       <div class="flex flex-wrap justify-between items-baseline gap-x-4 gap-y-1">
         <h3 class="text-2xl font-bold flex items-center gap-2">{{ title }}<slot name="title"></slot></h3>
@@ -27,6 +35,57 @@ export default {
     divider: {
       type: Boolean,
       default: true,
+    },
+    // A filter row; its apply button carries data-filter-apply so the mobile panel closes on it
+    filters: Boolean,
+  },
+  data() {
+    return {
+      showNav: true,
+      desktopView: true,
+    };
+  },
+  created() {
+    if (this.filters) {
+      this.desktopView = !this.isMobileView();
+      this.showNav = this.desktopView;
+      window.addEventListener('resize', this.checkScreenWidth);
+    }
+  },
+  unmounted() {
+    if (this.filters) {
+      window.removeEventListener('resize', this.checkScreenWidth);
+      if (this.showNav && this.isMobileView()) {
+        document.body.style.overflow = '';
+      }
+    }
+  },
+  watch: {
+    // The mobile panel covers the screen, so the page behind it shouldn't scroll
+    showNav(open) {
+      if (this.filters && this.isMobileView()) {
+        document.body.style.overflow = open ? 'hidden' : '';
+      }
+    },
+  },
+  methods: {
+    isMobileView() {
+      // Same breakpoint as Tailwind's md
+      return !window.matchMedia('(min-width: 1024px)').matches;
+    },
+    checkScreenWidth() {
+      const desktop = !this.isMobileView();
+      if (desktop) {
+        this.showNav = true;
+      } else if (this.desktopView) {
+        this.showNav = false;
+      }
+      this.desktopView = desktop;
+    },
+    closeOnApply(event) {
+      if (this.isMobileView() && event.target.closest('[data-filter-apply]')) {
+        this.showNav = false;
+      }
     },
   },
 };

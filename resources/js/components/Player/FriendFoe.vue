@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="flex max-w-[1920px] mx-auto">
-      <div class="">
+    <player-page-top>
+      <template #heading>
       <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
       <page-heading v-if="esport" :heading="'Friend vs Foe'" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
       <page-heading v-else :heading="'Friend vs Foe'"  :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
-      </div>
+      </template>
       <div class="w-full">
       <filters v-if="!esport"
         :onFilter="filterData"  
@@ -23,16 +23,16 @@
         :overrideGroupSizeRemoval="true"
         >
       </filters>
-      <panel-box v-else-if="esport && ngsFilterOptions">
+      <panel-box :filters="true" v-else-if="esport && ngsFilterOptions">
         <div class="filter-row justify-center">
           <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" :defaultValue="ngsSeason"></single-select-filter>
           <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" :defaultValue="ngsDivision"></single-select-filter>
           <single-select-filter :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" :defaultValue="ngsTeam"></single-select-filter>
-          <button :disabled="(friendIsLoading || enemyIsLoading)" @click="getNgsData" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="(friendIsLoading || enemyIsLoading) ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+          <button :disabled="(friendIsLoading || enemyIsLoading)" @click="getNgsData" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="(friendIsLoading || enemyIsLoading) ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div>
       </panel-box>
       </div>
-    </div>
+    </player-page-top>
     
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
@@ -86,8 +86,8 @@
               </td>
               <td class="py-2 px-3">
                 <div class="flex justify-center">
-                  <hero-image-wrapper :hero="row.heroData.hero">
-                    <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
+                  <hero-image-wrapper :hero="row.heroData.hero" :mobile-click="true">
+                    <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played: ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
                   </hero-image-wrapper>
                 </div>
               </td>
@@ -151,8 +151,8 @@
 
               <td class="py-2 px-3">
                 <div class="flex justify-center">
-                  <hero-image-wrapper :hero="row.heroData.hero">
-                    <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
+                  <hero-image-wrapper :hero="row.heroData.hero" :mobile-click="true">
+                    <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played: ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
                   </hero-image-wrapper>
                 </div>
               </td>

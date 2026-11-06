@@ -46,11 +46,11 @@
     </div>
     <div v-else>
       <div v-if="activeButton === 'teams'">
-        <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box><div class="filter-row justify-center">
+        <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box :filters="true"><div class="filter-row justify-center">
           <single-select-filter :values="seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter> 
           <single-select-filter :values="regions" :text="'Regions'" @input-changed="handleInputChange"></single-select-filter> 
           <single-select-filter :values="tournaments" :text="'Tournaments'" @input-changed="handleInputChange"></single-select-filter>
-          <button :disabled="isLoading" @click="filter()" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+          <button :disabled="isLoading" @click="filter()" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div></panel-box></div>
 
         <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
@@ -112,7 +112,7 @@
       </div>
       
       <div v-if="activeButton === 'overallHeroStats'">
-        <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box><div class="filter-row justify-center">
+        <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box :filters="true"><div class="filter-row justify-center">
           <single-select-filter :values="seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="regions" :text="'Regions'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="tournaments" :text="'Tournaments'" @input-changed="handleInputChange"></single-select-filter>
@@ -120,7 +120,7 @@
 
 
 
-          <button :disabled="isLoading" @click="filter()" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+          <button :disabled="isLoading" @click="filter()" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div></panel-box></div>
         <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
       </div>
@@ -133,12 +133,12 @@
 
         <div v-else>
           <div v-if="talentStatsData">
-            <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box><div class="filter-row justify-center">
+            <div class="max-w-[1920px] mx-auto px-4 md:px-8 mb-8"><panel-box :filters="true"><div class="filter-row justify-center">
               <single-select-filter :values="seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter>
               <single-select-filter :values="regions" :text="'Regions'" @input-changed="handleInputChange"></single-select-filter>
               <single-select-filter :values="tournaments" :text="'Tournaments'" @input-changed="handleInputChange"></single-select-filter>
 
-              <button :disabled="isLoading" @click="filter()" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+              <button :disabled="isLoading" @click="filter()" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
             </div></panel-box></div>
 
             

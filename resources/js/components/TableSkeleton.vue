@@ -3,16 +3,16 @@
   <component :is="bare ? 'div' : 'panel-box'" :class="{ 'bg-surface rounded overflow-hidden': bare }">
     <skeleton-box v-if="heading" class="h-8 w-80 max-w-full"></skeleton-box>
     <div v-if="columns.length" class="flex flex-col">
-      <div class="grid gap-6 px-3 py-5 border-b border-gray-dark" :style="gridStyle">
-        <skeleton-box v-for="(column, index) in columns" :key="index" :class="['h-4', column === 'num' ? 'w-2/3 ml-auto' : ['icon', 'avatar', 'stat', 'rank', 'pill', 'talentrow', 'copy', 'code'].includes(column) ? 'w-2/3 mx-auto' : 'w-3/4']"></skeleton-box>
+      <div class="grid gap-3 md:gap-6 px-3 py-5 border-b border-gray-dark" :style="gridStyle">
+        <skeleton-box v-for="(column, index) in shownColumns" :key="index" :class="['h-4', column === 'num' ? 'w-2/3 ml-auto' : ['icon', 'avatar', 'stat', 'rank', 'pill', 'talentrow', 'copy', 'code'].includes(column) ? 'w-2/3 mx-auto' : 'w-3/4']"></skeleton-box>
       </div>
-      <div v-for="row in rows" :key="row" :class="['grid gap-6 px-3 py-4 items-center', { 'bg-surface-1': row % 2 === 0 }]" :style="gridStyle">
-        <template v-for="(column, index) in columns" :key="index">
+      <div v-for="row in rows" :key="row" :class="['grid gap-3 md:gap-6 px-3 py-4 items-center', { 'bg-surface-1': row % 2 === 0 }]" :style="gridStyle">
+        <template v-for="(column, index) in shownColumns" :key="index">
           <div v-if="column === 'portrait'" class="flex flex-col gap-2">
-            <skeleton-box class="w-12 h-12 !rounded-full"></skeleton-box>
+            <skeleton-box class="w-12 h-12 max-md:w-10 max-md:h-10 !rounded-full"></skeleton-box>
             <skeleton-box class="h-4 w-24 max-w-full"></skeleton-box>
           </div>
-          <skeleton-box v-else-if="column === 'icon'" class="w-20 h-20 mx-auto !rounded-full"></skeleton-box>
+          <skeleton-box v-else-if="column === 'icon'" class="w-20 h-20 max-md:w-12 max-md:h-12 mx-auto !rounded-full"></skeleton-box>
           <skeleton-box v-else-if="column === 'avatar'" class="w-10 h-10 mx-auto !rounded-full"></skeleton-box>
           <!-- A hero portrait with the name beside it -->
           <div v-else-if="column === 'hero'" class="flex items-center gap-2">
@@ -48,15 +48,15 @@
             <skeleton-box class="h-6 w-36 max-w-full"></skeleton-box>
           </div>
           <div v-else-if="column === 'bar'" class="flex flex-col gap-2">
-            <skeleton-box class="h-4 w-14"></skeleton-box>
+            <skeleton-box class="h-4 w-14 max-w-full"></skeleton-box>
             <skeleton-box class="h-4 w-full"></skeleton-box>
           </div>
           <div v-else-if="column === 'pair'" class="flex flex-col gap-2">
             <skeleton-box class="h-4 w-12"></skeleton-box>
             <skeleton-box class="h-4 w-28 max-w-full"></skeleton-box>
           </div>
-          <skeleton-box v-else-if="column === 'num'" class="h-4 w-16 ml-auto"></skeleton-box>
-          <skeleton-box v-else-if="column === 'stat'" class="h-4 w-16 mx-auto"></skeleton-box>
+          <skeleton-box v-else-if="column === 'num'" class="h-4 w-16 max-w-full ml-auto"></skeleton-box>
+          <skeleton-box v-else-if="column === 'stat'" class="h-4 w-16 max-w-full mx-auto"></skeleton-box>
           <skeleton-box v-else-if="column === 'rank'" class="h-4 w-6 mx-auto"></skeleton-box>
           <skeleton-box v-else-if="column === 'name'" class="h-4 w-3/5"></skeleton-box>
           <skeleton-box v-else class="h-4 w-3/4"></skeleton-box>
@@ -86,12 +86,22 @@ export default {
     },
     // No panel around it, for tables that sit straight on the page.
     bare: Boolean,
+    // The columns phones show; without it, the first five
+    mobileColumns: Array,
+  },
+  data() {
+    return {
+      isMobile: window.matchMedia('(max-width: 1023px)').matches,
+    };
   },
   computed: {
+    shownColumns() {
+      return this.isMobile ? (this.mobileColumns ?? this.columns.slice(0, 5)) : this.columns;
+    },
     gridStyle() {
       // Icon-only columns are narrow in the real tables
       const widths = { avatar: 'minmax(0, 0.4fr)', hero: 'minmax(0, 1.6fr)', rank: 'minmax(0, 0.4fr)', name: 'minmax(0, 3fr)', talentrow: 'minmax(0, 2fr)', badge: 'minmax(0, 1.5fr)' };
-      return { gridTemplateColumns: this.columns.map(column => widths[column] ?? 'minmax(0, 1fr)').join(' ') };
+      return { gridTemplateColumns: this.shownColumns.map(column => widths[column] ?? 'minmax(0, 1fr)').join(' ') };
     },
   },
 };

@@ -1,30 +1,30 @@
 <template>
   <div>
-    <div class="flex max-md:flex-col max-w-[1920px] mx-auto">
-      <div class="">
+    <player-page-top>
+      <template #heading>
         <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="'Map data for ' + battletag + ' on ' + map" -->
         <page-heading v-if="esport" :heading="'Map Stats: ' + map" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
         <page-heading v-else :heading="'Map Stats: '+  map" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
-      </div>
+      </template>
     <div class="max-w-[1920px] mx-auto px-4 md:px-8 w-full">
-      <panel-box v-if="esport && ngsFilterOptions">
+      <panel-box :filters="true" v-if="esport && ngsFilterOptions">
         <div class="filter-row justify-center">
           <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" :defaultValue="ngsSeason"></single-select-filter>
           <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" :defaultValue="ngsDivision"></single-select-filter>
           <single-select-filter :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" :defaultValue="ngsTeam"></single-select-filter>
-          <button :disabled="isLoading" @click="applyFilter" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+          <button :disabled="isLoading" @click="applyFilter" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div>
       </panel-box>
-      <panel-box v-else-if="!esport">
+      <panel-box :filters="true" v-else-if="!esport">
         <div class="filter-row">
           <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
           <multi-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="seasonselection"></multi-select-filter>
           <date-range-filter :startDate="startdate" :endDate="enddate" @input-changed="handleInputChange"></date-range-filter>
-          <custom-button class="font-semibold text-center h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :text="'Filter'" :alt="'Filter'" :color="'blue'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
+          <custom-button data-filter-apply class="font-semibold text-center h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :text="'Filter'" :alt="'Filter'" :color="'blue'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
         </div>
       </panel-box>
     </div>
-    </div>
+    </player-page-top>
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 

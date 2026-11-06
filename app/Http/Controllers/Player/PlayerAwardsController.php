@@ -81,7 +81,8 @@ class PlayerAwardsController extends Controller
     public function getAwardGames(Request $request)
     {
         $validator = Validator::make($request->all(), array_merge($this->validationRules(), [
-            'award_id' => 'required|integer',
+            // Without one, every award: the page's Recent Awards
+            'award_id' => 'nullable|integer',
             'pagination_page' => 'required|integer|min:1',
         ]));
 
@@ -96,7 +97,8 @@ class PlayerAwardsController extends Controller
         $lookups = $this->rowLookups();
 
         return $this->baseQuery($request)
-            ->where('scores.match_award', $request['award_id'])
+            ->when($request['award_id'], fn ($query) => $query->where('scores.match_award', $request['award_id']),
+                fn ($query) => $query->whereIn('scores.match_award', $lookups['awards']->keys()->all()))
             ->select('replay.replayID', 'replay.game_date', 'replay.game_type', 'replay.game_map', 'player.hero', 'player.winner', 'scores.match_award')
             ->orderByDesc('replay.replayID')
             ->paginate(100, ['*'], 'page', $request['pagination_page'])

@@ -1,31 +1,31 @@
 <template>
   <div>
-    <div class="flex max-md:flex-col max-w-[1920px] mx-auto">
-      <div class="">
+    <player-page-top>
+      <template #heading>
         <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="hero + ' stats for ' + battletag" -->
         <page-heading v-if="esport" heading="Hero Stats" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
         <page-heading v-else heading="Hero Stats" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
-      </div>
+      </template>
     <div class="max-w-[1920px] mx-auto px-4 md:px-8 w-full">
-      <panel-box v-if="esport && ngsFilterOptions">
+      <panel-box :filters="true" v-if="esport && ngsFilterOptions">
         <div class="filter-row justify-center">
           <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" :defaultValue="ngsSeason"></single-select-filter>
           <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" :defaultValue="ngsDivision"></single-select-filter>
           <single-select-filter :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" :defaultValue="ngsTeam"></single-select-filter>
-          <button :disabled="isLoading" @click="applyFilter" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+          <button :disabled="isLoading" @click="applyFilter" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div>
       </panel-box>
-      <panel-box v-else-if="!esport">
+      <panel-box :filters="true" v-else-if="!esport">
         <div class="filter-row">
           <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
           <multi-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="seasonselection"></multi-select-filter>
           <date-range-filter :startDate="startdate" :endDate="enddate" @input-changed="handleInputChange"></date-range-filter>
           <single-select-filter :values="gameMapWithAll" :text="'Game Map'" @input-changed="handleInputChange" :trackclosure="true" :defaultValue="'All'" :disabled="disableFilterInput"></single-select-filter>
-          <custom-button class="font-semibold text-center h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :text="'Filter'" :alt="'Filter'" :color="'blue'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
+          <custom-button data-filter-apply class="font-semibold text-center h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :text="'Filter'" :alt="'Filter'" :color="'blue'" :disabled="disableFilterInput" :ignoreclick="true" @click="applyFilter"></custom-button>
         </div>
       </panel-box>
     </div>
-    </div>
+    </player-page-top>
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     
@@ -87,12 +87,12 @@
               <h3 class="text-2xl font-bold">Most Played Build</h3>
               <a class="text-header whitespace-nowrap hover:underline" :href="getTalentPageUrl()">Talent Data<i class="fas fa-chevron-right text-sm ml-3"></i></a>
             </div>
-            <tab-button v-if="!esport" class="self-start" tab1text="All Seasons" tab2text="This Season" :ignoreclick="true" @tab-click="buildThisSeason = $event === 'right'" :overridedefaultside="buildThisSeason ? 'right' : 'left'"></tab-button>
-            <div v-if="topBuild" class="flex flex-wrap items-center gap-x-6 gap-y-3">
-              <div class="flex flex-wrap gap-1.5">
+            <tab-button v-if="!esport" class="self-start max-md:self-center" tab1text="All Seasons" tab2text="This Season" :ignoreclick="true" @tab-click="buildThisSeason = $event === 'right'" :overridedefaultside="buildThisSeason ? 'right' : 'left'"></tab-button>
+            <div v-if="topBuild" class="flex flex-wrap items-center gap-x-6 gap-y-3 max-md:justify-center">
+              <div class="flex flex-wrap gap-1.5 max-md:justify-center">
                 <talent-image-wrapper v-for="level in talentLevels" :key="level" :talent="topBuild[level]" size="talent"></talent-image-wrapper>
               </div>
-              <div class="flex gap-6">
+              <div class="flex gap-6 max-md:justify-center max-md:text-center">
                 <stat-box class="!m-0 !px-0 !min-w-0" title="Games" :value="topBuild.games_played.toLocaleString('en-US')"></stat-box>
                 <stat-box class="!m-0 !px-0 !min-w-0" title="Win Rate" :value="topBuild.win_rate.toFixed(2) + '%'"></stat-box>
               </div>
@@ -258,9 +258,7 @@
       </panel-box>
     </div>
 
-    <div v-if="matchIsLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
-    </div>
+    <match-lookup v-if="matchIsLoading" :text="matchLookupText"></match-lookup>
     <div v-if="matchNotFound" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red text-white px-4 py-2 rounded z-50">
       Couldn't find the match for that value.
     </div>
@@ -310,6 +308,7 @@
         data: null,
         disableFilterInput: null,
         matchIsLoading: false,
+      matchLookupText: '',
         matchNotFound: false,
         ngsSeason: this.esportfilters?.season ?? null,
         ngsDivision: this.esportfilters?.division ?? null,
@@ -616,6 +615,7 @@
       async navigateToMaxStatMatch(stat, value){
         // Opened during the click so popup blockers allow it; pointed at the match once found
         const tab = window.open('', '_blank');
+        this.matchLookupText = `Finding replay with max ${stat.replace(/_/g, ' ')} for hero ${this.hero}`;
         this.matchIsLoading = true;
         try{
           const response = await this.$axios.post("/api/v1/player/find/max/stat/match", {
@@ -640,6 +640,7 @@
             tab.location.href = `/Match/Single/${replayID}`;
           } else if (Number.isInteger(replayID) && replayID > 0) {
             window.location.href = `/Match/Single/${replayID}`;
+          return;
           } else {
             tab?.close();
             this.showMatchNotFound();

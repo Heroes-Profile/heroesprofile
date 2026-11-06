@@ -3,11 +3,11 @@
     <page-heading :heading="'Division ' + division + ' Match History'" esport="NGS" heading-image="/images/NGS/ngs_large.png" heading-image-url="/Esports/NGS"></page-heading>
 
     <div class="max-w-[1920px] mx-auto px-4 md:px-8">
-      <panel-box>
+      <panel-box :filters="true">
         <div class="filter-row justify-center">
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="modifiedseason"></single-select-filter>
           <single-select-filter :values="teamOptions" :text="'Teams'" @input-changed="handleInputChange" :defaultValue="modifiedteam"></single-select-filter>
-          <button :disabled="isLoading" @click="filter" class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
+          <button :disabled="isLoading" @click="filter" data-filter-apply class="btn font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]" :class="isLoading ? 'bg-gray-md' : 'bg-blue hover:bg-lblue'">Filter</button>
         </div>
       </panel-box>
     </div>

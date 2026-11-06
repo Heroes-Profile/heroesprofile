@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="flex max-w-[1920px] mx-auto">
-      <div class="">
+    <player-page-top>
+      <template #heading>
       <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
       <page-heading :heading="'Heroes Profile MMR Data'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
-      </div>
+      </template>
       <div class="w-full">
       <filters 
         :onFilter="filterData" 
@@ -24,7 +24,7 @@
         >
       </filters>
       </div>
-    </div>
+    </player-page-top>
     
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
@@ -74,8 +74,8 @@
         <panel-box>
           <!-- Wide rows scroll sideways on narrow screens -->
           <div class="overflow-x-auto">
-            <div class="min-w-max w-full">
-              <div class="flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
+            <div class="md:min-w-max w-full">
+              <div class="max-md:hidden flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
                 <span class="w-[340px] shrink-0 pl-5 cursor-pointer" @click="sortTable('game_date')">Match<sort-indicator column="game_date" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
                 <span class="w-[140px] shrink-0 px-4 cursor-pointer" @click="sortTable('replayID')">Game ID<sort-indicator column="replayID" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
                 <span class="w-[260px] shrink-0 px-4 cursor-pointer" @click="sortTable('mmr_date_parsed')">HP MMR Date Parsed<sort-indicator column="mmr_date_parsed" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
@@ -87,7 +87,10 @@
                 <div v-if="!patreonUser && index != 0 && index % 50 === 0" class="my-2">
                   <dynamic-banner-ad :patreon-user="patreonUser" :index="index + 3" :mobile-override="false"></dynamic-banner-ad>
                 </div>
-                <div :class="['group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
+                <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="'/Match/Single/' + row.replayID" :hero="row.hero" :title="row.hero.name" :date="formatRowDate(row.game_date)" :winner="row.winner === 'True'" :result="row.winner === 'True' ? 'Win' : 'Loss'">
+                  HP MMR <span class="text-white font-medium">{{ row.mmr.toLocaleString('en-US') }}</span> <span :class="row.mmr_change >= 0 ? 'text-win' : 'text-red'">({{ row.mmr_change > 0 ? '+' : '' }}{{ row.mmr_change.toFixed(2) }})</span>
+                </match-row-mobile>
+                <div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
                   <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
                   <a :href="'/Match/Single/' + row.replayID" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
                   <div class="relative w-[340px] shrink-0 self-stretch flex items-center pl-5 py-2.5">
