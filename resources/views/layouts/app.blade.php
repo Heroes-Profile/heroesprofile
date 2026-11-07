@@ -117,7 +117,6 @@
 </head>
 <body class="bg-page bg-[radial-gradient(ellipse_62.5rem_56.25rem_at_50%_9.375rem,#1c2f5a,#14182a)] bg-no-repeat text-white {{ $bladeGlobals ? $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' : 'light-mode' }}">
   <div id="app" class="relative flex flex-col align-stretch " style="min-height:100vh; ">
-  <div class="max-md:h-[4.6875rem]"></div>
     <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" ></horizontal-banner-ad>
 
 

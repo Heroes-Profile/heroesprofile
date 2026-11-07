@@ -195,7 +195,7 @@ export default {
   },
   methods: {
     isSmallScreen() {
-      return window.innerWidth <= 1024; // You can adjust the threshold as needed
+      return window.innerWidth < 1024; // You can adjust the threshold as needed
     },
     // Info icons pin open on click; linked tiles on phones open instead of following the link
     handleClick(event) {

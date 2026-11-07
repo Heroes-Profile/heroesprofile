@@ -114,7 +114,7 @@ body{
   background: rgba(255, 255, 255, 0.25);
   border-radius: 0.1875rem;
 }
-@media (max-width: 1024px) {
+@media (max-width: 1023.98px) {
   .nav-flyout {
     display: none !important;
   }
@@ -142,8 +142,8 @@ body{
   @apply max-md:w-full text-center;
 }
 .nav-dropdown-inner-wrapper{
-  padding-bottom:.1em;
-  padding-top:.1em;
+  padding-bottom:.5rem;
+  padding-top:.5rem;
   @apply bg-surface-1 text-sm shadow-[0_0_0.5rem_rgba(0,0,0,0.4)] text-left max-md:flex-wrap;
 }
 
@@ -175,21 +175,21 @@ nav .search-component{
 }
 
 .nav-dropdown a{
-  @apply block px-4 py-3 m-2 hover:bg-lighten rounded;
+  @apply block px-4 py-2 hover:bg-lighten;
 }
 .nav-dropdown a.remove-account {
   @apply hover:bg-gray-dark/80;
 }
 
-@media (max-width:1024px){
+@media (max-width: 1023.98px) {
 
 
     /* Pinned to the screen, so it opens where you are rather than at the top of the page */
     .main-navigation-wrapper{
-      @apply fixed inset-0 z-50 overflow-y-auto hidden ;
+      @apply fixed inset-0 z-50 overflow-y-auto hidden bg-surface-1;
     }
-    .main-navigation-wrapper nav{
-      @apply min-h-[100vh]  flex-col ;
+    .main-navigation-wrapper nav:not(.alt-acct-nav){
+      @apply flex-col;
     }
     .nav-item{
       @apply border-b border-white;
@@ -204,7 +204,7 @@ nav .search-component{
     .alt-acct-nav .nav-dropdown-inner-wrapper{
         @apply rounded-none;
     }
-    .alt-acct-nav  a{
+    .alt-acct-nav .nav-dropdown a{
       @apply p-4 block;
     }
   }

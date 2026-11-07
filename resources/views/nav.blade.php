@@ -1,4 +1,4 @@
-<div id="mobile-header" class="md:hidden max-md:bg-surface-1 max-md:fixed max-md:z-40 max-md:w-full">
+<div id="mobile-header" class="md:hidden max-md:bg-surface-1 max-md:sticky max-md:top-0 max-md:order-first max-md:z-40 max-md:w-full">
     <div class="relative flex p-2 px-4 justify-center">
 <a id="mobile-logo" class="flex shrink-0 items-center whitespace-nowrap font-logo text-lg sm:text-2xl md:hidden" href="/">
                 Heroes
@@ -216,21 +216,20 @@
                         @endif
                     
                 </div>
-                <search-component id="nav-search" :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="!mt-4 mx-4 md:hidden"></search-component>
              
               
             </div>
 </div>
-              <div id="right-nav-wrapper" class="flex max-md:flex-wrap justify-center flex-none mx-auto">
+              <div id="right-nav-wrapper" class="flex max-md:flex-wrap max-md:items-center justify-center flex-none mx-auto">
 
-                <div id="nav-buttons" class="flex gap-3  md:pl-4 max-md:order-1 max-md:mt-auto max-md:p-3">
-                    <custom-button id="nav-api-button" class="font-semibold" :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'"></custom-button>
-                    <custom-button id="nav-uploader-button" class="font-semibold" :href="'/Upload'" :text="'Replay Uploader'" :alt="'Replay Uploader'" :color="'teal'"></custom-button>
-                    <custom-button id="nav-patreon-button" class="font-semibold" :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Remove Ads / Patreon'" :alt="'Patreon'" :color="'red'"></custom-button>
+                <div id="nav-buttons" class="flex gap-3 md:pl-4 max-md:gap-2 max-md:w-full max-md:px-3 max-md:pt-4 max-md:flex-wrap max-md:justify-center">
+                    <custom-button id="nav-api-button" class="font-semibold max-md:text-xs max-md:px-3 max-md:py-1.5" :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'"></custom-button>
+                    <custom-button id="nav-uploader-button" class="font-semibold max-md:text-xs max-md:px-3 max-md:py-1.5" :href="'/Upload'" :text="'Replay Uploader'" :alt="'Replay Uploader'" :color="'teal'"></custom-button>
+                    <custom-button id="nav-patreon-button" class="font-semibold max-md:text-xs max-md:px-3 max-md:py-1.5" :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Remove Ads / Patreon'" :alt="'Patreon'" :color="'red'"></custom-button>
                 </div>
 
 
-                <dark-mode-toggle id="nav-dark-mode-toggle" class="md:ml-4 max-md:my-4" :darkmode="{{ json_encode(! empty($bladeGlobals['darkmode'])) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></dark-mode-toggle>
+                <dark-mode-toggle id="nav-dark-mode-toggle" class="!flex items-center md:ml-4 max-md:my-3 max-md:mr-2" :darkmode="{{ json_encode(! empty($bladeGlobals['darkmode'])) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></dark-mode-toggle>
 
                 @if($isAuthenticated)
                     <div id="nav-user-menu" class="relative group inline-block md:ml-4 max-md:my-4 max-md:flex items-center">
@@ -259,14 +258,15 @@
 
 
                 @else
-                    <custom-button id="nav-login-button" class="md:ml-4 max-md:my-4 font-semibold" :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :color="'teal'"></custom-button>
+                    <custom-button id="nav-login-button" class="md:ml-4 max-md:my-3 font-semibold max-md:text-xs max-md:px-3 max-md:py-1.5" :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :color="'teal'"></custom-button>
                 @endif
                 </div>
+                {{-- Mobile only: under the buttons --}}
+                <search-component id="nav-search" :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="!mt-0 mx-4 md:hidden"></search-component>
         </div>
     </nav>
     
-</div>
-<nav id="alt-account-nav" class="relative flex justify-end items-center md:gap-4 w-full max-w-[120rem] mx-auto md:px-8 md:py-4 alt-acct-nav max-md:flex-wrap">
+<nav id="alt-account-nav" class="relative flex justify-end items-center md:gap-4 max-md:justify-center max-md:gap-2 max-md:px-3 max-md:pb-6 max-md:mt-4 w-full max-w-[120rem] mx-auto md:px-8 md:py-4 alt-acct-nav max-md:flex-wrap">
   {{-- League row colours, from each league's logo --}}
   @php($esportRowColours = ['NGS' => 'bg-[#f26b30]', 'CCL' => 'bg-gradient-to-r from-[#d42a0e] via-[#f07c12] to-[#f7c51e]', 'MastersClash' => 'bg-[#5a5ad6]', 'hi' => 'bg-[#6b6b6b]', 'hi_nc' => 'bg-[#6b6b6b]', 'Other' => 'bg-lblue'])
   {{-- Other series, each from its own logo; any series not listed keeps Other's colour --}}
@@ -277,7 +277,7 @@
       @php($esportPlayerUrl = $esportNav['url'])
       @php($esportQuery = $esportNav['query'])
       <div id="alt-account-{{ $index }}" class="relative group inline-block text-sm">
-        <a data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="mobile-secondary-nav-open btn md:bg-teal md:hover:bg-lteal inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="max-md:hidden h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></a>
+        <a data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="mobile-secondary-nav-open btn bg-teal hover:bg-lteal inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="max-md:hidden h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></a>
         <div data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[12.5rem] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
             <div class="nav-dropdown-inner-wrapper">
               <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal"><span class="inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></span> <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg" aria-label="Close menu">x</button></div>
@@ -345,7 +345,7 @@
       </div>
     @elseif($account)
       <div id="alt-account-{{ $index }}" class="relative group inline-block text-sm">
-        <a data-battletag="{{ $account['battletag'] }}" class="mobile-secondary-nav-open btn md:bg-teal md:hover:bg-lteal ">{{ $account['battletag'] }}@if(isset($regions[$account['region']]))<span class="text-[0.7em] ml-2">{{ $regions[$account['region']] }}</span>@endif</a>
+        <a data-battletag="{{ $account['battletag'] }}" class="mobile-secondary-nav-open btn bg-teal hover:bg-lteal ">{{ $account['battletag'] }}@if(isset($regions[$account['region']]))<span class="text-[0.7em] ml-2">{{ $regions[$account['region']] }}</span>@endif</a>
         <div data-battletag="{{ $account['battletag'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[12.5rem] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
             <div class="nav-dropdown-inner-wrapper">
               <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal">{{ $account['battletag'] }}@if(isset($regions[$account['region']])) ({{ $regions[$account['region']] }})@endif <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg" aria-label="Close menu">x</button></div>
@@ -411,4 +411,5 @@
   @endforeach
   <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="max-md:hidden"></search-component>
 </nav>
+</div>
 <mobile-nav-hack></mobile-nav-hack>

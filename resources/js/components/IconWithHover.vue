@@ -107,7 +107,7 @@ export default {
   },
   methods: {
      isSmallScreen() {
-      return window.innerWidth <= 1024; // You can adjust the threshold as needed
+      return window.innerWidth < 1024; // You can adjust the threshold as needed
     },
     handleMouseOver() {
       clearTimeout(this.hideTimer);

@@ -1,10 +1,10 @@
 <template>
-  <div class="inline-flex bg-teal rounded p-1 gap-1">
+  <div class="inline-flex bg-teal rounded p-1 gap-1 max-md:p-0.5">
     <button
       v-for="side in ['left', 'right']"
       :key="side"
       type="button"
-      :class="['w-8 h-8 rounded flex items-center justify-center transition-colors', isDark === (side === 'right') ? 'bg-surface text-white' : 'text-surface hover:bg-lteal']"
+      :class="['w-8 h-8 max-md:w-6 max-md:h-6 max-md:text-xs rounded flex items-center justify-center transition-colors', isDark === (side === 'right') ? 'bg-surface text-white' : 'text-surface hover:bg-lteal']"
       :aria-label="side === 'right' ? 'Dark mode' : 'Light mode'"
       :aria-pressed="isDark === (side === 'right')"
       @click="setMode(side)"

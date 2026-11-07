@@ -3,7 +3,7 @@
     <a :href="headingUrl || baseUrl + query" class="flex justify-between items-center">{{ label }} <span class="nav-flyout-arrow ml-4">›</span></a>
 
     <div v-show="open" class="nav-flyout">
-      <div class="nav-dropdown-inner-wrapper rounded-b rounded-r flex flex-col" style="max-height: 26.25rem;">
+      <div class="nav-dropdown-inner-wrapper !pt-0 rounded-b rounded-r flex flex-col" style="max-height: 26.25rem;">
         <div class="px-2 pt-2 pb-1 ">
           <input
             v-model="search"
