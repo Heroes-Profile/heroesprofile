@@ -5,7 +5,7 @@
                 <img class="w-8 sm:w-10 shrink-0 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
                 Profile
         </a>
-        <button  id="mobile-toggle" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 bg-blue rounded px-3 min-w-[2.75rem] min-h-[2.5rem] text-xl" aria-label="Open menu">=</button>
+        <button  id="mobile-toggle" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 bg-blue rounded-control px-2 min-w-[2.25rem] min-h-[2rem] text-lg leading-none" aria-label="Open menu">=</button>
          
         
     </div>
@@ -13,7 +13,7 @@
 
 <div id="main-menu" class="  main-navigation-wrapper"> <!-- max-md:hidden  - This needs to hide/show on click of the button but only on mobile - either detect mobile with vue, or have a class that is added/taken away that only applies to mobile -->
     <nav id="main-nav" class="bg-surface-1 text-white z-50 relative md:px-8 md:py-3 text-sm max-md:pt-2">
-      <button  id="mobile-nav-close" class="hidden bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg ml-auto  mr-2" aria-label="Close menu">x</button>
+      <button  id="mobile-nav-close" class="hidden bg-blue rounded-control px-2 py-1 min-w-[2.25rem] min-h-[2rem] text-base leading-none ml-auto  mr-2" aria-label="Close menu"><i class="fas fa-xmark" aria-hidden="true"></i></button>
        
         <div class="flex items-start justify-center flex-wrap  mx-auto max-md:flex-col max-md:items-stretch max-w-[120rem]" >
              <div class="flex justify-start items-start flex-wrap max-md:flex-col max-md:items-stretch grow mr-auto max-md:mr-0 max-md:w-full max-md:justify-center">
@@ -26,7 +26,7 @@
                 <div id="nav-links" class=" grow-1 flex items-left md:space-x-5 md:ml-auto flex-wrap md:flex-nowrap max-md:flex-col max-md:w-full ">
                     
                     <div id="nav-global-stats" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">Global Hero Stats</a>
+                        <a class=" cursor-pointer">Global Hero Stats<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
                         <div class="nav-dropdown ">
                             <div class="nav-dropdown-inner-wrapper ">
                                 {{-- ... (Global Hero Stats dropdown items) --}}
@@ -66,7 +66,7 @@
                     <a id="nav-leaderboards" class="  nav-item" href="/Global/Leaderboard">Leaderboards</a>
 
                     <div id="nav-tools" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">Tools</a>
+                        <a class=" cursor-pointer">Tools<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
                         <div class="nav-dropdown ">
                             <div class=" nav-dropdown-inner-wrapper ">
                                 <a href="/Global/Talents/Builder" >Talent Builder</a>
@@ -95,7 +95,7 @@
                     <a id="nav-esports" class=" nav-item" href="/Esports">Community Esports</a>
 
                     <div id="nav-help" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">Help</a>
+                        <a class=" cursor-pointer">Help<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
                         <div class="nav-dropdown ">
                             <div class="nav-dropdown-inner-wrapper ">
                                  <a href="https://github.com/Heroes-Profile/heroesprofile/issues/new?assignees=&labels=&projects=&template=bug_report.md" target="_blank" >Submit an Issue</a>
@@ -115,7 +115,7 @@
                     
 
                     <div id="nav-donate" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">Donate</a>
+                        <a class=" cursor-pointer">Donate<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
                         <div class="nav-dropdown ">
                             <div class="nav-dropdown-inner-wrapper ">
                                  <a href="https://www.patreon.com/c/heroesprofile" target="_blank" >Patreon</a>
@@ -137,7 +137,7 @@
                             @else
                                 (Region not found, log out and back in)
                             @endif
-
+                            <i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i>
                             </a>
                             <div class="nav-dropdown  ">
                                 <div class="nav-dropdown-inner-wrapper ">
@@ -232,23 +232,21 @@
                 <dark-mode-toggle id="nav-dark-mode-toggle" class="!flex items-center md:ml-4 max-md:my-3 max-md:mr-2" :darkmode="{{ json_encode(! empty($bladeGlobals['darkmode'])) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></dark-mode-toggle>
 
                 @if($isAuthenticated)
-                    <div id="nav-user-menu" class="relative group inline-block md:ml-4 max-md:my-4 max-md:flex items-center">
-                            <div class="flex items-center cursor-pointer">
-                                <img 
-                                class="card-img-top relative hover:opacity-75 w-10 h-10 rounded" 
-                                src="/images/heroes/auto_select.jpg" 
+                    <div id="nav-user-menu" class="relative group inline-block md:ml-4 max-md:my-3 max-md:flex max-md:items-center">
+                            {{-- On mobile a tap opens the panel full screen, like the alt-player buttons (MobileNavHack) --}}
+                            <div data-battletag="nav-user-menu" class="mobile-secondary-nav-open flex items-center cursor-pointer">
+                                <img
+                                class="card-img-top relative hover:opacity-75 w-10 h-10 rounded"
+                                src="/images/heroes/auto_select.jpg"
                                 alt="Settings">
                             </div>
-                            <div class="md:absolute right-0 md:hidden md:group-hover:block z-50  ">
-                                <div class="md:bg-surface-1 rounded-b rounded-tl text-sm md:shadow-[0_0_0.625rem_rgba(0,0,0,0.4)] max-md:flex">
-                                  
-                                <span class="block px-4 py-2 border-b border-darken bg-gray-dark">
-                                {{ $mainSearchAccount['battletag_full'] }}
-
-                                </span>
-
-                                    <a href="/Profile/Settings" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Settings</a>
-                                    <a href="/Battlenet/Logout" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Logout</a>
+                            {{-- Same panel as the primary menus, anchored to the right edge --}}
+                            <div data-battletag="nav-user-menu" class="nav-dropdown nav-dropdown-secondary-nav md:!left-auto md:!right-0 max-md:fixed max-md:top-0 max-md:w-full max-md:h-full max-md:bg-gray-dark">
+                                <div class="nav-dropdown-inner-wrapper">
+                                    <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal">{{ $mainSearchAccount['battletag_full'] }} <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg" aria-label="Close menu">x</button></div>
+                                    <span class="block px-4 py-2 whitespace-nowrap border-b-2 border-[#333] max-md:hidden">{{ $mainSearchAccount['battletag_full'] }}</span>
+                                    <a href="/Profile/Settings">Settings</a>
+                                    <a href="/Battlenet/Logout">Logout</a>
                                 </div>
                             </div>
                         </div>

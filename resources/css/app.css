@@ -192,20 +192,21 @@ nav .search-component{
       @apply flex-col;
     }
     .nav-item{
-      @apply border-b border-white;
+      @apply border-b border-white/20;
     }
-    /* Flat full-width rows with a divider, not the desktop's rounded buttons */
+    /* Flat full-width rows with a divider, spaced like the main menu's items */
     .nav-dropdown a{
-     @apply m-0 rounded-none border-t border-white/20 px-6 py-5;
+     @apply m-0 rounded-none border-t border-white/20 px-4 py-[0.625rem] block;
     }
+    /* Main menu dropdowns open in the flyout's lighter grey */
     .nav-dropdown:not(.nav-dropdown-secondary-nav){
-      @apply mt-4;
+      @apply mt-[0.625rem];
+    }
+    .nav-dropdown:not(.nav-dropdown-secondary-nav) .nav-dropdown-inner-wrapper{
+      @apply bg-surface-4 py-0;
     }
     .alt-acct-nav .nav-dropdown-inner-wrapper{
         @apply rounded-none;
-    }
-    .alt-acct-nav .nav-dropdown a{
-      @apply p-4 block;
     }
   }
 
