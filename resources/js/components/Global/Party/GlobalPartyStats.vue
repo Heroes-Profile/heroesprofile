@@ -39,7 +39,7 @@
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="partydata" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+    <div v-if="partydata" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <div class="flex justify-end">
         <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
       </div>
@@ -49,7 +49,7 @@
       <party-stats-display :partydata="partydata"></party-stats-display>
 
     </div>
-    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <loading-component :compact="true" :textoverride="true">Loading party stats...</loading-component>
       <party-stats-skeleton></party-stats-skeleton>
     </div>

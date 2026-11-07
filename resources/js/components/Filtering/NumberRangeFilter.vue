@@ -8,7 +8,7 @@
           :min="lowest"
           @change="emitChange(text + ' Min', min)"
           :disabled="disabled"
-          :class="['w-[150px] h-[40px] rounded-control p-2 text-white focus:outline-none', disabled ? '!bg-gray-md' : '!bg-surface-3 hover:!bg-surface-4']"
+          :class="['w-[9.375rem] h-[2.5rem] rounded-control p-2 text-white focus:outline-none', disabled ? '!bg-gray-md' : '!bg-surface-3 hover:!bg-surface-4']"
         >
       </div>
     </div>
@@ -20,7 +20,7 @@
           :min="min || lowest"
           @change="emitChange(text + ' Max', max)"
           :disabled="disabled"
-          :class="['w-[150px] h-[40px] rounded-control p-2 text-white focus:outline-none', disabled ? '!bg-gray-md' : '!bg-surface-3 hover:!bg-surface-4']"
+          :class="['w-[9.375rem] h-[2.5rem] rounded-control p-2 text-white focus:outline-none', disabled ? '!bg-gray-md' : '!bg-surface-3 hover:!bg-surface-4']"
         >
       </div>
     </div>

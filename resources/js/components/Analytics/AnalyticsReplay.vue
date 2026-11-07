@@ -8,7 +8,7 @@
     <!-- Page level, like the Talent Builder, so it fills the screen width -->
     <loading-component v-if="loading" :textoverride="preparing">Preparing replay, usually under a minute...</loading-component>
 
-    <div v-else class="max-w-[1500px] mx-auto px-4 mt-4">
+    <div v-else class="max-w-[93.75rem] mx-auto px-4 mt-4">
       <p v-if="error" class="text-center text-red">{{ error }}</p>
       <template v-else>
       <infobox class="mb-4" :input="'Watch the game play out on the minimap, with the in-game top bar, each team\'s win chance and a feed of events. Replays only record exact hero positions now and then, so hero positions between those moments are estimates.'"></infobox>
@@ -74,7 +74,7 @@
         </div>
 
         <!-- Panels -->
-        <div class="w-[380px] max-md:w-full flex flex-col gap-4 text-sm">
+        <div class="w-[23.75rem] max-md:w-full flex flex-col gap-4 text-sm">
           <!-- Players -->
           <div class="bg-darken rounded p-3">
             <div v-for="team in [0, 1]" :key="'players' + team" class="mb-2">

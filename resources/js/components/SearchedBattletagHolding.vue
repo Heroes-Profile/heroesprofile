@@ -2,7 +2,7 @@
   <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
   <div>
     <table-search v-if="!showNone" :query="userinput" :results="battletagresponse" @select="openProfile" @none="showNone = true"></table-search>
-    <div v-else class="max-w-[1500px] mx-auto mt-10 w-full flex justify-center items-center flex-col">
+    <div v-else class="max-w-[93.75rem] mx-auto mt-10 w-full flex justify-center items-center flex-col">
       <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'"></search-component>
       <div class="rounded bg-red text-white p-4 mb-4">No BattleTag found for {{ userinput }}
         Try Again?

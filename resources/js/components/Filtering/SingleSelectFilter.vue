@@ -1,9 +1,9 @@
 <template>
-  <div id="filter-label" class="relative" :class="compact ? 'min-w-0 w-full' : 'filter-fill max-md:w-full md:w-[200px]'">
+  <div id="filter-label" class="relative" :class="compact ? 'min-w-0 w-full' : 'filter-fill max-md:w-full md:w-[12.5rem]'">
     <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'" @keydown="handleKeyPress" tabindex="0">
       <span class="relative">
         <span class="relative">{{ this.text }}
-          <round-image v-if="showrankinfo" class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large" mobileClick="true" style="position:absolute; bottom:0; right:-25px;">
+          <round-image v-if="showrankinfo" class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large" mobileClick="true" style="position:absolute; bottom:0; right:-1.5625rem;">
             <slot>
               <div>
                 <p class="max-sm:text-xs">Heroes Profile Rank is based on a custom MMR algorithm developed by Heroes Profile for approximating a player's skill. This rank does not correlate to in-game rank but the distribution of players in the Heroes Profile dataset. Wood rank is players who have played less than 50 games and cannot be accurately ranked.</p>
@@ -12,7 +12,7 @@
           </round-image>
         </span>
       </span> 
-      <span class="h-[40px] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 min-w-0 w-full">
+      <span class="h-[2.5rem] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 min-w-0 w-full">
         <span class="uppercase font-bold px-1 text-nowrap truncate min-w-0" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span>
         <i class="fa-solid fa-chevron-down ml-auto shrink-0 text-xs"></i>
       </span>

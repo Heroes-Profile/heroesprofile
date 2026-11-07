@@ -7,14 +7,14 @@
       :infoText1="'Every endpoint, generated from the routes themselves — so this page cannot describe an endpoint that does not exist.'"
     ></page-heading>
 
-    <div v-if="!spec" class="mx-auto max-w-[900px] px-4 mt-8">
+    <div v-if="!spec" class="mx-auto max-w-[56.25rem] px-4 mt-8">
       <div class="bg-lighten p-6">
         <h2 class="text-lg mb-2">The specification has not been built yet</h2>
         <p class="text-sm mb-4">Run <code class="text-lteal">php artisan api:build-spec</code> and reload.</p>
       </div>
     </div>
 
-    <div v-else class="mx-auto max-w-[1800px] px-4 mt-6 flex gap-8 items-start">
+    <div v-else class="mx-auto max-w-[112.5rem] px-4 mt-6 flex gap-8 items-start">
 
       <!--
         Bounded to the viewport and scrollable in its own right. Sticky alone
@@ -77,7 +77,7 @@
             ></tab-button>
           </div>
 
-          <p class="text-xs text-gray-medium max-w-[420px]">
+          <p class="text-xs text-gray-medium max-w-[26.25rem]">
             <template v-if="state.admin_mode">
               Calls skip quota and need no key. Turn admin mode off to see exactly what a
               customer on your plan would get.
@@ -190,7 +190,7 @@
                         <a
                           v-if="listedInVariables(p)"
                           :href="'#variable-' + p.name" class="group/bt inline-flex items-center text-xs"><span class="group-hover/bt:underline">{{ p.schema.enum.length }} values — see Variables</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
-                        <div v-else class="text-xs break-all max-w-[240px]">{{ p.schema.enum.join(', ') }}</div>
+                        <div v-else class="text-xs break-all max-w-[15rem]">{{ p.schema.enum.join(', ') }}</div>
                       </template>
                     </td>
                     <td class="py-2 px-3">
@@ -201,7 +201,7 @@
                       <select
                         v-if="p.schema && p.schema.enum"
                         v-model="values[op.id][p.name]"
-                        class="form-control w-full min-w-[200px] text-black rounded p-1 text-sm"
+                        class="form-control w-full min-w-[12.5rem] text-black rounded p-1 text-sm"
                       >
                         <option value=""></option>
                         <option v-for="choice in p.schema.enum" :key="choice" :value="choice">{{ choice }}</option>
@@ -211,7 +211,7 @@
                         v-model="values[op.id][p.name]"
                         type="text"
                         :placeholder="p.example !== undefined ? String(p.example) : ''"
-                        class="form-control w-full min-w-[200px] text-black rounded p-1 text-sm"
+                        class="form-control w-full min-w-[12.5rem] text-black rounded p-1 text-sm"
                       />
                     </td>
                   </tr>

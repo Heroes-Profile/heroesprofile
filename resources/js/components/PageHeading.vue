@@ -1,5 +1,5 @@
 <template>
-  <div :class="['max-w-[1920px] w-full mx-auto px-4 py-6 md:pt-0 flex items-end gap-6 md:gap-20 max-md:flex-wrap max-md:justify-center', hasInfo ? 'md:px-8' : 'md:pl-8 md:pr-0']">
+  <div :class="['max-w-[120rem] w-full mx-auto px-4 py-6 md:pt-0 flex items-end gap-6 md:gap-20 max-md:flex-wrap max-md:justify-center', hasInfo ? 'md:px-8' : 'md:pl-8 md:pr-0']">
      <slot>
     </slot>
 
@@ -17,7 +17,7 @@
         <a :href="`/Player/${battletag}/${blizzid}/${region}`" class="text-3xl md:text-4xl font-bold">{{ battletag }}</a>
         <region-tag :region="regionstring"></region-tag>
       </div>
-      <div v-if="battletag" class="flex items-center gap-1 text-[20px] mt-1 max-md:justify-center">
+      <div v-if="battletag" class="flex items-center gap-1 text-[1.25rem] mt-1 max-md:justify-center">
           <icon-with-hover v-if="isOwner && !ownerHidden" size="small" icon="fas fa-crown" title="info" popupsize="small" style="color:gold">
             <div>
               <p class="max-sm:text-xs">Site Owner</p>

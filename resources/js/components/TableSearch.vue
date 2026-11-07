@@ -1,6 +1,6 @@
 <template>
   <!-- A player table is scanned while the search runs, then the matches drop in -->
-  <div class="max-w-[1500px] mx-auto w-full px-4 mt-10 pb-10">
+  <div class="max-w-[93.75rem] mx-auto w-full px-4 mt-10 pb-10">
     <loading-component v-if="phase === 'searching'" class="mb-4" :compact="true" :textoverride="true" :overrideimage="loaderImage">Searching for {{ query }}...</loading-component>
     <p v-else class="text-center text-subtext text-sm mb-4">
       <template v-if="phase === 'choose'">{{ results.length }} players named {{ query }}. Pick one.</template>

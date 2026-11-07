@@ -18,7 +18,7 @@
       :hideadvancedfilteringbutton="true"
     >
     </filters>
-    <div v-if="data" class="max-w-[1920px] mx-auto px-4 md:px-8 space-y-8">
+    <div v-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 space-y-8">
 
       <!-- Laid out like the profile page, from this league's games only -->
       <panel-box>
@@ -64,7 +64,7 @@
             <panel-box v-if="data.teams_played_for && data.teams_played_for.length" :inner="true" title="Teams Played For">
               <div class="flex flex-col gap-2">
                 <a v-for="team in data.teams_played_for" :key="team.team_name + team.season" :href="team.link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
-                  <img v-if="team.image" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0px]" :src="team.image" :alt="$ngsTeam(team.team_name).name"/>
+                  <img v-if="team.image" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image" :alt="$ngsTeam(team.team_name).name"/>
                   <div class="flex flex-col min-w-0 flex-1">
                     <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></span>
                     <span class="text-sm text-subtext">{{ [team.season ? 'Season ' + team.season : null, team.division ? 'Division ' + team.division : null].filter(Boolean).join(' · ') }}</span>
@@ -158,16 +158,16 @@
     </div>
 
     <!-- The page's layout with grey blocks while it loads, like the profile -->
-    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 space-y-8">
+    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 space-y-8">
       <loading-component :compact="true" :overrideimage="league.loaderImage"></loading-component>
       <panel-box>
         <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
-          <panel-box :inner="true" class="!gap-8 2xl:w-[780px]">
+          <panel-box :inner="true" class="!gap-8 2xl:w-[48.75rem]">
             <skeleton-box class="h-8 w-56"></skeleton-box>
             <div class="flex gap-8 max-sm:flex-col">
               <skeleton-box class="w-40 md:w-72 h-[23em] shrink-0 rounded"></skeleton-box>
               <div class="flex-1 flex flex-col gap-6">
-                <skeleton-box class="h-[30px]"></skeleton-box>
+                <skeleton-box class="h-[1.875rem]"></skeleton-box>
                 <div class="grid grid-cols-2 gap-x-6 gap-y-4">
                   <skeleton-box v-for="index in 8" :key="index" class="h-11"></skeleton-box>
                 </div>
@@ -196,7 +196,7 @@
       </panel-box>
       <div class="grid xl:grid-cols-2 gap-6">
         <panel-box title="Week Day Win Rates">
-          <skeleton-box class="h-[360px]"></skeleton-box>
+          <skeleton-box class="h-[22.5rem]"></skeleton-box>
         </panel-box>
         <panel-box title="Heroes">
           <table-skeleton :bare="true" :rows="8" :columns="['avatar', 'stat', 'stat']"></table-skeleton>

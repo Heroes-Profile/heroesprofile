@@ -24,11 +24,11 @@
       </template>
     </page-heading>
     <!-- Opens over the filters and table -->
-    <div v-if="leaderboardtype != 'SL Rank'" class="relative max-w-[1920px] mx-auto px-4 md:px-8 -mt-2 mb-6">
+    <div v-if="leaderboardtype != 'SL Rank'" class="relative max-w-[120rem] mx-auto px-4 md:px-8 -mt-2 mb-6">
       <button type="button" class="bg-surface-3 rounded px-4 py-2 text-sm flex items-center gap-3" :aria-expanded="showLeaderboardRequirements" @click="showLeaderboardRequirements = !showLeaderboardRequirements">
         Leaderboard Requirements<i :class="['fas fa-chevron-down text-xs transition-transform', { 'rotate-180': showLeaderboardRequirements }]"></i>
       </button>
-      <div v-if="showLeaderboardRequirements" class="absolute z-40 left-4 md:left-8 top-full mt-2 w-[640px] max-w-[calc(100vw-2rem)] max-h-[75vh] overflow-y-auto bg-surface-3 rounded p-6 shadow-lg flex flex-col gap-4 text-sm">
+      <div v-if="showLeaderboardRequirements" class="absolute z-40 left-4 md:left-8 top-full mt-2 w-[40rem] max-w-[calc(100vw-2rem)] max-h-[75vh] overflow-y-auto bg-surface-3 rounded p-6 shadow-lg flex flex-col gap-4 text-sm">
         <h3 class="font-bold text-base">To be eligible for <span v-if="leaderboardtype == 'Match Prediction'">Match Prediction</span> leaderboards, the following conditions must be met:</h3>
         <ol v-if="leaderboardtype != 'Match Prediction'" class="list-disc ml-5 space-y-1">
           <li>Account level must be greater than or equal to 250.</li>
@@ -83,7 +83,7 @@
       </filters>
       <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
       <div v-if="data">
-        <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
           <div v-if="season == defaultseason && leaderboardtype != 'SL Rank'" class="flex flex-wrap items-center gap-4">
             <div class="flex flex-wrap items-center justify-end gap-4 ml-auto">
               <span v-if="playerRating" class="text-sm">
@@ -250,7 +250,7 @@
         </div>
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
-    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <loading-component :compact="true" :textoverride="true">Loading leaderboard...</loading-component>
       <div v-if="leaderboardtype != 'SL Rank' && leaderboardtype != 'Match Prediction'" class="flex justify-end">
         <skeleton-box class="h-10 w-56"></skeleton-box>

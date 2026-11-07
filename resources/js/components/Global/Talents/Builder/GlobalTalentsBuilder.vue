@@ -43,7 +43,7 @@
   </div>
 
 
-  <div v-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+  <div v-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
     <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
     <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
     <loading-component v-else :compact="true" :textoverride="true">Loading talents...</loading-component>
@@ -53,7 +53,7 @@
       Error: Reload page/filter
   </div>
   <div v-if="data && !isLoading">
-    <div class="flex justify-between max-w-[1920px] mx-auto px-4 md:px-8 max-md:flex-wrap max-md:gap-2">
+    <div class="flex justify-between max-w-[120rem] mx-auto px-4 md:px-8 max-md:flex-wrap max-md:gap-2">
         <span class="flex gap-4 mb-2"> 
           <single-select-filter
             :values="filters.heroes" 
@@ -77,10 +77,10 @@
     <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
 
     <!-- The chart takes the talent columns' width -->
-    <div :class="effectiveStyle === 'horizontal' ? 'w-fit mx-auto' : 'max-w-[1500px] mx-auto'">
+    <div :class="effectiveStyle === 'horizontal' ? 'w-fit mx-auto' : 'max-w-[93.75rem] mx-auto'">
     <talent-build-paths v-if="paths && paths.length" :data="data" :paths="paths" v-model:open="pathsOpen"></talent-build-paths>
 
-    <div :class="effectiveStyle === 'horizontal' ? 'flex px-3 gap-5 mx-auto justify-center' : 'flex px-3 gap-5 mx-auto justify-center flex-wrap flex-col max-w-[1500px]'">
+    <div :class="effectiveStyle === 'horizontal' ? 'flex px-3 gap-5 mx-auto justify-center' : 'flex px-3 gap-5 mx-auto justify-center flex-wrap flex-col max-w-[93.75rem]'">
       <talent-builder-column :data="data['1']" :level="1" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
       <talent-builder-column :data="data['4']" :level="4" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
       <talent-builder-column :data="data['7']" :level="7" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
@@ -90,7 +90,7 @@
       <talent-builder-column :data="data['20']" :level="20" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
     </div>
     </div>
-    <div class="max-w-[1920px] mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
+    <div class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
     <panel-box title="Selected Build">
       <template #title>
         <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
@@ -154,7 +154,7 @@
     <table class="min-w-0 w-full responsive-table" v-if="showReplayList">
       <thead>
         <tr>
-          <th class="py-2 px-3 text-center text-sm leading-4 w-[200px]">
+          <th class="py-2 px-3 text-center text-sm leading-4 w-[12.5rem]">
             Match ID
           </th>
           <th class="py-2 px-3 text-center text-sm leading-4">

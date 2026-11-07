@@ -7,13 +7,13 @@
           type="text"
           v-model="search"
           placeholder="Enter BattleTag"
-          class="md:w-[200px] min-w-[100px] h-[40px] rounded-l-control !bg-surface-3 p-2 text-white focus:outline-none"
+          class="md:w-[12.5rem] min-w-[6.25rem] h-[2.5rem] rounded-l-control !bg-surface-3 p-2 text-white focus:outline-none"
           @keydown.enter.prevent="lookup"
           @input="results = []; error = null"
         />
-        <button type="button" class="h-[40px] rounded-r-control bg-blue hover:bg-lblue border-l border-darken text-white px-3" :disabled="loading" @click="lookup">{{ loading ? '...' : 'Add' }}</button>
+        <button type="button" class="h-[2.5rem] rounded-r-control bg-blue hover:bg-lblue border-l border-darken text-white px-3" :disabled="loading" @click="lookup">{{ loading ? '...' : 'Add' }}</button>
 
-        <div v-if="results.length > 1" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="min-width:280px; max-height:340px; overflow-y:auto;">
+        <div v-if="results.length > 1" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="min-width:17.5rem; max-height:21.25rem; overflow-y:auto;">
           <div
             v-for="result in results"
             :key="result.blizz_id + '-' + result.region"
@@ -33,7 +33,7 @@
         <tab-button tab1text="OR" tab2text="AND" :ignoreclick="true" @tab-click="setMatch" :overridedefaultside="match === 'all' ? 'right' : 'left'"></tab-button>
         <span class="text-xs">{{ match === 'all' ? 'Games with every player' : 'Games with any player' }}</span>
       </div>
-      <div v-if="selected.length" class="flex flex-wrap gap-1 mt-1 max-w-[260px]">
+      <div v-if="selected.length" class="flex flex-wrap gap-1 mt-1 max-w-[16.25rem]">
         <span v-for="player in selected" :key="player.blizz_id + '-' + player.region" class="uppercase font-bold bg-teal rounded px-1 flex items-center gap-1">
           {{ player.battletagShort }} ({{ player.regionName }})
           <button type="button" class="leading-none" @click="remove(player)">x</button>

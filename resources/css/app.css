@@ -8,6 +8,13 @@
 
 html{background-color:lightgrey; font-family: 'Roboto', sans-serif; box-sizing:border-box; }
 
+/* Site scale. Sizes are in rem, so this one value scales text, spacing and layout together.
+   Between 1500px and 2133px the root size follows the window width, so every width in that
+   range shows the 2133px page shrunk to fit (16px * 1500 / 2133 = 11.25px at 1500). */
+@media (min-width: 1024px){ html{ font-size: 70.31%; } }               /* below 1500: held at the 1500px size */
+@media (min-width: 1500px){ html{ font-size: calc(100vw / 2133 * 16); } } /* 1500-2133: scales with the window */
+@media (min-width: 2133px){ html{ font-size: 100%; } }                 /* 2133 and up: 16px */
+
 /* Shared button look. Colour stays on the element (e.g. bg-teal hover:bg-lteal); utilities on the element override this. */
 @layer components {
   .btn{
@@ -16,7 +23,7 @@ html{background-color:lightgrey; font-family: 'Roboto', sans-serif; box-sizing:b
 }
 
 .expandable-dropdown {
-  min-width: 150px;  /* Adjust based on your needs */
+  min-width: 9.375rem;  /* Adjust based on your needs */
   width: auto;
 }
 .dark-mode .expandable-dropdown{
@@ -54,7 +61,7 @@ html{background-color:lightgrey; font-family: 'Roboto', sans-serif; box-sizing:b
   @apply hover:bg-darken hover:text-white;
 }
 body{
-  font-size:18px;
+  font-size:1rem;
   letter-spacing: .14em;
 }
 
@@ -70,7 +77,7 @@ body{
   left: 100%;
   top: 0;
   z-index: 60;
-  min-width: 200px;
+  min-width: 12.5rem;
   padding-left: 2px;
   
 }
@@ -98,14 +105,14 @@ body{
   scrollbar-color: rgba(255, 255, 255, 0.25) theme('colors.surface-4');
 }
 .nav-flyout-scroll::-webkit-scrollbar {
-  width: 6px;
+  width: 0.375rem;
 }
 .nav-flyout-scroll::-webkit-scrollbar-track {
   background: theme('colors.surface-4');
 }
 .nav-flyout-scroll::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.25);
-  border-radius: 3px;
+  border-radius: 0.1875rem;
 }
 @media (max-width: 1024px) {
   .nav-flyout {
@@ -119,7 +126,7 @@ body{
 /* Navigation */
 .nav-dropdown{
   
-  @apply absolute  left-0 hidden  z-50 md:pt-3  min-w-[200px] max-md:relative;
+  @apply absolute  left-0 hidden  z-50 md:pt-3  min-w-[12.5rem] max-md:relative;
   
 }
 .nav-dropdown a{
@@ -130,14 +137,14 @@ body{
 }
 
 .nav-item{
-  padding-top:10px;
-  padding-bottom:10px;
+  padding-top:0.625rem;
+  padding-bottom:0.625rem;
   @apply max-md:w-full text-center;
 }
 .nav-dropdown-inner-wrapper{
   padding-bottom:.1em;
   padding-top:.1em;
-  @apply bg-surface-1 text-sm shadow-[0_0_8px_rgba(0,0,0,0.4)] text-left max-md:flex-wrap;
+  @apply bg-surface-1 text-sm shadow-[0_0_0.5rem_rgba(0,0,0,0.4)] text-left max-md:flex-wrap;
 }
 
 @media (min-width:1024px){
@@ -148,7 +155,7 @@ body{
   }
   /* A flex parent would centre the dropdown over the label. Under it, inside the item's bottom padding. */
   .main-navigation-wrapper .nav-item > .nav-dropdown{
-    top:calc(100% - 10px);
+    top:calc(100% - 0.625rem);
   }
   .nav-dropdown{
       @apply group-hover:block rounded;
@@ -277,7 +284,7 @@ table td{flex:1;}
   table{
   width:auto ;
 
-min-width:1500px;
+min-width:93.75rem;
   }
 }
 
@@ -303,7 +310,7 @@ tr.bg-yellow{
 th{
   @apply text-left text-sm leading-4  tracking-wider py-1 px-3 border-b;
 }
-/* Figma table header: medium-weight 16px over a line, the same in both modes so only the colours change.
+/* Figma table header: medium-weight 1rem over a line, the same in both modes so only the colours change.
    Under the mode class so it beats the text-sm each table puts on its headers */
 .dark-mode th, .light-mode th{
   @apply text-base font-medium;
@@ -601,14 +608,14 @@ thead{border-color:transparent;}
   background: linear-gradient(90deg, #120726 0%, #3a1470 50%, #120726 100%);
   border-bottom: 2px solid #7b3fe4;
 }
-.xalatath-title{ color: #c9a8ff; text-shadow: 0 0 8px #7b3fe4; }
+.xalatath-title{ color: #c9a8ff; text-shadow: 0 0 0.5rem #7b3fe4; }
 .xalatath-progress{ background: linear-gradient(90deg, #5b21b6, #c084fc); }
 
 .void-whisper{
   background: rgba(18, 7, 38, 0.92);
   border: 1px solid #7b3fe4;
   color: #e3d2ff;
-  box-shadow: 0 0 18px rgba(123, 63, 228, 0.6);
+  box-shadow: 0 0 1.125rem rgba(123, 63, 228, 0.6);
 }
 .void-whisper-enter-active{ transition: opacity 0.3s ease; }
 .void-whisper-leave-active{ transition: opacity 0.8s ease; }
@@ -638,7 +645,7 @@ thead{border-color:transparent;}
   color: #1a1a1a;
   font-family: Georgia, 'Times New Roman', serif;
   letter-spacing: normal;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0.625rem 2.5rem rgba(0, 0, 0, 0.6);
 }
 .void-gazette-masthead{
   font-family: 'Old English Text MT', 'UnifrakturMaguntia', Georgia, serif;
@@ -663,7 +670,7 @@ thead{border-color:transparent;}
   column-gap: 2rem;
   column-rule: 1px solid #1a1a1a;
 }
-.xalatath-recap [data-index]{ scroll-margin-top: 90px; }
+.xalatath-recap [data-index]{ scroll-margin-top: 5.625rem; }
 .xalatath-recap summary::-webkit-details-marker{ display: none; }
 .xalatath-mode-bar{
   background: rgba(8, 3, 18, 0.92);
@@ -693,12 +700,12 @@ thead{border-color:transparent;}
 .void-contribution-card{
   background: radial-gradient(circle at 50% 40%, #3a1470 0%, #08030f 85%);
   border: 1px solid #5b21b6;
-  box-shadow: 0 0 30px rgba(91, 33, 182, 0.45);
+  box-shadow: 0 0 1.875rem rgba(91, 33, 182, 0.45);
 }
 .void-palette-mock, .void-palette-mock *{ transition: background-color 0.8s ease, color 0.8s ease, opacity 0.8s ease, box-shadow 0.8s ease; }
 .void-glyph-text{
   color: #d9c2ff;
-  text-shadow: 0 0 6px #7b3fe4, 0 0 14px rgba(123, 63, 228, 0.7);
+  text-shadow: 0 0 0.375rem #7b3fe4, 0 0 0.875rem rgba(123, 63, 228, 0.7);
 }
 .xalatath-recap .recap-heading{
   font-size: 1.5rem;

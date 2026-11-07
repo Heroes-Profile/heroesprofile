@@ -3,7 +3,7 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
     <page-heading :heading="'Streamer Code of Conduct'"></page-heading>
 
-    <div class="mx-auto max-w-[900px] px-4 mt-6 mb-10">
+    <div class="mx-auto max-w-[56.25rem] px-4 mt-6 mb-10">
       <div class="bg-lighten rounded p-6 text-sm space-y-4">
         <p>
           Listing your channel on the Heroes Profile streamer page is optional. If you choose to be

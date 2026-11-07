@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-[1500px] mx-auto">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-[93.75rem] mx-auto">
     <div v-for="column in columns" :key="column.title" class="col-span-1">
       <h2 class="text-2xl">{{ column.title }}</h2>
       <p v-if="column.commits === null" class="text-sm">Couldn't load commits from GitHub. Try again in a few minutes.</p>
@@ -19,7 +19,7 @@
 
 <style scoped>
 .commit-item {
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
 }
 </style>
 

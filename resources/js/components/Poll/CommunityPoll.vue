@@ -3,7 +3,7 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="statusText" -->
     <page-heading :heading="poll.title"></page-heading>
 
-    <div class="max-w-[900px] mx-auto px-4 mt-4 mb-10">
+    <div class="max-w-[56.25rem] mx-auto px-4 mt-4 mb-10">
       <p v-if="poll.description" class="mb-6 whitespace-pre-line">{{ poll.description }}</p>
 
       <p class="mb-3 text-sm italic">{{ poll.allow_multiple ? 'Pick as many as you like.' : 'Pick one.' }}</p>

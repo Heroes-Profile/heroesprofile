@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center gap-4 min-w-0">
-    <div :class="['flex-1 min-w-0 rounded bg-surface-3 overflow-hidden', size === 'big' ? 'h-[30px]' : 'h-4']" aria-hidden="true">
+    <div :class="['flex-1 min-w-0 rounded bg-surface-3 overflow-hidden', size === 'big' ? 'h-[1.875rem]' : 'h-4']" aria-hidden="true">
       <div :class="['h-full', colorClasses[color] || colorClasses.blue]" :style="{ width }"></div>
     </div>
     <span v-if="mainText !== '' || suffix" :class="['shrink-0 font-semibold text-header whitespace-nowrap tabular-nums', { 'text-2xl': size === 'big' }]">

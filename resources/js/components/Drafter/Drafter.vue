@@ -43,7 +43,7 @@
       </div>
     </div>
 
-    <div v-else class="max-w-[1500px] mx-auto px-4 py-6">
+    <div v-else class="max-w-[93.75rem] mx-auto px-4 py-6">
       <div class="flex justify-between mb-4">
         <button v-if="picks.length > 0" @click="undo" :disabled="isLoading" class="btn bg-blue hover:bg-lblue font-bold px-6 disabled:opacity-50">
           <i class="fa-solid fa-reply mr-2"></i>Undo

@@ -1,16 +1,16 @@
 <template>
   <!-- Laid out like the match history's rows, with the two teams where a player's stats go.
        Compact and Expanded share the match history's saved choice. -->
-  <div class="max-w-[1920px] mx-auto px-4 md:px-8 py-4 flex flex-col gap-4">
+  <div class="max-w-[120rem] mx-auto px-4 md:px-8 py-4 flex flex-col gap-4">
     <div v-if="!alwaysExpanded" class="flex justify-end">
       <tab-button :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="expanded ? 'right' : 'left'"></tab-button>
     </div>
 
     <panel-box v-if="expanded">
       <div class="flex justify-between items-center pb-4 mb-4 border-b border-gray-dark font-medium text-subtext max-2xl:hidden">
-        <span class="flex-1 max-w-[410px] pl-6">Match</span>
+        <span class="flex-1 max-w-[25.625rem] pl-6">Match</span>
         <span class="flex-1 px-4 text-center">Teams</span>
-        <span class="w-[362px] shrink-0 px-4">Players</span>
+        <span class="w-[22.625rem] shrink-0 px-4">Players</span>
       </div>
 
       <div v-for="row in data" :key="row.replayID" class="group/replay relative mb-1.5">
@@ -19,7 +19,7 @@
           <!-- The whole row opens the match; the match ID and player links sit on top of it -->
           <a :href="matchUrl(row)" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
 
-          <div class="relative flex-1 md:max-w-[410px] min-w-[300px] self-stretch flex items-center max-md:justify-center pl-6 py-4">
+          <div class="relative flex-1 md:max-w-[25.625rem] min-w-[18.75rem] self-stretch flex items-center max-md:justify-center pl-6 py-4">
             <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="mapArt(row)"></div>
             <div class="absolute inset-y-0 left-0 w-1.5 bg-teal"></div>
             <div class="relative flex flex-col gap-1.5 whitespace-nowrap">
@@ -37,7 +37,7 @@
           <!-- Head to head: each team either side of the series score after this game; this game's winner marked -->
           <div class="relative flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-6 px-4 py-4 min-w-0">
             <div v-for="(team, position) in sidesOf(row)" :key="team" :class="['flex items-center gap-3 min-w-0 row-start-1', position === 0 ? 'flex-row-reverse text-right col-start-1' : 'col-start-3']">
-              <img v-if="teamImage(row, team)" class="w-12 h-12 shrink-0 rounded-full object-contain bg-surface-3 text-[0px]" :src="teamImage(row, team)" :alt="teamName(row, team)"/>
+              <img v-if="teamImage(row, team)" class="w-12 h-12 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="teamImage(row, team)" :alt="teamName(row, team)"/>
               <div :class="['flex flex-col gap-1 min-w-0', position === 0 ? 'items-end' : 'items-start']">
                 <span :class="['text-xl font-semibold leading-tight break-words', row.winner === team ? 'text-white' : 'text-subtext']">{{ teamName(row, team) }}</span>
                 <span v-if="row.winner === team" class="bg-win text-white rounded px-1.5 text-xs font-semibold">Won</span>
@@ -50,17 +50,17 @@
           </div>
 
           <!-- Each team as one party, drawn like the match history's players column -->
-          <div class="relative z-[2] flex gap-2 max-md:justify-center pl-4 2xl:pl-1.5 pr-4 py-4 w-full 2xl:w-[362px] shrink-0">
-            <div v-for="(team, position) in sidesOf(row)" :key="team" class="flex flex-col gap-1.5 w-[150px]">
+          <div class="relative z-[2] flex gap-2 max-md:justify-center pl-4 2xl:pl-1.5 pr-4 py-4 w-full 2xl:w-[22.625rem] shrink-0">
+            <div v-for="(team, position) in sidesOf(row)" :key="team" class="flex flex-col gap-1.5 w-[9.375rem]">
               <div class="flex items-center">
                 <span class="w-4 shrink-0 flex items-center justify-center">
                   <img class="w-4 h-4" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${TEAM_PARTY[position]}.png`" alt=""/>
                 </span>
-                <span class="w-[2px] ml-[3px] self-stretch shrink-0 rounded-l-full" :style="{ backgroundColor: PARTY_COLORS[TEAM_PARTY[position]] }"></span>
+                <span class="w-[2px] ml-[0.1875rem] self-stretch shrink-0 rounded-l-full" :style="{ backgroundColor: PARTY_COLORS[TEAM_PARTY[position]] }"></span>
                 <div class="flex flex-col gap-1.5 flex-1 min-w-0 ml-0.5">
                   <div v-for="(player, playerIndex) in teamPlayers(row, team)" :key="playerIndex" class="flex gap-1 h-4 items-center">
-                    <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover bg-surface-3 text-[0px]" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name" :title="player.hero.name"/>
-                    <a v-if="player.battletag" :href="playerUrl(row, player)" class="group/bt min-w-0 inline-flex items-center text-sm font-medium text-subtext hover:text-lteal"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-[10px] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                    <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover bg-surface-3 text-[0rem]" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name" :title="player.hero.name"/>
+                    <a v-if="player.battletag" :href="playerUrl(row, player)" class="group/bt min-w-0 inline-flex items-center text-sm font-medium text-subtext hover:text-lteal"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-[0.625rem] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                     <span v-else class="min-w-0 truncate text-sm font-medium text-subtext">{{ player.hero ? player.hero.name : '' }}</span>
                   </div>
                 </div>
@@ -76,11 +76,11 @@
       <div class="overflow-x-auto">
         <div class="md:min-w-max w-full">
           <div class="max-md:hidden flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
-            <span class="w-[320px] shrink-0 pl-5">Match</span>
-            <span class="w-[180px] shrink-0 px-4">Game</span>
-            <span class="w-[160px] shrink-0 px-4">{{ leagueName }} Match ID</span>
-            <span class="w-[560px] shrink-0 px-4">Teams</span>
-            <span class="w-[240px] shrink-0 px-4">Series</span>
+            <span class="w-[20rem] shrink-0 pl-5">Match</span>
+            <span class="w-[11.25rem] shrink-0 px-4">Game</span>
+            <span class="w-[10rem] shrink-0 px-4">{{ leagueName }} Match ID</span>
+            <span class="w-[35rem] shrink-0 px-4">Teams</span>
+            <span class="w-[15rem] shrink-0 px-4">Series</span>
           </div>
           <template v-for="(row, index) in data" :key="row.replayID">
             <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="matchUrl(row)" :title="row.game_map ? row.game_map.name : ''" :date="formatRowDate(row.game_date)" :map-art="row.game_map ? row.game_map.sanitized_map_name : null">
@@ -89,7 +89,7 @@
 <div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
             <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
             <a :href="matchUrl(row)" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
-            <div class="relative w-[320px] shrink-0 self-stretch flex items-center pl-5 py-2.5">
+            <div class="relative w-[20rem] shrink-0 self-stretch flex items-center pl-5 py-2.5">
               <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="mapArt(row)"></div>
               <div class="absolute inset-y-0 left-0 w-1.5 bg-teal"></div>
               <div class="relative flex flex-col whitespace-nowrap">
@@ -98,19 +98,19 @@
                 <span v-if="rowContext(row)" class="text-xs text-subtext">{{ rowContext(row) }}</span>
               </div>
             </div>
-            <span class="relative w-[180px] shrink-0 px-4 font-medium text-header">Game {{ row.game }} · Round {{ row.round }}</span>
-            <span class="relative z-[2] w-[160px] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="matchUrl(row)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
-            <div class="relative w-[560px] shrink-0 px-4 flex items-center gap-4">
+            <span class="relative w-[11.25rem] shrink-0 px-4 font-medium text-header">Game {{ row.game }} · Round {{ row.round }}</span>
+            <span class="relative z-[2] w-[10rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="matchUrl(row)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
+            <div class="relative w-[35rem] shrink-0 px-4 flex items-center gap-4">
               <template v-for="(team, position) in sidesOf(row)" :key="team">
                 <span v-if="position === 1" class="text-subtext text-sm">vs</span>
                 <span class="flex items-center gap-2 min-w-0">
-                  <img v-if="teamImage(row, team)" class="w-6 h-6 shrink-0 rounded-full object-contain bg-surface-3 text-[0px]" :src="teamImage(row, team)" :alt="teamName(row, team)"/>
+                  <img v-if="teamImage(row, team)" class="w-6 h-6 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="teamImage(row, team)" :alt="teamName(row, team)"/>
                   <span :class="['truncate font-medium', row.winner === team ? 'text-white' : 'text-subtext']">{{ teamName(row, team) }}</span>
                   <span v-if="row.winner === team" class="bg-win text-white rounded px-1 text-xs font-semibold">Won</span>
                 </span>
               </template>
             </div>
-            <span class="relative w-[240px] shrink-0 px-4 text-sm tabular-nums">{{ seriesScore(row, sidesOf(row)[0]) }} – {{ seriesScore(row, sidesOf(row)[1]) }} <span class="text-subtext">after game {{ row.game }}</span></span>
+            <span class="relative w-[15rem] shrink-0 px-4 text-sm tabular-nums">{{ seriesScore(row, sidesOf(row)[0]) }} – {{ seriesScore(row, sidesOf(row)[1]) }} <span class="text-subtext">after game {{ row.game }}</span></span>
           </div>
 </template>
         </div>

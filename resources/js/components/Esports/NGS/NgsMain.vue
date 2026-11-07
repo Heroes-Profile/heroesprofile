@@ -19,29 +19,29 @@
       </div>
 
 
-    <div class="bg-surface rounded max-w-[1500px] mx-4 md:mx-auto" v-if="!activeButton">
-      <div class="flex mx-auto max-w-[1500px]  md:p-20 flex-wrap justify-center max-md:pt-4 gap-10">
+    <div class="bg-surface rounded max-w-[93.75rem] mx-4 md:mx-auto" v-if="!activeButton">
+      <div class="flex mx-auto max-w-[93.75rem]  md:p-20 flex-wrap justify-center max-md:pt-4 gap-10">
         
         <div class="text-center md:w-[15em] mb-15  max-md:mb-10 ">
-          <i class="fas fa-list-ol text-[50px] md:text-[100px]" ></i>
+          <i class="fas fa-list-ol text-[3.125rem] md:text-[6.25rem]" ></i>
           
           <custom-button @click="setButtonActive('standings')" :text="'Standings'" :size="'big'" class="mt-10 max-md:text-xs" :active="standingsClicked" :ignoreclick="true"></custom-button>
         </div>
 
         <div class="text-center md:w-[15em] mb-15   max-md:mb-10">
-          <i class="fas fa-boxes text-[50px] md:text-[100px] " ></i>
+          <i class="fas fa-boxes text-[3.125rem] md:text-[6.25rem] " ></i>
           
           <custom-button @click="setButtonActive('divisions')" :text="'Divisions'" :size="'big'" class="mt-10 max-md:text-xs" :active="divisionsClicked" :ignoreclick="true"></custom-button>
         </div>
 
         <div class="text-center md:w-[15em] mb-15  max-md:mb-10">
-          <i class="fas fa-users text-[50px] md:text-[100px]" ></i>
+          <i class="fas fa-users text-[3.125rem] md:text-[6.25rem]" ></i>
           
           <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="mt-10 max-md:text-xs" :active="teamsClicked" :ignoreclick="true"></custom-button>
         </div>
 
         <div class="text-center md:w-[15em] mb-15 max-md:mb-10">
-          <i class="fas fa-address-card text-[50px] md:text-[100px]" ></i>
+          <i class="fas fa-address-card text-[3.125rem] md:text-[6.25rem]" ></i>
           
           <custom-button @click="setButtonActive('playerSearch')" :text="'Player Search'" :size="'big'" class="mt-10 max-md:text-xs" :active="playerSearchClicked" :ignoreclick="true"></custom-button>
         </div>
@@ -50,19 +50,19 @@
 
 
         <div class="text-center md:w-[15em] mb-15  max-md:mb-10">
-          <i class="fas fa-list text-[50px] md:text-[100px]" ></i>
+          <i class="fas fa-list text-[3.125rem] md:text-[6.25rem]" ></i>
           
           <custom-button @click="setButtonActive('recentMatches')" :text="'Recent Matches'" :size="'big'" class="mt-10 max-md:text-xs" :active="recentMatchesClicked" :ignoreclick="true"></custom-button>
         </div>
         
           <div class="text-center md:w-[15em] mb-15  max-md:mb-10">
-          <i class="fa-solid fa-chart-bar text-[50px] md:text-[100px]" ></i>
+          <i class="fa-solid fa-chart-bar text-[3.125rem] md:text-[6.25rem]" ></i>
           
           <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="mt-10 max-md:text-xs" :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
         </div>
 
         <div class="text-center md:w-[15em] mb-15  max-md:mb-10">
-          <i class="fas fa-chart-line text-[50px] md:text-[100px]" ></i>
+          <i class="fas fa-chart-line text-[3.125rem] md:text-[6.25rem]" ></i>
          
           <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="mt-10 max-md:text-xs" :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
         </div>
@@ -129,7 +129,7 @@
       </div>
 
       <div v-if="activeButton === 'playerSearch'">
-        <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
+        <div class="flex flex-wrap gap-2 max-w-[93.75rem] justify-center mx-auto items-center mb-10">
           <input type="text" class="form-control search-input mr-3" :placeholder="'Search for NGS player'" :aria-label="'Search for NGS player'" v-model="userinput" @keyup.enter="filter()">
           <custom-button @click="filter()" :text="'Search'" :size="'medium'" class="bg-teal ml-10 hover:bg-lteal" :ignoreclick="true"></custom-button>
 
@@ -157,12 +157,12 @@
         </filters>
 
         <div v-if="recentMatchesData">
-          <div v-if="recentMatchesData.pagination.last_page > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 flex justify-end">
+          <div v-if="recentMatchesData.pagination.last_page > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 flex justify-end">
             <pagination-bar :current="recentMatchesData.pagination.current_page" :last="recentMatchesData.pagination.last_page" @page="getRecentMatches"></pagination-bar>
           </div>
          
           <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'NGS'"></esports-recent-matches>
-          <div v-if="recentMatchesData.pagination.last_page > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 flex justify-end">
+          <div v-if="recentMatchesData.pagination.last_page > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 flex justify-end">
             <pagination-bar :current="recentMatchesData.pagination.current_page" :last="recentMatchesData.pagination.last_page" @page="getRecentMatches"></pagination-bar>
           </div>
         </div>
@@ -223,7 +223,7 @@
     </div>
     <!-- Player Search shows its own scanning table instead -->
     <div v-if="isLoading && activeButton !== 'playerSearch'">
-      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
         <loading-component :compact="true" :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component>
         <!-- Standings: a block per division, its title bar over a rank / team / five-number table -->
         <template v-if="activeButton === 'standings'">
@@ -237,7 +237,7 @@
         <!-- Recent Matches: expanded rows with the map, the two teams and each team's heroes -->
         <panel-box v-else-if="activeButton === 'recentMatches'">
           <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
-            <div class="flex flex-col gap-2 w-[300px] shrink-0">
+            <div class="flex flex-col gap-2 w-[18.75rem] shrink-0">
               <skeleton-box class="h-4 w-40"></skeleton-box>
               <skeleton-box class="h-4 w-32"></skeleton-box>
               <skeleton-box class="h-3 w-36"></skeleton-box>
@@ -257,8 +257,8 @@
                 <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
               </div>
             </div>
-            <div class="flex gap-2 w-[340px] max-w-full shrink-0">
-              <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[150px]">
+            <div class="flex gap-2 w-[21.25rem] max-w-full shrink-0">
+              <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[9.375rem]">
                 <div v-for="player in 5" :key="player" class="flex items-center gap-1">
                   <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
                   <skeleton-box class="h-3 w-24"></skeleton-box>
@@ -268,7 +268,7 @@
           </div>
         </panel-box>
         <!-- Overall Hero Stats: hero with name, then win rate, popularity, ban rate and games -->
-        <div v-else-if="activeButton === 'overallHeroStats'" class="max-w-[1000px] w-full mx-auto">
+        <div v-else-if="activeButton === 'overallHeroStats'" class="max-w-[62.5rem] w-full mx-auto">
           <table-skeleton :bare="true" :rows="12" :columns="['avatar', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
         </div>
         <!-- Overall Talent Stats: a block per talent level, then the builds table -->
@@ -277,7 +277,7 @@
             <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-20"></skeleton-box></div>
             <table-skeleton :bare="true" :rows="3" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
           </div>
-          <div class="w-full max-w-[800px] bg-surface overflow-hidden">
+          <div class="w-full max-w-[50rem] bg-surface overflow-hidden">
             <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-16"></skeleton-box></div>
             <table-skeleton :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
           </div>
@@ -285,7 +285,7 @@
         <!-- Teams: the name filter over a wrapping grid of round team logos -->
         <div v-else-if="activeButton === 'teams'" class="flex flex-col items-center gap-6">
           <skeleton-box class="h-10 w-72 max-w-full"></skeleton-box>
-          <div class="max-w-[1500px] w-full flex flex-wrap justify-center gap-4">
+          <div class="max-w-[93.75rem] w-full flex flex-wrap justify-center gap-4">
             <skeleton-box v-for="team in 45" :key="team" class="w-20 h-20 !rounded-full"></skeleton-box>
           </div>
         </div>

@@ -13,7 +13,7 @@
       This chart is the average number of orders given in each game minute, over the games still running at that minute. An order is anything with an ability attached: ability key presses, attack, stop, mount and hearth. Plain move clicks and other mouse movement are not counted. Late minutes come from only a few long games, so they jump around more.
     </analytics-heading>
     <multi-series-chart
-      class="max-w-[1200px] mx-auto mb-8"
+      class="max-w-[75rem] mx-auto mb-8"
       :labels="minuteLabels"
       :yLabel="'Orders per minute'"
       :series="apmSeries"
@@ -23,7 +23,7 @@
       Average game time when the talent for each tier was chosen. That's when you clicked the talent, which can be later than when your team reached the level. Choose a hero in the filters to compare like for like.
     </analytics-heading>
     <multi-series-chart
-      class="max-w-[1200px] mx-auto mb-8"
+      class="max-w-[75rem] mx-auto mb-8"
       type="bar"
       format="mmss"
       :labels="tierLabels"
@@ -35,7 +35,7 @@
       Presses count every time you pressed an ability's key or gave that order. Casts estimate how many times you actually used it: a press within 2 seconds of the previous press is the same cast, and for single-charge abilities with a known cooldown, a press before 60% of the base cooldown has passed isn't a new cast. Attack shows the difference best: you give hundreds of attack orders a game, but casts roughly count separate bursts of attacking, since the auto-attacks themselves aren't in replays. Per game figures average over all your games on that hero, including games where you never pressed it.
     </analytics-heading>
     <p v-if="!abilityHeroes.length" class="text-center text-gray-light">No ability data for these filters yet.</p>
-    <div v-for="hero in abilityHeroes" :key="hero.id" class="max-w-[1200px] mx-auto mb-6">
+    <div v-for="hero in abilityHeroes" :key="hero.id" class="max-w-[75rem] mx-auto mb-6">
       <h3 class="text-lg font-bold">{{ heroName(hero.id) }} <span class="text-sm text-gray-light">({{ hero.games }} games)</span></h3>
       <p v-if="hero.takeaway" class="text-base mb-2">{{ hero.takeaway }}</p>
       <multi-series-chart type="bar" :horizontal="true" :labels="hero.chart.labels" :series="hero.chart.series"></multi-series-chart>

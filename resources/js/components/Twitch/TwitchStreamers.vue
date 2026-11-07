@@ -3,7 +3,7 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
     <page-heading :heading="'Streamers on Twitch'"></page-heading>
 
-    <div class="mx-auto max-w-[1200px] px-4 mt-6">
+    <div class="mx-auto max-w-[75rem] px-4 mt-6">
       <div class="bg-lighten border-l-4 border-yellow rounded p-3 mb-6 text-sm">
         <strong>Beta:</strong> the Heroes Profile Twitch extension is still in testing and you may encounter
         issues. Report problems at <a href="/Contact" class="link">heroesprofile.com/Contact</a> or zemill@heroesprofile.com.
@@ -67,7 +67,7 @@
             <img
               src="/images/twitch/extension-open.webp"
               alt="The Heroes Profile Live panel open over a stream, showing both teams with heroes, talents and win rates"
-              class="rounded border border-lighten w-full max-w-[700px]"
+              class="rounded border border-lighten w-full max-w-[43.75rem]"
               loading="lazy"
             />
             <figcaption class="text-xs text-gray-medium mt-1">

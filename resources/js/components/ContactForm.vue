@@ -3,7 +3,7 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
     <page-heading heading="Contact"></page-heading>
 
-    <div class="max-w-[1000px] mx-auto px-4 mt-6 flex flex-col gap-4">
+    <div class="max-w-[62.5rem] mx-auto px-4 mt-6 flex flex-col gap-4">
       <panel-box>
       <!-- Contact form -->
       <form @submit.prevent="submitForm" class="flex flex-col gap-2">
@@ -17,7 +17,7 @@
         <textarea class="w-full bg-field text-white rounded-control px-3 py-2 text-sm min-h-[10em]" id="message" v-model="formData.message" required></textarea>
 
         <!-- Honeypot field - hidden from users but visible to bots -->
-        <input type="text" name="website" v-model="formData.website" style="display: none !important; visibility: hidden !important; position: absolute !important; left: -9999px !important;" tabindex="-1" autocomplete="off">
+        <input type="text" name="website" v-model="formData.website" style="display: none !important; visibility: hidden !important; position: absolute !important; left: -624.9375rem !important;" tabindex="-1" autocomplete="off">
 
         <button :disabled="isLoading" type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto mt-2">Submit</button>
       </form>

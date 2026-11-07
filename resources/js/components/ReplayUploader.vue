@@ -5,7 +5,7 @@
       heading="Upload Replays"
     ></page-heading>
 
-    <div class="mx-auto max-w-[1300px] px-4 mt-6 grid gap-6 md:grid-cols-2 items-start">
+    <div class="mx-auto max-w-[81.25rem] px-4 mt-6 grid gap-6 md:grid-cols-2 items-start">
 
       <div class="bg-lighten p-6">
         <h2 class="text-2xl mb-4">Replay Uploader</h2>

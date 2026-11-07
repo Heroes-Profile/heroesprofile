@@ -3,7 +3,7 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
     <page-heading :heading="'Auto Battler'"></page-heading>
 
-    <div class="max-w-[1500px] mx-auto px-4 py-6">
+    <div class="max-w-[93.75rem] mx-auto px-4 py-6">
       <auto-battler-setup-guide></auto-battler-setup-guide>
 
       <div class="flex justify-center items-center gap-4 mt-6 min-h-[3rem]">

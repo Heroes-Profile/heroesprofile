@@ -9,7 +9,7 @@
     </div>
 
     <!-- Same place and size as the Talent Builder's layout toggle -->
-    <div v-else class="flex justify-end max-w-[1500px] mx-auto mb-2">
+    <div v-else class="flex justify-end max-w-[93.75rem] mx-auto mb-2">
       <span class="flex items-center gap-4">
         <tab-button :tab1text="'Table'" :tab2text="'Compact'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="compact ? 'right' : 'left'"></tab-button>
       </span>

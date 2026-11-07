@@ -1,6 +1,6 @@
 <template>
   <panel-box v-if="loading" title="Storm League Rank" :loading="true">
-    <skeleton-box class="h-[360px]"></skeleton-box>
+    <skeleton-box class="h-[22.5rem]"></skeleton-box>
   </panel-box>
   <panel-box v-else-if="data" title="Storm League Rank">
     <template #title>
@@ -28,7 +28,7 @@
         <tab-button tab1text="7 days" tab2text="30 days" :ignoreclick="true" @tab-click="setRange"></tab-button>
       </div>
 
-      <div v-if="rankedPeriods.length" class="relative h-[260px]">
+      <div v-if="rankedPeriods.length" class="relative h-[16.25rem]">
         <canvas ref="chart"></canvas>
       </div>
       <div v-else class="text-subtext">Only an unranked badge has been read this season.</div>

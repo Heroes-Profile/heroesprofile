@@ -26,7 +26,7 @@
   </filters>
   <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
-  <div v-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+  <div v-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
     <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
     <loading-component v-else :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
     <table-skeleton></table-skeleton>
@@ -70,7 +70,7 @@
       </div>
     </div>
 
-    <div class="flex justify-between max-w-[1920px] mx-auto px-4 md:px-8 mb-2 max-md:flex-wrap max-md:gap-2">
+    <div class="flex justify-between max-w-[120rem] mx-auto px-4 md:px-8 mb-2 max-md:flex-wrap max-md:gap-2">
       <div class="flex">
         <div v-if="showTalentHeroToggle" class="text-center flex items-center justify-stretch gap-2 mx-2">
           Talents:    
@@ -86,7 +86,7 @@
     </div>
 
     <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
-    <div class="max-w-[1920px] mx-auto px-4 md:px-8">
+    <div class="max-w-[120rem] mx-auto px-4 md:px-8">
       <panel-box v-if="talentdetaildata">
         <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="null"></global-talent-details-section>
       </panel-box>

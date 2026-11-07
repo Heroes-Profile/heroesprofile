@@ -25,10 +25,10 @@
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="partydata" class="max-w-[1500px] mx-auto">
+    <div v-if="partydata" class="max-w-[93.75rem] mx-auto">
       <party-stats-display :partydata="partydata" teamlabel="Your Team"></party-stats-display>
     </div>
-    <div v-else-if="isLoading || asyncLoading" class="max-w-[1500px] mx-auto px-4 flex flex-col gap-6">
+    <div v-else-if="isLoading || asyncLoading" class="max-w-[93.75rem] mx-auto px-4 flex flex-col gap-6">
       <loading-component v-if="asyncLoading" :compact="true" :textoverride="true">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
       <loading-component v-else :compact="true" :textoverride="true">Loading party stats...</loading-component>
       <party-stats-skeleton></party-stats-skeleton>

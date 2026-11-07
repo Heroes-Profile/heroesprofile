@@ -31,9 +31,9 @@
     <p v-if="data === ''" class="text-center text-subtext mt-10">No data for this player and filters</p>
     <div v-else-if="data">
 
-      <line-chart class="max-w-[1500px] mx-auto px-4" :data="reversedData" :dataAttribute="'mmr'" :title="`${battletag} HP MMR Graph for ${gametype}`" :tooltip-label="`HP ${gameTypeName} MMR`"></line-chart>
+      <line-chart class="max-w-[93.75rem] mx-auto px-4" :data="reversedData" :dataAttribute="'mmr'" :title="`${battletag} HP MMR Graph for ${gametype}`" :tooltip-label="`HP ${gameTypeName} MMR`"></line-chart>
 
-      <div class="max-w-[1500px] mx-auto mt-2 px-4">
+      <div class="max-w-[93.75rem] mx-auto mt-2 px-4">
         {{ this.gametype.toUpperCase() }} - League Tier Breakdowns | HP Player MMR: {{ data[0].mmr }}
       </div>
 
@@ -67,22 +67,22 @@
         </tbody>
       </table>
       <!-- All rows are already loaded; the bar only picks which 100 to show -->
-      <div v-if="lastPage > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 mt-6 flex justify-end">
+      <div v-if="lastPage > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 flex justify-end">
         <pagination-bar :current="currentPage" :last="lastPage" @page="goToPage"></pagination-bar>
       </div>
       <!-- Styled like the match history's compact rows -->
-      <div ref="tablecontainer" class="max-w-[1920px] mx-auto px-4 md:px-8 py-4">
+      <div ref="tablecontainer" class="max-w-[120rem] mx-auto px-4 md:px-8 py-4">
         <panel-box>
           <!-- Wide rows scroll sideways on narrow screens -->
           <div class="overflow-x-auto">
             <div class="md:min-w-max w-full">
               <div class="max-md:hidden flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
-                <span class="w-[340px] shrink-0 pl-5 cursor-pointer" @click="sortTable('game_date')">Match<sort-indicator column="game_date" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                <span class="w-[140px] shrink-0 px-4 cursor-pointer" @click="sortTable('replayID')">Game ID<sort-indicator column="replayID" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                <span class="w-[260px] shrink-0 px-4 cursor-pointer" @click="sortTable('mmr_date_parsed')">HP MMR Date Parsed<sort-indicator column="mmr_date_parsed" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                <span class="w-[140px] shrink-0 px-4 text-center cursor-pointer" @click="sortTable('mmr')">HP MMR<sort-indicator column="mmr" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                <span class="w-[180px] shrink-0 px-4 text-center cursor-pointer" @click="sortTable('mmr_change')">HP MMR Change<sort-indicator column="mmr_change" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                <span class="w-[120px] shrink-0 px-4 text-center cursor-pointer" @click="sortTable('winner')">Result<sort-indicator column="winner" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[21.25rem] shrink-0 pl-5 cursor-pointer" @click="sortTable('game_date')">Match<sort-indicator column="game_date" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[8.75rem] shrink-0 px-4 cursor-pointer" @click="sortTable('replayID')">Game ID<sort-indicator column="replayID" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[16.25rem] shrink-0 px-4 cursor-pointer" @click="sortTable('mmr_date_parsed')">HP MMR Date Parsed<sort-indicator column="mmr_date_parsed" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[8.75rem] shrink-0 px-4 text-center cursor-pointer" @click="sortTable('mmr')">HP MMR<sort-indicator column="mmr" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[11.25rem] shrink-0 px-4 text-center cursor-pointer" @click="sortTable('mmr_change')">HP MMR Change<sort-indicator column="mmr_change" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[7.5rem] shrink-0 px-4 text-center cursor-pointer" @click="sortTable('winner')">Result<sort-indicator column="winner" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
               </div>
               <template v-for="(row, index) in pagedData" :key="row.replayID">
                 <div v-if="!patreonUser && index != 0 && index % 50 === 0" class="my-2">
@@ -94,7 +94,7 @@
                 <div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
                   <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
                   <a :href="'/Match/Single/' + row.replayID" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
-                  <div class="relative w-[340px] shrink-0 self-stretch flex items-center pl-5 py-2.5">
+                  <div class="relative w-[21.25rem] shrink-0 self-stretch flex items-center pl-5 py-2.5">
                     <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="row.winner === 'True' ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
                     <div class="absolute inset-y-0 left-0 w-1.5" :class="row.winner === 'True' ? 'bg-win' : 'bg-red'"></div>
                     <div class="relative flex items-center gap-4">
@@ -105,10 +105,10 @@
                       </div>
                     </div>
                   </div>
-                  <span class="relative z-[2] w-[140px] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="'/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
-                  <span class="relative w-[260px] shrink-0 px-4 text-sm text-subtext whitespace-nowrap">{{ formatRowDate(row.mmr_date_parsed) }}</span>
-                  <span class="relative w-[140px] shrink-0 px-4 text-center text-2xl font-semibold">{{ row.mmr.toLocaleString('en-US') }}</span>
-                  <div class="relative z-[2] w-[180px] shrink-0 px-4 flex items-center justify-center gap-2">
+                  <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="'/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
+                  <span class="relative w-[16.25rem] shrink-0 px-4 text-sm text-subtext whitespace-nowrap">{{ formatRowDate(row.mmr_date_parsed) }}</span>
+                  <span class="relative w-[8.75rem] shrink-0 px-4 text-center text-2xl font-semibold">{{ row.mmr.toLocaleString('en-US') }}</span>
+                  <div class="relative z-[2] w-[11.25rem] shrink-0 px-4 flex items-center justify-center gap-2">
                     <span class="font-medium" :class="row.mmr_change >= 0 ? 'text-win' : 'text-red'">{{ row.mmr_change > 0 ? '+' : '' }}{{ row.mmr_change.toFixed(2) }}</span>
                     <!-- Down after a win or up after a loss: the FAQ explains why -->
                     <round-image v-if="isUnexpectedChange(row)" class="text-xs" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
@@ -116,19 +116,19 @@
                       <a href="/FAQ#mmr-change-direction" class="group/bt inline-flex items-center mt-2 font-normal"><span class="group-hover/bt:underline">Read more in the FAQ</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
                     </round-image>
                   </div>
-                  <span class="relative w-[120px] shrink-0 px-4 text-center font-medium" :class="row.winner === 'True' ? 'text-win' : 'text-red'">{{ row.winner === 'True' ? 'Win' : 'Loss' }}</span>
+                  <span class="relative w-[7.5rem] shrink-0 px-4 text-center font-medium" :class="row.winner === 'True' ? 'text-win' : 'text-red'">{{ row.winner === 'True' ? 'Win' : 'Loss' }}</span>
                 </div>
               </template>
             </div>
           </div>
         </panel-box>
       </div>
-      <div v-if="lastPage > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 pb-4 flex justify-end">
+      <div v-if="lastPage > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 pb-4 flex justify-end">
         <pagination-bar :current="currentPage" :last="lastPage" @page="goToPage($event, true)"></pagination-bar>
       </div>
     </div>
     <!-- The graph, tier line, league table and match table in grey while it loads -->
-    <div v-else-if="isLoading" class="max-w-[1500px] mx-auto px-4 flex flex-col gap-6">
+    <div v-else-if="isLoading" class="max-w-[93.75rem] mx-auto px-4 flex flex-col gap-6">
       <loading-component :compact="true" :textoverride="true">Loading HP MMR...</loading-component>
       <skeleton-box class="w-full aspect-[2/1]"></skeleton-box>
       <skeleton-box class="h-5 w-96 max-w-full"></skeleton-box>

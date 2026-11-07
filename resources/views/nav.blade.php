@@ -1,11 +1,11 @@
 <div id="mobile-header" class="md:hidden max-md:bg-surface-1 max-md:fixed max-md:z-40 max-md:w-full">
     <div class="relative flex p-2 px-4 justify-center">
-<a id="mobile-logo" class=" flex items-center font-logo text-lg sm:text-2xl md:hidden" href="/">
+<a id="mobile-logo" class="flex shrink-0 items-center whitespace-nowrap font-logo text-lg sm:text-2xl md:hidden" href="/">
                 Heroes
-                <img class="w-8 sm:w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
+                <img class="w-8 sm:w-10 shrink-0 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
                 Profile
         </a>
-        <button  id="mobile-toggle" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 bg-blue rounded px-3 min-w-[44px] min-h-[40px] text-xl" aria-label="Open menu">=</button>
+        <button  id="mobile-toggle" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 bg-blue rounded px-3 min-w-[2.75rem] min-h-[2.5rem] text-xl" aria-label="Open menu">=</button>
          
         
     </div>
@@ -13,13 +13,13 @@
 
 <div id="main-menu" class="  main-navigation-wrapper"> <!-- max-md:hidden  - This needs to hide/show on click of the button but only on mobile - either detect mobile with vue, or have a class that is added/taken away that only applies to mobile -->
     <nav id="main-nav" class="bg-surface-1 text-white z-50 relative md:px-8 md:py-3 text-sm max-md:pt-2">
-      <button  id="mobile-nav-close" class="hidden bg-blue rounded px-3 py-1 min-w-[44px] min-h-[40px] text-lg ml-auto  mr-2" aria-label="Close menu">x</button>
+      <button  id="mobile-nav-close" class="hidden bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg ml-auto  mr-2" aria-label="Close menu">x</button>
        
-        <div class="flex items-start justify-center flex-wrap  mx-auto max-md:flex-col max-md:items-stretch max-w-[1920px]" >
+        <div class="flex items-start justify-center flex-wrap  mx-auto max-md:flex-col max-md:items-stretch max-w-[120rem]" >
              <div class="flex justify-start items-start flex-wrap max-md:flex-col max-md:items-stretch grow mr-auto max-md:mr-0 max-md:w-full max-md:justify-center">
-            <a id="nav-logo" class=" flex items-center font-logo text-2xl md:mt-[6px] max-md:self-center max-md:mb-2" href="/">
+            <a id="nav-logo" class="flex shrink-0 items-center whitespace-nowrap font-logo text-2xl md:mt-[0.375rem] max-md:self-center max-md:mb-2" href="/">
                 Heroes
-                <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
+                <img class="w-10 shrink-0 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
                 Profile
             </a>
             <div id="nav-content" class="ml-auto flex justify-between flex-wrap  text-sm md:flex-1 md:ml-8 max-md:flex-col max-md:ml-0 max-md:w-full">
@@ -241,7 +241,7 @@
                                 alt="Settings">
                             </div>
                             <div class="md:absolute right-0 md:hidden md:group-hover:block z-50  ">
-                                <div class="md:bg-surface-1 rounded-b rounded-tl text-sm md:shadow-[0_0_10px_rgba(0,0,0,0.4)] max-md:flex">
+                                <div class="md:bg-surface-1 rounded-b rounded-tl text-sm md:shadow-[0_0_0.625rem_rgba(0,0,0,0.4)] max-md:flex">
                                   
                                 <span class="block px-4 py-2 border-b border-darken bg-gray-dark">
                                 {{ $mainSearchAccount['battletag_full'] }}
@@ -266,7 +266,7 @@
     </nav>
     
 </div>
-<nav id="alt-account-nav" class="relative flex justify-end items-center md:gap-4 w-full max-w-[1920px] mx-auto md:px-8 md:py-4 alt-acct-nav max-md:flex-wrap">
+<nav id="alt-account-nav" class="relative flex justify-end items-center md:gap-4 w-full max-w-[120rem] mx-auto md:px-8 md:py-4 alt-acct-nav max-md:flex-wrap">
   {{-- League row colours, from each league's logo --}}
   @php($esportRowColours = ['NGS' => 'bg-[#f26b30]', 'CCL' => 'bg-gradient-to-r from-[#d42a0e] via-[#f07c12] to-[#f7c51e]', 'MastersClash' => 'bg-[#5a5ad6]', 'hi' => 'bg-[#6b6b6b]', 'hi_nc' => 'bg-[#6b6b6b]', 'Other' => 'bg-lblue'])
   {{-- Other series, each from its own logo; any series not listed keeps Other's colour --}}
@@ -278,9 +278,9 @@
       @php($esportQuery = $esportNav['query'])
       <div id="alt-account-{{ $index }}" class="relative group inline-block text-sm">
         <a data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="mobile-secondary-nav-open btn md:bg-teal md:hover:bg-lteal inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="max-md:hidden h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></a>
-        <div data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[200px] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
+        <div data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[12.5rem] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
             <div class="nav-dropdown-inner-wrapper">
-              <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal"><span class="inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></span> <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[44px] min-h-[40px] text-lg" aria-label="Close menu">x</button></div>
+              <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal"><span class="inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></span> <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg" aria-label="Close menu">x</button></div>
               <!-- The league's own pages, where a player's menu has Analytics -->
               <div class="nav-flyout-wrapper">
                 <a href="{{ $esportNav['main'] }}" class="flex justify-between items-center {{ $esportNav['key'] === 'Other' ? ($esportSeriesColours[$esportNav['name']] ?? $esportRowColours['Other']) : $esportRowColours[$esportNav['key']] }} font-bold"><span class="whitespace-nowrap"><img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="inline-block align-middle h-[1.1em] w-auto {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}">@if($esportNav['label'])<span class="ml-2 inline-block max-w-[9rem] max-md:max-w-none truncate align-middle" title="{{ $esportNav['name'] }}">{{ $esportNav['name'] }}</span>@endif</span> <span class="nav-flyout-arrow ml-4">›</span></a>
@@ -346,9 +346,9 @@
     @elseif($account)
       <div id="alt-account-{{ $index }}" class="relative group inline-block text-sm">
         <a data-battletag="{{ $account['battletag'] }}" class="mobile-secondary-nav-open btn md:bg-teal md:hover:bg-lteal ">{{ $account['battletag'] }}@if(isset($regions[$account['region']]))<span class="text-[0.7em] ml-2">{{ $regions[$account['region']] }}</span>@endif</a>
-        <div data-battletag="{{ $account['battletag'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[200px] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
+        <div data-battletag="{{ $account['battletag'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[12.5rem] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
             <div class="nav-dropdown-inner-wrapper">
-              <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal">{{ $account['battletag'] }}@if(isset($regions[$account['region']])) ({{ $regions[$account['region']] }})@endif <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[44px] min-h-[40px] text-lg" aria-label="Close menu">x</button></div>
+              <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal">{{ $account['battletag'] }}@if(isset($regions[$account['region']])) ({{ $regions[$account['region']] }})@endif <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg" aria-label="Close menu">x</button></div>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" >Profile</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" >Friends and Foes</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Party" >Party</a>

@@ -47,7 +47,7 @@
       <hero-selection :heroes="heroes" @search="heroSearchQuery = $event"></hero-selection>
 
       <!-- The player's most played build per hero, like the list on /Global/Talents -->
-      <div class="max-w-[1500px] mx-auto md:px-4 mt-8 w-full flex flex-col gap-4">
+      <div class="max-w-[93.75rem] mx-auto md:px-4 mt-8 w-full flex flex-col gap-4">
         <div class="flex flex-wrap items-center justify-between gap-4 max-md:justify-center max-md:text-center">
           <h2 class="heading">{{ esport ? 'Most Played Builds Per Hero' : 'Most Played Builds Per Hero and Game Type' }}</h2>
           <tab-button :key="esport ? 'ngs-' + ngsRangeSide : 'range'" :tab1text="'All Time'" :tab2text="'Current Season'" :ignoreclick="true" @tab-click="setBuildsRange" :overridedefaultside="esport ? ngsRangeSide : (buildsCurrentSeason ? 'right' : 'left')"></tab-button>
@@ -68,14 +68,14 @@
         <global-talent-details-section :talentdetaildata="talentdetaildata" :esport="esport ? 'true' : undefined" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
       </div>
       <!-- The talent tables' layout with grey blocks while they load, like Overall Talent Stats on the NGS page -->
-      <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
         <loading-component :compact="true" :overrideimage="league?.loaderImage"></loading-component>
         <div class="container mx-auto md:px-4 flex flex-col items-center">
           <div v-for="level in 7" :key="level" class="w-full bg-surface overflow-hidden">
             <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-20"></skeleton-box></div>
             <table-skeleton :bare="true" :rows="3" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
           </div>
-          <div class="w-full max-w-[800px] bg-surface overflow-hidden mt-6">
+          <div class="w-full max-w-[50rem] bg-surface overflow-hidden mt-6">
             <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-16"></skeleton-box></div>
             <table-skeleton :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
           </div>

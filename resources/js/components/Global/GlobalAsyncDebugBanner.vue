@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="showDebugBanner"
-    class="max-w-[1500px] mx-auto mb-4 p-3 rounded border border-yellow-600 bg-yellow-900/40 text-yellow-100 text-xs font-mono whitespace-pre-wrap"
+    class="max-w-[93.75rem] mx-auto mb-4 p-3 rounded border border-yellow-600 bg-yellow-900/40 text-yellow-100 text-xs font-mono whitespace-pre-wrap"
   >
     <div class="font-bold text-yellow-300 mb-1">{{ pageLabel }} async debug (develop only)</div>
     <div v-if="serverDebugConfig">Server: {{ serverDebugSummary }}</div>

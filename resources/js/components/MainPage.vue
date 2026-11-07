@@ -17,10 +17,10 @@
     </div>
 
 
-    <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[1920px] mx-auto px-4 md:px-8 pb-8 mt-20">
-      <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[1920px]">
+    <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem] mx-auto px-4 md:px-8 pb-8 mt-20">
+      <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem]">
       <div :class="cardClasses">
-        <i class="fa-solid fa-globe text-[80px]"></i>
+        <i class="fa-solid fa-globe text-[5rem]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Global Stats</h3>
         <p class="text-sm text-left mb-8">Variety of Heroes of the Storm stats, including global stats for heroes, talent stats, overall stats, builds, compositions, draft, matchups, and more.</p>
         <div class="flex gap-4 mt-auto">
@@ -30,7 +30,7 @@
       </div>
 
       <div :class="cardClasses">
-        <i class="fas fa-address-card text-[80px]"></i>
+        <i class="fas fa-address-card text-[5rem]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Player Profiles</h3>
         <p class="text-sm text-left mb-8">See all player stats in one place.  See data for individual maps or heroes played, match history, real in-game Storm League rank and comparisons all from within a streamlined profile.</p>
         <div class="flex mt-auto">
@@ -39,7 +39,7 @@
       </div>
 
       <div :class="cardClasses">
-        <i class="fas fa-chart-line text-[80px]"></i>
+        <i class="fas fa-chart-line text-[5rem]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Player Analytics</h3>
         <p class="text-sm text-left mb-8">Deep analysis of your season replays: where and how you die, time spent, performance ahead or behind, habit coaching, and a replay viewer for every game. Pre-alpha for Patreon supporters.</p>
         <div class="flex mt-auto">
@@ -48,9 +48,9 @@
         </div>
       </div>
 </div>
-<div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[1920px]">
+<div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem]">
       <div :class="cardClasses">
-        <i class="fas fa-list-ol text-[80px]"></i>
+        <i class="fas fa-list-ol text-[5rem]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Leaderboards</h3>
         <p class="text-sm text-left mb-8">View leaderboards based on Player, Hero, or Role using Heroes Profile Rating, real in-game Storm League ranks, and the Match Prediction game. Get talent builds, and navigate directly to player's profiles.</p>
         <div class="flex mt-auto">
@@ -59,7 +59,7 @@
       </div>
       
       <div :class="cardClasses">
-        <i class="fa-solid fa-database text-[80px]"></i>
+        <i class="fa-solid fa-database text-[5rem]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Heroes Profile API</h3>
         <p class="text-sm text-left mb-8">Heroes Profile API provides access to parsed Heroes of the Storm data from HeroesProfile.com, including player stats, match details, and performance insights.</p>
         <div class="flex mt-auto">
@@ -70,7 +70,7 @@
 
 </div>
     <div class="mt-auto bg-surface-2 text-sm px-4 md:px-8 py-6">
-      <div class="max-w-[1856px] mx-auto space-y-2">
+      <div class="max-w-[116rem] mx-auto space-y-2">
         <p>Heroes Profile uses data from the Heroes Profile API, an open Heroes of the Storm replay database built from user-uploaded replays.
           So far, Heroes Profile has pulled {{ getValueLocal(maxreplayid) }} replays into its dataset, up to and including patch
         {{ latestpatch }} and games played through <format-date :input="latestgamedate"></format-date>.</p>
@@ -116,7 +116,7 @@ import Cookies from 'js-cookie';
     },
     computed: {
       cardClasses() {
-        return 'flex flex-col text-center  w-[337px]';
+        return 'flex flex-col text-center  w-[21.0625rem]';
       },
     },
     watch: {

@@ -1,6 +1,6 @@
 <template>
   <!-- The methodology for the open tab: abstract always shown, the rest on request -->
-  <article class="max-w-[1100px] mx-auto mt-16 mb-10 px-4">
+  <article class="max-w-[68.75rem] mx-auto mt-16 mb-10 px-4">
     <header class="border-t border-gray-light pt-6 mb-4">
       <p class="text-xs uppercase text-gray-light mb-1">Methodology</p>
       <h2 class="text-2xl font-bold mb-1">{{ paper.title }}</h2>

@@ -4,7 +4,7 @@
       <span>{{ selectedName }}</span>
       <i class="fas fa-chevron-down text-xs"></i>
     </button>
-    <div v-if="open" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg font-normal tracking-normal" style="width: 220px; max-height: 340px; overflow-y: auto;">
+    <div v-if="open" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg font-normal tracking-normal" style="width: 13.75rem; max-height: 21.25rem; overflow-y: auto;">
       <input v-if="type !== 'role'" v-model="search" type="text" :placeholder="'Search ' + label.toLowerCase() + '...'" class="w-full px-2 py-1 text-xs bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
       <div
         v-for="h in filteredHeroes"

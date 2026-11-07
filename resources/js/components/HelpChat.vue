@@ -1,15 +1,15 @@
 <template>
   <!-- Bottom-left help (the video ad takes bottom-right). One box: the FAQ and site pages answer first, the assistant only when asked. Sits above the cookie banner while it shows. -->
   <div class="fixed left-4 z-50 flex flex-col items-start gap-3" :style="{ bottom: 'calc(var(--disclaimer-height, 0px) + 1rem)' }">
-    <div v-if="open" :class="expanded ? 'w-[760px] h-[calc(100dvh-8rem)]' : 'w-[420px] h-[560px]'" class="max-w-[calc(100vw-2rem)] max-h-[calc(100dvh-8rem)] bg-surface-4 rounded-2xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.7)] flex flex-col overflow-hidden">
+    <div v-if="open" :class="expanded ? 'w-[47.5rem] h-[calc(100dvh-8rem)]' : 'w-[26.25rem] h-[35rem]'" class="max-w-[calc(100vw-2rem)] max-h-[calc(100dvh-8rem)] bg-surface-4 rounded-2xl border border-white/20 shadow-[0_0.5rem_2rem_rgba(0,0,0,0.7)] flex flex-col overflow-hidden">
       <!-- Close and New chat on the left, expand alone in the top-right corner, so they're hard to mix up -->
       <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
         <div class="flex items-center gap-4">
-          <button class="text-xl leading-none min-w-[32px] min-h-[32px]" aria-label="Close help" @click="open = false">×</button>
+          <button class="text-xl leading-none min-w-[2rem] min-h-[2rem]" aria-label="Close help" @click="open = false">×</button>
           <span class="font-bold text-lg">Help</span>
           <button v-if="messages.length" class="text-sm underline" :disabled="!!loading" @click="newChat">New chat</button>
         </div>
-        <button class="min-w-[32px] min-h-[32px]" :aria-label="expanded ? 'Make help smaller' : 'Make help bigger'" :title="expanded ? 'Smaller' : 'Bigger'" @click="toggleExpanded">
+        <button class="min-w-[2rem] min-h-[2rem]" :aria-label="expanded ? 'Make help smaller' : 'Make help bigger'" :title="expanded ? 'Smaller' : 'Bigger'" @click="toggleExpanded">
           <i :class="expanded ? 'fas fa-down-left-and-up-right-to-center' : 'fas fa-up-right-and-down-left-from-center'"></i>
         </button>
       </div>
@@ -68,7 +68,7 @@
     </div>
 
     <button
-      class="w-14 h-14 rounded-full bg-teal hover:bg-lteal text-white text-2xl shadow-[0_4px_16px_rgba(0,0,0,0.5)] flex items-center justify-center transition-colors"
+      class="w-14 h-14 rounded-full bg-teal hover:bg-lteal text-white text-2xl shadow-[0_0.25rem_1rem_rgba(0,0,0,0.5)] flex items-center justify-center transition-colors"
       :aria-label="open ? 'Close help' : 'Open help'"
       :aria-expanded="open"
       @click="toggle"

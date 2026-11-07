@@ -2,7 +2,7 @@
   <div v-if="data" class="mx-4 text-sm">
     <multi-tab-button class="mb-4" :options="modes" :model-value="mode" @update:model-value="selectMode"></multi-tab-button>
 
-    <div v-if="mmrSplit" class="max-w-[1500px] mx-auto mb-4">
+    <div v-if="mmrSplit" class="max-w-[93.75rem] mx-auto mb-4">
       <div class="flex justify-between items-baseline mb-1">
         <span class="text-xs">Avg. {{ modeShort }} MMR <span class="text-base font-bold">{{ mmrSplit.teamOne }}</span></span>
         <span class="text-xs text-gray-medium">{{ mmrSplit.lead }}</span>
@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <div class="grid md:grid-cols-2 gap-4 max-w-[1500px] mx-auto">
+    <div class="grid md:grid-cols-2 gap-4 max-w-[93.75rem] mx-auto">
       <div v-for="team in [0, 1]" :key="team" class="min-w-0">
         <h2 :class="['bg-' + teamColors[team], 'rounded-t', 'p-2', 'text-sm', 'text-center', 'uppercase']">Team {{ team + 1 }}</h2>
 

@@ -12,7 +12,7 @@
             font-family: 'Open Sans', sans-serif;
             background-color: #0F121D;
             color: #ffffff;
-            font-size: 18px;
+            font-size: 1rem;
             letter-spacing: .14em;
             min-height: 100vh;
             display: flex;
@@ -42,7 +42,7 @@
 
         /* Main content */
         .main {
-            max-width: 1500px;
+            max-width: 93.75rem;
             margin: 0 auto;
             padding: 2rem 1rem;
             flex: 1;
@@ -85,7 +85,7 @@
         .btn {
             display: inline-block;
             padding: 0.85rem 2rem;
-            border-radius: 6px;
+            border-radius: 0.375rem;
             font-size: 1rem;
             font-weight: bold;
             text-decoration: none;
@@ -100,7 +100,7 @@
 
         /* Info box */
         .info-box {
-            max-width: 900px;
+            max-width: 56.25rem;
             margin: 0 auto;
             color: #aaa;
             line-height: 1.7;
@@ -110,7 +110,7 @@
         .footer {
             margin-top: auto;
             background: rgba(255,255,255,0.1);
-            border-top: 4px solid #008b8b;
+            border-top: 0.25rem solid #008b8b;
             text-align: center;
             padding: 2rem 1rem;
         }

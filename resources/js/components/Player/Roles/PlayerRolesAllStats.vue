@@ -42,7 +42,7 @@
   <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
   <div v-if="data">
-    <div  class="relative max-w-[1500px] mx-auto">
+    <div  class="relative max-w-[93.75rem] mx-auto">
       <custom-button class="ml-auto" @click="showOptions = !showOptions" :text="showOptions ? 'Hide Column Selection' : 'Show Column Selection'" :ignoreclick="true"></custom-button>
 
       <div v-if="showOptions">
@@ -114,7 +114,7 @@
     </table>
     </div>
   </div>
-  <div v-else-if="isLoading || asyncLoading" class="max-w-[1500px] mx-auto px-4 flex flex-col gap-6">
+  <div v-else-if="isLoading || asyncLoading" class="max-w-[93.75rem] mx-auto px-4 flex flex-col gap-6">
     <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
     <loading-component v-else :compact="true" :textoverride="true" :timer="!esport" :starttime="timertime" :overrideimage="league?.loaderImage">Large amount of data. Please be patient.</loading-component>
     <div>

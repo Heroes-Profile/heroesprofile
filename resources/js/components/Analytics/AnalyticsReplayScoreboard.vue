@@ -7,7 +7,7 @@
     <div class="flex gap-1">
       <div v-for="hero in heroesOn(0)" :key="hero.idx" class="flex flex-col items-center gap-1">
         <div
-          class="relative cursor-pointer rounded overflow-hidden w-[55px] [&_div]:!w-[55px] [&_img]:!w-[55px] [&_img]:!min-w-0 [&_img]:object-contain"
+          class="relative cursor-pointer rounded overflow-hidden w-[3.4375rem] [&_div]:!w-[3.4375rem] [&_img]:!w-[3.4375rem] [&_img]:!min-w-0 [&_img]:object-contain"
           :class="{ 'ring-2 ring-lyellow': hero.idx === selected }"
           @click="$emit('select', hero.idx)"
         >
@@ -45,7 +45,7 @@
     <div class="flex gap-1">
       <div v-for="hero in heroesOn(1)" :key="hero.idx" class="flex flex-col items-center gap-1">
         <div
-          class="relative cursor-pointer rounded overflow-hidden w-[55px] [&_div]:!w-[55px] [&_img]:!w-[55px] [&_img]:!min-w-0 [&_img]:object-contain"
+          class="relative cursor-pointer rounded overflow-hidden w-[3.4375rem] [&_div]:!w-[3.4375rem] [&_img]:!w-[3.4375rem] [&_img]:!min-w-0 [&_img]:object-contain"
           :class="{ 'ring-2 ring-lyellow': hero.idx === selected }"
           @click="$emit('select', hero.idx)"
         >

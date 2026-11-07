@@ -63,7 +63,7 @@
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="this.data.data" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+    <div v-if="this.data.data" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <div class="flex justify-between">
         <div>
           <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
@@ -172,7 +172,7 @@
           <template v-for="(row, index) in sortedData">
             <tr>
               <td class="py-2 px-3"><div class="flex justify-center gap-1"><div v-if="rankChanged" class="bg-blue text-white min-w-[2em] p-1 rounded-control text-center">{{ sortDir == 'desc' ? index + 1 : sortedData.length - index }}</div><span class="p-1">{{ row.rank }}</span></div></td>
-              <td class="py-2 px-3 flex items-center gap-1 max-md:w-[150px]">
+              <td class="py-2 px-3 flex items-center gap-1 max-md:w-[9.375rem]">
                 <a class="group/bt flex w-full items-center justify-start" :href="getGlobalTalentsURL(row)" >
                   <hero-image-wrapper class="mr-2" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block font-bold group-hover/bt:underline">{{ row.name }}</span>
                 </a>
@@ -213,7 +213,7 @@
       </panel-box>
     </div>
     <!-- The page's layout with grey blocks while it loads, like the leaderboard -->
-    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
       <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
       <loading-component v-else :compact="true" :textoverride="true">Loading hero stats...</loading-component>

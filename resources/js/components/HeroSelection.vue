@@ -10,7 +10,7 @@
       />
     </div>
 
-    <div class="flex flex-wrap gap-2 max-w-[1200px] mx-auto cursor-pointer justify-center max-md:justify-between">
+    <div class="flex flex-wrap gap-2 max-w-[75rem] mx-auto cursor-pointer justify-center max-md:justify-between">
       <template v-for="hero in filteredHeroes" :key="hero.id">
         <a v-if="linkbase" class="max-md:w-[30%]" :href="linkbase + '/' + encodeURIComponent(hero.name)" @click="linkClicked($event, hero)">
           <hero-image-wrapper :hero="hero" size="big"></hero-image-wrapper>

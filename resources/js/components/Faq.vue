@@ -3,7 +3,7 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="'Frequently asked questions about Heroes Profile. Can\'t find your answer? Ask us below.'" -->
     <page-heading :heading="'FAQ'"></page-heading>
 
-    <div class="mx-auto max-w-[1000px] px-4 mt-6">
+    <div class="mx-auto max-w-[62.5rem] px-4 mt-6">
 
       <!-- Search -->
       <div class="mb-8">
@@ -62,20 +62,20 @@
             <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
               <thead>
                 <tr>
-                  <th style="padding:4px 8px; text-align:left;">Page</th>
-                  <th style="padding:4px 8px; text-align:left;">URL</th>
-                  <th style="padding:4px 8px; text-align:left;">What it does</th>
+                  <th style="padding:0.25rem 0.5rem; text-align:left;">Page</th>
+                  <th style="padding:0.25rem 0.5rem; text-align:left;">URL</th>
+                  <th style="padding:0.25rem 0.5rem; text-align:left;">What it does</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="page in section.items" :key="page.url">
-                  <td style="padding:3px 8px; white-space:nowrap;">{{ page.name }}</td>
-                  <td style="padding:3px 8px; white-space:nowrap;">
+                  <td style="padding:0.1875rem 0.5rem; white-space:nowrap;">{{ page.name }}</td>
+                  <td style="padding:0.1875rem 0.5rem; white-space:nowrap;">
                     <a v-if="!page.url.includes('{')" :href="page.url" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ page.url }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                     <span v-else>{{ page.url }}</span>
                     <div v-if="page.hero_url" class="text-xs text-soft">One hero: <a :href="page.hero_url.replace('{hero}', 'Abathur')" class="underline">{{ page.hero_url.replace('{hero}', 'Abathur') }}</a></div>
                   </td>
-                  <td style="padding:3px 8px;">{{ page.description }}</td>
+                  <td style="padding:0.1875rem 0.5rem;">{{ page.description }}</td>
                 </tr>
               </tbody>
             </table>
@@ -93,21 +93,21 @@
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
             <thead>
               <tr>
-                <th style="padding:4px 8px; text-align:left;">Season</th>
-                <th style="padding:4px 8px; text-align:left;">Game Version</th>
-                <th style="padding:4px 8px; text-align:left; white-space:nowrap;">Start Date</th>
-                <th style="padding:4px 8px; text-align:left; white-space:nowrap;">End Date</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left;">Season</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left;">Game Version</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left; white-space:nowrap;">Start Date</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left; white-space:nowrap;">End Date</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(row, i) in patchHistory" :key="i">
-                <td style="padding:3px 8px;">{{ row.season }}</td>
-                <td style="padding:3px 8px;">
+                <td style="padding:0.1875rem 0.5rem;">{{ row.season }}</td>
+                <td style="padding:0.1875rem 0.5rem;">
                   <a v-if="row.patch_notes_url" :href="row.patch_notes_url" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ row.game_version }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                   <span v-else>{{ row.game_version }}</span>
                 </td>
-                <td style="padding:3px 8px;">{{ formatDate(row.start_date) }}</td>
-                <td style="padding:3px 8px;">{{ row.end_date ? formatDate(row.end_date) : 'Present' }}</td>
+                <td style="padding:0.1875rem 0.5rem;">{{ formatDate(row.start_date) }}</td>
+                <td style="padding:0.1875rem 0.5rem;">{{ row.end_date ? formatDate(row.end_date) : 'Present' }}</td>
               </tr>
             </tbody>
           </table>
@@ -125,16 +125,16 @@
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
             <thead>
               <tr>
-                <th style="padding:4px 8px; text-align:left;">Season</th>
-                <th style="padding:4px 8px; text-align:left; white-space:nowrap;">Start Date</th>
-                <th style="padding:4px 8px; text-align:left; white-space:nowrap;">End Date</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left;">Season</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left; white-space:nowrap;">Start Date</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left; white-space:nowrap;">End Date</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="row in seasonDates" :key="row.id">
-                <td style="padding:3px 8px;">{{ row.year }} Season {{ row.season }}</td>
-                <td style="padding:3px 8px;"><format-date :input="row.start_date"></format-date></td>
-                <td style="padding:3px 8px;"><format-date v-if="row.end_date" :input="row.end_date"></format-date></td>
+                <td style="padding:0.1875rem 0.5rem;">{{ row.year }} Season {{ row.season }}</td>
+                <td style="padding:0.1875rem 0.5rem;"><format-date :input="row.start_date"></format-date></td>
+                <td style="padding:0.1875rem 0.5rem;"><format-date v-if="row.end_date" :input="row.end_date"></format-date></td>
               </tr>
             </tbody>
           </table>
@@ -151,18 +151,18 @@
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
             <thead>
               <tr>
-                <th style="padding:4px 8px; text-align:left;">Award</th>
-                <th style="padding:4px 8px; text-align:left;">Description</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left;">Award</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left;">Description</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="award in awards" :key="award.award_id + '-' + award.title">
-                <td style="padding:3px 8px; white-space:nowrap;">
+                <td style="padding:0.1875rem 0.5rem; white-space:nowrap;">
                   <div class="flex items-center gap-2">
                     <img :src="`/images/awards/${award.icon}_blue.png`" :alt="award.title" class="w-8 h-8" />{{ award.title }}
                   </div>
                 </td>
-                <td style="padding:3px 8px;">{{ award.description }}</td>
+                <td style="padding:0.1875rem 0.5rem;">{{ award.description }}</td>
               </tr>
             </tbody>
           </table>
@@ -213,7 +213,7 @@
             </div>
 
             <!-- Honeypot -->
-            <input type="text" name="website" v-model="formData.website" style="display:none!important;visibility:hidden!important;position:absolute!important;left:-9999px!important;" tabindex="-1" autocomplete="off">
+            <input type="text" name="website" v-model="formData.website" style="display:none!important;visibility:hidden!important;position:absolute!important;left:-624.9375rem!important;" tabindex="-1" autocomplete="off">
 
             <div class="flex items-center gap-4">
               <button

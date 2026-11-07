@@ -18,10 +18,10 @@
         .container {
             background: white;
             padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 0.625rem rgba(0,0,0,0.1);
             text-align: center;
-            max-width: 500px;
+            max-width: 31.25rem;
             width: 90%;
         }
         .error-code {
@@ -43,7 +43,7 @@
         .ban-details {
             background: #f8f9fa;
             padding: 1rem;
-            border-radius: 4px;
+            border-radius: 0.25rem;
             margin-top: 1rem;
             text-align: left;
         }

@@ -35,12 +35,12 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="data">
       <!-- `compact` means the game rows, labelled Expanded -->
-      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-wrap justify-end items-center gap-4">
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-wrap justify-end items-center gap-4">
         <tab-button :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="compact ? 'right' : 'left'"></tab-button>
         <pagination-bar :current="data.current_page" :last="data.last_page" @page="getData"></pagination-bar>
       </div>
       <div v-if="compact">
-        <div class="max-w-[1920px] mx-auto px-4 md:px-8 py-4">
+        <div class="max-w-[120rem] mx-auto px-4 md:px-8 py-4">
           <panel-box>
             <div>
               <game-summary-header></game-summary-header>
@@ -49,7 +49,7 @@
           </panel-box>
         </div>
       </div>
-      <div v-else class="max-w-[1920px] mx-auto px-4 md:px-8 py-4">
+      <div v-else class="max-w-[120rem] mx-auto px-4 md:px-8 py-4">
         <panel-box>
           <!-- Wide rows scroll sideways on narrow screens -->
           <div class="overflow-x-auto">
@@ -60,12 +60,12 @@
           </div>
         </panel-box>
       </div>
-      <div class="max-w-[1920px] mx-auto px-4 md:px-8 pb-4 flex justify-end">
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 pb-4 flex justify-end">
         <pagination-bar :current="data.current_page" :last="data.last_page" @page="getData"></pagination-bar>
       </div>
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
-    <div v-else-if="isLoading || asyncLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 py-4 space-y-8">
+    <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 py-4 space-y-8">
       <loading-component :compact="true" :textoverride="true">{{ asyncLoading ? 'This is taking longer than expected. A background task is computing your results. Please be patient.' : 'Loading data...' }}</loading-component>
       <panel-box>
         <div v-if="compact">

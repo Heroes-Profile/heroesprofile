@@ -18,12 +18,12 @@
     >
     </filters>
 
-    <div v-if="loading" class="max-w-[1500px] mx-auto px-4 py-10 flex flex-col gap-6">
+    <div v-if="loading" class="max-w-[93.75rem] mx-auto px-4 py-10 flex flex-col gap-6">
       <loading-component :compact="true" :textoverride="true">Loading activity...</loading-component>
-      <skeleton-box class="h-[400px] w-full"></skeleton-box>
+      <skeleton-box class="h-[25rem] w-full"></skeleton-box>
     </div>
 
-    <div v-else class="max-w-[1500px] mx-auto px-4 py-10">
+    <div v-else class="max-w-[93.75rem] mx-auto px-4 py-10">
       <div v-if="error" class="text-center text-red py-20">{{ error }}</div>
       <template v-else-if="data.length">
         <div class="flex flex-wrap gap-2 mb-6">

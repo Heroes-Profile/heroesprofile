@@ -1,6 +1,6 @@
 <template>
   <div :class="expanded ? 'fixed inset-0 z-50 flex items-center justify-center p-4 bg-[rgba(0,0,0,0.75)]' : 'mb-3'" @click.self="expanded = false">
-    <div :class="expanded ? 'flex flex-col w-full max-w-[1100px] h-[85vh] bg-gray-dark' : 'bg-darken'">
+    <div :class="expanded ? 'flex flex-col w-full max-w-[68.75rem] h-[85vh] bg-gray-dark' : 'bg-darken'">
       <div v-if="editor" class="flex flex-wrap gap-1 p-1 border-b border-gray-dark">
         <button
           v-for="tool in tools"

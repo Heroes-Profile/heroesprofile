@@ -23,10 +23,10 @@
       :hideadvancedfilteringbutton="true"
     ></filters>
 
-    <div class="max-w-[1500px] mx-auto px-4 mt-4">
+    <div class="max-w-[93.75rem] mx-auto px-4 mt-4">
       <!-- Processing status: one line, so the tab's own numbers come first -->
       <div v-if="!sample" class="text-center mb-6">
-        <div v-if="processing" class="max-w-[600px] mx-auto">
+        <div v-if="processing" class="max-w-[37.5rem] mx-auto">
           <p class="text-sm">Processing your games: {{ status.done }} of {{ status.total }} done. You can leave this page; it carries on.</p>
           <stat-bar-box class="w-full" size="full" :title="'Progress'" :value="percent" :displaytext="status.done + ' of ' + status.total"></stat-bar-box>
         </div>

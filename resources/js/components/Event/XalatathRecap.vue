@@ -2,15 +2,15 @@
   <div class="xalatath-recap text-white">
     <!-- The Void Gazette: a front page -->
     <div class="xalatath-scoreboard px-4 py-8">
-      <article class="void-gazette max-w-[1100px] mx-auto px-5 md:px-10 py-6 md:py-8">
+      <article class="void-gazette max-w-[68.75rem] mx-auto px-5 md:px-10 py-6 md:py-8">
         <header class="text-center">
-          <div class="flex justify-between text-[11px] md:text-xs uppercase tracking-widest border-b border-[#1a1a1a] pb-1">
+          <div class="flex justify-between text-[0.6875rem] md:text-xs uppercase tracking-widest border-b border-[#1a1a1a] pb-1">
             <span>Final Edition</span>
             <span class="max-md:hidden">Heroes Profile</span>
             <span>Price: One Soul</span>
           </div>
           <h1 class="void-gazette-masthead text-5xl md:text-7xl py-3">The Void Gazette</h1>
-          <div class="flex justify-between text-[11px] md:text-xs uppercase tracking-widest border-y-[3px] border-double border-[#1a1a1a] py-1">
+          <div class="flex justify-between text-[0.6875rem] md:text-xs uppercase tracking-widest border-y-[0.1875rem] border-double border-[#1a1a1a] py-1">
             <span>{{ formatDate(recap.startsAt) }} to {{ formatDate(recap.endsAt) }}</span>
             <span class="max-md:hidden">"All the news that's fit to consume"</span>
             <span>Stage {{ final.stage }} of 5</span>
@@ -58,7 +58,7 @@
     </div>
 
     <!-- Event-wide: doesn't change with the mode toggle -->
-    <div class="max-w-[1500px] mx-auto px-4 pt-8 flex flex-col gap-10">
+    <div class="max-w-[93.75rem] mx-auto px-4 pt-8 flex flex-col gap-10">
       <!-- Stage timeline -->
       <section id="recap-stages" data-index="How the Nexus Fell" v-if="stages.length">
         <h2 class="recap-heading">How the Nexus Fell on Heroes Profile</h2>
@@ -93,7 +93,7 @@
               </span>
 
               <!-- 0: the eye hunt; her eye turns up tucked into a page -->
-              <div v-if="stage.stage === 0" class="w-full mt-4 text-[10px]">
+              <div v-if="stage.stage === 0" class="w-full mt-4 text-[0.625rem]">
                 <div class="relative h-24 rounded overflow-hidden text-left" style="background-color: #0F121D;">
                   <div class="px-2 py-1" style="background-color: #333333;">Heroes Profile</div>
                   <div class="px-2 pt-2 opacity-50 leading-relaxed">Player stats · Match history<br />Talent builds · Leaderboards</div>
@@ -103,7 +103,7 @@
               </div>
 
               <!-- 1: the nav picking up the purple glow -->
-              <div v-else-if="stage.stage === 1" class="w-full mt-4 rounded overflow-hidden text-[10px] text-left" style="background-color: #0F121D;">
+              <div v-else-if="stage.stage === 1" class="w-full mt-4 rounded overflow-hidden text-[0.625rem] text-left" style="background-color: #0F121D;">
                 <div class="px-2 py-1 void-palette-mock"
                   :style="{ backgroundColor: '#333333', boxShadow: paletteOn ? '0 4px 14px rgba(123, 63, 228, 0.8)' : 'none' }">
                   Heroes Profile · Global Stats · Tools
@@ -124,7 +124,7 @@
               </div>
 
               <!-- 4: a tiny slice of the site flipping to the stage 4 palette -->
-              <div v-else-if="stage.stage === 4" class="w-full mt-4 text-[10px] text-left">
+              <div v-else-if="stage.stage === 4" class="w-full mt-4 text-[0.625rem] text-left">
                 <div class="rounded overflow-hidden border border-[#5b21b6] void-palette-mock" :style="{ backgroundColor: palette.page }">
                   <div class="px-2 py-1 flex justify-between" :style="{ backgroundColor: palette.nav }">
                     <span>Heroes Profile</span>
@@ -162,7 +162,7 @@
       <!-- First sighting -->
       <section id="recap-firsts" data-index="First Sighting" v-if="firstGame">
         <h2 class="recap-heading">First Sighting</h2>
-        <div class="xalatath-recap-card p-4 max-w-[600px]">
+        <div class="xalatath-recap-card p-4 max-w-[37.5rem]">
           <p class="mb-2">This is the first Xal'atath game seen on Heroes Profile.</p>
           <a class="link text-sm" target="_blank" rel="noopener" :href="`/Match/Single/${firstGame.replayID}`">View the first match</a>
         </div>
@@ -200,7 +200,7 @@
             <div v-for="day in eyeDays" :key="day.date" class="w-3 bg-[#7b3fe4] rounded-t" :style="{ height: percent(day.count, eyeDayMax) }" :title="`${day.date}: ${day.count}`"></div>
           </div>
         </div>
-        <div class="max-w-[900px] mt-4 text-sm leading-relaxed">
+        <div class="max-w-[56.25rem] mt-4 text-sm leading-relaxed">
           <p class="mb-2">
             While the event ran, Xal'atath hid her eye somewhere on Heroes Profile. It turned up on roughly one page in twelve,
             in a different spot for every visitor, and moved each day. Clicking it and logging in with Battle.net claimed it.
@@ -214,8 +214,8 @@
     </div>
 
     <!-- Stats by game mode; the toggle sticks while scrolling through them -->
-    <div class="max-w-[1500px] mx-auto px-4 pt-10">
-      <div class="xalatath-mode-bar sticky top-0 max-md:top-[75px] z-40 py-3 mb-6 flex flex-wrap items-center gap-3">
+    <div class="max-w-[93.75rem] mx-auto px-4 pt-10">
+      <div class="xalatath-mode-bar sticky top-0 max-md:top-[4.6875rem] z-40 py-3 mb-6 flex flex-wrap items-center gap-3">
         <span class="text-sm opacity-75">Showing stats for</span>
         <multi-tab-button :options="modeOptions" :model-value="mode" @update:model-value="mode = $event"></multi-tab-button>
       </div>
@@ -527,7 +527,7 @@
         <div v-if="contribution">
           <!-- The card as it downloads; downloadCard() draws the same layout -->
           <!-- Never played or faced her: a short banner instead of the full card -->
-          <div v-if="cardEmpty" class="void-contribution-card max-w-[700px] rounded p-4 md:p-5 flex items-center gap-4">
+          <div v-if="cardEmpty" class="void-contribution-card max-w-[43.75rem] rounded p-4 md:p-5 flex items-center gap-4">
             <img class="w-16 md:w-20 shrink-0" :src="`/images/event/xalatath/xalatath-logo-stage-${final.stage}.svg`" alt="" />
             <div class="min-w-0">
               <div class="text-xs uppercase tracking-widest xalatath-title">Xal'atath Void Corruption<span v-if="mode !== 'all'"> · {{ modeLabel }}</span></div>
@@ -536,7 +536,7 @@
               <div class="text-xs opacity-60 mt-2">heroesprofile.com/Event/Xalatath</div>
             </div>
           </div>
-          <div v-else class="void-contribution-card max-w-[1000px] rounded p-5 md:p-8 grid md:grid-cols-[220px_minmax(0,1fr)] gap-6">
+          <div v-else class="void-contribution-card max-w-[62.5rem] rounded p-5 md:p-8 grid md:grid-cols-[13.75rem_minmax(0,1fr)] gap-6">
             <div class="flex flex-col items-center text-center">
               <img class="w-40 md:w-52" :src="`/images/event/xalatath/xalatath-logo-stage-${final.stage}.svg`" alt="" />
             </div>
@@ -550,7 +550,7 @@
                 </div>
 
                 <!-- Labels once as column headers, numbers lined up underneath -->
-                <div v-if="card.modes && card.modes.length" class="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-x-6 gap-y-1 text-sm mb-4 max-w-[420px]">
+                <div v-if="card.modes && card.modes.length" class="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-x-6 gap-y-1 text-sm mb-4 max-w-[26.25rem]">
                   <span class="text-xs uppercase opacity-75">Mode</span>
                   <span class="text-xs uppercase opacity-75 text-right">Games</span>
                   <span class="text-xs uppercase opacity-75 text-right">Win rate</span>
@@ -588,7 +588,7 @@
               <template v-else>
                 <div class="text-lg mb-4">{{ noGamesLine }}</div>
                 <!-- Estimated from her share of your team's deaths in each game she was against you -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 max-w-[600px]">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 max-w-[37.5rem]">
                   <div v-for="tile in facedTiles" :key="tile.label" class="xalatath-recap-card p-3 text-center">
                     <div class="text-xs uppercase opacity-75">{{ tile.label }}</div>
                     <div class="text-xl font-bold tabular-nums">{{ tile.value }}</div>
@@ -626,7 +626,7 @@
       </div>
     </div>
 
-    <div class="max-w-[1500px] mx-auto px-4 py-10 flex flex-col gap-10">
+    <div class="max-w-[93.75rem] mx-auto px-4 py-10 flex flex-col gap-10">
       <!-- Whispers -->
       <section id="recap-whispers" data-index="Her Last Whispers">
         <h2 class="recap-heading">Her Last Whispers</h2>

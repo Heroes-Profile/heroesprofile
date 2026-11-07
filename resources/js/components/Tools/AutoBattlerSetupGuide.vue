@@ -8,7 +8,7 @@
     <ol v-if="open" class="list-decimal pl-10 pr-4 pb-4 flex flex-col gap-3">
       <li v-for="(step, i) in steps" :key="i">
         <span v-html="step.text"></span>
-        <img v-if="step.image" :src="'/images/autobattler/' + step.image" :alt="'Step ' + (i + 1)" loading="lazy" class="mt-2 max-w-full md:max-w-[600px] rounded">
+        <img v-if="step.image" :src="'/images/autobattler/' + step.image" :alt="'Step ' + (i + 1)" loading="lazy" class="mt-2 max-w-full md:max-w-[37.5rem] rounded">
       </li>
     </ol>
   </div>

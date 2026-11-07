@@ -25,11 +25,11 @@
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="data" class="max-w-[1500px] mx-auto px-4 max-md:px-2">
+    <div v-if="data" class="max-w-[93.75rem] mx-auto px-4 max-md:px-2">
       <p class="text-center mb-4">Awards across {{ data.total_games.toLocaleString('en-US') }} games</p>
 
       <div class="flex justify-center mb-4">
-        <input type="text" v-model="awardSearch" placeholder="Search awards" class="md:w-[300px] w-full h-[40px] border-solid border-[1px] border-white bg-blue p-2 text-white focus:outline-none" />
+        <input type="text" v-model="awardSearch" placeholder="Search awards" class="md:w-[18.75rem] w-full h-[2.5rem] border-solid border-[1px] border-white bg-blue p-2 text-white focus:outline-none" />
       </div>
 
       <div class="flex flex-wrap justify-center gap-4 mb-10">
@@ -65,10 +65,10 @@
         <div class="overflow-x-auto">
           <div class="md:min-w-max w-full">
             <div class="max-md:hidden flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
-              <span class="w-[320px] shrink-0 pl-5">Match</span>
-              <span class="w-[160px] shrink-0 px-4">Game Type</span>
-              <span class="w-[140px] shrink-0 px-4">Game ID</span>
-              <span class="w-[300px] shrink-0 px-4">Award</span>
+              <span class="w-[20rem] shrink-0 pl-5">Match</span>
+              <span class="w-[10rem] shrink-0 px-4">Game Type</span>
+              <span class="w-[8.75rem] shrink-0 px-4">Game ID</span>
+              <span class="w-[18.75rem] shrink-0 px-4">Award</span>
             </div>
             <template v-for="(row, index) in tableRows" :key="row.replayID">
             <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="'/Match/Single/' + row.replayID" :hero="row.hero" :title="row.game_map.name" :date="formatRowDate(row.game_date)" :winner="row.winner == 1" :result="row.winner == 1 ? 'Win' : 'Loss'" :map-art="row.game_map.sanitized_map_name">
@@ -77,7 +77,7 @@
 <div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
               <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
               <a :href="'/Match/Single/' + row.replayID" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
-              <div class="relative w-[320px] shrink-0 self-stretch flex items-center pl-5 py-2.5">
+              <div class="relative w-[20rem] shrink-0 self-stretch flex items-center pl-5 py-2.5">
                 <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="row.winner == 1 ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
                 <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="{ backgroundImage: `url('/images/maps/match/match-${row.game_map.sanitized_map_name}.jpg')` }"></div>
                 <div class="absolute inset-y-0 left-0 w-1.5" :class="row.winner == 1 ? 'bg-win' : 'bg-red'"></div>
@@ -89,9 +89,9 @@
                   </div>
                 </div>
               </div>
-              <span class="relative w-[160px] shrink-0 px-4 font-medium text-header">{{ row.game_type.name }}</span>
-              <span class="relative z-[2] w-[140px] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="'/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
-              <div class="relative w-[300px] shrink-0 px-4 flex items-center gap-3">
+              <span class="relative w-[10rem] shrink-0 px-4 font-medium text-header">{{ row.game_type.name }}</span>
+              <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="'/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
+              <div class="relative w-[18.75rem] shrink-0 px-4 flex items-center gap-3">
                 <img :src="`/images/awards/${row.award.icon}_${row.winner == 1 ? 'blue' : 'red'}.png`" :alt="row.award.title" class="w-10 h-10" />
                 <span class="font-medium">{{ row.award.title }}</span>
               </div>

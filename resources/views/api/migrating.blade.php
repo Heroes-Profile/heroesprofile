@@ -9,7 +9,7 @@
     :infoText1="'What changed between the old API and v1, and what you have to do about it.'"
   ></page-heading>
 
-  <div class="mx-auto max-w-[1000px] px-4 mt-6 pb-16">
+  <div class="mx-auto max-w-[62.5rem] px-4 mt-6 pb-16">
 
     <div class="bg-lighten border-l-4 border-yellow p-4 mb-8">
       <p class="text-sm">

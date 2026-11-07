@@ -16,29 +16,29 @@
 
 
     <div v-if="!activeButton">
-      <div class="flex p-10 md:p-20 bg-surface rounded max-w-[1500px] mx-4 md:mx-auto flex-wrap justify-center">
+      <div class="flex p-10 md:p-20 bg-surface rounded max-w-[93.75rem] mx-4 md:mx-auto flex-wrap justify-center">
 
         <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fas fa-users" style="font-size: 100px"></i>
+          <i class="fas fa-users" style="font-size: 6.25rem"></i>
           <h3>Organizations</h3>
           <custom-button @click="setButtonActive('organizations')" :text="'Organizations'" :size="'big'" class="mt-10" :active="organizationsClicked" :ignoreclick="true"></custom-button>
         </div>
 
         <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fas fa-list" style="font-size: 100px"></i>
+          <i class="fas fa-list" style="font-size: 6.25rem"></i>
           <h3>Recent Matches</h3>
           <custom-button @click="setButtonActive('recentMatches')" :text="'Recent Matches'" :size="'big'" class="mt-10" :active="recentMatchesClicked" :ignoreclick="true"></custom-button>
         </div>
 
         
         <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fa-solid fa-chart-bar" style="font-size: 100px"></i>
+          <i class="fa-solid fa-chart-bar" style="font-size: 6.25rem"></i>
           <h3>Overall Hero Stats</h3>
           <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="mt-10" :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
         </div>
 
         <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fas fa-chart-line" style="font-size: 100px"></i>
+          <i class="fas fa-chart-line" style="font-size: 6.25rem"></i>
           <h3>Overall Talent Stats</h3>
           <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="mt-10" :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
         </div>
@@ -85,11 +85,11 @@
 
 
         <div v-if="recentMatchesData">
-          <div v-if="recentMatchesData.pagination.last_page > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 flex justify-end">
+          <div v-if="recentMatchesData.pagination.last_page > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 flex justify-end">
             <pagination-bar :current="recentMatchesData.pagination.current_page" :last="recentMatchesData.pagination.last_page" @page="getRecentMatches"></pagination-bar>
           </div>
           <esports-recent-matches :data="recentMatchesData.data" :esport="'CCL'"></esports-recent-matches>
-          <div v-if="recentMatchesData.pagination.last_page > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 flex justify-end">
+          <div v-if="recentMatchesData.pagination.last_page > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 flex justify-end">
             <pagination-bar :current="recentMatchesData.pagination.current_page" :last="recentMatchesData.pagination.last_page" @page="getRecentMatches"></pagination-bar>
           </div>
         </div>
@@ -145,10 +145,10 @@
 
     </div>
     <div v-if="isLoading">
-      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
         <loading-component :compact="true" :overrideimage="'/images/CCL/600-600-HHE_CCL_Logo_rectangle.png'"></loading-component>
         <!-- Organizations: a wrapping grid of logos with the name underneath -->
-        <div v-if="activeButton === 'organizations'" class="flex p-10 md:p-20 bg-surface rounded max-w-[1500px] w-full mx-auto flex-wrap justify-center gap-10">
+        <div v-if="activeButton === 'organizations'" class="flex p-10 md:p-20 bg-surface rounded max-w-[93.75rem] w-full mx-auto flex-wrap justify-center gap-10">
           <div v-for="team in 12" :key="team" class="flex flex-col items-center gap-3 md:w-[15%]">
             <skeleton-box class="w-32 h-32"></skeleton-box>
             <skeleton-box class="h-5 w-28 max-w-full"></skeleton-box>
@@ -157,7 +157,7 @@
         <!-- Recent Matches: expanded rows with the map, the two teams and each team's heroes -->
         <panel-box v-else-if="activeButton === 'recentMatches'">
           <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
-            <div class="flex flex-col gap-2 w-[300px] shrink-0">
+            <div class="flex flex-col gap-2 w-[18.75rem] shrink-0">
               <skeleton-box class="h-4 w-40"></skeleton-box>
               <skeleton-box class="h-4 w-32"></skeleton-box>
               <skeleton-box class="h-3 w-36"></skeleton-box>
@@ -177,8 +177,8 @@
                 <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
               </div>
             </div>
-            <div class="flex gap-2 w-[340px] max-w-full shrink-0">
-              <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[150px]">
+            <div class="flex gap-2 w-[21.25rem] max-w-full shrink-0">
+              <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[9.375rem]">
                 <div v-for="player in 5" :key="player" class="flex items-center gap-1">
                   <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
                   <skeleton-box class="h-3 w-24"></skeleton-box>
@@ -188,7 +188,7 @@
           </div>
         </panel-box>
         <!-- Overall Hero Stats: hero with name, then win rate, popularity, ban rate and games -->
-        <div v-else-if="activeButton === 'overallHeroStats'" class="max-w-[1000px] w-full mx-auto">
+        <div v-else-if="activeButton === 'overallHeroStats'" class="max-w-[62.5rem] w-full mx-auto">
           <table-skeleton :bare="true" :rows="12" :columns="['avatar', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
         </div>
         <!-- Overall Talent Stats: a block per talent level, then the builds table -->
@@ -197,7 +197,7 @@
             <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-20"></skeleton-box></div>
             <table-skeleton :bare="true" :rows="3" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
           </div>
-          <div class="w-full max-w-[800px] bg-surface overflow-hidden">
+          <div class="w-full max-w-[50rem] bg-surface overflow-hidden">
             <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-16"></skeleton-box></div>
             <table-skeleton :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
           </div>

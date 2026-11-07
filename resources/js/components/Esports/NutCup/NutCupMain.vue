@@ -13,16 +13,16 @@
 
 
     <div v-if="!activeButton">
-      <div class="flex p-10 md:p-20 bg-surface rounded max-w-[1500px] mx-4 md:mx-auto flex-wrap justify-center">
+      <div class="flex p-10 md:p-20 bg-surface rounded max-w-[93.75rem] mx-4 md:mx-auto flex-wrap justify-center">
         
         <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fa-solid fa-chart-bar" style="font-size: 100px"></i>
+          <i class="fa-solid fa-chart-bar" style="font-size: 6.25rem"></i>
           <h3>Overall Hero Stats</h3>
           <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="mt-10" :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
         </div>
 
         <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fas fa-chart-line" style="font-size: 100px"></i>
+          <i class="fas fa-chart-line" style="font-size: 6.25rem"></i>
           <h3>Overall Talent Stats</h3>
           <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="mt-10" :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
         </div>
@@ -81,10 +81,10 @@
 
     </div>
     <div v-if="isLoading">
-      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
         <loading-component :compact="true" :overrideimage="'/images/NutCup/logo-circular.png'"></loading-component>
         <!-- Overall Hero Stats: hero with name, then win rate, popularity, ban rate and games -->
-        <div v-if="activeButton === 'overallHeroStats'" class="max-w-[1000px] w-full mx-auto">
+        <div v-if="activeButton === 'overallHeroStats'" class="max-w-[62.5rem] w-full mx-auto">
           <table-skeleton :bare="true" :rows="12" :columns="['avatar', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
         </div>
         <!-- Overall Talent Stats: a block per talent level, then the builds table -->
@@ -93,7 +93,7 @@
             <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-20"></skeleton-box></div>
             <table-skeleton :bare="true" :rows="3" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
           </div>
-          <div class="w-full max-w-[800px] bg-surface overflow-hidden">
+          <div class="w-full max-w-[50rem] bg-surface overflow-hidden">
             <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-16"></skeleton-box></div>
             <table-skeleton :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
           </div>

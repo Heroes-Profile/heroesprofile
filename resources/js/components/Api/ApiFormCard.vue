@@ -2,7 +2,7 @@
   <div>
     <page-heading :infoText1="infoText1" :heading="heading"></page-heading>
 
-    <div class="mx-auto max-w-[480px] p-4">
+    <div class="mx-auto max-w-[30rem] p-4">
       <div v-if="status" class="bg-teal p-3 text-center mb-4">
         {{ status }}
       </div>

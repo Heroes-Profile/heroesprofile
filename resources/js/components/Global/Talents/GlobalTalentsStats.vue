@@ -7,7 +7,7 @@
       <page-heading :heading="selectedHero ? selectedHero.name + ' Builds & Talent Stats' : 'Hero Builds & Talent Stats'">
         <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
           <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
-          <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 220px; max-height: 340px; overflow-y: auto;">
+          <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 13.75rem; max-height: 21.25rem; overflow-y: auto;">
             <input v-model="heroDropdownSearch" type="text" placeholder="Search hero..." class="w-full px-2 py-1 text-xs bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
             <div
               v-for="h in filteredDropdownHeroes"
@@ -36,13 +36,13 @@
 
     
         <div v-if="!selectedHero">
-          <div class="flex justify-between max-w-[1500px] mx-auto md:px-4">
+          <div class="flex justify-between max-w-[93.75rem] mx-auto md:px-4">
             <hero-selection :heroes="heroes" linkbase="/Global/Talents" @search="heroSearchQuery = $event"></hero-selection>
           </div>
 
           <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
 
-          <div class="max-w-[1500px] mx-auto md:px-4 mt-8 w-full">
+          <div class="max-w-[93.75rem] mx-auto md:px-4 mt-8 w-full">
             <h2 class="heading mb-4">Most Popular Builds for Latest Patch Per Hero and Game Type</h2>
             <div v-if="!talentbuilddataall" class="flex flex-col gap-4">
               <loading-component :compact="true" :textoverride="true">Loading all talent builds...</loading-component>
@@ -94,7 +94,7 @@
         </filters>
         <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-        <div v-if="talentdetaildata" class="max-w-[1920px] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <div v-if="talentdetaildata" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
           <div class="flex flex-wrap justify-between items-center gap-2">
             <div>
               <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
@@ -116,7 +116,7 @@
             <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
           </panel-box>
         </div>
-        <div v-else-if="isTalentsLoading" class="max-w-[1920px] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <div v-else-if="isTalentsLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
           <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
           <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
           <loading-component v-else :compact="true" :textoverride="true">Loading talent stats...</loading-component>
@@ -129,7 +129,7 @@
         <dynamic-banner-ad :patreon-user="patreonUser" :index="4" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
 
-        <div v-if="talentbuilddata" class="max-w-[1920px] w-full mx-auto px-4 md:px-8 mt-6">
+        <div v-if="talentbuilddata" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6">
           <panel-box id="builds" :title="isCompact ? null : 'Talent Builds'">
             <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]">
               <template #heading>
@@ -154,7 +154,7 @@
           Error: Reload page/filter
         </div>
 
-        <div v-else-if="isBuildsLoading" class="max-w-[1920px] w-full mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
+        <div v-else-if="isBuildsLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
           <loading-component :compact="true" :textoverride="true">Loading talent builds...</loading-component>
           <table-skeleton :rows="5" :heading="true"></table-skeleton>
         </div>

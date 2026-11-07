@@ -1,7 +1,7 @@
 <template>
   <!-- The compact game-summary-box row, same column widths -->
   <div v-if="compact" class="md:hidden mb-1 flex items-center gap-3 rounded overflow-hidden bg-surface-1 pl-5 pr-3 py-2.5">
-    <skeleton-box class="w-[42px] h-[42px] shrink-0 !rounded-full"></skeleton-box>
+    <skeleton-box class="w-[2.625rem] h-[2.625rem] shrink-0 !rounded-full"></skeleton-box>
     <div class="flex-1 min-w-0 flex flex-col gap-1.5">
       <div class="flex justify-between gap-2"><skeleton-box class="w-32 h-4"></skeleton-box><skeleton-box class="w-8 h-4"></skeleton-box></div>
       <skeleton-box class="w-40 max-w-full h-3"></skeleton-box>
@@ -9,36 +9,36 @@
     </div>
   </div>
   <div v-if="compact" class="max-md:hidden mb-1 flex items-center justify-between rounded overflow-hidden bg-surface-1">
-    <div class="relative w-[320px] shrink-0 self-stretch flex items-center pl-5 py-2.5">
+    <div class="relative w-[20rem] shrink-0 self-stretch flex items-center pl-5 py-2.5">
       <div class="absolute inset-y-0 left-0 w-1.5 bg-surface-3"></div>
       <div class="flex items-center gap-4">
-        <skeleton-box class="w-[42px] h-[42px] shrink-0 !rounded-full"></skeleton-box>
+        <skeleton-box class="w-[2.625rem] h-[2.625rem] shrink-0 !rounded-full"></skeleton-box>
         <div class="flex flex-col gap-2">
           <skeleton-box class="w-32 h-4"></skeleton-box>
           <skeleton-box class="w-40 h-3"></skeleton-box>
         </div>
       </div>
     </div>
-    <div class="w-[160px] shrink-0 px-4"><skeleton-box class="w-24 h-4"></skeleton-box></div>
-    <div class="w-[140px] shrink-0 px-4"><skeleton-box class="w-20 h-4"></skeleton-box></div>
-    <div class="w-[130px] shrink-0 px-4 flex flex-col gap-2">
+    <div class="w-[10rem] shrink-0 px-4"><skeleton-box class="w-24 h-4"></skeleton-box></div>
+    <div class="w-[8.75rem] shrink-0 px-4"><skeleton-box class="w-20 h-4"></skeleton-box></div>
+    <div class="w-[8.125rem] shrink-0 px-4 flex flex-col gap-2">
       <skeleton-box class="w-16 h-6"></skeleton-box>
       <skeleton-box class="w-12 h-3"></skeleton-box>
     </div>
-    <div class="w-[140px] shrink-0 flex flex-col items-center gap-2">
+    <div class="w-[8.75rem] shrink-0 flex flex-col items-center gap-2">
       <skeleton-box class="w-20 h-6"></skeleton-box>
       <skeleton-box class="w-14 h-3"></skeleton-box>
     </div>
-    <div class="w-[426px] flex gap-1.5 items-center px-4 pr-20 shrink-0">
-      <skeleton-box v-for="talent in 7" :key="talent" class="w-[42px] h-[42px] shrink-0 !rounded"></skeleton-box>
+    <div class="w-[26.625rem] flex gap-1.5 items-center px-4 pr-20 shrink-0">
+      <skeleton-box v-for="talent in 7" :key="talent" class="w-[2.625rem] h-[2.625rem] shrink-0 !rounded"></skeleton-box>
     </div>
   </div>
   <!-- A game-summary-box row with empty slots, same column widths, while matches load -->
   <div v-else class="mb-1.5 flex flex-wrap items-center justify-between gap-y-4 rounded overflow-hidden bg-surface-1 2xl:flex-nowrap">
-    <div class="relative flex-1 md:max-w-[410px] min-w-[300px] self-stretch flex items-center pl-6 py-4">
+    <div class="relative flex-1 md:max-w-[25.625rem] min-w-[18.75rem] self-stretch flex items-center pl-6 py-4">
       <div class="absolute inset-y-0 left-0 w-1.5 bg-surface-3"></div>
       <div class="flex items-center gap-4">
-        <skeleton-box class="w-[82px] h-[82px] shrink-0 !rounded-full"></skeleton-box>
+        <skeleton-box class="w-[5.125rem] h-[5.125rem] shrink-0 !rounded-full"></skeleton-box>
         <div class="flex flex-col gap-2">
           <skeleton-box class="w-36 h-4"></skeleton-box>
           <skeleton-box class="w-20 h-4"></skeleton-box>
@@ -48,28 +48,28 @@
       </div>
     </div>
 
-    <div class="flex gap-5 items-center px-4 w-full 2xl:w-[430px] shrink-0">
-      <div v-for="stat in 3" :key="stat" class="flex flex-col gap-2 flex-1 min-w-0 2xl:flex-none 2xl:w-[118px]">
+    <div class="flex gap-5 items-center px-4 w-full 2xl:w-[26.875rem] shrink-0">
+      <div v-for="stat in 3" :key="stat" class="flex flex-col gap-2 flex-1 min-w-0 2xl:flex-none 2xl:w-[7.375rem]">
         <skeleton-box class="w-20 h-4"></skeleton-box>
         <skeleton-box class="w-16 h-6"></skeleton-box>
         <skeleton-box class="w-12 h-3"></skeleton-box>
       </div>
     </div>
 
-    <div class="w-full 2xl:w-[140px] shrink-0 flex flex-col gap-2 max-2xl:items-start max-2xl:px-4 2xl:items-center">
+    <div class="w-full 2xl:w-[8.75rem] shrink-0 flex flex-col gap-2 max-2xl:items-start max-2xl:px-4 2xl:items-center">
       <skeleton-box class="w-20 h-6"></skeleton-box>
       <skeleton-box class="w-14 h-3"></skeleton-box>
     </div>
 
-    <div class="flex flex-wrap gap-1.5 items-center px-4 w-full 2xl:w-[362px] shrink-0">
-      <skeleton-box v-for="talent in 7" :key="talent" class="w-[42px] h-[42px] shrink-0 !rounded"></skeleton-box>
+    <div class="flex flex-wrap gap-1.5 items-center px-4 w-full 2xl:w-[22.625rem] shrink-0">
+      <skeleton-box v-for="talent in 7" :key="talent" class="w-[2.625rem] h-[2.625rem] shrink-0 !rounded"></skeleton-box>
     </div>
 
-    <div class="flex gap-2 pl-4 2xl:pl-1.5 pr-12 py-4 w-full 2xl:w-[362px] shrink-0">
-      <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[150px]">
+    <div class="flex gap-2 pl-4 2xl:pl-1.5 pr-12 py-4 w-full 2xl:w-[22.625rem] shrink-0">
+      <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[9.375rem]">
         <div v-for="player in 5" :key="player" class="flex gap-1 h-4 items-center">
           <!-- Party icon and line slot, then hero icon and name -->
-          <span class="w-[19px] shrink-0"></span>
+          <span class="w-[1.1875rem] shrink-0"></span>
           <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
           <skeleton-box class="flex-1 h-3"></skeleton-box>
         </div>

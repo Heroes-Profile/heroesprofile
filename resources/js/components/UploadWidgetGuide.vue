@@ -3,7 +3,7 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
     <page-heading :heading="'Embed the Replay Uploader'"></page-heading>
 
-    <div class="mx-auto max-w-[900px] px-4 mt-6 mb-10 space-y-6">
+    <div class="mx-auto max-w-[56.25rem] px-4 mt-6 mb-10 space-y-6">
       <div class="bg-lighten rounded p-6 text-sm space-y-4">
         <p>
           You can put the Heroes Profile web uploader on your own site with an iframe:

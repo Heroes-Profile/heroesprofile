@@ -1,10 +1,10 @@
 <template>
-  <div :class="compact ? 'px-4' : 'max-w-[1920px] mx-auto md:px-8 mb-8'">
+  <div :class="compact ? 'px-4' : 'max-w-[120rem] mx-auto md:px-8 mb-8'">
     <button v-if="!compact" class="md:hidden p-2 bg-blue w-full" @click="showMobile">Show Filters</button>
     <div v-show="compact || showNav" :class="compact ? 'bg-lighten rounded p-3' : 'bg-surface md:rounded p-4 md:p-6 max-md:fixed max-md:inset-0 max-md:z-50 max-md:h-[100dvh] max-md:overflow-y-auto max-md:flex max-md:flex-col'">
-      <button v-if="!compact" class="md:hidden ml-auto text-2xl min-w-[44px] min-h-[44px]" aria-label="Close filters" @click="showMobile">x</button>
+      <button v-if="!compact" class="md:hidden ml-auto text-2xl min-w-[2.75rem] min-h-[2.75rem]" aria-label="Close filters" @click="showMobile">x</button>
       <div :class="compact ? 'flex flex-wrap items-end gap-3' : 'filter-row'">
-        <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,160px),1fr))] flex-1 basis-[800px] gap-2 min-w-0' : 'contents'">
+        <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] flex-1 basis-[50rem] gap-2 min-w-0' : 'contents'">
           <!-- A page's own pickers (esports seasons, divisions, teams, ...): { text, values, defaultValue, show } -->
           <template v-for="extra in extrafilters" :key="extra.text">
             <single-select-filter :compact="compact" v-if="extra.show !== false"
@@ -403,7 +403,7 @@
           ></date-range-filter>
 
           <!-- Friend/Foe Battletag Search -->
-          <div v-if="matchhistorybattletagsearch" id="filter-label" class="filter-fill relative max-md:w-full md:w-[200px]">
+          <div v-if="matchhistorybattletagsearch" id="filter-label" class="filter-fill relative max-md:w-full md:w-[12.5rem]">
             <div class="flex flex-col gap-1.5 text-sm font-medium text-subtext p-2">
               <span>Friend or Foe Player</span>
               <div class="relative">
@@ -412,10 +412,10 @@
                   type="text"
                   v-model="ffBattletag"
                   placeholder="Enter BattleTag"
-                  class="w-full h-[40px] rounded-control !bg-surface-3 pl-9 pr-2 text-white placeholder:text-subtext focus:outline-none"
+                  class="w-full h-[2.5rem] rounded-control !bg-surface-3 pl-9 pr-2 text-white placeholder:text-subtext focus:outline-none"
                   @input="ffBlizzid = null; ffRegion = null; ffSearchResults = []; ffSearchError = null"
                 />
-                <div v-if="ffSearchResults.length > 1" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="min-width:280px; max-height:340px; overflow-y:auto;">
+                <div v-if="ffSearchResults.length > 1" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="min-width:17.5rem; max-height:21.25rem; overflow-y:auto;">
                   <div
                     v-for="result in ffSearchResults"
                     :key="result.blizz_id + '-' + result.region"
@@ -444,9 +444,9 @@
                 v-model="selectedGameDate" 
                 @input="handleGameDateChange"
                 @blur="handleDateInputBlur"
-                class="w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 text-white"
+                class="w-[12.5rem] h-[2.5rem] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 text-white"
               ></div>
-              <button class="h-[40px] bg-blue md:m-t-auto  p-2 border-r-[1px] border-t-[1px] border-b-[1px] hover:bg-teal" @click="resetGameDate()">X</button>
+              <button class="h-[2.5rem] bg-blue md:m-t-auto  p-2 border-r-[1px] border-t-[1px] border-b-[1px] hover:bg-teal" @click="resetGameDate()">X</button>
             </div>
           </div>
 
@@ -467,7 +467,7 @@
           ></multi-select-filter>
           <slot></slot>
         </div>
-        <button :disabled="disabledFilter" @click="applyFilter" class="btn" :class="compact ? 'bg-blue px-5 h-10 disabled:opacity-50 hover:bg-lblue' : ['font-semibold h-10 m-2 md:w-[120px] max-md:flex-[1_1_8rem]', disabledFilter ? 'bg-gray-md' : 'bg-blue hover:bg-lblue']">
+        <button :disabled="disabledFilter" @click="applyFilter" class="btn" :class="compact ? 'bg-blue px-5 h-10 disabled:opacity-50 hover:bg-lblue' : ['font-semibold h-10 m-2 md:w-[7.5rem] max-md:flex-[1_1_8rem]', disabledFilter ? 'bg-gray-md' : 'bg-blue hover:bg-lblue']">
           Filter
         </button>
 

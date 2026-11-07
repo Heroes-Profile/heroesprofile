@@ -115,9 +115,9 @@
     <style>.void-eye-img{ background-image: url('{{ asset('images/event/xalatath/void-eye.svg') }}'); }</style>
 
 </head>
-<body class="bg-page bg-[radial-gradient(ellipse_1000px_900px_at_50%_150px,#1c2f5a,#14182a)] bg-no-repeat text-white {{ $bladeGlobals ? $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' : 'light-mode' }}">
+<body class="bg-page bg-[radial-gradient(ellipse_62.5rem_56.25rem_at_50%_9.375rem,#1c2f5a,#14182a)] bg-no-repeat text-white {{ $bladeGlobals ? $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' : 'light-mode' }}">
   <div id="app" class="relative flex flex-col align-stretch " style="min-height:100vh; ">
-  <div class="max-md:h-[75px]"></div>
+  <div class="max-md:h-[4.6875rem]"></div>
     <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" ></horizontal-banner-ad>
 
 
@@ -146,7 +146,7 @@
         </div>
       @endif
       <div class="bg-surface text-sm px-4 md:px-8 py-6">
-        <div class="max-w-[1856px] mx-auto flex flex-wrap items-center justify-between gap-4 max-md:flex-col max-md:text-center">
+        <div class="max-w-[116rem] mx-auto flex flex-wrap items-center justify-between gap-4 max-md:flex-col max-md:text-center">
           <div>
             @if(isset($maxReplayID) && ! (isset($isBackendOff) && $isBackendOff))
               Patch {{ $latestPatch }}<span class="mx-3">|</span>{{ is_numeric($maxReplayID) ? number_format($maxReplayID) : $maxReplayID }} replays

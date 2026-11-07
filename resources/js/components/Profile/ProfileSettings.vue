@@ -3,13 +3,13 @@
   <page-heading :heading="'Settings'"></page-heading>
   <!-- While a dropdown is open, a click anywhere just closes it (which saves) instead of opening another setting -->
   <div v-if="dropdownOpen" class="fixed inset-0 z-40"></div>
-  <div class="relative flex mx-auto w-full max-w-[1200px] mt-[2vh] h-[85vh]">
+  <div class="relative flex mx-auto w-full max-w-[75rem] mt-[2vh] h-[85vh]">
     <div v-if="isLoading" class="absolute inset-0 z-50 rounded overflow-hidden bg-page/70 flex items-center justify-center">
       <loading-component :compact="true" :textoverride="true">Saving...</loading-component>
     </div>
 
     <!-- Left sidebar -->
-    <div class="w-[180px] shrink-0 bg-surface-1 rounded-l flex flex-col">
+    <div class="w-[11.25rem] shrink-0 bg-surface-1 rounded-l flex flex-col">
       <nav class="flex flex-col pt-4">
         <button
           v-for="tab in tabs"
@@ -132,7 +132,7 @@
             <h3 class="mb-2">Match History Style</h3>
             <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" @tab-click="playermatchhistorystylesetting" :overridedefaultside="playerhistorytable"></tab-button>
             <div class="flex flex-wrap gap-4 mt-4">
-              <div v-for="example in matchHistoryStyleExamples" :key="example.side" class="max-w-[600px] w-full">
+              <div v-for="example in matchHistoryStyleExamples" :key="example.side" class="max-w-[37.5rem] w-full">
                 <p class="text-sm mb-1">{{ example.label }}</p>
                 <img :src="example.image" :alt="example.label + ' match history example'" :class="['w-full rounded border-2', playerhistorytable === example.side ? 'border-teal' : 'border-gray-dark opacity-60']" />
               </div>
@@ -228,7 +228,7 @@
       </div>
     </div>
   </div>
-  <div class="mx-auto w-full max-w-[1200px] mt-4 px-2 text-sm text-subtext">
+  <div class="mx-auto w-full max-w-[75rem] mt-4 px-2 text-sm text-subtext">
     To request new settings, please contact us directly at
     <a href="mailto:Zemill@heroesprofile.com" class="link">Zemill@heroesprofile.com</a>,
     or open a discussion on

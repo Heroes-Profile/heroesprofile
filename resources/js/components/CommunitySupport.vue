@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-[1500px] mx-auto p-4">
+  <div class="max-w-[93.75rem] mx-auto p-4">
     <h1 class="text-3xl font-bold mb-4 text-center">Site Temporarily Disabled</h1>
      <p class="mb-4">
       Heroes Profile is a community-funded site that relies on the support of its users to pay for server costs.
@@ -25,7 +25,7 @@
     </p>
       </div>
     </div>
-   <div class="max-w-[900px] mx-auto">
+   <div class="max-w-[56.25rem] mx-auto">
     
     <p class="mb-4">
       Our funding goal is ${{ patreongoal }} per month, which covers server and architecture costs.
@@ -69,7 +69,7 @@ export default {
   width: 80%;
   margin: 1em auto;
   background-color: #eee;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   height: 3em;
  
   overflow: hidden;

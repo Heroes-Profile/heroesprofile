@@ -183,8 +183,8 @@
     #hero-bubble-chart {
       width: 100%;
       height: 100%;
-      max-width: 1500px;
-      max-height: 750px;
+      max-width: 93.75rem;
+      max-height: 46.875rem;
       margin-left:auto;
       margin-right:auto;
     }

@@ -22,7 +22,7 @@
           <!-- A build: seven talent squares with its copy code and button underneath -->
           <div v-else-if="column === 'talents'" class="flex flex-col items-center gap-2">
             <div class="flex gap-1.5">
-              <skeleton-box v-for="level in 7" :key="level" class="w-[42px] h-[42px] shrink-0"></skeleton-box>
+              <skeleton-box v-for="level in 7" :key="level" class="w-[2.625rem] h-[2.625rem] shrink-0"></skeleton-box>
             </div>
             <div class="flex items-center gap-2">
               <skeleton-box class="h-4 w-40 max-w-full"></skeleton-box>
@@ -36,7 +36,7 @@
             <skeleton-box class="h-4 w-32 max-w-full"></skeleton-box>
           </div>
           <div v-else-if="column === 'talentrow'" class="flex gap-1.5 justify-center">
-            <skeleton-box v-for="level in 7" :key="level" class="w-[42px] h-[42px] shrink-0"></skeleton-box>
+            <skeleton-box v-for="level in 7" :key="level" class="w-[2.625rem] h-[2.625rem] shrink-0"></skeleton-box>
           </div>
           <!-- A build's copy code with its copy icon -->
           <div v-else-if="column === 'code'" class="flex items-center justify-center gap-2">

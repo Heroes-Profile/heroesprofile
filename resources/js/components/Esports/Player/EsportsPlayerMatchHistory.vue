@@ -25,12 +25,12 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="data">
       <!-- `compact` means the game rows, labelled Expanded -->
-      <div class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-wrap justify-end items-center gap-4">
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-wrap justify-end items-center gap-4">
         <tab-button :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="compact ? 'right' : 'left'"></tab-button>
         <pagination-bar :current="data.current_page" :last="data.last_page" @page="getNgsData"></pagination-bar>
       </div>
       <p v-if="!data.data.length" class="text-center text-subtext mt-10">No {{ league.name }} games for these filters.</p>
-      <div v-else-if="compact" class="max-w-[1920px] mx-auto px-4 md:px-8 py-4">
+      <div v-else-if="compact" class="max-w-[120rem] mx-auto px-4 md:px-8 py-4">
         <panel-box>
           <div>
             <game-summary-header :esport="true"></game-summary-header>
@@ -38,7 +38,7 @@
           </div>
         </panel-box>
       </div>
-      <div v-else class="max-w-[1920px] mx-auto px-4 md:px-8 py-4">
+      <div v-else class="max-w-[120rem] mx-auto px-4 md:px-8 py-4">
         <panel-box>
           <!-- Wide rows scroll sideways on narrow screens -->
           <div class="overflow-x-auto">
@@ -49,12 +49,12 @@
           </div>
         </panel-box>
       </div>
-      <div class="max-w-[1920px] mx-auto px-4 md:px-8 pb-4 flex justify-end">
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 pb-4 flex justify-end">
         <pagination-bar :current="data.current_page" :last="data.last_page" @page="getNgsData"></pagination-bar>
       </div>
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
-    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 py-4 space-y-8">
+    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 py-4 space-y-8">
       <loading-component :compact="true" :overrideimage="league.loaderImage"></loading-component>
       <panel-box>
         <div v-if="compact">

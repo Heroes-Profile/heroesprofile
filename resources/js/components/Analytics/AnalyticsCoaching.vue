@@ -226,7 +226,7 @@
                 <template v-if="signal.percentile === null">-</template>
                 <template v-else>
                   <!-- Worse to better, median tick in the middle -->
-                  <div class="relative h-2 bg-lighten rounded min-w-[80px] my-2" :title="standingText(signal)">
+                  <div class="relative h-2 bg-lighten rounded min-w-[5rem] my-2" :title="standingText(signal)">
                     <div class="absolute -top-1 h-4 w-px bg-gray-medium left-1/2"></div>
                     <div class="absolute top-1/2 w-3 h-3 rounded-full -translate-x-1/2 -translate-y-1/2" :class="playersAhead(signal) > 50 ? 'bg-red' : 'bg-teal'" :style="{ left: standingPosition(signal) + '%' }"></div>
                   </div>

@@ -11,7 +11,7 @@
       <li>Pre-match Game Analysis</li>
       <li>Post-match Game Analysis</li>
     </ul>
-    <img src="/images/miscellaneous/uploader.png" alt="The Heroes Profile replay uploader" class="w-full mt-6 rounded-[8px]" />
+    <img src="/images/miscellaneous/uploader.png" alt="The Heroes Profile replay uploader" class="w-full mt-6 rounded-[0.5rem]" />
 
     <template #footer>
       <custom-button class="ml-auto" color="teal" text="Close" :ignoreclick="true" @click="closePopup"></custom-button>

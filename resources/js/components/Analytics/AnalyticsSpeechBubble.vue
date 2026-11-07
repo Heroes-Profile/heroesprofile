@@ -60,7 +60,7 @@ export default {
 
 .speech-bubble.two-lines {
   /* Exactly two lines plus padding and border, whatever the text */
-  height: calc(2.8em + 1.2rem + 4px);
+  height: calc(2.8em + 1.2rem + 0.25rem);
   display: flex;
   align-items: center;
 }
@@ -77,14 +77,14 @@ export default {
 
 /* The tail's outline, then its fill on top */
 .speech-bubble::before {
-  left: -14px;
-  border-width: 9px 14px 9px 0;
+  left: -0.875rem;
+  border-width: 0.5625rem 0.875rem 0.5625rem 0;
   border-color: transparent #111 transparent transparent;
 }
 
 .speech-bubble::after {
-  left: -10px;
-  border-width: 7px 11px 7px 0;
+  left: -0.625rem;
+  border-width: 0.4375rem 0.6875rem 0.4375rem 0;
   border-color: transparent #f4f4f8 transparent transparent;
 }
 
@@ -99,7 +99,7 @@ export default {
 
 @keyframes announcer-talk {
   0% { transform: translateY(0) rotate(0); }
-  20% { transform: translateY(-3px) rotate(-5deg); }
+  20% { transform: translateY(-0.1875rem) rotate(-5deg); }
   45% { transform: translateY(0) rotate(4deg); }
   70% { transform: translateY(-2px) rotate(-2deg); }
   100% { transform: translateY(0) rotate(0); }

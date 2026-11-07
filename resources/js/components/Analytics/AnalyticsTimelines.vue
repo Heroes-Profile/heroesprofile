@@ -15,7 +15,7 @@
       This chart is your team's level minus the enemy team's level at each minute, averaged over the games still running at that minute. Above 0 means ahead. Late minutes come from fewer, longer games, so they jump around more.
     </analytics-heading>
     <multi-series-chart
-      class="max-w-[1200px] mx-auto mb-8"
+      class="max-w-[75rem] mx-auto mb-8"
       :labels="leadMinutes"
       :yLabel="'Levels ahead'"
       :reference="0"
@@ -28,7 +28,7 @@
       At 10, 15 and 20 minutes each game is marked behind, even or ahead in team level. Each bar is the win rate from that state; hover for the number of games. Games that ended before the checkpoint are left out.
     </analytics-heading>
     <multi-series-chart
-      class="max-w-[1200px] mx-auto"
+      class="max-w-[75rem] mx-auto"
       type="bar"
       format="percent"
       :reference="50"
@@ -94,7 +94,7 @@
       <stat-box class="w-[30%] max-md:w-[48%]" :title="'Solo Kills/Game'" :value="round(takedowns.you.solo_kills, 2)" :secondstat="round(takedowns.base.solo_kills, 2)" :secondcaption="'global'" color="teal"></stat-box>
     </div>
     <multi-series-chart
-      class="max-w-[1200px] mx-auto mb-8"
+      class="max-w-[75rem] mx-auto mb-8"
       type="bar"
       format="percent"
       :labels="phaseLabels"

@@ -2,7 +2,7 @@
   <div>
     <page-heading heading="Endpoint Limits" :infoText1="infoText"></page-heading>
 
-    <div class="mx-auto max-w-[1200px] px-4 mt-6 pb-16">
+    <div class="mx-auto max-w-[75rem] px-4 mt-6 pb-16">
 
       <div class="bg-lighten border-l-4 border-teal p-4 mb-8">
         <p class="text-sm">

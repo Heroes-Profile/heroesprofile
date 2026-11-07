@@ -21,7 +21,7 @@
       <span
         v-for="(m, index) in markers"
         :key="index"
-        class="absolute top-0 w-[3px] h-4 cursor-pointer -translate-x-1/2"
+        class="absolute top-0 w-[0.1875rem] h-4 cursor-pointer -translate-x-1/2"
         :style="{ left: (100 * m.t / length) + '%', background: m.color }"
         :title="clock(m.t) + ' ' + m.label"
         @click="$emit('seek', Math.max(0, m.t - 5))"

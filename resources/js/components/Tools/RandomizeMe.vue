@@ -3,7 +3,7 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
     <page-heading :heading="'Randomize Me'"></page-heading>
 
-    <div class="max-w-[900px] mx-auto px-4 py-10">
+    <div class="max-w-[56.25rem] mx-auto px-4 py-10">
       <div class="flex justify-center mb-10">
         <custom-button color="teal" :ignoreclick="true" :disabled="loading" :alt="'Randomize'" @click="randomize">
           <i class="fa-solid fa-shuffle mr-2"></i>
@@ -13,11 +13,11 @@
 
       <!-- The result's layout with grey blocks while it loads -->
       <div v-if="loading" class="flex flex-col items-center gap-8">
-        <skeleton-box class="w-[200px] h-[120px]"></skeleton-box>
+        <skeleton-box class="w-[12.5rem] h-[7.5rem]"></skeleton-box>
         <skeleton-box class="w-40 h-7"></skeleton-box>
         <panel-box class="w-full">
           <div class="flex flex-wrap gap-4 justify-center">
-            <skeleton-box v-for="talent in 7" :key="talent" class="w-[50px] h-[50px]"></skeleton-box>
+            <skeleton-box v-for="talent in 7" :key="talent" class="w-[3.125rem] h-[3.125rem]"></skeleton-box>
           </div>
         </panel-box>
       </div>

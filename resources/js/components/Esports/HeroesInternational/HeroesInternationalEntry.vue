@@ -2,7 +2,7 @@
   <div>
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
     <page-heading :heading="'Heroes International'"></page-heading>
-    <div class="flex p-10 md:p-20 bg-surface rounded max-w-[1500px] mx-4 md:mx-auto flex-wrap justify-center">
+    <div class="flex p-10 md:p-20 bg-surface rounded max-w-[93.75rem] mx-4 md:mx-auto flex-wrap justify-center">
 
       <div class="text-center md:w-[15%] mb-15 mx-5">
         <a :href="'/Esports/HeroesInternational/?tournament=main'"><img src="/images/HI/heroes_international.png" alt="Heroes International"/></a>

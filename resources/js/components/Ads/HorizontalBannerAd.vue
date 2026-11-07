@@ -9,7 +9,7 @@
         Please consider allowing ads or support us through patreon at <a class="link break-all" href="https://www.patreon.com/heroesprofile" target="_blank">https://www.patreon.com/heroesprofile</a>
       </details>
     </template>
-    <div v-else id="horizontal-banner-ad-container" style="min-height:120px; position:relative;"></div>
+    <div v-else id="horizontal-banner-ad-container" style="min-height:7.5rem; position:relative;"></div>
   </div>
 </template>
 

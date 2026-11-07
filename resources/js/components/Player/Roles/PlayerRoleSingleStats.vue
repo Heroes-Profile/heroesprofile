@@ -43,7 +43,7 @@
     <div v-if="data && esport && !data.games_played" class="flex items-center justify-center mt-8">
       No {{ role }} games in {{ league.name }} for these filters.
     </div>
-    <div v-else-if="data" class="max-w-[1920px] mx-auto px-4 md:px-8 mt-8 space-y-8">
+    <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
 
       <panel-box>
       <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
@@ -87,7 +87,7 @@
           <panel-box v-if="esport && data.teams_played_for && data.teams_played_for.length" :inner="true" title="Teams Played For">
             <div class="flex flex-col gap-2">
               <a v-for="team in data.teams_played_for" :key="team.team_name + team.season" :href="team.link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
-                <img v-if="team.image" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0px]" :src="team.image" :alt="$ngsTeam(team.team_name).name"/>
+                <img v-if="team.image" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image" :alt="$ngsTeam(team.team_name).name"/>
                 <div class="flex flex-col min-w-0 flex-1">
                   <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></span>
                   <span class="text-sm text-subtext">{{ [team.season ? 'Season ' + team.season : null, team.division ? 'Division ' + team.division : null].filter(Boolean).join(' · ') }}</span>
@@ -150,16 +150,16 @@
       No data
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
-    <div v-else-if="isLoading || asyncLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 mt-8 space-y-8">
+    <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
       <loading-component :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ asyncLoading ? 'This is taking longer than expected. A background task is computing your results. Please be patient.' : 'Loading data...' }}</loading-component>
       <panel-box>
         <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
-          <panel-box :inner="true" class="!gap-8 2xl:w-[780px]">
+          <panel-box :inner="true" class="!gap-8 2xl:w-[48.75rem]">
             <h2 class="text-3xl font-bold">{{ role }}</h2>
             <div class="flex gap-8 max-sm:flex-col">
               <skeleton-box class="w-40 md:w-60 h-40 md:h-60 shrink-0 !rounded-full"></skeleton-box>
               <div class="flex-1 flex flex-col gap-6">
-                <skeleton-box class="h-[30px]"></skeleton-box>
+                <skeleton-box class="h-[1.875rem]"></skeleton-box>
                 <div class="grid grid-cols-2 gap-x-6 gap-y-4">
                   <skeleton-box v-for="index in 10" :key="index" class="h-11"></skeleton-box>
                 </div>

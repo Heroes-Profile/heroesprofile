@@ -3,7 +3,7 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
     <page-heading :heading="'The New Replay Uploader'"></page-heading>
 
-    <div class="mx-auto max-w-[900px] px-4 mt-6 mb-10 space-y-6">
+    <div class="mx-auto max-w-[56.25rem] px-4 mt-6 mb-10 space-y-6">
       <div class="bg-lighten rounded p-6 text-sm space-y-4">
         <p>
           The Heroes Profile uploader has been rewritten. It's now one app for Windows, macOS and Linux,
@@ -14,7 +14,7 @@
         <img
           src="/images/miscellaneous/uploader.png"
           alt="The Heroes Profile replay uploader"
-          class="w-full rounded-[8px]"
+          class="w-full rounded-[0.5rem]"
         />
       </div>
 

@@ -9,7 +9,7 @@
         @tab-click="$emit('layout-change', $event === 'right' ? 'horizontal' : 'vertical')"
         :overridedefaultside="layout === 'horizontal' ? 'right' : 'left'"
       ></tab-button>
-      <img :src="'/images/heroes/' + hero.short_name + '.png'" :alt="hero.name" class="w-16 h-16 rounded-full bg-surface-3 text-[0px]" />
+      <img :src="'/images/heroes/' + hero.short_name + '.png'" :alt="hero.name" class="w-16 h-16 rounded-full bg-surface-3 text-[0rem]" />
       <h3 class="text-xl font-bold">{{ hero.name }}</h3>
       <button @click="$emit('change-hero')" class="btn bg-blue hover:bg-lblue">
         Change Hero

@@ -25,7 +25,7 @@ export default {
   name: 'ModalBox',
   props: {
     title: String,
-    width: { type: String, default: 'max-w-[944px]' },
+    width: { type: String, default: 'max-w-[59rem]' },
   },
   mounted() {
     document.body.style.overflow = 'hidden';
@@ -58,21 +58,21 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 1.25rem;
   min-height: 100%;
 }
 
 .modal-container {
   margin: 0 auto;
-  max-height: calc(100vh - 40px);
-  max-height: calc(100dvh - 40px);
+  max-height: calc(100vh - 2.5rem);
+  max-height: calc(100dvh - 2.5rem);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  box-shadow: 0 2px 0.5rem rgba(0, 0, 0, 0.33);
 }
 
 .modal-body {
-  margin: 20px 0;
+  margin: 1.25rem 0;
   overflow-y: auto;
   flex: 1 1 auto;
   min-height: 0;

@@ -3,7 +3,7 @@
 @section('meta_keywords', 'Heroes of the Storm, Twitch, extension')
 @section('meta_description', 'The Heroes Profile Twitch extension is in review and not open to streamers yet.')
 @section('content')
-  <div class="mx-auto max-w-[700px] px-4 py-16 text-center">
+  <div class="mx-auto max-w-[43.75rem] px-4 py-16 text-center">
     <h1 class="text-2xl mb-4">Heroes Profile Live is on its way</h1>
     <p class="mb-4">
       Our Twitch extension shows your viewers the lobby, heroes and talent picks of the game

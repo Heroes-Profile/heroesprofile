@@ -1,14 +1,14 @@
 <template>
-  <div id="filter-label" class="relative" :class="[compact ? 'min-w-0 w-full' : 'filter-fill max-md:w-full md:min-w-[200px]', { 'bg-red': highlighttimesframes }]">
+  <div id="filter-label" class="relative" :class="[compact ? 'min-w-0 w-full' : 'filter-fill max-md:w-full md:min-w-[12.5rem]', { 'bg-red': highlighttimesframes }]">
     <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'">
       <span class="relative">
         <span class="relative">{{ this.text }}
-          <round-image v-if="infolink" class="mt-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" style="position:absolute; bottom:0; right:-25px;">
+          <round-image v-if="infolink" class="mt-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" style="position:absolute; bottom:0; right:-1.5625rem;">
             <div>
               <p class="max-sm:text-xs">Timeframes correspond to game patches. <a :href="infolink" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">View the full patch & season history.</span><i class="fas fa-chevron-right text-xs ml-2"></i></a></p>
             </div>
           </round-image>
-          <round-image v-if="showrankinfo" class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large" mobileClick="true" style="position:absolute; bottom:0; right:-25px;">
+          <round-image v-if="showrankinfo" class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large" mobileClick="true" style="position:absolute; bottom:0; right:-1.5625rem;">
             <slot>
               <div>
                 <p class="max-sm:text-xs">Heroes Profile Rank is based on a custom MMR algorithm developed by Heroes Profile for approximating a player's skill. This rank does not correlate to in-game rank but the distribution of players in the Heroes Profile dataset. Wood rank is players who have played less than 50 games and cannot be accurately ranked.</p>
@@ -21,7 +21,7 @@
 
 
       
-      <span class="h-[40px] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 relative min-w-0 w-full">
+      <span class="h-[2.5rem] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 relative min-w-0 w-full">
         <span class="flex min-w-0 gap-1">
           <span v-if="toggletabs" class="uppercase whitespace-nowrap font-bold px-1 shrink-0">{{ toggleside === 'right' ? toggletabs[1] : toggletabs[0] }}</span>
           <span v-if="selectedOptions.length" class="uppercase font-bold px-1 truncate min-w-0">{{ selectedlabel || (selectedOptions.length <= 3 ? selectedOptionsName.join(', ') : selectedOptions.length + ' of ' + values.length + ' selected') }}</span>
@@ -63,7 +63,7 @@
             >
             <label :for="row.key" class="ml-2 text-sm font-bold variable-text">{{ row.name }}</label>
           </div>
-          <div v-else class="whitespace-nowrap" :class="[indentClass(row.depth), { 'md:flex md:items-center md:py-[3px]': hasPatchDates, 'opacity-40': !isSelectable(row.value.code) }]">
+          <div v-else class="whitespace-nowrap" :class="[indentClass(row.depth), { 'md:flex md:items-center md:py-[0.1875rem]': hasPatchDates, 'opacity-40': !isSelectable(row.value.code) }]">
             <input
             type="checkbox"
             :id="row.value.code"

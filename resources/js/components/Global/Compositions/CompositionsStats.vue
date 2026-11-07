@@ -37,7 +37,7 @@
       >
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
-    <div v-if="compositiondata" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+    <div v-if="compositiondata" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <div class="flex justify-between">
         <span></span>
         <span>
@@ -152,7 +152,7 @@
       </div>
       </panel-box>
     </div>
-    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <loading-component :compact="true" :textoverride="true">Loading compositions...</loading-component>
       <table-skeleton></table-skeleton>
     </div>

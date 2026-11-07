@@ -79,7 +79,7 @@
       <h4 class="text-sm mb-2">Options</h4>
       <div v-for="(option, index) in form.options" :key="option.key" class="flex flex-wrap gap-2 mb-2">
         <input v-model="option.label" type="text" maxlength="100" placeholder="Label" class="text-black p-2 rounded-control w-full md:w-1/3" />
-        <input v-model="option.description" type="text" maxlength="1000" placeholder="Description (optional)" class="text-black p-2 rounded-control flex-1 min-w-[200px]" />
+        <input v-model="option.description" type="text" maxlength="1000" placeholder="Description (optional)" class="text-black p-2 rounded-control flex-1 min-w-[12.5rem]" />
         <button v-if="!form.has_votes" type="button" class="link text-sm" @click="form.options.splice(index, 1)">Remove</button>
       </div>
       <button v-if="!form.has_votes" type="button" class="link text-sm mb-4" @click="addOption">Add option</button>

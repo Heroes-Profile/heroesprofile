@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table class="max-w-[1000px] md:min-w-[1000px] max-md:text-xs">
+    <table class="max-w-[62.5rem] md:min-w-[62.5rem] max-md:text-xs">
       <thead>
         <tr>
           <th @click="sortTable('hero_id')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'hero_id' }">

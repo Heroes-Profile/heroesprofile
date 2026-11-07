@@ -26,7 +26,7 @@
       <!-- Anything can open the popup in place of the icon -->
       <slot v-if="$slots.trigger" name="trigger"></slot>
       <!-- Looks pressed in while pinned open -->
-      <span :class="['bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em] flex justify-center items-center font-bold tracking-normal leading-none transition', { 'bg-surface-1 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] translate-y-px': pinned }]" v-else-if="circle" >
+      <span :class="['bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em] flex justify-center items-center font-bold tracking-normal leading-none transition', { 'bg-surface-1 shadow-[inset_0_2px_0.25rem_rgba(0,0,0,0.6)] translate-y-px': pinned }]" v-else-if="circle" >
         <i :class="icon" ></i>
       </span>
       <span class=" rounded-full   flex justify-center pl-[1px] items-center bold " v-else >
@@ -41,7 +41,7 @@
           'fixed text-xs z-50',
         {
           'w-[14em]' : popupsize != 'large' && popupsize != 'fit',
-          'w-[400px] max-w-[90vw]' : popupsize == 'large',
+          'w-[25rem] max-w-[90vw]' : popupsize == 'large',
           'w-max max-w-[24em]' : popupsize == 'fit'
         }
         ]" >

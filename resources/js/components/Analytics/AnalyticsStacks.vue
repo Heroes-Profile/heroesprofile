@@ -17,7 +17,7 @@
       <analytics-heading :title="'Against enemy stacks'" :takeaway="enemyTakeaway">
         Win rate by the largest group that queued together on the enemy team; no party means all five queued alone. Global is players in the global sample in the same kind of game, under the same filters. Difference is your win rate minus the global one, in percentage points: positive means you win more than players overall in these games.
       </analytics-heading>
-      <multi-series-chart class="max-w-[1200px] mx-auto" type="bar" format="percent" :reference="50" :referenceLabel="'50%'" :labels="enemyChart.labels" :yLabel="'Win rate'" :series="enemyChart.series"></multi-series-chart>
+      <multi-series-chart class="max-w-[75rem] mx-auto" type="bar" format="percent" :reference="50" :referenceLabel="'50%'" :labels="enemyChart.labels" :yLabel="'Win rate'" :series="enemyChart.series"></multi-series-chart>
       <analytics-numbers>
         <table class="min-w-0 w-full responsive-table">
           <thead>
@@ -46,7 +46,7 @@
         Win rate by how much bigger the enemy's biggest party was than your team's. +3 is, say, a 5-stack against your duo; -2 is your 3-stack against an all-solo team. Even means both teams' biggest parties were the same size. Gaps beyond 3 count as ±3.
       </analytics-heading>
       <multi-series-chart
-        class="max-w-[1200px] mx-auto mb-8"
+        class="max-w-[75rem] mx-auto mb-8"
         type="bar"
         format="percent"
         :reference="50"
@@ -61,7 +61,7 @@
       <analytics-heading :title="'Your party size'" :takeaway="partyTakeaway">
         The size of the party you queued in yourself, not your team's biggest party. Global compares players who queued in the same size of party. Difference is your win rate minus the global one, in percentage points.
       </analytics-heading>
-      <multi-series-chart class="max-w-[1200px] mx-auto" type="bar" format="percent" :reference="50" :referenceLabel="'50%'" :labels="partyChart.labels" :yLabel="'Win rate'" :series="partyChart.series"></multi-series-chart>
+      <multi-series-chart class="max-w-[75rem] mx-auto" type="bar" format="percent" :reference="50" :referenceLabel="'50%'" :labels="partyChart.labels" :yLabel="'Win rate'" :series="partyChart.series"></multi-series-chart>
       <analytics-numbers>
         <table class="min-w-0 w-full responsive-table">
           <thead>

@@ -18,7 +18,7 @@
 
     <!-- Laid out like the player profile -->
     <div v-if="data" class="mt-8 space-y-8">
-      <div class="max-w-[1920px] mx-auto px-4 md:px-8 space-y-8">
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 space-y-8">
         <panel-box>
           <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
 
@@ -30,7 +30,7 @@
               </div>
               <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
                 <div class="shrink-0 w-40 md:w-60 aspect-square flex items-center justify-center">
-                  <img class="max-w-full max-h-full object-contain text-[0px]" :src="divisionImage" :alt="'Division ' + division" @error="divisionImageFailed = true"/>
+                  <img class="max-w-full max-h-full object-contain text-[0rem]" :src="divisionImage" :alt="'Division ' + division" @error="divisionImageFailed = true"/>
                 </div>
                 <div class="flex-1 min-w-0 w-full grid grid-cols-2 gap-x-6 gap-y-1 content-start">
                   <stat-box v-for="stat in overviewStats" :key="stat.label" class="!m-0 !px-0 !min-w-0" :title="stat.label" :value="stat.value"></stat-box>
@@ -50,7 +50,7 @@
               <panel-box :inner="true" :title="'Teams in Division ' + division">
                 <div class="flex flex-col gap-2">
                   <a v-for="team in sortedTeams" :key="team.team_name" :href="teamUrl(team)" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
-                    <img v-if="team.image" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0px]" :src="team.image" :alt="$ngsTeam(team.team_name).name"/>
+                    <img v-if="team.image" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image" :alt="$ngsTeam(team.team_name).name"/>
                     <div class="flex flex-col min-w-0 flex-1">
                       <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></span>
                       <span v-if="$ngsTeam(team.team_name).withdrawnSeason" class="text-sm text-subtext">Withdrew Season {{ $ngsTeam(team.team_name).withdrawnSeason }}</span>
@@ -95,17 +95,17 @@
 
       <!-- The NGS page's own recent match rows -->
       <esports-recent-matches v-if="recentMatches.length" :data="recentMatches" :esport="'NGS'" :always-expanded="true"></esports-recent-matches>
-      <div v-else class="max-w-[1920px] mx-auto px-4 md:px-8">
+      <div v-else class="max-w-[120rem] mx-auto px-4 md:px-8">
         <p class="text-subtext">No games in this division yet.</p>
       </div>
     </div>
 
     <!-- The page's layout with grey blocks while it loads, like the profile -->
-    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 mt-8 space-y-8">
+    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
       <loading-component :compact="true" :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component>
       <panel-box>
         <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
-          <panel-box :inner="true" class="!gap-8 2xl:w-[780px]">
+          <panel-box :inner="true" class="!gap-8 2xl:w-[48.75rem]">
             <div class="flex flex-col gap-2">
               <h2 class="text-3xl font-bold">Division {{ division }}</h2>
               <skeleton-box class="h-4 w-24"></skeleton-box>
@@ -143,7 +143,7 @@
       <!-- The NGS page's recent match rows, in grey -->
         <panel-box>
           <div v-for="row in 7" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
-            <div class="flex flex-col gap-2 w-[300px] shrink-0">
+            <div class="flex flex-col gap-2 w-[18.75rem] shrink-0">
               <skeleton-box class="h-4 w-40"></skeleton-box>
               <skeleton-box class="h-4 w-32"></skeleton-box>
               <skeleton-box class="h-3 w-36"></skeleton-box>
@@ -163,8 +163,8 @@
                 <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
               </div>
             </div>
-            <div class="flex gap-2 w-[340px] max-w-full shrink-0">
-              <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[150px]">
+            <div class="flex gap-2 w-[21.25rem] max-w-full shrink-0">
+              <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[9.375rem]">
                 <div v-for="player in 5" :key="player" class="flex items-center gap-1">
                   <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
                   <skeleton-box class="h-3 w-24"></skeleton-box>

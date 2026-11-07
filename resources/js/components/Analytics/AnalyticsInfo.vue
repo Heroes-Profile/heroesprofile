@@ -5,7 +5,7 @@
       :heading="'Analytics (Pre-Alpha)'"
     ></page-heading>
 
-    <div class="max-w-[900px] mx-auto px-4 mt-4 mb-10">
+    <div class="max-w-[56.25rem] mx-auto px-4 mt-4 mb-10">
       <p class="mb-4">
         Player Analytics breaks down your own season games (from Oct 2, 2026) from their replays and compares you with a sample of all games:
       </p>

@@ -2,7 +2,7 @@
   <div>
     <page-heading heading="API Privacy Policy" :infoText1="infoText"></page-heading>
 
-    <div class="mx-auto max-w-[1000px] px-4 mt-6 pb-16">
+    <div class="mx-auto max-w-[62.5rem] px-4 mt-6 pb-16">
       <p class="text-sm text-gray-medium mb-6">Last updated: October 2026</p>
 
       <p class="mb-6">

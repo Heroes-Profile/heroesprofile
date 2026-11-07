@@ -2,7 +2,7 @@
   <div>
     <page-heading :infoText1="infoText" heading="Heroes Profile API"></page-heading>
 
-    <div class="mx-auto max-w-[1500px] p-4">
+    <div class="mx-auto max-w-[93.75rem] p-4">
       <p class="mb-8">
         Heroes Profile API is a tool used to get Heroes of the Storm data parsed for
         <a href="https://www.heroesprofile.com/" class="underline hover:text-lteal">Heroes Profile</a>.

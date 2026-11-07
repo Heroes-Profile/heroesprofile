@@ -13,8 +13,8 @@
       // Square 64px tile with a light border
       'block w-16 h-16 md:w-16 md:h-16': size === 'tile',
       // Fixed at every width: match rows (82px), compact rows (42px), talent icons (42px)
-      'block w-[82px] h-[82px] md:w-[82px] md:h-[82px]': size === 'match',
-      'block w-[42px] h-[42px] md:w-[42px] md:h-[42px]': size === 'row' || size === 'talent',
+      'block w-[5.125rem] h-[5.125rem] md:w-[5.125rem] md:h-[5.125rem]': size === 'match',
+      'block w-[2.625rem] h-[2.625rem] md:w-[2.625rem] md:h-[2.625rem]': size === 'row' || size === 'talent',
       'md:w-72': size === 'large',
       'md:h-[23em]': size === 'large',
       'overflow-hidden rounded': size === 'large',
@@ -49,21 +49,21 @@
     </div>
     
     <!-- Looks pressed in while pinned open -->
-    <span :class="['bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em] flex justify-center items-center font-bold tracking-normal leading-none transition', { 'bg-surface-1 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] translate-y-px': pinned }]" v-if="icon" >
+    <span :class="['bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em] flex justify-center items-center font-bold tracking-normal leading-none transition', { 'bg-surface-1 shadow-[inset_0_2px_0.25rem_rgba(0,0,0,0.6)] translate-y-px': pinned }]" v-if="icon" >
       <i :class="icon" ></i>
     </span>
   
     <!-- A grey box until the image arrives; the browser's own alt text is collapsed (it can't be centred) -->
     <img v-else loading="eager" :class="[
-      { 'bg-surface-3 text-[0px]': !imageLoaded || imageFailed },
+      { 'bg-surface-3 text-[0rem]': !imageLoaded || imageFailed },
       size === 'tile'
         ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-16 h-16 max-w-none rounded border-2 border-header'
         : size === 'match'
-        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-[82px] h-[82px] max-w-none'
+        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-[5.125rem] h-[5.125rem] max-w-none'
         : size === 'row'
-        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-[42px] h-[42px] max-w-none'
+        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-[2.625rem] h-[2.625rem] max-w-none'
         : size === 'talent'
-        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-[42px] h-[42px] max-w-none rounded'
+        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-[2.625rem] h-[2.625rem] max-w-none rounded'
         : size === 'large'
         ? 'card-img-top object-cover object-center relative hover:brightness-125 hover:drop-shadow max-w-none rounded md:w-full md:h-full max-md:w-40 max-md:h-auto'
         : 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow max-sm:w-[2.5em] max-sm:h-[2.5em] max-sm:min-w-[2.5em] w-full h-10 min-w-10 max-md:h-10 max-md:w-10 max-w-none md:mr-auto  max-md: m-0',
@@ -94,7 +94,7 @@
           'fixed text-xs z-50',
         {
           'w-[14em]' : popupsize != 'large' && popupsize != 'xlarge' && popupsize != 'fit',
-          'w-[400px] max-w-[90vw]' : popupsize == 'large',
+          'w-[25rem] max-w-[90vw]' : popupsize == 'large',
           'w-[32em] max-w-[90vw]' : popupsize == 'xlarge',
           'w-max max-w-[24em]' : popupsize == 'fit'
         }

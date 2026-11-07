@@ -16,7 +16,7 @@
         <div class="mb-4">
           <h1 class="max-md:text-[1.5em]">{{ formatDate(data.game_date) }}</h1>
         </div>
-        <div class="w-full max-w-[1000px] bg-surface/90 rounded flex flex-wrap justify-between gap-2 mx-auto p-4 mb-4">
+        <div class="w-full max-w-[62.5rem] bg-surface/90 rounded flex flex-wrap justify-between gap-2 mx-auto p-4 mb-4">
           <span>{{ data.game_map.name }}</span>
           <span v-if="!esport">
             {{ data.game_type }}
@@ -62,8 +62,8 @@
           </template>
         </div>
 
-        <div class="flex  justify-center max-w-[1500px] mx-auto  md:gap-10">
-          <div class=" max-w-[50%]  md:max-w-[600px]">
+        <div class="flex  justify-center max-w-[93.75rem] mx-auto  md:gap-10">
+          <div class=" max-w-[50%]  md:max-w-[37.5rem]">
             <group-box class="md:w-full max-sm:text-xs max-md:hidden":playerlink="true" :match="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(0, data.winner)" :esportteamname="getEsportTeamName(0)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
 
 
@@ -104,7 +104,7 @@
           </div>
 
 
-          <div class=" max-w-[50%]  md:max-w-[600px]">
+          <div class=" max-w-[50%]  md:max-w-[37.5rem]">
             <group-box class="md:w-full max-sm:text-xs max-md:hidden" :playerlink="true" :match="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(1, data.winner)" :esportteamname="getEsportTeamName(1)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
 
             <div v-if="showBans" class="mb-10">
@@ -143,7 +143,7 @@
       </div>
     </div>
 
-      <div v-if="esport && esport != 'Other'" class="max-w-[1500px] mx-auto mb-10 px-4">
+      <div v-if="esport && esport != 'Other'" class="max-w-[93.75rem] mx-auto mb-10 px-4">
         <panel-box title="Series Games">
         <table class="min-w-0 w-full responsive-table">
           <thead>
@@ -182,7 +182,7 @@
 
       <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-      <div class="max-w-[1500px] mx-auto px-4 my-6">
+      <div class="max-w-[93.75rem] mx-auto px-4 my-6">
         <panel-box>
           <div class="flex flex-wrap items-baseline gap-4">
             <h2 class="text-2xl font-bold">Match Scores</h2>
@@ -254,7 +254,7 @@
       </div>
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
-      <div v-if="data.draft_order && data.draft_order.length > 0" class="max-w-[1500px] mx-auto px-4 my-6 max-sm:text-xs">
+      <div v-if="data.draft_order && data.draft_order.length > 0" class="max-w-[93.75rem] mx-auto px-4 my-6 max-sm:text-xs">
         <panel-box title="Draft Order">
         <table class="min-w-0 w-full responsive-table">
           <thead>
@@ -291,7 +291,7 @@
 
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
-      <div class="max-w-[1500px] mx-auto px-4 max-md:px-2 my-6">
+      <div class="max-w-[93.75rem] mx-auto px-4 max-md:px-2 my-6">
        <panel-box title="Talents">
        <div class="flex flex-wrap gap-20 justify-around">
         <div class="max-md:w-full">
@@ -328,14 +328,14 @@
  </div>
   <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
 
-<div v-if="data.experience_breakdown" class="max-w-[1500px] mx-auto px-4 max-md:px-2 my-6 overflow-x-hidden">
+<div v-if="data.experience_breakdown" class="max-w-[93.75rem] mx-auto px-4 max-md:px-2 my-6 overflow-x-hidden">
   <panel-box title="Experience">
     <dual-line-chart :data="data.experience_breakdown" :winner="data.winner"></dual-line-chart>
   </panel-box>
 </div>
 
 
-<div v-if="!esport" class=" max-sm:text-sm max-w-[1500px] mx-auto px-4 my-6">
+<div v-if="!esport" class=" max-sm:text-sm max-w-[93.75rem] mx-auto px-4 my-6">
   <panel-box title="Team 1 Advanced HP MMR">
 
   <scroll-hint-container class="2xl:mx-auto">
@@ -388,7 +388,7 @@
 </div>
 
 
-<div  v-if="!esport" class="  max-sm:text-sm max-w-[1500px] mx-auto px-4 my-6">
+<div  v-if="!esport" class="  max-sm:text-sm max-w-[93.75rem] mx-auto px-4 my-6">
   <panel-box title="Team 2 Advanced HP MMR">
 
   <scroll-hint-container class="2xl:mx-auto">
@@ -442,7 +442,7 @@
 
 <dynamic-banner-ad :patreon-user="patreonUser" :index="5" :mobile-override="false"></dynamic-banner-ad>
 
-<div class="max-sm:text-sm max-w-[1500px] mx-auto px-4 my-6">
+<div class="max-sm:text-sm max-w-[93.75rem] mx-auto px-4 my-6">
   <panel-box title="Team 1 Advanced Stats">
   <template #right>
     <custom-button class="ml-auto" @click="flipAdvancedStats = !flipAdvancedStats" :text="flipAdvancedStats ? 'Show Stats as Rows' : 'Show Players as Rows'" :alt="'Flip Advanced Stats'" size="small" :ignoreclick="true"></custom-button>
@@ -489,7 +489,7 @@
   </panel-box>
 </div>
 <dynamic-banner-ad :patreon-user="patreonUser" :index="6" :mobile-override="false"></dynamic-banner-ad>
-<div class="max-sm:text-sm max-w-[1500px] mx-auto px-4 my-6">
+<div class="max-sm:text-sm max-w-[93.75rem] mx-auto px-4 my-6">
   <panel-box title="Team 2 Advanced Stats">
   <scroll-hint-container class="2xl:mx-auto" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
   <table :id="'responsive-table-' +sectionIndex" :ref="'responsivetable'+sectionIndex" :class="['responsive-table', 'relative', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1, 'fixed-column-table': flipAdvancedStats }]" :style="flipAdvancedStats ? { width: flippedTableWidth(section) } : null" >

@@ -2,7 +2,7 @@
   <div>
     <page-heading :infoText1="infoText" heading="Developer Tier Request"></page-heading>
 
-    <div class="mx-auto max-w-[1000px] p-4">
+    <div class="mx-auto max-w-[62.5rem] p-4">
       <div class="bg-lighten p-6 mb-8">
         <p class="mb-4">
           Thanks for your interest in the Developer Tier. Email us at

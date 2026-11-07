@@ -20,7 +20,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
   </head>
 
-  <body class="bg-page bg-[radial-gradient(ellipse_1000px_900px_at_50%_150px,#1c2f5a,#14182a)] bg-no-repeat text-white font-sans {{ $darkmode ? 'dark-mode' : 'light-mode' }}">
+  <body class="bg-page bg-[radial-gradient(ellipse_62.5rem_56.25rem_at_50%_9.375rem,#1c2f5a,#14182a)] bg-no-repeat text-white font-sans {{ $darkmode ? 'dark-mode' : 'light-mode' }}">
     <div id="app" class="flex flex-col align-stretch" style="min-height:100vh;">
 
       @include('api.partials.nav')

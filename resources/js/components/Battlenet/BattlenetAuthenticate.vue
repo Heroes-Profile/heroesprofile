@@ -1,5 +1,5 @@
 <template>
-  <div class="battlenet-login mx-auto max-w-[700px]  bg-lighten rounded mt-[10vh]">
+  <div class="battlenet-login mx-auto max-w-[43.75rem]  bg-lighten rounded mt-[10vh]">
     <h1 class="mb-4 bg-teal p-4 rounded-t">Heroes Profile Login</h1>
     <div class="p-4">
     <p>If you want to access your profile, you need to log in through Battle.net.</p>

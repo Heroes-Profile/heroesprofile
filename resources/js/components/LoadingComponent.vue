@@ -81,7 +81,7 @@
   align-items: center;
   justify-content: flex-start;
   padding-top: 5%; /* Adjust as needed to only occupy the top half */
-  gap: 20px;
+  gap: 1.25rem;
   background-color: rgba(0, 0, 0, 0.95); /* Translucent black background */
   width: 100%; /* Take full width of the parent container */
   height: 100%; /* Take full height of the parent container */
@@ -90,7 +90,7 @@
 
 .loading-text {
   font-family: 'Ruslan Display', cursive;
-  font-size: 24px;
+  font-size: 1.5rem;
   text-align: center;
   color: #fff;
 }
@@ -107,7 +107,7 @@
 .loading-container img {
   animation: spin 2.25s linear infinite;
   width: 121.5;
-  height: 108px;
+  height: 6.75rem;
 }
 </style>
 

@@ -19,20 +19,20 @@
 
     <!-- The NGS page's recent match rows, a page at a time, like the other match histories -->
     <div v-if="data" class="mt-4">
-      <div v-if="data.pagination.last_page > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 flex justify-end">
+      <div v-if="data.pagination.last_page > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 flex justify-end">
         <pagination-bar :current="data.pagination.current_page" :last="data.pagination.last_page" @page="getData"></pagination-bar>
       </div>
       <esports-recent-matches v-if="data.data.length" :data="data.data" :esport="'NGS'"></esports-recent-matches>
       <p v-else class="text-center text-subtext mt-10">No games in Division {{ division }} for Season {{ modifiedseason }}<template v-if="modifiedteam"> for {{ $ngsTeam(modifiedteam).name }}</template>.</p>
-      <div v-if="data.pagination.last_page > 1" class="max-w-[1920px] mx-auto px-4 md:px-8 pb-4 flex justify-end">
+      <div v-if="data.pagination.last_page > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 pb-4 flex justify-end">
         <pagination-bar :current="data.pagination.current_page" :last="data.pagination.last_page" @page="getData"></pagination-bar>
       </div>
     </div>
-    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 py-4 flex flex-col gap-6">
+    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 py-4 flex flex-col gap-6">
       <loading-component :compact="true" :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component>
         <panel-box>
           <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
-            <div class="flex flex-col gap-2 w-[300px] shrink-0">
+            <div class="flex flex-col gap-2 w-[18.75rem] shrink-0">
               <skeleton-box class="h-4 w-40"></skeleton-box>
               <skeleton-box class="h-4 w-32"></skeleton-box>
               <skeleton-box class="h-3 w-36"></skeleton-box>
@@ -52,8 +52,8 @@
                 <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
               </div>
             </div>
-            <div class="flex gap-2 w-[340px] max-w-full shrink-0">
-              <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[150px]">
+            <div class="flex gap-2 w-[21.25rem] max-w-full shrink-0">
+              <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[9.375rem]">
                 <div v-for="player in 5" :key="player" class="flex items-center gap-1">
                   <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
                   <skeleton-box class="h-3 w-24"></skeleton-box>

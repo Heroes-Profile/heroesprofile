@@ -43,9 +43,9 @@
     
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="frienddata && enemydata" class="gap-1 mx-auto  flex justify-center max-w-[1500px] max-md:flex-col max-md:text-sm max-md:max-w-[100vw]">
+    <div v-if="frienddata && enemydata" class="gap-1 mx-auto  flex justify-center max-w-[93.75rem] max-md:flex-col max-md:text-sm max-md:max-w-[100vw]">
       <div ref="friendcontainer" class="max-md:overflow-hidden">
-        <table ref="friendtable" class="min-w-0 max-w-[750px]">
+        <table ref="friendtable" class="min-w-0 max-w-[46.875rem]">
           <thead >
             <tr>
               <th colspan="5" class="py-2 px-3 text-center text-base font-bold tracking-wider">Friends</th>
@@ -108,7 +108,7 @@
         </table>
       </div>
       <div ref="enemycontainer" class="max-md:overflow-hidden">
-        <table ref="enemytable" class="min-w-0 max-w-[750px]">
+        <table ref="enemytable" class="min-w-0 max-w-[46.875rem]">
           <thead class="bg-red">
             <tr>
               <th colspan="5" class="py-2 px-3 text-center text-base font-bold tracking-wider">Foes</th>
@@ -173,7 +173,7 @@
         </table>
       </div>
     </div>
-    <div v-else-if="friendIsLoading || enemyIsLoading || asyncLoading" class="max-w-[1500px] mx-auto px-4 flex flex-col gap-6">
+    <div v-else-if="friendIsLoading || enemyIsLoading || asyncLoading" class="max-w-[93.75rem] mx-auto px-4 flex flex-col gap-6">
       <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
       <loading-component v-else :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">Large amount of data. Please be patient.</loading-component>
       <div class="grid md:grid-cols-2 gap-6">

@@ -1,6 +1,6 @@
 <template>
   <!-- Shown until acknowledged in this browser -->
-  <modal-box title="Analytics is in pre-alpha" width="max-w-[640px]">
+  <modal-box title="Analytics is in pre-alpha" width="max-w-[40rem]">
     <p class="mb-3">This is an early, experimental feature. Please keep in mind:</p>
     <ul class="list-disc ml-8 space-y-2">
       <li>The data may not be 100% accurate. Much of it is estimated from replays (for example, hero positions are mostly worked out from where players click).</li>

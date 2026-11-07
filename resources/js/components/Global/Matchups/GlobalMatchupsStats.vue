@@ -5,7 +5,7 @@
     <page-heading :heading="selectedHero ? selectedHero.name + ' Counters & Matchups' : 'Hero Counters & Matchups'">
       <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
         <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
-        <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 220px; max-height: 340px; overflow-y: auto;">
+        <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 13.75rem; max-height: 21.25rem; overflow-y: auto;">
           <input v-model="heroDropdownSearch" type="text" placeholder="Search hero..." class="w-full px-2 py-1 text-xs bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
           <div v-for="h in filteredDropdownHeroes" :key="h.id" class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-lighten text-sm" @click="clickedHero(h); heroDropdownOpen = false">
             <hero-image-wrapper :hero="h" :includehover="false" class="flex-shrink-0"></hero-image-wrapper>
@@ -56,7 +56,7 @@
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-    <div v-if="allyenemydata" class="max-w-[1920px] mx-auto px-4 md:px-8">
+    <div v-if="allyenemydata" class="max-w-[120rem] mx-auto px-4 md:px-8">
       <div class="flex flex-col gap-6">
         <div class="flex justify-center">
         <group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)" :type="'Matchups'" color="blue"></group-box>
@@ -165,7 +165,7 @@
       </panel-box>
     </div>
     </div>
-    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 flex flex-col gap-6">
+    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <loading-component :compact="true" :textoverride="true">Loading matchups...</loading-component>
       <table-skeleton></table-skeleton>
     </div>

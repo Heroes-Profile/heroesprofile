@@ -2,7 +2,7 @@
   <div>
     <page-heading :infoText1="infoText" heading="Account"></page-heading>
 
-    <div class="mx-auto max-w-[1000px] p-4">
+    <div class="mx-auto max-w-[62.5rem] p-4">
       <!-- Above everything else: if access has been withdrawn, nothing further down
            the page explains why the keys stopped working. -->
       <div

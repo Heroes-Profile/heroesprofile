@@ -19,7 +19,7 @@
     </filters>
 
     <!-- Laid out like the player profile -->
-    <div v-if="data" class="max-w-[1920px] mx-auto px-4 md:px-8 mt-8 space-y-8">
+    <div v-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
       <panel-box>
         <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
 
@@ -31,7 +31,7 @@
             </div>
             <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
               <div class="shrink-0 w-40 md:w-60 aspect-square flex items-center justify-center">
-                <img class="max-w-full max-h-full object-contain text-[0px]" :src="data.icon_url || isLoadingImageUrl" :alt="teamName(team)"/>
+                <img class="max-w-full max-h-full object-contain text-[0rem]" :src="data.icon_url || isLoadingImageUrl" :alt="teamName(team)"/>
               </div>
               <div class="flex-1 min-w-0 w-full grid grid-cols-2 gap-x-6 gap-y-1 content-start">
                 <stat-box v-for="stat in overviewStats" :key="stat.label" class="!m-0 !px-0 !min-w-0" :title="stat.label" :value="stat.value"></stat-box>
@@ -68,7 +68,7 @@
             <panel-box v-if="data.enemy_teams && data.enemy_teams.length" :inner="true" title="Teams Lost Against">
               <div class="flex flex-col gap-2">
                 <a v-for="(enemy, index) in data.enemy_teams" :key="index" :href="enemy.enemy_link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
-                  <img v-if="enemy.icon_url" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0px]" :src="enemy.icon_url" :alt="teamName(enemy.team_name || enemy.team)"/>
+                  <img v-if="enemy.icon_url" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="enemy.icon_url" :alt="teamName(enemy.team_name || enemy.team)"/>
                   <div class="flex flex-col min-w-0 flex-1">
                     <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ teamName(enemy.team_name || enemy.team) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></span>
                     <span class="text-sm text-subtext">{{ enemy.inputhover }}</span>
@@ -161,15 +161,15 @@
     <!-- The league pages' own recent match rows -->
     <div v-if="data" class="mt-4 pb-8">
       <esports-recent-matches v-if="recentMatches.length" :data="recentMatches" :esport="recentMatchesEsport" :series="series" :tournament="tournament" :always-expanded="true"></esports-recent-matches>
-      <p v-else class="max-w-[1920px] mx-auto px-4 md:px-8 text-subtext">No recent games.</p>
+      <p v-else class="max-w-[120rem] mx-auto px-4 md:px-8 text-subtext">No recent games.</p>
     </div>
 
     <!-- The page's layout with grey blocks while it loads, like the profile -->
-    <div v-else-if="isLoading" class="max-w-[1920px] mx-auto px-4 md:px-8 mt-8 space-y-8">
+    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
       <loading-component :compact="true" :overrideimage="isLoadingImageUrl"></loading-component>
       <panel-box>
         <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
-          <panel-box :inner="true" class="!gap-8 2xl:w-[780px]">
+          <panel-box :inner="true" class="!gap-8 2xl:w-[48.75rem]">
             <div class="flex flex-col gap-2">
               <h2 class="text-3xl font-bold">{{ teamName(team) }}</h2>
               <skeleton-box class="h-4 w-40"></skeleton-box>

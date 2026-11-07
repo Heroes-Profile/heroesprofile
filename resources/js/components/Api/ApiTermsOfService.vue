@@ -2,7 +2,7 @@
   <div>
     <page-heading heading="API Terms of Service" :infoText1="infoText"></page-heading>
 
-    <div class="mx-auto max-w-[1000px] px-4 mt-6 pb-16">
+    <div class="mx-auto max-w-[62.5rem] px-4 mt-6 pb-16">
 
       <div v-if="reviewrequired" class="bg-lighten border-l-4 border-yellow p-4 mb-8">
         <p class="text-sm mb-3">

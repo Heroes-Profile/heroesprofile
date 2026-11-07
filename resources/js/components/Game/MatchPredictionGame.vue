@@ -14,13 +14,13 @@
 
 
 
-    <div v-if="!user"  class="max-w-[1000px] mx-auto">
+    <div v-if="!user"  class="max-w-[62.5rem] mx-auto">
       <div class="bg-surface rounded p-4">
         Log in to track your prediction stats and rank on the leaderboard
       </div>
     </div>
     
-    <div v-else class="max-w-[1000px] mx-auto">
+    <div v-else class="max-w-[62.5rem] mx-auto">
       
       <div v-if="practicemode" class="bg-red p-4" >PRACTICE MODE ({{ 10 - totalGamesPlayedPractice }} practices left)</div>
       <div v-else>
@@ -43,14 +43,14 @@
 
     </div>
 
-    <div class="max-w-[1000px] mx-auto">
+    <div class="max-w-[62.5rem] mx-auto">
       <div class="bg-surface rounded p-4">
         Leaderboards can be found at <a class="link" :href="'/Global/Leaderboard?type=Match%20Prediction&season=' + currentSeason" target="_blank">Leaderboards</a>
       </div>
     </div>
 
 
-    <div class="flex justify-center max-w-[1500px] mx-auto">
+    <div class="flex justify-center max-w-[93.75rem] mx-auto">
      
 
           <!-- All Game Type Single -->
@@ -68,7 +68,7 @@
 
     </div>
 
-    <div v-if="isLoading" class="max-w-[1000px] mx-auto px-4 mt-6 flex flex-col gap-6">
+    <div v-if="isLoading" class="max-w-[62.5rem] mx-auto px-4 mt-6 flex flex-col gap-6">
       <loading-component :compact="true" :textoverride="true">Loading match...</loading-component>
       <skeleton-box class="h-14 w-full"></skeleton-box>
       <div class="grid grid-cols-2 gap-10">
@@ -81,7 +81,7 @@
 
     <div v-if="data" class="">
 
-      <div class="w-full max-w-[1000px] bg-surface rounded flex flex-wrap justify-between gap-2 mx-auto p-4 mb-4">
+      <div class="w-full max-w-[62.5rem] bg-surface rounded flex flex-wrap justify-between gap-2 mx-auto p-4 mb-4">
         <span>{{ data.replayData.game_map.name }}</span>
         <span>HP Rank: {{ data.rank }}</span>
         <span>Region: {{ data.replayData.regionString }}</span>
@@ -89,9 +89,9 @@
       </div>
 
 
-      <p class="mx-auto text-center max-w-[1500px] py-2">Who won the match?</p>
+      <p class="mx-auto text-center max-w-[93.75rem] py-2">Who won the match?</p>
 
-      <div class="flex max-w-[1000px] mx-auto justify-center gap-10">
+      <div class="flex max-w-[62.5rem] mx-auto justify-center gap-10">
 
         <div class="flex flex-col align-center bg-surface rounded p-4" >
           <div class="min-h-[4em] ">
@@ -154,11 +154,11 @@
     </div>
 
    
-    <div v-if="userchoiceresult" class="max-w-[1000px] text-center w-full mx-auto mt-2 bg-teal rounded p-4">
+    <div v-if="userchoiceresult" class="max-w-[62.5rem] text-center w-full mx-auto mt-2 bg-teal rounded p-4">
       See replay <a target="_blank" class="link" :href="'/Match/Single/' + userchoiceresult.replayID">{{ userchoiceresult.replayID }}</a> for more information
     </div>
 
-    <div class="p-10  max-w-[1000px] mx-auto">
+    <div class="p-10  max-w-[62.5rem] mx-auto">
       <h2 class="text-3xl font-bold py-5">Talents to Level 10</h2>
       <div class="flex flex-wrap gap-20 justify-around">
         <div class="">

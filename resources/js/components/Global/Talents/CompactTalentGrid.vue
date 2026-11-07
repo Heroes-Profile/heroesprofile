@@ -11,18 +11,18 @@
             <h3 class="text-sm">{{ talent.talentInfo.title }}</h3>
           </div>
           <dl class="grid grid-cols-[max-content_minmax(0,1fr)] items-center gap-x-2 gap-y-1 mt-2">
-            <dt class="text-[10px] uppercase">Win Rate</dt>
+            <dt class="text-[0.625rem] uppercase">Win Rate</dt>
             <dd>
               <stat-bar :value="talent.win_rate" :display-text="talent.win_rate.toFixed(2)" suffix="%"
                 color="blue" class="stat-bar-light rounded-l w-full text-xs"></stat-bar>
             </dd>
-            <dt class="text-[10px] uppercase">Popularity</dt>
+            <dt class="text-[0.625rem] uppercase">Popularity</dt>
             <dd>
               <stat-bar :value="talent.popularity" :display-text="talent.popularity.toFixed(2)" suffix="%"
                 color="yellow" class="stat-bar-light rounded-l w-full text-xs"></stat-bar>
             </dd>
           </dl>
-          <div class="flex justify-between gap-2 mt-1 text-[10px]">
+          <div class="flex justify-between gap-2 mt-1 text-[0.625rem]">
             <span v-if="statFilter && statFilter !== 'win_rate'">{{ statFilterLabel(statFilter) }}: {{ formatNumber(talent.total_filter_type) }}</span>
             <span class="ml-auto">{{ formatGames(talent.games_played) }}</span>
           </div>

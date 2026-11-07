@@ -2,7 +2,7 @@
   <div>
     <page-heading :infoText1="infoText" heading="Admin"></page-heading>
 
-    <div class="mx-auto max-w-[1600px] p-4">
+    <div class="mx-auto max-w-[100rem] p-4">
       <div v-if="error" class="bg-red p-3 mb-4">{{ error }}</div>
       <div v-if="notice" class="bg-teal p-3 mb-4">{{ notice }}</div>
 
@@ -46,7 +46,7 @@
             @keyup.enter="search"
             type="text"
             placeholder="Email, name or ID"
-            class="flex-1 min-w-[200px] p-2 bg-darken"
+            class="flex-1 min-w-[12.5rem] p-2 bg-darken"
           />
           <custom-button @click="search" :text="'Search'" :alt="'Search accounts'" :size="'small'" :ignoreclick="true"></custom-button>
         </div>
@@ -98,7 +98,7 @@
             @keyup.enter="trace"
             type="text"
             placeholder="Diablo"
-            class="flex-1 min-w-[200px] p-2 bg-darken"
+            class="flex-1 min-w-[12.5rem] p-2 bg-darken"
           />
           <input
             v-model="traceValue"
