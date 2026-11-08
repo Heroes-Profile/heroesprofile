@@ -19,6 +19,10 @@ use Symfony\Component\HttpFoundation\Response;
  * Rejections answer 200 with a body the client cannot read as a status, which is
  * what the old site did and what the deployed uploaders expect: anything they
  * cannot parse a status out of becomes an upload error client-side.
+ *
+ * Paused uploads (the ReplayUploads switch in processing_check) are the exception:
+ * they answer 429, which every deployed uploader already waits on and retries
+ * rather than failing, with a Retry-After of an hour for clients that read it.
  */
 class UploadController extends Controller
 {
@@ -27,6 +31,14 @@ class UploadController extends Controller
 
     public function store(Request $request, ReplayUploadService $uploads, UploaderSignature $signature, string $source): Response
     {
+        if (! $uploads->uploadsOpen()) {
+            return response()->json(
+                ['success' => false, 'Error' => 'Uploads are paused'],
+                Response::HTTP_TOO_MANY_REQUESTS,
+                ['Retry-After' => ReplayUploadService::PAUSED_RETRY_AFTER],
+            );
+        }
+
         $source = substr(trim($source), 0, self::SOURCE_LENGTH) ?: 'unknown';
         $ip = ClientIpService::getClientIp($request);
 
