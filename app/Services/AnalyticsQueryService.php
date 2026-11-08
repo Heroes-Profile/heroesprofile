@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Log;
  */
 class AnalyticsQueryService
 {
-    public const TABS = ['deaths', 'map', 'timelines', 'activity', 'sessions', 'coaching', 'stacks'];
+    public const TABS = ['deaths', 'map', 'positioning', 'timelines', 'activity', 'sessions', 'coaching', 'stacks'];
 
     private ?BigQueryClient $client = null;
 
@@ -36,7 +36,7 @@ class AnalyticsQueryService
         $processed = $this->analytics->status($blizzId, $region)['done'];
         $threshold = $this->globalThreshold();
         // Coaching tables are rebuilt by a nightly BigQuery job (or by hand); refresh whenever they change
-        $nightly = in_array($tab, ['coaching', 'sessions'], true) ? ':'.$this->coachingVersion() : '';
+        $nightly = in_array($tab, ['coaching', 'sessions', 'positioning'], true) ? ':'.$this->coachingVersion() : '';
         $key = 'analytics:tab:v'.config('analytics.extract_v').'.12:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
 
         return Cache::remember($key, now()->addDays(7), function () use ($tab, $blizzId, $region, $filters, $threshold) {
@@ -48,6 +48,7 @@ class AnalyticsQueryService
                 'hero' => $filters['hero'],
                 'cutover' => config('analytics.cutover'),
                 'sample' => $threshold,
+                'replay' => $filters['replay'] ?? 0,
             ];
 
             $data = $this->run($this->queries($tab), $params);
@@ -220,6 +221,7 @@ class AnalyticsQueryService
                 'hero' => $filters['hero'],
                 'cutover' => config('analytics.cutover'),
                 'sample' => $threshold,
+                'replay' => $filters['replay'] ?? 0,
                 'ability_hero' => $heroId,
                 'builds' => $links->pluck('build')->unique()->map(fn ($b) => (int) $b)->values()->all(),
                 'keys' => $links->map(fn ($link) => $link->build.':'.$link->abil_link)->values()->all(),
@@ -248,7 +250,8 @@ class AnalyticsQueryService
 
     /**
      * Shared CTEs. `games`: the player's games under the filters. `pg`: "you" and
-     * "global" player-games in one shape (who, replay_id, blizz, team, hero_id, winner).
+     * "global" player-games in one shape (who, replay_id, blizz, team, hero_id, winner). With @replay set (one
+     * game), "you" is that game and "usual" is your other games on the same hero, any map or mode.
      */
     private function ctes(): string
     {
@@ -260,9 +263,15 @@ class AnalyticsQueryService
                 AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR game_type IN UNNEST(@game_types))
                 AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR game_map IN UNNEST(@maps))
                 AND (@hero = 0 OR hero_id = @hero)
+                AND (@replay = 0 OR replay_id = @replay)
             ),
             pg AS (
               SELECT 'you' AS who, replay_id, @blizz AS blizz, team, hero_id, winner FROM games
+              UNION ALL
+              SELECT 'usual', replay_id, blizz_id, team, hero_id, winner
+              FROM `{dataset}.player_match`
+              WHERE @replay != 0 AND game_date >= @cutover AND blizz_id = @blizz AND region = @region
+                AND hero_id = @hero AND replay_id != @replay
               UNION ALL
               SELECT 'global', replay_id, blizz_id, team, hero_id, winner
               FROM `{dataset}.player_match`
@@ -520,6 +529,7 @@ class AnalyticsQueryService
                       AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR p.game_type IN UNNEST(@game_types))
                       AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR p.game_map IN UNNEST(@maps))
                       AND (@hero = 0 OR p.hero_id = @hero)
+                      AND (@replay = 0 OR p.replay_id = @replay)
                       AND p.replay_id NOT IN (SELECT replay_id FROM `{dataset}.coaching_player_game` WHERE blizz_id = @blizz AND region = @region)',
 
                 'mine' => 'SELECT COUNT(*) AS games, SUM(win) AS wins,
@@ -538,9 +548,11 @@ class AnalyticsQueryService
                     WHERE blizz_id = @blizz AND region = @region AND game_date >= @cutover
                       AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR game_type IN UNNEST(@game_types))
                       AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR game_map IN UNNEST(@maps))
-                      AND (@hero = 0 OR hero_id = @hero)',
+                      AND (@hero = 0 OR hero_id = @hero)
+                      AND (@replay = 0 OR replay_id = @replay)',
 
-                // Your games one by one, newest first, for "Are you improving?" (last few vs earlier games)
+                // Your games one by one, newest first, for "Are you improving?" (last few vs earlier games).
+                // One game: that game first, then your other games on the hero (any map or mode) as your usual
                 'recent' => 'SELECT replay_id, FORMAT_DATETIME("%Y-%m-%dT%H:%M:%S", game_date) AS game_date, win, hero_id, game_map,
                       overstay, lost_absent, lost_absent_costly, SAFE_DIVIDE(obj_present, obj_events) AS objective_presence,
                       tier_down_present, caught_first, picked_alone, SAFE_DIVIDE(fights_present, fights) AS fight_presence,
@@ -549,10 +561,12 @@ class AnalyticsQueryService
                       repeat_deaths, matchups_unadapted, IF(bush_map, bush_deaths, NULL) AS bush_deaths
                     FROM `{dataset}.coaching_player_game`
                     WHERE blizz_id = @blizz AND region = @region AND game_date >= @cutover
-                      AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR game_type IN UNNEST(@game_types))
-                      AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR game_map IN UNNEST(@maps))
-                      AND (@hero = 0 OR hero_id = @hero)
-                    ORDER BY game_date DESC LIMIT 200',
+                      AND (@replay != 0 AND hero_id = @hero
+                        OR @replay = 0
+                          AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR game_type IN UNNEST(@game_types))
+                          AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR game_map IN UNNEST(@maps))
+                          AND (@hero = 0 OR hero_id = @hero))
+                    ORDER BY replay_id = @replay DESC, game_date DESC LIMIT 200',
 
                 // The global sample under the same filters as "You": per-game values, and players with 5+ games
                 'compare' => 'WITH g AS (
@@ -597,6 +611,7 @@ class AnalyticsQueryService
                       AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR g.game_type IN UNNEST(@game_types))
                       AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR e.game_map IN UNNEST(@maps))
                       AND (@hero = 0 OR e.hero_id = @hero)
+                      AND (@replay = 0 OR e.replay_id = @replay)
                     QUALIFY ROW_NUMBER() OVER (PARTITION BY e.kind ORDER BY e.game_date DESC, e.t_s) <= 10',
 
                 // Every flagged moment in your most recent game under the filters, for the last-game breakdown
@@ -606,6 +621,7 @@ class AnalyticsQueryService
                         AND (IFNULL(ARRAY_LENGTH(@game_types), 0) = 0 OR game_type IN UNNEST(@game_types))
                         AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR game_map IN UNNEST(@maps))
                         AND (@hero = 0 OR hero_id = @hero)
+                        AND (@replay = 0 OR replay_id = @replay)
                       ORDER BY game_date DESC LIMIT 1
                     )
                     SELECT e.kind, e.replay_id, e.t_s, e.detail, e.hero_id, e.ref_hero_id
@@ -679,6 +695,59 @@ class AnalyticsQueryService
                       AND (IFNULL(ARRAY_LENGTH(@maps), 0) = 0 OR c.game_map IN UNNEST(@maps))
                       AND (@hero = 0 OR c.hero_id = @hero)
                     GROUP BY 1',
+            ],
+
+            // Built nightly with coaching (positioning_* tables, from functions.sql's coach_laning,
+            // coach_fight_positions and coach_objective_arrival), so games processed today join tomorrow
+            'positioning' => [
+                // Lane use per phase ('early', 'mid', 'late', 'all'), over each game's open time (not in a fight or at base)
+                'laning' => $this->ctes().'
+                    SELECT pg.who, l.phase, COUNT(*) AS games,
+                      AVG(l.lane_share) AS lane_share, AVG(l.camp_share) AS camp_share, AVG(l.away_share) AS away_share,
+                      AVG(l.main_lane_share) AS main_lane_share, AVG(l.solo_lane_share) AS solo_lane_share,
+                      AVG(l.lane_push) AS lane_push, AVG(l.enemy_side_share) AS enemy_side_share,
+                      AVG(SAFE_DIVIDE(l.lane_switches * 600, m.length_s)) AS switches_10
+                    FROM pg
+                    JOIN `{dataset}.positioning_laning` l ON l.replay_id = pg.replay_id AND l.blizz_id = pg.blizz
+                    JOIN `{dataset}.match` m ON m.replay_id = pg.replay_id AND m.game_date >= @cutover
+                    WHERE l.open_points >= 10
+                    GROUP BY 1, 2',
+
+                // Which lane each game was mostly spent in
+                'main_lanes' => $this->ctes().'
+                    SELECT pg.who, ml.lane_name, COUNT(*) AS games
+                    FROM pg
+                    JOIN `{dataset}.positioning_laning` l ON l.replay_id = pg.replay_id AND l.blizz_id = pg.blizz AND l.phase = "all"
+                    JOIN `{dataset}.match` m ON m.replay_id = pg.replay_id AND m.game_date >= @cutover
+                    JOIN (SELECT DISTINCT game_map, lane, lane_name FROM `{dataset}.map_lanes`) ml ON ml.game_map = m.game_map AND ml.lane = l.main_lane
+                    WHERE l.open_points >= 20
+                    GROUP BY 1, 2',
+
+                'fights' => $this->ctes().'
+                    SELECT pg.who, COUNT(*) AS games, SUM(f.fights_measured) AS fights,
+                      AVG(f.fight_ahead) AS fight_ahead, AVG(f.front_share) AS front_share, AVG(f.back_share) AS back_share,
+                      AVG(f.late_share) AS late_share, SAFE_DIVIDE(SUM(IFNULL(f.front_deaths, 0)) * 600, SUM(m.length_s)) AS front_deaths_10
+                    FROM pg
+                    JOIN `{dataset}.positioning_fights` f ON f.replay_id = pg.replay_id AND f.blizz_id = pg.blizz
+                    JOIN `{dataset}.match` m ON m.replay_id = pg.replay_id AND m.game_date >= @cutover
+                    WHERE f.fights_measured >= 3
+                    GROUP BY 1',
+
+                // Arrival and contesting, with coaching's presence at your team's camps and structure kills
+                'objectives' => $this->ctes().'
+                    SELECT pg.who, COUNT(*) AS games,
+                      AVG(IF(o.objectives_reached >= 2, o.objective_lead_s, NULL)) AS objective_lead,
+                      AVG(IF(o.enemy_camps >= 2, o.contest_share, NULL)) AS contest_share,
+                      AVG(SAFE_DIVIDE(c.obj_present, c.obj_events)) AS objective_presence,
+                      AVG(SAFE_DIVIDE(c.camp_present, c.camp_events)) AS camp_presence
+                    FROM pg
+                    JOIN `{dataset}.coaching_player_game` c ON c.replay_id = pg.replay_id AND c.blizz_id = pg.blizz AND c.game_date >= @cutover
+                    LEFT JOIN `{dataset}.positioning_objectives` o ON o.replay_id = pg.replay_id AND o.blizz_id = pg.blizz
+                    GROUP BY 1',
+
+                // With one hero picked: which way each measure goes with winning on that hero (nightly, global sample)
+                'weights' => 'SELECT metric, games, r_win FROM `{dataset}.performance_weights`
+                    WHERE @hero != 0 AND hero_id = @hero AND area = "positioning"',
             ],
 
             'sessions' => [

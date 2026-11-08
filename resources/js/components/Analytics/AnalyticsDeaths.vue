@@ -25,8 +25,8 @@
       Who got the kill: Ganked is 1-2 enemy heroes with kill credit, Teamfight is 3 or more, No hero is minions, towers, mercenaries or bosses. Your team's level: your team's level compared with the enemy team's when you died; deaths in the first seconds, before any level is recorded, count in none of them. Each bar is all your deaths, with the global sample under it.
     </analytics-heading>
     <div class="grid md:grid-cols-2 gap-6 mb-8">
-      <multi-series-chart type="bar" :horizontal="true" :stacked="true" :min="0" :max="100" format="percent" :labels="['You', 'Global']" :title="'Who got the kill'" :series="killerSplit"></multi-series-chart>
-      <multi-series-chart type="bar" :horizontal="true" :stacked="true" :min="0" :max="100" format="percent" :labels="['You', 'Global']" :title="levelTitle" :series="levelSplit"></multi-series-chart>
+      <multi-series-chart type="bar" :horizontal="true" :stacked="true" :min="0" :max="100" format="percent" :labels="whos().map(whoLabel)" :title="'Who got the kill'" :series="killerSplit"></multi-series-chart>
+      <multi-series-chart type="bar" :horizontal="true" :stacked="true" :min="0" :max="100" format="percent" :labels="whos().map(whoLabel)" :title="levelTitle" :series="levelSplit"></multi-series-chart>
     </div>
 
     <!-- Death timing -->
@@ -38,20 +38,14 @@
         type="bar"
         :labels="phaseLabels"
         :title="'Deaths per game'"
-        :series="[
-          { label: 'You', data: phases(youTiming), color: 'teal', n: phaseGames(youTiming) },
-          { label: 'Global', data: phases(baseTiming), color: 'yellow', n: phaseGames(baseTiming) },
-        ]"
+        :series="whos().map(w => ({ label: whoLabel(w), data: phases(pick(data.death_timing, w)), color: whoColor(w), n: phaseGames(pick(data.death_timing, w)) }))"
       ></multi-series-chart>
       <multi-series-chart
         type="bar"
         format="percent"
         :labels="phaseLabels"
         :title="'Deaths on the enemy half'"
-        :series="[
-          { label: 'You', data: overextension('you'), color: 'teal' },
-          { label: 'Global', data: overextension('global'), color: 'yellow' },
-        ]"
+        :series="whos().map(w => ({ label: whoLabel(w), data: overextension(w), color: whoColor(w) }))"
       ></multi-series-chart>
     </div>
 
@@ -161,11 +155,11 @@ export default {
     },
     killerSplit() {
       const row = r => [r.ganked, r.teamfight, r.no_hero_killer].map(n => (r.deaths ? this.round((100 * Number(n)) / Number(r.deaths), 1) : null));
-      const [you, base] = [row(this.you), row(this.base)];
+      const rows = this.whos().map(w => row(this.pick(this.data.death_context, w)));
       return [
-        { label: 'Ganked (1-2)', data: [you[0], base[0]], color: 'teal' },
-        { label: 'Teamfight (3+)', data: [you[1], base[1]], color: 'red' },
-        { label: 'No hero', data: [you[2], base[2]], color: 'gray' },
+        { label: 'Ganked (1-2)', data: rows.map(r => r[0]), color: 'teal' },
+        { label: 'Teamfight (3+)', data: rows.map(r => r[1]), color: 'red' },
+        { label: 'No hero', data: rows.map(r => r[2]), color: 'gray' },
       ];
     },
     levelSplit() {
@@ -173,11 +167,11 @@ export default {
         const total = Number(r.level_behind || 0) + Number(r.level_even || 0) + Number(r.level_ahead || 0);
         return [r.level_behind, r.level_even, r.level_ahead].map(n => (total ? this.round((100 * Number(n)) / total, 1) : null));
       };
-      const [you, base] = [row(this.you), row(this.base)];
+      const rows = this.whos().map(w => row(this.pick(this.data.death_context, w)));
       return [
-        { label: 'Behind', data: [you[0], base[0]], color: 'red' },
-        { label: 'Even', data: [you[1], base[1]], color: 'yellow' },
-        { label: 'Ahead', data: [you[2], base[2]], color: 'teal' },
+        { label: 'Behind', data: rows.map(r => r[0]), color: 'red' },
+        { label: 'Even', data: rows.map(r => r[1]), color: 'yellow' },
+        { label: 'Ahead', data: rows.map(r => r[2]), color: 'teal' },
       ];
     },
     levelTitle() {

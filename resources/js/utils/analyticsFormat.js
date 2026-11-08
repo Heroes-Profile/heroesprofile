@@ -1,7 +1,22 @@
 // Shared helpers for the analytics tabs. Expects `heroes` ([{ code, name }]) and
 // `maps` ({ id: name }) props on the component.
 export default {
+  props: {
+    // Analytics' one-match view: "you" is that match and "usual" is your other matches on the same hero
+    game: { type: Object, default: null },
+  },
   methods: {
+    // The groups a tab compares, in display order
+    whos() {
+      return this.game ? ['you', 'usual', 'global'] : ['you', 'global'];
+    },
+    whoLabel(who) {
+      if (who === 'you') return this.game ? 'This match' : 'You';
+      return who === 'usual' ? 'Your usual' : 'Global';
+    },
+    whoColor(who) {
+      return { you: 'teal', usual: 'blue', global: 'yellow' }[who];
+    },
     // The "you" or "global" row of a result set, or an empty object
     pick(rows, who) {
       return (rows || []).find(r => r.who === who) || {};

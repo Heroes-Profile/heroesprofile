@@ -20,7 +20,15 @@
       <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
         <div v-for="game in data.games" :key="game.replayID">
           <game-summary-box :data="game"></game-summary-box>
-          <div class="flex justify-end mt-1">
+          <div class="flex justify-end gap-2 mt-1">
+            <custom-button
+              v-if="isProcessed(game) && !sample"
+              :text="'Analyze'"
+              :alt="'See every Analytics section for this match'"
+              size="small"
+              :ignoreclick="true"
+              @click="$emit('analyze', game.replayID)"
+            ></custom-button>
             <custom-button
               v-if="isProcessed(game) && replayLink(game.replayID)"
               :href="replayLink(game.replayID)"
@@ -98,6 +106,15 @@
               </td>
               <td>
                 <custom-button
+                  v-if="isProcessed(row) && !sample"
+                  class="mr-1"
+                  :text="'Analyze'"
+                  :alt="'See every Analytics section for this match'"
+                  size="small"
+                  :ignoreclick="true"
+                  @click="$emit('analyze', row.replayID)"
+                ></custom-button>
+                <custom-button
                   v-if="isProcessed(row) && replayLink(row.replayID)"
                   :href="replayLink(row.replayID)"
                   :text="'Watch'"
@@ -143,8 +160,9 @@ export default {
     authenticated: Boolean,
     // The public sample: nothing to process, and only its one game has a replay
     sample: Boolean,
-    replayLink: { type: Function, default: replayId => '/Analytics/Match/Single/' + replayId },
+    replayLink: { type: Function, default: replayId => '/Analytics/Match/Single/' + replayId + '/Replay' },
   },
+  emits: ['analyze'],
   data() {
     return {
       // replayID: 'queued' while a Process request runs, 'ready' once it's done, 'error' if it failed

@@ -9,8 +9,9 @@
       :infoText2="'Pre-alpha: this is in very early development. Numbers, views and features will change, and some may be wrong or missing.'"
     ></page-heading>
 
-    <!-- Remounted when a tab picks a map, so the filter shows it -->
+    <!-- Remounted when a tab picks a map, so the filter shows it. One match sets its own hero, map and mode -->
     <filters
+      v-if="!game"
       :key="filtersKey"
       :onFilter="filterData"
       :gamemapinput="gamemap.length ? gamemap : null"
@@ -47,10 +48,37 @@
         <p v-if="error" class="mt-4 text-red">{{ error }}</p>
       </div>
 
-      <!-- Analytics -->
-      <div v-if="status.done > 0">
-        <!-- Phones get a dropdown; the eight tabs don't fit across -->
-        <multi-tab-button class="mb-2 max-md:hidden" :options="tabs" v-model="activeTab"></multi-tab-button>
+      <!-- Nothing processed yet: what Analytics is, while the first games process -->
+      <analytics-summary v-if="status.done === 0 && !sample" :path-for="pathFor" @open="activeTab = $event"></analytics-summary>
+    </div>
+
+    <!-- Analytics -->
+    <div v-if="status.done > 0">
+      <!-- The match picker and tabs use the page's full width, like Match History below them -->
+      <div class="px-4">
+        <!-- One match at a time: pick one, or go back to all of them -->
+        <div v-if="!sample" class="flex flex-wrap items-center justify-center gap-3 mb-4">
+          <single-select-filter
+            :key="'game' + (game || 0) + gameOptions.length"
+            :values="gameOptions"
+            :text="'Match'"
+            :defaultValue="game || 0"
+            :disabledeselectfilters="true"
+            @input-changed="selectGame(Number($event.value) || null)"
+          ></single-select-filter>
+          <template v-if="game">
+            <span v-if="gameInfo">
+              One match: <span class="font-bold">{{ gameInfo.hero }}</span> on {{ gameInfo.game_map }} &middot; {{ gameInfo.game_type }} &middot;
+              <span :class="gameInfo.winner ? 'text-teal' : 'text-red'">{{ gameInfo.winner ? 'Win' : 'Loss' }}</span> &middot; {{ formatDate(gameInfo.game_date) }}.
+              Compared with {{ gameInfo.hero }} on {{ gameInfo.game_map }} in {{ gameInfo.game_type }}, and your other {{ gameInfo.hero }} matches.
+            </span>
+            <custom-button :href="replayLink(game)" :text="'Watch Replay'" :alt="'Watch this match in the replay viewer'" size="small"></custom-button>
+            <custom-button :text="'Back to all matches'" :alt="'Back to all matches'" size="small" :ignoreclick="true" @click="selectGame(null)"></custom-button>
+          </template>
+        </div>
+
+        <!-- Phones get a dropdown; the tabs don't fit across -->
+        <multi-tab-button class="mb-2 max-md:hidden" :options="shownTabs" v-model="activeTab"></multi-tab-button>
         <div class="md:hidden flex justify-center mb-2">
           <single-select-filter
             :values="tabOptions"
@@ -60,16 +88,21 @@
             @input-changed="activeTab = $event.value"
           ></single-select-filter>
         </div>
-        <p class="text-center text-sm mb-6"><a class="link cursor-pointer" @click="toMethodology">How is this calculated?</a></p>
+        <p v-if="activeTab !== 'summary'" class="text-center text-sm mb-6"><a class="link cursor-pointer" @click="toMethodology">How is this calculated?</a></p>
+      </div>
+
+      <div class="max-w-[1500px] mx-auto px-4">
+        <analytics-summary v-if="activeTab === 'summary'" :path-for="pathFor" @open="activeTab = $event"></analytics-summary>
 
         <p v-if="tabError" class="text-center text-red mb-4">{{ tabError }}</p>
         <div v-if="!isLoading && tabData">
-          <analytics-deaths v-if="activeTab === 'deaths'" :data="tabData" :maps="maps" :heroes="filters.heroes" :game-maps="filters.game_maps" :selected-maps="gamemap" :pickable-maps="sample ? sample.maps : null" @pick-map="pickMap"></analytics-deaths>
-          <analytics-positions v-else-if="activeTab === 'map'" :data="tabData" :maps="maps" :heroes="filters.heroes" :game-maps="filters.game_maps" :selected-maps="gamemap" :pickable-maps="sample ? sample.maps : null" @pick-map="pickMap"></analytics-positions>
-          <analytics-timelines v-else-if="activeTab === 'timelines'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-timelines>
-          <analytics-activity v-else-if="activeTab === 'activity'" :data="tabData" :maps="maps" :heroes="filters.heroes" :filter-params="filterParams" :data-url="dataUrl"></analytics-activity>
+          <analytics-deaths v-if="activeTab === 'deaths'" :game="gameInfo" :data="tabData" :maps="maps" :heroes="filters.heroes" :game-maps="filters.game_maps" :selected-maps="gamemap" :pickable-maps="sample ? sample.maps : null" @pick-map="pickMap"></analytics-deaths>
+          <analytics-positions v-else-if="activeTab === 'map'" :game="gameInfo" :data="tabData" :maps="maps" :heroes="filters.heroes" :game-maps="filters.game_maps" :selected-maps="gamemap" :pickable-maps="sample ? sample.maps : null" @pick-map="pickMap"></analytics-positions>
+          <analytics-positioning v-else-if="activeTab === 'positioning'" :game="gameInfo" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-positioning>
+          <analytics-timelines v-else-if="activeTab === 'timelines'" :game="gameInfo" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-timelines>
+          <analytics-activity v-else-if="activeTab === 'activity'" :game="gameInfo" :data="tabData" :maps="maps" :heroes="filters.heroes" :filter-params="filterParams" :data-url="dataUrl"></analytics-activity>
           <analytics-sessions v-else-if="activeTab === 'sessions'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-sessions>
-          <analytics-coaching v-else-if="activeTab === 'coaching'" :data="tabData" :maps="maps" :heroes="filters.heroes" :filter-params="filterParams" :replay-link="replayLink"></analytics-coaching>
+          <analytics-coaching v-else-if="activeTab === 'coaching'" :game="gameInfo" :data="tabData" :maps="maps" :heroes="filters.heroes" :filter-params="filterParams" :replay-link="replayLink"></analytics-coaching>
           <analytics-stacks v-else-if="activeTab === 'stacks'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-stacks>
         </div>
       </div>
@@ -88,6 +121,7 @@
       :authenticated="!sample"
       :sample="!!sample"
       :replay-link="replayLink"
+      @analyze="selectGame"
     ></analytics-games>
 
     <!-- How the open tab's numbers are made; the wrapper is what "How is this calculated?" scrolls to -->
@@ -104,6 +138,23 @@
 <script>
 import { ANALYTICS_DISCLAIMER_KEY } from './AnalyticsDisclaimerPopup.vue';
 
+// Tabs that need many matches, left out when showing one match
+const ONE_GAME_HIDDEN = ['sessions', 'stacks'];
+
+// Each section's path after /Analytics (or after /Analytics/Match/Single/{id} for one match)
+const TAB_PATHS = {
+  summary: '',
+  deaths: '/Deaths',
+  map: '/Map',
+  positioning: '/Positioning',
+  timelines: '/Timelines',
+  activity: '/Activity',
+  sessions: '/Sessions',
+  coaching: '/Coaching',
+  stacks: '/Stacks',
+  games: '/Match/History',
+};
+
 export default {
   name: 'AnalyticsPage',
   props: {
@@ -117,6 +168,9 @@ export default {
     playermatchtablestyle: { type: [String, Boolean, Number], default: false },
     // The public sample's details (captured_at, maps, replay_id); null on the real page
     sample: { type: Object, default: null },
+    // The section and match from the page's path
+    initialTab: { type: String, default: null },
+    initialMatch: { type: Number, default: null },
   },
   data() {
     return {
@@ -130,15 +184,21 @@ export default {
       tabs: [
         { key: 'deaths', label: 'Deaths' },
         { key: 'map', label: 'Map & Positions' },
+        { key: 'positioning', label: 'Positioning' },
         { key: 'timelines', label: 'Timelines & Objectives' },
         { key: 'activity', label: 'Activity' },
         { key: 'sessions', label: 'Sessions' },
         { key: 'coaching', label: 'Coaching' },
         { key: 'stacks', label: 'Stacks' },
-        { key: 'games', label: 'Games' },
+        { key: 'games', label: 'Match History' },
       ],
-      // ?tab= in the URL opens that tab
-      activeTab: ['deaths', 'map', 'timelines', 'activity', 'sessions', 'coaching', 'stacks', 'games'].includes((this.urlparameters || {}).tab) ? this.urlparameters.tab : 'deaths',
+      // The section comes from the page's path (/Analytics/Deaths...); the sample still uses ?tab=
+      activeTab: this.sample
+        ? (Object.keys(TAB_PATHS).includes((this.urlparameters || {}).tab) && this.urlparameters.tab !== 'summary' ? this.urlparameters.tab : 'deaths')
+        : this.initialTab || 'summary',
+      // /Analytics/Match/Single/{id}: every section for that one match (not on the sample)
+      game: !this.sample && this.initialMatch ? this.initialMatch : null,
+      gameOptions: [],
       tabCache: {},
       tabError: '',
       isLoading: false,
@@ -156,8 +216,12 @@ export default {
     }
   },
   mounted() {
+    if (this.game && ONE_GAME_HIDDEN.includes(this.activeTab)) {
+      this.activeTab = 'deaths';
+    }
     if (this.status.done > 0) {
       this.loadTab();
+      this.loadGameOptions();
     }
     // A request still running from an earlier visit
     if (this.processing && !this.sample) {
@@ -176,7 +240,8 @@ export default {
       return this.status.total > 0 ? Math.floor((this.status.done / this.status.total) * 100) : 0;
     },
     filterParams() {
-      return { game_type: this.gametype, game_map: this.gamemap, hero: this.getHeroID() };
+      const params = { game_type: this.gametype, game_map: this.gamemap, hero: this.getHeroID() };
+      return this.game ? { ...params, game: this.game } : params;
     },
     dataUrl() {
       return this.sample ? '/Analytics/Sample/Data/' : '/Analytics/Data/';
@@ -184,10 +249,20 @@ export default {
     tabData() {
       return this.tabCache[this.cacheKey()];
     },
-    // Written plainly like the other pages' URLs (game_type=sl,qm); game types only when not the player's default
+    // The game being shown, as the server describes it (hero, map, mode, result, date)
+    gameInfo() {
+      return this.game ? this.tabData?.game || null : null;
+    },
+    // Sessions and Stacks need many games, so one game leaves them out
+    shownTabs() {
+      if (this.game) return this.tabs.filter(t => !ONE_GAME_HIDDEN.includes(t.key) && t.key !== 'games');
+      return this.sample ? this.tabs.filter(t => t.key !== 'positioning') : [{ key: 'summary', label: 'Summary' }, ...this.tabs];
+    },
+    // The filters, written plainly like the other pages' URLs (game_type=sl,qm); game types only when not the
+    // player's default. The sample keeps its section in ?tab=
     queryString() {
       const defaultTypes = [...(this.gametypedefault || [])].sort().join(',');
-      let queryString = `?tab=${this.activeTab}`;
+      let queryString = this.sample ? `&tab=${this.activeTab}` : '';
       if (this.gametype.length && [...this.gametype].sort().join(',') !== defaultTypes) {
         queryString += `&game_type=${this.gametype}`;
       }
@@ -197,23 +272,29 @@ export default {
       if (this.hero) {
         queryString += `&hero=${this.hero}`;
       }
-      return queryString;
+      return queryString ? '?' + queryString.slice(1) : '';
     },
     tabOptions() {
-      return this.tabs.map(t => ({ code: t.key, name: t.label }));
+      return this.shownTabs.map(t => ({ code: t.key, name: t.label }));
     },
   },
   watch: {
     activeTab(tab) {
-      // ?tab= in the URL, so a tab can be linked to and comes back on reload
-      history.pushState(null, null, `${window.location.pathname}${this.queryString}`);
+      // Each section is its own address, so it can be linked to and comes back on reload
+      history.pushState(null, null, this.pathFor(tab) + this.queryString);
       this.loadTab();
     },
   },
   methods: {
-    // Where a game's replay opens; the sample has only its one game
+    // A section's address: /Analytics/Deaths, or /Analytics/Match/Single/{id}/Deaths for one match
+    pathFor(tab) {
+      if (this.sample) return window.location.pathname;
+      if (this.game && tab !== 'games') return '/Analytics/Match/Single/' + this.game + TAB_PATHS[tab];
+      return '/Analytics' + TAB_PATHS[tab];
+    },
+    // Where a match's replay opens; the sample has only its one match
     replayLink(replayId) {
-      if (!this.sample) return '/Analytics/Match/Single/' + replayId;
+      if (!this.sample) return '/Analytics/Match/Single/' + replayId + '/Replay';
       return replayId === this.sample.replay_id ? '/Analytics/Sample/Match/Single' : null;
     },
     getHeroID() {
@@ -237,20 +318,49 @@ export default {
       this.applyFilters();
     },
     applyFilters() {
-      // In the URL like the tab, so a filtered view can be linked and survives a reload
-      history.replaceState(null, null, `${window.location.pathname}${this.queryString}`);
+      // In the URL, so a filtered view can be linked and survives a reload
+      history.replaceState(null, null, this.pathFor(this.activeTab) + this.queryString);
       this.loadTab();
     },
     toMethodology() {
       this.$refs.methodology?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     },
     cacheKey() {
-      return [this.activeTab, this.status.done, this.gametype.join(','), this.gamemap.join(','), this.hero || ''].join('|');
+      return [this.activeTab, this.status.done, this.gametype.join(','), this.gamemap.join(','), this.hero || '', this.activeTab === 'games' ? '' : this.game || ''].join('|');
+    },
+    // One match, or null for all matches again
+    selectGame(replayId) {
+      this.game = replayId || null;
+      if (this.game && (['games', 'summary'].includes(this.activeTab) || ONE_GAME_HIDDEN.includes(this.activeTab))) {
+        this.activeTab = 'deaths';
+      }
+      history.pushState(null, null, this.pathFor(this.activeTab) + this.queryString);
+      this.loadTab();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+    // The Match dropdown: your processed matches, newest first
+    async loadGameOptions() {
+      if (this.sample) return;
+      try {
+        const games = (await this.$axios.post(this.dataUrl + 'games', {})).data.games || [];
+        this.gameOptions = [
+          { code: 0, name: 'All matches' },
+          ...games.filter(g => g.processed).slice(0, 100).map(g => ({
+            code: g.replayID,
+            name: [this.formatDate(g.game_date), g.hero?.name, g.game_map?.name, g.winner ? 'Win' : 'Loss'].filter(Boolean).join(' · '),
+          })),
+        ];
+      } catch (e) {
+        // The dropdown just stays empty; Match History still has every match
+      }
+    },
+    formatDate(date) {
+      return new Date(String(date).replace(' ', 'T') + 'Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
     },
     async loadTab() {
       const key = this.cacheKey();
       this.tabError = '';
-      if (this.tabCache[key]) {
+      if (this.activeTab === 'summary' || this.tabCache[key]) {
         return;
       }
       this.isLoading = true;
