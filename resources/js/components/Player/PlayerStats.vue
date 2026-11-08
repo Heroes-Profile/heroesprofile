@@ -31,10 +31,10 @@
     <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
 
       <panel-box>
-      <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
+      <div class="flex flex-col xl:flex-row gap-6">
 
         <!-- Player overview -->
-        <panel-box ref="overviewCard" :inner="true" class="!gap-8">
+        <panel-box ref="overviewCard" :inner="true" class="!gap-8 xl:shrink-0">
           <div class="flex items-center gap-3">
             <icon-with-hover v-if="realRank && realRank.current && realRank.current.league != 'unranked'" popupsize="fit">
               <template #trigger>
@@ -87,8 +87,8 @@
           <p class="flex flex-wrap gap-2"><span class="text-subtext">Total Time Played:</span><span class="text-header">{{ data.total_time_played }}</span></p>
         </panel-box>
 
-        <div class="flex flex-col gap-6 min-w-0">
-          <div class="grid md:grid-cols-2 gap-6">
+        <div class="flex-1 flex flex-col gap-6 min-w-0">
+          <div class="grid 2xl:grid-cols-2 gap-6">
             <!-- Win rate by role -->
             <panel-box :inner="true" title="Win Rate By Role" link-text="All Roles" :link-href="profileUrl + '/Role'">
               <div class="flex flex-col gap-3">
@@ -135,8 +135,8 @@
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
       <loading-component :compact="true" :textoverride="true">Large amount of data. Please be patient. Loading data...</loading-component>
       <panel-box>
-        <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
-          <panel-box :inner="true" class="!gap-8 2xl:w-[48.75rem]">
+        <div class="flex flex-col xl:flex-row gap-6">
+          <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">
             <h2 class="text-3xl font-bold">{{ battletag }}</h2>
             <div class="flex gap-8 max-sm:flex-col">
               <skeleton-box class="w-40 md:w-72 h-[23em] shrink-0 rounded"></skeleton-box>
@@ -157,8 +157,8 @@
             </div>
           </panel-box>
 
-          <div class="flex flex-col gap-6 min-w-0">
-            <div class="grid md:grid-cols-2 gap-6">
+          <div class="flex-1 flex flex-col gap-6 min-w-0">
+            <div class="grid 2xl:grid-cols-2 gap-6">
               <panel-box v-for="title in ['Win Rate By Role', 'Party Size Win Rates']" :key="title" :inner="true" :title="title">
                 <skeleton-box v-for="index in 6" :key="index" class="h-10"></skeleton-box>
               </panel-box>

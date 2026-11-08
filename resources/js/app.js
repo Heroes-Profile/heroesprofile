@@ -14,6 +14,10 @@ const app = createApp({});
 
 import '@fortawesome/fontawesome-free/css/all.css'
 
+// Every <details> on the site slides open and shut
+import { animateDetails } from './utils/animateDetails';
+animateDetails();
+
 // Automatically register Vue components
 const components = import.meta.glob('./components/**/*.vue', { eager: true });
 Object.entries(components).forEach(([path, definition]) => {

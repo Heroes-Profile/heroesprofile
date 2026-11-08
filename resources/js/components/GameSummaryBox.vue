@@ -7,7 +7,7 @@
   </match-row-mobile>
   <!-- One line per game: the match history's Compact view -->
   <div v-if="compact" class="max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2">
-    <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
+    <div class="absolute inset-0 pointer-events-none transition-colors duration-200 ease-out group-hover/row:bg-white/10"></div>
     <a :href="getHref()" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
     <div class="relative w-[20rem] shrink-0 self-stretch flex items-center pl-5 py-2.5">
       <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="data.winner === 1 ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
@@ -35,7 +35,7 @@
     <!-- Esports rows give this space to the teams -->
     <div v-if="!esport" class="relative w-[8.75rem] shrink-0 flex flex-col items-center text-center">
       <template v-if="data.kills !== undefined">
-        <span class="grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] w-[8.75rem] text-2xl font-semibold whitespace-nowrap tabular-nums">
+        <span class="grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] gap-x-[0.4375rem] w-[8.75rem] text-2xl font-semibold whitespace-nowrap tabular-nums">
           <span class="text-right text-win">{{ data.kills }}</span><span>|</span><span class="font-normal text-red">{{ data.deaths }}</span><span>|</span><span class="text-left font-normal">{{ data.assists }}</span>
         </span>
         <span class="text-sm font-medium text-subtext">{{ kda }} KDA</span>
@@ -48,14 +48,14 @@
       </template>
     </div>
   </div>
-  <div v-else :class="['group/row relative flex flex-wrap items-center justify-between gap-y-4 rounded overflow-hidden 2xl:flex-nowrap group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2']">
-    <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
+  <div v-else :class="['group/row relative flex flex-wrap items-center justify-between gap-y-4 rounded overflow-hidden group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2']">
+    <div class="absolute inset-0 pointer-events-none transition-colors duration-200 ease-out group-hover/row:bg-white/10"></div>
     <!-- The whole row opens the match; talents, player names and the replay icons sit on top of it -->
     <a :href="getHref()" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
-    <div class="relative flex-1 md:max-w-[25.625rem] min-w-[18.75rem] self-stretch flex items-center max-md:justify-center pl-6 py-4">
-      <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="data.winner === 1 ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
+    <div class="relative flex-1 max-w-[25.625rem] min-w-[18.75rem] self-stretch flex items-center pl-6 py-4">
+      <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="data.winner === 1 ?'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
       <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"></div>
-      <div class="absolute inset-y-0 left-0 w-1.5" :class="data.winner === 1 ? 'bg-win' : 'bg-red'"></div>
+      <div class="absolute inset-y-0 left-0 w-1.5" :class="data.winner === 1 ?'bg-win' : 'bg-red'"></div>
 
       <div class="relative flex items-center gap-4">
         <hero-image-wrapper size="match" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
@@ -71,38 +71,38 @@
     </div>
 
     <!-- Esports games: their team against the other, where a ranked game shows MMR -->
-    <div v-if="esport" class="relative flex flex-col gap-0.5 justify-center px-4 w-full 2xl:w-[26.875rem] shrink-0 max-md:items-center max-md:text-center">
-      <span class="text-sm 2xl:text-base font-medium text-subtext">{{ data.winner === 1 ? 'Won' : 'Lost' }} with</span>
+    <div v-if="esport" class="relative flex flex-col gap-0.5 justify-center px-4 w-[26.875rem] shrink-0">
+      <span class="text-base font-medium text-subtext">{{ data.winner === 1 ? 'Won' : 'Lost' }} with</span>
       <span class="text-xl font-semibold truncate">{{ $ngsTeam(data.own_team).name }}</span>
       <span class="text-sm text-subtext truncate">vs {{ $ngsTeam(data.opponent_team).name }}</span>
     </div>
-    <div v-else class="relative flex gap-5 items-center px-4 w-full 2xl:w-[26.875rem] shrink-0">
-      <div v-for="stat in mmrStats" :key="stat.title" class="flex flex-col gap-0.5 flex-1 min-w-0 max-md:items-center max-md:text-center 2xl:flex-none 2xl:w-[7.375rem]">
-        <span class="text-sm 2xl:text-base font-medium text-subtext 2xl:whitespace-nowrap">{{ stat.title }}</span>
+    <div v-else class="relative flex gap-5 items-center px-4 w-[26.875rem] shrink-0">
+      <div v-for="stat in mmrStats" :key="stat.title" class="flex flex-col gap-0.5 flex-none w-[7.375rem] min-w-0">
+        <span class="text-base font-medium text-subtext whitespace-nowrap">{{ stat.title }}</span>
         <span class="text-2xl font-semibold">{{ stat.value.toLocaleString('en-US') }}</span>
-        <span v-if="stat.change !== null" class="text-sm font-medium" :class="stat.change >= 0 ? 'text-win' : 'text-red'">{{ stat.change > 0 ? '+' : '' }}{{ stat.change.toFixed(2) }}</span>
+        <span v-if="stat.change !== null" class="text-sm font-medium" :class="stat.change >= 0 ?'text-win' : 'text-red'">{{ stat.change > 0 ? '+' : '' }}{{ stat.change.toFixed(2) }}</span>
       </div>
     </div>
 
-    <div class="relative w-full 2xl:w-[8.75rem] shrink-0 flex flex-col gap-0.5 max-2xl:items-start max-md:items-center max-2xl:px-4 2xl:items-center 2xl:text-center">
+    <div class="relative w-[8.75rem] shrink-0 flex flex-col gap-0.5 items-center text-center">
       <template v-if="data.kills !== undefined">
         <!-- Same grid as the header's icons. Kills right-align against the first bar so their
              ones digits line up row to row; deaths sit centred; assists start right after the second bar. -->
-        <span class="grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] w-[8.75rem] text-2xl font-semibold whitespace-nowrap text-center tabular-nums">
+        <span class="grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] gap-x-[0.4375rem] w-[8.75rem] text-2xl font-semibold whitespace-nowrap text-center tabular-nums">
           <span class="text-right text-win">{{ data.kills }}</span><span>|</span><span class="font-normal text-red">{{ data.deaths }}</span><span>|</span><span class="text-left font-normal">{{ data.assists }}</span>
         </span>
         <span class="text-sm font-medium text-subtext">{{ kda }} KDA</span>
       </template>
     </div>
 
-    <div class="relative z-[2] flex flex-wrap gap-1.5 items-center max-md:justify-center px-4 w-full 2xl:w-[22.625rem] shrink-0">
+    <div class="relative z-[2] flex flex-wrap gap-1.5 items-center px-4 w-[22.625rem] shrink-0">
       <template v-for="level in talentLevels" :key="level">
         <talent-image-wrapper v-if="data[level]" :talent="data[level]" size="talent"></talent-image-wrapper>
         <div v-else class="w-[2.625rem] h-[2.625rem] shrink-0 rounded bg-surface-3"></div>
       </template>
     </div>
 
-    <div v-if="data.players && data.players.length" class="relative z-[2] flex gap-2 max-md:justify-center pl-4 2xl:pl-1.5 pr-12 max-md:pr-4 py-4 w-full 2xl:w-[22.625rem] shrink-0">
+    <div v-if="data.players && data.players.length" class="relative z-[2] flex gap-2 pl-1.5 pr-12 py-4 w-[22.625rem] shrink-0">
       <div v-for="(team, teamIndex) in data.players" :key="teamIndex" class="flex flex-col gap-1.5 w-[9.375rem]">
         <!-- A party's icon sits centred beside a line in its colour running down the group -->
         <div v-for="group in partyGroups(team)" :key="group.start" class="flex items-center">

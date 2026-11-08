@@ -45,10 +45,10 @@
     <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
 
       <panel-box>
-      <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
+      <div class="flex flex-col xl:flex-row gap-6">
 
         <!-- Map overview, laid out like the profile's player card -->
-        <panel-box :inner="true" class="!gap-8">
+        <panel-box :inner="true" class="!gap-8 xl:shrink-0">
           <h2 class="text-3xl font-bold">
             <hero-heading-select type="map" :heroes="filters.game_maps" :value="map" textclass="" @hero-changed="changeMap($event)"></hero-heading-select>
           </h2>
@@ -78,7 +78,7 @@
           </div>
         </panel-box>
 
-        <div class="flex flex-col gap-6 min-w-0">
+        <div class="flex-1 flex flex-col gap-6 min-w-0">
           <!-- Esports: the teams they played the map for -->
           <panel-box v-if="esport && data.teams_played_for && data.teams_played_for.length" :inner="true" title="Teams Played For">
             <div class="flex flex-col gap-2">
@@ -136,8 +136,8 @@
     <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
       <loading-component :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ asyncLoading ? 'This is taking longer than expected. A background task is computing your results. Please be patient.' : 'Loading data...' }}</loading-component>
       <panel-box>
-        <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
-          <panel-box :inner="true" class="!gap-8 2xl:w-[48.75rem]">
+        <div class="flex flex-col xl:flex-row gap-6">
+          <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">
             <h2 class="text-3xl font-bold">{{ map }}</h2>
             <div class="flex gap-8 max-sm:flex-col">
               <skeleton-box class="w-40 md:w-60 aspect-[3/4] shrink-0 rounded"></skeleton-box>
@@ -158,7 +158,7 @@
             </div>
           </panel-box>
 
-          <div class="flex flex-col gap-6 min-w-0">
+          <div class="flex-1 flex flex-col gap-6 min-w-0">
             <panel-box v-if="esport" :inner="true" title="Teams Played For">
               <skeleton-box v-for="index in 2" :key="index" class="h-14"></skeleton-box>
             </panel-box>

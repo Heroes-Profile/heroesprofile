@@ -15,6 +15,33 @@ html{background-color:lightgrey; font-family: 'Roboto', sans-serif; box-sizing:b
 @media (min-width: 1500px){ html{ font-size: calc(100vw / 2133 * 16); } } /* 1500-2133: scales with the window */
 @media (min-width: 2133px){ html{ font-size: 100%; } }                 /* 2133 and up: 16px */
 
+/* Hover fade: colours ease in and out instead of snapping. In the base layer, so an element's own
+   transition-* class still wins. Covers links, controls and anything with a hover: or group-hover/name: class. Skipped for
+   visitors who ask for reduced motion. */
+@layer base {
+  @media (prefers-reduced-motion: no-preference) {
+    a, button, [role="button"], label, summary, input, select, textarea, [class*="hover:"], [class*="hover/"] {
+      transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, filter;
+      transition-timing-function: ease;
+      transition-duration: 150ms;
+    }
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* Menus and dropdown panels fade in when they open (they switch on with display, so they can't fade out) */
+  .nav-dropdown, .nav-flyout, .expandable-dropdown {
+    animation: hover-fade-in 150ms ease;
+  }
+}
+/* A <details> sliding shut is still [open] until it finishes (utils/animateDetails.js), so turn its chevron back now */
+details.group.is-closing[open] .group-open\:rotate-180 {
+  --tw-rotate: 0deg;
+}
+@keyframes hover-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 /* Shared button look. Colour stays on the element (e.g. bg-teal hover:bg-lteal); utilities on the element override this. */
 @layer components {
   .btn{

@@ -46,10 +46,10 @@
     <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
 
       <panel-box>
-      <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
+      <div class="flex flex-col xl:flex-row gap-6">
 
         <!-- Role overview, laid out like the profile's player card -->
-        <panel-box :inner="true" class="!gap-8">
+        <panel-box :inner="true" class="!gap-8 xl:shrink-0">
           <h2 class="text-3xl font-bold">
             <hero-heading-select type="role" :heroes="filters.role" :value="role" textclass="" @hero-changed="changeRole($event)"></hero-heading-select>
           </h2>
@@ -82,7 +82,7 @@
           </div>
         </panel-box>
 
-        <div class="flex flex-col gap-6 min-w-0">
+        <div class="flex-1 flex flex-col gap-6 min-w-0">
           <!-- Esports: the teams they played the role for -->
           <panel-box v-if="esport && data.teams_played_for && data.teams_played_for.length" :inner="true" title="Teams Played For">
             <div class="flex flex-col gap-2">
@@ -104,7 +104,7 @@
 
           <player-mmr-panel v-if="!esport" :data="data" :link-href="profileUrl + '/MMR'" :link-query="{ role: role }"></player-mmr-panel>
 
-          <div class="grid md:grid-cols-2 gap-6">
+          <div class="grid 2xl:grid-cols-2 gap-6">
             <panel-box :inner="true" :title="'Heroes Played As ' + role">
               <div class="flex flex-wrap gap-2">
                 <a :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes" :key="index">
@@ -153,8 +153,8 @@
     <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
       <loading-component :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ asyncLoading ? 'This is taking longer than expected. A background task is computing your results. Please be patient.' : 'Loading data...' }}</loading-component>
       <panel-box>
-        <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
-          <panel-box :inner="true" class="!gap-8 2xl:w-[48.75rem]">
+        <div class="flex flex-col xl:flex-row gap-6">
+          <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">
             <h2 class="text-3xl font-bold">{{ role }}</h2>
             <div class="flex gap-8 max-sm:flex-col">
               <skeleton-box class="w-40 md:w-60 h-40 md:h-60 shrink-0 !rounded-full"></skeleton-box>
@@ -175,7 +175,7 @@
             </div>
           </panel-box>
 
-          <div class="flex flex-col gap-6 min-w-0">
+          <div class="flex-1 flex flex-col gap-6 min-w-0">
             <panel-box v-if="esport" :inner="true" title="Teams Played For">
               <skeleton-box v-for="index in 2" :key="index" class="h-14"></skeleton-box>
             </panel-box>
@@ -185,7 +185,7 @@
             <panel-box v-if="!esport" :inner="true" title="Heroes Profile MMR">
               <skeleton-box v-for="index in 6" :key="index" class="h-9"></skeleton-box>
             </panel-box>
-            <div class="grid md:grid-cols-2 gap-6">
+            <div class="grid 2xl:grid-cols-2 gap-6">
               <panel-box v-for="title in ['Heroes Played As ' + role, 'Maps Played As ' + role]" :key="title" :inner="true" :title="title">
                 <div class="flex flex-wrap gap-2">
                   <skeleton-box v-for="tile in 12" :key="tile" class="w-10 h-10 !rounded-full"></skeleton-box>

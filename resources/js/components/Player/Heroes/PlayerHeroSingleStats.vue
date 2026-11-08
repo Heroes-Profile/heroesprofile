@@ -46,10 +46,10 @@
     <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
 
       <panel-box>
-      <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
+      <div class="flex flex-col xl:flex-row gap-6">
 
         <!-- Hero overview, laid out like the profile's player card -->
-        <panel-box :inner="true" class="!gap-8">
+        <panel-box :inner="true" class="!gap-8 xl:shrink-0">
           <h2 class="text-3xl font-bold">
             <hero-heading-select :heroes="heroes" :value="heroobject.id" textclass="" @hero-changed="changeHero($event)"></hero-heading-select>
           </h2>
@@ -114,7 +114,7 @@
 
         </panel-box>
 
-        <div class="flex flex-col gap-6 min-w-0">
+        <div class="flex-1 flex flex-col gap-6 min-w-0">
           <!-- Esports: the teams they played it for, and the heroes they beat and lost to on it -->
           <panel-box v-if="esport && data.teams_played_for && data.teams_played_for.length" :inner="true" title="Teams Played For">
             <div class="flex flex-col gap-2">
@@ -200,8 +200,8 @@
     <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
       <loading-component :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ asyncLoading ? 'This is taking longer than expected. A background task is computing your results. Please be patient.' : 'Loading data...' }}</loading-component>
       <panel-box>
-        <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
-          <panel-box :inner="true" class="!gap-8 2xl:w-[48.75rem]">
+        <div class="flex flex-col xl:flex-row gap-6">
+          <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">
             <h2 class="text-3xl font-bold">{{ heroobject.name }}</h2>
             <div class="flex gap-8 max-sm:flex-col">
               <skeleton-box class="w-40 md:w-72 h-[23em] shrink-0 rounded"></skeleton-box>
@@ -228,7 +228,7 @@
             </div>
           </panel-box>
 
-          <div v-if="esport" class="flex flex-col gap-6 min-w-0">
+          <div v-if="esport" class="flex-1 flex flex-col gap-6 min-w-0">
             <panel-box :inner="true" title="Teams Played For">
               <skeleton-box v-for="index in 2" :key="index" class="h-14"></skeleton-box>
             </panel-box>
@@ -238,7 +238,7 @@
               </div>
             </panel-box>
           </div>
-          <div v-else class="flex flex-col gap-6 min-w-0">
+          <div v-else class="flex-1 flex flex-col gap-6 min-w-0">
             <panel-box :inner="true" title="Party Size Win Rates">
               <skeleton-box v-for="index in 5" :key="index" class="h-10"></skeleton-box>
             </panel-box>
