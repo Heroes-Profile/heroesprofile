@@ -2,8 +2,8 @@
   <div>
     <!-- The answers first -->
     <div class="flex flex-wrap justify-center gap-4 mb-8">
-      <stat-box class="w-[23%] max-md:w-[48%]" :title="'Deaths per Game'" :value="orDash(round(deathsPerGame(youTiming), 2))" :secondstat="orDash(round(deathsPerGame(baseTiming), 2))" :secondcaption="'global'" color="teal"></stat-box>
-      <stat-box class="w-[23%] max-md:w-[48%]" :title="'Deathless Games'" :value="percent(youTiming.deathless_share)" :secondstat="percent(baseTiming.deathless_share)" :secondcaption="'global'" color="yellow"></stat-box>
+      <stat-box class="w-[23%] max-md:w-[48%]" :title="game ? 'Deaths' : 'Deaths per Game'" :value="orDash(round(deathsPerGame(youTiming), 2))" :secondstat="orDash(round(deathsPerGame(baseTiming), 2))" :secondcaption="'global'" color="teal"></stat-box>
+      <stat-box class="w-[23%] max-md:w-[48%]" :title="game ? 'Deathless' : 'Deathless Games'" :value="game ? yesNo(youTiming.deathless_share) : percent(youTiming.deathless_share)" :secondstat="percent(baseTiming.deathless_share)" :secondcaption="'global'" color="yellow"></stat-box>
       <stat-box class="w-[23%] max-md:w-[48%]" :title="'First Death'" :value="clock(youTiming.avg_first_death)" :secondstat="clock(baseTiming.avg_first_death)" :secondcaption="'global'" color="teal"></stat-box>
       <stat-box class="w-[23%] max-md:w-[48%]" :title="'On Enemy Half'" :value="share(you.enemy_half, you.deaths)" :secondstat="share(base.enemy_half, base.deaths)" :secondcaption="'global'" color="red"></stat-box>
     </div>
@@ -99,8 +99,9 @@ export default {
     };
   },
   computed: {
-    // The map the death map draws: the one the page is filtered to, or with several, the one you die on most
+    // The map the death map draws: one match's own map, the one the page is filtered to, or with several, the one you die on most
     shownMap() {
+      if (this.game) return this.game.game_map_id;
       const picked = (this.selectedMaps || []).map(name => this.mapId(name)).filter(id => id !== null);
       if (picked.length === 1) return picked[0];
       if (picked.length > 1) return this.mapsWithDeaths.find(id => picked.includes(id)) ?? picked[0];
@@ -186,6 +187,10 @@ export default {
       return { labels: rows.map(r => this.heroName(r.hero_id)), series: [{ label: 'Your kills', data: rows.map(r => r.n), color: 'teal' }] };
     },
     mapTakeaway() {
+      if (this.game) {
+        const n = this.deathPoints.length;
+        return n ? 'You died ' + n + (n === 1 ? ' time' : ' times') + ' this match.' : 'No deaths this match.';
+      }
       if (!this.mapsWithDeaths.length) return 'No deaths with a position yet.';
       return this.shownMap === null ? 'You die most on ' + this.mapName(this.mapsWithDeaths[0]) + '.' : null;
     },
@@ -193,18 +198,20 @@ export default {
       if (!this.you.deaths) return null;
       const ganked = (100 * Number(this.you.ganked)) / Number(this.you.deaths);
       const global = this.base.deaths ? (100 * Number(this.base.ganked)) / Number(this.base.deaths) : null;
-      return this.round(ganked) + '% of your deaths are ganks by 1-2 heroes' + this.versus(ganked, global, '%') + '.';
+      return this.round(ganked) + '% of your deaths ' + (this.game ? 'were' : 'are') + ' ganks by 1-2 heroes' + this.versus(ganked, global, '%') + '.';
     },
     timingTakeaway() {
       const you = this.phases(this.youTiming);
       if (!you.some(v => v)) return null;
       const worst = you.indexOf(Math.max(...you));
+      if (this.game) return 'Your deadliest stretch was ' + this.phaseLabels[worst] + ' (' + you[worst] + (you[worst] === 1 ? ' death' : ' deaths') + ').';
       return 'Your deadliest stretch is ' + this.phaseLabels[worst] + ' (' + you[worst] + ' deaths per game).';
     },
     nemesisTakeaway() {
       const top = (this.data.nemesis_heroes || [])[0];
       const victim = (this.data.victim_heroes || [])[0];
       if (!top) return null;
+      if (this.game) return this.heroName(top.hero_id) + ' killed you most (' + top.n + (top.n === 1 ? ' time' : ' times') + ')' + (victim ? '; you killed ' + this.heroName(victim.hero_id) + ' most (' + victim.n + ').' : '.');
       return this.heroName(top.hero_id) + ' has killed you most (' + top.n + ' times)' + (victim ? '; you kill ' + this.heroName(victim.hero_id) + ' most (' + victim.n + ').' : '.');
     },
     nemesisLists() {

@@ -183,7 +183,7 @@ export default {
     apmTakeaway() {
       const mine = this.ordersPerMinute('you');
       if (mine === null) return null;
-      return 'You give ' + this.round(mine) + ' orders a minute on average' + this.versus(mine, this.ordersPerMinute('global')) + '.';
+      return (this.game ? 'You gave ' : 'You give ') + this.round(mine) + ' orders a minute on average' + this.versus(mine, this.ordersPerMinute('global')) + '.';
     },
     talentTakeaway() {
       // Average gap to global over the tiers both have
@@ -192,8 +192,9 @@ export default {
       const gaps = you.map((v, i) => (v !== null && global[i] !== null ? v - global[i] : null)).filter(v => v !== null);
       if (!gaps.length) return null;
       const gap = gaps.reduce((a, b) => a + b, 0) / gaps.length;
-      if (Math.abs(gap) < 3) return 'You pick talents at about the same time as most players.';
-      return 'You pick talents ' + this.clock(Math.abs(gap)) + (gap > 0 ? ' later' : ' sooner') + ' than most players, on average.';
+      const pick = this.game ? 'You picked' : 'You pick';
+      if (Math.abs(gap) < 3) return pick + ' talents at about the same time as most players.';
+      return pick + ' talents ' + this.clock(Math.abs(gap)) + (gap > 0 ? ' later' : ' sooner') + ' than most players, on average.';
     },
     abilityTakeaway() {
       return this.moreHeroes ? 'Your ' + this.abilityHeroes.length + ' most played heroes; choose a hero in the filters to see another.' : null;
@@ -294,7 +295,8 @@ export default {
         const ratio = Math.abs(mine - global) / global;
         if (!best || ratio > best.ratio) best = { ratio, name: a.name, mine, global };
       });
-      if (!best || best.ratio < 0.15) return best ? 'You use your abilities about as often as most players.' : null;
+      if (!best || best.ratio < 0.15) return best ? (this.game ? 'You used' : 'You use') + ' your abilities about as often as most players.' : null;
+      if (this.game) return 'You cast ' + best.name + ' ' + (best.mine > best.global ? 'more' : 'less') + ' than most players: ' + best.mine + ' times vs ' + best.global + ' a game.';
       return 'You cast ' + best.name + ' ' + (best.mine > best.global ? 'more' : 'less') + ' than most players: ' + best.mine + ' times a game vs ' + best.global + '.';
     },
     slotBase(slot) {

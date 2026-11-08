@@ -496,7 +496,7 @@ export default {
       const rated = this.rows.filter(r => r.percentile !== null);
       if (!rated.length) return null;
       const ahead = rated.filter(r => this.playersAhead(r) <= 50).length;
-      return 'You are at or above the median on ' + ahead + ' of ' + rated.length + ' signals.';
+      return (this.game ? 'This match you were' : 'You are') + ' at or above the median on ' + ahead + ' of ' + rated.length + ' signals.';
     },
     // What the announcer says: up to two things to work on, and your best area
     summary() {
