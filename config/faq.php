@@ -109,7 +109,12 @@ return [
                 ],
                 [
                     'q' => 'What do the time frame filters mean (major patch vs. minor patch)?',
-                    'a' => 'Major patches on Heroes Profile generally align with hero releases or major reworks — when Blizzard changes the first digit after the decimal (e.g. 2.44 → 2.45). Minor patches are smaller balance updates. You can filter global stats to specific patches or date ranges to see how the meta evolved over time.',
+                    'a' => 'Major patches on Heroes Profile generally align with hero releases or major reworks, when Blizzard changes the number after the first decimal (e.g. 2.44 → 2.45). Minor patches are the smaller balance updates inside a major patch. The Timeframes filter lists every build under its major and sub patch: tick a heading to take the whole patch, or tick single builds. See the <a href="/FAQ#patch-history" class="link">patch history</a> for what each patch changed.',
+                ],
+                [
+                    'id' => 'hero-average-stats',
+                    'q' => 'Can I see a hero\'s average in-game stats, like siege damage or hero damage?',
+                    'a' => 'Yes, every hero\'s average per game for a stat is on the <a href="/Global/Hero" class="link">Hero Stats</a> page:<ol class="list-decimal pl-6 my-2 flex flex-col gap-1"><li>Click <strong>Show Advanced Filters</strong> under the filters.</li><li>Set <strong>Timeframes</strong> to 5 or fewer single builds. The Stat Filter is hidden when a whole major or sub patch is ticked.</li><li>Pick the stat in <strong>Stat Filter</strong>, e.g. Siege Damage, Hero Damage, Spell Damage, Physical Damage, Healing or Deaths, and click <strong>Filter</strong>.</li></ol>The table and bubble chart then show each hero\'s average per game for that stat instead of win rate. You can also link straight to it, e.g. <a href="/Global/Hero?statfilter=siege_damage" class="link">/Global/Hero?statfilter=siege_damage</a>. The <a href="/Global/Talents" class="link">Talents</a> page has the same Stat Filter for talents and builds. A full breakdown of one hero\'s stats side by side, like the advanced stats on a player\'s hero page, isn\'t available globally.',
                 ],
                 [
                     'q' => 'Why is global data sometimes empty after a new patch?',
@@ -126,6 +131,79 @@ return [
                 [
                     'q' => 'What is the Talent Builder?',
                     'a' => 'The <a href="/Global/Talents/Builder" class="link">Talent Builder</a> lets you construct a specific talent build and see win rate data for exactly that combination. It\'s great for comparing two builds head-to-head with real game data.',
+                ],
+            ],
+        ],
+        [
+            'name' => 'Filters',
+            'items' => [
+                [
+                    'q' => 'How do the filters work?',
+                    'a' => 'Change any filters you want, then click <strong>Filter</strong> to reload the page with them. On global stats pages, <strong>Show Advanced Filters</strong> reveals more: Stat Filter, Hero Level, HP Hero Rank, HP Role Rank, Mirror Matches and, on Hero Stats, Group Size. Global stats pages save your filters in the page link, so you can share or bookmark a filtered page. On mobile, tap <strong>Show Filters</strong> to open them.',
+                ],
+                [
+                    'q' => 'What does the Timeframes filter do?',
+                    'a' => 'Timeframes picks which patches the data comes from. Builds are listed under their major patch and sub patch: tick a heading to take the whole patch, or tick single builds. It defaults to the latest patch. See <a href="/FAQ#patch-history" class="link">patch history</a> for what each patch changed.',
+                ],
+                [
+                    'q' => 'What does the Game Type filter do?',
+                    'a' => 'Game Type limits the data to Storm League, Quick Match, ARAM and the other modes. Global stats pages leave out Unranked Draft and Custom games. Profile pages include every game type, and Match History can show Custom games too.',
+                ],
+                [
+                    'q' => 'What does the Stat Filter do?',
+                    'a' => 'On <a href="/Global/Hero" class="link">Hero Stats</a> and <a href="/Global/Talents" class="link">Talents</a>, the Stat Filter swaps win rate for the average per game of an in-game stat, such as hero, siege, spell, physical or minion damage, healing, deaths, takedowns, time stunning enemies or merc camp captures. It is under Show Advanced Filters and only shows when Timeframes is 5 or fewer single builds. There is a step-by-step guide under "Can I see a hero\'s average in-game stats" in Global Stats &amp; Data.',
+                ],
+                [
+                    'q' => 'What do the Regions and Map filters do?',
+                    'a' => '<strong>Regions</strong> limits the data to games played in NA, EU, KR or CN. <strong>Map</strong> limits it to games on the maps you pick.',
+                ],
+                [
+                    'q' => 'What do the Heroes and Role filters do?',
+                    'a' => 'They limit the data to one hero or one role. On <a href="/Match/Search" class="link">Replay Search</a> you can pick several heroes and choose <strong>OR</strong> (games with any of them) or <strong>AND</strong> (games with all of them).',
+                ],
+                [
+                    'q' => 'What do the HP Player Rank, HP Hero Rank and HP Role Rank filters do?',
+                    'a' => 'They filter by skill using Heroes Profile\'s own MMR: the player\'s overall MMR, their MMR on that specific hero, or their MMR on that hero\'s role. The tiers mirror the in-game ones but use our formula, so they won\'t match in-game ranks. The MMR &amp; Rankings section explains how our MMR works.',
+                ],
+                [
+                    'q' => 'What is the HP / In-Game switch on Player Rank?',
+                    'a' => 'On Hero Stats and Talents, Player Rank can use either Heroes Profile MMR tiers (HP) or the Storm League rank Blizzard shows on the loading screen (In-Game). In-game rank is read by players using the Heroes Profile uploader\'s opt-in rank reader, and each player counts in the rank they had going into that game. Only players whose rank was read count, so sample sizes are smaller, and only patches since the rank reader started are listed in Timeframes.',
+                ],
+                [
+                    'q' => 'What does the Hero Level filter do?',
+                    'a' => 'Hero Level only includes players who had that hero at the levels you pick, from 1-5 up to 100+. Use it to see how a hero does in experienced hands.',
+                ],
+                [
+                    'q' => 'What does the Mirror Matches filter do?',
+                    'a' => 'It decides whether games with the same hero on both teams count. It defaults to Exclude, because a hero playing itself always adds one win and one loss, pulling its win rate toward 50%.',
+                ],
+                [
+                    'q' => 'What does the Group Size filter do?',
+                    'a' => 'Group Size limits the data to players who queued Solo, as a Duo, or in a group of 3, 4 or 5. On the <a href="/Global/Party" class="link">Party</a> page, <strong>Team One Party</strong> and <strong>Team Two Party</strong> pick each team\'s whole makeup instead, from 5 Solos to a 5 Stack.',
+                ],
+                [
+                    'q' => 'What does the Minimum Games filter do?',
+                    'a' => 'It hides rows with fewer games than the number you pick, so small samples don\'t crowd the top of the table.',
+                ],
+                [
+                    'q' => 'What does Talent Build Type do?',
+                    'a' => 'It picks which builds the Talents page lists. Only builds that reached level 20 count.<ul class="list-disc pl-6 mt-2 flex flex-col gap-1"><li><strong>Popular</strong>: the most played builds.</li><li><strong>HP Algorithm</strong>: the most played builds, but only one per combination of level 1, 4 and 7 talents, so you see different early-game paths.</li><li><strong>Unique Lvl X</strong>: the most played build for each different talent at that level.</li></ul>',
+                ],
+                [
+                    'q' => 'What do the Season and date filters do?',
+                    'a' => '<strong>Season</strong> limits the data to games in the seasons you pick, grouped by year. On profile pages you can pick several. The <strong>date range</strong> filter limits it to games played between the dates you choose.',
+                ],
+                [
+                    'q' => 'What do the Leaderboard Type and League filters do?',
+                    'a' => 'On the <a href="/Global/Leaderboard" class="link">Leaderboards</a>, Leaderboard Type switches between Player, Hero, Role, Match Prediction and SL Rank boards. SL Rank lists in-game Storm League ranks and adds a League picker.',
+                ],
+                [
+                    'q' => 'What filters does Replay Search have?',
+                    'a' => '<a href="/Match/Search" class="link">Replay Search</a> adds a few of its own: <strong>Game Version</strong> (patches), a <strong>date range</strong>, ranges on <strong>HP Player, Hero and Role MMR</strong>, and <strong>Players</strong>, which only finds games with those BattleTags in them. Match History has a similar <strong>Friend or Foe Player</strong> search.',
+                ],
+                [
+                    'q' => 'What filters do the esports pages have?',
+                    'a' => 'Esports pages have filters for that league instead, such as Season, Division, Team or Tournament, depending on what the league tracks.',
                 ],
             ],
         ],
@@ -278,7 +356,7 @@ return [
             'name' => 'Global Stats',
             'note' => 'Stats across every uploaded replay.',
             'items' => [
-                ['name' => 'Hero Stats', 'url' => '/Global/Hero', 'description' => 'Win rate, pick rate, ban rate and more for every hero, with a bubble chart.', 'hero_url' => '/Global/Hero?hero={hero}'],
+                ['name' => 'Hero Stats', 'url' => '/Global/Hero', 'description' => 'Win rate, pick rate, ban rate and more for every hero, with a bubble chart. The Stat Filter in Show Advanced Filters shows each hero\'s average per game for a stat instead, like siege, hero or spell damage.', 'hero_url' => '/Global/Hero?hero={hero}'],
                 ['name' => 'Hero Map Stats', 'url' => '/Global/Hero/Maps', 'description' => 'How each hero does on each map.', 'hero_url' => '/Global/Hero/Maps/{hero}'],
                 ['name' => 'Talents', 'url' => '/Global/Talents', 'description' => 'Pick a hero to see talent win rates and popular builds.'],
                 ['name' => 'Hero Talents', 'url' => '/Global/Talents/Abathur', 'description' => 'One hero\'s talents and builds.'],
