@@ -15,6 +15,8 @@ use GuzzleHttp\Exception\RequestException;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -81,7 +83,34 @@ class ReplayUploadService
      */
     private const SETTLED = ['Success', 'Duplicate'];
 
+    /** The processing_check row that switches uploads on and off. */
+    private const SWITCH_PROCESS = 'ReplayUploads';
+
+    /** Seconds a paused uploader is told to wait before trying again. */
+    public const PAUSED_RETRY_AFTER = 3600;
+
     public function __construct(private readonly ReplayParserClient $parser) {}
+
+    /**
+     * Whether uploads are switched on. Anything but running = 1 keeps them off, a missing row or
+     * an unreadable database included, the same as the backend's own switch.
+     */
+    public function uploadsOpen(): bool
+    {
+        return Cache::remember('uploads:open', now()->addMinute(), function () {
+            try {
+                $running = DB::connection('heroesprofile_processing')->table('processing_check')
+                    ->where('process', self::SWITCH_PROCESS)
+                    ->value('running');
+            } catch (Throwable $e) {
+                Log::warning('Uploads: could not read the upload switch, keeping uploads off', ['error' => $e->getMessage()]);
+
+                return false;
+            }
+
+            return (int) $running === 1;
+        });
+    }
 
     /**
      * @return array<string, mixed> the response body, frozen shape
