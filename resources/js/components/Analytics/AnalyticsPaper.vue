@@ -52,10 +52,11 @@ export default {
       open: false,
       // How every game reaches Analytics; the start of each methodology's Data section
       sharedData: [
-        'Data come from Heroes of the Storm replay files uploaded to Heroes Profile. Only games played on or after 2 October 2026, 16:00 UTC (the start of the 2026 season 3) are eligible. Raw replay files from that point on are kept in long-term storage, so any game can be analysed again later as methods improve.',
-        'When a game is analysed, its replay is parsed in full by a modified version of the open-source Heroes.ReplayParser library (version 1.2.20, with the game\'s unit events enabled) into an "extract" (version 3). The extract records every hero death with its time, position, victim and killers; structure and camp captures; team levels; periodic experience breakdowns; talent picks; every ability command and move order with its target; and hero positions. Positions are either real (from the game\'s own position events, deaths and regeneration-globe pickups) or estimated (the target point of a move or ability order). Most positions are estimates, which we flag throughout.',
+        'Data come from Heroes of the Storm replay files uploaded to Heroes Profile. Only games played on or after 2 October 2026, 16:00 UTC (the start of the 2026 season 3) are eligible. Raw replay files from that point on are kept in long-term storage, so any game can be analyzed again later as methods improve.',
+        'When a game is analyzed, its replay is parsed in full by a modified version of the open-source Heroes.ReplayParser library (version 1.2.20, with the game\'s unit events enabled) into an "extract" (version 3). The extract records every hero death with its time, position, victim and killers; structure and camp captures; team levels; periodic experience breakdowns; talent picks; every ability command and move order with its target; and hero positions. Positions are either real (from the game\'s own position events, deaths and regeneration-globe pickups) or estimated (the target point of a move or ability order). Most positions are estimates, which we flag throughout.',
         'Each extract is loaded into an analytical database alongside the site\'s own records of the game (game type, map, players, heroes, teams, results and party sizes). A game counts towards your numbers once it has been processed; the progress bar at the top of the page shows how many of your season games that is.',
         'Comparisons labelled "global" use a fixed random sample of all eligible games: those whose replay ID ends in a value below the sample threshold (replay ID mod 1000 < 100, currently a 10% sample). These games are processed nightly regardless of who uses Analytics, so the comparison group is not tilted towards players who use the tool. Unless stated otherwise, global numbers are computed under the same game type, map and hero filters as yours.',
+        'One match: when a single match is picked (from the Match list, Match History or the replay viewer), every number labelled "this match" comes from that match alone. Global is then the sample filtered to that game\'s hero, map and game type, and "your usual" is all your other processed games on the same hero, on any map and in any mode. One game is a small sample by nature: read its numbers as what happened in that game, not as a habit. Sessions and Stacks need many games and are not shown for one game.',
       ],
       // Per tab: { title, version, abstract, sections: [{ heading, shared?, body: [string | { formula } | { list } | { parts: [string | { label, href }] }] }] }.
       // Update a tab's entry whenever its queries or rules change.
@@ -295,7 +296,7 @@ export default {
               'Signals are computed nightly for every processed game. They use hero deaths and killers, team levels, objective, camp and structure events, hero positions, move orders, ability commands, the ability mapping (for heroic and mount abilities), and each map\'s bush cells, read from the vision-blocker layer of the map files.',
             ] },
             { heading: 'Methods', body: [
-              'Fights. Hero deaths are chained into fights: a death more than 15 seconds after the previous one starts a new fight. Fights with two or more deaths are analysed; the team with fewer deaths wins the fight. A player was present at a fight if they died in it, were credited with a kill in it, or had any recorded position within 25 map units of the fight\'s centre (the mean death position) between 10 seconds before the first death and the last death.',
+              'Fights. Hero deaths are chained into fights: a death more than 15 seconds after the previous one starts a new fight. Fights with two or more deaths are analyzed; the team with fewer deaths wins the fight. A player was present at a fight if they died in it, were credited with a kill in it, or had any recorded position within 25 map units of the fight\'s centre (the mean death position) between 10 seconds before the first death and the last death.',
               'Signal definitions:',
               { list: [
                 'Overstaying lost fights: deaths that occur when the player\'s team already has at least two more deaths than the enemy in that fight.',
@@ -399,6 +400,42 @@ export default {
             ] },
             { heading: 'Limitations', body: [
               'Some measures are partly results of winning rather than causes: a team that is ahead spends more time in the enemy half and destroys more structures. Comparing with games of the same result removes most of that, but not all. Correlations measure association, not cause. Most positions are estimated from orders, which loosens presence and distance measures, and the replay has no damage events, so the quality of individual trades cannot be measured. Distributions and weights are rebuilt nightly as the sample grows.',
+            ] },
+          ],
+        },
+
+        positioning: {
+          title: 'Positioning: lane use, teamfight position and objective timing from replay positions',
+          version: 'Extract v5 · Positioning rules v1 · November 2026',
+          abstract: 'We measure where a player is during a game in three parts: how they use lanes across the whole game (in early, mid and late phases), where they stand relative to their team when teamfights begin, and how early they reach their team\'s camp captures and structure kills and how often they contest the enemy\'s camps. Each measure is compared with the global sample under the same filters, and with one match selected, with the player\'s other games on the same hero.',
+          sections: [
+            { heading: 'Introduction', body: [
+              'Good positioning is hard to see from a scoreboard. Replays record where heroes are, so we can measure how a player uses the map: whether they keep lanes covered between fights, whether they stand where their hero should when a fight starts, and whether they arrive in time for objectives.',
+            ] },
+            { heading: 'Data', shared: true, body: [
+              'This tab uses hero positions, hero deaths, camp captures and structure kills from each game\'s extract, and three tables built once from the game\'s own map files: each lane\'s minion path (the map script\'s lane waypoints, in walking order from one core to the other), a grid of every map cell within 20 units of a lane with its nearest lane and how far along it the cell is, and each map\'s camp spots (the centre of 50 or more recorded captures). The numbers are worked out overnight, so a game appears here the day after it is processed.',
+            ] },
+            { heading: 'Definitions', body: [
+              { list: [
+                'Phases: early is up to 10:00, mid 10:00 to 20:00, late 20:00 on. The first minute is left out.',
+                'Open time: positions not in a fight (from 10 s before a fight\'s first death to 5 s after its last) and not at base (within 22 units of either core, where every lane meets).',
+                'In a lane: within 8 units of a lane\'s minion path. At camps: within 10 units of a camp spot. Elsewhere: neither.',
+                'Laning alone: lane time with no teammate within 15 units in the same 5 seconds.',
+                'How far up the lane: where along the lane you are, from 0 at your core to 1 at the enemy\'s, averaged over your lane time.',
+                'Main lane: the lane you spent most lane time in. Lane changes: times your next in-lane position was in a different lane, per 10 minutes.',
+                'Fight: two or more hero deaths with no more than 15 s between them; you were at it if you died, got credit for a kill, or were within 25 units of where its deaths happened while it ran.',
+                'Position when a fight starts: your average position over the 10 s before its first death, measured along the line from your team\'s centre to the enemy team\'s centre (teammates at the fight only). Ahead is in map units; front and back of the team need 3 or more teammates there.',
+                'Arrived late: first within 25 units of the fight\'s deaths only after the first one. Front death: your team\'s furthest-forward death, in a fight where your team lost two or more.',
+                'Objective arrival: at your team\'s camp captures and enemy structure kills you were at, how long before the capture you were first within 30 units, looking back up to 60 s. Contesting: the share of the enemy team\'s camp captures you were within 30 units of, from 15 s before to 5 s after.',
+              ] },
+            ] },
+            { heading: 'Methods', body: [
+              'Laning uses only the game\'s exact positions (position updates, deaths, globe pickups), about one every 13 seconds early in a game, not positions estimated from move orders. The 8-unit lane width was chosen from the data: in the first 10 minutes, the share of exact positions within a given distance of a lane rises steeply up to 8 units and flattens beyond it. Games with fewer than 10 open exact positions in a phase are left out of that phase.',
+              'Teamfight positions use every position, exact and estimated: players give move orders constantly in fights, so the estimates there are close. Games with fewer than 3 measured fights are left out.',
+              'Each number is your average over the games matching the filters, next to the global sample\'s average under the same filters. With one hero chosen (or one match), a note says whether standing further forward or back in fights goes with winning on that hero, from the correlation between that measure and winning across the hero\'s global-sample games; that relationship differs by hero (tanks generally want to be in front).',
+            ] },
+            { heading: 'Limitations', body: [
+              'Some of these partly reflect the game rather than the player: a team that is winning spends more time far up its lanes and less time defending them. Map objectives (tributes, shrines, altars and the like) are not included yet, because the replay does not record where or when they start. Exact positions are sparse, so laning numbers from one match are rough. Arriving late to fights goes slightly with winning in the global sample, probably because a team that is ahead chases into fights, so it is shown but not treated as advice.',
             ] },
           ],
         },

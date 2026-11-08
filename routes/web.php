@@ -182,6 +182,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     // match (allowlisted for now)
     // Non-patrons and logged-out visitors get the info page
     Route::get('Analytics', [AnalyticsController::class, 'show'])->middleware('ensureBattlenetAuth:optional');
+    Route::get('Analytics/{section}', [AnalyticsController::class, 'show'])->where('section', AnalyticsController::SECTION_PATTERN)->middleware('ensureBattlenetAuth:optional');
     // A frozen sample of one account's analytics, open to everyone
     Route::get('Analytics/Sample', [AnalyticsController::class, 'sample']);
     Route::post('Analytics/Sample/Data/{tab}', [AnalyticsController::class, 'sampleData'])->whereAlpha('tab')->middleware('throttle:60,1');
@@ -191,7 +192,8 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
         Route::get('Analytics/Status', [AnalyticsController::class, 'status'])->middleware('throttle:60,1');
         Route::post('Analytics/Request', [AnalyticsController::class, 'request'])->middleware('throttle:10,1');
         Route::post('Analytics/Data/{tab}', [AnalyticsController::class, 'data'])->whereAlpha('tab')->middleware('throttle:60,1');
-        Route::get('Analytics/Match/Single/{replayID}', [AnalyticsController::class, 'replay'])->whereNumber('replayID');
+        Route::get('Analytics/Match/Single/{replayID}/Replay', [AnalyticsController::class, 'replay'])->whereNumber('replayID');
+        Route::get('Analytics/Match/Single/{replayID}/{section?}', [AnalyticsController::class, 'showMatch'])->whereNumber('replayID')->where('section', AnalyticsController::MATCH_SECTION_PATTERN);
         Route::get('Analytics/Match/Single/{replayID}/Data', [AnalyticsController::class, 'replayData'])->whereNumber('replayID')->middleware('throttle:30,1');
         Route::get('Analytics/Match/Single/{replayID}/Performance', [AnalyticsController::class, 'replayPerformance'])->whereNumber('replayID')->middleware('throttle:30,1');
         Route::get('Analytics/Match/Single/{replayID}/Status', [AnalyticsController::class, 'replayStatus'])->whereNumber('replayID')->middleware('throttle:60,1');
@@ -200,7 +202,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 
     // The old addresses, from before the rename
     Route::permanentRedirect('DeepAnalytics', '/Analytics');
-    Route::get('DeepAnalytics/Replay/{replayID}', fn (string $replayID) => redirect('/Analytics/Match/Single/'.$replayID, 301))->whereNumber('replayID');
+    Route::get('DeepAnalytics/Replay/{replayID}', fn (string $replayID) => redirect('/Analytics/Match/Single/'.$replayID.'/Replay', 301))->whereNumber('replayID');
 
     // Player data
     Route::get('Player/{battletag}/{blizz_id}/{region}', [PlayerController::class, 'show'])->middleware('checkIfPrivateProfilePage');

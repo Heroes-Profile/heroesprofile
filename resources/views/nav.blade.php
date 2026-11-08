@@ -144,14 +144,16 @@
                                         <a href="/Analytics" class="flex justify-between items-center bg-teal font-bold"><span><i class="fas fa-chart-line mr-2"></i>Analytics</span> <span class="nav-flyout-arrow ml-4">›</span></a>
                                         <div class="nav-flyout">
                                             <div class="nav-dropdown-inner-wrapper rounded-b-lg rounded-r-lg">
-                                                <a href="/Analytics?tab=deaths">Deaths</a>
-                                                <a href="/Analytics?tab=map">Map &amp; Positions</a>
-                                                <a href="/Analytics?tab=timelines">Timelines &amp; Objectives</a>
-                                                <a href="/Analytics?tab=activity">Activity</a>
-                                                <a href="/Analytics?tab=sessions">Sessions</a>
-                                                <a href="/Analytics?tab=coaching">Coaching</a>
-                                                <a href="/Analytics?tab=stacks">Stacks</a>
-                                                <a href="/Analytics?tab=games">Games</a>
+                                                <a href="/Analytics">Summary</a>
+                                                <a href="/Analytics/Deaths">Deaths</a>
+                                                <a href="/Analytics/Map">Map &amp; Positions</a>
+                                                <a href="/Analytics/Positioning">Positioning</a>
+                                                <a href="/Analytics/Timelines">Timelines &amp; Objectives</a>
+                                                <a href="/Analytics/Activity">Activity</a>
+                                                <a href="/Analytics/Sessions">Sessions</a>
+                                                <a href="/Analytics/Coaching">Coaching</a>
+                                                <a href="/Analytics/Stacks">Stacks</a>
+                                                <a href="/Analytics/Match/History">Match History</a>
                                             </div>
                                         </div>
                                     </div>

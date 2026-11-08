@@ -38,7 +38,7 @@
             </round-image>
           </span>
           <!-- Replay viewer: season games; needs a Battle.net login, like Download Replay -->
-          <a v-if="isWatchableGame && replayViewerAllowed" class="link" :href="'/Analytics/Match/Single/' + replayid">Watch Replay</a>
+          <a v-if="isWatchableGame && replayViewerAllowed" class="link" :href="'/Analytics/Match/Single/' + replayid + '/Replay'">Watch Replay</a>
           <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
             Watch Replay
             <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
@@ -189,7 +189,7 @@
           <div class="flex flex-wrap items-baseline gap-4 py-5">
             <h2 class="text-3xl font-bold">Match Scores</h2>
             <!-- Same rules as Watch Replay -->
-            <a v-if="isWatchableGame && replayViewerAllowed" class="link" :href="'/Analytics/Match/Single/' + replayid + '#analytic-performance'">How each player played</a>
+            <a v-if="isWatchableGame && replayViewerAllowed" class="link" :href="'/Analytics/Match/Single/' + replayid + '/Replay#analytic-performance'">How each player played</a>
             <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
               How each player played
               <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
