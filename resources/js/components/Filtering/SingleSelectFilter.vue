@@ -18,24 +18,24 @@
       </span>
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
-    <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded overflow-hidden shadow-lg expandable-dropdown z-50">
+    <div v-if="showOptions" class="absolute left-0 mt-2 w-max max-w-[calc(100vw-2rem)] rounded overflow-hidden shadow-lg expandable-dropdown z-50">
       <div>
         <!-- Search Input -->
         <input v-model="searchQuery" type="text" placeholder="Search" class="w-full p-2 variable-text"/>
       </div>
-      <div class="max-h-80 overflow-y-auto">
-        <div class="space-y-2 p-2" :class="{ 'pr-6 whitespace-nowrap': text === 'Stat Filter' }">
-          <div v-for="value in filteredValues" :key="value.code" :class="{ 'whitespace-nowrap md:flex md:items-center': hasPatchDates }">
+      <div class="max-h-80 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable]">
+        <div class="p-2" :class="{ 'pr-6 whitespace-nowrap': text === 'Stat Filter' }">
+          <div v-for="value in filteredValues" :key="value.code" class="flex items-center gap-2 py-1" :class="{ 'whitespace-nowrap': hasPatchDates }">
             <input
               type="radio"
               :id="value.code"
               :value="value.code"
               :checked="isChecked(value.code)"
               @click="toggleSelectedOptions(value.code)"
-              class="form-checkbox h-5 w-5 text-indigo-600"
+              class="form-checkbox h-5 w-5 shrink-0 text-indigo-600"
               :disabled="disabled"
             >
-            <label :for="value.code" class="ml-2 text-sm variable-text">{{ value.name }}</label>
+            <label :for="value.code" class="text-sm variable-text">{{ value.name }}</label>
             <span v-if="value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="'Added ' + patchDate(value.date_added)">{{ patchAge(value.date_added) }}</span>
           </div>
         </div>

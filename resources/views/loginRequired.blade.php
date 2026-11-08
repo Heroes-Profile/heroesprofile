@@ -21,7 +21,7 @@
 
         /* Nav bar */
         .nav {
-            background-color: #333;
+            background-color: #303340;
             padding: 0.5rem 1rem;
             display: flex;
             align-items: center;

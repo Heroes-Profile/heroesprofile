@@ -30,7 +30,7 @@
       </span>
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
-    <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded overflow-hidden shadow-lg expandable-dropdown z-50">
+    <div v-if="showOptions" class="absolute left-0 mt-2 w-max max-w-[calc(100vw-2rem)] rounded overflow-hidden shadow-lg expandable-dropdown z-50">
       <div class="space-y-2 p-2">
         <div v-if="toggletabs" class="flex justify-center">
           <tab-button :tab1text="toggletabs[0]" :tab2text="toggletabs[1]" :ignoreclick="true" :small="true"
@@ -39,19 +39,19 @@
           ></tab-button>
         </div>
         <!-- Heading checkboxes stand in for Select All -->
-        <div v-if="!headings && !groupbyyear" class="whitespace-nowrap">
+        <div v-if="!headings && !groupbyyear" class="whitespace-nowrap flex items-center gap-2 py-1">
           <input 
           type="checkbox" 
           id="select-all" 
           :checked="selectedOptions.length === selectableValues.length"
           @click="toggleAll"
-          class="form-checkbox h-5 w-5 text-indigo-600"
+          class="form-checkbox h-5 w-5 shrink-0 text-indigo-600"
           >
-          <label for="select-all" class="ml-2 text-sm variable-text">Select All</label>
+          <label for="select-all" class="text-sm variable-text">Select All</label>
         </div>
-        <div class="max-h-80 overflow-y-auto"> 
+        <div class="max-h-80 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable] !mt-0">
           <template v-for="row in rows" :key="row.key">
-          <div v-if="row.heading" class="whitespace-nowrap py-1" :class="[indentClass(row.depth), { 'opacity-40': !row.codes.some(code => isSelectable(code)) }]">
+          <div v-if="row.heading" class="whitespace-nowrap flex items-center gap-2 py-1" :class="[indentClass(row.depth), { 'opacity-40': !row.codes.some(code => isSelectable(code)) }]">
             <input
             type="checkbox"
             :id="row.key"
@@ -59,20 +59,20 @@
             :indeterminate="row.codes.some(code => selectedOptions.includes(code)) && !row.codes.every(code => selectedOptions.includes(code))"
             :disabled="!row.codes.some(code => isSelectable(code))"
             @click="toggleHeading(row)"
-            class="form-checkbox h-5 w-5 text-indigo-600"
+            class="form-checkbox h-5 w-5 shrink-0 text-indigo-600"
             >
-            <label :for="row.key" class="ml-2 text-sm font-bold variable-text">{{ row.name }}</label>
+            <label :for="row.key" class="text-sm font-bold variable-text">{{ row.name }}</label>
           </div>
-          <div v-else class="whitespace-nowrap" :class="[indentClass(row.depth), { 'md:flex md:items-center md:py-[0.1875rem]': hasPatchDates, 'opacity-40': !isSelectable(row.value.code) }]">
+          <div v-else class="whitespace-nowrap flex items-center gap-2 py-1" :class="[indentClass(row.depth), { 'opacity-40': !isSelectable(row.value.code) }]">
             <input
             type="checkbox"
             :id="row.value.code"
             :value="row.value.code"
             v-model="selectedOptions"
             :disabled="!isSelectable(row.value.code)"
-            class="form-checkbox h-5 w-5 text-indigo-600"
+            class="form-checkbox h-5 w-5 shrink-0 text-indigo-600"
             >
-            <label :for="row.value.code" class="ml-2 text-sm variable-text">{{ groupbyyear ? String(row.value.name).split(' ').slice(1).join(' ') : row.value.name }}</label>
+            <label :for="row.value.code" class="text-sm variable-text">{{ groupbyyear ? String(row.value.name).split(' ').slice(1).join(' ') : row.value.name }}</label>
             <span v-if="row.value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="'Added ' + patchDate(row.value.date_added)">{{ patchAge(row.value.date_added) }}</span>
           </div>
           </template>

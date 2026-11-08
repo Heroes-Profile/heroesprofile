@@ -7,7 +7,7 @@ module.exports = {
   ],
   theme: {
     colors: {
-      'gray-dark': '#333',
+      'gray-dark': '#303340', // was #333 (warm); now the select-box grey, same as surface-3
       'gray-light' : '#ddd',
       'gray-xlight' : '#eee',
       'gray-md' : '#cbcbcb',
@@ -55,8 +55,8 @@ module.exports = {
       'xl': '1280px',
       // => @media (min-width: 1280px) { ... }
 
-      '2xl': '1536px',
-      // => @media (min-width: 1536px) { ... }
+      '2xl': '1500px',
+      // => @media (min-width: 1500px) { ... } -- where the site starts scaling (app.css), so 1500 looks like 2133
     },
     fontFamily: {
       'sans' : ['Roboto', 'sans-serif'],
