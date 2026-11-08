@@ -1,9 +1,9 @@
 <template>
   <div>
-    <!-- The answers first -->
+    <!-- The answers first (one match is one map, so no map counts) -->
     <div class="flex flex-wrap justify-center gap-4 mb-8">
-      <stat-box class="w-[30%] max-md:w-[48%]" :title="'Most Played Map'" :value="mapsPlayed.length ? mapName(mapsPlayed[0]) : '-'" color="teal"></stat-box>
-      <stat-box class="w-[30%] max-md:w-[48%]" :title="'Maps with Positions'" :value="mapsPlayed.length" color="yellow"></stat-box>
+      <stat-box v-if="!game" class="w-[30%] max-md:w-[48%]" :title="'Most Played Map'" :value="mapsPlayed.length ? mapName(mapsPlayed[0]) : '-'" color="teal"></stat-box>
+      <stat-box v-if="!game" class="w-[30%] max-md:w-[48%]" :title="'Maps with Positions'" :value="mapsPlayed.length" color="yellow"></stat-box>
       <stat-box class="w-[30%] max-md:w-[48%]" :title="'Most Time In'" :value="mainLane ? mainLane.label + ' (' + mainLane.value + '%)' : '-'" color="teal"></stat-box>
     </div>
 
@@ -77,8 +77,9 @@ export default {
     positionsByMap() {
       return this.mapsPlayed.map(id => ({ name: this.mapName(id), n: this.positionCounts[id] }));
     },
-    // The map the heatmaps draw: the one the page is filtered to, or with several, your most played of them
+    // The map the heatmaps draw: one match's own map, the one the page is filtered to, or with several, your most played of them
     selectedMap() {
+      if (this.game) return this.game.game_map_id;
       const picked = (this.selectedMaps || []).map(name => this.mapId(name)).filter(id => id !== null);
       if (picked.length === 1) return picked[0];
       if (picked.length > 1) return this.mapsPlayed.find(id => picked.includes(id)) ?? picked[0];
@@ -148,12 +149,13 @@ export default {
       ].sort((a, b) => b.value - a.value)[0];
     },
     mapTakeaway() {
+      if (this.game) return null;
       if (!this.mapsPlayed.length) return 'No recorded positions yet.';
       return this.selectedMap === null ? 'You have the most recorded positions on ' + this.mapName(this.mapsPlayed[0]) + '.' : null;
     },
     laneTakeaway() {
       if (!this.mainLane) return null;
-      return 'On ' + this.mapName(this.selectedMap) + ' you spend most of your time in the ' + this.mainLane.label.toLowerCase() + ' third (' + this.mainLane.value + '%).';
+      return 'On ' + this.mapName(this.selectedMap) + (this.game ? ' you spent' : ' you spend') + ' most of your time in the ' + this.mainLane.label.toLowerCase() + ' third (' + this.mainLane.value + '%).';
     },
   },
 };
