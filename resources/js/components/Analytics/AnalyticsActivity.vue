@@ -175,16 +175,10 @@ export default {
       return this.minutes.map(m => m + ' min');
     },
     apmSeries() {
-      return [
-        { label: 'You', data: this.apm('you'), color: 'teal', n: this.apmGames('you') },
-        { label: 'Global', data: this.apm('global'), color: 'yellow', n: this.apmGames('global') },
-      ];
+      return this.whos().map(w => ({ label: this.whoLabel(w), data: this.apm(w), color: this.whoColor(w), n: this.apmGames(w) }));
     },
     talentSeries() {
-      return [
-        { label: 'You', data: this.talents('you'), color: 'teal', n: this.talentPicks('you') },
-        { label: 'Global', data: this.talents('global'), color: 'yellow', n: this.talentPicks('global') },
-      ];
+      return this.whos().map(w => ({ label: this.whoLabel(w), data: this.talents(w), color: this.whoColor(w), n: this.talentPicks(w) }));
     },
     apmTakeaway() {
       const mine = this.ordersPerMinute('you');

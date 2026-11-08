@@ -1,11 +1,12 @@
 <template>
-  <div class="flex justify-center">
+  <!-- Labels never break mid-label; a row too wide for the space wraps whole tabs instead -->
+  <div class="flex flex-wrap justify-center">
     <a
       v-for="(item, index) in options"
       :key="item.key"
       role="button"
       :class="[
-        'transition-colors text-white inline-block py-2 px-4 max-sm:px-2 max-sm:text-xs',
+        'transition-colors text-white inline-block py-2 px-4 max-sm:px-2 max-sm:text-xs whitespace-nowrap',
         {
           'rounded-l': index === 0,
           'rounded-r': index === options.length - 1,

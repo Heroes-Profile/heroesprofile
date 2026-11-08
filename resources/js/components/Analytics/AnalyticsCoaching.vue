@@ -17,11 +17,11 @@
 
       <!-- Your last game: this one game's signals against your usual, and its flagged moments -->
       <template v-if="lastGame">
-        <analytics-heading :title="'Your last game'" :takeaway="lastGameTakeaway">
+        <analytics-heading :title="game ? 'This match' : 'Your last game'" :takeaway="lastGameTakeaway">
           Your most recent game under these filters, broken down signal by signal. Your usual is your average over your earlier games; a value counts as better or worse than usual only when it is further from that average than your games normally vary. Coaching is rebuilt overnight, so a game you just played shows up here the day after it is processed. Check the game below is the one you expect.
         </analytics-heading>
         <!-- Coaching is rebuilt once a day, so the newest games can be missing -->
-        <p v-if="notYet > 0" class="text-sm bg-darken rounded p-3 mb-2 border-l-4 border-yellow">
+        <p v-if="notYet > 0 && !game" class="text-sm bg-darken rounded p-3 mb-2 border-l-4 border-yellow">
           This isn't your most recent game: {{ notYet }} newer {{ notYet === 1 ? "game hasn't" : "games haven't" }} been added to coaching yet. Coaching updates once a day; check back after {{ nextUpdate }}.
         </p>
         <div class="flex flex-wrap items-center justify-between gap-4 bg-darken rounded p-3 mb-2">
@@ -101,7 +101,8 @@
         </table>
       </template>
 
-      <!-- Are you improving: your last few games against your earlier ones, per signal -->
+      <!-- Are you improving: your last few games against your earlier ones, per signal (not for one game) -->
+      <template v-if="!game">
       <div class="flex flex-wrap items-start justify-between gap-4">
         <analytics-heading :title="'Are you improving?'" :takeaway="progressTakeaway">
           Your average over your last {{ recentCount }} games compared with your average over your earlier games under these filters, for each signal rated Medium or High. Improving or Worse only shows when the change is bigger than your usual swing, worked out from how much your earlier games vary (shown under each verdict); anything smaller is About the same, because a few games are mostly noise. Signals marked (working on) are the ones the summary above tells you to work on. Click a signal for a chart of up to your last 20 games. New games appear here the day after they are processed.
@@ -163,6 +164,7 @@
           </template>
         </tbody>
       </table>
+      </template>
 
       <analytics-heading :title="'All signals'" :takeaway="allTakeaway">
         Every signal, whatever its rating. Shares are a percentage of chances (fights, objectives, travel time); counts are per game; Camp duty is in percentage points above or below the norm for your hero. The Standing bar runs from worse (left) to better (right), with the global median marked in the middle. Click a signal for the numbers behind its ratings, who you are compared with, and recent examples.
@@ -361,7 +363,7 @@ export default {
     // The page's current filters, so "global" is compared under the same ones
     filterParams: Object,
     // A game's replay viewer link, or null when it has none (the public sample)
-    replayLink: { type: Function, default: replayId => '/Analytics/Match/Single/' + replayId },
+    replayLink: { type: Function, default: replayId => '/Analytics/Match/Single/' + replayId + '/Replay' },
   },
   data() {
     return {

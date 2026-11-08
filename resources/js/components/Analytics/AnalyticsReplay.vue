@@ -39,6 +39,13 @@
           ></analytics-replay-timeline>
           <div class="flex flex-wrap items-center gap-3 mt-3 text-sm">
             <custom-button
+              v-if="!sample && performanceAllowed && yourTeam !== null"
+              :href="'/Analytics/Match/Single/' + replayId"
+              :text="'All analytics for this match'"
+              :alt="'See every Analytics section for this match'"
+              size="small"
+            ></custom-button>
+            <custom-button
               :text="'XP Graph'"
               :alt="'Jump to the team XP graph'"
               size="small"

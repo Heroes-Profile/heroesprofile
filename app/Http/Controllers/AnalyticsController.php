@@ -25,6 +25,24 @@ use Illuminate\View\View;
  */
 class AnalyticsController extends Controller
 {
+    // Each section's path under /Analytics, and the page's tab for it; /Analytics alone is the summary
+    public const SECTIONS = [
+        'Deaths' => 'deaths',
+        'Map' => 'map',
+        'Positioning' => 'positioning',
+        'Timelines' => 'timelines',
+        'Activity' => 'activity',
+        'Sessions' => 'sessions',
+        'Coaching' => 'coaching',
+        'Stacks' => 'stacks',
+        'Match/History' => 'games',
+    ];
+
+    public const SECTION_PATTERN = 'Deaths|Map|Positioning|Timelines|Activity|Sessions|Coaching|Stacks|Match/History';
+
+    // One match's sections: those that work for a single match
+    public const MATCH_SECTION_PATTERN = 'Deaths|Map|Positioning|Timelines|Activity|Coaching';
+
     public function __construct(
         GlobalDataService $globalDataService,
         private AnalyticsService $analytics,
@@ -36,7 +54,42 @@ class AnalyticsController extends Controller
         parent::__construct($globalDataService);
     }
 
-    public function show(Request $request): View
+    public function show(Request $request, ?string $section = null)
+    {
+        // Old ?tab= / ?game= links
+        $old = array_flip(self::SECTIONS);
+        if ($request->query('game')) {
+            return redirect('/Analytics/Match/Single/'.(int) $request->query('game').(isset($old[$request->query('tab')]) && $request->query('tab') !== 'games' ? '/'.$old[$request->query('tab')] : '').$this->filterQuery($request), 301);
+        }
+        if ($request->query('tab')) {
+            return redirect('/Analytics'.(isset($old[$request->query('tab')]) ? '/'.$old[$request->query('tab')] : '').$this->filterQuery($request), 301);
+        }
+
+        return $this->page($request, $section === null ? 'summary' : self::SECTIONS[$section], null);
+    }
+
+    // One match against the rest: the same page, for that match alone
+    public function showMatch(Request $request, int $replayID, ?string $section = null)
+    {
+        $user = $this->loggedInUser();
+        // Replay links from before the viewer moved (coaching examples carry ?t=), and anyone without
+        // Analytics, go to the replay viewer
+        if ($request->has('t') || ! $this->analytics->isAllowed($user)) {
+            return redirect('/Analytics/Match/Single/'.$replayID.'/Replay'.($request->getQueryString() ? '?'.$request->getQueryString() : ''));
+        }
+
+        return $this->page($request, $section === null ? 'deaths' : self::SECTIONS[$section], $replayID);
+    }
+
+    /** The filters of a request as a query string (?game_type=...&game_map=...&hero=...), or empty. */
+    private function filterQuery(Request $request): string
+    {
+        $query = http_build_query(array_filter($request->only(['game_type', 'game_map', 'hero'])));
+
+        return $query === '' ? '' : '?'.$query;
+    }
+
+    private function page(Request $request, string $tab, ?int $replayID): View
     {
         $user = Auth::user();
 
@@ -57,6 +110,8 @@ class AnalyticsController extends Controller
             'maps' => $this->globalDataService->getAllMapsKeyed()->map(fn ($map) => $map->name),
             'urlparameters' => $request->query(),
             'playermatchtablestyle' => $this->globalDataService->getPlayerMatchStyle(),
+            'initialTab' => $tab,
+            'initialMatch' => $replayID,
         ]);
     }
 
@@ -78,6 +133,14 @@ class AnalyticsController extends Controller
     {
         $user = $this->allowedUser();
         abort_unless($tab === 'games' || $tab === 'ability' || in_array($tab, AnalyticsQueryService::TABS, true), 404);
+
+        // One game: every tab for that game alone, against the same hero, map and mode
+        $game = null;
+        if ($request->filled('game') && $tab !== 'games') {
+            $replayId = (int) $request->validate(['game' => ['integer', 'min:1']])['game'];
+            $game = $this->replays->game((int) $user->blizz_id, (int) $user->region, $replayId);
+            abort_unless($game, 404);
+        }
 
         // No selection arrives as an empty list; that means "all", not an invalid value
         foreach (['game_type', 'game_map', 'hero'] as $field) {
@@ -104,6 +167,9 @@ class AnalyticsController extends Controller
                 : Map::whereIn('name', $list($validated['game_map']))->pluck('map_id')->map(fn ($id) => (int) $id)->all(),
             'hero' => (int) ($validated['hero'] ?? 0),
         ];
+        if ($game) {
+            $filters = ['game_types' => [$game['game_type_id']], 'maps' => [$game['game_map_id']], 'hero' => $game['hero_id'], 'replay' => $game['replay_id']];
+        }
 
         if ($tab === 'ability') {
             $ability = $request->validate([
@@ -120,7 +186,9 @@ class AnalyticsController extends Controller
             return response()->json(['games' => $this->replays->games((int) $user->blizz_id, (int) $user->region, $filters)]);
         }
 
-        return response()->json($this->queries->tab($tab, (int) $user->blizz_id, (int) $user->region, $filters));
+        $data = $this->queries->tab($tab, (int) $user->blizz_id, (int) $user->region, $filters);
+
+        return response()->json($game ? $data + ['game' => $game] : $data);
     }
 
     // The replay viewer: any season game for any Battle.net login (no allowlist), processed on demand.

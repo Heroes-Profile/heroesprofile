@@ -132,22 +132,24 @@ export default {
       return this.minuteList.map(m => m + ' min');
     },
     leadSeries() {
-      return [
-        { label: 'Your wins', data: this.lead('you', 'lead_won'), color: 'teal' },
-        { label: 'Your losses', data: this.lead('you', 'lead_lost'), color: 'teal', dashed: true },
-        { label: 'Global wins', data: this.lead('global', 'lead_won'), color: 'yellow' },
-        { label: 'Global losses', data: this.lead('global', 'lead_lost'), color: 'yellow', dashed: true },
-      ];
+      return this.whos().flatMap(w => {
+        // One game is a win or a loss, so it's one line
+        if (w === 'you' && this.game) return [{ label: this.whoLabel(w), data: this.lead(w, 'lead'), color: this.whoColor(w) }];
+        const name = w === 'you' ? 'Your' : this.whoLabel(w);
+        return [
+          { label: name + ' wins', data: this.lead(w, 'lead_won'), color: this.whoColor(w) },
+          { label: name + ' losses', data: this.lead(w, 'lead_lost'), color: this.whoColor(w), dashed: true },
+        ];
+      });
     },
     comebackChart() {
       const labels = [];
-      const you = { data: [], n: [] };
-      const global = { data: [], n: [] };
+      const groups = this.whos().map(who => ({ who, data: [], n: [] }));
       this.checkpoints.forEach(minute => {
         this.states.forEach(state => {
           labels.push(state.charAt(0).toUpperCase() + state.slice(1) + ' at ' + minute);
-          [['you', you], ['global', global]].forEach(([who, out]) => {
-            const row = this.comebackRow(who, minute, state);
+          groups.forEach(out => {
+            const row = this.comebackRow(out.who, minute, state);
             out.data.push(row ? this.round(row.win_rate * 100, 1) : null);
             out.n.push(row ? row.games : null);
           });
@@ -155,10 +157,7 @@ export default {
       });
       return {
         labels,
-        series: [
-          { label: 'You', data: you.data, n: you.n, color: 'teal' },
-          { label: 'Global', data: global.data, n: global.n, color: 'yellow' },
-        ],
+        series: groups.map(g => ({ label: this.whoLabel(g.who), data: g.data, n: g.n, color: this.whoColor(g.who) })),
       };
     },
     tiers() {
@@ -169,17 +168,11 @@ export default {
     },
     objectiveTimes() {
       const row = r => [r.avg_first_objective, r.avg_first_camp, r.avg_first_fort].map(v => this.round(v, 0));
-      return [
-        { label: 'You', data: row(this.objectives.you), color: 'teal' },
-        { label: 'Global', data: row(this.objectives.base), color: 'yellow' },
-      ];
+      return this.whos().map(w => ({ label: this.whoLabel(w), data: row(this.pick(this.data.objective_timing, w)), color: this.whoColor(w) }));
     },
     objectiveWins() {
       const row = r => [r.win_rate_first_objective, r.win_rate_first_camp, r.win_rate_first_fort].map(v => (v === null || v === undefined ? null : this.round(v * 100, 1)));
-      return [
-        { label: 'You', data: row(this.objectives.you), color: 'teal' },
-        { label: 'Global', data: row(this.objectives.base), color: 'yellow' },
-      ];
+      return this.whos().map(w => ({ label: this.whoLabel(w), data: row(this.pick(this.data.objective_timing, w)), color: this.whoColor(w) }));
     },
     xpWon() {
       return this.xpSeries(true);
@@ -191,10 +184,7 @@ export default {
       return { you: this.pick(this.data.takedowns, 'you'), base: this.pick(this.data.takedowns, 'global') };
     },
     takedownSeries() {
-      return [
-        { label: 'You', data: this.takedownPhases('you'), color: 'teal' },
-        { label: 'Global', data: this.takedownPhases('global'), color: 'yellow' },
-      ];
+      return this.whos().map(w => ({ label: this.whoLabel(w), data: this.takedownPhases(w), color: this.whoColor(w) }));
     },
     leadTakeaway() {
       const won = this.leadAt('you', 15, 'lead_won');
@@ -274,10 +264,7 @@ export default {
       return this.xpLabels.map(() => (row ? row.games : null));
     },
     xpSeries(won) {
-      return [
-        { label: 'You', data: this.xp('you', won), color: 'teal', n: this.xpGames('you', won) },
-        { label: 'Global', data: this.xp('global', won), color: 'yellow', n: this.xpGames('global', won) },
-      ];
+      return this.whos().map(w => ({ label: this.whoLabel(w), data: this.xp(w, won), color: this.whoColor(w), n: this.xpGames(w, won) }));
     },
     takedownPhases(who) {
       return [0, 1, 2, 3, 4].map(phase => {

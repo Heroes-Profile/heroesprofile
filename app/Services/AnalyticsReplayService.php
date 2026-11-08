@@ -81,6 +81,39 @@ class AnalyticsReplayService
      * @param  array{game_types: array<int>, maps: array<int>, hero: int}  $filters
      * @return array<int, array<string, mixed>>
      */
+    /**
+     * One of the player's processed season games, for Analytics' one-game view: its hero, map and game
+     * type (which become the comparison filters) and what the page's banner shows. Null if it isn't theirs
+     * or isn't processed.
+     *
+     * @return array<string, mixed>|null
+     */
+    public function game(int $blizzId, int $region, int $replayId): ?array
+    {
+        $row = DB::connection('heroesprofile')->table('player')
+            ->join('replay', 'replay.replayID', '=', 'player.replayID')
+            ->where('player.replayID', $replayId)
+            ->where('player.blizz_id', $blizzId)
+            ->where('replay.region', $region)
+            ->where('replay.game_date', '>=', config('analytics.cutover'))
+            ->first(['replay.game_date', 'replay.game_type', 'replay.game_map', 'player.hero', 'player.winner']);
+        if (! $row || ! $this->isReady($replayId)) {
+            return null;
+        }
+
+        return [
+            'replay_id' => $replayId,
+            'hero_id' => (int) $row->hero,
+            'hero' => $this->globalDataService->getHeroesByID()->get((int) $row->hero)?->name,
+            'game_map_id' => (int) $row->game_map,
+            'game_map' => $this->globalDataService->getAllMapsKeyed()->get((int) $row->game_map)?->name,
+            'game_type_id' => (int) $row->game_type,
+            'game_type' => $this->globalDataService->getGameTypeIDtoString()[$row->game_type]['name'] ?? null,
+            'game_date' => $row->game_date,
+            'winner' => (bool) $row->winner,
+        ];
+    }
+
     public function games(int $blizzId, int $region, array $filters): array
     {
         $heroes = $this->globalDataService->getHeroes()->keyBy('id');
