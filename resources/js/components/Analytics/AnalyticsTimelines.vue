@@ -2,10 +2,12 @@
   <div>
     <!-- The answers first -->
     <div class="flex flex-wrap justify-center gap-4 mb-8">
-      <stat-box class="w-[23%] max-md:w-[48%]" :title="'First to 10'" :value="share(tiers.you.first_to_10, tiers.you.games)" :secondstat="share(tiers.base.first_to_10, tiers.base.games)" :secondcaption="'global'" color="teal"></stat-box>
-      <stat-box class="w-[23%] max-md:w-[48%]" :title="'Comeback Win %'" :value="comebackRate('you', 15, 'behind')" :secondstat="comebackRate('global', 15, 'behind')" :secondcaption="'global'" color="yellow"></stat-box>
+      <stat-box class="w-[23%] max-md:w-[48%]" :title="'First to 10'" :value="game ? yesNo(tiers.you.first_to_10) : share(tiers.you.first_to_10, tiers.you.games)" :secondstat="share(tiers.base.first_to_10, tiers.base.games)" :secondcaption="'global'" color="teal"></stat-box>
+      <stat-box v-if="game" class="w-[23%] max-md:w-[48%]" :title="'At 15 Min'" :value="stateAt15" color="yellow"></stat-box>
+      <stat-box v-else class="w-[23%] max-md:w-[48%]" :title="'Comeback Win %'" :value="comebackRate('you', 15, 'behind')" :secondstat="comebackRate('global', 15, 'behind')" :secondcaption="'global'" color="yellow"></stat-box>
       <stat-box class="w-[23%] max-md:w-[48%]" :title="'Lead at 15 Min'" :value="signed(leadAt('you', 15, 'lead'))" :secondstat="signed(leadAt('global', 15, 'lead'))" :secondcaption="'global'" color="teal"></stat-box>
-      <stat-box class="w-[23%] max-md:w-[48%]" :title="'Objective Win %'" :value="percent(objectives.you.win_rate_first_objective)" :secondstat="percent(objectives.base.win_rate_first_objective)" :secondcaption="'global'" color="yellow"></stat-box>
+      <stat-box v-if="game" class="w-[23%] max-md:w-[48%]" :title="'First Objective'" :value="yesNo(objectives.you.win_rate_first_objective !== null && objectives.you.win_rate_first_objective !== undefined)" color="yellow"></stat-box>
+      <stat-box v-else class="w-[23%] max-md:w-[48%]" :title="'Objective Win %'" :value="percent(objectives.you.win_rate_first_objective)" :secondstat="percent(objectives.base.win_rate_first_objective)" :secondcaption="'global'" color="yellow"></stat-box>
     </div>
 
     <!-- Level lead -->
@@ -58,11 +60,11 @@
       First to 10 / 20: share of games where your team reached level 10 (or 20) before the enemy; reaching it at the same second does not count. Win %: your win rate in those games. Time ahead: how long your team had the level before the enemy got it (or the game ended), averaged over games where your team reached it; negative means the enemy usually got there first.
     </analytics-heading>
     <div class="flex flex-wrap justify-center gap-4 mb-8">
-      <stat-box class="w-[30%] max-md:w-[48%]" :title="'First to 10'" :value="share(tiers.you.first_to_10, tiers.you.games)" :secondstat="share(tiers.base.first_to_10, tiers.base.games)" :secondcaption="'global'" color="teal"></stat-box>
-      <stat-box class="w-[30%] max-md:w-[48%]" :title="'First-10 Win %'" :value="percent(tiers.you.win_rate_first_to_10)" :secondstat="percent(tiers.base.win_rate_first_to_10)" :secondcaption="'global'" color="yellow"></stat-box>
+      <stat-box class="w-[30%] max-md:w-[48%]" :title="'First to 10'" :value="game ? yesNo(tiers.you.first_to_10) : share(tiers.you.first_to_10, tiers.you.games)" :secondstat="share(tiers.base.first_to_10, tiers.base.games)" :secondcaption="'global'" color="teal"></stat-box>
+      <stat-box v-if="!game" class="w-[30%] max-md:w-[48%]" :title="'First-10 Win %'" :value="percent(tiers.you.win_rate_first_to_10)" :secondstat="percent(tiers.base.win_rate_first_to_10)" :secondcaption="'global'" color="yellow"></stat-box>
       <stat-box class="w-[30%] max-md:w-[48%]" :title="'Ahead to 10'" :value="signedClock(tiers.you.avg_seconds_ahead_10)" :secondstat="signedClock(tiers.base.avg_seconds_ahead_10)" :secondcaption="'global'" color="teal"></stat-box>
-      <stat-box class="w-[30%] max-md:w-[48%]" :title="'First to 20'" :value="share(tiers.you.first_to_20, tiers.you.games)" :secondstat="share(tiers.base.first_to_20, tiers.base.games)" :secondcaption="'global'" color="teal"></stat-box>
-      <stat-box class="w-[30%] max-md:w-[48%]" :title="'First-20 Win %'" :value="percent(tiers.you.win_rate_first_to_20)" :secondstat="percent(tiers.base.win_rate_first_to_20)" :secondcaption="'global'" color="yellow"></stat-box>
+      <stat-box class="w-[30%] max-md:w-[48%]" :title="'First to 20'" :value="game ? yesNo(tiers.you.first_to_20) : share(tiers.you.first_to_20, tiers.you.games)" :secondstat="share(tiers.base.first_to_20, tiers.base.games)" :secondcaption="'global'" color="teal"></stat-box>
+      <stat-box v-if="!game" class="w-[30%] max-md:w-[48%]" :title="'First-20 Win %'" :value="percent(tiers.you.win_rate_first_to_20)" :secondstat="percent(tiers.base.win_rate_first_to_20)" :secondcaption="'global'" color="yellow"></stat-box>
       <stat-box class="w-[30%] max-md:w-[48%]" :title="'Ahead to 20'" :value="signedClock(tiers.you.avg_seconds_ahead_20)" :secondstat="signedClock(tiers.base.avg_seconds_ahead_20)" :secondcaption="'global'" color="teal"></stat-box>
     </div>
 
@@ -90,8 +92,8 @@
     </analytics-heading>
     <div class="flex flex-wrap justify-center gap-4 mb-4">
       <stat-box class="w-[30%] max-md:w-[48%]" :title="'Participation'" :value="percent(takedowns.you.participation)" :secondstat="percent(takedowns.base.participation)" :secondcaption="'global'" color="teal"></stat-box>
-      <stat-box class="w-[30%] max-md:w-[48%]" :title="'Takedowns/Game'" :value="round(takedowns.you.takedowns)" :secondstat="round(takedowns.base.takedowns)" :secondcaption="'global'" color="yellow"></stat-box>
-      <stat-box class="w-[30%] max-md:w-[48%]" :title="'Solo Kills/Game'" :value="round(takedowns.you.solo_kills, 2)" :secondstat="round(takedowns.base.solo_kills, 2)" :secondcaption="'global'" color="teal"></stat-box>
+      <stat-box class="w-[30%] max-md:w-[48%]" :title="game ? 'Takedowns' : 'Takedowns/Game'" :value="round(takedowns.you.takedowns)" :secondstat="round(takedowns.base.takedowns)" :secondcaption="'global'" color="yellow"></stat-box>
+      <stat-box class="w-[30%] max-md:w-[48%]" :title="game ? 'Solo Kills' : 'Solo Kills/Game'" :value="round(takedowns.you.solo_kills, 2)" :secondstat="round(takedowns.base.solo_kills, 2)" :secondcaption="'global'" color="teal"></stat-box>
     </div>
     <multi-series-chart
       class="max-w-[75rem] mx-auto mb-8"
@@ -132,22 +134,24 @@ export default {
       return this.minuteList.map(m => m + ' min');
     },
     leadSeries() {
-      return [
-        { label: 'Your wins', data: this.lead('you', 'lead_won'), color: 'teal' },
-        { label: 'Your losses', data: this.lead('you', 'lead_lost'), color: 'teal', dashed: true },
-        { label: 'Global wins', data: this.lead('global', 'lead_won'), color: 'yellow' },
-        { label: 'Global losses', data: this.lead('global', 'lead_lost'), color: 'yellow', dashed: true },
-      ];
+      return this.whos().flatMap(w => {
+        // One game is a win or a loss, so it's one line
+        if (w === 'you' && this.game) return [{ label: this.whoLabel(w), data: this.lead(w, 'lead'), color: this.whoColor(w) }];
+        const name = w === 'you' ? 'Your' : this.whoLabel(w);
+        return [
+          { label: name + ' wins', data: this.lead(w, 'lead_won'), color: this.whoColor(w) },
+          { label: name + ' losses', data: this.lead(w, 'lead_lost'), color: this.whoColor(w), dashed: true },
+        ];
+      });
     },
     comebackChart() {
       const labels = [];
-      const you = { data: [], n: [] };
-      const global = { data: [], n: [] };
+      const groups = this.whos().map(who => ({ who, data: [], n: [] }));
       this.checkpoints.forEach(minute => {
         this.states.forEach(state => {
           labels.push(state.charAt(0).toUpperCase() + state.slice(1) + ' at ' + minute);
-          [['you', you], ['global', global]].forEach(([who, out]) => {
-            const row = this.comebackRow(who, minute, state);
+          groups.forEach(out => {
+            const row = this.comebackRow(out.who, minute, state);
             out.data.push(row ? this.round(row.win_rate * 100, 1) : null);
             out.n.push(row ? row.games : null);
           });
@@ -155,10 +159,7 @@ export default {
       });
       return {
         labels,
-        series: [
-          { label: 'You', data: you.data, n: you.n, color: 'teal' },
-          { label: 'Global', data: global.data, n: global.n, color: 'yellow' },
-        ],
+        series: groups.map(g => ({ label: this.whoLabel(g.who), data: g.data, n: g.n, color: this.whoColor(g.who) })),
       };
     },
     tiers() {
@@ -169,17 +170,11 @@ export default {
     },
     objectiveTimes() {
       const row = r => [r.avg_first_objective, r.avg_first_camp, r.avg_first_fort].map(v => this.round(v, 0));
-      return [
-        { label: 'You', data: row(this.objectives.you), color: 'teal' },
-        { label: 'Global', data: row(this.objectives.base), color: 'yellow' },
-      ];
+      return this.whos().map(w => ({ label: this.whoLabel(w), data: row(this.pick(this.data.objective_timing, w)), color: this.whoColor(w) }));
     },
     objectiveWins() {
       const row = r => [r.win_rate_first_objective, r.win_rate_first_camp, r.win_rate_first_fort].map(v => (v === null || v === undefined ? null : this.round(v * 100, 1)));
-      return [
-        { label: 'You', data: row(this.objectives.you), color: 'teal' },
-        { label: 'Global', data: row(this.objectives.base), color: 'yellow' },
-      ];
+      return this.whos().map(w => ({ label: this.whoLabel(w), data: row(this.pick(this.data.objective_timing, w)), color: this.whoColor(w) }));
     },
     xpWon() {
       return this.xpSeries(true);
@@ -190,13 +185,20 @@ export default {
     takedowns() {
       return { you: this.pick(this.data.takedowns, 'you'), base: this.pick(this.data.takedowns, 'global') };
     },
+    // One match: whether your team was behind, even or ahead at 15 minutes
+    stateAt15() {
+      const state = this.states.find(s => this.comebackRow('you', 15, s));
+      return state ? state.charAt(0).toUpperCase() + state.slice(1) : '-';
+    },
     takedownSeries() {
-      return [
-        { label: 'You', data: this.takedownPhases('you'), color: 'teal' },
-        { label: 'Global', data: this.takedownPhases('global'), color: 'yellow' },
-      ];
+      return this.whos().map(w => ({ label: this.whoLabel(w), data: this.takedownPhases(w), color: this.whoColor(w) }));
     },
     leadTakeaway() {
+      if (this.game) {
+        const lead = this.leadAt('you', 15, 'lead');
+        if (lead === null) return null;
+        return 'At 15 min your team was ' + (lead === 0 ? 'level with the enemy.' : Math.abs(lead) + (lead < 0 ? ' levels behind.' : ' levels ahead.'));
+      }
       const won = this.leadAt('you', 15, 'lead_won');
       const lost = this.leadAt('you', 15, 'lead_lost');
       if (won === null && lost === null) return null;
@@ -204,6 +206,11 @@ export default {
       return 'At 15 min, ' + [part(won, 'in wins'), part(lost, 'in losses')].filter(Boolean).join('; ') + '.';
     },
     comebackTakeaway() {
+      if (this.game) {
+        const state = this.states.find(s => this.comebackRow('you', 15, s));
+        if (!state) return null;
+        return 'Your team was ' + state + ' at 15 min and ' + (this.game.winner ? 'won.' : 'lost.');
+      }
       const you = this.comebackRow('you', 15, 'behind');
       if (!you) return null;
       const base = this.comebackRow('global', 15, 'behind');
@@ -213,11 +220,19 @@ export default {
     tierTakeaway() {
       const { you, base } = this.tiers;
       if (!you.games) return null;
+      if (this.game) return (Number(you.first_to_10) > 0 ? 'Your team' : 'The enemy') + ' hit level 10 first, and you ' + (this.game.winner ? 'won.' : 'lost.');
       const mine = (100 * you.first_to_10) / you.games;
       const global = base.games ? (100 * base.first_to_10) / base.games : null;
       return 'Your team hits level 10 first in ' + this.round(mine) + '% of games' + this.versus(mine, global, '%') + (you.win_rate_first_to_10 !== null && you.win_rate_first_to_10 !== undefined ? ', and wins ' + this.percent(you.win_rate_first_to_10) + ' of those.' : '.');
     },
     objectiveTakeaway() {
+      if (this.game) {
+        // A first that your team got has a win rate (0 or 100); one the enemy got has none
+        const names = ['map objective', 'merc camp', 'fort'];
+        const ours = this.objectiveWins[0].data.map((v, i) => (v === null ? null : names[i])).filter(Boolean);
+        if (!ours.length) return 'The enemy got the first map objective, merc camp and fort.';
+        return 'Your team got the first ' + ours.join(', ') + (ours.length < 3 ? '; the enemy got the rest.' : '.');
+      }
       const rates = this.objectiveWins[0].data;
       const best = rates.reduce((b, v, i) => (v !== null && (b === -1 || v > rates[b]) ? i : b), -1);
       if (best === -1) return null;
@@ -239,7 +254,7 @@ export default {
       const mine = this.takedowns.you.participation;
       if (mine === null || mine === undefined) return null;
       const global = this.takedowns.base.participation;
-      return 'You take part in ' + this.percent(mine) + " of your team's kills" + this.versus(100 * mine, global === null || global === undefined ? null : 100 * global, '%') + '.';
+      return (this.game ? 'You took part in ' : 'You take part in ') + this.percent(mine) + " of your team's kills" + this.versus(100 * mine, global === null || global === undefined ? null : 100 * global, '%') + '.';
     },
   },
   methods: {
@@ -274,10 +289,7 @@ export default {
       return this.xpLabels.map(() => (row ? row.games : null));
     },
     xpSeries(won) {
-      return [
-        { label: 'You', data: this.xp('you', won), color: 'teal', n: this.xpGames('you', won) },
-        { label: 'Global', data: this.xp('global', won), color: 'yellow', n: this.xpGames('global', won) },
-      ];
+      return this.whos().map(w => ({ label: this.whoLabel(w), data: this.xp(w, won), color: this.whoColor(w), n: this.xpGames(w, won) }));
     },
     takedownPhases(who) {
       return [0, 1, 2, 3, 4].map(phase => {

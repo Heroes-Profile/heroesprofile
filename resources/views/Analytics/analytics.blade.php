@@ -12,6 +12,8 @@
     :urlparameters="{{ json_encode($urlparameters) }}"
     :playermatchtablestyle="{{ json_encode($playermatchtablestyle) }}"
     :sample="{{ json_encode($sample ?? null) }}"
+    :initial-tab="{{ json_encode($initialTab ?? null) }}"
+    :initial-match="{{ json_encode($initialMatch ?? null) }}"
   >
   </analytics-page>
 @endsection

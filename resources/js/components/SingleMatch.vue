@@ -36,8 +36,8 @@
             </round-image>
           </span>
           <!-- Replay viewer: season games; needs a Battle.net login, like Download Replay -->
-          <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center" :href="'/Analytics/Match/Single/' + replayid"><span class="group-hover/bt:underline">Watch Replay</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
-          <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60">
+          <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center" :href="'/Analytics/Match/Single/' + replayid + '/Replay'"><span class="group-hover/bt:underline">Watch Replay</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+          <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
             Watch Replay
             <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
               <slot>
@@ -187,8 +187,8 @@
           <div class="flex flex-wrap items-baseline gap-4">
             <h2 class="text-2xl font-bold">Match Scores</h2>
             <!-- Same rules as Watch Replay -->
-            <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center text-header" :href="'/Analytics/Match/Single/' + replayid + '#analytic-performance'"><span class="group-hover/bt:underline">How each player played</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
-            <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60">
+            <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center text-header" :href="'/Analytics/Match/Single/' + replayid + '/Replay#analytic-performance'"><span class="group-hover/bt:underline">How each player played</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+            <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
               How each player played
               <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
                 <slot>
