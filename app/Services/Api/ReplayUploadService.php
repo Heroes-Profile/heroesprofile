@@ -89,6 +89,24 @@ class ReplayUploadService
     /** Seconds a paused uploader is told to wait before trying again. */
     public const PAUSED_RETRY_AFTER = 3600;
 
+    /**
+     * How far past the upload a game's end can be. The date is the player's own clock in UTC, and a
+     * wrong timezone or day puts real games up to 24h ahead; forged batches ran days to weeks ahead.
+     */
+    private const MAX_FUTURE_SECONDS = 25 * 3600;
+
+    /** Games shorter than this (5 minutes, in game loops) skip the event size check. */
+    private const SIZE_CHECK_MIN_LOOPS = 5 * 60 * 16;
+
+    /**
+     * Least event bytes a real game carries per minute. Real replays had at least 3,386 (game) and
+     * 10,599 (tracker); a forged one had 1 and 1,054.
+     */
+    private const MIN_EVENT_BYTES_PER_MINUTE = [
+        'game_events_bytes' => 1000,
+        'tracker_events_bytes' => 5000,
+    ];
+
     public function __construct(private readonly ReplayParserClient $parser) {}
 
     /**
@@ -158,6 +176,14 @@ class ReplayUploadService
             $this->record($ip, $hash, $name, $size, $source, 'Failure');
 
             return ['fingerprint' => self::NIL_FINGERPRINT, 'status' => self::FAILURE_STATUS];
+        }
+
+        $rejection = $this->rejectionReason($parsed);
+
+        if ($rejection !== null) {
+            $this->log($ip, $hash, $name, $size, $source, 'Rejected', $rejection);
+
+            return $this->body($fingerprint, null, 'Rejected');
         }
 
         $existing = ReplayFingerprint::where('fingerprint', $fingerprint)->first();
@@ -433,6 +459,41 @@ class ReplayUploadService
         $extra->save();
 
         UploaderSourceChange::create(['replayID' => $replayID, 'source' => $source]);
+    }
+
+    /**
+     * Why a replay can't be a real game, or null when it passes. Forged replays have come dated in the
+     * future and with near-empty event files.
+     *
+     * @param  array<string, mixed>  $parsed
+     */
+    private function rejectionReason(array $parsed): ?string
+    {
+        $gameDate = $this->gameDate($parsed);
+
+        if ($gameDate !== null && strtotime($gameDate) > time() + self::MAX_FUTURE_SECONDS) {
+            return 'Game date is in the future';
+        }
+
+        // Absent until the parser sends it
+        $loops = $parsed['header_loops'] ?? null;
+
+        if (! is_int($loops) || $loops < self::SIZE_CHECK_MIN_LOOPS) {
+            return null;
+        }
+
+        $minutes = $loops / 16 / 60;
+
+        foreach (self::MIN_EVENT_BYTES_PER_MINUTE as $field => $minimum) {
+            // With the header read, a missing size means the file isn't in the replay
+            $bytes = $parsed[$field] ?? 0;
+
+            if (! is_int($bytes) || $bytes / $minutes < $minimum) {
+                return "Too few {$field} for the game's length";
+            }
+        }
+
+        return null;
     }
 
     /** @param  array<string, mixed>  $parsed */
