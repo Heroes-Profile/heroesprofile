@@ -21,6 +21,9 @@ use Illuminate\Support\Facades\Log;
  */
 class AnalyticsQueryService
 {
+    // Emote wheel commands: they say nothing about how a game was played
+    private const COSMETIC_ABILITIES = ['LootSpray', 'LootYellVoiceLine', 'Taunt'];
+
     public const TABS = ['deaths', 'map', 'positioning', 'timelines', 'activity', 'sessions', 'coaching', 'stacks'];
 
     private ?BigQueryClient $client = null;
@@ -37,7 +40,7 @@ class AnalyticsQueryService
         $threshold = $this->globalThreshold();
         // Coaching tables are rebuilt by a nightly BigQuery job (or by hand); refresh whenever they change
         $nightly = in_array($tab, ['coaching', 'sessions', 'positioning'], true) ? ':'.$this->coachingVersion() : '';
-        $key = 'analytics:tab:v'.config('analytics.extract_v').'.12:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
+        $key = 'analytics:tab:v'.config('analytics.extract_v').'.13:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
 
         return Cache::remember($key, now()->addDays(7), function () use ($tab, $blizzId, $region, $filters, $threshold) {
             $params = [
@@ -861,7 +864,7 @@ class AnalyticsQueryService
         $named = [];
         foreach ($rows as $row) {
             $link = $links[$mappedBuild($row['build'] === null ? null : (int) $row['build']).':'.$row['abil_link']] ?? null;
-            if (! $link) {
+            if (! $link || in_array($link->ability_id, self::COSMETIC_ABILITIES, true)) {
                 continue;
             }
 

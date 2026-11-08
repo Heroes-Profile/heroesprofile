@@ -46,6 +46,11 @@ export default {
       if (seconds === null || seconds === undefined) return '-';
       return (seconds < 0 ? '-' : '+') + this.clock(Math.abs(seconds));
     },
+    // One match: a share or count (1 or 0, true or false) as Yes / No
+    yesNo(value) {
+      if (value === null || value === undefined) return '-';
+      return Number(value) > 0 || value === true ? 'Yes' : 'No';
+    },
     orDash(value) {
       return value === null || value === undefined ? '-' : value;
     },

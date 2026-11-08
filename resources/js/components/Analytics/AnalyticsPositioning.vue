@@ -129,8 +129,9 @@ export default {
       const front = you.front_deaths_10;
       const gFront = global.front_deaths_10;
       const where = you.front_share > you.back_share + 0.05 ? 'more often at the front of your team than the back' : you.back_share > you.front_share + 0.05 ? 'more often at the back of your team than the front' : 'about as often at the front of your team as the back';
-      const deaths = front === null || gFront === null || gFront === undefined ? '' : front > gFront * 1.15 ? ', and die at the front more than most players' : front < gFront * 0.85 ? ', and die at the front less than most players' : '';
-      return 'When fights start you are ' + where + deaths + '.';
+      const die = this.game ? 'died' : 'die';
+      const deaths = front === null || gFront === null || gFront === undefined ? '' : front > gFront * 1.15 ? ', and ' + die + ' at the front more than most players' : front < gFront * 0.85 ? ', and ' + die + ' at the front less than most players' : '';
+      return (this.game ? 'When fights started you were ' : 'When fights start you are ') + where + deaths + '.';
     },
     objectiveTakeaway() {
       const [you, global] = [this.objectives('you'), this.objectives('global')];
