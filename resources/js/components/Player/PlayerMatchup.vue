@@ -71,8 +71,8 @@
       <tbody>
         <tr v-for="row in shownData" :key="row.hero.id">
           <td class="py-2 px-3">
-            <a class="flex justify-center" :href="(esport ? ngsPlayerUrl : '/Player/' + battletag + '/' + blizzid + '/' + region) + '/Hero/' + row.hero.name + (league ? league.query : '')">
-              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>
+            <a class="group/bt flex items-center justify-center" :href="(esport ? ngsPlayerUrl : '/Player/' + battletag + '/' + blizzid + '/' + region) + '/Hero/' + row.hero.name + (league ? league.query : '')">
+              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="hidden md:block font-bold ml-2 group-hover/bt:underline">{{ row.hero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></i>
             </a>
           </td>
            <td class="py-2 px-3 text-center">

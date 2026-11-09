@@ -15,8 +15,8 @@
       <tbody class="text-center">
         <tr v-for="hero in shownHeroes" :key="hero.id">
           <td class="py-2 px-3">
-            <div class="flex justify-center">
-              <hero-image-wrapper :hero="hero" :includehover="false"></hero-image-wrapper>
+            <div class="flex items-center justify-center">
+              <hero-image-wrapper :hero="hero" :includehover="false"></hero-image-wrapper><span class="hidden md:block font-bold ml-2">{{ hero.name }}</span>
             </div>
           </td>
           <td v-for="gt in gameTypes" :key="gt.key" class="py-2 px-3">

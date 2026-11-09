@@ -98,7 +98,7 @@
         </thead>
         <tbody>
           <tr v-for="row in shownData" :key="row.id">
-            <td class="py-2 px-3"><a class="flex justify-center" :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper size="big" :hero="row.hero" :href="getPlayerHeroPageUrl(row.name)" link-text="View Hero"></hero-image-wrapper></a></td>
+            <td class="py-2 px-3"><a class="group/bt flex items-center justify-center" :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper size="big" :hero="row.hero" :href="getPlayerHeroPageUrl(row.name)" link-text="View Hero"></hero-image-wrapper><span class="hidden md:block font-bold ml-2 group-hover/bt:underline">{{ row.hero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></i></a></td>
             <td class="py-2 px-3"><div class="min-w-[8em]"><div class="text-sm font-semibold text-header tabular-nums mb-1.5">{{ row.win_rate }}<span class="text-xs">%</span></div><stat-bar :value="row.win_rate" display-text="" :color="getWinRateColor(row.win_rate)"></stat-bar></div></td>
             <td class="py-2 px-3 text-center">{{ (row.wins + row.losses) }}</td>
             <td class="max-md:hidden py-2 px-3 ">{{ row.kda }}</td>

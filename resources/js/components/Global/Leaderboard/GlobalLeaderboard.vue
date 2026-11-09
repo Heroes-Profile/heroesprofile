@@ -217,10 +217,10 @@
                     <td>{{ row.games_played.toLocaleString('en-US') }}</td>
 
                     <td class="py-2 px-3" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role')">
-                      <div v-if="row.most_played_hero" class="flex justify-center">
+                      <div v-if="row.most_played_hero" class="flex items-center justify-center">
                         <hero-image-wrapper :hero="row.most_played_hero">
                           <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played: ' + row.hero_build_games_played"></image-hover-box>
-                        </hero-image-wrapper>
+                        </hero-image-wrapper><span class="hidden md:block font-bold ml-2">{{ row.most_played_hero.name }}</span>
                       </div>
                     </td>
 

@@ -127,8 +127,8 @@
             <tbody class="text-center">
               <tr v-for="(row, index) in sortedData" :key="index">
                 <td>
-                  <a class="flex justify-center" :href="row.link">
-                    <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>
+                  <a class="group/bt flex items-center justify-center" :href="row.link">
+                    <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="hidden md:block font-bold ml-2 group-hover/bt:underline">{{ row.hero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></i>
                   </a>
                 </td>
                 <td>{{ row.win_rate }}</td>

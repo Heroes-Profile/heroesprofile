@@ -22,7 +22,7 @@
       </thead>
       <tbody class="text-center">
         <tr v-for="(row, index) in sortedData" :key="index">
-          <td class="py-2 px-3"><div class="flex items-center justify-center"><hero-image-wrapper :hero="row.hero" :includehover="false"></hero-image-wrapper></div></td>
+          <td class="py-2 px-3"><div class="flex items-center justify-center"><hero-image-wrapper :hero="row.hero" :includehover="false"></hero-image-wrapper><span class="hidden md:block font-bold ml-2">{{ row.hero.name }}</span></div></td>
           <td>{{ row.win_rate.toFixed(2) }}</td>
           <td>{{ row.popularity.toFixed(2) }}</td>
           <td>{{ row.ban_rate.toFixed(2) }}</td>
