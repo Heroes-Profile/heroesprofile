@@ -339,12 +339,7 @@
               ></nav-search-flyout>
               <a href="{{ $esportPlayerUrl }}/Match/History{{ $esportQuery }}">Match History</a>
               <a href="{{ $esportPlayerUrl }}/Match/Latest{{ $esportQuery }}">Latest Match</a>
-              <a href="#" class="remove-account text-right bg-surface-3">
-                <remove-battletag-nav
-                  :index="{{ $index }}"
-                >
-                </remove-battletag-nav>
-              </a>
+              <remove-battletag-nav :index="{{ $index }}" class="remove-account text-right bg-surface-3"></remove-battletag-nav>
             </div>
         </div>
       </div>
@@ -403,12 +398,7 @@
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Awards">Awards</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/History">Match History</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/Latest">Latest Match</a>
-              <a href="#" class="remove-account text-right bg-surface-3">
-                <remove-battletag-nav     
-                  :index="{{ $index }}"
-                >
-                </remove-battletag-nav>
-              </a>
+              <remove-battletag-nav :index="{{ $index }}" class="remove-account text-right bg-surface-3"></remove-battletag-nav>
             </div>
         </div>
       </div>

@@ -6,7 +6,7 @@ use App\Rules\BattletagInputProhibitCharacters;
 use App\Services\GlobalDataService;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -37,9 +37,11 @@ class RememberViewedPlayer
 
         $response = $next($request);
 
+        // Host-only and not Secure, exactly like the ones app.js writes, so the header's Remove (which clears them from JS) matches.
+        // Cookie::make would add the session's domain.
         if ($response->getStatusCode() === 200) {
             foreach ($slots as $name => $value) {
-                Cookie::queue(Cookie::make($name, $value, 60 * 24 * 90, '/', null, null, false, false, 'strict'));
+                $response->headers->setCookie(new Cookie($name, $value, now()->addDays(90), '/', null, false, false, false, Cookie::SAMESITE_STRICT));
             }
         }
 
