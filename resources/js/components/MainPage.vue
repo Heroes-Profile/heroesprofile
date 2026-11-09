@@ -120,6 +120,11 @@ import moment from 'moment-timezone';
       latestgamedate: String,
       // { count, rate }: rate is replays per second
       replayTicker: Object,
+      // GlobalDataService::PARSING_STALE_MINUTES
+      parsingStaleMinutes: {
+        type: Number,
+        default: 60,
+      },
       // Whether the signed-in player can open Analytics (Patreon supporters)
       analyticsAllowed: Boolean,
     },
@@ -163,9 +168,9 @@ import moment from 'moment-timezone';
       tickerChars() {
         return this.tickerCount.toLocaleString('en-US').split('');
       },
-      // No new game in an hour means the parser has likely stopped
+      // No new game in that long means the parser has likely stopped
       parsingStale() {
-        return this.now - moment.tz(this.latestgamedate, 'Atlantic/Reykjavik').valueOf() > 60 * 60 * 1000;
+        return this.now - moment.tz(this.latestgamedate, 'Atlantic/Reykjavik').valueOf() > this.parsingStaleMinutes * 60 * 1000;
       },
       latestGameAgo() {
         // Recomputes with the ticker clock

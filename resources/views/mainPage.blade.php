@@ -12,6 +12,7 @@
     :latestpatch="{{ json_encode($latestPatch) }}"
     :latestgamedate="{{ json_encode($latestGameDate) }}"
     :replay-ticker="{{ json_encode($replayTicker) }}"
+    :parsing-stale-minutes="{{ \App\Services\GlobalDataService::PARSING_STALE_MINUTES }}"
     :analytics-allowed="{{ json_encode(Auth::check() && app(\App\Services\AnalyticsService::class)->isAllowed(Auth::user())) }}"
   >
   </main-page>

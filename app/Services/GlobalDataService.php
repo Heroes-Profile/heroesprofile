@@ -50,6 +50,9 @@ class GlobalDataService
     /** How long a replay file is kept before it is purged from storage. */
     public const REPLAY_RETENTION_WEEKS = 4;
 
+    /** Minutes without a new game before parsing counts as offline (backend banner and the home page notice). */
+    public const PARSING_STALE_MINUTES = 60;
+
     /**
      * Oldest patch the globals filters offer. Older data exists but is not
      * offered: it predates changes that make it not worth comparing against.
@@ -700,7 +703,7 @@ class GlobalDataService
         $latestGameUtc = Carbon::parse($latestGame, 'UTC');
         $nowUtc = Carbon::now('UTC');
 
-        $isBackendOff = $nowUtc->diffInSeconds($latestGameUtc) > (3 * 60 * 60); // 6 hours
+        $isBackendOff = $nowUtc->diffInSeconds($latestGameUtc) > self::PARSING_STALE_MINUTES * 60;
 
         return [
             'regions' => $regions,
