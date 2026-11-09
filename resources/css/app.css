@@ -212,6 +212,10 @@ nav .search-component{
 .nav-dropdown a{
   @apply block px-4 py-2 hover:bg-lighten;
 }
+/* Rows with a flyout arrow keep their flex, so the arrow sits at the right edge */
+.nav-dropdown a.flex{
+  display: flex;
+}
 .nav-dropdown a.remove-account {
   @apply hover:bg-surface-4;
 }
