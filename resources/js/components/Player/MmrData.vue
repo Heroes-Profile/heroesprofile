@@ -89,7 +89,8 @@
                   <dynamic-banner-ad :patreon-user="patreonUser" :index="index + 3" :mobile-override="false"></dynamic-banner-ad>
                 </div>
                 <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="'/Match/Single/' + row.replayID" :hero="row.hero" :title="row.hero.name" :date="formatRowDate(row.game_date)" :winner="row.winner === 'True'" :result="row.winner === 'True' ? 'Win' : 'Loss'">
-                  HP MMR <span class="text-white font-medium">{{ row.mmr.toLocaleString('en-US') }}</span> <span :class="row.mmr_change >= 0 ? 'text-win' : 'text-red'">({{ row.mmr_change > 0 ? '+' : '' }}{{ row.mmr_change.toFixed(2) }})</span>
+                  <template v-if="notCalculated(row)">HP MMR not calculated yet</template>
+                  <template v-else>HP MMR <span class="text-white font-medium">{{ row.mmr.toLocaleString('en-US') }}</span> <span :class="row.mmr_change >= 0 ? 'text-win' : 'text-red'">({{ row.mmr_change > 0 ? '+' : '' }}{{ row.mmr_change.toFixed(2) }})</span></template>
                 </match-row-mobile>
                 <div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
                   <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
@@ -106,6 +107,13 @@
                     </div>
                   </div>
                   <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="'/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
+                  <!-- 1800 is the starting value before the game's MMR has been calculated -->
+                  <template v-if="notCalculated(row)">
+                  <span class="relative w-[16.25rem] shrink-0 px-4 text-sm text-subtext italic">Pending</span>
+                  <span class="relative w-[8.75rem] shrink-0 px-4 text-center text-sm text-subtext italic">Not calculated yet</span>
+                  <span class="relative w-[11.25rem] shrink-0 px-4 text-center text-subtext">-</span>
+                  </template>
+                  <template v-else>
                   <span class="relative w-[16.25rem] shrink-0 px-4 text-sm text-subtext whitespace-nowrap">{{ formatRowDate(row.mmr_date_parsed) }}</span>
                   <span class="relative w-[8.75rem] shrink-0 px-4 text-center text-2xl font-semibold">{{ row.mmr.toLocaleString('en-US') }}</span>
                   <div class="relative z-[2] w-[11.25rem] shrink-0 px-4 flex items-center justify-center gap-2">
@@ -116,6 +124,7 @@
                       <a href="/FAQ#mmr-change-direction" class="group/bt inline-flex items-center mt-2 font-normal"><span class="group-hover/bt:underline">Read more in the FAQ</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
                     </round-image>
                   </div>
+                  </template>
                   <span class="relative w-[7.5rem] shrink-0 px-4 text-center font-medium" :class="row.winner === 'True' ? 'text-win' : 'text-red'">{{ row.winner === 'True' ? 'Win' : 'Loss' }}</span>
                 </div>
               </template>
@@ -343,6 +352,9 @@ export default {
       }else if(tierID == 6){
         return "Master";
       }
+    },
+    notCalculated(row){
+      return row.mmr === 1800;
     },
     checkIfTierFound(min_mmr, max_mmr, tierFound){
       if(tierFound){
