@@ -12,7 +12,8 @@
 </div>
 
 <div id="main-menu" class="  main-navigation-wrapper"> <!-- max-md:hidden  - This needs to hide/show on click of the button but only on mobile - either detect mobile with vue, or have a class that is added/taken away that only applies to mobile -->
-    <nav id="main-nav" class="bg-surface-1 text-white z-50 relative md:px-8 md:py-3 text-sm max-md:pt-2">
+    {{-- Above the battletag row (z-[51]), which is above page dropdowns like filters (z-50) --}}
+    <nav id="main-nav" class="bg-surface-1 text-white z-[52] relative md:px-8 md:py-3 text-sm max-md:pt-2">
       <button  id="mobile-nav-close" class="hidden bg-blue rounded-control px-2 py-1 min-w-[2.25rem] min-h-[2rem] text-base leading-none ml-auto  mr-2" aria-label="Close menu"><i class="fas fa-xmark" aria-hidden="true"></i></button>
        
         <div class="flex items-start justify-center flex-wrap  mx-auto max-md:flex-col max-md:items-stretch max-w-[120rem]" >
@@ -63,7 +64,7 @@
                         </div>
                     </div>
 
-                    <a id="nav-leaderboards" class="  nav-item" href="/Global/Leaderboard">Leaderboards</a>
+                    <a id="nav-leaderboards" class="  nav-item" href="/Global/Leaderboard"><span>Leaderboards</span></a>
 
                     <div id="nav-tools" class="relative group inline-block nav-item">
                         <a class=" cursor-pointer">Tools<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
@@ -92,7 +93,7 @@
                         </div>
                     </div>
 
-                    <a id="nav-esports" class=" nav-item" href="/Esports">Community Esports</a>
+                    <a id="nav-esports" class=" nav-item" href="/Esports"><span>Community Esports</span></a>
 
                     <div id="nav-help" class="relative group inline-block nav-item">
                         <a class=" cursor-pointer">Help<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
@@ -267,10 +268,7 @@
         </div>
     </nav>
     
-<nav id="alt-account-nav" class="relative flex justify-end items-center md:gap-4 max-md:justify-center max-md:gap-2 max-md:px-3 max-md:pb-6 max-md:mt-4 w-full max-w-[120rem] mx-auto md:px-8 md:py-4 alt-acct-nav max-md:flex-wrap">
-  @if(isset($headeralert) && $headeralert !== null && request()->cookie('header_alert_dismissed') !== md5($headeralert))
-    <header-alert :alert="{{ json_encode($headeralert) }}" :dismiss-key="{{ json_encode(md5($headeralert)) }}"></header-alert>
-  @endif
+<nav id="alt-account-nav" class="relative z-[51] flex justify-end items-center md:gap-4 max-md:justify-center max-md:gap-2 max-md:px-3 max-md:pb-6 max-md:mt-4 w-full max-w-[120rem] mx-auto md:px-8 md:py-4 alt-acct-nav max-md:flex-wrap">
   {{-- League row colours, from each league's logo --}}
   @php($esportRowColours = ['NGS' => 'bg-[#f26b30]', 'CCL' => 'bg-gradient-to-r from-[#d42a0e] via-[#f07c12] to-[#f7c51e]', 'MastersClash' => 'bg-[#5a5ad6]', 'hi' => 'bg-[#6b6b6b]', 'hi_nc' => 'bg-[#6b6b6b]', 'Other' => 'bg-lblue'])
   {{-- Other series, each from its own logo; any series not listed keeps Other's colour --}}
@@ -280,9 +278,12 @@
       @php($esportNav = $account['esport_nav'])
       @php($esportPlayerUrl = $esportNav['url'])
       @php($esportQuery = $esportNav['query'])
+      {{-- The row colour as a plain background, for the menu's hover --}}
+      @php($esportRowClass = $esportNav['key'] === 'Other' ? ($esportSeriesColours[$esportNav['name']] ?? $esportRowColours['Other']) : $esportRowColours[$esportNav['key']])
+      @php($esportHover = $esportNav['key'] === 'CCL' ? 'linear-gradient(to right, #d42a0e, #f07c12, #f7c51e)' : (preg_match('/#[0-9a-f]{6}/i', $esportRowClass, $hex) ? $hex[0] : '#315bb6'))
       <div id="alt-account-{{ $index }}" class="relative group inline-block text-sm">
         <a data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="mobile-secondary-nav-open btn bg-teal hover:bg-lteal inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="max-md:hidden h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></a>
-        <div data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[12.5rem] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
+        <div data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" style="--esport-hover: {{ $esportHover }};" class="nav-dropdown esport-nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[12.5rem] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
             <div class="nav-dropdown-inner-wrapper">
               <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal"><span class="inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></span> <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg" aria-label="Close menu">x</button></div>
               <!-- The league's own pages, where a player's menu has Analytics -->

@@ -231,8 +231,8 @@ return [
                     'a' => 'The Match Prediction Game lets you look at a draft and try to predict which team will win before seeing the result. It\'s a fun way to test your game knowledge and see how your predictions compare to the actual outcome.',
                 ],
                 [
-                    'q' => 'Does Heroes Profile support esports data?',
-                    'a' => 'Yes! We host data for several amateur and community leagues including NGS (Next Generation Series), CCL (Community Clash League), Masters Clash, and others. You can find these under the <a href="/Esports" class="link">Esports</a> section of the site.',
+                    'q' => 'Does Heroes Profile have esports, tournament, series or league stats?',
+                    'a' => 'Yes. <a href="/Esports" class="link">Community Esports</a> in the top menu covers community leagues and tournaments: NGS (Nexus Gaming Series), CCL (Community Clash League), Masters Clash, Heroes International, Nut Cup, and HGC and More, which holds past tournaments and series such as HGC. Each has its own teams, players, matches, and hero and talent stats.',
                 ],
                 [
                     'q' => 'What is the Heroes Profile Drafter?',
@@ -387,13 +387,13 @@ return [
         [
             'name' => 'Esports',
             'items' => [
-                ['name' => 'Esports', 'url' => '/Esports', 'description' => 'All esports leagues on Heroes Profile.'],
+                ['name' => 'Community Esports', 'url' => '/Esports', 'description' => 'All community esports leagues, tournaments and series on Heroes Profile.'],
                 ['name' => 'NGS', 'url' => '/Esports/NGS', 'description' => 'NGS standings, divisions, teams, players and matches.'],
                 ['name' => 'CCL', 'url' => '/Esports/CCL', 'description' => 'Community Clash League: organizations, matches and stats.'],
                 ['name' => 'Masters Clash', 'url' => '/Esports/MastersClash', 'description' => 'Masters Clash teams, matches and stats.'],
                 ['name' => 'Heroes International', 'url' => '/Esports/HeroesInternational', 'description' => 'Heroes International teams, matches and stats.'],
                 ['name' => 'Nut Cup', 'url' => '/Esports/NutCup', 'description' => 'Nut Cup hero and talent stats.'],
-                ['name' => 'Other', 'url' => '/Esports/Other', 'description' => 'Other tournaments and series.'],
+                ['name' => 'HGC and More: tournaments and series', 'url' => '/Esports/Other', 'description' => 'HGC and other past tournaments and series.'],
             ],
         ],
         [

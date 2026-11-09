@@ -21,6 +21,7 @@ use App\Http\Middleware\LogIPAndUserAgent;
 use App\Http\Middleware\PoisonApiResponse;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\RememberViewedPlayer;
 use App\Http\Middleware\RequireApiAdmin;
 use App\Http\Middleware\RequireApiProjectDetails;
 use App\Http\Middleware\RequireApiTermsAcceptance;
@@ -101,6 +102,7 @@ class Kernel extends HttpKernel
             VerifyCsrfToken::class,
             SubstituteBindings::class,
             CheckIfPatreonSupporter::class,
+            RememberViewedPlayer::class,
         ],
 
         'api' => [

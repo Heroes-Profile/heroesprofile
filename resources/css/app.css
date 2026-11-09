@@ -216,6 +216,39 @@ nav .search-component{
 .nav-dropdown a.flex{
   display: flex;
 }
+
+/* Desktop: teal marks the open path - the top-level item, the hovered row, and a row whose flyout is open */
+@media (min-width:1024px){
+  .nav-dropdown-inner-wrapper a{
+    @apply mx-1.5 rounded-control;
+  }
+  .nav-dropdown-inner-wrapper a:not([class*="bg-"]):hover,
+  .nav-flyout-wrapper:hover > a:not([class*="bg-"]){
+    @apply bg-teal;
+  }
+  /* An esports player's menu hovers in their league's colour */
+  .esport-nav-dropdown .nav-dropdown-inner-wrapper a:not([class*="bg-"]):hover,
+  .esport-nav-dropdown .nav-flyout-wrapper:hover > a:not([class*="bg-"]){
+    background: var(--esport-hover);
+  }
+  /* Top-level labels: padded into a pill, pulled back by the same amount so the bar doesn't grow */
+  .main-navigation-wrapper .nav-item > a,
+  .main-navigation-wrapper a.nav-item > span{
+    @apply px-2.5 py-1.5 -mx-2.5 -my-1.5 rounded-control transition-colors;
+  }
+  .main-navigation-wrapper .nav-item:hover > a,
+  .main-navigation-wrapper a.nav-item:hover > span{
+    @apply bg-teal;
+  }
+  /* Dropdown edge lines up with the pill's edge, not the label's */
+  .main-navigation-wrapper .nav-item > .nav-dropdown{
+    left: -0.625rem;
+  }
+  .main-navigation-wrapper .nav-item > .nav-dropdown.nav-dropdown-flip{
+    left: auto;
+    right: -0.625rem;
+  }
+}
 .nav-dropdown a.remove-account {
   @apply hover:bg-surface-4;
 }

@@ -156,29 +156,6 @@ app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, 
     }
 };
 
-// Any esports player page puts that player in the header. HI needs its tournament.
-const esportPlayerPage = window.location.pathname.match(/^\/Esports\/(NGS|CCL|MastersClash|HeroesInternational)\/Player\/([^/]+)\/(\d+)/);
-const otherPlayerPage = window.location.pathname.match(/^\/Esports\/Other\/([^/]+)\/Player\/([^/]+)\/(\d+)/);
-const esportTournament = new URLSearchParams(window.location.search).get('tournament');
-if (esportPlayerPage && (esportPlayerPage[1] !== 'HeroesInternational' || ['main', 'nationscup'].includes(esportTournament))) {
-  rememberSearchAccount({
-    battletag: decodeURIComponent(esportPlayerPage[2]),
-    blizz_id: esportPlayerPage[3],
-    league: esportPlayerPage[1],
-    ...(esportPlayerPage[1] === 'HeroesInternational' ? { tournament: esportTournament } : {}),
-    date: new Date().toISOString(),
-  });
-} else if (otherPlayerPage) {
-  rememberSearchAccount({
-    battletag: decodeURIComponent(otherPlayerPage[2]),
-    blizz_id: otherPlayerPage[3],
-    league: 'Other',
-    series: decodeURIComponent(otherPlayerPage[1]),
-    date: new Date().toISOString(),
-  });
-}
-
-
 app.use(flareVue);
 flare.beforeEvaluate = error => {
   if (

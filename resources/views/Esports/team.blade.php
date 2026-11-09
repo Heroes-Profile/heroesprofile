@@ -12,7 +12,7 @@
     :division="{{ json_encode($division) }}" 
     :team="{{ json_encode($team) }}" 
     :season="{{ json_encode($season) }}" 
-    :region="{{ isset($reghion) ? json_encode($region) : 'null' }}" 
+    :region="{{ isset($region) ? json_encode($region) : 'null' }}" 
     :tournament="{{ json_encode($tournament) }}" 
     :image="{{ json_encode($image) }}" 
     :filters="{{ json_encode($filters) }}" 
