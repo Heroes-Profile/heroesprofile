@@ -96,7 +96,7 @@
                   <hero-image-wrapper class="mr-2" :hero="row.heroData.hero" :mobile-click="true">
                     <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played: ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
                   </hero-image-wrapper>
-                  <span class="hidden md:block font-bold">{{ row.heroData.hero.name }}</span>
+                  <a :href="heroLink(row)" class="group/bt hidden md:inline-flex items-center"><span class="font-bold group-hover/bt:underline">{{ row.heroData.hero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                 </div>
               </td>
               <td class="py-2 px-3 text-center">{{ row.total_games_played.toLocaleString('en-US') }}</td>
@@ -162,7 +162,7 @@
                   <hero-image-wrapper class="mr-2" :hero="row.heroData.hero" :mobile-click="true">
                     <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played: ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
                   </hero-image-wrapper>
-                  <span class="hidden md:block font-bold">{{ row.heroData.hero.name }}</span>
+                  <a :href="heroLink(row)" class="group/bt hidden md:inline-flex items-center"><span class="font-bold group-hover/bt:underline">{{ row.heroData.hero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                 </div>
               </td>
               <td class="py-2 px-3 text-center">{{ row.total_games_played.toLocaleString('en-US') }}</td>
@@ -175,11 +175,11 @@
         </table>
       </div>
     </div>
-    <div v-else-if="friendIsLoading || enemyIsLoading || asyncLoading" class="max-w-[93.75rem] mx-auto px-4 flex flex-col gap-6">
+    <div v-else-if="friendIsLoading || enemyIsLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
       <loading-component v-else :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">Large amount of data. Please be patient.</loading-component>
       <div class="grid md:grid-cols-2 gap-6">
-        <table-skeleton v-for="side in 2" :key="side" :bare="true" :rows="10" :columns="['text', 'avatar', 'text', 'text', 'text']"></table-skeleton>
+        <table-skeleton v-for="side in 2" :key="side" :bare="true" :rows="10" :columns="['text', 'hero', 'stat', 'stat', 'rank']"></table-skeleton>
       </div>
     </div>
   </div>
@@ -325,6 +325,15 @@ export default {
   watch: {
   },
   methods: {
+    // That row's player, on their page for this hero
+    heroLink(row) {
+      const hero = encodeURIComponent(row.heroData.hero.name);
+      if (this.esport) {
+        const [path, query] = row.link.split('?');
+        return `${path}/Hero/${hero}${query ? '?' + query : ''}`;
+      }
+      return `/Player/${row.battletag}/${row.blizz_id}/${row.region}/Hero/${hero}`;
+    },
     ngsParams(extra = {}) {
       return { ...this.league.params, battletag: this.battletag, blizz_id: this.blizzid, season: this.ngsSeason, division: this.ngsDivision, team: this.ngsTeam, ...extra };
     },
