@@ -30,6 +30,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Freeze the live patch's cached results
+    |--------------------------------------------------------------------------
+    |
+    | While Globals_Calculator recounts the live patch (a replay rollback), keep
+    | serving what's cached instead of refreshing it with half-counted numbers.
+    | Cached results still expire at their normal TTL. Turn off once it has caught up.
+    |
+    */
+
+    'freeze_live_cache' => env('GLOBAL_FREEZE_LIVE_CACHE', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Batch query fan-out
     |--------------------------------------------------------------------------
     |

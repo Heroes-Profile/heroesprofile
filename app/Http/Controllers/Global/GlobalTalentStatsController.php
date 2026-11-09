@@ -367,8 +367,9 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         }
 
         // Only as long as its children stay fresh, so it is rebuilt from their refreshes.
+        // Frozen, it's kept an hour so it doesn't outlive the freeze by a week.
         if (! $hasMisses) {
-            $cache->put($allCacheKey, $result, $window->fresh ?? $window->ttl);
+            $cache->put($allCacheKey, $result, $window->fresh ?? (config('global.freeze_live_cache') ? 60 * 60 : $window->ttl));
         }
 
         return $result;
