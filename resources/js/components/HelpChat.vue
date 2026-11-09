@@ -2,16 +2,21 @@
   <!-- Bottom-left help (the video ad takes bottom-right). One box: the FAQ and site pages answer first, the assistant only when asked. Sits above the cookie banner while it shows. -->
   <div class="fixed left-4 z-50 flex flex-col items-start gap-3" :style="{ bottom: 'calc(var(--disclaimer-height, 0px) + 1rem)' }">
     <div v-if="open" :class="expanded ? 'w-[47.5rem] h-[calc(100dvh-8rem)]' : 'w-[26.25rem] h-[35rem]'" class="max-w-[calc(100vw-2rem)] max-h-[calc(100dvh-8rem)] bg-surface-4 rounded-2xl border border-white/20 shadow-[0_0.5rem_2rem_rgba(0,0,0,0.7)] flex flex-col overflow-hidden">
-      <!-- Close and New chat on the left, expand alone in the top-right corner, so they're hard to mix up -->
+      <!-- Window controls top-right: expand, divider, close -->
       <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
         <div class="flex items-center gap-4">
-          <button class="text-xl leading-none min-w-[2rem] min-h-[2rem]" aria-label="Close help" @click="open = false">×</button>
           <span class="font-bold text-lg">Help</span>
           <button v-if="messages.length" class="text-sm underline" :disabled="!!loading" @click="newChat">New chat</button>
         </div>
-        <button class="min-w-[2rem] min-h-[2rem]" :aria-label="expanded ? 'Make help smaller' : 'Make help bigger'" :title="expanded ? 'Smaller' : 'Bigger'" @click="toggleExpanded">
-          <i :class="expanded ? 'fas fa-down-left-and-up-right-to-center' : 'fas fa-up-right-and-down-left-from-center'"></i>
-        </button>
+        <div class="flex items-center gap-2">
+          <button class="w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="expanded ? 'Make help smaller' : 'Make help bigger'" :title="expanded ? 'Smaller' : 'Bigger'" @click="toggleExpanded">
+            <i :class="expanded ? 'fas fa-down-left-and-up-right-to-center' : 'fas fa-up-right-and-down-left-from-center'"></i>
+          </button>
+          <span class="w-px h-5 bg-white/20" aria-hidden="true"></span>
+          <button class="w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" aria-label="Close help" title="Close" @click="open = false">
+            <i class="fas fa-xmark text-lg"></i>
+          </button>
+        </div>
       </div>
 
       <div ref="messageList" class="relative flex-1 min-h-0 overflow-y-auto px-5 py-4 flex flex-col gap-3 text-sm">
@@ -117,7 +122,19 @@ export default {
       // Storage blocked: start fresh
     }
   },
+  mounted() {
+    // The nav's Help > Help Assistant link
+    window.addEventListener('open-help-chat', this.openFromNav);
+  },
+  beforeUnmount() {
+    window.removeEventListener('open-help-chat', this.openFromNav);
+  },
   methods: {
+    openFromNav() {
+      if (!this.open) {
+        this.toggle();
+      }
+    },
     toggle() {
       this.open = !this.open;
       this.save();

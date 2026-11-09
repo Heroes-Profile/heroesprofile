@@ -103,6 +103,7 @@
                                  <a href="https://github.com/Heroes-Profile/heroesprofile/discussions" target="_blank" >Discussions</a>
                                  <a href="/Github/Change/Log">Change Log</a>
                                 <a href="/FAQ">FAQ</a>
+                                <a href="#" onclick="event.preventDefault(); window.dispatchEvent(new Event('open-help-chat'))">Help Assistant</a>
                                 <a href="/Contact" >Contact Us</a>
                             </div>
 
