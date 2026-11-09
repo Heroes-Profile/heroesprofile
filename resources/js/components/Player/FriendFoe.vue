@@ -43,30 +43,30 @@
     
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="frienddata && enemydata" class="gap-1 mx-auto  flex justify-center max-w-[93.75rem] max-md:flex-col max-md:text-sm max-md:max-w-[100vw]">
-      <div ref="friendcontainer" class="max-md:overflow-hidden">
-        <table ref="friendtable" class="min-w-0 max-w-[46.875rem]">
+    <div v-if="frienddata && enemydata" class="max-w-[120rem] mx-auto px-4 md:px-8 flex gap-6 max-md:flex-col max-md:text-sm max-md:max-w-[100vw]">
+      <div ref="friendcontainer" class="flex-1 min-w-0 max-md:overflow-hidden">
+        <table ref="friendtable" class="min-w-0 w-full">
           <thead >
             <tr>
               <th colspan="5" class="py-2 px-3 text-center text-base font-bold tracking-wider">Friends</th>
             </tr>
             <tr >
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider w-[25%]">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 <div class="flex items-center gap-3">
                   <span class="cursor-pointer" @click="sortTableFriend('battletag')">Player<sort-indicator :column="'battletag'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator></span>
                   <search-input v-model="friendSearch" placeholder="Search player" :collapsible="true" class="w-40"></search-input>
                 </div>
               </th>
-              <th @click="sortTableFriend('hero')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[35%]">
+              <th @click="sortTableFriend('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Favorite Hero<sort-indicator :column="'hero'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>            
-              <th @click="sortTableFriend('total_games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[20%]">
-                Games<sort-indicator :column="'total_games_played'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
+              <th @click="sortTableFriend('total_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                Games With<sort-indicator :column="'total_games_played'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>
-              <th  @click="sortTableFriend('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%] ">
+              <th  @click="sortTableFriend('win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer ">
                 Win Rate with<sort-indicator :column="'win_rate'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>
-              <th v-if="!esport" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider w-[10%]">
+              <th v-if="!esport" class="py-2 px-3 text-center text-sm leading-4 text-gray-500 tracking-wider w-px whitespace-nowrap">
                 Matches
               </th>
             </tr>
@@ -92,44 +92,45 @@
                 </div>
               </td>
               <td class="py-2 px-3">
-                <div class="flex justify-center">
-                  <hero-image-wrapper :hero="row.heroData.hero" :mobile-click="true">
+                <div class="flex items-center">
+                  <hero-image-wrapper class="mr-2" :hero="row.heroData.hero" :mobile-click="true">
                     <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played: ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
                   </hero-image-wrapper>
+                  <span class="hidden md:block font-bold">{{ row.heroData.hero.name }}</span>
                 </div>
               </td>
-              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString('en-US') }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 text-center">{{ row.total_games_played.toLocaleString('en-US') }}</td>
+              <td class="py-2 px-3 text-center">{{ row.win_rate.toFixed(2) }}</td>
               <td v-if="!esport" class="py-2 px-3">
-                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">Matches</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" :aria-label="`Matches with ${row.battletag}`" title="Matches" class="flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors"><i class="fas fa-chevron-right"></i></a>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div ref="enemycontainer" class="max-md:overflow-hidden">
-        <table ref="enemytable" class="min-w-0 max-w-[46.875rem]">
+      <div ref="enemycontainer" class="flex-1 min-w-0 max-md:overflow-hidden">
+        <table ref="enemytable" class="min-w-0 w-full">
           <thead class="bg-red">
             <tr>
               <th colspan="5" class="py-2 px-3 text-center text-base font-bold tracking-wider">Foes</th>
             </tr>
             <tr>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider w-[25%]">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 <div class="flex items-center gap-3">
                   <span class="cursor-pointer" @click="sortTableEnemy('battletag')">Player<sort-indicator :column="'battletag'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator></span>
                   <search-input v-model="enemySearch" placeholder="Search player" :collapsible="true" class="w-40"></search-input>
                 </div>
               </th>
-              <th @click="sortTableEnemy('hero')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[35%]">
+              <th @click="sortTableEnemy('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Favorite Hero<sort-indicator :column="'hero'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>            
-              <th @click="sortTableEnemy('total_games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[20%]">
-                Games<sort-indicator :column="'total_games_played'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
+              <th @click="sortTableEnemy('total_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                Games Against<sort-indicator :column="'total_games_played'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>
-              <th @click="sortTableEnemy('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
+              <th @click="sortTableEnemy('win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Win Rate Against<sort-indicator :column="'win_rate'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>
-              <th v-if="!esport" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider w-[10%]">
+              <th v-if="!esport" class="py-2 px-3 text-center text-sm leading-4 text-gray-500 tracking-wider w-px whitespace-nowrap">
                 Matches
               </th>
             </tr>
@@ -157,16 +158,17 @@
               </td>
 
               <td class="py-2 px-3">
-                <div class="flex justify-center">
-                  <hero-image-wrapper :hero="row.heroData.hero" :mobile-click="true">
+                <div class="flex items-center">
+                  <hero-image-wrapper class="mr-2" :hero="row.heroData.hero" :mobile-click="true">
                     <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played: ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
                   </hero-image-wrapper>
+                  <span class="hidden md:block font-bold">{{ row.heroData.hero.name }}</span>
                 </div>
               </td>
-              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString('en-US') }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 text-center">{{ row.total_games_played.toLocaleString('en-US') }}</td>
+              <td class="py-2 px-3 text-center">{{ row.win_rate.toFixed(2) }}</td>
               <td v-if="!esport" class="py-2 px-3">
-                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">Matches</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" :aria-label="`Matches with ${row.battletag}`" title="Matches" class="flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors"><i class="fas fa-chevron-right"></i></a>
               </td>
             </tr>
           </tbody>
