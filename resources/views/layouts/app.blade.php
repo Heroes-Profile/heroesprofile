@@ -127,9 +127,6 @@
     'regions' => $bladeGlobals["regions"],
     ])
 
-    @if(isset($headeralert) && $headeralert !== null && request()->cookie('header_alert_dismissed') !== md5($headeralert))
-      <header-alert :alert="{{ json_encode($headeralert) }}" :dismiss-key="{{ json_encode(md5($headeralert)) }}"></header-alert>
-    @endif
     
 
     <rich-media-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></rich-media-ad>

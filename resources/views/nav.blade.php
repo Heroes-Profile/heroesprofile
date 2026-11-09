@@ -267,6 +267,9 @@
     </nav>
     
 <nav id="alt-account-nav" class="relative flex justify-end items-center md:gap-4 max-md:justify-center max-md:gap-2 max-md:px-3 max-md:pb-6 max-md:mt-4 w-full max-w-[120rem] mx-auto md:px-8 md:py-4 alt-acct-nav max-md:flex-wrap">
+  @if(isset($headeralert) && $headeralert !== null && request()->cookie('header_alert_dismissed') !== md5($headeralert))
+    <header-alert :alert="{{ json_encode($headeralert) }}" :dismiss-key="{{ json_encode(md5($headeralert)) }}"></header-alert>
+  @endif
   {{-- League row colours, from each league's logo --}}
   @php($esportRowColours = ['NGS' => 'bg-[#f26b30]', 'CCL' => 'bg-gradient-to-r from-[#d42a0e] via-[#f07c12] to-[#f7c51e]', 'MastersClash' => 'bg-[#5a5ad6]', 'hi' => 'bg-[#6b6b6b]', 'hi_nc' => 'bg-[#6b6b6b]', 'Other' => 'bg-lblue'])
   {{-- Other series, each from its own logo; any series not listed keeps Other's colour --}}
