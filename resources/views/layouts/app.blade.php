@@ -136,7 +136,10 @@
 
     @yield('content')
 
+    {{-- Pages with their own bottom section place this ad themselves --}}
+    @sectionMissing('own_bottom_ad')
     <dynamic-banner-ad  :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" :index="{{ json_encode(0) }}" :mobile-override="{{ json_encode(false) }}"></dynamic-banner-ad>
+    @endif
 
     <footer class="mt-auto @yield('footer_gap', 'pt-[2em]')">
       @if(isset($isBackendOff) && $isBackendOff)
