@@ -978,6 +978,10 @@ class GlobalDataService
         if (in_array($latestPatch, $timeframe, true)) {
             $window = $this->recentPatchWindow($sinceLatest);
 
+            if (config('global.freeze_live_cache')) {
+                return new GlobalCacheWindow($window->ttl, null);
+            }
+
             // The live patch on its own is a small query: stale after an hour at most
             if (count(array_unique($timeframe)) === 1 && $window->fresh > 60 * 60) {
                 return new GlobalCacheWindow($window->ttl, 60 * 60);
