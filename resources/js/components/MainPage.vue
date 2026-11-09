@@ -153,6 +153,10 @@ import moment from 'moment-timezone';
         if (!this.replayTicker?.count) {
           return null;
         }
+        // Parsing offline: hold at the real count
+        if (this.latestgamedate && this.parsingStale) {
+          return this.maxreplayid || this.replayTicker.count;
+        }
         const rate = this.replayTicker.rate || 0;
         return this.replayTicker.count + Math.floor(rate * (this.now - this.tickerStart) / 1000);
       },
