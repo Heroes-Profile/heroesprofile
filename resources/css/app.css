@@ -145,6 +145,10 @@ body{
 .nav-flyout .nav-dropdown-inner-wrapper {
   @apply bg-surface-4;
 }
+.nav-flyout-arrow {
+  font-size: 1.4em;
+  line-height: 1;
+}
 @media (max-width: 1023.98px) {
   .nav-flyout {
     display: none !important;

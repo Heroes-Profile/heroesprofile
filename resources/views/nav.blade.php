@@ -145,7 +145,7 @@
                                     {{-- ... (mainSearchAccount dropdown items) --}}
                                     @if (Auth::check() && app(\App\Services\AnalyticsService::class)->isAllowed(Auth::user()))
                                     <div class="nav-flyout-wrapper">
-                                        <a href="/Analytics" class="flex justify-between items-center bg-teal font-bold"><span><i class="fas fa-chart-line mr-2"></i>Analytics</span> <span class="nav-flyout-arrow ml-4">›</span></a>
+                                        <a href="/Analytics" class="flex justify-between items-center bg-teal font-bold"><span><i class="fas fa-chart-line mr-2"></i>Analytics</span> <span class="nav-flyout-arrow ml-2">›</span></a>
                                         <div class="nav-flyout">
                                             <div class="nav-dropdown-inner-wrapper rounded-b rounded-r">
                                                 <a href="/Analytics">Summary</a>
@@ -177,7 +177,7 @@
                                         :all-label="'All Heroes'"
                                     ></nav-search-flyout>
                                     <div class="nav-flyout-wrapper">
-                                        <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role" class="flex justify-between items-center">Roles <span class="nav-flyout-arrow ml-4">›</span></a>
+                                        <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role" class="flex justify-between items-center">Roles <span class="nav-flyout-arrow ml-2">›</span></a>
                                         <div class="nav-flyout">
                                             <div class="nav-dropdown-inner-wrapper rounded-b rounded-r">
                                                 <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role">All Roles</a>
@@ -287,7 +287,7 @@
               <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal"><span class="inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></span> <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg" aria-label="Close menu">x</button></div>
               <!-- The league's own pages, where a player's menu has Analytics -->
               <div class="nav-flyout-wrapper">
-                <a href="{{ $esportNav['main'] }}" class="flex justify-between items-center {{ $esportNav['key'] === 'Other' ? ($esportSeriesColours[$esportNav['name']] ?? $esportRowColours['Other']) : $esportRowColours[$esportNav['key']] }} font-bold"><span class="whitespace-nowrap"><img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="inline-block align-middle h-[1.1em] w-auto {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}">@if($esportNav['label'])<span class="ml-2 inline-block max-w-[9rem] max-md:max-w-none truncate align-middle" title="{{ $esportNav['name'] }}">{{ $esportNav['name'] }}</span>@endif</span> <span class="nav-flyout-arrow ml-4">›</span></a>
+                <a href="{{ $esportNav['main'] }}" class="flex justify-between items-center {{ $esportNav['key'] === 'Other' ? ($esportSeriesColours[$esportNav['name']] ?? $esportRowColours['Other']) : $esportRowColours[$esportNav['key']] }} font-bold"><span class="whitespace-nowrap"><img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="inline-block align-middle h-[1.1em] w-auto {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}">@if($esportNav['label'])<span class="ml-2 inline-block max-w-[9rem] max-md:max-w-none truncate align-middle" title="{{ $esportNav['name'] }}">{{ $esportNav['name'] }}</span>@endif</span> <span class="nav-flyout-arrow ml-2">›</span></a>
                 <div class="nav-flyout">
                   <div class="nav-dropdown-inner-wrapper rounded-b rounded-r">
                     {{-- The full name, which the row cuts short --}}
@@ -308,7 +308,7 @@
                 :all-label="'All Heroes'"
               ></nav-search-flyout>
               <div class="nav-flyout-wrapper">
-                <a href="{{ $esportPlayerUrl }}/Role{{ $esportQuery }}" class="flex justify-between items-center">Roles <span class="nav-flyout-arrow ml-4">›</span></a>
+                <a href="{{ $esportPlayerUrl }}/Role{{ $esportQuery }}" class="flex justify-between items-center">Roles <span class="nav-flyout-arrow ml-2">›</span></a>
                 <div class="nav-flyout">
                   <div class="nav-dropdown-inner-wrapper rounded">
                     <a href="{{ $esportPlayerUrl }}/Role{{ $esportQuery }}">All Roles</a>
@@ -366,7 +366,7 @@
                 :all-label="'All Heroes'"
               ></nav-search-flyout>
               <div class="nav-flyout-wrapper">
-                <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role" class="flex justify-between items-center">Roles <span class="nav-flyout-arrow ml-4">›</span></a>
+                <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role" class="flex justify-between items-center">Roles <span class="nav-flyout-arrow ml-2">›</span></a>
                 <div class="nav-flyout">
                   <div class="nav-dropdown-inner-wrapper rounded">
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role">All Roles</a>
