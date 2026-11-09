@@ -280,6 +280,10 @@ nav .search-component{
     .alt-acct-nav .nav-dropdown-inner-wrapper{
         @apply rounded-none;
     }
+    /* Full-screen battletag menus: the name bar starts at the very top */
+    .nav-dropdown-secondary-nav .nav-dropdown-inner-wrapper{
+      @apply pt-0;
+    }
   }
 
 .variable-background{

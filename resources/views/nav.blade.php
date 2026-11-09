@@ -12,8 +12,8 @@
 </div>
 
 <div id="main-menu" class="  main-navigation-wrapper"> <!-- max-md:hidden  - This needs to hide/show on click of the button but only on mobile - either detect mobile with vue, or have a class that is added/taken away that only applies to mobile -->
-    {{-- Above the battletag row (z-[51]), which is above page dropdowns like filters (z-50) --}}
-    <nav id="main-nav" class="bg-surface-1 text-white z-[52] relative md:px-8 md:py-3 text-sm max-md:pt-2">
+    {{-- Desktop: above the battletag row (z-[51]), which is above page dropdowns like filters (z-50). Mobile keeps z-50 so a battletag menu can open full screen over it. --}}
+    <nav id="main-nav" class="bg-surface-1 text-white z-50 md:z-[52] relative md:px-8 md:py-3 text-sm max-md:pt-2">
       <button  id="mobile-nav-close" class="hidden bg-blue rounded-control px-2 py-1 min-w-[2.25rem] min-h-[2rem] text-base leading-none ml-auto  mr-2" aria-label="Close menu"><i class="fas fa-xmark" aria-hidden="true"></i></button>
        
         <div class="flex items-start justify-center flex-wrap  mx-auto max-md:flex-col max-md:items-stretch max-w-[120rem]" >
@@ -268,7 +268,7 @@
         </div>
     </nav>
     
-<nav id="alt-account-nav" class="relative z-[51] flex justify-end items-center md:gap-4 max-md:justify-center max-md:gap-2 max-md:px-3 max-md:pb-6 max-md:mt-4 w-full max-w-[120rem] mx-auto md:px-8 md:py-4 alt-acct-nav max-md:flex-wrap">
+<nav id="alt-account-nav" class="relative md:z-[51] flex justify-end items-center md:gap-4 max-md:justify-center max-md:gap-2 max-md:px-3 max-md:pb-6 max-md:mt-4 w-full max-w-[120rem] mx-auto md:px-8 md:py-4 alt-acct-nav max-md:flex-wrap">
   {{-- League row colours, from each league's logo --}}
   @php($esportRowColours = ['NGS' => 'bg-[#f26b30]', 'CCL' => 'bg-gradient-to-r from-[#d42a0e] via-[#f07c12] to-[#f7c51e]', 'MastersClash' => 'bg-[#5a5ad6]', 'hi' => 'bg-[#6b6b6b]', 'hi_nc' => 'bg-[#6b6b6b]', 'Other' => 'bg-lblue'])
   {{-- Other series, each from its own logo; any series not listed keeps Other's colour --}}
