@@ -39,6 +39,9 @@ use Illuminate\Support\Facades\DB;
 class GlobalDataService
 {
     /** Party icon colours in the order each team's parties get them, as in game. */
+    // Uploads in a day as of 2026-11-09, until the daily snapshots take over
+    private const SEED_DAILY_UPLOADS = 13657;
+
     public const PARTY_COLORS = [0 => ['blue', 'purple'], 1 => ['red', 'yellow']];
 
     /** Replays older than (max replay ID - this value) get stricter rate limits. */
@@ -571,8 +574,52 @@ class GlobalDataService
     public function getMaxReplayId(): int
     {
         return (int) Cache::remember('max_replay_id', 300, function () {
+            Cache::put('max_replay_id_at', now()->timestamp, 300);
+
             return Replay::max('replayID') ?? 0;
         });
+    }
+
+    /**
+     * Replays uploaded per second over roughly the last day, from daily snapshots of the max replayID.
+     * Uses SEED_DAILY_UPLOADS until the first full day of snapshots exists.
+     */
+    public function getReplayUploadRate(): float
+    {
+        $maxId = $this->getMaxReplayId();
+        $now = now()->timestamp;
+        $snapshot = Cache::get('replay_upload_snapshot');
+
+        if (! $snapshot) {
+            Cache::forever('replay_upload_snapshot', ['id' => $maxId, 'at' => $now]);
+
+            return self::SEED_DAILY_UPLOADS / 86400;
+        }
+
+        $elapsed = $now - $snapshot['at'];
+        if ($elapsed >= 86400) {
+            $rate = max(0, $maxId - $snapshot['id']) / $elapsed;
+            Cache::forever('replay_upload_rate', $rate);
+            Cache::forever('replay_upload_snapshot', ['id' => $maxId, 'at' => $now]);
+
+            return $rate;
+        }
+
+        return Cache::get('replay_upload_rate', self::SEED_DAILY_UPLOADS / 86400);
+    }
+
+    /** Starting point for the home page replay ticker: the count projected to now, and the per-second rate. */
+    public function getReplayTicker(): array
+    {
+        $count = $this->getMaxReplayId();
+        $rate = $this->getReplayUploadRate();
+
+        if ($rate) {
+            $cachedAt = Cache::get('max_replay_id_at', now()->timestamp);
+            $count += (int) floor($rate * max(0, now()->timestamp - $cachedAt));
+        }
+
+        return ['count' => $count, 'rate' => $rate];
     }
 
     /** Whether the original file for a replay is still stored. */

@@ -12,6 +12,26 @@
         <img class="w-[1.667em] mx-[0.333em]" src="/images/logo/heroesprofilelogo.png" alt=""/>
         Profile
       </h1>
+      <!-- Count rolls up at the last day's average upload rate; no requests after page load -->
+      <div v-if="tickerCount" class="mt-6 flex flex-col items-center gap-1">
+        <p class="text-2xl font-bold">
+          Replays uploaded:
+          <span class="inline-flex tabular-nums leading-none align-baseline" :aria-label="tickerCount.toLocaleString('en-US')">
+            <template v-for="(char, index) in tickerChars" :key="tickerChars.length - index">
+              <span v-if="/\d/.test(char)" class="inline-block h-[1em] overflow-hidden" aria-hidden="true">
+                <span class="flex flex-col transition-transform duration-500 ease-out" :style="{ transform: `translateY(-${char}em)` }">
+                  <span v-for="digit in 10" :key="digit" class="h-[1em]">{{ digit - 1 }}</span>
+                </span>
+              </span>
+              <span v-else aria-hidden="true">{{ char }}</span>
+            </template>
+          </span>
+        </p>
+        <template v-if="latestgamedate">
+          <p v-if="parsingStale" class="bg-red rounded px-4 py-2 text-sm flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i>Replay parsing is currently offline. Latest game played {{ latestGameAgo }}.</p>
+          <p v-else class="text-sm text-subtext">Latest game played {{ latestGameAgo }}</p>
+        </template>
+      </div>
 
      
     </div>
@@ -85,6 +105,7 @@
 
 <script>
 import Cookies from 'js-cookie';
+import moment from 'moment-timezone';
 
 
   export default {
@@ -97,12 +118,17 @@ import Cookies from 'js-cookie';
       maxreplayid: Number,
       latestpatch: String,
       latestgamedate: String,
+      // { count, rate }: rate is replays per second
+      replayTicker: Object,
       // Whether the signed-in player can open Analytics (Patreon supporters)
       analyticsAllowed: Boolean,
     },
     data(){
       return {
         showPopup: true,
+        tickerStart: Date.now(),
+        now: Date.now(),
+        tickerTimer: null,
       }
     },
     created(){
@@ -117,8 +143,31 @@ import Cookies from 'js-cookie';
       }
     },
     mounted() {
+      this.tickerTimer = setInterval(() => { this.now = Date.now(); }, 1000);
+    },
+    beforeUnmount() {
+      clearInterval(this.tickerTimer);
     },
     computed: {
+      tickerCount() {
+        if (!this.replayTicker?.count) {
+          return null;
+        }
+        const rate = this.replayTicker.rate || 0;
+        return this.replayTicker.count + Math.floor(rate * (this.now - this.tickerStart) / 1000);
+      },
+      tickerChars() {
+        return this.tickerCount.toLocaleString('en-US').split('');
+      },
+      // No new game in an hour means the parser has likely stopped
+      parsingStale() {
+        return this.now - moment.tz(this.latestgamedate, 'Atlantic/Reykjavik').valueOf() > 60 * 60 * 1000;
+      },
+      latestGameAgo() {
+        // Recomputes with the ticker clock
+        this.now;
+        return moment.tz(this.latestgamedate, 'Atlantic/Reykjavik').fromNow();
+      },
       cardClasses() {
         return 'flex flex-col text-center  w-[21.0625rem]';
       },
