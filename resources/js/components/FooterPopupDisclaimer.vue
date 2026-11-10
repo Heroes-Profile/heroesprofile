@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed bottom-0 bg-red left-0 p-4 text-xs" v-if="popUpVar">
+  <div ref="card" class="fixed bottom-0 bg-red left-0 p-4 text-xs" v-if="popUpVar">
    <div> Heroes Profile is funded by its developers. If you like the site, consider donating to our Patreon. even $2 helps. The data on this website relies on replays uploaded to Heroes Profile API. Make sure you go there to upload your data. If you do not upload your replays, your data will not be accurate.
 This site uses cookies in order to store your recent profile views. To learn more, view our <a class="link" href="/Privacy/Policy">Privacy Policy</a>
     </div>
@@ -36,15 +36,29 @@ export default {
       
   },
   mounted() {
+    // The help button sits above the banner: share its height as --disclaimer-height
+    if (this.popUpVar && this.$refs.card && typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(() => this.setHeight());
+      this.resizeObserver.observe(this.$refs.card);
+    }
+  },
+  beforeUnmount() {
+    this.resizeObserver?.disconnect();
   },
   computed: {
   },
   watch: {
   },
   methods: {
+    setHeight() {
+      const height = this.popUpVar && this.$refs.card ? this.$refs.card.offsetHeight : 0;
+      document.documentElement.style.setProperty('--disclaimer-height', `${height}px`);
+    },
     closePopup(){
       localStorage.setItem('popupDisclaimer', 'true');
       this.popUpVar = false;
+      this.resizeObserver?.disconnect();
+      this.setHeight();
     }
   }
 }

@@ -8,12 +8,14 @@ use App\Models\Api\ApiAccount;
 use App\Models\Api\ApiAccountAction;
 use App\Models\Api\ApiAccountApproval;
 use App\Models\Api\ApiKey;
+use App\Models\Api\ApiPoisonLog;
 use App\Models\Api\ApiUsage;
 use App\Models\Api\CashierSubscription;
 use App\Models\PatreonAccount;
 use App\Services\Api\AccountEnforcementService;
 use App\Services\Api\ApiKeyResolver;
 use App\Services\Api\PlanService;
+use App\Services\Api\PoisonPill;
 use App\Services\Api\UsageService;
 use App\Support\ApiCost;
 use App\Support\StandingText;
@@ -32,6 +34,8 @@ class AdminConsoleController extends Controller
     private const ACTIVITY_LIMIT = 50;
 
     private const HISTORY_LIMIT = 50;
+
+    private const POISON_LOG_LIMIT = 200;
 
     /** Raw editor HTML, so well above what anyone would actually write. */
     private const REASON_MAX = 10000;
@@ -133,7 +137,91 @@ class AdminConsoleController extends Controller
                 ->all(),
             'usage' => $usage->forAccount($account),
             'subscription_issue' => $context?->unresolvedMessage(),
+            'poison' => $this->poisonFor($account),
         ] + $this->standing($account));
+    }
+
+    /**
+     * Markers in their global stats. Admins are allowed here, unlike the standing
+     * actions, so it can be checked against your own key. Nothing is sent.
+     */
+    public function setPoison(Request $request, int $id)
+    {
+        $validated = $request->validate([
+            'value' => ['required', 'boolean'],
+        ]);
+
+        $account = ApiAccount::find($id);
+
+        if ($account === null) {
+            return response()->json(['error' => 'No such account.'], 404);
+        }
+
+        if ($account->isPoisoned() !== $validated['value']) {
+            DB::connection('heroesprofile_api')->transaction(function () use ($account, $validated) {
+                $account->forceFill(['poisoned_at' => $validated['value'] ? now() : null])->save();
+
+                ApiAccountAction::create([
+                    'api_account_id' => $account->id,
+                    'action' => $validated['value'] ? ApiAccountAction::POISON_ON : ApiAccountAction::POISON_OFF,
+                    'performed_by' => $this->actorId(),
+                ]);
+            });
+        }
+
+        return response()->json(['poison' => $this->poisonFor($account)] + $this->standing($account->refresh()));
+    }
+
+    /**
+     * Which poisoned account was sent a value, by row name and optionally the value
+     * seen. The value matches to the precision typed, so 57.1 finds 57.11 for a
+     * site that rounds to one decimal.
+     */
+    public function poisonTrace(Request $request)
+    {
+        $validated = $request->validate([
+            'label' => ['required', 'string', 'min:2', 'max:150'],
+            'value' => ['nullable', 'numeric', 'between:0,100'],
+        ]);
+
+        $term = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\%', '\_'], trim($validated['label'])).'%';
+
+        $query = ApiPoisonLog::where('label', 'like', $term);
+
+        if (isset($validated['value'])) {
+            $value = trim((string) $request->input('value'));
+            $decimals = str_contains($value, '.') ? strlen(substr($value, strpos($value, '.') + 1)) : 0;
+            $half = 0.5 / (10 ** $decimals);
+
+            $query->whereBetween('sent_value', [(float) $value - $half, (float) $value + $half - 0.00001]);
+        }
+
+        $rows = $query->orderByDesc('last_sent_at')->limit(self::POISON_LOG_LIMIT)->get();
+
+        $accounts = ApiAccount::whereIn('id', $rows->pluck('api_account_id')->unique())->get()->keyBy('id');
+
+        return response()->json([
+            'rows' => $rows->map(fn (ApiPoisonLog $row) => $row->present() + [
+                'account_id' => $row->api_account_id,
+                'email' => $accounts->get($row->api_account_id)?->email,
+            ])->all(),
+            'truncated' => $rows->count() === self::POISON_LOG_LIMIT,
+        ]);
+    }
+
+    private function poisonFor(ApiAccount $account): array
+    {
+        return [
+            'on' => $account->isPoisoned(),
+            'since' => $account->poisoned_at?->toDateTimeString(),
+            'heroes' => app(PoisonPill::class)->heroMarkers($account->id, $this->globalDataService->getHeroes()),
+            'log' => ApiPoisonLog::where('api_account_id', $account->id)
+                ->orderByDesc('last_sent_at')
+                ->limit(self::POISON_LOG_LIMIT)
+                ->get()
+                ->map(fn (ApiPoisonLog $row) => $row->present())
+                ->all(),
+        ];
     }
 
     /**

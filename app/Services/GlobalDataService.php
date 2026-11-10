@@ -39,6 +39,9 @@ use Illuminate\Support\Facades\DB;
 class GlobalDataService
 {
     /** Party icon colours in the order each team's parties get them, as in game. */
+    // Uploads in a day as of 2026-11-09, until the daily snapshots take over
+    private const SEED_DAILY_UPLOADS = 13657;
+
     public const PARTY_COLORS = [0 => ['blue', 'purple'], 1 => ['red', 'yellow']];
 
     /** Replays older than (max replay ID - this value) get stricter rate limits. */
@@ -574,8 +577,52 @@ class GlobalDataService
     public function getMaxReplayId(): int
     {
         return (int) Cache::remember('max_replay_id', 300, function () {
+            Cache::put('max_replay_id_at', now()->timestamp, 300);
+
             return Replay::max('replayID') ?? 0;
         });
+    }
+
+    /**
+     * Replays uploaded per second over roughly the last day, from daily snapshots of the max replayID.
+     * Uses SEED_DAILY_UPLOADS until the first full day of snapshots exists.
+     */
+    public function getReplayUploadRate(): float
+    {
+        $maxId = $this->getMaxReplayId();
+        $now = now()->timestamp;
+        $snapshot = Cache::get('replay_upload_snapshot');
+
+        if (! $snapshot) {
+            Cache::forever('replay_upload_snapshot', ['id' => $maxId, 'at' => $now]);
+
+            return self::SEED_DAILY_UPLOADS / 86400;
+        }
+
+        $elapsed = $now - $snapshot['at'];
+        if ($elapsed >= 86400) {
+            $rate = max(0, $maxId - $snapshot['id']) / $elapsed;
+            Cache::forever('replay_upload_rate', $rate);
+            Cache::forever('replay_upload_snapshot', ['id' => $maxId, 'at' => $now]);
+
+            return $rate;
+        }
+
+        return Cache::get('replay_upload_rate', self::SEED_DAILY_UPLOADS / 86400);
+    }
+
+    /** Starting point for the home page replay ticker: the count projected to now, and the per-second rate. */
+    public function getReplayTicker(): array
+    {
+        $count = $this->getMaxReplayId();
+        $rate = $this->getReplayUploadRate();
+
+        if ($rate) {
+            $cachedAt = Cache::get('max_replay_id_at', now()->timestamp);
+            $count += (int) floor($rate * max(0, now()->timestamp - $cachedAt));
+        }
+
+        return ['count' => $count, 'rate' => $rate];
     }
 
     /** Whether the original file for a replay is still stored. */
@@ -634,18 +681,22 @@ class GlobalDataService
         });
     }
 
-    public function getBladeGlobals()
+    public function getDarkMode()
     {
         $darkModeCookie = request()->cookie('darkmode') === '1' ? '1' : '0';
-        $darkModeValue = $darkModeCookie;
 
         if (Auth::check()) {
-            $user = Auth::user();
+            $darkmode = Auth::user()->userSettings->firstWhere('setting', 'darkmode');
 
-            $darkmode = $user->userSettings->firstWhere('setting', 'darkmode');
-
-            $darkModeValue = $darkmode ? $darkmode->value : $darkModeCookie;
+            return $darkmode ? $darkmode->value : $darkModeCookie;
         }
+
+        return $darkModeCookie;
+    }
+
+    public function getBladeGlobals()
+    {
+        $darkModeValue = $this->getDarkMode();
 
         $regions = $this->getRegionIDtoString();
         $latestGame = $this->getLatestGameDate();
@@ -998,6 +1049,119 @@ class GlobalDataService
     public function getAllTalentsKeyed()
     {
         return Cache::remember('heroes_data_talents_all_statuses_keyed', 3600, fn () => HeroesDataTalent::withAllStatuses()->get()->keyBy('talent_id'));
+    }
+
+    /** Esports leagues with player pages, for the nav's recent-player menus. Row colours are in nav.blade.php. */
+    private const ESPORT_NAV_LEAGUES = [
+        'NGS' => [
+            'schema' => 'heroesprofile_ngs',
+            'esport' => 'NGS',
+            'name' => 'NGS',
+            'logo' => '/images/NGS/ngs.png',
+            'tabs' => ['standings' => 'Standings', 'divisions' => 'Divisions', 'teams' => 'Teams', 'playerSearch' => 'Player Search', 'recentMatches' => 'Recent Matches', 'overallHeroStats' => 'Overall Hero Stats', 'overallTalentStats' => 'Overall Talent Stats'],
+        ],
+        'CCL' => [
+            'schema' => 'heroesprofile_ccl',
+            'esport' => 'CCL',
+            'name' => 'CCL',
+            'label' => 'CCL',
+            'logo' => '/images/CCL/600-600-HHE_CCL_Logo_rectangle.png',
+            'tabs' => ['organizations' => 'Organizations', 'recentMatches' => 'Recent Matches', 'overallHeroStats' => 'Overall Hero Stats', 'overallTalentStats' => 'Overall Talent Stats'],
+        ],
+        'MastersClash' => [
+            'schema' => 'heroesprofile_mcl',
+            'esport' => 'MastersClash',
+            'name' => 'Masters Clash',
+            'label' => 'MCL',
+            'logo' => '/images/MCL/no-image.png',
+            'tabs' => ['teams' => 'Teams', 'recentMatches' => 'Recent Matches', 'overallHeroStats' => 'Overall Hero Stats', 'overallTalentStats' => 'Overall Talent Stats'],
+        ],
+        'hi' => [
+            'schema' => 'heroesprofile_hi',
+            'esport' => 'HeroesInternational',
+            'tournament' => 'main',
+            'name' => 'Heroes International',
+            'label' => 'HI',
+            'logo' => '/images/HI/heroes_international.png',
+            'tabs' => ['teams' => 'Teams', 'recentMatches' => 'Recent Matches', 'overallHeroStats' => 'Overall Hero Stats', 'overallTalentStats' => 'Overall Talent Stats'],
+        ],
+        'hi_nc' => [
+            'schema' => 'heroesprofile_hi_nc',
+            'esport' => 'HeroesInternational',
+            'tournament' => 'nationscup',
+            'name' => 'Nations Cup',
+            'label' => 'HI NC',
+            'logo' => '/images/HI/heroes_international.png',
+            'tabs' => ['teams' => 'Teams', 'recentMatches' => 'Recent Matches', 'overallHeroStats' => 'Overall Hero Stats', 'overallTalentStats' => 'Overall Talent Stats'],
+        ],
+        // name and logo come from the series
+        'Other' => [
+            'schema' => 'heroesprofile_ml',
+            'esport' => 'Other',
+            'tabs' => ['teams' => 'Teams', 'players' => 'Players', 'overallHeroStats' => 'Overall Hero Stats', 'overallTalentStats' => 'Overall Talent Stats'],
+        ],
+    ];
+
+    /**
+     * A recent-player cookie's league and its links, or null if it names no known league.
+     * The cookie has league (the URL name), plus tournament for HI and series for Other.
+     */
+    public function esportNavLeague(array $account): ?array
+    {
+        $key = match ($account['league'] ?? null) {
+            'NGS', 'CCL', 'MastersClash', 'Other' => $account['league'],
+            'HeroesInternational' => match ($account['tournament'] ?? null) {
+                'main' => 'hi',
+                'nationscup' => 'hi_nc',
+                default => null,
+            },
+            default => null,
+        };
+
+        return is_null($key) ? null : $this->esportNavDescriptor($key, $account['battletag'], $account['blizz_id'], $account['series'] ?? null);
+    }
+
+    /** Other's series names => icon file. */
+    private function getEsportOtherSeriesIcons(): array
+    {
+        return Cache::remember('esport_other_series_icons', 3600, fn () => DB::table('heroesprofile_ml.series')->whereNotNull('name')->pluck('icon', 'name')->all());
+    }
+
+    private function esportNavDescriptor(string $key, $battletag, $blizz_id, $series = null): ?array
+    {
+        $league = self::ESPORT_NAV_LEAGUES[$key];
+        $query = isset($league['tournament']) ? '?tournament='.$league['tournament'] : '';
+
+        if ($key === 'Other') {
+            $icons = $this->getEsportOtherSeriesIcons();
+            if (! is_string($series) || ! array_key_exists($series, $icons)) {
+                return null;
+            }
+            $root = '/Esports/Other/'.rawurlencode($series);
+            $league['name'] = $series;
+            $league['label'] = $series;
+            $league['logo'] = '/images/EsportOther/'.($icons[$series] ?: 'heroesprofilelogo.png');
+        } else {
+            $root = '/Esports/'.$league['esport'];
+        }
+
+        $main = $root.$query;
+        $tabs = [];
+        foreach ($league['tabs'] as $tab => $label) {
+            $tabs[$main.($query ? '&' : '?').'tab='.$tab] = $label;
+        }
+
+        return [
+            'key' => $key,
+            'name' => $league['name'],
+            // Shown beside the logo where the logo doesn't spell the league out; NGS's does
+            'label' => $league['label'] ?? null,
+            'logo' => $league['logo'],
+            'main' => $main,
+            'tabs' => $tabs,
+            'url' => $root.'/Player/'.rawurlencode($battletag).'/'.$blizz_id,
+            'query' => $query,
+        ];
     }
 
     /** Every map, playable or not, keyed by map_id. */

@@ -172,6 +172,7 @@
           <div class="disclaimer">
             <footer-popup-disclaimer></footer-popup-disclaimer>
           </div>
+          <help-chat :logged-in="{{ json_encode(Auth::check()) }}"></help-chat>
         </div>
       </div>
     </div>

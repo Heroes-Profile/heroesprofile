@@ -1,0 +1,415 @@
+<?php
+
+// The FAQ page lists these, and the help chat answers from them. Answers are HTML.
+
+return [
+    'categories' => [
+        [
+            'name' => 'Getting Started',
+            'items' => [
+                [
+                    'q' => 'What is Heroes Profile?',
+                    'a' => 'Heroes Profile is a community-built statistics site for Heroes of the Storm. We track player profiles, global hero win rates, talent builds, matchups, draft data, leaderboards, and much more — all based on replay files uploaded by the community. The site launched in June 2018 and is run by Zemill and a small team of volunteers.',
+                ],
+                [
+                    'q' => 'How do I find my player profile?',
+                    'a' => 'Use the search bar at the top of the site and type in your BattleTag (e.g. <code>Zemill#1940</code>). Once found, you can view your match history, hero stats, MMR, maps, matchups, and more. Make sure you\'ve uploaded your replays first so your data appears.',
+                ],
+                [
+                    'q' => 'Is Heroes Profile free to use?',
+                    'a' => 'Yes, Heroes Profile is completely free. We are supported by the community through <a href="https://www.patreon.com/heroesprofile" target="_blank" class="link">Patreon</a>. Patreon supporters receive an ad-free experience and special site flair.',
+                ],
+            ],
+        ],
+        [
+            'name' => 'Uploading Replays',
+            'items' => [
+                [
+                    'q' => 'How do I get my stats onto Heroes Profile?',
+                    'a' => 'You need to upload your replay files. The easiest way is to download the <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe" class="link">Heroes Profile Uploader</a> which runs in the background and automatically uploads replays after each game. You can also <a href="/Upload" class="link">upload replays manually</a>. After uploading, wait 5–10 minutes for processing.',
+                ],
+                [
+                    'q' => 'Is the Heroes Profile Uploader safe?',
+                    'a' => 'Yes. The uploader is completely open source — you can review the full source code on GitHub: <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader" target="_blank" class="link">HeroesProfile.Uploader</a>. It does not contain ads, bloatware, or tracking beyond basic page analytics. If you prefer, you can upload replays manually instead.<br><br>Some antivirus tools or browsers may flag the installer as suspicious. This is a false positive caused by the executable not being signed with a paid code-signing certificate — not because it contains malware. You can verify this yourself by reviewing the open source code. If you\'re uncomfortable, use the <a href="/Upload" class="link">manual upload page</a> instead.',
+                ],
+                [
+                    'q' => 'Why aren\'t all of my games showing up?',
+                    'a' => 'Heroes Profile only contains games that have been uploaded to our system. If you haven\'t uploaded your replays, or only recently started uploading, older games won\'t appear. You can <a href="/Upload" class="link">upload past replay files manually</a>, or use the <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe" class="link">Heroes Profile Uploader</a> to auto-upload going forward. Replay files are stored by Heroes of the Storm in your Documents folder.',
+                ],
+                [
+                    'q' => 'Is a game\'s date and time when it started or when it ended?',
+                    'a' => 'When it ended. The time shown for a game comes from its replay file, which Heroes of the Storm saves at the end of the game, so a 25 minute game that started at 8:00 shows as 8:25.',
+                ],
+                [
+                    'q' => 'Can I upload old replays, and will that affect my MMR?',
+                    'a' => 'Yes, you can upload old replays. However, the order you upload them does matter for MMR. MMR systems give larger adjustments early on as they try to place you where you belong. If you upload your recent (higher win rate) games before your older (lower win rate) games, your MMR may end up higher than if you uploaded them chronologically. For the most accurate MMR, upload all replays in the order they were played.',
+                ],
+                [
+                    'q' => 'Does the uploader work on macOS or Linux?',
+                    'a' => 'Yes. The uploader is one app for Windows, macOS and Linux. Downloads for each are on the <a href="/Upload" class="link">Upload page</a>, and <a href="/Upload/Uploader" class="link">the uploader page</a> covers what changed and how to move over from the old Windows uploader.',
+                ],
+                [
+                    'q' => 'How do I make my profile private?',
+                    'a' => 'Log in with your Battle.net account, go to <a href="/Profile/Settings" class="link">Profile Settings</a>, and set your Account Visibility to Private. Your BattleTag will still appear in other players\' match history (since it is part of the replay file), but your individual profile page will not be publicly accessible.',
+                ],
+            ],
+        ],
+        [
+            'name' => 'MMR & Rankings',
+            'items' => [
+                [
+                    'q' => 'How does MMR work on Heroes Profile?',
+                    'a' => 'Blizzard does not include MMR or rank data in replay files, so we cannot get your official in-game rank or MMR from a replay. Instead, we calculate our own MMR based on the wins and losses in your uploaded replays. This is an approximation — the more games you upload, the more accurate it becomes. New game modes (like when Storm League launched) start everyone fresh, so early MMR values have high uncertainty. Your real Storm League rank can be shown separately, read from the loading screen (see below).',
+                ],
+                [
+                    'q' => 'Why doesn\'t my Heroes Profile MMR match my in-game rank?',
+                    'a' => 'Our MMR is an independent calculation based only on the replays uploaded to our system. It is not sourced from Blizzard\'s servers and does not reflect your official in-game ranking. The more games you upload, the closer it will converge to your actual skill level. If you\'re new to uploading, play more games and the value will stabilize. Your real in-game rank, when we have it, is shown in its own Storm League Rank section on your profile.',
+                ],
+                [
+                    'q' => 'Can Heroes Profile show my real in-game rank?',
+                    'a' => 'Yes, for Storm League. Ranks aren\'t in replay files, but the game shows every player\'s rank on the loading screen. The <strong>with rank reading</strong> version of the uploader (Windows, macOS or Linux) can read them from there:<ol class="list-decimal pl-6 my-2 space-y-1"><li>Install it from the <a href="/Upload" class="link">Replay Uploader</a> page.</li><li>In the uploader\'s Settings, turn on <strong>Read ranks from the loading screen</strong>. It\'s off until you do.</li><li>Play Storm League. Once a game\'s replay is uploaded, the ranks read from its loading screen are stored and shown in the Storm League Rank section of each player\'s profile.</li></ol>It only captures the game window, only during the loading screen, and only Storm League games are sent. A rank is only kept for a player who is in that game\'s replay, when the reader is confident the rank card is theirs, so you can also get a rank from someone else\'s games. Ranks are shown as read, with when they were last seen and in how many games, and can occasionally be wrong or out of date. <a href="/Upload/Uploader#rank-reading" class="link">How rank reading works</a>.',
+                ],
+                [
+                    'q' => 'What do the league tiers on global stats pages represent?',
+                    'a' => 'On global stats pages, league tiers (Bronze, Silver, Gold, Platinum, Diamond, Master) are based on our Heroes Profile MMR calculation. Players whose MMR falls in a certain range are grouped into that tier. We use the tier splits provided by Blizzard as a reference for where ranges should fall. This means roughly 7% of our players are in Bronze, matching Blizzard\'s intended distribution.',
+                ],
+                [
+                    'q' => 'What are the league tier distributions on Heroes Profile?',
+                    'a' => 'The league tiers on Heroes Profile are based on the following population distributions:<br><br><div style="display:inline-block;min-width:220px;border:1px solid rgba(255,255,255,0.15);border-radius:6px;overflow:hidden;font-size:0.875rem;"><div style="display:flex;background:rgba(255,255,255,0.1);font-weight:600;"><span style="flex:1;padding:8px 14px;">Tier</span><span style="width:120px;padding:8px 14px;text-align:right;">% of Players</span></div><div style="display:flex;border-top:1px solid rgba(255,255,255,0.1);"><span style="flex:1;padding:8px 14px;">Bronze</span><span style="width:120px;padding:8px 14px;text-align:right;">12%</span></div><div style="display:flex;border-top:1px solid rgba(255,255,255,0.1);"><span style="flex:1;padding:8px 14px;">Silver</span><span style="width:120px;padding:8px 14px;text-align:right;">23%</span></div><div style="display:flex;border-top:1px solid rgba(255,255,255,0.1);"><span style="flex:1;padding:8px 14px;">Gold</span><span style="width:120px;padding:8px 14px;text-align:right;">26%</span></div><div style="display:flex;border-top:1px solid rgba(255,255,255,0.1);"><span style="flex:1;padding:8px 14px;">Platinum</span><span style="width:120px;padding:8px 14px;text-align:right;">22%</span></div><div style="display:flex;border-top:1px solid rgba(255,255,255,0.1);"><span style="flex:1;padding:8px 14px;">Diamond</span><span style="width:120px;padding:8px 14px;text-align:right;">12%</span></div><div style="display:flex;border-top:1px solid rgba(255,255,255,0.1);"><span style="flex:1;padding:8px 14px;">Master</span><span style="width:120px;padding:8px 14px;text-align:right;">5%</span></div></div><br><br>These distributions are used to set the MMR thresholds for each tier. Players with fewer than 50 games played are placed in an "Unknown" tier (sometimes called Wood) until the system has enough data to place them accurately.',
+                ],
+                [
+                    'q' => 'Why are MMR recalculations done periodically?',
+                    'a' => 'We periodically recalculate MMR across all uploaded games to improve accuracy. As our algorithms improve and more data is uploaded, recalculation gives all players a more accurate rating. We announce these recalculations when they happen — check our Reddit posts or GitHub for updates.',
+                ],
+                [
+                    'id' => 'mmr-change-direction',
+                    'q' => 'Why did my MMR go down after a win (or up after a loss)?',
+                    'a' => 'Heroes Profile MMR is not an infinitely scaling metric — it\'s a measure of your skill relative to everyone else. If your MMR dropped after a win, it means the system detected you were playing against players with significantly lower MMR than yours. The algorithm sees a high-MMR player winning against low-MMR opponents and interprets that as a sign your current rating may be too high, so it nudges it down slightly. The reverse is also true — losing to much higher-MMR players can push your rating up. This is by design: the system is always trying to find the bracket you truly belong in, not just reward you for winning.',
+                ],
+                [
+                    'q' => 'What is Hero MMR?',
+                    'a' => 'Hero MMR is a per-hero MMR rating. Instead of a single overall rating, you have a different MMR for each hero you play. This rating compares you against other players\' performance on that same hero. Being a high-level Storm League player doesn\'t automatically mean you have a high Hero MMR on a hero you rarely play.',
+                ],
+            ],
+        ],
+        [
+            'name' => 'Global Stats & Data',
+            'items' => [
+                [
+                    'q' => 'How accurate is the data on Heroes Profile?',
+                    'a' => 'The data is only as accurate as the number of replays uploaded to our system. We do not have access to every game played — only games where players have used our uploader or submitted replays manually. That said, we consistently have one of the largest replay databases in the community, with tens of millions of games.',
+                ],
+                [
+                    'q' => 'Why are mirror matches excluded from matchup win rates?',
+                    'a' => 'When a hero faces itself in a mirror match, the result is always one win and one loss for that hero in the same game. Including mirrors would always push the average win rate toward 50% for every hero, giving you no useful information. Excluding them lets the matchup data actually reflect meaningful competitive dynamics.',
+                ],
+                [
+                    'q' => 'How does the Performance Score work?',
+                    'a' => 'The Performance Score on match pages is calculated by taking each stat from a game (damage, healing, kills, etc.), ranking all 10 players in that game from best to worst, and assigning a score based on rank position. It is a relative measure within that single game — not a global benchmark.',
+                ],
+                [
+                    'q' => 'What do the time frame filters mean (major patch vs. minor patch)?',
+                    'a' => 'Major patches on Heroes Profile generally align with hero releases or major reworks, when Blizzard changes the number after the first decimal (e.g. 2.44 → 2.45). Minor patches are the smaller balance updates inside a major patch. The Timeframes filter lists every build under its major and sub patch: tick a heading to take the whole patch, or tick single builds. See the <a href="/FAQ#patch-history" class="link">patch history</a> for what each patch changed.',
+                ],
+                [
+                    'id' => 'hero-average-stats',
+                    'q' => 'Can I see a hero\'s average in-game stats, like siege damage or hero damage?',
+                    'a' => 'Yes, every hero\'s average per game for a stat is on the <a href="/Global/Hero" class="link">Hero Stats</a> page:<ol class="list-decimal pl-6 my-2 flex flex-col gap-1"><li>Click <strong>Show Advanced Filters</strong> under the filters.</li><li>Set <strong>Timeframes</strong> to 5 or fewer single builds. The Stat Filter is hidden when a whole major or sub patch is ticked.</li><li>Pick the stat in <strong>Stat Filter</strong>, e.g. Siege Damage, Hero Damage, Spell Damage, Physical Damage, Healing or Deaths, and click <strong>Filter</strong>.</li></ol>The table and bubble chart then show each hero\'s average per game for that stat instead of win rate. You can also link straight to it, e.g. <a href="/Global/Hero?statfilter=siege_damage" class="link">/Global/Hero?statfilter=siege_damage</a>. The <a href="/Global/Talents" class="link">Talents</a> page has the same Stat Filter for talents and builds. A full breakdown of one hero\'s stats side by side, like the advanced stats on a player\'s hero page, isn\'t available globally.',
+                ],
+                [
+                    'q' => 'Why is global data sometimes empty after a new patch?',
+                    'a' => 'Right after Blizzard pushes a patch, there isn\'t enough uploaded data yet for that patch to display meaningful results. Broaden your timeframe filter to include multiple patches, or check back after a few days once more games have been uploaded.',
+                ],
+                [
+                    'id' => 'win-chance',
+                    'q' => 'What is "Win Chance" on talent builds, and how is it different from win rate?',
+                    'a' => 'Win Chance is our calculated probability that a full talent build leads to a win, from level 1 through level 20. It is not a simple win rate. Because many games end before level 20, we cannot always see the complete build a player intended to take. We use backend logic to infer what build a player was heading toward based on the talents they did pick, and we factor in both games that reached level 20 and games that did not. This gives a more accurate picture of a build\'s overall viability than just counting wins in completed games. You can explore build Win Chance on the <a href="/Global/Talents" class="link">Global Talents</a> page and the <a href="/Global/Talents/Builder" class="link">Talent Builder</a>.',
+                ],
+                [
+                    'q' => 'What does the "Influence" stat mean?',
+                    'a' => 'Influence is a value between -5000 and 5000 that measures how much a hero actually influences the outcome of games. It takes how far the hero\'s win rate is above or below 50% and multiplies it by how often the hero is picked in the games where it isn\'t banned. A hero with a high win rate that is rarely picked will have a lower influence score than a hero with a slightly lower win rate that is picked in most games — because the second hero is actually shaping more matches. Think of it as win rate weighted by relevance.',
+                ],
+                [
+                    'q' => 'What is the Talent Builder?',
+                    'a' => 'The <a href="/Global/Talents/Builder" class="link">Talent Builder</a> lets you construct a specific talent build and see win rate data for exactly that combination. It\'s great for comparing two builds head-to-head with real game data.',
+                ],
+            ],
+        ],
+        [
+            'name' => 'Filters',
+            'items' => [
+                [
+                    'q' => 'How do the filters work?',
+                    'a' => 'Change any filters you want, then click <strong>Filter</strong> to reload the page with them. On global stats pages, <strong>Show Advanced Filters</strong> reveals more: Stat Filter, Hero Level, HP Hero Rank, HP Role Rank, Mirror Matches and, on Hero Stats, Group Size. Global stats pages save your filters in the page link, so you can share or bookmark a filtered page. On mobile, tap <strong>Show Filters</strong> to open them.',
+                ],
+                [
+                    'q' => 'What does the Timeframes filter do?',
+                    'a' => 'Timeframes picks which patches the data comes from. Builds are listed under their major patch and sub patch: tick a heading to take the whole patch, or tick single builds. It defaults to the latest patch. See <a href="/FAQ#patch-history" class="link">patch history</a> for what each patch changed.',
+                ],
+                [
+                    'q' => 'What does the Game Type filter do?',
+                    'a' => 'Game Type limits the data to Storm League, Quick Match, ARAM and the other modes. Global stats pages leave out Unranked Draft and Custom games. Profile pages include every game type, and Match History can show Custom games too.',
+                ],
+                [
+                    'q' => 'What does the Stat Filter do?',
+                    'a' => 'On <a href="/Global/Hero" class="link">Hero Stats</a> and <a href="/Global/Talents" class="link">Talents</a>, the Stat Filter swaps win rate for the average per game of an in-game stat, such as hero, siege, spell, physical or minion damage, healing, deaths, takedowns, time stunning enemies or merc camp captures. It is under Show Advanced Filters and only shows when Timeframes is 5 or fewer single builds. There is a step-by-step guide under "Can I see a hero\'s average in-game stats" in Global Stats &amp; Data.',
+                ],
+                [
+                    'q' => 'What do the Regions and Map filters do?',
+                    'a' => '<strong>Regions</strong> limits the data to games played in NA, EU, KR or CN. <strong>Map</strong> limits it to games on the maps you pick.',
+                ],
+                [
+                    'q' => 'What do the Heroes and Role filters do?',
+                    'a' => 'They limit the data to one hero or one role. On <a href="/Match/Search" class="link">Replay Search</a> you can pick several heroes and choose <strong>OR</strong> (games with any of them) or <strong>AND</strong> (games with all of them).',
+                ],
+                [
+                    'q' => 'What do the HP Player Rank, HP Hero Rank and HP Role Rank filters do?',
+                    'a' => 'They filter by skill using Heroes Profile\'s own MMR: the player\'s overall MMR, their MMR on that specific hero, or their MMR on that hero\'s role. The tiers mirror the in-game ones but use our formula, so they won\'t match in-game ranks. The MMR &amp; Rankings section explains how our MMR works.',
+                ],
+                [
+                    'q' => 'What is the HP / In-Game switch on Player Rank?',
+                    'a' => 'On Hero Stats and Talents, Player Rank can use either Heroes Profile MMR tiers (HP) or the Storm League rank Blizzard shows on the loading screen (In-Game). In-game rank is read by players using the Heroes Profile uploader\'s opt-in rank reader, and each player counts in the rank they had going into that game. Only players whose rank was read count, so sample sizes are smaller, and only patches since the rank reader started are listed in Timeframes.',
+                ],
+                [
+                    'q' => 'What does the Hero Level filter do?',
+                    'a' => 'Hero Level only includes players who had that hero at the levels you pick, from 1-5 up to 100+. Use it to see how a hero does in experienced hands.',
+                ],
+                [
+                    'q' => 'What does the Mirror Matches filter do?',
+                    'a' => 'It decides whether games with the same hero on both teams count. It defaults to Exclude, because a hero playing itself always adds one win and one loss, pulling its win rate toward 50%.',
+                ],
+                [
+                    'q' => 'What does the Group Size filter do?',
+                    'a' => 'Group Size limits the data to players who queued Solo, as a Duo, or in a group of 3, 4 or 5. On the <a href="/Global/Party" class="link">Party</a> page, <strong>Team One Party</strong> and <strong>Team Two Party</strong> pick each team\'s whole makeup instead, from 5 Solos to a 5 Stack.',
+                ],
+                [
+                    'q' => 'What does the Minimum Games filter do?',
+                    'a' => 'It hides rows with fewer games than the number you pick, so small samples don\'t crowd the top of the table.',
+                ],
+                [
+                    'q' => 'What does Talent Build Type do?',
+                    'a' => 'It picks which builds the Talents page lists. Only builds that reached level 20 count.<ul class="list-disc pl-6 mt-2 flex flex-col gap-1"><li><strong>Popular</strong>: the most played builds.</li><li><strong>HP Algorithm</strong>: the most played builds, but only one per combination of level 1, 4 and 7 talents, so you see different early-game paths.</li><li><strong>Unique Lvl X</strong>: the most played build for each different talent at that level.</li></ul>',
+                ],
+                [
+                    'q' => 'What do the Season and date filters do?',
+                    'a' => '<strong>Season</strong> limits the data to games in the seasons you pick, grouped by year. On profile pages you can pick several. The <strong>date range</strong> filter limits it to games played between the dates you choose.',
+                ],
+                [
+                    'q' => 'What do the Leaderboard Type and League filters do?',
+                    'a' => 'On the <a href="/Global/Leaderboard" class="link">Leaderboards</a>, Leaderboard Type switches between Player, Hero, Role, Match Prediction and SL Rank boards. SL Rank lists in-game Storm League ranks and adds a League picker.',
+                ],
+                [
+                    'q' => 'What filters does Replay Search have?',
+                    'a' => '<a href="/Match/Search" class="link">Replay Search</a> adds a few of its own: <strong>Game Version</strong> (patches), a <strong>date range</strong>, ranges on <strong>HP Player, Hero and Role MMR</strong>, and <strong>Players</strong>, which only finds games with those BattleTags in them. Match History has a similar <strong>Friend or Foe Player</strong> search.',
+                ],
+                [
+                    'q' => 'What filters do the esports pages have?',
+                    'a' => 'Esports pages have filters for that league instead, such as Season, Division, Team or Tournament, depending on what the league tracks.',
+                ],
+            ],
+        ],
+        [
+            'name' => 'Site Features',
+            'items' => [
+                [
+                    'q' => 'What is the PreMatch feature?',
+                    'a' => 'PreMatch is a feature built into the <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe" class="link">Heroes Profile Uploader</a>. When enabled, it opens a browser page during the loading screen of a match showing information about all 10 players in your game — their stats, most-played heroes, MMR, and more. This helps you understand your teammates and opponents before the match starts. You can see an example at <a href="/PreMatch/Results/" class="link">PreMatch Results</a>.',
+                ],
+                [
+                    'q' => 'What is the Friends & Foes page?',
+                    'a' => 'The Friends &amp; Foes page on your player profile shows your win rate when playing <em>with</em> or <em>against</em> specific players. For example, see <a href="/Player/Zemill/67280/1/FriendFoe" class="link">Zemill\'s Friends &amp; Foes</a>. Upload your replays and check the Friends &amp; Foes section of your own profile to see yours.',
+                ],
+                [
+                    'q' => 'What is the Awards page?',
+                    'a' => 'The Awards page on your player profile shows how often you earn each end of match award, such as MVP, Painbringer or Main Healer, as a percentage of your games. For example, see <a href="/Player/Zemill/67280/1/Awards" class="link">Zemill\'s Awards</a>. Click an award to list every game where you earned it. Awards are only counted for games played after Heroes Profile began tracking them, so very old replays are not included. Every award and what it is given for is listed under <a href="#awards" class="link">Match Awards</a> below.',
+                ],
+                [
+                    'q' => 'What is Replay Search and how do I use it?',
+                    'a' => '<a href="/Match/Search" class="link">Replay Search</a> finds recent games uploaded to Heroes Profile. Pick your filters, press Filter, and each result links to its full match page.<p class="mt-2"><b>What it searches</b></p><ul class="list-disc list-inside mt-1 space-y-1"><li>Games played in the current and previous season, newest first.</li><li>Quick Match, Storm League and ARAM. Unranked Draft, Hero League and Team League have no games in that window.</li><li>Results come 1000 at a time. Use <b>Load 1000 More</b> to see older games.</li></ul><p class="mt-2"><b>Filters</b></p><ul class="list-disc list-inside mt-1 space-y-1"><li><b>Game Type, Regions, Map, Game Version, From/To Date</b>: narrow to those games. Game Version only lists patches from the search window.</li><li><b>Heroes</b>: pick one or more. With several, the <b>OR / AND</b> switch chooses between games with any of them or games with every one of them, on either team.</li><li><b>Players</b>: type a BattleTag and press Add. If several accounts match, choose the right one. Private profiles cannot be searched for. With several players, <b>OR / AND</b> works the same way as heroes.</li></ul><p class="mt-2"><b>Advanced Filters</b></p><ul class="list-disc list-inside mt-1 space-y-1"><li><b>HP Player, Hero and Role MMR</b> minimum and maximum, using the rating each player had in that game.</li><li><b>HP Player, Hero and Role Rank</b> (Bronze to Master). Ranks use the current league boundaries for each game type. HP Hero Rank appears once you pick a hero, since each hero has its own boundaries.</li><li>Every MMR and rank filter must hold for the <em>same</em> player. With no heroes picked, that can be anyone in the game. With heroes on OR, it is the player on one of those heroes. With heroes on AND, the player on every chosen hero has to meet them.</li></ul><p class="mt-2"><b>Why does it say "Keep Searching"?</b></p><p class="mt-1">Rare combinations, like several heroes all at Master, can take a long time to find. Replay Search looks through a few seconds\' worth of games at a time, shows what it found so far and how far back it has searched, and lets you press <b>Keep Searching</b> to continue. "No replays match those filters" only appears once the whole search window has been checked.</p><p class="mt-2"><b>Limits</b></p><p class="mt-1">To keep the site fast for everyone, searches are limited to 10 per minute, and each Load More or Keep Searching counts as one. If you hit the limit, wait a minute and try again.</p>',
+                ],
+                [
+                    'q' => 'What is the Match Prediction Game?',
+                    'a' => 'The Match Prediction Game lets you look at a draft and try to predict which team will win before seeing the result. It\'s a fun way to test your game knowledge and see how your predictions compare to the actual outcome.',
+                ],
+                [
+                    'q' => 'Does Heroes Profile have esports, tournament, series or league stats?',
+                    'a' => 'Yes. <a href="/Esports" class="link">Community Esports</a> in the top menu covers community leagues and tournaments: NGS (Nexus Gaming Series), CCL (Community Clash League), Masters Clash, Heroes International, Nut Cup, and HGC and More, which holds past tournaments and series such as HGC. Each has its own teams, players, matches, and hero and talent stats.',
+                ],
+                [
+                    'q' => 'What is the Heroes Profile Drafter?',
+                    'a' => 'The <a href="/Drafter" class="link">Heroes Profile Drafter</a> is a drafting tool that uses Heroes Profile win rate data to help you evaluate compositions during the draft phase. It is not intended to be a perfect predictor — use it to supplement your draft knowledge and investigate how compositions perform. See the Drafter section below for how it works.',
+                ],
+                [
+                    'q' => 'Can I copy a talent build from the site into the game?',
+                    'a' => 'Yes. On Global Hero pages, the Single Match page, and several other places around the site you will find a "Copy Build" button next to talent builds. Clicking it copies the build to your clipboard in a format that Heroes of the Storm accepts, so you can paste it directly into the game\'s loadout screen.',
+                ],
+            ],
+        ],
+        [
+            'name' => 'Drafter',
+            'items' => [
+                [
+                    'q' => 'How do I use the Drafter?',
+                    'a' => '<p>The Drafter is not a perfect predictor of a draft. It was built to investigate and gauge compositions, so use it to supplement your own draft knowledge.</p><ol class="list-decimal pl-6 mt-2 flex flex-col gap-2"><li>Open the <a href="/Drafter" class="link">Drafter</a> and choose your filters. Drafter data is Storm League only, from the latest five patches. Narrow filters can leave only a small number of games, so keep an eye on Games Played, Games Banned and Win Rate Confidence in the hero pop-ups.</li><li>Choose which team has first pick. Team 1 is on the left and Team 2 is on the right. This only affects how the draft is laid out, so match it to your in-game draft.</li><li>Click <strong>Start Draft</strong>. The Drafter loads the best options for the current ban or pick and orders them best to worst, left to right and top to bottom. Heroes it considers especially strong at that position get a star. Hover a hero to see its stats.</li><li>Click a hero to ban or pick it. The Drafter moves between Team 1 and Team 2 automatically as the draft goes on, and <strong>Undo</strong> steps back one pick.</li></ol><p class="mt-2">The search box and role icons narrow the heroes shown without changing their order. <strong>Show Filters</strong> lets you change filters at any point in the draft, and the suggestions for the current pick reload with the new filters.</p><p class="mt-2"><strong>Draft With No Data</strong> lets you walk through a draft with every hero listed alphabetically and no suggestions.</p><p class="mt-2">The Drafter is best used on a computer. It works on mobile, but there is a lot of information to show.</p>',
+                ],
+                [
+                    'q' => 'How does the Drafter suggest bans?',
+                    'a' => '<p><strong>Bans 1 to 4</strong> start from the most banned heroes for your filters, scaled by how often each hero is banned at that specific position in the draft (its <em>Draft Order Pick Rate</em>).</p><p class="mt-2">For example, say the most banned heroes are D.Va (200 bans), Imperius (150), Chromie (76) and Orphea (25), and at the current position D.Va is banned 5% of the time, Imperius 20%, Chromie 57% and Orphea 2%. Scaling each by its rate gives Chromie 43.3, Imperius 30, D.Va 10 and Orphea 0.5, so the order changes a lot depending on who tends to be banned at that point in the draft.</p><p class="mt-2"><strong>Bans 5 and 6</strong> work the same way, but also look at the opposing team\'s composition to find their next best pick and suggest it as a ban.</p>',
+                ],
+                [
+                    'q' => 'How does the Drafter suggest picks?',
+                    'a' => '<p><strong>Picks 1 and 2</strong> use each hero\'s Influence scaled by its Draft Order Pick Rate. Influence combines win rate with how often a hero is picked or banned.</p><p class="mt-2"><strong>Picks 3 to 10</strong> use composition data scaled by Draft Order Pick Rate. From the roles a team has already picked, the Drafter finds the most played composition containing those roles, then suggests the most played heroes in that composition for the roles still open.</p><p class="mt-2">For example, if the most popular composition is Tank, Bruiser, Healer, Ranged Assassin, Ranged Assassin and a team first picks Orphea, heroes like Diablo, D.Va, Brightwing, Li-Ming and Greymane will be near the top. If the team then picks The Lost Vikings, the Drafter looks for popular compositions that include a Support and a Ranged Assassin instead. This continues until the draft is done.</p>',
+                ],
+                [
+                    'q' => 'What is Draft Order Pick Rate?',
+                    'a' => '<p>Of all the games a hero was banned or picked, Draft Order Pick Rate is how often that happened at each position in the draft. Here is a mock-up for Li-Ming:</p><table class="my-3 text-sm"><thead><tr><th class="px-2 text-left">Draft Position</th><th class="px-2 text-left">Ban or Pick</th><th class="px-2 text-left">Rate</th></tr></thead><tbody><tr><td class="px-2">1</td><td class="px-2">Ban</td><td class="px-2">7%</td></tr><tr><td class="px-2">2</td><td class="px-2">Ban</td><td class="px-2">7%</td></tr><tr><td class="px-2">3</td><td class="px-2">Ban</td><td class="px-2">10%</td></tr><tr><td class="px-2">4</td><td class="px-2">Ban</td><td class="px-2">10%</td></tr><tr><td class="px-2">5</td><td class="px-2">Pick</td><td class="px-2">15%</td></tr><tr><td class="px-2">6</td><td class="px-2">Pick</td><td class="px-2">12%</td></tr><tr><td class="px-2">7</td><td class="px-2">Pick</td><td class="px-2">7%</td></tr><tr><td class="px-2">8</td><td class="px-2">Pick</td><td class="px-2">5%</td></tr><tr><td class="px-2">9</td><td class="px-2">Pick</td><td class="px-2">4%</td></tr><tr><td class="px-2">10</td><td class="px-2">Ban</td><td class="px-2">6%</td></tr><tr><td class="px-2">11</td><td class="px-2">Ban</td><td class="px-2">5%</td></tr><tr><td class="px-2">12</td><td class="px-2">Pick</td><td class="px-2">3%</td></tr><tr><td class="px-2">13</td><td class="px-2">Pick</td><td class="px-2">3%</td></tr><tr><td class="px-2">14</td><td class="px-2">Pick</td><td class="px-2">2%</td></tr><tr><td class="px-2">15</td><td class="px-2">Pick</td><td class="px-2">2%</td></tr><tr><td class="px-2">16</td><td class="px-2">Pick</td><td class="px-2">2%</td></tr></tbody></table><p>In this example Li-Ming is most often taken at position 5 (the first hero pick) and least often in the last three positions.</p><p class="mt-2">Every hero has its own split, and the Drafter uses it to scale each hero\'s HP Draft Value to the current point in the draft. Heroes usually taken early rise to the top early and drop later. For example, Li-Ming tends to show up as a strong early pick, while Tychus takes over near the end of the draft.</p>',
+                ],
+                [
+                    'q' => 'What do the stats in the Drafter pop-ups mean?',
+                    'a' => '<ul class="list-disc pl-6 flex flex-col gap-2"><li><strong>HP Draft Value</strong>: the value heroes are ordered by. It is calculated differently for bans and picks, as described above, and scaled so the best option at the current position is 100.</li><li><strong>Games Played / Games Banned</strong>: the total number of games the hero was played or banned in.</li><li><strong>Influence</strong>: a value from -5000 to 5000 showing a hero\'s relative power. <code>round((Wins / Games Played - 0.5) * Adjusted Pick Rate * 10000)</code>, where Adjusted Pick Rate is <code>(Games Played / Total Games * 100) / (100 - Ban Rate)</code>.</li><li><strong>Ban Rate</strong>: <code>Games Banned / Total Games * 100</code>.</li><li><strong>Win Rate</strong>: <code>Wins / Games Played</code>.</li><li><strong>Win Rate Confidence</strong>: add or subtract this from the win rate to get a range for the hero\'s true win rate. <code>1.96 * sqrt((Win Rate * (1 - Win Rate)) / Games Played)</code>.</li><li><strong>Draft Pick Order Rate</strong>: the hero\'s Draft Order Pick Rate at the current position.</li></ul>',
+                ],
+                [
+                    'q' => 'What do the Drafter filters do?',
+                    'a' => '<ul class="list-disc pl-6 flex flex-col gap-2"><li><strong>Timeframes</strong>: which of the latest five patches to include.</li><li><strong>Region</strong>: only include games from the selected regions.</li><li><strong>Hero Level</strong>: only include games where players were the selected hero levels, for example only drafts where every player was hero level 40 to 60.</li><li><strong>Map</strong>: only include games on the selected maps.</li><li><strong>Player Rank, Hero Rank and Role Rank</strong>: filter by skill using Heroes Profile\'s own MMR on the player overall, on the specific hero, or on the role. The tiers mirror the in-game ones but are calculated with our formula, so they will not match in-game ranks.</li></ul>',
+                ],
+            ],
+        ],
+        [
+            'name' => 'Leaderboards',
+            'items' => [
+                [
+                    'q' => 'What are the requirements to appear on the leaderboard?',
+                    'a' => 'To be eligible for a leaderboard, you must meet all three of these conditions:<ul class="list-disc list-inside mt-2 space-y-1"><li>Account level of 250 or higher</li><li>A win rate of 50% or greater for that season</li><li>A minimum number of games played — specifically 5 games per week (for Player leaderboards) or 2 games per week (for Hero/Role leaderboards) multiplied by the number of weeks since the season started. So in week 4, a Player leaderboard requires 20 games played that season.</li></ul>If fewer than 50 players meet the requirements, the games-played requirement is lowered in steps and the extra players are shown in separate groups. See "Why is the leaderboard split into groups?" below.',
+                ],
+                [
+                    'q' => 'Why is the leaderboard split into groups?',
+                    'a' => 'Early in a season, or on less-played heroes and party sizes, fewer than 50 players may meet the full games-played requirement. When that happens, the requirement is lowered by one game per week at a time, down to a minimum of 5 games, until at least 50 players qualify. Each step down becomes its own group, and each group shows the number of games it required.<ul class="list-disc list-inside mt-2 space-y-1"><li><strong>Group A</strong> met the full requirement.</li><li><strong>Group B</strong> met the requirement after one step down, <strong>Group C</strong> after two, and so on.</li></ul>Everyone in a higher group ranks above everyone in a lower group, even if their Heroes Profile Rating is lower. Without groups, a player with only a handful of games and a lucky win rate could jump ahead of players who put in the full number of games. Within each group, players are ranked by Heroes Profile Rating as usual, and rank numbers continue from one group to the next.',
+                ],
+                [
+                    'q' => 'What is the Heroes Profile Rating and how is it calculated?',
+                    'a' => 'The HP Rating is a custom score used to rank players on the leaderboard. It is intentionally not a pure MMR ranking — a pure MMR leaderboard would quickly be dominated by smurfs and players who reach a high MMR and stop playing, making it stale and uninteresting.<br><br>Instead, HP Rating combines three factors: your <strong>MMR</strong>, your <strong>win rate</strong>, and your <strong>games played</strong> for the season — all scaled relative to other players on that leaderboard. Games played is capped relative to the top players so that spamming games alone cannot carry you to the top. The result rewards players who are actively playing, winning, and performing at a high level. You can see the exact formula by clicking "Leaderboard Requirements" on the <a href="/Global/Leaderboard" class="link">Leaderboard page</a>.',
+                ],
+                [
+                    'q' => 'Why does Heroes Profile use HP Rating instead of just showing MMR?',
+                    'a' => 'A pure MMR leaderboard has a fundamental flaw: once a player reaches a high MMR, it barely changes. That means the same accounts would sit at the top of every leaderboard indefinitely — especially smurfs, who can artificially inflate MMR and then stop playing. HP Rating solves this by factoring in active play each season. If you stop playing, your ranking falls even if your MMR stays high. There are tangible things you can do to climb: win more games, play consistently throughout the season.',
+                ],
+                [
+                    'q' => 'Why can I filter leaderboards by party size?',
+                    'a' => 'A 5-stack premade team has a significant coordination advantage over solo players. Putting them on the same leaderboard makes it hard for solo players to compete at the top. Filtering by party size (Solo, 2-Stack, 3-Stack, etc.) lets you see how you rank against players who queued under the same conditions as you.',
+                ],
+                [
+                    'q' => 'When do seasons start and end?',
+                    'a' => 'Leaderboards are split by season, using the start and end date of each one. See <a href="#season-dates" class="link">Season Dates</a> below for every season so far.',
+                ],
+                [
+                    'q' => 'When are leaderboards updated?',
+                    'a' => 'Leaderboards are recalculated daily, starting at 2am EST. The calculation takes roughly 12–14 hours to complete across all leaderboard types. If you played games today, they may appear on some leaderboards the same day, but check back the following afternoon to ensure all leaderboards are fully updated.',
+                ],
+            ],
+        ],
+        [
+            'name' => 'Supporting Heroes Profile',
+            'items' => [
+                [
+                    'q' => 'How can I support Heroes Profile?',
+                    'a' => 'The best ways to support us are: <ul class="list-disc list-inside mt-2 space-y-1"><li>Subscribe on <a href="https://www.patreon.com/heroesprofile" target="_blank" class="link">Patreon</a> (any amount gets you ad-free + site flair)</li><li>Tell other players about the site — word of mouth is our biggest growth driver</li><li>Upload your replays consistently to help grow the dataset</li><li>Submit bug reports and feedback on <a href="https://github.com/Heroes-Profile/heroesprofile/issues" target="_blank" class="link">GitHub</a></li></ul>',
+                ],
+                [
+                    'q' => 'Is Heroes Profile open source?',
+                    'a' => 'Yes! The site code is publicly available on GitHub at <a href="https://github.com/Heroes-Profile/heroesprofile" target="_blank" class="link">Heroes-Profile/heroesprofile</a>. The uploader is also open source at <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader" target="_blank" class="link">HeroesProfile.Uploader</a>. Contributions and feedback are welcome.',
+                ],
+                [
+                    'q' => 'How do I report a bug or request a feature?',
+                    'a' => 'Submit bug reports at <a href="https://github.com/Heroes-Profile/heroesprofile/issues" target="_blank" class="link">GitHub Issues</a>. For feature requests and ideas, open a discussion at <a href="https://github.com/Heroes-Profile/heroesprofile/discussions" target="_blank" class="link">GitHub Discussions</a>. You can also use the contact form below or email <a href="mailto:Zemill@heroesprofile.com" class="link">Zemill@heroesprofile.com</a>.',
+                ],
+                [
+                    'q' => 'Does Heroes Profile have an API?',
+                    'a' => 'Yes, we provide a public API. Documentation is available at <a href="/Api/Docs" class="link">heroesprofile.com/Api/Docs</a>. The API has rate limits and is intended for reasonable use — not for bulk downloading the entire replay database.',
+                ],
+            ],
+        ],
+    ],
+    // Every main page, for the FAQ's Site Pages table and the help chat. {placeholders} aren't linked.
+    // hero_url: the same page opened on one hero; {hero} is the hero's name.
+    'pages' => [
+        [
+            'name' => 'Player Profiles',
+            'note' => 'Search a BattleTag in the bar at the top of the site to open a profile. These examples use Zemill.',
+            'items' => [
+                ['name' => 'Profile', 'url' => '/Player/Zemill/67280/1', 'description' => 'Overview of a player: win rate, top heroes and maps, MMR, recent matches.'],
+                ['name' => 'Heroes', 'url' => '/Player/Zemill/67280/1/Hero', 'description' => 'Stats for every hero the player has played.'],
+                ['name' => 'Single Hero', 'url' => '/Player/Zemill/67280/1/Hero/Abathur', 'description' => 'One hero in depth: win rate, talent builds, maps, MMR and recent matches.'],
+                ['name' => 'Maps', 'url' => '/Player/Zemill/67280/1/Map', 'description' => 'Stats on every map.'],
+                ['name' => 'Single Map', 'url' => '/Player/Zemill/67280/1/Map/Cursed Hollow', 'description' => 'One map in depth: win rate, best heroes and recent matches.'],
+                ['name' => 'Roles', 'url' => '/Player/Zemill/67280/1/Role', 'description' => 'Stats for each role.'],
+                ['name' => 'Single Role', 'url' => '/Player/Zemill/67280/1/Role/Bruiser', 'description' => 'One role in depth.'],
+                ['name' => 'Talents', 'url' => '/Player/Zemill/67280/1/Talents', 'description' => 'Pick a hero to see the player\'s talent choices and win rates.'],
+                ['name' => 'Hero Talents', 'url' => '/Player/Zemill/67280/1/Talents/Abathur', 'description' => 'The player\'s talents and builds for one hero.'],
+                ['name' => 'Matchups', 'url' => '/Player/Zemill/67280/1/Matchups', 'description' => 'How the player does with and against each hero.'],
+                ['name' => 'Friends & Foes', 'url' => '/Player/Zemill/67280/1/FriendFoe', 'description' => 'Players they most often play with and against, and how those games go.'],
+                ['name' => 'Party', 'url' => '/Player/Zemill/67280/1/Party', 'description' => 'Win rates by party size and with their party members.', 'hero_url' => '/Player/Zemill/67280/1/Party?hero={hero}'],
+                ['name' => 'MMR', 'url' => '/Player/Zemill/67280/1/MMR', 'description' => 'Heroes Profile MMR over time for the player, a hero or a role, with league tiers.', 'hero_url' => '/Player/Zemill/67280/1/MMR?hero={hero}'],
+                ['name' => 'Awards', 'url' => '/Player/Zemill/67280/1/Awards', 'description' => 'End-of-match awards earned, and the games they came from.'],
+                ['name' => 'Match History', 'url' => '/Player/Zemill/67280/1/Match/History', 'description' => 'Every uploaded game, with filters.', 'hero_url' => '/Player/Zemill/67280/1/Match/History?hero={hero}'],
+            ],
+        ],
+        [
+            'name' => 'Global Stats',
+            'note' => 'Stats across every uploaded replay.',
+            'items' => [
+                ['name' => 'Hero Stats', 'url' => '/Global/Hero', 'description' => 'Win rate, pick rate, ban rate and more for every hero, with a bubble chart. The Stat Filter in Show Advanced Filters shows each hero\'s average per game for a stat instead, like siege, hero or spell damage.', 'hero_url' => '/Global/Hero?hero={hero}'],
+                ['name' => 'Hero Map Stats', 'url' => '/Global/Hero/Maps', 'description' => 'How each hero does on each map.', 'hero_url' => '/Global/Hero/Maps/{hero}'],
+                ['name' => 'Talents', 'url' => '/Global/Talents', 'description' => 'Pick a hero to see talent win rates and popular builds.'],
+                ['name' => 'Hero Talents', 'url' => '/Global/Talents/Abathur', 'description' => 'One hero\'s talents and builds.'],
+                ['name' => 'Talent Builder', 'url' => '/Global/Talents/Builder', 'description' => 'Build a talent path and see how it performs.'],
+                ['name' => 'Matchups', 'url' => '/Global/Matchups', 'description' => 'How each hero does with and against every other hero.', 'hero_url' => '/Global/Matchups/{hero}'],
+                ['name' => 'Matchup Talents', 'url' => '/Global/Matchups/Talents', 'description' => 'Talent win rates for a hero when playing with or against another hero.'],
+                ['name' => 'Draft Stats', 'url' => '/Global/Draft', 'description' => 'Pick and ban rates by draft order.', 'hero_url' => '/Global/Draft/{hero}'],
+                ['name' => 'Compositions', 'url' => '/Global/Compositions', 'description' => 'Win rates for team compositions by role.'],
+                ['name' => 'Party Stats', 'url' => '/Global/Party', 'description' => 'Win rates by party size.'],
+                ['name' => 'Leaderboards', 'url' => '/Global/Leaderboard', 'description' => 'Top players by Heroes Profile Rating, Match Prediction or real Storm League rank.'],
+            ],
+        ],
+        [
+            'name' => 'Matches & Tools',
+            'items' => [
+                ['name' => 'Drafter', 'url' => '/Drafter', 'description' => 'Draft helper that suggests picks and bans from Heroes Profile data.'],
+                ['name' => 'Replay Search', 'url' => '/Match/Search', 'description' => 'Find recent uploaded games by game type, map, heroes, players and more.'],
+                ['name' => 'Single Match', 'url' => '/Match/Single/{replay ID}', 'description' => 'One game in full: teams, talents, stats and the draft. Open one from any match list.'],
+                ['name' => 'Match Prediction Game', 'url' => '/Match/Prediction/Game', 'description' => 'Look at a draft and guess which team won.'],
+                ['name' => 'PreMatch', 'url' => '/PreMatch/Results', 'description' => 'Pre-match look at both teams, opened by the Heroes Profile Uploader when a game loads.'],
+                ['name' => 'Player Analytics', 'url' => '/Analytics', 'description' => 'Deep analysis of your season replays for Patreon supporters (pre-alpha).'],
+                ['name' => 'Analytics Sample', 'url' => '/Analytics/Sample', 'description' => 'A sample of Player Analytics anyone can view.'],
+                ['name' => 'Randomize Me', 'url' => '/Tools/RandomizeMe', 'description' => 'A random hero with a real talent build to try.'],
+                ['name' => 'Activity Graphs', 'url' => '/Tools/Activity', 'description' => 'Unique players per month from uploaded replays, back to 2014.'],
+                ['name' => 'Auto Battler', 'url' => '/Tools/AutoBattler', 'description' => 'Build two AI teams with full talent builds and watch them play in the Veteran Introduction.'],
+            ],
+        ],
+        [
+            'name' => 'Esports',
+            'items' => [
+                ['name' => 'Community Esports', 'url' => '/Esports', 'description' => 'All community esports leagues, tournaments and series on Heroes Profile.'],
+                ['name' => 'NGS', 'url' => '/Esports/NGS', 'description' => 'NGS standings, divisions, teams, players and matches.'],
+                ['name' => 'CCL', 'url' => '/Esports/CCL', 'description' => 'Community Clash League: organizations, matches and stats.'],
+                ['name' => 'Masters Clash', 'url' => '/Esports/MastersClash', 'description' => 'Masters Clash teams, matches and stats.'],
+                ['name' => 'Heroes International', 'url' => '/Esports/HeroesInternational', 'description' => 'Heroes International teams, matches and stats.'],
+                ['name' => 'Nut Cup', 'url' => '/Esports/NutCup', 'description' => 'Nut Cup hero and talent stats.'],
+                ['name' => 'HGC and More: tournaments and series', 'url' => '/Esports/Other', 'description' => 'HGC and other past tournaments and series.'],
+            ],
+        ],
+        [
+            'name' => 'Site & Account',
+            'items' => [
+                ['name' => 'Upload', 'url' => '/Upload', 'description' => 'Upload replays and download the Heroes Profile Uploader.'],
+                ['name' => 'Uploader', 'url' => '/Upload/Uploader', 'description' => 'Guide to the Heroes Profile Uploader.'],
+                ['name' => 'FAQ', 'url' => '/FAQ', 'description' => 'This page.'],
+                ['name' => 'Contact', 'url' => '/Contact', 'description' => 'Contact the Heroes Profile team.'],
+                ['name' => 'Community Support', 'url' => '/Community/Support', 'description' => 'Ways to support the site, including Patreon.'],
+                ['name' => 'Profile Settings', 'url' => '/Profile/Settings', 'description' => 'Your account settings. Needs a Battle.net login.'],
+                ['name' => 'API', 'url' => '/Api/Docs', 'description' => 'Documentation for the Heroes Profile API.'],
+                ['name' => 'Change Log', 'url' => '/Github/Change/Log', 'description' => 'Recent changes to the site.'],
+                ['name' => 'Twitch', 'url' => '/Twitch', 'description' => 'Streamers using the Heroes Profile Twitch extension.'],
+            ],
+        ],
+    ],
+];

@@ -25,6 +25,9 @@ use Illuminate\Support\Facades\Route;
 | ones that have. `php artisan api:check-fixtures` fails if the two get out of
 | step or a fixture file is missing.
 |
+| Global stats, and the jobs that deliver them, also carry `api.poison`, which
+| marks live data for accounts flagged in the admin console.
+|
 */
 
 Route::get('maps', [ReferenceController::class, 'maps'])
@@ -194,59 +197,59 @@ Route::get('download/replay', [MatchController::class, 'download'])
 */
 
 Route::get('heroes/stats', [GlobalStatsController::class, 'heroStats'])
-    ->middleware(['api.fixtures:heroes_stats', 'api.quota:heroes_stats'])
+    ->middleware(['api.fixtures:heroes_stats', 'api.quota:heroes_stats', 'api.poison'])
     ->name('api.external.heroes.stats');
 
 Route::get('heroes/matchups', [GlobalStatsController::class, 'heroMatchups'])
-    ->middleware(['api.fixtures:heroes_matchups', 'api.quota:heroes_matchups'])
+    ->middleware(['api.fixtures:heroes_matchups', 'api.quota:heroes_matchups', 'api.poison'])
     ->name('api.external.heroes.matchups');
 
 Route::get('heroes/talents/details', [GlobalStatsController::class, 'talentDetails'])
-    ->middleware(['api.fixtures:heroes_talents_details', 'api.quota:heroes_talents_details'])
+    ->middleware(['api.fixtures:heroes_talents_details', 'api.quota:heroes_talents_details', 'api.poison'])
     ->name('api.external.heroes.talents.details');
 
 Route::get('heroes/talents/builds', [GlobalStatsController::class, 'talentBuilds'])
-    ->middleware(['api.fixtures:heroes_talents_builds', 'api.quota:heroes_talents_builds'])
+    ->middleware(['api.fixtures:heroes_talents_builds', 'api.quota:heroes_talents_builds', 'api.poison'])
     ->name('api.external.heroes.talents.builds');
 
 Route::get('compositions', [GlobalStatsController::class, 'compositions'])
-    ->middleware(['api.fixtures:global_compositions', 'api.quota:global_compositions'])
+    ->middleware(['api.fixtures:global_compositions', 'api.quota:global_compositions', 'api.poison'])
     ->name('api.external.compositions');
 
 Route::get('compositions/heroes', [GlobalStatsController::class, 'compositionHeroes'])
-    ->middleware(['api.fixtures:global_compositions_heroes', 'api.quota:global_compositions_heroes'])
+    ->middleware(['api.fixtures:global_compositions_heroes', 'api.quota:global_compositions_heroes', 'api.poison'])
     ->name('api.external.compositions.heroes');
 
 Route::get('draft', [GlobalStatsController::class, 'draft'])
-    ->middleware(['api.fixtures:global_draft', 'api.quota:global_draft'])
+    ->middleware(['api.fixtures:global_draft', 'api.quota:global_draft', 'api.poison'])
     ->name('api.external.draft');
 
 Route::get('party', [GlobalStatsController::class, 'party'])
-    ->middleware(['api.fixtures:global_party', 'api.quota:global_party'])
+    ->middleware(['api.fixtures:global_party', 'api.quota:global_party', 'api.poison'])
     ->name('api.external.party');
 
 Route::get('heroes/maps', [GlobalStatsController::class, 'heroMaps'])
-    ->middleware(['api.fixtures:heroes_map_stats', 'api.quota:heroes_map_stats'])
+    ->middleware(['api.fixtures:heroes_map_stats', 'api.quota:heroes_map_stats', 'api.poison'])
     ->name('api.external.heroes.maps');
 
 Route::get('heroes/matchups/talents', [GlobalStatsController::class, 'heroMatchupTalents'])
-    ->middleware(['api.fixtures:heroes_matchups_talents', 'api.quota:heroes_matchups_talents'])
+    ->middleware(['api.fixtures:heroes_matchups_talents', 'api.quota:heroes_matchups_talents', 'api.poison'])
     ->name('api.external.heroes.matchups.talents');
 
 Route::get('heroes/talents/builds/all', [GlobalStatsController::class, 'talentBuildsAll'])
-    ->middleware(['api.fixtures:heroes_talents_builds_all', 'api.quota:heroes_talents_builds_all'])
+    ->middleware(['api.fixtures:heroes_talents_builds_all', 'api.quota:heroes_talents_builds_all', 'api.poison'])
     ->name('api.external.heroes.talents.builds.all');
 
 Route::get('heroes/talents/builder', [GlobalStatsController::class, 'talentBuilder'])
-    ->middleware(['api.fixtures:talent_builder', 'api.quota:talent_builder'])
+    ->middleware(['api.fixtures:talent_builder', 'api.quota:talent_builder', 'api.poison'])
     ->name('api.external.heroes.talents.builder');
 
 Route::get('heroes/talents/builder/replays', [GlobalStatsController::class, 'talentBuilderReplays'])
-    ->middleware(['api.fixtures:talent_builder_replays', 'api.quota:talent_builder_replays'])
+    ->middleware(['api.fixtures:talent_builder_replays', 'api.quota:talent_builder_replays', 'api.poison'])
     ->name('api.external.heroes.talents.builder.replays');
 
 Route::get('leaderboard', [GlobalStatsController::class, 'leaderboard'])
-    ->middleware(['api.fixtures:leaderboard', 'api.quota:leaderboard'])
+    ->middleware(['api.fixtures:leaderboard', 'api.quota:leaderboard', 'api.poison'])
     ->name('api.external.leaderboard');
 
 /*
@@ -267,6 +270,7 @@ Route::get('tools/activity/players/unique', [ToolsController::class, 'uniquePlay
 */
 
 Route::get('jobs/{jobId}', [GlobalStatsController::class, 'job'])
+    ->middleware('api.poison')
     ->name('api.external.jobs');
 
 /*

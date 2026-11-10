@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use App\Models\Battletag;
+use App\Models\BattletagNotAllowedDownloadReplay;
 use App\Models\Map;
 use App\Rules\GameMapInputValidation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class PlayerMapsController extends Controller
@@ -95,6 +97,9 @@ class PlayerMapsController extends Controller
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
             'gametypedefault' => $this->globalDataService->getPlayerGameTypeDefault(),
+            'replayViewerAllowed' => Auth::check(),
+            'analyticsCutover' => config('analytics.cutover'),
+            'replayDownloadBlocked' => Auth::check() && BattletagNotAllowedDownloadReplay::where('battletag', Auth::user()->battletag)->exists(),
 
         ]);
     }

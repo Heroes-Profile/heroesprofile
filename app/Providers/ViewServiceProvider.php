@@ -25,16 +25,27 @@ class ViewServiceProvider extends ServiceProvider
     {
         View::composer('*', function ($view) {
             // These cookies are plain JSON the browser controls; anything malformed is dropped rather than rendered.
-            $regions = app(GlobalDataService::class)->getRegionIDtoString();
-            $searchAccount = function ($raw) use ($regions) {
+            $globalDataService = app(GlobalDataService::class);
+            $regions = $globalDataService->getRegionIDtoString();
+            $searchAccount = function ($raw) use ($regions, $globalDataService) {
                 $account = $raw ? json_decode($raw, true) : null;
 
                 $valid = is_array($account)
                     && (new BattletagInputProhibitCharacters)->passes('battletag', $account['battletag'] ?? null)
-                    && ctype_digit((string) ($account['blizz_id'] ?? ''))
-                    && isset($regions[(int) ($account['region'] ?? 0)]);
+                    && ctype_digit((string) ($account['blizz_id'] ?? ''));
 
-                return $valid ? $account : null;
+                if (! $valid) {
+                    return null;
+                }
+
+                // Esports players have no region; esport_nav is the league and its links
+                if (isset($account['league'])) {
+                    $account['esport_nav'] = $globalDataService->esportNavLeague($account);
+
+                    return $account['esport_nav'] ? $account : null;
+                }
+
+                return isset($regions[(int) ($account['region'] ?? 0)]) ? $account : null;
             };
 
             $main_search_account = $searchAccount(request()->cookie('main_search_account'));
