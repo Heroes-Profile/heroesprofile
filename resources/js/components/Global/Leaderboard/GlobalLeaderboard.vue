@@ -14,10 +14,9 @@
           </p>
           <p v-else class="font-normal">
             Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards.
-            The main uploader can be found at
-            <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases" target="_blank" rel="noopener noreferrer" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">Heroes Profile Uploader</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
-            while the secondary uploader that works on platforms other than Windows can be found at
-            <a href="https://github.com/Heroes-Profile/heroesprofile-electron-uploader/releases" target="_blank" rel="noopener noreferrer" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">Heroes Profile Electron Uploader</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>.
+            The
+            <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases" target="_blank" rel="noopener noreferrer" class="underline">Heroes Profile Uploader</a>
+            works on Windows, macOS and Linux.
             For any questions, please contact zemill@heroesprofile.com.
           </p>
         </round-image>
@@ -141,7 +140,7 @@
                       <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" @click.stop>
                         <p class="font-normal normal-case">
                           Heroes Profile Rating ranks players by combining their MMR, win rate and games played this season, each measured against the other players on this leaderboard. Games played is capped relative to the top players, so playing lots of games alone can't carry someone to the top.
-                          The exact formula is under Leaderboard Requirements, and the <a href="/FAQ" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">FAQ</span><i class="fas fa-chevron-right text-xs ml-2"></i></a> explains why it is used instead of MMR.
+                          The exact formula is under Leaderboard Requirements, and the <a href="/FAQ" class="underline">FAQ</a> explains why it is used instead of MMR.
                         </p>
                       </round-image>
                     </span>
@@ -149,15 +148,15 @@
                   <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('mmr')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'mmr'}]">
                     HP {{ leaderboardtype }} MMR<sort-indicator :column="'mmr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th> 
-                  <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('tier_id')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'tier_id'}]">
-                    Tier<sort-indicator :column="'tier_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                  <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('mmr')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'mmr'}]">
+                    HP Tier<sort-indicator :column="'mmr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>    
                   <th @click="sortTable('games_played')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'games_played'}]">
                     Games Played<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>     
 
 
-                  <th v-if="leaderboardtype == 'Player' || leaderboardtype == 'Role' " class="py-2 px-3  text-center text-sm leading-4">
+                  <th v-if="leaderboardtype == 'Player' || leaderboardtype == 'Role' " class="py-2 px-3  text-left text-sm leading-4">
                     Most Played Hero
                   </th>    
 
@@ -184,29 +183,7 @@
                   <tr>
                     <td><div class="flex justify-center gap-1"><div v-if="rankchange" class="bg-blue text-white min-w-[2em] p-1 rounded-control text-center"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  group.rows.length - index }}</span></div><span class="p-1">{{ row.rank }}</span></div></td>
                     <td>
-                      <div class="flex items-center justify-center">
-                        <a class="group/bt inline-flex items-center mr-2" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`" ><span class="group-hover/bt:underline">{{ row.split_battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
-                        <div class="" v-if="row.hp_owner">
-                          <icon-with-hover class="mt-3"  size="small"    icon="fas fa-crown"   title="info"  popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
-                            <slot>
-                              <div>
-                                <p class="max-sm:text-xs">Site Owner</p>
-                              </div>
-                            </slot>
-                          </icon-with-hover>
-         
-                        </div>
-                        <div class="" v-else-if="row.patreon">
-                          <icon-with-hover class="mt-3"  size="small"    icon="fas fa-star"   title="info"  popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
-                              <slot>
-                                <div>
-                                  <p class="max-sm:text-xs">Patreon Subscriber</p>
-                                </div>
-                              </slot>
-                        </icon-with-hover>
-                        </div>
-                        <void-eye-flair class="mt-3 -ml-1 -translate-y-[0.45em]" :blizz-id="row.blizz_id" :region="row.region_id"></void-eye-flair>
-                      </div>
+                      <player-name :battletag="row.split_battletag" :blizz-id="row.blizz_id" :region="row.region_id" :redirect="true" :hp-owner="!!row.hp_owner" :patreon="!!row.patreon"></player-name>
                     </td>
                     <td>{{ row.region }}</td>
                     <td v-if="leaderboardtype == 'SL Rank'"><real-rank-badge :rank="row" :width="36" label="right"></real-rank-badge></td>
@@ -217,10 +194,10 @@
                     <td>{{ row.games_played.toLocaleString('en-US') }}</td>
 
                     <td class="py-2 px-3" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role')">
-                      <div v-if="row.most_played_hero" class="flex items-center justify-center">
+                      <div v-if="row.most_played_hero" class="flex items-center">
                         <hero-image-wrapper :hero="row.most_played_hero">
                           <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played: ' + row.hero_build_games_played"></image-hover-box>
-                        </hero-image-wrapper><span class="hidden md:block font-bold ml-2">{{ row.most_played_hero.name }}</span>
+                        </hero-image-wrapper><a :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}/Hero/${encodeURIComponent(row.most_played_hero.name)}`" class="group/bt hidden md:inline-flex items-center ml-2"><span class="font-bold group-hover/bt:underline">{{ row.most_played_hero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                       </div>
                     </td>
 
@@ -351,13 +328,13 @@ export default {
       const lead = ['stat', 'stat', 'stat'];
       switch (this.leaderboardtype) {
         case 'Hero':
-          return [...lead, 'stat', 'stat', 'stat', 'pill', 'stat', 'talentrow', 'copy', 'stat'];
+          return [...lead, 'stat', 'stat', 'stat', 'pill', 'stat', 'talentrow', 'code', 'stat'];
         case 'Match Prediction':
           return [...lead, 'stat', 'stat'];
         case 'SL Rank':
           return [...lead, 'badge', 'stat', 'stat'];
         default:
-          return [...lead, 'stat', 'stat', 'stat', 'pill', 'stat', 'avatar'];
+          return [...lead, 'stat', 'stat', 'stat', 'pill', 'stat', 'hero'];
       }
     },
     sortedData() {

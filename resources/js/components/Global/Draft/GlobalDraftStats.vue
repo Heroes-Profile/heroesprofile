@@ -111,7 +111,7 @@
         </div>
         <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
           <loading-component :compact="true" :textoverride="true">Loading draft stats...</loading-component>
-          <table-skeleton :rows="16"></table-skeleton>
+          <table-skeleton :rows="16" :columns="['stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
         </div>
         <div v-else-if="dataError" class="flex items-center justify-center">
           Error: Reload page/filter

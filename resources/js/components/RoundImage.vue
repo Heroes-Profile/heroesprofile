@@ -91,7 +91,7 @@
     <!-- Rendered under body so scrolling table wrappers can't clip it -->
     <Teleport to="body">
       <div v-if="showTooltip" ref="popup" @mouseover="handleMouseOver" @mouseleave="scheduleHide" :style="tooltipStyle" :class="[
-          'fixed text-xs z-50',
+          'fixed text-xs z-[55]',
         {
           'w-[14em]' : popupsize != 'large' && popupsize != 'xlarge' && popupsize != 'fit',
           'w-[25rem] max-w-[90vw]' : popupsize == 'large',
@@ -104,7 +104,7 @@
           <div class="bg-red" v-if="ispatreon">Patreon Subscriber</div>
           <div class="bg-[#4c1d95]" v-if="voideye">Marked by the Void</div>
           <div class="bg-teal" v-if="award">{{award.title}}</div>
-          <slot></slot>
+          <div ref="hoverContent" class="contents"><slot></slot></div>
           <custom-button v-if="tapped" class="mt-2" :href="href" :text="linkText" size="small"></custom-button>
         </div>
       </div>
@@ -188,6 +188,15 @@ export default {
     },
   },
   watch: {
+    // Links in a hover open in a new tab
+    async showTooltip(shown) {
+      if (!shown) return;
+      await this.$nextTick();
+      this.$refs.hoverContent?.querySelectorAll('a[href]').forEach(link => {
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+      });
+    },
     image() {
       this.imageLoaded = false;
       this.imageFailed = false;

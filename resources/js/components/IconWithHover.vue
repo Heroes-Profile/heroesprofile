@@ -38,7 +38,7 @@
     <!-- Rendered under body so scrolling table wrappers can't clip it -->
     <Teleport to="body">
       <div v-if="showTooltip" ref="popup" @mouseover="handleMouseOver" @mouseleave="scheduleHide" :style="tooltipStyle" :class="[
-          'fixed text-xs z-50',
+          'fixed text-xs z-[55]',
         {
           'w-[14em]' : popupsize != 'large' && popupsize != 'fit',
           'w-[25rem] max-w-[90vw]' : popupsize == 'large',
@@ -47,7 +47,7 @@
         ]" >
           <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft tracking-normal text-left p-4 rounded drop-shadow-md z-30">
 
-            <slot></slot>
+            <div ref="hoverContent" class="contents"><slot></slot></div>
 
 
           </div>
@@ -104,6 +104,15 @@ export default {
 
   },
   watch: {
+    // Links in a hover open in a new tab
+    async showTooltip(shown) {
+      if (!shown) return;
+      await this.$nextTick();
+      this.$refs.hoverContent?.querySelectorAll('a[href]').forEach(link => {
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+      });
+    },
   },
   methods: {
      isSmallScreen() {

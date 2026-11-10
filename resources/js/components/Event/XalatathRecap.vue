@@ -489,28 +489,7 @@
             <tr v-for="row in leaderboard" :key="row.blizz_id + '-' + row.region">
               <td class="py-2 px-3">{{ row.rank }}</td>
               <td class="py-2 px-3">
-                <div class="flex items-center">
-                  <a target="_blank" rel="noopener" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" class="group/bt inline-flex items-center mr-2"><span class="group-hover/bt:underline">{{ row.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
-                  <div v-if="row.hp_owner">
-                    <icon-with-hover class="mt-3" size="small" icon="fas fa-crown" title="info" popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
-                      <slot>
-                        <div>
-                          <p class="max-sm:text-xs">Site Owner</p>
-                        </div>
-                      </slot>
-                    </icon-with-hover>
-                  </div>
-                  <div v-else-if="row.patreon">
-                    <icon-with-hover class="mt-3" size="small" icon="fas fa-star" title="info" popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
-                      <slot>
-                        <div>
-                          <p class="max-sm:text-xs">Patreon Subscriber</p>
-                        </div>
-                      </slot>
-                    </icon-with-hover>
-                  </div>
-                  <void-eye-flair class="mt-3 -ml-1 -translate-y-[0.45em]" :blizz-id="row.blizz_id" :region="row.region"></void-eye-flair>
-                </div>
+                <player-name :battletag="row.battletag" :blizz-id="row.blizz_id" :region="row.region" :new-tab="true" :hp-owner="!!row.hp_owner" :patreon="!!row.patreon"></player-name>
               </td>
               <td class="py-2 px-3">{{ recap.regions[row.region] || row.region }}</td>
               <td class="py-2 px-3">{{ format(row.games) }}</td>

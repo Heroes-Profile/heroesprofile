@@ -47,7 +47,27 @@
     <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
     <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
     <loading-component v-else :compact="true" :textoverride="true">Loading talents...</loading-component>
-    <table-skeleton :rows="7"></table-skeleton>
+    <!-- Mirrors the builder's level columns in whichever layout will load -->
+    <div v-if="effectiveStyle === 'horizontal'" class="flex px-3 gap-5 mx-auto justify-center">
+      <div v-for="level in 7" :key="level" class="w-[10.625rem] m-1 bg-surface rounded overflow-hidden">
+        <skeleton-box class="h-9 !rounded-none"></skeleton-box>
+        <div v-for="talent in 3" :key="talent" class="min-h-[15.625rem] p-4 m-2 flex flex-col items-center gap-10">
+          <skeleton-box class="h-4 w-24 max-w-full mt-2"></skeleton-box>
+          <skeleton-box class="w-10 h-10 !rounded-full"></skeleton-box>
+        </div>
+      </div>
+    </div>
+    <div v-else class="flex flex-col gap-5 px-3 mx-auto w-full max-w-[93.75rem]">
+      <div v-for="level in 7" :key="level" class="m-1 bg-surface rounded flex max-md:flex-col overflow-hidden">
+        <skeleton-box class="min-w-[9em] max-md:h-9 !rounded-none"></skeleton-box>
+        <div class="flex flex-wrap w-full max-md:justify-center">
+          <div v-for="talent in 4" :key="talent" class="min-w-[20%] max-md:w-1/2 p-4 m-2 flex flex-col items-center gap-4">
+            <skeleton-box class="h-4 w-28 max-w-full"></skeleton-box>
+            <skeleton-box class="w-10 h-10 !rounded-full"></skeleton-box>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div v-else-if="dataError" class="flex items-center justify-center">
       Error: Reload page/filter

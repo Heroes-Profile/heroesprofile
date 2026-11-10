@@ -154,7 +154,7 @@
     </div>
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <loading-component :compact="true" :textoverride="true">Loading compositions...</loading-component>
-      <table-skeleton></table-skeleton>
+      <table-skeleton :rows="8" :columns="['role', 'role', 'role', 'role', 'role', 'stat', 'stat', 'stat', 'pill']"></table-skeleton>
     </div>
     <div v-else-if="dataError" class="flex items-center justify-center">
       Error: Reload page/filter

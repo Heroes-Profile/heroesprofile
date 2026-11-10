@@ -75,21 +75,7 @@
           <tbody>
             <tr v-for="row in shownFriends" :key="row.blizz_id">
               <td class="py-2 px-3 ">
-                <div class="flex items-center">
-                  <a @click="!esport && $redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="esport ? row.link : `/Player/${row.battletag}/${row.blizz_id}/${row.region}`" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ row.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
-                  <icon-with-hover v-if="row.hp_owner" class="[&>span]:h-full" size="small" icon="fas fa-crown" title="info" popupsize="small" style="color:gold">
-                    <div>
-                      <p class="max-sm:text-xs">Site Owner</p>
-                    </div>
-                  </icon-with-hover>
-                  <icon-with-hover v-else-if="row.patreon" class="[&>span]:h-full" size="small" icon="fas fa-star" title="info" popupsize="small" style="color:gold">
-                    <div>
-                      <p class="max-sm:text-xs">Patreon Subscriber</p>
-                    </div>
-                  </icon-with-hover>
-                  <void-eye-flair v-if="!esport" :blizz-id="row.blizz_id" :region="row.region"></void-eye-flair>
-
-                </div>
+                <player-name :battletag="row.battletag" :blizz-id="row.blizz_id" :region="row.region" :link="esport ? row.link : null" :redirect="!esport" :void-eye="!esport" :hp-owner="!!row.hp_owner" :patreon="!!row.patreon"></player-name>
               </td>
               <td class="py-2 px-3">
                 <div class="flex items-center">
@@ -140,21 +126,7 @@
             <tr v-for="row in shownEnemies" :key="row.blizz_id">
               <td class="py-2 px-3 ">
 
-                <div class="flex items-center">
-                  <a @click="!esport && $redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="esport ? row.link : `/Player/${row.battletag}/${row.blizz_id}/${row.region}`" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ row.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
-                  <icon-with-hover v-if="row.hp_owner" class="[&>span]:h-full" size="small" icon="fas fa-crown" title="info" popupsize="small" style="color:gold">
-                    <div>
-                      <p class="max-sm:text-xs">Site Owner</p>
-                    </div>
-                  </icon-with-hover>
-                  <icon-with-hover v-else-if="row.patreon" class="[&>span]:h-full" size="small" icon="fas fa-star" title="info" popupsize="small" style="color:gold">
-                    <div>
-                      <p class="max-sm:text-xs">Patreon Subscriber</p>
-                    </div>
-                  </icon-with-hover>
-                  <void-eye-flair v-if="!esport" :blizz-id="row.blizz_id" :region="row.region"></void-eye-flair>
-
-                </div>
+                <player-name :battletag="row.battletag" :blizz-id="row.blizz_id" :region="row.region" :link="esport ? row.link : null" :redirect="!esport" :void-eye="!esport" :hp-owner="!!row.hp_owner" :patreon="!!row.patreon"></player-name>
               </td>
 
               <td class="py-2 px-3">

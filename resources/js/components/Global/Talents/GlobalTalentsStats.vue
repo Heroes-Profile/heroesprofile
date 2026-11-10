@@ -120,7 +120,14 @@
           <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
           <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
           <loading-component v-else :compact="true" :textoverride="true">Loading talent stats...</loading-component>
-          <table-skeleton></table-skeleton>
+          <panel-box>
+            <div class="w-full max-w-[86rem] mx-auto flex flex-col gap-4">
+              <div v-for="level in 3" :key="level" class="flex flex-col gap-3">
+                <skeleton-box class="h-4 w-16 mx-auto"></skeleton-box>
+                <table-skeleton :bare="true" :rows="4" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
+              </div>
+            </div>
+          </panel-box>
         </div>
         <div v-else-if="dataError" class="flex items-center justify-center">
           Error: Reload page/filter
@@ -156,7 +163,7 @@
 
         <div v-else-if="isBuildsLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
           <loading-component :compact="true" :textoverride="true">Loading talent builds...</loading-component>
-          <table-skeleton :rows="5" :heading="true"></table-skeleton>
+          <table-skeleton :rows="7" :heading="true" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
         </div>
       </div>
   </div>

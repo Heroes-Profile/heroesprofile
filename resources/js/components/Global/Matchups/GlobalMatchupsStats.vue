@@ -84,7 +84,7 @@
         <table id="responsive-table" class="min-w-0 w-full responsive-table relative" ref="responsivetable">
           <thead class="top-0 w-full sticky z-40">
           <tr>
-            <th @click="sortTable('hero_name')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'hero_name' }">
+            <th @click="sortTable('hero_name')" class="py-2 px-3 text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'hero_name' }">
               Hero<sort-indicator :column="'hero_name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('base_win_rate')" class="cursor-pointer py-2 px-3 text-center text-sm leading-4" :class="{ 'bg-teal text-white': sortKey === 'base_win_rate' }">
@@ -136,9 +136,9 @@
         <tbody class="text-center">
           <tr v-for="(row, index) in sortedData" :key="index">
             <td class="py-2 px-3 ">
-              <div class="flex items-center justify-center">
-                <hero-image-wrapper :hero="row.ally ? row.ally.hero : row.enemy.hero " ></hero-image-wrapper>
-                <span class="ml-left px-3 hidden md:block font-bold">{{ row.ally && row.ally.hero ? row.ally.hero.name : row.enemy.hero.name }}</span>
+              <div class="flex items-center">
+                <hero-image-wrapper class="mr-2" :hero="row.ally ? row.ally.hero : row.enemy.hero " ></hero-image-wrapper>
+                <span class="hidden md:block font-bold">{{ row.ally && row.ally.hero ? row.ally.hero.name : row.enemy.hero.name }}</span>
               </div>
             </td>
             <td class="py-2 px-3 ">
@@ -167,7 +167,7 @@
     </div>
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <loading-component :compact="true" :textoverride="true">Loading matchups...</loading-component>
-      <table-skeleton></table-skeleton>
+      <table-skeleton :columns="['hero', 'stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
     </div>
     <div v-else-if="dataError" class="flex items-center justify-center">
       Error: Reload page/filter

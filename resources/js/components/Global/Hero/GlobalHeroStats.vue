@@ -217,7 +217,7 @@
       <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
       <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
       <loading-component v-else :compact="true" :textoverride="true">Loading hero stats...</loading-component>
-      <table-skeleton></table-skeleton>
+      <table-skeleton :columns="['rank', 'hero', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'pill']"></table-skeleton>
     </div>
     <div v-else-if="dataError" class="flex flex-col items-center justify-center">
       Error: Reload page/filter
