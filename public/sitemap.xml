@@ -103,6 +103,12 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Upload</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -217,6 +223,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Abathur</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Alarak</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -239,6 +251,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Alarak</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Alexstrasza</loc>
@@ -265,6 +283,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Alexstrasza</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Ana</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -287,6 +311,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Ana</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Anduin</loc>
@@ -313,6 +343,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Anduin</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Anub%27arak</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -335,6 +371,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Anub%27arak</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Artanis</loc>
@@ -361,6 +403,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Artanis</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Arthas</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -383,6 +431,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Arthas</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Auriel</loc>
@@ -409,6 +463,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Auriel</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Azmodan</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -431,6 +491,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Azmodan</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Blaze</loc>
@@ -457,6 +523,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Blaze</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Brightwing</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -479,6 +551,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Brightwing</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Cassia</loc>
@@ -505,6 +583,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Cassia</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Chen</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -527,6 +611,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Chen</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Cho</loc>
@@ -553,6 +643,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Cho</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Chromie</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -575,6 +671,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Chromie</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/D.Va</loc>
@@ -601,6 +703,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/D.Va</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Deathwing</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -623,6 +731,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Deathwing</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Deckard</loc>
@@ -649,6 +763,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Deckard</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Dehaka</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -671,6 +791,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Dehaka</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Diablo</loc>
@@ -697,6 +823,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Diablo</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/E.T.C.</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -719,6 +851,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/E.T.C.</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Falstad</loc>
@@ -745,6 +883,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Falstad</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Fenix</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -767,6 +911,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Fenix</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Gall</loc>
@@ -793,6 +943,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Gall</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Garrosh</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -815,6 +971,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Garrosh</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Gazlowe</loc>
@@ -841,6 +1003,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Gazlowe</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Genji</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -863,6 +1031,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Genji</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Greymane</loc>
@@ -889,6 +1063,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Greymane</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Gul%27dan</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -911,6 +1091,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Gul%27dan</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Hanzo</loc>
@@ -937,6 +1123,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Hanzo</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Hogger</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -959,6 +1151,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Hogger</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Illidan</loc>
@@ -985,6 +1183,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Illidan</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Imperius</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1007,6 +1211,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Imperius</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Jaina</loc>
@@ -1033,6 +1243,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Jaina</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Johanna</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1055,6 +1271,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Johanna</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Junkrat</loc>
@@ -1081,6 +1303,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Junkrat</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Kael%27thas</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1103,6 +1331,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Kael%27thas</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Kel%27Thuzad</loc>
@@ -1129,6 +1363,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Kel%27Thuzad</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Kerrigan</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1151,6 +1391,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Kerrigan</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Kharazim</loc>
@@ -1177,6 +1423,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Kharazim</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Leoric</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1199,6 +1451,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Leoric</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Li%20Li</loc>
@@ -1225,6 +1483,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Li%20Li</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Li-Ming</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1247,6 +1511,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Li-Ming</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Lt.%20Morales</loc>
@@ -1273,6 +1543,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Lt.%20Morales</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/L%C3%BAcio</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1295,6 +1571,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/L%C3%BAcio</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Lunara</loc>
@@ -1321,6 +1603,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Lunara</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Maiev</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1343,6 +1631,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Maiev</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Mal%27Ganis</loc>
@@ -1369,6 +1663,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Mal%27Ganis</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Malfurion</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1391,6 +1691,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Malfurion</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Malthael</loc>
@@ -1417,6 +1723,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Malthael</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Medivh</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1439,6 +1751,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Medivh</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Mei</loc>
@@ -1465,6 +1783,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Mei</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Mephisto</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1487,6 +1811,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Mephisto</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Muradin</loc>
@@ -1513,6 +1843,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Muradin</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Murky</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1535,6 +1871,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Murky</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Nazeebo</loc>
@@ -1561,6 +1903,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Nazeebo</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Nova</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1583,6 +1931,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Nova</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Orphea</loc>
@@ -1609,6 +1963,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Orphea</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Probius</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1631,6 +1991,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Probius</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Qhira</loc>
@@ -1657,6 +2023,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Qhira</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Ragnaros</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1679,6 +2051,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Ragnaros</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Raynor</loc>
@@ -1705,6 +2083,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Raynor</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Rehgar</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1727,6 +2111,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Rehgar</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Rexxar</loc>
@@ -1753,6 +2143,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Rexxar</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Samuro</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1775,6 +2171,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Samuro</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Sgt.%20Hammer</loc>
@@ -1801,6 +2203,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Sgt.%20Hammer</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Sonya</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1823,6 +2231,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Sonya</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Stitches</loc>
@@ -1849,6 +2263,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Stitches</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Stukov</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1871,6 +2291,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Stukov</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Sylvanas</loc>
@@ -1897,6 +2323,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Sylvanas</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Tassadar</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1919,6 +2351,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Tassadar</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/The%20Butcher</loc>
@@ -1945,6 +2383,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/The%20Butcher</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/The%20Lost%20Vikings</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -1967,6 +2411,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/The%20Lost%20Vikings</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Thrall</loc>
@@ -1993,6 +2443,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Thrall</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Tracer</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -2015,6 +2471,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Tracer</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Tychus</loc>
@@ -2041,6 +2503,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Tychus</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Tyrael</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -2063,6 +2531,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Tyrael</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Tyrande</loc>
@@ -2089,6 +2563,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Tyrande</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Uther</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -2111,6 +2591,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Uther</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Valeera</loc>
@@ -2137,6 +2623,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Valeera</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Valla</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -2159,6 +2651,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Valla</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Varian</loc>
@@ -2185,6 +2683,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Varian</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Whitemane</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -2207,6 +2711,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Whitemane</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Xal%27atath</loc>
@@ -2233,6 +2743,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Xal%27atath</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Xul</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -2255,6 +2771,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Xul</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Yrel</loc>
@@ -2281,6 +2803,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Yrel</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Zagara</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -2303,6 +2831,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Zagara</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Zarya</loc>
@@ -2329,6 +2863,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Zarya</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Zeratul</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -2353,6 +2893,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Heroes/Zeratul</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Global/Talents/Zul%27jin</loc>
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>daily</changefreq>
@@ -2375,6 +2921,12 @@
     <lastmod>2026-10-18T13:11:58+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Heroes/Zul%27jin</loc>
+    <lastmod>2026-10-18T13:11:58+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.heroesprofile.com/Global/Hero/Maps/Alterac%20Pass</loc>

@@ -3,7 +3,8 @@
       <round-image v-if="talent" :size="size" popupsize="large" mobileClick="true" :image="getTalentImage()" :title="displayTitle">
         <h2 v-if="isRemoved" class="text-yellow font-bold mb-1">Talent no longer available</h2>
         <h2 class="text-base font-bold text-white">{{ displayTitle }}</h2>
-        <div class="space-y-2.5 mt-2.5">
+        <game-tooltip v-if="talent.raw_description" class="mt-2.5" :text="talent.raw_description" :level="level"></game-tooltip>
+        <div v-else class="space-y-2.5 mt-2.5">
           <p v-for="(part, index) in descriptionParts" :key="index">
             <template v-if="part.label">
               <img v-if="part.quest" class="inline-block w-4 h-4 mr-1 align-[-0.15em]" src="/images/miscellaneous/quest-icon.png" alt="">
@@ -12,6 +13,7 @@
             {{ part.text }}
           </p>
         </div>
+        <slot></slot>
       </round-image>
       <round-image v-else-if="talent != 0 && talent" :size="size" :image="'/images/talents/no-image.png'" tooltipdir="right">
         <h2>{{ "Talent removed or changed" }}</h2>
@@ -27,7 +29,12 @@ export default {
   props: {
     talent: Object,
     size: String,
-    mobileClick: true
+    mobileClick: true,
+    // Hero level for tooltips that scale; only used when the talent has raw_description
+    level: {
+      type: Number,
+      default: 1,
+    },
   },
   data(){
     return {

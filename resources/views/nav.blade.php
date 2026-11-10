@@ -70,6 +70,7 @@
                         <a class=" cursor-pointer">Tools<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
                         <div class="nav-dropdown ">
                             <div class=" nav-dropdown-inner-wrapper ">
+                                <a href="/Heroes" >Heroes</a>
                                 <a href="/Global/Talents/Builder" >Talent Builder</a>
                                 <a href="/Drafter" >Drafter</a>
                                 <a href="/Upload" >Replay Uploader</a>

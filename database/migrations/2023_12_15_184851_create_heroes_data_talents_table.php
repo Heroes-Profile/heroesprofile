@@ -24,6 +24,11 @@ class CreateHeroesDataTalentsTable extends Migration
             $table->integer('level');
             $table->string('icon');
             $table->unsignedBigInteger('required_talent_id')->nullable();
+            $table->string('link_id', 150)->nullable();
+            $table->string('ability_link_id', 150)->nullable();
+            $table->string('short_description')->nullable();
+            $table->text('raw_description')->nullable();
+            $table->boolean('is_quest')->nullable();
 
             $table->unique(['hero_name', 'title', 'talent_name'], 'Unique');
             $table->index('hero_name');
