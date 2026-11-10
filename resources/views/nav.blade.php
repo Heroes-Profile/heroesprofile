@@ -86,7 +86,6 @@
                                 @if (\App\Services\Twitch\TwitchAccess::visible())
                                 <a href="/Twitch" >Twitch Streamers (Beta)</a>
                                 @endif
-                                <a href="/" >Find a Player</a>
 
 
                             </div>
