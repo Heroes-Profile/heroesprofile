@@ -40,16 +40,16 @@
     </player-page-top>
   <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-  <div v-if="data">
+  <div v-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8">
     <div class="flex flex-wrap justify-center">
       <group-box :text="'Top 5 Allies with more than 5 games'" :data="topfiveheroes"></group-box>
       <group-box :text="'Top 5 Enemies with more than 5 games'" :data="topfiveenemies"></group-box>
     </div>
-    <table class="max-md:text-xs">
+    <table class="min-w-0 w-full max-md:text-xs">
       <thead>
         <tr>
-          <th class="py-2 px-3 text-center text-sm leading-4 text-gray-500 tracking-wider">
-            <div class="flex items-center justify-center gap-3">
+          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <div class="flex items-center gap-3">
               <span class="cursor-pointer" @click="sortTable('name')">Hero<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
               <search-input v-model="heroSearch" placeholder="Search hero" :collapsible="true" class="w-40"></search-input>
             </div>
@@ -71,7 +71,7 @@
       <tbody>
         <tr v-for="row in shownData" :key="row.hero.id">
           <td class="py-2 px-3">
-            <a class="group/bt flex items-center justify-center" :href="(esport ? ngsPlayerUrl : '/Player/' + battletag + '/' + blizzid + '/' + region) + '/Hero/' + row.hero.name + (league ? league.query : '')">
+            <a class="group/bt inline-flex items-center" :href="(esport ? ngsPlayerUrl : '/Player/' + battletag + '/' + blizzid + '/' + region) + '/Hero/' + row.hero.name + (league ? league.query : '')">
               <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="hidden md:block font-bold ml-2 group-hover/bt:underline">{{ row.hero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></i>
             </a>
           </td>
@@ -91,10 +91,10 @@
       </tbody>
     </table>
   </div>
-  <div v-else-if="isLoading || asyncLoading" class="max-w-[93.75rem] mx-auto px-4 flex flex-col gap-6">
+  <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
     <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
     <loading-component v-else :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">Large amount of data. Please be patient.</loading-component>
-    <table-skeleton :bare="true" :rows="10" :columns="['avatar', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
+    <table-skeleton :bare="true" :rows="10" :columns="['hero', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
   </div>
 
 

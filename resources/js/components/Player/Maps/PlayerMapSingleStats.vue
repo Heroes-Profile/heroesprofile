@@ -55,7 +55,7 @@
 
           <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
             <div class="shrink-0 w-40 md:w-60 aspect-[3/4] overflow-hidden rounded">
-              <round-image class="!w-full !h-full" :image="`/images/maps/icon/${formatMapName(map)}`" :excludehover="true" size="large"></round-image>
+              <round-image class="!w-full !h-full" :image="`/images/maps/icon/${formatMapName(map)}`" :excludehover="true" :rectangle="true" size="large"></round-image>
             </div>
 
             <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
@@ -405,7 +405,7 @@ export default {
       }
     },
     formatMapName(map) {
-      return `bg_${map.toLowerCase().replace(/\s+/g, '_')}.jpg`;
+      return `bg_${map.toLowerCase().replace(/'/g, '').replace(/\s+/g, '_')}.jpg`;
     },
   }
 }
