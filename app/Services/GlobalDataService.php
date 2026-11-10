@@ -356,6 +356,12 @@ class GlobalDataService
         return ! ($state === 'private' && $isOwner);
     }
 
+    /** Hero level as the single match page shows it: the mastery taunt's range when there is one. */
+    public function heroLevelLabel($heroLevel, $masteryTaunt)
+    {
+        return [1 => '15-25', 2 => '25-50', 3 => '50-75', 4 => '75-100', 5 => '100+'][$masteryTaunt] ?? $heroLevel;
+    }
+
     /** Called when an account's privacy changes, so it takes effect immediately. */
     public function forgetRestrictedAccount($blizzId, $region): void
     {
