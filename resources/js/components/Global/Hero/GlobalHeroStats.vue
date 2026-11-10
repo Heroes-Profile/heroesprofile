@@ -164,7 +164,8 @@
             <th v-if="this.showStatTypeColumn" @click="sortTable('total_filter_type')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'total_filter_type' }">
               {{ this.statfiltername }}<sort-indicator :column="'total_filter_type'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th v-if="!this.groupSizeActive" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">
+            <th v-if="!this.groupSizeActive" class="py-2 px-3 text-center text-sm leading-4 w-px whitespace-nowrap">
+              Builds
             </th>                              
           </tr>
         </thead>
@@ -189,16 +190,11 @@
               <td class="py-2 px-3 ">{{ getValueLocal(row.games_played) }}</td>
               <td v-if="this.showStatTypeColumn" class="py-2 px-3 ">{{ getValueLocal(getValueFixed(row.total_filter_type)) }}</td>
               <td v-if="!groupSizeActive" class="py-2 px-3 ">
-                <custom-button
-                  @click="viewtalentbuilds(row.name, index)"
-                  text="View Talent Builds"
-                  alt="View Talent Builds"
-                  size="small"
-                  :ignoreclick="true"
-                  :loading="loadingStates[row.name]"
-                >
-                  View Talent Builds
-                </custom-button>
+                <!-- Like Friend Foe's Matches column: a chevron that opens this hero's builds below the row -->
+                <button type="button" @click="viewtalentbuilds(row.name, index)" :aria-expanded="!!toggletalentbuilds[row.name]" :aria-label="`${row.name} talent builds`" title="Talent Builds" class="w-full flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors">
+                  <img v-if="loadingStates[row.name]" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="Loading"/>
+                  <i v-else :class="['fas fa-chevron-right transition-transform', { 'rotate-90': toggletalentbuilds[row.name] }]"></i>
+                </button>
               </td>
             </tr>
             <tr v-if="toggletalentbuilds[row.name] && talentbuilddata[row.name]">
@@ -217,7 +213,7 @@
       <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
       <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
       <loading-component v-else :compact="true" :textoverride="true">Loading hero stats...</loading-component>
-      <table-skeleton :columns="['rank', 'hero', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'pill']"></table-skeleton>
+      <table-skeleton :columns="['rank', 'hero', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'rank']"></table-skeleton>
     </div>
     <div v-else-if="dataError" class="flex flex-col items-center justify-center">
       Error: Reload page/filter

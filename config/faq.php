@@ -121,6 +121,7 @@ return [
                     'a' => 'Right after Blizzard pushes a patch, there isn\'t enough uploaded data yet for that patch to display meaningful results. Broaden your timeframe filter to include multiple patches, or check back after a few days once more games have been uploaded.',
                 ],
                 [
+                    'id' => 'win-chance',
                     'q' => 'What is "Win Chance" on talent builds, and how is it different from win rate?',
                     'a' => 'Win Chance is our calculated probability that a full talent build leads to a win, from level 1 through level 20. It is not a simple win rate. Because many games end before level 20, we cannot always see the complete build a player intended to take. We use backend logic to infer what build a player was heading toward based on the talents they did pick, and we factor in both games that reached level 20 and games that did not. This gives a more accurate picture of a build\'s overall viability than just counting wins in completed games. You can explore build Win Chance on the <a href="/Global/Talents" class="link">Global Talents</a> page and the <a href="/Global/Talents/Builder" class="link">Talent Builder</a>.',
                 ],
