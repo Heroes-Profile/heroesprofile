@@ -1,11 +1,17 @@
 <template>
   <div>
-    <page-heading :infoText1="'Map data for ' + battletag + ' on ' + map" :heading="'Map Stats: '+  map" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
+    <page-heading :infoText1="'Map data for ' + battletag + ' on ' + map" :heading="'Map Stats: '+  map" :battletag="battletag" :esport="esport" :heading-image="esport ? league.headingImage : null" :heading-image-url="esport ? league.headingImageUrl : null" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
             <map-image-wrapper :map="mapobject" :size="'big'"></map-image-wrapper>
     </page-heading>
 
 
-    <div class="flex justify-center max-w-[1500px] mx-auto flex-wrap max-md:flex-col max-md:items-center">
+    <div v-if="esport && ngsFilterOptions" class="flex flex-wrap justify-center max-w-[1500px] mx-auto">
+      <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsSeason"></single-select-filter>
+      <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsDivision"></single-select-filter>
+      <single-select-filter v-if="ngsFilterOptions.teams.length" :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsTeam"></single-select-filter>
+    </div>
+
+    <div v-if="!esport" class="flex justify-center max-w-[1500px] mx-auto flex-wrap max-md:flex-col max-md:items-center">
       <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
       <multi-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="seasonselection"></multi-select-filter>
       <date-range-filter :startDate="startdate" :endDate="enddate" @input-changed="handleInputChange"></date-range-filter>
@@ -42,12 +48,13 @@
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Heroes played on {{ map }}</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :playerlink="true" :text="'Most Played'" :data="data.hero_data_top_played.slice(0, 3)" color="blue"></group-box>
-            <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.hero_data_top_win_rate.slice(0, 3)" color="teal"></group-box>
-            <group-box :playerlink="true" :text="'Latest Played'" :data="data.hero_data_top_latest_played.slice(0, 3)" color="yellow"></group-box>
+            <group-box :esport="esport" :playerlink="true" :text="'Most Played'" :data="data.hero_data_top_played.slice(0, 3)" color="blue"></group-box>
+            <group-box :esport="esport" :playerlink="true" :text="'Highest Win Rate'" :data="data.hero_data_top_win_rate.slice(0, 3)" color="teal"></group-box>
+            <group-box v-if="esport" :esport="esport" :playerlink="true" :text="'Lowest Win Rate'" :data="data.hero_data_top_lowest_win_rate.slice(0, 3)" color="yellow"></group-box>
+            <group-box v-else :playerlink="true" :text="'Latest Played'" :data="data.hero_data_top_latest_played.slice(0, 3)" color="yellow"></group-box>
           </div>
           <div class="flex flex-wrap mx-auto gap-2 pt-5">
-            <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes">
+            <a :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes">
               <hero-image-wrapper :hero="item.hero" size="big">
                 <image-hover-box :title="item.hero.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + item.games_played" ></image-hover-box>
               </hero-image-wrapper>
@@ -59,7 +66,7 @@
       <line-chart v-if="seasonWinRateDataArray" class="max-w-[1500px] mx-auto" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" :title="`${battletag} Win Rate Data Per Season on ${map}`"></line-chart>
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
-      <div class="bg-lighten">
+      <div v-if="!esport" class="bg-lighten">
         <div class="flex justify-center max-w-[1500px] mx-auto items-center">
           <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
             <h2 class="text-3xl font-bold py-5">Party Size Win Rates</h2>
@@ -91,9 +98,9 @@
         <div class="">
           <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto" v-if="data && data.latestGames">
             <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
-            <game-summary-box v-for="(item, index) in data.latestGames" :data="item"></game-summary-box>
+            <game-summary-box v-for="(item, index) in data.latestGames" :data="item" :esport="!!esport" :esport-league="esport" :esport-series="esportfilters?.series" :tournament="esportfilters?.tournament"></game-summary-box>
             <div class="max-w-[1500px] mx-auto text-right my-2 max-md:text-center">
-              <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Match/History/?game_map=' + map" class="" text="View Match History"></custom-button>
+              <custom-button :href="esport ? ngsPlayerUrl + '/Match/History' + ngsQuery : '/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Match/History/?game_map=' + map" class="" text="View Match History"></custom-button>
             </div>
           </div>
         </div>
@@ -133,6 +140,9 @@ export default {
     mapobject: Object,
     isPatreon: Boolean,
     patreonUser: Boolean,
+    // The league on its esports player pages (NGS, CCL, MastersClash, HeroesInternational, Other), with its filters from the URL
+    esport: String,
+    esportfilters: Object,
     gametypedefault: Array,
 
   },
@@ -140,6 +150,11 @@ export default {
     return {
       isLoading: false,
       asyncLoading: false,
+      ngsSeason: this.esportfilters?.season ?? null,
+      ngsDivision: this.esportfilters?.division ?? null,
+      ngsTeam: this.esportfilters?.team ?? null,
+      ngsFilterOptions: null,
+      ngsFiltersChanged: false,
       cancelTokenSource: null,
       inputmap: null,
       modifiedgametype: null,
@@ -158,12 +173,40 @@ export default {
     }
   },
   mounted() {
+    if(this.esport){
+      this.getNgsData();
+      return;
+    }
     if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
       this.getData();
     }
   },
   computed: {
+    league() {
+      return this.esport ? this.$esportLeague(this.esport, this.esportfilters) : null;
+    },
+    ngsTeamOptions() {
+      return [{ code: null, name: 'All' }, ...(this.ngsFilterOptions?.teams || []).map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
+    },
+    ngsPlayerUrl() {
+      return this.esport ? `${this.league.root}/Player/${this.battletag}/${this.blizzid}` : null;
+    },
+    // The league and the filters picked here, for links to the player's other pages
+    ngsQuery() {
+      if (!this.esport) {
+        return '';
+      }
+      const params = new URLSearchParams(this.league.params);
+      if (this.ngsSeason) params.set('season', this.ngsSeason);
+      if (this.ngsDivision) params.set('division', this.ngsDivision);
+      if (this.ngsTeam) params.set('team', this.ngsTeam);
+      const query = params.toString();
+      return query ? `?${query}` : '';
+    },
     seasonWinRateDataArray() {
+      if (this.esport) {
+        return this.data && this.data.season_history && this.data.season_history.length ? this.data.season_history : null;
+      }
       return this.data && this.data.season_win_rate_data ? Object.values(this.data.season_win_rate_data) : null;
     },
     gameTypesWithAll() {
@@ -188,6 +231,37 @@ export default {
   watch: {
   },
   methods: {
+    ngsParams(extra = {}) {
+      return { ...this.league.params, battletag: this.battletag, blizz_id: this.blizzid, season: this.ngsSeason, division: this.ngsDivision, team: this.ngsTeam, ...extra };
+    },
+    ngsFilterChange(eventPayload) {
+      const field = { Seasons: 'ngsSeason', Divisions: 'ngsDivision', Teams: 'ngsTeam' }[eventPayload.field];
+      if (field && this[field] !== eventPayload.value) {
+        this[field] = eventPayload.value;
+        this.ngsFiltersChanged = true;
+      }
+      history.pushState({}, '', window.location.pathname + this.ngsQuery);
+    },
+    ngsDropdownClosed() {
+      if (this.ngsFiltersChanged) {
+        this.ngsFiltersChanged = false;
+        this.getNgsData();
+      }
+    },
+    async getNgsData(){
+      this.data = null;
+      this.isLoading = true;
+      try{
+        const response = await this.$axios.post(`${this.league.api}/map`, this.ngsParams({ game_map: this.map }));
+        this.ngsFilterOptions = response.data.filters;
+        // No games in these filters: the page's "No data"
+        this.data = response.data.games_played ? response.data : undefined;
+      }catch(error){
+        //Do something here
+      }finally {
+        this.isLoading = false;
+      }
+    },
     async getData(){
       this.disableFilterInput = true;
       this.isLoading = true;

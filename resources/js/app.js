@@ -83,6 +83,39 @@ app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, 
 };
 
 
+// NGS names a team that quits "Team (Withdrawn S22)". Returns the real name and the season it withdrew in, if any.
+app.config.globalProperties.$ngsTeam = function (teamName) {
+  const match = String(teamName ?? '').match(/^(.*?)\s*\(Withdrawn S(\d+)\)\s*$/i);
+  return match ? { name: match[1], withdrawnSeason: match[2] } : { name: teamName, withdrawnSeason: null };
+};
+
+// An esports player page's league, from its esport and esportfilters (HI's tournament, Other's series and icon).
+// params go on every request and link, so HI keeps ?tournament=.
+app.config.globalProperties.$esportLeague = function (esport, esportfilters) {
+  const tournament = esportfilters?.tournament;
+  const series = esportfilters?.series;
+  const leagues = {
+    NGS: { name: 'NGS', headingImage: '/images/NGS/ngs_large.png', loaderImage: '/images/NGS/no-image-clipped.png' },
+    CCL: { name: 'CCL', headingImage: '/images/CCL/600-600-HHE_CCL_Logo_rectangle.png' },
+    MastersClash: { name: 'Masters Clash', headingImage: '/images/MCL/no-image.png' },
+    HeroesInternational: { name: tournament === 'nationscup' ? 'Nations Cup' : 'Heroes International', headingImage: '/images/HI/heroes_international.png' },
+    Other: { name: series, headingImage: '/images/EsportOther/' + (esportfilters?.seriesimage || 'heroesprofilelogo.png') },
+  };
+  const league = leagues[esport];
+  const root = esport === 'Other' ? `/Esports/Other/${encodeURIComponent(series)}` : `/Esports/${esport}`;
+  const params = tournament ? { tournament } : {};
+  const query = tournament ? `?tournament=${tournament}` : '';
+  return {
+    ...league,
+    loaderImage: league.loaderImage ?? league.headingImage,
+    root,
+    headingImageUrl: root + query,
+    api: esport === 'Other' ? `/api/v1/esports/other/${encodeURIComponent(series)}/player` : `/api/v1/esports/${esport.toLowerCase()}/player`,
+    params,
+    query,
+  };
+};
+
 app.use(flareVue);
 flare.beforeEvaluate = error => {
   if (

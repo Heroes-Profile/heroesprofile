@@ -16,5 +16,7 @@
     :regionsmap="{{ json_encode($bladeGlobals['regions']) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+    :esport="{{ json_encode($esport ?? null) }}"
+    :esportfilters="{{ json_encode($esportfilters ?? null) }}"
   ></friend-foe>
 @endsection

@@ -6,7 +6,7 @@
     
     <a v-if="headingImage" :href="headingImageUrl" target="_blank">
       <img :src="headingImage" alt="" class="w-33 h-20"/>
-      <span v-if="battletag && !esport"  class="text-lg uppercase ">{{ battletag }}({{ regionstring  }}) </span> {{ heading }}
+      <span v-if="battletag && !esport"  class="text-lg uppercase ">{{ battletag }}({{ regionstring  }}) </span>
       <span v-if="battletag && esport"  class="text-lg uppercase ">{{ battletag }} </span> {{ heading }}
     </a>
 
