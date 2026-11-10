@@ -70,24 +70,27 @@
                         <a class=" cursor-pointer">Tools<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
                         <div class="nav-dropdown ">
                             <div class=" nav-dropdown-inner-wrapper ">
-                                <a href="/Heroes" >Heroes</a>
-                                <a href="/Global/Talents/Builder" >Talent Builder</a>
-                                <a href="/Drafter" >Drafter</a>
-                                <a href="/Upload" >Replay Uploader</a>
-                                {{--<a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Activity Graphs</a>--}}
-                                <a href="/Tools/AutoBattler" >Auto Battler</a>
-                                <a href="/Match/Prediction/Game" >Match Prediction Game</a>
-                                <a href="/Match/Search" >Replay Search</a>
-                                <a href="/Tools/RandomizeMe" >Randomize Me</a>
-                                <a href="/Tools/Activity" >Activity Graphs</a>
+                                <span class="nav-dropdown-label">Tools</span>
                                 <a href="/Analytics" >Analytics - Pre Alpha</a>
-                                @if (! empty($bladeGlobals['xalatathRecapAvailable']))
-                                <a href="/Event/Xalatath" >Xal'atath Recap</a>
-                                @endif
+                                <a href="/Drafter" >Drafter</a>
+                                <a href="/Match/Search" >Replay Search</a>
+                                <a href="/Upload" >Replay Uploader</a>
+                                <a href="/Global/Talents/Builder" >Talent Builder</a>
+
+                                <span class="nav-dropdown-label">Info</span>
+                                <a href="/Tools/Activity" >Activity Graphs</a>
+                                <a href="/Heroes" >Heroes</a>
                                 @if (\App\Services\Twitch\TwitchAccess::visible())
                                 <a href="/Twitch" >Twitch Streamers (Beta)</a>
                                 @endif
 
+                                <span class="nav-dropdown-label">Fun</span>
+                                <a href="/Tools/AutoBattler" >Auto Battler</a>
+                                <a href="/Match/Prediction/Game" >Match Prediction Game</a>
+                                <a href="/Tools/RandomizeMe" >Randomize Me</a>
+                                @if (! empty($bladeGlobals['xalatathRecapAvailable']))
+                                <a href="/Event/Xalatath" >Xal'atath Recap</a>
+                                @endif
 
                             </div>
                         </div>

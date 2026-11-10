@@ -212,6 +212,13 @@ nav .search-component{
 .nav-dropdown a{
   @apply block px-4 py-2 hover:bg-lighten;
 }
+/* Group label inside a dropdown; groups after the first get a divider above */
+.nav-dropdown-label{
+  @apply block px-4 md:px-[1.375rem] pt-2 pb-1 text-xs uppercase tracking-wide text-gray-medium;
+}
+.nav-dropdown-label ~ .nav-dropdown-label{
+  @apply mt-2 pt-3 border-t border-gray-dark;
+}
 /* Rows with a flyout arrow keep their flex, so the arrow sits at the right edge */
 .nav-dropdown a.flex{
   display: flex;
