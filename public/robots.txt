@@ -18,6 +18,8 @@ Disallow: /
 # Allowed public pages
 Allow: /$
 Allow: /Global/
+Allow: /Heroes$
+Allow: /Heroes/
 Allow: /FAQ
 Allow: /Contact
 Allow: /Privacy/Policy
@@ -50,6 +52,7 @@ Allow: /Event/Xalatath/Card/
 # Filter combinations are unbounded. Longer than "Allow: /Global/", so it wins.
 Disallow: /*?
 Disallow: /Global/*?
+Disallow: /Heroes/*?
 
 # API
 Disallow: /api/

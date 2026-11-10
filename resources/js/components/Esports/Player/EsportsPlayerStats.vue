@@ -32,6 +32,13 @@
 
 
 
+      <div v-if="hasPlayerPages" class="max-w-[1500px] mx-auto flex flex-wrap justify-end gap-2 mb-2 max-md:justify-center">
+        <custom-button :href="playerPageUrl('/Role')" text="View all Roles"></custom-button>
+        <custom-button :href="playerPageUrl('/FriendFoe')" text="Friends and Foes"></custom-button>
+        <custom-button :href="playerPageUrl('/Matchups')" text="Matchups"></custom-button>
+        <custom-button :href="playerPageUrl('/Talents')" text="Talents"></custom-button>
+      </div>
+
       <div class="bg-lighten p-10 ">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Heroes played by {{ battletag }}</h2>
@@ -40,6 +47,9 @@
             <group-box :esport="esport" :playerlink="true" :text="'Highest Win Rate'" :data="data.hero_top_three_highest_win_rate" color="teal"></group-box>
             <group-box :esport="esport" :playerlink="true" :text="'Lowest Win Rate'" :data="data.hero_top_three_lowest_win_rate" color="yellow"></group-box>
           </div>
+        </div>
+        <div v-if="hasPlayerPages" class="max-w-[1500px] mx-auto text-right mb-2 max-md:text-center">
+          <custom-button :href="playerPageUrl('/Hero')" text="View All Heroes"></custom-button>
         </div>
 
 
@@ -100,6 +110,9 @@
             <group-box :esport="esport" :playerlink="true" :text="'Highest Win Rate'" :data="data.map_top_three_highest_win_rate" color="teal"></group-box>
             <group-box :esport="esport" :playerlink="true" :text="'Lowest Win Rate'" :data="data.map_top_three_lowest_win_rate" color="yellow"></group-box>
           </div>
+        </div>
+        <div v-if="hasPlayerPages" class="max-w-[1500px] mx-auto text-right my-2 max-md:text-center">
+          <custom-button :href="playerPageUrl('/Map')" text="View All Maps"></custom-button>
         </div>
       </div>
 
@@ -173,6 +186,10 @@ export default {
     this.getData();
   },
   computed: {
+    // NutCup has no player pages
+    hasPlayerPages() {
+      return ['NGS', 'CCL', 'MastersClash', 'HeroesInternational', 'Other'].includes(this.esport);
+    },
     headingImage(){
       if(this.esport == "NGS"){
         return "/images/NGS/600-600-ngs_large_header.png"
@@ -325,6 +342,15 @@ export default {
       }else if(this.esport == "Other"){
         return "/images/EsportOther/" + this.seriesimage;
       }
+    },
+    // One of the player's other pages in this league, keeping the season and division picked here
+    playerPageUrl(path){
+      const league = this.$esportLeague(this.esport, { tournament: this.tournament, series: this.series, seriesimage: this.seriesimage });
+      const params = new URLSearchParams(league.params);
+      if (this.modifiedseason) params.set('season', this.modifiedseason);
+      if (this.modifieddivision) params.set('division', this.modifieddivision);
+      const query = params.toString();
+      return `${league.root}/Player/${this.battletag}/${this.blizz_id}${path}` + (query ? `?${query}` : '');
     },
     getMatchHistoryUrl(){
       if(this.esport == 'Other'){

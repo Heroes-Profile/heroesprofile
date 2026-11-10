@@ -1,8 +1,13 @@
 <template>
   <div>
-    <page-heading :infoText1="'All Role data for ' + battletag + '. Click a role to see individual role statistics'" :heading="'Role Stats'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading :infoText1="'All Role data for ' + battletag + '. Click a role to see individual role statistics'" :heading="'Role Stats'" :battletag="battletag" :esport="esport" :heading-image="esport ? league.headingImage : null" :heading-image-url="esport ? league.headingImageUrl : null" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
 
-    <filters 
+    <div v-if="esport && ngsFilterOptions" class="flex flex-wrap justify-center max-w-[1500px] mx-auto">
+      <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsSeason"></single-select-filter>
+      <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsDivision"></single-select-filter>
+      <single-select-filter v-if="ngsFilterOptions.teams.length" :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsTeam"></single-select-filter>
+    </div>
+    <filters v-if="!esport"
     :onFilter="filterData" 
     :filters="filters" 
     :isLoading="isLoading"
@@ -119,6 +124,9 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
       accountlevel: Number,
       isPatreon: Boolean,
       patreonUser: Boolean,
+      // The league on its esports player pages (NGS, CCL, MastersClash, HeroesInternational, Other), with its filters from the URL
+      esport: String,
+      esportfilters: Object,
       gametypedefault: Array,
 
     },
@@ -129,6 +137,11 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         showOptions: false,
         isLoading: false,
         asyncLoading: false,
+        ngsSeason: this.esportfilters?.season ?? null,
+        ngsDivision: this.esportfilters?.division ?? null,
+        ngsTeam: this.esportfilters?.team ?? null,
+        ngsFilterOptions: null,
+        ngsFiltersChanged: false,
         infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
         gametype: null,
         data: null,
@@ -231,11 +244,36 @@ created(){
   this.gametype = this.gametypedefault;
 },
 mounted() {
+  if(this.esport){
+    this.getNgsData();
+    return;
+  }
   if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
       this.getData();
     }
 },
 computed: {
+  league() {
+    return this.esport ? this.$esportLeague(this.esport, this.esportfilters) : null;
+  },
+  ngsTeamOptions() {
+    return [{ code: null, name: 'All' }, ...(this.ngsFilterOptions?.teams || []).map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
+  },
+  ngsPlayerUrl() {
+    return this.esport ? `${this.league.root}/Player/${this.battletag}/${this.blizzid}` : null;
+  },
+  // The league and the filters picked here, for links to the player's other pages
+  ngsQuery() {
+    if (!this.esport) {
+      return '';
+    }
+    const params = new URLSearchParams(this.league.params);
+    if (this.ngsSeason) params.set('season', this.ngsSeason);
+    if (this.ngsDivision) params.set('division', this.ngsDivision);
+    if (this.ngsTeam) params.set('team', this.ngsTeam);
+    const query = params.toString();
+    return query ? `?${query}` : '';
+  },
   timertime(){
     return parseInt(this.accountlevel * 3 * .003);
   },
@@ -267,6 +305,36 @@ computed: {
 watch: {
 },
 methods: {
+  ngsParams(extra = {}) {
+    return { ...this.league.params, battletag: this.battletag, blizz_id: this.blizzid, season: this.ngsSeason, division: this.ngsDivision, team: this.ngsTeam, ...extra };
+  },
+  ngsFilterChange(eventPayload) {
+    const field = { Seasons: 'ngsSeason', Divisions: 'ngsDivision', Teams: 'ngsTeam' }[eventPayload.field];
+    if (field && this[field] !== eventPayload.value) {
+      this[field] = eventPayload.value;
+      this.ngsFiltersChanged = true;
+    }
+    history.pushState({}, '', window.location.pathname + this.ngsQuery);
+  },
+  ngsDropdownClosed() {
+    if (this.ngsFiltersChanged) {
+      this.ngsFiltersChanged = false;
+      this.getNgsData();
+    }
+  },
+  async getNgsData(){
+    this.data = null;
+    this.isLoading = true;
+    try{
+      const response = await this.$axios.post(`${this.league.api}/roles`, this.ngsParams());
+      this.ngsFilterOptions = response.data.filters;
+      this.data = response.data.rows;
+    }catch(error){
+      //Do something here
+    }finally {
+      this.isLoading = false;
+    }
+  },
   async getData(type){
     this.isLoading = true;
 
@@ -351,6 +419,9 @@ methods: {
     return this.gametype.includes(game_type);
   },
   getPlayerRolePageUrl(role){
+    if(this.esport){
+      return this.ngsPlayerUrl + "/Role/" + encodeURIComponent(role) + this.ngsQuery;
+    }
     return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/" + "Role/" + role;
   },
   isDisabled(stat) {

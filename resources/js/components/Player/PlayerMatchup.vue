@@ -1,11 +1,18 @@
 <template>
   <div>
     
-    <page-heading :heading="'Matchups'" :infoText1="infotext" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading v-if="esport" :heading="'Matchups'" :infoText1="infotext" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
+    <page-heading v-else :heading="'Matchups'" :infoText1="infotext" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+
+    <div v-if="esport && ngsFilterOptions" class="flex flex-wrap justify-center max-w-[1500px] mx-auto">
+      <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsSeason"></single-select-filter>
+      <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsDivision"></single-select-filter>
+      <single-select-filter v-if="ngsFilterOptions.teams.length" :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsTeam"></single-select-filter>
+    </div>
     
     
 
-    <filters 
+    <filters v-if="!esport"
     :onFilter="filterData" 
     :filters="filters" 
     :isLoading="isLoading"
@@ -48,7 +55,7 @@
       <tbody>
         <tr v-for="(row, index) in sortedData" :key="index">
           <td class="py-2 px-3">
-            <a class="link flex items-center gap-1" :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/' + row.hero.name">
+            <a class="link flex items-center gap-1" :href="esport ? ngsPlayerUrl + '/Hero/' + encodeURIComponent(row.hero.name) + ngsQuery : '/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/' + row.hero.name">
               <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
             </a>
           </td>
@@ -94,6 +101,9 @@
       patreonUser: Boolean,
       gametypedefault: Array,
       regionsmap: Object,
+      // The league on its esports player pages (NGS, CCL, MastersClash, HeroesInternational, Other), with its filters from the URL
+      esport: String,
+      esportfilters: Object,
     },
     data(){
       return {
@@ -109,6 +119,11 @@
         season: null,
         startdate: null,
         enddate: null,
+        ngsSeason: this.esportfilters?.season ?? null,
+        ngsDivision: this.esportfilters?.division ?? null,
+        ngsTeam: this.esportfilters?.team ?? null,
+        ngsFilterOptions: null,
+        ngsFiltersChanged: false,
       }
     },
     created(){
@@ -116,11 +131,36 @@
 
     },
     mounted() {
+      if(this.esport){
+        this.getNgsData();
+        return;
+      }
       if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
         this.getData();
       }
     },
     computed: {
+      league() {
+        return this.esport ? this.$esportLeague(this.esport, this.esportfilters) : null;
+      },
+      ngsTeamOptions() {
+        return [{ code: null, name: 'All' }, ...(this.ngsFilterOptions?.teams || []).map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
+      },
+      ngsPlayerUrl() {
+        return this.esport ? `${this.league.root}/Player/${this.battletag}/${this.blizzid}` : null;
+      },
+      // The league and the filters picked here, for links to the player's other pages
+      ngsQuery() {
+        if (!this.esport) {
+          return '';
+        }
+        const params = new URLSearchParams(this.league.params);
+        if (this.ngsSeason) params.set('season', this.ngsSeason);
+        if (this.ngsDivision) params.set('division', this.ngsDivision);
+        if (this.ngsTeam) params.set('team', this.ngsTeam);
+        const query = params.toString();
+        return query ? `?${query}` : '';
+      },
       sortedData() {
         if (!this.sortKey) return this.data;
         return this.data.slice().sort((a, b) => {
@@ -143,6 +183,38 @@
     watch: {
     },
     methods: {
+      ngsParams(extra = {}) {
+        return { ...this.league.params, battletag: this.battletag, blizz_id: this.blizzid, season: this.ngsSeason, division: this.ngsDivision, team: this.ngsTeam, ...extra };
+      },
+      ngsFilterChange(eventPayload) {
+        const field = { Seasons: 'ngsSeason', Divisions: 'ngsDivision', Teams: 'ngsTeam' }[eventPayload.field];
+        if (field && this[field] !== eventPayload.value) {
+          this[field] = eventPayload.value;
+          this.ngsFiltersChanged = true;
+        }
+        history.pushState({}, '', window.location.pathname + this.ngsQuery);
+      },
+      ngsDropdownClosed() {
+        if (this.ngsFiltersChanged) {
+          this.ngsFiltersChanged = false;
+          this.getNgsData();
+        }
+      },
+      async getNgsData(){
+        this.data = null;
+        this.isLoading = true;
+        try{
+          const response = await this.$axios.post(`${this.league.api}/matchups`, this.ngsParams());
+          this.ngsFilterOptions = response.data.filters;
+          this.data = response.data.tabledata;
+          this.topfiveheroes = response.data.top_five_heroes;
+          this.topfiveenemies = response.data.top_five_enemies;
+        }catch(error){
+          //Do something here
+        }finally {
+          this.isLoading = false;
+        }
+      },
       async getData(){
         this.isLoading = true;
 

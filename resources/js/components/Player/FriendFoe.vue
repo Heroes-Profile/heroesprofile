@@ -1,8 +1,16 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="'Friend vs Foe'"  :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading v-if="esport" :infoText1="infoText" :heading="'Friend vs Foe'" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
+    <page-heading v-else :infoText1="infoText" :heading="'Friend vs Foe'"  :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
 
-    <filters 
+    <div v-if="esport && ngsFilterOptions" class="flex flex-wrap justify-center max-w-[1500px] mx-auto">
+      <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsSeason"></single-select-filter>
+      <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsDivision"></single-select-filter>
+      <single-select-filter v-if="ngsFilterOptions.teams.length" :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsTeam"></single-select-filter>
+    </div>
+
+    <filters v-if="!esport"
+
       :onFilter="filterData" 
       :filters="filters" 
       :isLoading="friendIsLoading || enemyIsLoading"
@@ -42,7 +50,7 @@
               <th  @click="sortTableFriend('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%] ">
                 Win Rate with Friend
               </th>
-              <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider w-[10%]">
+              <th v-if="!esport" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider w-[10%]">
                 Matches
               </th>
             </tr>
@@ -52,14 +60,15 @@
             <tr v-for="row in sortedDataFriends" :key="row.blizz_id">
               <td class="py-2 px-3 ">
                 <div class="flex items-center">
-                  <a class="link mr-2" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
+                  <a v-if="esport" class="link mr-2" :href="row.link">{{ row.battletag }}</a>
+                  <a v-else class="link mr-2" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
                   <div class="" v-if="row.hp_owner">
                     <i class="fas fa-crown text" style="color:gold;"></i>
                   </div>
                   <div class="" v-else-if="row.patreon">
                     <i class="fas fa-star" style="color:gold"></i>
                   </div>
-                  <void-eye-flair :blizz-id="row.blizz_id" :region="row.region" :tooltip="false"></void-eye-flair>
+                  <void-eye-flair v-if="!esport" :blizz-id="row.blizz_id" :region="row.region" :tooltip="false"></void-eye-flair>
 
                 </div>
               </td>
@@ -71,7 +80,7 @@
               </td>
               <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString('en-US') }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3">
+              <td v-if="!esport" class="py-2 px-3">
                 <a class="link" :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`">Matches</a>
               </td>
             </tr>
@@ -94,7 +103,7 @@
               <th @click="sortTableEnemy('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
                 Foe's Win Rate Against {{ battletag }}
               </th>
-              <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider w-[10%]">
+              <th v-if="!esport" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider w-[10%]">
                 Matches
               </th>
             </tr>
@@ -105,14 +114,15 @@
               <td class="py-2 px-3 ">
 
                 <div class="flex items-center">
-                  <a class="link mr-2" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
+                  <a v-if="esport" class="link mr-2" :href="row.link">{{ row.battletag }}</a>
+                  <a v-else class="link mr-2" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
                   <div class="" v-if="row.hp_owner">
                     <i class="fas fa-crown text" style="color:gold;"></i>
                   </div>
                   <div class="" v-else-if="row.patreon">
                     <i class="fas fa-star" style="color:gold"></i>
                   </div>
-                  <void-eye-flair :blizz-id="row.blizz_id" :region="row.region" :tooltip="false"></void-eye-flair>
+                  <void-eye-flair v-if="!esport" :blizz-id="row.blizz_id" :region="row.region" :tooltip="false"></void-eye-flair>
 
                 </div>
               </td>
@@ -126,7 +136,7 @@
               </td>
               <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString('en-US') }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3">
+              <td v-if="!esport" class="py-2 px-3">
                 <a class="link" :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`">Matches</a>
               </td>
             </tr>
@@ -162,6 +172,9 @@ export default {
     regionsmap: Object,
     isPatreon: Boolean,
     patreonUser: Boolean,
+    // The league on its esports player pages (NGS, CCL, MastersClash, HeroesInternational, Other), with its filters from the URL
+    esport: String,
+    esportfilters: Object,
   },
   data(){
     return {
@@ -185,12 +198,21 @@ export default {
       enemyCancelTokenSource: null,
       groupsize: null,
       asyncLoading: false,
+      ngsSeason: this.esportfilters?.season ?? null,
+      ngsDivision: this.esportfilters?.division ?? null,
+      ngsTeam: this.esportfilters?.team ?? null,
+      ngsFilterOptions: null,
+      ngsFiltersChanged: false,
     }
   },
   created(){
     this.gametype = this.gametypedefault;
   },
   mounted() {
+    if(this.esport){
+      this.getNgsData();
+      return;
+    }
     if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
       Promise.allSettled([
       this.getData("friend"),
@@ -218,6 +240,12 @@ export default {
     }
   },
   computed: {
+    league() {
+      return this.esport ? this.$esportLeague(this.esport, this.esportfilters) : null;
+    },
+    ngsTeamOptions() {
+      return [{ code: null, name: 'All' }, ...(this.ngsFilterOptions?.teams || []).map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
+    },
     sortedDataFriends() {
       if (!this.friendSortKey) return this.frienddata;
       return this.frienddata.slice().sort((a, b) => {
@@ -252,6 +280,45 @@ export default {
   watch: {
   },
   methods: {
+    ngsParams() {
+      return { ...this.league.params, battletag: this.battletag, blizz_id: this.blizzid, season: this.ngsSeason, division: this.ngsDivision, team: this.ngsTeam };
+    },
+    ngsFilterChange(eventPayload) {
+      const field = { Seasons: 'ngsSeason', Divisions: 'ngsDivision', Teams: 'ngsTeam' }[eventPayload.field];
+      if (field && this[field] !== eventPayload.value) {
+        this[field] = eventPayload.value;
+        this.ngsFiltersChanged = true;
+      }
+      const params = new URLSearchParams(this.league.params);
+      if (this.ngsSeason) params.set('season', this.ngsSeason);
+      if (this.ngsDivision) params.set('division', this.ngsDivision);
+      if (this.ngsTeam) params.set('team', this.ngsTeam);
+      const query = params.toString();
+      history.pushState({}, '', window.location.pathname + (query ? `?${query}` : ''));
+    },
+    ngsDropdownClosed() {
+      if (this.ngsFiltersChanged) {
+        this.ngsFiltersChanged = false;
+        this.getNgsData();
+      }
+    },
+    async getNgsData(){
+      this.frienddata = null;
+      this.enemydata = null;
+      this.friendIsLoading = true;
+      this.enemyIsLoading = true;
+      try {
+        const response = await this.$axios.post(`${this.league.api}/friendfoe`, this.ngsParams());
+        this.ngsFilterOptions = response.data.filters;
+        this.frienddata = response.data.friend;
+        this.enemydata = response.data.enemy;
+      } catch(error) {
+        //Do something here
+      } finally {
+        this.friendIsLoading = false;
+        this.enemyIsLoading = false;
+      }
+    },
     async getData(type){
       let cancelTokenSource;
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading heading="Talent Statistics" :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
+    <page-heading heading="Talent Statistics" :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" :battletag="battletag" :esport="esport" :heading-image="esport ? league.headingImage : null" :heading-image-url="esport ? league.headingImageUrl : null" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
       <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
       <template v-if="selectedHero" #aboveHeading>
         <hero-heading-select :heroes="heroes" :value="selectedHero.id" @hero-changed="changeHero($event)"></hero-heading-select>
@@ -11,7 +11,12 @@
       <hero-selection :heroes="heroes"></hero-selection>
     </div>
     <div v-else>
-      <filters 
+      <div v-if="esport && ngsFilterOptions" class="flex flex-wrap justify-center max-w-[1500px] mx-auto">
+        <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsSeason"></single-select-filter>
+        <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsDivision"></single-select-filter>
+        <single-select-filter v-if="ngsFilterOptions.teams.length" :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsTeam"></single-select-filter>
+      </div>
+      <filters v-if="!esport"
         :onFilter="filterData" 
         :filters="filters" 
         :isLoading="isLoading"
@@ -69,6 +74,9 @@ export default {
     isPatreon: Boolean,
     patreonUser: Boolean,
     gametypedefault: Array,
+    // The league on its esports player pages (NGS, CCL, MastersClash, HeroesInternational, Other), with its filters from the URL
+    esport: String,
+    esportfilters: Object,
 
   },
   data(){
@@ -84,6 +92,11 @@ export default {
       gamemap: null,
       startdate: null,
       enddate: null,
+      ngsSeason: this.esportfilters?.season ?? null,
+      ngsDivision: this.esportfilters?.division ?? null,
+      ngsTeam: this.esportfilters?.team ?? null,
+      ngsFilterOptions: null,
+      ngsFiltersChanged: false,
     }
   },
   created(){
@@ -92,12 +105,35 @@ export default {
   mounted() {
     if(this.inputhero){
       this.selectedHero = this.inputhero;
-      if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
+      if(this.esport){
+        this.getNgsData();
+      }else if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
         this.getData();
       }
     }
   },
   computed: {
+    league() {
+      return this.esport ? this.$esportLeague(this.esport, this.esportfilters) : null;
+    },
+    ngsTeamOptions() {
+      return [{ code: null, name: 'All' }, ...(this.ngsFilterOptions?.teams || []).map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
+    },
+    ngsPlayerUrl() {
+      return this.esport ? `${this.league.root}/Player/${this.battletag}/${this.blizzid}` : null;
+    },
+    // The league and the filters picked here, for links to the player's other pages
+    ngsQuery() {
+      if (!this.esport) {
+        return '';
+      }
+      const params = new URLSearchParams(this.league.params);
+      if (this.ngsSeason) params.set('season', this.ngsSeason);
+      if (this.ngsDivision) params.set('division', this.ngsDivision);
+      if (this.ngsTeam) params.set('team', this.ngsTeam);
+      const query = params.toString();
+      return query ? `?${query}` : '';
+    },
     isOwner(){
       if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
         return true;
@@ -108,6 +144,45 @@ export default {
   watch: {
   },
   methods: {
+    ngsParams(extra = {}) {
+      return { ...this.league.params, battletag: this.battletag, blizz_id: this.blizzid, season: this.ngsSeason, division: this.ngsDivision, team: this.ngsTeam, ...extra };
+    },
+    ngsFilterChange(eventPayload) {
+      const field = { Seasons: 'ngsSeason', Divisions: 'ngsDivision', Teams: 'ngsTeam' }[eventPayload.field];
+      if (field && this[field] !== eventPayload.value) {
+        this[field] = eventPayload.value;
+        this.ngsFiltersChanged = true;
+      }
+      history.pushState({}, '', window.location.pathname + this.ngsQuery);
+    },
+    ngsDropdownClosed() {
+      if (this.ngsFiltersChanged) {
+        this.ngsFiltersChanged = false;
+        this.getNgsData();
+      }
+    },
+    async getNgsData(){
+      this.talentdetaildata = null;
+      this.talentbuilddata = null;
+      this.isLoading = true;
+      try{
+        const response = await this.$axios.post(`${this.league.api}/talents`, this.ngsParams({ hero: this.selectedHero.name }));
+        this.ngsFilterOptions = response.data.filters;
+        this.talentdetaildata = response.data.talentData;
+        this.talentbuilddata = response.data.buildData;
+      }catch(error){
+        //Do something here
+      }finally {
+        this.isLoading = false;
+      }
+    },
+    loadData(){
+      if(this.esport){
+        this.getNgsData();
+      }else{
+        this.getData();
+      }
+    },
     async getData(){
       try{
         this.isLoading = true;
@@ -150,16 +225,18 @@ export default {
       this.preloadTalentImages(hero);
 
       let currentPath = window.location.pathname;
-      history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
-      this.getData();
+      history.pushState(null, null, `${currentPath}/${this.selectedHero.name}` + (this.esport ? this.ngsQuery : ''));
+      this.loadData();
     },
     changeHero(heroId) {
       this.selectedHero = this.heroes.find(hero => hero.id === heroId);
       this.preloadTalentImages(this.selectedHero);
-      history.pushState(null, null, `/Player/${this.battletag}/${this.blizzid}/${this.region}/Talents/${this.selectedHero.name}`);
+      history.pushState(null, null, this.esport
+        ? `${this.ngsPlayerUrl}/Talents/${encodeURIComponent(this.selectedHero.name)}${this.ngsQuery}`
+        : `/Player/${this.battletag}/${this.blizzid}/${this.region}/Talents/${this.selectedHero.name}`);
       this.talentdetaildata = null;
       this.talentbuilddata = null;
-      this.getData();
+      this.loadData();
     },
     filterData(filteredData){
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
@@ -182,7 +259,9 @@ export default {
       }
     },
     redirectChangeHero(){
-      window.location.href = `/Player/${this.battletag}/${this.blizzid}/${this.region}/Talents`;
+      window.location.href = this.esport
+        ? `${this.ngsPlayerUrl}/Talents${this.ngsQuery}`
+        : `/Player/${this.battletag}/${this.blizzid}/${this.region}/Talents`;
     }
   }
 }
