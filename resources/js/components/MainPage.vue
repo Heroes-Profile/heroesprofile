@@ -6,26 +6,30 @@
     </div>
 
 
-    <div class="text-center pt-10 pb-8 px-4 max-md:hidden">
+    <div class="flex-[1_1_0] min-h-12 max-md:hidden"></div>
+
+    <div class="text-center px-4 max-md:hidden">
+      <!-- Equal-width words put the hexagon on the page's centre line; PROFILE is the wider word -->
       <h1 class="flex items-center justify-center font-logo text-4xl md:text-8xl normal-case">
-        Heroes
-        <img class="w-[1.667em] mx-[0.333em]" src="/images/logo/heroesprofilelogo.png" alt=""/>
-        Profile
+        <span class="flex-1 basis-0 text-right whitespace-nowrap">Heroes</span>
+        <img class="w-[1.667em] mx-[0.333em] shrink-0" src="/images/logo/heroesprofilelogo.png" alt=""/>
+        <span class="flex-1 basis-0 text-left whitespace-nowrap">Profile</span>
       </h1>
       <!-- Count rolls up at the last day's average upload rate; no requests after page load -->
+      <!-- Digits shift by % of their 0-9 strip, not em: the root font size scales with the window, and an em shift would roll on resize -->
       <div v-if="tickerCount" class="mt-6 flex flex-col items-center gap-1">
         <p class="text-2xl font-bold">
-          Replays uploaded:
           <span class="inline-flex tabular-nums leading-none align-baseline" :aria-label="tickerCount.toLocaleString('en-US')">
             <template v-for="(char, index) in tickerChars" :key="tickerChars.length - index">
               <span v-if="/\d/.test(char)" class="inline-block h-[1em] overflow-hidden" aria-hidden="true">
-                <span class="flex flex-col transition-transform duration-500 ease-out" :style="{ transform: `translateY(-${char}em)` }">
+                <span class="flex flex-col transition-transform duration-500 ease-out" :style="{ transform: `translateY(-${char * 10}%)` }">
                   <span v-for="digit in 10" :key="digit" class="h-[1em]">{{ digit - 1 }}</span>
                 </span>
               </span>
               <span v-else aria-hidden="true">{{ char }}</span>
             </template>
           </span>
+          replays uploaded
         </p>
         <template v-if="latestgamedate">
           <p v-if="parsingStale" class="bg-red rounded px-4 py-2 text-sm flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i>Replay parsing is currently offline. Latest game played {{ latestGameAgo }}.</p>
@@ -33,22 +37,13 @@
         </template>
       </div>
 
-     
-    </div>
+         </div>
 
+    <!-- Wider than the gaps inside each group, so the logo and the cards read as two groups -->
+    <div class="flex-[1.5_1_0] min-h-28 max-md:min-h-0"></div>
 
-    <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem] mx-auto px-4 md:px-8 pb-8 mt-20">
+    <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem] mx-auto px-4 md:px-8 max-md:pt-8">
       <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem]">
-      <div :class="cardClasses">
-        <i class="fa-solid fa-globe text-[5rem]"></i>
-        <h3 class="text-3xl font-semibold mt-6 mb-4">Global Stats</h3>
-        <p class="text-sm text-left mb-8">Variety of Heroes of the Storm stats, including global stats for heroes, talent stats, overall stats, builds, compositions, draft, matchups, and more.</p>
-        <div class="flex gap-4 mt-auto">
-          <custom-button :href="'/Global/Hero'" :text="'Hero Stats'" :alt="'Hero Stats'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
-          <custom-button :href="'/Global/Talents'" :text="'Talent Stats'" :alt="'Talent Stats'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
-        </div>
-      </div>
-
       <div :class="cardClasses">
         <i class="fas fa-address-card text-[5rem]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Player Profiles</h3>
@@ -57,7 +52,6 @@
           <custom-button :text="'Find Player'" :alt="'Find Player'" :color="'teal'" :ignoreclick="true" class="flex-1 font-semibold" @click="focusSearch"></custom-button>
         </div>
       </div>
-
       <div :class="cardClasses">
         <i class="fas fa-chart-line text-[5rem]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Player Analytics</h3>
@@ -67,17 +61,17 @@
           <custom-button v-else :href="'/Analytics'" :text="'Learn More'" :alt="'Learn more about Analytics'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
         </div>
       </div>
-</div>
-<div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem]">
-      <div :class="cardClasses">
-        <i class="fas fa-list-ol text-[5rem]"></i>
-        <h3 class="text-3xl font-semibold mt-6 mb-4">Leaderboards</h3>
-        <p class="text-sm text-left mb-8">View leaderboards based on Player, Hero, or Role using Heroes Profile Rating, real in-game Storm League ranks, and the Match Prediction game. Get talent builds, and navigate directly to player's profiles.</p>
-        <div class="flex mt-auto">
-          <custom-button :href="'/Global/Leaderboard'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
+      <div :class="cardClasses" class="max-md:order-first">
+        <i class="fa-solid fa-globe text-[5rem]"></i>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">Global Stats</h3>
+        <p class="text-sm text-left mb-8">Variety of Heroes of the Storm stats, including global stats for heroes, talent stats, overall stats, builds, compositions, draft, matchups, and more.</p>
+        <div class="flex gap-4 mt-auto">
+          <custom-button :href="'/Global/Hero'" :text="'Hero Stats'" :alt="'Hero Stats'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
+          <custom-button :href="'/Global/Talents'" :text="'Talent Stats'" :alt="'Talent Stats'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
         </div>
       </div>
-      
+</div>
+<div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem]">
       <div :class="cardClasses">
         <i class="fa-solid fa-database text-[5rem]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Heroes Profile API</h3>
@@ -86,10 +80,20 @@
           <custom-button :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
         </div>
       </div>
+      <div :class="cardClasses" class="max-md:order-first">
+        <i class="fas fa-list-ol text-[5rem]"></i>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">Leaderboards</h3>
+        <p class="text-sm text-left mb-8">View leaderboards based on Player, Hero, or Role using Heroes Profile Rating, real in-game Storm League ranks, and the Match Prediction game. Get talent builds, and navigate directly to player's profiles.</p>
+        <div class="flex mt-auto">
+          <custom-button :href="'/Global/Leaderboard'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
+        </div>
+      </div>
     </div>
 
 </div>
-    <div class="mt-auto">
+    <div class="h-[8.75rem] shrink-0 max-md:h-12"></div>
+
+    <div>
       <dynamic-banner-ad :patreon-user="patreonUser" :index="0" :mobile-override="false"></dynamic-banner-ad>
     </div>
     <div class="bg-surface-2 text-sm px-4 md:px-8 py-6">
