@@ -7,6 +7,7 @@ use App\Models\BattlenetAccount;
 use App\Models\BattletagNotAllowedDownloadReplay;
 use App\Models\ReplayExperienceBreakdownBlob;
 use App\Rules\ReplayIDValidation;
+use App\Services\GlobalDataService;
 use App\Support\GameLength;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -540,27 +541,18 @@ class SingleMatchController extends Controller
 
     private function updatePartyData(&$playerArray)
     {
-        $partyArray = [];
-        $partColorArray = ['red', 'blue', 'teal', 'orange', 'brown', 'purple'];
-        $colorCounter = 0;
+        foreach ([0, 1] as $team) {
+            $partyArray = [];
 
-        foreach ($playerArray[0] as &$playerData) {
-            if ($playerData['party'] != '' && $playerData['party'] != 0 && ! array_key_exists($playerData['party'], $partyArray)) {
-                $partyArray[$playerData['party']] = $partColorArray[$colorCounter];
-                $colorCounter++;
+            foreach ($playerArray[$team] as &$playerData) {
+                if ($playerData['party'] != '' && $playerData['party'] != 0 && ! array_key_exists($playerData['party'], $partyArray)) {
+                    $partyArray[$playerData['party']] = GlobalDataService::PARTY_COLORS[$team][count($partyArray)] ?? null;
+                }
+                $playerData['party'] = ($playerData['party'] != '' && $playerData['party'] != 0) ? $partyArray[$playerData['party']] : null;
             }
-            $playerData['party'] = ($playerData['party'] != '' && $playerData['party'] != 0) ? $partyArray[$playerData['party']] : null;
-        }
 
-        foreach ($playerArray[1] as &$playerData) {
-            if ($playerData['party'] != '' && $playerData['party'] != 0 && ! array_key_exists($playerData['party'], $partyArray)) {
-                $partyArray[$playerData['party']] = $partColorArray[$colorCounter];
-                $colorCounter++;
-            }
-            $playerData['party'] = ($playerData['party'] != '' && $playerData['party'] != 0) ? $partyArray[$playerData['party']] : null;
+            unset($playerData);
         }
-
-        unset($playerData);
 
         return $playerArray;
     }

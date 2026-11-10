@@ -105,7 +105,7 @@
         cancelTokenSource: null,
         isLoading: false,
         infoText: "Search recent replays by game type, map, heroes, players, patch and more.",
-        pageSize: 1000,
+        pageSize: 100,
         rows: null,
         nextBeforeReplayID: null,
         pageFull: false,
