@@ -12,7 +12,7 @@
   </head>
   {{-- Framed on other sites: no nav, ads, footer or analytics. Transparent, so
        any frame height left over shows the host page rather than ours. --}}
-  <body class="text-white dark-mode {{ ($voidStage ?? 0) > 0 ? 'void-stage-'.$voidStage : '' }}" style="background: transparent">
+  <body class="text-white dark-mode" style="background: transparent">
     <div id="app">
       @yield('content')
     </div>

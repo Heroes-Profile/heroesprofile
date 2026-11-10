@@ -27,6 +27,7 @@ class NGSController extends Controller
                 'defaultseason' => $defaultseason,
                 'filters' => $this->globalDataService->getFilterData(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
+                'urlparameters' => $request->query(),
             ]);
     }
 
@@ -218,15 +219,14 @@ class NGSController extends Controller
             $battletagShort = explode('#', $item->battletag)[0];
             $region = $item->region;
             $regionName = $regions[$item->region];
-            $latestGame = $item->latest_game;
-
             $totalGamesPlayed = $this->getTotalGamesPlayedForPlayer($blizzId, $region);
-            $latestMap = $this->getLatestMapPlayedForPlayer($blizzId, $region);
-            $latestHero = $this->getLatestHeroPlayedForPlayer($blizzId, $region);
+            $latest = $this->getLatestGameForPlayer($blizzId, $region);
 
             $item->totalGamesPlayed = $totalGamesPlayed;
-            $item->latestMap = $maps[$latestMap];
-            $item->latestHero = $heroData[$latestHero];
+            $item->latestMap = $latest ? ($maps[$latest->game_map] ?? null) : null;
+            $item->latestHero = $latest ? ($heroData[$latest->hero] ?? null) : null;
+            $item->latest_game = $latest?->game_date;
+            $item->latestReplayID = $latest?->replayID;
 
             $item->battletagShort = $battletagShort;
             $item->regionName = $regionName;
@@ -250,36 +250,32 @@ class NGSController extends Controller
         return $count;
     }
 
-    private function getLatestMapPlayedForPlayer($blizzId, $region)
+    /**
+     * The player's latest NGS game: replay ID, date, map and the hero this player was on.
+     * Their own player row, not the first player of the game.
+     */
+    private function getLatestGameForPlayer($blizzId, $region)
     {
-        $lastReplayMap = Replay::whereHas('players', function ($query) use ($blizzId, $region) {
+        $replay = Replay::whereHas('players', function ($query) use ($blizzId, $region) {
             $query->where('blizz_id', $blizzId)
                 ->where('region', $region);
         })
+            // NGS player rows have no region; the replay above is already the player's region
+            ->with(['players' => function ($query) use ($blizzId) {
+                $query->where('blizz_id', $blizzId);
+            }])
             ->orderBy('game_date', 'desc')
-            ->value('replay.game_map');
+            ->first();
 
-        return $lastReplayMap;
-    }
-
-    private function getLatestHeroPlayedForPlayer($blizzId, $region)
-    {
-        $latestHero = Replay::whereHas('players', function ($query) use ($blizzId, $region) {
-            $query->where('blizz_id', $blizzId)
-                ->where('region', $region)
-                ->orderBy('game_date', 'desc');
-        })
-            ->with('players') // Load the players relationship
-            ->orderBy('game_date', 'desc')
-            ->limit(1)
-            ->get();
-
-        if ($latestHero->count() > 0) {
-            $latestHeroValue = $latestHero[0]->players[0]->hero;
-        } else {
-            $latestHeroValue = null;
+        if (! $replay) {
+            return null;
         }
 
-        return $latestHeroValue;
+        return (object) [
+            'replayID' => $replay->replayID,
+            'game_date' => $replay->game_date,
+            'game_map' => $replay->game_map,
+            'hero' => optional($replay->players->first())->hero,
+        ];
     }
 }
