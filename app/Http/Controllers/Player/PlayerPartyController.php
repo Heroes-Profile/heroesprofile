@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use App\Models\GameType;
+use App\Models\PlayerStatsCache;
 use App\Rules\DateInputValidation;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
@@ -50,6 +51,7 @@ class PlayerPartyController extends Controller
             'gametypedefault' => $this->globalDataService->getPlayerGameTypeDefault(),
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
+            'urlparameters' => $request->query(),
         ]);
     }
 
@@ -76,20 +78,25 @@ class PlayerPartyController extends Controller
             ];
         }
 
-        if (config('app.env') !== 'production') {
+        if (! $this->globalDataService->usesProductionCaching()) {
             return response()->json($this->executePartyData($request));
         }
 
-        $paramsHash = hash('sha256', json_encode(GlobalCacheKey::normalize([
-            'blizz_id' => $request['blizz_id'],
-            'region' => $request['region'],
-            'game_type' => $request['game_type'],
-            'season' => $request['season'],
-            'start_date' => $request['start_date'],
-            'end_date' => $request['end_date'],
-            'hero' => $request['hero'],
-            'game_map' => $request['game_map'],
-        ])));
+        $paramsHash = $this->paramsHash($request);
+
+        $dbCache = PlayerStatsCache::where('params_hash', $paramsHash)->first();
+
+        if ($dbCache) {
+            $latestReplayId = $this->getLatestReplayId($request);
+
+            if (! $latestReplayId || $dbCache->latest_replayID >= $latestReplayId) {
+                return response()->json(json_decode($dbCache->data, true));
+            }
+        }
+
+        if (! $this->globalDataService->isGlobalAsyncEnabled()) {
+            return response()->json($this->executePartyData($request));
+        }
 
         return app(GlobalQueryService::class)->dispatchAsync(
             'PlayerPartyData|'.$paramsHash,
@@ -196,6 +203,43 @@ class PlayerPartyController extends Controller
         }
         unset($combos);
 
+        PlayerStatsCache::updateOrCreate(
+            ['params_hash' => $this->paramsHash($request)],
+            [
+                'blizz_id' => $request['blizz_id'],
+                'region' => $request['region'],
+                'latest_replayID' => $this->getLatestReplayId($request) ?? 0,
+                'data' => json_encode($returnData),
+            ]
+        );
+
         return $returnData;
+    }
+
+    private function paramsHash(Request $request): string
+    {
+        return hash('sha256', json_encode(GlobalCacheKey::normalize([
+            'page' => 'party',
+            'blizz_id' => $request['blizz_id'],
+            'region' => $request['region'],
+            'game_type' => $request['game_type'],
+            'season' => $request['season'],
+            'start_date' => $request['start_date'],
+            'end_date' => $request['end_date'],
+            'hero' => $request['hero'],
+            'game_map' => $request['game_map'],
+        ])));
+    }
+
+    private function getLatestReplayId(Request $request): ?int
+    {
+        return $this->globalDataService->latestPlayerReplayId(
+            $request['blizz_id'],
+            $request['region'],
+            $request['game_type'],
+            $request['season'],
+            $request['start_date'],
+            $request['end_date']
+        );
     }
 }

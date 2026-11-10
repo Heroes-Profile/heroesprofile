@@ -17,6 +17,7 @@ class EncryptCookies extends Middleware
         'alt_search_account2',
         'alt_search_account3',
         'battlenet_region',
+        'header_alert_dismissed',
         'darkmode',
         'darkmode_pending',
         'talentbuilderstyle',

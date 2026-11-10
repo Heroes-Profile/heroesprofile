@@ -104,6 +104,7 @@
                                  <a href="https://github.com/Heroes-Profile/heroesprofile/discussions" target="_blank" >Discussions</a>
                                  <a href="/Github/Change/Log">Change Log</a>
                                 <a href="/FAQ">FAQ</a>
+                                <a href="#" onclick="event.preventDefault(); window.dispatchEvent(new Event('open-help-chat'))">Help Assistant</a>
                                 <a href="/Contact" >Contact Us</a>
                             </div>
 
@@ -263,7 +264,7 @@
 </div>
 <nav class="relative flex justify-end md:mr-8 alt-acct-nav max-md:flex-wrap  ">
   @foreach($altSearchAccounts as $index => $account)
-    @if($account)
+    @if($account && isset($account['region']))
       <div class="relative group inline-block  md:p-4 md:mx-4 text-sm  ">
         <a data-battletag="{{ $account['battletag'] }}" class="mobile-secondary-nav-open cursor-pointer">{{ $account['battletag'] }}@if(isset($regions[$account['region']])) ({{ $regions[$account['region']] }})@endif</a>
         <div data-battletag="{{ $account['battletag'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[200px] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">

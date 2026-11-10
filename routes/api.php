@@ -31,6 +31,7 @@ use App\Http\Controllers\Global\GlobalQueryStatusController;
 use App\Http\Controllers\Global\GlobalQueryWorkerController;
 use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
+use App\Http\Controllers\HelpChatController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\MatchPredictionGameController;
 use App\Http\Controllers\MatchSearchController;
@@ -114,6 +115,8 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
         Route::post('accounts/search', [AdminConsoleController::class, 'search']);
         Route::get('accounts/{id}', [AdminConsoleController::class, 'account']);
         Route::post('accounts/{id}/flag', [AdminConsoleController::class, 'setFlag']);
+        Route::post('accounts/{id}/poison', [AdminConsoleController::class, 'setPoison']);
+        Route::get('poison/trace', [AdminConsoleController::class, 'poisonTrace']);
         Route::post('accounts/{id}/approvals/{approvalId}/notes', [AdminConsoleController::class, 'approvalNotes'])
             ->whereNumber(['id', 'approvalId']);
 
@@ -218,6 +221,8 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('player/talents/', [PlayerTalentsController::class, 'getPlayerTalentData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
     Route::post('player/talents/build', [PlayerTalentsController::class, 'getPlayerTalentData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
+    Route::post('player/talents/build/heroes', [PlayerTalentsController::class, 'getPlayerTalentBuildHeroes'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
+    Route::post('player/talents/build/hero', [PlayerTalentsController::class, 'getPlayerTalentBuildHero'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
     Route::post('player/mmr', [PlayerMMRController::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
     Route::post('player/awards', [PlayerAwardsController::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
@@ -233,6 +238,8 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('profile/set/account/visibility', [ProfileController::class, 'setAccountVisibility']);
 
     Route::post('player/match/history', [PlayerMatchHistory::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
+
+    Route::post('player/match/history/details', [PlayerMatchHistory::class, 'getMatchDetails'])->middleware('checkIfPrivateProfileData');
 
     Route::post('esports/ngs/standings', [NGSController::class, 'getStandingData']);
     Route::post('esports/ngs/divisions', [NGSController::class, 'getDivisionData']);
@@ -317,6 +324,9 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('contact', [ContactController::class, 'submitMessage'])->middleware('throttle:contact');
 
     Route::post('poll/{slug}/vote', [PollController::class, 'vote'])->middleware('throttle:10,1');
+    // Help: search for anyone, then the logged-in assistant; the controller holds its daily limit
+    Route::post('help/search', [HelpChatController::class, 'search'])->middleware('throttle:30,1');
+    Route::post('help/chat', [HelpChatController::class, 'ask'])->middleware(['ensureBattlenetAuth:optional', 'throttle:10,1']);
 
     Route::post('match/prediction/game', [MatchPredictionGameController::class, 'getReplayData']);
     Route::post('match/search', [MatchSearchController::class, 'getData'])->middleware(['throttle:match-search', 'restrictCustomGames:never']);

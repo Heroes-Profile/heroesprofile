@@ -86,6 +86,70 @@
         </p>
       </api-admin-card>
 
+      <api-admin-card title="Trace a Marked Value" storage-key="trace" tight>
+        <p class="text-sm text-gray-medium mb-4">
+          Which marked account was sent a number seen elsewhere. Enter the hero, talent or map, and the
+          value as they show it &mdash; 57.1 also finds 57.11 for a site that rounds. Kept 90 days.
+        </p>
+
+        <div class="flex flex-wrap gap-2 mb-4">
+          <input
+            v-model="traceLabel"
+            @keyup.enter="trace"
+            type="text"
+            placeholder="Diablo"
+            class="flex-1 min-w-[12.5rem] p-2 bg-darken"
+          />
+          <input
+            v-model="traceValue"
+            @keyup.enter="trace"
+            type="text"
+            inputmode="decimal"
+            placeholder="Value (optional)"
+            class="w-40 p-2 bg-darken"
+          />
+          <custom-button @click="trace" :text="'Trace'" :alt="'Trace a marked value'" :size="'small'" :ignoreclick="true"></custom-button>
+        </div>
+
+        <p v-if="traced && !traceRows.length" class="text-sm text-gray-medium">No marked account was sent that.</p>
+
+        <div v-if="traceRows.length" class="overflow-x-auto">
+          <table class="min-w-0 w-full responsive-table">
+            <thead>
+              <tr>
+                <th class="py-2 px-3 text-left text-sm">Account</th>
+                <th class="py-2 px-3 text-left text-sm">Row</th>
+                <th class="py-2 px-3 text-left text-sm">Endpoint</th>
+                <th class="py-2 px-3 text-left text-sm">Ours</th>
+                <th class="py-2 px-3 text-left text-sm">Sent</th>
+                <th class="py-2 px-3 text-left text-sm">Sent between</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in traceRows" :key="row.id">
+                <td class="py-2 px-3">
+                  <a href="#" @click.prevent="load(row.account_id, 'trace')" class="link">{{ row.email || 'id ' + row.account_id }}</a>
+                </td>
+                <td class="py-2 px-3">{{ row.label }}</td>
+                <td class="py-2 px-3">
+                  {{ row.endpoint }}
+                  <div class="text-xs text-gray-medium">{{ formatParams(row.params) }}</div>
+                </td>
+                <td class="py-2 px-3">{{ row.real_value }}</td>
+                <td class="py-2 px-3">{{ row.sent_value }}</td>
+                <td class="py-2 px-3">{{ row.first_sent_at }} &ndash; {{ row.last_sent_at }} ({{ formatNumber(row.times_sent) }}&times;)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p v-if="traceTruncated" class="text-sm text-gray-medium mt-3">
+          Showing the newest {{ traceRows.length }}. Add a value to narrow it.
+        </p>
+      </api-admin-card>
+
+      <div id="admin-detail-trace"></div>
+
       <api-admin-card title="Usage This Window" storage-key="usage" tight>
         <p class="text-sm text-gray-medium mb-4">
           Each account's current 7-day window, summed across endpoints. Cost is an upper-bound estimate.
@@ -373,6 +437,78 @@
           </div>
         </api-admin-card>
 
+        <api-admin-card title="Data Markers" storage-key="poison" tight>
+          <p class="text-sm text-gray-medium mb-4">
+            Nudges a few win rates in their global stats by 0.05&ndash;0.15, the same way on every call,
+            so numbers republished elsewhere can be traced to this key. Never shown to them.
+          </p>
+
+          <label class="flex items-center gap-2 text-sm mb-4">
+            <input
+              type="checkbox"
+              :checked="detail.poison.on"
+              :disabled="busy"
+              @change="setPoison($event.target.checked)"
+            />
+            Mark their global stats
+            <span v-if="detail.poison.since" class="text-gray-medium">&mdash; since {{ detail.poison.since }}</span>
+          </label>
+
+          <p class="text-sm mb-1">Heroes marked for this account:</p>
+          <p v-if="!detail.poison.heroes.length" class="text-sm text-gray-medium">None.</p>
+          <p v-else class="text-sm">
+            <span v-for="(row, index) in detail.poison.heroes" :key="row.hero">
+              {{ row.hero }} ({{ row.delta > 0 ? '+' : '' }}{{ row.delta.toFixed(2) }})<template v-if="index < detail.poison.heroes.length - 1">, </template>
+            </span>
+          </p>
+          <p class="text-xs text-gray-medium mt-3">
+            Talents, builds, maps, compositions, draft picks and party rows get their own markers the same way.
+          </p>
+
+          <h3 class="text-base mt-6 mb-2">Sent</h3>
+
+          <p class="text-sm text-gray-medium mb-2">
+            Every marked value they were sent, beside what the site had at the time. Newest 200, kept 90 days.
+          </p>
+
+          <p v-if="!detail.poison.log.length" class="text-sm text-gray-medium">Nothing sent yet.</p>
+
+          <template v-else>
+            <input
+              v-model="poisonFilter"
+              type="text"
+              placeholder="Filter by hero, talent or map"
+              class="w-full p-2 bg-darken mb-2"
+            />
+
+            <div class="overflow-x-auto">
+              <table class="min-w-0 w-full responsive-table">
+                <thead>
+                  <tr>
+                    <th class="py-2 px-3 text-left text-sm">Row</th>
+                    <th class="py-2 px-3 text-left text-sm">Endpoint</th>
+                    <th class="py-2 px-3 text-left text-sm">Ours</th>
+                    <th class="py-2 px-3 text-left text-sm">Sent</th>
+                    <th class="py-2 px-3 text-left text-sm">Sent between</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="row in filteredPoisonLog" :key="row.id">
+                    <td class="py-2 px-3">{{ row.label }}</td>
+                    <td class="py-2 px-3">
+                      {{ row.endpoint }}
+                      <div class="text-xs text-gray-medium">{{ formatParams(row.params) }}</div>
+                    </td>
+                    <td class="py-2 px-3">{{ row.real_value }}</td>
+                    <td class="py-2 px-3">{{ row.sent_value }}</td>
+                    <td class="py-2 px-3">{{ row.first_sent_at }} &ndash; {{ row.last_sent_at }} ({{ formatNumber(row.times_sent) }}&times;)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </template>
+        </api-admin-card>
+
         <api-admin-card title="Standing" storage-key="standing" tight>
           <p class="text-sm text-gray-medium mb-4">
             Warn first. A suspension with nothing on record behind it is our word against theirs.
@@ -595,6 +731,12 @@ export default {
       approveNotes: '',
       editingApprovalId: null,
       approvalNotes: '',
+      poisonFilter: '',
+      traceLabel: '',
+      traceValue: '',
+      traceRows: [],
+      traceTruncated: false,
+      traced: false,
     }
   },
   computed: {
@@ -618,6 +760,13 @@ export default {
       }
 
       return '#admin-detail-' + this.detailFrom;
+    },
+    filteredPoisonLog(){
+      const term = this.poisonFilter.trim().toLowerCase();
+
+      return term
+        ? this.detail.poison.log.filter(row => row.label.toLowerCase().includes(term))
+        : this.detail.poison.log;
     },
     sortedUsage(){
       const key = this.usageSortKey;
@@ -713,6 +862,7 @@ export default {
       this.notice = null;
       // Text typed against the last account must not follow you to the next one.
       this.clearAction();
+      this.poisonFilter = '';
       this.loadingId = id;
 
       try {
@@ -724,7 +874,7 @@ export default {
         }
 
         // The usage list can be long enough to push the detail off screen.
-        if(from === 'usage' || from === 'pending'){
+        if(from === 'usage' || from === 'pending' || from === 'trace'){
           this.$nextTick(() => this.$refs.detail?.$el.scrollIntoView({ behavior: 'smooth' }));
         }
       } catch (error) {
@@ -734,6 +884,56 @@ export default {
         if(this.loadingId === id){
           this.loadingId = null;
         }
+      }
+    },
+    async trace(){
+      if(this.traceLabel.trim().length < 2){
+        this.error = 'Enter at least two characters of the hero, talent or map.';
+        return;
+      }
+
+      this.error = null;
+
+      try {
+        const params = { label: this.traceLabel.trim() };
+
+        if(this.traceValue.trim()){
+          params.value = this.traceValue.trim();
+        }
+
+        const response = await this.$axios.get('/api/v1/admin/poison/trace', { params });
+        this.traceRows = response.data.rows;
+        this.traceTruncated = response.data.truncated;
+        this.traced = true;
+      } catch (error) {
+        this.error = this.messageFrom(error);
+      }
+    },
+
+    formatParams(params){
+      return Object.entries(params || {})
+        .map(([key, value]) => key + '=' + (typeof value === 'object' ? JSON.stringify(value) : value))
+        .join(', ');
+    },
+
+    async setPoison(value){
+      this.busy = true;
+      this.error = null;
+      this.notice = null;
+
+      try {
+        const response = await this.$axios.post('/api/v1/admin/accounts/' + this.detail.account.id + '/poison', {
+          value: value,
+        });
+
+        this.detail.poison = response.data.poison;
+        this.detail.history = response.data.history;
+        this.notice = value ? 'Markers on.' : 'Markers off.';
+      } catch (error) {
+        this.error = this.messageFrom(error);
+        await this.load(this.detail.account.id);
+      } finally {
+        this.busy = false;
       }
     },
     editApprovalNotes(row){

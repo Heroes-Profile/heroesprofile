@@ -42,6 +42,7 @@ class ApiAccount extends Authenticatable implements MustVerifyEmail
         'terms_accepted_at' => 'datetime',
         'project_updated_at' => 'datetime',
         'suspended_at' => 'datetime',
+        'poisoned_at' => 'datetime',
         'last_read_announcements_at' => 'datetime',
         'migrated' => 'boolean',
         'test_mode' => 'boolean',
@@ -184,6 +185,12 @@ class ApiAccount extends Authenticatable implements MustVerifyEmail
     public function isTerminated(): bool
     {
         return $this->isSuspended() && $this->suspension_type === self::TERMINATION;
+    }
+
+    /** Global stats carry per-account markers. Internal only; never shown to them. */
+    public function isPoisoned(): bool
+    {
+        return $this->poisoned_at !== null;
     }
 
     /** Every action ever taken against this account, newest first. */

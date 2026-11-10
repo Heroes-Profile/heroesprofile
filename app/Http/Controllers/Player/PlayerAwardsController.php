@@ -81,7 +81,8 @@ class PlayerAwardsController extends Controller
     public function getAwardGames(Request $request)
     {
         $validator = Validator::make($request->all(), array_merge($this->validationRules(), [
-            'award_id' => 'required|integer',
+            // Without one, every award: the page's Recent Awards
+            'award_id' => 'nullable|integer',
             'pagination_page' => 'required|integer|min:1',
         ]));
 
@@ -96,7 +97,8 @@ class PlayerAwardsController extends Controller
         $lookups = $this->rowLookups();
 
         return $this->baseQuery($request)
-            ->where('scores.match_award', $request['award_id'])
+            ->when($request['award_id'], fn ($query) => $query->where('scores.match_award', $request['award_id']),
+                fn ($query) => $query->whereIn('scores.match_award', $lookups['awards']->keys()->all()))
             ->select('replay.replayID', 'replay.game_date', 'replay.game_type', 'replay.game_map', 'player.hero', 'player.winner', 'scores.match_award')
             ->orderByDesc('replay.replayID')
             ->paginate(100, ['*'], 'page', $request['pagination_page'])
@@ -115,7 +117,7 @@ class PlayerAwardsController extends Controller
             ];
         }
 
-        if (config('app.env') !== 'production') {
+        if (! $this->globalDataService->usesProductionCaching()) {
             return response()->json($this->executeGetData($request));
         }
 
@@ -129,6 +131,10 @@ class PlayerAwardsController extends Controller
             if (! $latestReplayId || $dbCache->latest_replayID >= $latestReplayId) {
                 return response()->json(json_decode($dbCache->data, true));
             }
+        }
+
+        if (! $this->globalDataService->isGlobalAsyncEnabled()) {
+            return response()->json($this->executeGetData($request));
         }
 
         return app(GlobalQueryService::class)->dispatchAsync(

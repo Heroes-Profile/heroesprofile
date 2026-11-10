@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BattletagNotAllowedDownloadReplay;
 use App\Models\GameType;
 use App\Models\LeagueTier;
 use App\Models\Map;
@@ -15,13 +16,14 @@ use App\Rules\TimeframeMinorInputValidation;
 use App\Support\GameLength;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class MatchSearchController extends Controller
 {
-    private const PAGE_SIZE = 1000;
+    private const PAGE_SIZE = 100;
 
     private const CHUNK_SIZE = 250000;
 
@@ -42,6 +44,9 @@ class MatchSearchController extends Controller
             'gametypedefault' => self::GAME_TYPES,
             'oldestdate' => $this->searchWindowStart(),
             'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
+            'playermatchtablestyle' => $this->globalDataService->getPlayerMatchStyle(),
+            'analyticsCutover' => config('analytics.cutover'),
+            'replayDownloadBlocked' => Auth::check() && BattletagNotAllowedDownloadReplay::where('battletag', Auth::user()->battletag)->exists(),
         ]);
     }
 
@@ -315,20 +320,47 @@ class MatchSearchController extends Controller
         $heroes = $this->globalDataService->getHeroes()->keyBy('id');
         $regions = $this->globalDataService->getRegionIDtoString();
 
+        // Same player fields as the match history's players column, plus each player's score for the team totals
         $players = DB::table('player')
-            ->select('replayID', 'hero', 'team', 'winner')
-            ->whereIn('replayID', $replayIDs)
-            ->get()
+            ->join('battletags', 'battletags.player_id', '=', 'player.battletag')
+            ->leftJoin('scores', function ($join) {
+                $join->on('scores.replayID', '=', 'player.replayID')
+                    ->on('scores.battletag', '=', 'player.battletag');
+            })
+            ->whereIn('player.replayID', $replayIDs)
+            ->get([
+                'player.replayID',
+                'player.blizz_id',
+                'player.hero',
+                'player.team',
+                'player.winner',
+                'player.party',
+                'player.hero_level',
+                'player.mastery_taunt',
+                'player.player_conservative_rating',
+                'battletags.battletag',
+                'battletags.account_level',
+                'scores.kills',
+                'scores.deaths',
+                'scores.assists',
+            ])
             ->groupBy('replayID');
 
         return DB::table('replay')
-            ->select('replayID', 'game_date', 'game_type', 'game_map', 'game_length', 'region', 'game_version')
+            ->select('replayID', 'game_date', 'game_type', 'game_map', 'game_length', 'region', 'game_version', 'date_added')
             ->whereIn('replayID', $replayIDs)
             ->orderByDesc('replayID')
             ->get()
             ->map(function ($replay) use ($players, $gameTypes, $maps, $heroes, $regions) {
                 $replayPlayers = $players[$replay->replayID] ?? collect();
                 $winningTeam = $replayPlayers->firstWhere('winner', 1)?->team;
+
+                $formatted = $this->globalDataService->formatMatchPlayers(
+                    $replayPlayers->map(fn ($player) => collect((array) $player)->except(['winner', 'kills', 'deaths', 'assists'])->all())->all(),
+                    null,
+                    $replay->region,
+                    $heroes
+                );
 
                 return [
                     'replayID' => $replay->replayID,
@@ -339,10 +371,18 @@ class MatchSearchController extends Controller
                     'region' => $regions[$replay->region] ?? null,
                     'game_version' => $replay->game_version,
                     'winner' => $winningTeam,
+                    'downloadable' => $this->globalDataService->replayFileIsRetained($replay->date_added),
                     'heroes' => [
                         $replayPlayers->where('team', 0)->map(fn ($player) => $heroes[$player->hero] ?? null)->filter()->values(),
                         $replayPlayers->where('team', 1)->map(fn ($player) => $heroes[$player->hero] ?? null)->filter()->values(),
                     ],
+                    // Per team, keyed by team number
+                    'players' => collect($formatted)->keyBy(fn ($team) => $team[0]['team'] ?? 0)->all(),
+                    'totals' => collect([0, 1])->mapWithKeys(fn ($team) => [$team => [
+                        'kills' => (int) $replayPlayers->where('team', $team)->sum('kills'),
+                        'deaths' => (int) $replayPlayers->where('team', $team)->sum('deaths'),
+                        'assists' => (int) $replayPlayers->where('team', $team)->sum('assists'),
+                    ]])->all(),
                 ];
             })
             ->all();

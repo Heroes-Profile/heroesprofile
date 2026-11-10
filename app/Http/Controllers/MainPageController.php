@@ -14,6 +14,7 @@ class MainPageController extends Controller
             'maxReplayID' => $this->globalDataService->calculateMaxReplayNumber(),
             'latestPatch' => $this->globalDataService->getLatestPatch(),
             'latestGameDate' => $this->globalDataService->getLatestGameDate(),
+            'replayTicker' => $this->globalDataService->getReplayTicker(),
         ]);
     }
 

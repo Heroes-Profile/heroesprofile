@@ -99,7 +99,7 @@ class FriendFoeController extends Controller
             ];
         }
 
-        if (config('app.env') !== 'production') {
+        if (! $this->globalDataService->usesProductionCaching()) {
             return response()->json($this->executeFriendFoeData($request));
         }
 
@@ -141,6 +141,10 @@ class FriendFoeController extends Controller
         }
 
         $cacheKey = 'FriendFoeData|'.$paramsHash;
+
+        if (! $this->globalDataService->isGlobalAsyncEnabled()) {
+            return response()->json($this->executeFriendFoeData($request));
+        }
 
         return app(GlobalQueryService::class)->dispatchAsync(
             $cacheKey,

@@ -51,6 +51,12 @@ class AppServiceProvider extends ServiceProvider
         // The nav's test-data badge, resolved the same way the quota middleware
         // resolves it. Asking a second source would let the badge disagree with
         // what the API actually serves, and it is the disagreement that misleads.
+        // The main site's dark mode setting and toggle, shared with the API section
+        View::composer('layouts.api', function ($view) {
+            $view->with('darkmode', (bool) app(\App\Services\GlobalDataService::class)->getDarkMode());
+            $view->with('isAuthenticated', Auth::check());
+        });
+
         View::composer('api.partials.nav', function ($view) {
             $account = Auth::guard('api_web')->user();
 

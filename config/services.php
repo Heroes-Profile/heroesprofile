@@ -63,6 +63,11 @@ return [
         'campaign_id' => env('PATREON_CAMPAIGN_ID'),
     ],
 
+    // Claude for the help chat; its own key, scoped to the Help Chat workspace
+    'help_chat' => [
+        'anthropic_api_key' => env('HEROESPROFILE_CHAT_ANTHROPIC_API_KEY'),
+    ],
+
     'recaptcha' => [
         'site_key' => env('RECAPTCHA_SITE_KEY'),
         'secret_key' => env('RECAPTCHA_SECRET_KEY'),
