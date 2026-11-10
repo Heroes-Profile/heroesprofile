@@ -57,6 +57,7 @@ class GenerateSitemap extends Command
             ['loc' => '/Community/Support',        'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.4'],
 
             // Tools
+            ['loc' => '/Heroes',                   'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.8'],
             ['loc' => '/Upload',                   'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.7'],
             ['loc' => '/Upload/Uploader',          'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.6'],
             ['loc' => '/Drafter',                  'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.7'],
@@ -88,6 +89,7 @@ class GenerateSitemap extends Command
             $urls[] = ['loc' => "/Global/Hero/Maps/{$encoded}",      'lastmod' => $now, 'changefreq' => 'daily',  'priority' => '0.7'];
             $urls[] = ['loc' => "/Global/Matchups/{$encoded}",       'lastmod' => $now, 'changefreq' => 'daily',  'priority' => '0.7'];
             $urls[] = ['loc' => "/Global/Talents/Builder/{$encoded}", 'lastmod' => $now, 'changefreq' => 'weekly', 'priority' => '0.6'];
+            $urls[] = ['loc' => "/Heroes/{$encoded}",                 'lastmod' => $now, 'changefreq' => 'weekly', 'priority' => '0.7'];
         }
 
         return $urls;

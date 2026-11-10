@@ -43,6 +43,7 @@ use App\Http\Controllers\Global\GlobalLeaderboardController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
+use App\Http\Controllers\HeroesController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\MatchPredictionGameController;
 use App\Http\Controllers\MatchSearchController;
@@ -160,6 +161,9 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/Global/Draft', [GlobalDraftController::class, 'show']);
     Route::get('/Drafter', [GlobalDrafterController::class, 'show']);
     Route::get('/Global/Draft/{hero}', [GlobalDraftController::class, 'show']);
+
+    Route::get('/Heroes', [HeroesController::class, 'index']);
+    Route::get('/Heroes/{hero}', [HeroesController::class, 'show']);
 
     Route::get('/Global/Talents/', [GlobalTalentStatsController::class, 'show']);
     Route::get('/Global/Talents/Builder', [GlobalTalentBuilderController::class, 'show']);

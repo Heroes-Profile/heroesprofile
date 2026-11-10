@@ -69,6 +69,7 @@
                         <a class=" cursor-pointer">Tools</a>
                         <div class="nav-dropdown ">
                             <div class=" nav-dropdown-inner-wrapper ">
+                                <a href="/Heroes" >Heroes</a>
                                 <a href="/Global/Talents/Builder" >Talent Builder</a>
                                 <a href="/Drafter" >Drafter</a>
                                 <a href="/Upload" >Replay Uploader</a>
