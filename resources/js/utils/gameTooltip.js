@@ -4,7 +4,7 @@
 const COLOUR_CLASSES = {
   '#TooltipNumbers': 'font-bold text-white',
   '#ColorGray': 'text-gray-medium',
-  '#TooltipQuest': 'text-yellow',
+  '#TooltipQuest': 'text-quest',
   '#TooltipGreen': 'text-green',
   '#AbilityPassive': 'text-green',
   '#ColorViolet': 'text-purple',

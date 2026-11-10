@@ -1,6 +1,7 @@
 <template>
   <div>
-    <page-heading heading="Heroes" infoText1="Abilities, talents and base stats for every hero, from the current patch."></page-heading>
+    <!-- Heading descriptions hidden site-wide for now. infoText1="Abilities, talents and base stats for every hero, from the current patch." -->
+    <page-heading heading="Heroes"></page-heading>
 
     <hero-selection :heroes="heroes" linkbase="/Heroes"></hero-selection>
   </div>

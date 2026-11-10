@@ -1,34 +1,36 @@
 <template>
   <div>
-    <page-heading :heading="hero.name" :infoText1="metadata ? metadata.title : null"></page-heading>
+    <page-heading :heading="hero.name">
+      <hero-image-wrapper :hero="hero" size="big" :excludehover="true"></hero-image-wrapper>
+      <template v-if="metadata" #aboveHeading>
+        <div class="flex items-center gap-2 text-base text-gray-medium max-md:justify-center">
+          <round-image v-if="universeIcon" :image="universeIcon" size="small" :title="metadata.franchise">
+            <image-hover-box :title="metadata.franchise"></image-hover-box>
+          </round-image>
+          {{ [hero.new_role, metadata.difficulty ? `Difficulty: ${metadata.difficulty}` : null].filter(v => v).join(' | ') }}
+        </div>
+      </template>
+    </page-heading>
 
-    <div class="max-w-[1500px] mx-auto px-4 py-4 space-y-4">
-      <div class="flex max-md:justify-center">
+    <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <div class="flex flex-wrap items-center gap-x-8 gap-y-4 max-md:justify-center">
         <multi-tab-button :options="tabs" v-model="activeTab"></multi-tab-button>
+        <level-slider v-if="metadata" class="w-full md:max-w-md" v-model="level"></level-slider>
       </div>
       <div class="flex flex-wrap items-center gap-2 max-md:justify-center">
         <custom-button v-for="link in statLinks" :key="link.href" :href="link.href" :text="link.text" :alt="link.text" size="small" :targetblank="true"></custom-button>
       </div>
 
-      <div v-if="!metadata" class="text-center">Game data for {{ hero.name }} hasn't been loaded yet.</div>
+      <panel-box v-if="!metadata">
+        <p class="text-center">Game data for {{ hero.name }} hasn't been loaded yet.</p>
+      </panel-box>
 
-      <div v-else class="flex gap-8 max-lg:flex-col-reverse">
-      <div class="flex-1 min-w-0 space-y-6">
-      <div class="flex items-center gap-4 pb-4 border-b border-gray-medium">
-        <round-image v-if="universeIcon" :image="universeIcon" size="xl" :title="metadata.franchise">
-          <image-hover-box :title="metadata.franchise"></image-hover-box>
-        </round-image>
-        <div>
-          <h2 class="text-5xl font-bold">{{ hero.name }}</h2>
-          <div class="text-xl font-bold mt-1 text-gray-light">{{ [hero.new_role, metadata.difficulty ? `Difficulty: ${metadata.difficulty}` : null].filter(v => v).join(' | ') }}</div>
-        </div>
-      </div>
-      <level-slider class="w-full md:max-w-md" v-model="level"></level-slider>
+      <div v-else class="flex gap-6">
+      <div class="flex-1 min-w-0 flex flex-col gap-6">
 
       <!-- About -->
-      <div v-show="activeTab === 'about'" class="space-y-6">
-        <div class="space-y-3">
-          <h3 v-if="metadata.title" class="text-xl font-bold">{{ metadata.title }}</h3>
+      <template v-if="activeTab === 'about'">
+        <panel-box :title="metadata.title || 'About'">
           <p v-if="metadata.description">{{ metadata.description }}</p>
           <div class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 items-center max-w-lg">
             <template v-for="rating in ratings" :key="rating.label">
@@ -36,10 +38,10 @@
               <stat-bar :value="rating.value * 10" :display-text="rating.value" color="teal"></stat-bar>
             </template>
           </div>
-        </div>
+        </panel-box>
 
-        <div v-for="unit in units" :key="unit.unit_id" class="space-y-2">
-          <h3 class="text-xl font-bold">{{ units.length > 1 ? unit.name : 'Base Stats' }} <span class="text-sm font-normal text-gray-medium">at level {{ level }}</span></h3>
+        <panel-box v-for="unit in units" :key="unit.unit_id" :title="units.length > 1 ? unit.name : 'Base Stats'">
+          <template #title><span class="text-sm font-normal text-gray-medium">at level {{ level }}</span></template>
           <table class="min-w-0 w-full responsive-table">
             <thead>
               <tr>
@@ -54,54 +56,52 @@
               </tr>
             </tbody>
           </table>
-        </div>
+        </panel-box>
 
-        <div v-if="metadata.lore" class="space-y-2">
-          <h3 class="text-xl font-bold">Lore</h3>
+        <panel-box v-if="metadata.lore" title="Lore">
           <p class="whitespace-pre-line">{{ metadata.lore }}</p>
-        </div>
-
-      </div>
+        </panel-box>
+      </template>
 
       <!-- Abilities -->
-      <div v-show="activeTab === 'abilities'" class="space-y-6">
-        <div v-for="group in abilityGroups" :key="group.key" class="space-y-3">
-          <h3 v-if="group.label" class="text-xl font-bold">{{ group.label }}</h3>
+      <template v-if="activeTab === 'abilities'">
+        <panel-box v-for="group in abilityGroups" :key="group.key" :title="group.label || 'Abilities'">
           <div v-for="ability in group.abilities" :key="ability.link_id" class="flex items-center">
             <talent-image-wrapper class="shrink-0" :talent="ability" :level="level">
-              <p v-if="abilityCosts(ability).length">{{ abilityCosts(ability).join(' · ') }}</p>
-              <div v-for="sub in childAbilities(ability.link_id)" :key="sub.link_id">
-                <h2><b>{{ sub.title }}</b></h2>
-                <game-tooltip :text="sub.raw_description" :level="level"></game-tooltip>
+              <p v-if="abilityCosts(ability).length" class="mt-2.5 text-gray-medium">{{ abilityCosts(ability).join(' · ') }}</p>
+              <div v-for="sub in childAbilities(ability.link_id)" :key="sub.link_id" class="mt-2.5">
+                <h2 class="text-base font-bold text-white">{{ sub.title }}</h2>
+                <game-tooltip class="mt-2.5" :text="sub.raw_description" :level="level"></game-tooltip>
               </div>
             </talent-image-wrapper>
             <div class="min-w-0 px-3">
               <div class="flex flex-wrap items-center gap-2">
-                <span>{{ ability.title }}</span>
+                <span class="font-bold">{{ ability.title }}</span>
                 <span v-if="hotkeyLabel(ability)" :class="['px-1 text-sm border rounded', isHeroicOrTrait(ability) ? 'text-yellow border-yellow' : 'border-gray-medium']">{{ hotkeyLabel(ability) }}</span>
               </div>
-              <p v-if="ability.short_description" class="text-sm">{{ ability.short_description }}</p>
+              <p v-if="ability.short_description" class="text-sm text-gray-medium">{{ ability.short_description }}</p>
             </div>
           </div>
-        </div>
-      </div>
+        </panel-box>
+      </template>
 
       <!-- Talents -->
-      <div v-show="activeTab === 'talents'" class="flex gap-8 max-md:flex-col">
+      <panel-box v-if="activeTab === 'talents'" title="Talents">
+        <div class="flex gap-8 max-md:flex-col">
         <multi-tab-button class="md:w-20 text-xl" :vertical="true" :options="tierOptions" v-model="selectedTier"></multi-tab-button>
         <div class="flex-1 min-w-0">
         <div v-for="tier in talentTiers" v-show="tier.level === selectedTier" :key="tier.level" class="space-y-3">
           <div v-for="talent in tier.talents" :key="talent.talent_id" class="flex items-center">
             <talent-image-wrapper class="shrink-0" :talent="talent" :level="level">
-              <p v-if="talent.cooldown && talent.cooldown !== '0'">Cooldown: {{ talent.cooldown }}</p>
-              <div v-for="sub in childAbilities(talent.link_id)" :key="sub.link_id">
-                <h2><b>{{ sub.title }}</b></h2>
-                <game-tooltip :text="sub.raw_description" :level="level"></game-tooltip>
+              <p v-if="talent.cooldown && talent.cooldown !== '0'" class="mt-2.5 text-gray-medium">Cooldown: {{ talent.cooldown }}</p>
+              <div v-for="sub in childAbilities(talent.link_id)" :key="sub.link_id" class="mt-2.5">
+                <h2 class="text-base font-bold text-white">{{ sub.title }}</h2>
+                <game-tooltip class="mt-2.5" :text="sub.raw_description" :level="level"></game-tooltip>
               </div>
             </talent-image-wrapper>
             <div class="flex-1 min-w-0 px-3">
-              <span>{{ talent.title }}</span>
-              <game-tooltip v-if="talent.short_description" class="text-sm" :text="talent.short_description" :level="level"></game-tooltip>
+              <span class="font-bold">{{ talent.title }}</span>
+              <game-tooltip v-if="talent.short_description" class="text-sm text-gray-medium" :text="talent.short_description" :level="level"></game-tooltip>
             </div>
             <span v-if="talentBadge(talent)" :class="['flex items-center gap-1 px-1 text-sm border rounded self-start whitespace-nowrap', talentBadge(talent).class]">
               <img v-if="talent.is_quest" class="w-4 h-4" src="/images/miscellaneous/quest-icon.png" alt="Quest">
@@ -110,9 +110,10 @@
           </div>
         </div>
         </div>
+        </div>
+      </panel-box>
       </div>
-      </div>
-      <img :src="`/images/heroes_rectangle_large/${hero.short_name}.jpg`" :alt="hero.name" class="w-full lg:w-[40%] aspect-[800/778] object-cover object-top rounded self-start">
+      <img :src="`/images/heroes_rectangle_large/${hero.short_name}.jpg`" :alt="hero.name" class="max-md:hidden md:w-[40%] aspect-[800/778] object-cover object-top rounded self-start">
       </div>
     </div>
   </div>
