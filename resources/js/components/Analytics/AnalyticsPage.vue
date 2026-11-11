@@ -37,14 +37,13 @@
       <!-- Processing status: one line, so the tab's own numbers come first -->
       <div v-if="!sample" class="text-center mb-6">
         <div v-if="processing" class="max-w-[600px] mx-auto">
-          <p v-if="status.done >= status.total && status.outdated > 0" class="text-sm">Updating your games: {{ status.outdated }} left. You can leave this page; it carries on.</p>
-          <p v-else class="text-sm">Processing your games: {{ status.done }} of {{ status.total }} done. You can leave this page; it carries on.</p>
-          <stat-bar-box class="w-full" size="full" :title="'Progress'" :value="percent" :displaytext="status.done + ' of ' + status.total"></stat-bar-box>
+          <p class="text-sm">Processing your games: {{ upToDate }} of {{ status.total }} up to date. You can leave this page; it carries on.</p>
+          <stat-bar-box class="w-full" size="full" :title="'Progress'" :value="upToDatePercent" :displaytext="upToDate + ' of ' + status.total"></stat-bar-box>
         </div>
         <div v-else class="flex flex-wrap items-center justify-center gap-3 text-sm">
           <span>{{ status.done.toLocaleString('en-US') }} of {{ status.total.toLocaleString('en-US') }} season games processed ({{ percent }}%)</span>
           <custom-button
-            v-if="status.done < status.total && !locked && (!status.free || status.free.left > 0)"
+            v-if="!locked && ((status.done < status.total && (!status.free || status.free.left > 0)) || status.outdated > 0)"
             @click="request"
             :text="processText"
             :alt="processText"
@@ -54,20 +53,10 @@
             :ignoreclick="true"
           ></custom-button>
         </div>
-        <!-- Games processed before a newer version: what they're missing, and the way to update them -->
+        <!-- Games processed before a newer version: what they're missing; the button above updates them -->
         <p v-if="!processing && status.outdated > 0 && !locked" class="text-sm mt-2">
           {{ status.outdated.toLocaleString('en-US') }} of your games were processed before Analytics added
-          {{ (status.whats_new || []).join('; ') }}.
-          <custom-button
-            class="ml-2"
-            @click="update"
-            :text="'Update my games'"
-            :alt="'Process those games again with the newest version'"
-            size="small"
-            :loading="requesting"
-            :disabled="requesting"
-            :ignoreclick="true"
-          ></custom-button>
+          {{ (status.whats_new || []).join('; ') }}. Rebuilding them is free.
         </p>
         <!-- Without a subscription: a set number of games per stage -->
         <p v-if="status.free && !locked" class="text-sm mt-2">
@@ -98,17 +87,17 @@
     <div v-if="status.done > 0" :class="{ 'opacity-30 pointer-events-none select-none': locked }" :aria-hidden="locked">
       <!-- The match picker and tabs use the page's full width, like Match History below them -->
       <div class="px-4">
-        <!-- One match at a time: pick one, or go back to all of them -->
-        <div v-if="!sample || game" class="flex flex-wrap items-center justify-center gap-3 mb-4">
-          <single-select-filter
-            v-if="!sample"
-            :key="'game' + (game || 0) + gameOptions.length"
-            :values="gameOptions"
-            :text="'Match'"
-            :defaultValue="game || 0"
-            :disabledeselectfilters="true"
-            @input-changed="selectGame(Number($event.value) || null)"
-          ></single-select-filter>
+        <!-- One match at a time: pick one from your latest processed matches, 10 to a page -->
+        <analytics-numbers v-if="!sample && activeTab !== 'summary' && !isLoading && pickerGames.length" class="max-w-[1500px] mx-auto" :label="game ? 'Pick another match' : 'Pick a match to see it on its own'">
+          <analytics-match-picker
+            :games="pickerGames"
+            :selected="game"
+            :playermatchtablestyle="playermatchtablestyle"
+            :authenticated="!sample"
+            @select="selectGame"
+          ></analytics-match-picker>
+        </analytics-numbers>
+        <div v-if="game" class="flex flex-wrap items-center justify-center gap-3 mb-4">
           <template v-if="game">
             <span v-if="gameInfo">
               One match: <span class="font-bold">{{ gameInfo.hero }}</span> on {{ gameInfo.game_map }} &middot; {{ gameInfo.game_type }} &middot;
@@ -253,7 +242,9 @@ export default {
       game: this.sample
         ? (Number((this.urlparameters || {}).game) && Number(this.urlparameters.game) === this.sample.replay_id && (this.sample.match_tabs || []).length ? this.sample.replay_id : null)
         : this.initialMatch || null,
-      gameOptions: [],
+      // Your processed matches for the match picker, newest first
+      pickerGames: [],
+      pickerLoaded: false,
       tabCache: {},
       tabError: '',
       isLoading: false,
@@ -285,7 +276,6 @@ export default {
     }
     if (this.status.done > 0) {
       this.loadTab();
-      this.loadGameOptions();
     }
     // A request still running from an earlier visit
     if (this.processing && !this.sample) {
@@ -310,10 +300,21 @@ export default {
     },
     processText() {
       const left = this.status.free ? this.status.free.left : null;
-      return left !== null && left < this.status.total - this.status.done ? 'Process my latest ' + left + ' games' : 'Process my games';
+      const pending = this.status.total - this.status.done;
+      if (this.status.outdated > 0) {
+        return 'Rebuild all games to latest analytics';
+      }
+      return left !== null && left < pending ? 'Process my latest ' + left + ' games' : 'Process my games';
     },
     percent() {
       return this.status.total > 0 ? Math.floor((this.status.done / this.status.total) * 100) : 0;
+    },
+    // Processed at the latest version
+    upToDate() {
+      return this.status.done - (this.status.outdated || 0);
+    },
+    upToDatePercent() {
+      return this.status.total > 0 ? Math.floor((this.upToDate / this.status.total) * 100) : 0;
     },
     filterParams() {
       const params = { game_type: this.gametype, game_map: this.gamemap, hero: this.getHeroID() };
@@ -416,20 +417,15 @@ export default {
       this.loadTab();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
-    // The Match dropdown: your processed matches, newest first
+    // The match picker: your processed matches, newest first. Loaded once, alongside the first tab's data
     async loadGameOptions() {
-      if (this.sample) return;
+      if (this.sample || this.pickerLoaded) return;
       try {
         const games = (await this.$axios.post(this.dataUrl + 'games', {})).data.games || [];
-        this.gameOptions = [
-          { code: 0, name: 'All matches' },
-          ...games.filter(g => g.processed).slice(0, 100).map(g => ({
-            code: g.replayID,
-            name: [this.formatDate(g.game_date), g.hero?.name, g.game_map?.name, g.winner ? 'Win' : 'Loss'].filter(Boolean).join(' · '),
-          })),
-        ];
+        this.pickerGames = games.filter(g => g.processed);
+        this.pickerLoaded = true;
       } catch (e) {
-        // The dropdown just stays empty; Match History still has every match
+        // The picker just doesn't show; Match History still has every match
       }
     },
     formatDate(date) {
@@ -438,12 +434,22 @@ export default {
     async loadTab() {
       const key = this.cacheKey();
       this.tabError = '';
-      if (this.activeTab === 'summary' || this.tabCache[key]) {
+      if (this.activeTab === 'summary') {
+        return;
+      }
+      if (this.tabCache[key]) {
+        // A tab already loaded; the picker still loads if it hasn't yet
+        if (!this.pickerLoaded && !this.sample) {
+          this.isLoading = true;
+          await this.loadGameOptions();
+          this.isLoading = false;
+        }
         return;
       }
       this.isLoading = true;
       try {
-        const response = await this.$axios.post(this.dataUrl + this.activeTab, this.filterParams);
+        // The tab and the match picker together, so they show at the same time
+        const [response] = await Promise.all([this.$axios.post(this.dataUrl + this.activeTab, this.filterParams), this.loadGameOptions()]);
         this.tabCache = { ...this.tabCache, [key]: response.data };
       } catch (e) {
         this.tabError = 'Could not load this tab. Please try again in a minute.';
@@ -460,30 +466,13 @@ export default {
           this.error = 'You have used your free processing for this stage. Subscribe on Patreon or link a paid API plan to process the rest.';
         } else if (response.data.already_requested) {
           this.error = 'Your games were already requested in the last 10 minutes. Try again in a few minutes if they are not processing.';
-        } else if (response.data.queued === 0) {
-          this.error = 'There are no unprocessed games to queue.';
+        } else if (response.data.queued === 0 && response.data.updated === 0) {
+          this.error = 'There are no games to process or update.';
         } else {
           this.startPolling();
         }
       } catch (e) {
         this.error = 'Could not start processing. Please try again in a minute.';
-      } finally {
-        this.requesting = false;
-      }
-    },
-    // Older-version games again; free, and the page's numbers refresh as they land
-    async update() {
-      this.requesting = true;
-      this.error = '';
-      try {
-        const response = await this.$axios.post('/Analytics/Update');
-        if (response.data.already_requested) {
-          this.error = 'Your games were already sent for updating in the last 10 minutes.';
-        } else if (response.data.queued > 0) {
-          this.startPolling();
-        }
-      } catch (e) {
-        this.error = 'Could not start the update. Please try again in a minute.';
       } finally {
         this.requesting = false;
       }

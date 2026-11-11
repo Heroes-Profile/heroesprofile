@@ -1,6 +1,6 @@
 <template>
   <div>
-    <analytics-heading :title="'What Analytics is'" :takeaway="'Your own season games, read from their replays and compared with everyone else.'">
+    <analytics-heading :title="'What are Heroes Profile Analytics'" :takeaway="'Your own season games, read from their replays and compared with everyone else.'">
       Every number comes from your processed replays (games from Oct 2, 2026 on). Pick a section below, or use the filters to narrow everything to a game type, map or hero.
     </analytics-heading>
     <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10 text-sm">
