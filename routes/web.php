@@ -197,7 +197,6 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
         Route::get('Analytics/Status', [AnalyticsController::class, 'status'])->middleware('throttle:60,1');
         Route::post('Analytics/Trial', [AnalyticsController::class, 'startTrial'])->middleware('throttle:10,1');
         Route::post('Analytics/Request', [AnalyticsController::class, 'request'])->middleware('throttle:10,1');
-        Route::post('Analytics/Update', [AnalyticsController::class, 'update'])->middleware('throttle:10,1');
         Route::post('Analytics/Data/{tab}', [AnalyticsController::class, 'data'])->whereAlpha('tab')->middleware('throttle:60,1');
         Route::get('Analytics/Match/Single/{replayID}/Replay', [AnalyticsController::class, 'replay'])->whereNumber('replayID');
         Route::get('Analytics/Match/Single/{replayID}/{section?}', [AnalyticsController::class, 'showMatch'])->whereNumber('replayID')->where('section', AnalyticsController::MATCH_SECTION_PATTERN);

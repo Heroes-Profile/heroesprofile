@@ -148,24 +148,17 @@ class AnalyticsController extends Controller
     {
         $user = $this->allowedUser();
         $free = $this->analytics->freeGames($user);
-        if ($free && $free['left'] === 0) {
-            return response()->json(['queued' => 0, 'already_requested' => false, 'limit_reached' => true]);
-        }
 
+        // Out of free games still updates older-version games
         $result = $this->analytics->request((int) $user->blizz_id, (int) $user->region, $free['left'] ?? null);
         if ($free) {
             $this->analytics->useFreeGames($user, $result['queued']);
         }
+        if ($free && $free['left'] === 0 && $result['updated'] === 0 && ! $result['already_requested']) {
+            $result['limit_reached'] = true;
+        }
 
         return response()->json($result);
-    }
-
-    // Reprocesses games from an older version; doesn't count toward the free allowance
-    public function update(): JsonResponse
-    {
-        $user = $this->allowedUser();
-
-        return response()->json($this->analytics->update((int) $user->blizz_id, (int) $user->region));
     }
 
     public function data(Request $request, string $tab): JsonResponse
