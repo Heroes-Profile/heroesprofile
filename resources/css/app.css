@@ -13,7 +13,8 @@ html{background-color:lightgrey; font-family: 'Roboto', sans-serif; box-sizing:b
    range shows the 2133px page shrunk to fit (16px * 1500 / 2133 = 11.25px at 1500). */
 @media (min-width: 1024px){ html{ font-size: 70.31%; } }               /* below 1500: held at the 1500px size */
 @media (min-width: 1500px){ html{ font-size: calc(100vw / 2133 * 16); } } /* 1500-2133: scales with the window */
-@media (min-width: 2133px){ html{ font-size: 100%; } }                 /* 2133 and up: 16px */
+@media (min-width: 2133px){ html{ font-size: 100%; } }                 /* 2133-2500: 16px */
+@media (min-width: 2500px){ html{ font-size: calc(100vw / 2500 * 16); } } /* 2500 and up: scales again, so 4K shows the 2500px page enlarged */
 
 /* Hover fade: colours ease in and out instead of snapping. In the base layer, so an element's own
    transition-* class still wins. Covers links, controls and anything with a hover: or group-hover/name: class. Skipped for

@@ -6,18 +6,19 @@
     </div>
 
 
-    <div class="flex-[1_1_0] min-h-12 max-md:hidden"></div>
+    <!-- Short windows (laptops at 125-150% scaling): smaller logo, icons and gaps so the cards stay on the first screen -->
+    <div class="flex-[1_1_0] min-h-12 md:[@media(max-height:700px)]:min-h-6 max-md:hidden"></div>
 
     <div class="text-center px-4 max-md:hidden">
       <!-- Equal-width words put the hexagon on the page's centre line; PROFILE is the wider word -->
-      <h1 class="flex items-center justify-center font-logo text-4xl md:text-8xl normal-case">
+      <h1 class="flex items-center justify-center font-logo text-4xl md:text-8xl md:[@media(max-height:700px)]:text-6xl normal-case">
         <span class="flex-1 basis-0 text-right whitespace-nowrap">Heroes</span>
         <img class="w-[1.667em] mx-[0.333em] shrink-0" src="/images/logo/heroesprofilelogo.png" alt=""/>
         <span class="flex-1 basis-0 text-left whitespace-nowrap">Profile</span>
       </h1>
       <!-- Count rolls up at the last day's average upload rate; no requests after page load -->
       <!-- Digits shift by % of their 0-9 strip, not em: the root font size scales with the window, and an em shift would roll on resize -->
-      <div v-if="tickerCount" class="mt-6 flex flex-col items-center gap-1">
+      <div v-if="tickerCount" class="mt-6 md:[@media(max-height:700px)]:mt-3 flex flex-col items-center gap-1">
         <p class="text-2xl font-bold">
           <span class="inline-flex tabular-nums leading-none align-baseline" :aria-label="tickerCount.toLocaleString('en-US')">
             <template v-for="(char, index) in tickerChars" :key="tickerChars.length - index">
@@ -40,12 +41,13 @@
          </div>
 
     <!-- Wider than the gaps inside each group, so the logo and the cards read as two groups -->
-    <div class="flex-[1.5_1_0] min-h-28 max-md:min-h-0"></div>
+    <div class="flex-[1.5_1_0] min-h-28 md:[@media(max-height:700px)]:min-h-10 max-md:min-h-0"></div>
 
-    <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem] mx-auto px-4 md:px-8 max-md:pt-8">
-      <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem]">
+    <!-- md+: one row of cards that shrink to fit; below md the two wrappers keep the mobile order -->
+    <div class="flex flex-wrap md:flex-nowrap justify-center gap-x-10 md:gap-x-6 2xl:gap-x-10 gap-y-16 max-w-[120rem] mx-auto px-4 md:px-8 max-md:pt-8">
+      <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem] md:contents">
       <div :class="cardClasses">
-        <i class="fas fa-address-card text-[5rem]"></i>
+        <i class="fas fa-address-card text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Player Profiles</h3>
         <p class="text-sm text-left mb-8">See all player stats in one place.  See data for individual maps or heroes played, match history, real in-game Storm League rank and comparisons all from within a streamlined profile.</p>
         <div class="flex mt-auto">
@@ -53,7 +55,7 @@
         </div>
       </div>
       <div :class="cardClasses">
-        <i class="fas fa-chart-line text-[5rem]"></i>
+        <i class="fas fa-chart-line text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Player Analytics</h3>
         <p class="text-sm text-left mb-8">Deep analysis of your season replays: where and how you die, time spent, performance ahead or behind, habit coaching, and a replay viewer for every game. Pre-alpha for Patreon supporters.</p>
         <div class="flex mt-auto">
@@ -62,7 +64,7 @@
         </div>
       </div>
       <div :class="cardClasses" class="max-md:order-first">
-        <i class="fa-solid fa-globe text-[5rem]"></i>
+        <i class="fa-solid fa-globe text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Global Stats</h3>
         <p class="text-sm text-left mb-8">Variety of Heroes of the Storm stats, including global stats for heroes, talent stats, overall stats, builds, compositions, draft, matchups, and more.</p>
         <div class="flex gap-4 mt-auto">
@@ -71,9 +73,9 @@
         </div>
       </div>
 </div>
-<div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem]">
+<div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem] md:contents">
       <div :class="cardClasses">
-        <i class="fa-solid fa-database text-[5rem]"></i>
+        <i class="fa-solid fa-database text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Heroes Profile API</h3>
         <p class="text-sm text-left mb-8">Heroes Profile API provides access to parsed Heroes of the Storm data from HeroesProfile.com, including player stats, match details, and performance insights.</p>
         <div class="flex mt-auto">
@@ -81,7 +83,7 @@
         </div>
       </div>
       <div :class="cardClasses" class="max-md:order-first">
-        <i class="fas fa-list-ol text-[5rem]"></i>
+        <i class="fas fa-list-ol text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Leaderboards</h3>
         <p class="text-sm text-left mb-8">View leaderboards based on Player, Hero, or Role using Heroes Profile Rating, real in-game Storm League ranks, and the Match Prediction game. Get talent builds, and navigate directly to player's profiles.</p>
         <div class="flex mt-auto">
@@ -91,7 +93,7 @@
     </div>
 
 </div>
-    <div class="h-[8.75rem] shrink-0 max-md:h-12"></div>
+    <div class="h-[8.75rem] md:[@media(max-height:700px)]:h-12 shrink-0 max-md:h-12"></div>
 
     <div>
       <dynamic-banner-ad :patreon-user="patreonUser" :index="0" :mobile-override="false"></dynamic-banner-ad>
@@ -182,7 +184,7 @@ import moment from 'moment-timezone';
         return moment.tz(this.latestgamedate, 'Atlantic/Reykjavik').fromNow();
       },
       cardClasses() {
-        return 'flex flex-col text-center  w-[21.0625rem]';
+        return 'flex flex-col text-center w-[21.0625rem] md:w-auto md:flex-1 md:min-w-0 md:max-w-[21.0625rem]';
       },
     },
     watch: {
