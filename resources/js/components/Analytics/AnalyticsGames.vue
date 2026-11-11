@@ -2,7 +2,7 @@
   <div>
     <p v-if="data.games.length === 0" class="text-center">No season games match these filters.</p>
 
-    <div v-if="data.games.length" class="flex flex-wrap justify-center gap-4 mb-8">
+    <div v-if="data.games.length" class="max-w-[1500px] mx-auto px-4 flex flex-wrap justify-center gap-4 mb-8">
       <stat-box class="w-[30%] max-md:w-[48%]" :title="'Games'" :value="data.games.length.toLocaleString('en-US')" color="teal"></stat-box>
       <stat-box class="w-[30%] max-md:w-[48%]" :title="'Wins - Losses'" :value="wins + ' - ' + (data.games.length - wins)" color="yellow"></stat-box>
       <stat-box class="w-[30%] max-md:w-[48%]" :title="'Win Rate'" :value="share(wins, data.games.length)" color="teal"></stat-box>
@@ -22,7 +22,7 @@
           <game-summary-box :data="game"></game-summary-box>
           <div class="flex justify-end gap-2 mt-1">
             <custom-button
-              v-if="isProcessed(game) && !sample"
+              v-if="isProcessed(game) && (!sample || game.replayID === sampleMatch)"
               :text="'Analyze'"
               :alt="'See every Analytics section for this match'"
               size="small"
@@ -106,7 +106,7 @@
               </td>
               <td>
                 <custom-button
-                  v-if="isProcessed(row) && !sample"
+                  v-if="isProcessed(row) && (!sample || row.replayID === sampleMatch)"
                   class="mr-1"
                   :text="'Analyze'"
                   :alt="'See every Analytics section for this match'"
@@ -160,6 +160,8 @@ export default {
     authenticated: Boolean,
     // The public sample: nothing to process, and only its one game has a replay
     sample: Boolean,
+    // The sample's one match that has an Analyze view, if it was captured
+    sampleMatch: { type: Number, default: null },
     replayLink: { type: Function, default: replayId => '/Analytics/Match/Single/' + replayId + '/Replay' },
   },
   emits: ['analyze'],
@@ -192,12 +194,17 @@ export default {
     },
     processButtonText(game) {
       const state = this.processState[game.replayID];
+      if (state === 'limit') return 'Free limit reached';
       return state === 'queued' ? 'Processing' : state === 'error' ? 'Try again' : 'Process';
     },
     async process(game) {
       this.processState = { ...this.processState, [game.replayID]: 'queued' };
       try {
-        await this.$axios.post('/Analytics/Match/Single/' + game.replayID + '/Process');
+        const response = await this.$axios.post('/Analytics/Match/Single/' + game.replayID + '/Process');
+        if (response.data.limit_reached) {
+          this.processState = { ...this.processState, [game.replayID]: 'limit' };
+          return;
+        }
         this.pollProcessing();
       } catch (e) {
         this.processState = { ...this.processState, [game.replayID]: 'error' };

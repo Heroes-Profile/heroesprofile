@@ -27,6 +27,10 @@ class BattlenetAccount extends Authenticatable
         'response',
     ];
 
+    protected $casts = [
+        'analytics_trial_started_at' => 'datetime',
+    ];
+
     protected $fillable = [
         'battlenet_accounts_id',
         'battlenet_id',

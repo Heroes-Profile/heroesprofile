@@ -317,7 +317,11 @@ return [
             'items' => [
                 [
                     'q' => 'How can I support Heroes Profile?',
-                    'a' => 'The best ways to support us are: <ul class="list-disc list-inside mt-2 space-y-1"><li>Subscribe on <a href="https://www.patreon.com/heroesprofile" target="_blank" class="link">Patreon</a> (any amount gets you ad-free + site flair)</li><li>Tell other players about the site — word of mouth is our biggest growth driver</li><li>Upload your replays consistently to help grow the dataset</li><li>Submit bug reports and feedback on <a href="https://github.com/Heroes-Profile/heroesprofile/issues" target="_blank" class="link">GitHub</a></li></ul>',
+                    'a' => 'The best ways to support us are: <ul class="list-disc list-inside mt-2 space-y-1"><li>Subscribe on <a href="https://www.patreon.com/heroesprofile" target="_blank" class="link">Patreon</a> (any amount gets you ad-free, site flair and <a href="/Analytics" class="link">Player Analytics</a>)</li><li>Tell other players about the site — word of mouth is our biggest growth driver</li><li>Upload your replays consistently to help grow the dataset</li><li>Submit bug reports and feedback on <a href="https://github.com/Heroes-Profile/heroesprofile/issues" target="_blank" class="link">GitHub</a></li></ul>',
+                ],
+                [
+                    'q' => 'How do I get Player Analytics?',
+                    'a' => '<a href="/Analytics" class="link">Player Analytics</a> is in pre-alpha. Every Battle.net account can start a free trial from the Analytics page; it starts when you press the button and processes your newest 100 games, and each new stage of development (alpha, beta and on) comes with a new free trial. To keep it after the trial, either subscribe on <a href="https://www.patreon.com/heroesprofile" target="_blank" class="link">Patreon</a> at any tier and link it to your Heroes Profile account, or hold any paid <a href="/Api" class="link">API plan</a> and link your Battle.net account on your <a href="/Api/Account#analytics" class="link">API account page</a>. Your processed games are kept between trials and subscriptions.',
                 ],
                 [
                     'q' => 'Is Heroes Profile open source?',
@@ -329,7 +333,7 @@ return [
                 ],
                 [
                     'q' => 'Does Heroes Profile have an API?',
-                    'a' => 'Yes, we provide a public API. Documentation is available at <a href="/Api/Docs" class="link">heroesprofile.com/Api/Docs</a>. The API has rate limits and is intended for reasonable use — not for bulk downloading the entire replay database.',
+                    'a' => 'Yes, we provide a public API. Documentation is available at <a href="/Api/Docs" class="link">heroesprofile.com/Api/Docs</a>. The API has rate limits and is intended for reasonable use — not for bulk downloading the entire replay database. Any paid API plan also includes <a href="/Analytics" class="link">Player Analytics</a> for one Battle.net account you link on your API account page.',
                 ],
             ],
         ],
@@ -384,7 +388,7 @@ return [
                 ['name' => 'Single Match', 'url' => '/Match/Single/{replay ID}', 'description' => 'One game in full: teams, talents, stats and the draft. Open one from any match list.'],
                 ['name' => 'Match Prediction Game', 'url' => '/Match/Prediction/Game', 'description' => 'Look at a draft and guess which team won.'],
                 ['name' => 'PreMatch', 'url' => '/PreMatch/Results', 'description' => 'Pre-match look at both teams, opened by the Heroes Profile Uploader when a game loads.'],
-                ['name' => 'Player Analytics', 'url' => '/Analytics', 'description' => 'Deep analysis of your season replays for Patreon supporters (pre-alpha).'],
+                ['name' => 'Player Analytics', 'url' => '/Analytics', 'description' => 'Deep analysis of your season replays (pre-alpha): free trial, then Patreon or a paid API plan.'],
                 ['name' => 'Analytics Sample', 'url' => '/Analytics/Sample', 'description' => 'A sample of Player Analytics anyone can view.'],
                 ['name' => 'Randomize Me', 'url' => '/Tools/RandomizeMe', 'description' => 'A random hero with a real talent build to try.'],
                 ['name' => 'Activity Graphs', 'url' => '/Tools/Activity', 'description' => 'Unique players per month from uploaded replays, back to 2014.'],

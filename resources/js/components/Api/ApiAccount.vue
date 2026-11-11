@@ -345,6 +345,54 @@
         </template>
       </div>
 
+      <!-- Player Analytics: any paid plan unlocks it for one linked Battle.net account. The
+           Battle.net sign-in returns to #analytics. -->
+      <div id="analytics" class="bg-lighten p-6 mb-8 scroll-mt-4">
+        <h2 class="text-lg mb-2">Player Analytics</h2>
+        <p class="text-sm text-gray-medium mb-4">
+          Any paid plan, or a Patreon pledge that includes API access, also unlocks
+          <a href="/Analytics" class="link">Player Analytics</a> on heroesprofile.com for one Battle.net account:
+          deep replay analysis of that player's season games. Link the account you play on.
+        </p>
+
+        <div v-if="analyticserror" class="bg-red p-3 mb-4">{{ analyticserror }}</div>
+        <div v-if="analyticsnotice" class="bg-teal p-3 mb-4">{{ analyticsnotice }}</div>
+
+        <template v-if="analyticsLink.battletag">
+          <p class="text-sm mb-2">
+            Linked to <strong>{{ analyticsLink.battletag }}</strong> ({{ analyticsLink.region_name }}).
+          </p>
+          <p class="text-sm mb-4" :class="analyticsLink.paid_plan ? '' : 'text-gray-medium'">
+            {{ analyticsLink.paid_plan
+              ? 'Player Analytics is unlocked for this account while your plan is active.'
+              : 'Player Analytics unlocks for this account once you hold a paid plan.' }}
+          </p>
+          <custom-button @click="unlinkAnalytics" :text="'Unlink Battle.net'" :alt="'Unlink Battle.net'" :size="'small'" :ignoreclick="true"></custom-button>
+        </template>
+
+        <template v-else>
+          <!-- No link here: the Battle.net account connected for the Twitch extension is used -->
+          <p v-if="analyticsLink.twitch_battletag" class="text-sm mb-2">
+            Using <strong>{{ analyticsLink.twitch_battletag }}</strong> ({{ analyticsLink.twitch_region_name }}), the Battle.net account
+            connected for your Twitch extension.
+          </p>
+          <p v-if="analyticsLink.twitch_battletag" class="text-sm mb-4" :class="analyticsLink.paid_plan ? '' : 'text-gray-medium'">
+            {{ analyticsLink.paid_plan
+              ? 'Player Analytics is unlocked for this account while your plan is active. To use a different account, link it below.'
+              : 'Player Analytics unlocks for this account once you hold a paid plan. To use a different account, link it below.' }}
+          </p>
+        <form action="/Api/Analytics/Battlenet/Link" method="GET" class="flex flex-wrap gap-2 items-end">
+          <div class="flex flex-col">
+            <label class="text-sm mb-1" for="analytics-region">Region you play in</label>
+            <select id="analytics-region" name="region" v-model="analyticsRegion" class="text-black p-2 rounded">
+              <option v-for="(name, id) in analyticsLink.regions" :key="id" :value="id">{{ name }}</option>
+            </select>
+          </div>
+          <button type="submit" class="transition-colors text-white rounded bg-blue hover:bg-lblue py-2 px-4">{{ analyticsLink.twitch_battletag ? 'Link a different Battle.net account' : 'Link Battle.net' }}</button>
+        </form>
+        </template>
+      </div>
+
       <div v-if="newKey" class="bg-teal p-4 mb-8">
         <h2 class="text-lg mb-2">Copy Your New Key Now</h2>
         <p class="text-sm mb-3">
@@ -484,6 +532,19 @@ export default {
       type: String,
       default: null,
     },
+    // The Player Analytics section: linked Battle.net account, regions, and whether a paid plan unlocks it
+    analytics: {
+      type: Object,
+      default: () => ({ regions: {} }),
+    },
+    analyticsnotice: {
+      type: String,
+      default: null,
+    },
+    analyticserror: {
+      type: String,
+      default: null,
+    },
   },
   data(){
     return {
@@ -496,6 +557,8 @@ export default {
       error: null,
       testMode: this.account.test_mode,
       patreonLinked: this.account.patreon_linked,
+      analyticsLink: { ...this.analytics },
+      analyticsRegion: this.analytics.region ? String(this.analytics.region) : '1',
       adminMode: this.account.admin_mode,
       receivesTestData: this.account.receives_test_data,
       migrated: this.account.migrated,
@@ -661,6 +724,16 @@ export default {
         this.error = 'Could not dismiss that. Please try again.';
       } finally {
         this.dismissing = false;
+      }
+    },
+    async unlinkAnalytics(){
+      this.error = null;
+
+      try {
+        await this.$axios.post('/Api/Analytics/Battlenet/Unlink');
+        this.analyticsLink = { ...this.analyticsLink, battletag: null, region: null, region_name: null };
+      } catch (error) {
+        this.error = 'Could not unlink Battle.net. Please try again.';
       }
     },
     async unlinkPatreon(){

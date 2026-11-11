@@ -14,6 +14,10 @@
     :sample="{{ json_encode($sample ?? null) }}"
     :initial-tab="{{ json_encode($initialTab ?? null) }}"
     :initial-match="{{ json_encode($initialMatch ?? null) }}"
+    :trial-ends-at="{{ json_encode($trialEndsAt ?? null) }}"
+    :trial-stage="{{ json_encode($trialStage ?? null) }}"
+    :locked="{{ json_encode($locked ?? false) }}"
+    :patreon-linked="{{ json_encode($patreonLinked ?? false) }}"
   >
   </analytics-page>
 @endsection

@@ -34,6 +34,14 @@ class CreateBattlenetAccountsTable extends Migration
             // Read by CheckIfPatreonSupporter and listed in BattlenetAccount::$fillable.
             $table->tinyInteger('flair_adfree_override')->default(0);
 
+            // When the account started its free Analytics trial, and for which development stage
+            // (config analytics.trial_stage). Each new stage gets a new trial; null = never started.
+            $table->timestamp('analytics_trial_started_at')->nullable();
+            $table->string('analytics_trial_stage', 20)->nullable();
+            // Games processed without a subscription, for analytics_free_stage (config analytics.free_games)
+            $table->unsignedSmallInteger('analytics_free_games')->default(0);
+            $table->string('analytics_free_stage', 20)->nullable();
+
             // Indexes
             $table->index('battlenet_id');
             $table->index('private_changed_at');

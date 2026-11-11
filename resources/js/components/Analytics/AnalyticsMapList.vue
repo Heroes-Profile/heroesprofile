@@ -5,7 +5,7 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
       <component
         :is="canPick(row.name) ? 'button' : 'div'"
-        v-for="row in sorted"
+        v-for="row in shown"
         :key="row.name"
         :type="canPick(row.name) ? 'button' : null"
         class="relative aspect-[16/9] rounded overflow-hidden border-2 border-[transparent] bg-darken bg-cover bg-center text-left"
@@ -36,8 +36,9 @@ export default {
   },
   emits: ['pick'],
   computed: {
-    sorted() {
-      return [...this.rows].sort((a, b) => a.name.localeCompare(b.name));
+    // Only the maps that can be picked (the public sample has just its own)
+    shown() {
+      return [...this.rows].filter(row => this.canPick(row.name)).sort((a, b) => a.name.localeCompare(b.name));
     },
   },
   methods: {
