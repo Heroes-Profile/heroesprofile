@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Map;
+use App\Services\AnalyticsPerformanceService;
 use App\Services\AnalyticsQueryService;
 use App\Services\AnalyticsReplayService;
 use App\Services\AnalyticsSampleService;
@@ -25,7 +26,10 @@ class CaptureAnalyticsSample extends Command
     // The Activity tab draws ability tables for this many of the player's heroes (AnalyticsActivity maxHeroes)
     private const ABILITY_HEROES = 5;
 
-    public function handle(AnalyticsService $analytics, AnalyticsQueryService $queries, AnalyticsReplayService $replays, AnalyticsSampleService $sample): int
+    // Need many games, so one match leaves them out (AnalyticsPage ONE_GAME_HIDDEN)
+    private const MATCH_HIDDEN = ['sessions', 'stacks'];
+
+    public function handle(AnalyticsService $analytics, AnalyticsQueryService $queries, AnalyticsReplayService $replays, AnalyticsSampleService $sample, AnalyticsPerformanceService $performance): int
     {
         $blizzId = (int) config('analytics.sample.blizz_id');
         $region = (int) config('analytics.sample.region');
@@ -77,6 +81,35 @@ class CaptureAnalyticsSample extends Command
         } else {
             $replay['win_model'] = $queries->winModel();
             $save('replay', $replay);
+
+            $perf = $performance->forReplay($replayId);
+            if ($perf === null) {
+                $this->warn('Performance for replay '.$replayId.' is not ready; the sample viewer will leave it out.');
+            } else {
+                $save('performance', $perf);
+            }
+
+            // Analyze: every section for this one match, as /Analytics/Data does with ?game=
+            $game = $replays->game($blizzId, $region, $replayId);
+            if ($game === null) {
+                $this->warn('Replay '.$replayId.' is not one of the sample account\'s games; the sample has no Analyze view.');
+            } else {
+                $this->info('Match '.$replayId);
+                $filters = ['game_types' => [$game['game_type_id']], 'maps' => [$game['game_map_id']], 'hero' => $game['hero_id'], 'replay' => $game['replay_id']];
+                foreach (array_diff(AnalyticsQueryService::TABS, self::MATCH_HIDDEN) as $tab) {
+                    $data = $queries->tab($tab, $blizzId, $region, $filters);
+                    $save($sample->matchFile($tab), $data + ['game' => $game]);
+
+                    if ($tab === 'activity') {
+                        foreach ($this->abilities($data) as [$heroId, $abilityId]) {
+                            $save($sample->matchFile($sample->abilityFile($heroId, $abilityId, null)), [
+                                'timeline' => $queries->abilityTimeline($blizzId, $region, $filters, $heroId, $abilityId),
+                            ]);
+                        }
+                    }
+                }
+                $matchTabs = array_values(array_diff(AnalyticsQueryService::TABS, self::MATCH_HIDDEN));
+            }
         }
 
         $save('meta', [
@@ -84,7 +117,9 @@ class CaptureAnalyticsSample extends Command
             'battletag' => config('analytics.sample.battletag'),
             'status' => array_merge($analytics->status($blizzId, $region), ['processing' => false]),
             'maps' => $mapNames,
+            'tabs' => AnalyticsQueryService::TABS,
             'replay_id' => $replayId,
+            'match_tabs' => $matchTabs ?? [],
         ]);
 
         $removed = $sample->removeExcept($written);

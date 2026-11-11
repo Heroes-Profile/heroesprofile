@@ -92,19 +92,27 @@ class AnalyticsController extends Controller
     private function page(Request $request, string $tab, ?int $replayID): View
     {
         $user = Auth::user();
+        $access = $user ? $this->analytics->access($user) : null;
+        // A used-up trial without Patreon: the page greyed out, with the ways to keep it
+        $locked = $access && ! $access['allowed'] && ! $access['trial_available'];
 
-        if (! $user || ! $this->analytics->isAllowed($user)) {
+        if (! $access || (! $access['allowed'] && ! $locked)) {
             return view('Analytics.analyticsInfo')->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'loggedIn' => (bool) $user,
                 'patreonLinked' => (bool) $user?->patreonAccount,
+                'trialAvailable' => (bool) $access && $access['trial_available'],
+                'trialEnded' => (bool) $access && ! $access['trial_available'],
+                'trialDays' => (int) config('analytics.trial_days'),
+                'trialStage' => (string) config('analytics.trial_stage'),
+                'freeGames' => (int) config('analytics.free_games'),
             ]);
         }
 
         return view('Analytics.analytics')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'battletag' => explode('#', (string) $user->battletag)[0],
-            'status' => $this->analytics->status((int) $user->blizz_id, (int) $user->region),
+            'status' => $this->analytics->status((int) $user->blizz_id, (int) $user->region) + ['free' => $this->analytics->freeGames($user, $access)],
             'filters' => $this->globalDataService->getFilterData(),
             'gametypedefault' => $this->globalDataService->getPlayerGameTypeDefault(),
             'maps' => $this->globalDataService->getAllMapsKeyed()->map(fn ($map) => $map->name),
@@ -112,21 +120,43 @@ class AnalyticsController extends Controller
             'playermatchtablestyle' => $this->globalDataService->getPlayerMatchStyle(),
             'initialTab' => $tab,
             'initialMatch' => $replayID,
+            // On a free trial: when it ends, for the days-left notice
+            'trialEndsAt' => $access['via'] === 'trial' ? $access['trial_ends_at']->toIso8601String() : null,
+            'trialStage' => $access['trial_stage'],
+            'locked' => $locked,
+            'patreonLinked' => (bool) $user->patreonAccount,
         ]);
+    }
+
+    // The account's one free trial; the page reloads into Analytics
+    public function startTrial(): JsonResponse
+    {
+        $user = $this->loggedInUser();
+
+        return response()->json(['started' => $this->analytics->startTrial($user)]);
     }
 
     public function status(): JsonResponse
     {
         $user = $this->allowedUser();
 
-        return response()->json($this->analytics->status((int) $user->blizz_id, (int) $user->region));
+        return response()->json($this->analytics->status((int) $user->blizz_id, (int) $user->region) + ['free' => $this->analytics->freeGames($user)]);
     }
 
     public function request(): JsonResponse
     {
         $user = $this->allowedUser();
+        $free = $this->analytics->freeGames($user);
+        if ($free && $free['left'] === 0) {
+            return response()->json(['queued' => 0, 'already_requested' => false, 'limit_reached' => true]);
+        }
 
-        return response()->json($this->analytics->request((int) $user->blizz_id, (int) $user->region));
+        $result = $this->analytics->request((int) $user->blizz_id, (int) $user->region, $free['left'] ?? null);
+        if ($free) {
+            $this->analytics->useFreeGames($user, $result['queued']);
+        }
+
+        return response()->json($result);
     }
 
     public function data(Request $request, string $tab): JsonResponse
@@ -198,14 +228,18 @@ class AnalyticsController extends Controller
     {
         $user = $this->loggedInUser();
         abort_unless($this->replays->isSeasonGame($replayID), 404);
+        $access = $this->analytics->access($user);
 
         return view('Analytics.analyticsReplay')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'replayId' => $replayID,
             'urlparameters' => $request->query(),
-            // Match performance is for Patreon supporters; everyone else sees it greyed out
-            'performanceAllowed' => $this->analytics->isAllowed($user),
+            // Match performance is part of Analytics; everyone else sees it greyed out with the way in
+            'performanceAllowed' => $access['allowed'],
             'patreonLinked' => (bool) $user->patreonAccount,
+            'trialAvailable' => $access['trial_available'],
+            'trialStage' => $access['trial_stage'],
+            'trialDays' => (int) config('analytics.trial_days'),
         ]);
     }
 
@@ -217,12 +251,23 @@ class AnalyticsController extends Controller
         return response()->json(['ready' => $this->replays->isReady($replayID)]);
     }
 
+    // Counts against the free allowance for anyone without a subscription; a game that's already ready doesn't
     public function replayProcess(int $replayID): JsonResponse
     {
-        $this->loggedInUser();
+        $user = $this->loggedInUser();
         abort_unless($this->replays->isSeasonGame($replayID), 404);
 
-        return response()->json(['queued' => $this->replays->process($replayID)]);
+        $free = $this->analytics->freeGames($user);
+        if ($free && $free['left'] === 0 && ! $this->replays->isReady($replayID)) {
+            return response()->json(['queued' => false, 'limit_reached' => true, 'limit' => $free['limit']]);
+        }
+
+        $queued = $this->replays->process($replayID);
+        if ($queued && $free) {
+            $this->analytics->useFreeGames($user, 1);
+        }
+
+        return response()->json(['queued' => $queued]);
     }
 
     public function replayData(int $replayID): JsonResponse
@@ -273,6 +318,24 @@ class AnalyticsController extends Controller
         $meta = $this->sample->meta();
         abort_unless($meta, 404);
 
+        // Analyze on the sample's one match: its own files, whatever the filters say
+        if ($request->filled('game') && $tab !== 'games') {
+            abort_unless((int) $request->input('game') === (int) $meta['replay_id'], 404);
+            if ($tab === 'ability') {
+                $ability = $request->validate([
+                    'ability_hero' => ['required', 'integer', 'min:1'],
+                    'ability_id' => ['required', 'string', 'max:100', 'regex:/^[A-Za-z0-9_]+$/'],
+                ]);
+                $data = $this->sample->match($this->sample->abilityFile((int) $ability['ability_hero'], $ability['ability_id'], null));
+            } else {
+                abort_unless(in_array($tab, $meta['match_tabs'] ?? [], true), 404);
+                $data = $this->sample->match($tab);
+            }
+            abort_unless($data, 404);
+
+            return response()->json($data);
+        }
+
         // One sample map at most; anything else isn't in the files
         $maps = $request->input('game_map');
         $maps = is_array($maps) ? $maps : array_filter(explode(',', (string) $maps));
@@ -305,6 +368,7 @@ class AnalyticsController extends Controller
             'replayId' => $meta['replay_id'],
             'urlparameters' => $request->query(),
             'sample' => true,
+            'performanceAllowed' => $this->sample->performance() !== null,
         ]);
     }
 
@@ -314,6 +378,14 @@ class AnalyticsController extends Controller
         abort_unless($replay, 404);
 
         return response()->json($replay);
+    }
+
+    public function sampleReplayPerformance(): JsonResponse
+    {
+        $performance = $this->sample->performance();
+        abort_unless($performance, 404);
+
+        return response()->json($performance);
     }
 
     // The replay viewer only needs a Battle.net login; the analytics pages also need the allowlist

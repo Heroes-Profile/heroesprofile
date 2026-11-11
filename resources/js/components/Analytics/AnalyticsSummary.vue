@@ -3,7 +3,7 @@
     <analytics-heading :title="'What Analytics is'" :takeaway="'Your own season games, read from their replays and compared with everyone else.'">
       Every number comes from your processed replays (games from Oct 2, 2026 on). Pick a section below, or use the filters to narrow everything to a game type, map or hero.
     </analytics-heading>
-    <div class="grid md:grid-cols-3 gap-6 mb-10 text-sm">
+    <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10 text-sm">
       <div class="bg-darken rounded p-4">
         <h3 class="font-bold mb-2">You vs global</h3>
         <p>Each section compares your games with a fixed 10% sample of all games under the same filters. Every game in that sample is processed, whoever played it, so the comparison isn't tilted towards people who use Analytics.</p>
@@ -15,6 +15,10 @@
       <div class="bg-darken rounded p-4">
         <h3 class="font-bold mb-2">How it's worked out</h3>
         <p>Each section ends with its methodology: what the data is, how each number is calculated, and what it can't tell you. Replays record exact positions only now and then, so position-based numbers are estimates.</p>
+      </div>
+      <div class="bg-darken rounded p-4">
+        <h3 class="font-bold mb-2">Keeping Analytics</h3>
+        <p>Analytics is in pre-alpha, with a free trial for every Battle.net account, and a new one with each stage of development. To keep it, subscribe on <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">Patreon</a> at any tier, or hold any paid <a class="link" href="/Api">API plan</a> and link your Battle.net account on your API account page.</p>
       </div>
     </div>
 

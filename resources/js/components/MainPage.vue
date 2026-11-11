@@ -70,10 +70,10 @@
         <i class="fas fa-chart-line" style="font-size: 100px;"></i>
 
         <h3 class="text-2xl mb-10 mt-2">Player Analytics</h3>
-        <p class="mb-10">Deep analysis of your own season games from their replays: where and how you die, where you spend your time, how you do when ahead or behind, coaching on your habits, and a replay viewer for every game. Pre-alpha: open to Patreon supporters while we test it.</p>
+        <p class="mb-10">Deep analysis of your own season games from their replays: where and how you die, where you spend your time, how you do when ahead or behind, coaching on your habits, and a replay viewer for every game. In pre-alpha: try it with a free trial, then keep it with Patreon or any paid API plan.</p>
 
         <custom-button v-if="analyticsAllowed" :href="'/Analytics'" :text="'Open Analytics'" :alt="'Open Analytics'" :size="'big'" class="mt-auto" :color="'teal'"></custom-button>
-        <custom-button v-else :href="'/Analytics'" :text="'Learn More'" :alt="'Learn more about Analytics'" :size="'big'" class="mt-auto" :color="'teal'"></custom-button>
+        <custom-button v-else :href="'/Analytics'" :text="'Try It Free'" :alt="'Try Player Analytics free'" :size="'big'" class="mt-auto" :color="'teal'"></custom-button>
       </div>
     </div>
 
@@ -101,7 +101,7 @@ import Cookies from 'js-cookie';
       maxreplayid: Number,
       latestpatch: String,
       latestgamedate: String,
-      // Whether the signed-in player can open Analytics (Patreon supporters)
+      // Whether the signed-in player can open Analytics (trial, Patreon or a paid API plan)
       analyticsAllowed: Boolean,
     },
     data(){

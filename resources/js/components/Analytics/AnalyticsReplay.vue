@@ -147,15 +147,19 @@
       </div>
 
       <!-- How each player played, against the same hero on the same map -->
-      <template v-if="!sample">
+      <template v-if="!sample || performanceAllowed">
         <analytics-replay-performance
           id="analytic-performance"
           class="scroll-mt-4"
           :replay-id="replayId"
+          :data-url="sample ? '/Analytics/Sample/Match/Single/Performance' : null"
           :players="data.players"
           :selected="selected"
           :allowed="performanceAllowed"
           :patreon-linked="patreonLinked"
+          :trial-available="trialAvailable"
+          :trial-stage="trialStage"
+          :trial-days="trialDays"
           @select="selected = $event"
         ></analytics-replay-performance>
         <analytics-paper v-if="performanceAllowed" :tab="'performance'"></analytics-paper>
@@ -335,6 +339,10 @@ export default {
     // Match performance: Patreon supporters only; everyone else sees it greyed out
     performanceAllowed: Boolean,
     patreonLinked: Boolean,
+    // Without Analytics: whether this account can still start the current stage's free trial
+    trialAvailable: Boolean,
+    trialStage: String,
+    trialDays: { type: Number, default: 7 },
   },
   data() {
     return {
@@ -354,6 +362,8 @@ export default {
       speed: 4,
       selected: null,
       preparing: false,
+      // Set when the free processing allowance is used up
+      freeLimit: null,
       stopWaiting: false,
       eventTypes: EVENT_TYPES.map(({ code, name }) => ({ code, name })),
       // The filter copies defaultValue whenever it changes and emits on every copy, so it gets a fixed
@@ -381,7 +391,9 @@ export default {
         this.t = Math.max(0, Math.min(start - 5, this.data.length_s));
       }
     } catch (e) {
-      this.error = e.message === 'could not start'
+      this.error = e.message === 'free limit'
+        ? 'Nobody has processed this replay yet, and you have used the ' + this.freeLimit + ' free games for this stage. Subscribe on Patreon or link a paid API plan to process more.'
+        : e.message === 'could not start'
         ? 'Could not start preparing this replay. Please try again in a minute.'
         : this.preparing
           ? 'This replay is taking longer than usual to prepare. Please try again in a few minutes.'
@@ -481,10 +493,15 @@ export default {
       const url = '/Analytics/Match/Single/' + this.replayId;
       if ((await this.$axios.get(url + '/Status')).data.ready) return;
       this.preparing = true;
+      let response;
       try {
-        await this.$axios.post(url + '/Process');
+        response = await this.$axios.post(url + '/Process');
       } catch (e) {
         throw new Error('could not start');
+      }
+      if (response.data.limit_reached) {
+        this.freeLimit = response.data.limit;
+        throw new Error('free limit');
       }
       const giveUp = Date.now() + 5 * 60 * 1000;
       while (!this.stopWaiting) {

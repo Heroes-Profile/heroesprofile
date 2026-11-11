@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Api\ApiAccount;
+use App\Services\Api\PlanService;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -20,16 +23,117 @@ class AnalyticsService
     public function __construct(private CloudTasksDispatcher $tasks) {}
 
     /**
-     * Analytics pages (not the replay viewer): current Patreon supporters, plus the allowlist for
-     * testing. A supporter is a linked Patreon account with site flair or ad-free on, the same test
-     * as Patreon flair elsewhere; both flags drop when a pledge lapses.
+     * Who can use the Analytics pages (not the replay viewer), and why: the allowlist, a current
+     * Patreon supporter, a paid plan on a linked API account, or a free trial still running. A supporter is a linked Patreon account
+     * with site flair or ad-free on, the same test as Patreon flair elsewhere; both flags drop when
+     * a pledge lapses. Each development stage (config analytics.trial_stage) has its own trial;
+     * trial_available is true until the account starts the current stage's (a running one from an
+     * earlier stage still counts until it ends).
+     *
+     * @return array{allowed: bool, via: ?string, trial_available: bool, trial_ends_at: ?CarbonInterface, trial_stage: string}
      */
+    public function access($user): array
+    {
+        $stage = (string) config('analytics.trial_stage');
+        $thisStage = $user->analytics_trial_started_at !== null && $user->analytics_trial_stage === $stage;
+        // A trial still running when the stage changes runs to its end; the new stage's starts after
+        $trialEnds = $user->analytics_trial_started_at?->copy()->addDays((int) config('analytics.trial_days'));
+
+        $via = match (true) {
+            in_array((int) $user->blizz_id, config('analytics.allowlist'), true) => 'allowlist',
+            $this->isSupporter($user) => 'patreon',
+            $this->hasPaidApiPlan($user) => 'api',
+            $trialEnds !== null && $trialEnds->isFuture() => 'trial',
+            default => null,
+        };
+
+        return [
+            'allowed' => $via !== null,
+            'via' => $via,
+            'trial_available' => ! $thisStage,
+            'trial_ends_at' => $trialEnds,
+            'trial_stage' => $stage,
+        ];
+    }
+
     public function isAllowed($user): bool
     {
-        if (in_array((int) $user->blizz_id, config('analytics.allowlist'), true)) {
-            return true;
+        return $this->access($user)['allowed'];
+    }
+
+    /**
+     * Starts the account's free trial for the current stage. Nothing happens if it already started
+     * this stage's, or already has access another way (a trial then would only be used up for nothing).
+     */
+    public function startTrial($user): bool
+    {
+        $access = $this->access($user);
+        if (! $access['trial_available'] || $access['allowed']) {
+            return false;
         }
 
+        $user->forceFill(['analytics_trial_started_at' => now(), 'analytics_trial_stage' => $access['trial_stage']])->save();
+
+        return true;
+    }
+
+    /**
+     * The free processing allowance for an account without a subscription (trial or not): used,
+     * limit and left for the current stage. Null when it has Patreon, a paid API plan or the allowlist.
+     *
+     * @return array{used: int, limit: int, left: int}|null
+     */
+    public function freeGames($user, ?array $access = null): ?array
+    {
+        $access ??= $this->access($user);
+        if (in_array($access['via'], ['allowlist', 'patreon', 'api'], true)) {
+            return null;
+        }
+
+        $limit = (int) config('analytics.free_games');
+        $used = $user->analytics_free_stage === $access['trial_stage'] ? (int) $user->analytics_free_games : 0;
+
+        return ['used' => $used, 'limit' => $limit, 'left' => max(0, $limit - $used)];
+    }
+
+    public function useFreeGames($user, int $games): void
+    {
+        if ($games <= 0) {
+            return;
+        }
+
+        $stage = (string) config('analytics.trial_stage');
+        if ($user->analytics_free_stage === $stage) {
+            $user->increment('analytics_free_games', $games);
+        } else {
+            $user->forceFill(['analytics_free_games' => $games, 'analytics_free_stage' => $stage])->save();
+        }
+    }
+
+    /**
+     * A paid plan on an API account that unlocks this Battle.net account: the one linked to it in
+     * the API portal's Player Analytics section, or failing that, one whose Twitch extension setup
+     * connected it (only while that account has no Player Analytics link of its own).
+     */
+    private function hasPaidApiPlan($user): bool
+    {
+        $blizzId = (int) $user->blizz_id;
+        $region = (int) $user->region;
+
+        $accounts = ApiAccount::where('analytics_blizz_id', $blizzId)->where('analytics_region', $region)->get();
+        if ($accounts->isEmpty()) {
+            $accounts = ApiAccount::whereNull('analytics_blizz_id')
+                ->whereHas('twitchChannel', fn ($q) => $q->where('blizz_id', $blizzId)->where('region', $region))
+                ->get();
+        }
+
+        $plans = app(PlanService::class);
+
+        return $accounts->contains(fn (ApiAccount $account) => $plans->holdsPaidPlan($account));
+    }
+
+    private function isSupporter($user): bool
+    {
         $patreon = $user->patreonAccount;
 
         return $patreon && ($patreon->site_flair == 1 || $patreon->ad_free == 1);
@@ -51,8 +155,10 @@ class AnalyticsService
         $total = (int) $row->total;
         $done = (int) $row->done;
 
-        $processing = Cache::has($this->processingKey($blizzId, $region));
-        if ($processing && $done >= $total) {
+        // The done count the last request is working towards (fewer than all games when capped)
+        $target = Cache::get($this->processingKey($blizzId, $region));
+        $processing = $target !== null;
+        if ($processing && $done >= min($total, (int) $target)) {
             Cache::forget($this->processingKey($blizzId, $region));
             $processing = false;
         }
@@ -61,12 +167,12 @@ class AnalyticsService
     }
 
     /**
-     * Queues the player's unprocessed season games. A second request inside the lock
-     * window queues nothing, so refreshing or double-clicking costs nothing.
+     * Queues the player's unprocessed season games, or with a limit only that many of the newest. A
+     * second request inside the lock window queues nothing, so refreshing or double-clicking costs nothing.
      *
      * @return array{queued: int, already_requested: bool}
      */
-    public function request(int $blizzId, int $region): array
+    public function request(int $blizzId, int $region, ?int $limit = null): array
     {
         if (! Cache::add('analytics:request:'.$region.':'.$blizzId, 1, config('analytics.request_lock_seconds'))) {
             return ['queued' => 0, 'already_requested' => true];
@@ -75,7 +181,8 @@ class AnalyticsService
         $pending = $this->seasonGames($blizzId, $region)
             ->leftJoin('replay_deep', fn ($join) => $this->currentLoadedRow($join))
             ->whereNull('replay_deep.replayID')
-            ->orderBy('replay.replayID')
+            ->orderByDesc('replay.replayID')
+            ->when($limit !== null, fn ($query) => $query->limit($limit))
             ->pluck('replay.replayID')
             ->map(fn ($id) => (int) $id)
             ->all();
@@ -89,7 +196,8 @@ class AnalyticsService
         }
 
         if ($pending !== []) {
-            Cache::put($this->processingKey($blizzId, $region), now()->timestamp, config('analytics.processing_seconds'));
+            $target = $this->status($blizzId, $region)['done'] + count($pending);
+            Cache::put($this->processingKey($blizzId, $region), $target, config('analytics.processing_seconds'));
         }
 
         return ['queued' => count($pending), 'already_requested' => false];
