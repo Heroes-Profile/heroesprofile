@@ -98,9 +98,10 @@ class TwitchDirectoryService
                 'region' => $channel->region,
             ];
 
-            if (isset($streams[$channelId])) {
-                $stream = $streams[$channelId];
+            $stream = $streams[$channelId] ?? null;
 
+            // Only live when streaming HotS.
+            if ($stream && ($stream['game_name'] ?? null) === 'Heroes of the Storm') {
                 $live[] = $entry + [
                     'title' => $stream['title'] ?? null,
                     'viewer_count' => (int) ($stream['viewer_count'] ?? 0),
