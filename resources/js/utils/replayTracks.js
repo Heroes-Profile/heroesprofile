@@ -31,10 +31,11 @@ export const MAIN_BODIES = ['HeroAbathur', 'HeroChen', 'HeroSamuro'];
 
 // data.mounts: [t, player, 1] for a mount press, [t, player, 0] for anything that dismounts.
 // data.travel: [t, player, kind, delay, speed, x, y] for each travel ability press; shortcutExits: [[x, y]] for the map.
+// regionOf: (x, y) => a name for maps with separate areas (Haunted Mines' mines); moving between them is always a jump.
 // A player controlling several heroes at once (the Lost Vikings) has a life per hero unit: data.lives
 // rows carry the unit id, data.unit_tracks holds each unit's own exact positions, and data.selections
 // ([t, player, [unit ids]]) says which units a move order moved.
-export function buildTracks(data, { mode = 'follow', walkable = null, walkGrid = null, shortcutExits = [] } = {}) {
+export function buildTracks(data, { mode = 'follow', walkable = null, walkGrid = null, shortcutExits = [], regionOf = null } = {}) {
   const length = data.length_s;
   const byPlayer = new Map(data.players.map(p => [p.idx, []]));
 
@@ -70,7 +71,7 @@ export function buildTracks(data, { mode = 'follow', walkable = null, walkGrid =
   (data.travel || []).forEach(([t, p, kind, delay, speed, x, y]) => {
     travel.get(p)?.push([t, kind, delay, speed, x >= 0 ? x : null, y >= 0 ? y : null]);
   });
-  const jumps = list => ({ travel: list, exits: shortcutExits });
+  const jumps = list => ({ travel: list, exits: shortcutExits, regionOf });
 
   const units = new Map((data.unit_tracks || []).map(u => [u.id, u]));
   const selections = new Map();
@@ -236,8 +237,13 @@ function jump(segment, to, { travel, exits }) {
   return out;
 }
 
+// Between two areas no one can walk between, like the surface and Haunted Mines' mines
+function crosses(from, to, regionOf) {
+  return !!regionOf && regionOf(from[1], from[2]) !== regionOf(to[1], to[2]);
+}
+
 // Path samples [t, x, y] from the first anchor to the end of the life
-function walk(anchors, moves, mounts, end, mode, grid, jumps = { travel: [], exits: [] }) {
+function walk(anchors, moves, mounts, end, mode, grid, jumps = { travel: [], exits: [], regionOf: null }) {
   const path = [];
   for (let i = 0; i < anchors.length; i++) {
     const from = anchors[i];
@@ -245,7 +251,7 @@ function walk(anchors, moves, mounts, end, mode, grid, jumps = { travel: [], exi
     const until = to ? to[0] : end;
 
     if (mode !== 'follow') {
-      if (to && tooFar(from, to)) {
+      if (to && (tooFar(from, to) || crosses(from, to, jumps.regionOf))) {
         path.push(...jump([from], to, jumps));
         continue;
       }
@@ -254,7 +260,7 @@ function walk(anchors, moves, mounts, end, mode, grid, jumps = { travel: [], exi
     }
 
     const segment = follow(from, moves, mounts, until, grid);
-    if (to && until > from[0] && tooFar(from, to)) {
+    if (to && until > from[0] && (tooFar(from, to) || crosses(from, to, jumps.regionOf))) {
       path.push(...jump(segment, to, jumps));
       continue;
     }

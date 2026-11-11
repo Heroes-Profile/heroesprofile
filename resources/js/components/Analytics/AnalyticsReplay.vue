@@ -12,6 +12,20 @@
     <div v-else class="max-w-[1500px] mx-auto px-4 mt-4">
       <p v-if="error" class="text-center text-red">{{ error }}</p>
       <template v-else>
+      <!-- Processed at an older version: what it's missing, and the way to update it -->
+      <p v-if="!sample && data && missing.length" class="text-center text-sm mb-2">
+        This game was processed before Analytics added {{ missing.join('; ') }}.
+        <custom-button
+          class="ml-2"
+          @click="updateGame"
+          :text="updating ? 'Updating' : 'Update this game'"
+          :alt="'Process this game again with the newest version'"
+          size="small"
+          :loading="updating"
+          :disabled="updating"
+          :ignoreclick="true"
+        ></custom-button>
+      </p>
       <infobox class="mb-4" :input="'Watch the game play out on the minimap, with the in-game top bar, each team\'s win chance and a feed of events. Replays only record exact hero positions now and then, so hero positions between those moments are estimates.'"></infobox>
       <div class="flex flex-wrap gap-4">
         <!-- Map and controls -->
@@ -173,7 +187,7 @@
 import { markRaw } from 'vue';
 import analytics from '../../utils/analyticsFormat.js';
 import { buildTracks, positionAt } from '../../utils/replayTracks.js';
-import { loadWalkable, minimapFor, teamColor, MAP_SHORTCUT_EXITS } from '../../utils/mapAssets.js';
+import { loadWalkable, minimapFor, teamColor, MAP_SHORTCUT_EXITS, MAP_REGIONS } from '../../utils/mapAssets.js';
 import { loadWalkGrid } from '../../utils/replayPathing.js';
 
 // The replay viewer's event feed and timeline markers, built once per game from its extract doc.
@@ -334,6 +348,9 @@ export default {
   props: {
     replayId: Number,
     urlparameters: { type: Object, default: () => ({}) },
+    // The newest analytics version, and what each version added (for the update notice)
+    latestExtractV: { type: Number, default: 0 },
+    extractVersions: { type: Object, default: () => ({}) },
     // The public sample's game: already prepared, read from the sample files
     sample: Boolean,
     // Match performance: Patreon supporters only; everyone else sees it greyed out
@@ -364,6 +381,7 @@ export default {
       preparing: false,
       // Set when the free processing allowance is used up
       freeLimit: null,
+      updating: false,
       stopWaiting: false,
       eventTypes: EVENT_TYPES.map(({ code, name }) => ({ code, name })),
       // The filter copies defaultValue whenever it changes and emits on every copy, so it gets a fixed
@@ -417,6 +435,11 @@ export default {
     },
   },
   computed: {
+    // What later versions added that this game doesn't have yet
+    missing() {
+      const v = this.data?.extract_v || 0;
+      return Object.keys(this.extractVersions).map(Number).filter(n => n > v && n <= this.latestExtractV).sort((x, y) => x - y).map(n => this.extractVersions[n]);
+    },
     minimap() {
       return this.data ? minimapFor(this.data.game_map) : null;
     },
@@ -489,6 +512,32 @@ export default {
   methods: {
     teamColor,
     // A game nobody has processed yet: start it, then wait until it's parsed and loaded
+    // Reprocess at the newest version, wait for it, then load the game again
+    async updateGame() {
+      const url = '/Analytics/Match/Single/' + this.replayId;
+      this.updating = true;
+      try {
+        await this.$axios.post(url + '/Update');
+        const giveUp = Date.now() + 5 * 60 * 1000;
+        while (!this.stopWaiting && Date.now() < giveUp) {
+          await new Promise(resolve => setTimeout(resolve, 3000));
+          try {
+            if ((await this.$axios.get(url + '/Status')).data.current) {
+              this.data = (await this.$axios.get(url + '/Data')).data;
+              this.rebuild();
+              return;
+            }
+          } catch (e) {
+            // Retried on the next check
+          }
+        }
+        this.error = 'Updating this game is taking longer than usual. Please try again in a few minutes.';
+      } catch (e) {
+        this.error = 'Could not start updating this game. Please try again in a minute.';
+      } finally {
+        this.updating = false;
+      }
+    },
     async ensureReady() {
       const url = '/Analytics/Match/Single/' + this.replayId;
       if ((await this.$axios.get(url + '/Status')).data.ready) return;
@@ -520,7 +569,8 @@ export default {
     rebuild() {
       if (!this.data) return;
       const shortcutExits = (this.minimap && MAP_SHORTCUT_EXITS[this.minimap.slug]) || [];
-      this.tracks = markRaw(buildTracks(this.data, { mode: this.mode, walkable: this.walkable, walkGrid: this.walkGrid, shortcutExits }));
+      const regionOf = (this.minimap && MAP_REGIONS[this.minimap.slug]) || null;
+      this.tracks = markRaw(buildTracks(this.data, { mode: this.mode, walkable: this.walkable, walkGrid: this.walkGrid, shortcutExits, regionOf }));
     },
     toggle() {
       this.playing = !this.playing;

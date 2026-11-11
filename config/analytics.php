@@ -19,9 +19,18 @@ return [
     'archive_bucket' => env('DEEP_ANALYTICS_ARCHIVE_BUCKET', 'heroesprofile-replay-archive'),
     'replay_bucket' => env('DEEP_ANALYTICS_REPLAY_BUCKET', 'heroesprofile-replay-storage'),
 
-    // The parser's DeepExtract.Version. Games loaded at an older version are reprocessed on
-    // the next request, and cached results are keyed on it.
+    // The oldest DeepExtract.Version the site can still use. Games below it count as unprocessed.
     'extract_v' => 5,
+
+    // The parser's current DeepExtract.Version. Games from extract_v up to this still work but miss what
+    // later versions added; players get an "Update my games" notice for them. Raise this only after the
+    // parser writing it is deployed, and raise extract_v only when older games can't be used at all.
+    'latest_extract_v' => 6,
+
+    // What each version added, for the update notices
+    'extract_versions' => [
+        6 => 'objectives, bosses and pushing mercenaries on the replay map, and the Objectives & Bosses section',
+    ],
 
     // Only games from the start of season 34 on are archived or analysed.
     'cutover' => '2026-10-02 16:00:01',
