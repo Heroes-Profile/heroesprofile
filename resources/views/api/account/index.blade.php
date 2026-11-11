@@ -17,6 +17,9 @@
          so their messages show in the Twitch section rather than the Patreon one. --}}
     :twitchnotice="{{ json_encode(session('twitch_status')) }}"
     :twitcherror="{{ json_encode($errors->first('twitch') ?: $errors->first('battlenet')) }}"
+    :analytics="{{ json_encode($analytics) }}"
+    :analyticsnotice="{{ json_encode(session('analytics_status')) }}"
+    :analyticserror="{{ json_encode($errors->first('analytics')) }}"
   >
   </api-account>
 @endsection

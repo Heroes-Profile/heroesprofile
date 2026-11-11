@@ -4,7 +4,7 @@
       Each player's numbers from this game, against the same hero on the same map in our global sample of games with the same result: a loss against losses, a win against wins, so a good game on a losing team still rates well. 50 is a typical game; higher is better. Each area weights its numbers by how much they go with winning on that hero. Winners usually is the middle half of that hero's wins on the map, to show how far a number is from a winning game.
     </analytics-heading>
 
-    <!-- Patreon supporters only: everyone else gets a greyed-out preview and the way in -->
+    <!-- Part of Analytics: everyone else gets a greyed-out preview and the way in -->
     <div v-if="!allowed" class="relative">
       <div class="opacity-30 pointer-events-none select-none" aria-hidden="true">
         <table class="min-w-0 w-full responsive-table">
@@ -20,13 +20,14 @@
           </tbody>
         </table>
       </div>
-      <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-        <p class="text-lg font-bold mb-2">Match performance is for Patreon supporters</p>
-        <p class="mb-4 max-w-[40em]">See how every player in this game did in combat, survival, teamfights, objectives, positioning, ability use and more, against the same hero on the same map. Subscribe on Patreon at any tier, then link your Patreon account to your Heroes Profile account.</p>
-        <div class="flex flex-wrap justify-center gap-2">
-          <custom-button :href="'https://www.patreon.com/heroesprofile'" :text="'Subscribe on Patreon'" :alt="'Subscribe on Patreon'" :color="'teal'" :targetblank="true"></custom-button>
-          <custom-button v-if="!patreonLinked" :href="'/authenticate/patreon'" :text="'Link Patreon'" :alt="'Link Patreon'"></custom-button>
-        </div>
+      <div class="absolute inset-0 flex flex-col items-center justify-center px-4">
+        <analytics-subscribe
+          :title="'Match performance is part of Player Analytics'"
+          :text="'See how every player in this game did in combat, survival, teamfights, objectives, positioning, ability use and more, against the same hero on the same map. ' + (trialAvailable ? 'Try Player Analytics free for ' + trialDays + ' days with the ' + (trialStage || '').toLowerCase() + ' free trial.' : 'Subscribe on Patreon at any tier, then link your Patreon account to your Heroes Profile account.')"
+          :trial-available="trialAvailable"
+          :trial-days="trialDays"
+          :patreon-linked="patreonLinked"
+        ></analytics-subscribe>
       </div>
     </div>
 
@@ -162,10 +163,15 @@ export default {
   mixins: [analytics],
   props: {
     replayId: Number,
+    // Where the numbers come from, when not this game's live endpoint (the public sample)
+    dataUrl: { type: String, default: null },
     players: Array,
     selected: { type: Number, default: null },
     allowed: Boolean,
     patreonLinked: Boolean,
+    trialAvailable: Boolean,
+    trialStage: String,
+    trialDays: { type: Number, default: 7 },
   },
   emits: ['select'],
   data() {
@@ -181,7 +187,7 @@ export default {
     if (!this.allowed) return;
     this.loading = true;
     try {
-      this.data = (await this.$axios.get('/Analytics/Match/Single/' + this.replayId + '/Performance')).data;
+      this.data = (await this.$axios.get(this.dataUrl || '/Analytics/Match/Single/' + this.replayId + '/Performance')).data;
     } catch (e) {
       this.error = 'Performance for this game isn\'t ready yet. Please try again in a minute.';
     } finally {

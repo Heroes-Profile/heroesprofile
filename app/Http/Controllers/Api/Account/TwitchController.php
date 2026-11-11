@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Account;
 use App\Http\Controllers\Controller;
 use App\Models\Api\ApiAccount;
 use App\Models\Api\TwitchChannel;
+use App\Services\Api\BattlenetPlayerLink;
 use App\Services\Twitch\TwitchEntitlementService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
-use SocialiteProviders\Manager\Config;
 use Throwable;
 
 /**
@@ -30,7 +30,9 @@ use Throwable;
  */
 class TwitchController extends Controller
 {
-    private const REGIONS = [1 => 'NA', 2 => 'EU', 3 => 'KR', 5 => 'CN'];
+    private const REGIONS = BattlenetPlayerLink::REGIONS;
+
+    private const BATTLENET_CALLBACK = '/Api/Twitch/Battlenet/Callback';
 
     /** The Twitch section of the account page, where both sign-in flows return. */
     private const SECTION_URL = '/Api/Account#twitch';
@@ -115,7 +117,7 @@ class TwitchController extends Controller
         return redirect(self::SECTION_URL)->with('twitch_status', 'Twitch channel connected.');
     }
 
-    public function redirectToBattlenet(Request $request)
+    public function redirectToBattlenet(Request $request, BattlenetPlayerLink $battlenet)
     {
         $validated = $request->validate([
             'region' => ['required', 'integer', 'in:'.implode(',', array_keys(self::REGIONS))],
@@ -127,39 +129,28 @@ class TwitchController extends Controller
 
         $request->session()->put('twitch_battlenet_region', (int) $validated['region']);
 
-        return Socialite::driver('battlenet')
-            ->setConfig($this->battlenetConfig())
-            ->redirect();
+        return $battlenet->redirect(self::BATTLENET_CALLBACK);
     }
 
-    public function handleBattlenetCallback(Request $request)
+    public function handleBattlenetCallback(Request $request, BattlenetPlayerLink $battlenet)
     {
         $region = $request->session()->pull('twitch_battlenet_region');
         $channel = $this->account()->twitchChannel;
 
-        if ($request->filled('error') || ! $request->filled('code') || $region === null || ! $channel) {
+        if ($region === null || ! $channel) {
             return redirect(self::SECTION_URL)->withErrors(['battlenet' => 'Battle.net sign-in did not complete. Please try again.']);
         }
 
-        try {
-            $user = Socialite::driver('battlenet')->setConfig($this->battlenetConfig())->user();
-        } catch (InvalidStateException $e) {
-            return redirect(self::SECTION_URL)->withErrors(['battlenet' => 'Battle.net sign-in did not complete. Please try again.']);
-        }
+        $player = $battlenet->player($request, self::BATTLENET_CALLBACK, $region);
 
-        $blizzId = $this->globalDataService->getBlizzIDGivenFullBattletag($user->nickname, $region);
-
-        if (! $blizzId) {
-            return redirect(self::SECTION_URL)->withErrors([
-                'battlenet' => "We have no games for {$user->nickname} in ".self::REGIONS[$region].' yet. '
-                    .'Upload a replay from that region and try again, or pick the region you play in.',
-            ]);
+        if (is_string($player)) {
+            return redirect(self::SECTION_URL)->withErrors(['battlenet' => $player]);
         }
 
         $channel->forceFill([
-            'blizz_id' => $blizzId,
+            'blizz_id' => $player['blizz_id'],
             'region' => $region,
-            'battletag' => $user->nickname,
+            'battletag' => $player['battletag'],
         ])->save();
 
         return redirect(self::SECTION_URL)->with('twitch_status', 'Battle.net account connected.');
@@ -288,16 +279,6 @@ class TwitchController extends Controller
     private function account(): ApiAccount
     {
         return Auth::guard('api_web')->user();
-    }
-
-    private function battlenetConfig(): Config
-    {
-        return new Config(
-            config('services.battlenet.client_id'),
-            config('services.battlenet.client_secret'),
-            url('/Api/Twitch/Battlenet/Callback'),
-            ['region' => 'us'],
-        );
     }
 
     private function twitchCallbackUrl(): string

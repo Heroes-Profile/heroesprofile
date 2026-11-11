@@ -154,17 +154,20 @@ export default {
           'Limited amount of Global and individual player stats calls per week',
           'Return results in JSON or CSV format',
           'Direct endpoint integration unavailable',
+          'Includes Player Analytics for your Battle.net account',
         ],
         intermediate: [
           'Ideal for small use applications',
           'Limited amount of Global and individual player stats calls per week',
           'Return results in JSON or CSV format',
           'Direct endpoint integration unavailable',
+          'Includes Player Analytics for your Battle.net account',
         ],
         developer: [
           'Ideal for developers looking to build an app or website',
           'More calls per week, allowing consistent data return',
           'Direct endpoint integration available',
+          'Includes Player Analytics for your Battle.net account',
         ],
       },
     }

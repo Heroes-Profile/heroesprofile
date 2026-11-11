@@ -31,6 +31,18 @@ return [
     'local_test_blizz_id' => env('DEEP_ANALYTICS_LOCAL_TEST_BLIZZ_ID'),
     'local_test_region' => env('DEEP_ANALYTICS_LOCAL_TEST_REGION', 1),
 
+    // How long the free Analytics trial lasts, from when an account starts it.
+    'trial_days' => 7,
+
+    // The development stage the free trial is for. Every account gets one trial per stage, so
+    // changing this (Pre-alpha, Alpha, Beta...) gives everyone a new one.
+    // How many games an account without Patreon, a paid API plan or the allowlist can have processed
+    // per stage, trial or not: Process my games and the replay viewer both count. Games someone else
+    // already processed are free.
+    'free_games' => 100,
+
+    'trial_stage' => 'Pre-alpha',
+
     // Blizz IDs allowed to use it until access is opened up, comma-separated.
     'allowlist' => array_values(array_filter(array_map('intval', explode(',', (string) env('DEEP_ANALYTICS_ALLOWLIST', '67280'))))),
 

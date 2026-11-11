@@ -14,7 +14,7 @@ class AnalyticsSampleService
 {
     public const DIRECTORY = 'analytics-sample';
 
-    /** @return array{captured_at: string, battletag: string, status: array, maps: array<string>, replay_id: int|null}|null */
+    /** @return array{captured_at: string, battletag: string, status: array, maps: array<string>, replay_id: int|null, match_tabs?: array<string>}|null */
     public function meta(): ?array
     {
         return $this->read('meta');
@@ -34,6 +34,22 @@ class AnalyticsSampleService
     public function replay(): ?array
     {
         return $this->read('replay');
+    }
+
+    public function performance(): ?array
+    {
+        return $this->read('performance');
+    }
+
+    // The sample replay alone (Analyze), keyed by tab or ability file
+    public function match(string $file): ?array
+    {
+        return $this->read($this->matchFile($file));
+    }
+
+    public function matchFile(string $file): string
+    {
+        return 'match--'.$file;
     }
 
     public function tabFile(string $tab, ?string $map): string

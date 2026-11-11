@@ -123,6 +123,31 @@ class PlanService
      * falling through to Basic. Lives here rather than in ApiKeyResolver so the
      * billing page and the key guard cannot disagree about what a pledge buys.
      */
+    /**
+     * Whether the account pays for a plan: a valid Stripe subscription, or a Patreon pledge
+     * that earns a tier, priced above $0. Comped grants (Partner, NGS, Heroes Lounge, Bulk
+     * Download) and additive flags don't count. Player Analytics unlocks on this.
+     */
+    public function holdsPaidPlan(ApiAccount $account): bool
+    {
+        $planIds = [];
+
+        $subscription = $account->subscription(ApiAccount::SUBSCRIPTION);
+        if ($subscription !== null && $subscription->valid()) {
+            $planIds[] = $this->planIdForPrice($subscription->stripe_price);
+        }
+
+        $planIds[] = $this->planIdForPatreonCents($account->patreonPledgeCents());
+
+        foreach (array_filter($planIds, fn ($id) => $id !== null) as $id) {
+            if ((int) ($this->priceFor($id) ?? 0) > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function planIdForPatreonCents(mixed $cents): ?int
     {
         if (! is_numeric($cents)) {

@@ -108,6 +108,13 @@ return new class extends Migration
             $table->unsignedBigInteger('patreon_accounts_id')->nullable();
             $table->unique('patreon_accounts_id', 'users_patreon_accounts_id_unique');
 
+            // The Battle.net account a paid plan unlocks Player Analytics for, linked on the
+            // account page. Unique so one Battle.net account is unlocked through one API account.
+            $table->unsignedBigInteger('analytics_blizz_id')->nullable();
+            $table->unsignedTinyInteger('analytics_region')->nullable();
+            $table->string('analytics_battletag')->nullable();
+            $table->unique(['analytics_blizz_id', 'analytics_region'], 'users_analytics_player_unique');
+
             // Where the account's integration can be seen. Self-declared, optional,
             // and stored exactly as typed — a note about where to look rather than a
             // URL anything resolves. The only way to check an attribution complaint

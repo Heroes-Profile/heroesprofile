@@ -72,6 +72,7 @@ class AccountController extends Controller
             'standing' => $this->standingFor($account),
             // Null while the extension is ours alone: the section does not render.
             'twitch' => TwitchAccess::visible() ? TwitchController::section($account, $twitchEntitlements) : null,
+            'analytics' => AnalyticsLinkController::section($account),
         ]);
     }
 

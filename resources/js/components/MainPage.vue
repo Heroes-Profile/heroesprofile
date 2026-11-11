@@ -57,10 +57,10 @@
       <div :class="cardClasses">
         <i class="fas fa-chart-line text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
         <h3 class="text-3xl font-semibold mt-6 mb-4">Player Analytics</h3>
-        <p class="text-sm text-left mb-8">Deep analysis of your season replays: where and how you die, time spent, performance ahead or behind, habit coaching, and a replay viewer for every game. Pre-alpha for Patreon supporters.</p>
+        <p class="text-sm text-left mb-8">Deep analysis of your season replays: where and how you die, time spent, performance ahead or behind, habit coaching, and a replay viewer for every game. Pre-alpha: try it free, then keep it with Patreon or any paid API plan.</p>
         <div class="flex mt-auto">
           <custom-button v-if="analyticsAllowed" :href="'/Analytics'" :text="'Open Analytics'" :alt="'Open Analytics'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
-          <custom-button v-else :href="'/Analytics'" :text="'Learn More'" :alt="'Learn more about Analytics'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
+          <custom-button v-else :href="'/Analytics'" :text="'Try It Free'" :alt="'Try Player Analytics free'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
         </div>
       </div>
       <div :class="cardClasses" class="max-md:order-first">
@@ -131,7 +131,7 @@ import moment from 'moment-timezone';
         type: Number,
         default: 60,
       },
-      // Whether the signed-in player can open Analytics (Patreon supporters)
+      // Whether the signed-in player can open Analytics (trial, Patreon or a paid API plan)
       analyticsAllowed: Boolean,
     },
     data(){

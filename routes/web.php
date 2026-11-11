@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AnimationsController;
 use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
+use App\Http\Controllers\Api\Account\AnalyticsLinkController as ApiAnalyticsLinkController;
 use App\Http\Controllers\Api\Account\BillingController as ApiBillingController;
 use App\Http\Controllers\Api\Account\PatreonLinkController as ApiPatreonLinkController;
 use App\Http\Controllers\Api\Account\TwitchController as ApiTwitchController;
@@ -191,8 +192,10 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::post('Analytics/Sample/Data/{tab}', [AnalyticsController::class, 'sampleData'])->whereAlpha('tab')->middleware('throttle:60,1');
     Route::get('Analytics/Sample/Match/Single', [AnalyticsController::class, 'sampleReplay']);
     Route::get('Analytics/Sample/Match/Single/Data', [AnalyticsController::class, 'sampleReplayData'])->middleware('throttle:30,1');
+    Route::get('Analytics/Sample/Match/Single/Performance', [AnalyticsController::class, 'sampleReplayPerformance'])->middleware('throttle:30,1');
     Route::middleware('ensureBattlenetAuth')->group(function () {
         Route::get('Analytics/Status', [AnalyticsController::class, 'status'])->middleware('throttle:60,1');
+        Route::post('Analytics/Trial', [AnalyticsController::class, 'startTrial'])->middleware('throttle:10,1');
         Route::post('Analytics/Request', [AnalyticsController::class, 'request'])->middleware('throttle:10,1');
         Route::post('Analytics/Data/{tab}', [AnalyticsController::class, 'data'])->whereAlpha('tab')->middleware('throttle:60,1');
         Route::get('Analytics/Match/Single/{replayID}/Replay', [AnalyticsController::class, 'replay'])->whereNumber('replayID');
@@ -371,6 +374,12 @@ Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
         Route::get('/Twitch/Callback', [ApiTwitchController::class, 'handleTwitchCallback']);
         Route::get('/Twitch/Battlenet/Link', [ApiTwitchController::class, 'redirectToBattlenet']);
         Route::get('/Twitch/Battlenet/Callback', [ApiTwitchController::class, 'handleBattlenetCallback']);
+
+        // Player Analytics through a paid API plan: link the Battle.net account it unlocks. The callback
+        // is its own redirect URI on the Blizzard app.
+        Route::get('/Analytics/Battlenet/Link', [ApiAnalyticsLinkController::class, 'redirectToBattlenet']);
+        Route::get('/Analytics/Battlenet/Callback', [ApiAnalyticsLinkController::class, 'handleBattlenetCallback']);
+        Route::post('/Analytics/Battlenet/Unlink', [ApiAnalyticsLinkController::class, 'unlink']);
 
         // Gated on the grant rather than on admin mode, so an admin looking at the
         // site as a customer keeps the door back. See EnsureApiAdmin.

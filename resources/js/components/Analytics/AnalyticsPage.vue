@@ -10,7 +10,7 @@
 
     <!-- Remounted when a tab picks a map, so the filter shows it. One match sets its own hero, map and mode -->
     <filters
-      v-if="!game"
+      v-if="!game && !locked"
       :key="filtersKey"
       :onFilter="filterData"
       :gamemapinput="gamemap.length ? gamemap : null"
@@ -25,6 +25,14 @@
     ></filters>
 
     <div class="max-w-[93.75rem] mx-auto px-4 mt-4">
+      <!-- Free trial: days left, and the ways to keep Analytics in its last two days -->
+      <p v-if="trialDaysLeft !== null" class="text-center text-sm mb-4">
+        {{ trialStage }} free trial: {{ trialDaysLeft }} {{ trialDaysLeft === 1 ? 'day' : 'days' }} left.
+        <template v-if="trialDaysLeft <= 2">
+          To keep Analytics after that, <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">subscribe on Patreon</a> and link it to your account.
+        </template>
+      </p>
+
       <!-- Processing status: one line, so the tab's own numbers come first -->
       <div v-if="!sample" class="text-center mb-6">
         <div v-if="processing" class="max-w-[37.5rem] mx-auto">
@@ -34,30 +42,49 @@
         <div v-else class="flex flex-wrap items-center justify-center gap-3 text-sm">
           <span>{{ status.done.toLocaleString('en-US') }} of {{ status.total.toLocaleString('en-US') }} season games processed ({{ percent }}%)</span>
           <custom-button
-            v-if="status.done < status.total"
+            v-if="status.done < status.total && !locked && (!status.free || status.free.left > 0)"
             @click="request"
-            :text="'Process my games'"
-            :alt="'Process my games'"
+            :text="processText"
+            :alt="processText"
             size="small"
             :loading="requesting"
             :disabled="requesting"
             :ignoreclick="true"
           ></custom-button>
         </div>
+        <!-- Without a subscription: a set number of games per stage -->
+        <p v-if="status.free && !locked" class="text-sm mt-2">
+          Your {{ trialStage }} free processing covers {{ status.free.limit }} games, newest first, including games processed in the replay viewer:
+          {{ status.free.left }} left.
+          <template v-if="status.free.left < status.total - status.done">
+            To process the rest, <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">subscribe on Patreon</a>
+            or link a paid <a class="link" href="/Api">API plan</a>.
+          </template>
+        </p>
         <p v-if="error" class="mt-4 text-red">{{ error }}</p>
+      </div>
+
+      <!-- Trial used up: the ways to keep Analytics; the page below stays greyed out -->
+      <div v-if="locked" class="bg-darken rounded p-4 mb-6">
+        <analytics-subscribe
+          :title="'Your ' + (trialStage || '').toLowerCase() + ' free trial has ended'"
+          :text="'Your processed games are kept, so everything below is back as soon as you subscribe on Patreon at any tier and link it to your Heroes Profile account. The next stage of development will come with a new free trial.'"
+          :patreon-linked="patreonLinked"
+        ></analytics-subscribe>
       </div>
 
       <!-- Nothing processed yet: what Analytics is, while the first games process -->
       <analytics-summary v-if="status.done === 0 && !sample" :path-for="pathFor" @open="activeTab = $event"></analytics-summary>
     </div>
 
-    <!-- Analytics -->
-    <div v-if="status.done > 0">
+    <!-- Analytics (greyed out and inert when locked) -->
+    <div v-if="status.done > 0" :class="{ 'opacity-30 pointer-events-none select-none': locked }" :aria-hidden="locked">
       <!-- The match picker and tabs use the page's full width, like Match History below them -->
       <div class="px-4">
         <!-- One match at a time: pick one, or go back to all of them -->
-        <div v-if="!sample" class="flex flex-wrap items-center justify-center gap-3 mb-4">
+        <div v-if="!sample || game" class="flex flex-wrap items-center justify-center gap-3 mb-4">
           <single-select-filter
+            v-if="!sample"
             :key="'game' + (game || 0) + gameOptions.length"
             :values="gameOptions"
             :text="'Match'"
@@ -119,6 +146,7 @@
       :playermatchtablestyle="playermatchtablestyle"
       :authenticated="!sample"
       :sample="!!sample"
+      :sample-match="sampleMatch"
       :replay-link="replayLink"
       @analyze="selectGame"
     ></analytics-games>
@@ -167,6 +195,12 @@ export default {
     playermatchtablestyle: { type: [String, Boolean, Number], default: false },
     // The public sample's details (captured_at, maps, replay_id); null on the real page
     sample: { type: Object, default: null },
+    // On a free trial: when it ends (ISO), for the days-left notice
+    trialEndsAt: { type: String, default: null },
+    trialStage: { type: String, default: null },
+    // Trial used up and no Patreon: the page greyed out with the ways to keep Analytics, no data loaded
+    locked: Boolean,
+    patreonLinked: Boolean,
     // The section and match from the page's path
     initialTab: { type: String, default: null },
     initialMatch: { type: Number, default: null },
@@ -195,8 +229,10 @@ export default {
       activeTab: this.sample
         ? (Object.keys(TAB_PATHS).includes((this.urlparameters || {}).tab) && this.urlparameters.tab !== 'summary' ? this.urlparameters.tab : 'deaths')
         : this.initialTab || 'summary',
-      // /Analytics/Match/Single/{id}: every section for that one match (not on the sample)
-      game: !this.sample && this.initialMatch ? this.initialMatch : null,
+      // /Analytics/Match/Single/{id}: every section for that one match. The sample has only its own, in ?game=
+      game: this.sample
+        ? (Number((this.urlparameters || {}).game) && Number(this.urlparameters.game) === this.sample.replay_id && (this.sample.match_tabs || []).length ? this.sample.replay_id : null)
+        : this.initialMatch || null,
       gameOptions: [],
       tabCache: {},
       tabError: '',
@@ -213,9 +249,18 @@ export default {
       if (this.urlparameters['game_type']) this.gametype = this.urlparameters['game_type'].split(',');
       if (this.urlparameters['game_map']) this.gamemap = this.urlparameters['game_map'].split(',');
     }
+    // The public sample only has map-level data for its own map(s): open on them
+    if (this.sample && !this.gamemap.length && (this.sample.maps || []).length) {
+      this.gamemap = [this.sample.maps[0]];
+    }
   },
   mounted() {
-    if (this.game && ONE_GAME_HIDDEN.includes(this.activeTab)) {
+    // Locked: the summary only, and nothing loaded
+    if (this.locked) {
+      this.activeTab = 'summary';
+      return;
+    }
+    if (this.game && (ONE_GAME_HIDDEN.includes(this.activeTab) || this.activeTab === 'games')) {
       this.activeTab = 'deaths';
     }
     if (this.status.done > 0) {
@@ -235,6 +280,18 @@ export default {
     window.removeEventListener('focus', this.onVisible);
   },
   computed: {
+    // The sample match that Analyze can open (older samples have none)
+    sampleMatch() {
+      return this.sample && (this.sample.match_tabs || []).length ? this.sample.replay_id : null;
+    },
+    trialDaysLeft() {
+      if (!this.trialEndsAt) return null;
+      return Math.max(1, Math.ceil((new Date(this.trialEndsAt) - Date.now()) / 86400000));
+    },
+    processText() {
+      const left = this.status.free ? this.status.free.left : null;
+      return left !== null && left < this.status.total - this.status.done ? 'Process my latest ' + left + ' games' : 'Process my games';
+    },
     percent() {
       return this.status.total > 0 ? Math.floor((this.status.done / this.status.total) * 100) : 0;
     },
@@ -255,13 +312,15 @@ export default {
     // Sessions and Stacks need many games, so one game leaves them out
     shownTabs() {
       if (this.game) return this.tabs.filter(t => !ONE_GAME_HIDDEN.includes(t.key) && t.key !== 'games');
-      return this.sample ? this.tabs.filter(t => t.key !== 'positioning') : [{ key: 'summary', label: 'Summary' }, ...this.tabs];
+      // Older samples were captured before Positioning, so show only the tabs a sample has
+      if (this.sample) return this.tabs.filter(t => this.sample.tabs ? this.sample.tabs.includes(t.key) || t.key === 'games' : t.key !== 'positioning');
+      return [{ key: 'summary', label: 'Summary' }, ...this.tabs];
     },
     // The filters, written plainly like the other pages' URLs (game_type=sl,qm); game types only when not the
     // player's default. The sample keeps its section in ?tab=
     queryString() {
       const defaultTypes = [...(this.gametypedefault || [])].sort().join(',');
-      let queryString = this.sample ? `&tab=${this.activeTab}` : '';
+      let queryString = this.sample ? `&tab=${this.activeTab}` + (this.game ? `&game=${this.game}` : '') : '';
       if (this.gametype.length && [...this.gametype].sort().join(',') !== defaultTypes) {
         queryString += `&game_type=${this.gametype}`;
       }
@@ -377,7 +436,9 @@ export default {
       this.error = '';
       try {
         const response = await this.$axios.post('/Analytics/Request');
-        if (response.data.already_requested) {
+        if (response.data.limit_reached) {
+          this.error = 'You have used your free processing for this stage. Subscribe on Patreon or link a paid API plan to process the rest.';
+        } else if (response.data.already_requested) {
           this.error = 'Your games were already requested in the last 10 minutes. Try again in a few minutes if they are not processing.';
         } else if (response.data.queued === 0) {
           this.error = 'There are no unprocessed games to queue.';
