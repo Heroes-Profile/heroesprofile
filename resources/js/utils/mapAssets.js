@@ -46,6 +46,12 @@ export const MAP_SHORTCUTS = {
   },
 };
 
+// Maps with areas no one can walk between, by map slug: the region a point is in. Haunted Mines' mines sit
+// below the surface on the minimap (the surface ends near y 133, the mines top out near y 106).
+export const MAP_REGIONS = {
+  haunted_mines: (x, y) => (y < 120 ? 'mines' : 'surface'),
+};
+
 // Where those shortcuts put a hero out: [[x, y]] by map slug
 export const MAP_SHORTCUT_EXITS = Object.fromEntries(Object.entries(MAP_SHORTCUTS)
   .map(([slug, map]) => [slug, map.markers.filter(m => m.exit).map(m => [m.x, m.y])]));

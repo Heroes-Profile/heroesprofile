@@ -65,6 +65,22 @@
       fill="none" :stroke="teamColor(c.team)" stroke-width="1" :stroke-opacity="1 - c.age / 10"
     ></circle>
 
+    <!-- Map objectives, bosses and pushing mercenaries; spawn warnings faded with a dashed ring -->
+    <g v-for="o in objectives" :key="o.key" class="pointer-events-none" :opacity="o.warning ? 0.5 : 1">
+      <circle v-if="o.warning" :cx="o.x" :cy="flip(o.y)" :r="o.size / 2 + 1" fill="none" stroke="#f2b134" stroke-width="0.5" stroke-dasharray="1 1"></circle>
+      <image
+        v-if="o.src"
+        :href="o.src"
+        :x="o.x - o.size / 2" :y="flip(o.y) - o.size / 2" :width="o.size" :height="o.size"
+        :filter="o.tint ? 'url(#' + tintId(o.team) + ')' : null"
+      ></image>
+      <template v-else>
+        <circle :cx="o.x" :cy="flip(o.y)" :r="o.size / 2" fill="none" :stroke="teamColor(o.team)" stroke-width="0.6"></circle>
+        <text :x="o.x" :y="flip(o.y) + o.size / 4" text-anchor="middle" :font-size="o.size * 0.6" font-weight="bold" :fill="teamColor(o.team)">{{ o.letter }}</text>
+      </template>
+      <title>{{ o.label }}</title>
+    </g>
+
     <!-- Where minions died in the last few seconds -->
     <circle
       v-for="(m, index) in recentMinions"
@@ -151,6 +167,7 @@ function bodyName(unit) {
   if (!unit || MAIN_BODIES.includes(unit)) return null;
   return BODY_NAMES[unit] || 'Clone';
 }
+import { objectiveUnits, objectivesAt } from '../../utils/objectiveUnits.js';
 import { structureIcons, teamColor, tintMatrix, tintMatrixFor, SYMBIOTE_COLOR, shortcutOpenSpans, shortcutMarkers } from '../../utils/mapAssets.js';
 
 const KIND = { TownTownHallL2: 'fort', TownTownHallL3: 'keep', KingsCore: 'core', VanndarStormpike: 'core', DrekThar: 'core' };
@@ -230,6 +247,12 @@ export default {
       return this.data.camps
         .filter(c => c.x !== null && c.t <= this.t && this.t - c.t < 10)
         .map(c => ({ ...c, age: this.t - c.t }));
+    },
+    objectiveUnits() {
+      return objectiveUnits(this.data);
+    },
+    objectives() {
+      return objectivesAt(this.objectiveUnits, this.t);
     },
     recentMinions() {
       return this.data.minion_deaths.filter(m => m[1] >= 0 && m[0] <= this.t && this.t - m[0] < this.minionWindow);

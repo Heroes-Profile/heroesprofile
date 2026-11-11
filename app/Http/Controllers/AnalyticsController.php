@@ -30,6 +30,7 @@ class AnalyticsController extends Controller
         'Deaths' => 'deaths',
         'Map' => 'map',
         'Positioning' => 'positioning',
+        'Objectives' => 'objectives',
         'Timelines' => 'timelines',
         'Activity' => 'activity',
         'Sessions' => 'sessions',
@@ -38,10 +39,10 @@ class AnalyticsController extends Controller
         'Match/History' => 'games',
     ];
 
-    public const SECTION_PATTERN = 'Deaths|Map|Positioning|Timelines|Activity|Sessions|Coaching|Stacks|Match/History';
+    public const SECTION_PATTERN = 'Deaths|Map|Positioning|Objectives|Timelines|Activity|Sessions|Coaching|Stacks|Match/History';
 
     // One match's sections: those that work for a single match
-    public const MATCH_SECTION_PATTERN = 'Deaths|Map|Positioning|Timelines|Activity|Coaching';
+    public const MATCH_SECTION_PATTERN = 'Deaths|Map|Positioning|Objectives|Timelines|Activity|Coaching';
 
     public function __construct(
         GlobalDataService $globalDataService,
@@ -159,6 +160,14 @@ class AnalyticsController extends Controller
         return response()->json($result);
     }
 
+    // Reprocesses games from an older version; doesn't count toward the free allowance
+    public function update(): JsonResponse
+    {
+        $user = $this->allowedUser();
+
+        return response()->json($this->analytics->update((int) $user->blizz_id, (int) $user->region));
+    }
+
     public function data(Request $request, string $tab): JsonResponse
     {
         $user = $this->allowedUser();
@@ -240,6 +249,8 @@ class AnalyticsController extends Controller
             'trialAvailable' => $access['trial_available'],
             'trialStage' => $access['trial_stage'],
             'trialDays' => (int) config('analytics.trial_days'),
+            'latestExtractV' => (int) config('analytics.latest_extract_v'),
+            'extractVersions' => config('analytics.extract_versions'),
         ]);
     }
 
@@ -248,7 +259,12 @@ class AnalyticsController extends Controller
         $this->loggedInUser();
         abort_unless($this->replays->isSeasonGame($replayID), 404);
 
-        return response()->json(['ready' => $this->replays->isReady($replayID)]);
+        $version = $this->replays->version($replayID);
+
+        return response()->json([
+            'ready' => $this->replays->isReady($replayID),
+            'current' => $version !== null && $version >= (int) config('analytics.latest_extract_v'),
+        ]);
     }
 
     // Counts against the free allowance for anyone without a subscription; a game that's already ready doesn't
@@ -268,6 +284,15 @@ class AnalyticsController extends Controller
         }
 
         return response()->json(['queued' => $queued]);
+    }
+
+    // A game from an older version, reprocessed for what later versions added; free
+    public function replayUpdate(int $replayID): JsonResponse
+    {
+        $this->loggedInUser();
+        abort_unless($this->replays->isSeasonGame($replayID), 404);
+
+        return response()->json(['queued' => $this->replays->update($replayID)]);
     }
 
     public function replayData(int $replayID): JsonResponse

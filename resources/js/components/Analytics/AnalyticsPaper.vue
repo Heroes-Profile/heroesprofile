@@ -404,6 +404,30 @@ export default {
           ],
         },
 
+        objectives: {
+          title: 'Objectives and bosses: where players are at boss takes and map objectives',
+          version: 'Extract v6 · Objective rules v1 · November 2026',
+          abstract: 'For every boss camp capture we record where each player in the game was over the 20 seconds before it: at the take, dead, at the map objective, defending a lane on their own half, or elsewhere. For games processed with the map\'s objective units in the replay (extract v6 on), we also record whether each player was at each contested map objective, and at the enemy\'s pushing objectives. Each is compared with the global sample under the same filters, and with one match selected, with the player\'s other games on the same hero.',
+          sections: [
+            { heading: 'Data', shared: true, body: [
+              'Boss takes come from the camp captures in every processed game: the capturing team, the time and the camp\'s position. Map objectives come from the objective units in the replay (Immortals, tributes, shrines, seeds, payloads, capture points, nukes, cavalry, captured bosses and more), with when and where each appeared and ended, and its position about every 15 seconds while it moves. Hero positions and deaths are the same as the other tabs. The numbers are worked out overnight, so a game appears here the day after it is processed.',
+            ] },
+            { heading: 'Definitions', body: [
+              { list: [
+                'At the take: within 15 units of the boss camp at any position in the 20 s before the capture.',
+                'Dead: died in the minute before the capture and not at it.',
+                'On the map objective: within 25 units of a map objective that was up at the capture. In games processed before objective units were in the replay, a map objective event within 30 s of the capture while you were more than 40 units from the camp.',
+                'Defending a lane: your latest position in the window was in a lane, on your own half of the map. Shown on its own rather than excused, because sometimes holding a lane is worth more than the boss and sometimes it is not.',
+                'Elsewhere: none of the above.',
+                'Contested map objective: one either team can take; you were there if within 20 units of it while it was up. Defending: the enemy team\'s pushing objective; you were there if within 25 units of it at any of its recorded positions (5 s either side). Escorting is the same for your own team\'s.',
+              ] },
+            ] },
+            { heading: 'Limitations', body: [
+              'Taking bosses goes with winning partly because the team that is ahead takes them, often without everyone. In the global sample, players who were elsewhere when their team took a boss won more often than players who were at it, so being absent from a boss take is not, on its own, a sign of a mistake; the numbers here describe what happened rather than give advice. Positions between exact updates are estimated from move orders. Objective units move only between recorded positions about 15 seconds apart.',
+            ] },
+          ],
+        },
+
         positioning: {
           title: 'Positioning: lane use, teamfight position and objective timing from replay positions',
           version: 'Extract v5 · Positioning rules v1 · November 2026',

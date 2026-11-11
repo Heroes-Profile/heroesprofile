@@ -37,7 +37,8 @@
       <!-- Processing status: one line, so the tab's own numbers come first -->
       <div v-if="!sample" class="text-center mb-6">
         <div v-if="processing" class="max-w-[600px] mx-auto">
-          <p class="text-sm">Processing your games: {{ status.done }} of {{ status.total }} done. You can leave this page; it carries on.</p>
+          <p v-if="status.done >= status.total && status.outdated > 0" class="text-sm">Updating your games: {{ status.outdated }} left. You can leave this page; it carries on.</p>
+          <p v-else class="text-sm">Processing your games: {{ status.done }} of {{ status.total }} done. You can leave this page; it carries on.</p>
           <stat-bar-box class="w-full" size="full" :title="'Progress'" :value="percent" :displaytext="status.done + ' of ' + status.total"></stat-bar-box>
         </div>
         <div v-else class="flex flex-wrap items-center justify-center gap-3 text-sm">
@@ -53,6 +54,21 @@
             :ignoreclick="true"
           ></custom-button>
         </div>
+        <!-- Games processed before a newer version: what they're missing, and the way to update them -->
+        <p v-if="!processing && status.outdated > 0 && !locked" class="text-sm mt-2">
+          {{ status.outdated.toLocaleString('en-US') }} of your games were processed before Analytics added
+          {{ (status.whats_new || []).join('; ') }}.
+          <custom-button
+            class="ml-2"
+            @click="update"
+            :text="'Update my games'"
+            :alt="'Process those games again with the newest version'"
+            size="small"
+            :loading="requesting"
+            :disabled="requesting"
+            :ignoreclick="true"
+          ></custom-button>
+        </p>
         <!-- Without a subscription: a set number of games per stage -->
         <p v-if="status.free && !locked" class="text-sm mt-2">
           Your {{ trialStage }} free processing covers {{ status.free.limit }} games, newest first, including games processed in the replay viewer:
@@ -126,6 +142,7 @@
           <analytics-deaths v-if="activeTab === 'deaths'" :game="gameInfo" :data="tabData" :maps="maps" :heroes="filters.heroes" :game-maps="filters.game_maps" :selected-maps="gamemap" :pickable-maps="sample ? sample.maps : null" @pick-map="pickMap"></analytics-deaths>
           <analytics-positions v-else-if="activeTab === 'map'" :game="gameInfo" :data="tabData" :maps="maps" :heroes="filters.heroes" :game-maps="filters.game_maps" :selected-maps="gamemap" :pickable-maps="sample ? sample.maps : null" @pick-map="pickMap"></analytics-positions>
           <analytics-positioning v-else-if="activeTab === 'positioning'" :game="gameInfo" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-positioning>
+          <analytics-objectives v-else-if="activeTab === 'objectives'" :game="gameInfo" :data="tabData"></analytics-objectives>
           <analytics-timelines v-else-if="activeTab === 'timelines'" :game="gameInfo" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-timelines>
           <analytics-activity v-else-if="activeTab === 'activity'" :game="gameInfo" :data="tabData" :maps="maps" :heroes="filters.heroes" :filter-params="filterParams" :data-url="dataUrl"></analytics-activity>
           <analytics-sessions v-else-if="activeTab === 'sessions'" :data="tabData" :maps="maps" :heroes="filters.heroes"></analytics-sessions>
@@ -175,6 +192,7 @@ const TAB_PATHS = {
   deaths: '/Deaths',
   map: '/Map',
   positioning: '/Positioning',
+  objectives: '/Objectives',
   timelines: '/Timelines',
   activity: '/Activity',
   sessions: '/Sessions',
@@ -219,6 +237,7 @@ export default {
         { key: 'deaths', label: 'Deaths' },
         { key: 'map', label: 'Map & Positions' },
         { key: 'positioning', label: 'Positioning' },
+        { key: 'objectives', label: 'Objectives & Bosses' },
         { key: 'timelines', label: 'Timelines & Objectives' },
         { key: 'activity', label: 'Activity' },
         { key: 'sessions', label: 'Sessions' },
@@ -452,6 +471,23 @@ export default {
         this.requesting = false;
       }
     },
+    // Older-version games again; free, and the page's numbers refresh as they land
+    async update() {
+      this.requesting = true;
+      this.error = '';
+      try {
+        const response = await this.$axios.post('/Analytics/Update');
+        if (response.data.already_requested) {
+          this.error = 'Your games were already sent for updating in the last 10 minutes.';
+        } else if (response.data.queued > 0) {
+          this.startPolling();
+        }
+      } catch (e) {
+        this.error = 'Could not start the update. Please try again in a minute.';
+      } finally {
+        this.requesting = false;
+      }
+    },
     startPolling() {
       if (this.pollTimer) {
         return;
@@ -470,7 +506,7 @@ export default {
       try {
         const response = await this.$axios.get('/Analytics/Status');
         this.status = response.data;
-        if (this.status.done >= this.status.total || !this.status.processing) {
+        if (!this.status.processing) {
           clearInterval(this.pollTimer);
           this.pollTimer = null;
           this.processing = false;

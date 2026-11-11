@@ -24,7 +24,7 @@ class AnalyticsQueryService
     // Emote wheel commands: they say nothing about how a game was played
     private const COSMETIC_ABILITIES = ['LootSpray', 'LootYellVoiceLine', 'Taunt'];
 
-    public const TABS = ['deaths', 'map', 'positioning', 'timelines', 'activity', 'sessions', 'coaching', 'stacks'];
+    public const TABS = ['deaths', 'map', 'positioning', 'objectives', 'timelines', 'activity', 'sessions', 'coaching', 'stacks'];
 
     private ?BigQueryClient $client = null;
 
@@ -36,11 +36,13 @@ class AnalyticsQueryService
      */
     public function tab(string $tab, int $blizzId, int $region, array $filters): array
     {
-        $processed = $this->analytics->status($blizzId, $region)['done'];
+        $status = $this->analytics->status($blizzId, $region);
+        // Changes as games are processed or updated to a newer version
+        $processed = $status['done'].'-'.$status['outdated'];
         $threshold = $this->globalThreshold();
         // Coaching tables are rebuilt by a nightly BigQuery job (or by hand); refresh whenever they change
-        $nightly = in_array($tab, ['coaching', 'sessions', 'positioning'], true) ? ':'.$this->coachingVersion() : '';
-        $key = 'analytics:tab:v'.config('analytics.extract_v').'.13:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
+        $nightly = in_array($tab, ['coaching', 'sessions', 'positioning', 'objectives'], true) ? ':'.$this->coachingVersion() : '';
+        $key = 'analytics:tab:v'.config('analytics.latest_extract_v').'.13:'.$tab.':'.$region.':'.$blizzId.':'.$processed.':'.$threshold.$nightly.':'.md5(json_encode($filters));
 
         return Cache::remember($key, now()->addDays(7), function () use ($tab, $blizzId, $region, $filters, $threshold) {
             $params = [
@@ -162,9 +164,10 @@ class AnalyticsQueryService
             return [];
         }
 
-        $processed = $this->analytics->status($blizzId, $region)['done'];
+        $status = $this->analytics->status($blizzId, $region);
+        $processed = $status['done'].'-'.$status['outdated'];
         $threshold = $this->globalThreshold();
-        $key = 'analytics:ability:v'.config('analytics.extract_v').'.3:'.$region.':'.$blizzId.':'.$processed.':'.$threshold.':'.$heroId.':'.$abilityId.':'.md5(json_encode($filters));
+        $key = 'analytics:ability:v'.config('analytics.latest_extract_v').'.3:'.$region.':'.$blizzId.':'.$processed.':'.$threshold.':'.$heroId.':'.$abilityId.':'.md5(json_encode($filters));
 
         return Cache::remember($key, now()->addDays(7), function () use ($blizzId, $region, $filters, $heroId, $links, $threshold) {
             return $this->run(['timeline' => $this->ctes().',
@@ -751,6 +754,44 @@ class AnalyticsQueryService
                 // With one hero picked: which way each measure goes with winning on that hero (nightly, global sample)
                 'weights' => 'SELECT metric, games, r_win FROM `{dataset}.performance_weights`
                     WHERE @hero != 0 AND hero_id = @hero AND area = "positioning"',
+            ],
+
+            // Built nightly with coaching (boss_takes, objective_presence, from functions.sql's coach_boss_takes and
+            // coach_objective_presence), so games processed today join tomorrow
+            'objectives' => [
+                // Where you were at each boss take, yours and theirs, and how those games went
+                'takes' => $this->ctes().'
+                    SELECT pg.who, b.own, b.status, COUNT(*) AS takes, COUNT(DISTINCT pg.replay_id) AS games, AVG(IF(pg.winner, 1, 0)) AS win_rate
+                    FROM pg JOIN `{dataset}.boss_takes` b ON b.replay_id = pg.replay_id AND b.blizz_id = pg.blizz
+                    GROUP BY 1, 2, 3',
+
+                // Games by who took the first boss and when (3-minute steps), and how they went
+                'first_boss' => $this->ctes().'
+                    SELECT pg.who, b.own, DIV(b.t_s, 180) * 3 AS minute, COUNT(*) AS games, AVG(IF(pg.winner, 1, 0)) AS win_rate
+                    FROM pg JOIN `{dataset}.boss_takes` b ON b.replay_id = pg.replay_id AND b.blizz_id = pg.blizz AND b.take_n = 1
+                    GROUP BY 1, 2, 3',
+
+                // Bosses per game, yours and theirs
+                'per_game' => $this->ctes().',
+                    counted AS (
+                      SELECT pg.who, pg.replay_id, pg.winner, COUNTIF(b.own) AS own_takes, COUNTIF(NOT b.own) AS enemy_takes
+                      FROM pg LEFT JOIN `{dataset}.boss_takes` b ON b.replay_id = pg.replay_id AND b.blizz_id = pg.blizz
+                      JOIN `{dataset}.match` m ON m.replay_id = pg.replay_id AND m.game_date >= @cutover
+                      WHERE EXISTS (SELECT 1 FROM `{dataset}.map_camps` c WHERE c.game_map = m.game_map)
+                      GROUP BY 1, 2, 3
+                    )
+                    SELECT who, COUNT(*) AS games, AVG(own_takes) AS own_takes, AVG(enemy_takes) AS enemy_takes,
+                      AVG(IF(own_takes > enemy_takes, IF(winner, 1, 0), NULL)) AS win_more_bosses,
+                      AVG(IF(own_takes < enemy_takes, IF(winner, 1, 0), NULL)) AS win_fewer_bosses
+                    FROM counted GROUP BY 1',
+
+                // Map objectives (games processed with objectives in the replay, extract v6 on): attack = either team
+                // can take it, defend = the enemy's pushing objective, escort = your team's
+                'presence' => $this->ctes().'
+                    SELECT pg.who, o.side, o.name, COUNT(*) AS objectives, AVG(IF(o.present, 1, 0)) AS present_share,
+                      AVG(IF(o.present, IF(pg.winner, 1, 0), NULL)) AS win_present, AVG(IF(NOT o.present, IF(pg.winner, 1, 0), NULL)) AS win_absent
+                    FROM pg JOIN `{dataset}.objective_presence` o ON o.replay_id = pg.replay_id AND o.blizz_id = pg.blizz
+                    GROUP BY 1, 2, 3',
             ],
 
             'sessions' => [
