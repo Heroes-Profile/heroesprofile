@@ -1,3 +1,5 @@
+import { routeTo } from './replayPathing.js';
+
 // The replay viewer's map objectives, bosses and pushing mercenaries: the doc's objective_units
 // (extract v6). Older games only have the few the parser always kept (the tribute, Dragon Shire's
 // shrines and Dragon Knight...), from units, with no positions in between.
@@ -85,17 +87,44 @@ function look(unit) {
   return UNITS[unit.name] || (unit.k === 'merc' ? MERC : null);
 }
 
-// The game's objective units, from objective_units, or for older games from units
-export function objectiveUnits(data) {
+// The game's objective units, from objective_units, or for older games from units. With the map's walk
+// grid, a unit goes from one recorded point to the next around walls (down its lane) rather than straight.
+export function objectiveUnits(data, grid = null) {
   const units = data.objective_units
     ?? (data.units || []).filter(u => UNITS[u.name]).map(u => ({ ...u, k: UNITS[u.name].kind, pts: [] }));
-  return units.map(u => ({ ...u, look: look(u) })).filter(u => u.look);
+  return units.map(u => ({ ...u, look: look(u), track: track(u, grid) })).filter(u => u.look);
 }
 
-// Where a unit is at time t: along its spawn, recorded points and death; null while it doesn't exist
+// [t, x, y] from spawn through the recorded points to death, with the walked route's turns in between,
+// each timed by its share of the distance
+function track(unit, grid) {
+  const points = [unit.b, ...unit.pts, ...(unit.d ? [unit.d] : [])].filter(p => p[1] >= 0);
+  if (!grid || points.length < 2) return points;
+  const out = [points[0]];
+  for (let i = 1; i < points.length; i++) {
+    const [t0, x0, y0] = points[i - 1];
+    const [t1, x1, y1] = points[i];
+    const way = Math.hypot(x1 - x0, y1 - y0) < 3 ? [[x1, y1]] : routeTo(grid, x0, y0, x1, y1);
+    const legs = [];
+    let [px, py] = [x0, y0];
+    way.forEach(([x, y]) => {
+      legs.push([x, y, Math.hypot(x - px, y - py)]);
+      [px, py] = [x, y];
+    });
+    const total = legs.reduce((sum, l) => sum + l[2], 0) || 1;
+    let done = 0;
+    legs.forEach(([x, y, len], j) => {
+      done += len;
+      out.push(j === legs.length - 1 ? points[i] : [t0 + ((t1 - t0) * done) / total, x, y]);
+    });
+  }
+  return out;
+}
+
+// Where a unit is at time t: along its track; null while it doesn't exist
 function positionAt(unit, t) {
   if (t < unit.b[0] || (unit.d && t > unit.d[0])) return null;
-  const points = [unit.b, ...unit.pts, ...(unit.d ? [unit.d] : [])].filter(p => p[1] >= 0);
+  const points = unit.track;
   if (!points.length) return null;
   let i = 0;
   while (i < points.length - 1 && points[i + 1][0] <= t) i++;
