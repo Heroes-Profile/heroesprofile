@@ -182,6 +182,8 @@ export default {
     t: Number,
     selected: { type: Number, default: null },
     minimap: Object,
+    // The map's walkable cells, so objectives and mercenaries follow their lane between recorded points
+    walkGrid: { type: Object, default: null },
   },
   emits: ['select'],
   data() {
@@ -249,7 +251,7 @@ export default {
         .map(c => ({ ...c, age: this.t - c.t }));
     },
     objectiveUnits() {
-      return objectiveUnits(this.data);
+      return objectiveUnits(this.data, this.walkGrid);
     },
     objectives() {
       return objectivesAt(this.objectiveUnits, this.t);

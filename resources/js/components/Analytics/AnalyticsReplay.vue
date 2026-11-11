@@ -40,6 +40,7 @@
             :t="t"
             :selected="selected"
             :minimap="minimap"
+            :walk-grid="walkGrid"
             @select="selected = $event"
           ></analytics-replay-map>
           <analytics-replay-timeline
