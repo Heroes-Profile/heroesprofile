@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\DB;
  * away: it queues one Cloud Task per chunk of games to this app's fan-out route, and
  * each of those queues the chunk's analytics parses on the replay parser's analytics service (replay-parser-deep).
  * The VM loader writes replay_deep once a game's rows are in BigQuery, so progress is
- * a count of those rows. Rows from an older extract version count as not done, so the
- * next request rebuilds them.
+ * a count of those rows. Rows from an older extract version still count as done; the
+ * same request rebuilds them.
  */
 class AnalyticsService
 {
@@ -191,16 +191,28 @@ class AnalyticsService
     }
 
     /**
-     * Reprocesses the player's games that were processed at an older version, so they get what later
-     * versions added. Free: it doesn't count toward the free allowance.
+     * Queues the player's unprocessed season games (with a limit, only that many of the newest) plus
+     * every game processed at an older version. queued is the new games only, since updates don't count
+     * toward the free allowance. A second request inside the lock window queues nothing, so refreshing
+     * or double-clicking costs nothing.
      *
-     * @return array{queued: int, already_requested: bool}
+     * @return array{queued: int, updated: int, already_requested: bool}
      */
-    public function update(int $blizzId, int $region): array
+    public function request(int $blizzId, int $region, ?int $limit = null): array
     {
-        if (! Cache::add('analytics:update:'.$region.':'.$blizzId, 1, config('analytics.request_lock_seconds'))) {
-            return ['queued' => 0, 'already_requested' => true];
+        $lockKey = 'analytics:request:'.$region.':'.$blizzId;
+        if (! Cache::add($lockKey, 1, config('analytics.request_lock_seconds'))) {
+            return ['queued' => 0, 'updated' => 0, 'already_requested' => true];
         }
+
+        $pending = $limit === 0 ? [] : $this->seasonGames($blizzId, $region)
+            ->leftJoin('replay_deep', fn ($join) => $this->currentLoadedRow($join))
+            ->whereNull('replay_deep.replayID')
+            ->orderByDesc('replay.replayID')
+            ->when($limit !== null, fn ($query) => $query->limit($limit))
+            ->pluck('replay.replayID')
+            ->map(fn ($id) => (int) $id)
+            ->all();
 
         $outdated = $this->seasonGames($blizzId, $region)
             ->join('replay_deep', fn ($join) => $this->currentLoadedRow($join))
@@ -210,43 +222,20 @@ class AnalyticsService
             ->map(fn ($id) => (int) $id)
             ->all();
 
-        $this->dispatch($outdated);
-        if ($outdated !== []) {
-            Cache::put($this->processingKey($blizzId, $region), ['done' => 0, 'outdated' => 0], config('analytics.processing_seconds'));
+        if ($pending === [] && $outdated === []) {
+            Cache::forget($lockKey);
+
+            return ['queued' => 0, 'updated' => 0, 'already_requested' => false];
         }
 
-        return ['queued' => count($outdated), 'already_requested' => false];
-    }
+        $this->dispatch(array_merge($pending, $outdated));
+        $target = [
+            'done' => $this->status($blizzId, $region)['done'] + count($pending),
+            'outdated' => $outdated === [] ? PHP_INT_MAX : 0,
+        ];
+        Cache::put($this->processingKey($blizzId, $region), $target, config('analytics.processing_seconds'));
 
-    /**
-     * Queues the player's unprocessed season games, or with a limit only that many of the newest. A
-     * second request inside the lock window queues nothing, so refreshing or double-clicking costs nothing.
-     *
-     * @return array{queued: int, already_requested: bool}
-     */
-    public function request(int $blizzId, int $region, ?int $limit = null): array
-    {
-        if (! Cache::add('analytics:request:'.$region.':'.$blizzId, 1, config('analytics.request_lock_seconds'))) {
-            return ['queued' => 0, 'already_requested' => true];
-        }
-
-        $pending = $this->seasonGames($blizzId, $region)
-            ->leftJoin('replay_deep', fn ($join) => $this->currentLoadedRow($join))
-            ->whereNull('replay_deep.replayID')
-            ->orderByDesc('replay.replayID')
-            ->when($limit !== null, fn ($query) => $query->limit($limit))
-            ->pluck('replay.replayID')
-            ->map(fn ($id) => (int) $id)
-            ->all();
-
-        $this->dispatch($pending);
-
-        if ($pending !== []) {
-            $target = $this->status($blizzId, $region)['done'] + count($pending);
-            Cache::put($this->processingKey($blizzId, $region), ['done' => $target, 'outdated' => PHP_INT_MAX], config('analytics.processing_seconds'));
-        }
-
-        return ['queued' => count($pending), 'already_requested' => false];
+        return ['queued' => count($pending), 'updated' => count($outdated), 'already_requested' => false];
     }
 
     /** @param  array<int>  $replayIds */

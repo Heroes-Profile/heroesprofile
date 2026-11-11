@@ -37,14 +37,13 @@
       <!-- Processing status: one line, so the tab's own numbers come first -->
       <div v-if="!sample" class="text-center mb-6">
         <div v-if="processing" class="max-w-[600px] mx-auto">
-          <p v-if="status.done >= status.total && status.outdated > 0" class="text-sm">Updating your games: {{ status.outdated }} left. You can leave this page; it carries on.</p>
-          <p v-else class="text-sm">Processing your games: {{ status.done }} of {{ status.total }} done. You can leave this page; it carries on.</p>
-          <stat-bar-box class="w-full" size="full" :title="'Progress'" :value="percent" :displaytext="status.done + ' of ' + status.total"></stat-bar-box>
+          <p class="text-sm">Processing your games: {{ upToDate }} of {{ status.total }} up to date. You can leave this page; it carries on.</p>
+          <stat-bar-box class="w-full" size="full" :title="'Progress'" :value="upToDatePercent" :displaytext="upToDate + ' of ' + status.total"></stat-bar-box>
         </div>
         <div v-else class="flex flex-wrap items-center justify-center gap-3 text-sm">
           <span>{{ status.done.toLocaleString('en-US') }} of {{ status.total.toLocaleString('en-US') }} season games processed ({{ percent }}%)</span>
           <custom-button
-            v-if="status.done < status.total && !locked && (!status.free || status.free.left > 0)"
+            v-if="!locked && ((status.done < status.total && (!status.free || status.free.left > 0)) || status.outdated > 0)"
             @click="request"
             :text="processText"
             :alt="processText"
@@ -54,20 +53,10 @@
             :ignoreclick="true"
           ></custom-button>
         </div>
-        <!-- Games processed before a newer version: what they're missing, and the way to update them -->
+        <!-- Games processed before a newer version: what they're missing; the button above updates them -->
         <p v-if="!processing && status.outdated > 0 && !locked" class="text-sm mt-2">
           {{ status.outdated.toLocaleString('en-US') }} of your games were processed before Analytics added
-          {{ (status.whats_new || []).join('; ') }}.
-          <custom-button
-            class="ml-2"
-            @click="update"
-            :text="'Update my games'"
-            :alt="'Process those games again with the newest version'"
-            size="small"
-            :loading="requesting"
-            :disabled="requesting"
-            :ignoreclick="true"
-          ></custom-button>
+          {{ (status.whats_new || []).join('; ') }}. Rebuilding them is free.
         </p>
         <!-- Without a subscription: a set number of games per stage -->
         <p v-if="status.free && !locked" class="text-sm mt-2">
@@ -310,10 +299,21 @@ export default {
     },
     processText() {
       const left = this.status.free ? this.status.free.left : null;
-      return left !== null && left < this.status.total - this.status.done ? 'Process my latest ' + left + ' games' : 'Process my games';
+      const pending = this.status.total - this.status.done;
+      if (this.status.outdated > 0) {
+        return 'Rebuild all games to latest analytics';
+      }
+      return left !== null && left < pending ? 'Process my latest ' + left + ' games' : 'Process my games';
     },
     percent() {
       return this.status.total > 0 ? Math.floor((this.status.done / this.status.total) * 100) : 0;
+    },
+    // Processed at the latest version
+    upToDate() {
+      return this.status.done - (this.status.outdated || 0);
+    },
+    upToDatePercent() {
+      return this.status.total > 0 ? Math.floor((this.upToDate / this.status.total) * 100) : 0;
     },
     filterParams() {
       const params = { game_type: this.gametype, game_map: this.gamemap, hero: this.getHeroID() };
@@ -460,30 +460,13 @@ export default {
           this.error = 'You have used your free processing for this stage. Subscribe on Patreon or link a paid API plan to process the rest.';
         } else if (response.data.already_requested) {
           this.error = 'Your games were already requested in the last 10 minutes. Try again in a few minutes if they are not processing.';
-        } else if (response.data.queued === 0) {
-          this.error = 'There are no unprocessed games to queue.';
+        } else if (response.data.queued === 0 && response.data.updated === 0) {
+          this.error = 'There are no games to process or update.';
         } else {
           this.startPolling();
         }
       } catch (e) {
         this.error = 'Could not start processing. Please try again in a minute.';
-      } finally {
-        this.requesting = false;
-      }
-    },
-    // Older-version games again; free, and the page's numbers refresh as they land
-    async update() {
-      this.requesting = true;
-      this.error = '';
-      try {
-        const response = await this.$axios.post('/Analytics/Update');
-        if (response.data.already_requested) {
-          this.error = 'Your games were already sent for updating in the last 10 minutes.';
-        } else if (response.data.queued > 0) {
-          this.startPolling();
-        }
-      } catch (e) {
-        this.error = 'Could not start the update. Please try again in a minute.';
       } finally {
         this.requesting = false;
       }
