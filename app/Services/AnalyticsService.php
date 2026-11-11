@@ -148,22 +148,74 @@ class AnalyticsService
      */
     public function status(int $blizzId, int $region): array
     {
+        $latest = (int) config('analytics.latest_extract_v');
         $row = $this->seasonGames($blizzId, $region)
             ->leftJoin('replay_deep', fn ($join) => $this->currentLoadedRow($join))
-            ->selectRaw('COUNT(*) AS total, COUNT(replay_deep.replayID) AS done')
+            ->selectRaw('COUNT(*) AS total, COUNT(replay_deep.replayID) AS done, SUM(replay_deep.extract_v < ?) AS outdated, MIN(replay_deep.extract_v) AS oldest', [$latest])
             ->first();
         $total = (int) $row->total;
         $done = (int) $row->done;
+        $outdated = (int) $row->outdated;
 
-        // The done count the last request is working towards (fewer than all games when capped)
+        // What the last request is working towards: a done count (fewer than all games when capped),
+        // or for an update, an outdated count
         $target = Cache::get($this->processingKey($blizzId, $region));
         $processing = $target !== null;
-        if ($processing && $done >= min($total, (int) $target)) {
+        $target = is_array($target) ? $target : ['done' => (int) $target, 'outdated' => PHP_INT_MAX];
+        if ($processing && $done >= min($total, $target['done']) && $outdated <= $target['outdated']) {
             Cache::forget($this->processingKey($blizzId, $region));
             $processing = false;
         }
 
-        return ['total' => $total, 'done' => $done, 'processing' => $processing];
+        return [
+            'total' => $total,
+            'done' => $done,
+            'processing' => $processing,
+            'outdated' => $outdated,
+            'whats_new' => $outdated > 0 ? $this->whatsNew((int) $row->oldest) : [],
+        ];
+    }
+
+    /**
+     * What versions after this one added, newest last, for the update notices.
+     *
+     * @return array<string>
+     */
+    public function whatsNew(int $version): array
+    {
+        return array_values(array_filter(
+            config('analytics.extract_versions'),
+            fn ($v) => $v > $version && $v <= (int) config('analytics.latest_extract_v'),
+            ARRAY_FILTER_USE_KEY
+        ));
+    }
+
+    /**
+     * Reprocesses the player's games that were processed at an older version, so they get what later
+     * versions added. Free: it doesn't count toward the free allowance.
+     *
+     * @return array{queued: int, already_requested: bool}
+     */
+    public function update(int $blizzId, int $region): array
+    {
+        if (! Cache::add('analytics:update:'.$region.':'.$blizzId, 1, config('analytics.request_lock_seconds'))) {
+            return ['queued' => 0, 'already_requested' => true];
+        }
+
+        $outdated = $this->seasonGames($blizzId, $region)
+            ->join('replay_deep', fn ($join) => $this->currentLoadedRow($join))
+            ->where('replay_deep.extract_v', '<', config('analytics.latest_extract_v'))
+            ->orderByDesc('replay.replayID')
+            ->pluck('replay.replayID')
+            ->map(fn ($id) => (int) $id)
+            ->all();
+
+        $this->dispatch($outdated);
+        if ($outdated !== []) {
+            Cache::put($this->processingKey($blizzId, $region), ['done' => 0, 'outdated' => 0], config('analytics.processing_seconds'));
+        }
+
+        return ['queued' => count($outdated), 'already_requested' => false];
     }
 
     /**
@@ -187,20 +239,26 @@ class AnalyticsService
             ->map(fn ($id) => (int) $id)
             ->all();
 
-        foreach (array_chunk($pending, config('analytics.fanout_chunk')) as $chunk) {
+        $this->dispatch($pending);
+
+        if ($pending !== []) {
+            $target = $this->status($blizzId, $region)['done'] + count($pending);
+            Cache::put($this->processingKey($blizzId, $region), ['done' => $target, 'outdated' => PHP_INT_MAX], config('analytics.processing_seconds'));
+        }
+
+        return ['queued' => count($pending), 'already_requested' => false];
+    }
+
+    /** @param  array<int>  $replayIds */
+    private function dispatch(array $replayIds): void
+    {
+        foreach (array_chunk($replayIds, config('analytics.fanout_chunk')) as $chunk) {
             $this->tasks->dispatchHttp(
                 url: $this->fanoutUrl(),
                 body: ['replay_ids' => $chunk],
                 queue: config('analytics.queue'),
             );
         }
-
-        if ($pending !== []) {
-            $target = $this->status($blizzId, $region)['done'] + count($pending);
-            Cache::put($this->processingKey($blizzId, $region), $target, config('analytics.processing_seconds'));
-        }
-
-        return ['queued' => count($pending), 'already_requested' => false];
     }
 
     private function processingKey(int $blizzId, int $region): string

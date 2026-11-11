@@ -61,6 +61,29 @@ class AnalyticsReplayService
             ->exists();
     }
 
+    /** The version a game was processed at, or null if it hasn't been. */
+    public function version(int $replayId): ?int
+    {
+        $version = DB::connection('heroesprofile')->table('replay_deep')->where('replayID', $replayId)->value('extract_v');
+
+        return $version === null ? null : (int) $version;
+    }
+
+    /**
+     * Reprocesses a game processed at an older version, so it gets what later versions added. Same
+     * lock as process(); free, so the caller doesn't count it.
+     */
+    public function update(int $replayId): bool
+    {
+        $version = $this->version($replayId);
+        if ($version === null || $version >= (int) config('analytics.latest_extract_v')
+            || ! Cache::add('analytics:replay_request:'.$replayId, 1, config('analytics.request_lock_seconds'))) {
+            return false;
+        }
+
+        return $this->analytics->fanOut([$replayId]) > 0;
+    }
+
     /**
      * Queues one game's analytics parse, for the viewer opened on a game nobody has processed yet. A
      * second request inside the lock window queues nothing, so refreshing costs nothing.
@@ -210,7 +233,8 @@ class AnalyticsReplayService
     /** @return array<string, mixed>|null */
     private function trimmed(int $replayId): ?array
     {
-        return Cache::remember('analytics:replay:v'.config('analytics.extract_v').'.5:'.$replayId, now()->addDay(), function () use ($replayId) {
+        // Keyed on the game's own version, so an updated game is read again
+        return Cache::remember('analytics:replay:v'.$this->version($replayId).'.6:'.$replayId, now()->addDay(), function () use ($replayId) {
             try {
                 $raw = Storage::disk(self::DISK)->get('doc/'.$replayId.'.json.gz');
             } catch (UnableToReadFile) {
@@ -269,6 +293,8 @@ class AnalyticsReplayService
             'deaths' => $doc['deaths'],
             'structures' => $doc['structures'],
             'units' => array_values(array_filter($doc['units'], fn ($u) => $u['g'] !== 'Hero')),
+            // v6 on; older games leave it out and the viewer falls back to units
+            'objective_units' => $doc['objective_units'] ?? null,
             'lives' => $this->lives($doc),
             'unit_tracks' => $doc['unit_tracks'] ?? [],
             'selections' => $doc['selections'] ?? [],

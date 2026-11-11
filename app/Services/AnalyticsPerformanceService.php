@@ -43,7 +43,7 @@ class AnalyticsPerformanceService
             return null;
         }
 
-        $key = 'analytics:performance:v1:'.config('analytics.extract_v').':'.$replayId.':'.$this->baselineVersion();
+        $key = 'analytics:performance:v1:'.config('analytics.latest_extract_v').':'.$replayId.':'.$this->baselineVersion();
 
         return Cache::remember($key, now()->addDays(7), fn () => $this->build($replayId));
     }
