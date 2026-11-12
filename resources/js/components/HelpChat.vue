@@ -77,14 +77,23 @@
       </form>
     </div>
 
-    <button
-      class="w-14 h-14 rounded-full bg-teal hover:bg-lteal text-white text-2xl shadow-[0_0.25rem_1rem_rgba(0,0,0,0.5)] flex items-center justify-center transition-colors"
-      :aria-label="open ? 'Close help' : 'Open help'"
-      :aria-expanded="open"
-      @click="toggle"
-    >
-      <i :class="open ? 'fas fa-xmark' : 'fas fa-question'"></i>
-    </button>
+    <div class="flex items-center gap-3">
+      <button
+        class="w-14 h-14 shrink-0 rounded-full bg-teal hover:bg-lteal text-white text-2xl shadow-[0_0.25rem_1rem_rgba(0,0,0,0.5)] flex items-center justify-center transition-colors"
+        :aria-label="open ? 'Close help' : 'Open help'"
+        :aria-expanded="open"
+        @click="toggle"
+      >
+        <i :class="open ? 'fas fa-xmark' : 'fas fa-question'"></i>
+      </button>
+      <!-- Phones' first visit, instead of opening the panel over the page -->
+      <div v-if="teaser && !open" class="help-teaser animate-bounce flex items-center gap-2 rounded-xl pl-3 pr-1 py-1 text-sm">
+        <button class="text-left" @click="toggle"><span class="font-bold">New:</span> questions? Ask here</button>
+        <button class="w-6 h-6 flex items-center justify-center rounded hover:bg-black/10" aria-label="Dismiss" title="Dismiss" @click="teaser = false">
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -115,14 +124,20 @@ export default {
       // The reply whose logo is mid-bounce
       talkingIndex: null,
       showIntro: false,
+      teaser: false,
     };
   },
   created() {
     try {
-      this.showIntro = !localStorage.getItem(INTRO_KEY);
-      this.open = this.showIntro;
       // Only the first page they land on, closed or not
-      if (this.showIntro) {
+      if (!localStorage.getItem(INTRO_KEY)) {
+        // Phones get the small note instead: the panel would cover the page
+        if (window.matchMedia('(min-width: 768px)').matches) {
+          this.showIntro = true;
+          this.open = true;
+        } else {
+          this.teaser = true;
+        }
         localStorage.setItem(INTRO_KEY, 'true');
       }
     } catch (e) {
@@ -155,6 +170,11 @@ export default {
     },
     toggle() {
       this.open = !this.open;
+      // Opened from the phone note: the panel greets them with the intro
+      if (this.open && this.teaser) {
+        this.teaser = false;
+        this.showIntro = true;
+      }
       // Reopening on the same page shows the usual prompt
       if (!this.open) {
         this.showIntro = false;
@@ -305,3 +325,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* The speech bubble's colours */
+.help-teaser {
+  background: #f4f4f8;
+  color: #111;
+  border: 2px solid #111;
+}
+</style>
