@@ -24,6 +24,7 @@
         :includeplayerrank="true"
         :includeherorank="true"
         :includerolerank="true"
+        :advancedfiltersinfo="'Advanced filters may take a lot longer to run.'"
       ></filters>
     </div>
 
@@ -64,15 +65,15 @@
         <div class="flex flex-col items-center gap-2 order-2 flex-1">
           <input type="text" v-model="searchQuery" class="w-60 border rounded p-2 text-black" placeholder="Search Heroes" />
           <div class="flex justify-center">
-            <img
+            <round-image
               v-for="role in roles"
               :key="role"
-              :src="'/images/roles/' + role.toLowerCase() + (selectedRoles.includes(role) ? '-highlighted' : '') + '.PNG'"
+              :image="'/images/roles/' + role.toLowerCase() + (selectedRoles.includes(role) ? '-highlighted' : '') + '.PNG'"
               :title="role"
-              :alt="role"
+              :hidemobiletext="true"
               @click="toggleRole(role)"
-              class="w-12 cursor-pointer"
-            />
+              class="cursor-pointer"
+            >{{ role }}</round-image>
           </div>
         </div>
       </div>
@@ -167,8 +168,7 @@ export default {
       heroStats: {},
       totalGames: 0,
       draftOrder: {},
-      compositionCache: {},
-      compositionData: null,
+      compositions: {},
 
       timeframe: null,
       gametype: null,
@@ -224,6 +224,40 @@ export default {
       }
       return list.sort((a, b) => b.value - a.value);
     },
+    // Heroes from the most played composition containing the team's current roles,
+    // with games played zeroed for roles the team has already filled
+    compositionData() {
+      if (this.mockDraft || this.dataError || this.currentPick < 6 || this.draftComplete) return null;
+
+      const knownRoles = new Set(Object.values(this.compositions).flatMap(composition => composition.roles));
+      const teamRoles = this.compositionTeamPicks()
+        .map(heroId => this.heroesById[heroId]?.new_role)
+        .filter(role => knownRoles.has(role));
+
+      const remaining = roles => {
+        const counts = {};
+        roles.forEach(role => { counts[role] = (counts[role] || 0) + 1; });
+        teamRoles.forEach(role => { counts[role] = (counts[role] || 0) - 1; });
+        return counts;
+      };
+
+      let best = null;
+      for (const composition of Object.values(this.compositions)) {
+        if (best && composition.games <= best.games) continue;
+        if (Object.values(remaining(composition.roles)).every(count => count >= 0)) {
+          best = composition;
+        }
+      }
+      if (!best) return [];
+
+      const remainingRoles = remaining(best.roles);
+      return Object.entries(best.heroes)
+        .filter(([heroId]) => this.heroesById[heroId])
+        .map(([heroId, games]) => ({
+          hero_id: Number(heroId),
+          games_played: remainingRoles[this.heroesById[heroId].new_role] ? games : 0,
+        }));
+    },
     visibleSuggestions() {
       const query = this.normalizeString(this.searchQuery).replace(/[^\w\s]/gi, '');
       return this.suggestions.filter(hero => {
@@ -276,15 +310,12 @@ export default {
       if ((hero.id === CHO || hero.id === GALL) && next > 4 && next !== 10 && next !== 11 && next < this.pickOrder.length) {
         this.picks.push({ heroId: hero.id === CHO ? GALL : CHO, auto: true });
       }
-
-      this.loadCompositionData();
     },
     undo() {
       const last = this.picks.pop();
       if (last && last.auto) {
         this.picks.pop();
       }
-      this.loadCompositionData();
     },
     filterData(filteredData) {
       this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes) : this.defaulttimeframe;
@@ -315,12 +346,10 @@ export default {
     async loadBaseData() {
       this.isLoading = true;
       this.dataError = false;
-      this.compositionCache = {};
-      this.compositionData = null;
 
       try {
         // Same parameters the Global Hero Stats page sends, so both share its cache entry
-        const [statsResponse, orderResponse] = await Promise.all([
+        const [statsResponse, orderResponse, compositionResponse] = await Promise.all([
           this.$globalAsyncPost('/api/v1/global/hero', {
             ...this.filterParameters(),
             statfilter: 'win_rate',
@@ -330,51 +359,25 @@ export default {
             groupsize: [],
           }),
           this.$globalAsyncPost('/api/v1/drafter/draft-order', this.filterParameters()),
+          this.$globalAsyncPost('/api/v1/drafter/composition', { ...this.filterParameters(), mirror: 0 }),
         ]);
 
         const stats = statsResponse.data.data || [];
         this.totalGames = stats.reduce((sum, row) => sum + row.games_played, 0) / 10;
         this.heroStats = Object.fromEntries(stats.map(row => [row.hero_id, row]));
         this.draftOrder = orderResponse.data || {};
+        this.compositions = compositionResponse.data || {};
       } catch (error) {
         this.dataError = true;
       } finally {
         this.isLoading = false;
       }
-
-      this.loadCompositionData();
     },
     compositionTeamPicks() {
       const pick = this.currentPick;
       const firstTeam = FIRST_TEAM_PICKS.includes(pick) || pick === 9;
       const picks = firstTeam ? FIRST_TEAM_PICKS : SECOND_TEAM_PICKS;
       return this.picks.filter((p, index) => picks.includes(index)).map(p => p.heroId);
-    },
-    async loadCompositionData() {
-      this.compositionData = null;
-      if (this.mockDraft || this.dataError || this.currentPick < 6 || this.draftComplete) return;
-
-      const teamPicks = this.compositionTeamPicks();
-      const cacheKey = [...teamPicks].sort().join(',');
-      if (this.compositionCache[cacheKey]) {
-        this.compositionData = this.compositionCache[cacheKey];
-        return;
-      }
-
-      this.isLoading = true;
-      try {
-        const response = await this.$globalAsyncPost('/api/v1/drafter/composition', {
-          ...this.filterParameters(),
-          mirror: 0,
-          team_picks: teamPicks,
-        });
-        this.compositionCache[cacheKey] = Array.isArray(response.data) ? response.data : [];
-        this.compositionData = this.compositionCache[cacheKey];
-      } catch (error) {
-        this.dataError = true;
-      } finally {
-        this.isLoading = false;
-      }
     },
     // Share of a hero's picks within `positions` that happened at the current pick; null when never picked there
     pickOrderShare(positions, heroId) {

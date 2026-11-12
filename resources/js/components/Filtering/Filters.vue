@@ -485,6 +485,9 @@
       <div class="flex max-md:mb-auto" :class="compact && $slots['compact-footer'] ? 'justify-between items-start' : 'justify-end'">
         <div v-if="compact && $slots['compact-footer']" class="mt-2"><slot name="compact-footer"></slot></div>
         <button class="m-l-auto underline" :class="{ 'text-sm mt-2': compact }" v-if="!hideadvancedfilteringbutton" :aria-expanded="!!toggleExtraFilters" @click="toggleExtraFilters = !toggleExtraFilters" >{{toggleButtonText}}</button>
+        <round-image v-if="advancedfiltersinfo && !hideadvancedfilteringbutton" class="ml-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+          <p class="max-sm:text-xs">{{ advancedfiltersinfo }}</p>
+        </round-image>
       </div>
     </div>
   </div>
@@ -554,6 +557,7 @@
       minimumseason: Number,
       includegamedate: Boolean,
       hideadvancedfilteringbutton: Boolean,
+      advancedfiltersinfo: String,
       includeseasonwithall: Boolean,
       includemultiseason: Boolean,
       includegamedaterange: Boolean,
