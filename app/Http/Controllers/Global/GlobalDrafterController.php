@@ -6,6 +6,7 @@ use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
 use App\Models\Composition;
 use App\Models\GlobalCompositions;
 use App\Models\GlobalHeroDraftOrder;
+use App\Models\GlobalHeroDraftOrderSummary;
 use App\Models\MMRTypeID;
 use App\Models\SeasonGameVersion;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class GlobalDrafterController extends GlobalsInputValidationController
     // Bump when the cached data changes shape or maths, so old entries are skipped.
     private const DRAFT_ORDER_CACHE_VERSION = 1;
 
-    private const COMPOSITION_CACHE_VERSION = 1;
+    private const COMPOSITION_CACHE_VERSION = 2;
 
     public function show(Request $request)
     {
@@ -60,16 +61,23 @@ class GlobalDrafterController extends GlobalsInputValidationController
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
 
-        $rows = GlobalHeroDraftOrder::query()
+        // The summary table has no hero level, hero rank or role rank, so those filters need the full table
+        $advanced = ! empty($request['hero_level']) || ! empty($request['hero_league_tier']) || ! empty($request['role_league_tier']);
+
+        $query = $advanced
+            ? GlobalHeroDraftOrder::query()
+                ->filterByHeroLeagueTier($request['hero_league_tier'])
+                ->filterByRoleLeagueTier($request['role_league_tier'])
+                ->filterByHeroLevel($request['hero_level'])
+            : GlobalHeroDraftOrderSummary::query();
+
+        $rows = $query
             ->select('hero', 'pick_number')
             ->selectRaw('SUM(count) as total')
             ->filterByGameVersion($gameVersionIDs)
             ->filterByGameType($this->globalDataService->getGameTypeFilterValues($request['game_type']))
             ->filterByLeagueTier($request['league_tier'])
-            ->filterByHeroLeagueTier($request['hero_league_tier'])
-            ->filterByRoleLeagueTier($request['role_league_tier'])
             ->filterByGameMap($this->globalDataService->getGameMapFilterValues($request['game_map']))
-            ->filterByHeroLevel($request['hero_level'])
             ->filterByRegion($this->globalDataService->getRegionFilterValues($request['region']))
             ->where('hero', '<>', 0)
             ->groupBy('hero', 'pick_number')
@@ -85,12 +93,7 @@ class GlobalDrafterController extends GlobalsInputValidationController
 
     public function getCompositionData(Request $request)
     {
-        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
-            'team_picks' => 'required|array|min:1|max:5',
-            'team_picks.*' => 'integer',
-        ]);
-
-        $validator = Validator::make($request->all(), $validationRules);
+        $validator = Validator::make($request->all(), $this->globalsValidationRules($request['timeframe_type'], $request['timeframe']));
 
         if ($validator->fails()) {
             return [
@@ -101,105 +104,67 @@ class GlobalDrafterController extends GlobalsInputValidationController
 
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
-
-        // Only the roles picked so far change the answer, so key on those rather than the heroes
-        $keyParameters = $request->except('team_picks');
-        $keyParameters['team_roles'] = $this->getTeamRoleIDs($request['team_picks']);
-        $cacheKey = $this->globalCacheKey('DrafterComposition', $gameVersionIDs, $keyParameters, self::COMPOSITION_CACHE_VERSION);
+        $cacheKey = $this->globalCacheKey('DrafterComposition', $gameVersionIDs, $request->all(), self::COMPOSITION_CACHE_VERSION);
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeCompositionData');
     }
 
     /**
-     * Heroes from the most played composition containing the team's current roles,
-     * with games played zeroed for roles the team has already filled.
+     * Every played composition with its role names, total games and games per hero,
+     * keyed composition_id => ['roles', 'games', 'heroes' => hero_id => games].
      */
     public function executeCompositionData(Request $request)
     {
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
-        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
-        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
-        $region = $this->globalDataService->getRegionFilterValues($request['region']);
 
-        $teamRoles = $this->getTeamRoleIDs($request['team_picks']);
+        $rows = GlobalCompositions::query()
+            ->select('composition_id', 'hero')
+            ->selectRaw('SUM(games_played) as games_played')
+            ->filterByGameVersion($gameVersionIDs)
+            ->filterByGameType($this->globalDataService->getGameTypeFilterValues($request['game_type']))
+            ->filterByLeagueTier($request['league_tier'])
+            ->filterByHeroLeagueTier($request['hero_league_tier'])
+            ->filterByRoleLeagueTier($request['role_league_tier'])
+            ->filterByGameMap($this->globalDataService->getGameMapFilterValues($request['game_map']))
+            ->filterByHeroLevel($request['hero_level'])
+            ->excludeMirror($request['mirror'])
+            ->filterByRegion($this->globalDataService->getRegionFilterValues($request['region']))
+            ->groupBy('composition_id', 'hero')
+            ->get();
 
-        $validCompositionIDs = Composition::query()
-            ->whereRaw('CONCAT(role_one, role_two, role_three, role_four, role_five) LIKE ?', ['%'.implode('%', $teamRoles).'%'])
-            ->pluck('composition_id')
-            ->toArray();
-
-        if (empty($validCompositionIDs)) {
+        if ($rows->isEmpty()) {
             return [];
         }
 
-        $filtered = function () use ($gameVersionIDs, $gameType, $gameMap, $region, $request) {
-            return GlobalCompositions::query()
-                ->filterByGameVersion($gameVersionIDs)
-                ->filterByGameType($gameType)
-                ->filterByLeagueTier($request['league_tier'])
-                ->filterByHeroLeagueTier($request['hero_league_tier'])
-                ->filterByRoleLeagueTier($request['role_league_tier'])
-                ->filterByGameMap($gameMap)
-                ->filterByHeroLevel($request['hero_level'])
-                ->excludeMirror($request['mirror'])
-                ->filterByRegion($region);
-        };
+        $roleNames = MMRTypeID::all()->pluck('name', 'mmr_type_id');
+        $compositions = Composition::whereIn('composition_id', $rows->pluck('composition_id')->unique())->get()->keyBy('composition_id');
 
-        $compositionID = $filtered()
-            ->select('composition_id')
-            ->selectRaw('SUM(games_played) as games_played')
-            ->whereIn('composition_id', $validCompositionIDs)
-            ->groupBy('composition_id')
-            ->orderByDesc('games_played')
-            ->value('composition_id');
+        $data = [];
+        foreach ($rows as $row) {
+            $composition = $compositions[$row->composition_id] ?? null;
+            if (! $composition) {
+                continue;
+            }
 
-        if (! $compositionID) {
-            return [];
-        }
-
-        $composition = Composition::find($compositionID);
-        $remainingRoles = array_count_values([
-            $composition->role_one, $composition->role_two, $composition->role_three, $composition->role_four, $composition->role_five,
-        ]);
-        foreach ($teamRoles as $roleID) {
-            $remainingRoles[$roleID] = ($remainingRoles[$roleID] ?? 0) - 1;
-        }
-
-        $roleIDsByName = MMRTypeID::all()->pluck('mmr_type_id', 'name');
-        $heroRoleIDs = $this->globalDataService->getHeroes()->mapWithKeys(fn ($hero) => [$hero->id => $roleIDsByName[$hero->new_role] ?? null]);
-
-        return $filtered()
-            ->select('hero')
-            ->selectRaw('SUM(games_played) as games_played')
-            ->where('composition_id', $compositionID)
-            ->groupBy('hero')
-            ->get()
-            ->filter(fn ($row) => isset($heroRoleIDs[$row->hero]))
-            ->map(function ($row) use ($heroRoleIDs, $remainingRoles) {
-                $roleID = $heroRoleIDs[$row->hero];
-
-                return [
-                    'hero_id' => $row->hero,
-                    'games_played' => ($remainingRoles[$roleID] ?? 0) != 0 ? (float) $row->games_played : 0,
+            if (! isset($data[$row->composition_id])) {
+                $data[$row->composition_id] = [
+                    'roles' => collect([$composition->role_one, $composition->role_two, $composition->role_three, $composition->role_four, $composition->role_five])
+                        ->map(fn ($roleID) => $roleNames[$roleID] ?? null)
+                        ->filter()
+                        ->values()
+                        ->toArray(),
+                    'games' => 0,
+                    'heroes' => [],
                 ];
-            })
-            ->values()
-            ->toArray();
-    }
+            }
 
-    private function getTeamRoleIDs($teamPicks)
-    {
-        $roleIDsByName = MMRTypeID::all()->pluck('mmr_type_id', 'name');
-        $heroes = $this->globalDataService->getHeroes()->keyBy('id');
+            $data[$row->composition_id]['games'] += (float) $row->games_played;
+            if ($row->hero) {
+                $data[$row->composition_id]['heroes'][$row->hero] = (float) $row->games_played;
+            }
+        }
 
-        $roleIDs = collect($teamPicks)
-            ->map(fn ($heroID) => isset($heroes[$heroID]) ? ($roleIDsByName[$heroes[$heroID]->new_role] ?? null) : null)
-            ->filter()
-            ->sort()
-            ->values()
-            ->toArray();
-
-        return $roleIDs;
+        return $data;
     }
 }
