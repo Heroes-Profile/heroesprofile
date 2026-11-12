@@ -7,6 +7,7 @@ use Anthropic\Core\Exceptions\APIStatusException;
 use Anthropic\Core\Exceptions\RateLimitException;
 use App\Models\HelpChatMiss;
 use App\Services\FaqMatcher;
+use App\Services\GlobalDataService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -40,6 +41,8 @@ class HelpChatController extends Controller
         }
 
         return response()->json(app(FaqMatcher::class)->search($request['question']) + [
+            // Profile links are Zemill's examples until they log in
+            'examples' => FaqMatcher::viewerProfile() === null,
             'persona' => $this->persona($request['question']),
         ]);
     }
@@ -118,6 +121,7 @@ class HelpChatController extends Controller
         // with the chat so far, so context is never lost. A new FAQ or page list gives new keys.
         $cacheKey = $history->count() === 1 ? $this->answerCacheKey($question, $systemPrompt) : null;
         if ($cacheKey && ($cached = Cache::store('database')->get($cacheKey))) {
+            $cached = $this->personalize($cached);
             $this->storeMiss($request, $question, $cached);
 
             return response()->json([
@@ -178,6 +182,7 @@ class HelpChatController extends Controller
             }
         }
 
+        $answer = $this->personalize($answer);
         $this->storeMiss($request, $question, $answer);
 
         return response()->json([
@@ -193,6 +198,20 @@ class HelpChatController extends Controller
         $supporter = $patreon && ($patreon->site_flair == 1 || $patreon->ad_free == 1);
 
         return self::DAILY_LIMIT + ($supporter ? self::PATREON_BONUS : 0);
+    }
+
+    // Answers are cached with {profile} and {season} so one answer serves everyone; filled in per user here
+    private function personalize(string $answer): string
+    {
+        if (str_contains($answer, '{profile}')) {
+            $answer = str_replace('{profile}', FaqMatcher::viewerProfile(), $answer);
+        }
+
+        if (str_contains($answer, '{season}')) {
+            $answer = str_replace('{season}', (string) app(GlobalDataService::class)->getDefaultSeason(), $answer);
+        }
+
+        return $answer;
     }
 
     // Same question once case, punctuation and spacing are ignored
@@ -249,8 +268,10 @@ class HelpChatController extends Controller
             - When a page helps, give its path starting with "/" (for example /Global/Draft) so it becomes a link.
             - If the guide doesn't cover something, say you're not sure and point to /FAQ or /Contact. Never make up features, numbers or stats.
             - When the question is about one hero and the page has a "For one hero" path, link that path with the hero's name in place of {hero}, written as it appears in the game (spaces as %20, e.g. /Global/Hero?hero=Li%20Li).
-            - Player profile paths in the guide are Zemill's, as examples. Tell people to search their own BattleTag in the bar at the top, then open that tab.
-            - You can't look up players, matches or stats yourself. Tell people which page shows what they want.
+            - The person asking is logged in, and you can link their own profile. Player profile paths in the guide are Zemill's examples: for the person asking, write {profile} in place of /Player/Zemill/67280/1, e.g. {profile}/Match/History. Never write {profile} with anything in front of it.
+            - Player profile pages take a season. For questions about "this season" or a season count, add ?season={season} for the current season (&season={season} if the path already has a ?), e.g. {profile}?season={season}.
+            - Only for someone else's profile, tell them to search that BattleTag in the bar at the top.
+            - You can't see stats, matches or numbers yourself. Link the page that shows what they want instead.
             - For questions unrelated to Heroes Profile or Heroes of the Storm, politely say you can only help with Heroes Profile.
 
             # Site guide
