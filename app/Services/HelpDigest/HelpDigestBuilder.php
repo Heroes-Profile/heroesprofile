@@ -40,7 +40,7 @@ class HelpDigestBuilder
     // Outlives a missed run, and PruneDatabaseTables only removes expired rows
     private const TTL_DAYS = 3;
 
-    // Cold global queries started per run; the rest wait for the next run
+    // Global queries started per run, cold or stale refreshes; the rest wait for the next run
     private const MAX_QUEUED = 60;
 
     // Longest list kept from any table, and the most text one chunk can hold
@@ -287,12 +287,27 @@ class HelpDigestBuilder
 
     private function heroMaps(): array
     {
-        return $this->perHero('global-hero-maps', 'Hero Map Stats', '/Global/Hero/Maps/', GlobalHeroMapStatsController::class, 'getHeroStatMapData', $this->globalDefaults(), 'How this hero does on each map.');
+        return $this->perHero('global-hero-maps', 'Hero Map Stats', '/Global/Hero/Maps/', GlobalHeroMapStatsController::class, 'getHeroStatMapData', $this->globalDefaults(), fn ($data) => [
+            'How this hero does on each map, sorted by win rate:',
+            ...collect($data)->map(fn ($map) => sprintf(
+                '%s: win %s%%, ban %s%%, games %s',
+                $map['name'], $map['win_rate'], $map['ban_rate'], number_format($map['games_played'])
+            )),
+        ]);
     }
 
     private function matchups(): array
     {
-        return $this->perHero('global-matchups', 'Matchups', '/Global/Matchups/', GlobalHeroMatchupStatsController::class, 'getHeroMatchupData', $this->globalDefaults(), 'Win rates with each hero as an ally and against each as an enemy.');
+        $line = fn ($row) => sprintf('%s (%s): %s%%, games %s', data_get($row, 'hero.name'), $row['role'], $row['win_rate'], number_format($row['games_played']));
+        // Both ends of ~90 heroes; the middle would overflow the chunk
+        $ends = fn ($rows, $best, $worst) => [$best.':', ...collect($rows)->take(10)->map($line), $worst.':', ...collect($rows)->take(-10)->map($line)];
+
+        return $this->perHero('global-matchups', 'Matchups', '/Global/Matchups/', GlobalHeroMatchupStatsController::class, 'getHeroMatchupData', $this->globalDefaults(), fn ($data) => [
+            'Ally numbers are the win rate when this hero has that hero on its team.',
+            ...$ends($data['ally'] ?? [], 'Best allies', 'Worst allies'),
+            'Enemy numbers are the loss rate when this hero plays against that hero (high means a hard counter).',
+            ...$ends($data['enemy'] ?? [], 'Hardest counters', 'Easiest matchups'),
+        ]);
     }
 
     private function draft(): array
@@ -300,7 +315,16 @@ class HelpDigestBuilder
         $defaults = $this->globalDefaults();
         unset($defaults['mirror']);
 
-        return $this->perHero('global-draft', 'Draft Stats', '/Global/Draft/', GlobalDraftController::class, 'getDraftData', $defaults, 'Pick and ban rates by draft position, and how teams do from each position.');
+        // Same labels as GlobalDraftStats.vue
+        $positions = ['Ban 1', 'Ban 2', 'Ban 3', 'Ban 4', 'Pick 1', 'Pick 2', 'Pick 3', 'Pick 4', 'Pick 5', 'Ban 5', 'Ban 6', 'Pick 6', 'Pick 7', 'Pick 8', 'Pick 9', 'Pick 10'];
+
+        return $this->perHero('global-draft', 'Draft Stats', '/Global/Draft/', GlobalDraftController::class, 'getDraftData', $defaults, fn ($data) => [
+            'Share of this hero\'s drafts at each position, and the win rate of the team that picked or banned it there:',
+            ...collect($data)->map(fn ($row) => sprintf(
+                '%s: %s%% of drafts, team win %s%%, games %s',
+                $positions[$row['pick_number']] ?? 'Position '.$row['pick_number'], $row['popularity'], $row['win_rate'], number_format($row['games_played'])
+            )),
+        ]);
     }
 
     private function talents(): array
@@ -318,9 +342,9 @@ class HelpDigestBuilder
                 ? $this->pending($id)
                 : $this->chunk($id, $hero->name.' Talents & Builds', '/Global/Talents/'.rawurlencode($hero->name), $this->globalFilters().', '.$buildType.' builds', [
                     'Talent win rates and popularity by tier:',
-                    $this->json($details),
-                    'Top builds:',
-                    $this->json($builds),
+                    ...$this->talentLines($details),
+                    'Top '.$buildType.' builds:',
+                    ...$this->buildLines($builds),
                 ], $hero->name);
         }
 
@@ -457,16 +481,39 @@ class HelpDigestBuilder
         ))->values()->all();
     }
 
-    // One cached global query per hero, the request the page sends once a hero is picked
-    private function perHero(string $prefix, string $title, string $path, string $controller, string $method, array $defaults, string $about): array
+    // One line per talent, every tier. As JSON the talent tooltips filled the chunk by level 4.
+    private function talentLines(array $details): array
     {
-        return $this->heroes()->map(function ($hero) use ($prefix, $title, $path, $controller, $method, $defaults, $about) {
+        return collect($details)->sortKeys()->flatMap(fn ($tier, $level) => collect($tier)
+            ->sortBy(fn ($talent) => $talent['sort'] ?? 0)
+            ->map(fn ($talent) => sprintf(
+                'Level %s %s: win %s%%, popularity %s%%, games %s',
+                $level, data_get($talent, 'talentInfo.title', $talent['name'] ?? '?'),
+                round((float) $talent['win_rate'], 2), round((float) $talent['popularity'], 2), number_format($talent['games_played'])
+            )))->values()->all();
+    }
+
+    private function buildLines(array $builds): array
+    {
+        $levels = ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'];
+
+        return collect($builds)->take(10)->map(fn ($build) => sprintf(
+            '%s: win %s%%, games %s',
+            collect($levels)->map(fn ($level) => data_get($build, $level.'.title', '-'))->implode(' > '),
+            $build['win_rate'] ?? 0, number_format($build['games_played'] ?? 0)
+        ))->all();
+    }
+
+    // One cached global query per hero, the request the page sends once a hero is picked
+    private function perHero(string $prefix, string $title, string $path, string $controller, string $method, array $defaults, callable $lines): array
+    {
+        return $this->heroes()->map(function ($hero) use ($prefix, $title, $path, $controller, $method, $defaults, $lines) {
             $id = $prefix.'-'.$hero->id;
             $data = $this->global($controller, $method, $defaults + ['hero' => $hero->name]);
 
             return $data === null
                 ? $this->pending($id)
-                : $this->chunk($id, $hero->name.' '.$title, $path.rawurlencode($hero->name), $this->globalFilters(), [$about, $this->json($data)], $hero->name);
+                : $this->chunk($id, $hero->name.' '.$title, $path.rawurlencode($hero->name), $this->globalFilters(), $lines($data), $hero->name);
         })->all();
     }
 
@@ -518,6 +565,11 @@ class HelpDigestBuilder
             $this->queued++;
 
             return null;
+        }
+
+        // A stale hit is still usable, but it queued a refresh behind the scenes
+        if ($result instanceof JsonResponse && $result->headers->get('X-Global-Cache-Status') === 'stale') {
+            $this->queued++;
         }
 
         $result = $this->toArray($result);

@@ -317,7 +317,7 @@ export default {
         .replace(/"/g, '&quot;');
 
       // Paths can carry a query (?hero=Li%20Li) and names with apostrophes (Kel'Thuzad)
-      return escaped.replace(/(^|[\s(])((?:https:\/\/[^\s<)]+)|(?:\/[A-Za-z][A-Za-z0-9_\-\/#?=&%.']*))/g, (match, lead, url) => {
+      const linked = escaped.replace(/(^|[\s(])((?:https:\/\/[^\s<)]+)|(?:\/[A-Za-z][A-Za-z0-9_\-\/#?=&%.']*))/g, (match, lead, url) => {
         const trimmed = url.replace(/[.,!?']+$/, '');
         const rest = url.slice(trimmed.length);
         const external = trimmed.startsWith('https://');
@@ -328,6 +328,12 @@ export default {
           // A stray % that isn't an escape: show the path as written
         }
         return `${lead}<a href="${trimmed}" class="underline"${external ? ' target="_blank" rel="noopener"' : ''}>${shown}</a>${rest}`;
+      });
+
+      // Runs of "- " lines become a list, styled like the FAQ's
+      return linked.replace(/(?:^|\n)((?:[ \t]*[-•][ \t]+[^\n]*(?:\n|$))+)/g, (match, block) => {
+        const items = block.trim().split('\n').map(line => `<li>${line.replace(/^[ \t]*[-•][ \t]+/, '')}</li>`).join('');
+        return `${match.startsWith('\n') ? '\n' : ''}<ul class="list-disc list-inside mt-1 space-y-1">${items}</ul>`;
       });
     },
   },
