@@ -75,11 +75,11 @@
 </div>
 <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem] md:contents">
       <div :class="cardClasses">
-        <i class="fa-solid fa-database text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
-        <h3 class="text-3xl font-semibold mt-6 mb-4">Heroes Profile API</h3>
-        <p class="text-sm text-left mb-8">Heroes Profile API provides access to parsed Heroes of the Storm data from HeroesProfile.com, including player stats, match details, and performance insights.</p>
+        <i class="fa-solid fa-grip text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">Drafter</h3>
+        <p class="text-sm text-left mb-8">Get ban and pick suggestions at every step of a Storm League draft, based on how often heroes are taken at that point, their win rates and bans, and the team compositions they fit into.</p>
         <div class="flex mt-auto">
-          <custom-button :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
+          <custom-button :href="'/Drafter'" :text="'Start Drafting'" :alt="'Drafter'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
         </div>
       </div>
       <div :class="cardClasses" class="max-md:order-first">

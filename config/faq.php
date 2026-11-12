@@ -307,6 +307,10 @@ return [
                     'a' => 'Leaderboards are split by season, using the start and end date of each one. See <a href="#season-dates" class="link">Season Dates</a> below for every season so far.',
                 ],
                 [
+                    'q' => 'Why are some of my games counted in the wrong season?',
+                    'a' => 'Replay files don\'t say which season a game was played in, and Blizzard doesn\'t publish exact season start times. Heroes Profile sets the start of a new season when we notice it has changed, so the start time we use can be a few hours after the real one. Games you played in that gap are counted in the previous season, which is why your season stats can be a game or two off from what you see in game.<br><br>A game\'s season is saved when the replay is processed, and leaderboards and other pages are built from that. Moving a season\'s start time afterwards would leave those games out of sync with the new date, so we don\'t change season dates once a season has started.',
+                ],
+                [
                     'q' => 'When are leaderboards updated?',
                     'a' => 'Leaderboards are recalculated daily, starting at 2am EST. The calculation takes roughly 12–14 hours to complete across all leaderboard types. If you played games today, they may appear on some leaderboards the same day, but check back the following afternoon to ensure all leaderboards are fully updated.',
                 ],

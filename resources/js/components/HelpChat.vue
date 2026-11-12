@@ -13,7 +13,7 @@
             <i :class="expanded ? 'fas fa-down-left-and-up-right-to-center' : 'fas fa-up-right-and-down-left-from-center'"></i>
           </button>
           <span class="w-px h-5 bg-white/20" aria-hidden="true"></span>
-          <button class="w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" aria-label="Close help" title="Close" @click="open = false">
+          <button class="w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" aria-label="Close help" title="Close" @click="toggle">
             <i class="fas fa-xmark text-lg"></i>
           </button>
         </div>
@@ -21,7 +21,12 @@
 
       <div ref="messageList" class="relative flex-1 min-h-0 overflow-y-auto px-5 py-4 flex flex-col gap-3 text-sm">
         <!-- The Heroes Profile logo answers, like the Analytics announcer -->
-        <analytics-speech-bubble v-if="!messages.length">Ask me anything about Heroes Profile, like "Is there a drafter?" or "How do I upload my replays?"</analytics-speech-bubble>
+        <!-- First visit: the panel opens itself with this on the first page only -->
+        <analytics-speech-bubble v-if="!messages.length && showIntro" :talking="true">
+          <span class="font-bold">New:</span>
+          Got a question about Heroes Profile? Ask it here, like "Is there a drafter?" or "How do I upload my replays?" I'll find the right page or FAQ answer, and if you're logged in with Battle.net the assistant can help with the rest.
+        </analytics-speech-bubble>
+        <analytics-speech-bubble v-else-if="!messages.length">Ask me anything about Heroes Profile, like "Is there a drafter?" or "How do I upload my replays?"</analytics-speech-bubble>
         <template v-for="(message, index) in messages" :key="index">
           <!-- What the FAQ and site pages had, with the choice to ask the assistant -->
           <analytics-speech-bubble v-if="message.role === 'results'" :data-message="index" :logo="message.logo || undefined" :talking="talkingIndex === index" @done="talkingIndex = null">
@@ -72,20 +77,31 @@
       </form>
     </div>
 
-    <button
-      class="w-14 h-14 rounded-full bg-teal hover:bg-lteal text-white text-2xl shadow-[0_0.25rem_1rem_rgba(0,0,0,0.5)] flex items-center justify-center transition-colors"
-      :aria-label="open ? 'Close help' : 'Open help'"
-      :aria-expanded="open"
-      @click="toggle"
-    >
-      <i :class="open ? 'fas fa-xmark' : 'fas fa-question'"></i>
-    </button>
+    <div class="flex items-center gap-3">
+      <button
+        class="w-14 h-14 shrink-0 rounded-full bg-teal hover:bg-lteal text-white text-2xl shadow-[0_0.25rem_1rem_rgba(0,0,0,0.5)] flex items-center justify-center transition-colors"
+        :aria-label="open ? 'Close help' : 'Open help'"
+        :aria-expanded="open"
+        @click="toggle"
+      >
+        <i :class="open ? 'fas fa-xmark' : 'fas fa-question'"></i>
+      </button>
+      <!-- Phones' first visit, instead of opening the panel over the page -->
+      <div v-if="teaser && !open" class="help-teaser animate-bounce flex items-center gap-2 rounded-xl pl-3 pr-1 py-1 text-sm">
+        <button class="text-left" @click="toggle"><span class="font-bold">New:</span> questions? Ask here</button>
+        <button class="w-6 h-6 flex items-center justify-center rounded-control hover:bg-black/10" aria-label="Dismiss" title="Dismiss" @click="teaser = false">
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-// The conversation lasts for the browser tab, so moving between pages keeps it. The panel itself starts closed on every page.
+// The conversation lasts for the browser tab, so moving between pages keeps it. The panel itself starts closed on every page, except the first visit.
 const STORAGE_KEY = 'helpChat';
+// Bump the number to show the intro to everyone again
+const INTRO_KEY = 'helpChatIntro_1';
 
 export default {
   name: 'HelpChat',
@@ -107,9 +123,26 @@ export default {
       error: null,
       // The reply whose logo is mid-bounce
       talkingIndex: null,
+      showIntro: false,
+      teaser: false,
     };
   },
   created() {
+    try {
+      // Only the first page they land on, closed or not
+      if (!localStorage.getItem(INTRO_KEY)) {
+        // Phones get the small note instead: the panel would cover the page
+        if (window.matchMedia('(min-width: 1024px)').matches) {
+          this.showIntro = true;
+          this.open = true;
+        } else {
+          this.teaser = true;
+        }
+        localStorage.setItem(INTRO_KEY, 'true');
+      }
+    } catch (e) {
+      // Storage blocked: skip the intro rather than show it on every page
+    }
     try {
       const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null');
       if (saved) {
@@ -137,6 +170,15 @@ export default {
     },
     toggle() {
       this.open = !this.open;
+      // Opened from the phone note: the panel greets them with the intro
+      if (this.open && this.teaser) {
+        this.teaser = false;
+        this.showIntro = true;
+      }
+      // Reopening on the same page shows the usual prompt
+      if (!this.open) {
+        this.showIntro = false;
+      }
       this.save();
       if (this.open) {
         this.scrollToEnd();
@@ -283,3 +325,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* The speech bubble's colours */
+.help-teaser {
+  background: #f4f4f8;
+  color: #111;
+  border: 2px solid #111;
+}
+</style>
