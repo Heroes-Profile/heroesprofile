@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Services\HelpDigest\HelpDigestBuilder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 // Finds FAQ entries (config/faq.php) that clearly answer a help chat question, by keyword overlap
@@ -74,6 +76,79 @@ class FaqMatcher
         }
 
         return self::forViewer(['faq' => $this->best($faq), 'pages' => $this->best($pages)]);
+    }
+
+    // Site digest sent with one question, at most
+    private const MAX_DIGEST_TOKENS = 5000;
+
+    private const MAX_DIGEST_CHUNKS = 4;
+
+    // Looser than the FAQ match: a stray chunk costs a little, a missed one loses the answer
+    private const DIGEST_MIN_COVERAGE = 0.25;
+
+    /**
+     * Site digest chunks (HelpDigestBuilder) that fit the question, best first, within the token budget.
+     *
+     * @return array<int, array{id: string, title: string, url: string, filters: ?string, hero: ?string, as_of: string, text: string}>
+     */
+    public function digest(string $question): array
+    {
+        $index = Cache::store('database')->get(HelpDigestBuilder::INDEX_KEY, []);
+        if (! $index) {
+            return [];
+        }
+
+        [$hero, $question] = $this->findHero($question);
+        $keywords = array_values(array_unique($this->digestKeywords($question)));
+        if ($hero) {
+            $keywords[] = self::HERO_KEYWORD;
+        }
+        if (! $keywords) {
+            return [];
+        }
+
+        $scored = [];
+        foreach ($index as $entry) {
+            // Another hero's chunk never answers this one
+            if ($entry['hero'] !== null && $entry['hero'] !== $hero) {
+                continue;
+            }
+
+            $titleWords = array_flip([...$this->digestKeywords($entry['title'].' '.$entry['url']), ...($entry['hero'] ? [self::HERO_KEYWORD] : [])]);
+            $bodyWords = array_flip($this->digestKeywords(($entry['description'] ?? '').' '.($entry['summary'] ?? '')));
+
+            $titleHits = count(array_filter($keywords, fn ($keyword) => isset($titleWords[$keyword])));
+            $bodyHits = count(array_filter($keywords, fn ($keyword) => ! isset($titleWords[$keyword]) && isset($bodyWords[$keyword])));
+            $coverage = ($titleHits + 0.5 * $bodyHits) / count($keywords);
+
+            if ($coverage >= self::DIGEST_MIN_COVERAGE && ($titleHits > 0 || $bodyHits >= 2)) {
+                $scored[] = ['coverage' => $coverage, 'hits' => $titleHits, 'entry' => $entry];
+            }
+        }
+
+        usort($scored, fn ($x, $y) => [$y['coverage'], $y['hits']] <=> [$x['coverage'], $x['hits']]);
+
+        $chunks = [];
+        $tokens = 0;
+        foreach ($scored as $candidate) {
+            $entry = $candidate['entry'];
+            if (count($chunks) >= self::MAX_DIGEST_CHUNKS || $tokens + $entry['tokens'] > self::MAX_DIGEST_TOKENS) {
+                continue;
+            }
+            $chunk = Cache::store('database')->get(HelpDigestBuilder::CHUNK_PREFIX.$entry['id']);
+            if ($chunk) {
+                $chunks[] = $chunk;
+                $tokens += $entry['tokens'];
+            }
+        }
+
+        return $chunks;
+    }
+
+    // keywords(), plus "marked" -> "mark", "played" -> "play"
+    private function digestKeywords(string $text): array
+    {
+        return array_map(fn ($word) => strlen($word) > 4 && str_ends_with($word, 'ed') ? substr($word, 0, -2) : $word, $this->keywords($text));
     }
 
     // Can't come out of keywords(), which only keeps letters and digits

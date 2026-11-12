@@ -116,10 +116,11 @@ class HelpChatController extends Controller
         }
 
         $systemPrompt = $this->systemPrompt();
+        $digest = app(FaqMatcher::class)->digest($question);
 
         // Opening questions asked word-for-word before reuse that answer, for free. Later questions always go to Claude
-        // with the chat so far, so context is never lost. A new FAQ or page list gives new keys.
-        $cacheKey = $history->count() === 1 ? $this->answerCacheKey($question, $systemPrompt) : null;
+        // with the chat so far, so context is never lost. A new FAQ, page list or day's site data gives new keys.
+        $cacheKey = $history->count() === 1 ? $this->answerCacheKey($question, $systemPrompt, $digest) : null;
         if ($cacheKey && ($cached = Cache::store('database')->get($cacheKey))) {
             $cached = $this->personalize($cached);
             $this->storeMiss($request, $question, $cached);
@@ -152,7 +153,8 @@ class HelpChatController extends Controller
                 system: [
                     ['type' => 'text', 'text' => $systemPrompt, 'cacheControl' => ['type' => 'ephemeral']],
                 ],
-                messages: $history->all(),
+                // After the cached system prompt, so the cache still hits
+                messages: $digest ? [...$history->all(), ['role' => 'system', 'content' => $this->siteData($digest)]] : $history->all(),
                 outputConfig: ['effort' => 'low'],
             );
         } catch (RateLimitException $e) {
@@ -214,12 +216,22 @@ class HelpChatController extends Controller
         return $answer;
     }
 
-    // Same question once case, punctuation and spacing are ignored
-    private function answerCacheKey(string $question, string $systemPrompt): string
+    // Same question once case, punctuation and spacing are ignored. The site data is in the key, so an answer never outlives its numbers.
+    private function answerCacheKey(string $question, string $systemPrompt, array $digest): string
     {
         $normalized = trim(preg_replace('/[^a-z0-9]+/', ' ', mb_strtolower($question)));
+        $data = collect($digest)->map(fn ($chunk) => $chunk['id'].'@'.$chunk['as_of'])->implode(',');
 
-        return 'help_chat_answer|'.self::MODEL.'|'.sha1($systemPrompt).'|'.sha1($normalized);
+        return 'help_chat_answer|'.self::MODEL.'|'.sha1($systemPrompt).'|'.sha1($normalized).($data !== '' ? '|'.sha1($data) : '');
+    }
+
+    // Digest chunks for this question, as the "Site data" the prompt refers to
+    private function siteData(array $digest): string
+    {
+        return "# Site data\n\n".collect($digest)->map(fn ($chunk) => '## '.$chunk['title'].' ('.$chunk['url'].")\n"
+            .($chunk['filters'] ? 'Filters: '.$chunk['filters']."\n" : '')
+            .'As of: {asof:'.$chunk['as_of']."}\n"
+            .$chunk['text'])->implode("\n\n");
     }
 
     // The FAQ didn't answer this one: keep it for improving the FAQ. Cached repeats count too, to show what's asked often.
@@ -271,7 +283,10 @@ class HelpChatController extends Controller
             - The person asking is logged in, and you can link their own profile. Player profile paths in the guide are Zemill's examples: for the person asking, write {profile} in place of /Player/Zemill/67280/1, e.g. {profile}/Match/History. Never write {profile} with anything in front of it.
             - Player profile pages take a season. For questions about "this season" or a season count, add ?season={season} for the current season (&season={season} if the path already has a ?), e.g. {profile}?season={season}.
             - Only for someone else's profile, tell them to search that BattleTag in the bar at the top.
-            - You can't see stats, matches or numbers yourself. Link the page that shows what they want instead.
+            - A "Site data" message may follow the question: each page's default view, snapshotted daily. You may quote its numbers, saying which filters they're for, and link the page.
+            - When you quote Site data, say when it's from by writing its "As of" value exactly as given, e.g. "as of {asof:2026-11-12T13:00:00Z}". Never convert or reformat that time yourself.
+            - Site data marked "Sample profile (Zemill#1940)" only shows what a player page contains. Never quote, summarize or compare its numbers, even when asked about Zemill. Describe the page and link {profile} instead.
+            - Outside Site data you can't see stats, matches or numbers. Link the page that shows what they want instead.
             - For questions unrelated to Heroes Profile or Heroes of the Storm, politely say you can only help with Heroes Profile.
 
             # Site guide
