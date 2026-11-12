@@ -20,11 +20,12 @@
         :includetimeframe="true"
         :includeregion="true"
         :includeherolevel="true"
-        :includegamemap="true"
+        :includesinglegamemap="true"
         :includeplayerrank="true"
         :includeherorank="true"
         :includerolerank="true"
         :advancedfiltersinfo="'Advanced filters may take a lot longer to run.'"
+        :autoapply="true"
       ></filters>
     </div>
 
@@ -45,9 +46,14 @@
 
     <div v-else class="max-w-[1500px] mx-auto px-4 py-6">
       <div class="flex justify-between mb-4">
-        <button v-if="picks.length > 0" @click="undo" :disabled="isLoading" class="bg-blue hover:bg-lblue text-white font-bold px-6 py-2 rounded disabled:opacity-50">
-          <i class="fa-solid fa-reply mr-2"></i>Undo
-        </button>
+        <div v-if="picks.length > 0" class="flex gap-2">
+          <button @click="undo" :disabled="isLoading" class="bg-blue hover:bg-lblue text-white font-bold px-6 py-2 rounded disabled:opacity-50">
+            <i class="fa-solid fa-reply mr-2"></i>Undo
+          </button>
+          <button @click="restartDraft" :disabled="isLoading" class="bg-blue hover:bg-lblue text-white font-bold px-6 py-2 rounded disabled:opacity-50">
+            <i class="fa-solid fa-rotate-left mr-2"></i>Restart Draft
+          </button>
+        </div>
         <span v-else></span>
         <button @click="showFilters = !showFilters" class="bg-blue hover:bg-lblue text-white font-bold px-6 py-2 rounded">
           <i class="fa-solid fa-filter mr-2"></i>{{ showFilters ? 'Hide Filters' : 'Show Filters' }}
@@ -84,8 +90,8 @@
         </div>
 
         <div class="flex-1 min-w-0 order-2">
-          <loading-component v-if="isLoading"></loading-component>
-          <div v-else-if="dataError" class="text-center text-red py-10">Failed to load draft data. Please try again.</div>
+          <loading-component v-if="waiting"></loading-component>
+          <div v-else-if="dataError || (needsCompositions && compositionsError)" class="text-center text-red py-10">Failed to load draft data. Please try again.</div>
           <div v-else-if="draftComplete" class="text-center text-gray-medium py-10">Draft complete.</div>
           <div v-else class="flex flex-wrap justify-center">
             <div v-for="hero in visibleSuggestions" :key="hero.id" class="relative m-2 cursor-pointer" @click="pickHero(hero)">
@@ -169,6 +175,9 @@ export default {
       totalGames: 0,
       draftOrder: {},
       compositions: {},
+      compositionsLoading: false,
+      compositionsError: false,
+      loadId: 0,
 
       timeframe: null,
       gametype: null,
@@ -226,6 +235,13 @@ export default {
     },
     // Heroes from the most played composition containing the team's current roles,
     // with games played zeroed for roles the team has already filled
+    // Compositions are only used from pick 6 on
+    needsCompositions() {
+      return !this.mockDraft && this.currentPick >= 6 && !this.draftComplete;
+    },
+    waiting() {
+      return this.isLoading || (this.needsCompositions && this.compositionsLoading);
+    },
     compositionData() {
       if (this.mockDraft || this.dataError || this.currentPick < 6 || this.draftComplete) return null;
 
@@ -301,7 +317,7 @@ export default {
       }
     },
     pickHero(hero) {
-      if (this.isLoading || this.draftComplete) return;
+      if (this.waiting || this.draftComplete) return;
 
       this.picks.push({ heroId: hero.id, auto: false });
 
@@ -317,11 +333,14 @@ export default {
         this.picks.pop();
       }
     },
+    restartDraft() {
+      this.picks = [];
+    },
     filterData(filteredData) {
       this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes) : this.defaulttimeframe;
       this.region = filteredData.multi.Regions ? Array.from(filteredData.multi.Regions) : null;
       this.herolevel = filteredData.multi['Hero Level'] ? Array.from(filteredData.multi['Hero Level']) : null;
-      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
+      this.gamemap = filteredData.single.Map ? [filteredData.single.Map] : null;
       this.playerrank = filteredData.multi['HP Player Rank'] ? Array.from(filteredData.multi['HP Player Rank']) : null;
       this.herorank = filteredData.multi['HP Hero Rank'] ? Array.from(filteredData.multi['HP Hero Rank']) : null;
       this.rolerank = filteredData.multi['HP Role Rank'] ? Array.from(filteredData.multi['HP Role Rank']) : null;
@@ -344,33 +363,45 @@ export default {
       };
     },
     async loadBaseData() {
+      // Filters apply as they change, so an older load can finish after a newer one
+      const loadId = ++this.loadId;
       this.isLoading = true;
       this.dataError = false;
+      this.compositions = {};
+      this.compositionsLoading = true;
+      this.compositionsError = false;
+
+      // Same parameters the Global Hero Stats page sends, so both share its cache entry
+      const baseRequests = Promise.all([
+        this.$globalAsyncPost('/api/v1/global/hero', {
+          ...this.filterParameters(),
+          statfilter: 'win_rate',
+          role: null,
+          hero: null,
+          mirror: 0,
+          groupsize: [],
+        }),
+        this.$globalAsyncPost('/api/v1/drafter/draft-order', this.filterParameters()),
+      ]);
+
+      // Slower and not needed until pick 6, so it's sent last and doesn't hold up the first suggestions
+      this.$globalAsyncPost('/api/v1/drafter/composition', { ...this.filterParameters(), mirror: 0 })
+        .then(response => { if (loadId === this.loadId) this.compositions = response.data || {}; })
+        .catch(() => { if (loadId === this.loadId) this.compositionsError = true; })
+        .finally(() => { if (loadId === this.loadId) this.compositionsLoading = false; });
 
       try {
-        // Same parameters the Global Hero Stats page sends, so both share its cache entry
-        const [statsResponse, orderResponse, compositionResponse] = await Promise.all([
-          this.$globalAsyncPost('/api/v1/global/hero', {
-            ...this.filterParameters(),
-            statfilter: 'win_rate',
-            role: null,
-            hero: null,
-            mirror: 0,
-            groupsize: [],
-          }),
-          this.$globalAsyncPost('/api/v1/drafter/draft-order', this.filterParameters()),
-          this.$globalAsyncPost('/api/v1/drafter/composition', { ...this.filterParameters(), mirror: 0 }),
-        ]);
+        const [statsResponse, orderResponse] = await baseRequests;
+        if (loadId !== this.loadId) return;
 
         const stats = statsResponse.data.data || [];
         this.totalGames = stats.reduce((sum, row) => sum + row.games_played, 0) / 10;
         this.heroStats = Object.fromEntries(stats.map(row => [row.hero_id, row]));
         this.draftOrder = orderResponse.data || {};
-        this.compositions = compositionResponse.data || {};
       } catch (error) {
-        this.dataError = true;
+        if (loadId === this.loadId) this.dataError = true;
       } finally {
-        this.isLoading = false;
+        if (loadId === this.loadId) this.isLoading = false;
       }
     },
     compositionTeamPicks() {
