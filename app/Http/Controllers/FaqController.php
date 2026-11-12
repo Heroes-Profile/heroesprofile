@@ -54,9 +54,9 @@ class FaqController extends Controller
             'patchHistory' => $patchHistory,
             'awards' => $awards,
             'seasonDates' => $seasonDates,
-            'faqCategories' => config('faq.categories'),
+            'faqCategories' => FaqMatcher::forViewer(config('faq.categories')),
             'faqStopwords' => FaqMatcher::STOPWORDS,
-            'faqPages' => config('faq.pages'),
+            'faqPages' => FaqMatcher::pages(),
         ]);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Auth;
+
 // Finds FAQ entries (config/faq.php) that clearly answer a help chat question, by keyword overlap
 class FaqMatcher
 {
@@ -56,7 +58,54 @@ class FaqMatcher
             }
         }
 
-        return ['faq' => $this->best($faq), 'pages' => $this->best($pages)];
+        return self::forViewer(['faq' => $this->best($faq), 'pages' => $this->best($pages)]);
+    }
+
+    // The FAQ's example profile. Logged-in readers get their own in its place.
+    public const EXAMPLE_PROFILE = '/Player/Zemill/67280/1';
+
+    public static function viewerProfile(): ?string
+    {
+        if (! Auth::check()) {
+            return null;
+        }
+
+        $user = Auth::user();
+
+        return '/Player/'.rawurlencode(explode('#', $user->battletag)[0]).'/'.$user->blizz_id.'/'.$user->region;
+    }
+
+    public static function forViewer(array $data): array
+    {
+        $profile = self::viewerProfile();
+        if (! $profile) {
+            return $data;
+        }
+
+        array_walk_recursive($data, function (&$value) use ($profile) {
+            if (is_string($value)) {
+                $value = str_replace(self::EXAMPLE_PROFILE, $profile, $value);
+            }
+        });
+
+        return $data;
+    }
+
+    // config/faq.php pages for whoever's reading, with the logged-in note when there is one
+    public static function pages(): array
+    {
+        $loggedIn = Auth::check();
+
+        $pages = collect(config('faq.pages'))->map(function ($section) use ($loggedIn) {
+            if ($loggedIn && isset($section['viewer_note'])) {
+                $section['note'] = $section['viewer_note'];
+            }
+            unset($section['viewer_note']);
+
+            return $section;
+        })->all();
+
+        return self::forViewer($pages);
     }
 
     // Hits in the title count fully, hits only in the body count half

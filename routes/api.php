@@ -325,7 +325,7 @@ Route::prefix('v1')->middleware('web')->group(function () {
 
     Route::post('poll/{slug}/vote', [PollController::class, 'vote'])->middleware('throttle:10,1');
     // Help: search for anyone, then the logged-in assistant; the controller holds its daily limit
-    Route::post('help/search', [HelpChatController::class, 'search'])->middleware('throttle:30,1');
+    Route::post('help/search', [HelpChatController::class, 'search'])->middleware(['ensureBattlenetAuth:optional', 'throttle:30,1']);
     Route::post('help/chat', [HelpChatController::class, 'ask'])->middleware(['ensureBattlenetAuth:optional', 'throttle:10,1']);
 
     Route::post('match/prediction/game', [MatchPredictionGameController::class, 'getReplayData']);
