@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 // Finds FAQ entries (config/faq.php) that clearly answer a help chat question, by keyword overlap
 class FaqMatcher
@@ -33,19 +34,25 @@ class FaqMatcher
      */
     public function search(string $question): array
     {
+        [$hero, $question] = $this->findHero($question);
+
         $keywords = array_values(array_unique($this->keywords($question)));
-        if (! $keywords) {
+        // The hero counts as a title hit on pages that open on one hero
+        $pageKeywords = $hero ? [...$keywords, self::HERO_KEYWORD] : $keywords;
+        if (! $pageKeywords) {
             return ['faq' => [], 'pages' => []];
         }
 
         $faq = [];
-        foreach (config('faq.categories') as $category) {
-            foreach ($category['items'] as $item) {
-                $faq[] = $this->score($keywords, $item['q'], strip_tags($item['a']), [
-                    'q' => $item['q'],
-                    'a' => $item['a'],
-                    'id' => $item['id'] ?? null,
-                ]);
+        if ($keywords) {
+            foreach (config('faq.categories') as $category) {
+                foreach ($category['items'] as $item) {
+                    $faq[] = $this->score($keywords, $item['q'], strip_tags($item['a']), [
+                        'q' => $item['q'],
+                        'a' => $item['a'],
+                        'id' => $item['id'] ?? null,
+                    ]);
+                }
             }
         }
 
@@ -54,11 +61,56 @@ class FaqMatcher
             foreach ($section['items'] as $page) {
                 // Example profile URLs say nothing about the page: leave out the BattleTag and IDs
                 $url = preg_replace('#^/Player/[^/]+/\d+/\d+#', '/Player', $page['url']);
-                $pages[] = $this->score($keywords, $page['name'].' '.$url, $page['description'], $page);
+                $forHero = $hero && isset($page['hero_url']);
+                if ($forHero) {
+                    $page = [
+                        'name' => $page['name'].' ('.$hero.')',
+                        'url' => str_replace('{hero}', rawurlencode($hero), $page['hero_url']),
+                        'description' => $page['description'],
+                    ];
+                }
+                $pages[] = $this->score($pageKeywords, $page['name'].' '.$url, $page['description'], $page, $forHero ? [self::HERO_KEYWORD] : []);
             }
         }
 
         return self::forViewer(['faq' => $this->best($faq), 'pages' => $this->best($pages)]);
+    }
+
+    // Can't come out of keywords(), which only keeps letters and digits
+    private const HERO_KEYWORD = '{hero}';
+
+    /**
+     * The hero named in the question, and the question without it. "Kel'Thuzad", "kelthuzad" and "the butcher"/"butcher" all count.
+     *
+     * @return array{0: ?string, 1: string}
+     */
+    private function findHero(string $question): array
+    {
+        preg_match_all('/[a-z0-9]+/', strtolower(Str::ascii($question)), $matches);
+        $words = $matches[0];
+
+        $heroes = [];
+        foreach (app(GlobalDataService::class)->getHeroes() as $hero) {
+            $compact = preg_replace('/[^a-z0-9]/', '', strtolower(Str::ascii($hero->name)));
+            $heroes[$compact] = $hero->name;
+            if (str_starts_with($compact, 'the') && strlen($compact) > 6) {
+                $heroes[substr($compact, 3)] = $hero->name;
+            }
+        }
+
+        // Longest run first, so "li li" wins over a one-word name inside it
+        for ($length = 3; $length >= 1; $length--) {
+            for ($start = 0; $start + $length <= count($words); $start++) {
+                $compact = implode('', array_slice($words, $start, $length));
+                if (isset($heroes[$compact])) {
+                    array_splice($words, $start, $length);
+
+                    return [$heroes[$compact], implode(' ', $words)];
+                }
+            }
+        }
+
+        return [null, $question];
     }
 
     // The FAQ's example profile. Logged-in readers get their own in its place.
@@ -109,9 +161,9 @@ class FaqMatcher
     }
 
     // Hits in the title count fully, hits only in the body count half
-    private function score(array $keywords, string $title, string $body, array $result): array
+    private function score(array $keywords, string $title, string $body, array $result, array $extraTitleWords = []): array
     {
-        $titleWords = array_flip($this->keywords($title));
+        $titleWords = array_flip([...$this->keywords($title), ...$extraTitleWords]);
         $bodyWords = array_flip($this->keywords($body));
 
         $titleHits = 0;
@@ -160,6 +212,10 @@ class FaqMatcher
                 $word = substr($word, 0, -2);
             } elseif (strlen($word) > 3 && str_ends_with($word, 's') && ! str_ends_with($word, 'ss')) {
                 $word = substr($word, 0, -1);
+            }
+            // "whats" -> "what"
+            if (in_array($word, self::STOPWORDS, true)) {
+                continue;
             }
             $words[] = $word;
         }
