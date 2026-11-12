@@ -222,11 +222,11 @@ return [
                 ],
                 [
                     'q' => 'What is the Friends & Foes page?',
-                    'a' => 'The Friends &amp; Foes page on your player profile shows your win rate when playing <em>with</em> or <em>against</em> specific players. For example, see <a href="/Player/Zemill/67280/1/FriendFoe" class="link">Zemill\'s Friends &amp; Foes</a>. Upload your replays and check the Friends &amp; Foes section of your own profile to see yours.',
+                    'a' => 'The Friends &amp; Foes page on your player profile shows your win rate when playing <em>with</em> or <em>against</em> specific players. For example, see <a href="/Player/Zemill/67280/1/FriendFoe" class="link">this Friends &amp; Foes page</a>. Upload your replays and check the Friends &amp; Foes section of your own profile to see yours.',
                 ],
                 [
                     'q' => 'What is the Awards page?',
-                    'a' => 'The Awards page on your player profile shows how often you earn each end of match award, such as MVP, Painbringer or Main Healer, as a percentage of your games. For example, see <a href="/Player/Zemill/67280/1/Awards" class="link">Zemill\'s Awards</a>. Click an award to list every game where you earned it. Awards are only counted for games played after Heroes Profile began tracking them, so very old replays are not included. Every award and what it is given for is listed under <a href="#awards" class="link">Match Awards</a> below.',
+                    'a' => 'The Awards page on your player profile shows how often you earn each end of match award, such as MVP, Painbringer or Main Healer, as a percentage of your games. For example, see <a href="/Player/Zemill/67280/1/Awards" class="link">this Awards page</a>. Click an award to list every game where you earned it. Awards are only counted for games played after Heroes Profile began tracking them, so very old replays are not included. Every award and what it is given for is listed under <a href="#awards" class="link">Match Awards</a> below.',
                 ],
                 [
                     'q' => 'What is Replay Search and how do I use it?',
@@ -348,6 +348,7 @@ return [
         [
             'name' => 'Player Profiles',
             'note' => 'Search a BattleTag in the bar at the top of the site to open a profile. These examples use Zemill.',
+            'viewer_note' => 'These links open your own profile. Search a BattleTag in the bar at the top of the site to open someone else\'s.',
             'items' => [
                 ['name' => 'Profile', 'url' => '/Player/Zemill/67280/1', 'description' => 'Overview of a player: win rate, top heroes and maps, MMR, recent matches.'],
                 ['name' => 'Heroes', 'url' => '/Player/Zemill/67280/1/Hero', 'description' => 'Stats for every hero the player has played.'],

@@ -41,7 +41,7 @@
                     <a v-if="!page.url.includes('{')" :href="page.url" class="underline">{{ page.name }}</a>
                     <span v-else class="font-medium">{{ page.name }}</span>
                     <span>: {{ page.description }}</span>
-                    <span v-if="page.url.includes('/Zemill/')" class="text-xs opacity-70"> (an example profile; search your own BattleTag)</span>
+                    <span v-if="message.examples && page.url.startsWith('/Player/')" class="text-xs opacity-70"> (an example profile; search your own BattleTag)</span>
                   </div>
                 </div>
                 <span v-if="message.faq.length" class="font-bold">From the FAQ</span>
@@ -215,7 +215,7 @@ export default {
         if (data.persona) {
           this.persona = data.persona;
         }
-        this.messages.push({ role: 'results', faq: data.faq || [], pages: data.pages || [], logo: this.persona?.logo, line });
+        this.messages.push({ role: 'results', faq: data.faq || [], pages: data.pages || [], examples: data.examples, logo: this.persona?.logo, line });
       });
 
       if (!ok) {
