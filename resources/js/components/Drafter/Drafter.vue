@@ -51,7 +51,7 @@
           <button @click="undo" :disabled="isLoading" class="btn bg-blue hover:bg-lblue font-bold px-6 disabled:opacity-50">
             <i class="fa-solid fa-reply mr-2"></i>Undo
           </button>
-          <button @click="restartDraft" :disabled="isLoading" class="btn bg-blue hover:bg-lblue font-bold px-6 disabled:opacity-50">
+          <button @click="restartDraft" :disabled="isLoading" class="btn bg-red hover:bg-lred font-bold px-6 disabled:opacity-50">
             <i class="fa-solid fa-rotate-left mr-2"></i>Restart Draft
           </button>
         </div>

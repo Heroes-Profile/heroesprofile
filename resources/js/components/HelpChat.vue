@@ -24,9 +24,9 @@
         <!-- First visit: the panel opens itself with this on the first page only -->
         <analytics-speech-bubble v-if="!messages.length && showIntro" :talking="true">
           <span class="font-bold">New:</span>
-          Got a question about Heroes Profile? Ask it here, like "Is there a drafter?" or "How do I upload my replays?" I'll find the right page or FAQ answer, and if you're logged in with Battle.net the assistant can help with the rest.
+          Got a question about Heroes Profile? Ask it here, like "What's the best Valla build?" or "How do I upload my replays?" I'll find the right page or FAQ answer, and if you're logged in with Battle.net the assistant can help with the rest.
         </analytics-speech-bubble>
-        <analytics-speech-bubble v-else-if="!messages.length">Ask me anything about Heroes Profile, like "Is there a drafter?" or "How do I upload my replays?"</analytics-speech-bubble>
+        <analytics-speech-bubble v-else-if="!messages.length">Ask me anything about Heroes Profile, like "What's the best Valla build?" or "How do I upload my replays?"</analytics-speech-bubble>
         <template v-for="(message, index) in messages" :key="index">
           <!-- What the FAQ and site pages had, with the choice to ask the assistant -->
           <analytics-speech-bubble v-if="message.role === 'results'" :data-message="index" :logo="message.logo || undefined" :talking="talkingIndex === index" @done="talkingIndex = null">
