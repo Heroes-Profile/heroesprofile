@@ -1,6 +1,6 @@
 # Creates a release for every push to master, bumping the patch number of the
-# latest v* tag. Minor/major bumps are done by hand; the next push continues
-# from whatever tag is newest.
+# latest v* tag. Patch rolls over into minor after 9 (v2.0.9 -> v2.1.0). Major
+# bumps are done by hand; the next push continues from whatever tag is newest.
 
 name: Release
 
@@ -32,7 +32,12 @@ jobs:
         latest=${latest:-v0.0.0}
 
         IFS=. read -r major minor patch <<< "${latest#v}"
-        next="v${major}.${minor}.$((patch + 1))"
+        patch=$((patch + 1))
+        if [ "$patch" -ge 10 ]; then
+          patch=0
+          minor=$((minor + 1))
+        fi
+        next="v${major}.${minor}.${patch}"
 
         gh release create "$next" \
           --target "$GITHUB_SHA" \
