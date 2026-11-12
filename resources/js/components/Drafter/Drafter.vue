@@ -50,7 +50,7 @@
           <button @click="undo" :disabled="isLoading" class="bg-blue hover:bg-lblue text-white font-bold px-6 py-2 rounded disabled:opacity-50">
             <i class="fa-solid fa-reply mr-2"></i>Undo
           </button>
-          <button @click="restartDraft" :disabled="isLoading" class="bg-blue hover:bg-lblue text-white font-bold px-6 py-2 rounded disabled:opacity-50">
+          <button @click="restartDraft" :disabled="isLoading" class="bg-red hover:bg-lred text-white font-bold px-6 py-2 rounded disabled:opacity-50">
             <i class="fa-solid fa-rotate-left mr-2"></i>Restart Draft
           </button>
         </div>
