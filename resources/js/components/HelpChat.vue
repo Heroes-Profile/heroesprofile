@@ -98,6 +98,8 @@
 </template>
 
 <script>
+import moment from 'moment-timezone';
+
 // The conversation lasts for the browser tab, so moving between pages keeps it. The panel itself starts closed on every page, except the first visit.
 const STORAGE_KEY = 'helpChat';
 // Bump the number to show the intro to everyone again
@@ -302,7 +304,13 @@ export default {
     },
     // Answers are plain text: escape them, then turn site paths and links into anchors
     linkify(text) {
-      const escaped = String(text)
+      // Site data times come back as {asof:<UTC>}: shown in the reader's own time zone
+      const localized = String(text).replace(/\{asof:([0-9T:\-.]+Z)\}/g, (match, utc) => {
+        const local = moment.tz(utc, 'Atlantic/Reykjavik').clone().tz(moment.tz.guess());
+        return local.isValid() ? local.format('MM/DD/YYYY h:mm:ss a') : utc;
+      });
+
+      const escaped = localized
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')

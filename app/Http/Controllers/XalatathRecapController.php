@@ -195,7 +195,8 @@ class XalatathRecapController extends Controller
             ->all();
     }
 
-    private function eyeHunt(Carbon $startsAt): array
+    // Also read by the help chat digest
+    public function eyeHunt(Carbon $startsAt): array
     {
         return $this->globalDataService->rememberXalatathRecap('xalatath_recap_eye_hunt', function () use ($startsAt) {
             // Rows before launch are test claims from development.

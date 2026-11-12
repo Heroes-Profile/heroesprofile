@@ -32,6 +32,7 @@ use App\Http\Controllers\Global\GlobalQueryWorkerController;
 use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Http\Controllers\HelpChatController;
+use App\Http\Controllers\HelpDigestWorkerController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\MatchPredictionGameController;
 use App\Http\Controllers\MatchSearchController;
@@ -70,6 +71,7 @@ Route::prefix('v1')->middleware(['api', 'cloud.tasks'])->group(function () {
     Route::post('internal/analytics/fanout', [AnalyticsWorkerController::class, 'fanOut']);
     // Old path, for fan-out tasks queued before the rename; remove once the queue has drained
     Route::post('internal/deep/fanout', [AnalyticsWorkerController::class, 'fanOut']);
+    Route::post('internal/help-digest/build', [HelpDigestWorkerController::class, 'build']);
 });
 
 Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function () {

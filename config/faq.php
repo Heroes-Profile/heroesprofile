@@ -398,6 +398,7 @@ return [
                 ['name' => 'Randomize Me', 'url' => '/Tools/RandomizeMe', 'description' => 'A random hero with a real talent build to try.'],
                 ['name' => 'Activity Graphs', 'url' => '/Tools/Activity', 'description' => 'Unique players per month from uploaded replays, back to 2014.'],
                 ['name' => 'Auto Battler', 'url' => '/Tools/AutoBattler', 'description' => 'Build two AI teams with full talent builds and watch them play in the Veteran Introduction.'],
+                ['name' => 'Xal\'atath Event Recap', 'url' => '/Event/Xalatath', 'description' => 'The Void Gazette: final totals from the Xal\'atath takeover, how many players found her eye and earned the Mark of the Void, top players, and your own contribution.'],
             ],
         ],
         [
