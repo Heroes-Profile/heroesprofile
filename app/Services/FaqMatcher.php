@@ -154,6 +154,17 @@ class FaqMatcher
             }
             unset($section['viewer_note']);
 
+            // Through lang/{locale}.json, before the example profile is swapped for the viewer's
+            $section['name'] = __($section['name']);
+            if (isset($section['note'])) {
+                $section['note'] = __($section['note']);
+            }
+            foreach ($section['items'] as &$item) {
+                $item['name'] = __($item['name']);
+                $item['description'] = __($item['description']);
+            }
+            unset($item);
+
             return $section;
         })->all();
 

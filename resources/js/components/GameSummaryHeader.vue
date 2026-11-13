@@ -15,7 +15,7 @@
   <!-- Same column widths and padding as the game-summary-box rows -->
   <div v-else class="flex justify-between items-center pb-4 mb-4 border-b border-gray-dark font-medium text-subtext max-2xl:hidden">
     <span class="flex-1 max-w-[25.625rem] pl-6">{{ $t('Match') }}</span>
-    <span class="w-[26.875rem] shrink-0 px-4">{{ esport ? 'Teams' : 'Statistics' }}</span>
+    <span class="w-[26.875rem] shrink-0 px-4">{{ esport ? $t('Teams') : $t('Statistics') }}</span>
     <!-- The in-game scoreboard icons, in the same order as the row's kills | deaths | assists -->
     <span class="w-[8.75rem] shrink-0 grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] gap-x-[0.4375rem] items-center justify-items-center">
       <kda-icon v-for="(stat, index) in kdaStats" :key="stat" :stat="stat" :style="{ gridColumn: index * 2 + 1 }"></kda-icon>

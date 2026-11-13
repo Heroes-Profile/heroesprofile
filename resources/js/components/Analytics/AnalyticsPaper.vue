@@ -2,20 +2,20 @@
   <!-- The methodology for the open tab: abstract always shown, the rest on request -->
   <article class="max-w-[68.75rem] mx-auto mt-16 mb-10 px-4">
     <header class="border-t border-gray-light pt-6 mb-4">
-      <p class="text-xs uppercase text-gray-light mb-1">Methodology</p>
+      <p class="text-xs uppercase text-gray-light mb-1">{{ $t('Methodology') }}</p>
       <h2 class="text-2xl font-bold mb-1">{{ paper.title }}</h2>
       <p class="text-sm text-gray-light">Heroes Profile Analytics &middot; {{ paper.version }}</p>
     </header>
 
     <section class="mb-4">
-      <h3 class="text-lg font-bold mb-1">Abstract</h3>
+      <h3 class="text-lg font-bold mb-1">{{ $t('Abstract') }}</h3>
       <p class="text-sm leading-relaxed">{{ paper.abstract }}</p>
     </section>
 
     <custom-button
       @click="open = !open"
-      :text="open ? 'Hide the methodology' : 'Read the full methodology'"
-      :alt="open ? 'Hide the methodology' : 'Read the full methodology'"
+      :text="open ? $t('Hide the methodology') : $t('Read the full methodology')"
+      :alt="open ? $t('Hide the methodology') : $t('Read the full methodology')"
       size="small"
       :ignoreclick="true"
     ></custom-button>

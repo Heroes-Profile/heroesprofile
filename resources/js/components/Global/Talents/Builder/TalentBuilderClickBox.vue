@@ -7,7 +7,7 @@
         <h3 :class="horizontal ? 'min-h-[5rem]' : 'pb-4'"> {{ $talentName(talent) }}</h3>
         <talent-image-wrapper :talent="talent" :size="'medium'" :class="horizontal ? 'mb-10' : ''"></talent-image-wrapper>
         <span v-if="talent.games_played">{{ (talent.win_rate ?? 0).toFixed(2) }}%</span>
-        <span v-if="talent.games_played" class="text-xs">{{ talent.games_played.toLocaleString('en-US') }} games</span>
+        <span v-if="talent.games_played" class="text-xs">{{ $t(':played games', { played: talent.games_played.toLocaleString('en-US') }) }}</span>
       </div>
     </div>
   </div>

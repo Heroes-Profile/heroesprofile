@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', $battletag . "'s Main Player Stats")
+@section('title', __(":battletag's Main Player Stats", ['battletag' => $battletag]))
 @section('meta_keywords', 'Player Stats, Hero Statistics, Player Profile, Player Performance')
 @section('meta_description', 'Explore the main player stats of ' . $battletag . ', including hero statistics, player profile, and performance metrics.')
 @section('content')

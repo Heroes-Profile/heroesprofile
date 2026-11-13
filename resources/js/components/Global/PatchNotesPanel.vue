@@ -5,7 +5,7 @@
     <div v-else-if="notes">
       <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
         <h3 class="text-xl font-bold">
-          Patch {{ notes.version }}<span v-if="notes.date"> &mdash; {{ notes.date }}</span><span v-if="notes.title"> ({{ notes.title }})</span>
+          {{ $t('Patch :version', { version: notes.version }) }}<span v-if="notes.date"> &mdash; {{ notes.date }}</span><span v-if="notes.title"> ({{ notes.title }})</span>
         </h3>
         <div class="flex items-center gap-3 text-xs">
           <span v-for="(badge, type) in badges" :key="type" class="flex items-center gap-1">

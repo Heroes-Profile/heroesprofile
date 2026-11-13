@@ -30,11 +30,11 @@
               <span v-else aria-hidden="true">{{ char }}</span>
             </template>
           </span>
-          replays uploaded
+          {{ $t('replays uploaded') }}
         </p>
         <template v-if="latestgamedate">
-          <p v-if="parsingStale" class="bg-red rounded px-4 py-2 text-sm flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i>Replay parsing is currently offline. Latest game played {{ latestGameAgo }}.</p>
-          <p v-else class="text-sm text-subtext">Latest game played {{ latestGameAgo }}</p>
+          <p v-if="parsingStale" class="bg-red rounded px-4 py-2 text-sm flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i>{{ $t('Replay parsing is currently offline. Latest game played :ago.', { ago: latestGameAgo }) }}</p>
+          <p v-else class="text-sm text-subtext">{{ $t('Latest game played :ago', { ago: latestGameAgo }) }}</p>
         </template>
       </div>
 
@@ -103,7 +103,7 @@
         <p>{{ $t('Heroes Profile uses data from the Heroes Profile API, an open Heroes of the Storm replay database built from user-uploaded replays.') }}
           So far, Heroes Profile has pulled {{ getValueLocal(maxreplayid) }} replays into its dataset, up to and including patch
         {{ latestpatch }} and games played through <format-date :input="latestgamedate"></format-date>.</p>
-        <p>For more information on the Heroes Profile API, visit <a class="underline" href="/Api">heroesprofile.com/Api</a>.</p>
+        <p>{{ $t('For more information on the Heroes Profile API, visit') }} <a class="underline" href="/Api">heroesprofile.com/Api</a>.</p>
       </div>
     </div>
   </div>
@@ -181,7 +181,15 @@ import moment from 'moment-timezone';
       latestGameAgo() {
         // Recomputes with the ticker clock
         this.now;
-        return moment.tz(this.latestgamedate, 'Atlantic/Reykjavik').fromNow();
+        const played = moment.tz(this.latestgamedate, 'Atlantic/Reykjavik');
+        const siteLocale = document.documentElement.lang;
+        if (siteLocale && siteLocale !== 'en') {
+          // moment only has English loaded; Intl words it in the chosen language
+          const seconds = played.diff(moment(), 'seconds');
+          const [unit, size] = [['day', 86400], ['hour', 3600], ['minute', 60], ['second', 1]].find(([, s]) => Math.abs(seconds) >= s) || ['second', 1];
+          return new Intl.RelativeTimeFormat(siteLocale, { numeric: 'auto' }).format(Math.round(seconds / size), unit);
+        }
+        return played.fromNow();
       },
       cardClasses() {
         return 'flex flex-col text-center w-[21.0625rem] md:w-auto md:flex-1 md:min-w-0 md:max-w-[21.0625rem]';

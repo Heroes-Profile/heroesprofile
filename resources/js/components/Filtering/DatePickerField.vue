@@ -19,9 +19,9 @@
     <!-- The calendar: same panel as the filter dropdowns -->
     <div v-if="open" class="expandable-dropdown absolute left-0 mt-2 !w-[17.5rem] max-w-[calc(100vw-2rem)] !min-w-0 rounded p-3 z-50 text-sm font-normal normal-case">
       <div class="flex items-center justify-between mb-2">
-        <button type="button" class="w-8 h-8 rounded-control hover:bg-surface-4 disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!canGoBack" aria-label="Previous" @click="step(-1)"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+        <button type="button" class="w-8 h-8 rounded-control hover:bg-surface-4 disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!canGoBack" :aria-label="$t('Previous')" @click="step(-1)"><i class="fa-solid fa-chevron-left text-xs"></i></button>
         <button type="button" class="px-3 h-8 rounded-control hover:bg-surface-4 font-bold" @click="zoomOut">{{ heading }}</button>
-        <button type="button" class="w-8 h-8 rounded-control hover:bg-surface-4 disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!canGoForward" aria-label="Next" @click="step(1)"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+        <button type="button" class="w-8 h-8 rounded-control hover:bg-surface-4 disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!canGoForward" :aria-label="$t('Next')" @click="step(1)"><i class="fa-solid fa-chevron-right text-xs"></i></button>
       </div>
 
       <!-- Days -->
@@ -73,8 +73,10 @@
 </template>
 
 <script>
+  // The site's language when one was picked; on English pages the browser's own date style, as before
+  const SITE_LOCALE = document.documentElement.lang === 'en' ? undefined : document.documentElement.lang;
   // Day, month and year in the visitor's own order, e.g. 10/28/26 in the US and 28.10.26 in most of Europe
-  const DATE_FORMAT = new Intl.DateTimeFormat(undefined, { day: '2-digit', month: '2-digit', year: '2-digit' });
+  const DATE_FORMAT = new Intl.DateTimeFormat(SITE_LOCALE, { day: '2-digit', month: '2-digit', year: '2-digit' });
   const pad = n => String(n).padStart(2, '0');
 
   // First day of the week for the visitor's locale (1 = Monday ... 7 = Sunday); Sunday where the browser can't tell
@@ -124,18 +126,18 @@
       },
       heading() {
         if (this.view === 'days') {
-          return new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' }).format(new Date(this.viewYear, this.viewMonth, 1));
+          return new Intl.DateTimeFormat(SITE_LOCALE, { month: 'long', year: 'numeric' }).format(new Date(this.viewYear, this.viewMonth, 1));
         }
         if (this.view === 'months') return String(this.viewYear);
         return `${this.yearPage[0]} – ${this.yearPage[this.yearPage.length - 1]}`;
       },
       weekdayNames() {
-        const format = new Intl.DateTimeFormat(undefined, { weekday: 'narrow' });
+        const format = new Intl.DateTimeFormat(SITE_LOCALE, { weekday: 'narrow' });
         // 2023-01-01 was a Sunday
         return Array.from({ length: 7 }, (_, i) => format.format(new Date(2023, 0, 1 + ((this.weekStart + i) % 7))));
       },
       monthNames() {
-        const format = new Intl.DateTimeFormat(undefined, { month: 'short' });
+        const format = new Intl.DateTimeFormat(SITE_LOCALE, { month: 'short' });
         return Array.from({ length: 12 }, (_, i) => format.format(new Date(2000, i, 1)));
       },
       daysInMonth() {

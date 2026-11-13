@@ -5,7 +5,7 @@
       :key="side"
       type="button"
       :class="['w-8 h-8 max-md:w-6 max-md:h-6 max-md:text-xs rounded flex items-center justify-center transition-colors', isDark === (side === 'right') ? 'bg-surface text-white' : 'text-surface hover:bg-lteal']"
-      :aria-label="side === 'right' ? 'Dark mode' : 'Light mode'"
+      :aria-label="$t(side === 'right' ? $t('Dark mode') : $t('Light mode'))"
       :aria-pressed="isDark === (side === 'right')"
       @click="setMode(side)"
     >

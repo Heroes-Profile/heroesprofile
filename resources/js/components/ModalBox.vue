@@ -4,7 +4,7 @@
     <div class="modal-wrapper">
       <div :class="['modal-container bg-surface-4 rounded-2xl p-10 max-md:p-4 w-[90%]', width]">
         <div class="modal-header">
-          <h3 v-if="title" class="text-3xl max-md:text-2xl font-bold text-center mb-6">{{ title }}</h3>
+          <h3 v-if="title" class="text-3xl max-md:text-2xl font-bold text-center mb-6">{{ $t(title) }}</h3>
           <slot name="header"></slot>
         </div>
 

@@ -29,7 +29,7 @@
         <tab-button :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="compact ? 'right' : 'left'"></tab-button>
         <pagination-bar :current="data.current_page" :last="data.last_page" @page="getNgsData"></pagination-bar>
       </div>
-      <p v-if="!data.data.length" class="text-center text-subtext mt-10">No {{ league.name }} games for these filters.</p>
+      <p v-if="!data.data.length" class="text-center text-subtext mt-10">{{ $t('No :league games for these filters.', { league: league.name }) }}</p>
       <div v-else-if="compact" class="max-w-[120rem] mx-auto px-4 md:px-8 py-4">
         <panel-box>
           <div>

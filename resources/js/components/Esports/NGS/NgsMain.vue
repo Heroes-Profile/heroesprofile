@@ -136,7 +136,7 @@
         </div>
         <!-- The main site's search: the table scans while it runs, then lists the matches; a single match opens straight away -->
         <table-search v-if="searchRun && !searchFoundNone" :key="searchRun" :query="searchedFor" :results="battletagresponse" :profile-url="ngsPlayerUrl" :match-url="item => '/Esports/NGS/Match/Single/' + item.latestReplayID" loader-image="/images/NGS/no-image-clipped.png" :show-region="false" @select="item => openNgsPlayer(item)" @none="searchFoundNone = true"></table-search>
-        <p v-else-if="searchFoundNone" class="text-center text-subtext mt-10">No NGS player found for {{ searchedFor }}.</p>
+        <p v-else-if="searchFoundNone" class="text-center text-subtext mt-10">{{ $t('No NGS player found for :searchedfor.', { searchedfor: searchedFor }) }}</p>
       </div>
 
       <div v-if="activeButton === 'recentMatches'">

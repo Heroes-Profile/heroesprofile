@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mb-4 max-w-[93.75rem] mx-auto text-center">
-      <input type="text" v-model="filterText" class="border p-2 rounded-control text-black" placeholder="Filter by team name">
+      <input type="text" v-model="filterText" class="border p-2 rounded-control text-black" :placeholder="$t('Filter by team name')">
     </div>
 
     <div class="flex flex-wrap gap-5 max-w-[93.75rem] mx-auto max-md:flex-col">

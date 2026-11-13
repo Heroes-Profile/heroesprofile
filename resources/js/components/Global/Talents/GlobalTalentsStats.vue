@@ -4,11 +4,11 @@
 
     <div class="grid gap-5 grid-cols-1">
       <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-      <page-heading :heading="selectedHero ? selectedHero.name + ' Builds & Talent Stats' : 'Hero Builds & Talent Stats'">
+      <page-heading :heading="selectedHero ? selectedHero.name + ' Builds & Talent Stats' : $t('Hero Builds & Talent Stats')">
         <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
           <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
           <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 13.75rem; max-height: 21.25rem; overflow-y: auto;">
-            <input v-model="heroDropdownSearch" type="text" placeholder="Search hero..." class="w-full px-2 py-1 text-xs bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
+            <input v-model="heroDropdownSearch" type="text" :placeholder="$t('Search hero...')" class="w-full px-2 py-1 text-xs bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
             <div
               v-for="h in filteredDropdownHeroes"
               :key="h.id"
@@ -26,7 +26,7 @@
         <template v-if="isSLRank" #headingInfo>
           <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
             <p class="font-normal">
-              In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.
+              {{ $t("In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.") }}
               <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">How rank reading works</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
             </p>
           </round-image>
@@ -97,14 +97,14 @@
         <div v-if="talentdetaildata" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
           <div class="flex flex-wrap justify-between items-center gap-2">
             <div>
-              <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
+              <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
             </div>
             <div class="flex items-center gap-4">
               <button type="button" class="underline text-sm" @click="scrollToBuilds">{{ $t('Scroll To Builds') }}</button>
               <div class="flex items-center gap-2 max-md:hidden">
                 <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" :overridedefaultside="isCompact ? 'right' : 'left'" @tab-click="setLayout"></tab-button>
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                  <p class="max-sm:text-xs">Your default layout can be set in your <a href="/Profile/Settings" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('Profile Settings') }}</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>.</p>
+                  <p class="max-sm:text-xs">{{ $t('Your default layout can be set in your') }} <a href="/Profile/Settings" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('Profile Settings') }}</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>.</p>
                 </round-image>
               </div>
             </div>
@@ -137,12 +137,12 @@
 
 
         <div v-if="talentbuilddata" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6">
-          <panel-box id="builds" :title="isCompact ? null : 'Talent Builds'">
+          <panel-box id="builds" :title="isCompact ? null : $t('Talent Builds')">
             <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]">
               <template #heading>
                 <span class="flex flex-wrap items-center gap-2">
                   {{ $heroName(selectedHero) }}
-                  <select class="bg-blue text-white rounded-control px-2 py-1" aria-label="Talent Build Type" :value="talentbuildtype" @change="buildtypechange({ value: $event.target.value })">
+                  <select class="bg-blue text-white rounded-control px-2 py-1" :aria-label="$t('Talent Build Type')" :value="talentbuildtype" @change="buildtypechange({ value: $event.target.value })">
                     <option v-for="buildType in buildtypes" :key="buildType.code" :value="buildType.code">{{ buildType.name }}</option>
                   </select>
                   {{ $t('Talent Builds') }}

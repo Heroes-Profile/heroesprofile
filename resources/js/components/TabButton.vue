@@ -8,7 +8,7 @@
       role="button"
       @click="handleClick(side)"
     >
-      {{ side === 'left' ? tab1text : tab2text }}
+      {{ $t(side === 'left' ? tab1text : tab2text) }}
     </a>
   </div>
 </template>

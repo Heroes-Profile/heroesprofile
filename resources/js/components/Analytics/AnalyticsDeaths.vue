@@ -2,8 +2,8 @@
   <div>
     <!-- The answers first -->
     <div class="flex flex-wrap justify-center gap-4 mb-8">
-      <stat-box class="w-[23%] max-md:w-[48%]" :title="game ? 'Deaths' : 'Deaths per Game'" :value="orDash(round(deathsPerGame(youTiming), 2))" :secondstat="orDash(round(deathsPerGame(baseTiming), 2))" :secondcaption="'global'" color="teal"></stat-box>
-      <stat-box class="w-[23%] max-md:w-[48%]" :title="game ? 'Deathless' : 'Deathless Games'" :value="game ? yesNo(youTiming.deathless_share) : percent(youTiming.deathless_share)" :secondstat="percent(baseTiming.deathless_share)" :secondcaption="'global'" color="yellow"></stat-box>
+      <stat-box class="w-[23%] max-md:w-[48%]" :title="game ? $t('Deaths') : $t('Deaths per Game')" :value="orDash(round(deathsPerGame(youTiming), 2))" :secondstat="orDash(round(deathsPerGame(baseTiming), 2))" :secondcaption="'global'" color="teal"></stat-box>
+      <stat-box class="w-[23%] max-md:w-[48%]" :title="game ? $t('Deathless') : $t('Deathless Games')" :value="game ? yesNo(youTiming.deathless_share) : percent(youTiming.deathless_share)" :secondstat="percent(baseTiming.deathless_share)" :secondcaption="'global'" color="yellow"></stat-box>
       <stat-box class="w-[23%] max-md:w-[48%]" :title="'First Death'" :value="clock(youTiming.avg_first_death)" :secondstat="clock(baseTiming.avg_first_death)" :secondcaption="'global'" color="teal"></stat-box>
       <stat-box class="w-[23%] max-md:w-[48%]" :title="'On Enemy Half'" :value="share(you.enemy_half, you.deaths)" :secondstat="share(base.enemy_half, base.deaths)" :secondcaption="'global'" color="red"></stat-box>
     </div>
@@ -14,7 +14,7 @@
         Each dot is one of your deaths, at the exact spot the game recorded (not an estimate). Colour shows how many enemy heroes got credit for the kill: 1-2 is a gank, 3 or more is a teamfight, and grey means no hero got credit (minions, towers, mercenaries or bosses). Hover or click a legend entry to pick out just those deaths. You play on both sides across games, so use "enemy half" in a dot's hover rather than the structure colours to tell whose side it was.
       </analytics-heading>
       <template v-if="shownMap !== null">
-        <p v-if="(selectedMaps || []).length > 1" class="text-center text-sm mb-2">Showing {{ mapName(shownMap) }}, where you die most of the maps you picked.</p>
+        <p v-if="(selectedMaps || []).length > 1" class="text-center text-sm mb-2">{{ $t('Showing :mapname, where you die most of the maps you picked.', { mapname: mapName(shownMap) }) }}</p>
         <analytics-map-view :map-name="mapName(shownMap)" :layout="layoutFor(shownMap)" :points="deathPoints" :legend="deathLegend"></analytics-map-view>
       </template>
       <analytics-map-list v-else unit="deaths" :rows="deathsByMap" :prompt="'Pick a map to see where you die on it. Everything on this tab then shows that map only.'" :pickable="pickableMaps" @pick="$emit('pick-map', $event)"></analytics-map-list>
@@ -22,7 +22,7 @@
 
     <!-- Death context -->
     <analytics-heading :title="'How you die'" :takeaway="contextTakeaway">
-      Who got the kill: Ganked is 1-2 enemy heroes with kill credit, Teamfight is 3 or more, No hero is minions, towers, mercenaries or bosses. Your team's level: your team's level compared with the enemy team's when you died; deaths in the first seconds, before any level is recorded, count in none of them. Each bar is all your deaths, with the global sample under it.
+      {{ $t("Who got the kill: Ganked is 1-2 enemy heroes with kill credit, Teamfight is 3 or more, No hero is minions, towers, mercenaries or bosses. Your team's level: your team's level compared with the enemy team's when you died; deaths in the first seconds, before any level is recorded, count in none of them. Each bar is all your deaths, with the global sample under it.") }}
     </analytics-heading>
     <div class="grid md:grid-cols-2 gap-6 mb-8">
       <multi-series-chart type="bar" :horizontal="true" :stacked="true" :min="0" :max="100" format="percent" :labels="whos().map(whoLabel)" :title="'Who got the kill'" :series="killerSplit"></multi-series-chart>
@@ -31,7 +31,7 @@
 
     <!-- Death timing -->
     <analytics-heading :title="'When you die'" :takeaway="timingTakeaway">
-      The first chart is how many times you die per game in each 5-minute window (games with no deaths count as 0). The second is the share of your deaths in each window that happened on the enemy half of the map; a high late-game number usually means overextending. First Death above is the average game time of your first death, counting only games where you died.
+      {{ $t('The first chart is how many times you die per game in each 5-minute window (games with no deaths count as 0). The second is the share of your deaths in each window that happened on the enemy half of the map; a high late-game number usually means overextending. First Death above is the average game time of your first death, counting only games where you died.') }}
     </analytics-heading>
     <div class="grid md:grid-cols-2 gap-6 mb-8">
       <multi-series-chart
@@ -51,7 +51,7 @@
 
     <!-- Nemesis -->
     <analytics-heading :title="'Who kills you, and who you kill'" :takeaway="nemesisTakeaway">
-      Kill credit includes assists: every enemy credited with a takedown counts, not just the last hit, so one death in a 5-man fight adds 1 to five different heroes. These lists are yours only; there is no global comparison. Players who hide their profile show as Hidden player.
+      {{ $t('Kill credit includes assists: every enemy credited with a takedown counts, not just the last hit, so one death in a 5-man fight adds 1 to five different heroes. These lists are yours only; there is no global comparison. Players who hide their profile show as Hidden player.') }}
     </analytics-heading>
     <div class="grid md:grid-cols-2 gap-6">
       <multi-series-chart type="bar" :horizontal="true" :labels="nemesisChart.labels" :title="'Heroes that kill you most'" :series="nemesisChart.series"></multi-series-chart>

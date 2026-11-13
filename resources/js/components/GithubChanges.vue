@@ -2,13 +2,13 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-[93.75rem] mx-auto">
     <div v-for="column in columns" :key="column.title" class="col-span-1">
       <h2 class="text-2xl">{{ column.title }}</h2>
-      <p v-if="column.commits === null" class="text-sm">Couldn't load commits from GitHub. Try again in a few minutes.</p>
+      <p v-if="column.commits === null" class="text-sm">{{ $t("Couldn't load commits from GitHub. Try again in a few minutes.") }}</p>
       <ul v-else>
         <li v-for="commit in column.commits" :key="commit.sha" class="commit-item">
           <span class="text-xs block">
             <a v-if="commit.author_login" class="link" :href="`https://github.com/${commit.author_login}`" target="_blank">{{ commit.author_login }}</a>
             <template v-else>{{ commit.author_name }}</template>
-            committed <a class="link" :href="commit.url" target="_blank">{{ commit.short_sha }}</a> on {{ formatDate(commit.date) }}:
+            committed <a class="link" :href="commit.url" target="_blank">{{ commit.short_sha }}</a> {{ $t('on :formatdate:', { formatdate: formatDate(commit.date) }) }}
           </span>
           <span class="border p-1 block" :class="column.background">{{ commit.message }}</span>
         </li>

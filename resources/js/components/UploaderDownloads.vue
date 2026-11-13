@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-4">
     <div>
-      <h3 class="mb-2">Windows</h3>
+      <h3 class="mb-2">{{ $t('Windows') }}</h3>
       <div class="flex flex-wrap gap-2">
         <custom-button :href="link('HeroesProfileUploaderSetup.exe')" text="Download for Windows" alt="Download the Windows replay uploader" color="teal" :targetblank="true"></custom-button>
         <custom-button v-if="showRanks" :href="link('Heroesprofile.Uploader-win-ranks-Setup.exe')" text="Windows, with rank reading" alt="Download the Windows replay uploader with rank reading" color="teal" :targetblank="true"></custom-button>
@@ -17,13 +17,12 @@
         <custom-button v-if="showRanks" :href="link('Heroesprofile.Uploader-osx-x64-ranks-Setup.pkg')" text="Intel, with rank reading" alt="Download the macOS replay uploader with rank reading for Intel Macs" color="teal" :targetblank="true"></custom-button>
       </div>
       <p class="text-xs text-gray-medium mt-2">
-        The Mac builds aren't signed yet while we wait on Apple. The first time, right-click the installer
-        and choose <strong>Open</strong>, or allow it under System Settings → Privacy &amp; Security.
+        {{ $t("The Mac builds aren't signed yet while we wait on Apple. The first time, right-click the installer and choose") }} <strong>{{ $t('Open') }}</strong>{{ $t(', or allow it under System Settings → Privacy & Security.') }}
       </p>
     </div>
 
     <div>
-      <h3 class="mb-2">Linux</h3>
+      <h3 class="mb-2">{{ $t('Linux') }}</h3>
       <div class="flex flex-wrap gap-2">
         <custom-button :href="link('Heroesprofile.Uploader.AppImage')" text="AppImage" alt="Download the Linux replay uploader (AppImage)" color="teal" :targetblank="true"></custom-button>
         <custom-button v-if="showRanks" :href="link('Heroesprofile.Uploader-linux-ranks.AppImage')" text="AppImage, with rank reading" alt="Download the Linux replay uploader with rank reading (AppImage)" color="teal" :targetblank="true"></custom-button>
@@ -32,9 +31,9 @@
     </div>
 
     <p class="text-xs text-gray-medium">
-      All files are on the
-      <a class="link" :href="repository + '/releases/latest'" target="_blank" rel="noopener">latest release</a>, with
-      <a class="link" :href="repository + '/blob/master/packaging/INSTALL.md'" target="_blank" rel="noopener">install instructions</a>.
+      {{ $t('All files are on the') }}
+      <a class="link" :href="repository + '/releases/latest'" target="_blank" rel="noopener">{{ $t('latest release') }}</a>{{ $t(', with') }}
+      <a class="link" :href="repository + '/blob/master/packaging/INSTALL.md'" target="_blank" rel="noopener">{{ $t('install instructions') }}</a>.
     </p>
   </div>
 </template>

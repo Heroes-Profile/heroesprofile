@@ -1,10 +1,10 @@
 <template>
   <div>
     <analytics-heading :title="'Stacks (experimental)'">
-      How you do with and against premade parties. A team's stack is its biggest party: a team with a duo and three solo players is a 2-stack. Facing a stack means the enemy's biggest party was 3 or more and bigger than your team's. Global numbers come from the global sample under the same filters. Win rate differences are in percentage points (pts): 55% against a global 50% is +5 pts. Games where anyone's party size isn't known yet are left out.
+      {{ $t("How you do with and against premade parties. A team's stack is its biggest party: a team with a duo and three solo players is a 2-stack. Facing a stack means the enemy's biggest party was 3 or more and bigger than your team's. Global numbers come from the global sample under the same filters. Win rate differences are in percentage points (pts): 55% against a global 50% is +5 pts. Games where anyone's party size isn't known yet are left out.") }}
     </analytics-heading>
 
-    <p v-if="!hasData" class="text-center text-gray-light">Party data is still being loaded for your games. Check back soon.</p>
+    <p v-if="!hasData" class="text-center text-gray-light">{{ $t('Party data is still being loaded for your games. Check back soon.') }}</p>
 
     <template v-else>
       <analytics-speech-bubble class="mb-6" :talking="talking" @done="talking = false">
@@ -15,7 +15,7 @@
 
       <!-- Enemy stacks -->
       <analytics-heading :title="'Against enemy stacks'" :takeaway="enemyTakeaway">
-        Win rate by the largest group that queued together on the enemy team; no party means all five queued alone. Global is players in the global sample in the same kind of game, under the same filters. Difference is your win rate minus the global one, in percentage points: positive means you win more than players overall in these games.
+        {{ $t('Win rate by the largest group that queued together on the enemy team; no party means all five queued alone. Global is players in the global sample in the same kind of game, under the same filters. Difference is your win rate minus the global one, in percentage points: positive means you win more than players overall in these games.') }}
       </analytics-heading>
       <multi-series-chart class="max-w-[75rem] mx-auto" type="bar" format="percent" :reference="50" :referenceLabel="'50%'" :labels="enemyChart.labels" :yLabel="'Win rate'" :series="enemyChart.series"></multi-series-chart>
       <analytics-numbers>
@@ -43,7 +43,7 @@
 
       <!-- Stack advantage -->
       <analytics-heading :title="'Stack advantage'" :takeaway="advantageTakeaway">
-        Win rate by how much bigger the enemy's biggest party was than your team's. +3 is, say, a 5-stack against your duo; -2 is your 3-stack against an all-solo team. Even means both teams' biggest parties were the same size. Gaps beyond 3 count as ±3.
+        {{ $t("Win rate by how much bigger the enemy's biggest party was than your team's. +3 is, say, a 5-stack against your duo; -2 is your 3-stack against an all-solo team. Even means both teams' biggest parties were the same size. Gaps beyond 3 count as ±3.") }}
       </analytics-heading>
       <multi-series-chart
         class="max-w-[75rem] mx-auto mb-8"
@@ -59,7 +59,7 @@
 
       <!-- Your party -->
       <analytics-heading :title="'Your party size'" :takeaway="partyTakeaway">
-        The size of the party you queued in yourself, not your team's biggest party. Global compares players who queued in the same size of party. Difference is your win rate minus the global one, in percentage points.
+        {{ $t("The size of the party you queued in yourself, not your team's biggest party. Global compares players who queued in the same size of party. Difference is your win rate minus the global one, in percentage points.") }}
       </analytics-heading>
       <multi-series-chart class="max-w-[75rem] mx-auto" type="bar" format="percent" :reference="50" :referenceLabel="'50%'" :labels="partyChart.labels" :yLabel="'Win rate'" :series="partyChart.series"></multi-series-chart>
       <analytics-numbers>
@@ -87,7 +87,7 @@
 
       <!-- What winners did -->
       <analytics-heading :title="'How teams beat bigger stacks'" :takeaway="beatTakeaway">
-        Global teams that faced a bigger enemy stack of 3+: how the teams that won played compared with the teams that lost. These are differences in what winning teams did, not proof that each one causes the win. Each number is a team average per player (per game, or a share where shown with %). Difference is how much better the winners were, relative to the losers: winners dying 30% less than losers shows as +30%. Only behaviours where the winners did better are listed, biggest gap first. Confidence: High is a gap of 20%+ with at least 300 winning and 300 losing teams, Medium 10%+ with at least 100 each, Low anything less, so treat it as a hint. The last two columns are your own averages in games facing a stack and in all your other games (including ones where your team had the bigger or equal stack), so you can see where your play slips. The winner and loser columns always use every hero, even with a hero filter, because they need a large sample; your own columns follow the filters.
+        {{ $t('Global teams that faced a bigger enemy stack of 3+: how the teams that won played compared with the teams that lost. These are differences in what winning teams did, not proof that each one causes the win. Each number is a team average per player (per game, or a share where shown with %). Difference is how much better the winners were, relative to the losers: winners dying 30% less than losers shows as +30%. Only behaviours where the winners did better are listed, biggest gap first. Confidence: High is a gap of 20%+ with at least 300 winning and 300 losing teams, Medium 10%+ with at least 100 each, Low anything less, so treat it as a hint. The last two columns are your own averages in games facing a stack and in all your other games (including ones where your team had the bigger or equal stack), so you can see where your play slips. The winner and loser columns always use every hero, even with a hero filter, because they need a large sample; your own columns follow the filters.') }}
       </analytics-heading>
       <table class="min-w-0 w-full responsive-table mb-6">
         <thead>

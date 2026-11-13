@@ -64,7 +64,7 @@
           <div v-for="row in shownRows" :key="row.replayID" class="group/replay relative mb-1.5">
             <div class="group/row relative flex flex-wrap items-center justify-between gap-y-4 rounded overflow-hidden 2xl:flex-nowrap group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2">
               <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
-              <a :href="matchUrl(row)" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
+              <a :href="matchUrl(row)" class="absolute inset-0 z-[1]" :aria-label="$t('Open match')"></a>
 
               <div class="relative flex-1 md:max-w-[25.625rem] min-w-[18.75rem] self-stretch flex items-center max-md:justify-center pl-6 py-4">
                 <div v-if="row.game_map" class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="mapArt(row)"></div>
@@ -72,7 +72,7 @@
                 <div class="relative flex flex-col gap-1.5 whitespace-nowrap">
                   <span class="font-bold">{{ row.game_map ? row.game_map.name : '' }}</span>
                   <span class="text-base font-medium text-header">{{ row.game_type ? row.game_type.name : '' }}</span>
-                  <span class="text-sm">{{ Math.round(row.game_length / 60) }} minutes · {{ row.region }} · {{ row.game_version }}</span>
+                  <span class="text-sm">{{ $t(':round minutes · :region · :version', { round: Math.round(row.game_length / 60), region: row.region, version: row.game_version }) }}</span>
                   <span class="text-xs">{{ formatDate(row.game_date) }}</span>
                   <span class="relative z-[2] text-sm">
                     {{ $t('Match ID') }}
@@ -84,21 +84,21 @@
               <!-- Each team's kills | deaths | assists, drawn like the match history's KDA column -->
               <div class="relative z-[2] flex-1 flex flex-wrap justify-center gap-x-16 gap-y-4 px-4 py-4 min-w-0">
                 <div v-for="side in sides(row)" :key="side.team" class="flex flex-col gap-0.5 items-center text-center">
-                  <span :class="['text-sm font-semibold', side.won ? 'text-win' : 'text-red']">{{ side.won ? 'Winner' : 'Loser' }}</span>
+                  <span :class="['text-sm font-semibold', side.won ? 'text-win' : 'text-red']">{{ side.won ? $t('Winner') : $t('Loser') }}</span>
                   <span class="grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] gap-x-[0.4375rem] w-[8.75rem] items-center justify-items-center my-1">
                     <kda-icon v-for="(stat, index) in ['kills', 'deaths', 'assists']" :key="stat" :stat="stat" :style="{ gridColumn: index * 2 + 1 }"></kda-icon>
                   </span>
                   <span class="grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] gap-x-[0.4375rem] w-[8.75rem] text-2xl font-semibold whitespace-nowrap tabular-nums">
                     <span class="text-right text-win">{{ teamTotal(row, side.team, 'kills') }}</span><span>|</span><span class="font-normal text-red">{{ teamTotal(row, side.team, 'deaths') }}</span><span>|</span><span class="text-left font-normal">{{ teamTotal(row, side.team, 'assists') }}</span>
                   </span>
-                  <span class="text-sm font-medium text-subtext">{{ teamKda(row, side.team) }} KDA</span>
+                  <span class="text-sm font-medium text-subtext">{{ $t(':teamkda KDA', { teamkda: teamKda(row, side.team) }) }}</span>
                 </div>
               </div>
 
               <!-- The match history's players column, winners first -->
               <div class="relative z-[2] flex gap-2 max-md:justify-center pl-4 2xl:pl-1.5 pr-12 py-4 w-full 2xl:w-[22.625rem] shrink-0">
                 <div v-for="side in sides(row)" :key="side.team" class="flex flex-col gap-1.5 w-[9.375rem]">
-                  <span :class="['text-sm font-semibold h-4 flex items-center', side.won ? 'text-win' : 'text-red']">{{ side.won ? 'Winner' : 'Loser' }}</span>
+                  <span :class="['text-sm font-semibold h-4 flex items-center', side.won ? 'text-win' : 'text-red']">{{ side.won ? $t('Winner') : $t('Loser') }}</span>
                   <!-- A party's icon sits centred beside a line in its colour running down the group -->
                   <div v-for="group in partyGroups(teamPlayers(row, side.team))" :key="group.start" class="flex items-center">
                     <span class="w-4 shrink-0 flex items-center justify-center">
@@ -132,10 +132,10 @@
               </div>
             </div>
             <div v-if="row.downloadable || isWatchable(row)" class="absolute z-[3] flex transition-opacity right-2 top-2 flex-col gap-2 md:opacity-0 md:group-hover/replay:opacity-100 md:focus-within:opacity-100">
-                    <a v-if="row.downloadable && authenticated && !replayDownloadBlocked" class="max-md:hidden hover:text-lteal" :href="'/Match/Single/' + row.replayID + '/Download'" title="Download Replay"><i class="fa-solid fa-download"></i></a>
-                    <span v-else-if="row.downloadable && !authenticated" class="max-md:hidden opacity-60" title="Log in to download replays"><i class="fa-solid fa-download"></i></span>
-                    <a v-if="isWatchable(row) && authenticated" class="hover:text-lteal" :href="'/Analytics/Match/Single/' + row.replayID" title="Watch Replay"><i class="fa-solid fa-video"></i></a>
-                    <span v-else-if="isWatchable(row)" class="opacity-60" title="Log in with Battle.net to watch replays"><i class="fa-solid fa-video"></i></span>
+                    <a v-if="row.downloadable && authenticated && !replayDownloadBlocked" class="max-md:hidden hover:text-lteal" :href="'/Match/Single/' + row.replayID + '/Download'" :title="$t('Download Replay')"><i class="fa-solid fa-download"></i></a>
+                    <span v-else-if="row.downloadable && !authenticated" class="max-md:hidden opacity-60" :title="$t('Log in to download replays')"><i class="fa-solid fa-download"></i></span>
+                    <a v-if="isWatchable(row) && authenticated" class="hover:text-lteal" :href="'/Analytics/Match/Single/' + row.replayID" :title="$t('Watch Replay')"><i class="fa-solid fa-video"></i></a>
+                    <span v-else-if="isWatchable(row)" class="opacity-60" :title="$t('Log in with Battle.net to watch replays')"><i class="fa-solid fa-video"></i></span>
                   </div>
           </div>
         </panel-box>
@@ -161,7 +161,7 @@
                 </match-row-mobile>
                 <div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
                   <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
-                  <a :href="matchUrl(row)" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
+                  <a :href="matchUrl(row)" class="absolute inset-0 z-[1]" :aria-label="$t('Open match')"></a>
                   <div class="relative w-[20rem] shrink-0 self-stretch flex items-center pl-5 py-2.5">
                     <div v-if="row.game_map" class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="mapArt(row)"></div>
                     <div class="absolute inset-y-0 left-0 w-1.5 bg-teal"></div>
@@ -181,10 +181,10 @@
                   <span class="w-20 shrink-0"></span>
                 </div>
                 <div v-if="row.downloadable || isWatchable(row)" class="absolute z-[3] flex transition-opacity right-4 top-1/2 -translate-y-1/2 flex-row-reverse gap-4 md:opacity-0 md:group-hover/replay:opacity-100 md:focus-within:opacity-100">
-                    <a v-if="row.downloadable && authenticated && !replayDownloadBlocked" class="max-md:hidden hover:text-lteal" :href="'/Match/Single/' + row.replayID + '/Download'" title="Download Replay"><i class="fa-solid fa-download"></i></a>
-                    <span v-else-if="row.downloadable && !authenticated" class="max-md:hidden opacity-60" title="Log in to download replays"><i class="fa-solid fa-download"></i></span>
-                    <a v-if="isWatchable(row) && authenticated" class="hover:text-lteal" :href="'/Analytics/Match/Single/' + row.replayID" title="Watch Replay"><i class="fa-solid fa-video"></i></a>
-                    <span v-else-if="isWatchable(row)" class="opacity-60" title="Log in with Battle.net to watch replays"><i class="fa-solid fa-video"></i></span>
+                    <a v-if="row.downloadable && authenticated && !replayDownloadBlocked" class="max-md:hidden hover:text-lteal" :href="'/Match/Single/' + row.replayID + '/Download'" :title="$t('Download Replay')"><i class="fa-solid fa-download"></i></a>
+                    <span v-else-if="row.downloadable && !authenticated" class="max-md:hidden opacity-60" :title="$t('Log in to download replays')"><i class="fa-solid fa-download"></i></span>
+                    <a v-if="isWatchable(row) && authenticated" class="hover:text-lteal" :href="'/Analytics/Match/Single/' + row.replayID" :title="$t('Watch Replay')"><i class="fa-solid fa-video"></i></a>
+                    <span v-else-if="isWatchable(row)" class="opacity-60" :title="$t('Log in with Battle.net to watch replays')"><i class="fa-solid fa-video"></i></span>
                   </div>
               </div>
             </div>
@@ -196,7 +196,7 @@
 
         <!-- A search that ran out of time before filling a page says how far it got -->
         <p v-if="nextBeforeReplayID && !pageFull && searchedBackTo && !isLoading" class="text-sm text-center">
-          {{ rows.length ? 'Found ' + rows.length.toLocaleString('en-US') + ' so far.' : 'No matches yet.' }} Searched back to {{ formatDay(searchedBackTo) }}.
+          {{ rows.length ? 'Found ' + rows.length.toLocaleString('en-US') + ' so far.' : $t('No matches yet.') }} Searched back to {{ formatDay(searchedBackTo) }}.
           <button type="button" class="underline" @click="loadMore">{{ $t('Keep Searching') }}</button>
         </p>
       </template>

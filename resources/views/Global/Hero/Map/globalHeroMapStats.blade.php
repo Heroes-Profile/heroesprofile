@@ -1,10 +1,10 @@
 @extends('layouts.app', $bladeGlobals)    
 
 @if ($userinput)
-  @section('title', $userinput["name"] . ' Best Maps & Map Win Rates')
+  @section('title', __(':hero Best Maps & Map Win Rates', ['hero' => $userinput["name"]]))
   @section('meta_description', 'The best and worst maps for ' . $userinput["name"] . ' in Heroes of the Storm. Win rate, ban rate and games played on every map, from real games on the latest patch.')
 @else
-  @section('title', 'Hero Map Win Rates')
+  @section('title', __('Hero Map Win Rates'))
   @section('meta_description', 'Heroes of the Storm hero and map statistics. Explore global hero-map statistics to discover hero performance on various maps, map synergy, hero picks, and win rates. Filter and analyze hero-map data to make informed decisions on Heroes Profile.')
 @endif
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <p v-if="!rowFor('you', 'all').games" class="text-center text-gray-light mb-8">
-      Positioning is worked out overnight, so {{ game ? 'this match appears' : 'your newest games appear' }} here the day after {{ game ? 'it is' : 'they are' }} processed.
+      {{ $t('Positioning is worked out overnight, so :appear here the day after :are processed.', { appear: game ? $t('this match appears') : $t('your newest games appear'), are: game ? $t('it is') : $t('they are') }) }}
     </p>
 
     <template v-else>
@@ -28,7 +28,7 @@
       <analytics-numbers>
         <table class="min-w-0 w-full responsive-table mb-4">
           <thead>
-            <tr><th>{{ $t('Phase') }}</th><th v-for="w in whos()" :key="w">{{ whoLabel(w) }}: in lane / at camps / elsewhere</th></tr>
+            <tr><th>{{ $t('Phase') }}</th><th v-for="w in whos()" :key="w">{{ $t(':wholabel: in lane / at camps / elsewhere', { wholabel: whoLabel(w) }) }}</th></tr>
           </thead>
           <tbody>
             <tr v-for="(phase, i) in phases" :key="phase">
@@ -44,17 +44,17 @@
             <tr><th>{{ $t('Whole game') }}</th><th v-for="w in whos()" :key="w">{{ whoLabel(w) }}</th></tr>
           </thead>
           <tbody>
-            <tr><td>Time in your main lane</td><td v-for="w in whos()" :key="w">{{ percent(rowFor(w, 'all').main_lane_share) }}</td></tr>
-            <tr><td>Lane changes per 10 min</td><td v-for="w in whos()" :key="w">{{ orDash(round(rowFor(w, 'all').switches_10, 1)) }}</td></tr>
-            <tr><td>Lane time past the middle</td><td v-for="w in whos()" :key="w">{{ percent(rowFor(w, 'all').enemy_side_share) }}</td></tr>
-            <tr><td>Main lane</td><td v-for="w in whos()" :key="w">{{ mainLanes(w) }}</td></tr>
+            <tr><td>{{ $t('Time in your main lane') }}</td><td v-for="w in whos()" :key="w">{{ percent(rowFor(w, 'all').main_lane_share) }}</td></tr>
+            <tr><td>{{ $t('Lane changes per 10 min') }}</td><td v-for="w in whos()" :key="w">{{ orDash(round(rowFor(w, 'all').switches_10, 1)) }}</td></tr>
+            <tr><td>{{ $t('Lane time past the middle') }}</td><td v-for="w in whos()" :key="w">{{ percent(rowFor(w, 'all').enemy_side_share) }}</td></tr>
+            <tr><td>{{ $t('Main lane') }}</td><td v-for="w in whos()" :key="w">{{ mainLanes(w) }}</td></tr>
           </tbody>
         </table>
       </analytics-numbers>
 
       <!-- Teamfights -->
       <analytics-heading :title="'Teamfights'" :takeaway="fightTakeaway">
-        A fight is two or more hero deaths with no more than 15 s between them. For each fight you were at, your position is your average over the 10 s before its first death, compared with your team's centre along the line towards the enemy team's centre (only teammates at the fight count). Front and back of the team need at least 3 teammates there. Arrived late means you were first within 25 units of where the fight's deaths happened only after it started. Front deaths are times you were your team's furthest-forward death in a fight where your team lost two or more. Positions in fights are mostly estimated from move orders, which players give constantly in fights. Games with fewer than 3 such fights are left out.
+        {{ $t("A fight is two or more hero deaths with no more than 15 s between them. For each fight you were at, your position is your average over the 10 s before its first death, compared with your team's centre along the line towards the enemy team's centre (only teammates at the fight count). Front and back of the team need at least 3 teammates there. Arrived late means you were first within 25 units of where the fight's deaths happened only after it started. Front deaths are times you were your team's furthest-forward death in a fight where your team lost two or more. Positions in fights are mostly estimated from move orders, which players give constantly in fights. Games with fewer than 3 such fights are left out.") }}
       </analytics-heading>
       <div class="grid md:grid-cols-2 gap-6 mb-4">
         <multi-series-chart type="bar" format="percent" :min="0" :max="100" :labels="['Front of your team', 'Back of your team', 'Arrived late']" :title="'Where you are when fights start'" :series="fightSeries"></multi-series-chart>
@@ -64,7 +64,7 @@
 
       <!-- Objectives -->
       <analytics-heading :title="'Objectives and camps'" :takeaway="objectiveTakeaway">
-        Objective and camp presence: the share of your team's camp captures and enemy structure kills (and of camps alone) you were at, as on the Coaching tab. Arrival: at the ones you were at, how many seconds before the capture you were first within 30 units, looking back up to 60 s. Contesting: the share of the enemy team's camp captures you were within 30 units of, from 15 s before to 5 s after. Map objectives (tributes, shrines, altars) aren't in this yet: the replay doesn't say where or when they start.
+        {{ $t("Objective and camp presence: the share of your team's camp captures and enemy structure kills (and of camps alone) you were at, as on the Coaching tab. Arrival: at the ones you were at, how many seconds before the capture you were first within 30 units, looking back up to 60 s. Contesting: the share of the enemy team's camp captures you were within 30 units of, from 15 s before to 5 s after. Map objectives (tributes, shrines, altars) aren't in this yet: the replay doesn't say where or when they start.") }}
       </analytics-heading>
       <multi-series-chart class="mb-8" type="bar" format="percent" :min="0" :max="100" :labels="['Objectives you were at', 'Camps you were at', 'Enemy camps contested']" :title="'Being there'" :series="objectiveSeries"></multi-series-chart>
     </template>

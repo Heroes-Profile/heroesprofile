@@ -1,16 +1,16 @@
 <template>
-  <panel-box v-if="loading" title="Storm League Rank" :loading="true">
+  <panel-box v-if="loading" :title="$t('Storm League Rank')" :loading="true">
     <skeleton-box class="h-[22.5rem]"></skeleton-box>
   </panel-box>
-  <panel-box v-else-if="data" title="Storm League Rank">
+  <panel-box v-else-if="data" :title="$t('Storm League Rank')">
     <template #title>
       <round-image size="small" icon="fas fa-info" title="info" popupsize="large">
         <slot>
           <div>
             <p class="max-sm:text-xs">{{ $t("This is the player's real in-game Storm League rank, not an estimate. Blizzard doesn't publish ranks, so we read them off the game itself.") }}</p>
             <p class="max-sm:text-xs mt-2">The "with rank reading" version of the Heroes Profile uploader (Windows, macOS or Linux) has an opt-in "Read ranks from the loading screen" setting. When it's on, the uploader looks at the loading screen of each Storm League game (only the game window, only while the loading screen is up), reads every player's rank badge, and sends those ranks to us along with the game's replay.</p>
-            <p class="max-sm:text-xs mt-2">We only keep a rank for a player who is actually in that replay, and only when the uploader is confident the badge belongs to them. Each time the same rank is read again we count it, so "read in 12 games" means twelve separate loading screens showed that rank. A new rank, or a new season, starts a new entry.</p>
-            <p class="max-sm:text-xs mt-2">A rank only appears once someone with the setting on has played a game with this player, so it can be out of date. Ranks are as read and can occasionally be wrong.</p>
+            <p class="max-sm:text-xs mt-2">{{ $t('We only keep a rank for a player who is actually in that replay, and only when the uploader is confident the badge belongs to them. Each time the same rank is read again we count it, so "read in 12 games" means twelve separate loading screens showed that rank. A new rank, or a new season, starts a new entry.') }}</p>
+            <p class="max-sm:text-xs mt-2">{{ $t('A rank only appears once someone with the setting on has played a game with this player, so it can be out of date. Ranks are as read and can occasionally be wrong.') }}</p>
           </div>
         </slot>
       </round-image>
@@ -51,8 +51,8 @@
       <div class="px-6 pb-6 space-y-4">
         <ol class="list-decimal list-inside space-y-1">
           <li>Install the <strong>with rank reading</strong> version of the Heroes Profile uploader for your system: Windows, macOS or Linux.</li>
-          <li>In the uploader's Settings, turn on <strong>{{ $t('Read ranks from the loading screen') }}</strong>.</li>
-          <li>Play Storm League. Once a game's replay is uploaded, the ranks read from its loading screen show up here, for you and for everyone else in that game.</li>
+          <li>{{ $t("In the uploader's Settings, turn on") }} <strong>{{ $t('Read ranks from the loading screen') }}</strong>.</li>
+          <li>{{ $t("Play Storm League. Once a game's replay is uploaded, the ranks read from its loading screen show up here, for you and for everyone else in that game.") }}</li>
         </ol>
         <p>{{ $t('Rank reading is off until you turn it on.') }}
           <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>.

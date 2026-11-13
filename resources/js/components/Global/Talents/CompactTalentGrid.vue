@@ -1,7 +1,7 @@
 <template>
-  <section v-if="tiers.some(tier => tier.talents.length)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-2" aria-label="Talent statistics">
+  <section v-if="tiers.some(tier => tier.talents.length)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-2" :aria-label="$t('Talent statistics')">
     <article v-for="tier in tiers" :key="tier.level" class="min-w-0">
-      <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Level {{ tier.level }}</h2>
+      <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">{{ $t('Level :level', { level: tier.level }) }}</h2>
       <div class="rounded-b overflow-hidden variable-background variable-text">
         <div v-for="talent in tier.talents" :key="talent.talentInfo.talent_id"
           class="py-2 px-3 border-b border-white last:border-b-0"

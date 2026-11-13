@@ -1,8 +1,8 @@
 <template>
-  <modal-box title="Heroes Profile Uploader">
+  <modal-box :title="$t('Heroes Profile Uploader')">
     <template #header>
       <p>
-        In order to view accurate data for your matches, regularly upload via the <a class="underline hover:text-header" href="/Upload" target="_blank">Heroes Profile Uploader</a>.
+        {{ $t('In order to view accurate data for your matches, regularly upload via the') }} <a class="underline hover:text-header" href="/Upload" target="_blank">Heroes Profile Uploader</a>.
       </p>
     </template>
 

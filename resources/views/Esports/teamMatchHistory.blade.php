@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', 'Team & Organization Esports Match History Data')
+@section('title', __('Team & Organization Esports Match History Data'))
 @section('meta_keywords', 'Team & Organization Match History')
 @section('meta_description', 'Team & Organization Match History')
 

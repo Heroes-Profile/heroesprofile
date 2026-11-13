@@ -2,7 +2,7 @@
   <div class="flex flex-wrap">
     <div id="filter-label" class="relative">
       <div class="flex flex-col gap-1.5 text-sm font-medium text-subtext p-2">
-        <span>{{ text }} Min</span>
+        <span>{{ $t(':name Min', { name: $t(text) }) }}</span>
         <input type="number"
           v-model="min"
           :min="lowest"
@@ -14,7 +14,7 @@
     </div>
     <div id="filter-label" class="relative">
       <div class="flex flex-col gap-1.5 text-sm font-medium text-subtext p-2">
-        <span>{{ text }} Max</span>
+        <span>{{ $t(':name Max', { name: $t(text) }) }}</span>
         <input type="number"
           v-model="max"
           :min="min || lowest"

@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)  
-@section('title', 'Deathwing Animation')
+@section('title', __('Deathwing Animation'))
 @section('meta_keywords', '')
 @section('meta_description', '')
 @section('content')

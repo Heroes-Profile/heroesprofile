@@ -27,20 +27,20 @@
     <div class="max-w-[93.75rem] mx-auto px-4 mt-4">
       <!-- Free trial: days left, and the ways to keep Analytics in its last two days -->
       <p v-if="trialDaysLeft !== null" class="text-center text-sm mb-4">
-        {{ trialStage }} free trial: {{ trialDaysLeft }} {{ trialDaysLeft === 1 ? 'day' : 'days' }} left.
+        {{ $t(':trialstage free trial: :trialdaysleft :days left.', { trialstage: trialStage, trialdaysleft: trialDaysLeft, days: trialDaysLeft === 1 ? $t('day') : $t('days') }) }}
         <template v-if="trialDaysLeft <= 2">
-          To keep Analytics after that, <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">subscribe on Patreon</a> and link it to your account.
+          {{ $t('To keep Analytics after that,') }} <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">subscribe on Patreon</a> and link it to your account.
         </template>
       </p>
 
       <!-- Processing status: one line, so the tab's own numbers come first -->
       <div v-if="!sample" class="text-center mb-6">
         <div v-if="processing" class="max-w-[37.5rem] mx-auto">
-          <p class="text-sm">Processing your games: {{ upToDate }} of {{ status.total }} up to date. You can leave this page; it carries on.</p>
+          <p class="text-sm">{{ $t('Processing your games: :uptodate of :total up to date. You can leave this page; it carries on.', { uptodate: upToDate, total: status.total }) }}</p>
           <stat-bar-box class="w-full" size="full" :title="'Progress'" :value="upToDatePercent" :displaytext="upToDate + ' of ' + status.total"></stat-bar-box>
         </div>
         <div v-else class="flex flex-wrap items-center justify-center gap-3 text-sm">
-          <span>{{ status.done.toLocaleString('en-US') }} of {{ status.total.toLocaleString('en-US') }} season games processed ({{ percent }}%)</span>
+          <span>{{ $t(':done of :total season games processed (:percent%)', { done: status.done.toLocaleString('en-US'), total: status.total.toLocaleString('en-US'), percent: percent }) }}</span>
           <custom-button
             v-if="!locked && ((status.done < status.total && (!status.free || status.free.left > 0)) || status.outdated > 0)"
             @click="request"
@@ -54,16 +54,14 @@
         </div>
         <!-- Games processed before a newer version: what they're missing; the button above updates them -->
         <p v-if="!processing && status.outdated > 0 && !locked" class="text-sm mt-2">
-          {{ status.outdated.toLocaleString('en-US') }} of your games were processed before Analytics added
-          {{ (status.whats_new || []).join('; ') }}. Rebuilding them is free.
+          {{ $t(':outdated of your games were processed before Analytics added :value. Rebuilding them is free.', { outdated: status.outdated.toLocaleString('en-US'), value: (status.whats_new || []).join('; ') }) }}
         </p>
         <!-- Without a subscription: a set number of games per stage -->
         <p v-if="status.free && !locked" class="text-sm mt-2">
-          Your {{ trialStage }} free processing covers {{ status.free.limit }} games, newest first, including games processed in the replay viewer:
-          {{ status.free.left }} left.
+          {{ $t('Your :trialstage free processing covers :limit games, newest first, including games processed in the replay viewer: :left left.', { trialstage: trialStage, limit: status.free.limit, left: status.free.left }) }}
           <template v-if="status.free.left < status.total - status.done">
-            To process the rest, <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">subscribe on Patreon</a>
-            or link a paid <a class="link" href="/Api">API plan</a>.
+            {{ $t('To process the rest,') }} <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">subscribe on Patreon</a>
+            or link a paid <a class="link" href="/Api">{{ $t('API plan') }}</a>.
           </template>
         </p>
         <p v-if="error" class="mt-4 text-red">{{ error }}</p>
@@ -87,7 +85,7 @@
       <!-- The match picker and tabs use the page's full width, like Match History below them -->
       <div class="px-4">
         <!-- One match at a time: pick one from your latest processed matches, 10 to a page -->
-        <analytics-numbers v-if="!sample && activeTab !== 'summary' && !isLoading && pickerGames.length" class="max-w-[1500px] mx-auto" :label="game ? 'Pick another match' : 'Pick a match to see it on its own'">
+        <analytics-numbers v-if="!sample && activeTab !== 'summary' && !isLoading && pickerGames.length" class="max-w-[1500px] mx-auto" :label="game ? $t('Pick another match') : $t('Pick a match to see it on its own')">
           <analytics-match-picker
             :games="pickerGames"
             :selected="game"
@@ -100,7 +98,7 @@
           <template v-if="game">
             <span v-if="gameInfo">
               One match: <span class="font-bold">{{ $heroName(gameInfo.hero) }}</span> on {{ $mapName(gameInfo.game_map) }} &middot; {{ gameInfo.game_type }} &middot;
-              <span :class="gameInfo.winner ? 'text-teal' : 'text-red'">{{ gameInfo.winner ? 'Win' : 'Loss' }}</span> &middot; {{ formatDate(gameInfo.game_date) }}.
+              <span :class="gameInfo.winner ? 'text-teal' : 'text-red'">{{ gameInfo.winner ? $t('Win') : $t('Loss') }}</span> &middot; {{ formatDate(gameInfo.game_date) }}.
               Compared with {{ $heroName(gameInfo.hero) }} on {{ $mapName(gameInfo.game_map) }} in {{ gameInfo.game_type }}, and your other {{ $heroName(gameInfo.hero) }} matches.
             </span>
             <custom-button :href="replayLink(game)" :text="'Watch Replay'" :alt="'Watch this match in the replay viewer'" size="small"></custom-button>
@@ -119,7 +117,7 @@
             @input-changed="activeTab = $event.value"
           ></single-select-filter>
         </div>
-        <p v-if="activeTab !== 'summary'" class="text-center text-sm mb-6"><a class="link cursor-pointer" @click="toMethodology">How is this calculated?</a></p>
+        <p v-if="activeTab !== 'summary'" class="text-center text-sm mb-6"><a class="link cursor-pointer" @click="toMethodology">{{ $t('How is this calculated?') }}</a></p>
       </div>
 
       <div class="max-w-[1500px] mx-auto px-4">

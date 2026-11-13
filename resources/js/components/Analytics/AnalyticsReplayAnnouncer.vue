@@ -2,8 +2,8 @@
   <div class="bg-darken rounded p-3 mb-2 text-sm">
     <!-- Win chance, split between the teams -->
     <div class="flex justify-between text-xs mb-1">
-      <span :style="{ color: teamColor(0) }">Blue {{ pct(chance) }}</span>
-      <span :style="{ color: teamColor(1) }">{{ pct(1 - chance) }} Red</span>
+      <span :style="{ color: teamColor(0) }">{{ $t('Blue :pct', { pct: pct(chance) }) }}</span>
+      <span :style="{ color: teamColor(1) }">{{ $t(':pct Red', { pct: pct(1 - chance) }) }}</span>
     </div>
     <div class="flex h-2 rounded overflow-hidden bg-gray-dark">
       <div class="transition-all" :style="{ width: 100 * chance + '%', background: teamColor(0) }"></div>
@@ -16,9 +16,9 @@
         <template v-if="said.length">
           <span class="font-mono bubble-time mr-2">{{ clock(said[0].t) }}</span>
           <span class="font-bold">{{ said[0].text }}</span>
-          <span v-if="said[0].why" class="bubble-why ml-1">Why: {{ said[0].why }}.</span>
+          <span v-if="said[0].why" class="bubble-why ml-1">{{ $t('Why: :why.', { why: said[0].why }) }}</span>
         </template>
-        <span v-else>Waiting for the gates to open.</span>
+        <span v-else>{{ $t('Waiting for the gates to open.') }}</span>
       </div>
     </analytics-speech-bubble>
 
@@ -35,7 +35,7 @@
         <slot><p class="text-sm p-2 text-left">Each team's chance to win at this moment, from team levels, XP, forts and keeps destroyed, heroes dead right now and takedowns. It stays 50/50 until the gates open; "Why" lists what favours the leading team most.</p></slot>
       </round-image>
       {{ source === 'heuristic'
-        ? 'Estimated from levels, XP, structures and deaths; not yet trained on past games.'
+        ? $t('Estimated from levels, XP, structures and deaths; not yet trained on past games.')
         : 'Win chance from a model trained on ' + model.games.toLocaleString('en-US') + ' games; the favourite wins about ' + Math.round(model.accuracy * 10) + ' times in 10.' }}
     </div>
   </div>

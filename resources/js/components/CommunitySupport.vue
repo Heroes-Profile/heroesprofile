@@ -1,35 +1,31 @@
 <template>
   <div class="max-w-[93.75rem] mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-4 text-center">Site Temporarily Disabled</h1>
+    <h1 class="text-3xl font-bold mb-4 text-center">{{ $t('Site Temporarily Disabled') }}</h1>
      <p class="mb-4">
-      Heroes Profile is a community-funded site that relies on the support of its users to pay for server costs.
-      We are currently operating at a loss and need your help to keep the site running. We've temporarily disabled the site for free users to reduce costs and encourage community support.
-      Feel free to contact us at zemill@heroesprofile.com
+      {{ $t("Heroes Profile is a community-funded site that relies on the support of its users to pay for server costs. We are currently operating at a loss and need your help to keep the site running. We've temporarily disabled the site for free users to reduce costs and encourage community support. Feel free to contact us at zemill@heroesprofile.com") }}
     </p>
     <hr class="pb-4"/>
-    <h2 class="text-center text-[1.5em] pb-4">To view the site while it is temporarily down, please do one of the following:</h2>
+    <h2 class="text-center text-[1.5em] pb-4">{{ $t('To view the site while it is temporarily down, please do one of the following:') }}</h2>
     <div class="flex flex-col md:flex-row gap-4 mb-4 justify-center items-stretch" >
       <div class="md:w-[50%]">
-       Patreon subscribers may bypass this page and access the site directly. Please log in to your account
-      and authenticate with Patreon to gain access.
+       {{ $t('Patreon subscribers may bypass this page and access the site directly. Please log in to your account and authenticate with Patreon to gain access.') }}
       <br>
       <br>
       <custom-button href="/Authenticate/Battlenet" text="Login with Existing Patreon Donation" alt="Login with Battle.net" size="big" class=" mt-[2em]"></custom-button>
       </div>
       <div class="md:hidden   bg-white w-full h-[2px] "></div>
       <div class="md:w-[50%]">
-      Please consider supporting the site by donating on Patreon. Your support helps us cover server and architecture costs and keep the site running. Once you have donated, you may log in to view the site.
+      {{ $t('Please consider supporting the site by donating on Patreon. Your support helps us cover server and architecture costs and keep the site running. Once you have donated, you may log in to view the site.') }}
       <custom-button href="https://www.patreon.com/c/heroesprofile" text="Donate on Patreon" alt="Donate on Patreon" size="big"  color="red" class="mb-4 mt-[2em]"></custom-button>
        <p class="mb-4 text-sm italic text-center mt-2">
-      For new subscribers, it may take 10-15 minutes for the site to recognize your subscription.
+      {{ $t('For new subscribers, it may take 10-15 minutes for the site to recognize your subscription.') }}
     </p>
       </div>
     </div>
    <div class="max-w-[56.25rem] mx-auto">
     
     <p class="mb-4">
-      Our funding goal is ${{ patreongoal }} per month, which covers server and architecture costs.
-      As of now, we have raised ${{ patreonearnings }} per month through Patreon subscriptions.
+      {{ $t('Our funding goal is $:patreongoal per month, which covers server and architecture costs. As of now, we have raised $:patreonearnings per month through Patreon subscriptions.', { patreongoal: patreongoal, patreonearnings: patreonearnings }) }}
     </p>
   
 
@@ -37,7 +33,7 @@
     <div class="progress-container">
       <div class="progress-bar" :style="{ width: progressPercent + '%' }"></div>
     </div>
-    <p class="mx-auto text-center text-sm italic">Raised: ${{ patreonearnings }} of ${{ patreongoal }}</p>
+    <p class="mx-auto text-center text-sm italic">{{ $t('Raised: $:patreonearnings of $:patreongoal', { patreonearnings: patreonearnings, patreongoal: patreongoal }) }}</p>
   </div>
   </div>
 </template>

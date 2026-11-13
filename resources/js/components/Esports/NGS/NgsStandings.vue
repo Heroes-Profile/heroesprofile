@@ -1,11 +1,11 @@
 <template>
   <div>
-    <p v-if="teamSearch.trim() && !Object.keys(shownData).length" class="max-w-[93.75rem] mx-auto mt-4 text-subtext">No teams match "{{ teamSearch }}".</p>
+    <p v-if="teamSearch.trim() && !Object.keys(shownData).length" class="max-w-[93.75rem] mx-auto mt-4 text-subtext">{{ $t('No teams match ":teamsearch".', { teamsearch: teamSearch }) }}</p>
     <div v-for="(division, divisionName) in shownData" :key="divisionName" class="max-w-[93.75rem] mx-auto flex justify-start mb-2 mt-4">
       <table class="min-w-0 w-full responsive-table max-md:text-xs">
         <thead>
           <tr class="bg-surface-3">
-            <th colspan="7"><a :href="'/Esports/NGS/Division/' + divisionName">Division {{ divisionName }}</a></th>
+            <th colspan="7"><a :href="'/Esports/NGS/Division/' + divisionName">{{ $t('Division :divisionname', { divisionname: divisionName }) }}</a></th>
           </tr>
         </thead>
         <thead >
@@ -16,7 +16,7 @@
               <!-- One search for every division, so it finds a team wherever it plays -->
               <div class="flex items-center gap-3">
                 <span>{{ $t('Team') }}</span>
-                <search-input v-model="teamSearch" placeholder="Search team" :collapsible="true" class="w-40"></search-input>
+                <search-input v-model="teamSearch" :placeholder="$t('Search team')" :collapsible="true" class="w-40"></search-input>
               </div>
             </th>            
             <th class="py-2 px-3 text-center max-md:text-xs md:text-sm leading-4">
@@ -42,7 +42,7 @@
             <td class="max-md:max-w-[6.25rem] text-left">
               <div class="flex items-center gap-2">
                 <a class="group/bt inline-flex items-center max-md:break-words" :href="`/Esports/NGS/Team/${encodeURIComponent($ngsTeam(team.team_name).name)}?season=${season}&division=${divisionName}`"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
-                <round-image v-if="$ngsTeam(team.team_name).withdrawnSeason" class="text-xs" size="small" icon="fa-solid fa-ban" title="Withdrawn" popupsize="small" mobileClick="true"><p class="font-normal">Withdrew from the league in Season {{ $ngsTeam(team.team_name).withdrawnSeason }}.</p></round-image>
+                <round-image v-if="$ngsTeam(team.team_name).withdrawnSeason" class="text-xs" size="small" icon="fa-solid fa-ban" :title="$t('Withdrawn')" popupsize="small" mobileClick="true"><p class="font-normal">{{ $t('Withdrew from the league in Season :withdrawnseason.', { withdrawnseason: $ngsTeam(team.team_name).withdrawnSeason }) }}</p></round-image>
               </div>
             </td>
             <td>{{ team.points }}</td>

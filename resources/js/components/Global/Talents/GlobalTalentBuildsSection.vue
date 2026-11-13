@@ -21,7 +21,7 @@
               <div class="flex items-center justify-center">
                 {{ $t('Win Chance %') }}
                 <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
-                  <p class="font-normal whitespace-normal">Win Chance is our calculated probability that a full talent build leads to a win, from level 1 through level 20. It is not a simple win rate. Because many games end before level 20, we infer what build a player was heading toward from the talents they did pick, and factor in both games that reached level 20 and games that did not.</p>
+                  <p class="font-normal whitespace-normal">{{ $t('Win Chance is our calculated probability that a full talent build leads to a win, from level 1 through level 20. It is not a simple win rate. Because many games end before level 20, we infer what build a player was heading toward from the talents they did pick, and factor in both games that reached level 20 and games that did not.') }}</p>
                   <a href="/FAQ#win-chance" class="group/bt inline-flex items-center mt-2 font-normal"><span class="group-hover/bt:underline">Read more in the FAQ</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
                 </round-image>
               </div>

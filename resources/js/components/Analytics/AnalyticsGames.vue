@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p v-if="data.games.length === 0" class="text-center">No season games match these filters.</p>
+    <p v-if="data.games.length === 0" class="text-center">{{ $t('No season games match these filters.') }}</p>
 
     <div v-if="data.games.length" class="max-w-[1500px] mx-auto px-4 flex flex-wrap justify-center gap-4 mb-8">
       <stat-box class="w-[30%] max-md:w-[48%]" :title="'Games'" :value="data.games.length.toLocaleString('en-US')" color="teal"></stat-box>
@@ -87,7 +87,7 @@
                 <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ $heroName(row.hero) }}</span>
               </td>
               <td>
-                <span :class="row.winner == 1 ? 'text-teal' : 'text-red'">{{ row.winner == 1 ? 'Win' : 'Loss' }}</span>
+                <span :class="row.winner == 1 ? 'text-teal' : 'text-red'">{{ row.winner == 1 ? $t('Win') : $t('Loss') }}</span>
               </td>
               <td>
                 {{ row.player_mmr.toLocaleString('en-US') }}

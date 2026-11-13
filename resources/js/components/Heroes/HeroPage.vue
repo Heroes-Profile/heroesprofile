@@ -7,7 +7,7 @@
           <round-image v-if="universeIcon" :image="universeIcon" size="small" :title="metadata.franchise">
             <image-hover-box :title="metadata.franchise"></image-hover-box>
           </round-image>
-          {{ [hero.new_role, metadata.difficulty ? `Difficulty: ${metadata.difficulty}` : null].filter(v => v).join(' | ') }}
+          {{ [$t(hero.new_role), metadata.difficulty ? $t('Difficulty: :difficulty', { difficulty: $t(metadata.difficulty) }) : null].filter(v => v).join(' | ') }}
         </div>
       </template>
     </page-heading>
@@ -22,7 +22,7 @@
       </div>
 
       <panel-box v-if="!metadata">
-        <p class="text-center">Game data for {{ $heroName(hero) }} hasn't been loaded yet.</p>
+        <p class="text-center">{{ $t("Game data for :hero hasn't been loaded yet.", { hero: $heroName(hero) }) }}</p>
       </panel-box>
 
       <div v-else class="flex gap-6">
@@ -34,14 +34,14 @@
           <p v-if="metadata.description">{{ metadata.description }}</p>
           <div class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 items-center max-w-lg">
             <template v-for="rating in ratings" :key="rating.label">
-              <span>{{ rating.label }}</span>
+              <span>{{ $t(rating.label) }}</span>
               <stat-bar :value="rating.value * 10" :display-text="rating.value" color="teal"></stat-bar>
             </template>
           </div>
         </panel-box>
 
-        <panel-box v-for="unit in units" :key="unit.unit_id" :title="units.length > 1 ? unit.name : 'Base Stats'">
-          <template #title><span class="text-sm font-normal text-gray-medium">at level {{ level }}</span></template>
+        <panel-box v-for="unit in units" :key="unit.unit_id" :title="units.length > 1 ? unit.name : $t('Base Stats')">
+          <template #title><span class="text-sm font-normal text-gray-medium">{{ $t('at level :level', { level }) }}</span></template>
           <table class="min-w-0 w-full responsive-table">
             <thead>
               <tr>
@@ -52,13 +52,13 @@
             <tbody>
               <tr v-for="row in unitStats(unit)" :key="row.label">
                 <td>{{ $t(row.label) }}</td>
-                <td>{{ row.value }}<span v-if="row.rate" class="text-gray-medium"> (+{{ row.rate }}% per level)</span></td>
+                <td>{{ row.value }}<span v-if="row.rate" class="text-gray-medium"> ({{ $t('+:rate% per level', { rate: row.rate }) }})</span></td>
               </tr>
             </tbody>
           </table>
         </panel-box>
 
-        <panel-box v-if="metadata.lore" title="Lore">
+        <panel-box v-if="metadata.lore" :title="$t('Lore')">
           <p class="whitespace-pre-line">{{ metadata.lore }}</p>
         </panel-box>
       </template>
@@ -86,14 +86,14 @@
       </template>
 
       <!-- Talents -->
-      <panel-box v-if="activeTab === 'talents'" title="Talents">
+      <panel-box v-if="activeTab === 'talents'" :title="$t('Talents')">
         <div class="flex gap-8 max-md:flex-col">
         <multi-tab-button class="md:w-20 text-xl" :vertical="true" :options="tierOptions" v-model="selectedTier"></multi-tab-button>
         <div class="flex-1 min-w-0">
         <div v-for="tier in talentTiers" v-show="tier.level === selectedTier" :key="tier.level" class="space-y-3">
           <div v-for="talent in tier.talents" :key="talent.talent_id" class="flex items-center">
             <talent-image-wrapper class="shrink-0" :talent="talent" :level="level">
-              <p v-if="talent.cooldown && talent.cooldown !== '0'" class="mt-2.5 text-gray-medium">Cooldown: {{ talent.cooldown }}</p>
+              <p v-if="talent.cooldown && talent.cooldown !== '0'" class="mt-2.5 text-gray-medium">{{ $t('Cooldown: :cooldown', { cooldown: talent.cooldown }) }}</p>
               <div v-for="sub in childAbilities(talent.link_id)" :key="sub.link_id" class="mt-2.5">
                 <h2 class="text-base font-bold text-white">{{ $talentName(sub) }}</h2>
                 <game-tooltip class="mt-2.5" :text="$gameText(sub, 'raw_description')" :level="level"></game-tooltip>
@@ -260,7 +260,7 @@ export default {
       }
       const regen = this.num(unit.life_regen);
       if (regen) {
-        rows.push({ label: 'Health Regen', value: this.scaled(regen, this.num(unit.life_regen_scale), 2) + ' / sec', rate: this.ratePercent(this.num(unit.life_regen_scale)) });
+        rows.push({ label: 'Health Regen', value: this.$t(':value / sec', { value: this.scaled(regen, this.num(unit.life_regen_scale), 2) }), rate: this.ratePercent(this.num(unit.life_regen_scale)) });
       }
       const shield = this.num(unit.shield);
       if (shield) {
@@ -271,7 +271,7 @@ export default {
         const label = unit.energy_type || 'Mana';
         rows.push({ label, value: this.scaled(energy) });
         if (this.num(unit.energy_regen)) {
-          rows.push({ label: `${label} Regen`, value: this.num(unit.energy_regen).toFixed(2) + ' / sec' });
+          rows.push({ label: this.$t(':name Regen', { name: this.$t(label) }), value: this.$t(':value / sec', { value: this.num(unit.energy_regen).toFixed(2) }) });
         }
       }
       const weapons = this.enabledWeapons.filter(weapon => weapon.unit_id === unit.unit_id);
@@ -279,12 +279,12 @@ export default {
         const label = this.weaponLabel(weapon, unit, weapons.length);
         const damage = this.num(weapon.damage);
         const period = this.num(weapon.period);
-        rows.push({ label: `${label} Damage`, value: this.scaled(damage, this.num(weapon.damage_scale)), rate: this.ratePercent(this.num(weapon.damage_scale)) });
+        rows.push({ label: this.$t(':name Damage', { name: label }), value: this.scaled(damage, this.num(weapon.damage_scale)), rate: this.ratePercent(this.num(weapon.damage_scale)) });
         if (period) {
-          rows.push({ label: `${label} Speed`, value: (1 / period).toFixed(2) + ' / sec' });
+          rows.push({ label: this.$t(':name Speed', { name: label }), value: this.$t(':value / sec', { value: (1 / period).toFixed(2) }) });
         }
         if (this.num(weapon.range)) {
-          rows.push({ label: `${label} Range`, value: parseFloat(this.num(weapon.range).toFixed(2)).toString() });
+          rows.push({ label: this.$t(':name Range', { name: label }), value: parseFloat(this.num(weapon.range).toFixed(2)).toString() });
         }
       }
       if (this.num(unit.move_speed)) {
@@ -294,7 +294,7 @@ export default {
     },
     weaponLabel(weapon, unit, count) {
       if (count === 1) {
-        return 'Basic Attack';
+        return this.$t('Basic Attack');
       }
       const heroToken = (unit.unit_id || '').replace(/^Hero/, '');
       const tag = weapon.weapon_id
@@ -302,7 +302,7 @@ export default {
         .replace(/Hero|Weapon|Attack/g, '')
         .replace(/([a-z])([A-Z])/g, '$1 $2')
         .trim();
-      return tag ? `Basic Attack (${tag})` : 'Basic Attack';
+      return tag ? this.$t('Basic Attack (:tag)', { tag }) : this.$t('Basic Attack');
     },
     abilityCosts(ability) {
       const costs = [];

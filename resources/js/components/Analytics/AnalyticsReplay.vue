@@ -6,18 +6,18 @@
     ></page-heading>
 
     <!-- Page level, like the Talent Builder, so it fills the screen width -->
-    <loading-component v-if="loading" :textoverride="preparing">Preparing replay, usually under a minute...</loading-component>
+    <loading-component v-if="loading" :textoverride="preparing">{{ $t('Preparing replay, usually under a minute...') }}</loading-component>
 
     <div v-else class="max-w-[93.75rem] mx-auto px-4 mt-4">
       <p v-if="error" class="text-center text-red">{{ error }}</p>
       <template v-else>
       <!-- Processed at an older version: what it's missing, and the way to update it -->
       <p v-if="!sample && data && missing.length" class="text-center text-sm mb-2">
-        This game was processed before Analytics added {{ missing.join('; ') }}.
+        {{ $t('This game was processed before Analytics added :missing.', { missing: missing.join('; ') }) }}
         <custom-button
           class="ml-2"
           @click="updateGame"
-          :text="updating ? 'Updating' : 'Update this game'"
+          :text="updating ? $t('Updating') : $t('Update this game')"
           :alt="'Process this game again with the newest version'"
           size="small"
           :loading="updating"
@@ -68,14 +68,14 @@
               @click="$refs.xp.scrollIntoView({ behavior: 'smooth', block: 'start' })"
             ></custom-button>
             <span class="inline-flex items-center gap-1">
-              Movement
+              {{ $t('Movement') }}
               <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                <slot><p class="text-sm p-2 text-left">Replays only record exact positions now and then (position updates, spawns, globe pickups, deaths). Follow move orders walks heroes toward where they were ordered to move, faster while mounted and around walls; Smooth glides them between exact positions, also around walls. Follow is the more accurate of the two.</p></slot>
+                <slot><p class="text-sm p-2 text-left">{{ $t('Replays only record exact positions now and then (position updates, spawns, globe pickups, deaths). Follow move orders walks heroes toward where they were ordered to move, faster while mounted and around walls; Smooth glides them between exact positions, also around walls. Follow is the more accurate of the two.') }}</p></slot>
               </round-image>
             </span>
             <multi-tab-button :options="modeOptions" v-model="mode"></multi-tab-button>
             <span class="text-gray-light">
-              {{ mode === 'follow' ? "Between the game's own position updates, heroes walk along their move orders." : "Between the game's own position updates, heroes glide straight to the next one." }} Space plays or pauses, arrows skip 5 seconds.
+              {{ $t(':one Space plays or pauses, arrows skip 5 seconds.', { one: mode === 'follow' ? "Between the game's own position updates, heroes walk along their move orders." : "Between the game's own position updates, heroes glide straight to the next one." }) }}
             </span>
           </div>
 
@@ -83,11 +83,11 @@
           <div ref="xp" class="bg-darken rounded p-3 mt-4 text-sm scroll-mt-4">
             <div v-for="team in [0, 1]" :key="'team' + team" class="flex justify-between items-center mb-1">
               <span class="font-bold" :style="{ color: teamColor(team) }">
-                {{ team === 0 ? 'Blue' : 'Red' }}{{ yourTeam === team ? ' (your team)' : '' }}
+                {{ team === 0 ? $t('Blue') : $t('Red') }}{{ yourTeam === team ? ' (your team)' : '' }}
               </span>
-              <span>Level {{ levelAt(team) }} &middot; {{ killsAt(team) }} takedowns</span>
+              <span>{{ $t('Level :level', { level: levelAt(team) }) }} &middot; {{ $t(':count takedowns', { count: killsAt(team) }) }}</span>
             </div>
-            <div class="text-center text-gray-light mb-1">Team XP: {{ xpLead }}</div>
+            <div class="text-center text-gray-light mb-1">{{ $t('Team XP: :xplead', { xplead: xpLead }) }}</div>
             <!-- The match page's experience chart, in this page's team colours and names -->
             <div class="w-full">
               <dual-line-chart :data="experience" :winner="winningTeam" :team-colors="[teamColor(0), teamColor(1)]" :team-names="['Blue', 'Red']"></dual-line-chart>
@@ -125,17 +125,17 @@
                 <talent-image-wrapper :talent="pick.talent" :size="'small'"></talent-image-wrapper>
                 <span class="text-xs text-gray-light">{{ clock(pick.t) }}</span>
               </div>
-              <span v-if="talentsAt(selected).length === 0" class="text-gray-light">No talents picked yet</span>
+              <span v-if="talentsAt(selected).length === 0" class="text-gray-light">{{ $t('No talents picked yet') }}</span>
             </div>
-            <div>Globes picked up: {{ globesAt(selected) }}</div>
-            <div v-if="disconnectedAt(selected)" class="text-red">Disconnected</div>
-            <div class="text-gray-light mt-1">The white box on the map is roughly where their camera is.</div>
+            <div>{{ $t('Globes picked up: :globesat', { globesat: globesAt(selected) }) }}</div>
+            <div v-if="disconnectedAt(selected)" class="text-red">{{ $t('Disconnected') }}</div>
+            <div class="text-gray-light mt-1">{{ $t('The white box on the map is roughly where their camera is.') }}</div>
           </div>
 
           <!-- Event feed: newest first, up to the current game time; click one to jump just before it -->
           <div class="bg-darken rounded p-3">
             <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-              <span class="font-bold">Events</span>
+              <span class="font-bold">{{ $t('Events') }}</span>
               <multi-select-filter
                 :values="eventTypes"
                 :text="'Show'"
@@ -153,7 +153,7 @@
                 <span class="font-mono text-gray-light">{{ clock(e.t) }}</span>
                 <span :style="{ color: e.color }">{{ e.label }}</span>
               </div>
-              <div v-if="feed.length === 0" class="text-gray-light">Nothing yet</div>
+              <div v-if="feed.length === 0" class="text-gray-light">{{ $t('Nothing yet') }}</div>
             </div>
           </div>
 

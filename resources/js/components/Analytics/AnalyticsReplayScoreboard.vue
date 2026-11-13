@@ -27,7 +27,7 @@
       <span class="inline-flex items-center gap-1">
         <span class="font-mono text-lg">{{ clock(t) }}</span>
         <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-          <slot><p class="text-sm p-2 text-left">The big numbers are team levels, with progress to the next level below. A number over a portrait is seconds until that hero respawns.</p></slot>
+          <slot><p class="text-sm p-2 text-left">{{ $t('The big numbers are team levels, with progress to the next level below. A number over a portrait is seconds until that hero respawns.') }}</p></slot>
         </round-image>
       </span>
       <div class="flex items-center gap-3">

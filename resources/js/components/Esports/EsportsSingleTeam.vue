@@ -48,7 +48,7 @@
 
           <div class="flex flex-col gap-6 min-w-0">
             <!-- The roster, with each player's most played hero -->
-            <panel-box v-if="playerList.length" :inner="true" title="Players">
+            <panel-box v-if="playerList.length" :inner="true" :title="$t('Players')">
               <div class="flex flex-col gap-2">
                 <div v-for="(row, index) in playerList" :key="index" class="flex items-center gap-3 rounded bg-surface-2 px-3 py-2">
                   <a v-if="row.most_played_hero" class="shrink-0" :href="row.herolink">
@@ -60,12 +60,12 @@
                     <a class="group/bt font-semibold truncate" :href="row.playerlink"><span class="group-hover/bt:underline">{{ row.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                     <span v-if="row.most_played_role" class="text-sm text-subtext">{{ row.most_played_role }}</span>
                   </div>
-                  <span class="shrink-0 text-sm text-subtext">{{ row.games_played }} games</span>
+                  <span class="shrink-0 text-sm text-subtext">{{ $t(':played games', { played: row.games_played }) }}</span>
                 </div>
               </div>
             </panel-box>
 
-            <panel-box v-if="data.enemy_teams && data.enemy_teams.length" :inner="true" title="Teams Lost Against">
+            <panel-box v-if="data.enemy_teams && data.enemy_teams.length" :inner="true" :title="$t('Teams Lost Against')">
               <div class="flex flex-col gap-2">
                 <a v-for="(enemy, index) in data.enemy_teams" :key="index" :href="enemy.enemy_link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
                   <img v-if="enemy.icon_url" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="enemy.icon_url" :alt="teamName(enemy.team_name || enemy.team)"/>
@@ -77,7 +77,7 @@
               </div>
             </panel-box>
 
-            <panel-box v-if="(data.heroes_won_against || []).length || (data.heroes_lost_against || []).length" :inner="true" title="Heroes Played Against">
+            <panel-box v-if="(data.heroes_won_against || []).length || (data.heroes_lost_against || []).length" :inner="true" :title="$t('Heroes Played Against')">
               <div class="flex flex-col gap-4">
                 <group-box v-if="data.heroes_won_against.length" class="!m-0" :useinputforhover="true" :text="'Most Won Against'" :data="data.heroes_won_against.slice(0, 5)"></group-box>
                 <group-box v-if="data.heroes_lost_against.length" class="!m-0" :useinputforhover="true" :text="'Most Lost Against'" :data="data.heroes_lost_against.slice(0, 5)"></group-box>
@@ -90,14 +90,14 @@
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
       <div class="grid xl:grid-cols-2 gap-6 items-start">
-        <panel-box title="Heroes Played">
+        <panel-box :title="$t('Heroes Played')">
           <div class="flex flex-wrap gap-2">
             <hero-image-wrapper v-for="(item, index) in data.heroes" :key="index" size="big" :hero="item.hero">
               <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
             </hero-image-wrapper>
           </div>
         </panel-box>
-        <panel-box title="Maps Played">
+        <panel-box :title="$t('Maps Played')">
           <div class="flex flex-wrap gap-2">
             <map-image-wrapper v-for="(item, index) in data.maps" :key="index" size="big" :map="item.game_map">
               <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
@@ -124,7 +124,7 @@
       </div>
 
       <div class="grid xl:grid-cols-2 gap-6 items-start">
-        <panel-box title="Heroes">
+        <panel-box :title="$t('Heroes')">
           <table class="min-w-0 w-full responsive-table max-md:text-xs">
             <thead>
               <tr>
@@ -190,10 +190,10 @@
             </div>
           </panel-box>
           <div class="flex flex-col gap-6 min-w-0">
-            <panel-box :inner="true" title="Players">
+            <panel-box :inner="true" :title="$t('Players')">
               <skeleton-box v-for="index in 6" :key="index" class="h-14"></skeleton-box>
             </panel-box>
-            <panel-box :inner="true" title="Teams Lost Against">
+            <panel-box :inner="true" :title="$t('Teams Lost Against')">
               <skeleton-box v-for="index in 3" :key="index" class="h-14"></skeleton-box>
             </panel-box>
           </div>
@@ -322,7 +322,7 @@ export default {
     },
     subtitle() {
       return [
-        this.modifiedseason ? 'Season ' + this.modifiedseason : null,
+        this.modifiedseason ? this.$t('Season :season', { season: this.modifiedseason }) : null,
         this.esport == 'NGS' && this.modifieddivision ? 'Division ' + this.modifieddivision : null,
         this.series,
       ].filter(Boolean).join(' · ');

@@ -41,7 +41,7 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     
     <div v-if="data && esport && !data.games_played" class="flex items-center justify-center mt-8">
-      No {{ role }} games in {{ league.name }} for these filters.
+      {{ $t('No :role games in :league for these filters.', { role: role, league: league.name }) }}
     </div>
     <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
 
@@ -84,17 +84,17 @@
 
         <div class="flex-1 flex flex-col gap-6 min-w-0">
           <!-- Esports: the teams they played the role for -->
-          <panel-box v-if="esport && data.teams_played_for && data.teams_played_for.length" :inner="true" title="Teams Played For">
+          <panel-box v-if="esport && data.teams_played_for && data.teams_played_for.length" :inner="true" :title="$t('Teams Played For')">
             <div class="flex flex-col gap-2">
               <a v-for="team in data.teams_played_for" :key="team.team_name + team.season" :href="team.link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
                 <img v-if="team.image" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image" :alt="$ngsTeam(team.team_name).name"/>
                 <div class="flex flex-col min-w-0 flex-1">
                   <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></span>
-                  <span class="text-sm text-subtext">{{ [team.season ? 'Season ' + team.season : null, team.division ? 'Division ' + team.division : null].filter(Boolean).join(' · ') }}</span>
+                  <span class="text-sm text-subtext">{{ [team.season ? $t('Season :season', { season: team.season }) : null, team.division ? $t('Division :division', { division: team.division }) : null].filter(Boolean).join(' · ') }}</span>
                 </div>
                 <div class="flex flex-col items-end shrink-0 text-sm">
                   <span class="font-semibold">{{ team.win_rate.toFixed(2) }}%</span>
-                  <span class="text-subtext">{{ team.games_played }} games</span>
+                  <span class="text-subtext">{{ $t(':played games', { played: team.games_played }) }}</span>
                 </div>
               </a>
             </div>
@@ -133,13 +133,13 @@
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
-      <panel-box v-if="esport && data.latestGames && data.latestGames.length" title="Recent Matches" link-text="Match History" :link-href="ngsPlayerUrl + '/Match/History' + league.query" :divider="false">
+      <panel-box v-if="esport && data.latestGames && data.latestGames.length" :title="$t('Recent Matches')" link-text="Match History" :link-href="ngsPlayerUrl + '/Match/History' + league.query" :divider="false">
         <div>
           <game-summary-header></game-summary-header>
           <game-summary-box v-for="(item, index) in data.latestGames" :key="index" :esport="true" :esport-league="esport" :esport-series="esportfilters?.series" :tournament="esportfilters?.tournament" :data="item"></game-summary-box>
         </div>
       </panel-box>
-      <panel-box v-else-if="!esport && data.latestGames" title="Recent Matches" link-text="Match History" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Match/History/?role=' + role" :divider="false">
+      <panel-box v-else-if="!esport && data.latestGames" :title="$t('Recent Matches')" link-text="Match History" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Match/History/?role=' + role" :divider="false">
         <div>
           <game-summary-header></game-summary-header>
           <game-summary-box v-for="(item, index) in data.latestGames" :key="index" :data="item" :replay-viewer-allowed="replayViewerAllowed" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
@@ -151,7 +151,7 @@
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
-      <loading-component :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ asyncLoading ? 'This is taking longer than expected. A background task is computing your results. Please be patient.' : 'Loading data...' }}</loading-component>
+      <loading-component :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ asyncLoading ? $t('This is taking longer than expected. A background task is computing your results. Please be patient.') : $t('Loading data...') }}</loading-component>
       <panel-box>
         <div class="flex flex-col xl:flex-row gap-6">
           <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">
@@ -176,13 +176,13 @@
           </panel-box>
 
           <div class="flex-1 flex flex-col gap-6 min-w-0">
-            <panel-box v-if="esport" :inner="true" title="Teams Played For">
+            <panel-box v-if="esport" :inner="true" :title="$t('Teams Played For')">
               <skeleton-box v-for="index in 2" :key="index" class="h-14"></skeleton-box>
             </panel-box>
-            <panel-box v-if="!esport" :inner="true" title="Party Size Win Rates">
+            <panel-box v-if="!esport" :inner="true" :title="$t('Party Size Win Rates')">
               <skeleton-box v-for="index in 5" :key="index" class="h-10"></skeleton-box>
             </panel-box>
-            <panel-box v-if="!esport" :inner="true" title="Heroes Profile MMR">
+            <panel-box v-if="!esport" :inner="true" :title="$t('Heroes Profile MMR')">
               <skeleton-box v-for="index in 6" :key="index" class="h-9"></skeleton-box>
             </panel-box>
             <div class="grid 2xl:grid-cols-2 gap-6">
@@ -196,11 +196,11 @@
         </div>
       </panel-box>
 
-      <panel-box title="Win Rate Per Season">
+      <panel-box :title="$t('Win Rate Per Season')">
         <skeleton-box class="h-72"></skeleton-box>
       </panel-box>
 
-      <panel-box title="Recent Matches" :divider="false">
+      <panel-box :title="$t('Recent Matches')" :divider="false">
         <div>
           <game-summary-header></game-summary-header>
           <game-summary-skeleton v-for="index in 7" :key="index"></game-summary-skeleton>

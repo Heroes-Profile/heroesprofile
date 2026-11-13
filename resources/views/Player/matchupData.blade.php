@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', $battletag . " Matchup Data")
+@section('title', __(':battletag Matchup Data', ['battletag' => $battletag]))
 @section('meta_keywords', 'Matchup Data, Hero Matchups, Hero Performance, Win Rate, Heroes Played')
 @section('meta_description', 'Explore the matchup data of ' . $battletag . ', including hero performance, win rates, and heroes played well against or with.')
 @section('content')

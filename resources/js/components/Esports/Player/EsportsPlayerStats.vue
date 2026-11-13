@@ -61,17 +61,17 @@
 
           <div class="flex flex-col gap-6 min-w-0">
             <!-- The teams they played for -->
-            <panel-box v-if="data.teams_played_for && data.teams_played_for.length" :inner="true" title="Teams Played For">
+            <panel-box v-if="data.teams_played_for && data.teams_played_for.length" :inner="true" :title="$t('Teams Played For')">
               <div class="flex flex-col gap-2">
                 <a v-for="team in data.teams_played_for" :key="team.team_name + team.season" :href="team.link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
                   <img v-if="team.image" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image" :alt="$ngsTeam(team.team_name).name"/>
                   <div class="flex flex-col min-w-0 flex-1">
                     <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></span>
-                    <span class="text-sm text-subtext">{{ [team.season ? 'Season ' + team.season : null, team.division ? 'Division ' + team.division : null].filter(Boolean).join(' · ') }}</span>
+                    <span class="text-sm text-subtext">{{ [team.season ? $t('Season :season', { season: team.season }) : null, team.division ? $t('Division :division', { division: team.division }) : null].filter(Boolean).join(' · ') }}</span>
                   </div>
                   <div class="flex flex-col items-end shrink-0 text-sm">
                     <span class="font-semibold">{{ team.win_rate.toFixed(2) }}%</span>
-                    <span class="text-subtext">{{ team.games_played }} games</span>
+                    <span class="text-subtext">{{ $t(':played games', { played: team.games_played }) }}</span>
                   </div>
                 </a>
               </div>
@@ -79,17 +79,17 @@
 
             <div class="grid md:grid-cols-2 gap-6">
               <!-- Win rate by role -->
-              <panel-box v-if="data.role_win_rates && data.role_win_rates.length" :inner="true" title="Win Rate By Role"  link-text="All Roles" :link-href="ngsPageUrl('/Role')">
+              <panel-box v-if="data.role_win_rates && data.role_win_rates.length" :inner="true" :title="$t('Win Rate By Role')"  link-text="All Roles" :link-href="ngsPageUrl('/Role')">
                 <div class="flex flex-col gap-3">
                   <div v-for="role in data.role_win_rates" :key="role.role" class="flex flex-col gap-1.5">
-                    <span class="text-header"><a class="hover:underline" :href="ngsPageUrl('/Role/' + role.role)">{{ role.role }}<i class="fas fa-chevron-right text-sm ml-3"></i></a> <span class="text-sm text-subtext">· {{ role.games_played }} games</span></span>
+                    <span class="text-header"><a class="hover:underline" :href="ngsPageUrl('/Role/' + role.role)">{{ role.role }}<i class="fas fa-chevron-right text-sm ml-3"></i></a> <span class="text-sm text-subtext">{{ $t('· :played games', { played: role.games_played }) }}</span></span>
                     <stat-bar :value="role.win_rate.toFixed(2)" suffix="%" :color="$winRateColor(role.win_rate)"></stat-bar>
                   </div>
                 </div>
               </panel-box>
 
               <!-- Heroes on the other side in their wins and losses -->
-              <panel-box v-if="data.heroes_won_against && (data.heroes_won_against.length || data.heroes_lost_against.length)" :inner="true" title="Heroes Played Against">
+              <panel-box v-if="data.heroes_won_against && (data.heroes_won_against.length || data.heroes_lost_against.length)" :inner="true" :title="$t('Heroes Played Against')">
                 <div class="flex flex-col gap-4">
                   <group-box v-if="data.heroes_won_against.length" class="!m-0" :useinputforhover="true" :text="'Most Won Against'" :data="data.heroes_won_against.slice(0, 5)"></group-box>
                   <group-box v-if="data.heroes_lost_against.length" class="!m-0" :useinputforhover="true" :text="'Most Lost Against'" :data="data.heroes_lost_against.slice(0, 5)"></group-box>
@@ -105,11 +105,11 @@
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
       <div class="grid xl:grid-cols-2 gap-6">
-        <panel-box v-if="data.weekday_data" title="Week Day Win Rates">
+        <panel-box v-if="data.weekday_data" :title="$t('Week Day Win Rates')">
           <player-weekday-win-rates :data="data.weekday_data"></player-weekday-win-rates>
         </panel-box>
 
-        <panel-box title="Heroes" :class="{ 'xl:col-span-2': !data.weekday_data }">
+        <panel-box :title="$t('Heroes')" :class="{ 'xl:col-span-2': !data.weekday_data }">
           <table class="min-w-0 w-full responsive-table">
             <thead>
               <tr>
@@ -141,7 +141,7 @@
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
-      <panel-box v-if="data.matches && data.matches.length" title="Recent Matches" link-text="Match History" :link-href="getMatchHistoryUrl()" :divider="false">
+      <panel-box v-if="data.matches && data.matches.length" :title="$t('Recent Matches')" link-text="Match History" :link-href="getMatchHistoryUrl()" :divider="false">
         <div>
           <game-summary-header></game-summary-header>
           <game-summary-box
@@ -183,7 +183,7 @@
             </div>
           </panel-box>
           <div class="flex flex-col gap-6 min-w-0">
-            <panel-box :inner="true" title="Teams Played For">
+            <panel-box :inner="true" :title="$t('Teams Played For')">
               <skeleton-box v-for="index in 3" :key="index" class="h-14"></skeleton-box>
             </panel-box>
             <div class="grid md:grid-cols-2 gap-6">
@@ -195,10 +195,10 @@
         </div>
       </panel-box>
       <div class="grid xl:grid-cols-2 gap-6">
-        <panel-box title="Week Day Win Rates">
+        <panel-box :title="$t('Week Day Win Rates')">
           <skeleton-box class="h-[22.5rem]"></skeleton-box>
         </panel-box>
-        <panel-box title="Heroes">
+        <panel-box :title="$t('Heroes')">
           <table-skeleton :bare="true" :rows="8" :columns="['avatar', 'stat', 'stat']"></table-skeleton>
         </panel-box>
       </div>

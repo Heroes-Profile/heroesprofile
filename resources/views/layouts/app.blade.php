@@ -171,6 +171,9 @@
         </div>
       </div>
       <footer-popup-disclaimer></footer-popup-disclaimer>
+      @if (app()->getLocale() !== 'en')
+      <translation-notice :locale="'{{ app()->getLocale() }}'"></translation-notice>
+      @endif
       <help-chat :logged-in="{{ json_encode(Auth::check()) }}"></help-chat>
     </footer>
   </div>

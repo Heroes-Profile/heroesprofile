@@ -2,7 +2,7 @@
   <div>
     <!-- Horizontal layout: fixed-width column, header on top, talents stack vertically -->
     <div v-if="horizontal" :class="[compact ? 'w-[9.375rem]' : 'w-[10.625rem]', 'inline-block m-1 bg-gray-light rounded']">
-      <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase relative">Level {{ level }}
+      <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase relative">{{ $t('Level :level', { level: level }) }}
         <div @click="removeAnySelections" class="absolute right-0 top-0 text-bold p-2 rounded hover:bg-teal">
           <i class="fa-solid fa-xmark"></i>
         </div>
@@ -19,7 +19,7 @@
 
     <!-- Vertical layout: full-width row, header on left, talents wrap horizontally -->
     <div v-else class="m-1 bg-gray-light rounded flex max-md:flex-col">
-      <h2 class="bg-blue rounded-l max-md:rounded-l-none max-md:rounded-t p-2 text-sm text-center uppercase relative pr-8 min-w-[9em] max-md:min-w-0">Level {{ level }}
+      <h2 class="bg-blue rounded-l max-md:rounded-l-none max-md:rounded-t p-2 text-sm text-center uppercase relative pr-8 min-w-[9em] max-md:min-w-0">{{ $t('Level :level', { level: level }) }}
         <div @click="removeAnySelections" class="absolute right-0 top-0 text-bold p-2 rounded hover:bg-teal">
           <i class="fa-solid fa-xmark"></i>
         </div>

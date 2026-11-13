@@ -13,13 +13,13 @@
     <div class="loading-text">
       <div v-if="textoverride">
         <slot></slot>
-        <span v-if="timer">~{{ countdown }} seconds remaining</span>
+        <span v-if="timer">{{ $t('~:countdown seconds remaining', { countdown: countdown }) }}</span>
       </div>
 
       <span v-else>{{ $t('Loading data...') }}</span>
     </div>
     <!-- Unforunately this only cancels the front end request, and I have found no way to cancel the backend request -->
-    <!--<custom-button @click="cancelRequest" text="Cancel Request" alt="Cancel Request" size="small" :ignoreclick="true">Cancel Request</custom-button>-->
+    <!--<custom-button @click="cancelRequest" text="Cancel Request" alt="Cancel Request" size="small" :ignoreclick="true">{{ $t('Cancel Request') }}</custom-button>-->
   </div>
 </template>
 <script>

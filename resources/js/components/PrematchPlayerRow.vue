@@ -17,7 +17,7 @@
             <img v-if="party" class="w-5 shrink-0" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${party}.png`" alt="Party">
             <a class="link text-lteal block truncate" :href="profileLink" @click.stop="this.$redirectToProfile(player.battletag, player.blizz_id, player.region, false)">{{ player.battletag }}</a>
           </div>
-          <div class="text-xs text-gray-medium">Lvl {{ player.account_level }}</div>
+          <div class="text-xs text-gray-medium">{{ $t('Lvl :level', { level: player.account_level }) }}</div>
           <div class="flex gap-[2px] mt-1">
             <span v-for="game in games" :key="game.replayID" :class="['inline-block w-2 h-2 rounded', game.winner ? 'bg-teal' : 'bg-red']"></span>
           </div>
@@ -28,10 +28,10 @@
       </div>
 
       <div v-if="expanded" class="bg-lighten p-3 text-left">
-        <div v-if="recentloading" class="text-gray-medium">Loading most recent {{ modelabel }} games…</div>
+        <div v-if="recentloading" class="text-gray-medium">{{ $t('Loading most recent :modelabel games…', { modelabel: modelabel }) }}</div>
         <template v-else>
           <h4 class="text-xs uppercase text-gray-medium mb-2">
-            Last {{ games.length }} {{ modelabel }} games<span v-if="games.length"> · {{ wins }}–{{ games.length - wins }}</span>
+            {{ $t('Last :games :modelabel games', { games: games.length, modelabel: modelabel }) }}<span v-if="games.length"> · {{ wins }}–{{ games.length - wins }}</span>
           </h4>
           <div v-if="!games.length" class="text-gray-medium">{{ $t('No games') }}</div>
         </template>
@@ -39,7 +39,7 @@
           <hero-image-wrapper v-if="game.hero" :size="'small'" :hero="game.hero"></hero-image-wrapper>
           <span class="flex-1 min-w-0 truncate">{{ game.hero ? game.hero.name : '' }} <span class="text-gray-medium">· {{ game.game_map ? game.game_map.name : '' }}</span></span>
           <img v-if="game.party" class="w-4 shrink-0" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${game.party}.png`" alt="Party">
-          <span :class="game.winner ? 'text-lteal' : 'text-lred'">{{ game.winner ? 'Win' : 'Loss' }}</span>
+          <span :class="game.winner ? 'text-lteal' : 'text-lred'">{{ game.winner ? $t('Win') : $t('Loss') }}</span>
           <span class="text-xs text-gray-medium min-w-[9em] text-right whitespace-nowrap">{{ timeAgo(game.game_date) }}</span>
         </div>
 

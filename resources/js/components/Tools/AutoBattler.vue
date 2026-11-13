@@ -7,7 +7,7 @@
       <auto-battler-setup-guide></auto-battler-setup-guide>
 
       <div class="flex justify-center items-center gap-4 mt-6 min-h-[3rem]">
-        <span class="text-gray-medium">{{ completedSlotCount }} / 10 players ready</span>
+        <span class="text-gray-medium">{{ $t(':completedslotcount / 10 players ready', { completedslotcount: completedSlotCount }) }}</span>
         <button
           v-if="allSlotsComplete"
           @click="downloadFiles"
@@ -19,7 +19,7 @@
 
       <div class="flex gap-4 mt-4 max-md:flex-col">
         <div v-for="team in [1, 2]" :key="team" :class="['flex md:flex-col items-center max-md:justify-center gap-1 shrink-0', team === 1 ? 'order-1' : 'order-3']">
-          <span class="text-sm uppercase max-md:hidden">Team {{ team }}</span>
+          <span class="text-sm uppercase max-md:hidden">{{ $t('Team :team', { team: team }) }}</span>
           <div
             v-for="index in 5"
             :key="index"
@@ -37,14 +37,14 @@
               v-if="slots[team][index].hero"
               @click.stop="clearSlot(team, index)"
               class="absolute top-0 right-0 hidden group-hover:flex items-center justify-center w-6 h-6 rounded-tr bg-darken hover:bg-red text-white text-sm"
-              title="Clear"
+              :title="$t('Clear')"
             >
               <i class="fa-solid fa-xmark"></i>
             </div>
             <div
               v-if="slots[team][index].talents"
               class="absolute bottom-0 right-0 flex items-center justify-center w-6 h-6 rounded-br bg-teal text-white text-xs"
-              title="Talents locked in"
+              :title="$t('Talents locked in')"
             >
               <i class="fa-solid fa-check"></i>
             </div>
@@ -58,7 +58,7 @@
                 type="text"
                 v-model="searchQuery"
                 class="w-60 bg-field text-white rounded-control px-3 py-2 text-sm"
-                placeholder="Search Heroes"
+                :placeholder="$t('Search Heroes')"
               />
               <div class="flex justify-center">
                 <img

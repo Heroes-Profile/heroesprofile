@@ -6,7 +6,7 @@
           <th class="py-2 px-3 text-center text-sm leading-4">
             <div class="flex items-center justify-center gap-3">
               <span>{{ $t('Hero') }}</span>
-              <search-input v-model="heroSearch" placeholder="Search hero" :collapsible="true" class="w-40"></search-input>
+              <search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" class="w-40"></search-input>
             </div>
           </th>
           <th v-for="gt in gameTypes" :key="gt.key" class="py-2 px-3 text-center text-sm leading-4">{{ gt.label }}</th>

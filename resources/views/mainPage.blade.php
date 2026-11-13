@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)  
-@section('title', 'Heroes of the Storm Stats, Builds & Tier List')
+@section('title', __('Heroes of the Storm Stats, Builds & Tier List'))
 @section('footer_gap', '')
 @section('own_bottom_ad', '1')
 @section('meta_keywords', 'heroes of the storm profile, heroes of the storm statistics, heroes profile, hero statistics, player data, hots stats, heroes of the storm stats, win rates, pick rates')

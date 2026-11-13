@@ -7,7 +7,7 @@
         <thead>
           <tr>
             <th :colspan="statfilter ? 5 : 4" class="text-center py-2 px-3 ">
-              Level {{ level }}
+              {{ $t('Level :level', { level: level }) }}
             </th>
           </tr>
         </thead>

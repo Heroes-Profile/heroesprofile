@@ -2,8 +2,8 @@
   <div class="mt-2">
     <div class="flex flex-wrap items-center gap-3 mb-2">
       <custom-button
-        :text="playing ? 'Pause' : 'Play'"
-        :alt="playing ? 'Pause' : 'Play'"
+        :text="playing ? $t('Pause') : $t('Play')"
+        :alt="playing ? $t('Pause') : $t('Play')"
         size="small"
         :ignoreclick="true"
         @click="$emit('toggle')"
@@ -11,7 +11,7 @@
       <span class="font-mono">{{ clock(t) }} / {{ clock(length) }}</span>
       <multi-tab-button :options="speedOptions" :modelValue="speed" @update:modelValue="$emit('speed', $event)"></multi-tab-button>
       <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-        <slot><p class="text-sm p-2 text-left">The ticks above the slider are the events shown in the event feed. Click one to jump to 5 seconds before it.</p></slot>
+        <slot><p class="text-sm p-2 text-left">{{ $t('The ticks above the slider are the events shown in the event feed. Click one to jump to 5 seconds before it.') }}</p></slot>
       </round-image>
     </div>
 

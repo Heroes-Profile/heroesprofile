@@ -42,11 +42,11 @@
 
     <div v-if="data">
       <div  class="relative max-w-[93.75rem] mx-auto">
-        <custom-button class="ml-auto" @click="showOptions = !showOptions" :text="showOptions ? 'Hide Column Selection' : 'Show Column Selection'" :ignoreclick="true"></custom-button>
+        <custom-button class="ml-auto" @click="showOptions = !showOptions" :text="showOptions ? $t('Hide Column Selection') : $t('Show Column Selection')" :ignoreclick="true"></custom-button>
           
         <div v-if="showOptions">
           <div class="absolute left-0 mt-2 w-full variable-background border border-gray-300 rounded shadow-lg variable-text z-50 flex flex-wrap  p-2 ">
-            <input class="w-full p-2" type="text" v-model="searchQuery" placeholder="Search..." />
+            <input class="w-full p-2" type="text" v-model="searchQuery" :placeholder="$t('Search...')" />
               <div v-for="(stat, index) in filteredStats" :class="[
               'flex-1 min-w-[24%] border-gray border cursor-pointer variable-hover',
               {
@@ -66,7 +66,7 @@
             <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
               <div class="flex items-center gap-3">
                 <span class="cursor-pointer" @click="sortTable('name')">{{ $t('Map') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                <search-input v-model="mapSearch" placeholder="Search map" :collapsible="true" class="w-40"></search-input>
+                <search-input v-model="mapSearch" :placeholder="$t('Search map')" :collapsible="true" class="w-40"></search-input>
               </div>
             </th>    
             <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -106,7 +106,7 @@
                 v-if="stat.selected" 
                 :class="{ flash: stat.flash }"
                 class="py-2 px-3 text-center">
-                <a v-if="statContainsMax(stat) && !esport" class="group/bt inline-flex items-center cursor-pointer" role="button" @click="navigateToMaxStatMatch(row.name, stat.value, row[stat.value])" title="Navigate to this match"><span class="group-hover/bt:underline">{{ showStatValue(row[stat.value]) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                <a v-if="statContainsMax(stat) && !esport" class="group/bt inline-flex items-center cursor-pointer" role="button" @click="navigateToMaxStatMatch(row.name, stat.value, row[stat.value])" :title="$t('Navigate to this match')"><span class="group-hover/bt:underline">{{ showStatValue(row[stat.value]) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                 <template v-else>{{ showStatValue(row[stat.value]) }}</template>
               </td>
             </template>

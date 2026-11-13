@@ -10,7 +10,7 @@
           <button v-if="messages.length" class="text-sm underline" :disabled="!!loading" @click="newChat">{{ $t('New chat') }}</button>
         </div>
         <div class="flex items-center gap-2">
-          <button class="w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="$t(expanded ? 'Make help smaller' : 'Make help bigger')" :title="expanded ? 'Smaller' : 'Bigger'" @click="toggleExpanded">
+          <button class="w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="$t(expanded ? $t('Make help smaller') : $t('Make help bigger'))" :title="expanded ? $t('Smaller') : $t('Bigger')" @click="toggleExpanded">
             <i :class="expanded ? 'fas fa-down-left-and-up-right-to-center' : 'fas fa-up-right-and-down-left-from-center'"></i>
           </button>
           <span class="w-px h-5 bg-white/20" aria-hidden="true"></span>
@@ -61,11 +61,11 @@
           <div v-else-if="message.role === 'user'" :data-message="index" class="self-end max-w-[85%] rounded-xl px-3 py-2 bg-blue whitespace-pre-line">{{ message.content }}</div>
           <!-- Under the latest search result: the way on to the assistant -->
           <template v-if="message.role === 'results' && index === messages.length - 1 && !loading">
-            <custom-button v-if="loggedIn" class="w-full text-center" color="blue" :text="message.faq.length || message.pages.length ? 'Not what you needed? Ask the assistant' : 'Ask the assistant'" :ignoreclick="true" @click="askAssistant(message)"></custom-button>
+            <custom-button v-if="loggedIn" class="w-full text-center" color="blue" :text="message.faq.length || message.pages.length ? $t('Not what you needed? Ask the assistant') : $t('Ask the assistant')" :ignoreclick="true" @click="askAssistant(message)"></custom-button>
             <custom-button v-else class="w-full text-center" color="blue" href="/Authenticate/Battlenet" text="Log in with Battle.net to ask the assistant"></custom-button>
           </template>
         </template>
-        <analytics-speech-bubble v-if="loading" :logo="persona?.logo" :talking="true">{{ $t(loading === 'assistant' ? 'Thinking…' : 'Looking…') }}</analytics-speech-bubble>
+        <analytics-speech-bubble v-if="loading" :logo="persona?.logo" :talking="true">{{ $t(loading === 'assistant' ? $t('Thinking…') : $t('Looking…')) }}</analytics-speech-bubble>
         <p v-if="error" class="text-red">{{ error }}</p>
       </div>
 
@@ -74,14 +74,14 @@
           <input v-model="question" type="text" maxlength="500" :placeholder="$t('Ask a question')" :aria-label="$t('Ask a question')" class="flex-1 min-w-0 bg-field text-white rounded-control px-3 py-2 text-sm" :disabled="!!loading" />
           <custom-button color="teal" text="Send" size="small" :ignoreclick="true" :disabled="!!loading || !question.trim()" @click="send"></custom-button>
         </div>
-        <span v-if="loggedIn && remaining !== null" class="text-xs text-subtext">{{ remaining }} assistant {{ remaining === 1 ? 'question' : 'questions' }} left today</span>
+        <span v-if="loggedIn && remaining !== null" class="text-xs text-subtext">{{ $t(':remaining assistant :questions left today', { remaining: remaining, questions: remaining === 1 ? $t('question') : $t('questions') }) }}</span>
       </form>
     </div>
 
     <div class="flex items-center gap-3">
       <button
         class="w-14 h-14 shrink-0 rounded-full bg-teal hover:bg-lteal text-white text-2xl shadow-[0_0.25rem_1rem_rgba(0,0,0,0.5)] flex items-center justify-center transition-colors"
-        :aria-label="$t(open ? 'Close help' : 'Open help')"
+        :aria-label="$t(open ? $t('Close help') : $t('Open help'))"
         :aria-expanded="open"
         @click="toggle"
       >

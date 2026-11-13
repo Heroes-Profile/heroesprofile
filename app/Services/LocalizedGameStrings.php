@@ -26,7 +26,7 @@ class LocalizedGameStrings
             return ['heroes' => [], 'maps' => []];
         }
 
-        return Cache::remember('game_strings_names|'.$locale, self::CACHE_SECONDS, function () use ($locale) {
+        return $this->remember('names|'.$locale, function () use ($locale) {
             $heroes = Hero::pluck('name', 'id');
             $maps = Map::pluck('name', 'map_id');
 
@@ -48,7 +48,7 @@ class LocalizedGameStrings
             return [];
         }
 
-        return Cache::remember('game_strings_hero|'.$locale.'|'.$heroId, self::CACHE_SECONDS, fn () => (array) (HeroTranslation::where('locale', $locale)
+        return $this->remember('hero|'.$locale.'|'.$heroId, fn () => (array) (HeroTranslation::where('locale', $locale)
             ->where('hero_id', $heroId)
             ->first(['name', 'title', 'description', 'lore'])
             ?->toArray() ?? []));
@@ -61,7 +61,7 @@ class LocalizedGameStrings
             return [];
         }
 
-        return Cache::remember('game_strings_talents|'.$locale, self::CACHE_SECONDS, fn () => DB::connection('heroesprofile_translations')
+        return $this->remember('talents|'.$locale, fn () => DB::connection('heroesprofile_translations')
             ->table('talents')
             ->where('locale', $locale)
             ->get(['talent_id', ...self::FIELDS])
@@ -76,7 +76,7 @@ class LocalizedGameStrings
             return [];
         }
 
-        return Cache::remember('game_strings_abilities|'.$locale.'|'.$heroName, self::CACHE_SECONDS, fn () => DB::connection('heroesprofile_translations')
+        return $this->remember('abilities|'.$locale.'|'.$heroName, fn () => DB::connection('heroesprofile_translations')
             ->table('abilities')
             ->where('locale', $locale)
             ->where('hero_name', $heroName)
@@ -125,6 +125,26 @@ class LocalizedGameStrings
                 $this->walk($child, $talents);
             }
         }
+    }
+
+    /**
+     * Cached for an hour, but only once there's something to cache: a lookup made before the
+     * translation tables were filled would otherwise hide them for the full hour.
+     */
+    private function remember(string $key, \Closure $build): array
+    {
+        $key = 'game_strings_v2|'.$key;
+        $cached = Cache::get($key);
+        if (is_array($cached)) {
+            return $cached;
+        }
+
+        $value = $build();
+        if ($value !== [] && $value !== ['heroes' => [], 'maps' => []]) {
+            Cache::put($key, $value, self::CACHE_SECONDS);
+        }
+
+        return $value;
     }
 
     /** @return array<string, string|null> */

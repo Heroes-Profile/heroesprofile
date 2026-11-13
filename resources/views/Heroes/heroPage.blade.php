@@ -1,6 +1,6 @@
 @extends('layouts.app', $bladeGlobals)
 
-@section('title', $heroname . ' Abilities, Talents & Stats')
+@section('title', __(':hero Abilities, Talents & Stats', ['hero' => $heroname]))
 @section('meta_description', $metadescription)
 @section('meta_keywords', 'heroes of the storm ' . $heroname . ', hots ' . $heroname . ', ' . $heroname . ' abilities, ' . $heroname . ' talents, ' . $heroname . ' stats, ' . $heroname . ' tooltips')
 @if ($ogimage)

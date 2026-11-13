@@ -9,24 +9,24 @@
 
     <!-- Heatmaps -->
     <analytics-heading :title="'Where you are on the map'" :takeaway="mapTakeaway">
-      Two heatmaps of your games on the selected map. A replay only records your hero's real position every several seconds, plus the spots where you died or picked up a regen globe. Most other recorded points are estimates: the spot you clicked to move or aim an ability. The first map uses only real positions, so it shows where your hero actually was. The second uses only the click targets. Each side of the map has its own heatmaps, since you start in a different base; the map with the most data is selected first.
+      {{ $t("Two heatmaps of your games on the selected map. A replay only records your hero's real position every several seconds, plus the spots where you died or picked up a regen globe. Most other recorded points are estimates: the spot you clicked to move or aim an ability. The first map uses only real positions, so it shows where your hero actually was. The second uses only the click targets. Each side of the map has its own heatmaps, since you start in a different base; the map with the most data is selected first.") }}
     </analytics-heading>
     <analytics-map-list v-if="selectedMap === null" class="mb-8" unit="positions" :rows="positionsByMap" :prompt="'Pick a map to see where you are on it. Everything on this tab then shows that map only.'" :pickable="pickableMaps" @pick="$emit('pick-map', $event)"></analytics-map-list>
     <template v-else>
-    <p v-if="(selectedMaps || []).length > 1" class="text-center text-sm mb-2">Showing {{ mapName(selectedMap) }}, your most played of the maps you picked.</p>
+    <p v-if="(selectedMaps || []).length > 1" class="text-center text-sm mb-2">{{ $t('Showing :mapname, your most played of the maps you picked.', { mapname: mapName(selectedMap) }) }}</p>
     <div class="flex flex-wrap justify-center items-center gap-4 mb-4">
       <multi-tab-button :options="teamOptions" v-model="team"></multi-tab-button>
     </div>
     <div class="grid md:grid-cols-2 gap-6 mb-8">
       <div>
         <analytics-heading :title="'Where you stand'">
-          Each square is 4 by 4 map units; brighter means more real positions recorded there across your games. Real positions are sparse, so quick stretches like walking between lanes show up less.
+          {{ $t('Each square is 4 by 4 map units; brighter means more real positions recorded there across your games. Real positions are sparse, so quick stretches like walking between lanes show up less.') }}
         </analytics-heading>
         <analytics-map-view :map-name="mapName(selectedMap)" :layout="layout" :heatmap="cells"></analytics-map-view>
       </div>
       <div>
         <analytics-heading :title="'Where you click'">
-          Built only from estimated points: the target spots of your move and ability orders, at most one per second. It shows where you send your hero and aim, not where your hero stood.
+          {{ $t('Built only from estimated points: the target spots of your move and ability orders, at most one per second. It shows where you send your hero and aim, not where your hero stood.') }}
         </analytics-heading>
         <analytics-map-view :map-name="mapName(selectedMap)" :layout="layout" :heatmap="clickCells" heat-color="#f2b134" :heat-labels="['Fewer clicks', 'Most clicks']" heat-unit="clicks"></analytics-map-view>
       </div>
@@ -34,7 +34,7 @@
 
     <!-- Rough lane split: the map's height cut into thirds -->
     <analytics-heading :title="'Lane split'" :takeaway="laneTakeaway">
-      Share of your real positions in each third of the selected map, on the selected side. The map is cut into three equal horizontal bands between its highest and lowest structures and camps. The bands don't follow the real lane paths, so treat this as a rough guide on three-lane maps.
+      {{ $t("Share of your real positions in each third of the selected map, on the selected side. The map is cut into three equal horizontal bands between its highest and lowest structures and camps. The bands don't follow the real lane paths, so treat this as a rough guide on three-lane maps.") }}
     </analytics-heading>
     <multi-series-chart type="bar" :horizontal="true" :stacked="true" :min="0" :max="100" format="percent" :labels="['You']" :title="'Share of your time in each third'" :series="laneSplit"></multi-series-chart>
     </template>

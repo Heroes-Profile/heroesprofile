@@ -2,11 +2,11 @@
   <div>
     <global-async-debug-banner page-label="Global Matchups" />
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-    <page-heading :heading="selectedHero ? selectedHero.name + ' Counters & Matchups' : 'Hero Counters & Matchups'">
+    <page-heading :heading="selectedHero ? selectedHero.name + ' Counters & Matchups' : $t('Hero Counters & Matchups')">
       <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
         <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
         <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 13.75rem; max-height: 21.25rem; overflow-y: auto;">
-          <input v-model="heroDropdownSearch" type="text" placeholder="Search hero..." class="w-full px-2 py-1 text-xs bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
+          <input v-model="heroDropdownSearch" type="text" :placeholder="$t('Search hero...')" class="w-full px-2 py-1 text-xs bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
           <div v-for="h in filteredDropdownHeroes" :key="h.id" class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-lighten text-sm" @click="clickedHero(h); heroDropdownOpen = false">
             <hero-image-wrapper :hero="h" :includehover="false" class="flex-shrink-0"></hero-image-wrapper>
             <span>{{ $heroName(h) }}</span>
@@ -73,7 +73,7 @@
           ></single-select-filter>
         </span>
         <span>
-          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
+          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
         </span>
       </div>
 
@@ -95,7 +95,7 @@
                 <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
                   <slot>
                     <div>
-                      <p>This row's hero global win rate.  This would be their win rate in all games that match the filter.  This is displayed to make comparisons of ally and enemy win rates easier.</p>
+                      <p>{{ $t("This row's hero global win rate. This would be their win rate in all games that match the filter. This is displayed to make comparisons of ally and enemy win rates easier.") }}</p>
                     </div>
                   </slot>
                 </round-image>
@@ -115,11 +115,11 @@
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate_against' || sortKey === 'enemy_difference' }">
               <div class="flex items-center justify-center">
-                <span class="cursor-pointer" @click="sortTable('win_rate_against')">Win Rate Against {{ this.selectedHero.name }} %<sort-indicator column="win_rate_against" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator> | </span><span class="cursor-pointer" @click="sortTable('enemy_difference')">(Difference)<sort-indicator column="enemy_difference" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="cursor-pointer" @click="sortTable('win_rate_against')">{{ $t('Win Rate Against :hero %', { hero: $heroName(selectedHero) }) }}<sort-indicator column="win_rate_against" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator> | </span><span class="cursor-pointer" @click="sortTable('enemy_difference')">{{ $t('(Difference)') }}<sort-indicator column="enemy_difference" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
                 <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
                   <slot>
                     <div>
-                      <p>Difference is (Win Rate Against {{ this.selectedHero.name }} - Hero Base Win Rate)</p>
+                      <p>{{ $t('Difference is (Win Rate Against :hero - Hero Base Win Rate)', { hero: $heroName(selectedHero) }) }}</p>
                     </div>
                   </slot>
                 </round-image>
@@ -129,7 +129,7 @@
               {{ $t('Games Played As Ally') }}<sort-indicator :column="'games_played_as_ally'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('games_played_against')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played_against' }">
-              Games Played Against {{ this.selectedHero.name }}<sort-indicator :column="'games_played_against'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+              {{ $t('Games Played Against :hero', { hero: $heroName(selectedHero) }) }}<sort-indicator :column="'games_played_against'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
           </tr>
         </thead>

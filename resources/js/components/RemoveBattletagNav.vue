@@ -1,6 +1,6 @@
 <template>
   <!-- The whole row is the button, not just the word -->
-  <a href="#" role="button" @click.prevent="remove()">Remove</a>
+  <a href="#" role="button" @click.prevent="remove()">{{ $t('Remove') }}</a>
 </template>
 
 <script>

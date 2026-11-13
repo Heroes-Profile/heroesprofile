@@ -1,10 +1,10 @@
 @extends('layouts.app', $bladeGlobals)    
 
 @if ($userinput)
-  @section('title', $userinput["name"] . ' Counters & Matchups')
+  @section('title', __(':hero Counters & Matchups', ['hero' => $userinput["name"]]))
   @section('meta_description', $userinput["name"] . ' counters and matchups for Heroes of the Storm. Win rates against every enemy hero and alongside every ally, from real games on the latest patch.')
 @else
-  @section('title', 'Hero Counters & Matchups')
+  @section('title', __('Hero Counters & Matchups'))
   @section('meta_description', 'Heroes of the Storm hero matchup statistics and counters. Explore hero matchup statistics to see which heroes perform well against others. Analyze hero counters and matchups to improve your gameplay on Heroes Profile.')
 @endif
 

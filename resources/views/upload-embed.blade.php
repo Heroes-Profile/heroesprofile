@@ -1,5 +1,5 @@
 @extends('layouts.embed')
-@section('title', 'Upload Replays')
+@section('title', __('Upload Replays'))
 @section('content')
   <replay-uploader-embed
     :upload-url="'{{ $uploadUrl }}'"

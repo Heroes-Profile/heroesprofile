@@ -29,7 +29,7 @@
           <a v-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && user && !data.replay_download_blocked" class="group/bt inline-flex items-center cursor-pointer max-md:hidden" role="button" @click="downloadReplay(data, replayid)"><span class="group-hover/bt:underline">{{ $t('Download Replay') }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
           <span v-else-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && !user" class="inline-flex items-center gap-1 opacity-60 max-md:hidden">
             {{ $t('Download Replay') }}
-            <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
+            <round-image size="small" icon="fas fa-info" :title="$t('Login required')" popupsize="large">
               <slot>
                 <p>{{ $t('You need to be logged in to download replays.') }}</p>
               </slot>
@@ -39,7 +39,7 @@
           <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center" :href="'/Analytics/Match/Single/' + replayid + '/Replay'"><span class="group-hover/bt:underline">{{ $t('Watch Replay') }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
           <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
             {{ $t('Watch Replay') }}
-            <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
+            <round-image size="small" icon="fas fa-info" :title="$t('Login required')" popupsize="large">
               <slot>
                 <p>{{ $t('You need to be logged in with Battle.net to watch replays.') }}</p>
               </slot>
@@ -68,7 +68,7 @@
 
 
             <div v-if="showBans" class="mb-10">
-              {{ esport ? this.data.team_names.team_one.team_name : "Team 1" }} Bans
+              {{ $t(':team Bans', { team: esport ? this.data.team_names.team_one.team_name : $t("Team 1") }) }}
               <div class="flex gap-2 justify-center mt-4">
                 <template v-for="(item, index) in data.replay_bans[0]" :key="index">
                   <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" :size="'big'"></hero-image-wrapper>
@@ -108,7 +108,7 @@
             <group-box class="md:w-full max-sm:text-xs max-md:hidden" :playerlink="true" :match="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(1, data.winner)" :esportteamname="getEsportTeamName(1)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
 
             <div v-if="showBans" class="mb-10">
-              {{ esport ? this.data.team_names.team_two.team_name : "Team 2" }} Bans
+              {{ $t(':team Bans', { team: esport ? this.data.team_names.team_two.team_name : $t("Team 2") }) }}
               <div class="flex gap-2 justify-center mt-4">
                 <template v-for="(item, index) in data.replay_bans[1]" :key="index">
                   <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" :size="'big'"></hero-image-wrapper>
@@ -144,7 +144,7 @@
     </div>
 
       <div v-if="esport && esport != 'Other'" class="max-w-[93.75rem] mx-auto mb-10 px-4">
-        <panel-box title="Series Games">
+        <panel-box :title="$t('Series Games')">
         <table class="min-w-0 w-full responsive-table">
           <thead>
             <tr>
@@ -190,7 +190,7 @@
             <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center text-header" :href="'/Analytics/Match/Single/' + replayid + '/Replay#analytic-performance'"><span class="group-hover/bt:underline">{{ $t('How each player played') }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
             <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
               {{ $t('How each player played') }}
-              <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
+              <round-image size="small" icon="fas fa-info" :title="$t('Login required')" popupsize="large">
                 <slot>
                   <p>{{ $t('You need to be logged in with Battle.net to see how each player played.') }}</p>
                 </slot>
@@ -210,7 +210,7 @@
               <round-image class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large">
                 <slot>
                   <div>
-                    <p class="max-sm:text-xs">Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match.  100 would be a perfect match with most MVPs hovering between 70-75.</p>
+                    <p class="max-sm:text-xs">{{ $t('Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match. 100 would be a perfect match with most MVPs hovering between 70-75.') }}</p>
                   </div>
                 </slot>
               </round-image>
@@ -227,7 +227,7 @@
                 <div>
                   <div class="flex flex-wrap justify-between flex-1  max-md:w-full">
                     <span> {{ item.battletag }}</span> 
-                    <span>Heroes Profile Rating: {{ item.total_rank }}</span>
+                    <span>{{ $t('Heroes Profile Rating: :rank', { rank: item.total_rank }) }}</span>
                   </div>
                   <div class="flex flex-wrap md:space-x-9 items-between w-full flex-1 max-md:flex-col">
                     <div class="flex flex-1 max-md:w-full">
@@ -255,7 +255,7 @@
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
       <div v-if="data.draft_order && data.draft_order.length > 0" class="max-w-[93.75rem] mx-auto px-4 my-6 max-sm:text-xs">
-        <panel-box title="Draft Order">
+        <panel-box :title="$t('Draft Order')">
         <table class="min-w-0 w-full responsive-table">
           <thead>
             <tr>
@@ -292,7 +292,7 @@
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
       <div class="max-w-[93.75rem] mx-auto px-4 max-md:px-2 my-6">
-       <panel-box title="Talents">
+       <panel-box :title="$t('Talents')">
        <div class="flex flex-wrap gap-20 justify-around">
         <div class="max-md:w-full">
           <div class="w-full  mb-10" v-for="(item, index) in data.players[0]" :key="index">
@@ -329,14 +329,14 @@
   <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
 
 <div v-if="data.experience_breakdown" class="max-w-[93.75rem] mx-auto px-4 max-md:px-2 my-6 overflow-x-hidden">
-  <panel-box title="Experience">
+  <panel-box :title="$t('Experience')">
     <dual-line-chart :data="data.experience_breakdown" :winner="data.winner"></dual-line-chart>
   </panel-box>
 </div>
 
 
 <div v-if="!esport" class=" max-sm:text-sm max-w-[93.75rem] mx-auto px-4 my-6">
-  <panel-box title="Team 1 Advanced HP MMR">
+  <panel-box :title="$t('Team 1 Advanced HP MMR')">
 
   <scroll-hint-container class="2xl:mx-auto">
 
@@ -389,7 +389,7 @@
 
 
 <div  v-if="!esport" class="  max-sm:text-sm max-w-[93.75rem] mx-auto px-4 my-6">
-  <panel-box title="Team 2 Advanced HP MMR">
+  <panel-box :title="$t('Team 2 Advanced HP MMR')">
 
   <scroll-hint-container class="2xl:mx-auto">
 
@@ -443,9 +443,9 @@
 <dynamic-banner-ad :patreon-user="patreonUser" :index="5" :mobile-override="false"></dynamic-banner-ad>
 
 <div class="max-sm:text-sm max-w-[93.75rem] mx-auto px-4 my-6">
-  <panel-box title="Team 1 Advanced Stats">
+  <panel-box :title="$t('Team 1 Advanced Stats')">
   <template #right>
-    <custom-button class="ml-auto" @click="flipAdvancedStats = !flipAdvancedStats" :text="flipAdvancedStats ? 'Show Stats as Rows' : 'Show Players as Rows'" :alt="'Flip Advanced Stats'" size="small" :ignoreclick="true"></custom-button>
+    <custom-button class="ml-auto" @click="flipAdvancedStats = !flipAdvancedStats" :text="flipAdvancedStats ? $t('Show Stats as Rows') : $t('Show Players as Rows')" :alt="'Flip Advanced Stats'" size="small" :ignoreclick="true"></custom-button>
   </template>
 
   <scroll-hint-container class="2xl:mx-auto" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
@@ -490,7 +490,7 @@
 </div>
 <dynamic-banner-ad :patreon-user="patreonUser" :index="6" :mobile-override="false"></dynamic-banner-ad>
 <div class="max-sm:text-sm max-w-[93.75rem] mx-auto px-4 my-6">
-  <panel-box title="Team 2 Advanced Stats">
+  <panel-box :title="$t('Team 2 Advanced Stats')">
   <scroll-hint-container class="2xl:mx-auto" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
   <table :id="'responsive-table-' +sectionIndex" :ref="'responsivetable'+sectionIndex" :class="['responsive-table', 'relative', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1, 'fixed-column-table': flipAdvancedStats }]" :style="flipAdvancedStats ? { width: flippedTableWidth(section) } : null" >
     <thead v-if="!flipAdvancedStats">

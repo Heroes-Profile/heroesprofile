@@ -1,11 +1,11 @@
 <template>
   <div>
     <analytics-heading :title="'Coaching (experimental)'">
-      Coaching looks for 14 habits (signals) in your processed games, like dying after a fight is already lost or walking without mounting, and compares your rate with other players under the same filters. Each signal has two ratings. Signal says how strongly that habit goes with winning or losing across all players: High means strong evidence, Medium some, Low not enough yet. Your sample says how many of your games back your number: High is 30+, Medium 10-29, Low under 10. The tips focus on signals that are both rated Medium or High and where most players do better than you. Click any signal for recent examples, each linked into the replay viewer.
+      {{ $t('Coaching looks for 14 habits (signals) in your processed games, like dying after a fight is already lost or walking without mounting, and compares your rate with other players under the same filters. Each signal has two ratings. Signal says how strongly that habit goes with winning or losing across all players: High means strong evidence, Medium some, Low not enough yet. Your sample says how many of your games back your number: High is 30+, Medium 10-29, Low under 10. The tips focus on signals that are both rated Medium or High and where most players do better than you. Click any signal for recent examples, each linked into the replay viewer.') }}
     </analytics-heading>
-    <p v-if="computedAt" class="text-sm text-gray-light mb-4">Signal ratings updated {{ computedAt }}.</p>
+    <p v-if="computedAt" class="text-sm text-gray-light mb-4">{{ $t('Signal ratings updated :computedat.', { computedat: computedAt }) }}</p>
 
-    <p v-if="!mine.games" class="text-center text-gray-light">No coaching data for these filters yet. It's built nightly from processed games.</p>
+    <p v-if="!mine.games" class="text-center text-gray-light">{{ $t("No coaching data for these filters yet. It's built nightly from processed games.") }}</p>
 
     <template v-else>
       <!-- The replay viewer's announcer, summing up what to work on -->
@@ -17,17 +17,17 @@
 
       <!-- Your last game: this one game's signals against your usual, and its flagged moments -->
       <template v-if="lastGame">
-        <analytics-heading :title="game ? 'This match' : 'Your last game'" :takeaway="lastGameTakeaway">
-          Your most recent game under these filters, broken down signal by signal. Your usual is your average over your earlier games; a value counts as better or worse than usual only when it is further from that average than your games normally vary. Coaching is rebuilt overnight, so a game you just played shows up here the day after it is processed. Check the game below is the one you expect.
+        <analytics-heading :title="game ? $t('This match') : $t('Your last game')" :takeaway="lastGameTakeaway">
+          {{ $t('Your most recent game under these filters, broken down signal by signal. Your usual is your average over your earlier games; a value counts as better or worse than usual only when it is further from that average than your games normally vary. Coaching is rebuilt overnight, so a game you just played shows up here the day after it is processed. Check the game below is the one you expect.') }}
         </analytics-heading>
         <!-- Coaching is rebuilt once a day, so the newest games can be missing -->
         <p v-if="notYet > 0 && !game" class="text-sm bg-darken rounded p-3 mb-2 border-l-4 border-yellow">
-          This isn't your most recent game: {{ notYet }} newer {{ notYet === 1 ? "game hasn't" : "games haven't" }} been added to coaching yet. Coaching updates once a day; check back after {{ nextUpdate }}.
+          {{ $t("This isn't your most recent game: :notyet newer :t been added to coaching yet. Coaching updates once a day; check back after :nextupdate.", { notyet: notYet, t: notYet === 1 ? "game hasn't" : "games haven't", nextupdate: nextUpdate }) }}
         </p>
         <div class="flex flex-wrap items-center justify-between gap-4 bg-darken rounded p-3 mb-2">
           <div>
             <span class="font-bold">{{ heroName(lastGame.hero_id) }}</span> on {{ mapName(lastGame.game_map) }}
-            &middot; <span :class="isWin(lastGame) ? 'text-teal' : 'text-red'">{{ isWin(lastGame) ? 'Win' : 'Loss' }}</span>
+            &middot; <span :class="isWin(lastGame) ? 'text-teal' : 'text-red'">{{ isWin(lastGame) ? $t('Win') : $t('Loss') }}</span>
             <div class="text-sm text-gray-light">Game ended {{ formatDateTime(lastGame.game_date) }} &middot; Replay {{ lastGame.replay_id }}</div>
           </div>
           <custom-button
@@ -47,7 +47,7 @@
                 <span class="inline-flex items-center gap-1">
                   {{ $t('Your usual') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                    <slot><p class="text-sm p-2 text-left">Your average over your earlier games under these filters (up to 200). Needs at least 5 earlier games.</p></slot>
+                    <slot><p class="text-sm p-2 text-left">{{ $t('Your average over your earlier games under these filters (up to 200). Needs at least 5 earlier games.') }}</p></slot>
                   </round-image>
                 </span>
               </th>
@@ -56,7 +56,7 @@
                 <span class="inline-flex items-center gap-1">
                   {{ $t('Against your usual') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                    <slot><p class="text-sm p-2 text-left">Better or Worse when this game is further from your usual than one game normally swings (the spread of your earlier games). Otherwise Typical.</p></slot>
+                    <slot><p class="text-sm p-2 text-left">{{ $t('Better or Worse when this game is further from your usual than one game normally swings (the spread of your earlier games). Otherwise Typical.') }}</p></slot>
                   </round-image>
                 </span>
               </th>
@@ -72,7 +72,7 @@
             </tr>
           </tbody>
         </table>
-        <p v-if="!lastEvents.length" class="text-sm text-gray-light mb-8">Nothing flagged in this game.</p>
+        <p v-if="!lastEvents.length" class="text-sm text-gray-light mb-8">{{ $t('Nothing flagged in this game.') }}</p>
         <table v-else class="min-w-0 w-full responsive-table mb-8">
           <thead>
             <tr>
@@ -105,24 +105,24 @@
       <template v-if="!game">
       <div class="flex flex-wrap items-start justify-between gap-4">
         <analytics-heading :title="'Are you improving?'" :takeaway="progressTakeaway">
-          Your average over your last {{ recentCount }} games compared with your average over your earlier games under these filters, for each signal rated Medium or High. Improving or Worse only shows when the change is bigger than your usual swing, worked out from how much your earlier games vary (shown under each verdict); anything smaller is About the same, because a few games are mostly noise. Signals marked (working on) are the ones the summary above tells you to work on. Click a signal for a chart of up to your last 20 games. New games appear here the day after they are processed.
+          {{ $t('Your average over your last :recentcount games compared with your average over your earlier games under these filters, for each signal rated Medium or High. Improving or Worse only shows when the change is bigger than your usual swing, worked out from how much your earlier games vary (shown under each verdict); anything smaller is About the same, because a few games are mostly noise. Signals marked (working on) are the ones the summary above tells you to work on. Click a signal for a chart of up to your last 20 games. New games appear here the day after they are processed.', { recentcount: recentCount }) }}
         </analytics-heading>
         <tab-button :tab1text="'Last 3 games'" :tab2text="'Last 5 games'" :ignoreclick="true" @tab-click="setRecentCount" :overridedefaultside="recentCount === 3 ? 'left' : 'right'"></tab-button>
       </div>
       <p v-if="recentGames.length < recentCount + 5" class="text-center text-gray-light mb-8">
-        Not enough games yet: this needs at least {{ recentCount + 5 }} processed games under these filters (you have {{ recentGames.length }}).
+        {{ $t('Not enough games yet: this needs at least :recentcount processed games under these filters (you have :recentgames).', { recentcount: recentCount + 5, recentgames: recentGames.length }) }}
       </p>
       <table v-else class="min-w-0 w-full responsive-table mb-8">
         <thead>
           <tr>
             <th>{{ $t('Signal') }}</th>
             <th>{{ $t('Earlier games') }}</th>
-            <th>Last {{ recentCount }}</th>
+            <th>{{ $t('Last :recentcount', { recentcount: recentCount }) }}</th>
             <th>
               <span class="inline-flex items-center gap-1">
                 {{ $t('Change') }}
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                  <slot><p class="text-sm p-2 text-left">Last {{ recentCount }} minus earlier games. Whether up is good depends on the signal: for deaths and missed fights, a minus is better.</p></slot>
+                  <slot><p class="text-sm p-2 text-left">{{ $t('Last :recentcount minus earlier games. Whether up is good depends on the signal: for deaths and missed fights, a minus is better.', { recentcount: recentCount }) }}</p></slot>
                 </round-image>
               </span>
             </th>
@@ -130,7 +130,7 @@
               <span class="inline-flex items-center gap-1">
                 {{ $t('Verdict') }}
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                  <slot><p class="text-sm p-2 text-left">Improving or Worse when the change is bigger than your usual swing for {{ recentCount }} games (your earlier games' spread divided by the square root of {{ recentCount }}). Otherwise About the same.</p></slot>
+                  <slot><p class="text-sm p-2 text-left">{{ $t("Improving or Worse when the change is bigger than your usual swing for :recentcount games (your earlier games' spread divided by the square root of :recentcount2). Otherwise About the same.", { recentcount: recentCount, recentcount2: recentCount }) }}</p></slot>
                 </round-image>
               </span>
             </th>
@@ -148,7 +148,7 @@
               <td>{{ changeText(row) }}</td>
               <td>
                 <span :class="verdictClass(row.direction)">{{ row.verdict }}</span>
-                <div class="text-sm text-gray-light font-normal">usual swing {{ format(row, row.swing) }}</div>
+                <div class="text-sm text-gray-light font-normal">{{ $t('usual swing :format', { format: format(row, row.swing) }) }}</div>
               </td>
             </tr>
             <tr v-if="progressSelected === row.key">
@@ -158,7 +158,7 @@
                   :yLabel="row.name"
                   :series="trendSeries(row)"
                 ></multi-series-chart>
-                <p class="text-center text-sm text-gray-light">Your last {{ trend(row).labels.length }} games under these filters, oldest to newest.</p>
+                <p class="text-center text-sm text-gray-light">{{ $t('Your last :trend games under these filters, oldest to newest.', { trend: trend(row).labels.length }) }}</p>
               </td>
             </tr>
           </template>
@@ -167,7 +167,7 @@
       </template>
 
       <analytics-heading :title="'All signals'" :takeaway="allTakeaway">
-        Every signal, whatever its rating. Shares are a percentage of chances (fights, objectives, travel time); counts are per game; Camp duty is in percentage points above or below the norm for your hero. The Standing bar runs from worse (left) to better (right), with the global median marked in the middle. Click a signal for the numbers behind its ratings, who you are compared with, and recent examples.
+        {{ $t('Every signal, whatever its rating. Shares are a percentage of chances (fights, objectives, travel time); counts are per game; Camp duty is in percentage points above or below the norm for your hero. The Standing bar runs from worse (left) to better (right), with the global median marked in the middle. Click a signal for the numbers behind its ratings, who you are compared with, and recent examples.') }}
       </analytics-heading>
       <table class="min-w-0 w-full responsive-table">
         <thead>
@@ -177,7 +177,7 @@
               <span class="inline-flex items-center gap-1">
                 {{ $t('You') }}
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                  <slot><p class="text-sm p-2 text-left">Your rate across all your processed games under these filters.</p></slot>
+                  <slot><p class="text-sm p-2 text-left">{{ $t('Your rate across all your processed games under these filters.') }}</p></slot>
                 </round-image>
               </span>
             </th>
@@ -185,7 +185,7 @@
               <span class="inline-flex items-center gap-1">
                 {{ $t('Global median') }}
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                  <slot><p class="text-sm p-2 text-left">The middle player in the global sample under these filters: half of players are above it, half below. Click a signal to see who it is compared with.</p></slot>
+                  <slot><p class="text-sm p-2 text-left">{{ $t('The middle player in the global sample under these filters: half of players are above it, half below. Click a signal to see who it is compared with.') }}</p></slot>
                 </round-image>
               </span>
             </th>
@@ -193,7 +193,7 @@
               <span class="inline-flex items-center gap-1">
                 {{ $t('Standing') }}
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                  <slot><p class="text-sm p-2 text-left">Where you rank among those players, taking into account which way is better for that signal (fewer deaths, more presence).</p></slot>
+                  <slot><p class="text-sm p-2 text-left">{{ $t('Where you rank among those players, taking into account which way is better for that signal (fewer deaths, more presence).') }}</p></slot>
                 </round-image>
               </span>
             </th>
@@ -201,7 +201,7 @@
               <span class="inline-flex items-center gap-1">
                 {{ $t('Signal') }}
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                  <slot><p class="text-sm p-2 text-left">How strongly this habit goes with winning or losing across all players, re-checked nightly. High: it passes all three tests (linked to win rate beyond deaths, a 3+ point win-rate effect when it happens in the first 10 minutes, and consistent from game to game). Medium: one of the first two. Low: neither yet.</p></slot>
+                  <slot><p class="text-sm p-2 text-left">{{ $t('How strongly this habit goes with winning or losing across all players, re-checked nightly. High: it passes all three tests (linked to win rate beyond deaths, a 3+ point win-rate effect when it happens in the first 10 minutes, and consistent from game to game). Medium: one of the first two. Low: neither yet.') }}</p></slot>
                 </round-image>
               </span>
             </th>
@@ -209,7 +209,7 @@
               <span class="inline-flex items-center gap-1">
                 {{ $t('Your sample') }}
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                  <slot><p class="text-sm p-2 text-left">How many of your games back your number. High: 30+, Medium: 10-29, Low: under 10. Some signals only count certain games (maps with bushes, games with mounts, strong camp heroes).</p></slot>
+                  <slot><p class="text-sm p-2 text-left">{{ $t('How many of your games back your number. High: 30+, Medium: 10-29, Low: under 10. Some signals only count certain games (maps with bushes, games with mounts, strong camp heroes).') }}</p></slot>
                 </round-image>
               </span>
             </th>
@@ -249,13 +249,13 @@
                   <span class="inline-flex items-center gap-1">
                     {{ evidenceText(signal) }}
                     <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                      <slot><p class="text-sm p-2 text-left">Early-game effect: how much win rate changes when this happens in the first 10 minutes, in games that were equally close on deaths at that point (3+ points counts). Link beyond deaths: how closely players' rate tracks their win rate once deaths per game are accounted for (r from -1 to 1; 0.15+ in either direction counts). Habit consistency: how similar a player's odd and even games are (0.2+ counts).</p></slot>
+                      <slot><p class="text-sm p-2 text-left">{{ $t("Early-game effect: how much win rate changes when this happens in the first 10 minutes, in games that were equally close on deaths at that point (3+ points counts). Link beyond deaths: how closely players' rate tracks their win rate once deaths per game are accounted for (r from -1 to 1; 0.15+ in either direction counts). Habit consistency: how similar a player's odd and even games are (0.2+ counts).") }}</p></slot>
                     </round-image>
                   </span>
                 </div>
-                <p v-if="signal.basis" class="text-sm text-gray-light mb-2">Compared with {{ signal.basis }}.</p>
-                <p class="text-sm text-gray-light mb-2">Your sample: {{ signal.sampleGames || 0 }} games.</p>
-                <p v-if="!examples(signal).length" class="text-sm">No recent examples.</p>
+                <p v-if="signal.basis" class="text-sm text-gray-light mb-2">{{ $t('Compared with :basis.', { basis: signal.basis }) }}</p>
+                <p class="text-sm text-gray-light mb-2">{{ $t('Your sample: :samplegames games.', { samplegames: signal.sampleGames || 0 }) }}</p>
+                <p v-if="!examples(signal).length" class="text-sm">{{ $t('No recent examples.') }}</p>
                 <table v-if="examples(signal).length" class="min-w-0 w-full responsive-table">
                   <thead>
                     <tr>

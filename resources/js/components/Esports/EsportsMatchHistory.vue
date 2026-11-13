@@ -9,7 +9,7 @@
         <pagination-bar :current="data.pagination.current_page" :last="data.pagination.last_page" @page="getData"></pagination-bar>
       </div>
       <esports-recent-matches v-if="data.data.length" :data="data.data" :esport="recentMatchesEsport" :series="series" :tournament="tournament"></esports-recent-matches>
-      <p v-else class="text-center text-subtext mt-10">No games for {{ teamName(team) }}<template v-if="subtitle"> in {{ subtitle }}</template>.</p>
+      <p v-else class="text-center text-subtext mt-10">{{ $t('No games for :teamname', { teamname: teamName(team) }) }}<template v-if="subtitle"> {{ $t('in :subtitle', { subtitle: subtitle }) }}</template>.</p>
       <div v-if="data.pagination.last_page > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 pb-4 flex justify-end">
         <pagination-bar :current="data.pagination.current_page" :last="data.pagination.last_page" @page="getData"></pagination-bar>
       </div>
@@ -121,7 +121,7 @@ export default {
     },
     subtitle() {
       return [
-        this.modifiedSeason ? 'Season ' + this.modifiedSeason : null,
+        this.modifiedSeason ? this.$t('Season :season', { season: this.modifiedSeason }) : null,
         this.esport == 'NGS' && this.division ? 'Division ' + this.division : null,
       ].filter(Boolean).join(', ');
     },

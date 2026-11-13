@@ -1,7 +1,7 @@
 <template>
   <div class="bg-darken rounded p-3 mt-4">
     <analytics-heading :title="'How each player played'" :takeaway="allowed ? takeaway : null">
-      Each player's numbers from this game, against the same hero on the same map in our global sample of games with the same result: a loss against losses, a win against wins, so a good game on a losing team still rates well. 50 is a typical game; higher is better. Each area weights its numbers by how much they go with winning on that hero. Winners usually is the middle half of that hero's wins on the map, to show how far a number is from a winning game.
+      {{ $t("Each player's numbers from this game, against the same hero on the same map in our global sample of games with the same result: a loss against losses, a win against wins, so a good game on a losing team still rates well. 50 is a typical game; higher is better. Each area weights its numbers by how much they go with winning on that hero. Winners usually is the middle half of that hero's wins on the map, to show how far a number is from a winning game.") }}
     </analytics-heading>
 
     <!-- Part of Analytics: everyone else gets a greyed-out preview and the way in -->
@@ -23,7 +23,7 @@
       <div class="absolute inset-0 flex flex-col items-center justify-center px-4">
         <analytics-subscribe
           :title="'Match performance is part of Player Analytics'"
-          :text="'See how every player in this game did in combat, survival, teamfights, objectives, positioning, ability use and more, against the same hero on the same map. ' + (trialAvailable ? 'Try Player Analytics free for ' + trialDays + ' days with the ' + (trialStage || '').toLowerCase() + ' free trial.' : 'Subscribe on Patreon at any tier, then link your Patreon account to your Heroes Profile account.')"
+          :text="'See how every player in this game did in combat, survival, teamfights, objectives, positioning, ability use and more, against the same hero on the same map. ' + (trialAvailable ? 'Try Player Analytics free for ' + trialDays + ' days with the ' + (trialStage || '').toLowerCase() + ' free trial.' : $t('Subscribe on Patreon at any tier, then link your Patreon account to your Heroes Profile account.'))"
           :trial-available="trialAvailable"
           :trial-days="trialDays"
           :patreon-linked="patreonLinked"
@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <p v-else-if="loading" class="text-center text-gray-light">Working out how everyone played...</p>
+    <p v-else-if="loading" class="text-center text-gray-light">{{ $t('Working out how everyone played...') }}</p>
     <p v-else-if="error" class="text-center">{{ error }}</p>
 
     <template v-else>
@@ -62,17 +62,17 @@
       <div v-if="current" ref="breakdown" class="scroll-mt-4">
         <analytics-heading :title="currentName" :takeaway="playerTakeaway"></analytics-heading>
         <multi-tab-button :options="areaOptions" v-model="area" class="mb-3"></multi-tab-button>
-        <p v-if="fellBack" class="text-sm mb-2">Some of these compare with {{ $heroName(current.player.hero) }}'s games on every map, because the sample has too few on this one.</p>
+        <p v-if="fellBack" class="text-sm mb-2">{{ $t("Some of these compare with :hero's games on every map, because the sample has too few on this one.", { hero: $heroName(current.player.hero) }) }}</p>
         <table class="min-w-0 w-full responsive-table mb-4">
           <thead>
             <tr>
-              <th>{{ area === 'abilities' ? 'Ability or measure' : 'Measure' }}</th>
+              <th>{{ area === 'abilities' ? $t('Ability or measure') : $t('Measure') }}</th>
               <th>{{ $t('This game') }}</th>
               <th>
                 <span class="inline-flex items-center gap-1">
                   {{ $t('Rating') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                    <slot><p class="text-sm p-2 text-left">Where this game sits among the hero's games on this map with the same result, turned so higher is better: 50 is typical, 90 is better than 9 in 10. Blank when the number doesn't go with winning on this hero, or the sample has too few games.</p></slot>
+                    <slot><p class="text-sm p-2 text-left">{{ $t("Where this game sits among the hero's games on this map with the same result, turned so higher is better: 50 is typical, 90 is better than 9 in 10. Blank when the number doesn't go with winning on this hero, or the sample has too few games.") }}</p></slot>
                   </round-image>
                 </span>
               </th>
@@ -94,12 +94,12 @@
                 <span v-else class="text-gray-light">-</span>
               </td>
               <td>{{ m.winners ? format(m, m.winners.p25) + ' to ' + format(m, m.winners.p75) : '-' }}</td>
-              <td>{{ m.better === 'higher' ? 'More' : m.better === 'lower' ? 'Less' : '-' }}</td>
+              <td>{{ m.better === 'higher' ? $t('More') : m.better === 'lower' ? $t('Less') : '-' }}</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p v-else class="text-center text-gray-light">Pick a player for their breakdown.</p>
+      <p v-else class="text-center text-gray-light">{{ $t('Pick a player for their breakdown.') }}</p>
     </template>
   </div>
 </template>

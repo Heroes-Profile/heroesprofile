@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', "Match History")
+@section('title', __('Match History'))
 @section('meta_keywords', 'Match History, Player Matches, Game Results, Match Stats')
 @section('content')
   <ngs-single-division-match-history

@@ -4,9 +4,9 @@
 
     <div v-if="mmrSplit" class="max-w-[93.75rem] mx-auto mb-4">
       <div class="flex justify-between items-baseline mb-1">
-        <span class="text-xs">Avg. {{ modeShort }} MMR <span class="text-base font-bold">{{ mmrSplit.teamOne }}</span></span>
+        <span class="text-xs">{{ $t('Avg. :modeshort MMR', { modeshort: modeShort }) }} <span class="text-base font-bold">{{ mmrSplit.teamOne }}</span></span>
         <span class="text-xs text-gray-medium">{{ mmrSplit.lead }}</span>
-        <span class="text-xs"><span class="text-base font-bold">{{ mmrSplit.teamTwo }}</span> Avg. {{ modeShort }} MMR</span>
+        <span class="text-xs"><span class="text-base font-bold">{{ mmrSplit.teamTwo }}</span> {{ $t('Avg. :modeshort MMR', { modeshort: modeShort }) }}</span>
       </div>
       <div class="flex h-2 rounded overflow-hidden">
         <div :class="'bg-' + teamColors[0]" :style="{ width: mmrSplit.percent + '%' }"></div>
@@ -16,7 +16,7 @@
 
     <div class="grid md:grid-cols-2 gap-4 max-w-[93.75rem] mx-auto">
       <div v-for="team in [0, 1]" :key="team" class="min-w-0">
-        <h2 :class="['bg-' + teamColors[team], 'rounded-t', 'p-2', 'text-sm', 'text-center', 'uppercase']">Team {{ team + 1 }}</h2>
+        <h2 :class="['bg-' + teamColors[team], 'rounded-t', 'p-2', 'text-sm', 'text-center', 'uppercase']">{{ $t('Team :team', { team: team + 1 }) }}</h2>
 
         <div v-if="data[team]" class="bg-black rounded-b">
           <div class="flex flex-wrap justify-center p-2">
@@ -40,7 +40,7 @@
       </div>
     </div>
 
-    <p class="text-xs text-gray-medium text-center mt-4">Faded players have fewer than 25 games in this mode. Squares are their last 10 games, newest first. Teammates with the same party icon partied together in their recent QM, SL or ARAM games.</p>
+    <p class="text-xs text-gray-medium text-center mt-4">{{ $t('Faded players have fewer than 25 games in this mode. Squares are their last 10 games, newest first. Teammates with the same party icon partied together in their recent QM, SL or ARAM games.') }}</p>
   </div>
   <div v-else-if="isLoading">
     <loading-component></loading-component>

@@ -15,7 +15,7 @@
 
 @extends('layouts.app', $bladeGlobals)
 
-@section('title', 'Error')
+@section('title', __('Error'))
 @section('meta_keywords', '404 error, page not found, not found error, website error, error page, site not found')
 @section('meta_description', 'The page you were looking for could not be found.')
 

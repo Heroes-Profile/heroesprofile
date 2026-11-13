@@ -26,35 +26,35 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
     <div v-if="data" class="max-w-[93.75rem] mx-auto px-4 max-md:px-2">
-      <p class="text-center mb-4">Awards across {{ data.total_games.toLocaleString('en-US') }} games</p>
+      <p class="text-center mb-4">{{ $t('Awards across :games games', { games: data.total_games.toLocaleString('en-US') }) }}</p>
 
       <div class="flex justify-center mb-4">
-        <input type="text" v-model="awardSearch" placeholder="Search awards" class="md:w-[18.75rem] w-full h-[2.5rem] border-solid border-[1px] border-white bg-blue p-2 text-white focus:outline-none" />
+        <input type="text" v-model="awardSearch" :placeholder="$t('Search awards')" class="md:w-[18.75rem] w-full h-[2.5rem] border-solid border-[1px] border-white bg-blue p-2 text-white focus:outline-none" />
       </div>
 
       <div class="flex flex-wrap justify-center gap-4 mb-10">
-        <p v-if="filteredAwards.length == 0">No awards match "{{ awardSearch }}".</p>
+        <p v-if="filteredAwards.length == 0">{{ $t('No awards match ":awardsearch".', { awardsearch: awardSearch }) }}</p>
         <div v-for="award in filteredAwards" :key="award.award_id" @click="selectAward(award)" :class="['bg-gray-dark rounded p-4 w-[12em] max-md:w-[45%] flex flex-col items-center text-center cursor-pointer border-2 hover:border-lteal', selectedAward && selectedAward.award_id == award.award_id ? 'border-teal' : 'border-gray-dark']">
           <img :src="`/images/awards/${award.icon}_blue.png`" :alt="award.title" class="w-14 h-14" />
           <span class="mt-2">{{ award.title }}</span>
           <span v-if="award.description" class="text-xs opacity-75 mb-1">{{ award.description }}</span>
           <span class="text-2xl font-bold">{{ award.rate.toFixed(2) }}%</span>
-          <span class="text-sm">{{ award.count.toLocaleString('en-US') }} games</span>
+          <span class="text-sm">{{ $t(':count games', { count: award.count.toLocaleString('en-US') }) }}</span>
         </div>
       </div>
 
       <div ref="gamestable" class="flex items-center gap-4 mb-2 scroll-mt-4">
         <h2 class="text-xl flex items-center gap-2">
           <img v-if="selectedAward" :src="`/images/awards/${selectedAward.icon}_blue.png`" :alt="selectedAward.title" class="w-10 h-10" />
-          {{ selectedAward ? selectedAward.title + ' Games' : 'Recent Awards' }}
+          {{ selectedAward ? selectedAward.title + ' Games' : $t('Recent Awards') }}
         </h2>
         <custom-button v-if="selectedAward" @click="clearAward" :text="'Show Recent Awards'" :alt="'Show Recent Awards'" size="small" :ignoreclick="true"></custom-button>
       </div>
 
       <!-- One award's games, or every award's (Recent Awards), a page at a time -->
-      <loading-component v-if="awardGamesLoading" :compact="true" :textoverride="true">Loading {{ selectedAward ? selectedAward.title + ' games' : 'recent awards' }}...</loading-component>
+      <loading-component v-if="awardGamesLoading" :compact="true" :textoverride="true">{{ $t('Loading :awards...', { awards: selectedAward ? selectedAward.title + ' games' : $t('recent awards') }) }}</loading-component>
       <template v-else-if="awardGames">
-        <p v-if="awardGames.data.length == 0">{{ selectedAward ? 'No ' + selectedAward.title + ' games' : 'No awards' }} for the selected filters.</p>
+        <p v-if="awardGames.data.length == 0">{{ selectedAward ? 'No ' + selectedAward.title + ' games' : $t('No awards') }} for the selected filters.</p>
         <div v-if="awardGames.last_page > 1" class="flex justify-end mb-4">
           <pagination-bar :current="awardGames.current_page" :last="awardGames.last_page" @page="getAwardGames"></pagination-bar>
         </div>
@@ -76,7 +76,7 @@
             </match-row-mobile>
 <div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
               <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
-              <a :href="'/Match/Single/' + row.replayID" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
+              <a :href="'/Match/Single/' + row.replayID" class="absolute inset-0 z-[1]" :aria-label="$t('Open match')"></a>
               <div class="relative w-[20rem] shrink-0 self-stretch flex items-center pl-5 py-2.5">
                 <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="row.winner == 1 ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
                 <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="{ backgroundImage: `url('/images/maps/match/match-${row.game_map.sanitized_map_name}.jpg')` }"></div>
@@ -105,7 +105,7 @@
       </div>
     </div>
     <div v-if="asyncLoading">
-      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>{{ $t('Please be patient.') }}</loading-component>
+      <loading-component :textoverride="true">{{ $t('This is taking longer than expected.') }}<br/>{{ $t('A background task is computing your results.') }}<br/>{{ $t('Please be patient.') }}</loading-component>
     </div>
     <div v-else-if="isLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>

@@ -32,6 +32,11 @@ export default {
       const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
       const localDate = originalDate.clone().tz(this.userTimezone);
 
+      const siteLocale = document.documentElement.lang;
+      if (siteLocale && siteLocale !== 'en') {
+        return new Intl.DateTimeFormat(siteLocale, { dateStyle: 'short', timeStyle: 'medium', timeZone: this.userTimezone }).format(localDate.toDate());
+      }
+
       return localDate.format('MM/DD/YYYY h:mm:ss a');
     },
   }

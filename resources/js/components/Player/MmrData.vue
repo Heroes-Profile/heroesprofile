@@ -34,7 +34,7 @@
       <line-chart class="max-w-[93.75rem] mx-auto px-4" :data="reversedData" :dataAttribute="'mmr'" :title="`${battletag} HP MMR Graph for ${gametype}`" :tooltip-label="`HP ${gameTypeName} MMR`"></line-chart>
 
       <div class="max-w-[93.75rem] mx-auto mt-2 px-4">
-        {{ this.gametype.toUpperCase() }} - League Tier Breakdowns | HP Player MMR: {{ data[0].mmr }}
+        {{ $t(':touppercase - League Tier Breakdowns | HP Player MMR: :mmr', { touppercase: this.gametype.toUpperCase(), mmr: data[0].mmr }) }}
       </div>
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
@@ -94,7 +94,7 @@
                 </match-row-mobile>
                 <div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
                   <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
-                  <a :href="'/Match/Single/' + row.replayID" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
+                  <a :href="'/Match/Single/' + row.replayID" class="absolute inset-0 z-[1]" :aria-label="$t('Open match')"></a>
                   <div class="relative w-[21.25rem] shrink-0 self-stretch flex items-center pl-5 py-2.5">
                     <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="row.winner === 'True' ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
                     <div class="absolute inset-y-0 left-0 w-1.5" :class="row.winner === 'True' ? 'bg-win' : 'bg-red'"></div>
@@ -120,12 +120,12 @@
                     <span class="font-medium" :class="row.mmr_change >= 0 ? 'text-win' : 'text-red'">{{ row.mmr_change > 0 ? '+' : '' }}{{ row.mmr_change.toFixed(2) }}</span>
                     <!-- Down after a win or up after a loss: the FAQ explains why -->
                     <round-image v-if="isUnexpectedChange(row)" class="text-xs" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                      <p class="font-normal">HP MMR measures your skill against everyone else, so it can {{ row.winner === 'True' ? 'drop after a win against much lower rated players' : 'rise after a loss against much higher rated players' }}. The system is finding the bracket you belong in, not only rewarding wins.</p>
+                      <p class="font-normal">{{ $t('HP MMR measures your skill against everyone else, so it can :players. The system is finding the bracket you belong in, not only rewarding wins.', { players: row.winner === 'True' ? $t('drop after a win against much lower rated players') : $t('rise after a loss against much higher rated players') }) }}</p>
                       <a href="/FAQ#mmr-change-direction" class="group/bt inline-flex items-center mt-2 font-normal"><span class="group-hover/bt:underline">Read more in the FAQ</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
                     </round-image>
                   </div>
                   </template>
-                  <span class="relative w-[7.5rem] shrink-0 px-4 text-center font-medium" :class="row.winner === 'True' ? 'text-win' : 'text-red'">{{ row.winner === 'True' ? 'Win' : 'Loss' }}</span>
+                  <span class="relative w-[7.5rem] shrink-0 px-4 text-center font-medium" :class="row.winner === 'True' ? 'text-win' : 'text-red'">{{ row.winner === 'True' ? $t('Win') : $t('Loss') }}</span>
                 </div>
               </template>
             </div>

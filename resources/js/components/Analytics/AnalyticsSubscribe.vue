@@ -19,10 +19,10 @@
       </template>
     </div>
     <p v-if="!trialAvailable" class="text-sm mt-3">
-      Or with any paid <a class="link" href="/Api">Heroes Profile API</a> plan: link your Battle.net account on your
-      <a class="link" href="/Api/Account#analytics">API account page</a>.
+      {{ $t('Or with any paid') }} <a class="link" href="/Api">{{ $t('Heroes Profile API') }}</a> plan: link your Battle.net account on your
+      <a class="link" href="/Api/Account#analytics">{{ $t('API account page') }}</a>.
     </p>
-    <p v-if="!trialAvailable" class="text-sm italic mt-3">For new subscribers, it may take 10-15 minutes for the site to recognize your subscription.</p>
+    <p v-if="!trialAvailable" class="text-sm italic mt-3">{{ $t('For new subscribers, it may take 10-15 minutes for the site to recognize your subscription.') }}</p>
     <p v-if="error" class="text-red mt-3">{{ error }}</p>
   </div>
 </template>

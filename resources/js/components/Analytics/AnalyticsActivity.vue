@@ -8,9 +8,9 @@
     </div>
 
     <analytics-heading :title="'Activity over the game'" :takeaway="apmTakeaway">
-      Everything on this tab comes from the orders saved in your replays: each ability key press, attack order and talent pick, with the game time it happened. Replays don't record what happened on screen, such as each auto-attack or whether an ability hit. Global is a sample of other players' games under the same filters.
+      {{ $t("Everything on this tab comes from the orders saved in your replays: each ability key press, attack order and talent pick, with the game time it happened. Replays don't record what happened on screen, such as each auto-attack or whether an ability hit. Global is a sample of other players' games under the same filters.") }}
       <br /><br />
-      This chart is the average number of orders given in each game minute, over the games still running at that minute. An order is anything with an ability attached: ability key presses, attack, stop, mount and hearth. Plain move clicks and other mouse movement are not counted. Late minutes come from only a few long games, so they jump around more.
+      {{ $t('This chart is the average number of orders given in each game minute, over the games still running at that minute. An order is anything with an ability attached: ability key presses, attack, stop, mount and hearth. Plain move clicks and other mouse movement are not counted. Late minutes come from only a few long games, so they jump around more.') }}
     </analytics-heading>
     <multi-series-chart
       class="max-w-[75rem] mx-auto mb-8"
@@ -20,7 +20,7 @@
     ></multi-series-chart>
 
     <analytics-heading :title="'When you pick talents'" :takeaway="talentTakeaway">
-      Average game time when the talent for each tier was chosen. That's when you clicked the talent, which can be later than when your team reached the level. Choose a hero in the filters to compare like for like.
+      {{ $t("Average game time when the talent for each tier was chosen. That's when you clicked the talent, which can be later than when your team reached the level. Choose a hero in the filters to compare like for like.") }}
     </analytics-heading>
     <multi-series-chart
       class="max-w-[75rem] mx-auto mb-8"
@@ -32,11 +32,11 @@
     ></multi-series-chart>
 
     <analytics-heading :title="'Ability usage'" :takeaway="abilityTakeaway">
-      Presses count every time you pressed an ability's key or gave that order. Casts estimate how many times you actually used it: a press within 2 seconds of the previous press is the same cast, and for single-charge abilities with a known cooldown, a press before 60% of the base cooldown has passed isn't a new cast. Attack shows the difference best: you give hundreds of attack orders a game, but casts roughly count separate bursts of attacking, since the auto-attacks themselves aren't in replays. Per game figures average over all your games on that hero, including games where you never pressed it.
+      {{ $t("Presses count every time you pressed an ability's key or gave that order. Casts estimate how many times you actually used it: a press within 2 seconds of the previous press is the same cast, and for single-charge abilities with a known cooldown, a press before 60% of the base cooldown has passed isn't a new cast. Attack shows the difference best: you give hundreds of attack orders a game, but casts roughly count separate bursts of attacking, since the auto-attacks themselves aren't in replays. Per game figures average over all your games on that hero, including games where you never pressed it.") }}
     </analytics-heading>
-    <p v-if="!abilityHeroes.length" class="text-center text-gray-light">No ability data for these filters yet.</p>
+    <p v-if="!abilityHeroes.length" class="text-center text-gray-light">{{ $t('No ability data for these filters yet.') }}</p>
     <div v-for="hero in abilityHeroes" :key="hero.id" class="max-w-[75rem] mx-auto mb-6">
-      <h3 class="text-lg font-bold">{{ heroName(hero.id) }} <span class="text-sm text-gray-light">({{ hero.games }} games)</span></h3>
+      <h3 class="text-lg font-bold">{{ heroName(hero.id) }} <span class="text-sm text-gray-light">{{ $t('(:games games)', { games: hero.games }) }}</span></h3>
       <p v-if="hero.takeaway" class="text-base mb-2">{{ hero.takeaway }}</p>
       <multi-series-chart type="bar" :horizontal="true" :labels="hero.chart.labels" :series="hero.chart.series"></multi-series-chart>
       <analytics-numbers :label="'Show every ability; click one for its usage over the game'">
@@ -48,7 +48,7 @@
                 <span class="inline-flex items-center gap-1">
                   {{ $t('Presses per game') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                    <slot><p class="text-sm p-2 text-left">Every key press or order for this ability, averaged over all your games on this hero. Pressing the key again while it's on cooldown still adds a press.</p></slot>
+                    <slot><p class="text-sm p-2 text-left">{{ $t("Every key press or order for this ability, averaged over all your games on this hero. Pressing the key again while it's on cooldown still adds a press.") }}</p></slot>
                   </round-image>
                 </span>
               </th>
@@ -56,7 +56,7 @@
                 <span class="inline-flex items-center gap-1">
                   {{ $t('Casts per game') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                    <slot><p class="text-sm p-2 text-left">Presses grouped into estimated uses: repeats within 2 seconds count once, and presses while a single-charge ability is likely still on cooldown don't count. Abilities whose cooldown gets reduced or reset can be undercounted.</p></slot>
+                    <slot><p class="text-sm p-2 text-left">{{ $t("Presses grouped into estimated uses: repeats within 2 seconds count once, and presses while a single-charge ability is likely still on cooldown don't count. Abilities whose cooldown gets reduced or reset can be undercounted.") }}</p></slot>
                   </round-image>
                 </span>
               </th>
@@ -64,7 +64,7 @@
                 <span class="inline-flex items-center gap-1">
                   {{ $t('Global presses') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                    <slot><p class="text-sm p-2 text-left">The global columns are the same figures from a sample of other players' games on this hero, under the same filters.</p></slot>
+                    <slot><p class="text-sm p-2 text-left">{{ $t("The global columns are the same figures from a sample of other players' games on this hero, under the same filters.") }}</p></slot>
                   </round-image>
                 </span>
               </th>
@@ -73,7 +73,7 @@
                 <span class="inline-flex items-center gap-1">
                   {{ $t('Games used in') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                    <slot><p class="text-sm p-2 text-left">Share of your games on this hero where you pressed this ability at least once.</p></slot>
+                    <slot><p class="text-sm p-2 text-left">{{ $t('Share of your games on this hero where you pressed this ability at least once.') }}</p></slot>
                   </round-image>
                 </span>
               </th>
@@ -82,7 +82,7 @@
                 <span class="inline-flex items-center gap-1">
                   {{ $t('First use') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                    <slot><p class="text-sm p-2 text-left">Average game time of your first press, over the games where you used it.</p></slot>
+                    <slot><p class="text-sm p-2 text-left">{{ $t('Average game time of your first press, over the games where you used it.') }}</p></slot>
                   </round-image>
                 </span>
               </th>
@@ -110,7 +110,7 @@
                 <td colspan="8">
                   <loading-component v-if="timelineLoading"></loading-component>
                   <p v-else-if="timelineError" class="text-center text-gray-light">{{ timelineError }}</p>
-                  <p v-else-if="timeline && !timelineHasData" class="text-center text-gray-light">Per-minute data for this ability is still being filled in for your games. Check back soon.</p>
+                  <p v-else-if="timeline && !timelineHasData" class="text-center text-gray-light">{{ $t('Per-minute data for this ability is still being filled in for your games. Check back soon.') }}</p>
                   <template v-else-if="timeline">
                     <multi-series-chart
                       :labels="timelineMinutes.map(m => m + ' min')"
@@ -120,9 +120,9 @@
                     ></multi-series-chart>
                     <div class="text-center text-sm text-gray-light">
                       <span class="inline-flex items-center gap-1">
-                        {{ row.name }} over the game. Click a legend item to show or hide it, e.g. your deaths and takedowns.
+                        {{ $t(':row over the game. Click a legend item to show or hide it, e.g. your deaths and takedowns.', { row: row.name }) }}
                         <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                          <slot><p class="text-sm p-2 text-left">Per game is the average count in that game minute, over your games on this hero still running at that minute; games where you didn't press it count as 0. Your lines stop once fewer than 5 of your games were still running at that minute, since one or two games aren't a fair average. Deaths and takedowns use the right axis.</p></slot>
+                          <slot><p class="text-sm p-2 text-left">{{ $t("Per game is the average count in that game minute, over your games on this hero still running at that minute; games where you didn't press it count as 0. Your lines stop once fewer than 5 of your games were still running at that minute, since one or two games aren't a fair average. Deaths and takedowns use the right axis.") }}</p></slot>
                         </round-image>
                       </span>
                     </div>

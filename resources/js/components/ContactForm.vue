@@ -7,23 +7,23 @@
       <panel-box>
       <!-- Contact form -->
       <form @submit.prevent="submitForm" class="flex flex-col gap-2">
-        <label for="name" class="text-sm text-subtext">BattleTag</label>
+        <label for="name" class="text-sm text-subtext">{{ $t('BattleTag') }}</label>
         <input class="w-full bg-field text-white rounded-control px-3 py-2 text-sm mb-2" type="text" id="name" v-model="formData.battletag" required>
 
-        <label for="email" class="text-sm text-subtext">Email</label>
+        <label for="email" class="text-sm text-subtext">{{ $t('Email') }}</label>
         <input class="w-full bg-field text-white rounded-control px-3 py-2 text-sm mb-2" type="email" id="email" v-model="formData.email" required>
 
-        <label for="message" class="text-sm text-subtext">Message</label>
+        <label for="message" class="text-sm text-subtext">{{ $t('Message') }}</label>
         <textarea class="w-full bg-field text-white rounded-control px-3 py-2 text-sm min-h-[10em]" id="message" v-model="formData.message" required></textarea>
 
         <!-- Honeypot field - hidden from users but visible to bots -->
         <input type="text" name="website" v-model="formData.website" style="display: none !important; visibility: hidden !important; position: absolute !important; left: -624.9375rem !important;" tabindex="-1" autocomplete="off">
 
-        <button :disabled="isLoading" type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto mt-2">Submit</button>
+        <button :disabled="isLoading" type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto mt-2">{{ $t('Submit') }}</button>
       </form>
       </panel-box>
       <div v-if="emailSent" class="bg-teal rounded p-4 text-center">
-        <p>Email Sent Successfully!</p>
+        <p>{{ $t('Email Sent Successfully!') }}</p>
       </div>
       <div v-if="sendError" class="bg-red rounded p-4 text-center">
         <p>{{ sendError }}</p>

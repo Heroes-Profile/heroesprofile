@@ -1,14 +1,14 @@
 @extends('layouts.app', $bladeGlobals)
 
 @if ($userinput)
-  @section('title', $userinput["name"] . ' Builds & Talent Stats')
+  @section('title', __(':hero Builds & Talent Stats', ['hero' => $userinput["name"]]))
   @if ($topbuild && data_get($topbuild, 'games_played'))
     @section('meta_description', 'Best ' . $userinput["name"] . ' builds for Heroes of the Storm on patch ' . $defaulttimeframe[0] . '. The top build wins ' . data_get($topbuild, 'win_rate') . '% over ' . number_format(data_get($topbuild, 'games_played')) . ' games. Talent win rates and popularity at every level.')
   @else
     @section('meta_description', 'Best ' . $userinput["name"] . ' builds for Heroes of the Storm on patch ' . $defaulttimeframe[0] . '. Talent win rates and popularity at every level.')
   @endif
 @else
-  @section('title', 'Talent Stats & Builds')
+  @section('title', __('Talent Stats & Builds'))
   @section('meta_description', 'Heroes of the Storm talent statistics and builds. Explore talent stats for heroes, including talent win rates and talent builds. Analyze which talents perform well and customize your hero builds for success on Heroes Profile.')
 @endif
 

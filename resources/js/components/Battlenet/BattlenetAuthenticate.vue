@@ -1,8 +1,8 @@
 <template>
   <div class="battlenet-login mx-auto max-w-[43.75rem]  bg-lighten rounded mt-[10vh]">
-    <h1 class="mb-4 bg-teal p-4 rounded-t">Heroes Profile Login</h1>
+    <h1 class="mb-4 bg-teal p-4 rounded-t">{{ $t('Heroes Profile Login') }}</h1>
     <div class="p-4">
-    <p>If you want to access your profile, you need to log in through Battle.net.</p>
+    <p>{{ $t('If you want to access your profile, you need to log in through Battle.net.') }}</p>
     
     <div class="flex items-end my-20 justify-center">
       <single-select-filter :values="filters.regions" :text="'Region'" v-model="selectedRegion" @input-changed="handleInputChange"></single-select-filter>
@@ -10,7 +10,7 @@
       <custom-button class="m-2" :href="'/redirect/authenticate/battlenet'" :text="'Login with Battle.net'" :alt="'Login with Battle.net'" :size="'medium'" :color="'blue'" :disabled="!selectedRegion"></custom-button>
     </div>
 
-   <p class="text-sm"> Heroes Profile uses Blizzard's Battle.net OAuth for authentication.  Battle.net OAuth is an authentication and authorization framework used by Blizzard Entertainment for its online gaming platform, Battle.net. It allows users to securely log in to Battle.net and grant third-party applications limited access to their Battle.net accounts without sharing their account credentials. </p>
+   <p class="text-sm"> {{ $t("Heroes Profile uses Blizzard's Battle.net OAuth for authentication. Battle.net OAuth is an authentication and authorization framework used by Blizzard Entertainment for its online gaming platform, Battle.net. It allows users to securely log in to Battle.net and grant third-party applications limited access to their Battle.net accounts without sharing their account credentials.") }} </p>
   </div>
 </div>
 </template>

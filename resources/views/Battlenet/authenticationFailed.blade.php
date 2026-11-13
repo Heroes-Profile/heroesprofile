@@ -1,6 +1,6 @@
 @extends('layouts.app', $bladeGlobals)    
 
-@section('title', 'Battlenet Authentication Failed')
+@section('title', __('Battlenet Authentication Failed'))
 @section('meta_keywords', 'Battlenet authentication Failed')
 @section('meta_description', 'Battlenet authentication Failed.')
 

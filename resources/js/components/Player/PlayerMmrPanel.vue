@@ -1,9 +1,9 @@
 <template>
-  <panel-box :inner="true" title="Heroes Profile MMR" :link-text="linkHref ? 'HP MMR Breakdown' : null" :link-href="linkHref ? breakdownHref() : null">
+  <panel-box :inner="true" :title="$t('Heroes Profile MMR')" :link-text="linkHref ? 'HP MMR Breakdown' : null" :link-href="linkHref ? breakdownHref() : null">
     <template #title>
       <round-image size="small" icon="fas fa-info" title="info" popupsize="large">
         <div>
-          <p class="max-sm:text-xs">Heroes Profile MMR is a custom algorithm developed by Heroes Profile for approximating a player's skill. This MMR or rank does not correlate to your in-game rank or MMR.</p>
+          <p class="max-sm:text-xs">{{ $t("Heroes Profile MMR is a custom algorithm developed by Heroes Profile for approximating a player's skill. This MMR or rank does not correlate to your in-game rank or MMR.") }}</p>
         </div>
       </round-image>
     </template>

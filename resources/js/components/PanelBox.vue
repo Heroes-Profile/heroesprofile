@@ -1,9 +1,9 @@
 <template>
   <!-- A filter panel: on mobile it hides behind Show Filters and opens full screen, like Filters.vue -->
   <div v-if="filters">
-    <button class="md:hidden p-2 bg-blue w-full" @click="showNav = !showNav">Show Filters</button>
+    <button class="md:hidden p-2 bg-blue w-full" @click="showNav = !showNav">{{ $t('Show Filters') }}</button>
     <div v-show="showNav" :class="[inner ? 'bg-surface-1' : 'bg-surface', 'md:rounded p-4 md:p-6 flex flex-col gap-4 min-w-0 max-md:fixed max-md:inset-0 max-md:z-50 max-md:h-[100dvh] max-md:overflow-y-auto']" @click="closeOnApply">
-      <button class="md:hidden ml-auto text-2xl min-w-[2.75rem] min-h-[2.75rem]" aria-label="Close filters" @click="showNav = false">x</button>
+      <button class="md:hidden ml-auto text-2xl min-w-[2.75rem] min-h-[2.75rem]" :aria-label="$t('Close filters')" @click="showNav = false">x</button>
       <slot></slot>
     </div>
   </div>

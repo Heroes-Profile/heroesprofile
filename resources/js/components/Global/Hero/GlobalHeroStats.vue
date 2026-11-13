@@ -7,7 +7,7 @@
       <template v-if="isSLRank" #headingInfo>
         <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
           <p class="font-normal">
-            In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.
+            {{ $t("In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.") }}
             <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">How rank reading works</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
           </p>
         </round-image>
@@ -66,7 +66,7 @@
     <div v-if="this.data.data" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <div class="flex flex-wrap justify-between gap-2">
         <div>
-          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
+          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
         </div>
         <custom-button @click="toggleChartValue" text="Toggle Chart" alt="Toggle Chart" size="small" :ignoreclick="true"></custom-button>
       </div>
@@ -121,7 +121,7 @@
         <thead class="top-0 w-full sticky z-40">
           <tr>
             <th @click="sortTable('rank')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'rank' }">
-              {{ rankChanged ? 'Sorted Rank|(Rank)' : 'Rank' }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+              {{ rankChanged ? $t('Sorted Rank|(Rank)') : $t('Rank') }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('name')" class="py-2 px-3 text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'name' }">
               {{ $t('Hero') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
@@ -152,7 +152,7 @@
                 <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
                   <slot>
                     <div>
-                      <p>Influence is an integer scaled from -5000 to 5000 that combines Win Rate, Pick Rate, and Ban Rate to determine the impact a hero will have on a particular team.</p>
+                      <p>{{ $t('Influence is an integer scaled from -5000 to 5000 that combines Win Rate, Pick Rate, and Ban Rate to determine the impact a hero will have on a particular team.') }}</p>
                     </div>
                   </slot>
                 </round-image>
@@ -191,7 +191,7 @@
               <td v-if="this.showStatTypeColumn" class="py-2 px-3 ">{{ getValueLocal(getValueFixed(row.total_filter_type)) }}</td>
               <td v-if="!groupSizeActive" class="py-2 px-3 ">
                 <!-- Like Friend Foe's Matches column: a chevron that opens this hero's builds below the row -->
-                <button type="button" @click="viewtalentbuilds(row.name, index)" :aria-expanded="!!toggletalentbuilds[row.name]" :aria-label="`${row.name} talent builds`" title="Talent Builds" class="w-full flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors">
+                <button type="button" @click="viewtalentbuilds(row.name, index)" :aria-expanded="!!toggletalentbuilds[row.name]" :aria-label="`${row.name} talent builds`" :title="$t('Talent Builds')" class="w-full flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors">
                   <img v-if="loadingStates[row.name]" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="Loading"/>
                   <i v-else :class="['fas fa-chevron-right transition-transform', { 'rotate-90': toggletalentbuilds[row.name] }]"></i>
                 </button>

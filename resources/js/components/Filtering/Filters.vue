@@ -318,7 +318,7 @@
           <!-- Player Rank; with includeranksource, an HP | In-Game switch picks HP tiers or in-game SL ranks -->
           <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeplayerrank"
             :values="rankSourceSL ? filters.sl_leagues : filters.rank_tiers"
-            :text="includeranksource ? 'Player Rank' : 'HP Player Rank'"
+            :text="includeranksource ? $t('Player Rank') : $t('HP Player Rank')"
             :field="rankSourceSL ? 'SL Rank' : 'HP Player Rank'"
             :showrankinfo="true"
             :toggletabs="includeranksource ? ['HP', 'In-Game'] : null"
@@ -424,7 +424,7 @@
                   >
                     <div>{{ result.battletagShort }} ({{ result.regionName }})</div>
                     <div class="text-xs text-gray-400">{{ result.latest_game }}</div>
-                    <div>Games Played: {{ result.totalGamesPlayed }}</div>
+                    <div>{{ $t('Games Played: :totalgamesplayed', { totalgamesplayed: result.totalGamesPlayed }) }}</div>
                     <div v-if="result.latestMap">{{ result.latestMap.name }}</div>
                     <div v-if="result.latestHero">
                       <hero-image-wrapper :hero="result.latestHero"></hero-image-wrapper>

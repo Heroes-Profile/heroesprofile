@@ -28,20 +28,20 @@
         {{ $t('Leaderboard Requirements') }}<i :class="['fas fa-chevron-down text-xs transition-transform', { 'rotate-180': showLeaderboardRequirements }]"></i>
       </button>
       <div v-if="showLeaderboardRequirements" class="absolute z-40 left-4 md:left-8 top-full mt-2 w-[40rem] max-w-[calc(100vw-2rem)] max-h-[75vh] overflow-y-auto bg-surface-3 rounded p-6 shadow-lg flex flex-col gap-4 text-sm">
-        <h3 class="font-bold text-base">To be eligible for <span v-if="leaderboardtype == 'Match Prediction'">{{ $t('Match Prediction') }}</span> leaderboards, the following conditions must be met:</h3>
+        <h3 class="font-bold text-base">{{ $t('To be eligible for') }} <span v-if="leaderboardtype == 'Match Prediction'">{{ $t('Match Prediction') }}</span> leaderboards, the following conditions must be met:</h3>
         <ol v-if="leaderboardtype != 'Match Prediction'" class="list-disc ml-5 space-y-1">
           <li>{{ $t('Account level must be greater than or equal to 250.') }}</li>
-          <li>Must have played at least {{ weeksSinceStartScalar }} times the number of weeks since the season started. (Currently that is {{ weekssincestart * weeksSinceStartScalar }} games).</li>
+          <li>{{ $t('Must have played at least :weekssincestartscalar times the number of weeks since the season started. (Currently that is :weekssincestartscalar2 games).', { weekssincestartscalar: weeksSinceStartScalar, weekssincestartscalar2: weekssincestart * weeksSinceStartScalar }) }}</li>
           <li>{{ $t('Must have a win rate greater than or equal to 50%.') }}</li>
         </ol>
         <ol v-else class="list-disc ml-5">
-          <!--<li> Must have predicted at least {{ matchPredictionWeeksSinceStartScalar }} times the number of weeks since the season started. (Currently that is {{ weekssincestart * matchPredictionWeeksSinceStartScalar }} games)</li>-->
+          <!--<li> {{ $t('Must have predicted at least :matchpredictionweekssincestartscalar times the number of weeks since the season started. (Currently that is :matchpredictionweekssincestartscalar2 games)', { matchpredictionweekssincestartscalar: matchPredictionWeeksSinceStartScalar, matchpredictionweekssincestartscalar2: weekssincestart * matchPredictionWeeksSinceStartScalar }) }}</li>-->
           <li>{{ $t('Must have predicted 20 games in the game type and season') }}</li>
         </ol>
         <div class="flex flex-col gap-2">
           <h4 class="font-bold">{{ $t('Leaderboard groups') }}</h4>
-          <p>If fewer than 50 players meet the {{ leaderboardtype == 'Match Prediction' ? 'predictions' : 'games played' }} requirement, it is lowered by one game per week at a time until at least 50 players qualify, down to a minimum of 5 games. Each step down is a new group: Group A met the full requirement, Group B met the next step down, and so on. Each group shows the games it required.</p>
-          <p>Everyone in Group A ranks above everyone in Group B, even with a lower {{ leaderboardtype == 'Match Prediction' ? 'prediction rate' : 'Heroes Profile Rating' }}, so players who met the full requirement are never passed by players who have played fewer games. Within a group, players are ranked by {{ leaderboardtype == 'Match Prediction' ? 'prediction rate' : 'Heroes Profile Rating' }}.</p>
+          <p>{{ leaderboardtype == 'Match Prediction' ? $t('If fewer than 50 players meet the predictions requirement, it is lowered by one game per week at a time until at least 50 players qualify, down to a minimum of 5 games. Each step down is a new group: Group A met the full requirement, Group B met the next step down, and so on. Each group shows the games it required.') : $t('If fewer than 50 players meet the games played requirement, it is lowered by one game per week at a time until at least 50 players qualify, down to a minimum of 5 games. Each step down is a new group: Group A met the full requirement, Group B met the next step down, and so on. Each group shows the games it required.') }}</p>
+          <p>Everyone in Group A ranks above everyone in Group B, even with a lower {{ leaderboardtype == 'Match Prediction' ? 'prediction rate' : $t('Heroes Profile Rating') }}, so players who met the full requirement are never passed by players who have played fewer games. Within a group, players are ranked by {{ leaderboardtype == 'Match Prediction' ? 'prediction rate' : $t('Heroes Profile Rating') }}.</p>
         </div>
         <template v-if="leaderboardtype != 'Match Prediction'">
           <h4 class="font-bold">Heroes Profile Rating formula</h4>
@@ -91,7 +91,7 @@
               <span v-else-if="playerRating == 0" class="text-sm">
                 {{ $t('No data for the selected filters') }}
               </span>
-              <custom-button class="h-10" @click="calculateHPRating(user)" text="Calculate My HP Rating" alt="Calculate My HP Rating" :ignoreclick="true" :disabled="!user" :title="user ? null : 'Log in with Battle.net to use'" :loading="ratingLoading"></custom-button>
+              <custom-button class="h-10" @click="calculateHPRating(user)" text="Calculate My HP Rating" alt="Calculate My HP Rating" :ignoreclick="true" :disabled="!user" :title="user ? null : $t('Log in with Battle.net to use')" :loading="ratingLoading"></custom-button>
             </div>
           </div>
 
@@ -102,7 +102,7 @@
             <div ref="responsivetable" class="grid min-w-full" style="width: fit-content">
             <template v-for="group in groupedData" :key="group.group">
             <h3 v-if="showGroupHeadings" class="stack-header !mx-0 mt-6 first:mt-0 mb-2">
-              {{ group.name ?? groupName(group.group) }}<span v-if="group.minGamesRequired !== null">&nbsp;- At least {{ group.minGamesRequired.toLocaleString('en-US') }} games played</span>
+              {{ group.name ?? groupName(group.group) }}<span v-if="group.minGamesRequired !== null">&nbsp;- {{ $t('At least :count games played', { count: group.minGamesRequired.toLocaleString('en-US') }) }}</span>
             </h3>
             <table class="min-w-0 w-full responsive-table relative">
               <thead class=" top-0 w-full  z-40">
@@ -113,7 +113,7 @@
                   <th :class="['py-2 px-3  text-center text-sm leading-4',{ 'bg-teal text-white': sortKey === 'battletag'}]">
                     <div class="flex items-center justify-center gap-3">
                       <span class="cursor-pointer" @click="sortTable('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                      <search-input v-model="searchTerm" placeholder="Search BattleTag" :collapsible="true" class="w-40"></search-input>
+                      <search-input v-model="searchTerm" :placeholder="$t('Search BattleTag')" :collapsible="true" class="w-40"></search-input>
                     </div>
                   </th>            
                   <th @click="sortTable('region_id')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'region_id'}]">
@@ -123,7 +123,7 @@
                     <span class="inline-flex items-center gap-2">{{ $t('Storm League Rank') }}
                       <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                         <p class="font-normal normal-case">
-                          Real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is listed by the latest rank read for them this season, grouped by league: Grandmasters by ladder position, then Master, then each league by division. Within a division, players with at least {{ data.length ? data[0].min_games : 0 }} Storm League games this season (the Player leaderboard's games requirement) come first, by Storm League win rate; players under it follow, by games played. Ties go to the rank read in more games. Shows the top 500 in each league.
+                          {{ $t("Real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is listed by the latest rank read for them this season, grouped by league: Grandmasters by ladder position, then Master, then each league by division. Within a division, players with at least :games Storm League games this season (the Player leaderboard's games requirement) come first, by Storm League win rate; players under it follow, by games played. Ties go to the rank read in more games. Shows the top 500 in each league.", { games: data.length ? data[0].min_games : 0 }) }}
                           <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">How rank reading works</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
                         </p>
                       </round-image>
@@ -146,7 +146,7 @@
                     </span>
                   </th>      
                   <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('mmr')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'mmr'}]">
-                    HP {{ leaderboardtype }} MMR<sort-indicator :column="'mmr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                    {{ $t('HP :leaderboardtype MMR', { leaderboardtype: leaderboardtype }) }}<sort-indicator :column="'mmr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th> 
                   <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('mmr')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'mmr'}]">
                     {{ $t('HP Tier') }}<sort-indicator :column="'mmr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
@@ -514,7 +514,7 @@ export default {
       this.sortKey = key;
     },
     groupName(group){
-      return `Group ${String.fromCharCode(65 + group)}`;
+      return this.$t('Group :letter', { letter: String.fromCharCode(65 + group) });
     },
     ratingText(playerRating, playerRatingGamesPlayed){
       let scalar = this.weekssincestart * this.weeksSinceStartScalar;

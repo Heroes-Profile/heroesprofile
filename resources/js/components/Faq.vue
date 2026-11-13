@@ -13,7 +13,7 @@
             v-model="search"
             type="text"
             :placeholder="$t('Search FAQ')"
-            aria-label="Search FAQ"
+            :aria-label="$t('Search FAQ')"
             class="w-full bg-field text-white rounded-control pl-9 pr-3 py-2 text-sm"
           />
         </div>
@@ -21,7 +21,7 @@
 
       <!-- No results -->
       <div v-if="filteredCategories.length === 0" class="text-center text-subtext py-10">
-        No results found for "{{ search }}". Try a different keyword or ask us below.
+        {{ $t('No results found for ":search". Try a different keyword or ask us below.', { search: search }) }}
       </div>
 
       <!-- FAQ Categories -->
@@ -53,7 +53,7 @@
 
       <!-- Site Pages: config/faq.php, shared with the help chat -->
       <div id="site-pages" class="mt-10 mb-8">
-        <panel-box title="Site Pages">
+        <panel-box :title="$t('Site Pages')">
         <div class="flex flex-col gap-6">
           <div v-for="section in faqPages" :key="section.name">
             <h3 class="font-bold mb-1">{{ section.name }}</h3>
@@ -87,7 +87,7 @@
 
       <!-- Patch & Season History -->
       <div id="patch-history" class="mt-10 mb-8">
-        <panel-box title="Patch & Season History">
+        <panel-box :title="$t('Patch & Season History')">
         <div>
           <scroll-hint-container :fit="true">
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
@@ -107,7 +107,7 @@
                   <span v-else>{{ row.game_version }}</span>
                 </td>
                 <td style="padding:0.1875rem 0.5rem;">{{ formatDate(row.start_date) }}</td>
-                <td style="padding:0.1875rem 0.5rem;">{{ row.end_date ? formatDate(row.end_date) : 'Present' }}</td>
+                <td style="padding:0.1875rem 0.5rem;">{{ row.end_date ? formatDate(row.end_date) : $t('Present') }}</td>
               </tr>
             </tbody>
           </table>
@@ -118,7 +118,7 @@
 
       <!-- Season Dates -->
       <div id="season-dates" class="mt-10 mb-8">
-        <panel-box title="Season Dates">
+        <panel-box :title="$t('Season Dates')">
         <div>
           <p class="text-sm text-soft mb-3">{{ $t('Shown in your time zone.') }}</p>
           <scroll-hint-container :fit="true">
@@ -132,7 +132,7 @@
             </thead>
             <tbody>
               <tr v-for="row in seasonDates" :key="row.id">
-                <td style="padding:0.1875rem 0.5rem;">{{ row.year }} Season {{ row.season }}</td>
+                <td style="padding:0.1875rem 0.5rem;">{{ $t(':year Season :season', { year: row.year, season: row.season }) }}</td>
                 <td style="padding:0.1875rem 0.5rem;"><format-date :input="row.start_date"></format-date></td>
                 <td style="padding:0.1875rem 0.5rem;"><format-date v-if="row.end_date" :input="row.end_date"></format-date></td>
               </tr>
@@ -145,7 +145,7 @@
 
       <!-- Match Awards -->
       <div id="awards" class="mt-10 mb-8">
-        <panel-box title="Match Awards">
+        <panel-box :title="$t('Match Awards')">
         <div>
           <scroll-hint-container :fit="true">
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
@@ -173,7 +173,7 @@
 
       <!-- Ask a Question -->
       <div class="mt-12 mb-8">
-        <panel-box title="Still have a question?">
+        <panel-box :title="$t('Still have a question?')">
         <div>
           <p class="text-soft mb-4">
             {{ $t("Can't find what you're looking for? Send us a message and we'll get back to you. You can also email us directly at") }}
@@ -220,7 +220,7 @@
                 type="submit"
                 class="btn bg-blue hover:bg-lblue px-6"
               >
-                {{ $t(isLoading ? 'Sending...' : 'Send Question') }}
+                {{ $t(isLoading ? $t('Sending...') : $t('Send Question')) }}
               </button>
               <span v-if="emailSent" class="text-teal">{{ $t("Message sent! We'll be in touch.") }}</span>
             </div>

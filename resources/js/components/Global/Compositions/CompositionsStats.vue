@@ -41,7 +41,7 @@
       <div class="flex justify-between">
         <span></span>
         <span>
-          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
+          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
         </span>
       </div>
 
@@ -102,19 +102,19 @@
                   <thead>
                     <tr>
                       <th class="py-2 px-3 text-center text-sm leading-4">
-                        Top {{ row.role_one.name }}
+                        {{ $t('Top :one', { one: row.role_one.name }) }}
                       </th>
                       <th class="py-2 px-3 text-center text-sm leading-4">
-                        Top {{ row.role_two.name }}
+                        {{ $t('Top :two', { two: row.role_two.name }) }}
                       </th>
                       <th class="py-2 px-3 text-center text-sm leading-4">
-                        Top {{ row.role_three.name }}
+                        {{ $t('Top :three', { three: row.role_three.name }) }}
                       </th>
                       <th class="py-2 px-3 text-center text-sm leading-4">
-                        Top {{ row.role_four.name }}
+                        {{ $t('Top :four', { four: row.role_four.name }) }}
                       </th>
                       <th class="py-2 px-3 text-center text-sm leading-4">
-                        Top {{ row.role_five.name }}
+                        {{ $t('Top :five', { five: row.role_five.name }) }}
                       </th>
                     </tr>
    

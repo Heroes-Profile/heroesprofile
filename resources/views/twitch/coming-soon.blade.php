@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)
-@section('title', 'Heroes Profile on Twitch')
+@section('title', __('Heroes Profile on Twitch'))
 @section('meta_keywords', 'Heroes of the Storm, Twitch, extension')
 @section('meta_description', 'The Heroes Profile Twitch extension is in review and not open to streamers yet.')
 @section('content')

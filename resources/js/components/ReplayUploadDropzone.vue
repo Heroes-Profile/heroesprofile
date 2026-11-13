@@ -30,21 +30,20 @@
       </div>
 
       <p class="text-xs text-gray-medium mt-3">
-        .StormReplay files, up to {{ formatSize(maxBytes) }} each. Uploading more than about 700
-        at once is easier by folder.
+        {{ $t('.StormReplay files, up to :size each. Uploading more than about 700 at once is easier by folder.', { size: formatSize(maxBytes) }) }}
       </p>
     </div>
 
     <div v-if="ignoredCount" class="text-xs text-gray-medium mb-3">
-      Ignored {{ ignoredCount }} file{{ ignoredCount === 1 ? '' : 's' }} that {{ ignoredCount === 1 ? 'was' : 'were' }} not a .StormReplay.
+      {{ $t('Ignored :ignoredcount file:s that :were not a .StormReplay.', { ignoredcount: ignoredCount, s: ignoredCount === 1 ? '' : $t('s'), were: ignoredCount === 1 ? $t('was') : $t('were') }) }}
     </div>
 
     <div v-if="files.length" class="mb-4">
       <div class="flex flex-wrap gap-4 text-sm mb-2">
-        <span>{{ finishedCount }} of {{ files.length }} done</span>
-        <span class="text-lteal">{{ counts.Success || 0 }} uploaded</span>
-        <span class="text-yellow">{{ counts.Duplicate || 0 }} already had</span>
-        <span class="text-lred">{{ failedCount }} failed</span>
+        <span>{{ $t(':finishedcount of :files done', { finishedcount: finishedCount, files: files.length }) }}</span>
+        <span class="text-lteal">{{ $t(':success uploaded', { success: counts.Success || 0 }) }}</span>
+        <span class="text-yellow">{{ $t(':duplicate already had', { duplicate: counts.Duplicate || 0 }) }}</span>
+        <span class="text-lred">{{ $t(':failedcount failed', { failedcount: failedCount }) }}</span>
       </div>
 
       <div class="h-1 bg-darken">
@@ -53,7 +52,7 @@
     </div>
 
     <div v-if="waitingSeconds" class="bg-darken p-3 text-sm mb-4">
-      Rate limited by the API — waiting {{ waitingSeconds }}s, then carrying on.
+      {{ $t('Rate limited by the API — waiting :waitingsecondss, then carrying on.', { waitingseconds: waitingSeconds }) }}
     </div>
 
     <table v-if="files.length" class="min-w-0 w-full responsive-table">

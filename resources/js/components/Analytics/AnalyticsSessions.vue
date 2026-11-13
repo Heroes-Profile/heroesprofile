@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p v-if="!games.length" class="text-center text-gray-light">No games match the current filters.</p>
+    <p v-if="!games.length" class="text-center text-gray-light">{{ $t('No games match the current filters.') }}</p>
 
     <template v-else>
       <!-- The answers first -->
@@ -13,8 +13,7 @@
 
       <!-- Sessions: does your play drop off the longer you play -->
       <analytics-heading :title="'Do you play worse the longer you play?'" :takeaway="dropTakeaway">
-        A session is a run of games with no break longer than 30 minutes between the end of one game and the start of the next. Sessions are built from all your games, then only the games matching the current filters are counted, at their place in the session.
-        Each point is your 1st, 2nd, 3rd... game of a session; Game 6+ combines every later game. Besides win rate, it shows how you played: deaths, overstaying lost fights and being caught first per 10 minutes of game, time spent dead, and your presence at fights and at your team's objectives. These come from the nightly coaching run, so games processed today join tomorrow. The answer compares your first two games of a session with your 4th game on.
+        {{ $t("A session is a run of games with no break longer than 30 minutes between the end of one game and the start of the next. Sessions are built from all your games, then only the games matching the current filters are counted, at their place in the session. Each point is your 1st, 2nd, 3rd... game of a session; Game 6+ combines every later game. Besides win rate, it shows how you played: deaths, overstaying lost fights and being caught first per 10 minutes of game, time spent dead, and your presence at fights and at your team's objectives. These come from the nightly coaching run, so games processed today join tomorrow. The answer compares your first two games of a session with your 4th game on.") }}
       </analytics-heading>
       <div class="grid md:grid-cols-2 gap-6 mb-8">
         <multi-series-chart type="line" format="percent" :min="0" :max="100" :reference="50" :labels="positionLabels" :title="'Win rate and presence by game number in a session'" :series="positionShareSeries"></multi-series-chart>
@@ -23,12 +22,12 @@
 
       <!-- Tilt -->
       <analytics-heading :title="'After a win or a loss'" :takeaway="sessionTakeaway">
-        Win Rate After a Win (or Loss) uses only games whose previous game in the same session was a win (or loss), so the first game of each session is not counted. A low after-a-loss rate can be a sign of tilt.
+        {{ $t('Win Rate After a Win (or Loss) uses only games whose previous game in the same session was a win (or loss), so the first game of each session is not counted. A low after-a-loss rate can be a sign of tilt.') }}
       </analytics-heading>
 
       <!-- Time of day -->
       <analytics-heading :title="'When you play'" :takeaway="timeTakeaway">
-        Win rate by the hour and weekday each game started, in your browser's local time zone. Time of day is grouped into four-hour blocks.
+        {{ $t("Win rate by the hour and weekday each game started, in your browser's local time zone. Time of day is grouped into four-hour blocks.") }}
       </analytics-heading>
       <div class="grid md:grid-cols-2 gap-6 mb-8">
         <multi-series-chart type="bar" format="percent" :reference="50" :labels="hourBuckets.map(b => b.label)" :title="'Win rate by time of day'" :series="hourSeries"></multi-series-chart>
@@ -37,13 +36,13 @@
 
       <!-- Game length -->
       <analytics-heading :title="'Game length'" :takeaway="lengthTakeaway">
-        Your win rate on each map split by how long the game lasted. Hover a bar for how many of your games fall in that length range.
+        {{ $t('Your win rate on each map split by how long the game lasted. Hover a bar for how many of your games fall in that length range.') }}
       </analytics-heading>
       <multi-series-chart type="bar" format="percent" :reference="50" :labels="byMap.map(row => mapName(row.map))" :title="'Win rate by game length on each map'" :series="lengthSeries"></multi-series-chart>
       <analytics-numbers>
         <table class="min-w-0 w-full responsive-table">
           <thead>
-            <tr><th>{{ $t('Map') }}</th><th>{{ $t('Games') }}</th><th><span class="inline-flex items-center gap-1">{{ $t('Average length') }} <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true"><slot><p class="text-sm p-2 text-left">Mean game length on that map, in minutes:seconds.</p></slot></round-image></span></th><th v-for="b in lengthBuckets" :key="b.label">{{ b.label }}</th></tr>
+            <tr><th>{{ $t('Map') }}</th><th>{{ $t('Games') }}</th><th><span class="inline-flex items-center gap-1">{{ $t('Average length') }} <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true"><slot><p class="text-sm p-2 text-left">{{ $t('Mean game length on that map, in minutes and seconds.') }}</p></slot></round-image></span></th><th v-for="b in lengthBuckets" :key="b.label">{{ b.label }}</th></tr>
           </thead>
           <tbody>
             <tr v-for="row in byMap" :key="row.map">
@@ -54,12 +53,12 @@
             </tr>
           </tbody>
         </table>
-        <p class="mt-2 text-gray-light">The number in brackets is how many of your games fall in that length range; - means none.</p>
+        <p class="mt-2 text-gray-light">{{ $t('The number in brackets is how many of your games fall in that length range; - means none.') }}</p>
       </analytics-numbers>
 
       <!-- Disconnects -->
       <analytics-heading :title="'Disconnects'" :takeaway="dcTakeaway">
-        Each box is your win rate in those games, with how many games it covers. A disconnect (DC) is any player leaving more than 30 seconds before the game ended, even if they rejoined later. Leaving in the last 30 seconds is treated as the normal end-of-game exit. "You disconnected" counts games where you disconnected, "a teammate disconnected" games where another player on your team did, and "an enemy disconnected" games where anyone on the enemy team did. A game can count in more than one. No disconnects uses only games where nobody disconnected.
+        {{ $t('Each box is your win rate in those games, with how many games it covers. A disconnect (DC) is any player leaving more than 30 seconds before the game ended, even if they rejoined later. Leaving in the last 30 seconds is treated as the normal end-of-game exit. "You disconnected" counts games where you disconnected, "a teammate disconnected" games where another player on your team did, and "an enemy disconnected" games where anyone on the enemy team did. A game can count in more than one. No disconnects uses only games where nobody disconnected.') }}
       </analytics-heading>
       <div class="flex flex-wrap justify-center gap-4">
         <!-- Each is your win rate in those games, with how many games beside it -->

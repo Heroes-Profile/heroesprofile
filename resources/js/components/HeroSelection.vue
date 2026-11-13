@@ -6,7 +6,7 @@
         v-model="searchQuery"
         @input="$emit('search', searchQuery)"
         class="border rounded p-2 text-black"
-        placeholder="Search for a hero..."
+        :placeholder="$t('Search for a hero...')"
       />
     </div>
 

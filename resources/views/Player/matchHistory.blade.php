@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', $battletag . " Match History")
+@section('title', __(':battletag Match History', ['battletag' => $battletag]))
 @section('meta_keywords', 'Match History, Player Matches, Game Results, Match Stats')
 @section('meta_description', 'Explore the match history of ' . $battletag . ', including game details, heroes played, talents, wins, and losses.')
 @section('content')

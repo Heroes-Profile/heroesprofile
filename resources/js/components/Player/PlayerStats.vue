@@ -40,7 +40,7 @@
               <template #trigger>
                 <real-rank-badge :rank="realRank.current" :width="48"></real-rank-badge>
               </template>
-              <image-hover-box title="Storm League"></image-hover-box>
+              <image-hover-box :title="$t('Storm League')"></image-hover-box>
               <real-rank-badge :rank="realRank.current" :width="96" label="below" label-class="text-subtext mt-1"></real-rank-badge>
             </icon-with-hover>
             <div class="flex flex-col">
@@ -50,8 +50,8 @@
             <div class="card-actions ml-auto flex gap-1 text-header">
               <loading-component v-if="cardDownloading" :compact="true" :textoverride="true">{{ $t('Processing image for download...') }}</loading-component>
               <template v-else>
-                <button v-if="canCopyImage" type="button" class="p-1.5 hover:text-lteal" :title="cardCopied ? 'Copied' : 'Copy card image'" @click="copyCard"><i :class="cardCopied ? 'fa-solid fa-check' : 'fa-solid fa-copy'"></i></button>
-                <button type="button" class="p-1.5 hover:text-lteal" title="Download card image" @click="downloadCard"><i class="fa-solid fa-download"></i></button>
+                <button v-if="canCopyImage" type="button" class="p-1.5 hover:text-lteal" :title="cardCopied ? $t('Copied') : $t('Copy card image')" @click="copyCard"><i :class="cardCopied ? 'fa-solid fa-check' : 'fa-solid fa-copy'"></i></button>
+                <button type="button" class="p-1.5 hover:text-lteal" :title="$t('Download card image')" @click="downloadCard"><i class="fa-solid fa-download"></i></button>
               </template>
             </div>
           </div>
@@ -90,7 +90,7 @@
         <div class="flex-1 flex flex-col gap-6 min-w-0">
           <div class="grid 2xl:grid-cols-2 gap-6">
             <!-- Win rate by role -->
-            <panel-box :inner="true" title="Win Rate By Role" link-text="All Roles" :link-href="profileUrl + '/Role'">
+            <panel-box :inner="true" :title="$t('Win Rate By Role')" link-text="All Roles" :link-href="profileUrl + '/Role'">
               <div class="flex flex-col gap-3">
                 <div v-for="role in roleWinRates" :key="role.label" class="flex flex-col gap-1.5">
                   <a class="text-header w-fit hover:underline" :href="profileUrl + '/Role/' + role.label">{{ role.label }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
@@ -112,7 +112,7 @@
       <div class="grid xl:grid-cols-2 gap-6">
         <player-real-rank :blizzid="blizzid" :region="region" @loaded="realRank = $event"></player-real-rank>
 
-        <panel-box v-if="data.weekday_data" title="Week Day Win Rates">
+        <panel-box v-if="data.weekday_data" :title="$t('Week Day Win Rates')">
           <player-weekday-win-rates :data="data.weekday_data"></player-weekday-win-rates>
         </panel-box>
         <!-- Week days are only shown to the profile's owner; everyone else gets an ad in their place -->
@@ -123,7 +123,7 @@
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
-      <panel-box v-if="data.matchData" title="Recent Matches" link-text="Match History" :link-href="profileUrl + '/Match/History'" :divider="false">
+      <panel-box v-if="data.matchData" :title="$t('Recent Matches')" link-text="Match History" :link-href="profileUrl + '/Match/History'" :divider="false">
         <div>
           <game-summary-header></game-summary-header>
           <game-summary-box v-for="(item, index) in data.matchData" :key="index" :data="item" :replay-viewer-allowed="replayViewerAllowed" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
@@ -163,7 +163,7 @@
                 <skeleton-box v-for="index in 6" :key="index" class="h-10"></skeleton-box>
               </panel-box>
             </div>
-            <panel-box :inner="true" title="Heroes Profile MMR">
+            <panel-box :inner="true" :title="$t('Heroes Profile MMR')">
               <skeleton-box v-for="index in 6" :key="index" class="h-9"></skeleton-box>
             </panel-box>
           </div>
@@ -176,7 +176,7 @@
         </panel-box>
       </div>
 
-      <panel-box title="Recent Matches" :divider="false">
+      <panel-box :title="$t('Recent Matches')" :divider="false">
         <div>
           <game-summary-header></game-summary-header>
           <game-summary-skeleton v-for="index in 7" :key="index"></game-summary-skeleton>

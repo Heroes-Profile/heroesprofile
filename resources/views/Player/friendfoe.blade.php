@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', $battletag . " Friend and Foe Data")
+@section('title', __(':battletag Friend and Foe Data', ['battletag' => $battletag]))
 @section('meta_keywords', 'Friend and Foe Data, Player Connections, Player Statistics')
 @section('meta_description', 'Explore the connections and statistics for ' . $battletag . ', including friends and foes. Analyze the players ' . $battletag . ' frequently plays with and against.')
 @section('content')

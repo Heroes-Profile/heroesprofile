@@ -1,8 +1,8 @@
 <template>
-  <modal-box title="Important: Conditions & Agreement">
+  <modal-box :title="$t('Important: Conditions & Agreement')">
     <template #header>
       <p>
-        In order to view accurate data for your matches, regularly upload via the <a class="underline hover:text-header" href="/Upload" target="_blank">Heroes Profile Uploader</a>.
+        {{ $t('In order to view accurate data for your matches, regularly upload via the') }} <a class="underline hover:text-header" href="/Upload" target="_blank">Heroes Profile Uploader</a>.
       </p>
     </template>
 
@@ -17,12 +17,12 @@
           <li>{{ $t('Do not only upload wins') }}</li>
           <li>{{ $t('Do not upload losses through excluded uploaders to try and game the system into excluding it') }}</li>
           <li>{{ $t('Use automatic uploaders to prevent friends/other players from making your account appear to violate these rules') }}</li>
-          <li>Do not turn the uploader on and off during playtime between matches, as this results in behavior that looks like replay pruning and may cause a review or account to be flagged</li>
+          <li>{{ $t('Do not turn the uploader on and off during playtime between matches, as this results in behavior that looks like replay pruning and may cause a review or account to be flagged') }}</li>
         </ul>
       </div>
 
       <p>
-        Our zero tolerance process means player accounts will be banned from the site. The data will no longer be viewable or accessible. Violations will result in irreversible action.
+        {{ $t('Our zero tolerance process means player accounts will be banned from the site. The data will no longer be viewable or accessible. Violations will result in irreversible action.') }}
       </p>
 
       <div>

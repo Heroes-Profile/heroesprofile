@@ -7,7 +7,7 @@
     </div>
     <div v-if="show !== 'talents' && code" :class="['flex items-center gap-1 text-sm', alignClass]">
       <span>{{ code }}</span>
-      <button type="button" class="p-1.5 hover:text-lteal" :title="copied ? 'Copied' : 'Copy build to paste into the in-game chat'" :aria-label="copied ? 'Copied' : 'Copy build'" @click.stop.prevent="copy">
+      <button type="button" class="p-1.5 hover:text-lteal" :title="$t(copied ? $t('Copied') : $t('Copy build to paste into the in-game chat'))" :aria-label="$t(copied ? $t('Copied') : $t('Copy build'))" @click.stop.prevent="copy">
         <i :class="copied ? 'fa-solid fa-check' : 'fa-solid fa-copy'"></i>
       </button>
     </div>

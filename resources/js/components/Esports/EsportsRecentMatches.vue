@@ -17,18 +17,18 @@
         <div class="group/row relative flex flex-wrap items-center justify-between gap-y-4 rounded overflow-hidden 2xl:flex-nowrap group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2">
           <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
           <!-- The whole row opens the match; the match ID and player links sit on top of it -->
-          <a :href="matchUrl(row)" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
+          <a :href="matchUrl(row)" class="absolute inset-0 z-[1]" :aria-label="$t('Open match')"></a>
 
           <div class="relative flex-1 md:max-w-[25.625rem] min-w-[18.75rem] self-stretch flex items-center max-md:justify-center pl-6 py-4">
             <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="mapArt(row)"></div>
             <div class="absolute inset-y-0 left-0 w-1.5 bg-teal"></div>
             <div class="relative flex flex-col gap-1.5 whitespace-nowrap">
               <span class="font-bold">{{ row.game_map ? row.game_map.name : '' }}</span>
-              <span class="text-base font-medium text-header">Game {{ row.game }} · Round {{ row.round }}</span>
+              <span class="text-base font-medium text-header">{{ $t('Game :game · Round :round', { game: row.game, round: row.round }) }}</span>
               <span v-if="rowContext(row)" class="text-xs text-subtext">{{ rowContext(row) }}</span>
               <span class="text-xs">{{ formatRowDate(row.game_date) }}</span>
               <span class="relative z-[2] text-sm">
-                {{ leagueName }} Match ID
+                {{ $t(':leaguename Match ID', { leaguename: leagueName }) }}
                 <a class="group/bt inline-flex items-center" :href="matchUrl(row)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
               </span>
             </div>
@@ -45,7 +45,7 @@
             </div>
             <div class="col-start-2 row-start-1 flex flex-col items-center">
               <span class="text-3xl font-semibold tabular-nums whitespace-nowrap">{{ seriesScore(row, sidesOf(row)[0]) }} – {{ seriesScore(row, sidesOf(row)[1]) }}</span>
-              <span class="text-xs text-subtext whitespace-nowrap">Series after game {{ row.game }}</span>
+              <span class="text-xs text-subtext whitespace-nowrap">{{ $t('Series after game :game', { game: row.game }) }}</span>
             </div>
           </div>
 
@@ -78,17 +78,17 @@
           <div class="max-md:hidden flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
             <span class="w-[20rem] shrink-0 pl-5">{{ $t('Match') }}</span>
             <span class="w-[11.25rem] shrink-0 px-4">{{ $t('Game') }}</span>
-            <span class="w-[10rem] shrink-0 px-4">{{ leagueName }} Match ID</span>
+            <span class="w-[10rem] shrink-0 px-4">{{ $t(':leaguename Match ID', { leaguename: leagueName }) }}</span>
             <span class="w-[35rem] shrink-0 px-4">{{ $t('Teams') }}</span>
             <span class="w-[15rem] shrink-0 px-4">{{ $t('Series') }}</span>
           </div>
           <template v-for="(row, index) in data" :key="row.replayID">
             <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="matchUrl(row)" :title="row.game_map ? row.game_map.name : ''" :date="formatRowDate(row.game_date)" :map-art="row.game_map ? row.game_map.sanitized_map_name : null">
-              {{ teamName(row, sidesOf(row)[0]) }} <span class="text-white font-medium">{{ seriesScore(row, sidesOf(row)[0]) }} – {{ seriesScore(row, sidesOf(row)[1]) }}</span> {{ teamName(row, sidesOf(row)[1]) }} · Game {{ row.game }} · Round {{ row.round }}
+              {{ teamName(row, sidesOf(row)[0]) }} <span class="text-white font-medium">{{ seriesScore(row, sidesOf(row)[0]) }} – {{ seriesScore(row, sidesOf(row)[1]) }}</span> {{ $t(':teamname · Game :game · Round :round', { teamname: teamName(row, sidesOf(row)[1]), game: row.game, round: row.round }) }}
             </match-row-mobile>
 <div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
             <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
-            <a :href="matchUrl(row)" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
+            <a :href="matchUrl(row)" class="absolute inset-0 z-[1]" :aria-label="$t('Open match')"></a>
             <div class="relative w-[20rem] shrink-0 self-stretch flex items-center pl-5 py-2.5">
               <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="mapArt(row)"></div>
               <div class="absolute inset-y-0 left-0 w-1.5 bg-teal"></div>
@@ -98,7 +98,7 @@
                 <span v-if="rowContext(row)" class="text-xs text-subtext">{{ rowContext(row) }}</span>
               </div>
             </div>
-            <span class="relative w-[11.25rem] shrink-0 px-4 font-medium text-header">Game {{ row.game }} · Round {{ row.round }}</span>
+            <span class="relative w-[11.25rem] shrink-0 px-4 font-medium text-header">{{ $t('Game :game · Round :round', { game: row.game, round: row.round }) }}</span>
             <span class="relative z-[2] w-[10rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="matchUrl(row)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
             <div class="relative w-[35rem] shrink-0 px-4 flex items-center gap-4">
               <template v-for="(team, position) in sidesOf(row)" :key="team">
@@ -110,7 +110,7 @@
                 </span>
               </template>
             </div>
-            <span class="relative w-[15rem] shrink-0 px-4 text-sm tabular-nums">{{ seriesScore(row, sidesOf(row)[0]) }} – {{ seriesScore(row, sidesOf(row)[1]) }} <span class="text-subtext">after game {{ row.game }}</span></span>
+            <span class="relative w-[15rem] shrink-0 px-4 text-sm tabular-nums">{{ seriesScore(row, sidesOf(row)[0]) }} – {{ seriesScore(row, sidesOf(row)[1]) }} <span class="text-subtext">{{ $t('after game :game', { game: row.game }) }}</span></span>
           </div>
 </template>
         </div>

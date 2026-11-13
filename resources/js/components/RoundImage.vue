@@ -100,9 +100,9 @@
         }
         ]" >
         <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft tracking-normal text-left p-4 rounded drop-shadow-md z-30">
-          <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
-          <div class="bg-red" v-if="ispatreon">Patreon Subscriber</div>
-          <div class="bg-[#4c1d95]" v-if="voideye">Marked by the Void</div>
+          <div class="bg-yellow" v-if="hpowner">{{ $t('Heroes Profile Owner') }}</div>
+          <div class="bg-red" v-if="ispatreon">{{ $t('Patreon Subscriber') }}</div>
+          <div class="bg-[#4c1d95]" v-if="voideye">{{ $t('Marked by the Void') }}</div>
           <div class="bg-teal" v-if="award">{{award.title}}</div>
           <div ref="hoverContent" class="contents"><slot></slot></div>
           <custom-button v-if="tapped" class="mt-2" :href="href" :text="linkText" size="small"></custom-button>

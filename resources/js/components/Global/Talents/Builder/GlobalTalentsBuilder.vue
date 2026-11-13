@@ -2,7 +2,7 @@
   <div>
     <global-async-debug-banner page-label="Global Talent Builder" />
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" :infoText2="infoText2" -->
-    <page-heading :heading="selectedHero ? selectedHero.name + ' Talent Calculator & Builder' : 'Talent Calculator & Builder'"></page-heading>
+    <page-heading :heading="selectedHero ? selectedHero.name + ' Talent Calculator & Builder' : $t('Talent Calculator & Builder')"></page-heading>
 
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes"></hero-selection>
@@ -86,7 +86,7 @@
         <span class="flex items-center gap-4">
           <tab-button :tab1text="'Auto Load'" :tab2text="'On Filter'" :ignoreclick="true" @tab-click="loadStyleSelected" :overridedefaultside="localLoad === 'filter' ? 'right' : 'left'"></tab-button>
           <tab-button v-if="!isMobile" :tab1text="'Vertical'" :tab2text="'Horizontal'" :ignoreclick="true" @tab-click="layoutStyleSelected" :overridedefaultside="effectiveStyle === 'horizontal' ? 'right' : 'left'"></tab-button>
-          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
+          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
         </span>
         
 
@@ -111,10 +111,10 @@
     </div>
     </div>
     <div class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
-    <panel-box title="Selected Build">
+    <panel-box :title="$t('Selected Build')">
       <template #title>
         <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-          <p class="font-normal">Build win rate and how many players have played that exact build. Win rate for builds to level 20 are inflated because teams that make it to level 20 win more. Therefore it is not an accurate representation of a builds viabllity. See table below for that calculation</p>
+          <p class="font-normal">{{ $t('Build win rate and how many players have played that exact build. Win rate for builds to level 20 are inflated because teams that make it to level 20 win more. Therefore it is not an accurate representation of a builds viabllity. See table below for that calculation') }}</p>
           <p class="font-normal mt-2">{{ $t('Calculated build win chance tries to gauge what the builds win rate will be at any point during the game.') }}</p>
         </round-image>
       </template>
@@ -162,7 +162,7 @@
     </table>
     </panel-box>
 
-    <panel-box title="Matching Replays">
+    <panel-box :title="$t('Matching Replays')">
       <template #title>
         <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
           <p class="font-normal">{{ $t('Possible Replays do not take into account Hero Level, Player Rank, Hero Rank, Role Rank, or Mirror Match Filter options') }}</p>

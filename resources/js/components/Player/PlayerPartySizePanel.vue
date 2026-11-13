@@ -1,10 +1,10 @@
 <template>
-  <panel-box :inner="true" title="Party Size Win Rates" :link-text="linkText" :link-href="linkHref">
+  <panel-box :inner="true" :title="$t('Party Size Win Rates')" :link-text="linkText" :link-href="linkHref">
     <div class="flex flex-col gap-3">
       <div v-for="stack in partySizes" :key="stack.label" class="flex flex-col gap-1.5">
         <div class="flex justify-between">
           <span class="text-header">{{ stack.label }}</span>
-          <span class="text-subtext">Games: {{ stack.games.toLocaleString('en-US') }}</span>
+          <span class="text-subtext">{{ $t('Games: :games', { games: stack.games.toLocaleString('en-US') }) }}</span>
         </div>
         <stat-bar :value="stack.winRate.toFixed(2)" suffix="%" :color="$winRateColor(stack.winRate)"></stat-bar>
       </div>

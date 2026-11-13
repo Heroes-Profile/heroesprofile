@@ -16,6 +16,7 @@ import '@fortawesome/fontawesome-free/css/all.css'
 
 // Every <details> on the site slides open and shut
 import { animateDetails } from './utils/animateDetails';
+import { translate } from './utils/translate';
 animateDetails();
 
 // Automatically register Vue components
@@ -64,15 +65,7 @@ app.config.globalProperties.$ngsTeam = function (teamName) {
   return match ? { name: match[1], withdrawnSeason: match[2] } : { name: teamName, withdrawnSeason: null };
 };
 
-// Interface text in the chosen language (window.translations, from lang/{locale}.json); the English key itself when there's no translation.
-// :name placeholders are filled from replace, e.g. $t(':count games', { count: 5 }).
-app.config.globalProperties.$t = function (key, replace = {}) {
-  let text = window.translations?.[key] || key;
-  for (const [name, value] of Object.entries(replace)) {
-    text = text.replaceAll(':' + name, value);
-  }
-  return text;
-};
+app.config.globalProperties.$t = translate;
 
 // A hero or map name (or an object with .name) in the chosen language, from window.gameStrings; English when there's no translation.
 app.config.globalProperties.$heroName = function (hero) {

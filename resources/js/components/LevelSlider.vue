@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center gap-4">
-    <span class="font-bold whitespace-nowrap">Level {{ modelValue }}</span>
+    <span class="font-bold whitespace-nowrap">{{ $t('Level :level', { level: modelValue }) }}</span>
     <input
       type="range"
       class="w-full accent-teal"

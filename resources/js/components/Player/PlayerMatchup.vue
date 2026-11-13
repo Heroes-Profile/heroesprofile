@@ -51,7 +51,7 @@
           <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
             <div class="flex items-center gap-3">
               <span class="cursor-pointer" @click="sortTable('name')">{{ $t('Hero') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-              <search-input v-model="heroSearch" placeholder="Search hero" :collapsible="true" class="w-40"></search-input>
+              <search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" class="w-40"></search-input>
             </div>
           </th>
           <th @click="sortTable('ally_win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">

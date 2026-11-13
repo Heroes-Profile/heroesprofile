@@ -1,6 +1,6 @@
 @extends('layouts.app', $bladeGlobals)    
 
-@section('title', 'Nut Cup Esports')
+@section('title', __('Nut Cup Esports'))
 @section('meta_keywords', 'Nut Cup league, Heroes of the Storm, Nut Cup esports, competitive gaming, Heroes of the Storm league, Nut Cup schedule')
 @section('meta_description', 'Overall stats for Nut Cup')
 

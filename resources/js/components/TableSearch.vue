@@ -1,10 +1,10 @@
 <template>
   <!-- A player table is scanned while the search runs, then the matches drop in -->
   <div class="max-w-[93.75rem] mx-auto w-full px-4 mt-10 pb-10">
-    <loading-component v-if="phase === 'searching'" class="mb-4" :compact="true" :textoverride="true" :overrideimage="loaderImage">Searching for {{ query }}...</loading-component>
+    <loading-component v-if="phase === 'searching'" class="mb-4" :compact="true" :textoverride="true" :overrideimage="loaderImage">{{ $t('Searching for :query...', { query: query }) }}</loading-component>
     <p v-else class="text-center text-subtext text-sm mb-4">
-      <template v-if="phase === 'choose'">{{ results.length }} players named {{ query }}. Pick one.</template>
-      <template v-else-if="phase === 'picked'">Opening profile...</template>
+      <template v-if="phase === 'choose'">{{ $t(':results players named :query. Pick one.', { results: results.length, query: query }) }}</template>
+      <template v-else-if="phase === 'picked'">{{ $t('Opening profile...') }}</template>
     </p>
 
     <div class="relative overflow-hidden">

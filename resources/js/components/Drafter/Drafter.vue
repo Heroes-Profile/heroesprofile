@@ -57,7 +57,7 @@
         </div>
         <span v-else></span>
         <button @click="showFilters = !showFilters" class="btn bg-blue hover:bg-lblue font-bold px-6">
-          <i class="fa-solid fa-filter mr-2"></i>{{ showFilters ? 'Hide Filters' : 'Show Filters' }}
+          <i class="fa-solid fa-filter mr-2"></i>{{ showFilters ? $t('Hide Filters') : $t('Show Filters') }}
         </button>
       </div>
 
@@ -70,7 +70,7 @@
         </div>
 
         <div class="flex flex-col items-center gap-2 order-2 flex-1">
-          <input type="text" v-model="searchQuery" class="w-60 bg-field text-white rounded-control px-3 py-2 text-sm" placeholder="Search Heroes" />
+          <input type="text" v-model="searchQuery" class="w-60 bg-field text-white rounded-control px-3 py-2 text-sm" :placeholder="$t('Search Heroes')" />
           <div class="flex justify-center">
             <round-image
               v-for="role in roles"
@@ -105,13 +105,13 @@
               <hero-image-wrapper :hero="hero" size="big">
                 <h2>{{ $heroName(hero) }}</h2>
                 <div v-if="!mockDraft" class="text-left">
-                  <p>HP Draft Value: {{ hero.value.toFixed(2) }}</p>
-                  <p>{{ isBanStep ? 'Games Banned' : 'Games Played' }}: {{ hero.games.toLocaleString('en-US') }}</p>
-                  <p>Influence: {{ hero.influence }}</p>
-                  <p v-if="isBanStep">Ban Rate: {{ hero.ban_rate }}%</p>
-                  <p>Win Rate: {{ hero.win_rate }}%</p>
+                  <p>{{ $t('HP Draft Value: :value', { value: hero.value.toFixed(2) }) }}</p>
+                  <p>{{ isBanStep ? $t('Games Banned') : $t('Games Played') }}: {{ hero.games.toLocaleString('en-US') }}</p>
+                  <p>{{ $t('Influence: :influence', { influence: hero.influence }) }}</p>
+                  <p v-if="isBanStep">{{ $t('Ban Rate: :rate%', { rate: hero.ban_rate }) }}</p>
+                  <p>{{ $t('Win Rate: :rate%', { rate: hero.win_rate }) }}</p>
                   <p>Win Rate Confidence: &plusmn; {{ hero.confidence }}%</p>
-                  <p>Draft Pick Order Rate: {{ hero.pick_order_percent.toFixed(2) }}%</p>
+                  <p>{{ $t('Draft Pick Order Rate: :percent%', { percent: hero.pick_order_percent.toFixed(2) }) }}</p>
                 </div>
               </hero-image-wrapper>
             </div>

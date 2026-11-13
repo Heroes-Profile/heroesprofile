@@ -14,10 +14,12 @@ use App\Rules\HeroInputValidation;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
 use App\Services\GlobalQueryService;
+use App\Services\LocalizedGameStrings;
 use App\Support\GameLength;
 use App\Support\GlobalCacheFreshness;
 use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
@@ -107,6 +109,18 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 'executeGlobalHeroTalentBuildData',
                 $buildParameters
             );
+
+            // Embedded in the page, so they miss the API's LocalizeGameStrings middleware
+            $locale = App::getLocale();
+            if ($locale !== 'en') {
+                $localize = function ($data) use ($locale) {
+                    $array = json_decode(json_encode($data), true);
+
+                    return is_array($array) ? app(LocalizedGameStrings::class)->localizeTalents($array, $locale) : $data;
+                };
+                $initialTalentData = $initialTalentData === null ? null : $localize($initialTalentData);
+                $initialBuildData = $initialBuildData === null ? null : $localize($initialBuildData);
+            }
         }
 
         return view('Global.Talents.globalTalentStats')

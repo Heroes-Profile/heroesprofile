@@ -23,7 +23,7 @@
         <pagination-bar :current="data.pagination.current_page" :last="data.pagination.last_page" @page="getData"></pagination-bar>
       </div>
       <esports-recent-matches v-if="data.data.length" :data="data.data" :esport="'NGS'"></esports-recent-matches>
-      <p v-else class="text-center text-subtext mt-10">No games in Division {{ division }} for Season {{ modifiedseason }}<template v-if="modifiedteam"> for {{ $ngsTeam(modifiedteam).name }}</template>.</p>
+      <p v-else class="text-center text-subtext mt-10">{{ $t('No games in Division :division for Season :modifiedseason', { division: division, modifiedseason: modifiedseason }) }}<template v-if="modifiedteam"> {{ $t('for :modifiedteam', { modifiedteam: $ngsTeam(modifiedteam).name }) }}</template>.</p>
       <div v-if="data.pagination.last_page > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 pb-4 flex justify-end">
         <pagination-bar :current="data.pagination.current_page" :last="data.pagination.last_page" @page="getData"></pagination-bar>
       </div>

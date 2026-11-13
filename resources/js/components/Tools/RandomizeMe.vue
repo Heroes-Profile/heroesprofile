@@ -7,7 +7,7 @@
       <div class="flex justify-center mb-10">
         <custom-button color="teal" :ignoreclick="true" :disabled="loading" :alt="'Randomize'" @click="randomize">
           <i class="fa-solid fa-shuffle mr-2"></i>
-          {{ loading ? 'Randomizing...' : (hero ? 'Randomize Again' : 'Randomize!') }}
+          {{ loading ? $t('Randomizing...') : (hero ? $t('Randomize Again') : $t('Randomize!')) }}
         </custom-button>
       </div>
 
@@ -46,7 +46,7 @@
               <span class="text-sm text-subtext">{{ copyString }}</span>
               <i
                 :class="['fa-solid fa-copy cursor-pointer', copied ? 'text-teal' : 'text-subtext', 'hover:text-white']"
-                :title="copied ? 'COPIED' : 'COPY TO CLIPBOARD'"
+                :title="copied ? $t('COPIED') : $t('COPY TO CLIPBOARD')"
                 @click="copyToClipboard"
               ></i>
             </div>

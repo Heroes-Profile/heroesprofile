@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)
-@section('title', $battletag . " Party Data")
+@section('title', __(':battletag Party Data', ['battletag' => $battletag]))
 @section('meta_keywords', 'Party Data, Party Size, Stack Win Rates, Player Statistics')
 @section('meta_description', 'Explore ' . $battletag . '\'s win rates by party setup, comparing the groups on their team against the groups they faced.')
 @section('content')

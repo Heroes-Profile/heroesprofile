@@ -2,13 +2,13 @@
   <div v-if="!esport || data.hero" :class="['group/replay relative', compact ? 'mb-1' : 'mb-1.5']">
   <!-- Phones: the compact row as two short lines -->
   <match-row-mobile v-if="compact" class="md:hidden !mb-0" bg="group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2" :href="getHref()" :hero="data.hero" :title="data.game_map.name" :date="formatRowDate(data.game_date)" :winner="data.winner === 1" :result="data.winner === 1 ? 'Win' : 'Loss'" :map-art="data.game_map.sanitized_map_name">
-    <template v-if="esport">Game {{ data.game }} · Round {{ data.round }} · {{ $ngsTeam(data.own_team).name }} vs {{ $ngsTeam(data.opponent_team).name }}</template>
+    <template v-if="esport">{{ $t('Game :game · Round :round · :team vs :team2', { game: data.game, round: data.round, team: $ngsTeam(data.own_team).name, team2: $ngsTeam(data.opponent_team).name }) }}</template>
     <template v-else>{{ data.game_type.name }} · <span class="text-white font-medium">{{ data.player_mmr.toLocaleString('en-US') }}</span><span v-if="data.player_change !== null" :class="data.player_change >= 0 ? 'text-win' : 'text-red'"> ({{ data.player_change > 0 ? '+' : '' }}{{ data.player_change.toFixed(2) }})</span><template v-if="data.kills !== undefined"> · {{ data.kills }}/{{ data.deaths }}/{{ data.assists }}</template></template>
   </match-row-mobile>
   <!-- One line per game: the match history's Compact view -->
   <div v-if="compact" class="max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2">
     <div class="absolute inset-0 pointer-events-none transition-colors duration-200 ease-out group-hover/row:bg-white/10"></div>
-    <a :href="getHref()" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
+    <a :href="getHref()" class="absolute inset-0 z-[1]" :aria-label="$t('Open match')"></a>
     <div class="relative w-[20rem] shrink-0 self-stretch flex items-center pl-5 py-2.5">
       <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="data.winner === 1 ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
       <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"></div>
@@ -26,7 +26,7 @@
     <!-- Esports games: their team against the other, where a ranked game shows MMR -->
     <div v-if="esport" class="relative w-[16.875rem] shrink-0 px-4 flex flex-col min-w-0">
       <span class="font-semibold truncate">{{ $ngsTeam(data.own_team).name }}</span>
-      <span class="text-sm text-subtext truncate">vs {{ $ngsTeam(data.opponent_team).name }}</span>
+      <span class="text-sm text-subtext truncate">{{ $t('vs :team', { team: $ngsTeam(data.opponent_team).name }) }}</span>
     </div>
     <div v-else class="relative w-[8.125rem] shrink-0 px-4 flex flex-col">
       <span class="text-2xl font-semibold">{{ data.player_mmr.toLocaleString('en-US') }}</span>
@@ -38,7 +38,7 @@
         <span class="grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] gap-x-[0.4375rem] w-[8.75rem] text-2xl font-semibold whitespace-nowrap tabular-nums">
           <span class="text-right text-win">{{ data.kills }}</span><span>|</span><span class="font-normal text-red">{{ data.deaths }}</span><span>|</span><span class="text-left font-normal">{{ data.assists }}</span>
         </span>
-        <span class="text-sm font-medium text-subtext">{{ kda }} KDA</span>
+        <span class="text-sm font-medium text-subtext">{{ $t(':kda KDA', { kda: kda }) }}</span>
       </template>
     </div>
     <div class="relative z-[2] w-[26.625rem] flex gap-1.5 items-center px-4 pr-20 shrink-0">
@@ -51,7 +51,7 @@
   <div v-else :class="['group/row relative flex flex-wrap items-center justify-between gap-y-4 rounded overflow-hidden group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2']">
     <div class="absolute inset-0 pointer-events-none transition-colors duration-200 ease-out group-hover/row:bg-white/10"></div>
     <!-- The whole row opens the match; talents, player names and the replay icons sit on top of it -->
-    <a :href="getHref()" class="absolute inset-0 z-[1]" aria-label="Open match"></a>
+    <a :href="getHref()" class="absolute inset-0 z-[1]" :aria-label="$t('Open match')"></a>
     <div class="relative flex-1 max-w-[25.625rem] min-w-[18.75rem] self-stretch flex items-center pl-6 py-4">
       <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="data.winner === 1 ?'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
       <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"></div>
@@ -63,7 +63,7 @@
           <span class="font-bold">{{ $mapName(data.game_map) }}</span>
           <div class="flex flex-col">
             <span class="text-base font-medium text-header">{{ esport ? `Game ${data.game} · Round ${data.round}` : data.game_type.name }}</span>
-            <span v-if="data.game_length" class="text-sm">{{ Math.round(data.game_length / 60) }} minutes</span>
+            <span v-if="data.game_length" class="text-sm">{{ $t(':round minutes', { round: Math.round(data.game_length / 60) }) }}</span>
           </div>
           <span class="text-xs">{{ formatRowDate(data.game_date) }}</span>
         </div>
@@ -72,9 +72,9 @@
 
     <!-- Esports games: their team against the other, where a ranked game shows MMR -->
     <div v-if="esport" class="relative flex flex-col gap-0.5 justify-center px-4 w-[26.875rem] shrink-0">
-      <span class="text-base font-medium text-subtext">{{ data.winner === 1 ? 'Won' : 'Lost' }} with</span>
+      <span class="text-base font-medium text-subtext">{{ data.winner === 1 ? $t('Won') : $t('Lost') }} with</span>
       <span class="text-xl font-semibold truncate">{{ $ngsTeam(data.own_team).name }}</span>
-      <span class="text-sm text-subtext truncate">vs {{ $ngsTeam(data.opponent_team).name }}</span>
+      <span class="text-sm text-subtext truncate">{{ $t('vs :team', { team: $ngsTeam(data.opponent_team).name }) }}</span>
     </div>
     <div v-else class="relative flex gap-5 items-center px-4 w-[26.875rem] shrink-0">
       <div v-for="stat in mmrStats" :key="stat.title" class="flex flex-col gap-0.5 flex-none w-[7.375rem] min-w-0">
@@ -91,7 +91,7 @@
         <span class="grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] gap-x-[0.4375rem] w-[8.75rem] text-2xl font-semibold whitespace-nowrap text-center tabular-nums">
           <span class="text-right text-win">{{ data.kills }}</span><span>|</span><span class="font-normal text-red">{{ data.deaths }}</span><span>|</span><span class="text-left font-normal">{{ data.assists }}</span>
         </span>
-        <span class="text-sm font-medium text-subtext">{{ kda }} KDA</span>
+        <span class="text-sm font-medium text-subtext">{{ $t(':kda KDA', { kda: kda }) }}</span>
       </template>
     </div>
 
@@ -139,10 +139,10 @@
   </div>
 
   <div v-if="data.downloadable || isWatchableGame" :class="['absolute z-[3] flex transition-opacity', compact ? 'right-4 top-1/2 -translate-y-1/2 flex-row-reverse gap-4' : 'right-2 top-2 flex-col gap-2']" class="md:opacity-0 md:group-hover/replay:opacity-100 md:focus-within:opacity-100">
-    <a v-if="data.downloadable && replayViewerAllowed && !replayDownloadBlocked" class="max-md:hidden hover:text-lteal" :href="'/Match/Single/' + data.replayID + '/Download'" title="Download Replay"><i class="fa-solid fa-download"></i></a>
-    <span v-else-if="data.downloadable && !replayViewerAllowed" class="max-md:hidden opacity-60" title="Log in to download replays"><i class="fa-solid fa-download"></i></span>
-    <a v-if="isWatchableGame && replayViewerAllowed" class="hover:text-lteal" :href="'/Analytics/Match/Single/' + data.replayID" title="Watch Replay"><i class="fa-solid fa-video"></i></a>
-    <span v-else-if="isWatchableGame" class="opacity-60" title="Log in with Battle.net to watch replays"><i class="fa-solid fa-video"></i></span>
+    <a v-if="data.downloadable && replayViewerAllowed && !replayDownloadBlocked" class="max-md:hidden hover:text-lteal" :href="'/Match/Single/' + data.replayID + '/Download'" :title="$t('Download Replay')"><i class="fa-solid fa-download"></i></a>
+    <span v-else-if="data.downloadable && !replayViewerAllowed" class="max-md:hidden opacity-60" :title="$t('Log in to download replays')"><i class="fa-solid fa-download"></i></span>
+    <a v-if="isWatchableGame && replayViewerAllowed" class="hover:text-lteal" :href="'/Analytics/Match/Single/' + data.replayID" :title="$t('Watch Replay')"><i class="fa-solid fa-video"></i></a>
+    <span v-else-if="isWatchableGame" class="opacity-60" :title="$t('Log in with Battle.net to watch replays')"><i class="fa-solid fa-video"></i></span>
   </div>
   </div>
 

@@ -12,9 +12,9 @@
 
     <!-- Level lead -->
     <analytics-heading :title="'Level lead over the game'" :takeaway="leadTakeaway">
-      How your games unfold over time: team levels, talent tier races, objectives, experience and kills. Each number is your average over the games matching the filters, next to a global sample of all players on the same filters. Team level and experience are shared by the whole team, so most of these reflect your team, not just you.
+      {{ $t('How your games unfold over time: team levels, talent tier races, objectives, experience and kills. Each number is your average over the games matching the filters, next to a global sample of all players on the same filters. Team level and experience are shared by the whole team, so most of these reflect your team, not just you.') }}
       <br /><br />
-      This chart is your team's level minus the enemy team's level at each minute, averaged over the games still running at that minute. Above 0 means ahead. Late minutes come from fewer, longer games, so they jump around more.
+      {{ $t("This chart is your team's level minus the enemy team's level at each minute, averaged over the games still running at that minute. Above 0 means ahead. Late minutes come from fewer, longer games, so they jump around more.") }}
     </analytics-heading>
     <multi-series-chart
       class="max-w-[75rem] mx-auto mb-8"
@@ -27,7 +27,7 @@
 
     <!-- Comebacks -->
     <analytics-heading :title="'Win rate by level state'" :takeaway="comebackTakeaway">
-      At 10, 15 and 20 minutes each game is marked behind, even or ahead in team level. Each bar is the win rate from that state; hover for the number of games. Games that ended before the checkpoint are left out.
+      {{ $t('At 10, 15 and 20 minutes each game is marked behind, even or ahead in team level. Each bar is the win rate from that state; hover for the number of games. Games that ended before the checkpoint are left out.') }}
     </analytics-heading>
     <multi-series-chart
       class="max-w-[75rem] mx-auto"
@@ -45,7 +45,7 @@
         </thead>
         <tbody>
           <tr v-for="minute in checkpoints" :key="minute">
-            <td>{{ minute }} min</td>
+            <td>{{ $t(':minute min', { minute: minute }) }}</td>
             <template v-for="state in states" :key="state">
               <td>{{ comeback('you', minute, state) }}</td>
               <td>{{ comeback('global', minute, state) }}</td>
@@ -57,7 +57,7 @@
 
     <!-- Talent tier windows -->
     <analytics-heading :title="'Talent tier races'" :takeaway="tierTakeaway">
-      First to 10 / 20: share of games where your team reached level 10 (or 20) before the enemy; reaching it at the same second does not count. Win %: your win rate in those games. Time ahead: how long your team had the level before the enemy got it (or the game ended), averaged over games where your team reached it; negative means the enemy usually got there first.
+      {{ $t('First to 10 / 20: share of games where your team reached level 10 (or 20) before the enemy; reaching it at the same second does not count. Win %: your win rate in those games. Time ahead: how long your team had the level before the enemy got it (or the game ended), averaged over games where your team reached it; negative means the enemy usually got there first.') }}
     </analytics-heading>
     <div class="flex flex-wrap justify-center gap-4 mb-8">
       <stat-box class="w-[30%] max-md:w-[48%]" :title="'First to 10'" :value="game ? yesNo(tiers.you.first_to_10) : share(tiers.you.first_to_10, tiers.you.games)" :secondstat="share(tiers.base.first_to_10, tiers.base.games)" :secondcaption="'global'" color="teal"></stat-box>
@@ -70,7 +70,7 @@
 
     <!-- Objectives -->
     <analytics-heading :title="'Objectives, camps and forts'" :takeaway="objectiveTakeaway">
-      Times are the average game time of your team's first map objective, first mercenary camp capture and first enemy fort destroyed, in games where it happened. Win % is your win rate in games where your team got it before the enemy. Objectives differ by map, so filter to one map for a fair comparison.
+      {{ $t("Times are the average game time of your team's first map objective, first mercenary camp capture and first enemy fort destroyed, in games where it happened. Win % is your win rate in games where your team got it before the enemy. Objectives differ by map, so filter to one map for a fair comparison.") }}
     </analytics-heading>
     <div class="grid md:grid-cols-2 gap-6 mb-8">
       <multi-series-chart type="bar" format="mmss" :labels="objectiveLabels" :title="'When your team gets it first'" :yLabel="'Game time'" :series="objectiveTimes"></multi-series-chart>
@@ -79,7 +79,7 @@
 
     <!-- XP sources -->
     <analytics-heading :title="'Team XP sources at game end'" :takeaway="xpTakeaway">
-      Your team's total experience at the end of the game, split by where it came from. Passive is the experience every team gains automatically over time. Averaged separately for wins and losses.
+      {{ $t("Your team's total experience at the end of the game, split by where it came from. Passive is the experience every team gains automatically over time. Averaged separately for wins and losses.") }}
     </analytics-heading>
     <div class="grid md:grid-cols-2 gap-6 mb-8">
       <multi-series-chart type="bar" :labels="xpLabels" :title="'Wins'" :yLabel="'Experience'" :series="xpWon"></multi-series-chart>
@@ -88,12 +88,12 @@
 
     <!-- Takedowns -->
     <analytics-heading :title="'Takedown participation'" :takeaway="takedownTakeaway">
-      Participation is the share of your team's kills on enemy heroes that you were credited in (kill or assist). Takedowns / Game counts those kills; Solo Kills / Game counts kills where you were the only hero credited. The chart splits participation by game phase.
+      {{ $t("Participation is the share of your team's kills on enemy heroes that you were credited in (kill or assist). Takedowns / Game counts those kills; Solo Kills / Game counts kills where you were the only hero credited. The chart splits participation by game phase.") }}
     </analytics-heading>
     <div class="flex flex-wrap justify-center gap-4 mb-4">
       <stat-box class="w-[30%] max-md:w-[48%]" :title="'Participation'" :value="percent(takedowns.you.participation)" :secondstat="percent(takedowns.base.participation)" :secondcaption="'global'" color="teal"></stat-box>
-      <stat-box class="w-[30%] max-md:w-[48%]" :title="game ? 'Takedowns' : 'Takedowns/Game'" :value="round(takedowns.you.takedowns)" :secondstat="round(takedowns.base.takedowns)" :secondcaption="'global'" color="yellow"></stat-box>
-      <stat-box class="w-[30%] max-md:w-[48%]" :title="game ? 'Solo Kills' : 'Solo Kills/Game'" :value="round(takedowns.you.solo_kills, 2)" :secondstat="round(takedowns.base.solo_kills, 2)" :secondcaption="'global'" color="teal"></stat-box>
+      <stat-box class="w-[30%] max-md:w-[48%]" :title="game ? $t('Takedowns') : $t('Takedowns/Game')" :value="round(takedowns.you.takedowns)" :secondstat="round(takedowns.base.takedowns)" :secondcaption="'global'" color="yellow"></stat-box>
+      <stat-box class="w-[30%] max-md:w-[48%]" :title="game ? $t('Solo Kills') : $t('Solo Kills/Game')" :value="round(takedowns.you.solo_kills, 2)" :secondstat="round(takedowns.base.solo_kills, 2)" :secondcaption="'global'" color="teal"></stat-box>
     </div>
     <multi-series-chart
       class="max-w-[75rem] mx-auto mb-8"

@@ -5,15 +5,15 @@
       <article class="void-gazette max-w-[68.75rem] mx-auto px-5 md:px-10 py-6 md:py-8">
         <header class="text-center">
           <div class="flex justify-between text-[0.6875rem] md:text-xs uppercase tracking-widest border-b border-[#1a1a1a] pb-1">
-            <span>Final Edition</span>
+            <span>{{ $t('Final Edition') }}</span>
             <span class="max-md:hidden">Heroes Profile</span>
-            <span>Price: One Soul</span>
+            <span>{{ $t('Price: One Soul') }}</span>
           </div>
-          <h1 class="void-gazette-masthead text-5xl md:text-7xl py-3">The Void Gazette</h1>
+          <h1 class="void-gazette-masthead text-5xl md:text-7xl py-3">{{ $t('The Void Gazette') }}</h1>
           <div class="flex justify-between text-[0.6875rem] md:text-xs uppercase tracking-widest border-y-[0.1875rem] border-double border-[#1a1a1a] py-1">
-            <span>{{ formatDate(recap.startsAt) }} to {{ formatDate(recap.endsAt) }}</span>
+            <span>{{ $t(':formatdate to :formatdate2', { formatdate: formatDate(recap.startsAt), formatdate2: formatDate(recap.endsAt) }) }}</span>
             <span class="max-md:hidden">"All the news that's fit to consume"</span>
-            <span>Stage {{ final.stage }} of 5</span>
+            <span>{{ $t('Stage :stage of 5', { stage: final.stage }) }}</span>
           </div>
         </header>
 
@@ -21,14 +21,14 @@
         <div class="grid md:grid-cols-5 gap-6 py-5 border-b border-[#1a1a1a]">
           <figure class="md:col-span-2">
             <img src="/images/event/xalatath/xalatath-gazette.webp" alt="Xal'atath" class="void-gazette-photo w-full h-auto" />
-            <figcaption class="text-xs italic mt-1">Xal'atath, moments before consuming our photographer.</figcaption>
+            <figcaption class="text-xs italic mt-1">{{ $t("Xal'atath, moments before consuming our photographer.") }}</figcaption>
           </figure>
           <div class="md:col-span-3">
             <h2 class="void-gazette-headline text-3xl md:text-5xl leading-tight mb-3">{{ leadArticle.headline }}</h2>
             <p class="void-gazette-body text-base md:text-lg first-letter:text-5xl first-letter:font-bold first-letter:float-left first-letter:mr-2 first-letter:leading-none">{{ leadArticle.body }}</p>
 
             <div class="border-t border-[#1a1a1a] mt-5 pt-4">
-              <h3 class="void-gazette-headline text-2xl md:text-3xl leading-tight mb-2">Heroes Profile Back in Mortal Hands</h3>
+              <h3 class="void-gazette-headline text-2xl md:text-3xl leading-tight mb-2">{{ $t('Heroes Profile Back in Mortal Hands') }}</h3>
               <p class="void-gazette-body text-base">{{ reclaimedBody }}</p>
             </div>
           </div>
@@ -36,8 +36,8 @@
 
         <!-- Inside this edition: jump links to everything below -->
         <nav class="border-b border-[#1a1a1a] py-4">
-          <div class="void-gazette-headline text-center text-lg uppercase tracking-widest">Inside This Edition</div>
-          <div class="text-center text-xs italic mb-3">Click a section to jump straight to it.</div>
+          <div class="void-gazette-headline text-center text-lg uppercase tracking-widest">{{ $t('Inside This Edition') }}</div>
+          <div class="text-center text-xs italic mb-3">{{ $t('Click a section to jump straight to it.') }}</div>
           <ul class="void-gazette-index text-sm">
             <li v-for="entry in indexEntries" :key="entry.id" class="flex items-baseline gap-2 break-inside-avoid">
               <a :href="`#${entry.id}`" class="hover:underline" @click.prevent="jumpTo(entry.id)">{{ entry.label }}</a>
@@ -61,13 +61,13 @@
     <div class="max-w-[93.75rem] mx-auto px-4 pt-8 flex flex-col gap-10">
       <!-- Stage timeline -->
       <section id="recap-stages" data-index="How the Nexus Fell" v-if="stages.length">
-        <h2 class="recap-heading">How the Nexus Fell on Heroes Profile</h2>
+        <h2 class="recap-heading">{{ $t('How the Nexus Fell on Heroes Profile') }}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
           <div v-for="stage in timelineStages" :key="stage.stage" :class="['rounded p-4 flex flex-col items-center text-center', { 'opacity-30': !stage.reached_at }]" :style="stageCardStyle(stage.stage)">
             <img class="w-24 mb-2" :src="`/images/event/xalatath/xalatath-logo-stage-${stage.stage}.svg`" alt="" />
-            <div class="font-bold">Stage {{ stage.stage }}</div>
-            <div class="text-xs opacity-75">{{ stage.stage === 0 ? 'Event start' : `${format(stage.threshold)} games + bans` }}</div>
-            <div class="text-sm mb-2">{{ stage.reached_at ? formatDate(stage.reached_at) : 'Never reached' }}</div>
+            <div class="font-bold">{{ $t('Stage :stage', { stage: stage.stage }) }}</div>
+            <div class="text-xs opacity-75">{{ stage.stage === 0 ? $t('Event start') : `${format(stage.threshold)} games + bans` }}</div>
+            <div class="text-sm mb-2">{{ stage.reached_at ? formatDate(stage.reached_at) : $t('Never reached') }}</div>
             <p class="text-sm opacity-90">{{ stageNotes[stage.stage] }}</p>
           </div>
         </div>
@@ -75,13 +75,13 @@
         <!-- What each stage changed, one card per stage, all the same size. The Before/After
              toggle above flips every card at once. -->
         <div class="flex flex-wrap items-center gap-3 mt-6 mb-2">
-          <h3 class="text-sm uppercase tracking-widest xalatath-title">What Changed</h3>
+          <h3 class="text-sm uppercase tracking-widest xalatath-title">{{ $t('What Changed') }}</h3>
           <multi-tab-button :options="changeOptions" :model-value="paletteOn ? 'after' : 'before'" @update:model-value="setChangeView"></multi-tab-button>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
           <!-- Stage 5 added no new colours (the site stayed in the stage 4 palette); its gradient was only the splash -->
           <div v-for="stage in timelineStages" :key="'change-' + stage.stage" :class="['rounded p-3 h-96 flex flex-col overflow-hidden', { 'opacity-30': !stage.reached_at }]" :style="stageCardStyle(stage.stage === 5 ? 4 : stage.stage)">
-            <div class="text-xs uppercase opacity-75 text-center mb-2">Stage {{ stage.stage }}</div>
+            <div class="text-xs uppercase opacity-75 text-center mb-2">{{ $t('Stage :stage', { stage: stage.stage }) }}</div>
             <!-- Top-aligned so the logos and samples line up across the row -->
             <div class="flex-1 min-h-0 flex flex-col items-center justify-start pt-2 text-center">
 
@@ -96,17 +96,17 @@
               <div v-if="stage.stage === 0" class="w-full mt-4 text-[0.625rem]">
                 <div class="relative h-24 rounded overflow-hidden text-left" style="background-color: #0F121D;">
                   <div class="px-2 py-1" style="background-color: #333333;">Heroes Profile</div>
-                  <div class="px-2 pt-2 opacity-50 leading-relaxed">Player stats · Match history<br />Talent builds · Leaderboards</div>
+                  <div class="px-2 pt-2 opacity-50 leading-relaxed">{{ $t('Player stats · Match history') }}<br />{{ $t('Talent builds · Leaderboards') }}</div>
                   <img src="/images/event/xalatath/void-eye.svg" alt="" class="absolute bottom-1 right-2 w-8 h-8 void-palette-mock" :style="{ opacity: paletteOn ? 1 : 0 }" />
                 </div>
-                <div class="mt-1 opacity-75 void-palette-mock" :style="{ opacity: paletteOn ? 1 : 0 }">The eye hunt begins</div>
+                <div class="mt-1 opacity-75 void-palette-mock" :style="{ opacity: paletteOn ? 1 : 0 }">{{ $t('The eye hunt begins') }}</div>
               </div>
 
               <!-- 1: the nav picking up the purple glow -->
               <div v-else-if="stage.stage === 1" class="w-full mt-4 rounded overflow-hidden text-[0.625rem] text-left" style="background-color: #0F121D;">
                 <div class="px-2 py-1 void-palette-mock"
                   :style="{ backgroundColor: '#333333', boxShadow: paletteOn ? '0 4px 14px rgba(123, 63, 228, 0.8)' : 'none' }">
-                  Heroes Profile · Global Stats · Tools
+                  {{ $t('Heroes Profile · Global Stats · Tools') }}
                 </div>
                 <div class="h-4"></div>
               </div>
@@ -128,14 +128,14 @@
                 <div class="rounded overflow-hidden border border-[#5b21b6] void-palette-mock" :style="{ backgroundColor: palette.page }">
                   <div class="px-2 py-1 flex justify-between" :style="{ backgroundColor: palette.nav }">
                     <span>Heroes Profile</span>
-                    <span :style="{ color: palette.accent }">Global Stats</span>
+                    <span :style="{ color: palette.accent }">{{ $t('Global Stats') }}</span>
                   </div>
                   <div class="px-2 py-1 flex justify-between" :style="{ backgroundColor: palette.thead }">
-                    <span>Hero</span><span>Win rate</span>
+                    <span>{{ $t('Hero') }}</span><span>{{ $t('Win rate') }}</span>
                   </div>
                   <div class="px-2 py-1 flex justify-between">
-                    <span>Xal'atath</span>
-                    <span class="px-2 rounded" :style="{ backgroundColor: palette.button }">Search</span>
+                    <span>{{ $t("Xal'atath") }}</span>
+                    <span class="px-2 rounded" :style="{ backgroundColor: palette.button }">{{ $t('Search') }}</span>
                   </div>
                 </div>
                 <!-- The colours for whichever side of the toggle is showing -->
@@ -150,28 +150,28 @@
 
               <!-- 5: the fallen splash's message -->
               <div v-else-if="stage.stage === 5" class="h-28 w-full mt-4 flex items-center justify-center">
-                <div class="font-logo text-lg leading-tight void-palette-mock" :style="{ opacity: paletteOn ? 1 : 0 }">The Nexus Has Fallen</div>
+                <div class="font-logo text-lg leading-tight void-palette-mock" :style="{ opacity: paletteOn ? 1 : 0 }">{{ $t('The Nexus Has Fallen') }}</div>
               </div>
             </div>
             <!-- Before/after label pinned to the bottom of every card -->
-            <div class="text-xs opacity-75 text-center pt-2">{{ paletteOn ? (stage.stage === 0 ? 'Event logo' : `After stage ${stage.stage}`) : 'Before' }}</div>
+            <div class="text-xs opacity-75 text-center pt-2">{{ paletteOn ? (stage.stage === 0 ? $t('Event logo') : `After stage ${stage.stage}`) : $t('Before') }}</div>
           </div>
         </div>
       </section>
 
       <!-- First sighting -->
       <section id="recap-firsts" data-index="First Sighting" v-if="firstGame">
-        <h2 class="recap-heading">First Sighting</h2>
+        <h2 class="recap-heading">{{ $t('First Sighting') }}</h2>
         <div class="xalatath-recap-card p-4 max-w-[37.5rem]">
-          <p class="mb-2">This is the first Xal'atath game seen on Heroes Profile.</p>
-          <a class="link text-sm" target="_blank" rel="noopener" :href="`/Match/Single/${firstGame.replayID}`">View the first match</a>
+          <p class="mb-2">{{ $t("This is the first Xal'atath game seen on Heroes Profile.") }}</p>
+          <a class="link text-sm" target="_blank" rel="noopener" :href="`/Match/Single/${firstGame.replayID}`">{{ $t('View the first match') }}</a>
         </div>
       </section>
 
       <!-- Launch comparison -->
       <section id="recap-launch" data-index="Biggest Launch Ever?" v-if="launches.length">
-        <h2 class="recap-heading">Biggest Launch Ever?</h2>
-        <p class="mb-3 text-sm opacity-75">Games played in each hero's first {{ launchDays }} days, the length of the event, from replays uploaded to Heroes Profile.</p>
+        <h2 class="recap-heading">{{ $t('Biggest Launch Ever?') }}</h2>
+        <p class="mb-3 text-sm opacity-75">{{ $t("Games played in each hero's first :launchdays days, the length of the event, from replays uploaded to Heroes Profile.", { launchdays: launchDays }) }}</p>
         <div v-for="row in launches" :key="row.hero" class="mb-3">
           <div class="flex justify-between text-sm mb-1">
             <span :class="{ 'font-bold xalatath-title': row.hero == heroId }">{{ heroName(row.hero) }} <span class="opacity-60">({{ formatDate(row.release_date) }})</span></span>
@@ -186,14 +186,14 @@
 
       <!-- Eye hunt -->
       <section id="recap-eye" data-index="The Eye Hunt" v-if="recap.eyeHunt && recap.eyeHunt.finders">
-        <h2 class="recap-heading">The Eye Hunt</h2>
+        <h2 class="recap-heading">{{ $t('The Eye Hunt') }}</h2>
         <div class="flex flex-wrap gap-6 items-end">
           <div class="xalatath-recap-card p-4 flex items-center gap-4">
             <img src="/images/event/xalatath/void-eye.svg" alt="" class="w-16 h-16" />
             <div>
               <div class="text-3xl font-bold tabular-nums">{{ format(recap.eyeHunt.finders) }}</div>
               <div>found Xal'atath's eye</div>
-              <div v-if="eyeBusiestDay" class="text-sm opacity-75">Busiest day: {{ format(eyeBusiestDay.count) }} found on {{ formatDate(eyeBusiestDay.date) }}</div>
+              <div v-if="eyeBusiestDay" class="text-sm opacity-75">{{ $t('Busiest day: :format found on :formatdate', { format: format(eyeBusiestDay.count), formatdate: formatDate(eyeBusiestDay.date) }) }}</div>
             </div>
           </div>
           <div class="flex items-end gap-[2px] h-24">
@@ -202,11 +202,10 @@
         </div>
         <div class="max-w-[56.25rem] mt-4 text-sm leading-relaxed">
           <p class="mb-2">
-            While the event ran, Xal'atath hid her eye somewhere on Heroes Profile. It turned up on roughly one page in twelve,
-            in a different spot for every visitor, and moved each day. Clicking it and logging in with Battle.net claimed it.
+            {{ $t("While the event ran, Xal'atath hid her eye somewhere on Heroes Profile. It turned up on roughly one page in twelve, in a different spot for every visitor, and moved each day. Clicking it and logging in with Battle.net claimed it.") }}
           </p>
           <p>
-            <span class="font-bold">The reward:</span> the Mark of the Void, an eye shown beside your battletag across the site that stays for good,
+            <span class="font-bold">{{ $t('The reward:') }}</span> the Mark of the Void, an eye shown beside your battletag across the site that stays for good,
             plus 3 months of ad-free Heroes Profile. Finders can hide the mark in Profile Settings.
           </p>
         </div>
@@ -216,15 +215,15 @@
     <!-- Stats by game mode; the toggle sticks while scrolling through them -->
     <div class="max-w-[93.75rem] mx-auto px-4 pt-10">
       <div class="xalatath-mode-bar sticky top-0 max-md:top-[4.6875rem] z-40 py-3 mb-6 flex flex-wrap items-center gap-3">
-        <span class="text-sm opacity-75">Showing stats for</span>
+        <span class="text-sm opacity-75">{{ $t('Showing stats for') }}</span>
         <multi-tab-button :options="modeOptions" :model-value="mode" @update:model-value="mode = $event"></multi-tab-button>
       </div>
       <div class="flex flex-col gap-10">
       <!-- Final stats -->
       <section id="recap-final-count" data-index="The Final Count">
-        <h2 class="recap-heading">The Final Count</h2>
-        <p v-if="mode === 'all'" class="mb-4 opacity-80">The Void reached stage {{ final.stage }} of 5 with {{ format(final.corruption) }} games and bans.</p>
-        <p v-else class="mb-4 opacity-80">{{ modeLabel }} games only.</p>
+        <h2 class="recap-heading">{{ $t('The Final Count') }}</h2>
+        <p v-if="mode === 'all'" class="mb-4 opacity-80">{{ $t('The Void reached stage :stage of 5 with :format games and bans.', { stage: final.stage, format: format(final.corruption) }) }}</p>
+        <p v-else class="mb-4 opacity-80">{{ $t(':modelabel games only.', { modelabel: modeLabel }) }}</p>
         <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-3">
           <div v-for="tile in allTiles" :key="tile.label" class="xalatath-recap-card p-3 text-center" :title="tile.info">
             <div class="text-xs uppercase opacity-75">{{ tile.label }}</div>
@@ -235,7 +234,7 @@
 
       <!-- Her average game -->
       <section id="recap-average-game" data-index="Her Average Game" v-if="averages.length">
-        <h2 class="recap-heading">Her Average Game</h2>
+        <h2 class="recap-heading">{{ $t('Her Average Game') }}</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-3">
           <div v-for="item in averages" :key="item.label" class="xalatath-recap-card p-3 text-center">
             <div class="text-xs uppercase opacity-75">{{ $t(item.label) }}</div>
@@ -246,7 +245,7 @@
 
       <!-- Void ledger -->
       <section id="recap-ledger" data-index="The Void Ledger">
-        <h2 class="recap-heading">The Void Ledger</h2>
+        <h2 class="recap-heading">{{ $t('The Void Ledger') }}</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
           <div v-for="item in ledger" :key="item.label" class="xalatath-recap-card p-3 text-center">
             <div class="text-xs uppercase opacity-75">{{ $t(item.label) }}</div>
@@ -257,8 +256,8 @@
 
       <!-- Rise over time -->
       <section id="recap-rise" data-index="Rise of the Void" v-if="daily.length">
-        <h2 class="recap-heading">Rise of the Void</h2>
-        <p class="mb-2 text-sm opacity-75">Games per day and win rate. Large points mark the days a stage fell; the dashed line marks the balance update that nerfed her.</p>
+        <h2 class="recap-heading">{{ $t('Rise of the Void') }}</h2>
+        <p class="mb-2 text-sm opacity-75">{{ $t('Games per day and win rate. Large points mark the days a stage fell; the dashed line marks the balance update that nerfed her.') }}</p>
         <div class="xalatath-recap-card p-4">
           <canvas ref="dailyChart" width="1500" height="550"></canvas>
         </div>
@@ -266,9 +265,9 @@
 
       <!-- Did the nerf work? -->
       <section id="recap-nerf" data-index="Did the Nerf Work?" v-if="nerf">
-        <h2 class="recap-heading">Did the Nerf Work?</h2>
+        <h2 class="recap-heading">{{ $t('Did the Nerf Work?') }}</h2>
         <p class="mb-1 text-sm opacity-75">
-          Balance update {{ nerf.after.patch }}<span v-if="nerf.after.first_game"> ({{ formatDate(nerf.after.first_game) }})</span> cut Void Volley and Void Eruption damage, shortened Void Step and changed five talents.
+          {{ $t('Balance update :patch', { patch: nerf.after.patch }) }}<span v-if="nerf.after.first_game"> ({{ formatDate(nerf.after.first_game) }})</span> cut Void Volley and Void Eruption damage, shortened Void Step and changed five talents.
           Launch patch compared with the balance update.
         </p>
         <p class="mb-4 text-lg font-bold xalatath-title">{{ nerf.verdict }}</p>
@@ -288,7 +287,7 @@
         </table>
         </scroll-hint-container>
         <div v-if="nerfedTalents.length">
-          <h3 class="font-bold mb-2">The Talents It Changed</h3>
+          <h3 class="font-bold mb-2">{{ $t('The Talents It Changed') }}</h3>
           <scroll-hint-container :fit="true">
           <table class="min-w-0 w-full responsive-table">
             <thead>
@@ -299,7 +298,7 @@
                 <td class="py-2 px-3">
                   <div class="flex items-center gap-2">
                     <talent-image-wrapper :talent="recap.talents[row.talent_id]" size="small"></talent-image-wrapper>
-                    <span>{{ talentName(row.talent_id) }} <span class="opacity-60">(level {{ row.level }})</span></span>
+                    <span>{{ talentName(row.talent_id) }} <span class="opacity-60">{{ $t('(level :level)', { level: row.level }) }}</span></span>
                   </div>
                 </td>
                 <td class="py-2 px-3">{{ row.pickBefore }}</td>
@@ -316,7 +315,7 @@
       <!-- Game modes + regions -->
       <section id="recap-modes" data-index="Modes & Regions" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div v-if="mode === 'all'">
-          <h2 class="recap-heading">Corruption by Game Mode</h2>
+          <h2 class="recap-heading">{{ $t('Corruption by Game Mode') }}</h2>
           <scroll-hint-container :fit="true">
           <table class="min-w-0 w-full responsive-table">
             <thead>
@@ -334,7 +333,7 @@
           </scroll-hint-container>
         </div>
         <div>
-          <h2 class="recap-heading">Corruption by Region</h2>
+          <h2 class="recap-heading">{{ $t('Corruption by Region') }}</h2>
           <div v-for="row in regions" :key="row.region" class="mb-3">
             <div class="flex justify-between text-sm mb-1">
               <span>{{ recap.regions[row.region] || row.region }}</span>
@@ -349,9 +348,9 @@
 
       <!-- When the Void struck -->
       <section id="recap-when" data-index="When the Void Struck" v-if="heatmap.max > 0">
-        <h2 class="recap-heading">When the Void Struck</h2>
+        <h2 class="recap-heading">{{ $t('When the Void Struck') }}</h2>
         <multi-tab-button v-if="heatmapRegionOptions.length > 1" class="mb-3 !justify-start" :options="heatmapRegionOptions" :model-value="heatmapRegion" @update:model-value="selectedHeatmapRegion = $event"></multi-tab-button>
-        <p class="mb-2 text-sm opacity-75">Games by day and hour, in {{ heatmapZoneLabel }}.</p>
+        <p class="mb-2 text-sm opacity-75">{{ $t('Games by day and hour, in :heatmapzonelabel.', { heatmapzonelabel: heatmapZoneLabel }) }}</p>
         <div class="overflow-x-auto">
           <div class="inline-grid gap-[2px] text-xs" style="grid-template-columns: 3rem repeat(24, minmax(1.25rem, 1fr));">
             <div></div>
@@ -363,17 +362,17 @@
           </div>
         </div>
         <div class="flex items-center gap-2 mt-3 text-xs">
-          <span class="opacity-75">Fewer games</span>
+          <span class="opacity-75">{{ $t('Fewer games') }}</span>
           <div v-for="step in [0, 0.25, 0.5, 0.75, 1]" :key="step" class="w-5 h-5 rounded bg-[#7b3fe4]" :style="{ opacity: heatOpacity(step) }"></div>
-          <span class="opacity-75">More games</span>
+          <span class="opacity-75">{{ $t('More games') }}</span>
         </div>
-        <p v-if="heatmap.peak" class="mt-2 text-sm">The Void was hungriest on {{ heatmap.peak }}.</p>
+        <p v-if="heatmap.peak" class="mt-2 text-sm">{{ $t('The Void was hungriest on :peak.', { peak: heatmap.peak }) }}</p>
       </section>
 
       <!-- Single-game records, grouped; each opens to its top 10 -->
       <section id="recap-records" data-index="Single-Game Records" v-if="recordGroups.length">
-        <h2 class="recap-heading">Single-Game Records</h2>
-        <p class="mb-4 text-sm opacity-75">Her best single games for every stat. Click a record to see the top 10.</p>
+        <h2 class="recap-heading">{{ $t('Single-Game Records') }}</h2>
+        <p class="mb-4 text-sm opacity-75">{{ $t('Her best single games for every stat. Click a record to see the top 10.') }}</p>
         <div v-for="group in recordGroups" :key="group.title" class="mb-5">
           <h3 class="text-sm uppercase tracking-widest xalatath-title mb-2">{{ group.title }}</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 items-start">
@@ -382,7 +381,7 @@
                 <div class="min-w-0">
                   <div class="text-sm font-bold truncate">{{ $t(item.label) }}</div>
                   <div class="text-xs opacity-70">
-                    <i class="fas fa-chevron-down mr-1 transition-transform group-open:rotate-180"></i>Top {{ item.top.length }}
+                    <i class="fas fa-chevron-down mr-1 transition-transform group-open:rotate-180"></i>{{ $t('Top :top', { top: item.top.length }) }}
                   </div>
                 </div>
                 <div class="text-lg font-bold tabular-nums xalatath-title whitespace-nowrap">{{ item.display }}</div>
@@ -392,7 +391,7 @@
                   <span class="w-5 opacity-60 tabular-nums">{{ row.place }}</span>
                   <span class="flex-1 tabular-nums font-bold">{{ row.display }}</span>
                   <span class="opacity-70">{{ formatDate(row.game_date) }}</span>
-                  <a v-if="row.replayID && !NEGATIVE_RECORDS.includes(item.record)" class="link" target="_blank" rel="noopener" :href="`/Match/Single/${row.replayID}`">Match</a>
+                  <a v-if="row.replayID && !NEGATIVE_RECORDS.includes(item.record)" class="link" target="_blank" rel="noopener" :href="`/Match/Single/${row.replayID}`">{{ $t('Match') }}</a>
                 </li>
               </ol>
             </details>
@@ -402,10 +401,10 @@
 
       <!-- Path of the Void -->
       <section id="recap-talents" data-index="Path of the Void" v-if="builds.length || talentTiers.length">
-        <h2 class="recap-heading">Path of the Void</h2>
+        <h2 class="recap-heading">{{ $t('Path of the Void') }}</h2>
         <!-- Same components as the global talent pages -->
         <global-talent-builds-section v-if="buildRows.length" class="mb-6" :talentbuilddata="buildRows">
-          <template #heading>Most played builds</template>
+          <template #heading>{{ $t('Most played builds') }}</template>
         </global-talent-builds-section>
         <global-talent-details-section v-if="talentGridData" class="mx-auto" :talentdetaildata="talentGridData"></global-talent-details-section>
       </section>
@@ -430,7 +429,7 @@
 
       <!-- Maps -->
       <section id="recap-maps" data-index="Battlegrounds" v-if="maps.length">
-        <h2 class="recap-heading">Battlegrounds Conquered</h2>
+        <h2 class="recap-heading">{{ $t('Battlegrounds Conquered') }}</h2>
         <scroll-hint-container :fit="true">
         <table class="min-w-0 w-full responsive-table">
           <thead>
@@ -450,8 +449,8 @@
       <!-- Awards + devotees -->
       <section id="recap-awards" data-index="Awards & Devotees" class="grid md:grid-cols-2 gap-6">
         <div v-if="awards.length">
-          <h2 class="recap-heading">Awards Hoard</h2>
-          <p class="mb-3 text-sm opacity-75">A player gets one award a game and MVP takes priority, so MVP is out of all her games and every other award is out of the games she wasn't MVP.</p>
+          <h2 class="recap-heading">{{ $t('Awards Hoard') }}</h2>
+          <p class="mb-3 text-sm opacity-75">{{ $t("A player gets one award a game and MVP takes priority, so MVP is out of all her games and every other award is out of the games she wasn't MVP.") }}</p>
           <div class="grid grid-cols-2 gap-3">
             <div v-for="row in awards" :key="row.award" class="xalatath-recap-card p-3 flex items-center gap-3 max-md:flex-col max-md:text-center">
               <img v-if="recap.awards[row.award]" :src="`/images/awards/${recap.awards[row.award].icon}_blue.png`" :alt="awardTitle(row.award)" class="w-10 h-10" />
@@ -463,8 +462,8 @@
           </div>
         </div>
         <div v-if="devotees.total">
-          <h2 class="recap-heading">Devotees and Tourists</h2>
-          <p class="mb-3">{{ format(devotees.total) }} players answered her call.</p>
+          <h2 class="recap-heading">{{ $t('Devotees and Tourists') }}</h2>
+          <p class="mb-3">{{ $t(':format players answered her call.', { format: format(devotees.total) }) }}</p>
           <div v-for="row in devotees.rows" :key="row.bucket" class="mb-3">
             <div class="flex justify-between text-sm mb-1">
               <span>{{ $t(row.label) }}</span>
@@ -479,7 +478,7 @@
 
       <!-- Leaderboard -->
       <section id="recap-leaderboard" data-index="Most Corrupted" v-if="leaderboard.length">
-        <h2 class="recap-heading">Most Corrupted</h2>
+        <h2 class="recap-heading">{{ $t('Most Corrupted') }}</h2>
         <scroll-hint-container :fit="true">
         <table class="min-w-0 w-full responsive-table">
           <thead>
@@ -502,14 +501,14 @@
 
       <!-- Your contribution -->
       <section id="recap-contribution" data-index="Your Contribution">
-        <h2 class="recap-heading">Your Contribution</h2>
+        <h2 class="recap-heading">{{ $t('Your Contribution') }}</h2>
         <div v-if="contribution">
           <!-- The card as it downloads; downloadCard() draws the same layout -->
           <!-- Never played or faced her: a short banner instead of the full card -->
           <div v-if="cardEmpty" class="void-contribution-card max-w-[43.75rem] rounded p-4 md:p-5 flex items-center gap-4">
             <img class="w-16 md:w-20 shrink-0" :src="`/images/event/xalatath/xalatath-logo-stage-${final.stage}.svg`" alt="" />
             <div class="min-w-0">
-              <div class="text-xs uppercase tracking-widest xalatath-title">Xal'atath Void Corruption<span v-if="mode !== 'all'"> · {{ modeLabel }}</span></div>
+              <div class="text-xs uppercase tracking-widest xalatath-title">{{ $t("Xal'atath Void Corruption") }}<span v-if="mode !== 'all'"> · {{ modeLabel }}</span></div>
               <div class="text-2xl md:text-3xl font-bold">{{ contribution.battletag }}</div>
               <div class="text-lg">{{ noGamesLine }}</div>
               <div class="text-xs opacity-60 mt-2">heroesprofile.com/Event/Xalatath</div>
@@ -520,7 +519,7 @@
               <img class="w-40 md:w-52" :src="`/images/event/xalatath/xalatath-logo-stage-${final.stage}.svg`" alt="" />
             </div>
             <div class="min-w-0">
-              <div class="text-xs uppercase tracking-widest xalatath-title">Xal'atath Void Corruption<span v-if="mode !== 'all'"> · {{ modeLabel }}</span></div>
+              <div class="text-xs uppercase tracking-widest xalatath-title">{{ $t("Xal'atath Void Corruption") }}<span v-if="mode !== 'all'"> · {{ modeLabel }}</span></div>
               <div class="text-3xl md:text-4xl font-bold mb-1">{{ contribution.battletag }}</div>
               <template v-if="card.games > 0">
                 <div class="text-lg mb-4">
@@ -530,9 +529,9 @@
 
                 <!-- Labels once as column headers, numbers lined up underneath -->
                 <div v-if="card.modes && card.modes.length" class="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-x-6 gap-y-1 text-sm mb-4 max-w-[26.25rem]">
-                  <span class="text-xs uppercase opacity-75">Mode</span>
-                  <span class="text-xs uppercase opacity-75 text-right">Games</span>
-                  <span class="text-xs uppercase opacity-75 text-right">Win rate</span>
+                  <span class="text-xs uppercase opacity-75">{{ $t('Mode') }}</span>
+                  <span class="text-xs uppercase opacity-75 text-right">{{ $t('Games') }}</span>
+                  <span class="text-xs uppercase opacity-75 text-right">{{ $t('Win rate') }}</span>
                   <template v-for="mode in card.modes" :key="mode.name">
                     <span class="truncate">{{ mode.name }}</span>
                     <span class="text-right tabular-nums">{{ format(mode.games) }}</span>
@@ -541,18 +540,18 @@
                 </div>
 
                 <div v-if="card.build" class="mb-4">
-                  <div class="text-xs uppercase opacity-75 mb-1">Played build</div>
+                  <div class="text-xs uppercase opacity-75 mb-1">{{ $t('Played build') }}</div>
                   <div class="flex flex-wrap items-center gap-2">
                     <talent-image-wrapper v-for="(talent, index) in card.build.talents" :key="index" :talent="talent" size="small"></talent-image-wrapper>
-                    <span class="text-sm ml-2 opacity-90">{{ format(card.build.games) }} games, {{ winRate(card.build.wins, card.build.games) }} won</span>
+                    <span class="text-sm ml-2 opacity-90">{{ $t(':format games, :winrate won', { format: format(card.build.games), winrate: winRate(card.build.wins, card.build.games) }) }}</span>
                   </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div v-for="group in contributionMates" :key="group.title" class="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-x-4 gap-y-1 text-sm">
                     <span class="text-xs uppercase opacity-75">{{ group.title }}</span>
-                    <span class="text-xs uppercase opacity-75 text-right">Games</span>
-                    <span class="text-xs uppercase opacity-75 text-right">Win rate</span>
+                    <span class="text-xs uppercase opacity-75 text-right">{{ $t('Games') }}</span>
+                    <span class="text-xs uppercase opacity-75 text-right">{{ $t('Win rate') }}</span>
                     <template v-for="mate in group.rows" :key="mate.hero ? mate.hero.id : mate.games">
                       <span class="flex items-center gap-2 min-w-0">
                         <hero-image-wrapper v-if="mate.hero" :hero="mate.hero" size="small"></hero-image-wrapper>
@@ -577,7 +576,7 @@
 
               <!-- Estimated from her share of your team's deaths in each game she was against you -->
               <div v-if="card.games > 0 && card.faced && card.faced.games" class="text-sm mt-2">
-                <div class="text-xs uppercase opacity-75 mb-1">Facing her</div>
+                <div class="text-xs uppercase opacity-75 mb-1">{{ $t('Facing her') }}</div>
                 Faced her in <span class="font-bold">{{ format(card.faced.games) }}</span> games:
                 <span class="font-bold">&asymp; {{ format(card.faced.involved) }}</span> deaths involving her,
                 <span class="font-bold">&asymp; {{ format(card.faced.killing_blows) }}</span> to her killing blow.
@@ -586,17 +585,17 @@
             </div>
           </div>
           <div class="flex flex-wrap items-center gap-3 mt-3">
-            <button type="button" class="bg-[#5b21b6] hover:bg-[#7b3fe4] text-white px-6 py-3 rounded" @click="downloadCard">Download your card</button>
+            <button type="button" class="bg-[#5b21b6] hover:bg-[#7b3fe4] text-white px-6 py-3 rounded" @click="downloadCard">{{ $t('Download your card') }}</button>
             <button v-if="canShareFiles" type="button" class="bg-[#5b21b6] hover:bg-[#7b3fe4] text-white px-6 py-3 rounded" @click="shareCard">
-              <i class="fas fa-share-alt mr-1"></i> Share your card
+              <i class="fas fa-share-alt mr-1"></i> {{ $t('Share your card') }}
             </button>
           </div>
         </div>
         <div v-else class="xalatath-recap-card p-4">
-          <a class="link" href="/Authenticate/Battlenet">Log in with Battle.net</a> to see how much you fed the Void.
+          <a class="link" href="/Authenticate/Battlenet">{{ $t('Log in with Battle.net') }}</a> to see how much you fed the Void.
         </div>
         <div class="flex flex-wrap items-center gap-3 mt-4 text-sm">
-          <span class="opacity-75">Spread the word:</span>
+          <span class="opacity-75">{{ $t('Spread the word:') }}</span>
           <a v-for="link in shareLinks" :key="link.name" :href="link.build(recapUrl)" target="_blank" rel="noopener" class="bg-darken hover:bg-lighten rounded px-3 py-2" @click="openShare($event, link)">
             <i :class="[link.icon, 'mr-1']"></i> {{ link.name }}
           </a>
@@ -608,7 +607,7 @@
     <div class="max-w-[93.75rem] mx-auto px-4 py-10 flex flex-col gap-10">
       <!-- Whispers -->
       <section id="recap-whispers" data-index="Her Last Whispers">
-        <h2 class="recap-heading">Her Last Whispers</h2>
+        <h2 class="recap-heading">{{ $t('Her Last Whispers') }}</h2>
         <div class="columns-1 md:columns-2 xl:columns-3 gap-4">
           <p v-for="(line, index) in whispers" :key="index" class="void-whisper rounded px-4 py-2 mb-3 italic break-inside-avoid">{{ line }}</p>
         </div>

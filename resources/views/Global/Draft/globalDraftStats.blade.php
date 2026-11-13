@@ -1,10 +1,10 @@
 @extends('layouts.app', $bladeGlobals)    
 
 @if ($userinput)
-  @section('title', $userinput["name"] . ' Draft Stats & Pick Order')
+  @section('title', __(':hero Draft Stats & Pick Order', ['hero' => $userinput["name"]]))
   @section('meta_description', 'When to pick or ban ' . $userinput["name"] . ' in Heroes of the Storm drafts. Pick rate, ban rate and win rate at every draft position in Storm League.')
 @else
-  @section('title', 'Hero Draft Stats & Pick Order')
+  @section('title', __('Hero Draft Stats & Pick Order'))
   @section('meta_description', 'Heroes of the Storm draft statistics and strategy. Analyze hero bans, picks, draft order, and drafting data to strategize your games effectively. Filter and analyze draft data to make informed decisions on Heroes Profile.')
 @endif
 

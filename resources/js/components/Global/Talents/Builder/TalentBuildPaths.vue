@@ -8,22 +8,22 @@
     <div class="px-3 pb-3">
     <div class="bg-gray-dark text-white rounded-2xl p-3">
       <div class="flex flex-wrap justify-between gap-2 text-sm mb-2">
-        <span>{{ paths.length.toLocaleString('en-US') }} build combinations · line width is games played</span>
+        <span>{{ $t(':count build combinations · line width is games played', { count: paths.length.toLocaleString('en-US') }) }}</span>
         <span class="flex items-center gap-2">
           <span>-{{ colourRange.toFixed(1) }}%</span>
           <span class="w-24 h-3 rounded" :style="{ background: `linear-gradient(to right, ${colours.low}, ${colours.mid}, ${colours.high})` }"></span>
           <span>+{{ colourRange.toFixed(1) }}%</span>
-          <span>vs builds that reach the same level</span>
+          <span>{{ $t('vs builds that reach the same level') }}</span>
         </span>
       </div>
       <div class="relative w-full" :style="{ aspectRatio: `${width} / ${height}` }">
         <svg class="absolute inset-0 w-full h-full" :viewBox="`0 0 ${width} ${height}`">
           <path v-for="line in lines" :key="line.key" :d="line.d" fill="none" stroke-linecap="round" stroke-opacity="0.7" :stroke="line.colour" :stroke-width="line.width">
-            <title>{{ line.win_rate.toFixed(2) }}% win rate · {{ line.games_played.toLocaleString('en-US') }} games · {{ line.versus >= 0 ? '+' : '' }}{{ line.versus.toFixed(2) }}% vs average</title>
+            <title>{{ $t(':rate% win rate · :played games · :versus:versus2% vs average', { rate: line.win_rate.toFixed(2), played: line.games_played.toLocaleString('en-US'), versus: line.versus >= 0 ? '+' : '', versus2: line.versus.toFixed(2) }) }}</title>
           </path>
         </svg>
         <template v-for="(level, column) in levels" :key="level">
-          <div class="absolute -translate-x-1/2 text-xs uppercase" :style="{ left: percent(x(column), width), top: 0 }">Level {{ level }}</div>
+          <div class="absolute -translate-x-1/2 text-xs uppercase" :style="{ left: percent(x(column), width), top: 0 }">{{ $t('Level :level', { level: level }) }}</div>
           <div v-for="(talent, row) in data[level]" :key="talent.talent_id" class="absolute -translate-x-1/2 -translate-y-1/2" :style="{ left: percent(x(column), width), top: percent(y(row), height) }">
             <talent-image-wrapper :talent="talent" size="small"></talent-image-wrapper>
           </div>

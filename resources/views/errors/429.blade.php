@@ -15,7 +15,7 @@
 
 @extends('layouts.app', $bladeGlobals)
 
-@section('title', 'Too Many Requests')
+@section('title', __('Too Many Requests'))
 @section('meta_keywords', '429 error, too many requests, rate limited, throttled request')
 @section('meta_description', 'Too many requests were made in a short amount of time. Please wait and try again.')
 

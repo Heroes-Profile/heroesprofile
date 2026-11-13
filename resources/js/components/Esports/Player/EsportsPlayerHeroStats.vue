@@ -55,7 +55,7 @@
 
       <div>
         <div class=" max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5 text-center">Maps played by {{ battletag }}</h2>
+          <h2 class="text-3xl font-bold py-5 text-center">{{ $t('Maps played by :battletag', { battletag: battletag }) }}</h2>
           <div class="flex flex-wrap justify-center">
             <group-box :esport="esport" :playerlink="true" :text="'Most Played'" :data="data.map_top_three_most_played" color="blue"></group-box>
             <group-box :esport="esport" :playerlink="true" :text="'Highest Win Rate'" :data="data.map_top_three_highest_win_rate" color="teal"></group-box>

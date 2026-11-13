@@ -54,7 +54,7 @@
               <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 <div class="flex items-center gap-3">
                   <span class="cursor-pointer" @click="sortTableFriend('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator></span>
-                  <search-input v-model="friendSearch" placeholder="Search player" :collapsible="true" class="w-40"></search-input>
+                  <search-input v-model="friendSearch" :placeholder="$t('Search player')" :collapsible="true" class="w-40"></search-input>
                 </div>
               </th>
               <th @click="sortTableFriend('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -88,7 +88,7 @@
               <td class="py-2 px-3 text-center">{{ row.total_games_played.toLocaleString('en-US') }}</td>
               <td class="py-2 px-3 text-center">{{ row.win_rate.toFixed(2) }}</td>
               <td v-if="!esport" class="py-2 px-3">
-                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" :aria-label="`Matches with ${row.battletag}`" title="Matches" class="flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors"><i class="fas fa-chevron-right"></i></a>
+                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" :aria-label="`Matches with ${row.battletag}`" :title="$t('Matches')" class="flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors"><i class="fas fa-chevron-right"></i></a>
               </td>
             </tr>
           </tbody>
@@ -104,7 +104,7 @@
               <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 <div class="flex items-center gap-3">
                   <span class="cursor-pointer" @click="sortTableEnemy('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator></span>
-                  <search-input v-model="enemySearch" placeholder="Search player" :collapsible="true" class="w-40"></search-input>
+                  <search-input v-model="enemySearch" :placeholder="$t('Search player')" :collapsible="true" class="w-40"></search-input>
                 </div>
               </th>
               <th @click="sortTableEnemy('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -140,7 +140,7 @@
               <td class="py-2 px-3 text-center">{{ row.total_games_played.toLocaleString('en-US') }}</td>
               <td class="py-2 px-3 text-center">{{ row.win_rate.toFixed(2) }}</td>
               <td v-if="!esport" class="py-2 px-3">
-                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" :aria-label="`Matches with ${row.battletag}`" title="Matches" class="flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors"><i class="fas fa-chevron-right"></i></a>
+                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" :aria-label="`Matches with ${row.battletag}`" :title="$t('Matches')" class="flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors"><i class="fas fa-chevron-right"></i></a>
               </td>
             </tr>
           </tbody>

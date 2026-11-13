@@ -3,7 +3,7 @@
     <div v-for="day in computedDays" :key="day.label" class="flex flex-col gap-1.5">
       <div class="flex justify-between">
         <span class="text-header">{{ day.label }}</span>
-        <span class="text-subtext">Games: {{ (day.wins + day.losses).toLocaleString('en-US') }}</span>
+        <span class="text-subtext">{{ $t('Games: :value', { value: (day.wins + day.losses).toLocaleString('en-US') }) }}</span>
       </div>
       <stat-bar :value="day.winRate.toFixed(2)" suffix="%" :color="$winRateColor(day.winRate)"></stat-bar>
     </div>

@@ -4,7 +4,7 @@
     <page-heading :heading="'Match Prediction Game'">
       <template #extraInfo>
         <p class="text-sm max-md:text-sm">
-          How good are you at predicting the winner of a game based on the team picks? Select your game mode, then select which team you believe won. Results are based off actual game data. 
+          {{ $t('How good are you at predicting the winner of a game based on the team picks? Select your game mode, then select which team you believe won. Results are based off actual game data.') }} 
         </p>
       </template>
     </page-heading>
@@ -22,7 +22,7 @@
     
     <div v-else class="max-w-[62.5rem] mx-auto">
       
-      <div v-if="practicemode" class="bg-red p-4" >PRACTICE MODE ({{ 10 - totalGamesPlayedPractice }} practices left)</div>
+      <div v-if="practicemode" class="bg-red p-4" >{{ $t('PRACTICE MODE (:totalgamesplayedpractice practices left)', { totalgamesplayedpractice: 10 - totalGamesPlayedPractice }) }}</div>
       <div v-else>
         <h2 class="text-sm text-center uppercase font-semibold text-subtext"> {{ truncatedBattletag }} - {{ seasonLabel(statsSeason) }}</h2>
         <div class="bg-surface rounded p-4">
@@ -34,7 +34,7 @@
               :defaultValue="season"
             ></single-select-filter>
           </div>
-          <p class="text-sm text-center mb-4">Every match you predict counts toward the current season, {{ seasonLabel(currentSeason) }}. The filter only changes which stats are shown.</p>
+          <p class="text-sm text-center mb-4">{{ $t('Every match you predict counts toward the current season, :seasonlabel. The filter only changes which stats are shown.', { seasonlabel: seasonLabel(currentSeason) }) }}</p>
           <span ><stat-bar-box class="w-full" size="full" :title="'Quick Match Prediction Rate (Out of '+getPredictionGames(1)+' Games)'" :value="getPredictionRate(1)"></stat-bar-box> </span>
           <span ><stat-bar-box color="teal" class="w-full" size="full" :title="'Storm League Prediction Rate (Out of '+getPredictionGames(5)+' Games)'" :value="getPredictionRate(5)"></stat-bar-box> </span>
           <span ><stat-bar-box color="red" class="w-full" size="full" :title="'ARAM Prediction Rate (Out of '+getPredictionGames(6)+' Games)'" :value="getPredictionRate(6)"></stat-bar-box></span>
@@ -45,7 +45,7 @@
 
     <div class="max-w-[62.5rem] mx-auto">
       <div class="bg-surface rounded p-4">
-        Leaderboards can be found at <a class="link" :href="'/Global/Leaderboard?type=Match%20Prediction&season=' + currentSeason" target="_blank">{{ $t('Leaderboards') }}</a>
+        {{ $t('Leaderboards can be found at') }} <a class="link" :href="'/Global/Leaderboard?type=Match%20Prediction&season=' + currentSeason" target="_blank">{{ $t('Leaderboards') }}</a>
       </div>
     </div>
 
@@ -83,8 +83,8 @@
 
       <div class="w-full max-w-[62.5rem] bg-surface rounded flex flex-wrap justify-between gap-2 mx-auto p-4 mb-4">
         <span>{{ $mapName(data.replayData.game_map) }}</span>
-        <span>HP Rank: {{ data.rank }}</span>
-        <span>Region: {{ data.replayData.regionString }}</span>
+        <span>{{ $t('HP Rank: :rank', { rank: data.rank }) }}</span>
+        <span>{{ $t('Region: :regionstring', { regionstring: data.replayData.regionString }) }}</span>
         <span>{{ data.replayData.timeFormat }}</span>
       </div>
 
@@ -340,7 +340,7 @@ export default {
         return 'All Seasons';
       }
       const match = this.statsSeasons.find(item => item.code == season);
-      return match ? match.name : 'Season ' + season;
+      return match ? match.name : this.$t('Season :season', { season });
     },
     shownStat(gameType){
       const rows = this.predictionstatsallupdated.filter(stat => stat.game_type === gameType

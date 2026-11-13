@@ -5,7 +5,7 @@
 
     <div class="mx-auto max-w-[75rem] px-4 mt-6">
       <div class="bg-lighten border-l-4 border-yellow rounded p-3 mb-6 text-sm">
-        <strong>Beta:</strong> the Heroes Profile Twitch extension is still in testing and you may encounter
+        <strong>{{ $t('Beta:') }}</strong> the Heroes Profile Twitch extension is still in testing and you may encounter
         issues. Report problems at <a href="/Contact" class="link">heroesprofile.com/Contact</a> or zemill@heroesprofile.com.
       </div>
 
@@ -16,20 +16,20 @@
           :aria-expanded="showHowTo ? 'true' : 'false'"
         >
           <span class="text-lteal text-sm">{{ showHowTo ? '▼' : '►' }}</span>
-          How to watch a stream with the extension
+          {{ $t('How to watch a stream with the extension') }}
         </button>
 
         <div v-if="showHowTo" class="px-4 pb-4 text-sm">
-          <h3 class="font-semibold mb-1">On a computer</h3>
+          <h3 class="font-semibold mb-1">{{ $t('On a computer') }}</h3>
           <ol class="list-decimal list-inside space-y-1 mb-4 text-gray-light">
-            <li>Open one of the live channels above on twitch.tv.</li>
+            <li>{{ $t('Open one of the live channels above on twitch.tv.') }}</li>
             <li>
-              Move your mouse over the video. A small Heroes Profile icon appears against the
+              {{ $t('Move your mouse over the video. A small Heroes Profile icon appears against the') }}
               <strong>right-hand edge of the player</strong>, about halfway down. It is easy to
               miss, and it disappears again when you move the mouse away from the video.
             </li>
-            <li>Click the icon. The panel opens over the stream.</li>
-            <li>Click the icon again, or the ✕ in the panel's title bar, to close it.</li>
+            <li>{{ $t('Click the icon. The panel opens over the stream.') }}</li>
+            <li>{{ $t("Click the icon again, or the ✕ in the panel's title bar, to close it.") }}</li>
           </ol>
           <div class="grid gap-4 sm:grid-cols-[2fr,1fr] items-start mb-4">
             <figure>
@@ -40,8 +40,7 @@
                 loading="lazy"
               />
               <figcaption class="text-xs text-gray-medium mt-1">
-                The icon sits against the right edge of the video, and only appears while your mouse
-                is over the player.
+                {{ $t('The icon sits against the right edge of the video, and only appears while your mouse is over the player.') }}
               </figcaption>
             </figure>
 
@@ -53,14 +52,13 @@
                 loading="lazy"
               />
               <figcaption class="text-xs text-gray-medium mt-1">
-                Close up: look for the Heroes Profile logo.
+                {{ $t('Close up: look for the Heroes Profile logo.') }}
               </figcaption>
             </figure>
           </div>
 
           <p class="mb-4 text-gray-light">
-            It works the same in theatre mode and fullscreen, and you can keep it open while you
-            watch.
+            {{ $t('It works the same in theatre mode and fullscreen, and you can keep it open while you watch.') }}
           </p>
 
           <figure class="mb-4">
@@ -71,45 +69,42 @@
               loading="lazy"
             />
             <figcaption class="text-xs text-gray-medium mt-1">
-              The panel open on a stream, showing an example lobby.
+              {{ $t('The panel open on a stream, showing an example lobby.') }}
             </figcaption>
           </figure>
 
-          <h3 class="font-semibold mb-1">On the Twitch mobile app</h3>
+          <h3 class="font-semibold mb-1">{{ $t('On the Twitch mobile app') }}</h3>
           <p class="mb-4 text-gray-light">
-            Open the channel, then swipe across from the chat to the extensions panel below the
-            stream. The same lobby is shown in a single column.
+            {{ $t('Open the channel, then swipe across from the chat to the extensions panel below the stream. The same lobby is shown in a single column.') }}
           </p>
 
-          <h3 class="font-semibold mb-1">What you will see</h3>
+          <h3 class="font-semibold mb-1">{{ $t('What you will see') }}</h3>
           <ul class="list-disc list-inside space-y-1 mb-4 text-gray-light">
-            <li>Both teams, each in the column matching its side of the map in game.</li>
-            <li>Every player's hero, win rate and account level from Heroes Profile.</li>
-            <li>Talents as they are picked. Hover one to read what it does.</li>
-            <li><strong>Copy build</strong> copies a code you can paste into the game's chat to try that build yourself.</li>
-            <li>A player's name opens their Heroes Profile page in a new tab.</li>
+            <li>{{ $t('Both teams, each in the column matching its side of the map in game.') }}</li>
+            <li>{{ $t("Every player's hero, win rate and account level from Heroes Profile.") }}</li>
+            <li>{{ $t('Talents as they are picked. Hover one to read what it does.') }}</li>
+            <li><strong>{{ $t('Copy build') }}</strong> copies a code you can paste into the game's chat to try that build yourself.</li>
+            <li>{{ $t("A player's name opens their Heroes Profile page in a new tab.") }}</li>
           </ul>
 
-          <h3 class="font-semibold mb-1">If it says "Waiting for the next game"</h3>
+          <h3 class="font-semibold mb-1">{{ $t('If it says "Waiting for the next game"') }}</h3>
           <p class="text-gray-light">
-            That is the normal idle state: it fills in once the streamer is in a lobby. Streamers can
-            also set a delay, so what you see can be up to 15 minutes behind the game to stop stream
-            sniping. Nothing appears at all if the streamer is not running the uploader.
+            {{ $t('That is the normal idle state: it fills in once the streamer is in a lobby. Streamers can also set a delay, so what you see can be up to 15 minutes behind the game to stop stream sniping. Nothing appears at all if the streamer is not running the uploader.') }}
           </p>
 
           <p class="mt-4 text-xs text-gray-medium">
-            Link to this guide: <a :href="howToUrl" class="link">{{ howToUrl }}</a>
+            {{ $t('Link to this guide:') }} <a :href="howToUrl" class="link">{{ howToUrl }}</a>
           </p>
         </div>
       </div>
 
-      <panel-box title="Live Now" class="mb-8">
+      <panel-box :title="$t('Live Now')" class="mb-8">
         <template #title>
           <span class="text-sm font-normal text-subtext">({{ directory.live.length }})</span>
           <span class="inline-block w-2 h-2 rounded-full bg-red"></span>
         </template>
         <p v-if="!directory.live.length" class="text-sm text-gray-medium">
-          Nobody using the extension is live right now. Check back later.
+          {{ $t('Nobody using the extension is live right now. Check back later.') }}
         </p>
 
         <div v-else class="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
@@ -129,9 +124,9 @@
                 class="w-full aspect-video object-cover"
                 loading="lazy"
               />
-              <span class="absolute top-2 left-2 bg-red text-white text-xs px-2 py-0.5 rounded">LIVE</span>
+              <span class="absolute top-2 left-2 bg-red text-white text-xs px-2 py-0.5 rounded">{{ $t('LIVE') }}</span>
               <span class="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded">
-                {{ stream.viewer_count.toLocaleString() }} viewers
+                {{ $t(':count viewers', { count: stream.viewer_count.toLocaleString() }) }}
               </span>
             </div>
             <div class="p-3">
@@ -143,39 +138,35 @@
         </div>
       </panel-box>
 
-      <panel-box title="All Streamers" class="mb-8">
+      <panel-box :title="$t('All Streamers')" class="mb-8">
         <template #title>
-          <span class="text-sm font-normal text-subtext">({{ directory.offline.length }} offline)</span>
+          <span class="text-sm font-normal text-subtext">{{ $t('(:offline offline)', { offline: directory.offline.length }) }}</span>
         </template>
-        <p v-if="!directory.offline.length" class="text-sm text-gray-medium">No other listed streamers yet.</p>
+        <p v-if="!directory.offline.length" class="text-sm text-gray-medium">{{ $t('No other listed streamers yet.') }}</p>
 
         <ul v-else class="grid gap-2 sm:grid-cols-2 md:grid-cols-4">
           <li v-for="streamer in directory.offline" :key="streamer.login" class="bg-surface-1 rounded p-3">
             <a :href="streamer.url" target="_blank" rel="noopener" class="link font-semibold">{{ streamer.display_name }}</a>
             <div v-if="streamer.battletag && streamer.blizz_id" class="text-xs mt-1">
-              <a :href="profileUrl(streamer)" class="hover:text-lteal">Heroes Profile: {{ streamer.battletag }}</a>
+              <a :href="profileUrl(streamer)" class="hover:text-lteal">{{ $t('Heroes Profile: :battletag', { battletag: streamer.battletag }) }}</a>
             </div>
           </li>
         </ul>
       </panel-box>
 
       <div class="bg-surface rounded p-6 mb-8 text-sm">
-        <h2 class="text-lg mb-2">Stream Heroes of the Storm?</h2>
+        <h2 class="text-lg mb-2">{{ $t('Stream Heroes of the Storm?') }}</h2>
         <p class="mb-2">
-          The Heroes Profile Twitch extension shows your viewers everyone in your game — heroes,
-          talents as they are picked, win rates and account levels — without you lifting a finger. It is included
-          with any Heroes Profile API plan, and every channel gets a free month to try it.
-          It reads temporary files the game writes as it goes, so it is not 100% real time and
-          talent picks can lag behind the game.
+          {{ $t('The Heroes Profile Twitch extension shows your viewers everyone in your game — heroes, talents as they are picked, win rates and account levels — without you lifting a finger. It is included with any Heroes Profile API plan, and every channel gets a free month to try it. It reads temporary files the game writes as it goes, so it is not 100% real time and talent picks can lag behind the game.') }}
         </p>
         <p>
-          <a href="/Api/Account#twitch" class="link">Set it up</a> ·
-          <a href="https://dashboard.twitch.tv/extensions/chu7yxvts476q2ys0pben0ij8iagsk-2.0.0" target="_blank" rel="noopener" class="link">Extension on Twitch</a> ·
-          <a href="/Twitch/Guidelines" class="link">Streamer code of conduct</a>
+          <a href="/Api/Account#twitch" class="link">{{ $t('Set it up') }}</a> ·
+          <a href="https://dashboard.twitch.tv/extensions/chu7yxvts476q2ys0pben0ij8iagsk-2.0.0" target="_blank" rel="noopener" class="link">{{ $t('Extension on Twitch') }}</a> ·
+          <a href="/Twitch/Guidelines" class="link">{{ $t('Streamer code of conduct') }}</a>
         </p>
       </div>
 
-      <p class="text-xs text-gray-medium mb-8">Updated {{ updatedAt }}. Refreshes every few minutes.</p>
+      <p class="text-xs text-gray-medium mb-8">{{ $t('Updated :updatedat. Refreshes every few minutes.', { updatedat: updatedAt }) }}</p>
     </div>
   </div>
 </template>

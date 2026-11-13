@@ -25,8 +25,8 @@
             <!-- Division overview -->
             <panel-box :inner="true" class="!gap-8">
               <div class="flex flex-col">
-                <h2 class="text-3xl font-bold">Division {{ division }}</h2>
-                <span class="text-subtext">Season {{ modifiedseason }}</span>
+                <h2 class="text-3xl font-bold">{{ $t('Division :division', { division: division }) }}</h2>
+                <span class="text-subtext">{{ $t('Season :modifiedseason', { modifiedseason: modifiedseason }) }}</span>
               </div>
               <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
                 <div class="shrink-0 w-40 md:w-60 aspect-square flex items-center justify-center">
@@ -53,11 +53,11 @@
                     <img v-if="team.image" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image" :alt="$ngsTeam(team.team_name).name"/>
                     <div class="flex flex-col min-w-0 flex-1">
                       <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></span>
-                      <span v-if="$ngsTeam(team.team_name).withdrawnSeason" class="text-sm text-subtext">Withdrew Season {{ $ngsTeam(team.team_name).withdrawnSeason }}</span>
+                      <span v-if="$ngsTeam(team.team_name).withdrawnSeason" class="text-sm text-subtext">{{ $t('Withdrew Season :withdrawnseason', { withdrawnseason: $ngsTeam(team.team_name).withdrawnSeason }) }}</span>
                     </div>
                     <div class="flex flex-col items-end shrink-0 text-sm">
                       <span class="font-semibold">{{ team.win_rate.toFixed(2) }}%</span>
-                      <span class="text-subtext">{{ team.wins + team.losses }} games</span>
+                      <span class="text-subtext">{{ $t(':losses games', { losses: team.wins + team.losses }) }}</span>
                     </div>
                   </a>
                 </div>
@@ -69,14 +69,14 @@
         <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
         <div class="grid xl:grid-cols-2 gap-6 items-start">
-          <panel-box title="Heroes Played">
+          <panel-box :title="$t('Heroes Played')">
             <div class="flex flex-wrap gap-2">
               <hero-image-wrapper v-for="item in data.heroes" :key="item.hero_id" size="big" :hero="item.hero">
                 <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
               </hero-image-wrapper>
             </div>
           </panel-box>
-          <panel-box title="Maps Played">
+          <panel-box :title="$t('Maps Played')">
             <div class="flex flex-wrap gap-2">
               <map-image-wrapper v-for="item in data.maps" :key="item.map_id" size="big" :map="item.map">
                 <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
@@ -107,7 +107,7 @@
         <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
           <panel-box :inner="true" class="!gap-8 2xl:w-[48.75rem]">
             <div class="flex flex-col gap-2">
-              <h2 class="text-3xl font-bold">Division {{ division }}</h2>
+              <h2 class="text-3xl font-bold">{{ $t('Division :division', { division: division }) }}</h2>
               <skeleton-box class="h-4 w-24"></skeleton-box>
             </div>
             <div class="flex gap-8 max-sm:flex-col">

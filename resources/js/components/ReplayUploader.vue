@@ -17,8 +17,7 @@
         />
 
         <p class="text-sm mb-4">
-          Watches your replay folder and uploads each game as you finish it, with pre-match and
-          post-match analysis. Games uploaded this way count towards the leaderboards.
+          {{ $t('Watches your replay folder and uploads each game as you finish it, with pre-match and post-match analysis. Games uploaded this way count towards the leaderboards.') }}
         </p>
 
         <p class="text-sm mb-4">
@@ -29,9 +28,8 @@
         <uploader-downloads class="text-sm mb-4" :show-ranks="true"></uploader-downloads>
 
         <p class="text-sm mb-4">
-          The <strong>with rank reading</strong> downloads are the same uploader plus an opt-in reader for the Storm
-          League loading screen, which helps us get real in-game ranks onto Heroes Profile.
-          <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>.
+          {{ $t('The') }} <strong>{{ $t('with rank reading') }}</strong> {{ $t('downloads are the same uploader plus an opt-in reader for the Storm League loading screen, which helps us get real in-game ranks onto Heroes Profile.') }}
+          <a class="link" href="/Upload/Uploader#rank-reading">{{ $t('How rank reading works') }}</a>.
         </p>
 
         <p class="text-sm">
