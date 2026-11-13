@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :heading="'Division ' + division + ' Match History'" esport="NGS" heading-image="/images/NGS/ngs_large.png" heading-image-url="/Esports/NGS"></page-heading>
+    <page-heading :heading="$t('Division :division Match History', { division })" esport="NGS" heading-image="/images/NGS/ngs_large.png" heading-image-url="/Esports/NGS"></page-heading>
 
     <filters
       :filters="filters"

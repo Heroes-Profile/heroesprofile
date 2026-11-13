@@ -108,7 +108,7 @@
               <thead class=" top-0 w-full  z-40">
                 <tr class="">
                   <th @click="sortTable('rank')" class="py-2 px-3  text-center text-sm leading-4 cursor-pointer">
-                    {{ getHeaderRankText("rank") }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                    {{ $t(getHeaderRankText("rank")) }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
                   <th :class="['py-2 px-3  text-center text-sm leading-4',{ 'bg-teal text-white': sortKey === 'battletag'}]">
                     <div class="flex items-center justify-center gap-3">
@@ -130,10 +130,10 @@
                     </span>
                   </th>
                   <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'win_rate'}]">
-                    Win Rate&nbsp;%<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                    {{ $t('Win Rate %') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
                   <th v-if="leaderboardtype == 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'win_rate'}]">
-                    Prediction Rate&nbsp;%<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                    {{ $t('Prediction Rate %') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
                   <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('rating')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'rating'}]">
                     <span class="inline-flex items-center gap-2">{{ $t('HP Rating') }}<sort-indicator :column="'rating'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
@@ -146,7 +146,7 @@
                     </span>
                   </th>      
                   <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('mmr')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'mmr'}]">
-                    {{ $t('HP :leaderboardtype MMR', { leaderboardtype: leaderboardtype }) }}<sort-indicator :column="'mmr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                    {{ $t('HP :leaderboardtype MMR', { leaderboardtype: $t(leaderboardtype) }) }}<sort-indicator :column="'mmr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th> 
                   <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('mmr')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'mmr'}]">
                     {{ $t('HP Tier') }}<sort-indicator :column="'mmr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>

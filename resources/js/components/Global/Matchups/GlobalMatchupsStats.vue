@@ -2,7 +2,7 @@
   <div>
     <global-async-debug-banner page-label="Global Matchups" />
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-    <page-heading :heading="selectedHero ? selectedHero.name + ' Counters & Matchups' : $t('Hero Counters & Matchups')">
+    <page-heading :heading="selectedHero ? $t(':hero Counters & Matchups', { hero: $heroName(selectedHero) }) : $t('Hero Counters & Matchups')">
       <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
         <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
         <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 13.75rem; max-height: 21.25rem; overflow-y: auto;">
@@ -103,7 +103,7 @@
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate_as_ally' || sortKey === 'ally_difference' }">
               <div class="flex items-center justify-center">
-                <span class="cursor-pointer" @click="sortTable('win_rate_as_ally')">{{ $t('Win Rate as Ally %') }}<sort-indicator column="win_rate_as_ally" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator> | </span><span class="cursor-pointer" @click="sortTable('ally_difference')">(Difference)<sort-indicator column="ally_difference" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="cursor-pointer" @click="sortTable('win_rate_as_ally')">{{ $t('Win Rate as Ally %') }}<sort-indicator column="win_rate_as_ally" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator> | </span><span class="cursor-pointer" @click="sortTable('ally_difference')">{{ $t('(Difference)') }}<sort-indicator column="ally_difference" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
                 <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
                   <slot>
                     <div>
@@ -138,7 +138,7 @@
             <td class="py-2 px-3 ">
               <div class="flex items-center">
                 <hero-image-wrapper class="mr-2" :hero="row.ally ? row.ally.hero : row.enemy.hero " ></hero-image-wrapper>
-                <span class="hidden md:block font-bold">{{ row.ally && row.ally.hero ? row.ally.hero.name : row.enemy.hero.name }}</span>
+                <span class="hidden md:block font-bold">{{ $heroName(row.ally && row.ally.hero ? row.ally.hero : row.enemy.hero) }}</span>
               </div>
             </td>
             <td class="py-2 px-3 ">

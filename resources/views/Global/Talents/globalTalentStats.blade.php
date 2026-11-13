@@ -34,7 +34,7 @@
   >
     {{-- Crawlers get the heading and builds in the HTML; Vue drops it on mount --}}
     <div v-pre class="sr-only">
-      <h1 class="text-xl md:text-3xl">{{ $userinput ? $userinput["name"] . ' Builds & Talent Stats' : 'Hero Builds & Talent Stats' }}</h1>
+      <h1 class="text-xl md:text-3xl">{{ $userinput ? __(':hero Builds & Talent Stats', ['hero' => $userinput["name"]]) : __('Hero Builds & Talent Stats') }}</h1>
       @if ($userinput && $initialbuilddata)
         <h2 class="heading mt-4 mb-2">Top {{ $userinput["name"] }} Builds, Patch {{ $defaulttimeframe[0] }}</h2>
         <ol class="text-sm">

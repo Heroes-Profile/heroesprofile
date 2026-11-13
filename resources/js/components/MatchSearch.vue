@@ -321,10 +321,10 @@
     computed: {
       searchInfo() {
         return [
-          `Searches replays played since ${this.formatDay(this.oldestdate)} (the current and previous season), newest first, ${this.pageSize} at a time.`,
-          'Several heroes or players use their OR / AND switch.',
-          'HP MMR and rank filters (under Advanced Filters) must all hold for the same player: with heroes on OR, one player on any chosen hero; on AND, the player on every chosen hero.',
-          'Ranks use the current league boundaries for each game type.',
+          this.$t('Searches replays played since :date (the current and previous season), newest first, :count at a time.', { date: this.formatDay(this.oldestdate), count: this.pageSize }),
+          this.$t('Several heroes or players use their OR / AND switch.'),
+          this.$t('HP MMR and rank filters (under Advanced Filters) must all hold for the same player: with heroes on OR, one player on any chosen hero; on AND, the player on every chosen hero.'),
+          this.$t('Ranks use the current league boundaries for each game type.'),
         ];
       },
       loadedPages() {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="`${esport == 'HeroesInternational' ? 'Heroes International' : esport} ${team} Match History`" -->
-    <page-heading :heading="teamName(team) + ' Match History'" :esport="esport == 'Other' ? null : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <page-heading :heading="$t(':team Match History', { team: teamName(team) })" :esport="esport == 'Other' ? null : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <!-- The league pages' match rows, a page at a time, like the other match histories -->
     <div v-if="data" class="mt-4">

@@ -52,7 +52,7 @@
     </div>
 
     <div v-if="waitingSeconds" class="bg-darken p-3 text-sm mb-4">
-      {{ $t('Rate limited by the API — waiting :waitingsecondss, then carrying on.', { waitingseconds: waitingSeconds }) }}
+      {{ $t('Rate limited by the API — waiting :count seconds, then carrying on.', { count: waitingSeconds }) }}
     </div>
 
     <table v-if="files.length" class="min-w-0 w-full responsive-table">

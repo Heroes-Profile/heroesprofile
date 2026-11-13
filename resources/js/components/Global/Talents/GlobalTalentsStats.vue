@@ -4,7 +4,7 @@
 
     <div class="grid gap-5 grid-cols-1">
       <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-      <page-heading :heading="selectedHero ? selectedHero.name + ' Builds & Talent Stats' : $t('Hero Builds & Talent Stats')">
+      <page-heading :heading="selectedHero ? $t(':hero Builds & Talent Stats', { hero: $heroName(selectedHero) }) : $t('Hero Builds & Talent Stats')">
         <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
           <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
           <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 13.75rem; max-height: 21.25rem; overflow-y: auto;">
@@ -150,7 +150,7 @@
               </template>
             </global-talent-builds-section>
             <div class="mt-4">
-              Create your own builds at
+              {{ $t('Create your own builds at') }}
               <a :href="'/Global/Talents/Builder/' + selectedHero.name" class="group/bt inline-flex items-center" target="_blank" rel="noopener">
                 <span class="group-hover/bt:underline">{{ '/Global/Talents/Builder/' + selectedHero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i>
               </a>

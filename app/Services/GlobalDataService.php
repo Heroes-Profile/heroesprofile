@@ -1654,6 +1654,20 @@ class GlobalDataService
         $filterData->game_maps = collect($filterData->game_maps)
             ->map(fn ($map) => $map + ['label' => $names['maps'][$map['name']] ?? $map['name']]);
 
+        // "2026 Season 3" and "Season 3" are built in English in buildFilterData()
+        $seasonLabel = function ($season) {
+            if (preg_match('/^(\d+) Season (.+)$/', $season['name'], $m)) {
+                return $season + ['label' => __(':year Season :season', ['year' => $m[1], 'season' => $m[2]])];
+            }
+            if (preg_match('/^Season (.+)$/', $season['name'], $m)) {
+                return $season + ['label' => __('Season :season', ['season' => $m[1]])];
+            }
+
+            return $season + ['label' => __($season['name'])];
+        };
+        $filterData->seasons = collect($filterData->seasons)->map($seasonLabel);
+        $filterData->match_prediction_seasons = collect($filterData->match_prediction_seasons)->map($seasonLabel);
+
         return $filterData;
     }
 

@@ -2,7 +2,7 @@
   <div>
     <global-async-debug-banner page-label="Global Talent Builder" />
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" :infoText2="infoText2" -->
-    <page-heading :heading="selectedHero ? selectedHero.name + ' Talent Calculator & Builder' : $t('Talent Calculator & Builder')"></page-heading>
+    <page-heading :heading="selectedHero ? $t(':hero Talent Calculator & Builder', { hero: $heroName(selectedHero) }) : $t('Talent Calculator & Builder')"></page-heading>
 
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes"></hero-selection>

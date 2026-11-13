@@ -3,7 +3,7 @@
     <global-async-debug-banner page-label="Global Draft" />
     <div class="grid gap-5 grid-cols-1">
       <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" :infoText2="infoText2" -->
-      <page-heading :heading="selectedHero ? selectedHero.name + ' Draft Stats & Pick Order' : $t('Hero Draft Stats & Pick Order')">
+      <page-heading :heading="selectedHero ? $t(':hero Draft Stats & Pick Order', { hero: $heroName(selectedHero) }) : $t('Hero Draft Stats & Pick Order')">
         <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
           <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
           <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 13.75rem; max-height: 21.25rem; overflow-y: auto;">

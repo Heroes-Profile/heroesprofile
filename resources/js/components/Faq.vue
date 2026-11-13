@@ -73,7 +73,7 @@
                   <td style="padding:0.1875rem 0.5rem; white-space:nowrap;">
                     <a v-if="!page.url.includes('{')" :href="page.url" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ page.url }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                     <span v-else>{{ page.url }}</span>
-                    <div v-if="page.hero_url" class="text-xs text-soft">One hero: <a :href="page.hero_url.replace('{hero}', 'Abathur')" class="underline">{{ page.hero_url.replace('{hero}', 'Abathur') }}</a></div>
+                    <div v-if="page.hero_url" class="text-xs text-soft">{{ $t('One hero:') }} <a :href="page.hero_url.replace('{hero}', 'Abathur')" class="underline">{{ page.hero_url.replace('{hero}', 'Abathur') }}</a></div>
                   </td>
                   <td style="padding:0.1875rem 0.5rem;">{{ page.description }}</td>
                 </tr>

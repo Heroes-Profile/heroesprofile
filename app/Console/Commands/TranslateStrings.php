@@ -104,7 +104,8 @@ class TranslateStrings extends Command
             '/(?:\$t|translate|__)\(\s*(?:\'((?:[^\'\\\\]|\\\\.)*)\'|"((?:[^"\\\\]|\\\\.)*)"|`([^`$]*)`)/',
             // Props the shared components pass through $t
             '/:(?:text|heading|title|label|all-label|button-text|buttonText|label-text|labelText)="\'([^\']+)\'"/',
-            '/<(?:custom-button|page-heading|panel-box|modal-box)\b[^>]*?\s(?:text|heading|title)="([A-Z][^"{]*)"/',
+            '/<(?:custom-button|page-heading|panel-box|modal-box|group-box|tab-button|search-input)\b[^>]*?\s(?:text|heading|title|tab1text|tab2text|placeholder|label)="([A-Z][^"{]*)"/',
+            '/:(?:tab1text|tab2text)="\'([^\']+)\'"/',
         ];
 
         $finder = (new Finder)->files()->in([resource_path('js'), resource_path('views')])->name(['*.vue', '*.js', '*.blade.php']);
@@ -140,6 +141,11 @@ class TranslateStrings extends Command
                 $keys[$item['name']] = true;
                 $keys[$item['description']] = true;
             }
+        }
+
+        // Built at runtime: GlobalDataService::localizeFilterLabels()
+        foreach ([':year Season :season', 'Season :season', 'Preseason'] as $key) {
+            $keys[$key] = true;
         }
 
         return array_keys($keys);

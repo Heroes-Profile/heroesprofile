@@ -191,7 +191,7 @@
               <td v-if="this.showStatTypeColumn" class="py-2 px-3 ">{{ getValueLocal(getValueFixed(row.total_filter_type)) }}</td>
               <td v-if="!groupSizeActive" class="py-2 px-3 ">
                 <!-- Like Friend Foe's Matches column: a chevron that opens this hero's builds below the row -->
-                <button type="button" @click="viewtalentbuilds(row.name, index)" :aria-expanded="!!toggletalentbuilds[row.name]" :aria-label="`${row.name} talent builds`" :title="$t('Talent Builds')" class="w-full flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors">
+                <button type="button" @click="viewtalentbuilds(row.name, index)" :aria-expanded="!!toggletalentbuilds[row.name]" :aria-label="$t(':hero talent builds', { hero: $heroName(row.name) })" :title="$t('Talent Builds')" class="w-full flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors">
                   <img v-if="loadingStates[row.name]" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="Loading"/>
                   <i v-else :class="['fas fa-chevron-right transition-transform', { 'rotate-90': toggletalentbuilds[row.name] }]"></i>
                 </button>
