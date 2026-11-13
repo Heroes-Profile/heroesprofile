@@ -24,7 +24,7 @@
             v-for="index in 5"
             :key="index"
             @click="selectSlot(team, index)"
-            :title="slots[team][index].hero ? slots[team][index].hero.name : 'Player ' + playerNumber(team, index)"
+            :title="slots[team][index].hero ? $heroName(slots[team][index].hero) : $t('Player :number', { number: playerNumber(team, index) })"
             :class="[
               'relative group w-20 h-20 max-md:w-14 max-md:h-14 m-2 max-md:m-1 rounded border bg-cover cursor-pointer',
               team === 1 ? 'bg-[rgba(33,61,122,0.2)]' : 'bg-[rgba(179,54,22,0.2)]',
@@ -65,8 +65,8 @@
                   v-for="role in roles"
                   :key="role"
                   :src="'/images/roles/' + role.toLowerCase() + (selectedRole === role ? '-highlighted' : '') + '.PNG'"
-                  :title="role"
-                  :alt="role"
+                  :title="$t(role)"
+                  :alt="$t(role)"
                   @click="selectedRole = selectedRole === role ? null : role"
                   class="w-12 cursor-pointer"
                 />
@@ -78,8 +78,8 @@
                 v-for="hero in filteredHeroes"
                 :key="hero.id"
                 :src="heroImage(hero)"
-                :title="hero.name"
-                :alt="hero.name"
+                :title="$heroName(hero)"
+                :alt="$heroName(hero)"
                 @click="clickedHero(hero)"
                 class="w-16 h-16 m-2 rounded-full cursor-pointer hover:shadow-[0.2em_0.1em_0.5em_black] hover:brightness-125"
               />

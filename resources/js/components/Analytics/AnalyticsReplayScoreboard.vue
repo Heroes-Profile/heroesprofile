@@ -32,7 +32,7 @@
       </span>
       <div class="flex items-center gap-3">
         <span class="text-4xl font-bold" :style="{ color: teamColor(0) }">{{ levels[0].level }}</span>
-        <span class="text-gray-light">vs</span>
+        <span class="text-gray-light">{{ $t('vs') }}</span>
         <span class="text-4xl font-bold" :style="{ color: teamColor(1) }">{{ levels[1].level }}</span>
       </div>
       <div class="flex gap-2 w-full mt-1">

@@ -9,7 +9,7 @@
   ]" :style="tier ? tierStyle(tier) : null">
     <div class="flex gap-6">
       <div :class="['flex min-w-0', valueFirst ? 'flex-col-reverse' : 'flex-col']">
-        <span :class="['text-sm whitespace-nowrap', { 'text-subtext': !tier }]">{{ title }}</span>
+        <span :class="['text-sm whitespace-nowrap', { 'text-subtext': !tier }]">{{ $t(title) }}</span>
         <span :class="['text-xl font-semibold', { 'text-header': !tier }]">{{ value }}</span>
       </div>
       <div v-if="secondstat" class="flex flex-col min-w-0">

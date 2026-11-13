@@ -1,5 +1,5 @@
 <template>
-  <span v-if="tier" class="inline-block min-w-[10.5em] text-center px-3 py-1.5 rounded font-medium whitespace-nowrap" :style="style">{{ tier }}</span>
+  <span v-if="tier" class="inline-block min-w-[10.5em] text-center px-3 py-1.5 rounded font-medium whitespace-nowrap" :style="style">{{ tierLabel }}</span>
 </template>
 
 <script>
@@ -26,6 +26,10 @@ export default {
     tier: [String, Number],
   },
   computed: {
+    tierLabel() {
+      const [, league, division] = String(this.tier).match(/^(.*?)(?:\s+(\d+))?$/) || [];
+      return division ? `${this.$t(league)} ${division}` : this.$t(String(this.tier));
+    },
     style() {
       return tierStyle(this.tier);
     },

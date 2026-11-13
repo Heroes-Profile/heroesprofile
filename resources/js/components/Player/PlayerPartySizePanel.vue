@@ -3,7 +3,7 @@
     <div class="flex flex-col gap-3">
       <div v-for="stack in partySizes" :key="stack.label" class="flex flex-col gap-1.5">
         <div class="flex justify-between">
-          <span class="text-header">{{ stack.label }}</span>
+          <span class="text-header">{{ $t(stack.label) }}</span>
           <span class="text-subtext">{{ $t('Games: :games', { games: stack.games.toLocaleString('en-US') }) }}</span>
         </div>
         <stat-bar :value="stack.winRate.toFixed(2)" suffix="%" :color="$winRateColor(stack.winRate)"></stat-bar>

@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     fullName() {
-      return FULL_NAMES[this.region] || this.region;
+      return FULL_NAMES[this.region] ? this.$t(FULL_NAMES[this.region]) : this.region;
     },
   },
 };

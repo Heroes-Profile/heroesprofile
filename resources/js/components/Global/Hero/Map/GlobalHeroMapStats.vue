@@ -83,7 +83,7 @@
                 :class="['py-2 px-3 text-center text-sm leading-4', column.sortable ? 'cursor-pointer' : '', { 'bg-teal text-white': column.sortable && sortKey === column.value }]"
                 @click="column.sortable ? sortTable(column.value) : null"
                 >
-                  {{ column.text }}<sort-indicator v-if="column.sortable" :column="column.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                  {{ $t(column.text) }}<sort-indicator v-if="column.sortable" :column="column.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>        
             </tr>
           </thead>
@@ -101,7 +101,7 @@
                   </div>
                 </div>
                 <div v-else>
-                  {{ row[column.value] }}
+                  {{ $mapName(row[column.value]) }}
                 </div>
               </td>
             </tr>

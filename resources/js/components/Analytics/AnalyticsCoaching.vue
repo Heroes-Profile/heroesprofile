@@ -296,6 +296,7 @@
 </template>
 
 <script>
+import { siteLocale } from '../../utils/translate';
 import moment from 'moment-timezone';
 import analytics from '../../utils/analyticsFormat.js';
 
@@ -389,7 +390,7 @@ export default {
       const next = new Date();
       next.setUTCHours(14, 0, 0, 0);
       if (next <= new Date()) next.setUTCDate(next.getUTCDate() + 1);
-      return next.toLocaleString(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' });
+      return next.toLocaleString(siteLocale(), { weekday: 'short', hour: 'numeric', minute: '2-digit' });
     },
     computedAt() {
       const any = (this.data.signals || [])[0];

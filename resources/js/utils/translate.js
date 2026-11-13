@@ -9,3 +9,9 @@ export function translate(key, replace = {}) {
   }
   return text;
 }
+
+// The language picked on the site, for Intl/toLocale* dates; undefined on English pages so those keep the browser's own style
+export function siteLocale() {
+  const lang = document.documentElement.lang;
+  return lang && lang !== 'en' ? lang : undefined;
+}

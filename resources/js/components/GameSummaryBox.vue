@@ -185,6 +185,7 @@
 
 
 <script>
+import { siteLocale } from '../utils/translate';
   import moment from 'moment-timezone';
 
   export default {
@@ -272,7 +273,7 @@
       },
       // In the viewer's own date format and timezone, e.g. "October 22, 2026 at 10:57 PM" in the US
       formatRowDate(dateString) {
-        return moment.utc(dateString).toDate().toLocaleString(undefined, {
+        return moment.utc(dateString).toDate().toLocaleString(siteLocale(), {
           dateStyle: 'long',
           timeStyle: 'short',
           timeZone: this.userTimezone,

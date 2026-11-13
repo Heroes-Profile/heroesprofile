@@ -167,6 +167,7 @@
 </template>
 
 <script>
+import { siteLocale } from '../../utils/translate';
 import { ANALYTICS_DISCLAIMER_KEY } from './AnalyticsDisclaimerPopup.vue';
 
 // Tabs that need many matches, left out when showing one match
@@ -426,7 +427,7 @@ export default {
       }
     },
     formatDate(date) {
-      return new Date(String(date).replace(' ', 'T') + 'Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+      return new Date(String(date).replace(' ', 'T') + 'Z').toLocaleDateString(siteLocale(), { month: 'short', day: 'numeric' });
     },
     async loadTab() {
       const key = this.cacheKey();

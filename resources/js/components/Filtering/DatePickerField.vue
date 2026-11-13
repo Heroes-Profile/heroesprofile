@@ -5,14 +5,14 @@
       class="relative h-[2.5rem] w-[9.5rem] max-md:w-full rounded-control bg-surface-3 hover:bg-surface-4 text-white px-3 flex items-center gap-2 cursor-pointer"
       tabindex="0"
       role="button"
-      :aria-label="label"
+      :aria-label="$t(label)"
       :aria-expanded="open"
       @click="toggle"
       @keydown.enter.prevent="toggle"
       @keydown.space.prevent="toggle"
     >
       <span class="font-bold uppercase whitespace-nowrap">{{ modelValue ? formatDate(modelValue) : placeholder }}</span>
-      <button v-if="modelValue" type="button" class="relative z-[1] ml-auto" :aria-label="'Clear ' + label" @click.stop="pick(null)"><i class="fa-solid fa-xmark"></i></button>
+      <button v-if="modelValue" type="button" class="relative z-[1] ml-auto" :aria-label="$t('Clear :field', { field: $t(label) })" @click.stop="pick(null)"><i class="fa-solid fa-xmark"></i></button>
       <i v-else class="fa-solid fa-chevron-down ml-auto text-xs"></i>
     </div>
 

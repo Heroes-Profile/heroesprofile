@@ -102,7 +102,7 @@
             <span class="relative z-[2] w-[10rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="matchUrl(row)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
             <div class="relative w-[35rem] shrink-0 px-4 flex items-center gap-4">
               <template v-for="(team, position) in sidesOf(row)" :key="team">
-                <span v-if="position === 1" class="text-subtext text-sm">vs</span>
+                <span v-if="position === 1" class="text-subtext text-sm">{{ $t('vs') }}</span>
                 <span class="flex items-center gap-2 min-w-0">
                   <img v-if="teamImage(row, team)" class="w-6 h-6 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="teamImage(row, team)" :alt="teamName(row, team)"/>
                   <span :class="['truncate font-medium', row.winner === team ? 'text-white' : 'text-subtext']">{{ teamName(row, team) }}</span>
@@ -120,6 +120,7 @@
 </template>
 
 <script>
+import { siteLocale } from '../../utils/translate';
 import moment from 'moment-timezone';
 import Cookies from 'js-cookie';
 
@@ -223,7 +224,7 @@ export default {
     },
     // In the viewer's own date format and timezone, like the match history rows
     formatRowDate(dateString) {
-      return moment.utc(dateString).toDate().toLocaleString(undefined, {
+      return moment.utc(dateString).toDate().toLocaleString(siteLocale(), {
         dateStyle: 'long',
         timeStyle: 'short',
         timeZone: moment.tz.guess(),

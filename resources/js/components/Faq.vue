@@ -235,6 +235,7 @@
 </template>
 
 <script>
+import { siteLocale } from '../utils/translate';
 const RECAPTCHA_MESSAGE = "We couldn't verify this message with reCAPTCHA. Please allow reCAPTCHA (google.com) in your browser or blocker and try again, or email contact@heroesprofile.com directly.";
 
 export default {
@@ -316,7 +317,7 @@ export default {
   },
   methods: {
     formatDate(dateStr) {
-      return new Date(dateStr).toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' });
+      return new Date(dateStr).toLocaleDateString(siteLocale(), { year: 'numeric', month: '2-digit', day: '2-digit' });
     },
     // /FAQ#some-id opens that question and scrolls to it
     openFromHash() {

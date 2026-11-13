@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import { siteLocale } from '../../utils/translate';
 import { markRaw } from 'vue';
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
@@ -181,7 +182,7 @@ export default {
           const label = this.getLabelForValue(value);
           const date = typeof label === 'string' && label.match(/^(\d{4})-(\d{2})-(\d{2})/);
           return date
-            ? new Date(date[1], date[2] - 1, date[3]).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+            ? new Date(date[1], date[2] - 1, date[3]).toLocaleDateString(siteLocale(), { year: 'numeric', month: 'short', day: 'numeric' })
             : label;
         },
       },
@@ -294,7 +295,7 @@ export default {
       if (typeof label !== 'string' || !/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(label)) {
         return label;
       }
-      return new Date(label.replace(' ', 'T') + 'Z').toLocaleString(undefined, { dateStyle: 'long', timeStyle: 'short' });
+      return new Date(label.replace(' ', 'T') + 'Z').toLocaleString(siteLocale(), { dateStyle: 'long', timeStyle: 'short' });
     },
     // Half a step either side so the end points aren't cut in half
     windowRange() {

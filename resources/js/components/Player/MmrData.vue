@@ -150,6 +150,7 @@
 </template>
 
 <script>
+import { siteLocale } from '../../utils/translate';
 import moment from 'moment-timezone';
 
 export default {
@@ -369,7 +370,7 @@ export default {
     },
     // In the viewer's own date format and timezone, like the match history rows
     formatRowDate(dateString) {
-      return moment.utc(dateString).toDate().toLocaleString(undefined, {
+      return moment.utc(dateString).toDate().toLocaleString(siteLocale(), {
         dateStyle: 'long',
         timeStyle: 'short',
         timeZone: this.userTimezone,

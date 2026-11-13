@@ -30,7 +30,7 @@
 
 
     <panel-box :divider="false" class="mb-6" id="5 Solo players">
-      <h3 class="stack-header">{{ $t(':teamlabel: 5 Solo Players', { teamlabel: teamlabel }) }}<div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs.</h3>
+      <h3 class="stack-header">{{ $t(':teamlabel: 5 Solo Players', { teamlabel: $t(teamlabel) }) }}<div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> {{ $t('vs.') }}</h3>
       <table class="min-w-0 w-full responsive-table max-sm:text-xs">
         <thead>
           <tr >
@@ -53,7 +53,7 @@
             <td class="py-2 md:px-3 md:w-[35%]">
               <div class="flex flex-wrap max-md:flex-col max-md:items-center justify-center">
                 <div class="flex-1">
-                  {{ row.stack_size_name }}
+                  {{ $t(row.stack_size_name) }}
                 </div>
                 <div class="md:mx-10 flex-1">
                   <span class="flex max-md:flex-col" v-if="row.stack_size_name == '5 Solo'">
@@ -99,7 +99,7 @@
 
 
     <panel-box :divider="false" class="mb-6" id="1 Double Stack">
-     <h3 class="stack-header">{{ $t(':teamlabel: 1 Double Stack', { teamlabel: teamlabel }) }} <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs.</h3>
+     <h3 class="stack-header">{{ $t(':teamlabel: 1 Double Stack', { teamlabel: $t(teamlabel) }) }} <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> {{ $t('vs.') }}</h3>
       <table class="min-w-0 w-full responsive-table max-sm:text-xs">
         <thead>
           <tr>
@@ -122,7 +122,7 @@
             <td class="py-2 md:px-3 md:w-[35%]">
               <div class="flex flex-wrap max-md:flex-col max-md:items-center justify-center">
                 <div class="flex-1">
-                  {{ row.stack_size_name }}
+                  {{ $t(row.stack_size_name) }}
                 </div>
                 <div class="md:mx-10 flex-1">
                   <span class="flex max-md:flex-col" v-if="row.stack_size_name == '5 Solo'">
@@ -167,7 +167,7 @@
 
 
     <panel-box :divider="false" class="mb-6" id="2 Double Stack">
-      <h3 class="stack-header">{{ $t(':teamlabel: 2 Double Stack', { teamlabel: teamlabel }) }} <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs.</h3>
+      <h3 class="stack-header">{{ $t(':teamlabel: 2 Double Stack', { teamlabel: $t(teamlabel) }) }} <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> {{ $t('vs.') }}</h3>
       <table class="min-w-0 w-full responsive-table max-sm:text-xs">
         <thead>
           <tr>
@@ -190,7 +190,7 @@
             <td class="py-2 px-3 w-[35%]">
               <div class="flex flex-wrap py max-md:flex-col max-md:items-start">
                 <div class="flex-1">
-                  {{ row.stack_size_name }}
+                  {{ $t(row.stack_size_name) }}
                 </div>
                 <div class="md:mx-10 flex-1">
                   <span class="flex" v-if="row.stack_size_name == '5 Solo'">
@@ -235,7 +235,7 @@
 
 
     <panel-box :divider="false" class="mb-6" id="1 Tripe 2 Solo">
-      <h3 class="stack-header">{{ $t(':teamlabel: 1 Triple Stack and 2 Solos', { teamlabel: teamlabel }) }} <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs.</h3>
+      <h3 class="stack-header">{{ $t(':teamlabel: 1 Triple Stack and 2 Solos', { teamlabel: $t(teamlabel) }) }} <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> {{ $t('vs.') }}</h3>
       <table class="min-w-0 w-full responsive-table max-sm:text-xs">
         <thead>
           <tr>
@@ -258,7 +258,7 @@
             <td class="py-2 px-3 w-[35%]">
               <div class="flex flex-wrap py max-md:flex-col max-md:items-start">
                 <div class="flex-1">
-                  {{ row.stack_size_name }}
+                  {{ $t(row.stack_size_name) }}
                 </div>
                 <div class="md:mx-10 flex-1">
                   <span class="flex" v-if="row.stack_size_name == '5 Solo'">
@@ -303,7 +303,7 @@
 
 
     <panel-box :divider="false" class="mb-6" id="1 Tripe 1 Double">
-      <h3 class="stack-header">{{ $t(':teamlabel: 1 Triple Stack and 1 Double Stack', { teamlabel: teamlabel }) }} <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div> vs.</h3>
+      <h3 class="stack-header">{{ $t(':teamlabel: 1 Triple Stack and 1 Double Stack', { teamlabel: $t(teamlabel) }) }} <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div> {{ $t('vs.') }}</h3>
       <table class="min-w-0 w-full responsive-table max-sm:text-xs">
         <thead>
           <tr>
@@ -326,7 +326,7 @@
             <td class="py-2 px-3 w-[35%]">
               <div class="flex flex-wrap py max-md:flex-col max-md:items-start">
                 <div class="flex-1">
-                  {{ row.stack_size_name }}
+                  {{ $t(row.stack_size_name) }}
                 </div>
                 <div class="md:mx-10 flex-1">
                   <span class="flex" v-if="row.stack_size_name == '5 Solo'">
@@ -371,7 +371,7 @@
 
 
     <panel-box :divider="false" class="mb-6" id="1 Quad 1 Solo">
-      <h3 class="stack-header">{{ $t(':teamlabel: 1 Quadruple Stack and 1 Solo', { teamlabel: teamlabel }) }} <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs.</h3>
+      <h3 class="stack-header">{{ $t(':teamlabel: 1 Quadruple Stack and 1 Solo', { teamlabel: $t(teamlabel) }) }} <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> {{ $t('vs.') }}</h3>
       <table class="min-w-0 w-full responsive-table max-sm:text-xs">
         <thead>
           <tr>
@@ -394,7 +394,7 @@
             <td class="py-2 px-3 w-[35%]">
               <div class="flex flex-wrap py max-md:flex-col max-md:items-start">
                 <div class="flex-1">
-                  {{ row.stack_size_name }}
+                  {{ $t(row.stack_size_name) }}
                 </div>
                 <div class="md:mx-10 flex-1">
                   <span class="flex" v-if="row.stack_size_name == '5 Solo'">
@@ -440,7 +440,7 @@
 
 
     <panel-box :divider="false" class="mb-6" id="5 Player">
-      <h3 class="stack-header">{{ $t(':teamlabel: 5 player Stack', { teamlabel: teamlabel }) }} <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div> vs.</h3>
+      <h3 class="stack-header">{{ $t(':teamlabel: 5 player Stack', { teamlabel: $t(teamlabel) }) }} <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div> {{ $t('vs.') }}</h3>
       <table class="min-w-0 w-full responsive-table max-sm:text-xs">
         <thead>
           <tr>
@@ -463,7 +463,7 @@
             <td class="py-2 px-3 w-[35%]">
               <div class="flex flex-wrap py max-md:flex-col max-md:items-start">
                 <div class="flex-1">
-                  {{ row.stack_size_name }}
+                  {{ $t(row.stack_size_name) }}
                 </div>
                 <div class="md:mx-10 flex-1">
                   <span class="flex" v-if="row.stack_size_name == '5 Solo'">

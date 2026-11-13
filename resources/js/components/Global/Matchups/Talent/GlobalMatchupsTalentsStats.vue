@@ -61,7 +61,7 @@
         
         ]"
         style="-webkit-text-stroke-width: 1px; -webkit-text-stroke-color: white;">
-        {{ fightoralliance }}!!
+        {{ $t(fightoralliance === 'FIGHT' ? 'FIGHT!!' : 'ALLIANCE!!') }}
       </div>
       <div>  
         <hero-image-wrapper class="" :rectangle="true" :size="'large'" :hero="hero"></hero-image-wrapper>

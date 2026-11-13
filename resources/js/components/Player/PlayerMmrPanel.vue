@@ -18,8 +18,8 @@
         <div class="h-px bg-gray-dark"></div>
         <!-- Phones stack each mode: name with a Win Rate caption, then the bar, then tier and MMR -->
         <div class="flex flex-wrap md:flex-nowrap gap-x-6 md:gap-x-12 gap-y-2 items-center">
-          <a v-if="linkHref" class="max-md:flex-1 md:w-[12.5rem] shrink-0 font-semibold text-header truncate hover:underline" :href="modeHref(mode)">{{ mode.label }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
-          <span v-else class="max-md:flex-1 md:w-[12.5rem] shrink-0 font-semibold text-header truncate">{{ mode.label }}</span>
+          <a v-if="linkHref" class="max-md:flex-1 md:w-[12.5rem] shrink-0 font-semibold text-header truncate hover:underline" :href="modeHref(mode)">{{ $t(mode.label) }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+          <span v-else class="max-md:flex-1 md:w-[12.5rem] shrink-0 font-semibold text-header truncate">{{ $t(mode.label) }}</span>
           <span class="md:hidden text-xs text-subtext">{{ $t('Win Rate') }}</span>
           <stat-bar class="max-md:w-full md:flex-1 min-w-0" :value="mode.data ? mode.data.win_rate.toFixed(2) : '0.00'" suffix="%" :color="$winRateColor(mode.data ? mode.data.win_rate : 0)"></stat-bar>
           <span v-if="tiers" class="md:flex-1 md:max-w-[12.5rem]"><rank-tier-pill v-if="mode.data" :tier="mode.data.rank_tier"></rank-tier-pill></span>

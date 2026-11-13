@@ -59,7 +59,7 @@
           <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
             <div class="flex flex-col items-center gap-2 shrink-0">
               <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name" :excludehover="inputHero.name == 'Auto Select'" size="large"></hero-image-wrapper>
-              <div class="font-bold text-subtext">Level: <span class="text-header">{{ data.account_level.toLocaleString('en-US') }}</span></div>
+              <div class="font-bold text-subtext">{{ $t('Level:') }} <span class="text-header">{{ data.account_level.toLocaleString('en-US') }}</span></div>
             </div>
 
             <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
@@ -77,7 +77,7 @@
           <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
             <div class="flex justify-between items-baseline">
               <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
-              <a class="text-header whitespace-nowrap hover:underline" :href="profileUrl + section.allPath">{{ section.allText }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+              <a class="text-header whitespace-nowrap hover:underline" :href="profileUrl + section.allPath">{{ $t(section.allText) }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
             </div>
             <div class="flex flex-wrap gap-6 max-md:justify-center">
               <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :playerlink="true" :text="group.label" :data="group.data"></group-box>
@@ -93,7 +93,7 @@
             <panel-box :inner="true" :title="$t('Win Rate By Role')" link-text="All Roles" :link-href="profileUrl + '/Role'">
               <div class="flex flex-col gap-3">
                 <div v-for="role in roleWinRates" :key="role.label" class="flex flex-col gap-1.5">
-                  <a class="text-header w-fit hover:underline" :href="profileUrl + '/Role/' + role.label">{{ role.label }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+                  <a class="text-header w-fit hover:underline" :href="profileUrl + '/Role/' + role.label">{{ $t(role.label) }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
                   <stat-bar :value="role.value.toFixed(2)" suffix="%" :color="$winRateColor(role.value)"></stat-bar>
                 </div>
               </div>
