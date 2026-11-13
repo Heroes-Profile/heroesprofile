@@ -2,10 +2,11 @@
 
 namespace App\Services\Twitch;
 
+use App\Models\HeroTranslation;
+use App\Models\MapTranslation;
 use App\Services\GlobalDataService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Hero and talent lookups for live snapshots, and the static data file the
@@ -134,19 +135,13 @@ class TwitchGameData
     /** @return array<string, string> translated name => English name */
     private function mapTranslations(): array
     {
-        return Cache::remember('twitch_map_translations', 3600, fn () => DB::connection('heroesprofile')
-            ->table('maps_translations')
-            ->pluck('name', 'translation')
-            ->all());
+        return Cache::remember('twitch_map_translations', 3600, fn () => MapTranslation::englishNamesByLocalized());
     }
 
     /** @return array<string, string> translated name => English name */
     private function heroTranslations(): array
     {
-        return Cache::remember('twitch_hero_translations', 3600, fn () => DB::connection('heroesprofile')
-            ->table('heroes_translations')
-            ->pluck('name', 'translation')
-            ->all());
+        return Cache::remember('twitch_hero_translations', 3600, fn () => HeroTranslation::englishNamesByLocalized());
     }
 
     /** @return array<string, int> */

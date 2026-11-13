@@ -5,7 +5,7 @@
         <tr>
           <th class="py-2 px-3 text-center text-sm leading-4">
             <div class="flex items-center justify-center gap-3">
-              <span>Hero</span>
+              <span>{{ $t('Hero') }}</span>
               <search-input v-model="heroSearch" placeholder="Search hero" :collapsible="true" class="w-40"></search-input>
             </div>
           </th>
@@ -16,7 +16,7 @@
         <tr v-for="hero in shownHeroes" :key="hero.id">
           <td class="py-2 px-3">
             <div class="flex items-center justify-center">
-              <hero-image-wrapper :hero="hero" :includehover="false"></hero-image-wrapper><span class="hidden md:block font-bold ml-2">{{ hero.name }}</span>
+              <hero-image-wrapper :hero="hero" :includehover="false"></hero-image-wrapper><span class="hidden md:block font-bold ml-2">{{ $heroName(hero) }}</span>
             </div>
           </td>
           <td v-for="gt in gameTypes" :key="gt.key" class="py-2 px-3">
@@ -57,7 +57,7 @@ export default {
   computed: {
     shownHeroes() {
       const search = this.heroSearch.trim().toLowerCase();
-      return search ? this.heroes.filter(hero => hero.name.toLowerCase().includes(search)) : this.heroes;
+      return search ? this.heroes.filter(hero => hero.name.toLowerCase().includes(search) || this.$heroName(hero).toLowerCase().includes(search)) : this.heroes;
     },
   },
   mounted() {

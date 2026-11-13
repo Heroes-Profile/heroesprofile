@@ -16,6 +16,7 @@ use App\Http\Middleware\EnforceApiQuota;
 use App\Http\Middleware\EnsureApiAccountAuthenticated;
 use App\Http\Middleware\EnsureApiAdmin;
 use App\Http\Middleware\EnsureBattlenetAuthenticated;
+use App\Http\Middleware\LocalizeGameStrings;
 use App\Http\Middleware\LogApiRequest;
 use App\Http\Middleware\LogIPAndUserAgent;
 use App\Http\Middleware\PoisonApiResponse;
@@ -31,6 +32,7 @@ use App\Http\Middleware\ResolveApiKey;
 use App\Http\Middleware\RestrictCustomGames;
 use App\Http\Middleware\ServeApiFixtures;
 use App\Http\Middleware\SetGlobalDataValues;
+use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\ThrottleNonApiRequests;
 use App\Http\Middleware\ThrottleOldReplayRequests;
 use App\Http\Middleware\TrackSlowRequests;
@@ -103,6 +105,7 @@ class Kernel extends HttpKernel
             SubstituteBindings::class,
             CheckIfPatreonSupporter::class,
             RememberViewedPlayer::class,
+            SetLocale::class,
         ],
 
         'api' => [
@@ -148,6 +151,7 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $middlewareAliases = [
+        'localizeGameStrings' => LocalizeGameStrings::class,
         'auth' => Authenticate::class,
         'auth.basic' => AuthenticateWithBasicAuth::class,
         'auth.session' => AuthenticateSession::class,

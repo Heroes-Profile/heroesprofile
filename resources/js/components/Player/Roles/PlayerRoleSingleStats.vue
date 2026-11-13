@@ -61,7 +61,7 @@
 
             <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
               <div class="flex flex-col gap-1">
-                <span class="text-header">Win Rate</span>
+                <span class="text-header">{{ $t('Win Rate') }}</span>
                 <stat-bar size="big" :value="data.win_rate.toFixed(2)" suffix="%" :color="$winRateColor(data.win_rate)"></stat-bar>
               </div>
 
@@ -73,7 +73,7 @@
 
           <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
             <div class="flex justify-between items-baseline gap-6">
-              <h3 class="text-2xl font-bold">{{ section.title }}</h3>
+              <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
               <a class="text-header whitespace-nowrap hover:underline" :href="esport ? ngsPlayerUrl + section.allPath + ngsQuery : profileUrl + section.allPath">{{ section.allText }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
             </div>
             <div class="flex flex-wrap gap-6 max-md:justify-center">
@@ -147,7 +147,7 @@
       </panel-box>
     </div>
     <div v-else-if="typeof data === 'undefined'"  class="flex items-center justify-center">
-      No data
+      {{ $t('No data') }}
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">

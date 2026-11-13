@@ -65,10 +65,10 @@
         <div class="overflow-x-auto">
           <div class="md:min-w-max w-full">
             <div class="max-md:hidden flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
-              <span class="w-[20rem] shrink-0 pl-5">Match</span>
-              <span class="w-[10rem] shrink-0 px-4">Game Type</span>
-              <span class="w-[8.75rem] shrink-0 px-4">Game ID</span>
-              <span class="w-[18.75rem] shrink-0 px-4">Award</span>
+              <span class="w-[20rem] shrink-0 pl-5">{{ $t('Match') }}</span>
+              <span class="w-[10rem] shrink-0 px-4">{{ $t('Game Type') }}</span>
+              <span class="w-[8.75rem] shrink-0 px-4">{{ $t('Game ID') }}</span>
+              <span class="w-[18.75rem] shrink-0 px-4">{{ $t('Award') }}</span>
             </div>
             <template v-for="(row, index) in tableRows" :key="row.replayID">
             <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="'/Match/Single/' + row.replayID" :hero="row.hero" :title="row.game_map.name" :date="formatRowDate(row.game_date)" :winner="row.winner == 1" :result="row.winner == 1 ? 'Win' : 'Loss'" :map-art="row.game_map.sanitized_map_name">
@@ -84,7 +84,7 @@
                 <div class="relative flex items-center gap-4">
                   <hero-image-wrapper size="row" :hero="row.hero" :excludehover="true"></hero-image-wrapper>
                   <div class="flex flex-col whitespace-nowrap">
-                    <span class="font-bold">{{ row.game_map.name }}</span>
+                    <span class="font-bold">{{ $mapName(row.game_map) }}</span>
                     <span class="text-xs">{{ formatRowDate(row.game_date) }}</span>
                   </div>
                 </div>
@@ -105,7 +105,7 @@
       </div>
     </div>
     <div v-if="asyncLoading">
-      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
+      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>{{ $t('Please be patient.') }}</loading-component>
     </div>
     <div v-else-if="isLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>

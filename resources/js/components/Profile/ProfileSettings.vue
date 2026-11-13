@@ -5,7 +5,7 @@
   <div v-if="dropdownOpen" class="fixed inset-0 z-40"></div>
   <div class="relative flex mx-auto w-full max-w-[75rem] mt-[2vh] h-[85vh]">
     <div v-if="isLoading" class="absolute inset-0 z-50 rounded overflow-hidden bg-page/70 flex items-center justify-center">
-      <loading-component :compact="true" :textoverride="true">Saving...</loading-component>
+      <loading-component :compact="true" :textoverride="true">{{ $t('Saving...') }}</loading-component>
     </div>
 
     <!-- Left sidebar -->
@@ -27,21 +27,21 @@
     <div class="flex-1 bg-surface rounded-r overflow-y-auto">
       <transition name="fade">
         <div v-if="settingsSaved" class="bg-teal text-white text-center py-2 text-sm rounded-tr">
-          Settings Saved
+          {{ $t('Settings Saved') }}
         </div>
       </transition>
 
       <!-- General -->
       <div v-if="activeTab === 'general'" class="p-8">
-        <h2 class="text-2xl font-bold mb-6">General</h2>
+        <h2 class="text-2xl font-bold mb-6">{{ $t('General') }}</h2>
         <div class="space-y-6">
           <div>
-            <h3 class="mb-2">Table Style</h3>
+            <h3 class="mb-2">{{ $t('Table Style') }}</h3>
             <tab-button tab1text="Light" tab2text="Dark" :ignoreclick="true" @tab-click="darkmodesetting" :overridedefaultside="darkmode"></tab-button>
           </div>
           <div>
-            <h3 class="mb-1">Account Visibility</h3>
-            <p class="text-sm text-subtext mb-3">Control whether your profile is visible to other users.</p>
+            <h3 class="mb-1">{{ $t('Account Visibility') }}</h3>
+            <p class="text-sm text-subtext mb-3">{{ $t('Control whether your profile is visible to other users.') }}</p>
             <single-select-filter class="w-fit"
               :values="privateOptions"
               :text="'Account Visibility'"
@@ -52,15 +52,27 @@
               @dropdown-opened="dropdownOpen = true"
             ></single-select-filter>
           </div>
+          <div>
+            <h3 class="mb-2">{{ $t('Language') }}</h3>
+            <single-select-filter class="w-fit"
+              :values="localeOptions"
+              :text="'Language'"
+              @dropdown-closed="dropdownOpen = false; saveLocale()"
+              @input-changed="handleInputChange"
+              :defaultValue="userLocale"
+              :trackclosure="true"
+              @dropdown-opened="dropdownOpen = true"
+            ></single-select-filter>
+          </div>
         </div>
       </div>
 
       <!-- Global Pages -->
       <div v-if="activeTab === 'global'" class="p-8">
-        <h2 class="text-2xl font-bold mb-6">Global Pages</h2>
+        <h2 class="text-2xl font-bold mb-6">{{ $t('Global Pages') }}</h2>
         <div class="space-y-6">
           <div>
-            <h3 class="mb-2">Default Multi-Select Game Type</h3>
+            <h3 class="mb-2">{{ $t('Default Multi-Select Game Type') }}</h3>
             <div class="w-fit">
               <multi-select-filter
                 :values="filters.game_types_full"
@@ -74,7 +86,7 @@
             </div>
           </div>
           <div>
-            <h3 class="mb-2">Default Single Game Type</h3>
+            <h3 class="mb-2">{{ $t('Default Single Game Type') }}</h3>
             <single-select-filter class="w-fit"
               :values="filters.game_types_full"
               :text="'Game Type'"
@@ -86,7 +98,7 @@
             ></single-select-filter>
           </div>
           <div>
-            <h3 class="mb-2">Default Build Type</h3>
+            <h3 class="mb-2">{{ $t('Default Build Type') }}</h3>
             <single-select-filter class="w-fit"
               :values="filters.talent_build_types"
               :text="'Talent Build Type'"
@@ -98,19 +110,19 @@
             ></single-select-filter>
           </div>
           <div>
-            <h3 class="mb-2">Talent Builder Layout</h3>
+            <h3 class="mb-2">{{ $t('Talent Builder Layout') }}</h3>
             <tab-button tab1text="Vertical" tab2text="Horizontal" :ignoreclick="true" @tab-click="talentbuilderstylesetting" :overridedefaultside="talentbuilderstyle"></tab-button>
           </div>
           <div>
-            <h3 class="mb-2">Talent Builder Load</h3>
+            <h3 class="mb-2">{{ $t('Talent Builder Load') }}</h3>
             <tab-button tab1text="Auto Load" tab2text="On Filter" :ignoreclick="true" @tab-click="talentbuilderloadsetting" :overridedefaultside="talentbuilderload"></tab-button>
           </div>
           <div>
-            <h3 class="mb-2">Talent Statistics Layout</h3>
+            <h3 class="mb-2">{{ $t('Talent Statistics Layout') }}</h3>
             <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" @tab-click="setTalentStatsLayout" :overridedefaultside="talentStatsLayout"></tab-button>
           </div>
           <div>
-            <h3 class="mb-2">Show Advanced Filtering Options</h3>
+            <h3 class="mb-2">{{ $t('Show Advanced Filtering Options') }}</h3>
             <single-select-filter class="w-fit"
               :values="advancedfilteringoptions"
               :text="'Advanced Filtering'"
@@ -126,10 +138,10 @@
 
       <!-- Player -->
       <div v-if="activeTab === 'player'" class="p-8">
-        <h2 class="text-2xl font-bold mb-6">Player</h2>
+        <h2 class="text-2xl font-bold mb-6">{{ $t('Player') }}</h2>
         <div class="space-y-6">
           <div>
-            <h3 class="mb-2">Match History Style</h3>
+            <h3 class="mb-2">{{ $t('Match History Style') }}</h3>
             <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" @tab-click="playermatchhistorystylesetting" :overridedefaultside="playerhistorytable"></tab-button>
             <div class="flex flex-wrap gap-4 mt-4">
               <div v-for="example in matchHistoryStyleExamples" :key="example.side" class="max-w-[37.5rem] w-full">
@@ -139,8 +151,8 @@
             </div>
           </div>
           <div>
-            <h3 class="mb-2">Default Player Pages Game Type</h3>
-            <p class="text-sm text-subtext mb-2">Nothing ticked shows every game type. HP MMR uses the first one ticked, or Storm League.</p>
+            <h3 class="mb-2">{{ $t('Default Player Pages Game Type') }}</h3>
+            <p class="text-sm text-subtext mb-2">{{ $t('Nothing ticked shows every game type. HP MMR uses the first one ticked, or Storm League.') }}</p>
             <div class="w-fit">
               <multi-select-filter
                 :values="filters.game_types_full"
@@ -154,7 +166,7 @@
             </div>
           </div>
           <div>
-            <h3 class="mb-2">Player Data Initial Load Style</h3>
+            <h3 class="mb-2">{{ $t('Player Data Initial Load Style') }}</h3>
             <single-select-filter class="w-fit"
               :values="playerdataloadstyles"
               :text="'Player Load'"
@@ -166,7 +178,7 @@
             ></single-select-filter>
           </div>
           <div>
-            <h3 class="mb-2">Show Custom Games (Match History only)</h3>
+            <h3 class="mb-2">{{ $t('Show Custom Games (Match History only)') }}</h3>
             <single-select-filter class="w-fit"
               :values="showcustomgamesoptions"
               :text="'Show Custom Games'"
@@ -182,8 +194,8 @@
 
       <!-- Flair -->
       <div v-if="activeTab === 'flair'" class="p-8">
-        <h2 class="text-2xl font-bold mb-6">Flair</h2>
-        <p class="text-sm text-subtext mb-6">Choose which flair shows next to your BattleTag. Hidden flair is hidden for everyone.</p>
+        <h2 class="text-2xl font-bold mb-6">{{ $t('Flair') }}</h2>
+        <p class="text-sm text-subtext mb-6">{{ $t('Choose which flair shows next to your BattleTag. Hidden flair is hidden for everyone.') }}</p>
         <div class="space-y-6">
           <div v-for="flair in flairOptions" :key="flair.key">
             <h3 class="mb-1 flex items-center gap-2">
@@ -198,13 +210,13 @@
 
       <!-- Connections -->
       <div v-if="activeTab === 'connections'" class="p-8">
-        <h2 class="text-2xl font-bold mb-6">Connections</h2>
+        <h2 class="text-2xl font-bold mb-6">{{ $t('Connections') }}</h2>
         <div class="space-y-8">
           <div class="">
             <h3 class="mb-1">Patreon</h3>
-            <p class="text-sm text-subtext mb-3">Link your Patreon account to unlock supporter features.</p>
+            <p class="text-sm text-subtext mb-3">{{ $t('Link your Patreon account to unlock supporter features.') }}</p>
             <div class="flex items-center gap-4">
-              <span v-if="user.patreon_account" class="bg-teal px-3 py-1 rounded text-sm">Connected</span>
+              <span v-if="user.patreon_account" class="bg-teal px-3 py-1 rounded text-sm">{{ $t('Connected') }}</span>
               <custom-button
                 v-if="!user.patreon_account"
                 :href="'/authenticate/patreon'"
@@ -239,11 +251,15 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
+
 export default {
   name: 'ProfileSettings',
   props: {
     user: Object,
     filters: Object,
+    locale: { type: String, default: 'en' },
+    locales: { type: Object, default: () => ({}) },
     availableFlair: {
       type: Array,
       default: () => [],
@@ -276,6 +292,7 @@ export default {
       talentbuilderstyle: 'left',
       talentbuilderload: 'left',
       talentStatsLayout: 'left',
+      userLocale: this.locale,
       playerhistorytable: 'left',
       playerload: 'true',
       customgames: false,
@@ -327,6 +344,9 @@ export default {
     });
   },
   computed: {
+    localeOptions() {
+      return Object.entries(this.locales).map(([code, name]) => ({ code, name }));
+    },
     flairOptions() {
       const all = [
         { key: 'owner', label: 'Site Owner', description: 'The crown shown for the Heroes Profile owner.', icon: 'fas fa-crown', iconStyle: 'color:gold' },
@@ -441,6 +461,15 @@ export default {
       }
       this.isLoading = false;
     },
+    async saveLocale() {
+      if (this.userLocale === this.locale) {
+        return;
+      }
+
+      Cookies.set('locale', this.userLocale, { expires: 365, path: '/' });
+      await this.$axios.post('/api/v1/profile/save/settings', { locale: this.userLocale }).catch(() => {});
+      window.location.reload();
+    },
     async setAccountVisbility() {
       try {
         await this.$axios.post('/api/v1/profile/set/account/visibility', {
@@ -474,6 +503,8 @@ export default {
           this.playerload = value;
         } else if (field === 'Show Custom Games') {
           this.customgames = value;
+        } else if (field === 'Language') {
+          this.userLocale = value;
         }
       } else if (eventPayload.type === 'multi') {
         if (eventPayload.field === 'Game Type') {

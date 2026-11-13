@@ -41,7 +41,7 @@ EsportsPlayerHeroStats<template>
 
       <div class="bg-surface rounded p-6 md:p-10 mx-4 md:mx-8 mb-6">
         <div class=" max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5 text-center">Hero Enemies and Allies</h2>
+          <h2 class="text-3xl font-bold py-5 text-center">{{ $t('Hero Enemies and Allies') }}</h2>
           <div class="flex flex-wrap justify-center">
             <group-box :useinputforhover="true" :text="'Top Heroes Won Against'" :data="data.heroes_won_against.slice(0,5)" color="blue"></group-box>
             <group-box :useinputforhover="true" :text="'Top Heroes Lost Against'" :data="data.heroes_lost_against.slice(0,5)" color="red"></group-box>
@@ -53,7 +53,7 @@ EsportsPlayerHeroStats<template>
 
       <div class="bg-surface rounded p-6 md:p-10 mx-4 md:mx-8 mb-6">
         <div class=" max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5 text-center">Heroes</h2>
+          <h2 class="text-3xl font-bold py-5 text-center">{{ $t('Heroes') }}</h2>
           <div class="flex flex-wrap justify-center">
             <group-box :text="'Most Played (5+ games)'" :data="data.hero_top_three_most_played" color="blue"></group-box>
             <group-box :text="'Highest Win Rate (5+ games)'" :data="data.hero_top_three_highest_win_rate" color="teal"></group-box>
@@ -72,7 +72,7 @@ EsportsPlayerHeroStats<template>
       <div class=" p-10">
 
         <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
+          <h2 class="text-3xl font-bold py-5">{{ $t('Most Recent matches') }}</h2>
           <game-summary-box 
             v-for="(item, index) in data.matches" 
             :esport="true" 

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
@@ -41,6 +42,7 @@ class ProfileController extends Controller
             'talentbuilderstyle' => 'nullable|in:vertical,horizontal',
             'talentbuilderload' => 'nullable|in:auto,filter',
             'talentStatsLayout' => 'nullable|in:table,compact',
+            'locale' => ['nullable', Rule::in(array_keys(config('app.supported_locales')))],
             'darkmode' => 'nullable|boolean',
             'playerhistorytable' => 'nullable|boolean',
             'customgames' => 'nullable|boolean',
@@ -153,6 +155,13 @@ class ProfileController extends Controller
             $user->userSettings()->updateOrCreate(
                 ['setting' => 'talentStatsLayout'],
                 ['value' => $request['talentStatsLayout']]
+            );
+        }
+
+        if (! is_null($request['locale'])) {
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'locale'],
+                ['value' => $request['locale']]
             );
         }
 

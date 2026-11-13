@@ -1,6 +1,6 @@
 <template>
   <div class="nav-flyout-wrapper" @mouseenter="open = true" @mouseleave="open = false">
-    <a :href="headingUrl || baseUrl + query" class="flex justify-between items-center">{{ label }} <span class="nav-flyout-arrow ml-2">›</span></a>
+    <a :href="headingUrl || baseUrl + query" class="flex justify-between items-center">{{ $t(label) }} <span class="nav-flyout-arrow ml-2">›</span></a>
 
     <div v-show="open" class="nav-flyout">
       <div class="nav-dropdown-inner-wrapper !pt-0 rounded-b rounded-r flex flex-col" style="max-height: 26.25rem;">
@@ -8,20 +8,20 @@
           <input
             v-model="search"
             type="text"
-            placeholder="Search"
+            :placeholder="$t('Search')"
             class="w-full px-2 py-2 text-sm bg-field text-white rounded-control focus:outline-none focus:border-teal text-sm"
             @click.stop
           />
         </div>
         <div class="nav-flyout-scroll overflow-y-auto flex-1">
-          <a v-if="allLabel" :href="baseUrl + query" class="block px-4 py-2   hover:bg-lighten text-sm">{{ allLabel }}</a>
+          <a v-if="allLabel" :href="baseUrl + query" class="block px-4 py-2   hover:bg-lighten text-sm">{{ $t(allLabel) }}</a>
           <a
             v-for="item in filteredItems"
             :key="item.id"
             :href="baseUrl + '/' + encodeURIComponent(item.name) + query"
             class="block px-4 py-2  hover:bg-lighten text-sm whitespace-nowrap"
-          >{{ item.name }}</a>
-          <div v-if="filteredItems.length === 0" class="px-4 py-2 text-xs text-gray-400">No results found</div>
+          >{{ displayName(item) }}</a>
+          <div v-if="filteredItems.length === 0" class="px-4 py-2 text-xs text-gray-400">{{ $t('No results found') }}</div>
         </div>
       </div>
     </div>
@@ -54,6 +54,10 @@ export default {
     };
   },
   methods: {
+    // Items are heroes or maps; a name is only ever one of the two.
+    displayName(item) {
+      return this.$mapName(this.$heroName(item.name));
+    },
     normalize(str) {
       try {
         return str.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -74,7 +78,7 @@ export default {
     filteredItems() {
       const q = this.normalize(this.search.trim());
       if (!q) return this.sourceItems;
-      return this.sourceItems.filter(item => this.normalize(item.name).includes(q));
+      return this.sourceItems.filter(item => this.normalize(item.name).includes(q) || this.normalize(this.displayName(item)).includes(q));
     },
   },
 };

@@ -43,10 +43,10 @@
         <table class="min-w-0 w-full responsive-table">
           <thead>
             <tr>
-              <th>Ability</th>
+              <th>{{ $t('Ability') }}</th>
               <th>
                 <span class="inline-flex items-center gap-1">
-                  Presses per game
+                  {{ $t('Presses per game') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">Every key press or order for this ability, averaged over all your games on this hero. Pressing the key again while it's on cooldown still adds a press.</p></slot>
                   </round-image>
@@ -54,7 +54,7 @@
               </th>
               <th>
                 <span class="inline-flex items-center gap-1">
-                  Casts per game
+                  {{ $t('Casts per game') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">Presses grouped into estimated uses: repeats within 2 seconds count once, and presses while a single-charge ability is likely still on cooldown don't count. Abilities whose cooldown gets reduced or reset can be undercounted.</p></slot>
                   </round-image>
@@ -62,25 +62,25 @@
               </th>
               <th>
                 <span class="inline-flex items-center gap-1">
-                  Global presses
+                  {{ $t('Global presses') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">The global columns are the same figures from a sample of other players' games on this hero, under the same filters.</p></slot>
                   </round-image>
                 </span>
               </th>
-              <th>Global casts</th>
+              <th>{{ $t('Global casts') }}</th>
               <th>
                 <span class="inline-flex items-center gap-1">
-                  Games used in
+                  {{ $t('Games used in') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">Share of your games on this hero where you pressed this ability at least once.</p></slot>
                   </round-image>
                 </span>
               </th>
-              <th>Global games used in</th>
+              <th>{{ $t('Global games used in') }}</th>
               <th>
                 <span class="inline-flex items-center gap-1">
-                  First use
+                  {{ $t('First use') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">Average game time of your first press, over the games where you used it.</p></slot>
                   </round-image>

@@ -5,21 +5,21 @@
           <thead v-if="!$slots.heading">
             <tr>
               <th :colspan="statfilter ? 5 : 4" class="text-center py-2 px-3 ">
-                Builds
+                {{ $t('Builds') }}
               </th>
             </tr>
           </thead>
         <thead>
           <tr>
             <th class="text-center text-sm leading-4 cursor-pointer">
-              <slot name="heading">Talents</slot>
+              <slot name="heading">{{ $t('Talents') }}</slot>
             </th>
             <th class="whitespace-nowrap text-center text-sm leading-4 cursor-pointer">
-              Games
+              {{ $t('Games') }}
             </th>                
             <th class="whitespace-nowrap py-2 px-3 text-center text-sm leading-4 cursor-pointer">
               <div class="flex items-center justify-center">
-                Win Chance %
+                {{ $t('Win Chance %') }}
                 <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
                   <p class="font-normal whitespace-normal">Win Chance is our calculated probability that a full talent build leads to a win, from level 1 through level 20. It is not a simple win rate. Because many games end before level 20, we infer what build a player was heading toward from the talents they did pick, and factor in both games that reached level 20 and games that did not.</p>
                   <a href="/FAQ#win-chance" class="group/bt inline-flex items-center mt-2 font-normal"><span class="group-hover/bt:underline">Read more in the FAQ</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
@@ -30,7 +30,7 @@
               {{ statFilterLabel(statfilter) }}
             </th>                           
             <th class="text-right text-sm leading-4 cursor-pointer">
-              Copy Build top Game
+              {{ $t('Copy Build top Game') }}
             </th>
           </tr>
         </thead>

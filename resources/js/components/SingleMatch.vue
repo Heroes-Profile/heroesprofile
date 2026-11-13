@@ -5,11 +5,11 @@
 <div class="" :style="`background-size: cover; background-position:center; background-image: url('/images/maps/background/header-${data.game_map.sanitized_map_name}.jpg')`">
 <div class="text-center pt-4">
        <!-- <div>
-          <span>Match Scores</span>
-          <span>Talents</span>
-          <span>Experience</span>
-          <span>MMR</span>
-          <span>Advanced Stats</span>
+          <span>{{ $t('Match Scores') }}</span>
+          <span>{{ $t('Talents') }}</span>
+          <span>{{ $t('Experience') }}</span>
+          <span>{{ $t('MMR') }}</span>
+          <span>{{ $t('Advanced Stats') }}</span>
         </div>-->
 
 
@@ -17,7 +17,7 @@
           <h1 class="max-md:text-[1.5em]">{{ formatDate(data.game_date) }}</h1>
         </div>
         <div class="w-full max-w-[62.5rem] bg-surface/90 rounded flex flex-wrap justify-between gap-2 mx-auto p-4 mb-4">
-          <span>{{ data.game_map.name }}</span>
+          <span>{{ $mapName(data.game_map) }}</span>
           <span v-if="!esport">
             {{ data.game_type }}
           </span>
@@ -26,22 +26,22 @@
           </span>
           <span>{{ data.game_length }}</span>
           <!-- Download requires login for all (esport and non-esport); blocked battletags get no control -->
-          <a v-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && user && !data.replay_download_blocked" class="group/bt inline-flex items-center cursor-pointer max-md:hidden" role="button" @click="downloadReplay(data, replayid)"><span class="group-hover/bt:underline">Download Replay</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+          <a v-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && user && !data.replay_download_blocked" class="group/bt inline-flex items-center cursor-pointer max-md:hidden" role="button" @click="downloadReplay(data, replayid)"><span class="group-hover/bt:underline">{{ $t('Download Replay') }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
           <span v-else-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && !user" class="inline-flex items-center gap-1 opacity-60 max-md:hidden">
-            Download Replay
+            {{ $t('Download Replay') }}
             <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
               <slot>
-                <p>You need to be logged in to download replays.</p>
+                <p>{{ $t('You need to be logged in to download replays.') }}</p>
               </slot>
             </round-image>
           </span>
           <!-- Replay viewer: season games; needs a Battle.net login, like Download Replay -->
-          <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center" :href="'/Analytics/Match/Single/' + replayid + '/Replay'"><span class="group-hover/bt:underline">Watch Replay</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+          <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center" :href="'/Analytics/Match/Single/' + replayid + '/Replay'"><span class="group-hover/bt:underline">{{ $t('Watch Replay') }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
           <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
-            Watch Replay
+            {{ $t('Watch Replay') }}
             <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
               <slot>
-                <p>You need to be logged in with Battle.net to watch replays.</p>
+                <p>{{ $t('You need to be logged in with Battle.net to watch replays.') }}</p>
               </slot>
             </round-image>
           </span>
@@ -72,7 +72,7 @@
               <div class="flex gap-2 justify-center mt-4">
                 <template v-for="(item, index) in data.replay_bans[0]" :key="index">
                   <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" :size="'big'"></hero-image-wrapper>
-                  <round-image v-else :size="'big'" :image="'/images/talents/no-image.png'"><h2>No Ban</h2></round-image>
+                  <round-image v-else :size="'big'" :image="'/images/talents/no-image.png'"><h2>{{ $t('No Ban') }}</h2></round-image>
                 </template>
               </div>
             </div>
@@ -89,7 +89,7 @@
 
 
             <div v-if="esport && esport != 'Other'">
-              Map Bans
+              {{ $t('Map Bans') }}
               <div class="flex gap-2 justify-center mt-4">
                 <map-image-wrapper v-if="data.map_bans.team_zero_ban_data.map_ban_one" :map="data.map_bans.team_zero_ban_data.map_ban_one" :size="'big'">
                   <image-hover-box :title="data.map_bans.team_zero_ban_data.map_ban_one.name"></image-hover-box>
@@ -112,7 +112,7 @@
               <div class="flex gap-2 justify-center mt-4">
                 <template v-for="(item, index) in data.replay_bans[1]" :key="index">
                   <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" :size="'big'"></hero-image-wrapper>
-                  <round-image v-else :size="'big'" :image="'/images/talents/no-image.png'"><h2>No Ban</h2></round-image>
+                  <round-image v-else :size="'big'" :image="'/images/talents/no-image.png'"><h2>{{ $t('No Ban') }}</h2></round-image>
                 </template>              
               </div>
             </div>
@@ -127,7 +127,7 @@
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. HP Role MMR'" :value="getAverageValue('role_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
             </div>
             <div v-if="esport && esport != 'Other'" class="">
-              Map Bans
+              {{ $t('Map Bans') }}
               <div class="flex gap-2 justify-center mt-4">
               <map-image-wrapper v-if="data.map_bans.team_one_ban_data.map_ban_one" :map="data.map_bans.team_one_ban_data.map_ban_one" :size="'big'">
                 <image-hover-box :title="data.map_bans.team_one_ban_data.map_ban_one.name"></image-hover-box>
@@ -149,16 +149,16 @@
           <thead>
             <tr>
               <th class="py-2 px-3 text-center text-sm leading-4">
-                Match ID
+                {{ $t('Match ID') }}
               </th>
               <th class="py-2 px-3 text-center text-sm leading-4">
-                Round
+                {{ $t('Round') }}
               </th>
               <th class="py-2 px-3 text-center text-sm leading-4">
-                Game
+                {{ $t('Game') }}
               </th>
               <th class="py-2 px-3 text-center text-sm leading-4">
-                Game Map
+                {{ $t('Game Map') }}
               </th>
             </tr>
           </thead>
@@ -185,19 +185,19 @@
       <div class="max-w-[93.75rem] mx-auto px-4 my-6">
         <panel-box>
           <div class="flex flex-wrap items-baseline gap-4">
-            <h2 class="text-2xl font-bold">Match Scores</h2>
+            <h2 class="text-2xl font-bold">{{ $t('Match Scores') }}</h2>
             <!-- Same rules as Watch Replay -->
-            <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center text-header" :href="'/Analytics/Match/Single/' + replayid + '/Replay#analytic-performance'"><span class="group-hover/bt:underline">How each player played</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+            <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center text-header" :href="'/Analytics/Match/Single/' + replayid + '/Replay#analytic-performance'"><span class="group-hover/bt:underline">{{ $t('How each player played') }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
             <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
-              How each player played
+              {{ $t('How each player played') }}
               <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
                 <slot>
-                  <p>You need to be logged in with Battle.net to see how each player played.</p>
+                  <p>{{ $t('You need to be logged in with Battle.net to see how each player played.') }}</p>
                 </slot>
               </round-image>
             </span>
           </div>
-          <p class="text-subtext">See advanced stats below</p>
+          <p class="text-subtext">{{ $t('See advanced stats below') }}</p>
          
        
           
@@ -205,7 +205,7 @@
 
           <div class="ml-auto flex justify-end">
             <div class="text-center flex items-center gap-2">
-              Sort By: 
+              {{ $t('Sort By:') }} 
               <tab-button :tab1text="'Team'" :ignoreclick="true" :tab2text="'HP Score'" @tab-click="sortCombinedPlayers" > </tab-button>
               <round-image class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large">
                 <slot>
@@ -260,13 +260,13 @@
           <thead>
             <tr>
               <th class="py-2 px-3 text-center text-sm leading-4">
-                Hero
+                {{ $t('Hero') }}
               </th>
               <th class="py-2 px-3 text-center text-sm leading-4">
-                Draft Order
+                {{ $t('Draft Order') }}
               </th>            
               <th class="py-2 px-3 text-center text-sm leading-4">
-                Type
+                {{ $t('Type') }}
               </th>                
             </tr>
           </thead>
@@ -274,10 +274,10 @@
             <tr v-for="(row, index) in data.draft_order" :key="index" class="">      
               <td width="25%">
                 <div v-if="row.hero != 'No Pick'" class="flex gap-4 items-center justify-center">
-                  <hero-image-wrapper :size="'medium'" :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
+                  <hero-image-wrapper :size="'medium'" :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ $heroName(row.hero) }}</span>
                 </div>
                 <div v-else class="flex gap-4 items-center justify-center">
-                  <round-image :size="'medium'" :image="'/images/talents/no-image.png'"><h2>No Pick</h2></round-image><span class="max-md:hidden">No Pick</span>
+                  <round-image :size="'medium'" :image="'/images/talents/no-image.png'"><h2>{{ $t('No Pick') }}</h2></round-image><span class="max-md:hidden">{{ $t('No Pick') }}</span>
                 </div>
               </td>
               <td width="25%">{{ row.pick_number + 1 }}</td>
@@ -300,7 +300,7 @@
             <a class="flex  w-full"  :href="getPlayerProfileLink(item, true)">
               <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
               <div class="min-w-0">
-                {{ item.battletag }} - {{ item.hero.name }}
+                {{ item.battletag }} - {{ $heroName(item.hero) }}
                 <build-code class="mb-2" :build="item.talents" :hero="item.hero" show="talents" align="start"></build-code>
               </div>
             </a>
@@ -314,7 +314,7 @@
           <a class="flex  w-full"  :href="item.check ? 'javascript:void(0)' : esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
             <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
             <div class="min-w-0">
-              {{ item.battletag }} - {{ item.hero.name }}
+              {{ item.battletag }} - {{ $heroName(item.hero) }}
               <build-code class="mb-2" :build="item.talents" :hero="item.hero" show="talents" align="start"></build-code>
             </div>
           </a>
@@ -345,24 +345,24 @@
     <thead>
       <tr >
         <td class="color-cell bg-black border-l border-black"></td>
-        <td class="color-cell bg-yellow" colspan="3">Pre-Match</td>
-        <td class="color-cell bg-blue" colspan="3">Post-Match</td>
+        <td class="color-cell bg-yellow" colspan="3">{{ $t('Pre-Match') }}</td>
+        <td class="color-cell bg-blue" colspan="3">{{ $t('Post-Match') }}</td>
       </tr>
       <tr>
-        <td >Player</td>
-        <td >HP Player MMR</td>
-        <td >HP Hero MMR</td>
-        <td >HP Role MMR</td>
-        <td >HP Player MMR</td>
-        <td >HP Hero MMR</td>
-        <td >HP Role MMR</td>
+        <td >{{ $t('Player') }}</td>
+        <td >{{ $t('HP Player MMR') }}</td>
+        <td >{{ $t('HP Hero MMR') }}</td>
+        <td >{{ $t('HP Role MMR') }}</td>
+        <td >{{ $t('HP Player MMR') }}</td>
+        <td >{{ $t('HP Hero MMR') }}</td>
+        <td >{{ $t('HP Role MMR') }}</td>
       </tr>
     </thead>
     <tbody class="text-center">
       <tr v-for="(item, index) in data.players[0]" :key="index">
         <td class="bg-blue text-white border-white border">
           <div class="flex gap-2 items-center">
-            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ item.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a><span v-else>Hidden</span>
+            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ item.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a><span v-else>{{ $t('Hidden') }}</span>
           </div>
         </td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
@@ -373,7 +373,7 @@
         <td>{{ item.role_mmr }} ({{ item.role_change }})</td>
       </tr>
       <tr>
-        <td class="color-cell bg-blue text-white border-white border">Average</td>
+        <td class="color-cell bg-blue text-white border-white border">{{ $t('Average') }}</td>
         <td class="color-cell bg-blue text-white">{{ getAverageValue('prev_player_mmr', data.players[0]) }}</td>
         <td class="color-cell bg-blue text-white">{{ getAverageValue('prev_hero_mmr', data.players[0]) }}</td>
         <td class="color-cell bg-blue text-white">{{ getAverageValue('prev_role_mmr', data.players[0]) }}</td>
@@ -398,24 +398,24 @@
     <thead>
       <tr>
        <td class="color-cell bg-black border-l border-black"></td>
-        <td class="color-cell bg-yellow" colspan="3">Pre-Match</td>
-        <td class="color-cell bg-blue" colspan="3">Post-Match</td>
+        <td class="color-cell bg-yellow" colspan="3">{{ $t('Pre-Match') }}</td>
+        <td class="color-cell bg-blue" colspan="3">{{ $t('Post-Match') }}</td>
       </tr>
       <tr>
-        <td>Player</td>
-        <td>HP Player MMR</td>
-        <td>HP Hero MMR</td>
-        <td>HP Role MMR</td>
-        <td>HP Player MMR</td>
-        <td>HP Hero MMR</td>
-        <td>HP Role MMR</td>
+        <td>{{ $t('Player') }}</td>
+        <td>{{ $t('HP Player MMR') }}</td>
+        <td>{{ $t('HP Hero MMR') }}</td>
+        <td>{{ $t('HP Role MMR') }}</td>
+        <td>{{ $t('HP Player MMR') }}</td>
+        <td>{{ $t('HP Hero MMR') }}</td>
+        <td>{{ $t('HP Role MMR') }}</td>
       </tr>
     </thead>
     <tbody class="text-center">
       <tr v-for="(item, index) in data.players[1]" :key="index">
         <td class="bg-blue text-white border-white border">
           <div class="flex gap-2 items-center">
-            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ item.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a><span v-else>Hidden</span>
+            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ item.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a><span v-else>{{ $t('Hidden') }}</span>
           </div>
         </td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
@@ -426,7 +426,7 @@
         <td>{{ item.role_mmr }} ({{ item.role_change }})</td>
       </tr>
       <tr>
-        <td class="color-cell bg-blue text-white border-white border">Average</td>
+        <td class="color-cell bg-blue text-white border-white border">{{ $t('Average') }}</td>
         <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('prev_player_mmr', data.players[1]) }}</td>
         <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('prev_hero_mmr', data.players[1]) }}</td>
         <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('prev_role_mmr', data.players[1]) }}</td>
@@ -454,7 +454,7 @@
   <table :class="['responsive-table', 'relative', { winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1, 'fixed-column-table': flipAdvancedStats }]" :style="flipAdvancedStats ? { width: flippedTableWidth(section) } : null" >
     <thead v-if="!flipAdvancedStats">
       <tr>
-        <td >{{ section.title }}</td>
+        <td >{{ $t(section.title) }}</td>
         <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">
           <div class="flex gap-2 items-center">
             <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
@@ -464,13 +464,13 @@
   </thead>
   <thead v-else>
     <tr>
-      <td class="bg-blue text-white border-white border">{{ section.title }}</td>
-      <td class="bg-blue text-white border-white border" v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ row.label }}</td>
+      <td class="bg-blue text-white border-white border">{{ $t(section.title) }}</td>
+      <td class="bg-blue text-white border-white border" v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ $t(row.label) }}</td>
     </tr>
   </thead>
   <tbody v-if="!flipAdvancedStats">
     <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-      <td class="bg-blue text-white border-white border">{{ row.label }}</td>
+      <td class="bg-blue text-white border-white border">{{ $t(row.label) }}</td>
       <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
     </tr>
   </tbody>
@@ -495,7 +495,7 @@
   <table :id="'responsive-table-' +sectionIndex" :ref="'responsivetable'+sectionIndex" :class="['responsive-table', 'relative', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1, 'fixed-column-table': flipAdvancedStats }]" :style="flipAdvancedStats ? { width: flippedTableWidth(section) } : null" >
     <thead v-if="!flipAdvancedStats">
       <tr>
-        <td class="bg-blue text-white border-white border">{{ section.title }}</td>
+        <td class="bg-blue text-white border-white border">{{ $t(section.title) }}</td>
         <td
         v-for="(player, playerIndex) in data.players[1]"
         :key="playerIndex"
@@ -509,13 +509,13 @@
   </thead>
   <thead v-else>
     <tr>
-      <td class="bg-blue text-white border-white border">{{ section.title }}</td>
-      <td class="bg-blue text-white border-white border" v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ row.label }}</td>
+      <td class="bg-blue text-white border-white border">{{ $t(section.title) }}</td>
+      <td class="bg-blue text-white border-white border" v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ $t(row.label) }}</td>
     </tr>
   </thead>
   <tbody v-if="!flipAdvancedStats">
     <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-      <td class="bg-blue text-white border-white border">{{ row.label }}</td>
+      <td class="bg-blue text-white border-white border">{{ $t(row.label) }}</td>
       <td v-for="(player, playerIndex) in data.players[1]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
     </tr>
   </tbody>

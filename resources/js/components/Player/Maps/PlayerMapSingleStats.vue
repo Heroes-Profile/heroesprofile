@@ -40,7 +40,7 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
     <div v-if="data && esport && !data.games_played" class="flex items-center justify-center mt-8">
-      No {{ map }} games in {{ league.name }} for these filters.
+      No {{ $mapName(map) }} games in {{ league.name }} for these filters.
     </div>
     <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
 
@@ -60,7 +60,7 @@
 
             <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
               <div class="flex flex-col gap-1">
-                <span class="text-header">Win Rate</span>
+                <span class="text-header">{{ $t('Win Rate') }}</span>
                 <stat-bar size="big" :value="data.win_rate.toFixed(2)" suffix="%" :color="$winRateColor(data.win_rate)"></stat-bar>
               </div>
 
@@ -71,7 +71,7 @@
           </div>
 
           <div class="flex flex-col gap-4 w-fit max-w-full">
-            <h3 class="text-2xl font-bold">Heroes</h3>
+            <h3 class="text-2xl font-bold">{{ $t('Heroes') }}</h3>
             <div class="flex flex-wrap gap-6 max-md:justify-center">
               <group-box v-for="group in heroGroups" :key="group.label" class="!m-0" :esport="esport" :playerlink="true" :text="group.label" :data="group.data"></group-box>
             </div>
@@ -130,7 +130,7 @@
       </panel-box>
     </div>
     <div v-else-if="typeof data === 'undefined'"  class="flex items-center justify-center">
-      No data
+      {{ $t('No data') }}
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
@@ -138,7 +138,7 @@
       <panel-box>
         <div class="flex flex-col xl:flex-row gap-6">
           <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">
-            <h2 class="text-3xl font-bold">{{ map }}</h2>
+            <h2 class="text-3xl font-bold">{{ $mapName(map) }}</h2>
             <div class="flex gap-8 max-sm:flex-col">
               <skeleton-box class="w-40 md:w-60 aspect-[3/4] shrink-0 rounded"></skeleton-box>
               <div class="flex-1 flex flex-col gap-6">
@@ -149,7 +149,7 @@
               </div>
             </div>
             <div class="flex flex-col gap-4">
-              <h3 class="text-2xl font-bold">Heroes</h3>
+              <h3 class="text-2xl font-bold">{{ $t('Heroes') }}</h3>
               <div class="flex flex-wrap gap-6 max-md:justify-center">
                 <div v-for="group in 3" :key="group" class="flex gap-3">
                   <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>

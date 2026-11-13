@@ -50,21 +50,21 @@
         <tr>
           <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
             <div class="flex items-center gap-3">
-              <span class="cursor-pointer" @click="sortTable('name')">Hero<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+              <span class="cursor-pointer" @click="sortTable('name')">{{ $t('Hero') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
               <search-input v-model="heroSearch" placeholder="Search hero" :collapsible="true" class="w-40"></search-input>
             </div>
           </th>
           <th @click="sortTable('ally_win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-            Win Rate as Ally %<sort-indicator :column="'ally_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+            {{ $t('Win Rate as Ally %') }}<sort-indicator :column="'ally_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>            
           <th @click="sortTable('enemy_win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-            Win Rate Against Hero %<sort-indicator :column="'enemy_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+            {{ $t('Win Rate Against Hero %') }}<sort-indicator :column="'enemy_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>
           <th @click="sortTable('ally_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-            Games Played As Ally<sort-indicator :column="'ally_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+            {{ $t('Games Played As Ally') }}<sort-indicator :column="'ally_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>
           <th @click="sortTable('enemy_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-            Games Played Against<sort-indicator :column="'enemy_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+            {{ $t('Games Played Against') }}<sort-indicator :column="'enemy_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>                 
         </tr>
       </thead>
@@ -72,7 +72,7 @@
         <tr v-for="row in shownData" :key="row.hero.id">
           <td class="py-2 px-3">
             <a class="group/bt inline-flex items-center" :href="(esport ? ngsPlayerUrl : '/Player/' + battletag + '/' + blizzid + '/' + region) + '/Hero/' + row.hero.name + (league ? league.query : '')">
-              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="hidden md:block font-bold ml-2 group-hover/bt:underline">{{ row.hero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></i>
+              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="hidden md:block font-bold ml-2 group-hover/bt:underline">{{ $heroName(row.hero) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></i>
             </a>
           </td>
            <td class="py-2 px-3 text-center">
@@ -92,8 +92,8 @@
     </table>
   </div>
   <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-    <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
-    <loading-component v-else :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">Large amount of data. Please be patient.</loading-component>
+    <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
+    <loading-component v-else :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
     <table-skeleton :bare="true" :rows="10" :columns="['hero', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
   </div>
 
@@ -182,7 +182,7 @@
       },
       shownData() {
         const search = this.heroSearch.trim().toLowerCase();
-        return search ? this.sortedData.filter(row => row.hero.name.toLowerCase().includes(search)) : this.sortedData;
+        return search ? this.sortedData.filter(row => row.hero.name.toLowerCase().includes(search) || this.$heroName(row.hero).toLowerCase().includes(search)) : this.sortedData;
       },
       isOwner(){
         if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){

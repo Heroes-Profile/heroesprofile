@@ -38,12 +38,12 @@
               </div>
             </div>
             <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
-              <h3 class="text-2xl font-bold">{{ section.title }} <span class="text-sm font-normal text-subtext">5+ games</span></h3>
+              <h3 class="text-2xl font-bold">{{ $t(section.title) }} <span class="text-sm font-normal text-subtext">5+ games</span></h3>
               <div class="flex flex-wrap gap-6 max-md:justify-center">
                 <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :text="group.label" :data="group.data"></group-box>
               </div>
             </div>
-            <p class="flex flex-wrap gap-2"><span class="text-subtext">Total Time Spent Dead:</span><span class="text-header">{{ data.time_spent_dead }}</span></p>
+            <p class="flex flex-wrap gap-2"><span class="text-subtext">{{ $t('Total Time Spent Dead:') }}</span><span class="text-header">{{ data.time_spent_dead }}</span></p>
           </panel-box>
 
           <div class="flex flex-col gap-6 min-w-0">
@@ -128,14 +128,14 @@
           <table class="min-w-0 w-full responsive-table max-md:text-xs">
             <thead>
               <tr>
-                <th @click="sortTable('hero_id')" class="py-2 px-3 text-left text-sm cursor-pointer">Hero<sort-indicator :column="'hero_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
-                <th @click="sortTable('win_rate')" class="py-2 px-3 text-left text-sm cursor-pointer">Win Rate %<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
-                <th @click="sortTable('games_played')" class="py-2 px-3 text-left text-sm cursor-pointer">Games Played<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+                <th @click="sortTable('hero_id')" class="py-2 px-3 text-left text-sm cursor-pointer">{{ $t('Hero') }}<sort-indicator :column="'hero_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+                <th @click="sortTable('win_rate')" class="py-2 px-3 text-left text-sm cursor-pointer">{{ $t('Win Rate %') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+                <th @click="sortTable('games_played')" class="py-2 px-3 text-left text-sm cursor-pointer">{{ $t('Games Played') }}<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(row, index) in sortedData" :key="index">
-                <td class="py-2 px-3"><div class="flex items-center gap-2"><hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span></div></td>
+                <td class="py-2 px-3"><div class="flex items-center gap-2"><hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ $heroName(row.hero) }}</span></div></td>
                 <td class="py-2 px-3">{{ row.win_rate }}</td>
                 <td class="py-2 px-3">{{ row.games_played }}</td>
               </tr>
@@ -154,14 +154,14 @@
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
       <div class="flex justify-between items-baseline gap-6">
-        <h2 class="text-2xl font-bold">Recent Matches</h2>
-        <a class="text-header whitespace-nowrap hover:underline" :href="matchHistoryUrl">Match History<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+        <h2 class="text-2xl font-bold">{{ $t('Recent Matches') }}</h2>
+        <a class="text-header whitespace-nowrap hover:underline" :href="matchHistoryUrl">{{ $t('Match History') }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
       </div>
     </div>
     <!-- The league pages' own recent match rows -->
     <div v-if="data" class="mt-4 pb-8">
       <esports-recent-matches v-if="recentMatches.length" :data="recentMatches" :esport="recentMatchesEsport" :series="series" :tournament="tournament" :always-expanded="true"></esports-recent-matches>
-      <p v-else class="max-w-[120rem] mx-auto px-4 md:px-8 text-subtext">No recent games.</p>
+      <p v-else class="max-w-[120rem] mx-auto px-4 md:px-8 text-subtext">{{ $t('No recent games.') }}</p>
     </div>
 
     <!-- The page's layout with grey blocks while it loads, like the profile -->
@@ -206,7 +206,7 @@
           </div>
         </panel-box>
       </div>
-      <h2 class="text-2xl font-bold">Recent Matches</h2>
+      <h2 class="text-2xl font-bold">{{ $t('Recent Matches') }}</h2>
       <div class="flex flex-col gap-2 pb-8">
         <skeleton-box v-for="row in 6" :key="row" class="h-16"></skeleton-box>
       </div>

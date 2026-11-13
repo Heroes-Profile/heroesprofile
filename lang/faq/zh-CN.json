@@ -1,0 +1,303 @@
+{
+    "categories": {
+        "Getting Started": "入门",
+        "Uploading Replays": "上传录像",
+        "MMR & Rankings": "MMR 与排名",
+        "Global Stats & Data": "全球统计与数据",
+        "Filters": "筛选",
+        "Site Features": "网站功能",
+        "Drafter": "选秀助手",
+        "Leaderboards": "排行榜",
+        "Supporting Heroes Profile": "支持 Heroes Profile"
+    },
+    "items": {
+        "9f34d33651e2f406": {
+            "q": "Heroes Profile 是什么？",
+            "a": "Heroes Profile 是一个由社区打造的《风暴英雄》统计网站。我们追踪玩家资料、全球英雄胜率、天赋构筑、对位、选秀数据、排行榜等众多内容，所有数据均来自社区上传的录像文件。本站于 2018 年 6 月上线，由 Zemill 和一支小型志愿者团队运营。"
+        },
+        "53e7bf5654bd4ea6": {
+            "q": "如何找到我的玩家资料？",
+            "a": "使用网站顶部的搜索栏，输入你的战网昵称（例如 <code>Zemill#1940</code>）。找到后，你可以查看自己的比赛历史、英雄统计、MMR、地图、对位等内容。请确保你已先上传录像，这样你的数据才会显示。"
+        },
+        "fee6b20b0ee8251f": {
+            "q": "Heroes Profile 是免费的吗？",
+            "a": "是的，Heroes Profile 完全免费。我们通过 <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> 获得社区支持。Patreon 赞助者可享受无广告体验和专属网站标识。"
+        },
+        "7ba1b5ca799e4b7a": {
+            "q": "如何让我的数据出现在 Heroes Profile 上？",
+            "a": "你需要上传录像文件。最简单的方法是下载 <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a>，它会在后台运行，并在每场比赛结束后自动上传录像。你也可以<a href=\"/Upload\" class=\"link\">手动上传录像</a>。上传后，请等待 5–10 分钟完成处理。"
+        },
+        "4015e4f47fc40628": {
+            "q": "Heroes Profile Uploader 安全吗？",
+            "a": "安全。上传工具完全开源，你可以在 GitHub 上查看全部源代码：<a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>。它不含广告或捆绑软件，除基本的页面统计外也没有任何追踪。如果你愿意，也可以改为手动上传录像。<br><br>部分杀毒软件或浏览器可能会将安装程序标记为可疑。这是误报，原因是该可执行文件没有使用付费的代码签名证书签名，而不是因为它含有恶意软件。你可以自行查看开源代码来验证。如果仍有顾虑，请改用<a href=\"/Upload\" class=\"link\">手动上传页面</a>。"
+        },
+        "be6aba0fe5a58edc": {
+            "q": "为什么我的比赛没有全部显示？",
+            "a": "Heroes Profile 只包含已上传到我们系统的比赛。如果你没有上传过录像，或者最近才开始上传，较早的比赛就不会显示。你可以<a href=\"/Upload\" class=\"link\">手动上传以前的录像文件</a>，或使用 <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a> 自动上传今后的比赛。《风暴英雄》会将录像文件保存在你的“文档”文件夹中。"
+        },
+        "9ea212dc517ae501": {
+            "q": "比赛显示的日期和时间是开始时间还是结束时间？",
+            "a": "是结束时间。比赛显示的时间来自其录像文件，而《风暴英雄》会在比赛结束时保存录像文件，因此一场 8:00 开始、持续 25 分钟的比赛会显示为 8:25。"
+        },
+        "588f4dbb15c62747": {
+            "q": "我可以上传旧录像吗？这会影响我的 MMR 吗？",
+            "a": "可以上传旧录像。但上传顺序会影响 MMR。MMR 系统在初期会做较大幅度的调整，以便将你定位到合适的水平。如果你先上传近期（胜率较高）的比赛，再上传较早（胜率较低）的比赛，你的 MMR 可能会比按时间顺序上传时更高。为了得到最准确的 MMR，请按比赛的进行顺序上传所有录像。"
+        },
+        "9d33bcc4b479b937": {
+            "q": "上传工具支持 macOS 或 Linux 吗？",
+            "a": "支持。上传工具是同一个应用，适用于 Windows、macOS 和 Linux。各平台的下载链接都在<a href=\"/Upload\" class=\"link\">上传页面</a>上，<a href=\"/Upload/Uploader\" class=\"link\">上传工具页面</a>介绍了有哪些变化以及如何从旧版 Windows 上传工具迁移。"
+        },
+        "a1eb614636680760": {
+            "q": "如何将我的个人资料设为私密？",
+            "a": "使用你的 Battle.net 账号登录，前往<a href=\"/Profile/Settings\" class=\"link\">个人资料设置</a>，将“账号可见性”设为“私密”。你的战网昵称仍会出现在其他玩家的比赛历史中（因为它是录像文件的一部分），但你的个人资料页面将无法被公开访问。"
+        },
+        "c4b452b25e56c717": {
+            "q": "Heroes Profile 的 MMR 是如何计算的？",
+            "a": "Blizzard 不会在录像文件中包含 MMR 或段位数据，因此我们无法从录像中获取你官方的游戏内段位或 MMR。我们会根据你上传录像中的胜负计算自己的 MMR。这只是估算值，上传的比赛越多就越准确。新游戏模式（例如风暴联赛刚推出时）会让所有人从头开始，因此早期的 MMR 数值不确定性较高。你真实的风暴联赛段位可以单独显示，它是从载入画面中读取的（见下文）。"
+        },
+        "628d7a2936bd5087": {
+            "q": "为什么我的 Heroes Profile MMR 与游戏内段位不一致？",
+            "a": "我们的 MMR 是独立计算的，只依据上传到我们系统的录像。它并非来自 Blizzard 的服务器，也不代表你官方的游戏内排名。上传的比赛越多，它就越接近你的实际水平。如果你刚开始上传录像，多打几场后数值就会趋于稳定。如果我们获取到了你真实的游戏内段位，它会显示在你个人资料中单独的风暴联赛段位区域。"
+        },
+        "561dd721f50a722e": {
+            "q": "Heroes Profile 能显示我真实的游戏内段位吗？",
+            "a": "可以，仅限风暴联赛。录像文件中没有段位信息，但游戏会在载入画面显示每位玩家的段位。<strong>带段位读取功能</strong>的上传工具版本（Windows、macOS 或 Linux）可以从载入画面读取段位：<ol class=\"list-decimal pl-6 my-2 space-y-1\"><li>从<a href=\"/Upload\" class=\"link\">录像上传工具</a>页面安装。</li><li>在上传工具的设置中开启<strong>从载入画面读取段位</strong>。该功能在你开启前处于关闭状态。</li><li>进行风暴联赛比赛。比赛录像上传后，从其载入画面读取的段位会被保存，并显示在每位玩家个人资料的风暴联赛段位区域。</li></ol>它只捕获游戏窗口，只在载入画面期间捕获，并且只发送风暴联赛的比赛。只有当玩家出现在该场比赛的录像中，且读取工具确信段位卡属于该玩家时，段位才会被保留，因此你也可以通过别人的比赛获得段位。段位按读取结果显示，并注明最后一次读取的时间和读取的场次，偶尔可能有误或已过时。<a href=\"/Upload/Uploader#rank-reading\" class=\"link\">段位读取的工作原理</a>。"
+        },
+        "b46963dbac0933b1": {
+            "q": "全球统计页面中的联赛段位代表什么？",
+            "a": "在全球统计页面中，联赛段位（青铜、白银、黄金、白金、钻石、大师）基于我们的 Heroes Profile MMR 计算。MMR 落在某一范围内的玩家会被归入相应段位。我们参考 Blizzard 提供的段位划分来确定各范围。这意味着约 7% 的玩家处于青铜段位，与 Blizzard 预期的分布一致。"
+        },
+        "9f2014d56a0836a1": {
+            "q": "Heroes Profile 的联赛段位分布是怎样的？",
+            "a": "Heroes Profile 的联赛段位基于以下玩家分布：<br><br><div style=\"display:inline-block;min-width:220px;border:1px solid rgba(255,255,255,0.15);border-radius:6px;overflow:hidden;font-size:0.875rem;\"><div style=\"display:flex;background:rgba(255,255,255,0.1);font-weight:600;\"><span style=\"flex:1;padding:8px 14px;\">段位</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">玩家占比</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">青铜</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">12%</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">白银</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">23%</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">黄金</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">26%</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">白金</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">22%</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">钻石</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">12%</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">大师</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">5%</span></div></div><br><br>这些分布用于设定每个段位的 MMR 门槛。比赛场次少于 50 场的玩家会被归入“未知”段位（有时称为木头），直到系统有足够数据准确评定。"
+        },
+        "743025c455ccb4e1": {
+            "q": "为什么要定期重新计算 MMR？",
+            "a": "我们会定期对所有已上传的比赛重新计算 MMR，以提高准确性。随着算法改进和上传数据增多，重新计算能让所有玩家获得更准确的评分。每次重新计算时我们都会发布公告，请关注我们的 Reddit 帖子或 GitHub 获取最新消息。"
+        },
+        "ab1a5a59c21f2ed8": {
+            "q": "为什么我赢了 MMR 却下降（或输了却上升）？",
+            "a": "Heroes Profile MMR 并不是无限累加的指标，它衡量的是你相对于其他所有人的水平。如果你赢了之后 MMR 下降，说明系统检测到你的对手 MMR 明显低于你。算法看到高 MMR 玩家战胜低 MMR 对手，会认为你当前的评分可能偏高，于是略微下调。反之亦然：输给 MMR 高得多的玩家可能会让你的评分上升。这是有意为之：系统始终在寻找你真正所属的水平区间，而不只是奖励胜利。"
+        },
+        "d9046734a5b347eb": {
+            "q": "什么是英雄 MMR？",
+            "a": "英雄 MMR 是针对每个英雄单独计算的 MMR 评分。你不只有一个总体评分，而是每个使用过的英雄都有各自的 MMR。该评分会将你与其他玩家使用同一英雄的表现进行比较。即使你是高水平的风暴联赛玩家，也不代表你在很少使用的英雄上就有很高的英雄 MMR。"
+        },
+        "4f0391d0e1d4e289": {
+            "q": "Heroes Profile 的数据有多准确？",
+            "a": "数据的准确度取决于上传到我们系统的录像数量。我们无法获取所有比赛，只能获取玩家通过我们的上传工具上传或手动提交录像的比赛。尽管如此，我们的录像数据库一直是社区中规模最大的之一，收录了数千万场比赛。"
+        },
+        "887f997b1810f8c3": {
+            "q": "为什么对位胜率中排除了镜像对局？",
+            "a": "在镜像对局中，英雄与自己对阵，同一场比赛里该英雄必然是一胜一负。如果计入镜像对局，每个英雄的平均胜率都会被拉向 50%，无法提供有用的信息。排除镜像对局后，对位数据才能真正反映有意义的对抗关系。"
+        },
+        "507d49de8fb485c2": {
+            "q": "表现评分是如何计算的？",
+            "a": "比赛页面上的表现评分的计算方式是：针对比赛中的每项统计（伤害、治疗量、击杀等），将该场比赛的全部 10 名玩家从高到低排名，并根据名次给出分数。这是该场比赛内部的相对衡量，而不是全球基准。"
+        },
+        "199e6ba2d5e28495": {
+            "q": "时间范围筛选是什么意思（主要补丁与次要补丁）？",
+            "a": "Heroes Profile 上的主要补丁通常对应新英雄发布或重大重做，即 Blizzard 修改小数点后第一位数字的时候（例如 2.44 → 2.45）。次要补丁是主要补丁中较小的平衡性更新。时间范围筛选会将每个版本列在对应的主要补丁和子补丁下：勾选标题即选择整个补丁，也可以只勾选单个版本。各补丁的改动请查看<a href=\"/FAQ#patch-history\" class=\"link\">补丁历史</a>。"
+        },
+        "6952ad9e69f8dc30": {
+            "q": "我能查看英雄在游戏中的平均数据吗，比如攻城伤害或英雄伤害？",
+            "a": "可以。每个英雄在某项统计上的场均数据都可以在<a href=\"/Global/Hero\" class=\"link\">英雄统计</a>页面查看：<ol class=\"list-decimal pl-6 my-2 flex flex-col gap-1\"><li>点击筛选下方的<strong>显示高级筛选</strong>。</li><li>将<strong>时间范围</strong>设为不超过 5 个单独版本。勾选整个主要补丁或子补丁时，统计筛选会被隐藏。</li><li>在<strong>统计筛选</strong>中选择统计项，例如攻城伤害、英雄伤害、法术伤害、物理伤害、治疗量或死亡，然后点击<strong>筛选</strong>。</li></ol>之后，表格和气泡图会显示每个英雄在该统计上的场均数据，而不是胜率。你也可以直接通过链接访问，例如 <a href=\"/Global/Hero?statfilter=siege_damage\" class=\"link\">/Global/Hero?statfilter=siege_damage</a>。<a href=\"/Global/Talents\" class=\"link\">天赋</a>页面也为天赋和构筑提供了相同的统计筛选。全球页面不提供单个英雄所有统计并列的完整明细，这类明细只能在玩家英雄页面的高级统计中查看。"
+        },
+        "8b86a4ca4006babb": {
+            "q": "为什么新补丁发布后全球数据有时是空的？",
+            "a": "Blizzard 刚推送补丁时，该补丁的上传数据还不足以显示有意义的结果。请扩大时间范围筛选以包含多个补丁，或等几天、上传的比赛增多后再来查看。"
+        },
+        "236905d835494eef": {
+            "q": "天赋构筑的“胜利概率”是什么？它和胜率有什么区别？",
+            "a": "胜利概率是我们计算出的完整天赋构筑（从 1 级到 20 级）赢得比赛的概率，并不是简单的胜率。由于很多比赛在 20 级之前就结束了，我们无法总能看到玩家原本打算采用的完整构筑。我们通过后端逻辑，根据玩家已选的天赋推断其打算采用的构筑，并同时计入达到 20 级和未达到 20 级的比赛。与仅统计完整比赛中的胜场相比，这能更准确地反映构筑的整体强度。你可以在<a href=\"/Global/Talents\" class=\"link\">全球天赋</a>页面和<a href=\"/Global/Talents/Builder\" class=\"link\">天赋构建器</a>中查看构筑的胜利概率。"
+        },
+        "c2692ad41dc38841": {
+            "q": "“影响力”统计是什么意思？",
+            "a": "影响力是一个介于 -5000 到 5000 之间的数值，用于衡量英雄对比赛结果的实际影响程度。它将英雄胜率高于或低于 50% 的幅度，乘以该英雄在未被禁用的比赛中的选取频率。一个胜率很高但很少被选的英雄，其影响力会低于一个胜率稍低但在大多数比赛中被选的英雄，因为后者实际左右了更多的比赛。可以把它理解为按相关性加权的胜率。"
+        },
+        "baef60d089cdea87": {
+            "q": "在哪里可以查看英雄的技能、天赋和基础属性？",
+            "a": "<a href=\"/Heroes\" class=\"link\">英雄</a>页面（也可在顶部菜单的“工具”下找到）为每个英雄提供了单独的页面，例如 <a href=\"/Heroes/Abathur\" class=\"link\">Abathur</a>。页面根据当前补丁的游戏文件生成，包含三个标签页：<strong>简介</strong>（职责、难度、描述、评分、基础属性和背景故事）、<strong>技能</strong>和<strong>天赋</strong>。将鼠标悬停在技能或天赋图标上（或点击图标）可查看完整说明。等级滑块可将生命值、攻击伤害和技能数值调整到 1 至 30 级之间的任意等级，随等级成长的数值会显示每级增长率，例如 62（每级 +4%）。标签页下方的链接可在统计页面（如天赋统计和天赋构建器）中打开该英雄，查看胜率和构筑。"
+        },
+        "da9672cbf4c59a90": {
+            "q": "什么是天赋构建器？",
+            "a": "<a href=\"/Global/Talents/Builder\" class=\"link\">天赋构建器</a>让你组建特定的天赋构筑，并查看该组合的胜率数据。用它基于真实比赛数据对比两套构筑非常方便。"
+        },
+        "2df01fc91ad6f6f6": {
+            "q": "筛选功能如何使用？",
+            "a": "更改你想要的任意筛选条件，然后点击 <strong>筛选</strong>，页面会按这些条件重新加载。在全球统计页面中，点击<strong>显示高级筛选</strong>会展开更多选项：统计筛选、英雄等级、HP 英雄段位、HP 职责段位、镜像对局，以及英雄统计页面中的组队人数。全球统计页面会将筛选条件保存在页面链接中，因此你可以分享或收藏筛选后的页面。在移动设备上，点击<strong>显示筛选</strong>即可打开筛选。"
+        },
+        "cc5ac1d59d4e6d47": {
+            "q": "时间范围筛选有什么作用？",
+            "a": "时间范围用于选择数据来自哪些补丁。各版本按所属的主要补丁和子补丁列出：勾选标题可选择整个补丁，也可以单独勾选某个版本。默认为最新补丁。各补丁的改动内容请参阅<a href=\"/FAQ#patch-history\" class=\"link\">补丁历史</a>。"
+        },
+        "5aeb185246963ce8": {
+            "q": "游戏模式筛选有什么作用？",
+            "a": "游戏模式可将数据限定为风暴联赛、快速比赛、ARAM 或其他模式。全球统计页面不包含非排位模式和自定义比赛。个人资料页面包含所有游戏模式，比赛历史还可以显示自定义比赛。"
+        },
+        "3e46caaf0ef2343c": {
+            "q": "统计筛选有什么作用？",
+            "a": "在<a href=\"/Global/Hero\" class=\"link\">英雄统计</a>和<a href=\"/Global/Talents\" class=\"link\">天赋</a>页面中，统计筛选会将胜率替换为某项游戏内统计的场均值，例如英雄伤害、攻城伤害、法术伤害、物理伤害、小兵伤害、治疗量、死亡、参与击杀、眩晕敌人时间或雇佣兵营地占领。该筛选位于“显示高级筛选”中，且仅在时间范围选择了不超过 5 个单独版本时显示。分步指南请参阅“全球统计与数据”部分中的“我能查看英雄的平均游戏内统计吗”。"
+        },
+        "93da9eaa18b9675f": {
+            "q": "区域和地图筛选有什么作用？",
+            "a": "<strong>区域</strong>可将数据限定为在 NA、EU、KR 或 CN 进行的比赛。<strong>地图</strong>可将数据限定为你所选地图上的比赛。"
+        },
+        "4209fedfeb72deca": {
+            "q": "英雄和职责筛选有什么作用？",
+            "a": "它们可将数据限定为某一位英雄或某一种职责。在<a href=\"/Match/Search\" class=\"link\">录像搜索</a>中，你可以选择多位英雄，并选择<strong>或</strong>（包含其中任意一位英雄的比赛）或<strong>且</strong>（包含所有所选英雄的比赛）。"
+        },
+        "3a3626551cb58f7f": {
+            "q": "HP 玩家段位、HP 英雄段位和 HP 职责段位筛选有什么作用？",
+            "a": "它们使用 Heroes Profile 自有的 MMR 按水平进行筛选：分别对应玩家的总体 MMR、玩家使用该英雄的 MMR，或玩家在该英雄所属职责上的 MMR。这些段位与游戏内段位一一对应，但采用我们的公式计算，因此不会与游戏内段位一致。我们的 MMR 如何运作，请参阅“MMR 与排名”部分。"
+        },
+        "48e670ac975a3e5d": {
+            "q": "玩家段位中的 HP / 游戏内切换是什么？",
+            "a": "在英雄统计和天赋页面中，玩家段位既可以使用 Heroes Profile MMR 段位（HP），也可以使用 Blizzard 在载入画面中显示的风暴联赛段位（游戏内）。游戏内段位由使用 Heroes Profile 上传工具可选段位读取功能的玩家读取，每位玩家按进入该场比赛时的段位计算。只有段位被读取的玩家才会计入，因此样本量较小，且时间范围中只会列出段位读取功能推出以来的补丁。"
+        },
+        "ceb307666ee1a707": {
+            "q": "英雄等级筛选有什么作用？",
+            "a": "英雄等级只统计该英雄等级处于你所选范围内的玩家，范围从 1-5 到 100+。可用它查看英雄在熟练玩家手中的表现。"
+        },
+        "8b4005b071aaa893": {
+            "q": "镜像对局筛选有什么作用？",
+            "a": "它决定是否计入双方队伍使用同一英雄的比赛。默认为排除，因为英雄与自身对战时总会同时增加一场胜利和一场失败，使其胜率向 50% 靠拢。"
+        },
+        "5be3d434bc2a4afe": {
+            "q": "组队人数筛选有什么作用？",
+            "a": "组队人数可将数据限定为单排、双排，或以 3 人、4 人、5 人组队排队的玩家。在<a href=\"/Global/Party\" class=\"link\">组队</a>页面中，<strong>队伍一组队</strong>和<strong>队伍二组队</strong>则用于选择每支队伍的整体组队构成，从 5 名单排到五排。"
+        },
+        "34aa4d9109cf513d": {
+            "q": "最少场次筛选有什么作用？",
+            "a": "它会隐藏场次少于你所选数值的行，避免小样本数据占据表格顶部。"
+        },
+        "7a5847744c3c61e0": {
+            "q": "天赋构筑类型有什么作用？",
+            "a": "它决定天赋页面列出哪些构筑。只有达到 20 级的构筑才会计入。<ul class=\"list-disc pl-6 mt-2 flex flex-col gap-1\"><li><strong>热门</strong>：使用次数最多的构筑。</li><li><strong>HP 算法</strong>：使用次数最多的构筑，但每种 1、4、7 级天赋组合只保留一个，让你看到不同的前期路线。</li><li><strong>独特 X 级</strong>：该等级每个不同天赋下使用次数最多的构筑。</li></ul>"
+        },
+        "f485a44e467332ce": {
+            "q": "赛季和日期筛选有什么作用？",
+            "a": "<strong>赛季</strong>可将数据限定为你所选赛季中的比赛，赛季按年份分组。在个人资料页面中可以多选。<strong>日期范围</strong>筛选可将数据限定为在你所选日期之间进行的比赛。"
+        },
+        "9402670d1c36d27e": {
+            "q": "排行榜类型和联赛筛选有什么作用？",
+            "a": "在<a href=\"/Global/Leaderboard\" class=\"link\">排行榜</a>中，排行榜类型可在玩家、英雄、职责、比赛预测和风暴联赛段位榜之间切换。风暴联赛段位榜列出游戏内的风暴联赛段位，并额外提供联赛选择器。"
+        },
+        "0b0fb91586231d5f": {
+            "q": "录像搜索有哪些筛选？",
+            "a": "<a href=\"/Match/Search\" class=\"link\">录像搜索</a>还有几项专属筛选：<strong>游戏版本</strong>（补丁）、<strong>日期范围</strong>、<strong>HP 玩家、英雄和职责 MMR</strong> 范围，以及<strong>玩家</strong>（仅查找包含这些战网昵称的比赛）。比赛历史也有类似的<strong>队友或对手玩家</strong>搜索。"
+        },
+        "dd2e2fa841409455": {
+            "q": "电竞页面有哪些筛选？",
+            "a": "电竞页面提供的是该联赛专属的筛选，例如赛季、分区、战队或锦标赛，具体取决于该联赛记录的内容。"
+        },
+        "955526a9d6ed7f17": {
+            "q": "什么是 PreMatch 功能？",
+            "a": "PreMatch 是 <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile 上传工具</a>的内置功能。启用后，它会在比赛载入画面期间打开一个浏览器页面，显示本场比赛全部 10 名玩家的信息，包括他们的统计数据、最常玩英雄、MMR 等。这能帮助你在比赛开始前了解队友和对手。示例可查看 <a href=\"/PreMatch/Results/\" class=\"link\">PreMatch 结果</a>。"
+        },
+        "43893ec09753fb1b": {
+            "q": "什么是队友与对手页面？",
+            "a": "个人资料中的队友与对手页面会显示你<em>与</em>特定玩家同队或<em>对阵</em>特定玩家时的胜率。例如，请查看<a href=\"/Player/Zemill/67280/1/FriendFoe\" class=\"link\">这个队友与对手页面</a>。上传你的录像，然后在自己个人资料的队友与对手部分查看你的数据。"
+        },
+        "957be35b13074e79": {
+            "q": "什么是奖项页面？",
+            "a": "个人资料中的奖项页面会显示你获得各项赛后奖项（如 MVP、Painbringer 或 Main Healer）的频率，以占你比赛场次的百分比表示。例如，请查看<a href=\"/Player/Zemill/67280/1/Awards\" class=\"link\">这个奖项页面</a>。点击某个奖项即可列出你获得该奖项的所有比赛。只有在 Heroes Profile 开始记录奖项之后的比赛才会计入，因此非常早期的录像不包括在内。所有奖项及其获得条件都列在下方的<a href=\"#awards\" class=\"link\">比赛奖项</a>中。"
+        },
+        "77eb65776c03f5b4": {
+            "q": "什么是录像搜索？如何使用？",
+            "a": "<a href=\"/Match/Search\" class=\"link\">录像搜索</a>用于查找最近上传到 Heroes Profile 的比赛。选择筛选条件后点击“筛选”，每条结果都会链接到对应的完整比赛页面。<p class=\"mt-2\"><b>搜索范围</b></p><ul class=\"list-disc list-inside mt-1 space-y-1\"><li>本赛季和上赛季的比赛，按时间从新到旧排列。</li><li>快速比赛、风暴联赛和 ARAM。非排位模式、英雄联赛和团队联赛在此时间范围内没有比赛。</li><li>结果每次显示 1000 条。使用<b>再加载 1000 条</b>查看更早的比赛。</li></ul><p class=\"mt-2\"><b>筛选</b></p><ul class=\"list-disc list-inside mt-1 space-y-1\"><li><b>游戏模式、区域、地图、游戏版本、开始/结束日期</b>：将结果限定为符合条件的比赛。游戏版本只列出搜索范围内的补丁。</li><li><b>英雄</b>：可选择一个或多个。选择多个时，<b>或 / 且</b>开关用于选择包含其中任意一个英雄的比赛，还是包含所有所选英雄的比赛（不限队伍）。</li><li><b>玩家</b>：输入战网昵称并点击“添加”。如果匹配到多个账号，请选择正确的那个。无法搜索设为私密的个人资料。选择多名玩家时，<b>或 / 且</b>的作用与英雄相同。</li></ul><p class=\"mt-2\"><b>高级筛选</b></p><ul class=\"list-disc list-inside mt-1 space-y-1\"><li><b>HP 玩家、英雄和职责 MMR</b>的最小值和最大值，使用每位玩家在该场比赛时的评分。</li><li><b>HP 玩家、英雄和职责段位</b>（青铜到大师）。段位使用各游戏模式当前的段位分界线。选择英雄后才会出现 HP 英雄段位，因为每个英雄都有各自的分界线。</li><li>所有 MMR 和段位筛选条件必须由<em>同一名</em>玩家满足。未选择英雄时，可以是比赛中的任意玩家。英雄设为“或”时，必须是使用所选英雄之一的玩家。英雄设为“且”时，使用每个所选英雄的玩家都必须满足这些条件。</li></ul><p class=\"mt-2\"><b>为什么会显示“继续搜索”？</b></p><p class=\"mt-1\">一些罕见的组合（例如多个英雄都处于大师段位）可能需要很长时间才能找到。录像搜索每次会查找几秒钟的比赛数据，显示目前找到的结果以及已经回溯搜索的范围，你可以点击<b>继续搜索</b>接着查找。只有在整个搜索范围都检查完毕后，才会显示“没有符合这些筛选条件的录像”。</p><p class=\"mt-2\"><b>限制</b></p><p class=\"mt-1\">为了让所有人都能流畅使用本站，搜索限制为每分钟 10 次，每次“再加载”或“继续搜索”都计为一次。如果达到上限，请等待一分钟后再试。</p>"
+        },
+        "e62237f1953d9ea2": {
+            "q": "什么是比赛预测游戏？",
+            "a": "比赛预测游戏让你查看一场选秀，并在看到结果之前预测哪支队伍会获胜。这是检验你游戏知识的有趣方式，还能看看你的预测与实际结果相比如何。"
+        },
+        "d5a1dac9a60a2bba": {
+            "q": "Heroes Profile 有电竞、锦标赛、系列赛或联赛的统计吗？",
+            "a": "有。顶部菜单中的<a href=\"/Esports\" class=\"link\">社区电竞</a>涵盖社区联赛和锦标赛：NGS（Nexus Gaming Series）、CCL（Community Clash League）、Masters Clash、Heroes International、Nut Cup，以及收录了 HGC 等往届锦标赛和系列赛的“HGC 及更多”。每项赛事都有各自的战队、选手、比赛以及英雄和天赋统计。"
+        },
+        "bf4555b9f7c4901c": {
+            "q": "什么是 Heroes Profile 选秀助手？",
+            "a": "<a href=\"/Drafter\" class=\"link\">Heroes Profile 选秀助手</a>是一款选秀工具，它利用 Heroes Profile 的胜率数据，帮助你在选秀阶段评估阵容。它并非完美的预测工具，请将其作为选秀知识的补充，用于研究各种阵容的表现。其工作原理请参阅下方的选秀助手部分。"
+        },
+        "ac97e4684901a4e5": {
+            "q": "可以把网站上的天赋构筑复制到游戏中吗？",
+            "a": "可以。在全球英雄页面、单场比赛页面以及网站上的其他多个位置，天赋构筑旁都有一个“复制构筑”按钮。点击后，构筑会以《风暴英雄》支持的格式复制到剪贴板，你可以直接将其粘贴到游戏的配置界面中。"
+        },
+        "7fceba2017cd384d": {
+            "q": "如何使用选秀助手？",
+            "a": "<p>选秀助手无法完美预测选秀结果。它的用途是研究和评估阵容，请将它作为你自身选秀知识的补充。</p><ol class=\"list-decimal pl-6 mt-2 flex flex-col gap-2\"><li>打开<a href=\"/Drafter\" class=\"link\">选秀助手</a>并选择筛选条件。选秀助手只使用风暴联赛最近五个补丁的数据。筛选条件过窄时，符合条件的比赛可能很少，因此请留意英雄弹窗中的比赛场次、禁用场次和胜率置信度。</li><li>选择由哪支队伍先选。队伍 1 在左侧，队伍 2 在右侧。这只影响选秀界面的排列，请与游戏内的选秀保持一致。</li><li>点击<strong>开始选秀</strong>。选秀助手会加载当前禁用或选择的最佳选项，并按从优到劣的顺序排列，从左到右、从上到下。在当前位置特别强势的英雄会带有星标。将鼠标悬停在英雄上即可查看其统计数据。</li><li>点击英雄即可禁用或选择。选秀过程中，选秀助手会自动在队伍 1 和队伍 2 之间切换。点击<strong>撤销</strong>可退回一步。</li></ol><p class=\"mt-2\">搜索框和职责图标可以缩小显示的英雄范围，但不会改变排列顺序。在选秀的任何阶段，都可以点击<strong>显示筛选</strong>更改筛选条件，当前选择的建议会按新条件重新加载。</p><p class=\"mt-2\"><strong>无数据选秀</strong>会按字母顺序列出所有英雄，不提供任何建议，方便你走完一次选秀。</p><p class=\"mt-2\">选秀助手最适合在电脑上使用。手机上也能用，但需要显示的信息较多。</p>"
+        },
+        "f328f73f255bc9e4": {
+            "q": "选秀助手如何给出禁用建议？",
+            "a": "<p><strong>第 1 至 4 个禁用</strong>以当前筛选条件下禁用最多的英雄为基础，再乘以各英雄在选秀中该特定位置被禁用的频率，即该英雄的<em>选秀顺序选取率</em>。</p><p class=\"mt-2\">例如，假设禁用最多的英雄依次是 D.Va（200 次禁用）、Imperius（150）、Chromie（76）和 Orphea（25）。在当前位置，D.Va 的禁用率为 5%，Imperius 为 20%，Chromie 为 57%，Orphea 为 2%。分别乘以各自的比率后，得到 Chromie 43.3、Imperius 30、D.Va 10、Orphea 0.5。可见，排序会因英雄通常在选秀哪个阶段被禁用而发生很大变化。</p><p class=\"mt-2\"><strong>第 5 和第 6 个禁用</strong>的计算方式相同，但还会参考对方队伍的阵容，找出对方的下一个最佳选择，并建议将其禁用。</p>"
+        },
+        "7e8baf289c326dc9": {
+            "q": "选秀助手如何给出选择建议？",
+            "a": "<p><strong>第 1 和第 2 个选择</strong>使用各英雄的影响力，再乘以其选秀顺序选取率。影响力综合了胜率以及英雄被选择或禁用的频率。</p><p class=\"mt-2\"><strong>第 3 至 10 个选择</strong>使用阵容数据，同样乘以选秀顺序选取率。选秀助手会根据队伍已选的职责，找到包含这些职责且使用次数最多的阵容，再针对尚未选择的职责，推荐该阵容中最常用的英雄。</p><p class=\"mt-2\">例如，如果最热门的阵容是坦克、斗士、治疗者、远程刺客、远程刺客，而某队伍首选了 Orphea，那么 Diablo、D.Va、Brightwing、Li-Ming 和 Greymane 等英雄会排在前列。如果该队伍接着选择了 The Lost Vikings，选秀助手就会改为寻找包含支援者和远程刺客的热门阵容。此过程会一直持续到选秀结束。</p>"
+        },
+        "fff296fb94a79713": {
+            "q": "什么是选秀顺序选取率？",
+            "a": "<p>在某个英雄被禁用或选择的所有比赛中，选秀顺序选取率表示这一情况发生在选秀各个位置上的频率。以下是 Li-Ming 的示例：</p><table class=\"my-3 text-sm\"><thead><tr><th class=\"px-2 text-left\">选秀位置</th><th class=\"px-2 text-left\">禁用或选择</th><th class=\"px-2 text-left\">比率</th></tr></thead><tbody><tr><td class=\"px-2\">1</td><td class=\"px-2\">禁用</td><td class=\"px-2\">7%</td></tr><tr><td class=\"px-2\">2</td><td class=\"px-2\">禁用</td><td class=\"px-2\">7%</td></tr><tr><td class=\"px-2\">3</td><td class=\"px-2\">禁用</td><td class=\"px-2\">10%</td></tr><tr><td class=\"px-2\">4</td><td class=\"px-2\">禁用</td><td class=\"px-2\">10%</td></tr><tr><td class=\"px-2\">5</td><td class=\"px-2\">选择</td><td class=\"px-2\">15%</td></tr><tr><td class=\"px-2\">6</td><td class=\"px-2\">选择</td><td class=\"px-2\">12%</td></tr><tr><td class=\"px-2\">7</td><td class=\"px-2\">选择</td><td class=\"px-2\">7%</td></tr><tr><td class=\"px-2\">8</td><td class=\"px-2\">选择</td><td class=\"px-2\">5%</td></tr><tr><td class=\"px-2\">9</td><td class=\"px-2\">选择</td><td class=\"px-2\">4%</td></tr><tr><td class=\"px-2\">10</td><td class=\"px-2\">禁用</td><td class=\"px-2\">6%</td></tr><tr><td class=\"px-2\">11</td><td class=\"px-2\">禁用</td><td class=\"px-2\">5%</td></tr><tr><td class=\"px-2\">12</td><td class=\"px-2\">选择</td><td class=\"px-2\">3%</td></tr><tr><td class=\"px-2\">13</td><td class=\"px-2\">选择</td><td class=\"px-2\">3%</td></tr><tr><td class=\"px-2\">14</td><td class=\"px-2\">选择</td><td class=\"px-2\">2%</td></tr><tr><td class=\"px-2\">15</td><td class=\"px-2\">选择</td><td class=\"px-2\">2%</td></tr><tr><td class=\"px-2\">16</td><td class=\"px-2\">选择</td><td class=\"px-2\">2%</td></tr></tbody></table><p>在这个例子中，Li-Ming 最常出现在第 5 位（第一个英雄选择），最少出现在最后三个位置。</p><p class=\"mt-2\">每个英雄都有各自的分布。选秀助手会据此将每个英雄的 HP 选秀价值调整到选秀的当前阶段。通常较早被选的英雄会在前期排到前列，到后期则会下降。例如，Li-Ming 往往是强势的早期选择，而 Tychus 则在选秀末尾占据上风。</p>"
+        },
+        "13924ed966ec1eef": {
+            "q": "选秀助手弹窗中的统计数据是什么意思？",
+            "a": "<ul class=\"list-disc pl-6 flex flex-col gap-2\"><li><strong>HP 选秀价值</strong>：英雄排序所依据的数值。禁用和选择的计算方式不同（见上文），并经过缩放，使当前位置的最佳选项为 100。</li><li><strong>比赛场次 / 禁用场次</strong>：该英雄被使用或被禁用的比赛总数。</li><li><strong>影响力</strong>：介于 -5000 到 5000 之间的数值，表示英雄的相对强度。计算公式为 <code>round((Wins / Games Played - 0.5) * Adjusted Pick Rate * 10000)</code>，其中 Adjusted Pick Rate 为 <code>(Games Played / Total Games * 100) / (100 - Ban Rate)</code>。</li><li><strong>禁用率</strong>：<code>Games Banned / Total Games * 100</code>。</li><li><strong>胜率</strong>：<code>Wins / Games Played</code>。</li><li><strong>胜率置信度</strong>：在胜率基础上加减此值，即可得到英雄真实胜率的范围。计算公式为 <code>1.96 * sqrt((Win Rate * (1 - Win Rate)) / Games Played)</code>。</li><li><strong>选秀选取顺序率</strong>：该英雄在当前位置的选秀顺序选取率。</li></ul>"
+        },
+        "541b245993b1fbbc": {
+            "q": "选秀助手的筛选条件有什么作用？",
+            "a": "<ul class=\"list-disc pl-6 flex flex-col gap-2\"><li><strong>时间范围</strong>：选择包含最近五个补丁中的哪些补丁。</li><li><strong>区域</strong>：只包含所选区域的比赛。</li><li><strong>英雄等级</strong>：只包含玩家处于所选英雄等级的比赛，例如只统计每位玩家英雄等级都在 40 到 60 之间的选秀。</li><li><strong>地图</strong>：只包含所选地图上的比赛。</li><li><strong>玩家段位、英雄段位和职责段位</strong>：使用 Heroes Profile 自研的 MMR，分别按玩家整体、特定英雄或职责的水平进行筛选。各段位与游戏内的段位一一对应，但采用我们自己的公式计算，因此与游戏内段位并不一致。</li></ul>"
+        },
+        "d0239e003a57d18b": {
+            "q": "上榜需要满足哪些要求？",
+            "a": "要上榜，你必须同时满足以下三个条件：<ul class=\"list-disc list-inside mt-2 space-y-1\"><li>账号等级达到 250 或以上</li><li>该赛季胜率达到 50% 或以上</li><li>达到最少场次要求：用每周的场次乘以赛季开始以来的周数，玩家排行榜为每周 5 场，英雄/职责排行榜为每周 2 场。例如在第 4 周，玩家排行榜要求本赛季至少进行 20 场比赛。</li></ul>如果满足要求的玩家少于 50 人，场次要求会逐级降低，额外符合条件的玩家会显示在单独的分组中。详见下方的“为什么排行榜要分组？”。"
+        },
+        "0bc744e4ecdb1b37": {
+            "q": "为什么排行榜要分组？",
+            "a": "在赛季初期，或在较少人玩的英雄和组队人数下，满足完整场次要求的玩家可能不足 50 人。这时，场次要求会每次降低每周 1 场，最低降至 5 场，直到至少有 50 名玩家符合条件。每降低一级就形成一个单独的分组，每个分组都会显示其所需的场次。<ul class=\"list-disc list-inside mt-2 space-y-1\"><li><strong>A 组</strong>满足完整要求。</li><li><strong>B 组</strong>在降低一级后满足要求，<strong>C 组</strong>在降低两级后满足要求，以此类推。</li></ul>较高分组中的所有玩家都排在较低分组的所有玩家之前，即使其 Heroes Profile 评分更低。如果不分组，只打了寥寥几场、凭运气获得高胜率的玩家就可能排到打满场次的玩家前面。在每个分组内，玩家照常按 Heroes Profile 评分排名，排名序号会从一个分组延续到下一个分组。"
+        },
+        "079b26f1586074d5": {
+            "q": "什么是 Heroes Profile 评分？它是如何计算的？",
+            "a": "HP 评分是用于在排行榜上为玩家排名的自定义分数。它刻意不采用纯 MMR 排名：纯 MMR 排行榜很快就会被小号以及达到高 MMR 后就不再游戏的玩家占据，变得一成不变、毫无看点。<br><br>HP 评分综合了三个因素：你本赛季的 <strong>MMR</strong>、<strong>胜率</strong>和<strong>比赛场次</strong>，并且都相对于该排行榜上的其他玩家进行换算。比赛场次会以顶尖玩家为参照设置上限，因此仅靠刷场次无法登顶。最终结果奖励的是积极游戏、持续获胜并保持高水平发挥的玩家。你可以在<a href=\"/Global/Leaderboard\" class=\"link\">排行榜页面</a>点击“排行榜要求”查看具体公式。"
+        },
+        "2799edd46240bfe7": {
+            "q": "为什么 Heroes Profile 使用 HP 评分，而不是直接显示 MMR？",
+            "a": "纯 MMR 排行榜有一个根本缺陷：玩家一旦达到高 MMR，数值就几乎不再变化。这意味着同样的账号会无限期霸占每个排行榜的榜首，尤其是小号，它们可以人为抬高 MMR 后就不再游戏。HP 评分通过纳入每个赛季的活跃程度解决了这个问题。如果你停止游戏，即使 MMR 保持在高位，你的排名也会下降。想要爬榜，你可以切实做到这些：赢下更多比赛，并在整个赛季中保持稳定游戏。"
+        },
+        "ab28c1d2159d507d": {
+            "q": "为什么可以按组队人数筛选排行榜？",
+            "a": "五排预组队相比单排玩家拥有明显的配合优势。把他们放在同一个排行榜上，单排玩家很难争夺榜首。按组队人数（单排、双排、三排等）筛选，你就能看到自己在相同排队条件的玩家中排名如何。"
+        },
+        "0661aaccad1cf05b": {
+            "q": "赛季何时开始和结束？",
+            "a": "排行榜按赛季划分，依据每个赛季的开始和结束日期。所有赛季的日期请见下方的<a href=\"#season-dates\" class=\"link\">赛季日期</a>。"
+        },
+        "e84d33fa67b6bd91": {
+            "q": "为什么我的一些比赛被计入了错误的赛季？",
+            "a": "录像文件不会注明比赛属于哪个赛季，Blizzard 也不公布赛季的确切开始时间。Heroes Profile 会在发现赛季变更时设定新赛季的开始时间，因此我们使用的开始时间可能比实际晚几个小时。你在这段间隔内进行的比赛会被计入上一赛季，这就是你的赛季统计可能与游戏内显示的相差一两场的原因。<br><br>比赛所属的赛季会在处理录像时保存，排行榜和其他页面都基于此生成。如果事后调整赛季开始时间，这些比赛就会与新日期不一致，因此赛季一旦开始，我们便不会再修改赛季日期。"
+        },
+        "468e8905eba2fc53": {
+            "q": "排行榜何时更新？",
+            "a": "排行榜每天重新计算，从美国东部时间凌晨 2 点开始。完成所有类型排行榜的计算大约需要 12–14 小时。如果你今天进行了比赛，部分排行榜可能当天就会显示，但请在第二天下午再来查看，以确保所有排行榜都已完全更新。"
+        },
+        "19de013de5252428": {
+            "q": "我如何支持 Heroes Profile？",
+            "a": "支持我们的最佳方式有：<ul class=\"list-disc list-inside mt-2 space-y-1\"><li>在 <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> 上赞助（任意金额即可享受无广告、网站标识和<a href=\"/Analytics\" class=\"link\">玩家分析</a>）</li><li>向其他玩家介绍本站——口碑是我们最大的增长动力</li><li>坚持上传你的录像，帮助扩充数据集</li><li>在 <a href=\"https://github.com/Heroes-Profile/heroesprofile/issues\" target=\"_blank\" class=\"link\">GitHub</a> 上提交错误报告和反馈</li></ul>"
+        },
+        "52de9f21d698303e": {
+            "q": "如何获得玩家分析？",
+            "a": "<a href=\"/Analytics\" class=\"link\">玩家分析</a>目前处于预览测试版。每个 Battle.net 账号都可以在分析页面开始免费试用；试用从你点击按钮时开始，并处理你最近的 100 场比赛。每个新的开发阶段（Alpha、Beta 及之后）都会提供新的免费试用。试用结束后如需继续使用，可以在 <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> 上以任意档位赞助并将其关联到你的 Heroes Profile 账号，或者持有任意付费 <a href=\"/Api\" class=\"link\">API 方案</a>并在你的 <a href=\"/Api/Account#analytics\" class=\"link\">API 账号页面</a>关联你的 Battle.net 账号。已处理的比赛会在试用和订阅之间保留。"
+        },
+        "e19915550dcb29d8": {
+            "q": "Heroes Profile 是开源的吗？",
+            "a": "是的！网站代码已在 GitHub 上公开：<a href=\"https://github.com/Heroes-Profile/heroesprofile\" target=\"_blank\" class=\"link\">Heroes-Profile/heroesprofile</a>。上传工具同样开源：<a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>。欢迎贡献代码和提供反馈。"
+        },
+        "fd2f1bcf5ec4497d": {
+            "q": "如何报告错误或请求新功能？",
+            "a": "请在 <a href=\"https://github.com/Heroes-Profile/heroesprofile/issues\" target=\"_blank\" class=\"link\">GitHub Issues</a> 提交错误报告。如有功能请求和想法，请在 <a href=\"https://github.com/Heroes-Profile/heroesprofile/discussions\" target=\"_blank\" class=\"link\">GitHub Discussions</a> 发起讨论。你也可以使用下方的联系表单，或发送邮件至 <a href=\"mailto:Zemill@heroesprofile.com\" class=\"link\">Zemill@heroesprofile.com</a>。"
+        },
+        "f9ae99a59d56f8f0": {
+            "q": "Heroes Profile 有 API 吗？",
+            "a": "有，我们提供公开 API。文档见 <a href=\"/Api/Docs\" class=\"link\">heroesprofile.com/Api/Docs</a>。API 有请求频率限制，仅供合理使用——不得用于批量下载整个录像数据库。任意付费 API 方案还包含<a href=\"/Analytics\" class=\"link\">玩家分析</a>，适用于你在 API 账号页面关联的一个 Battle.net 账号。"
+        }
+    }
+}

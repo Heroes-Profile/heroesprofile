@@ -37,12 +37,12 @@
                 </div>
               </div>
               <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
-                <h3 class="text-2xl font-bold">{{ section.title }} <span class="text-sm font-normal text-subtext">5+ games</span></h3>
+                <h3 class="text-2xl font-bold">{{ $t(section.title) }} <span class="text-sm font-normal text-subtext">5+ games</span></h3>
                 <div class="flex flex-wrap gap-6 max-md:justify-center">
                   <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :text="group.label" :data="group.data"></group-box>
                 </div>
               </div>
-              <p class="flex flex-wrap gap-2"><span class="text-subtext">Total Time Spent Dead:</span><span class="text-header">{{ data.time_spent_dead }}</span></p>
+              <p class="flex flex-wrap gap-2"><span class="text-subtext">{{ $t('Total Time Spent Dead:') }}</span><span class="text-header">{{ data.time_spent_dead }}</span></p>
             </panel-box>
 
             <!-- The division's teams, best record first -->
@@ -88,15 +88,15 @@
         <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
         <div class="flex justify-between items-baseline gap-6">
-          <h2 class="text-2xl font-bold">Recent Matches</h2>
-          <a class="text-header whitespace-nowrap hover:underline" :href="`/Esports/NGS/Division/${division}/Match/History?season=${modifiedseason}`">Match History<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+          <h2 class="text-2xl font-bold">{{ $t('Recent Matches') }}</h2>
+          <a class="text-header whitespace-nowrap hover:underline" :href="`/Esports/NGS/Division/${division}/Match/History?season=${modifiedseason}`">{{ $t('Match History') }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
         </div>
       </div>
 
       <!-- The NGS page's own recent match rows -->
       <esports-recent-matches v-if="recentMatches.length" :data="recentMatches" :esport="'NGS'" :always-expanded="true"></esports-recent-matches>
       <div v-else class="max-w-[120rem] mx-auto px-4 md:px-8">
-        <p class="text-subtext">No games in this division yet.</p>
+        <p class="text-subtext">{{ $t('No games in this division yet.') }}</p>
       </div>
     </div>
 
@@ -139,7 +139,7 @@
           </div>
         </panel-box>
       </div>
-      <h2 class="text-2xl font-bold">Recent Matches</h2>
+      <h2 class="text-2xl font-bold">{{ $t('Recent Matches') }}</h2>
       <!-- The NGS page's recent match rows, in grey -->
         <panel-box>
           <div v-for="row in 7" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">

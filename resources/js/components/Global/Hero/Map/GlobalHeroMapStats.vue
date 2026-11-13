@@ -10,7 +10,7 @@
           <input v-model="heroDropdownSearch" type="text" placeholder="Search hero..." class="w-full px-2 py-1 text-xs bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
           <div v-for="h in filteredDropdownHeroes" :key="h.id" class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-lighten text-sm" @click="clickedHero(h); heroDropdownOpen = false">
             <hero-image-wrapper :hero="h" :includehover="false" class="flex-shrink-0"></hero-image-wrapper>
-            <span>{{ h.name }}</span>
+            <span>{{ $heroName(h) }}</span>
           </div>
         </div>
       </div>
@@ -97,7 +97,7 @@
                   <div  v-if="row.most_played_hero" class="flex gap-x-2 items-center justify-center">
                     <hero-image-wrapper :hero="row.most_played_hero">
                       <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played: ' + row.hero_build_games_played"></image-hover-box>
-                    </hero-image-wrapper><span class="hidden md:block font-bold">{{ row.most_played_hero.name }}</span>
+                    </hero-image-wrapper><span class="hidden md:block font-bold">{{ $heroName(row.most_played_hero) }}</span>
                   </div>
                 </div>
                 <div v-else>
@@ -111,13 +111,13 @@
       </panel-box>
     </div>
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
-      <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
-      <loading-component v-else :compact="true" :textoverride="true">Loading map stats...</loading-component>
+      <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
+      <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+      <loading-component v-else :compact="true" :textoverride="true">{{ $t('Loading map stats...') }}</loading-component>
       <table-skeleton :rows="13" :columns="['stat', 'stat', 'stat', 'stat']"></table-skeleton>
     </div>
     <div v-else-if="dataError" class="flex items-center justify-center">
-      Error: Reload page/filter
+      {{ $t('Error: Reload page/filter') }}
     </div>
   </div>
 
@@ -192,7 +192,7 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
       filteredDropdownHeroes() {
         const q = this.heroDropdownSearch.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
         if (!q) return this.heroes;
-        return this.heroes.filter(h => h.name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().includes(q));
+        return this.heroes.filter(h => [h.name, this.$heroName(h)].some(name => name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().includes(q)));
       },
       patchNotesUrl() {
         if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {

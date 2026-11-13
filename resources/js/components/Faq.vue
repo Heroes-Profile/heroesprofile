@@ -12,7 +12,7 @@
           <input
             v-model="search"
             type="text"
-            placeholder="Search FAQ"
+            :placeholder="$t('Search FAQ')"
             aria-label="Search FAQ"
             class="w-full bg-field text-white rounded-control pl-9 pr-3 py-2 text-sm"
           />
@@ -62,9 +62,9 @@
             <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
               <thead>
                 <tr>
-                  <th style="padding:0.25rem 0.5rem; text-align:left;">Page</th>
-                  <th style="padding:0.25rem 0.5rem; text-align:left;">URL</th>
-                  <th style="padding:0.25rem 0.5rem; text-align:left;">What it does</th>
+                  <th style="padding:0.25rem 0.5rem; text-align:left;">{{ $t('Page') }}</th>
+                  <th style="padding:0.25rem 0.5rem; text-align:left;">{{ $t('URL') }}</th>
+                  <th style="padding:0.25rem 0.5rem; text-align:left;">{{ $t('What it does') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -87,16 +87,16 @@
 
       <!-- Patch & Season History -->
       <div id="patch-history" class="mt-10 mb-8">
-        <panel-box title="Patch &amp; Season History">
+        <panel-box title="Patch & Season History">
         <div>
           <scroll-hint-container :fit="true">
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
             <thead>
               <tr>
-                <th style="padding:0.25rem 0.5rem; text-align:left;">Season</th>
-                <th style="padding:0.25rem 0.5rem; text-align:left;">Game Version</th>
-                <th style="padding:0.25rem 0.5rem; text-align:left; white-space:nowrap;">Start Date</th>
-                <th style="padding:0.25rem 0.5rem; text-align:left; white-space:nowrap;">End Date</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left;">{{ $t('Season') }}</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left;">{{ $t('Game Version') }}</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left; white-space:nowrap;">{{ $t('Start Date') }}</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left; white-space:nowrap;">{{ $t('End Date') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -120,14 +120,14 @@
       <div id="season-dates" class="mt-10 mb-8">
         <panel-box title="Season Dates">
         <div>
-          <p class="text-sm text-soft mb-3">Shown in your time zone.</p>
+          <p class="text-sm text-soft mb-3">{{ $t('Shown in your time zone.') }}</p>
           <scroll-hint-container :fit="true">
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
             <thead>
               <tr>
-                <th style="padding:0.25rem 0.5rem; text-align:left;">Season</th>
-                <th style="padding:0.25rem 0.5rem; text-align:left; white-space:nowrap;">Start Date</th>
-                <th style="padding:0.25rem 0.5rem; text-align:left; white-space:nowrap;">End Date</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left;">{{ $t('Season') }}</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left; white-space:nowrap;">{{ $t('Start Date') }}</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left; white-space:nowrap;">{{ $t('End Date') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -151,8 +151,8 @@
           <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
             <thead>
               <tr>
-                <th style="padding:0.25rem 0.5rem; text-align:left;">Award</th>
-                <th style="padding:0.25rem 0.5rem; text-align:left;">Description</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left;">{{ $t('Award') }}</th>
+                <th style="padding:0.25rem 0.5rem; text-align:left;">{{ $t('Description') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -176,15 +176,14 @@
         <panel-box title="Still have a question?">
         <div>
           <p class="text-soft mb-4">
-            Can't find what you're looking for? Send us a message and we'll get back to you.
-            You can also email us directly at
+            {{ $t("Can't find what you're looking for? Send us a message and we'll get back to you. You can also email us directly at") }}
             <a href="mailto:Zemill@heroesprofile.com" class="link">Zemill@heroesprofile.com</a>.
           </p>
 
           <form @submit.prevent="submitQuestion" class="flex flex-col gap-3">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label class="block mb-1 text-sm text-soft">BattleTag</label>
+                <label class="block mb-1 text-sm text-soft">{{ $t('BattleTag') }}</label>
                 <input
                   v-model="formData.battletag"
                   type="text"
@@ -193,7 +192,7 @@
                 />
               </div>
               <div>
-                <label class="block mb-1 text-sm text-soft">Email</label>
+                <label class="block mb-1 text-sm text-soft">{{ $t('Email') }}</label>
                 <input
                   v-model="formData.email"
                   type="email"
@@ -203,7 +202,7 @@
               </div>
             </div>
             <div>
-              <label class="block mb-1 text-sm text-soft">Your Question</label>
+              <label class="block mb-1 text-sm text-soft">{{ $t('Your Question') }}</label>
               <textarea
                 v-model="formData.message"
                 class="form-control search-input w-full text-black"
@@ -221,9 +220,9 @@
                 type="submit"
                 class="btn bg-blue hover:bg-lblue px-6"
               >
-                {{ isLoading ? 'Sending...' : 'Send Question' }}
+                {{ $t(isLoading ? 'Sending...' : 'Send Question') }}
               </button>
-              <span v-if="emailSent" class="text-teal">Message sent! We'll be in touch.</span>
+              <span v-if="emailSent" class="text-teal">{{ $t("Message sent! We'll be in touch.") }}</span>
             </div>
             <p v-if="sendError" class="bg-red p-3 rounded">{{ sendError }}</p>
           </form>

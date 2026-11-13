@@ -2,16 +2,16 @@
   <div id="filter-label" class="relative" :class="[compact ? 'min-w-0 w-full' : 'filter-fill max-md:w-full md:min-w-[12.5rem]', { 'bg-red': highlighttimesframes }]">
     <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'">
       <span class="relative">
-        <span class="relative">{{ this.text }}
+        <span class="relative">{{ $t(text) }}
           <round-image v-if="infolink" class="mt-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" style="position:absolute; bottom:0; right:-1.5625rem;">
             <div>
-              <p class="max-sm:text-xs">Timeframes correspond to game patches. <a :href="infolink" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">View the full patch & season history.</span><i class="fas fa-chevron-right text-xs ml-2"></i></a></p>
+              <p class="max-sm:text-xs">{{ $t('Timeframes correspond to game patches.') }} <a :href="infolink" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('View the full patch & season history.') }}</span><i class="fas fa-chevron-right text-xs ml-2"></i></a></p>
             </div>
           </round-image>
           <round-image v-if="showrankinfo" class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large" mobileClick="true" style="position:absolute; bottom:0; right:-1.5625rem;">
             <slot>
               <div>
-                <p class="max-sm:text-xs">Heroes Profile Rank is based on a custom MMR algorithm developed by Heroes Profile for approximating a player's skill. This rank does not correlate to in-game rank but the distribution of players in the Heroes Profile dataset. Wood rank is players who have played less than 50 games and cannot be accurately ranked.</p>
+                <p class="max-sm:text-xs">{{ $t(rankInfo) }}</p>
               </div>
             </slot>
           </round-image>
@@ -23,8 +23,8 @@
       
       <span class="h-[2.5rem] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 relative min-w-0 w-full">
         <span class="flex min-w-0 gap-1">
-          <span v-if="toggletabs" class="uppercase whitespace-nowrap font-bold px-1 shrink-0">{{ toggleside === 'right' ? toggletabs[1] : toggletabs[0] }}</span>
-          <span v-if="selectedOptions.length" class="uppercase font-bold px-1 truncate min-w-0">{{ selectedlabel || (selectedOptions.length <= 3 ? selectedOptionsName.join(', ') : selectedOptions.length + ' of ' + values.length + ' selected') }}</span>
+          <span v-if="toggletabs" class="uppercase whitespace-nowrap font-bold px-1 shrink-0">{{ $t(toggleside === 'right' ? toggletabs[1] : toggletabs[0]) }}</span>
+          <span v-if="selectedOptions.length" class="uppercase font-bold px-1 truncate min-w-0">{{ selectedlabel || (selectedOptions.length <= 3 ? selectedOptionsName.join(', ') : $t(':selected of :total selected', { selected: selectedOptions.length, total: values.length })) }}</span>
         </span>
         <i class="fa-solid fa-chevron-down ml-auto shrink-0 text-xs"></i>
       </span>
@@ -33,7 +33,7 @@
     <div v-if="showOptions" class="absolute left-0 mt-2 w-max max-w-[calc(100vw-2rem)] rounded overflow-hidden shadow-lg expandable-dropdown z-50">
       <div class="space-y-2 p-2">
         <div v-if="toggletabs" class="flex justify-center">
-          <tab-button :tab1text="toggletabs[0]" :tab2text="toggletabs[1]" :ignoreclick="true" :small="true"
+          <tab-button :tab1text="$t(toggletabs[0])" :tab2text="$t(toggletabs[1])" :ignoreclick="true" :small="true"
             :overridedefaultside="toggleside"
             @tab-click="handleToggle"
           ></tab-button>
@@ -47,7 +47,7 @@
           @click="toggleAll"
           class="form-checkbox h-5 w-5 shrink-0 text-indigo-600"
           >
-          <label for="select-all" class="text-sm variable-text">Select All</label>
+          <label for="select-all" class="text-sm variable-text">{{ $t('Select All') }}</label>
         </div>
         <div class="max-h-80 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable] !mt-0">
           <template v-for="row in rows" :key="row.key">
@@ -61,7 +61,7 @@
             @click="toggleHeading(row)"
             class="form-checkbox h-5 w-5 shrink-0 text-indigo-600"
             >
-            <label :for="row.key" class="text-sm font-bold variable-text">{{ row.name }}</label>
+            <label :for="row.key" class="text-sm font-bold variable-text">{{ $t(row.name) }}</label>
           </div>
           <div v-else class="whitespace-nowrap flex items-center gap-2 py-1" :class="[indentClass(row.depth), { 'opacity-40': !isSelectable(row.value.code) }]">
             <input
@@ -72,7 +72,7 @@
             :disabled="!isSelectable(row.value.code)"
             class="form-checkbox h-5 w-5 shrink-0 text-indigo-600"
             >
-            <label :for="row.value.code" class="text-sm variable-text">{{ groupbyyear ? String(row.value.name).split(' ').slice(1).join(' ') : row.value.name }}</label>
+            <label :for="row.value.code" class="text-sm variable-text">{{ groupbyyear ? String(row.value.name).split(' ').slice(1).join(' ') : (row.value.label || $t(row.value.name)) }}</label>
             <span v-if="row.value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="'Added ' + patchDate(row.value.date_added)">{{ patchAge(row.value.date_added) }}</span>
           </div>
           </template>
@@ -84,6 +84,9 @@
 
 <script>
   import { patchAge, patchDate } from '../../utils/patchAge';
+
+// Shown beside the rank filters
+const RANK_INFO = "Heroes Profile Rank is based on a custom MMR algorithm developed by Heroes Profile for approximating a player's skill. This rank does not correlate to in-game rank but the distribution of players in the Heroes Profile dataset. Wood rank is players who have played less than 50 games and cannot be accurately ranked.";
 
   export default {
     name: 'MultiSelectFilter',
@@ -129,10 +132,13 @@
       document.removeEventListener("click", this.handleClickOutside);
     },
     computed: {
+      rankInfo() {
+        return RANK_INFO;
+      },
       selectedOptionsName() {
         return this.selectedOptions.map(code => {
           const value = this.values.find(v => v.code === code);
-          return value ? value.name : '';
+          return value ? (value.label || this.$t(value.name)) : '';
         });
       },
       highlighttimesframes(){

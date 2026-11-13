@@ -11,11 +11,11 @@
       <table class="min-w-0 w-full responsive-table relative">
         <thead>
           <tr>
-            <th class="py-2 px-3 text-center text-sm leading-4">Player</th>
-            <th v-if="showRegion" class="py-2 px-3 text-center text-sm leading-4">Region</th>
-            <th class="py-2 px-3 text-center text-sm leading-4">Games Played</th>
-            <th class="py-2 px-3 text-center text-sm leading-4">Latest Hero</th>
-            <th class="py-2 px-3 text-center text-sm leading-4">Latest Game</th>
+            <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Player') }}</th>
+            <th v-if="showRegion" class="py-2 px-3 text-center text-sm leading-4">{{ $t('Region') }}</th>
+            <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Games Played') }}</th>
+            <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Latest Hero') }}</th>
+            <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Latest Game') }}</th>
           </tr>
         </thead>
 

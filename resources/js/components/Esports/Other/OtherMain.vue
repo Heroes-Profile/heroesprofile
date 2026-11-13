@@ -35,7 +35,7 @@
         <pagination-bar :current="data.current_page" :last="data.last_page" @page="getMatches"></pagination-bar>
       </div>
       <esports-recent-matches v-if="data.data.length" :data="data.data" :esport="'Other'"></esports-recent-matches>
-      <p v-else class="text-center text-subtext mt-10">No games match these filters.</p>
+      <p v-else class="text-center text-subtext mt-10">{{ $t('No games match these filters.') }}</p>
 
       <div v-if="data.last_page > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 flex justify-end">
         <pagination-bar :current="data.current_page" :last="data.last_page" @page="getMatches"></pagination-bar>

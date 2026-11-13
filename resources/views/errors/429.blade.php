@@ -22,9 +22,9 @@
 @section('content')
     <div class="error-page">
         <div class="text-center">
-            <h1>Too many requests</h1>
-            <p>You are sending requests too quickly. Please wait a moment and try again.</p>
-            <p>If this keeps happening, please submit a report at <a class="link" href="https://github.com/Heroes-Profile/heroesprofile/issues" target="_blank">https://github.com/Heroes-Profile/heroesprofile/issues</a>.</p>
+            <h1>{{ __('Too many requests') }}</h1>
+            <p>{{ __('You are sending requests too quickly. Please wait a moment and try again.') }}</p>
+            <p>{{ __('If this keeps happening, please submit a report at') }} <a class="link" href="https://github.com/Heroes-Profile/heroesprofile/issues" target="_blank">https://github.com/Heroes-Profile/heroesprofile/issues</a>.</p>
         </div>
 
         <div class="flex justify-center items-center text-center bg-gray-100">

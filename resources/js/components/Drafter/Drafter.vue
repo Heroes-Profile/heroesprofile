@@ -33,15 +33,15 @@
     <div v-if="!started" class="flex flex-col items-center gap-4 py-10 px-4">
       <div class="flex gap-8">
         <label class="flex items-center gap-2 cursor-pointer">
-          <input type="radio" value="team1" v-model="firstPickTeam" /> Team 1 First Pick
+          <input type="radio" value="team1" v-model="firstPickTeam" /> {{ $t('Team 1 First Pick') }}
         </label>
         <label class="flex items-center gap-2 cursor-pointer">
-          <input type="radio" value="team2" v-model="firstPickTeam" /> Team 2 First Pick
+          <input type="radio" value="team2" v-model="firstPickTeam" /> {{ $t('Team 2 First Pick') }}
         </label>
       </div>
       <div class="flex gap-4">
-        <button @click="startDraft(false)" class="btn bg-blue hover:bg-lblue font-bold px-6 uppercase">Start Draft</button>
-        <button @click="startDraft(true)" class="btn bg-red hover:bg-lred font-bold px-6 uppercase">Draft With No Data</button>
+        <button @click="startDraft(false)" class="btn bg-blue hover:bg-lblue font-bold px-6 uppercase">{{ $t('Start Draft') }}</button>
+        <button @click="startDraft(true)" class="btn bg-red hover:bg-lred font-bold px-6 uppercase">{{ $t('Draft With No Data') }}</button>
       </div>
     </div>
 
@@ -49,10 +49,10 @@
       <div class="flex justify-between mb-4">
         <div v-if="picks.length > 0" class="flex gap-2">
           <button @click="undo" :disabled="isLoading" class="btn bg-blue hover:bg-lblue font-bold px-6 disabled:opacity-50">
-            <i class="fa-solid fa-reply mr-2"></i>Undo
+            <i class="fa-solid fa-reply mr-2"></i>{{ $t('Undo') }}
           </button>
           <button @click="restartDraft" :disabled="isLoading" class="btn bg-red hover:bg-lred font-bold px-6 disabled:opacity-50">
-            <i class="fa-solid fa-rotate-left mr-2"></i>Restart Draft
+            <i class="fa-solid fa-rotate-left mr-2"></i>{{ $t('Restart Draft') }}
           </button>
         </div>
         <span v-else></span>
@@ -63,7 +63,7 @@
 
       <div class="flex gap-4 max-md:flex-col items-start">
         <div v-for="team in ['team1', 'team2']" :key="team + '-bans'" :class="['border border-[gray] rounded p-2 text-xs uppercase', team === 'team1' ? 'order-1' : 'order-3 md:ml-auto']">
-          <span>Bans</span>
+          <span>{{ $t('Bans') }}</span>
           <div class="flex">
             <div v-for="ban in [1, 2, 3]" :key="ban" :class="slotClasses(team, team + '-ban' + ban, 'w-16 h-16')" :style="slotStyle(team + '-ban' + ban)"></div>
           </div>
@@ -92,18 +92,18 @@
 
         <div class="flex-1 min-w-0 order-2">
           <div v-if="waiting" class="flex flex-col gap-4">
-            <loading-component :compact="true" :textoverride="true">Loading draft options...</loading-component>
+            <loading-component :compact="true" :textoverride="true">{{ $t('Loading draft options...') }}</loading-component>
             <div class="flex flex-wrap justify-center gap-2">
               <skeleton-box v-for="hero in 30" :key="hero" class="w-16 h-16 !rounded-full"></skeleton-box>
             </div>
           </div>
-          <div v-else-if="dataError || (needsCompositions && compositionsError)" class="text-center text-red py-10">Failed to load draft data. Please try again.</div>
-          <div v-else-if="draftComplete" class="text-center text-gray-medium py-10">Draft complete.</div>
+          <div v-else-if="dataError || (needsCompositions && compositionsError)" class="text-center text-red py-10">{{ $t('Failed to load draft data. Please try again.') }}</div>
+          <div v-else-if="draftComplete" class="text-center text-gray-medium py-10">{{ $t('Draft complete.') }}</div>
           <div v-else class="flex flex-wrap justify-center">
             <div v-for="hero in visibleSuggestions" :key="hero.id" class="relative m-2 cursor-pointer" @click="pickHero(hero)">
               <i v-if="hero.starred" class="fa-solid fa-star absolute -top-1 -left-1 z-10 text-[gold] text-xl"></i>
               <hero-image-wrapper :hero="hero" size="big">
-                <h2>{{ hero.name }}</h2>
+                <h2>{{ $heroName(hero) }}</h2>
                 <div v-if="!mockDraft" class="text-left">
                   <p>HP Draft Value: {{ hero.value.toFixed(2) }}</p>
                   <p>{{ isBanStep ? 'Games Banned' : 'Games Played' }}: {{ hero.games.toLocaleString('en-US') }}</p>
@@ -281,10 +281,12 @@ export default {
         }));
     },
     visibleSuggestions() {
-      const query = this.normalizeString(this.searchQuery).replace(/[^\w\s]/gi, '');
+      // Unicode letters, so translated names (Cyrillic, Hangul, CJK) survive; matches English or translated name
+      const strip = (text) => this.normalizeString(text).replace(/[^\p{L}\p{N}\s]/gu, '');
+      const query = strip(this.searchQuery);
       return this.suggestions.filter(hero => {
         if (this.selectedRoles.length && !this.selectedRoles.includes(hero.new_role)) return false;
-        return !query || this.normalizeString(hero.name).replace(/[^\w\s]/gi, '').includes(query);
+        return !query || strip(hero.name).includes(query) || strip(this.$heroName(hero)).includes(query);
       });
     },
   },

@@ -36,7 +36,7 @@
               </div>
               <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
                 <div class="flex flex-col gap-1">
-                  <span class="text-header">Win Rate</span>
+                  <span class="text-header">{{ $t('Win Rate') }}</span>
                   <stat-bar size="big" :value="data.win_rate.toFixed(2)" suffix="%" :color="$winRateColor(data.win_rate)"></stat-bar>
                 </div>
                 <div class="grid grid-cols-2 gap-x-6 gap-y-1">
@@ -46,7 +46,7 @@
             </div>
             <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
               <div class="flex justify-between items-baseline gap-6">
-                <h3 class="text-2xl font-bold">{{ section.title }}</h3>
+                <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
                 <a class="text-header whitespace-nowrap hover:underline" :href="ngsPageUrl(section.allPath)">{{ section.allText }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
               </div>
               <div class="flex flex-wrap gap-6 max-md:justify-center">
@@ -54,8 +54,8 @@
               </div>
             </div>
             <div class="flex flex-col gap-1">
-              <p v-if="data.total_time_played" class="flex flex-wrap gap-2"><span class="text-subtext">Total Time Played:</span><span class="text-header">{{ data.total_time_played }}</span></p>
-              <p class="flex flex-wrap gap-2"><span class="text-subtext">Total Time Spent Dead:</span><span class="text-header">{{ data.time_spent_dead }}</span></p>
+              <p v-if="data.total_time_played" class="flex flex-wrap gap-2"><span class="text-subtext">{{ $t('Total Time Played:') }}</span><span class="text-header">{{ data.total_time_played }}</span></p>
+              <p class="flex flex-wrap gap-2"><span class="text-subtext">{{ $t('Total Time Spent Dead:') }}</span><span class="text-header">{{ data.time_spent_dead }}</span></p>
             </div>
           </panel-box>
 
@@ -114,13 +114,13 @@
             <thead>
               <tr>
                 <th @click="sortTable('hero_id')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'hero_id' }">
-                  Hero<sort-indicator :column="'hero_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                  {{ $t('Hero') }}<sort-indicator :column="'hero_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
                 <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
-                  Win Rate %<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                  {{ $t('Win Rate %') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
                 <th @click="sortTable('games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
-                  Games Played<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                  {{ $t('Games Played') }}<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
               </tr>
             </thead>
@@ -128,7 +128,7 @@
               <tr v-for="(row, index) in sortedData" :key="index">
                 <td>
                   <a class="group/bt flex items-center justify-center" :href="row.link">
-                    <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="hidden md:block font-bold ml-2 group-hover/bt:underline">{{ row.hero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></i>
+                    <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="hidden md:block font-bold ml-2 group-hover/bt:underline">{{ $heroName(row.hero) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></i>
                   </a>
                 </td>
                 <td>{{ row.win_rate }}</td>

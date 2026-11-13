@@ -66,7 +66,7 @@
       </div>
 
       <div class="flex justify-end mt-2 pt-2 border-t border-white/10">
-        <button type="button" class="px-3 py-1 rounded-control hover:bg-surface-4 text-lteal font-semibold disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!inRange(todayIso)" @click="pick(todayIso)">Today</button>
+        <button type="button" class="px-3 py-1 rounded-control hover:bg-surface-4 text-lteal font-semibold disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!inRange(todayIso)" @click="pick(todayIso)">{{ $t('Today') }}</button>
       </div>
     </div>
   </div>

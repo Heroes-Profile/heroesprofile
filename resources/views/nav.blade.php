@@ -27,11 +27,11 @@
                 <div id="nav-links" class=" grow-1 flex items-left md:space-x-5 md:ml-auto flex-wrap md:flex-nowrap max-md:flex-col max-md:w-full ">
                     
                     <div id="nav-global-stats" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">Global Hero Stats<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
+                        <a class=" cursor-pointer">{{ __('Global Hero Stats') }}<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
                         <div class="nav-dropdown ">
                             <div class="nav-dropdown-inner-wrapper ">
                                 {{-- ... (Global Hero Stats dropdown items) --}}
-                                <a href="/Global/Hero" >Hero Stats</a>
+                                <a href="/Global/Hero" >{{ __('Hero Stats') }}</a>
                                 <nav-search-flyout
                                     list="heroes"
                                     :label="'Talent Stats'"
@@ -50,65 +50,65 @@
                                     :all-label="'All Heroes'"
                                     :base-url-override="'/Global/Matchups'"
                                 ></nav-search-flyout>
-                                <a href="/Global/Matchups/Talents" >Matchup Talent Stats</a>
-                                <a href="/Global/Compositions" >Compositional Stats</a>
+                                <a href="/Global/Matchups/Talents" >{{ __('Matchup Talent Stats') }}</a>
+                                <a href="/Global/Compositions" >{{ __('Compositional Stats') }}</a>
                                 <nav-search-flyout
                                     list="heroes"
                                     :label="'Draft Stats'"
                                     :all-label="'All Heroes'"
                                     :base-url-override="'/Global/Draft'"
                                 ></nav-search-flyout>
-                                <a href="/Global/Party" >Party Stats</a>
-                                {{--<a href="/Global/Extra" >Extra Stats</a>--}}
+                                <a href="/Global/Party" >{{ __('Party Stats') }}</a>
+                                {{--<a href="/Global/Extra" >{{ __('Extra Stats') }}</a>--}}
                             </div>
                         </div>
                     </div>
 
-                    <a id="nav-leaderboards" class="  nav-item" href="/Global/Leaderboard"><span>Leaderboards</span></a>
+                    <a id="nav-leaderboards" class="  nav-item" href="/Global/Leaderboard"><span>{{ __('Leaderboards') }}</span></a>
 
                     <div id="nav-tools" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">Tools<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
+                        <a class=" cursor-pointer">{{ __('Tools') }}<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
                         <div class="nav-dropdown ">
                             <div class=" nav-dropdown-inner-wrapper ">
-                                <span class="nav-dropdown-label">Tools</span>
-                                <a href="/Analytics" >Analytics - Pre Alpha</a>
-                                <a href="/Drafter" >Drafter</a>
-                                <a href="/Match/Search" >Replay Search</a>
-                                <a href="/Upload" >Replay Uploader</a>
-                                <a href="/Global/Talents/Builder" >Talent Builder</a>
+                                <span class="nav-dropdown-label">{{ __('Tools') }}</span>
+                                <a href="/Analytics" >{{ __('Analytics - Pre Alpha') }}</a>
+                                <a href="/Drafter" >{{ __('Drafter') }}</a>
+                                <a href="/Match/Search" >{{ __('Replay Search') }}</a>
+                                <a href="/Upload" >{{ __('Replay Uploader') }}</a>
+                                <a href="/Global/Talents/Builder" >{{ __('Talent Builder') }}</a>
 
-                                <span class="nav-dropdown-label">Info</span>
-                                <a href="/Tools/Activity" >Activity Graphs</a>
-                                <a href="/Heroes" >Heroes</a>
+                                <span class="nav-dropdown-label">{{ __('Info') }}</span>
+                                <a href="/Tools/Activity" >{{ __('Activity Graphs') }}</a>
+                                <a href="/Heroes" >{{ __('Heroes') }}</a>
                                 @if (\App\Services\Twitch\TwitchAccess::visible())
-                                <a href="/Twitch" >Twitch Streamers (Beta)</a>
+                                <a href="/Twitch" >{{ __('Twitch Streamers (Beta)') }}</a>
                                 @endif
 
-                                <span class="nav-dropdown-label">Fun</span>
-                                <a href="/Tools/AutoBattler" >Auto Battler</a>
-                                <a href="/Match/Prediction/Game" >Match Prediction Game</a>
-                                <a href="/Tools/RandomizeMe" >Randomize Me</a>
+                                <span class="nav-dropdown-label">{{ __('Fun') }}</span>
+                                <a href="/Tools/AutoBattler" >{{ __('Auto Battler') }}</a>
+                                <a href="/Match/Prediction/Game" >{{ __('Match Prediction Game') }}</a>
+                                <a href="/Tools/RandomizeMe" >{{ __('Randomize Me') }}</a>
                                 @if (! empty($bladeGlobals['xalatathRecapAvailable']))
-                                <a href="/Event/Xalatath" >Xal'atath Recap</a>
+                                <a href="/Event/Xalatath" >{{ __("Xal'atath Recap") }}</a>
                                 @endif
 
                             </div>
                         </div>
                     </div>
 
-                    <a id="nav-esports" class=" nav-item" href="/Esports"><span>Community Esports</span></a>
+                    <a id="nav-esports" class=" nav-item" href="/Esports"><span>{{ __('Community Esports') }}</span></a>
 
                     <div id="nav-help" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">Help<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
+                        <a class=" cursor-pointer">{{ __('Help') }}<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
                         <div class="nav-dropdown ">
                             <div class="nav-dropdown-inner-wrapper ">
-                                 <a href="https://github.com/Heroes-Profile/heroesprofile/issues/new?assignees=&labels=&projects=&template=bug_report.md" target="_blank" >Submit an Issue</a>
-                                 <a href="https://github.com/Heroes-Profile/heroesprofile/discussions/new?category=ideas" target="_blank" >Submit a Request</a>
-                                 <a href="https://github.com/Heroes-Profile/heroesprofile/discussions" target="_blank" >Discussions</a>
-                                 <a href="/Github/Change/Log">Change Log</a>
-                                <a href="/FAQ">FAQ</a>
-                                <a href="#" onclick="event.preventDefault(); window.dispatchEvent(new Event('open-help-chat'))">Help Assistant</a>
-                                <a href="/Contact" >Contact Us</a>
+                                 <a href="https://github.com/Heroes-Profile/heroesprofile/issues/new?assignees=&labels=&projects=&template=bug_report.md" target="_blank" >{{ __('Submit an Issue') }}</a>
+                                 <a href="https://github.com/Heroes-Profile/heroesprofile/discussions/new?category=ideas" target="_blank" >{{ __('Submit a Request') }}</a>
+                                 <a href="https://github.com/Heroes-Profile/heroesprofile/discussions" target="_blank" >{{ __('Discussions') }}</a>
+                                 <a href="/Github/Change/Log">{{ __('Change Log') }}</a>
+                                <a href="/FAQ">{{ __('FAQ') }}</a>
+                                <a href="#" onclick="event.preventDefault(); window.dispatchEvent(new Event('open-help-chat'))">{{ __('Help Assistant') }}</a>
+                                <a href="/Contact" >{{ __('Contact Us') }}</a>
                             </div>
 
              
@@ -120,11 +120,11 @@
                     
 
                     <div id="nav-donate" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">Donate<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
+                        <a class=" cursor-pointer">{{ __('Donate') }}<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
                         <div class="nav-dropdown ">
                             <div class="nav-dropdown-inner-wrapper ">
-                                 <a href="https://www.patreon.com/c/heroesprofile" target="_blank" >Patreon</a>
-                                 <a href="https://opencollective.com/heroes-profile" target="_blank" >Open Collective</a>
+                                 <a href="https://www.patreon.com/c/heroesprofile" target="_blank" >{{ __('Patreon') }}</a>
+                                 <a href="https://opencollective.com/heroes-profile" target="_blank" >{{ __('Open Collective') }}</a>
                             </div>
 
              
@@ -140,7 +140,7 @@
                             @if(isset($regions[$mainSearchAccount['region']]))
                                 ({{ $regions[$mainSearchAccount['region']] }})
                             @else
-                                (Region not found, log out and back in)
+                                ({{ __('Region not found, log out and back in') }})
                             @endif
                             <i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i>
                             </a>
@@ -149,28 +149,28 @@
                                     {{-- ... (mainSearchAccount dropdown items) --}}
                                     @if (Auth::check() && app(\App\Services\AnalyticsService::class)->isAllowed(Auth::user()))
                                     <div class="nav-flyout-wrapper">
-                                        <a href="/Analytics" class="flex justify-between items-center bg-teal font-bold"><span><i class="fas fa-chart-line mr-2"></i>Analytics</span> <span class="nav-flyout-arrow ml-2">›</span></a>
+                                        <a href="/Analytics" class="flex justify-between items-center bg-teal font-bold"><span><i class="fas fa-chart-line mr-2"></i>{{ __('Analytics') }}</span> <span class="nav-flyout-arrow ml-2">›</span></a>
                                         <div class="nav-flyout">
                                             <div class="nav-dropdown-inner-wrapper rounded-b rounded-r">
-                                                <a href="/Analytics">Summary</a>
-                                                <a href="/Analytics/Deaths">Deaths</a>
-                                                <a href="/Analytics/Map">Map &amp; Positions</a>
-                                                <a href="/Analytics/Positioning">Positioning</a>
-                                                <a href="/Analytics/Timelines">Timelines &amp; Objectives</a>
-                                                <a href="/Analytics/Activity">Activity</a>
-                                                <a href="/Analytics/Sessions">Sessions</a>
-                                                <a href="/Analytics/Coaching">Coaching</a>
-                                                <a href="/Analytics/Stacks">Stacks</a>
-                                                <a href="/Analytics/Match/History">Match History</a>
+                                                <a href="/Analytics">{{ __('Summary') }}</a>
+                                                <a href="/Analytics/Deaths">{{ __('Deaths') }}</a>
+                                                <a href="/Analytics/Map">{{ __('Map & Positions') }}</a>
+                                                <a href="/Analytics/Positioning">{{ __('Positioning') }}</a>
+                                                <a href="/Analytics/Timelines">{{ __('Timelines & Objectives') }}</a>
+                                                <a href="/Analytics/Activity">{{ __('Activity') }}</a>
+                                                <a href="/Analytics/Sessions">{{ __('Sessions') }}</a>
+                                                <a href="/Analytics/Coaching">{{ __('Coaching') }}</a>
+                                                <a href="/Analytics/Stacks">{{ __('Stacks') }}</a>
+                                                <a href="/Analytics/Match/History">{{ __('Match History') }}</a>
                                             </div>
                                         </div>
                                     </div>
                                     @else
-                                    <a href="/Analytics" class="bg-teal font-bold"><i class="fas fa-chart-line mr-2"></i>Analytics</a>
+                                    <a href="/Analytics" class="bg-teal font-bold"><i class="fas fa-chart-line mr-2"></i>{{ __('Analytics') }}</a>
                                     @endif
-                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" >Profile</a>
-                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/FriendFoe" >Friends and Foes</a>
-                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Party" >Party</a>
+                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" >{{ __('Profile') }}</a>
+                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/FriendFoe" >{{ __('Friends and Foes') }}</a>
+                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Party" >{{ __('Party') }}</a>
                                     <nav-search-flyout
                                         :battletag="'{{ $mainSearchAccount['battletag'] }}'"
                                         :blizz-id="{{ $mainSearchAccount['blizz_id'] }}"
@@ -181,16 +181,16 @@
                                         :all-label="'All Heroes'"
                                     ></nav-search-flyout>
                                     <div class="nav-flyout-wrapper">
-                                        <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role" class="flex justify-between items-center">Roles <span class="nav-flyout-arrow ml-2">›</span></a>
+                                        <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role" class="flex justify-between items-center">{{ __('Roles') }} <span class="nav-flyout-arrow ml-2">›</span></a>
                                         <div class="nav-flyout">
                                             <div class="nav-dropdown-inner-wrapper rounded-b rounded-r">
-                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role">All Roles</a>
-                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Bruiser">Bruiser</a>
-                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Healer">Healer</a>
-                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Melee%20Assassin">Melee Assassin</a>
-                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Ranged%20Assassin">Ranged Assassin</a>
-                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Support">Support</a>
-                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Tank">Tank</a>
+                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role">{{ __('All Roles') }}</a>
+                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Bruiser">{{ __('Bruiser') }}</a>
+                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Healer">{{ __('Healer') }}</a>
+                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Melee%20Assassin">{{ __('Melee Assassin') }}</a>
+                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Ranged%20Assassin">{{ __('Ranged Assassin') }}</a>
+                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Support">{{ __('Support') }}</a>
+                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Tank">{{ __('Tank') }}</a>
                                             </div>
                                         </div>
                                     </div>
@@ -203,7 +203,7 @@
                                         :subpath="'Map'"
                                         :all-label="'All Maps'"
                                     ></nav-search-flyout>
-                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Matchups" >Matchups</a>
+                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Matchups" >{{ __('Matchups') }}</a>
                                     <nav-search-flyout
                                         :battletag="'{{ $mainSearchAccount['battletag'] }}'"
                                         :blizz-id="{{ $mainSearchAccount['blizz_id'] }}"
@@ -213,10 +213,10 @@
                                         :subpath="'Talents'"
                                         :all-label="'All Talents'"
                                     ></nav-search-flyout>
-                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/MMR" >HP MMR Breakdown</a>
-                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Awards" >Awards</a>
-                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Match/History" >Match History</a>
-                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Match/Latest" >Latest Match</a>
+                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/MMR" >{{ __('HP MMR Breakdown') }}</a>
+                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Awards" >{{ __('Awards') }}</a>
+                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Match/History" >{{ __('Match History') }}</a>
+                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Match/Latest" >{{ __('Latest Match') }}</a>
                                 </div>
                             </div>
                         </div>
@@ -238,6 +238,8 @@
 
                 <dark-mode-toggle id="nav-dark-mode-toggle" class="!flex items-center md:ml-4 max-md:my-3 max-md:mr-2" :darkmode="{{ json_encode(! empty($bladeGlobals['darkmode'])) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></dark-mode-toggle>
 
+                <language-picker id="nav-language-picker" :locale="'{{ app()->getLocale() }}'" :locales="{{ json_encode(config('app.supported_locales')) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></language-picker>
+
                 @if($isAuthenticated)
                     <div id="nav-user-menu" class="relative group inline-block md:ml-4 max-md:my-3 max-md:flex max-md:items-center">
                             {{-- On mobile a tap opens the panel full screen, like the alt-player buttons (MobileNavHack) --}}
@@ -252,8 +254,8 @@
                                 <div class="nav-dropdown-inner-wrapper">
                                     <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal">{{ $mainSearchAccount['battletag_full'] }} <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg" aria-label="Close menu">x</button></div>
                                     <span class="block px-4 py-2 whitespace-nowrap border-b-2 border-[#333] max-md:hidden">{{ $mainSearchAccount['battletag_full'] }}</span>
-                                    <a href="/Profile/Settings">Settings</a>
-                                    <a href="/Battlenet/Logout">Logout</a>
+                                    <a href="/Profile/Settings">{{ __('Settings') }}</a>
+                                    <a href="/Battlenet/Logout">{{ __('Logout') }}</a>
                                 </div>
                             </div>
                         </div>
@@ -297,13 +299,13 @@
                     {{-- The full name, which the row cuts short --}}
                     @if($esportNav['label'])<a href="{{ $esportNav['main'] }}" class="font-bold">{{ $esportNav['name'] }}</a>@endif
                     @foreach($esportNav['tabs'] as $tabUrl => $tabLabel)
-                    <a href="{{ $tabUrl }}">{{ $tabLabel }}</a>
+                    <a href="{{ $tabUrl }}">{{ __($tabLabel) }}</a>
                     @endforeach
                   </div>
                 </div>
               </div>
-              <a href="{{ $esportPlayerUrl }}{{ $esportQuery }}">Profile</a>
-              <a href="{{ $esportPlayerUrl }}/FriendFoe{{ $esportQuery }}">Friends and Foes</a>
+              <a href="{{ $esportPlayerUrl }}{{ $esportQuery }}">{{ __('Profile') }}</a>
+              <a href="{{ $esportPlayerUrl }}/FriendFoe{{ $esportQuery }}">{{ __('Friends and Foes') }}</a>
               <nav-search-flyout
                 list="heroes"
                 :label="'Heroes'"
@@ -312,16 +314,16 @@
                 :all-label="'All Heroes'"
               ></nav-search-flyout>
               <div class="nav-flyout-wrapper">
-                <a href="{{ $esportPlayerUrl }}/Role{{ $esportQuery }}" class="flex justify-between items-center">Roles <span class="nav-flyout-arrow ml-2">›</span></a>
+                <a href="{{ $esportPlayerUrl }}/Role{{ $esportQuery }}" class="flex justify-between items-center">{{ __('Roles') }} <span class="nav-flyout-arrow ml-2">›</span></a>
                 <div class="nav-flyout">
                   <div class="nav-dropdown-inner-wrapper rounded">
-                    <a href="{{ $esportPlayerUrl }}/Role{{ $esportQuery }}">All Roles</a>
-                    <a href="{{ $esportPlayerUrl }}/Role/Bruiser{{ $esportQuery }}">Bruiser</a>
-                    <a href="{{ $esportPlayerUrl }}/Role/Healer{{ $esportQuery }}">Healer</a>
-                    <a href="{{ $esportPlayerUrl }}/Role/Melee%20Assassin{{ $esportQuery }}">Melee Assassin</a>
-                    <a href="{{ $esportPlayerUrl }}/Role/Ranged%20Assassin{{ $esportQuery }}">Ranged Assassin</a>
-                    <a href="{{ $esportPlayerUrl }}/Role/Support{{ $esportQuery }}">Support</a>
-                    <a href="{{ $esportPlayerUrl }}/Role/Tank{{ $esportQuery }}">Tank</a>
+                    <a href="{{ $esportPlayerUrl }}/Role{{ $esportQuery }}">{{ __('All Roles') }}</a>
+                    <a href="{{ $esportPlayerUrl }}/Role/Bruiser{{ $esportQuery }}">{{ __('Bruiser') }}</a>
+                    <a href="{{ $esportPlayerUrl }}/Role/Healer{{ $esportQuery }}">{{ __('Healer') }}</a>
+                    <a href="{{ $esportPlayerUrl }}/Role/Melee%20Assassin{{ $esportQuery }}">{{ __('Melee Assassin') }}</a>
+                    <a href="{{ $esportPlayerUrl }}/Role/Ranged%20Assassin{{ $esportQuery }}">{{ __('Ranged Assassin') }}</a>
+                    <a href="{{ $esportPlayerUrl }}/Role/Support{{ $esportQuery }}">{{ __('Support') }}</a>
+                    <a href="{{ $esportPlayerUrl }}/Role/Tank{{ $esportQuery }}">{{ __('Tank') }}</a>
                   </div>
                 </div>
               </div>
@@ -332,7 +334,7 @@
                 query="{{ $esportQuery }}"
                 :all-label="'All Maps'"
               ></nav-search-flyout>
-              <a href="{{ $esportPlayerUrl }}/Matchups{{ $esportQuery }}">Matchups</a>
+              <a href="{{ $esportPlayerUrl }}/Matchups{{ $esportQuery }}">{{ __('Matchups') }}</a>
               <nav-search-flyout
                 list="heroes"
                 :label="'Talents'"
@@ -340,8 +342,8 @@
                 query="{{ $esportQuery }}"
                 :all-label="'All Talents'"
               ></nav-search-flyout>
-              <a href="{{ $esportPlayerUrl }}/Match/History{{ $esportQuery }}">Match History</a>
-              <a href="{{ $esportPlayerUrl }}/Match/Latest{{ $esportQuery }}">Latest Match</a>
+              <a href="{{ $esportPlayerUrl }}/Match/History{{ $esportQuery }}">{{ __('Match History') }}</a>
+              <a href="{{ $esportPlayerUrl }}/Match/Latest{{ $esportQuery }}">{{ __('Latest Match') }}</a>
               <remove-battletag-nav :index="{{ $index }}" class="remove-account text-right bg-surface-3"></remove-battletag-nav>
             </div>
         </div>
@@ -352,9 +354,9 @@
         <div data-battletag="{{ $account['battletag'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[12.5rem] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
             <div class="nav-dropdown-inner-wrapper">
               <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal">{{ $account['battletag'] }}@if(isset($regions[$account['region']])) ({{ $regions[$account['region']] }})@endif <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg" aria-label="Close menu">x</button></div>
-              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" >Profile</a>
-              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" >Friends and Foes</a>
-              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Party" >Party</a>
+              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" >{{ __('Profile') }}</a>
+              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" >{{ __('Friends and Foes') }}</a>
+              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Party" >{{ __('Party') }}</a>
               <nav-search-flyout
                 :battletag="'{{ $account['battletag'] }}'"
                 :blizz-id="{{ $account['blizz_id'] }}"
@@ -365,16 +367,16 @@
                 :all-label="'All Heroes'"
               ></nav-search-flyout>
               <div class="nav-flyout-wrapper">
-                <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role" class="flex justify-between items-center">Roles <span class="nav-flyout-arrow ml-2">›</span></a>
+                <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role" class="flex justify-between items-center">{{ __('Roles') }} <span class="nav-flyout-arrow ml-2">›</span></a>
                 <div class="nav-flyout">
                   <div class="nav-dropdown-inner-wrapper rounded">
-                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role">All Roles</a>
-                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Bruiser">Bruiser</a>
-                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Healer">Healer</a>
-                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Melee%20Assassin">Melee Assassin</a>
-                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Ranged%20Assassin">Ranged Assassin</a>
-                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Support">Support</a>
-                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Tank">Tank</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role">{{ __('All Roles') }}</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Bruiser">{{ __('Bruiser') }}</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Healer">{{ __('Healer') }}</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Melee%20Assassin">{{ __('Melee Assassin') }}</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Ranged%20Assassin">{{ __('Ranged Assassin') }}</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Support">{{ __('Support') }}</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Tank">{{ __('Tank') }}</a>
                   </div>
                 </div>
               </div>
@@ -387,7 +389,7 @@
                 :subpath="'Map'"
                 :all-label="'All Maps'"
               ></nav-search-flyout>
-              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Matchups">Matchups</a>
+              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Matchups">{{ __('Matchups') }}</a>
               <nav-search-flyout
                 :battletag="'{{ $account['battletag'] }}'"
                 :blizz-id="{{ $account['blizz_id'] }}"
@@ -397,10 +399,10 @@
                 :subpath="'Talents'"
                 :all-label="'All Talents'"
               ></nav-search-flyout>
-              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/MMR">HP MMR Breakdown</a>
-              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Awards">Awards</a>
-              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/History">Match History</a>
-              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/Latest">Latest Match</a>
+              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/MMR">{{ __('HP MMR Breakdown') }}</a>
+              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Awards">{{ __('Awards') }}</a>
+              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/History">{{ __('Match History') }}</a>
+              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/Latest">{{ __('Latest Match') }}</a>
               <remove-battletag-nav :index="{{ $index }}" class="remove-account text-right bg-surface-3"></remove-battletag-nav>
             </div>
         </div>

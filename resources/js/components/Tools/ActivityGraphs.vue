@@ -19,7 +19,7 @@
     </filters>
 
     <div v-if="loading" class="max-w-[93.75rem] mx-auto px-4 py-10 flex flex-col gap-6">
-      <loading-component :compact="true" :textoverride="true">Loading activity...</loading-component>
+      <loading-component :compact="true" :textoverride="true">{{ $t('Loading activity...') }}</loading-component>
       <skeleton-box class="h-[25rem] w-full"></skeleton-box>
     </div>
 
@@ -36,7 +36,7 @@
                 : 'bg-transparent text-subtext border-gray-dark hover:border-gray-medium'
             ]"
           >
-            All
+            {{ $t('All') }}
           </button>
           <button
             v-for="year in availableYears"

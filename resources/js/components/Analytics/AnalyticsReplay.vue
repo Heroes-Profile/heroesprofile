@@ -110,7 +110,7 @@
                 <div :style="{ opacity: aliveAt(p.idx) ? 1 : 0.35 }">
                   <hero-image-wrapper v-if="p.short_name" :hero="{ name: p.hero, short_name: p.short_name }" :size="'small'"></hero-image-wrapper>
                 </div>
-                <span class="flex-1 truncate">{{ p.battletag || p.hero }}<span v-if="p.you" class="text-yellow"> (you)</span></span>
+                <span class="flex-1 truncate">{{ p.battletag || $heroName(p.hero) }}<span v-if="p.you" class="text-yellow"> (you)</span></span>
                 <span class="font-mono">{{ takedownsAt(p.idx) }} / {{ deathsAt(p.idx) }}</span>
               </div>
             </div>
@@ -119,7 +119,7 @@
 
           <!-- Selected player -->
           <div v-if="selectedPlayer" class="bg-darken rounded p-3">
-            <div class="font-bold mb-2">{{ selectedPlayer.hero }}{{ selectedPlayer.battletag ? ' - ' + selectedPlayer.battletag : '' }}</div>
+            <div class="font-bold mb-2">{{ $heroName(selectedPlayer.hero) }}{{ selectedPlayer.battletag ? ' - ' + selectedPlayer.battletag : '' }}</div>
             <div class="flex flex-wrap gap-2 mb-2">
               <div v-for="pick in talentsAt(selected)" :key="pick.tier" class="flex flex-col items-center">
                 <talent-image-wrapper :talent="pick.talent" :size="'small'"></talent-image-wrapper>

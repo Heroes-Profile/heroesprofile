@@ -6,15 +6,15 @@
       <!-- Window controls top-right: expand, divider, close -->
       <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
         <div class="flex items-center gap-4">
-          <span class="font-bold text-lg">Help</span>
-          <button v-if="messages.length" class="text-sm underline" :disabled="!!loading" @click="newChat">New chat</button>
+          <span class="font-bold text-lg">{{ $t('Help') }}</span>
+          <button v-if="messages.length" class="text-sm underline" :disabled="!!loading" @click="newChat">{{ $t('New chat') }}</button>
         </div>
         <div class="flex items-center gap-2">
-          <button class="w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="expanded ? 'Make help smaller' : 'Make help bigger'" :title="expanded ? 'Smaller' : 'Bigger'" @click="toggleExpanded">
+          <button class="w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="$t(expanded ? 'Make help smaller' : 'Make help bigger')" :title="expanded ? 'Smaller' : 'Bigger'" @click="toggleExpanded">
             <i :class="expanded ? 'fas fa-down-left-and-up-right-to-center' : 'fas fa-up-right-and-down-left-from-center'"></i>
           </button>
           <span class="w-px h-5 bg-white/20" aria-hidden="true"></span>
-          <button class="w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" aria-label="Close help" title="Close" @click="toggle">
+          <button class="w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="$t('Close help')" :title="$t('Close')" @click="toggle">
             <i class="fas fa-xmark text-lg"></i>
           </button>
         </div>
@@ -24,35 +24,35 @@
         <!-- The Heroes Profile logo answers, like the Analytics announcer -->
         <!-- First visit: the panel opens itself with this on the first page only -->
         <analytics-speech-bubble v-if="!messages.length && showIntro" :talking="true">
-          <span class="font-bold">New:</span>
-          Got a question about Heroes Profile? Ask it here, like "What's the best Valla build?" or "How do I upload my replays?" I'll find the right page or FAQ answer, and if you're logged in with Battle.net the assistant can help with the rest.
+          <span class="font-bold">{{ $t('New:') }}</span>
+          {{ $t(`Got a question about Heroes Profile? Ask it here, like ":one" or ":two" I'll find the right page or FAQ answer, and if you're logged in with Battle.net the assistant can help with the rest.`, { one: $t("What's the best Valla build?"), two: $t('How do I upload my replays?') }) }}
         </analytics-speech-bubble>
-        <analytics-speech-bubble v-else-if="!messages.length">Ask me anything about Heroes Profile, like "What's the best Valla build?" or "How do I upload my replays?"</analytics-speech-bubble>
+        <analytics-speech-bubble v-else-if="!messages.length">{{ $t('Ask me anything about Heroes Profile, like ":one" or ":two"', { one: $t("What's the best Valla build?"), two: $t('How do I upload my replays?') }) }}</analytics-speech-bubble>
         <template v-for="(message, index) in messages" :key="index">
           <!-- What the FAQ and site pages had, with the choice to ask the assistant -->
           <analytics-speech-bubble v-if="message.role === 'results'" :data-message="index" :logo="message.logo || undefined" :talking="talkingIndex === index" @done="talkingIndex = null">
             <div class="flex flex-col gap-3">
               <span v-if="message.line" class="italic font-medium">{{ message.line }}</span>
               <template v-if="message.faq.length || message.pages.length">
-                <span class="text-xs opacity-70">Here's what I found</span>
+                <span class="text-xs opacity-70">{{ $t("Here's what I found") }}</span>
                 <!-- Pages first: usually where they want to go -->
                 <div v-if="message.pages.length" class="flex flex-col gap-1">
-                  <span class="font-bold">Pages</span>
+                  <span class="font-bold">{{ $t('Pages') }}</span>
                   <div v-for="page in message.pages" :key="page.url">
                     <a v-if="!page.url.includes('{')" :href="page.url" class="underline">{{ page.name }}</a>
                     <span v-else class="font-medium">{{ page.name }}</span>
                     <span>: {{ page.description }}</span>
-                    <span v-if="message.examples && page.url.startsWith('/Player/')" class="text-xs opacity-70"> (an example profile; search your own BattleTag)</span>
+                    <span v-if="message.examples && page.url.startsWith('/Player/')" class="text-xs opacity-70"> ({{ $t('an example profile; search your own BattleTag') }})</span>
                   </div>
                 </div>
-                <span v-if="message.faq.length" class="font-bold">From the FAQ</span>
+                <span v-if="message.faq.length" class="font-bold">{{ $t('From the FAQ') }}</span>
                 <div v-for="item in message.faq" :key="item.q" class="flex flex-col gap-1">
                   <span class="font-semibold">{{ item.q }}</span>
                   <div v-html="item.a"></div>
-                  <a v-if="item.id" :href="'/FAQ#' + item.id" class="underline text-xs">Open in the FAQ</a>
+                  <a v-if="item.id" :href="'/FAQ#' + item.id" class="underline text-xs">{{ $t('Open in the FAQ') }}</a>
                 </div>
               </template>
-              <span v-else>I couldn't find that in the FAQ.</span>
+              <span v-else>{{ $t("I couldn't find that in the FAQ.") }}</span>
             </div>
           </analytics-speech-bubble>
           <analytics-speech-bubble v-else-if="message.role === 'assistant'" :data-message="index" :logo="message.logo || undefined" :talking="talkingIndex === index" @done="talkingIndex = null">
@@ -65,13 +65,13 @@
             <custom-button v-else class="w-full text-center" color="blue" href="/Authenticate/Battlenet" text="Log in with Battle.net to ask the assistant"></custom-button>
           </template>
         </template>
-        <analytics-speech-bubble v-if="loading" :logo="persona?.logo" :talking="true">{{ loading === 'assistant' ? 'Thinking…' : 'Looking…' }}</analytics-speech-bubble>
+        <analytics-speech-bubble v-if="loading" :logo="persona?.logo" :talking="true">{{ $t(loading === 'assistant' ? 'Thinking…' : 'Looking…') }}</analytics-speech-bubble>
         <p v-if="error" class="text-red">{{ error }}</p>
       </div>
 
       <form class="px-5 py-4 border-t border-white/10 flex flex-col gap-2" @submit.prevent="send">
         <div class="flex gap-2">
-          <input v-model="question" type="text" maxlength="500" placeholder="Ask a question" aria-label="Ask a question" class="flex-1 min-w-0 bg-field text-white rounded-control px-3 py-2 text-sm" :disabled="!!loading" />
+          <input v-model="question" type="text" maxlength="500" :placeholder="$t('Ask a question')" :aria-label="$t('Ask a question')" class="flex-1 min-w-0 bg-field text-white rounded-control px-3 py-2 text-sm" :disabled="!!loading" />
           <custom-button color="teal" text="Send" size="small" :ignoreclick="true" :disabled="!!loading || !question.trim()" @click="send"></custom-button>
         </div>
         <span v-if="loggedIn && remaining !== null" class="text-xs text-subtext">{{ remaining }} assistant {{ remaining === 1 ? 'question' : 'questions' }} left today</span>
@@ -81,7 +81,7 @@
     <div class="flex items-center gap-3">
       <button
         class="w-14 h-14 shrink-0 rounded-full bg-teal hover:bg-lteal text-white text-2xl shadow-[0_0.25rem_1rem_rgba(0,0,0,0.5)] flex items-center justify-center transition-colors"
-        :aria-label="open ? 'Close help' : 'Open help'"
+        :aria-label="$t(open ? 'Close help' : 'Open help')"
         :aria-expanded="open"
         @click="toggle"
       >
@@ -89,8 +89,8 @@
       </button>
       <!-- Phones' first visit, instead of opening the panel over the page -->
       <div v-if="teaser && !open" class="help-teaser animate-bounce flex items-center gap-2 rounded-xl pl-3 pr-1 py-1 text-sm">
-        <button class="text-left" @click="toggle"><span class="font-bold">New:</span> questions? Ask here</button>
-        <button class="w-6 h-6 flex items-center justify-center rounded-control hover:bg-black/10" aria-label="Dismiss" title="Dismiss" @click="teaser = false">
+        <button class="text-left" @click="toggle"><span class="font-bold">{{ $t('New:') }}</span> {{ $t('questions? Ask here') }}</button>
+        <button class="w-6 h-6 flex items-center justify-center rounded-control hover:bg-black/10" :aria-label="$t('Dismiss')" :title="$t('Dismiss')" @click="teaser = false">
           <i class="fas fa-xmark"></i>
         </button>
       </div>

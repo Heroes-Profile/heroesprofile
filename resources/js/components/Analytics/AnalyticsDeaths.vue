@@ -62,7 +62,7 @@
         <div v-for="list in nemesisLists" :key="list.title" class="w-[45%] max-md:w-full">
           <h3 class="mb-2">{{ list.title }}</h3>
           <table class="min-w-0 w-full responsive-table">
-            <thead><tr><th>{{ list.column }}</th><th>Times</th></tr></thead>
+            <thead><tr><th>{{ list.column }}</th><th>{{ $t('Times') }}</th></tr></thead>
             <tbody>
               <tr v-for="row in list.rows" :key="list.title + row.label">
                 <td>{{ row.label }}</td>

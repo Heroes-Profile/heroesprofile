@@ -15,24 +15,24 @@
             <th class="py-2 px-3 text-left max-md:text-xs md:text-sm leading-4">
               <!-- One search for every division, so it finds a team wherever it plays -->
               <div class="flex items-center gap-3">
-                <span>Team</span>
+                <span>{{ $t('Team') }}</span>
                 <search-input v-model="teamSearch" placeholder="Search team" :collapsible="true" class="w-40"></search-input>
               </div>
             </th>            
             <th class="py-2 px-3 text-center max-md:text-xs md:text-sm leading-4">
-              Points
+              {{ $t('Points') }}
             </th>
             <th class="py-2 px-3 text-center max-md:text-xs md:text-sm leading-4">
-              <span class="max-md:hidden">Dominations</span><span class="md:hidden text-[0.5625rem]">Denom- inations</span>
+              <span class="max-md:hidden">{{ $t('Dominations') }}</span><span class="md:hidden text-[0.5625rem]">Denom- inations</span>
             </th>
             <th class="py-2 px-3 text-center max-md:text-xs md:text-sm leading-4">
-              Games Won
+              {{ $t('Games Won') }}
             </th>   
             <th class="py-2 px-3 text-center max-md:text-xs md:text-sm leading-4">
-              Games Lost
+              {{ $t('Games Lost') }}
             </th>   
             <th class="py-2 px-3 text-center max-md:text-xs md:text-sm leading-4">
-              Matches Played
+              {{ $t('Matches Played') }}
             </th>     
           </tr>
         </thead>

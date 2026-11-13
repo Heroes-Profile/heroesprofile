@@ -19,7 +19,7 @@
       ]"
       @click="$emit('update:modelValue', item.key)"
     >
-      {{ item.label }}
+      {{ $t(item.label) }}
     </a>
   </div>
 </template>

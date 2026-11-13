@@ -9,7 +9,7 @@
         <button v-if="end < seasons.length" type="button" :class="['absolute right-0 text-subtext hover:text-white', row]" aria-label="Newer seasons" @click="shift(1)"><i class="fas fa-chevron-right"></i></button>
       </template>
     </div>
-    <p v-else class="text-subtext">No season data for these filters.</p>
+    <p v-else class="text-subtext">{{ $t('No season data for these filters.') }}</p>
   </panel-box>
 </template>
 

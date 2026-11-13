@@ -1423,6 +1423,18 @@ class GlobalDataService
         return $value === 'compact' ? 'compact' : 'table';
     }
 
+    /** Account setting first, then the cookie; anything unsupported is English. */
+    public function getLocale(): string
+    {
+        $value = Auth::check()
+            ? Auth::user()->userSettings->firstWhere('setting', 'locale')?->value
+            : null;
+
+        $value ??= request()->cookie('locale');
+
+        return is_string($value) && array_key_exists($value, config('app.supported_locales')) ? $value : 'en';
+    }
+
     public function getTalentBuilderStyle(): string
     {
         $value = Auth::check()
@@ -1616,14 +1628,33 @@ class GlobalDataService
 
         // remember() with a 0 TTL still returns an existing entry, and local shares prod's cache table
         if (! $this->usesProductionCaching()) {
-            return $this->buildFilterData($filtersMinimumPatch);
+            return $this->localizeFilterLabels($this->buildFilterData($filtersMinimumPatch));
         }
 
         $cacheKey = 'filter_data_'.str_replace('.', '_', $filtersMinimumPatch);
 
-        return Cache::remember($cacheKey, 600, function () use ($filtersMinimumPatch) {
+        return $this->localizeFilterLabels(Cache::remember($cacheKey, 600, function () use ($filtersMinimumPatch) {
             return $this->buildFilterData($filtersMinimumPatch);
-        });
+        }));
+    }
+
+    /** Hero and map options get a display label in the chosen language; codes and names stay English. */
+    private function localizeFilterLabels(\stdClass $filterData): \stdClass
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'en') {
+            return $filterData;
+        }
+
+        $names = app(LocalizedGameStrings::class)->names($locale);
+        $filterData = clone $filterData;
+
+        $filterData->heroes = collect($filterData->heroes)
+            ->map(fn ($hero) => $hero + ['label' => $names['heroes'][$hero['name']] ?? $hero['name']]);
+        $filterData->game_maps = collect($filterData->game_maps)
+            ->map(fn ($map) => $map + ['label' => $names['maps'][$map['name']] ?? $map['name']]);
+
+        return $filterData;
     }
 
     /**

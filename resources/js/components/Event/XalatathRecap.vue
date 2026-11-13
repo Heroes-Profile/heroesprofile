@@ -238,7 +238,7 @@
         <h2 class="recap-heading">Her Average Game</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-3">
           <div v-for="item in averages" :key="item.label" class="xalatath-recap-card p-3 text-center">
-            <div class="text-xs uppercase opacity-75">{{ item.label }}</div>
+            <div class="text-xs uppercase opacity-75">{{ $t(item.label) }}</div>
             <div class="text-xl font-bold tabular-nums">{{ item.value }}</div>
           </div>
         </div>
@@ -249,7 +249,7 @@
         <h2 class="recap-heading">The Void Ledger</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
           <div v-for="item in ledger" :key="item.label" class="xalatath-recap-card p-3 text-center">
-            <div class="text-xs uppercase opacity-75">{{ item.label }}</div>
+            <div class="text-xs uppercase opacity-75">{{ $t(item.label) }}</div>
             <div class="text-xl font-bold tabular-nums">{{ item.value }}</div>
           </div>
         </div>
@@ -275,11 +275,11 @@
         <scroll-hint-container :fit="true">
         <table class="min-w-0 w-full responsive-table mb-6">
           <thead>
-            <tr><th class="py-2 px-3 text-left text-sm">Stat</th><th class="py-2 px-3 text-left text-sm">Launch patch</th><th class="py-2 px-3 text-left text-sm">After the balance update</th><th class="py-2 px-3 text-left text-sm">Change</th></tr>
+            <tr><th class="py-2 px-3 text-left text-sm">{{ $t('Stat') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Launch patch') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('After the balance update') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Change') }}</th></tr>
           </thead>
           <tbody>
             <tr v-for="row in nerf.rows" :key="row.label">
-              <td class="py-2 px-3">{{ row.label }}</td>
+              <td class="py-2 px-3">{{ $t(row.label) }}</td>
               <td class="py-2 px-3">{{ row.before }}</td>
               <td class="py-2 px-3">{{ row.after }}</td>
               <td class="py-2 px-3">{{ row.change }}</td>
@@ -292,7 +292,7 @@
           <scroll-hint-container :fit="true">
           <table class="min-w-0 w-full responsive-table">
             <thead>
-              <tr><th class="py-2 px-3 text-left text-sm">Talent</th><th class="py-2 px-3 text-left text-sm">Picked before</th><th class="py-2 px-3 text-left text-sm">Picked after</th><th class="py-2 px-3 text-left text-sm">Win rate before</th><th class="py-2 px-3 text-left text-sm">Win rate after</th></tr>
+              <tr><th class="py-2 px-3 text-left text-sm">{{ $t('Talent') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Picked before') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Picked after') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Win rate before') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Win rate after') }}</th></tr>
             </thead>
             <tbody>
               <tr v-for="row in nerfedTalents" :key="row.talent_id">
@@ -320,7 +320,7 @@
           <scroll-hint-container :fit="true">
           <table class="min-w-0 w-full responsive-table">
             <thead>
-              <tr><th class="py-2 px-3 text-left text-sm">Game mode</th><th class="py-2 px-3 text-left text-sm">Games</th><th class="py-2 px-3 text-left text-sm">Win rate</th><th class="py-2 px-3 text-left text-sm">Bans</th></tr>
+              <tr><th class="py-2 px-3 text-left text-sm">{{ $t('Game mode') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Games') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Win rate') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Bans') }}</th></tr>
             </thead>
             <tbody>
               <tr v-for="row in gameModes" :key="row.game_type">
@@ -380,7 +380,7 @@
             <details v-for="item in group.records" :key="item.record" class="xalatath-recap-card group">
               <summary class="px-3 py-2 flex justify-between items-center gap-3 cursor-pointer list-none">
                 <div class="min-w-0">
-                  <div class="text-sm font-bold truncate">{{ item.label }}</div>
+                  <div class="text-sm font-bold truncate">{{ $t(item.label) }}</div>
                   <div class="text-xs opacity-70">
                     <i class="fas fa-chevron-down mr-1 transition-transform group-open:rotate-180"></i>Top {{ item.top.length }}
                   </div>
@@ -434,7 +434,7 @@
         <scroll-hint-container :fit="true">
         <table class="min-w-0 w-full responsive-table">
           <thead>
-            <tr><th class="py-2 px-3 text-left text-sm">Battleground</th><th class="py-2 px-3 text-left text-sm">Games</th><th class="py-2 px-3 text-left text-sm">Win rate</th></tr>
+            <tr><th class="py-2 px-3 text-left text-sm">{{ $t('Battleground') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Games') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Win rate') }}</th></tr>
           </thead>
           <tbody>
             <tr v-for="row in maps" :key="row.game_map">
@@ -467,7 +467,7 @@
           <p class="mb-3">{{ format(devotees.total) }} players answered her call.</p>
           <div v-for="row in devotees.rows" :key="row.bucket" class="mb-3">
             <div class="flex justify-between text-sm mb-1">
-              <span>{{ row.label }}</span>
+              <span>{{ $t(row.label) }}</span>
               <span class="tabular-nums">{{ format(row.players) }} ({{ percent(row.players, devotees.total) }})</span>
             </div>
             <div class="h-3 bg-darken rounded overflow-hidden">
@@ -483,7 +483,7 @@
         <scroll-hint-container :fit="true">
         <table class="min-w-0 w-full responsive-table">
           <thead>
-            <tr><th class="py-2 px-3 text-left text-sm">Rank</th><th class="py-2 px-3 text-left text-sm">Player</th><th class="py-2 px-3 text-left text-sm">Region</th><th class="py-2 px-3 text-left text-sm">Games</th><th class="py-2 px-3 text-left text-sm">Win rate</th></tr>
+            <tr><th class="py-2 px-3 text-left text-sm">{{ $t('Rank') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Player') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Region') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Games') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Win rate') }}</th></tr>
           </thead>
           <tbody>
             <tr v-for="row in leaderboard" :key="row.blizz_id + '-' + row.region">
@@ -1455,15 +1455,15 @@ export default {
     },
     heroName(id) {
       const hero = this.recap.heroes[id];
-      return hero ? hero.name : `Hero ${id}`;
+      return hero ? this.$heroName(hero) : `Hero ${id}`;
     },
     mapName(id) {
       const map = this.recap.maps[id];
-      return map ? map.name : `Map ${id}`;
+      return map ? this.$mapName(map) : `Map ${id}`;
     },
     talentName(id) {
       const talent = this.recap.talents[id];
-      return talent ? (talent.title || talent.talent_name) : 'Unknown talent';
+      return talent ? this.$talentName(talent) : 'Unknown talent';
     },
     awardTitle(id) {
       const award = this.recap.awards[id];

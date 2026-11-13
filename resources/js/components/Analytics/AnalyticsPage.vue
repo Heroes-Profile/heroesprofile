@@ -99,9 +99,9 @@
         <div v-if="game" class="flex flex-wrap items-center justify-center gap-3 mb-4">
           <template v-if="game">
             <span v-if="gameInfo">
-              One match: <span class="font-bold">{{ gameInfo.hero }}</span> on {{ gameInfo.game_map }} &middot; {{ gameInfo.game_type }} &middot;
+              One match: <span class="font-bold">{{ $heroName(gameInfo.hero) }}</span> on {{ $mapName(gameInfo.game_map) }} &middot; {{ gameInfo.game_type }} &middot;
               <span :class="gameInfo.winner ? 'text-teal' : 'text-red'">{{ gameInfo.winner ? 'Win' : 'Loss' }}</span> &middot; {{ formatDate(gameInfo.game_date) }}.
-              Compared with {{ gameInfo.hero }} on {{ gameInfo.game_map }} in {{ gameInfo.game_type }}, and your other {{ gameInfo.hero }} matches.
+              Compared with {{ $heroName(gameInfo.hero) }} on {{ $mapName(gameInfo.game_map) }} in {{ gameInfo.game_type }}, and your other {{ $heroName(gameInfo.hero) }} matches.
             </span>
             <custom-button :href="replayLink(game)" :text="'Watch Replay'" :alt="'Watch this match in the replay viewer'" size="small"></custom-button>
             <custom-button :text="'Back to all matches'" :alt="'Back to all matches'" size="small" :ignoreclick="true" @click="selectGame(null)"></custom-button>

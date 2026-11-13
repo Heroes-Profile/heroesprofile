@@ -1,0 +1,303 @@
+{
+    "categories": {
+        "Getting Started": "入門指南",
+        "Uploading Replays": "上傳重播",
+        "MMR & Rankings": "MMR 與排名",
+        "Global Stats & Data": "全球統計與資料",
+        "Filters": "篩選",
+        "Site Features": "網站功能",
+        "Drafter": "選角助手",
+        "Leaderboards": "排行榜",
+        "Supporting Heroes Profile": "支持 Heroes Profile"
+    },
+    "items": {
+        "9f34d33651e2f406": {
+            "q": "什麼是 Heroes Profile？",
+            "a": "Heroes Profile 是由社群打造的《暴雪英霸》統計網站。我們追蹤玩家檔案、全球英雄勝率、天賦組合、對位、選角資料、排行榜等眾多內容，所有資料皆來自社群上傳的重播檔案。本站於 2018 年 6 月上線，由 Zemill 與一支小型志工團隊營運。"
+        },
+        "53e7bf5654bd4ea6": {
+            "q": "如何找到我的玩家檔案？",
+            "a": "使用網站頂端的搜尋列，輸入你的 BattleTag（例如 <code>Zemill#1940</code>）。找到後，即可查看你的比賽紀錄、英雄統計、MMR、地圖、對位等更多資料。請先確認你已上傳重播，這樣你的資料才會顯示。"
+        },
+        "fee6b20b0ee8251f": {
+            "q": "Heroes Profile 是免費的嗎？",
+            "a": "是的，Heroes Profile 完全免費。我們透過 <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> 獲得社群支持。Patreon 贊助者可享有無廣告體驗及專屬的網站標誌。"
+        },
+        "7ba1b5ca799e4b7a": {
+            "q": "如何讓我的統計資料出現在 Heroes Profile 上？",
+            "a": "你需要上傳你的重播檔案。最簡單的方法是下載 <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a>，它會在背景運行，並在每場比賽結束後自動上傳重播。你也可以<a href=\"/Upload\" class=\"link\">手動上傳重播</a>。上傳後，請等待 5–10 分鐘讓系統處理。"
+        },
+        "4015e4f47fc40628": {
+            "q": "Heroes Profile Uploader 安全嗎？",
+            "a": "安全。上傳工具完全開源，你可以在 GitHub 上查看完整原始碼：<a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>。它不含廣告、冗贅軟體，除了基本的頁面分析之外也不會進行任何追蹤。如果你願意，也可以改為手動上傳重播。<br><br>部分防毒軟體或瀏覽器可能會將安裝程式標記為可疑。這是誤報，原因是執行檔沒有使用付費的程式碼簽章憑證簽署，而不是因為它含有惡意軟體。你可以自行查看開源程式碼來確認。如果仍有疑慮，請改用<a href=\"/Upload\" class=\"link\">手動上傳頁面</a>。"
+        },
+        "be6aba0fe5a58edc": {
+            "q": "為什麼我的比賽沒有全部顯示？",
+            "a": "Heroes Profile 只收錄已上傳到我們系統的比賽。如果你沒有上傳過重播，或最近才開始上傳，較早的比賽就不會出現。你可以<a href=\"/Upload\" class=\"link\">手動上傳過去的重播檔案</a>，或使用 <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a> 在之後自動上傳。《暴雪英霸》會將重播檔案儲存在你的「文件」資料夾中。"
+        },
+        "9ea212dc517ae501": {
+            "q": "比賽的日期和時間是開始時間還是結束時間？",
+            "a": "是結束時間。比賽顯示的時間來自重播檔案，而《暴雪英霸》會在比賽結束時儲存重播檔案，因此一場 8:00 開始、時長 25 分鐘的比賽會顯示為 8:25。"
+        },
+        "588f4dbb15c62747": {
+            "q": "我可以上傳舊的重播嗎？這會影響我的 MMR 嗎？",
+            "a": "可以，你可以上傳舊的重播。不過，上傳順序會影響 MMR。MMR 系統在初期會做較大幅度的調整，以便將你定位到合適的位置。如果你先上傳近期（勝率較高）的比賽，再上傳較早（勝率較低）的比賽，你的 MMR 可能會比依時間順序上傳時更高。若想得到最準確的 MMR，請依比賽進行的順序上傳所有重播。"
+        },
+        "9d33bcc4b479b937": {
+            "q": "上傳工具可以在 macOS 或 Linux 上使用嗎？",
+            "a": "可以。上傳工具是同一個應用程式，支援 Windows、macOS 與 Linux。各平台的下載連結都在<a href=\"/Upload\" class=\"link\">上傳頁面</a>，而<a href=\"/Upload/Uploader\" class=\"link\">上傳工具頁面</a>說明了有哪些變更，以及如何從舊版 Windows 上傳工具轉移。"
+        },
+        "a1eb614636680760": {
+            "q": "如何將我的個人檔案設為不公開？",
+            "a": "使用你的 Battle.net 帳號登入，前往<a href=\"/Profile/Settings\" class=\"link\">個人檔案設定</a>，將帳號可見性設為不公開。你的 BattleTag 仍會出現在其他玩家的比賽紀錄中（因為它是重播檔案的一部分），但你的個人檔案頁面將不會公開。"
+        },
+        "c4b452b25e56c717": {
+            "q": "Heroes Profile 的 MMR 是如何運作的？",
+            "a": "Blizzard 的重播檔案中不包含 MMR 或段位資料，因此我們無法從重播取得你官方的遊戲內段位或 MMR。我們會根據你上傳的重播中的勝敗，自行計算 MMR。這只是估算值，上傳的比賽越多就越準確。新的遊戲模式（例如風暴聯賽剛推出時）會讓所有人從頭開始，因此早期的 MMR 數值不確定性較高。你真實的風暴聯賽段位可以另外顯示，從載入畫面讀取（見下方）。"
+        },
+        "628d7a2936bd5087": {
+            "q": "為什麼我的 Heroes Profile MMR 和遊戲內段位不一致？",
+            "a": "我們的 MMR 是獨立計算的，只依據上傳到我們系統的重播。它並非來自 Blizzard 的伺服器，也不代表你官方的遊戲內排名。上傳的比賽越多，數值就越接近你的實際實力。如果你剛開始上傳，多打幾場比賽，數值就會趨於穩定。你真實的遊戲內段位（若我們有資料）會顯示在個人檔案中獨立的「風暴聯賽段位」區塊。"
+        },
+        "561dd721f50a722e": {
+            "q": "Heroes Profile 能顯示我真實的遊戲內段位嗎？",
+            "a": "可以，限風暴聯賽。重播檔案中沒有段位，但遊戲會在載入畫面顯示每位玩家的段位。上傳工具的<strong>含段位讀取</strong>版本（Windows、macOS 或 Linux）可以從載入畫面讀取段位：<ol class=\"list-decimal pl-6 my-2 space-y-1\"><li>從<a href=\"/Upload\" class=\"link\">重播上傳工具</a>頁面安裝。</li><li>在上傳工具的設定中開啟<strong>從載入畫面讀取段位</strong>。在你開啟前此功能為關閉狀態。</li><li>進行風暴聯賽。比賽重播上傳後，從載入畫面讀取到的段位會被儲存，並顯示在每位玩家個人檔案的「風暴聯賽段位」區塊中。</li></ol>它只擷取遊戲視窗、只在載入畫面期間擷取，且只會傳送風暴聯賽的比賽。只有當玩家出現在該場比賽的重播中，且讀取工具確定段位卡屬於該玩家時，才會保留其段位，因此你也可能透過其他人的比賽取得段位。段位會依讀取結果顯示，並註明最後一次讀取的時間及讀取到的場次，偶爾可能有誤或已過時。<a href=\"/Upload/Uploader#rank-reading\" class=\"link\">段位讀取的運作方式</a>。"
+        },
+        "b46963dbac0933b1": {
+            "q": "全球統計頁面上的聯賽段位代表什麼？",
+            "a": "在全球統計頁面上，聯賽段位（青銅、白銀、黃金、白金、鑽石、大師）是根據我們的 Heroes Profile MMR 計算結果劃分的。MMR 落在特定範圍內的玩家會被歸入該段位。我們參考 Blizzard 提供的段位比例來決定各範圍的界線。這表示我們約有 7% 的玩家位於青銅，符合 Blizzard 預期的分布。"
+        },
+        "9f2014d56a0836a1": {
+            "q": "Heroes Profile 的聯賽段位分布是如何？",
+            "a": "Heroes Profile 的聯賽段位依據以下玩家分布比例：<br><br><div style=\"display:inline-block;min-width:220px;border:1px solid rgba(255,255,255,0.15);border-radius:6px;overflow:hidden;font-size:0.875rem;\"><div style=\"display:flex;background:rgba(255,255,255,0.1);font-weight:600;\"><span style=\"flex:1;padding:8px 14px;\">段位</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">玩家比例</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">青銅</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">12%</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">白銀</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">23%</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">黃金</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">26%</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">白金</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">22%</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">鑽石</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">12%</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">大師</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">5%</span></div></div><br><br>這些分布比例用於設定各段位的 MMR 門檻。比賽場次少於 50 場的玩家會被歸入「未知」段位（有時稱為木頭），直到系統有足夠資料準確評定其段位。"
+        },
+        "743025c455ccb4e1": {
+            "q": "為什麼要定期重新計算 MMR？",
+            "a": "我們會定期對所有已上傳的比賽重新計算 MMR，以提高準確度。隨著演算法改進和上傳資料增加，重新計算能讓所有玩家得到更準確的評分。每次重新計算時我們都會公告，請關注我們的 Reddit 貼文或 GitHub 以取得最新消息。"
+        },
+        "ab1a5a59c21f2ed8": {
+            "q": "為什麼我贏了 MMR 反而下降（或輸了反而上升）？",
+            "a": "Heroes Profile MMR 並不是無限累加的數值，而是衡量你相對於其他所有玩家的實力。如果你贏了之後 MMR 下降，代表系統偵測到你的對手 MMR 明顯低於你。演算法看到高 MMR 玩家擊敗低 MMR 對手，會判斷你目前的評分可能偏高，因此稍微調降。反之亦然：輸給 MMR 高出許多的玩家可能讓你的評分上升。這是刻意的設計：系統始終在尋找你真正所屬的區間，而不只是獎勵勝利。"
+        },
+        "d9046734a5b347eb": {
+            "q": "什麼是英雄 MMR？",
+            "a": "英雄 MMR 是針對個別英雄的 MMR 評分。你不只有單一的整體評分，而是你玩的每位英雄都有各自的 MMR。此評分會將你與其他玩家在同一位英雄上的表現進行比較。身為高段位的風暴聯賽玩家，並不代表你在很少使用的英雄上也會有很高的英雄 MMR。"
+        },
+        "4f0391d0e1d4e289": {
+            "q": "Heroes Profile 的資料有多準確？",
+            "a": "資料的準確度取決於上傳到我們系統的重播數量。我們無法取得每一場比賽，只有玩家使用我們的上傳工具或手動提交重播的比賽才會收錄。即便如此，我們的重播資料庫一直是社群中規模最大的之一，收錄了數千萬場比賽。"
+        },
+        "887f997b1810f8c3": {
+            "q": "為什麼對位勝率會排除鏡像對局？",
+            "a": "在鏡像對局中，英雄的對手是同一位英雄，因此該英雄在同一場比賽中必定是一勝一敗。如果納入鏡像對局，每位英雄的平均勝率都會被拉向 50%，無法提供有用的資訊。排除鏡像對局後，對位資料才能真正反映有意義的對戰關係。"
+        },
+        "507d49de8fb485c2": {
+            "q": "表現分數是如何計算的？",
+            "a": "比賽頁面上的表現分數計算方式如下：取該場比賽的每項統計（傷害、治療量、擊殺等），將該場 10 名玩家由高到低排名，再依排名位置給分。這是單場比賽內的相對衡量，並非全球基準。"
+        },
+        "199e6ba2d5e28495": {
+            "q": "時間範圍篩選（主要版本與次要版本）代表什麼？",
+            "a": "Heroes Profile 上的主要版本通常對應新英雄推出或大型重製，也就是 Blizzard 變更小數點後第一位數字的時候（例如 2.44 → 2.45）。次要版本則是主要版本內較小的平衡更新。時間範圍篩選會將每個組建版本列在其主要版本與子版本之下：勾選標題即可選取整個版本，也可以只勾選單一組建版本。各版本的變更內容請參閱<a href=\"/FAQ#patch-history\" class=\"link\">版本紀錄</a>。"
+        },
+        "6952ad9e69f8dc30": {
+            "q": "可以查看英雄的平均遊戲內統計嗎？例如攻城傷害或英雄傷害？",
+            "a": "可以。每位英雄各項統計的每場平均值都在<a href=\"/Global/Hero\" class=\"link\">英雄統計</a>頁面上：<ol class=\"list-decimal pl-6 my-2 flex flex-col gap-1\"><li>點擊篩選下方的<strong>顯示進階篩選</strong>。</li><li>將<strong>時間範圍</strong>設定為 5 個以內的單一組建版本。勾選整個主要版本或子版本時，統計篩選會被隱藏。</li><li>在<strong>統計篩選</strong>中選擇統計項目，例如攻城傷害、英雄傷害、法術傷害、物理傷害、治療量或死亡，然後點擊<strong>篩選</strong>。</li></ol>表格與泡泡圖就會改為顯示每位英雄該統計的每場平均值，而非勝率。你也可以直接使用連結，例如 <a href=\"/Global/Hero?statfilter=siege_damage\" class=\"link\">/Global/Hero?statfilter=siege_damage</a>。<a href=\"/Global/Talents\" class=\"link\">天賦</a>頁面也有相同的統計篩選，可用於天賦與組合。至於像玩家英雄頁面上的進階統計那樣、並排列出單一英雄所有統計的完整明細，目前在全球統計中無法提供。"
+        },
+        "8b86a4ca4006babb": {
+            "q": "為什麼新版本推出後，全球資料有時會是空的？",
+            "a": "Blizzard 剛推出新版本時，該版本上傳的資料還不足以呈現有意義的結果。請擴大時間範圍篩選以涵蓋多個版本，或等幾天後有更多比賽上傳時再來查看。"
+        },
+        "236905d835494eef": {
+            "q": "天賦組合上的「勝利機率」是什麼？和勝率有什麼不同？",
+            "a": "勝利機率是我們計算出的完整天賦組合（從 1 級到 20 級）帶來勝利的機率，並非單純的勝率。由於許多比賽在 20 級之前就結束，我們不一定能看到玩家原本打算採用的完整組合。我們會透過後端邏輯，根據玩家已選擇的天賦推測他們原本朝哪個組合發展，並同時納入達到 20 級與未達到 20 級的比賽。相較於只計算完整比賽中的勝場，這更能準確反映一個組合的整體可行性。你可以在<a href=\"/Global/Talents\" class=\"link\">全球天賦</a>頁面和<a href=\"/Global/Talents/Builder\" class=\"link\">天賦建構器</a>中查看組合的勝利機率。"
+        },
+        "c2692ad41dc38841": {
+            "q": "「影響力」統計代表什麼？",
+            "a": "影響力是介於 -5000 到 5000 之間的數值，用來衡量英雄實際上對比賽結果的影響程度。計算方式是取英雄勝率高於或低於 50% 的幅度，乘以該英雄在未被禁用的比賽中被選取的頻率。勝率高但很少被選的英雄，影響力會低於勝率稍低但大多數比賽都會被選的英雄，因為後者實際上左右了更多比賽。你可以把它想成依重要性加權的勝率。"
+        },
+        "baef60d089cdea87": {
+            "q": "在哪裡可以查看英雄的技能、天賦和基礎屬性？",
+            "a": "<a href=\"/Heroes\" class=\"link\">英雄</a>頁面（也位於頂部選單的「工具」下）為每位英雄都提供了專屬頁面，例如 <a href=\"/Heroes/Abathur\" class=\"link\">Abathur</a>。這些頁面根據目前版本的遊戲檔案建立，分為三個分頁：<strong>簡介</strong>（職責、難度、描述、評分、基礎屬性與背景故事）、<strong>技能</strong>和<strong>天賦</strong>。將滑鼠移到或點擊技能或天賦圖示即可查看完整說明。等級滑桿可將生命值、攻擊傷害與技能數值換算至 1 到 30 的任何等級，隨等級成長的數值會標示每級成長率，例如 62（每級 +4%）。分頁下方的連結可在統計頁面（例如天賦統計和天賦建構器）中開啟該英雄，查看勝率與組合。"
+        },
+        "da9672cbf4c59a90": {
+            "q": "什麼是天賦建構器？",
+            "a": "<a href=\"/Global/Talents/Builder\" class=\"link\">天賦建構器</a>讓你建立特定的天賦組合，並查看該組合確切的勝率資料。非常適合用真實比賽資料直接比較兩個組合。"
+        },
+        "2df01fc91ad6f6f6": {
+            "q": "篩選功能怎麼用？",
+            "a": "調整你想要的篩選條件，然後點擊<strong>篩選</strong>，頁面就會依這些條件重新載入。在全球統計頁面中，<strong>顯示進階篩選</strong>會顯示更多選項：統計篩選、英雄等級、HP 英雄段位、HP 職責段位、鏡像對局，以及英雄統計頁面上的組隊人數。全球統計頁面會將篩選條件儲存在頁面連結中，因此你可以分享篩選後的頁面，或將它加入書籤。在行動裝置上，點擊<strong>顯示篩選</strong>即可開啟篩選。"
+        },
+        "cc5ac1d59d4e6d47": {
+            "q": "時間範圍篩選有什麼作用？",
+            "a": "時間範圍決定資料來自哪些版本。版本號依主要版本與子版本分組列出：勾選標題可選取整個版本，也可以只勾選單一版本號。預設為最新版本。各版本的變更內容請參閱<a href=\"/FAQ#patch-history\" class=\"link\">版本紀錄</a>。"
+        },
+        "5aeb185246963ce8": {
+            "q": "遊戲模式篩選有什麼作用？",
+            "a": "遊戲模式可將資料限定為風暴聯賽、快速對戰、ARAM 或其他模式。全球統計頁面不包含非排名選角與自訂比賽。個人檔案頁面包含所有遊戲模式，比賽紀錄也可以顯示自訂比賽。"
+        },
+        "3e46caaf0ef2343c": {
+            "q": "統計篩選有什麼作用？",
+            "a": "在<a href=\"/Global/Hero\" class=\"link\">英雄統計</a>與<a href=\"/Global/Talents\" class=\"link\">天賦</a>頁面中，統計篩選可將勝率換成某項遊戲內數據的每場平均值，例如英雄傷害、攻城傷害、法術傷害、物理傷害或小兵傷害，以及治療量、死亡、參與擊殺、暈眩敵人時間或傭兵營地佔領。此篩選位於「顯示進階篩選」中，且只有在時間範圍選擇不超過 5 個單一版本號時才會出現。「全球統計與資料」分類中的「我能查看英雄的遊戲內平均數據嗎」有逐步說明。"
+        },
+        "93da9eaa18b9675f": {
+            "q": "地區與地圖篩選有什麼作用？",
+            "a": "<strong>地區</strong>可將資料限定為在 NA、EU、KR 或 CN 進行的比賽。<strong>地圖</strong>可將資料限定為在你所選地圖上進行的比賽。"
+        },
+        "4209fedfeb72deca": {
+            "q": "英雄與職責篩選有什麼作用？",
+            "a": "這兩個篩選可將資料限定為單一英雄或單一職責。在<a href=\"/Match/Search\" class=\"link\">重播搜尋</a>中，你可以選擇多位英雄，並選擇<strong>或</strong>（包含其中任一位英雄的比賽）或<strong>且</strong>（包含所有所選英雄的比賽）。"
+        },
+        "3a3626551cb58f7f": {
+            "q": "HP 玩家段位、HP 英雄段位與 HP 職責段位篩選有什麼作用？",
+            "a": "這些篩選會使用 Heroes Profile 自己的 MMR 依實力進行篩選，分別依據玩家的整體 MMR、該玩家使用該英雄的 MMR，或該玩家在該英雄所屬職責上的 MMR。段位分級與遊戲內相同，但採用我們的公式計算，因此不會與遊戲內段位一致。「MMR 與排名」分類有說明我們的 MMR 如何運作。"
+        },
+        "48e670ac975a3e5d": {
+            "q": "玩家段位上的 HP／遊戲內切換是什麼？",
+            "a": "在英雄統計與天賦頁面中，玩家段位可以使用 Heroes Profile MMR 段位（HP），或 Blizzard 在載入畫面顯示的風暴聯賽段位（遊戲內）。遊戲內段位由使用 Heroes Profile 上傳工具、並選擇開啟段位讀取功能的玩家讀取，每位玩家都依進入該場比賽時的段位計算。只有段位被讀取的玩家才會計入，因此樣本數較小，而且時間範圍中只會列出段位讀取功能推出後的版本。"
+        },
+        "ceb307666ee1a707": {
+            "q": "英雄等級篩選有什麼作用？",
+            "a": "英雄等級只會納入該英雄等級在你所選範圍內的玩家，範圍從 1-5 級到 100 級以上。你可以用它查看英雄在熟練玩家手中的表現。"
+        },
+        "8b4005b071aaa893": {
+            "q": "鏡像對局篩選有什麼作用？",
+            "a": "此篩選決定是否計入雙方隊伍使用同一位英雄的比賽。預設為「排除」，因為英雄與自己對戰時一定會同時增加一場勝利與一場失敗，使勝率趨近 50%。"
+        },
+        "5be3d434bc2a4afe": {
+            "q": "組隊人數篩選有什麼作用？",
+            "a": "組隊人數可將資料限定為以單排、雙排，或以 3 人、4 人、5 人組隊排隊的玩家。在<a href=\"/Global/Party\" class=\"link\">組隊</a>頁面中，則改用<strong>隊伍一組隊</strong>與<strong>隊伍二組隊</strong>選擇每支隊伍的整體組成，從 5 名單排到五排皆可選擇。"
+        },
+        "34aa4d9109cf513d": {
+            "q": "最少場次篩選有什麼作用？",
+            "a": "此篩選會隱藏場次少於你所選數值的資料列，避免小樣本資料擠到表格頂端。"
+        },
+        "7a5847744c3c61e0": {
+            "q": "天賦組合類型有什麼作用？",
+            "a": "此選項決定天賦頁面列出哪些組合。只有達到 20 級的組合才會計入。<ul class=\"list-disc pl-6 mt-2 flex flex-col gap-1\"><li><strong>熱門</strong>：最常用的組合。</li><li><strong>HP 演算法</strong>：最常用的組合，但每種 1、4、7 級天賦的組合方式只列出一個，讓你看到不同的前期路線。</li><li><strong>獨特 X 級</strong>：該等級每個不同天賦各自最常用的組合。</li></ul>"
+        },
+        "f485a44e467332ce": {
+            "q": "賽季與日期篩選有什麼作用？",
+            "a": "<strong>賽季</strong>可將資料限定為你所選賽季中的比賽，賽季依年份分組。在個人檔案頁面中可以選擇多個賽季。<strong>日期範圍</strong>篩選可將資料限定為在你所選日期之間進行的比賽。"
+        },
+        "9402670d1c36d27e": {
+            "q": "排行榜類型與聯賽篩選有什麼作用？",
+            "a": "在<a href=\"/Global/Leaderboard\" class=\"link\">排行榜</a>中，排行榜類型可切換玩家、英雄、職責、比賽預測與風暴聯賽段位排行榜。風暴聯賽段位排行榜會列出遊戲內的風暴聯賽段位，並額外提供聯賽選擇器。"
+        },
+        "0b0fb91586231d5f": {
+            "q": "重播搜尋有哪些篩選？",
+            "a": "<a href=\"/Match/Search\" class=\"link\">重播搜尋</a>另外提供幾項專屬篩選：<strong>遊戲版本</strong>（版本）、<strong>日期範圍</strong>、<strong>HP 玩家、英雄與職責 MMR</strong> 的範圍，以及<strong>玩家</strong>。「玩家」篩選只會找出有這些 BattleTag 參與的比賽。比賽紀錄也有類似的<strong>隊伍或對手玩家</strong>搜尋。"
+        },
+        "dd2e2fa841409455": {
+            "q": "電競頁面有哪些篩選？",
+            "a": "電競頁面改用該聯賽專屬的篩選，例如賽季、分組、隊伍或錦標賽，實際項目取決於該聯賽記錄的內容。"
+        },
+        "955526a9d6ed7f17": {
+            "q": "什麼是 PreMatch 功能？",
+            "a": "PreMatch 是內建於 <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a> 的功能。啟用後，它會在比賽載入畫面期間開啟一個瀏覽器頁面，顯示該場比賽全部 10 位玩家的資訊，包括統計、最常玩的英雄、MMR 等。這能幫助你在比賽開始前了解隊友與對手。你可以在 <a href=\"/PreMatch/Results/\" class=\"link\">PreMatch 結果</a>查看範例。"
+        },
+        "43893ec09753fb1b": {
+            "q": "什麼是隊友與對手頁面？",
+            "a": "個人檔案中的隊友與對手頁面會顯示你與特定玩家<em>同隊</em>或<em>對陣</em>時的勝率。範例請見<a href=\"/Player/Zemill/67280/1/FriendFoe\" class=\"link\">這個隊友與對手頁面</a>。上傳你的重播後，到你自己個人檔案的隊友與對手區塊即可查看。"
+        },
+        "957be35b13074e79": {
+            "q": "什麼是獎項頁面？",
+            "a": "個人檔案中的獎項頁面會顯示你獲得各項賽後獎項（例如 MVP、Painbringer 或 Main Healer）的頻率，以占你比賽場次的百分比呈現。範例請見<a href=\"/Player/Zemill/67280/1/Awards\" class=\"link\">這個獎項頁面</a>。點擊某個獎項即可列出你獲得該獎項的所有比賽。只有在 Heroes Profile 開始記錄獎項之後進行的比賽才會計入，因此非常舊的重播不包含在內。所有獎項及其獲得條件都列在下方的<a href=\"#awards\" class=\"link\">比賽獎項</a>中。"
+        },
+        "77eb65776c03f5b4": {
+            "q": "什麼是重播搜尋？該如何使用？",
+            "a": "<a href=\"/Match/Search\" class=\"link\">重播搜尋</a>可以找到最近上傳到 Heroes Profile 的比賽。選好篩選條件後按下「篩選」，每筆結果都會連結到完整的比賽頁面。<p class=\"mt-2\"><b>搜尋範圍</b></p><ul class=\"list-disc list-inside mt-1 space-y-1\"><li>本賽季與上賽季的比賽，由新到舊排列。</li><li>快速對戰、風暴聯賽與 ARAM。非排名選角、英雄聯賽與團隊聯賽在此期間內沒有比賽。</li><li>每次顯示 1000 筆結果。使用<b>再載入 1000 場</b>可查看更早的比賽。</li></ul><p class=\"mt-2\"><b>篩選</b></p><ul class=\"list-disc list-inside mt-1 space-y-1\"><li><b>遊戲模式、地區、地圖、遊戲版本、開始／結束日期</b>：將結果縮小到符合條件的比賽。遊戲版本只會列出搜尋範圍內的版本。</li><li><b>英雄</b>：選擇一位或多位英雄。選擇多位時，<b>或／且</b>切換鈕可決定要搜尋包含其中任一英雄的比賽，或包含所有所選英雄的比賽（不限隊伍）。</li><li><b>玩家</b>：輸入 BattleTag 後按「新增」。若有多個帳號符合，請選擇正確的那一個。私人檔案無法被搜尋。選擇多位玩家時，<b>或／且</b>的運作方式與英雄相同。</li></ul><p class=\"mt-2\"><b>進階篩選</b></p><ul class=\"list-disc list-inside mt-1 space-y-1\"><li><b>HP 玩家、英雄與職責 MMR</b>的最小值與最大值，依據每位玩家在該場比賽時的評分。</li><li><b>HP 玩家、英雄與職責段位</b>（青銅到大師）。段位採用各遊戲模式目前的聯賽分界。HP 英雄段位會在你選擇英雄後出現，因為每位英雄都有各自的分界。</li><li>所有 MMR 與段位篩選條件都必須由<em>同一位</em>玩家滿足。未選擇英雄時，可以是比賽中的任何人。英雄設為「或」時，指的是使用其中一位所選英雄的玩家。英雄設為「且」時，使用每位所選英雄的玩家都必須符合條件。</li></ul><p class=\"mt-2\"><b>為什麼會顯示「繼續搜尋」？</b></p><p class=\"mt-1\">罕見的組合（例如多位英雄都在大師段位）可能需要很長時間才能找到。重播搜尋每次會搜尋數秒份量的比賽，顯示目前找到的結果與已回溯的時間範圍，並讓你按下<b>繼續搜尋</b>接著搜尋。只有在整個搜尋範圍都檢查完畢後，才會出現「沒有符合這些篩選條件的重播」。</p><p class=\"mt-2\"><b>限制</b></p><p class=\"mt-1\">為了讓所有人都能順暢使用網站，搜尋次數限制為每分鐘 10 次，每次「再載入」或「繼續搜尋」都算一次。若達到上限，請等待一分鐘後再試。</p>"
+        },
+        "e62237f1953d9ea2": {
+            "q": "什麼是比賽預測遊戲？",
+            "a": "比賽預測遊戲讓你查看一場選角，並在看到結果前預測哪一隊會獲勝。這是測試你遊戲知識的有趣方式，還能看看你的預測與實際結果相比如何。"
+        },
+        "d5a1dac9a60a2bba": {
+            "q": "Heroes Profile 有電競、錦標賽、系列賽或聯賽的統計嗎？",
+            "a": "有。頂部選單中的<a href=\"/Esports\" class=\"link\">社群電競</a>涵蓋各個社群聯賽與錦標賽：NGS（Nexus Gaming Series）、CCL（Community Clash League）、Masters Clash、Heroes International、Nut Cup，以及收錄 HGC 等過往錦標賽與系列賽的「HGC 及其他」。每個項目都有各自的戰隊、玩家、比賽，以及英雄與天賦統計。"
+        },
+        "bf4555b9f7c4901c": {
+            "q": "什麼是 Heroes Profile 選角助手？",
+            "a": "<a href=\"/Drafter\" class=\"link\">Heroes Profile 選角助手</a>是一個選角工具，會運用 Heroes Profile 的勝率資料，協助你在選角階段評估陣容。它並非完美的預測工具，請將它作為選角知識的輔助，並用來研究各種陣容的表現。運作方式請參閱下方的選角助手章節。"
+        },
+        "ac97e4684901a4e5": {
+            "q": "我可以把網站上的天賦組合複製到遊戲中嗎？",
+            "a": "可以。在全球英雄頁面、單場比賽頁面以及網站上其他多處，你會在天賦組合旁看到「複製組合」按鈕。點擊後會以《暴雪英霸》可接受的格式將組合複製到剪貼簿，讓你可以直接貼到遊戲的天賦配置畫面中。"
+        },
+        "7fceba2017cd384d": {
+            "q": "如何使用選角助手？",
+            "a": "<p>選角助手無法完美預測選角結果。它的用途是研究與評估陣容，請把它當成你自身選角知識的補充。</p><ol class=\"list-decimal pl-6 mt-2 flex flex-col gap-2\"><li>開啟<a href=\"/Drafter\" class=\"link\">選角助手</a>並設定篩選條件。選角助手的資料僅來自風暴聯賽最近五個版本。篩選範圍太窄時可能只剩少量比賽，請留意英雄彈出視窗中的比賽場次、禁用場次與勝率信賴度。</li><li>選擇由哪支隊伍先選。隊伍 1 在左側，隊伍 2 在右側。這只會影響選角畫面的排列方式，請依遊戲內的選角情況設定。</li><li>點擊<strong>開始選角</strong>。選角助手會載入目前這一手禁用或選擇的最佳選項，並由左至右、由上至下依優劣排序。在該位置特別強勢的英雄會標上星號。將游標移到英雄上即可查看其統計。</li><li>點擊英雄即可禁用或選擇。選角過程中，選角助手會自動在隊伍 1 與隊伍 2 之間切換，<strong>復原</strong>可退回上一手。</li></ol><p class=\"mt-2\">搜尋框與職責圖示可縮小顯示的英雄範圍，但不會改變排序。<strong>顯示篩選</strong>讓你在選角的任何時刻更改篩選條件，目前這一手的建議會依新條件重新載入。</p><p class=\"mt-2\"><strong>無資料選角</strong>讓你在沒有任何建議的情況下進行選角，所有英雄依字母順序列出。</p><p class=\"mt-2\">選角助手最適合在電腦上使用。行動裝置也能使用，但要顯示的資訊相當多。</p>"
+        },
+        "f328f73f255bc9e4": {
+            "q": "選角助手如何建議禁用？",
+            "a": "<p><strong>第 1 至 4 個禁用</strong>會先找出符合你篩選條件中最常被禁用的英雄，再依各英雄在選角中該特定位置被禁用的頻率（即其<em>選角順序選取率</em>）進行加權。</p><p class=\"mt-2\">舉例來說，假設最常被禁用的英雄是 D.Va（200 次禁用）、Imperius（150）、Chromie（76）與 Orphea（25），而在目前位置，D.Va 被禁用的比例為 5%、Imperius 20%、Chromie 57%、Orphea 2%。依各自比例加權後，Chromie 為 43.3、Imperius 30、D.Va 10、Orphea 0.5，因此排序會因選角中該時刻常被禁用的英雄而有很大變化。</p><p class=\"mt-2\"><strong>第 5 與第 6 個禁用</strong>的運作方式相同，但還會參考對方隊伍的陣容，找出他們下一手的最佳選擇並建議將其禁用。</p>"
+        },
+        "7e8baf289c326dc9": {
+            "q": "選角助手如何建議選擇？",
+            "a": "<p><strong>第 1 與第 2 手選擇</strong>使用各英雄的影響力，並依其選角順序選取率加權。影響力結合了勝率與英雄被選擇或禁用的頻率。</p><p class=\"mt-2\"><strong>第 3 至 10 手選擇</strong>使用陣容資料，並依選角順序選取率加權。選角助手會根據隊伍已選的職責，找出包含這些職責且最常被使用的陣容，再針對尚未補上的職責，建議該陣容中最常被使用的英雄。</p><p class=\"mt-2\">例如，若最熱門的陣容是肉盾、鬥士、治療者、遠程刺客、遠程刺客，而某隊先選了 Orphea，那麼 Diablo、D.Va、Brightwing、Li-Ming 與 Greymane 等英雄就會排在前面。若該隊接著選了 The Lost Vikings，選角助手會改為尋找包含輔助與遠程刺客的熱門陣容。如此持續進行，直到選角結束。</p>"
+        },
+        "fff296fb94a79713": {
+            "q": "什麼是選角順序選取率？",
+            "a": "<p>在某英雄被禁用或選擇的所有比賽中，選角順序選取率表示這些禁用或選擇發生在選角各個位置的頻率。以下是 Li-Ming 的範例：</p><table class=\"my-3 text-sm\"><thead><tr><th class=\"px-2 text-left\">選角位置</th><th class=\"px-2 text-left\">禁用或選擇</th><th class=\"px-2 text-left\">比例</th></tr></thead><tbody><tr><td class=\"px-2\">1</td><td class=\"px-2\">禁用</td><td class=\"px-2\">7%</td></tr><tr><td class=\"px-2\">2</td><td class=\"px-2\">禁用</td><td class=\"px-2\">7%</td></tr><tr><td class=\"px-2\">3</td><td class=\"px-2\">禁用</td><td class=\"px-2\">10%</td></tr><tr><td class=\"px-2\">4</td><td class=\"px-2\">禁用</td><td class=\"px-2\">10%</td></tr><tr><td class=\"px-2\">5</td><td class=\"px-2\">選擇</td><td class=\"px-2\">15%</td></tr><tr><td class=\"px-2\">6</td><td class=\"px-2\">選擇</td><td class=\"px-2\">12%</td></tr><tr><td class=\"px-2\">7</td><td class=\"px-2\">選擇</td><td class=\"px-2\">7%</td></tr><tr><td class=\"px-2\">8</td><td class=\"px-2\">選擇</td><td class=\"px-2\">5%</td></tr><tr><td class=\"px-2\">9</td><td class=\"px-2\">選擇</td><td class=\"px-2\">4%</td></tr><tr><td class=\"px-2\">10</td><td class=\"px-2\">禁用</td><td class=\"px-2\">6%</td></tr><tr><td class=\"px-2\">11</td><td class=\"px-2\">禁用</td><td class=\"px-2\">5%</td></tr><tr><td class=\"px-2\">12</td><td class=\"px-2\">選擇</td><td class=\"px-2\">3%</td></tr><tr><td class=\"px-2\">13</td><td class=\"px-2\">選擇</td><td class=\"px-2\">3%</td></tr><tr><td class=\"px-2\">14</td><td class=\"px-2\">選擇</td><td class=\"px-2\">2%</td></tr><tr><td class=\"px-2\">15</td><td class=\"px-2\">選擇</td><td class=\"px-2\">2%</td></tr><tr><td class=\"px-2\">16</td><td class=\"px-2\">選擇</td><td class=\"px-2\">2%</td></tr></tbody></table><p>在此範例中，Li-Ming 最常在第 5 個位置（第一個英雄選擇）被選走，而在最後三個位置最少。</p><p class=\"mt-2\">每位英雄都有各自的分布，選角助手會用它把各英雄的 HP 選角值調整到選角目前的時間點。通常較早被選走的英雄會在前期排到前面，之後則往下掉。例如，Li-Ming 常以強勢的前期選擇出現，而 Tychus 則會在選角接近尾聲時排到前面。</p>"
+        },
+        "13924ed966ec1eef": {
+            "q": "選角助手彈出視窗中的統計代表什麼？",
+            "a": "<ul class=\"list-disc pl-6 flex flex-col gap-2\"><li><strong>HP 選角值</strong>：英雄排序所依據的數值。禁用與選擇的計算方式不同（如上所述），並經過縮放，使目前位置的最佳選項為 100。</li><li><strong>比賽場次 / 禁用場次</strong>：該英雄被使用或被禁用的總場次。</li><li><strong>影響力</strong>：介於 -5000 到 5000 的數值，表示英雄的相對強度。<code>round((Wins / Games Played - 0.5) * Adjusted Pick Rate * 10000)</code>，其中 Adjusted Pick Rate（調整後選取率）為 <code>(Games Played / Total Games * 100) / (100 - Ban Rate)</code>。</li><li><strong>禁用率</strong>：<code>Games Banned / Total Games * 100</code>。</li><li><strong>勝率</strong>：<code>Wins / Games Played</code>。</li><li><strong>勝率信賴度</strong>：將勝率加上或減去此數值，即可得到該英雄真實勝率的範圍。<code>1.96 * sqrt((Win Rate * (1 - Win Rate)) / Games Played)</code>。</li><li><strong>選角選取順序率</strong>：該英雄在目前位置的選角順序選取率。</li></ul>"
+        },
+        "541b245993b1fbbc": {
+            "q": "選角助手的篩選條件有什麼作用？",
+            "a": "<ul class=\"list-disc pl-6 flex flex-col gap-2\"><li><strong>時間範圍</strong>：要納入最近五個版本中的哪些版本。</li><li><strong>地區</strong>：只納入所選地區的比賽。</li><li><strong>英雄等級</strong>：只納入玩家英雄等級符合所選範圍的比賽，例如只看所有玩家英雄等級皆為 40 到 60 的選角。</li><li><strong>地圖</strong>：只納入所選地圖的比賽。</li><li><strong>玩家段位、英雄段位與職責段位</strong>：依 Heroes Profile 自有的 MMR 按實力篩選，分別針對玩家整體、特定英雄或職責。段位層級與遊戲內相同，但以我們的公式計算，因此不會與遊戲內段位一致。</li></ul>"
+        },
+        "d0239e003a57d18b": {
+            "q": "要登上排行榜需要符合哪些條件？",
+            "a": "要登上排行榜，必須同時符合以下三項條件：<ul class=\"list-disc list-inside mt-2 space-y-1\"><li>帳號等級須達 250 以上</li><li>該賽季勝率須達 50% 以上</li><li>達到最少比賽場次：每週 5 場（玩家排行榜）或每週 2 場（英雄/職責排行榜），乘以賽季開始至今的週數。例如在第 4 週，玩家排行榜需要該賽季已進行 20 場比賽。</li></ul>如果符合條件的玩家少於 50 人，場次要求會逐步降低，額外符合資格的玩家會顯示在不同的分組中。詳見下方「為什麼排行榜會分成多個分組？」。"
+        },
+        "0bc744e4ecdb1b37": {
+            "q": "為什麼排行榜會分成多個分組？",
+            "a": "在賽季初期，或是較少人玩的英雄與組隊人數中，可能不到 50 名玩家達到完整的場次要求。此時，場次要求會每次降低每週 1 場，最低降至 5 場，直到至少有 50 名玩家符合資格為止。每降低一次就會形成一個分組，每個分組都會顯示其所需的場次。<ul class=\"list-disc list-inside mt-2 space-y-1\"><li><strong>A 組</strong>達到完整要求。</li><li><strong>B 組</strong>在降低一次後達到要求，<strong>C 組</strong>則是降低兩次後，以此類推。</li></ul>較高分組的所有玩家排名都高於較低分組的玩家，即使其 Heroes Profile 評分較低也一樣。如果沒有分組，只打了幾場、勝率又剛好很高的玩家，可能會排在打滿完整場次的玩家之前。在每個分組內，玩家照常依 Heroes Profile 評分排名，名次則會從上一個分組接續下去。"
+        },
+        "079b26f1586074d5": {
+            "q": "什麼是 Heroes Profile 評分？如何計算？",
+            "a": "HP 評分是用來為排行榜玩家排名的自訂分數。它刻意不採用純 MMR 排名——純 MMR 排行榜很快就會被分身帳號以及達到高 MMR 後就不再遊玩的玩家佔據，變得停滯又無趣。<br><br>HP 評分結合了三項因素：你本賽季的 <strong>MMR</strong>、<strong>勝率</strong>與<strong>比賽場次</strong>，並且都是相對於該排行榜上其他玩家進行換算。比賽場次會依頂尖玩家設有上限，因此光靠狂刷場次無法登上榜首。最終結果會獎勵積極遊玩、贏得比賽且表現出色的玩家。你可以在<a href=\"/Global/Leaderboard\" class=\"link\">排行榜頁面</a>點擊「排行榜要求」查看確切公式。"
+        },
+        "2799edd46240bfe7": {
+            "q": "為什麼 Heroes Profile 使用 HP 評分，而不是直接顯示 MMR？",
+            "a": "純 MMR 排行榜有一個根本缺陷：玩家一旦達到高 MMR，數值幾乎不會再變動。這代表同樣的帳號會無限期佔據每個排行榜的頂端——尤其是分身帳號，它們可以人為拉高 MMR 後就不再遊玩。HP 評分透過納入每個賽季的實際遊玩情況來解決這個問題。如果你停止遊玩，即使 MMR 維持在高檔，排名也會下滑。想要往上爬，你可以實際採取的做法是：贏更多比賽，並在整個賽季中持續遊玩。"
+        },
+        "ab28c1d2159d507d": {
+            "q": "為什麼可以依組隊人數篩選排行榜？",
+            "a": "五排的預組隊伍在配合上比單排玩家有明顯優勢。若把他們放在同一個排行榜上，單排玩家很難在頂端競爭。依組隊人數（單排、雙排、三排等）篩選，可以讓你看到自己在與相同條件下排隊的玩家中排名如何。"
+        },
+        "0661aaccad1cf05b": {
+            "q": "賽季何時開始與結束？",
+            "a": "排行榜依賽季劃分，採用每個賽季的開始與結束日期。歷來所有賽季請見下方的<a href=\"#season-dates\" class=\"link\">賽季日期</a>。"
+        },
+        "e84d33fa67b6bd91": {
+            "q": "為什麼我有些比賽被算進錯誤的賽季？",
+            "a": "重播檔案不會記載比賽屬於哪個賽季，而 Blizzard 也不公布賽季的確切開始時間。Heroes Profile 會在發現賽季變更時設定新賽季的開始時間，因此我們採用的開始時間可能比實際晚幾個小時。你在這段空檔中進行的比賽會被算進上一個賽季，這就是為什麼你的賽季統計可能與遊戲內看到的差一兩場。<br><br>比賽的賽季會在重播處理時儲存，排行榜與其他頁面都以此為基礎建立。若事後更改賽季開始時間，這些比賽就會與新日期不一致，因此賽季一旦開始，我們就不會再更改賽季日期。"
+        },
+        "468e8905eba2fc53": {
+            "q": "排行榜何時更新？",
+            "a": "排行榜每天重新計算，從美東時間凌晨 2 點開始。所有類型的排行榜大約需要 12–14 小時才能計算完成。如果你今天有進行比賽，可能當天就會出現在部分排行榜上，但請在隔天下午再回來查看，以確保所有排行榜都已完整更新。"
+        },
+        "19de013de5252428": {
+            "q": "我要如何支持 Heroes Profile？",
+            "a": "支持我們的最佳方式有：<ul class=\"list-disc list-inside mt-2 space-y-1\"><li>在 <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> 上贊助（任何金額都能享有無廣告、網站標誌與<a href=\"/Analytics\" class=\"link\">玩家分析</a>）</li><li>向其他玩家介紹本站——口耳相傳是我們成長最大的動力</li><li>持續上傳你的重播，幫助擴充資料庫</li><li>在 <a href=\"https://github.com/Heroes-Profile/heroesprofile/issues\" target=\"_blank\" class=\"link\">GitHub</a> 上提交錯誤回報與意見回饋</li></ul>"
+        },
+        "52de9f21d698303e": {
+            "q": "我要如何取得玩家分析？",
+            "a": "<a href=\"/Analytics\" class=\"link\">玩家分析</a>目前為預覽測試版。每個 Battle.net 帳號都可以在分析頁面開始免費試用；試用會在你按下按鈕時開始，並處理你最近的 100 場比賽。每個新的開發階段（alpha、beta 及之後）都會提供新的免費試用。試用結束後若要繼續使用，可以在 <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> 上以任一方案贊助並連結到你的 Heroes Profile 帳號，或持有任一付費 <a href=\"/Api\" class=\"link\">API 方案</a>，並在你的 <a href=\"/Api/Account#analytics\" class=\"link\">API 帳號頁面</a>連結你的 Battle.net 帳號。已處理的比賽會在試用與贊助之間保留。"
+        },
+        "e19915550dcb29d8": {
+            "q": "Heroes Profile 是開源的嗎？",
+            "a": "是的！網站程式碼公開於 GitHub：<a href=\"https://github.com/Heroes-Profile/heroesprofile\" target=\"_blank\" class=\"link\">Heroes-Profile/heroesprofile</a>。上傳工具同樣開源：<a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>。歡迎貢獻程式碼與提供意見。"
+        },
+        "fd2f1bcf5ec4497d": {
+            "q": "我要如何回報錯誤或提出功能建議？",
+            "a": "請在 <a href=\"https://github.com/Heroes-Profile/heroesprofile/issues\" target=\"_blank\" class=\"link\">GitHub Issues</a> 提交錯誤回報。功能建議與想法請在 <a href=\"https://github.com/Heroes-Profile/heroesprofile/discussions\" target=\"_blank\" class=\"link\">GitHub Discussions</a> 發起討論。你也可以使用下方的聯絡表單，或寄信至 <a href=\"mailto:Zemill@heroesprofile.com\" class=\"link\">Zemill@heroesprofile.com</a>。"
+        },
+        "f9ae99a59d56f8f0": {
+            "q": "Heroes Profile 有提供 API 嗎？",
+            "a": "有，我們提供公開 API。說明文件請見 <a href=\"/Api/Docs\" class=\"link\">heroesprofile.com/Api/Docs</a>。API 設有請求頻率限制，僅供合理使用，不得用於大量下載整個重播資料庫。任一付費 API 方案也包含<a href=\"/Analytics\" class=\"link\">玩家分析</a>，適用於你在 API 帳號頁面連結的一個 Battle.net 帳號。"
+        }
+    }
+}

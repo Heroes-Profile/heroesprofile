@@ -57,15 +57,15 @@
         <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
           <thead>
             <tr>
-              <th>Match ID</th>
-              <th>Game Date</th>
-              <th>Game Type</th>
-              <th>Game Map</th>
-              <th>Hero</th>
-              <th>Result</th>
-              <th>Player MMR</th>
-              <th>Talents</th>
-              <th>Replay</th>
+              <th>{{ $t('Match ID') }}</th>
+              <th>{{ $t('Game Date') }}</th>
+              <th>{{ $t('Game Type') }}</th>
+              <th>{{ $t('Game Map') }}</th>
+              <th>{{ $t('Hero') }}</th>
+              <th>{{ $t('Result') }}</th>
+              <th>{{ $t('Player MMR') }}</th>
+              <th>{{ $t('Talents') }}</th>
+              <th>{{ $t('Replay') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -84,7 +84,7 @@
                 {{ row.game_map ? row.game_map.name : '' }}
               </td>
               <td class="py-2 px-3  flex items-center gap-1">
-                <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
+                <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ $heroName(row.hero) }}</span>
               </td>
               <td>
                 <span :class="row.winner == 1 ? 'text-teal' : 'text-red'">{{ row.winner == 1 ? 'Win' : 'Loss' }}</span>

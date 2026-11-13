@@ -22,11 +22,11 @@
         <table class="min-w-0 w-full responsive-table">
           <thead>
             <tr>
-              <th>Enemy's biggest party</th>
-              <th>Your games</th>
-              <th>Your win rate</th>
-              <th>Global win rate</th>
-              <th>Difference</th>
+              <th>{{ $t("Enemy's biggest party") }}</th>
+              <th>{{ $t('Your games') }}</th>
+              <th>{{ $t('Your win rate') }}</th>
+              <th>{{ $t('Global win rate') }}</th>
+              <th>{{ $t('Difference') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -66,11 +66,11 @@
         <table class="min-w-0 w-full responsive-table">
           <thead>
             <tr>
-              <th>You queued</th>
-              <th>Your games</th>
-              <th>Your win rate</th>
-              <th>Global win rate</th>
-              <th>Difference</th>
+              <th>{{ $t('You queued') }}</th>
+              <th>{{ $t('Your games') }}</th>
+              <th>{{ $t('Your win rate') }}</th>
+              <th>{{ $t('Global win rate') }}</th>
+              <th>{{ $t('Difference') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -92,13 +92,13 @@
       <table class="min-w-0 w-full responsive-table mb-6">
         <thead>
           <tr>
-            <th>Suggestion</th>
-            <th>Teams that won</th>
-            <th>Teams that lost</th>
-            <th>Difference</th>
-            <th>Confidence</th>
-            <th>You vs stacks</th>
-            <th>You otherwise</th>
+            <th>{{ $t('Suggestion') }}</th>
+            <th>{{ $t('Teams that won') }}</th>
+            <th>{{ $t('Teams that lost') }}</th>
+            <th>{{ $t('Difference') }}</th>
+            <th>{{ $t('Confidence') }}</th>
+            <th>{{ $t('You vs stacks') }}</th>
+            <th>{{ $t('You otherwise') }}</th>
           </tr>
         </thead>
         <tbody>

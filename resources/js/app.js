@@ -64,6 +64,34 @@ app.config.globalProperties.$ngsTeam = function (teamName) {
   return match ? { name: match[1], withdrawnSeason: match[2] } : { name: teamName, withdrawnSeason: null };
 };
 
+// Interface text in the chosen language (window.translations, from lang/{locale}.json); the English key itself when there's no translation.
+// :name placeholders are filled from replace, e.g. $t(':count games', { count: 5 }).
+app.config.globalProperties.$t = function (key, replace = {}) {
+  let text = window.translations?.[key] || key;
+  for (const [name, value] of Object.entries(replace)) {
+    text = text.replaceAll(':' + name, value);
+  }
+  return text;
+};
+
+// A hero or map name (or an object with .name) in the chosen language, from window.gameStrings; English when there's no translation.
+app.config.globalProperties.$heroName = function (hero) {
+  const name = typeof hero === 'object' && hero !== null ? hero.name : hero;
+  return window.gameStrings?.heroes?.[name] ?? name;
+};
+app.config.globalProperties.$mapName = function (map) {
+  const name = typeof map === 'object' && map !== null ? map.name : map;
+  return window.gameStrings?.maps?.[name] ?? name;
+};
+
+// A talent or ability field in the chosen language (localized_* from the server), else the English one.
+app.config.globalProperties.$gameText = function (row, field) {
+  return row?.['localized_' + field] || row?.[field];
+};
+app.config.globalProperties.$talentName = function (talent) {
+  return talent?.localized_name || talent?.title || talent?.talent_name || '';
+};
+
 // An esports player page's league, from its esport and esportfilters (HI's tournament, Other's series and icon).
 // params go on every request and link, so HI keeps ?tournament=.
 app.config.globalProperties.$esportLeague = function (esport, esportfilters) {

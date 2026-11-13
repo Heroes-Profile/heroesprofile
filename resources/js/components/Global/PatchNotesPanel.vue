@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-[93.75rem] mx-auto mb-4 p-4 rounded bg-lighten text-gray-light">
-    <div v-if="loading" class="text-center py-4">Loading patch notes...</div>
+    <div v-if="loading" class="text-center py-4">{{ $t('Loading patch notes...') }}</div>
 
     <div v-else-if="notes">
       <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
@@ -19,7 +19,7 @@
       </p>
 
       <div v-if="notes.general && notes.general.length" class="mb-4">
-        <h4 class="text-lg font-semibold mb-1">General</h4>
+        <h4 class="text-lg font-semibold mb-1">{{ $t('General') }}</h4>
         <ul class="list-disc list-inside space-y-1">
           <li v-for="(entry, index) in notes.general" :key="index">
             <span v-if="entry.type" :class="badgeFor(entry.type).color" class="mr-1">{{ badgeFor(entry.type).glyph }}</span>{{ entry.note || entry }}
@@ -28,7 +28,7 @@
       </div>
 
       <div v-if="notes.maps && notes.maps.length" class="mb-4">
-        <h4 class="text-lg font-semibold mb-2">Maps</h4>
+        <h4 class="text-lg font-semibold mb-2">{{ $t('Maps') }}</h4>
         <div class="flex flex-wrap gap-3">
           <div v-for="map in notes.maps" :key="map.map" class="w-56 rounded overflow-hidden bg-darken">
             <div class="relative">
@@ -36,7 +36,7 @@
               <span class="absolute top-1 right-1 text-lg drop-shadow" :class="badgeFor(map.type).color">{{ badgeFor(map.type).glyph }}</span>
             </div>
             <div class="p-2">
-              <div class="font-semibold text-sm mb-1">{{ map.map }}</div>
+              <div class="font-semibold text-sm mb-1">{{ $mapName(map.map) }}</div>
               <ul class="text-xs text-gray-md space-y-1">
                 <li v-for="(note, index) in map.notes" :key="index">{{ note }}</li>
               </ul>
@@ -65,7 +65,7 @@
               />
               <span class="absolute -top-1 -right-1 text-sm leading-none drop-shadow" :class="badgeFor(hero.type).color">{{ badgeFor(hero.type).glyph }}</span>
             </div>
-            <div class="text-[0.625rem] leading-tight truncate" :class="selectedHero === hero.name ? 'text-teal' : 'text-gray-md'">{{ hero.name }}</div>
+            <div class="text-[0.625rem] leading-tight truncate" :class="selectedHero === hero.name ? 'text-teal' : 'text-gray-md'">{{ $heroName(hero) }}</div>
           </div>
         </div>
         <div v-if="selectedHeroData" class="mt-3 p-3 rounded bg-darken">
@@ -86,18 +86,18 @@
         </h4>
         <div v-if="showBugFixes">
           <div v-if="notes.bug_fixes.general && notes.bug_fixes.general.length" class="mb-4">
-            <h5 class="font-semibold mb-1">General</h5>
+            <h5 class="font-semibold mb-1">{{ $t('General') }}</h5>
             <ul class="list-disc list-inside text-sm space-y-1">
               <li v-for="(note, index) in notes.bug_fixes.general" :key="index">{{ note }}</li>
             </ul>
           </div>
           <div v-if="notes.bug_fixes.maps && notes.bug_fixes.maps.length" class="mb-4">
-            <h5 class="font-semibold mb-2">Maps</h5>
+            <h5 class="font-semibold mb-2">{{ $t('Maps') }}</h5>
             <div class="flex flex-wrap gap-3">
               <div v-for="map in notes.bug_fixes.maps" :key="map.map" class="w-56 rounded overflow-hidden bg-darken">
                 <img v-if="map.image" :src="`/images/maps/icon/${map.image}`" :alt="map.map" class="w-full h-20 object-cover" @error="hideImage" />
                 <div class="p-2">
-                  <div class="font-semibold text-sm mb-1">{{ map.map }}</div>
+                  <div class="font-semibold text-sm mb-1">{{ $mapName(map.map) }}</div>
                   <ul class="text-xs text-gray-md space-y-1">
                     <li v-for="(note, index) in map.notes" :key="index">{{ note }}</li>
                   </ul>
@@ -122,7 +122,7 @@
                   :class="selectedBugFixHero === hero.name ? 'border-teal' : 'border-gray-dark'"
                   @error="useFallbackImage"
                 />
-                <div class="text-[0.625rem] leading-tight truncate" :class="selectedBugFixHero === hero.name ? 'text-teal' : 'text-gray-md'">{{ hero.name }}</div>
+                <div class="text-[0.625rem] leading-tight truncate" :class="selectedBugFixHero === hero.name ? 'text-teal' : 'text-gray-md'">{{ $heroName(hero) }}</div>
               </div>
             </div>
             <div v-if="selectedBugFixHeroData" class="mt-3 p-3 rounded bg-darken">
@@ -139,7 +139,7 @@
       </div>
     </div>
 
-    <div v-else class="text-center py-4 text-gray-medium">No summary available for this patch.</div>
+    <div v-else class="text-center py-4 text-gray-medium">{{ $t('No summary available for this patch.') }}</div>
   </div>
 </template>
 

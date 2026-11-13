@@ -16,7 +16,7 @@
       <div class="relative flex items-center gap-4">
         <hero-image-wrapper size="row" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
         <div class="flex flex-col whitespace-nowrap">
-          <span class="font-bold">{{ data.game_map.name }}</span>
+          <span class="font-bold">{{ $mapName(data.game_map) }}</span>
           <span class="text-xs">{{ formatRowDate(data.game_date) }}</span>
         </div>
       </div>
@@ -60,7 +60,7 @@
       <div class="relative flex items-center gap-4">
         <hero-image-wrapper size="match" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
         <div class="flex flex-col gap-1.5 whitespace-nowrap">
-          <span class="font-bold">{{ data.game_map.name }}</span>
+          <span class="font-bold">{{ $mapName(data.game_map) }}</span>
           <div class="flex flex-col">
             <span class="text-base font-medium text-header">{{ esport ? `Game ${data.game} · Round ${data.round}` : data.game_type.name }}</span>
             <span v-if="data.game_length" class="text-sm">{{ Math.round(data.game_length / 60) }} minutes</span>
@@ -78,7 +78,7 @@
     </div>
     <div v-else class="relative flex gap-5 items-center px-4 w-[26.875rem] shrink-0">
       <div v-for="stat in mmrStats" :key="stat.title" class="flex flex-col gap-0.5 flex-none w-[7.375rem] min-w-0">
-        <span class="text-base font-medium text-subtext whitespace-nowrap">{{ stat.title }}</span>
+        <span class="text-base font-medium text-subtext whitespace-nowrap">{{ $t(stat.title) }}</span>
         <span class="text-2xl font-semibold">{{ stat.value.toLocaleString('en-US') }}</span>
         <span v-if="stat.change !== null" class="text-sm font-medium" :class="stat.change >= 0 ?'text-win' : 'text-red'">{{ stat.change > 0 ? '+' : '' }}{{ stat.change.toFixed(2) }}</span>
       </div>
@@ -114,7 +114,7 @@
             <div v-for="(player, groupIndex) in group.players" :key="groupIndex" class="flex gap-1 h-4 items-center">
               <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover bg-surface-3 text-[0rem]" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name"/>
               <!-- The profile's own player comes first -->
-              <span v-if="player.check" class="flex-1 min-w-0 truncate text-sm font-medium text-subtext">Hidden</span>
+              <span v-if="player.check" class="flex-1 min-w-0 truncate text-sm font-medium text-subtext">{{ $t('Hidden') }}</span>
               <icon-with-hover v-else class="flex-1" popupsize="fit">
                 <template #trigger>
                   <a :href="player.link || `/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="!player.link && $redirectToProfile(player.battletag, player.blizz_id, player.region, false)" :class="['group/bt min-w-0 inline-flex items-center text-sm font-medium hover:text-lteal', player.own ? 'text-white' : 'text-subtext']"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-[0.625rem] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>

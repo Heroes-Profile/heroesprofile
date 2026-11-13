@@ -9,6 +9,7 @@ use App\Models\HelpChatMiss;
 use App\Services\FaqMatcher;
 use App\Services\GlobalDataService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -260,6 +261,10 @@ class HelpChatController extends Controller
 
 ');
 
+        // English keeps the prompt (and its cached answers) as it was
+        $locale = App::getLocale();
+        $languageRule = $locale === 'en' ? '' : "\n- Reply in ".config('app.supported_locales')[$locale].', the language they picked on the site, unless they write to you in another language; then reply in theirs. Use hero, map and talent names as the game shows them in that language, but keep every path and URL parameter in English.';
+
         return <<<PROMPT
             You are the help assistant on Heroes Profile (heroesprofile.com), a statistics site for the game Heroes of the Storm.
 
@@ -272,7 +277,7 @@ class HelpChatController extends Controller
             - Player profile pages take a season. For questions about "this season" or a season count, add ?season={season} for the current season (&season={season} if the path already has a ?), e.g. {profile}?season={season}.
             - Only for someone else's profile, tell them to search that BattleTag in the bar at the top.
             - You can't see stats, matches or numbers yourself. Link the page that shows what they want instead.
-            - For questions unrelated to Heroes Profile or Heroes of the Storm, politely say you can only help with Heroes Profile.
+            - For questions unrelated to Heroes Profile or Heroes of the Storm, politely say you can only help with Heroes Profile.{$languageRule}
 
             # Site guide
 

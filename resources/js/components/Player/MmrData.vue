@@ -28,7 +28,7 @@
     
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <p v-if="data === ''" class="text-center text-subtext mt-10">No data for this player and filters</p>
+    <p v-if="data === ''" class="text-center text-subtext mt-10">{{ $t('No data for this player and filters') }}</p>
     <div v-else-if="data">
 
       <line-chart class="max-w-[93.75rem] mx-auto px-4" :data="reversedData" :dataAttribute="'mmr'" :title="`${battletag} HP MMR Graph for ${gametype}`" :tooltip-label="`HP ${gameTypeName} MMR`"></line-chart>
@@ -42,13 +42,13 @@
         <thead>
           <tr>
             <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-              League
+              {{ $t('League') }}
             </th>
             <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-              Min HP MMR
+              {{ $t('Min HP MMR') }}
             </th>            
             <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-              Max HP MMR
+              {{ $t('Max HP MMR') }}
             </th>                
           </tr>
         </thead>
@@ -77,19 +77,19 @@
           <div class="overflow-x-auto">
             <div class="md:min-w-max w-full">
               <div class="max-md:hidden flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
-                <span class="w-[21.25rem] shrink-0 pl-5 cursor-pointer" @click="sortTable('game_date')">Match<sort-indicator column="game_date" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                <span class="w-[8.75rem] shrink-0 px-4 cursor-pointer" @click="sortTable('replayID')">Game ID<sort-indicator column="replayID" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                <span class="w-[16.25rem] shrink-0 px-4 cursor-pointer" @click="sortTable('mmr_date_parsed')">HP MMR Date Parsed<sort-indicator column="mmr_date_parsed" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                <span class="w-[8.75rem] shrink-0 px-4 text-center cursor-pointer" @click="sortTable('mmr')">HP MMR<sort-indicator column="mmr" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                <span class="w-[11.25rem] shrink-0 px-4 text-center cursor-pointer" @click="sortTable('mmr_change')">HP MMR Change<sort-indicator column="mmr_change" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                <span class="w-[7.5rem] shrink-0 px-4 text-center cursor-pointer" @click="sortTable('winner')">Result<sort-indicator column="winner" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[21.25rem] shrink-0 pl-5 cursor-pointer" @click="sortTable('game_date')">{{ $t('Match') }}<sort-indicator column="game_date" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[8.75rem] shrink-0 px-4 cursor-pointer" @click="sortTable('replayID')">{{ $t('Game ID') }}<sort-indicator column="replayID" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[16.25rem] shrink-0 px-4 cursor-pointer" @click="sortTable('mmr_date_parsed')">{{ $t('HP MMR Date Parsed') }}<sort-indicator column="mmr_date_parsed" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[8.75rem] shrink-0 px-4 text-center cursor-pointer" @click="sortTable('mmr')">{{ $t('HP MMR') }}<sort-indicator column="mmr" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[11.25rem] shrink-0 px-4 text-center cursor-pointer" @click="sortTable('mmr_change')">{{ $t('HP MMR Change') }}<sort-indicator column="mmr_change" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="w-[7.5rem] shrink-0 px-4 text-center cursor-pointer" @click="sortTable('winner')">{{ $t('Result') }}<sort-indicator column="winner" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
               </div>
               <template v-for="(row, index) in pagedData" :key="row.replayID">
                 <div v-if="!patreonUser && index != 0 && index % 50 === 0" class="my-2">
                   <dynamic-banner-ad :patreon-user="patreonUser" :index="index + 3" :mobile-override="false"></dynamic-banner-ad>
                 </div>
                 <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="'/Match/Single/' + row.replayID" :hero="row.hero" :title="row.hero.name" :date="formatRowDate(row.game_date)" :winner="row.winner === 'True'" :result="row.winner === 'True' ? 'Win' : 'Loss'">
-                  <template v-if="notCalculated(row)">HP MMR not calculated yet</template>
+                  <template v-if="notCalculated(row)">{{ $t('HP MMR not calculated yet') }}</template>
                   <template v-else>HP MMR <span class="text-white font-medium">{{ row.mmr.toLocaleString('en-US') }}</span> <span :class="row.mmr_change >= 0 ? 'text-win' : 'text-red'">({{ row.mmr_change > 0 ? '+' : '' }}{{ row.mmr_change.toFixed(2) }})</span></template>
                 </match-row-mobile>
                 <div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
@@ -101,7 +101,7 @@
                     <div class="relative flex items-center gap-4">
                       <hero-image-wrapper size="row" :hero="row.hero" :excludehover="true"></hero-image-wrapper>
                       <div class="flex flex-col whitespace-nowrap">
-                        <span class="font-bold">{{ row.hero.name }}</span>
+                        <span class="font-bold">{{ $heroName(row.hero) }}</span>
                         <span class="text-xs">{{ formatRowDate(row.game_date) }}</span>
                       </div>
                     </div>
@@ -109,8 +109,8 @@
                   <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="'/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
                   <!-- 1800 is the starting value before the game's MMR has been calculated -->
                   <template v-if="notCalculated(row)">
-                  <span class="relative w-[16.25rem] shrink-0 px-4 text-sm text-subtext italic">Pending</span>
-                  <span class="relative w-[8.75rem] shrink-0 px-4 text-center text-sm text-subtext italic">Not calculated yet</span>
+                  <span class="relative w-[16.25rem] shrink-0 px-4 text-sm text-subtext italic">{{ $t('Pending') }}</span>
+                  <span class="relative w-[8.75rem] shrink-0 px-4 text-center text-sm text-subtext italic">{{ $t('Not calculated yet') }}</span>
                   <span class="relative w-[11.25rem] shrink-0 px-4 text-center text-subtext">-</span>
                   </template>
                   <template v-else>
@@ -138,7 +138,7 @@
     </div>
     <!-- The graph, tier line, league table and match table in grey while it loads -->
     <div v-else-if="isLoading" class="max-w-[93.75rem] mx-auto px-4 flex flex-col gap-6">
-      <loading-component :compact="true" :textoverride="true">Loading HP MMR...</loading-component>
+      <loading-component :compact="true" :textoverride="true">{{ $t('Loading HP MMR...') }}</loading-component>
       <skeleton-box class="w-full aspect-[2/1]"></skeleton-box>
       <skeleton-box class="h-5 w-96 max-w-full"></skeleton-box>
       <table-skeleton :bare="true" :rows="7" :columns="['text', 'text', 'text']"></table-skeleton>

@@ -150,7 +150,7 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
     });
 });
 
-Route::prefix('v1')->middleware('web')->group(function () {
+Route::prefix('v1')->middleware(['web', 'localizeGameStrings'])->group(function () {
     Route::get('global/debug/config', [GlobalDebugController::class, 'config']);
     Route::get('global/status/{jobId}', [GlobalQueryStatusController::class, 'show']);
     Route::post('main/footer/data', [MainPageController::class, 'getFooterData']);

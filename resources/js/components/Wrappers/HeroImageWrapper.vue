@@ -4,7 +4,7 @@
       :rectangle="rectangle" 
       :size="size" 
       :image="getHeroImage()" 
-      :title="hero.name" 
+      :title="$heroName(hero)" 
       :excludehover="excludehover" 
       :hpowner="hpowner"
       :award="award"
@@ -20,7 +20,7 @@
     >
       <slot>
         <div v-if="!hasSlotContent">
-          <h2 class="max-sm:text-xs">{{ hero.name }}</h2>
+          <h2 class="max-sm:text-xs">{{ $heroName(hero) }}</h2>
         </div>
       </slot>
     </round-image>

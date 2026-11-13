@@ -8,7 +8,7 @@
     <div class="mx-auto max-w-[81.25rem] px-4 mt-6 grid gap-6 md:grid-cols-2 items-start">
 
       <div class="bg-lighten p-6">
-        <h2 class="text-2xl mb-4">Replay Uploader</h2>
+        <h2 class="text-2xl mb-4">{{ $t('Replay Uploader') }}</h2>
 
         <img
           src="/images/miscellaneous/uploader.png"
@@ -22,8 +22,8 @@
         </p>
 
         <p class="text-sm mb-4">
-          The uploader has been rewritten for Windows, macOS and Linux.
-          <a class="link" href="/Upload/Uploader">See what's new and how to move over from the old one</a>.
+          {{ $t('The uploader has been rewritten for Windows, macOS and Linux.') }}
+          <a class="link" href="/Upload/Uploader">{{ $t("See what's new and how to move over from the old one") }}</a>.
         </p>
 
         <uploader-downloads class="text-sm mb-4" :show-ranks="true"></uploader-downloads>
@@ -35,18 +35,18 @@
         </p>
 
         <p class="text-sm">
-          Source
+          {{ $t('Source') }}
           <a class="link block" :href="repository" target="_blank" rel="noopener">{{ repository }}</a>
         </p>
       </div>
 
       <div class="bg-lighten p-6">
-        <h2 class="text-2xl mb-4">Web Uploader</h2>
+        <h2 class="text-2xl mb-4">{{ $t('Web Uploader') }}</h2>
 
         <replay-upload-dropzone :upload-url="uploadUrl" :max-bytes="maxBytes"></replay-upload-dropzone>
 
         <p class="text-xs text-gray-medium mt-4">
-          <a class="link" href="/Upload/Widget">Embed this uploader</a>
+          <a class="link" href="/Upload/Widget">{{ $t('Embed this uploader') }}</a>
         </p>
       </div>
     </div>

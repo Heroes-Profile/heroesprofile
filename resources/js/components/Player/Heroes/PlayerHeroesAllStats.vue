@@ -56,7 +56,7 @@
               } ]
               ">
                 <label class="cursor-pointer block h-full p-1"><input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
-              {{ stat.name }}</label>
+              {{ $t(stat.name) }}</label>
             </div>
           </div>
         </div>
@@ -68,29 +68,29 @@
           <tr>
             <th class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider">
               <div class="flex items-center justify-center gap-3">
-                <span class="cursor-pointer" @click="sortTable('name')">Hero<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <span class="cursor-pointer" @click="sortTable('name')">{{ $t('Hero') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
                 <search-input v-model="heroSearch" placeholder="Search hero" :collapsible="true" class="w-40"></search-input>
               </div>
             </th>    
             <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate<sort-indicator column="win_rate" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+              {{ $t('Win Rate') }}<sort-indicator column="win_rate" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Total Games<sort-indicator column="games_played" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+              {{ $t('Total Games') }}<sort-indicator column="games_played" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('kda')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               <div class="">
-                KDA
+                {{ $t('KDA') }}
               </div><sort-indicator :column="'kda'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>  
             <th @click="sortTable('kdr')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               <div class="">
-                KDR
+                {{ $t('KDR') }}
               </div><sort-indicator :column="'kdr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <template   v-for="stat in selectedStats">
               <th  v-if="stat.selected" @click="sortTable(stat.value)" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                {{ stat.name }}<sort-indicator :column="stat.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                {{ $t(stat.name) }}<sort-indicator :column="stat.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>
             </template> 
          
@@ -98,7 +98,7 @@
         </thead>
         <tbody>
           <tr v-for="row in shownData" :key="row.id">
-            <td class="py-2 px-3"><a class="group/bt flex items-center justify-center" :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper size="big" :hero="row.hero" :href="getPlayerHeroPageUrl(row.name)" link-text="View Hero"></hero-image-wrapper><span class="hidden md:block font-bold ml-2 group-hover/bt:underline">{{ row.hero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></i></a></td>
+            <td class="py-2 px-3"><a class="group/bt flex items-center justify-center" :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper size="big" :hero="row.hero" :href="getPlayerHeroPageUrl(row.name)" link-text="View Hero"></hero-image-wrapper><span class="hidden md:block font-bold ml-2 group-hover/bt:underline">{{ $heroName(row.hero) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></i></a></td>
             <td class="py-2 px-3"><div class="min-w-[8em]"><div class="text-sm font-semibold text-header tabular-nums mb-1.5">{{ row.win_rate }}<span class="text-xs">%</span></div><stat-bar :value="row.win_rate" display-text="" :color="getWinRateColor(row.win_rate)"></stat-bar></div></td>
             <td class="py-2 px-3 text-center">{{ (row.wins + row.losses) }}</td>
             <td class="max-md:hidden py-2 px-3 ">{{ row.kda }}</td>
@@ -128,8 +128,8 @@
       </div>
     </div>
     <div v-else-if="isLoading || asyncLoading" class="max-w-[93.75rem] mx-auto px-4 flex flex-col gap-6">
-      <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
-      <loading-component v-else :compact="true" :textoverride="true" :timer="!esport" :starttime="timertime" :overrideimage="league?.loaderImage">Large amount of data. Please be patient.</loading-component>
+      <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
+      <loading-component v-else :compact="true" :textoverride="true" :timer="!esport" :starttime="timertime" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
       <div>
         <skeleton-box class="h-14 rounded-b-none"></skeleton-box>
         <table-skeleton :bare="true" :rows="10" :columns="['icon', 'bar', 'stat', 'text', 'text', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat']" :mobile-columns="['icon', 'bar', 'stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
@@ -137,7 +137,7 @@
     </div>
     <match-lookup v-if="matchIsLoading" :text="matchLookupText"></match-lookup>
     <div v-if="matchNotFound" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red text-white px-4 py-2 rounded z-50">
-      Couldn't find the match for that value.
+      {{ $t("Couldn't find the match for that value.") }}
     </div>
   </div>
 </template>
@@ -340,7 +340,7 @@ if(this.playerloadsetting == null || this.playerloadsetting == true || this.play
     },
     shownData() {
       const search = this.heroSearch.trim().toLowerCase();
-      return search ? this.sortedData.filter(row => row.name.toLowerCase().includes(search)) : this.sortedData;
+      return search ? this.sortedData.filter(row => row.name.toLowerCase().includes(search) || this.$heroName(row.name).toLowerCase().includes(search)) : this.sortedData;
     },
     selectedStatsCount() {
       return this.stats.filter(stat => stat.selected).length;

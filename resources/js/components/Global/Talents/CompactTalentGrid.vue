@@ -8,15 +8,15 @@
           :class="talent.games_played > 0 && talent.win_rate === tier.highestWinRate ? 'talent-card-row-highlight' : 'talent-card-row'">
           <div class="flex items-center gap-2">
             <talent-image-wrapper class="shrink-0" :talent="talent.talentInfo"></talent-image-wrapper>
-            <h3 class="text-sm">{{ talent.talentInfo.title }}</h3>
+            <h3 class="text-sm">{{ $talentName(talent.talentInfo) }}</h3>
           </div>
           <dl class="grid grid-cols-[max-content_minmax(0,1fr)] items-center gap-x-2 gap-y-1 mt-2">
-            <dt class="text-[0.625rem] uppercase">Win Rate</dt>
+            <dt class="text-[0.625rem] uppercase">{{ $t('Win Rate') }}</dt>
             <dd>
               <stat-bar :value="talent.win_rate" :display-text="talent.win_rate.toFixed(2)" suffix="%"
                 color="blue" class="stat-bar-light rounded-l w-full text-xs"></stat-bar>
             </dd>
-            <dt class="text-[0.625rem] uppercase">Popularity</dt>
+            <dt class="text-[0.625rem] uppercase">{{ $t('Popularity') }}</dt>
             <dd>
               <stat-bar :value="talent.popularity" :display-text="talent.popularity.toFixed(2)" suffix="%"
                 color="yellow" class="stat-bar-light rounded-l w-full text-xs"></stat-bar>
@@ -30,7 +30,7 @@
       </div>
     </article>
   </section>
-  <p v-else class="p-4 text-center bg-lighten">No talent statistics match these filters.</p>
+  <p v-else class="p-4 text-center bg-lighten">{{ $t('No talent statistics match these filters.') }}</p>
 </template>
 
 <script>

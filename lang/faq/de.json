@@ -1,0 +1,303 @@
+{
+    "categories": {
+        "Getting Started": "Erste Schritte",
+        "Uploading Replays": "Replays hochladen",
+        "MMR & Rankings": "MMR & Ranglisten",
+        "Global Stats & Data": "Globale Statistiken und Daten",
+        "Filters": "Filter",
+        "Site Features": "Website-Funktionen",
+        "Drafter": "Draft-Helfer",
+        "Leaderboards": "Bestenlisten",
+        "Supporting Heroes Profile": "Heroes Profile unterstützen"
+    },
+    "items": {
+        "9f34d33651e2f406": {
+            "q": "Was ist Heroes Profile?",
+            "a": "Heroes Profile ist eine von der Community aufgebaute Statistikseite für Heroes of the Storm. Wir erfassen Spielerprofile, globale Siegesraten der Helden, Talent-Builds, Duelle, Draft-Daten, Bestenlisten und vieles mehr – alles auf Grundlage von Replay-Dateien, die die Community hochlädt. Die Seite ging im Juni 2018 online und wird von Zemill und einem kleinen Team aus Freiwilligen betrieben."
+        },
+        "53e7bf5654bd4ea6": {
+            "q": "Wie finde ich mein Spielerprofil?",
+            "a": "Nutze die Suchleiste oben auf der Seite und gib deinen BattleTag ein (z. B. <code>Zemill#1940</code>). Sobald dein Profil gefunden ist, kannst du deinen Spielverlauf, deine Heldenstatistiken, deinen MMR, Karten, Duelle und mehr ansehen. Lade vorher deine Replays hoch, damit deine Daten angezeigt werden."
+        },
+        "fee6b20b0ee8251f": {
+            "q": "Ist Heroes Profile kostenlos?",
+            "a": "Ja, Heroes Profile ist komplett kostenlos. Wir werden von der Community über <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> unterstützt. Patreon-Unterstützer nutzen die Seite ohne Werbung und erhalten besondere Abzeichen."
+        },
+        "7ba1b5ca799e4b7a": {
+            "q": "Wie kommen meine Statistiken auf Heroes Profile?",
+            "a": "Du musst deine Replay-Dateien hochladen. Am einfachsten lädst du den <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a> herunter. Er läuft im Hintergrund und lädt Replays nach jedem Spiel automatisch hoch. Du kannst <a href=\"/Upload\" class=\"link\">Replays auch manuell hochladen</a>. Nach dem Hochladen dauert die Verarbeitung 5–10 Minuten."
+        },
+        "4015e4f47fc40628": {
+            "q": "Ist der Heroes Profile Uploader sicher?",
+            "a": "Ja. Der Uploader ist vollständig Open Source – den gesamten Quellcode findest du auf GitHub: <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>. Er enthält keine Werbung, keine Bloatware und kein Tracking über einfache Seitenanalysen hinaus. Wenn du möchtest, kannst du Replays stattdessen auch manuell hochladen.<br><br>Manche Antivirenprogramme oder Browser stufen das Installationsprogramm möglicherweise als verdächtig ein. Das ist ein Fehlalarm. Er entsteht, weil die ausführbare Datei nicht mit einem kostenpflichtigen Code-Signing-Zertifikat signiert ist, nicht weil sie Schadsoftware enthält. Du kannst das selbst anhand des offenen Quellcodes prüfen. Wenn dir das nicht geheuer ist, nutze stattdessen die <a href=\"/Upload\" class=\"link\">Seite zum manuellen Hochladen</a>."
+        },
+        "be6aba0fe5a58edc": {
+            "q": "Warum werden nicht alle meine Spiele angezeigt?",
+            "a": "Heroes Profile enthält nur Spiele, die in unser System hochgeladen wurden. Wenn du deine Replays nicht hochgeladen hast oder erst vor Kurzem damit angefangen hast, erscheinen ältere Spiele nicht. Du kannst <a href=\"/Upload\" class=\"link\">ältere Replay-Dateien manuell hochladen</a> oder künftig mit dem <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a> automatisch hochladen. Heroes of the Storm speichert Replay-Dateien in deinem Dokumente-Ordner."
+        },
+        "9ea212dc517ae501": {
+            "q": "Zeigen Datum und Uhrzeit eines Spiels den Beginn oder das Ende?",
+            "a": "Das Ende. Die angezeigte Zeit stammt aus der Replay-Datei, die Heroes of the Storm am Ende des Spiels speichert. Ein 25-minütiges Spiel, das um 8:00 Uhr begann, wird also mit 8:25 Uhr angezeigt."
+        },
+        "588f4dbb15c62747": {
+            "q": "Kann ich alte Replays hochladen, und beeinflusst das meinen MMR?",
+            "a": "Ja, du kannst alte Replays hochladen. Die Reihenfolge des Hochladens beeinflusst allerdings den MMR. MMR-Systeme nehmen anfangs größere Anpassungen vor, um dich richtig einzustufen. Lädst du deine neueren Spiele (mit höherer Siegesrate) vor deinen älteren Spielen (mit niedrigerer Siegesrate) hoch, kann dein MMR höher ausfallen als bei chronologischem Hochladen. Für den genauesten MMR lade alle Replays in der Reihenfolge hoch, in der sie gespielt wurden."
+        },
+        "9d33bcc4b479b937": {
+            "q": "Funktioniert der Uploader unter macOS oder Linux?",
+            "a": "Ja. Der Uploader ist eine einzige App für Windows, macOS und Linux. Die Downloads für alle Systeme findest du auf der <a href=\"/Upload\" class=\"link\">Upload-Seite</a>. Auf <a href=\"/Upload/Uploader\" class=\"link\">der Uploader-Seite</a> erfährst du, was sich geändert hat und wie du vom alten Windows-Uploader umsteigst."
+        },
+        "a1eb614636680760": {
+            "q": "Wie mache ich mein Profil privat?",
+            "a": "Melde dich mit deinem Battle.net-Account an, öffne die <a href=\"/Profile/Settings\" class=\"link\">Profileinstellungen</a> und stelle die Sichtbarkeit des Accounts auf „Privat“. Dein BattleTag erscheint weiterhin im Spielverlauf anderer Spieler, da er Teil der Replay-Datei ist. Deine eigene Profilseite ist dann aber nicht mehr öffentlich zugänglich."
+        },
+        "c4b452b25e56c717": {
+            "q": "Wie funktioniert MMR auf Heroes Profile?",
+            "a": "Blizzard speichert weder MMR noch Rangdaten in Replay-Dateien. Deshalb können wir deinen offiziellen Rang oder MMR im Spiel nicht aus einem Replay auslesen. Stattdessen berechnen wir eine eigene MMR aus den Siegen und Niederlagen in deinen hochgeladenen Replays. Das ist eine Annäherung: Je mehr Spiele du hochlädst, desto genauer wird sie. In neuen Spielmodi (etwa beim Start der Sturmliga) fangen alle bei null an, daher sind frühe MMR-Werte sehr ungenau. Deinen echten Sturmliga-Rang können wir separat anzeigen. Er wird vom Ladebildschirm ausgelesen (siehe unten)."
+        },
+        "628d7a2936bd5087": {
+            "q": "Warum stimmt meine Heroes-Profile-MMR nicht mit meinem Rang im Spiel überein?",
+            "a": "Unsere MMR ist eine unabhängige Berechnung, die nur auf den Replays in unserem System beruht. Sie stammt nicht von Blizzards Servern und gibt nicht deinen offiziellen Rang im Spiel wieder. Je mehr Spiele du hochlädst, desto näher kommt sie deinem tatsächlichen Können. Wenn du gerade erst mit dem Hochladen angefangen hast, spiel weitere Spiele, dann pendelt sich der Wert ein. Deinen echten Rang im Spiel zeigen wir, sofern vorhanden, in einem eigenen Bereich „Sturmliga-Rang“ in deinem Profil."
+        },
+        "561dd721f50a722e": {
+            "q": "Kann Heroes Profile meinen echten Rang im Spiel anzeigen?",
+            "a": "Ja, für die Sturmliga. Ränge stehen nicht in Replay-Dateien, aber das Spiel zeigt den Rang jedes Spielers auf dem Ladebildschirm. Die Version des Uploaders <strong>mit Rangauslesung</strong> (Windows, macOS oder Linux) kann sie dort auslesen:<ol class=\"list-decimal pl-6 my-2 space-y-1\"><li>Installiere sie über die Seite <a href=\"/Upload\" class=\"link\">Replay-Uploader</a>.</li><li>Schalte in den Einstellungen des Uploaders <strong>Ränge vom Ladebildschirm auslesen</strong> ein. Bis dahin ist die Funktion aus.</li><li>Spiel Sturmliga. Sobald das Replay eines Spiels hochgeladen ist, werden die vom Ladebildschirm ausgelesenen Ränge gespeichert und im Bereich „Sturmliga-Rang“ im Profil jedes Spielers angezeigt.</li></ol>Der Uploader erfasst nur das Spielfenster, nur während des Ladebildschirms, und nur Sturmliga-Spiele werden übermittelt. Ein Rang wird nur für Spieler gespeichert, die im Replay des Spiels vorkommen, und nur, wenn der Rangleser sicher ist, dass die Rangkarte zu ihnen gehört. Du kannst also auch über die Spiele anderer einen Rang erhalten. Ränge werden so angezeigt, wie sie ausgelesen wurden, zusammen mit dem Zeitpunkt, an dem sie zuletzt gesehen wurden, und der Anzahl der Spiele. Sie können gelegentlich falsch oder veraltet sein. <a href=\"/Upload/Uploader#rank-reading\" class=\"link\">So funktioniert das Auslesen der Ränge</a>."
+        },
+        "b46963dbac0933b1": {
+            "q": "Wofür stehen die Ligastufen auf den globalen Statistikseiten?",
+            "a": "Auf den globalen Statistikseiten beruhen die Ligastufen (Bronze, Silber, Gold, Platin, Diamant, Meister) auf unserer Heroes-Profile-MMR. Spieler, deren MMR in einem bestimmten Bereich liegt, werden dieser Stufe zugeordnet. Als Richtwert für die Bereiche nutzen wir die Stufenaufteilung von Blizzard. So sind etwa 7 % unserer Spieler in Bronze, was Blizzards vorgesehener Verteilung entspricht."
+        },
+        "9f2014d56a0836a1": {
+            "q": "Wie sind die Ligastufen auf Heroes Profile verteilt?",
+            "a": "Die Ligastufen auf Heroes Profile beruhen auf folgender Verteilung der Spieler:<br><br><div style=\"display:inline-block;min-width:220px;border:1px solid rgba(255,255,255,0.15);border-radius:6px;overflow:hidden;font-size:0.875rem;\"><div style=\"display:flex;background:rgba(255,255,255,0.1);font-weight:600;\"><span style=\"flex:1;padding:8px 14px;\">Stufe</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">% der Spieler</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">Bronze</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">12 %</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">Silber</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">23 %</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">Gold</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">26 %</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">Platin</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">22 %</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">Diamant</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">12 %</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">Meister</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">5 %</span></div></div><br><br>Aus dieser Verteilung ergeben sich die MMR-Grenzen der einzelnen Stufen. Spieler mit weniger als 50 Spielen landen in der Stufe „Unbekannt“ (manchmal Holz genannt), bis das System genug Daten hat, um sie genau einzustufen."
+        },
+        "743025c455ccb4e1": {
+            "q": "Warum wird die MMR regelmäßig neu berechnet?",
+            "a": "Wir berechnen die MMR regelmäßig über alle hochgeladenen Spiele neu, um die Genauigkeit zu verbessern. Wenn unsere Algorithmen besser werden und mehr Daten hochgeladen werden, erhalten alle Spieler durch die Neuberechnung eine genauere Wertung. Wir kündigen Neuberechnungen an, wenn sie stattfinden. Neuigkeiten findest du in unseren Reddit-Beiträgen oder auf GitHub."
+        },
+        "ab1a5a59c21f2ed8": {
+            "q": "Warum ist meine MMR nach einem Sieg gesunken (oder nach einer Niederlage gestiegen)?",
+            "a": "Die Heroes-Profile-MMR steigt nicht unbegrenzt. Sie misst dein Können im Verhältnis zu allen anderen. Wenn deine MMR nach einem Sieg gesunken ist, hat das System festgestellt, dass deine Gegner eine deutlich niedrigere MMR hatten als du. Gewinnt ein Spieler mit hoher MMR gegen Gegner mit niedriger MMR, wertet der Algorithmus das als Hinweis, dass deine aktuelle Wertung zu hoch sein könnte, und senkt sie leicht. Umgekehrt kann eine Niederlage gegen Spieler mit viel höherer MMR deine Wertung steigern. Das ist so gewollt: Das System versucht immer, den Bereich zu finden, in den du wirklich gehörst, statt dich nur für Siege zu belohnen."
+        },
+        "d9046734a5b347eb": {
+            "q": "Was ist die Helden-MMR?",
+            "a": "Die Helden-MMR ist eine MMR pro Held. Statt einer einzigen Gesamtwertung hast du für jeden gespielten Helden eine eigene MMR. Sie vergleicht dich mit der Leistung anderer Spieler auf demselben Helden. Wer in der Sturmliga weit oben spielt, hat nicht automatisch eine hohe Helden-MMR auf einem Helden, den er selten spielt."
+        },
+        "4f0391d0e1d4e289": {
+            "q": "Wie genau sind die Daten auf Heroes Profile?",
+            "a": "Die Daten sind nur so genau, wie es die Anzahl der in unser System hochgeladenen Replays zulässt. Wir haben keinen Zugriff auf jedes gespielte Spiel, sondern nur auf Spiele, bei denen Spieler unseren Uploader genutzt oder Replays manuell eingereicht haben. Trotzdem haben wir mit zig Millionen Spielen durchgehend eine der größten Replay-Datenbanken der Community."
+        },
+        "887f997b1810f8c3": {
+            "q": "Warum sind Spiegelmatches bei den Siegesraten der Duelle ausgeschlossen?",
+            "a": "Wenn ein Held in einem Spiegelmatch auf sich selbst trifft, ergibt das im selben Spiel immer genau einen Sieg und eine Niederlage für diesen Helden. Würde man Spiegelmatches einbeziehen, würde die durchschnittliche Siegesrate jedes Helden immer in Richtung 50 % gedrückt, ohne dass du daraus etwas Nützliches ablesen kannst. Ohne sie spiegeln die Duelldaten tatsächlich aussagekräftige Wettkampfdynamiken wider."
+        },
+        "507d49de8fb485c2": {
+            "q": "Wie funktioniert der Leistungswert?",
+            "a": "Der Leistungswert auf den Spielseiten wird so berechnet: Für jede Statistik eines Spiels (Schaden, Heilung, Tötungen usw.) werden alle 10 Spieler dieses Spiels vom besten zum schlechtesten eingestuft, und je nach Platzierung wird ein Wert vergeben. Es ist ein relatives Maß innerhalb dieses einen Spiels, kein globaler Vergleichswert."
+        },
+        "199e6ba2d5e28495": {
+            "q": "Was bedeuten die Zeitraumfilter (Hauptpatch vs. Nebenpatch)?",
+            "a": "Hauptpatches entsprechen auf Heroes Profile in der Regel Heldenveröffentlichungen oder größeren Überarbeitungen, bei denen Blizzard die Zahl nach dem ersten Dezimalpunkt ändert (z. B. 2.44 → 2.45). Nebenpatches sind die kleineren Balance-Updates innerhalb eines Hauptpatches. Der Filter „Zeiträume“ listet jeden Build unter seinem Haupt- und Unterpatch auf: Hake eine Überschrift an, um den ganzen Patch zu wählen, oder hake einzelne Builds an. In der <a href=\"/FAQ#patch-history\" class=\"link\">Patch-Historie</a> siehst du, was sich mit jedem Patch geändert hat."
+        },
+        "6952ad9e69f8dc30": {
+            "q": "Kann ich die durchschnittlichen Spielstatistiken eines Helden sehen, z. B. Belagerungsschaden oder Heldenschaden?",
+            "a": "Ja, der Durchschnitt pro Spiel für eine Statistik steht für jeden Helden auf der Seite <a href=\"/Global/Hero\" class=\"link\">Heldenstatistiken</a>:<ol class=\"list-decimal pl-6 my-2 flex flex-col gap-1\"><li>Klicke unter den Filtern auf <strong>Erweiterte Filter anzeigen</strong>.</li><li>Stelle bei <strong>Zeiträume</strong> höchstens 5 einzelne Builds ein. Der Statistikfilter wird ausgeblendet, wenn ein ganzer Haupt- oder Unterpatch angehakt ist.</li><li>Wähle die Statistik im <strong>Statistikfilter</strong>, z. B. Belagerungsschaden, Heldenschaden, Zauberschaden, Physischer Schaden, Heilung oder Tode, und klicke auf <strong>Filtern</strong>.</li></ol>Tabelle und Blasendiagramm zeigen dann statt der Siegesrate den Durchschnitt pro Spiel jedes Helden für diese Statistik. Du kannst auch direkt darauf verlinken, z. B. <a href=\"/Global/Hero?statfilter=siege_damage\" class=\"link\">/Global/Hero?statfilter=siege_damage</a>. Die Seite <a href=\"/Global/Talents\" class=\"link\">Talente</a> hat denselben Statistikfilter für Talente und Builds. Eine vollständige Gegenüberstellung aller Statistiken eines Helden, wie die erweiterten Statistiken auf der Heldenseite eines Spielers, gibt es global nicht."
+        },
+        "8b86a4ca4006babb": {
+            "q": "Warum sind die globalen Daten nach einem neuen Patch manchmal leer?",
+            "a": "Direkt nachdem Blizzard einen Patch veröffentlicht hat, gibt es für diesen Patch noch nicht genug hochgeladene Daten, um aussagekräftige Ergebnisse anzuzeigen. Erweitere deinen Zeitraumfilter auf mehrere Patches oder schau nach ein paar Tagen wieder vorbei, wenn mehr Spiele hochgeladen wurden."
+        },
+        "236905d835494eef": {
+            "q": "Was ist die „Siegeschance“ bei Talent-Builds und wie unterscheidet sie sich von der Siegesrate?",
+            "a": "Die Siegeschance ist unsere berechnete Wahrscheinlichkeit, dass ein vollständiger Talent-Build von Stufe 1 bis Stufe 20 zu einem Sieg führt. Sie ist keine einfache Siegesrate. Da viele Spiele vor Stufe 20 enden, können wir nicht immer den vollständigen Build sehen, den ein Spieler wählen wollte. Wir ermitteln im Backend anhand der tatsächlich gewählten Talente, auf welchen Build ein Spieler hinarbeitete, und berücksichtigen sowohl Spiele, die Stufe 20 erreicht haben, als auch solche, bei denen das nicht der Fall war. So ergibt sich ein genaueres Bild davon, wie tauglich ein Build insgesamt ist, als wenn man nur Siege in vollständigen Spielen zählt. Die Siegeschance von Builds findest du auf der Seite <a href=\"/Global/Talents\" class=\"link\">Globale Talente</a> und im <a href=\"/Global/Talents/Builder\" class=\"link\">Talent-Planer</a>."
+        },
+        "c2692ad41dc38841": {
+            "q": "Was bedeutet die Statistik „Einfluss“?",
+            "a": "Einfluss ist ein Wert zwischen -5000 und 5000, der misst, wie stark ein Held den Ausgang von Spielen tatsächlich beeinflusst. Dafür wird berechnet, wie weit die Siegesrate des Helden über oder unter 50 % liegt, und das mit der Häufigkeit multipliziert, mit der der Held in Spielen gewählt wird, in denen er nicht gebannt ist. Ein Held mit hoher Siegesrate, der selten gewählt wird, hat einen niedrigeren Einflusswert als ein Held mit etwas niedrigerer Siegesrate, der in den meisten Spielen gewählt wird – denn der zweite Held prägt tatsächlich mehr Spiele. Stell es dir als Siegesrate gewichtet nach Relevanz vor."
+        },
+        "baef60d089cdea87": {
+            "q": "Wo sehe ich die Fähigkeiten, Talente und Basiswerte eines Helden?",
+            "a": "Die Seite <a href=\"/Heroes\" class=\"link\">Helden</a>, auch unter „Werkzeuge“ im oberen Menü, hat für jeden Helden eine eigene Seite, z. B. <a href=\"/Heroes/Abathur\" class=\"link\">Abathur</a>. Sie basiert auf den Spieldateien des aktuellen Patches und hat drei Reiter: <strong>Über</strong> (Rolle, Schwierigkeit, Beschreibung, Bewertungen, Basiswerte und Hintergrund), <strong>Fähigkeiten</strong> und <strong>Talente</strong>. Fahre mit der Maus über ein Fähigkeits- oder Talentsymbol oder tippe darauf, um den vollständigen Tooltip zu sehen. Der Stufenregler skaliert Leben, Angriffsschaden und Fähigkeitswerte auf jede Stufe von 1 bis 30, und skalierende Werte zeigen ihre Steigerung pro Stufe, z. B. 62 (+4 % pro Stufe). Die Links unter den Reitern öffnen diesen Helden auf den Statistikseiten, etwa Talentstatistiken und Talent-Planer, für Siegesraten und Builds."
+        },
+        "da9672cbf4c59a90": {
+            "q": "Was ist der Talent-Planer?",
+            "a": "Mit dem <a href=\"/Global/Talents/Builder\" class=\"link\">Talent-Planer</a> stellst du einen bestimmten Talent-Build zusammen und siehst Siegesratendaten für genau diese Kombination. Damit kannst du zwei Builds anhand echter Spieldaten direkt miteinander vergleichen."
+        },
+        "2df01fc91ad6f6f6": {
+            "q": "Wie funktionieren die Filter?",
+            "a": "Ändere die gewünschten Filter und klicke dann auf <strong>Filtern</strong>, um die Seite damit neu zu laden. Auf den Seiten mit globalen Statistiken blendet <strong>Erweiterte Filter anzeigen</strong> weitere Filter ein: Statistikfilter, Heldenstufe, HP-Heldenrang, HP-Rollenrang, Spiegelmatches und auf den Heldenstatistiken zusätzlich Gruppengröße. Seiten mit globalen Statistiken speichern deine Filter im Seitenlink. So kannst du eine gefilterte Seite teilen oder als Lesezeichen speichern. Auf dem Smartphone tippst du auf <strong>Filter anzeigen</strong>, um sie zu öffnen."
+        },
+        "cc5ac1d59d4e6d47": {
+            "q": "Was bewirkt der Filter „Zeiträume“?",
+            "a": "Mit „Zeiträume“ legst du fest, aus welchen Patches die Daten stammen. Die Builds sind nach Hauptpatch und Unterpatch gruppiert: Hake eine Überschrift an, um den ganzen Patch zu wählen, oder hake einzelne Builds an. Standardmäßig ist der neueste Patch ausgewählt. Im <a href=\"/FAQ#patch-history\" class=\"link\">Patchverlauf</a> siehst du, was sich mit jedem Patch geändert hat."
+        },
+        "5aeb185246963ce8": {
+            "q": "Was bewirkt der Filter „Spielmodus“?",
+            "a": "„Spielmodus“ beschränkt die Daten auf Sturmliga, Schnelles Spiel, ARAM und die übrigen Modi. Seiten mit globalen Statistiken lassen Draft ohne Rang und benutzerdefinierte Spiele weg. Profilseiten enthalten alle Spielmodi, und im Spielverlauf lassen sich auch benutzerdefinierte Spiele anzeigen."
+        },
+        "3e46caaf0ef2343c": {
+            "q": "Was bewirkt der Statistikfilter?",
+            "a": "Auf den Seiten <a href=\"/Global/Hero\" class=\"link\">Heldenstatistiken</a> und <a href=\"/Global/Talents\" class=\"link\">Talente</a> ersetzt der Statistikfilter die Siegesrate durch den Durchschnitt pro Spiel einer Spielstatistik. Das kann etwa Helden-, Belagerungs-, Zauber-, physischer Schaden oder Schaden an Dienern sein, außerdem Heilung, Tode, Beteiligungen, Zeit mit betäubten Gegnern oder eroberte Söldnerlager. Du findest ihn unter „Erweiterte Filter anzeigen“. Er erscheint nur, wenn unter „Zeiträume“ höchstens 5 einzelne Builds ausgewählt sind. Eine Schritt-für-Schritt-Anleitung findest du unter „Kann ich die durchschnittlichen Spielstatistiken eines Helden sehen“ im Abschnitt „Globale Statistiken &amp; Daten“."
+        },
+        "93da9eaa18b9675f": {
+            "q": "Was bewirken die Filter „Regionen“ und „Karte“?",
+            "a": "<strong>Regionen</strong> beschränkt die Daten auf Spiele in NA, EU, KR oder CN. <strong>Karte</strong> beschränkt sie auf Spiele auf den gewählten Karten."
+        },
+        "4209fedfeb72deca": {
+            "q": "Was bewirken die Filter „Helden“ und „Rolle“?",
+            "a": "Sie beschränken die Daten auf einen Helden oder eine Rolle. In der <a href=\"/Match/Search\" class=\"link\">Replay-Suche</a> kannst du mehrere Helden wählen und dich für <strong>ODER</strong> (Spiele mit einem beliebigen dieser Helden) oder <strong>UND</strong> (Spiele mit allen diesen Helden) entscheiden."
+        },
+        "3a3626551cb58f7f": {
+            "q": "Was bewirken die Filter „HP-Spielerrang“, „HP-Heldenrang“ und „HP-Rollenrang“?",
+            "a": "Sie filtern nach Können und nutzen dafür den eigenen MMR von Heroes Profile. Das ist entweder der Gesamt-MMR des Spielers, sein MMR auf diesem Helden oder sein MMR in der Rolle dieses Helden. Die Stufen orientieren sich an denen im Spiel, beruhen aber auf unserer Formel und stimmen daher nicht mit den Rängen im Spiel überein. Wie unser MMR funktioniert, erklärt der Abschnitt „MMR &amp; Ranglisten“."
+        },
+        "48e670ac975a3e5d": {
+            "q": "Was ist der Schalter „HP / Im Spiel“ beim Spielerrang?",
+            "a": "Auf den Seiten Heldenstatistiken und Talente kann der Spielerrang entweder die MMR-Stufen von Heroes Profile (HP) nutzen oder den Sturmliga-Rang, den Blizzard auf dem Ladebildschirm zeigt (Im Spiel). Der Rang im Spiel wird von Spielern ausgelesen, die den optionalen Rangleser des Heroes-Profile-Uploaders nutzen. Jeder Spieler zählt in dem Rang, den er vor dem jeweiligen Spiel hatte. Nur Spieler mit ausgelesenem Rang zählen, daher sind die Stichproben kleiner. Unter „Zeiträume“ erscheinen außerdem nur Patches seit dem Start des Ranglesers."
+        },
+        "ceb307666ee1a707": {
+            "q": "Was bewirkt der Filter „Heldenstufe“?",
+            "a": "„Heldenstufe“ berücksichtigt nur Spieler, deren Held die gewählten Stufen hatte, von 1–5 bis 100+. So siehst du, wie ein Held in erfahrenen Händen abschneidet."
+        },
+        "8b4005b071aaa893": {
+            "q": "Was bewirkt der Filter „Spiegelmatches“?",
+            "a": "Er legt fest, ob Spiele mitzählen, in denen derselbe Held in beiden Teams ist. Standardmäßig steht er auf „Ausschließen“. Spielt ein Held gegen sich selbst, kommen immer ein Sieg und eine Niederlage hinzu, was seine Siegesrate in Richtung 50 % zieht."
+        },
+        "5be3d434bc2a4afe": {
+            "q": "Was bewirkt der Filter „Gruppengröße“?",
+            "a": "„Gruppengröße“ beschränkt die Daten auf Spieler, die Solo, als Duo oder in einer Gruppe aus 3, 4 oder 5 angetreten sind. Auf der Seite <a href=\"/Global/Party\" class=\"link\">Gruppe</a> wählst du mit <strong>Gruppe Team 1</strong> und <strong>Gruppe Team 2</strong> stattdessen die komplette Zusammensetzung jedes Teams, von 5 Einzelspielern bis zur 5er-Gruppe."
+        },
+        "34aa4d9109cf513d": {
+            "q": "Was bewirkt der Filter „Mindestanzahl Spiele“?",
+            "a": "Er blendet Zeilen mit weniger Spielen als der gewählten Anzahl aus. So drängen sich kleine Stichproben nicht an die Spitze der Tabelle."
+        },
+        "7a5847744c3c61e0": {
+            "q": "Was bewirkt der Talent-Build-Typ?",
+            "a": "Er legt fest, welche Builds die Seite Talente auflistet. Es zählen nur Builds, die Stufe 20 erreicht haben.<ul class=\"list-disc pl-6 mt-2 flex flex-col gap-1\"><li><strong>Beliebt</strong>: die am häufigsten gespielten Builds.</li><li><strong>HP-Algorithmus</strong>: die am häufigsten gespielten Builds, aber nur einer pro Kombination aus Talenten der Stufen 1, 4 und 7. So siehst du verschiedene Wege im frühen Spiel.</li><li><strong>Einzigartig Stufe X</strong>: der meistgespielte Build für jedes einzelne Talent auf dieser Stufe.</li></ul>"
+        },
+        "f485a44e467332ce": {
+            "q": "Was bewirken die Filter „Saison“ und „Datum“?",
+            "a": "<strong>Saison</strong> beschränkt die Daten auf Spiele in den gewählten Saisons, gruppiert nach Jahr. Auf Profilseiten kannst du mehrere wählen. Der Filter <strong>Zeitraum</strong> beschränkt sie auf Spiele zwischen den gewählten Daten."
+        },
+        "9402670d1c36d27e": {
+            "q": "Was bewirken die Filter „Bestenlistentyp“ und „Liga“?",
+            "a": "In den <a href=\"/Global/Leaderboard\" class=\"link\">Bestenlisten</a> wechselt der Bestenlistentyp zwischen den Listen für Spieler, Held, Rolle, Spielvorhersage und SL-Rang. Die Liste für den SL-Rang zeigt die Sturmliga-Ränge aus dem Spiel und bietet zusätzlich eine Auswahl für die Liga."
+        },
+        "0b0fb91586231d5f": {
+            "q": "Welche Filter hat die Replay-Suche?",
+            "a": "Die <a href=\"/Match/Search\" class=\"link\">Replay-Suche</a> hat einige eigene Filter. Dazu gehören <strong>Spielversion</strong> (Patches), ein <strong>Zeitraum</strong> und Bereiche für <strong>HP-Spieler-, Helden- und Rollen-MMR</strong>. Mit <strong>Spieler</strong> findest du nur Spiele, an denen diese BattleTags beteiligt waren. Der Spielverlauf bietet mit <strong>Spieler (Freund oder Feind)</strong> eine ähnliche Suche."
+        },
+        "dd2e2fa841409455": {
+            "q": "Welche Filter haben die E-Sport-Seiten?",
+            "a": "E-Sport-Seiten haben stattdessen Filter für die jeweilige Liga, etwa Saison, Division, Team oder Turnier. Welche es gibt, hängt davon ab, was die Liga erfasst."
+        },
+        "955526a9d6ed7f17": {
+            "q": "Was ist die PreMatch-Funktion?",
+            "a": "PreMatch ist eine Funktion des <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a>. Wenn sie aktiviert ist, öffnet sie während des Ladebildschirms eines Spiels eine Browserseite mit Infos zu allen 10 Spielern deines Spiels: ihre Statistiken, meistgespielten Helden, MMR und mehr. So lernst du deine Mitspieler und Gegner schon vor Spielbeginn kennen. Ein Beispiel findest du unter <a href=\"/PreMatch/Results/\" class=\"link\">PreMatch-Ergebnisse</a>."
+        },
+        "43893ec09753fb1b": {
+            "q": "Was ist die Seite „Freunde und Feinde“?",
+            "a": "Die Seite „Freunde und Feinde“ in deinem Spielerprofil zeigt deine Siegesrate, wenn du <em>mit</em> oder <em>gegen</em> bestimmte Spieler spielst. Ein Beispiel ist <a href=\"/Player/Zemill/67280/1/FriendFoe\" class=\"link\">diese Seite „Freunde und Feinde“</a>. Lade deine Replays hoch und sieh dir den Bereich „Freunde und Feinde“ in deinem eigenen Profil an, um deine Werte zu sehen."
+        },
+        "957be35b13074e79": {
+            "q": "Was ist die Seite „Auszeichnungen“?",
+            "a": "Die Seite „Auszeichnungen“ in deinem Spielerprofil zeigt, wie oft du jede Auszeichnung am Spielende erhältst, etwa MVP, Schmerzbringer oder Hauptheiler, als Anteil deiner Spiele. Ein Beispiel ist <a href=\"/Player/Zemill/67280/1/Awards\" class=\"link\">diese Seite „Auszeichnungen“</a>. Klicke auf eine Auszeichnung, um alle Spiele aufzulisten, in denen du sie erhalten hast. Auszeichnungen werden nur für Spiele gezählt, die gespielt wurden, nachdem Heroes Profile mit ihrer Erfassung begonnen hat. Sehr alte Replays sind daher nicht enthalten. Alle Auszeichnungen und wofür sie vergeben werden, findest du unten unter <a href=\"#awards\" class=\"link\">Spielauszeichnungen</a>."
+        },
+        "77eb65776c03f5b4": {
+            "q": "Was ist die Replay-Suche und wie nutze ich sie?",
+            "a": "Die <a href=\"/Match/Search\" class=\"link\">Replay-Suche</a> findet aktuelle Spiele, die auf Heroes Profile hochgeladen wurden. Wähle deine Filter, klicke auf „Filtern“, und jedes Ergebnis verlinkt auf die vollständige Spielseite.<p class=\"mt-2\"><b>Was durchsucht wird</b></p><ul class=\"list-disc list-inside mt-1 space-y-1\"><li>Spiele der aktuellen und der vorherigen Saison, die neuesten zuerst.</li><li>Schnelles Spiel, Sturmliga und ARAM. Für Draft ohne Rang, Heldenliga und Teamliga gibt es in diesem Zeitraum keine Spiele.</li><li>Ergebnisse kommen jeweils in 1000er-Schritten. Mit <b>1000 weitere laden</b> siehst du ältere Spiele.</li></ul><p class=\"mt-2\"><b>Filter</b></p><ul class=\"list-disc list-inside mt-1 space-y-1\"><li><b>Spielmodus, Regionen, Karte, Spielversion, Von/Bis Datum</b>: grenzen die Suche auf diese Spiele ein. Unter Spielversion stehen nur Patches aus dem Suchzeitraum.</li><li><b>Helden</b>: wähle einen oder mehrere. Bei mehreren legt der Schalter <b>ODER / UND</b> fest, ob Spiele mit einem beliebigen davon oder Spiele mit allen davon gesucht werden, egal in welchem Team.</li><li><b>Spieler</b>: gib einen BattleTag ein und klicke auf „Hinzufügen“. Passen mehrere Accounts, wähle den richtigen aus. Private Profile können nicht gesucht werden. Bei mehreren Spielern funktioniert <b>ODER / UND</b> genauso wie bei Helden.</li></ul><p class=\"mt-2\"><b>Erweiterte Filter</b></p><ul class=\"list-disc list-inside mt-1 space-y-1\"><li><b>HP-Spieler-, HP-Helden- und HP-Rollen-MMR</b> als Minimum und Maximum, basierend auf der Wertung, die jeder Spieler in diesem Spiel hatte.</li><li><b>HP-Spieler-, HP-Helden- und HP-Rollenrang</b> (Bronze bis Meister). Die Ränge nutzen die aktuellen Ligagrenzen des jeweiligen Spielmodus. Der HP-Heldenrang erscheint, sobald du einen Helden wählst, da jeder Held eigene Grenzen hat.</li><li>Alle MMR- und Rangfilter müssen für <em>denselben</em> Spieler gelten. Ohne gewählte Helden kann das jeder im Spiel sein. Mit Helden auf ODER ist es der Spieler, der einen dieser Helden spielt. Mit Helden auf UND muss der Spieler auf jedem gewählten Helden die Filter erfüllen.</li></ul><p class=\"mt-2\"><b>Warum steht dort „Weitersuchen“?</b></p><p class=\"mt-1\">Seltene Kombinationen, etwa mehrere Helden alle auf Meister, können lange dauern. Die Replay-Suche durchsucht jeweils Spiele für einige Sekunden, zeigt, was sie bisher gefunden hat und wie weit sie zurück gesucht hat, und du kannst mit <b>Weitersuchen</b> fortfahren. „Keine Replays passen zu diesen Filtern.“ erscheint erst, wenn der gesamte Suchzeitraum geprüft wurde.</p><p class=\"mt-2\"><b>Begrenzungen</b></p><p class=\"mt-1\">Damit die Website für alle schnell bleibt, sind Suchen auf 10 pro Minute begrenzt, und jedes „Mehr laden“ oder „Weitersuchen“ zählt als eine Suche. Wenn du das Limit erreichst, warte eine Minute und versuche es erneut.</p>"
+        },
+        "e62237f1953d9ea2": {
+            "q": "Was ist das Spiel „Spielvorhersage“?",
+            "a": "Bei der Spielvorhersage siehst du dir einen Draft an und versuchst vorherzusagen, welches Team gewinnt, bevor du das Ergebnis siehst. So kannst du dein Spielwissen auf unterhaltsame Weise testen und vergleichen, wie deine Vorhersagen im Vergleich zum tatsächlichen Ergebnis abschneiden."
+        },
+        "d5a1dac9a60a2bba": {
+            "q": "Gibt es auf Heroes Profile Statistiken zu E-Sport, Turnieren, Serien oder Ligen?",
+            "a": "Ja. <a href=\"/Esports\" class=\"link\">Community-E-Sport</a> im oberen Menü umfasst Community-Ligen und -Turniere: NGS (Nexus Gaming Series), CCL (Community Clash League), Masters Clash, Heroes International, Nut Cup sowie HGC and More mit früheren Turnieren und Serien wie der HGC. Jede davon hat eigene Teams, Spieler, Spiele sowie Helden- und Talentstatistiken."
+        },
+        "bf4555b9f7c4901c": {
+            "q": "Was ist der Draft-Helfer von Heroes Profile?",
+            "a": "Der <a href=\"/Drafter\" class=\"link\">Draft-Helfer von Heroes Profile</a> ist ein Draft-Werkzeug, das die Siegesraten-Daten von Heroes Profile nutzt, um dir beim Bewerten von Aufstellungen während der Draft-Phase zu helfen. Er ist nicht als perfekte Vorhersage gedacht – nutze ihn als Ergänzung zu deinem Draft-Wissen und um zu untersuchen, wie Aufstellungen abschneiden. Wie er funktioniert, erfährst du unten im Abschnitt zum Draft-Helfer."
+        },
+        "ac97e4684901a4e5": {
+            "q": "Kann ich einen Talent-Build von der Website ins Spiel kopieren?",
+            "a": "Ja. Auf den globalen Heldenseiten, der Seite eines einzelnen Spiels und an mehreren anderen Stellen der Website findest du neben Talent-Builds den Button „Build ins Spiel kopieren“. Ein Klick darauf kopiert den Build in einem Format, das Heroes of the Storm akzeptiert, in deine Zwischenablage, sodass du ihn direkt im Spiel einfügen kannst."
+        },
+        "7fceba2017cd384d": {
+            "q": "Wie benutze ich den Draft-Helfer?",
+            "a": "<p>Der Draft-Helfer kann einen Draft nicht perfekt vorhersagen. Er wurde entwickelt, um Aufstellungen zu untersuchen und einzuschätzen. Nutze ihn also als Ergänzung zu deinem eigenen Draft-Wissen.</p><ol class=\"list-decimal pl-6 mt-2 flex flex-col gap-2\"><li>Öffne den <a href=\"/Drafter\" class=\"link\">Draft-Helfer</a> und wähle deine Filter. Die Daten des Draft-Helfers stammen ausschließlich aus der Sturmliga und den letzten fünf Patches. Enge Filter können nur wenige Spiele übrig lassen. Achte deshalb in den Helden-Pop-ups auf Gespielte Spiele, Gebannte Spiele und Konfidenz der Siegesrate.</li><li>Wähle, welches Team zuerst wählt. Team 1 ist links, Team 2 rechts. Das beeinflusst nur die Darstellung des Drafts, stimme es also auf deinen Draft im Spiel ab.</li><li>Klicke auf <strong>Draft starten</strong>. Der Draft-Helfer lädt die besten Optionen für den aktuellen Bann oder Pick und ordnet sie vom besten zum schlechtesten, von links nach rechts und von oben nach unten. Helden, die er an dieser Position für besonders stark hält, erhalten einen Stern. Fahre mit der Maus über einen Helden, um seine Statistiken zu sehen.</li><li>Klicke auf einen Helden, um ihn zu bannen oder zu wählen. Der Draft-Helfer wechselt im Verlauf des Drafts automatisch zwischen Team 1 und Team 2, und mit <strong>Rückgängig</strong> gehst du einen Pick zurück.</li></ol><p class=\"mt-2\">Das Suchfeld und die Rollensymbole schränken die angezeigten Helden ein, ohne ihre Reihenfolge zu ändern. Mit <strong>Filter anzeigen</strong> kannst du die Filter jederzeit während des Drafts ändern. Die Vorschläge für den aktuellen Pick werden dann mit den neuen Filtern neu geladen.</p><p class=\"mt-2\">Mit <strong>Draft ohne Daten</strong> kannst du einen Draft durchspielen, bei dem alle Helden alphabetisch aufgelistet sind und keine Vorschläge erscheinen.</p><p class=\"mt-2\">Der Draft-Helfer lässt sich am besten am Computer nutzen. Er funktioniert auch auf Mobilgeräten, zeigt aber sehr viele Informationen an.</p>"
+        },
+        "f328f73f255bc9e4": {
+            "q": "Wie schlägt der Draft-Helfer Banns vor?",
+            "a": "<p><strong>Banns 1 bis 4</strong> gehen von den am häufigsten gebannten Helden für deine Filter aus. Diese werden danach gewichtet, wie oft der jeweilige Held genau an dieser Position im Draft gebannt wird (seine <em>Pickrate nach Draft-Reihenfolge</em>).</p><p class=\"mt-2\">Ein Beispiel: Die am häufigsten gebannten Helden sind D.Va (200 Banns), Imperius (150), Chromie (76) und Orphea (25). An der aktuellen Position wird D.Va in 5 % der Fälle gebannt, Imperius in 20 %, Chromie in 57 % und Orphea in 2 %. Gewichtet man jeden Helden mit seiner Rate, ergibt sich Chromie 43,3, Imperius 30, D.Va 10 und Orphea 0,5. Die Reihenfolge ändert sich also stark, je nachdem, wer an dieser Stelle im Draft typischerweise gebannt wird.</p><p class=\"mt-2\"><strong>Banns 5 und 6</strong> funktionieren genauso, berücksichtigen aber zusätzlich die Aufstellung des gegnerischen Teams. So wird dessen nächstbester Pick ermittelt und als Bann vorgeschlagen.</p>"
+        },
+        "7e8baf289c326dc9": {
+            "q": "Wie schlägt der Draft-Helfer Picks vor?",
+            "a": "<p><strong>Picks 1 und 2</strong> nutzen den Einfluss jedes Helden, gewichtet mit seiner Pickrate nach Draft-Reihenfolge. Der Einfluss verbindet die Siegesrate damit, wie oft ein Held gewählt oder gebannt wird.</p><p class=\"mt-2\"><strong>Picks 3 bis 10</strong> nutzen Aufstellungsdaten, gewichtet mit der Pickrate nach Draft-Reihenfolge. Anhand der Rollen, die ein Team bereits gewählt hat, sucht der Draft-Helfer die meistgespielte Aufstellung mit diesen Rollen. Für die noch offenen Rollen schlägt er dann die meistgespielten Helden dieser Aufstellung vor.</p><p class=\"mt-2\">Ein Beispiel: Die beliebteste Aufstellung ist Tank, Frontbrecher, Heiler, Fernkampfassassine, Fernkampfassassine. Wählt ein Team zuerst Orphea, stehen Helden wie Diablo, D.Va, Brightwing, Li-Ming und Greymane weit oben. Wählt das Team danach The Lost Vikings, sucht der Draft-Helfer stattdessen nach beliebten Aufstellungen mit einem Unterstützer und einer Fernkampfassassine. Das geht so weiter, bis der Draft abgeschlossen ist.</p>"
+        },
+        "fff296fb94a79713": {
+            "q": "Was ist die Pickrate nach Draft-Reihenfolge?",
+            "a": "<p>Die Pickrate nach Draft-Reihenfolge gibt an, wie oft ein Held an jeder Position im Draft gebannt oder gewählt wurde. Grundlage sind alle Spiele, in denen er gebannt oder gewählt wurde. Hier ein Beispiel für Li-Ming:</p><table class=\"my-3 text-sm\"><thead><tr><th class=\"px-2 text-left\">Draft-Position</th><th class=\"px-2 text-left\">Bann oder Pick</th><th class=\"px-2 text-left\">Rate</th></tr></thead><tbody><tr><td class=\"px-2\">1</td><td class=\"px-2\">Bann</td><td class=\"px-2\">7 %</td></tr><tr><td class=\"px-2\">2</td><td class=\"px-2\">Bann</td><td class=\"px-2\">7 %</td></tr><tr><td class=\"px-2\">3</td><td class=\"px-2\">Bann</td><td class=\"px-2\">10 %</td></tr><tr><td class=\"px-2\">4</td><td class=\"px-2\">Bann</td><td class=\"px-2\">10 %</td></tr><tr><td class=\"px-2\">5</td><td class=\"px-2\">Pick</td><td class=\"px-2\">15 %</td></tr><tr><td class=\"px-2\">6</td><td class=\"px-2\">Pick</td><td class=\"px-2\">12 %</td></tr><tr><td class=\"px-2\">7</td><td class=\"px-2\">Pick</td><td class=\"px-2\">7 %</td></tr><tr><td class=\"px-2\">8</td><td class=\"px-2\">Pick</td><td class=\"px-2\">5 %</td></tr><tr><td class=\"px-2\">9</td><td class=\"px-2\">Pick</td><td class=\"px-2\">4 %</td></tr><tr><td class=\"px-2\">10</td><td class=\"px-2\">Bann</td><td class=\"px-2\">6 %</td></tr><tr><td class=\"px-2\">11</td><td class=\"px-2\">Bann</td><td class=\"px-2\">5 %</td></tr><tr><td class=\"px-2\">12</td><td class=\"px-2\">Pick</td><td class=\"px-2\">3 %</td></tr><tr><td class=\"px-2\">13</td><td class=\"px-2\">Pick</td><td class=\"px-2\">3 %</td></tr><tr><td class=\"px-2\">14</td><td class=\"px-2\">Pick</td><td class=\"px-2\">2 %</td></tr><tr><td class=\"px-2\">15</td><td class=\"px-2\">Pick</td><td class=\"px-2\">2 %</td></tr><tr><td class=\"px-2\">16</td><td class=\"px-2\">Pick</td><td class=\"px-2\">2 %</td></tr></tbody></table><p>In diesem Beispiel wird Li-Ming am häufigsten an Position 5 (dem ersten Heldenpick) genommen und am seltensten an den letzten drei Positionen.</p><p class=\"mt-2\">Jeder Held hat seine eigene Verteilung. Der Draft-Helfer nutzt sie, um den HP-Draft-Wert jedes Helden an den aktuellen Zeitpunkt im Draft anzupassen. Helden, die meist früh genommen werden, steigen früh nach oben und fallen später zurück. So taucht Li-Ming meist als starker früher Pick auf, während Tychus gegen Ende des Drafts vorne liegt.</p>"
+        },
+        "13924ed966ec1eef": {
+            "q": "Was bedeuten die Statistiken in den Pop-ups des Draft-Helfers?",
+            "a": "<ul class=\"list-disc pl-6 flex flex-col gap-2\"><li><strong>HP-Draft-Wert</strong>: der Wert, nach dem die Helden sortiert werden. Er wird für Banns und Picks unterschiedlich berechnet, wie oben beschrieben, und so skaliert, dass die beste Option an der aktuellen Position 100 ergibt.</li><li><strong>Gespielte Spiele / Gebannte Spiele</strong>: die Gesamtzahl der Spiele, in denen der Held gespielt oder gebannt wurde.</li><li><strong>Einfluss</strong>: ein Wert von -5000 bis 5000, der die relative Stärke eines Helden zeigt. <code>round((Wins / Games Played - 0.5) * Adjusted Pick Rate * 10000)</code>, wobei die angepasste Pickrate (Adjusted Pick Rate) <code>(Games Played / Total Games * 100) / (100 - Ban Rate)</code> ist.</li><li><strong>Bannrate</strong>: <code>Games Banned / Total Games * 100</code>.</li><li><strong>Siegesrate</strong>: <code>Wins / Games Played</code>.</li><li><strong>Konfidenz der Siegesrate</strong>: Addiere diesen Wert zur Siegesrate oder ziehe ihn ab, um einen Bereich für die tatsächliche Siegesrate des Helden zu erhalten. <code>1.96 * sqrt((Win Rate * (1 - Win Rate)) / Games Played)</code>.</li><li><strong>Pick-Reihenfolge-Rate im Draft</strong>: die Pickrate nach Draft-Reihenfolge des Helden an der aktuellen Position.</li></ul>"
+        },
+        "541b245993b1fbbc": {
+            "q": "Was bewirken die Filter des Draft-Helfers?",
+            "a": "<ul class=\"list-disc pl-6 flex flex-col gap-2\"><li><strong>Zeiträume</strong>: welche der letzten fünf Patches einbezogen werden.</li><li><strong>Region</strong>: nur Spiele aus den gewählten Regionen einbeziehen.</li><li><strong>Heldenstufe</strong>: nur Spiele einbeziehen, in denen die Spieler die gewählten Heldenstufen hatten, zum Beispiel nur Drafts, in denen jeder Spieler Heldenstufe 40 bis 60 hatte.</li><li><strong>Karte</strong>: nur Spiele auf den gewählten Karten einbeziehen.</li><li><strong>Spielerrang, Heldenrang und Rollenrang</strong>: nach Können filtern, basierend auf dem eigenen MMR von Heroes Profile für den Spieler insgesamt, für den jeweiligen Helden oder für die Rolle. Die Stufen entsprechen denen im Spiel, werden aber mit unserer Formel berechnet und stimmen daher nicht mit den Rängen im Spiel überein.</li></ul>"
+        },
+        "d0239e003a57d18b": {
+            "q": "Welche Voraussetzungen gelten, um in der Bestenliste zu erscheinen?",
+            "a": "Um für eine Bestenliste infrage zu kommen, musst du alle drei Bedingungen erfüllen:<ul class=\"list-disc list-inside mt-2 space-y-1\"><li>Accountstufe 250 oder höher</li><li>Eine Siegesrate von mindestens 50 % in der jeweiligen Saison</li><li>Eine Mindestanzahl gespielter Spiele – genauer gesagt 5 Spiele pro Woche (für Spielerbestenlisten) bzw. 2 Spiele pro Woche (für Helden- und Rollenbestenlisten), multipliziert mit der Anzahl der Wochen seit Saisonbeginn. In Woche 4 erfordert eine Spielerbestenliste also 20 Spiele in dieser Saison.</li></ul>Wenn weniger als 50 Spieler die Voraussetzungen erfüllen, wird die Mindestanzahl an Spielen schrittweise gesenkt und die zusätzlichen Spieler werden in eigenen Gruppen angezeigt. Siehe „Warum ist die Bestenliste in Gruppen aufgeteilt?“ weiter unten."
+        },
+        "0bc744e4ecdb1b37": {
+            "q": "Warum ist die Bestenliste in Gruppen aufgeteilt?",
+            "a": "Zu Beginn einer Saison oder bei seltener gespielten Helden und Gruppengrößen erfüllen eventuell weniger als 50 Spieler die volle Mindestanzahl an Spielen. In diesem Fall wird die Anforderung jeweils um ein Spiel pro Woche gesenkt, bis auf mindestens 5 Spiele, bis sich mindestens 50 Spieler qualifizieren. Jede Stufe bildet eine eigene Gruppe, und bei jeder Gruppe steht, wie viele Spiele sie erforderte.<ul class=\"list-disc list-inside mt-2 space-y-1\"><li><strong>Gruppe A</strong> hat die volle Anforderung erfüllt.</li><li><strong>Gruppe B</strong> hat die Anforderung nach einer Absenkung erfüllt, <strong>Gruppe C</strong> nach zwei und so weiter.</li></ul>Alle Spieler einer höheren Gruppe stehen vor allen Spielern einer niedrigeren Gruppe, auch wenn ihre Heroes-Profile-Wertung niedriger ist. Ohne Gruppen könnte ein Spieler mit nur wenigen Spielen und einer glücklichen Siegesrate an Spielern vorbeiziehen, die die volle Anzahl an Spielen absolviert haben. Innerhalb jeder Gruppe wird wie gewohnt nach Heroes-Profile-Wertung sortiert, und die Platzierungen laufen von einer Gruppe zur nächsten weiter."
+        },
+        "079b26f1586074d5": {
+            "q": "Was ist die Heroes-Profile-Wertung und wie wird sie berechnet?",
+            "a": "Die HP-Wertung ist ein eigener Wert, nach dem Spieler in der Bestenliste eingestuft werden. Sie ist bewusst keine reine MMR-Rangliste – eine reine MMR-Bestenliste würde schnell von Smurfs und Spielern dominiert, die eine hohe MMR erreichen und dann aufhören zu spielen, und wäre damit starr und uninteressant.<br><br>Stattdessen kombiniert die HP-Wertung drei Faktoren: deine <strong>MMR</strong>, deine <strong>Siegesrate</strong> und deine <strong>gespielten Spiele</strong> in der Saison – jeweils im Verhältnis zu den anderen Spielern dieser Bestenliste. Die Anzahl gespielter Spiele ist im Verhältnis zu den Spitzenspielern gedeckelt, sodass dich massenhaftes Spielen allein nicht an die Spitze bringt. Belohnt werden Spieler, die aktiv spielen, gewinnen und auf hohem Niveau Leistung bringen. Die genaue Formel siehst du, wenn du auf der <a href=\"/Global/Leaderboard\" class=\"link\">Bestenlistenseite</a> auf „Voraussetzungen für die Bestenliste“ klickst."
+        },
+        "2799edd46240bfe7": {
+            "q": "Warum nutzt Heroes Profile die HP-Wertung statt einfach die MMR anzuzeigen?",
+            "a": "Eine reine MMR-Bestenliste hat einen grundlegenden Fehler: Hat ein Spieler einmal eine hohe MMR erreicht, ändert sie sich kaum noch. Dieselben Accounts würden also dauerhaft an der Spitze jeder Bestenliste stehen – vor allem Smurfs, die ihre MMR künstlich in die Höhe treiben und dann aufhören zu spielen. Die HP-Wertung löst das, indem sie aktives Spielen in jeder Saison berücksichtigt. Wenn du aufhörst zu spielen, fällt deine Platzierung, auch wenn deine MMR hoch bleibt. Es gibt konkrete Wege, aufzusteigen: mehr Spiele gewinnen und die ganze Saison über regelmäßig spielen."
+        },
+        "ab28c1d2159d507d": {
+            "q": "Warum kann ich Bestenlisten nach Gruppengröße filtern?",
+            "a": "Eine vorgefertigte 5er-Gruppe hat einen deutlichen Koordinationsvorteil gegenüber Einzelspielern. Stünden beide in derselben Bestenliste, hätten Einzelspieler an der Spitze kaum eine Chance. Mit dem Filter nach Gruppengröße (Solo, 2er-Gruppe, 3er-Gruppe usw.) siehst du, wie du im Vergleich zu Spielern abschneidest, die unter denselben Bedingungen wie du in die Warteschlange gegangen sind."
+        },
+        "0661aaccad1cf05b": {
+            "q": "Wann beginnen und enden Saisons?",
+            "a": "Bestenlisten sind nach Saisons aufgeteilt, anhand des Start- und Enddatums der jeweiligen Saison. Unter <a href=\"#season-dates\" class=\"link\">Saisondaten</a> weiter unten findest du alle bisherigen Saisons."
+        },
+        "e84d33fa67b6bd91": {
+            "q": "Warum werden manche meiner Spiele der falschen Saison zugerechnet?",
+            "a": "Replay-Dateien enthalten nicht, in welcher Saison ein Spiel gespielt wurde, und Blizzard veröffentlicht keine genauen Startzeiten der Saisons. Heroes Profile legt den Beginn einer neuen Saison fest, sobald wir bemerken, dass sie gewechselt hat. Die von uns verwendete Startzeit kann daher einige Stunden nach der tatsächlichen liegen. Spiele aus dieser Lücke werden der vorherigen Saison zugerechnet, weshalb deine Saisonstatistiken um ein oder zwei Spiele von dem abweichen können, was du im Spiel siehst.<br><br>Die Saison eines Spiels wird bei der Verarbeitung des Replays gespeichert, und Bestenlisten sowie andere Seiten werden daraus erstellt. Würde man die Startzeit einer Saison nachträglich verschieben, passten diese Spiele nicht mehr zum neuen Datum. Deshalb ändern wir Saisondaten nicht mehr, sobald eine Saison begonnen hat."
+        },
+        "468e8905eba2fc53": {
+            "q": "Wann werden die Bestenlisten aktualisiert?",
+            "a": "Die Bestenlisten werden täglich neu berechnet, beginnend um 2 Uhr EST. Die Berechnung aller Bestenlistentypen dauert etwa 12–14 Stunden. Wenn du heute gespielt hast, erscheinen deine Spiele eventuell noch am selben Tag in einigen Bestenlisten. Schau aber am folgenden Nachmittag noch einmal vorbei, um sicherzugehen, dass alle Bestenlisten vollständig aktualisiert sind."
+        },
+        "19de013de5252428": {
+            "q": "Wie kann ich Heroes Profile unterstützen?",
+            "a": "Am besten unterstützt du uns so: <ul class=\"list-disc list-inside mt-2 space-y-1\"><li>Werde Unterstützer auf <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> (jeder Betrag bringt dir Werbefreiheit, Abzeichen auf der Seite und <a href=\"/Analytics\" class=\"link\">Spieleranalysen</a>)</li><li>Erzähl anderen Spielern von der Seite – Mundpropaganda ist unser größter Wachstumstreiber</li><li>Lade deine Replays regelmäßig hoch, damit der Datenbestand wächst</li><li>Melde Fehler und gib Feedback auf <a href=\"https://github.com/Heroes-Profile/heroesprofile/issues\" target=\"_blank\" class=\"link\">GitHub</a></li></ul>"
+        },
+        "52de9f21d698303e": {
+            "q": "Wie bekomme ich Spieleranalysen?",
+            "a": "<a href=\"/Analytics\" class=\"link\">Spieleranalysen</a> befinden sich in der Pre-Alpha. Jeder Battle.net-Account kann auf der Analysen-Seite eine kostenlose Testphase starten. Sie beginnt, sobald du auf den Button klickst, und verarbeitet deine neuesten 100 Spiele. Jede neue Entwicklungsphase (Alpha, Beta und so weiter) bringt eine neue kostenlose Testphase mit sich. Um die Analysen nach der Testphase zu behalten, unterstütze uns entweder auf <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> in einer beliebigen Stufe und verknüpfe Patreon mit deinem Heroes-Profile-Konto, oder schließe einen bezahlten <a href=\"/Api\" class=\"link\">API-Plan</a> ab und verknüpfe deinen Battle.net-Account auf deiner <a href=\"/Api/Account#analytics\" class=\"link\">API-Kontoseite</a>. Deine verarbeiteten Spiele bleiben zwischen Testphasen und Abos erhalten."
+        },
+        "e19915550dcb29d8": {
+            "q": "Ist Heroes Profile Open Source?",
+            "a": "Ja! Der Code der Website ist öffentlich auf GitHub verfügbar unter <a href=\"https://github.com/Heroes-Profile/heroesprofile\" target=\"_blank\" class=\"link\">Heroes-Profile/heroesprofile</a>. Auch der Uploader ist Open Source: <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>. Beiträge und Feedback sind willkommen."
+        },
+        "fd2f1bcf5ec4497d": {
+            "q": "Wie melde ich einen Fehler oder wünsche mir eine Funktion?",
+            "a": "Fehler meldest du unter <a href=\"https://github.com/Heroes-Profile/heroesprofile/issues\" target=\"_blank\" class=\"link\">GitHub Issues</a>. Für Funktionswünsche und Ideen eröffne eine Diskussion unter <a href=\"https://github.com/Heroes-Profile/heroesprofile/discussions\" target=\"_blank\" class=\"link\">GitHub Discussions</a>. Du kannst auch das Kontaktformular unten nutzen oder eine E-Mail an <a href=\"mailto:Zemill@heroesprofile.com\" class=\"link\">Zemill@heroesprofile.com</a> schreiben."
+        },
+        "f9ae99a59d56f8f0": {
+            "q": "Hat Heroes Profile eine API?",
+            "a": "Ja, wir bieten eine öffentliche API an. Die Dokumentation findest du unter <a href=\"/Api/Docs\" class=\"link\">heroesprofile.com/Api/Docs</a>. Die API hat Ratenbegrenzungen und ist für eine angemessene Nutzung gedacht – nicht für das massenhafte Herunterladen der gesamten Replay-Datenbank. Jeder bezahlte API-Plan enthält außerdem <a href=\"/Analytics\" class=\"link\">Spieleranalysen</a> für einen Battle.net-Account, den du auf deiner API-Kontoseite verknüpfst."
+        }
+    }
+}

@@ -28,7 +28,7 @@
       <analytics-numbers>
         <table class="min-w-0 w-full responsive-table mb-4">
           <thead>
-            <tr><th>Phase</th><th v-for="w in whos()" :key="w">{{ whoLabel(w) }}: in lane / at camps / elsewhere</th></tr>
+            <tr><th>{{ $t('Phase') }}</th><th v-for="w in whos()" :key="w">{{ whoLabel(w) }}: in lane / at camps / elsewhere</th></tr>
           </thead>
           <tbody>
             <tr v-for="(phase, i) in phases" :key="phase">
@@ -41,7 +41,7 @@
         </table>
         <table class="min-w-0 w-full responsive-table">
           <thead>
-            <tr><th>Whole game</th><th v-for="w in whos()" :key="w">{{ whoLabel(w) }}</th></tr>
+            <tr><th>{{ $t('Whole game') }}</th><th v-for="w in whos()" :key="w">{{ whoLabel(w) }}</th></tr>
           </thead>
           <tbody>
             <tr><td>Time in your main lane</td><td v-for="w in whos()" :key="w">{{ percent(rowFor(w, 'all').main_lane_share) }}</td></tr>

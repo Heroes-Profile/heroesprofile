@@ -2,7 +2,7 @@
   <!-- Every build path through the talent tiers: width is games played, colour is win rate -->
   <details :open="open" @toggle="$emit('update:open', $event.target.open)" class="bg-lighten rounded-lg w-0 min-w-full my-5 group">
     <summary class="px-6 py-4 flex justify-between items-center cursor-pointer list-none">
-      <h3 class="text-lg">Alluvial Diagram</h3>
+      <h3 class="text-lg">{{ $t('Alluvial Diagram') }}</h3>
       <i class="fas fa-chevron-down transition-transform group-open:rotate-180"></i>
     </summary>
     <div class="px-3 pb-3">

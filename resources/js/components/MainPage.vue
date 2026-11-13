@@ -48,16 +48,16 @@
       <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem] md:contents">
       <div :class="cardClasses">
         <i class="fas fa-address-card text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
-        <h3 class="text-3xl font-semibold mt-6 mb-4">Player Profiles</h3>
-        <p class="text-sm text-left mb-8">See all player stats in one place.  See data for individual maps or heroes played, match history, real in-game Storm League rank and comparisons all from within a streamlined profile.</p>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">{{ $t('Player Profiles') }}</h3>
+        <p class="text-sm text-left mb-8">{{ $t('See all player stats in one place.  See data for individual maps or heroes played, match history, real in-game Storm League rank and comparisons all from within a streamlined profile.') }}</p>
         <div class="flex mt-auto">
           <custom-button :text="'Find Player'" :alt="'Find Player'" :color="'teal'" :ignoreclick="true" class="flex-1 font-semibold" @click="focusSearch"></custom-button>
         </div>
       </div>
       <div :class="cardClasses">
         <i class="fas fa-chart-line text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
-        <h3 class="text-3xl font-semibold mt-6 mb-4">Player Analytics</h3>
-        <p class="text-sm text-left mb-8">Deep analysis of your season replays: where and how you die, time spent, performance ahead or behind, habit coaching, and a replay viewer for every game. Pre-alpha: try it free, then keep it with Patreon or any paid API plan.</p>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">{{ $t('Player Analytics') }}</h3>
+        <p class="text-sm text-left mb-8">{{ $t('Deep analysis of your season replays: where and how you die, time spent, performance ahead or behind, habit coaching, and a replay viewer for every game. Pre-alpha: try it free, then keep it with Patreon or any paid API plan.') }}</p>
         <div class="flex mt-auto">
           <custom-button v-if="analyticsAllowed" :href="'/Analytics'" :text="'Open Analytics'" :alt="'Open Analytics'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
           <custom-button v-else :href="'/Analytics'" :text="'Try It Free'" :alt="'Try Player Analytics free'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
@@ -65,27 +65,27 @@
       </div>
       <div :class="cardClasses" class="max-md:order-first">
         <i class="fa-solid fa-globe text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
-        <h3 class="text-3xl font-semibold mt-6 mb-4">Global Stats</h3>
-        <p class="text-sm text-left mb-8">Variety of Heroes of the Storm stats, including global stats for heroes, talent stats, overall stats, builds, compositions, draft, matchups, and more.</p>
-        <div class="flex gap-4 mt-auto">
-          <custom-button :href="'/Global/Hero'" :text="'Hero Stats'" :alt="'Hero Stats'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
-          <custom-button :href="'/Global/Talents'" :text="'Talent Stats'" :alt="'Talent Stats'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">{{ $t('Global Stats') }}</h3>
+        <p class="text-sm text-left mb-8">{{ $t('Variety of Heroes of the Storm stats, including global stats for heroes, talent stats, overall stats, builds, compositions, draft, matchups, and more.') }}</p>
+        <div class="flex flex-wrap gap-4 mt-auto">
+          <custom-button :href="'/Global/Hero'" :text="'Hero Stats'" :alt="'Hero Stats'" :color="'teal'" class="grow basis-auto font-semibold"></custom-button>
+          <custom-button :href="'/Global/Talents'" :text="'Talent Stats'" :alt="'Talent Stats'" :color="'teal'" class="grow basis-auto font-semibold"></custom-button>
         </div>
       </div>
 </div>
 <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem] md:contents">
       <div :class="cardClasses">
         <i class="fa-solid fa-grip text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
-        <h3 class="text-3xl font-semibold mt-6 mb-4">Drafter</h3>
-        <p class="text-sm text-left mb-8">Get ban and pick suggestions at every step of a Storm League draft, based on how often heroes are taken at that point, their win rates and bans, and the team compositions they fit into.</p>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">{{ $t('Drafter') }}</h3>
+        <p class="text-sm text-left mb-8">{{ $t('Get ban and pick suggestions at every step of a Storm League draft, based on how often heroes are taken at that point, their win rates and bans, and the team compositions they fit into.') }}</p>
         <div class="flex mt-auto">
-          <custom-button :href="'/Drafter'" :text="'Start Drafting'" :alt="'Drafter'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
+          <custom-button :href="'/Drafter'" :text="'Drafter'" :alt="'Drafter'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
         </div>
       </div>
       <div :class="cardClasses" class="max-md:order-first">
         <i class="fas fa-list-ol text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
-        <h3 class="text-3xl font-semibold mt-6 mb-4">Leaderboards</h3>
-        <p class="text-sm text-left mb-8">View leaderboards based on Player, Hero, or Role using Heroes Profile Rating, real in-game Storm League ranks, and the Match Prediction game. Get talent builds, and navigate directly to player's profiles.</p>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">{{ $t('Leaderboards') }}</h3>
+        <p class="text-sm text-left mb-8">{{ $t("View leaderboards based on Player, Hero, or Role using Heroes Profile Rating, real in-game Storm League ranks, and the Match Prediction game. Get talent builds, and navigate directly to player's profiles.") }}</p>
         <div class="flex mt-auto">
           <custom-button :href="'/Global/Leaderboard'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
         </div>
@@ -100,7 +100,7 @@
     </div>
     <div class="bg-surface-2 text-sm px-4 md:px-8 py-6">
       <div class="max-w-[116rem] mx-auto space-y-2">
-        <p>Heroes Profile uses data from the Heroes Profile API, an open Heroes of the Storm replay database built from user-uploaded replays.
+        <p>{{ $t('Heroes Profile uses data from the Heroes Profile API, an open Heroes of the Storm replay database built from user-uploaded replays.') }}
           So far, Heroes Profile has pulled {{ getValueLocal(maxreplayid) }} replays into its dataset, up to and including patch
         {{ latestpatch }} and games played through <format-date :input="latestgamedate"></format-date>.</p>
         <p>For more information on the Heroes Profile API, visit <a class="underline" href="/Api">heroesprofile.com/Api</a>.</p>

@@ -2,11 +2,11 @@
   <div id="filter-label" class="relative" :class="compact ? 'min-w-0 w-full' : 'filter-fill max-md:w-full md:w-[12.5rem]'">
     <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'" @keydown="handleKeyPress" tabindex="0">
       <span class="relative">
-        <span class="relative">{{ this.text }}
+        <span class="relative">{{ $t(text) }}
           <round-image v-if="showrankinfo" class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large" mobileClick="true" style="position:absolute; bottom:0; right:-1.5625rem;">
             <slot>
               <div>
-                <p class="max-sm:text-xs">Heroes Profile Rank is based on a custom MMR algorithm developed by Heroes Profile for approximating a player's skill. This rank does not correlate to in-game rank but the distribution of players in the Heroes Profile dataset. Wood rank is players who have played less than 50 games and cannot be accurately ranked.</p>
+                <p class="max-sm:text-xs">{{ $t(rankInfo) }}</p>
               </div>
             </slot>
           </round-image>
@@ -21,7 +21,7 @@
     <div v-if="showOptions" class="absolute left-0 mt-2 w-max max-w-[calc(100vw-2rem)] rounded overflow-hidden shadow-lg expandable-dropdown z-50">
       <div>
         <!-- Search Input -->
-        <input v-model="searchQuery" type="text" placeholder="Search" class="w-full p-2 variable-text"/>
+        <input v-model="searchQuery" type="text" :placeholder="$t('Search')" class="w-full p-2 variable-text"/>
       </div>
       <div class="max-h-80 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable]">
         <div class="p-2" :class="{ 'pr-6 whitespace-nowrap': text === 'Stat Filter' }">
@@ -35,7 +35,7 @@
               class="form-checkbox h-5 w-5 shrink-0 text-indigo-600"
               :disabled="disabled"
             >
-            <label :for="value.code" class="text-sm variable-text">{{ value.name }}</label>
+            <label :for="value.code" class="text-sm variable-text">{{ value.label || $t(value.name) }}</label>
             <span v-if="value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="'Added ' + patchDate(value.date_added)">{{ patchAge(value.date_added) }}</span>
           </div>
         </div>
@@ -47,6 +47,9 @@
 
 <script>
 import { patchAge, patchDate } from '../../utils/patchAge';
+
+// Shown beside the rank filters
+const RANK_INFO = "Heroes Profile Rank is based on a custom MMR algorithm developed by Heroes Profile for approximating a player's skill. This rank does not correlate to in-game rank but the distribution of players in the Heroes Profile dataset. Wood rank is players who have played less than 50 games and cannot be accurately ranked.";
 
 export default {
   name: 'SingleSelectFilter',
@@ -80,23 +83,28 @@ export default {
     document.removeEventListener("click", this.handleClickOutside);
   },
   computed: {
+    rankInfo() {
+      return RANK_INFO;
+    },
     selectedOptionsName() {
       const selected = this.values.find(value => value.code === this.selectedOptions);
-      return selected ? selected.name : '';
+      return selected ? (selected.label || this.$t(selected.name)) : '';
     },
     filteredValues() {
       return this.values.filter(value => {
         if (value.name && typeof value.name === 'string') {
-          let normalizedValue = value.name;
+          // Translated heroes and maps match on either name
+          const text = `${value.name} ${value.label || this.$t(value.name)}`;
+          let normalizedValue = text;
           // Check if normalize method is available and ICU support is present
           if (String.prototype.normalize && typeof String.prototype.normalize === 'function') {
             try {
-              normalizedValue = value.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+              normalizedValue = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
             } catch (error) {
-              normalizedValue = value.name.toLowerCase();
+              normalizedValue = text.toLowerCase();
             }
           } else {
-            normalizedValue = value.name.toLowerCase();
+            normalizedValue = text.toLowerCase();
           }
           
           return normalizedValue.includes(this.searchQuery.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase());

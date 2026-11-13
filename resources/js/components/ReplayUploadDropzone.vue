@@ -1,7 +1,7 @@
 <template>
   <div>
     <p class="text-sm mb-4 text-yellow">
-      Games uploaded through the web uploader may not be eligible for leaderboard consideration.
+      {{ $t('Games uploaded through the web uploader may not be eligible for leaderboard consideration.') }}
     </p>
 
     <div
@@ -12,11 +12,11 @@
       @dragleave.prevent="dragging = false"
       @drop.prevent="onDrop"
     >
-      <p class="mb-4 text-sm">Drop replays here, or choose them below.</p>
+      <p class="mb-4 text-sm">{{ $t('Drop replays here, or choose them below.') }}</p>
 
       <div class="flex flex-wrap gap-3 justify-center">
         <label class="btn bg-teal hover:bg-lteal cursor-pointer text-sm">
-          <span>Select replays</span>
+          <span>{{ $t('Select replays') }}</span>
           <input type="file" class="hidden" multiple accept=".StormReplay" @change="onSelect" />
         </label>
 
@@ -24,7 +24,7 @@
           v-if="directorySupported"
           class="btn bg-teal hover:bg-lteal cursor-pointer text-sm"
         >
-          <span>Select a folder</span>
+          <span>{{ $t('Select a folder') }}</span>
           <input type="file" class="hidden" multiple webkitdirectory directory @change="onSelect" />
         </label>
       </div>
@@ -59,8 +59,8 @@
     <table v-if="files.length" class="min-w-0 w-full responsive-table">
       <thead>
         <tr>
-          <th class="py-2 px-3 text-left text-sm">Replay</th>
-          <th class="py-2 px-3 text-left text-sm">Status</th>
+          <th class="py-2 px-3 text-left text-sm">{{ $t('Replay') }}</th>
+          <th class="py-2 px-3 text-left text-sm">{{ $t('Status') }}</th>
         </tr>
       </thead>
       <tbody>

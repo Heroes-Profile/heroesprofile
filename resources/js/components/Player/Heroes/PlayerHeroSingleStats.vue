@@ -61,7 +61,7 @@
 
             <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
               <div class="flex flex-col gap-1">
-                <span class="text-header">Win Rate</span>
+                <span class="text-header">{{ $t('Win Rate') }}</span>
                 <stat-bar size="big" :value="data.win_rate.toFixed(2)" suffix="%" :color="$winRateColor(data.win_rate)"></stat-bar>
               </div>
 
@@ -72,7 +72,7 @@
           </div>
 
           <div class="flex flex-col gap-4 w-fit max-w-full">
-            <h3 class="text-2xl font-bold">Maps</h3>
+            <h3 class="text-2xl font-bold">{{ $t('Maps') }}</h3>
             <div class="flex flex-wrap gap-6 max-md:justify-center">
               <group-box v-for="group in mapGroups" :key="group.label" class="!m-0" :esport="esport" :playerlink="true" :text="group.label" :data="group.data"></group-box>
             </div>
@@ -95,8 +95,8 @@
 
           <div class="flex flex-col gap-4">
             <div class="flex justify-between items-baseline gap-3">
-              <h3 class="text-2xl font-bold">Most Played Build</h3>
-              <a class="text-header whitespace-nowrap hover:underline" :href="getTalentPageUrl()">Talent Data<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+              <h3 class="text-2xl font-bold">{{ $t('Most Played Build') }}</h3>
+              <a class="text-header whitespace-nowrap hover:underline" :href="getTalentPageUrl()">{{ $t('Talent Data') }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
             </div>
             <tab-button v-if="!esport" class="self-start max-md:self-center" tab1text="All Seasons" tab2text="This Season" :ignoreclick="true" @tab-click="buildThisSeason = $event === 'right'" :overridedefaultside="buildThisSeason ? 'right' : 'left'"></tab-button>
             <div v-if="topBuild" class="flex flex-wrap items-center gap-x-6 gap-y-3 max-md:justify-center">
@@ -171,15 +171,15 @@
             <table v-for="section in visibleSections(column)" :key="section.title" class="min-w-0 w-full responsive-table max-md:text-xs">
               <thead>
                 <tr>
-                  <th class="py-2 px-3 text-left text-sm w-[31%]">{{ section.title }}</th>
-                  <th class="py-2 px-3 text-left text-sm w-[23%]">Total</th>
-                  <th class="py-2 px-3 text-left text-sm w-[23%]">Average</th>
-                  <th class="py-2 px-3 text-left text-sm w-[23%]">Maximum</th>
+                  <th class="py-2 px-3 text-left text-sm w-[31%]">{{ $t(section.title) }}</th>
+                  <th class="py-2 px-3 text-left text-sm w-[23%]">{{ $t('Total') }}</th>
+                  <th class="py-2 px-3 text-left text-sm w-[23%]">{{ $t('Average') }}</th>
+                  <th class="py-2 px-3 text-left text-sm w-[23%]">{{ $t('Maximum') }}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="row in section.visibleRows" :key="row.key">
-                  <td class="py-2 px-3">{{ row.label }}</td>
+                  <td class="py-2 px-3">{{ $t(row.label) }}</td>
                   <td class="py-2 px-3">{{ formatValue(row.key, data["sum_" + row.key]) }}</td>
                   <td class="py-2 px-3">{{ formatValue(row.key, data["avg_" + row.key], true) }}</td>
                   <td class="py-2 px-3">
@@ -194,7 +194,7 @@
       </panel-box>
     </div>
     <div v-else-if="typeof data === 'undefined'"  class="flex items-center justify-center">
-      No data
+      {{ $t('No data') }}
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
@@ -213,7 +213,7 @@
               </div>
             </div>
             <div class="flex flex-col gap-4">
-              <h3 class="text-2xl font-bold">Maps</h3>
+              <h3 class="text-2xl font-bold">{{ $t('Maps') }}</h3>
               <div class="flex flex-wrap gap-6 max-md:justify-center">
                 <div v-for="group in 3" :key="group" class="flex gap-3">
                   <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
@@ -221,7 +221,7 @@
               </div>
             </div>
             <div class="flex flex-col gap-4">
-              <h3 class="text-2xl font-bold">Most Played Build</h3>
+              <h3 class="text-2xl font-bold">{{ $t('Most Played Build') }}</h3>
               <div class="flex flex-wrap gap-1.5">
                 <skeleton-box v-for="level in 7" :key="level" class="w-[2.625rem] h-[2.625rem] !rounded"></skeleton-box>
               </div>
@@ -271,7 +271,7 @@
 
     <match-lookup v-if="matchIsLoading" :text="matchLookupText"></match-lookup>
     <div v-if="matchNotFound" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red text-white px-4 py-2 rounded z-50">
-      Couldn't find the match for that value.
+      {{ $t("Couldn't find the match for that value.") }}
     </div>
   </div>
 </template>

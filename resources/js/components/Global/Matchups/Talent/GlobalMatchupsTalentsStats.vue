@@ -27,8 +27,8 @@
   <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
   <div v-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-    <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
-    <loading-component v-else :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
+    <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
+    <loading-component v-else :compact="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
     <panel-box>
       <div class="w-full max-w-[86rem] mx-auto flex flex-col gap-4">
         <div v-for="level in 3" :key="level" class="flex flex-col gap-3">
@@ -39,7 +39,7 @@
     </panel-box>
   </div>
   <div v-else-if="dataError" class="flex items-center justify-center">
-      Error: Reload page/filter
+      {{ $t('Error: Reload page/filter') }}
   </div>
   <div v-else>
     <div class="flex justify-center items-center md:gap-10">
@@ -80,7 +80,7 @@
     <div class="flex justify-between max-w-[120rem] mx-auto px-4 md:px-8 mb-2 max-md:flex-wrap max-md:gap-2">
       <div class="flex">
         <div v-if="showTalentHeroToggle" class="text-center flex items-center justify-stretch gap-2 mx-2">
-          Talents:    
+          {{ $t('Talents:') }}    
           <tab-button  :tab1text="this.hero.name" :ignoreclick="true" :tab2text="this.enemyally.name" @tab-click="talentHeroOrEnemySideSelected" > </tab-button>
         </div>
         <div class="text-center mt-auto">

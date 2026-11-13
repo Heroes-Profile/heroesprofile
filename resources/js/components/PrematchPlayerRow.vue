@@ -1,6 +1,6 @@
 <template>
   <div :class="['border-t border-lighten', { 'opacity-50': lowSample && !expanded }]">
-    <div v-if="player.hidden" class="p-3 text-left text-gray-medium italic">Hidden</div>
+    <div v-if="player.hidden" class="p-3 text-left text-gray-medium italic">{{ $t('Hidden') }}</div>
 
     <template v-else>
       <div class="flex items-center gap-3 p-2 cursor-pointer hover:bg-lighten" role="button" @click="$emit('toggle')">
@@ -33,7 +33,7 @@
           <h4 class="text-xs uppercase text-gray-medium mb-2">
             Last {{ games.length }} {{ modelabel }} games<span v-if="games.length"> · {{ wins }}–{{ games.length - wins }}</span>
           </h4>
-          <div v-if="!games.length" class="text-gray-medium">No games</div>
+          <div v-if="!games.length" class="text-gray-medium">{{ $t('No games') }}</div>
         </template>
         <div v-for="game in games" :key="game.replayID" class="flex items-center gap-2 py-1 border-t border-lighten">
           <hero-image-wrapper v-if="game.hero" :size="'small'" :hero="game.hero"></hero-image-wrapper>
@@ -45,7 +45,7 @@
 
         <div class="flex justify-between gap-2 mt-3 text-xs">
           <span class="text-gray-medium">{{ player.last_played ? 'Last played ' + timeAgo(player.last_played) : '' }}</span>
-          <a class="link text-lteal" :href="profileLink" @click="this.$redirectToProfile(player.battletag, player.blizz_id, player.region, false)">View Profile</a>
+          <a class="link text-lteal" :href="profileLink" @click="this.$redirectToProfile(player.battletag, player.blizz_id, player.region, false)">{{ $t('View Profile') }}</a>
         </div>
       </div>
     </template>

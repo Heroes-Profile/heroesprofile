@@ -3,8 +3,8 @@
   <div v-if="compact" class="flex flex-wrap items-center gap-3 text-sm text-soft">
     <img class="logo-spin h-7 w-auto shrink-0" :src="overrideimage || '/images/logo/heroesprofilelogo.png'" alt="Loading" />
     <span v-if="textoverride"><slot></slot></span>
-    <span v-else>Loading data...</span>
-    <span v-if="timer" class="text-subtext">~{{ countdown }} seconds remaining</span>
+    <span v-else>{{ $t('Loading data...') }}</span>
+    <span v-if="timer" class="text-subtext">{{ $t('~:count seconds remaining', { count: countdown }) }}</span>
   </div>
 
   <div v-else class="loading-container z-40 w-full min-h-[50vh] ">
@@ -16,7 +16,7 @@
         <span v-if="timer">~{{ countdown }} seconds remaining</span>
       </div>
 
-      <span v-else>Loading data...</span>
+      <span v-else>{{ $t('Loading data...') }}</span>
     </div>
     <!-- Unforunately this only cancels the front end request, and I have found no way to cancel the backend request -->
     <!--<custom-button @click="cancelRequest" text="Cancel Request" alt="Cancel Request" size="small" :ignoreclick="true">Cancel Request</custom-button>-->

@@ -4,10 +4,10 @@
       <thead>
         <tr>
           <th class="py-2 px-3 text-center text-sm leading-4">
-            Division
+            {{ $t('Division') }}
           </th>            
           <th class="py-2 px-3 text-center text-sm leading-4">
-            Games Played
+            {{ $t('Games Played') }}
           </th>  
         </tr>
       </thead>

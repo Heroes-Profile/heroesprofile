@@ -16,7 +16,7 @@
               @click="clickedHero(h); heroDropdownOpen = false"
             >
               <hero-image-wrapper :hero="h" :includehover="false" class="flex-shrink-0"></hero-image-wrapper>
-              <span>{{ h.name }}</span>
+              <span>{{ $heroName(h) }}</span>
             </div>
           </div>
         </div>
@@ -43,9 +43,9 @@
           <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
 
           <div class="max-w-[93.75rem] mx-auto md:px-4 mt-8 w-full">
-            <h2 class="heading mb-4">Most Popular Builds for Latest Patch Per Hero and Game Type</h2>
+            <h2 class="heading mb-4">{{ $t('Most Popular Builds for Latest Patch Per Hero and Game Type') }}</h2>
             <div v-if="!talentbuilddataall" class="flex flex-col gap-4">
-              <loading-component :compact="true" :textoverride="true">Loading all talent builds...</loading-component>
+              <loading-component :compact="true" :textoverride="true">{{ $t('Loading all talent builds...') }}</loading-component>
               <table-skeleton :bare="true" :rows="10" :columns="['avatar', 'talents', 'talents', 'talents']"></table-skeleton>
             </div>
             <global-talent-builds-all v-else :heroes="filteredHeroesForTable" :talentbuilddataall="talentbuilddataall"></global-talent-builds-all>
@@ -100,11 +100,11 @@
               <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
             </div>
             <div class="flex items-center gap-4">
-              <button type="button" class="underline text-sm" @click="scrollToBuilds">Scroll To Builds</button>
+              <button type="button" class="underline text-sm" @click="scrollToBuilds">{{ $t('Scroll To Builds') }}</button>
               <div class="flex items-center gap-2 max-md:hidden">
                 <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" :overridedefaultside="isCompact ? 'right' : 'left'" @tab-click="setLayout"></tab-button>
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                  <p class="max-sm:text-xs">Your default layout can be set in your <a href="/Profile/Settings" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">Profile Settings</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>.</p>
+                  <p class="max-sm:text-xs">Your default layout can be set in your <a href="/Profile/Settings" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('Profile Settings') }}</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>.</p>
                 </round-image>
               </div>
             </div>
@@ -117,9 +117,9 @@
           </panel-box>
         </div>
         <div v-else-if="isTalentsLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
-          <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
-          <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
-          <loading-component v-else :compact="true" :textoverride="true">Loading talent stats...</loading-component>
+          <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
+          <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+          <loading-component v-else :compact="true" :textoverride="true">{{ $t('Loading talent stats...') }}</loading-component>
           <panel-box>
             <div class="w-full max-w-[86rem] mx-auto flex flex-col gap-4">
               <div v-for="level in 3" :key="level" class="flex flex-col gap-3">
@@ -130,7 +130,7 @@
           </panel-box>
         </div>
         <div v-else-if="dataError" class="flex items-center justify-center">
-          Error: Reload page/filter
+          {{ $t('Error: Reload page/filter') }}
         </div>
 
         <dynamic-banner-ad :patreon-user="patreonUser" :index="4" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
@@ -141,11 +141,11 @@
             <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]">
               <template #heading>
                 <span class="flex flex-wrap items-center gap-2">
-                  {{ selectedHero.name }}
+                  {{ $heroName(selectedHero) }}
                   <select class="bg-blue text-white rounded-control px-2 py-1" aria-label="Talent Build Type" :value="talentbuildtype" @change="buildtypechange({ value: $event.target.value })">
                     <option v-for="buildType in buildtypes" :key="buildType.code" :value="buildType.code">{{ buildType.name }}</option>
                   </select>
-                  Talent Builds
+                  {{ $t('Talent Builds') }}
                 </span>
               </template>
             </global-talent-builds-section>
@@ -158,11 +158,11 @@
           </panel-box>
         </div>
         <div v-else-if="!isTalentsLoading && dataError" class="flex items-center justify-center">
-          Error: Reload page/filter
+          {{ $t('Error: Reload page/filter') }}
         </div>
 
         <div v-else-if="isBuildsLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
-          <loading-component :compact="true" :textoverride="true">Loading talent builds...</loading-component>
+          <loading-component :compact="true" :textoverride="true">{{ $t('Loading talent builds...') }}</loading-component>
           <table-skeleton :rows="7" :heading="true" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
         </div>
       </div>
@@ -296,12 +296,12 @@
       filteredDropdownHeroes() {
         const q = this.heroDropdownSearch.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
         if (!q) return this.heroes;
-        return this.heroes.filter(h => h.name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().includes(q));
+        return this.heroes.filter(h => [h.name, this.$heroName(h)].some(name => name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().includes(q)));
       },
       filteredHeroesForTable() {
         if (!this.heroSearchQuery) return this.heroes;
         const q = this.heroSearchQuery.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-        return this.heroes.filter(h => h.name.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().includes(q));
+        return this.heroes.filter(h => [h.name, this.$heroName(h)].some(name => name.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().includes(q)));
       },
       patchNotesUrl() {
         if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {

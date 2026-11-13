@@ -9,11 +9,11 @@
       <div class="opacity-30 pointer-events-none select-none" aria-hidden="true">
         <table class="min-w-0 w-full responsive-table">
           <thead>
-            <tr><th>Player</th><th>Overall</th><th v-for="area in areas" :key="area.key">{{ area.label }}</th></tr>
+            <tr><th>{{ $t('Player') }}</th><th>{{ $t('Overall') }}</th><th v-for="area in areas" :key="area.key">{{ area.label }}</th></tr>
           </thead>
           <tbody>
             <tr v-for="p in players" :key="p.idx">
-              <td>{{ p.hero }}</td>
+              <td>{{ $heroName(p.hero) }}</td>
               <td>--</td>
               <td v-for="area in areas" :key="area.key">--</td>
             </tr>
@@ -38,7 +38,7 @@
       <!-- Every player at a glance; click one for their breakdown -->
       <table class="min-w-0 w-full responsive-table mb-6">
         <thead>
-          <tr><th>Player</th><th>Overall</th><th v-for="area in areas" :key="area.key">{{ area.label }}</th></tr>
+          <tr><th>{{ $t('Player') }}</th><th>{{ $t('Overall') }}</th><th v-for="area in areas" :key="area.key">{{ area.label }}</th></tr>
         </thead>
         <tbody>
           <tr
@@ -51,7 +51,7 @@
             <td class="text-white border-white border" :class="row.won ? 'bg-teal' : 'bg-red'">
               <span class="inline-flex items-center gap-2">
                 <hero-image-wrapper v-if="row.player.short_name" :hero="{ name: row.player.hero, short_name: row.player.short_name }" :size="'small'"></hero-image-wrapper>
-                <span>{{ row.player.battletag || row.player.hero }}<span v-if="row.player.you"> (you)</span></span>              </span>
+                <span>{{ row.player.battletag || $heroName(row.player.hero) }}<span v-if="row.player.you"> (you)</span></span>              </span>
             </td>
             <td class="min-w-[8em]"><stat-bar :value="row.overall ?? 0" :display-text="orDash(row.overall === null ? null : Math.round(row.overall))" color="teal"></stat-bar></td>
             <td v-for="area in areas" :key="area.key">{{ ratingText(row.areas[area.key]) }}</td>
@@ -62,22 +62,22 @@
       <div v-if="current" ref="breakdown" class="scroll-mt-4">
         <analytics-heading :title="currentName" :takeaway="playerTakeaway"></analytics-heading>
         <multi-tab-button :options="areaOptions" v-model="area" class="mb-3"></multi-tab-button>
-        <p v-if="fellBack" class="text-sm mb-2">Some of these compare with {{ current.player.hero }}'s games on every map, because the sample has too few on this one.</p>
+        <p v-if="fellBack" class="text-sm mb-2">Some of these compare with {{ $heroName(current.player.hero) }}'s games on every map, because the sample has too few on this one.</p>
         <table class="min-w-0 w-full responsive-table mb-4">
           <thead>
             <tr>
               <th>{{ area === 'abilities' ? 'Ability or measure' : 'Measure' }}</th>
-              <th>This game</th>
+              <th>{{ $t('This game') }}</th>
               <th>
                 <span class="inline-flex items-center gap-1">
-                  Rating
+                  {{ $t('Rating') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">Where this game sits among the hero's games on this map with the same result, turned so higher is better: 50 is typical, 90 is better than 9 in 10. Blank when the number doesn't go with winning on this hero, or the sample has too few games.</p></slot>
                   </round-image>
                 </span>
               </th>
-              <th>Winners usually</th>
-              <th>Better is</th>
+              <th>{{ $t('Winners usually') }}</th>
+              <th>{{ $t('Better is') }}</th>
             </tr>
           </thead>
           <tbody>

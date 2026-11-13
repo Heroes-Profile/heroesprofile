@@ -41,20 +41,20 @@
         <table class="min-w-0 w-full responsive-table mb-4">
           <thead>
             <tr>
-              <th>Signal</th>
-              <th>This game</th>
+              <th>{{ $t('Signal') }}</th>
+              <th>{{ $t('This game') }}</th>
               <th>
                 <span class="inline-flex items-center gap-1">
-                  Your usual
+                  {{ $t('Your usual') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">Your average over your earlier games under these filters (up to 200). Needs at least 5 earlier games.</p></slot>
                   </round-image>
                 </span>
               </th>
-              <th>Global median</th>
+              <th>{{ $t('Global median') }}</th>
               <th>
                 <span class="inline-flex items-center gap-1">
-                  Against your usual
+                  {{ $t('Against your usual') }}
                   <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                     <slot><p class="text-sm p-2 text-left">Better or Worse when this game is further from your usual than one game normally swings (the spread of your earlier games). Otherwise Typical.</p></slot>
                   </round-image>
@@ -76,10 +76,10 @@
         <table v-else class="min-w-0 w-full responsive-table mb-8">
           <thead>
             <tr>
-              <th>Time</th>
-              <th>Signal</th>
-              <th>What happened</th>
-              <th>Replay</th>
+              <th>{{ $t('Time') }}</th>
+              <th>{{ $t('Signal') }}</th>
+              <th>{{ $t('What happened') }}</th>
+              <th>{{ $t('Replay') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -115,12 +115,12 @@
       <table v-else class="min-w-0 w-full responsive-table mb-8">
         <thead>
           <tr>
-            <th>Signal</th>
-            <th>Earlier games</th>
+            <th>{{ $t('Signal') }}</th>
+            <th>{{ $t('Earlier games') }}</th>
             <th>Last {{ recentCount }}</th>
             <th>
               <span class="inline-flex items-center gap-1">
-                Change
+                {{ $t('Change') }}
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">Last {{ recentCount }} minus earlier games. Whether up is good depends on the signal: for deaths and missed fights, a minus is better.</p></slot>
                 </round-image>
@@ -128,7 +128,7 @@
             </th>
             <th>
               <span class="inline-flex items-center gap-1">
-                Verdict
+                {{ $t('Verdict') }}
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">Improving or Worse when the change is bigger than your usual swing for {{ recentCount }} games (your earlier games' spread divided by the square root of {{ recentCount }}). Otherwise About the same.</p></slot>
                 </round-image>
@@ -172,10 +172,10 @@
       <table class="min-w-0 w-full responsive-table">
         <thead>
           <tr>
-            <th>Signal</th>
+            <th>{{ $t('Signal') }}</th>
             <th>
               <span class="inline-flex items-center gap-1">
-                You
+                {{ $t('You') }}
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">Your rate across all your processed games under these filters.</p></slot>
                 </round-image>
@@ -183,7 +183,7 @@
             </th>
             <th>
               <span class="inline-flex items-center gap-1">
-                Global median
+                {{ $t('Global median') }}
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">The middle player in the global sample under these filters: half of players are above it, half below. Click a signal to see who it is compared with.</p></slot>
                 </round-image>
@@ -191,7 +191,7 @@
             </th>
             <th>
               <span class="inline-flex items-center gap-1">
-                Standing
+                {{ $t('Standing') }}
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">Where you rank among those players, taking into account which way is better for that signal (fewer deaths, more presence).</p></slot>
                 </round-image>
@@ -199,7 +199,7 @@
             </th>
             <th>
               <span class="inline-flex items-center gap-1">
-                Signal
+                {{ $t('Signal') }}
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">How strongly this habit goes with winning or losing across all players, re-checked nightly. High: it passes all three tests (linked to win rate beyond deaths, a 3+ point win-rate effect when it happens in the first 10 minutes, and consistent from game to game). Medium: one of the first two. Low: neither yet.</p></slot>
                 </round-image>
@@ -207,7 +207,7 @@
             </th>
             <th>
               <span class="inline-flex items-center gap-1">
-                Your sample
+                {{ $t('Your sample') }}
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                   <slot><p class="text-sm p-2 text-left">How many of your games back your number. High: 30+, Medium: 10-29, Low: under 10. Some signals only count certain games (maps with bushes, games with mounts, strong camp heroes).</p></slot>
                 </round-image>
@@ -259,12 +259,12 @@
                 <table v-if="examples(signal).length" class="min-w-0 w-full responsive-table">
                   <thead>
                     <tr>
-                      <th>Date</th>
-                      <th>Map</th>
-                      <th>Hero</th>
-                      <th>Time</th>
-                      <th>What happened</th>
-                      <th>Replay</th>
+                      <th>{{ $t('Date') }}</th>
+                      <th>{{ $t('Map') }}</th>
+                      <th>{{ $t('Hero') }}</th>
+                      <th>{{ $t('Time') }}</th>
+                      <th>{{ $t('What happened') }}</th>
+                      <th>{{ $t('Replay') }}</th>
                     </tr>
                   </thead>
                   <tbody>

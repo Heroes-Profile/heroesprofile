@@ -83,7 +83,7 @@
           <tr>
             <th class="py-2 px-3"></th>
             <th class="py-2 px-3 text-left text-sm leading-4">
-              Avg
+              {{ $t('Avg') }}
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
               {{ getValueFixed(data.average_win_rate) }}
@@ -124,30 +124,30 @@
               {{ rankChanged ? 'Sorted Rank|(Rank)' : 'Rank' }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('name')" class="py-2 px-3 text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'name' }">
-              Hero<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+              {{ $t('Hero') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
-              Win Rate %<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+              {{ $t('Win Rate %') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('confidence_interval')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'confidence_interval' }">
-              Win Rate Confidence<sort-indicator :column="'confidence_interval'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+              {{ $t('Win Rate Confidence') }}<sort-indicator :column="'confidence_interval'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th v-if="showWinRateChange" @click="sortTable('win_rate_change')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate_change' }">
-              Win Rate Change<sort-indicator :column="'win_rate_change'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+              {{ $t('Win Rate Change') }}<sort-indicator :column="'win_rate_change'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('popularity')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'popularity' }">
-              Popularity %<sort-indicator :column="'popularity'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+              {{ $t('Popularity %') }}<sort-indicator :column="'popularity'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('pick_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'pick_rate' }">
-              Pick Rate %<sort-indicator :column="'pick_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+              {{ $t('Pick Rate %') }}<sort-indicator :column="'pick_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>   
             <th v-if="this.gametype.includes('sl') && !this.groupSizeActive" @click="sortTable('ban_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'ban_rate' }">
-              Ban Rate %<sort-indicator :column="'ban_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+              {{ $t('Ban Rate %') }}<sort-indicator :column="'ban_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>    
             <th @click="sortTable('influence')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'influence' }">
               <div class="flex items-center">
                 <div class="">
-                  Influence
+                  {{ $t('Influence') }}
                 </div>
                 <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
                   <slot>
@@ -159,13 +159,13 @@
               </div><sort-indicator :column="'influence'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>                  
             <th @click="sortTable('games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
-              Games Played<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+              {{ $t('Games Played') }}<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>       
             <th v-if="this.showStatTypeColumn" @click="sortTable('total_filter_type')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'total_filter_type' }">
               {{ this.statfiltername }}<sort-indicator :column="'total_filter_type'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th v-if="!this.groupSizeActive" class="py-2 px-3 text-center text-sm leading-4 w-px whitespace-nowrap">
-              Builds
+              {{ $t('Builds') }}
             </th>                              
           </tr>
         </thead>
@@ -175,7 +175,7 @@
               <td class="py-2 px-3"><div class="flex justify-center gap-1"><div v-if="rankChanged" class="bg-blue text-white min-w-[2em] p-1 rounded-control text-center">{{ sortDir == 'desc' ? index + 1 : sortedData.length - index }}</div><span class="p-1">{{ row.rank }}</span></div></td>
               <td class="py-2 px-3 flex items-center gap-1 max-md:w-[9.375rem]">
                 <a class="group/bt flex w-full items-center justify-start" :href="getGlobalTalentsURL(row)" >
-                  <hero-image-wrapper class="mr-2" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block font-bold group-hover/bt:underline">{{ row.name }}</span>
+                  <hero-image-wrapper class="mr-2" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block font-bold group-hover/bt:underline">{{ $heroName(row.name) }}</span>
                 </a>
               </td>
               <td class="  ">{{ getValueFixed(row.win_rate) }}</td>
@@ -210,13 +210,13 @@
     </div>
     <!-- The page's layout with grey blocks while it loads, like the leaderboard -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
-      <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
-      <loading-component v-else :compact="true" :textoverride="true">Loading hero stats...</loading-component>
+      <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
+      <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+      <loading-component v-else :compact="true" :textoverride="true">{{ $t('Loading hero stats...') }}</loading-component>
       <table-skeleton :columns="['rank', 'hero', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'rank']"></table-skeleton>
     </div>
     <div v-else-if="dataError" class="flex flex-col items-center justify-center">
-      Error: Reload page/filter
+      {{ $t('Error: Reload page/filter') }}
     </div>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :heading="hero.name">
+    <page-heading :heading="$heroName(hero)">
       <hero-image-wrapper :hero="hero" size="big" :excludehover="true"></hero-image-wrapper>
       <template v-if="metadata" #aboveHeading>
         <div class="flex items-center gap-2 text-base text-gray-medium max-md:justify-center">
@@ -22,7 +22,7 @@
       </div>
 
       <panel-box v-if="!metadata">
-        <p class="text-center">Game data for {{ hero.name }} hasn't been loaded yet.</p>
+        <p class="text-center">Game data for {{ $heroName(hero) }} hasn't been loaded yet.</p>
       </panel-box>
 
       <div v-else class="flex gap-6">
@@ -45,13 +45,13 @@
           <table class="min-w-0 w-full responsive-table">
             <thead>
               <tr>
-                <th>Stat</th>
-                <th>Value</th>
+                <th>{{ $t('Stat') }}</th>
+                <th>{{ $t('Value') }}</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="row in unitStats(unit)" :key="row.label">
-                <td>{{ row.label }}</td>
+                <td>{{ $t(row.label) }}</td>
                 <td>{{ row.value }}<span v-if="row.rate" class="text-gray-medium"> (+{{ row.rate }}% per level)</span></td>
               </tr>
             </tbody>
@@ -70,16 +70,16 @@
             <talent-image-wrapper class="shrink-0" :talent="ability" :level="level">
               <p v-if="abilityCosts(ability).length" class="mt-2.5 text-gray-medium">{{ abilityCosts(ability).join(' · ') }}</p>
               <div v-for="sub in childAbilities(ability.link_id)" :key="sub.link_id" class="mt-2.5">
-                <h2 class="text-base font-bold text-white">{{ sub.title }}</h2>
-                <game-tooltip class="mt-2.5" :text="sub.raw_description" :level="level"></game-tooltip>
+                <h2 class="text-base font-bold text-white">{{ $talentName(sub) }}</h2>
+                <game-tooltip class="mt-2.5" :text="$gameText(sub, 'raw_description')" :level="level"></game-tooltip>
               </div>
             </talent-image-wrapper>
             <div class="min-w-0 px-3">
               <div class="flex flex-wrap items-center gap-2">
-                <span class="font-bold">{{ ability.title }}</span>
+                <span class="font-bold">{{ $talentName(ability) }}</span>
                 <span v-if="hotkeyLabel(ability)" :class="['px-1 text-sm border rounded', isHeroicOrTrait(ability) ? 'text-yellow border-yellow' : 'border-gray-medium']">{{ hotkeyLabel(ability) }}</span>
               </div>
-              <p v-if="ability.short_description" class="text-sm text-gray-medium">{{ ability.short_description }}</p>
+              <p v-if="ability.short_description" class="text-sm text-gray-medium">{{ $gameText(ability, 'short_description') }}</p>
             </div>
           </div>
         </panel-box>
@@ -95,13 +95,13 @@
             <talent-image-wrapper class="shrink-0" :talent="talent" :level="level">
               <p v-if="talent.cooldown && talent.cooldown !== '0'" class="mt-2.5 text-gray-medium">Cooldown: {{ talent.cooldown }}</p>
               <div v-for="sub in childAbilities(talent.link_id)" :key="sub.link_id" class="mt-2.5">
-                <h2 class="text-base font-bold text-white">{{ sub.title }}</h2>
-                <game-tooltip class="mt-2.5" :text="sub.raw_description" :level="level"></game-tooltip>
+                <h2 class="text-base font-bold text-white">{{ $talentName(sub) }}</h2>
+                <game-tooltip class="mt-2.5" :text="$gameText(sub, 'raw_description')" :level="level"></game-tooltip>
               </div>
             </talent-image-wrapper>
             <div class="flex-1 min-w-0 px-3">
-              <span class="font-bold">{{ talent.title }}</span>
-              <game-tooltip v-if="talent.short_description" class="text-sm text-gray-medium" :text="talent.short_description" :level="level"></game-tooltip>
+              <span class="font-bold">{{ $talentName(talent) }}</span>
+              <game-tooltip v-if="talent.short_description" class="text-sm text-gray-medium" :text="$gameText(talent, 'short_description')" :level="level"></game-tooltip>
             </div>
             <span v-if="talentBadge(talent)" :class="['flex items-center gap-1 px-1 text-sm border rounded self-start whitespace-nowrap', talentBadge(talent).class]">
               <img v-if="talent.is_quest" class="w-4 h-4" src="/images/miscellaneous/quest-icon.png" alt="Quest">
@@ -177,7 +177,14 @@ export default {
       return this.herodata.hero;
     },
     metadata() {
-      return this.herodata.metadata;
+      const metadata = this.herodata.metadata;
+      const localized = this.herodata.localized || {};
+      return metadata && {
+        ...metadata,
+        title: localized.title || metadata.title,
+        description: localized.description || metadata.description,
+        lore: localized.lore || metadata.lore,
+      };
     },
     units() {
       return this.herodata.units || [];

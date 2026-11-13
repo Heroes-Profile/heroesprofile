@@ -16,7 +16,7 @@
 
     <div v-if="!user"  class="max-w-[62.5rem] mx-auto">
       <div class="bg-surface rounded p-4">
-        Log in to track your prediction stats and rank on the leaderboard
+        {{ $t('Log in to track your prediction stats and rank on the leaderboard') }}
       </div>
     </div>
     
@@ -45,7 +45,7 @@
 
     <div class="max-w-[62.5rem] mx-auto">
       <div class="bg-surface rounded p-4">
-        Leaderboards can be found at <a class="link" :href="'/Global/Leaderboard?type=Match%20Prediction&season=' + currentSeason" target="_blank">Leaderboards</a>
+        Leaderboards can be found at <a class="link" :href="'/Global/Leaderboard?type=Match%20Prediction&season=' + currentSeason" target="_blank">{{ $t('Leaderboards') }}</a>
       </div>
     </div>
 
@@ -63,13 +63,13 @@
 
 
       <button :disabled="disableFilterInput" @click="applyFilter"  class="btn" :class="{'bg-teal md:ml-10 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md md:ml-10 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
-          Next Match
+          {{ $t('Next Match') }}
       </button>
 
     </div>
 
     <div v-if="isLoading" class="max-w-[62.5rem] mx-auto px-4 mt-6 flex flex-col gap-6">
-      <loading-component :compact="true" :textoverride="true">Loading match...</loading-component>
+      <loading-component :compact="true" :textoverride="true">{{ $t('Loading match...') }}</loading-component>
       <skeleton-box class="h-14 w-full"></skeleton-box>
       <div class="grid grid-cols-2 gap-10">
         <skeleton-box class="h-64"></skeleton-box>
@@ -82,14 +82,14 @@
     <div v-if="data" class="">
 
       <div class="w-full max-w-[62.5rem] bg-surface rounded flex flex-wrap justify-between gap-2 mx-auto p-4 mb-4">
-        <span>{{ data.replayData.game_map.name }}</span>
+        <span>{{ $mapName(data.replayData.game_map) }}</span>
         <span>HP Rank: {{ data.rank }}</span>
         <span>Region: {{ data.replayData.regionString }}</span>
         <span>{{ data.replayData.timeFormat }}</span>
       </div>
 
 
-      <p class="mx-auto text-center max-w-[93.75rem] py-2">Who won the match?</p>
+      <p class="mx-auto text-center max-w-[93.75rem] py-2">{{ $t('Who won the match?') }}</p>
 
       <div class="flex max-w-[62.5rem] mx-auto justify-center gap-10">
 
@@ -99,21 +99,21 @@
               {{ "Select Team 1 Winner" }}
             </button>
             <div v-else>
-              <div class="rounded bg-teal w-full text-center px-4 py-2" v-if="userchoiceteam == 0 && userchoiceresult && userchoiceresult.data == 1">CORRECT!</div>
-              <div class="rounded bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 0 && userchoiceresult && userchoiceresult.data == 0">WRONG</div>
+              <div class="rounded bg-teal w-full text-center px-4 py-2" v-if="userchoiceteam == 0 && userchoiceresult && userchoiceresult.data == 1">{{ $t('CORRECT!') }}</div>
+              <div class="rounded bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 0 && userchoiceresult && userchoiceresult.data == 0">{{ $t('WRONG') }}</div>
             </div>
           </div>
           <div class="px-2" v-if="data.draftData && data.replayBans?.[0]?.length">
-            <h2 class="text-sm text-center uppercase font-semibold text-subtext">Team 1 Bans</h2>
+            <h2 class="text-sm text-center uppercase font-semibold text-subtext">{{ $t('Team 1 Bans') }}</h2>
             <div class="flex justify-center gap-5 p-4 max-md:flex-col">
               <template v-for="(item, index) in data.replayBans[0]" :key="index">
                 <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" size="big" ></hero-image-wrapper >
-                <round-image v-else size="big" image="/images/talents/no-image.png"><h2>No Ban</h2></round-image>
+                <round-image v-else size="big" image="/images/talents/no-image.png"><h2>{{ $t('No Ban') }}</h2></round-image>
               </template>
             </div>
           </div>
           <div class="px-2">
-            <h2 class="text-sm text-center uppercase font-semibold text-subtext">Team 1 Picks</h2>
+            <h2 class="text-sm text-center uppercase font-semibold text-subtext">{{ $t('Team 1 Picks') }}</h2>
             <div class="flex justify-center gap-5 p-4 max-md:flex-col">
               <template v-for="(item, index) in teamZeroPicks" :key="index">
                 <hero-image-wrapper v-if="item.hero" :hero="item.hero" size="big" ></hero-image-wrapper >
@@ -128,22 +128,22 @@
               {{ "Select Team 2 Winner" }}
             </button>
             <div v-else>
-              <div class="rounded bg-teal w-full text-center px-4 py-2" v-if="userchoiceteam == 1 && userchoiceresult && userchoiceresult.data == 1">CORRECT!</div>
-              <div class="rounded bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 1 && userchoiceresult && userchoiceresult.data == 0">WRONG</div>
+              <div class="rounded bg-teal w-full text-center px-4 py-2" v-if="userchoiceteam == 1 && userchoiceresult && userchoiceresult.data == 1">{{ $t('CORRECT!') }}</div>
+              <div class="rounded bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 1 && userchoiceresult && userchoiceresult.data == 0">{{ $t('WRONG') }}</div>
             </div>
           </div>
           <div class="px-2" v-if="data.draftData && data.replayBans?.[1]?.length">
-            <h2 class="text-sm text-center uppercase font-semibold text-subtext">Team 2 Bans</h2>
+            <h2 class="text-sm text-center uppercase font-semibold text-subtext">{{ $t('Team 2 Bans') }}</h2>
             <div class="flex justify-center gap-5 p-4 max-md:flex-col">
             <template v-for="(item, index) in data.replayBans[1]" :key="index">
               <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" size="big" ></hero-image-wrapper >
-              <round-image v-else size="big" image="/images/talents/no-image.png"><h2>No Ban</h2></round-image>
+              <round-image v-else size="big" image="/images/talents/no-image.png"><h2>{{ $t('No Ban') }}</h2></round-image>
             </template>
           </div>
         </div>
         
         <div class="px-2">
-          <h2 class="text-sm text-center uppercase font-semibold text-subtext">Team 2 Picks</h2>
+          <h2 class="text-sm text-center uppercase font-semibold text-subtext">{{ $t('Team 2 Picks') }}</h2>
           <div class="flex justify-center gap-5 p-4 max-md:flex-col">
             <template v-for="(item, index) in teamOnePicks" :key="index">
               <hero-image-wrapper :hero="item.hero" size="big" ></hero-image-wrapper >
@@ -159,7 +159,7 @@
     </div>
 
     <div class="p-10  max-w-[62.5rem] mx-auto">
-      <h2 class="text-3xl font-bold py-5">Talents to Level 10</h2>
+      <h2 class="text-3xl font-bold py-5">{{ $t('Talents to Level 10') }}</h2>
       <div class="flex flex-wrap gap-20 justify-around">
         <div class="">
           <div class="w-full mb-10" v-for="(item, index) in data.playerData[0]" :key="index">

@@ -4,7 +4,7 @@
     <div class="flex items-stretch">
       <div class="relative flex-1">
         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-lteal pointer-events-none"></i>
-        <input ref="input" type="text" :class="['form-control variable-text rounded-l-control px-4 py-3 pl-10 w-full', { 'ring-2 ring-inset ring-teal outline-none': showEmptyPrompt }]" :placeholder="labelText" :aria-label="labelText" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton" @blur="showEmptyPrompt = false">
+        <input ref="input" type="text" :class="['form-control variable-text rounded-l-control px-4 py-3 pl-10 w-full', { 'ring-2 ring-inset ring-teal outline-none': showEmptyPrompt }]" :placeholder="$t(labelText)" :aria-label="$t(labelText)" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton" @blur="showEmptyPrompt = false">
       </div>
       <button
         v-if="buttonText"
@@ -12,7 +12,7 @@
         type="button"
         @click="clickedButton"
       >
-        {{ buttonText }}
+        {{ $t(buttonText) }}
       </button>
     </div>
     <p v-if="errorMessage" class="text-red text-sm mt-1">{{ errorMessage }}</p>

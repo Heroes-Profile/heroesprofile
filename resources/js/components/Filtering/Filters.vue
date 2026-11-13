@@ -1,8 +1,8 @@
 <template>
   <div :class="compact ? 'px-4' : 'max-w-[120rem] mx-auto md:px-8 mb-8'">
-    <button v-if="!compact" class="md:hidden p-2 bg-blue w-full" @click="showMobile">Show Filters</button>
+    <button v-if="!compact" class="md:hidden p-2 bg-blue w-full" @click="showMobile">{{ $t('Show Filters') }}</button>
     <div v-show="compact || showNav" :class="compact ? 'bg-lighten rounded p-3' : 'bg-surface md:rounded p-4 md:p-6 max-md:fixed max-md:inset-0 max-md:z-50 max-md:h-[100dvh] max-md:overflow-y-auto max-md:flex max-md:flex-col'">
-      <button v-if="!compact" class="md:hidden ml-auto text-2xl min-w-[2.75rem] min-h-[2.75rem]" aria-label="Close filters" @click="showMobile">x</button>
+      <button v-if="!compact" class="md:hidden ml-auto text-2xl min-w-[2.75rem] min-h-[2.75rem]" :aria-label="$t('Close filters')" @click="showMobile">x</button>
       <div :class="compact ? 'flex flex-wrap items-end gap-3' : 'filter-row'">
         <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] flex-1 basis-[50rem] gap-2 min-w-0' : 'contents'">
           <!-- A page's own pickers (esports seasons, divisions, teams, ...): { text, values, defaultValue, show } -->
@@ -241,8 +241,8 @@
             @input-changed="handleInputChange"
           ></multi-select-filter>
           <div v-if="includemultihero && selectedMultiFilters['Heroes'] && selectedMultiFilters['Heroes'].length > 1" class="flex flex-col text-sm font-medium p-2">
-            <span>Heroes Match</span>
-            <tab-button tab1text="OR" tab2text="AND" :ignoreclick="true"
+            <span>{{ $t('Heroes Match') }}</span>
+            <tab-button :tab1text="$t('OR')" :tab2text="$t('AND')" :ignoreclick="true"
               @tab-click="(side) => handleInputChange({ field: 'Heroes Match', value: side === 'right' ? 'all' : 'any', type: 'single' })"
               :overridedefaultside="selectedSingleFilters['Heroes Match'] === 'all' ? 'right' : 'left'"
             ></tab-button>
@@ -329,7 +329,7 @@
           >
             <!-- Replaces the HP rank explanation while In-Game is on -->
             <div v-if="rankSourceSL">
-              <p class="max-sm:text-xs">In-game rank is the Storm League rank Blizzard shows on the loading screen, read by players using the Heroes Profile uploader's opt-in rank reader. Each player counts in the rank they had going into that game. Only players whose rank was read count, so sample sizes are smaller than HP rank.</p>
+              <p class="max-sm:text-xs">{{ $t(inGameRankInfo) }}</p>
             </div>
           </multi-select-filter>
 
@@ -405,13 +405,13 @@
           <!-- Friend/Foe Battletag Search -->
           <div v-if="matchhistorybattletagsearch" id="filter-label" class="filter-fill relative max-md:w-full md:w-[12.5rem]">
             <div class="flex flex-col gap-1.5 text-sm font-medium text-subtext p-2">
-              <span>Friend or Foe Player</span>
+              <span>{{ $t('Friend or Foe Player') }}</span>
               <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-subtext pointer-events-none"></i>
                 <input
                   type="text"
                   v-model="ffBattletag"
-                  placeholder="Enter BattleTag"
+                  :placeholder="$t('Enter BattleTag')"
                   class="w-full h-[2.5rem] rounded-control !bg-surface-3 pl-9 pr-2 text-white placeholder:text-subtext focus:outline-none"
                   @input="ffBlizzid = null; ffRegion = null; ffSearchResults = []; ffSearchError = null"
                 />
@@ -439,7 +439,7 @@
           <!-- Game Date -->
           <div v-if="includegamedate" id="filter-label" class="relative">
             <div v-if="includegamedate" class="flex items-end  text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors">
-              <div class="flex flex-col"><span>From Date  </span>
+              <div class="flex flex-col"><span>{{ $t('From Date') }}</span>
               <input type="date" 
                 v-model="selectedGameDate" 
                 @input="handleGameDateChange"
@@ -468,14 +468,14 @@
           <slot></slot>
         </div>
         <button v-if="!autoapply" :disabled="disabledFilter" @click="applyFilter" class="btn" :class="compact ? 'bg-blue px-5 h-10 disabled:opacity-50 hover:bg-lblue' : ['font-semibold h-10 m-2 md:w-[7.5rem] max-md:flex-[1_1_8rem]', disabledFilter ? 'bg-gray-md' : 'bg-blue hover:bg-lblue']">
-          Filter
+          {{ $t('Filter') }}
         </button>
 
         
       </div>
       <div class="flex max-md:mb-auto" :class="compact && $slots['compact-footer'] ? 'justify-between items-start' : 'justify-end'">
         <div v-if="compact && $slots['compact-footer']" class="mt-2"><slot name="compact-footer"></slot></div>
-        <button class="m-l-auto underline" :class="{ 'text-sm mt-2': compact }" v-if="!hideadvancedfilteringbutton" :aria-expanded="!!toggleExtraFilters" @click="toggleExtraFilters = !toggleExtraFilters" >{{toggleButtonText}}</button>
+        <button class="m-l-auto underline" :class="{ 'text-sm mt-2': compact }" v-if="!hideadvancedfilteringbutton" :aria-expanded="!!toggleExtraFilters" @click="toggleExtraFilters = !toggleExtraFilters" >{{ $t(toggleButtonText) }}</button>
         <round-image v-if="advancedfiltersinfo && !hideadvancedfilteringbutton" class="ml-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
           <p class="max-sm:text-xs">{{ advancedfiltersinfo }}</p>
         </round-image>
@@ -788,6 +788,9 @@
       }
     },
     computed: {
+      inGameRankInfo() {
+        return "In-game rank is the Storm League rank Blizzard shows on the loading screen, read by players using the Heroes Profile uploader's opt-in rank reader. Each player counts in the rank they had going into that game. Only players whose rank was read count, so sample sizes are smaller than HP rank.";
+      },
       // Select All would otherwise tick `All` alongside every real size. Nothing
       // selected already means the unfiltered table, so the option is redundant.
       groupSizeOptions() {

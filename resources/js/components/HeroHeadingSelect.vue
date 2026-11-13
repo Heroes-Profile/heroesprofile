@@ -1,7 +1,7 @@
 <template>
   <div class="relative" :class="textclass" @mouseleave="open = false">
     <button type="button" class="inline-flex items-center gap-2 focus:underline focus:outline-none" :aria-label="'Change ' + label" :aria-expanded="open" @click="open = !open">
-      <span>{{ selectedName }}</span>
+      <span>{{ displayName(selectedName) }}</span>
       <i class="fas fa-chevron-down text-xs"></i>
     </button>
     <div v-if="open" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg font-normal tracking-normal" style="width: 13.75rem; max-height: 21.25rem; overflow-y: auto;">
@@ -14,7 +14,7 @@
       >
         <hero-image-wrapper v-if="type === 'hero'" :hero="h" :includehover="false" class="flex-shrink-0"></hero-image-wrapper>
         <round-image v-else-if="type === 'role'" :image="`/images/roles/${h.name.toLowerCase()}.PNG`" :excludehover="true" class="flex-shrink-0"></round-image>
-        <span>{{ h.name }}</span>
+        <span>{{ displayName(h.name) }}</span>
       </div>
     </div>
   </div>
@@ -54,10 +54,14 @@ export default {
     filteredHeroes() {
       const q = this.search.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
       if (!q) return this.heroes;
-      return this.heroes.filter(h => h.name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().includes(q));
+      const fold = (text) => text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+      return this.heroes.filter(h => fold(h.name).includes(q) || fold(this.displayName(h.name)).includes(q));
     },
   },
   methods: {
+    displayName(name) {
+      return { hero: this.$heroName, map: this.$mapName }[this.type]?.(name) ?? name;
+    },
     keyOf(item) {
       return this.type === 'hero' ? item.id : item.name;
     },

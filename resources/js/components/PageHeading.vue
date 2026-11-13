@@ -9,7 +9,7 @@
       <span v-if="battletag && !esport" class="text-lg uppercase">{{ battletag }}({{ regionstring }})</span>
       <span v-if="battletag && esport" class="text-lg uppercase">{{ battletag }}</span>
       <!-- Left out when the logo already says it -->
-      <span v-if="heading" class="text-2xl font-bold">{{ heading }}</span>
+      <span v-if="heading" class="text-2xl font-bold">{{ $t(heading) }}</span>
     </a>
 
     <h1 v-else class="max-md:w-full max-md:text-center">
@@ -19,18 +19,18 @@
       <div v-if="battletag" class="flex items-center gap-1 text-[1.25rem] mt-1 max-md:justify-center">
           <icon-with-hover v-if="isOwner && !ownerHidden" size="small" icon="fas fa-crown" title="info" popupsize="small" style="color:gold">
             <div>
-              <p class="max-sm:text-xs">Site Owner</p>
+              <p class="max-sm:text-xs">{{ $t('Site Owner') }}</p>
             </div>
           </icon-with-hover>
           <icon-with-hover v-else-if="isPatreon" size="small" icon="fas fa-star" title="info" popupsize="small" style="color:gold">
             <div>
-              <p class="max-sm:text-xs">Patreon Subscriber</p>
+              <p class="max-sm:text-xs">{{ $t('Patreon Subscriber') }}</p>
             </div>
           </icon-with-hover>
           <void-eye-flair v-if="!esport && voidEye" class="md:-translate-y-[0.3em]" :force="true"></void-eye-flair>
       </div>
       <slot name="aboveHeading"></slot>
-      <div :class="['heading flex items-center gap-3 max-md:justify-center', battletag ? 'text-base text-gray-medium mt-1' : 'text-3xl md:text-4xl font-bold']">{{ heading }}<slot name="headingInfo"></slot></div>
+      <div :class="['heading flex items-center gap-3 max-md:justify-center', battletag ? 'text-base text-gray-medium mt-1' : 'text-3xl md:text-4xl font-bold']">{{ $t(heading) }}<slot name="headingInfo"></slot></div>
     </h1>
     <div v-if="hasInfo && !hideText" class="text-gray-medium md:ml-auto md:max-w-[50%]">
       <infobox :input="infoText1"></infobox>

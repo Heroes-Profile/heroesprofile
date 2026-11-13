@@ -110,6 +110,12 @@
     <script>
       window.navLists = {!! json_encode($navLists, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
       window.flairState = {!! json_encode($flairState, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
+      @if (app()->getLocale() !== 'en')
+      {{-- English hero/map name => name in the chosen language, read by $heroName / $mapName --}}
+      window.gameStrings = {!! json_encode(app(\App\Services\LocalizedGameStrings::class)->names(app()->getLocale()), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_FORCE_OBJECT) !!};
+      {{-- lang/{locale}.json, read by $t --}}
+      window.translations = {!! json_encode(app('translator')->getLoader()->load(app()->getLocale(), '*', '*'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_FORCE_OBJECT) !!};
+      @endif
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>.void-eye-img{ background-image: url('{{ asset('images/event/xalatath/void-eye.svg') }}'); }</style>
@@ -146,20 +152,20 @@
     <footer class="mt-auto @yield('footer_gap', 'pt-[2em]')">
       @if(isset($isBackendOff) && $isBackendOff)
         <div class="bg-red text-sm text-center p-1">
-          The backend is currently offline. Some features may not be available.  Please contact zemill@heroesprofile.com
+          {{ __('The backend is currently offline. Some features may not be available. Please contact :email', ['email' => 'zemill@heroesprofile.com']) }}
         </div>
       @endif
       <div class="bg-surface text-sm px-4 md:px-8 py-6">
         <div class="max-w-[116rem] mx-auto flex flex-wrap items-center justify-between gap-4 max-md:flex-col max-md:text-center">
           <div>
             @if(isset($maxReplayID) && ! (isset($isBackendOff) && $isBackendOff))
-              Patch {{ $latestPatch }}<span class="mx-3">|</span>{{ is_numeric($maxReplayID) ? number_format($maxReplayID) : $maxReplayID }} replays
+              {{ __('Patch :patch', ['patch' => $latestPatch]) }}<span class="mx-3">|</span>{{ __(':count replays', ['count' => is_numeric($maxReplayID) ? number_format($maxReplayID) : $maxReplayID]) }}
             @endif
           </div>
           <div class="space-x-3">
-            <a href="/FAQ" class="underline">FAQ</a>
-            <a href="/Privacy/Policy" class="underline">Privacy Policy</a>
-            <a href="/Terms/Of/Service" class="underline">Terms of Service</a>
+            <a href="/FAQ" class="underline">{{ __('FAQ') }}</a>
+            <a href="/Privacy/Policy" class="underline">{{ __('Privacy Policy') }}</a>
+            <a href="/Terms/Of/Service" class="underline">{{ __('Terms of Service') }}</a>
           </div>
           <div>Skill Tree Development, LLC<span class="mx-3">|</span><a href="https://heroesprofile.com">Heroes Profile</a></div>
         </div>

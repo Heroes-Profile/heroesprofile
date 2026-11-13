@@ -50,11 +50,11 @@
 
     </div>
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <loading-component :compact="true" :textoverride="true">Loading party stats...</loading-component>
+      <loading-component :compact="true" :textoverride="true">{{ $t('Loading party stats...') }}</loading-component>
       <party-stats-skeleton></party-stats-skeleton>
     </div>
     <div v-else-if="dataError" class="flex items-center justify-center">
-      Error: Reload page/filter
+      {{ $t('Error: Reload page/filter') }}
     </div>
   </div>
 </template>

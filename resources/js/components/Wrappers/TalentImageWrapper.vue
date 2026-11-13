@@ -3,7 +3,7 @@
       <round-image v-if="talent" :size="size" popupsize="large" mobileClick="true" :image="getTalentImage()" :title="displayTitle">
         <h2 v-if="isRemoved" class="text-yellow font-bold mb-1">Talent no longer available</h2>
         <h2 class="text-base font-bold text-white">{{ displayTitle }}</h2>
-        <game-tooltip v-if="talent.raw_description" class="mt-2.5" :text="talent.raw_description" :level="level"></game-tooltip>
+        <game-tooltip v-if="$gameText(talent, 'raw_description')" class="mt-2.5" :text="$gameText(talent, 'raw_description')" :level="level"></game-tooltip>
         <div v-else class="space-y-2.5 mt-2.5">
           <p v-for="(part, index) in descriptionParts" :key="index">
             <template v-if="part.label">
@@ -66,10 +66,7 @@ export default {
         });
     },
     displayTitle() {
-      if (this.talent && this.talent.title && this.talent.title !== '') {
-        return this.talent.title;
-      }
-      return this.talent && this.talent.talent_name ? this.talent.talent_name : '';
+      return this.$talentName(this.talent);
     }
   },
   watch: {

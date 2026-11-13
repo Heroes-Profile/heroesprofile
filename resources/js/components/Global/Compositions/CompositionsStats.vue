@@ -55,16 +55,16 @@
         <thead>
           <tr>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Composition
+              {{ $t('Composition') }}
             </th>
             <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
-              Win Rate %<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+              {{ $t('Win Rate %') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>            
             <th @click="sortTable('popularity')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'popularity' }">
-              Popularity %<sort-indicator :column="'popularity'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+              {{ $t('Popularity %') }}<sort-indicator :column="'popularity'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
             <th @click="sortTable('games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
-              Games Played<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+              {{ $t('Games Played') }}<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>       
             <th></th>          
           </tr>
@@ -153,11 +153,11 @@
       </panel-box>
     </div>
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <loading-component :compact="true" :textoverride="true">Loading compositions...</loading-component>
+      <loading-component :compact="true" :textoverride="true">{{ $t('Loading compositions...') }}</loading-component>
       <table-skeleton :rows="8" :columns="['role', 'role', 'role', 'role', 'role', 'stat', 'stat', 'stat', 'pill']"></table-skeleton>
     </div>
     <div v-else-if="dataError" class="flex items-center justify-center">
-      Error: Reload page/filter
+      {{ $t('Error: Reload page/filter') }}
     </div>
 
 

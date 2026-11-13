@@ -53,7 +53,7 @@
           <tab-button :key="esport ? 'ngs-' + ngsRangeSide : 'range'" :tab1text="'All Time'" :tab2text="'Current Season'" :ignoreclick="true" @tab-click="setBuildsRange" :overridedefaultside="esport ? ngsRangeSide : (buildsCurrentSeason ? 'right' : 'left')"></tab-button>
         </div>
         <loading-component v-if="isBuildsLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">Loading talent builds{{ buildsTotal ? ` (${buildsLoaded} of ${buildsTotal} heroes)` : '' }}...</loading-component>
-        <p v-if="buildsError" class="text-sm text-subtext">Couldn't load talent builds. Reload the page to try again.</p>
+        <p v-if="buildsError" class="text-sm text-subtext">{{ $t("Couldn't load talent builds. Reload the page to try again.") }}</p>
         <global-talent-builds-all v-else-if="heroesWithBuilds.length" :key="buildsCurrentSeason ? 'season' : 'all'" :heroes="heroesWithBuilds" :talentbuilddataall="talentbuilddataall" :game-types="esport ? [{ key: 'ngs', label: league.name }] : undefined"></global-talent-builds-all>
         <table-skeleton v-else-if="isBuildsLoading" :bare="true" :rows="10" :columns="['avatar', 'talents', 'talents', 'talents']"></table-skeleton>
         <p v-else-if="talentbuilddataall && esport" class="text-sm text-subtext">No {{ league.name }} builds for these filters.</p>

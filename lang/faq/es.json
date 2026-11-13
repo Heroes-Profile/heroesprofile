@@ -1,0 +1,303 @@
+{
+    "categories": {
+        "Getting Started": "Primeros pasos",
+        "Uploading Replays": "Subir repeticiones",
+        "MMR & Rankings": "MMR y clasificaciones",
+        "Global Stats & Data": "Estadísticas globales y datos",
+        "Filters": "Filtros",
+        "Site Features": "Funciones del sitio",
+        "Drafter": "Asistente de draft",
+        "Leaderboards": "Clasificaciones",
+        "Supporting Heroes Profile": "Apoyar a Heroes Profile"
+    },
+    "items": {
+        "9f34d33651e2f406": {
+            "q": "¿Qué es Heroes Profile?",
+            "a": "Heroes Profile es un sitio de estadísticas de Heroes of the Storm creado por la comunidad. Recopilamos perfiles de jugador, tasas de victoria globales de los héroes, builds de talentos, enfrentamientos, datos de draft, clasificaciones y mucho más, todo a partir de los archivos de repetición que sube la comunidad. El sitio se lanzó en junio de 2018 y lo gestionan Zemill y un pequeño equipo de voluntarios."
+        },
+        "53e7bf5654bd4ea6": {
+            "q": "¿Cómo encuentro mi perfil de jugador?",
+            "a": "Usa la barra de búsqueda de la parte superior del sitio y escribe tu BattleTag (p. ej., <code>Zemill#1940</code>). Una vez encontrado, podrás ver tu historial de partidas, estadísticas de héroes, MMR, mapas, enfrentamientos y más. Asegúrate de haber subido antes tus repeticiones para que aparezcan tus datos."
+        },
+        "fee6b20b0ee8251f": {
+            "q": "¿Heroes Profile es gratuito?",
+            "a": "Sí, Heroes Profile es totalmente gratuito. La comunidad nos apoya a través de <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a>. Quienes nos apoyan en Patreon disfrutan del sitio sin anuncios y de distintivos especiales."
+        },
+        "7ba1b5ca799e4b7a": {
+            "q": "¿Cómo consigo que mis estadísticas aparezcan en Heroes Profile?",
+            "a": "Tienes que subir tus archivos de repetición. Lo más fácil es descargar el <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">cargador de Heroes Profile</a>, que funciona en segundo plano y sube las repeticiones automáticamente después de cada partida. También puedes <a href=\"/Upload\" class=\"link\">subir repeticiones manualmente</a>. Después de subirlas, espera entre 5 y 10 minutos a que se procesen."
+        },
+        "4015e4f47fc40628": {
+            "q": "¿Es seguro el cargador de Heroes Profile?",
+            "a": "Sí. El cargador es completamente de código abierto: puedes revisar todo el código fuente en GitHub: <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>. No contiene anuncios, bloatware ni rastreo más allá de un análisis básico de páginas. Si lo prefieres, puedes subir las repeticiones manualmente.<br><br>Algunos antivirus o navegadores pueden marcar el instalador como sospechoso. Es un falso positivo que se debe a que el ejecutable no está firmado con un certificado de firma de código de pago, no a que contenga malware. Puedes comprobarlo tú mismo revisando el código abierto. Si no te sientes cómodo, usa la <a href=\"/Upload\" class=\"link\">página de subida manual</a>."
+        },
+        "be6aba0fe5a58edc": {
+            "q": "¿Por qué no aparecen todas mis partidas?",
+            "a": "Heroes Profile solo contiene las partidas que se han subido a nuestro sistema. Si no has subido tus repeticiones, o empezaste a subirlas hace poco, las partidas más antiguas no aparecerán. Puedes <a href=\"/Upload\" class=\"link\">subir manualmente archivos de repetición antiguos</a> o usar el <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">cargador de Heroes Profile</a> para subirlas automáticamente a partir de ahora. Heroes of the Storm guarda los archivos de repetición en tu carpeta Documentos."
+        },
+        "9ea212dc517ae501": {
+            "q": "¿La fecha y hora de una partida corresponden a cuando empezó o a cuando terminó?",
+            "a": "A cuando terminó. La hora que se muestra para una partida procede de su archivo de repetición, que Heroes of the Storm guarda al final de la partida, así que una partida de 25 minutos que empezó a las 8:00 aparece como 8:25."
+        },
+        "588f4dbb15c62747": {
+            "q": "¿Puedo subir repeticiones antiguas? ¿Afectará eso a mi MMR?",
+            "a": "Sí, puedes subir repeticiones antiguas. Sin embargo, el orden en que las subas sí importa para el MMR. Los sistemas de MMR aplican ajustes mayores al principio, mientras intentan situarte donde te corresponde. Si subes tus partidas recientes (con mayor tasa de victorias) antes que las antiguas (con menor tasa de victorias), tu MMR podría acabar más alto que si las subieras en orden cronológico. Para obtener el MMR más preciso, sube todas las repeticiones en el orden en que se jugaron."
+        },
+        "9d33bcc4b479b937": {
+            "q": "¿El cargador funciona en macOS o Linux?",
+            "a": "Sí. El cargador es una sola aplicación para Windows, macOS y Linux. Las descargas para cada sistema están en la <a href=\"/Upload\" class=\"link\">página de subida</a>, y en <a href=\"/Upload/Uploader\" class=\"link\">la página del cargador</a> se explica qué ha cambiado y cómo pasar desde el antiguo cargador de Windows."
+        },
+        "a1eb614636680760": {
+            "q": "¿Cómo hago privado mi perfil?",
+            "a": "Inicia sesión con tu cuenta de Battle.net, ve a <a href=\"/Profile/Settings\" class=\"link\">Ajustes del perfil</a> y cambia la visibilidad de la cuenta a Privada. Tu BattleTag seguirá apareciendo en el historial de partidas de otros jugadores (ya que forma parte del archivo de repetición), pero tu página de perfil no será accesible públicamente."
+        },
+        "c4b452b25e56c717": {
+            "q": "¿Cómo funciona el MMR en Heroes Profile?",
+            "a": "Blizzard no incluye datos de MMR ni de rango en los archivos de repetición, así que no podemos obtener tu rango ni tu MMR oficiales del juego a partir de una repetición. Por eso calculamos nuestro propio MMR a partir de las victorias y derrotas de las repeticiones que subes. Es una aproximación: cuantas más partidas subas, más preciso será. En los modos de juego nuevos (como cuando se lanzó la Liga de la Tormenta), todo el mundo empieza desde cero, así que los primeros valores de MMR tienen mucha incertidumbre. Tu rango real de la Liga de la Tormenta puede mostrarse por separado, leído de la pantalla de carga (consulta más abajo)."
+        },
+        "628d7a2936bd5087": {
+            "q": "¿Por qué mi MMR de Heroes Profile no coincide con mi rango del juego?",
+            "a": "Nuestro MMR es un cálculo independiente basado solo en las repeticiones subidas a nuestro sistema. No procede de los servidores de Blizzard ni refleja tu clasificación oficial en el juego. Cuantas más partidas subas, más se acercará a tu nivel real de habilidad. Si acabas de empezar a subir repeticiones, juega más partidas y el valor se estabilizará. Tu rango real del juego, cuando lo tenemos, aparece en su propia sección de Rango de Liga de la Tormenta en tu perfil."
+        },
+        "561dd721f50a722e": {
+            "q": "¿Puede Heroes Profile mostrar mi rango real del juego?",
+            "a": "Sí, en la Liga de la Tormenta. Los rangos no están en los archivos de repetición, pero el juego muestra el rango de cada jugador en la pantalla de carga. La versión del cargador <strong>con lectura de rango</strong> (Windows, macOS o Linux) puede leerlos de ahí:<ol class=\"list-decimal pl-6 my-2 space-y-1\"><li>Instálala desde la página <a href=\"/Upload\" class=\"link\">Cargador de repeticiones</a>.</li><li>En los ajustes del cargador, activa <strong>Leer rangos de la pantalla de carga</strong>. Está desactivado hasta que lo actives.</li><li>Juega a la Liga de la Tormenta. Cuando se sube la repetición de una partida, los rangos leídos de su pantalla de carga se guardan y se muestran en la sección Rango de Liga de la Tormenta del perfil de cada jugador.</li></ol>Solo captura la ventana del juego, solo durante la pantalla de carga, y solo se envían las partidas de la Liga de la Tormenta. Solo se guarda el rango de un jugador que aparece en la repetición de esa partida y cuando el lector está seguro de que la tarjeta de rango es suya, así que también puedes obtener tu rango a partir de las partidas de otras personas. Los rangos se muestran tal como se leyeron, con la última vez que se vieron y en cuántas partidas, y en ocasiones pueden ser erróneos o estar desactualizados. <a href=\"/Upload/Uploader#rank-reading\" class=\"link\">Cómo funciona la lectura de rango</a>."
+        },
+        "b46963dbac0933b1": {
+            "q": "¿Qué representan las ligas en las páginas de estadísticas globales?",
+            "a": "En las páginas de estadísticas globales, las ligas (Bronce, Plata, Oro, Platino, Diamante, Maestro) se basan en nuestro cálculo de MMR de Heroes Profile. Los jugadores cuyo MMR está dentro de un rango determinado se agrupan en esa liga. Usamos como referencia los cortes por liga que proporciona Blizzard para fijar dónde deben estar los rangos. Esto significa que aproximadamente el 7 % de nuestros jugadores están en Bronce, igual que en la distribución prevista por Blizzard."
+        },
+        "9f2014d56a0836a1": {
+            "q": "¿Cómo se distribuyen las ligas en Heroes Profile?",
+            "a": "Las ligas de Heroes Profile se basan en las siguientes distribuciones de población:<br><br><div style=\"display:inline-block;min-width:220px;border:1px solid rgba(255,255,255,0.15);border-radius:6px;overflow:hidden;font-size:0.875rem;\"><div style=\"display:flex;background:rgba(255,255,255,0.1);font-weight:600;\"><span style=\"flex:1;padding:8px 14px;\">Liga</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">% de jugadores</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">Bronce</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">12 %</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">Plata</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">23 %</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">Oro</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">26 %</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">Platino</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">22 %</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">Diamante</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">12 %</span></div><div style=\"display:flex;border-top:1px solid rgba(255,255,255,0.1);\"><span style=\"flex:1;padding:8px 14px;\">Maestro</span><span style=\"width:120px;padding:8px 14px;text-align:right;\">5 %</span></div></div><br><br>Estas distribuciones sirven para fijar los umbrales de MMR de cada liga. Los jugadores con menos de 50 partidas jugadas se colocan en una liga «Desconocida» (a veces llamada Madera) hasta que el sistema tiene datos suficientes para clasificarlos con precisión."
+        },
+        "743025c455ccb4e1": {
+            "q": "¿Por qué se recalcula el MMR periódicamente?",
+            "a": "Recalculamos periódicamente el MMR de todas las partidas subidas para mejorar su precisión. A medida que mejoran nuestros algoritmos y se suben más datos, el recálculo ofrece a todos los jugadores una puntuación más precisa. Anunciamos estos recálculos cuando se producen; consulta nuestras publicaciones en Reddit o GitHub para estar al día."
+        },
+        "ab1a5a59c21f2ed8": {
+            "q": "¿Por qué ha bajado mi MMR tras una victoria (o subido tras una derrota)?",
+            "a": "El MMR de Heroes Profile no es una métrica que crezca indefinidamente: mide tu habilidad en relación con la de los demás. Si tu MMR ha bajado tras una victoria, significa que el sistema ha detectado que jugabas contra jugadores con un MMR bastante más bajo que el tuyo. El algoritmo ve a un jugador de MMR alto ganando a rivales de MMR bajo y lo interpreta como señal de que tu puntuación actual puede ser demasiado alta, así que la ajusta ligeramente a la baja. Lo contrario también ocurre: perder contra jugadores con un MMR mucho más alto puede subir tu puntuación. Es intencionado: el sistema siempre intenta encontrar el nivel al que realmente perteneces, no solo recompensarte por ganar."
+        },
+        "d9046734a5b347eb": {
+            "q": "¿Qué es el MMR de héroe?",
+            "a": "El MMR de héroe es una puntuación de MMR por héroe. En lugar de una única puntuación general, tienes un MMR distinto para cada héroe que juegas. Esta puntuación te compara con el rendimiento de otros jugadores con ese mismo héroe. Ser un jugador de alto nivel en la Liga de la Tormenta no implica automáticamente tener un MMR de héroe alto con un héroe que apenas juegas."
+        },
+        "4f0391d0e1d4e289": {
+            "q": "¿Qué precisión tienen los datos de Heroes Profile?",
+            "a": "Los datos son tan precisos como lo permite el número de repeticiones subidas a nuestro sistema. No tenemos acceso a todas las partidas jugadas, solo a aquellas en las que los jugadores han usado nuestro cargador o han enviado repeticiones manualmente. Aun así, tenemos de forma constante una de las mayores bases de datos de repeticiones de la comunidad, con decenas de millones de partidas."
+        },
+        "887f997b1810f8c3": {
+            "q": "¿Por qué se excluyen los enfrentamientos espejo de las tasas de victoria de los enfrentamientos?",
+            "a": "Cuando un héroe se enfrenta a sí mismo en un enfrentamiento espejo, el resultado siempre es una victoria y una derrota para ese héroe en la misma partida. Incluir los enfrentamientos espejo empujaría siempre la tasa de victorias media hacia el 50 % para todos los héroes, lo que no aportaría información útil. Al excluirlos, los datos de enfrentamientos reflejan de verdad dinámicas competitivas significativas."
+        },
+        "507d49de8fb485c2": {
+            "q": "¿Cómo funciona la puntuación de rendimiento?",
+            "a": "La puntuación de rendimiento de las páginas de partida se calcula tomando cada estadística de una partida (daño, sanación, muertes causadas, etc.), ordenando a los 10 jugadores de esa partida de mejor a peor y asignando una puntuación según la posición. Es una medida relativa dentro de esa única partida, no una referencia global."
+        },
+        "199e6ba2d5e28495": {
+            "q": "¿Qué significan los filtros de periodo (parche principal frente a parche menor)?",
+            "a": "En Heroes Profile, los parches principales suelen coincidir con lanzamientos de héroes o grandes rediseños, cuando Blizzard cambia el número tras el primer decimal (p. ej., 2.44 → 2.45). Los parches menores son las actualizaciones de equilibrio más pequeñas dentro de un parche principal. El filtro Periodos muestra cada versión bajo su parche principal y su subparche: marca un encabezado para seleccionar el parche completo o marca versiones sueltas. Consulta el <a href=\"/FAQ#patch-history\" class=\"link\">historial de parches</a> para ver qué cambió en cada parche."
+        },
+        "6952ad9e69f8dc30": {
+            "q": "¿Puedo ver las estadísticas medias de un héroe en partida, como el daño de asedio o el daño a héroes?",
+            "a": "Sí, la media por partida de cada héroe para una estadística está en la página <a href=\"/Global/Hero\" class=\"link\">Estadísticas de héroes</a>:<ol class=\"list-decimal pl-6 my-2 flex flex-col gap-1\"><li>Haz clic en <strong>Mostrar filtros avanzados</strong> bajo los filtros.</li><li>En <strong>Periodos</strong>, selecciona 5 versiones sueltas o menos. El Filtro de estadística se oculta cuando hay marcado un parche principal o un subparche completo.</li><li>Elige la estadística en <strong>Filtro de estadística</strong>, p. ej., Daño de asedio, Daño a héroes, Daño de hechizos, Daño físico, Sanación o Muertes, y haz clic en <strong>Filtrar</strong>.</li></ol>La tabla y el gráfico de burbujas mostrarán entonces la media por partida de cada héroe para esa estadística en lugar de la tasa de victorias. También puedes enlazarlo directamente, p. ej., <a href=\"/Global/Hero?statfilter=siege_damage\" class=\"link\">/Global/Hero?statfilter=siege_damage</a>. La página <a href=\"/Global/Talents\" class=\"link\">Talentos</a> tiene el mismo Filtro de estadística para talentos y builds. No hay disponible a nivel global un desglose completo de las estadísticas de un héroe una al lado de otra, como las estadísticas avanzadas de la página de héroe de un jugador."
+        },
+        "8b86a4ca4006babb": {
+            "q": "¿Por qué a veces los datos globales aparecen vacíos tras un nuevo parche?",
+            "a": "Justo después de que Blizzard publique un parche, aún no hay suficientes datos subidos de ese parche para mostrar resultados significativos. Amplía el filtro de periodos para incluir varios parches o vuelve a consultarlo dentro de unos días, cuando se hayan subido más partidas."
+        },
+        "236905d835494eef": {
+            "q": "¿Qué es la «Probabilidad de victoria» de las builds de talentos y en qué se diferencia de la tasa de victorias?",
+            "a": "La probabilidad de victoria es la probabilidad calculada de que una build de talentos completa, del nivel 1 al 20, lleve a la victoria. No es una simple tasa de victorias. Como muchas partidas terminan antes del nivel 20, no siempre podemos ver la build completa que el jugador pretendía elegir. Usamos lógica en el backend para deducir hacia qué build se dirigía el jugador según los talentos que sí eligió, y tenemos en cuenta tanto las partidas que llegaron al nivel 20 como las que no. Así se obtiene una imagen más precisa de la viabilidad general de una build que si solo se contaran las victorias de las partidas completadas. Puedes consultar la probabilidad de victoria de las builds en la página <a href=\"/Global/Talents\" class=\"link\">Talentos globales</a> y en el <a href=\"/Global/Talents/Builder\" class=\"link\">Creador de talentos</a>."
+        },
+        "c2692ad41dc38841": {
+            "q": "¿Qué significa la estadística «Influencia»?",
+            "a": "La influencia es un valor entre -5000 y 5000 que mide cuánto influye realmente un héroe en el resultado de las partidas. Toma cuánto está la tasa de victorias del héroe por encima o por debajo del 50 % y lo multiplica por la frecuencia con la que se elige al héroe en las partidas en las que no está baneado. Un héroe con una tasa de victorias alta que rara vez se elige tendrá una influencia menor que un héroe con una tasa de victorias algo más baja que se elige en la mayoría de las partidas, porque el segundo héroe determina realmente más partidas. Piensa en ella como una tasa de victorias ponderada por relevancia."
+        },
+        "baef60d089cdea87": {
+            "q": "¿Dónde puedo ver las habilidades, los talentos y las estadísticas base de un héroe?",
+            "a": "La página <a href=\"/Heroes\" class=\"link\">Héroes</a>, también en Herramientas en el menú superior, tiene una página para cada héroe, como <a href=\"/Heroes/Abathur\" class=\"link\">Abathur</a>. Se crea a partir de los archivos del juego del parche actual y tiene tres pestañas: <strong>Acerca de</strong> (rol, dificultad, descripción, valoraciones, estadísticas base e historia), <strong>Habilidades</strong> y <strong>Talentos</strong>. Pasa el cursor por encima o toca el icono de una habilidad o un talento para ver su descripción completa. El control deslizante de nivel ajusta la salud, el daño de ataque y los valores de las habilidades a cualquier nivel del 1 al 30, y los valores que escalan muestran su aumento por nivel, p. ej., 62 (+4 % por nivel). Los enlaces bajo las pestañas abren ese héroe en las páginas de estadísticas, como Estadísticas de talentos y el Creador de talentos, para ver tasas de victoria y builds."
+        },
+        "da9672cbf4c59a90": {
+            "q": "¿Qué es el Creador de talentos?",
+            "a": "El <a href=\"/Global/Talents/Builder\" class=\"link\">Creador de talentos</a> te permite montar una build de talentos concreta y ver los datos de tasa de victorias de exactamente esa combinación. Es ideal para comparar dos builds frente a frente con datos de partidas reales."
+        },
+        "2df01fc91ad6f6f6": {
+            "q": "¿Cómo funcionan los filtros?",
+            "a": "Cambia los filtros que quieras y pulsa <strong>Filtrar</strong> para recargar la página con ellos. En las páginas de estadísticas globales, <strong>Mostrar filtros avanzados</strong> muestra más opciones: Filtro de estadística, Nivel de héroe, Rango de héroe HP, Rango de rol HP, Enfrentamientos espejo y, en Estadísticas de héroes, Tamaño del grupo. Las páginas de estadísticas globales guardan los filtros en el enlace de la página, así que puedes compartir o guardar en marcadores una página filtrada. En el móvil, toca <strong>Mostrar filtros</strong> para abrirlos."
+        },
+        "cc5ac1d59d4e6d47": {
+            "q": "¿Qué hace el filtro Periodos?",
+            "a": "Periodos elige de qué parches salen los datos. Las versiones aparecen agrupadas por parche principal y subparche: marca un encabezado para incluir el parche entero o marca versiones sueltas. Por defecto se usa el último parche. Consulta el <a href=\"/FAQ#patch-history\" class=\"link\">historial de parches</a> para ver qué cambió en cada uno."
+        },
+        "5aeb185246963ce8": {
+            "q": "¿Qué hace el filtro Modo de juego?",
+            "a": "Modo de juego limita los datos a Liga de la Tormenta, Partida rápida, ARAM y los demás modos. Las páginas de estadísticas globales no incluyen Draft sin clasificación ni partidas personalizadas. Las páginas de perfil incluyen todos los modos, y el Historial de partidas también puede mostrar partidas personalizadas."
+        },
+        "3e46caaf0ef2343c": {
+            "q": "¿Qué hace el Filtro de estadística?",
+            "a": "En <a href=\"/Global/Hero\" class=\"link\">Estadísticas de héroes</a> y <a href=\"/Global/Talents\" class=\"link\">Talentos</a>, el Filtro de estadística sustituye la tasa de victorias por la media por partida de una estadística del juego, como daño a héroes, de asedio, de hechizos, físico o a esbirros, sanación, muertes, derribos, tiempo aturdiendo enemigos o campamentos capturados. Está en Mostrar filtros avanzados y solo aparece cuando Periodos tiene 5 versiones sueltas o menos. Hay una guía paso a paso en «¿Puedo ver las estadísticas medias de un héroe en el juego?», en Estadísticas globales y datos."
+        },
+        "93da9eaa18b9675f": {
+            "q": "¿Qué hacen los filtros Regiones y Mapa?",
+            "a": "<strong>Regiones</strong> limita los datos a partidas jugadas en NA, EU, KR o CN. <strong>Mapa</strong> los limita a partidas en los mapas que elijas."
+        },
+        "4209fedfeb72deca": {
+            "q": "¿Qué hacen los filtros Héroes y Rol?",
+            "a": "Limitan los datos a un héroe o a un rol. En <a href=\"/Match/Search\" class=\"link\">Búsqueda de repeticiones</a> puedes elegir varios héroes y escoger <strong>O</strong> (partidas con cualquiera de ellos) o <strong>Y</strong> (partidas con todos ellos)."
+        },
+        "3a3626551cb58f7f": {
+            "q": "¿Qué hacen los filtros Rango de jugador HP, Rango de héroe HP y Rango de rol HP?",
+            "a": "Filtran por habilidad usando el MMR propio de Heroes Profile: el MMR general del jugador, su MMR con ese héroe concreto o su MMR en el rol de ese héroe. Los niveles imitan los del juego, pero usan nuestra fórmula, así que no coincidirán con los rangos del juego. La sección MMR y clasificaciones explica cómo funciona nuestro MMR."
+        },
+        "48e670ac975a3e5d": {
+            "q": "¿Qué es el selector HP / En el juego de Rango de jugador?",
+            "a": "En Estadísticas de héroes y Talentos, Rango de jugador puede usar los niveles de MMR de Heroes Profile (HP) o el rango de la Liga de la Tormenta que Blizzard muestra en la pantalla de carga (En el juego). El rango del juego lo leen los jugadores que usan el lector de rango opcional del cargador de Heroes Profile, y cada jugador cuenta en el rango que tenía al empezar la partida. Solo cuentan los jugadores cuyo rango se leyó, así que las muestras son menores, y en Periodos solo aparecen los parches desde que empezó a funcionar el lector de rango."
+        },
+        "ceb307666ee1a707": {
+            "q": "¿Qué hace el filtro Nivel de héroe?",
+            "a": "Nivel de héroe solo incluye a los jugadores que tenían ese héroe en los niveles que elijas, desde 1-5 hasta 100+. Úsalo para ver cómo rinde un héroe en manos experimentadas."
+        },
+        "8b4005b071aaa893": {
+            "q": "¿Qué hace el filtro Enfrentamientos espejo?",
+            "a": "Decide si cuentan las partidas con el mismo héroe en ambos equipos. Por defecto está en Excluir, porque un héroe que se enfrenta a sí mismo siempre suma una victoria y una derrota, lo que acerca su tasa de victorias al 50 %."
+        },
+        "5be3d434bc2a4afe": {
+            "q": "¿Qué hace el filtro Tamaño del grupo?",
+            "a": "Tamaño del grupo limita los datos a jugadores que entraron en cola en solitario, en dúo o en un grupo de 3, 4 o 5. En la página de <a href=\"/Global/Party\" class=\"link\">Grupos</a>, <strong>Grupo del equipo 1</strong> y <strong>Grupo del equipo 2</strong> eligen en cambio la composición completa de cada equipo, desde 5 en solitario hasta un grupo de 5."
+        },
+        "34aa4d9109cf513d": {
+            "q": "¿Qué hace el filtro Partidas mínimas?",
+            "a": "Oculta las filas con menos partidas que el número que elijas, para que las muestras pequeñas no copen la parte superior de la tabla."
+        },
+        "7a5847744c3c61e0": {
+            "q": "¿Qué hace Tipo de build de talentos?",
+            "a": "Elige qué builds muestra la página de Talentos. Solo cuentan las builds que llegaron al nivel 20.<ul class=\"list-disc pl-6 mt-2 flex flex-col gap-1\"><li><strong>Popular</strong>: las builds más jugadas.</li><li><strong>Algoritmo HP</strong>: las builds más jugadas, pero solo una por cada combinación de talentos de nivel 1, 4 y 7, para que veas distintos caminos al principio de la partida.</li><li><strong>Único nv. X</strong>: la build más jugada para cada talento distinto de ese nivel.</li></ul>"
+        },
+        "f485a44e467332ce": {
+            "q": "¿Qué hacen los filtros Temporada y de fechas?",
+            "a": "<strong>Temporada</strong> limita los datos a partidas de las temporadas que elijas, agrupadas por año. En las páginas de perfil puedes elegir varias. El filtro de <strong>rango de fechas</strong> los limita a partidas jugadas entre las fechas que elijas."
+        },
+        "9402670d1c36d27e": {
+            "q": "¿Qué hacen los filtros Tipo de clasificación y Liga?",
+            "a": "En las <a href=\"/Global/Leaderboard\" class=\"link\">Clasificaciones</a>, Tipo de clasificación alterna entre las clasificaciones de Jugador, Héroe, Rol, Predicción de partidas y Rango de LT. Rango de LT muestra los rangos de la Liga de la Tormenta del juego y añade un selector de Liga."
+        },
+        "0b0fb91586231d5f": {
+            "q": "¿Qué filtros tiene Búsqueda de repeticiones?",
+            "a": "<a href=\"/Match/Search\" class=\"link\">Búsqueda de repeticiones</a> añade algunos propios: <strong>Versión del juego</strong> (parches), un <strong>rango de fechas</strong>, rangos de <strong>MMR HP de jugador, héroe y rol</strong>, y <strong>Jugadores</strong>, que solo encuentra partidas en las que aparezcan esos BattleTags. El Historial de partidas tiene una búsqueda similar de <strong>Jugador (amigo o enemigo)</strong>."
+        },
+        "dd2e2fa841409455": {
+            "q": "¿Qué filtros tienen las páginas de esports?",
+            "a": "Las páginas de esports tienen en su lugar filtros de esa liga, como Temporada, División, Equipo o Torneo, según lo que registre la liga."
+        },
+        "955526a9d6ed7f17": {
+            "q": "¿Qué es la función PreMatch?",
+            "a": "PreMatch es una función integrada en el <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a>. Si la activas, durante la pantalla de carga de una partida abre una página en el navegador con información sobre los 10 jugadores de la partida: sus estadísticas, sus héroes más jugados, su MMR y más. Así conoces a tus compañeros y rivales antes de que empiece la partida. Puedes ver un ejemplo en <a href=\"/PreMatch/Results/\" class=\"link\">Resultados de PreMatch</a>."
+        },
+        "43893ec09753fb1b": {
+            "q": "¿Qué es la página de Amigos y enemigos?",
+            "a": "La página de Amigos y enemigos de tu perfil de jugador muestra tu tasa de victorias al jugar <em>con</em> o <em>contra</em> jugadores concretos. Por ejemplo, mira <a href=\"/Player/Zemill/67280/1/FriendFoe\" class=\"link\">esta página de Amigos y enemigos</a>. Sube tus repeticiones y consulta la sección de Amigos y enemigos de tu propio perfil para ver la tuya."
+        },
+        "957be35b13074e79": {
+            "q": "¿Qué es la página de Premios?",
+            "a": "La página de Premios de tu perfil de jugador muestra con qué frecuencia consigues cada premio de final de partida, como MVP, Portador del dolor o Sanador principal, como porcentaje de tus partidas. Por ejemplo, mira <a href=\"/Player/Zemill/67280/1/Awards\" class=\"link\">esta página de Premios</a>. Haz clic en un premio para ver todas las partidas en las que lo conseguiste. Los premios solo se cuentan en las partidas jugadas después de que Heroes Profile empezara a registrarlos, así que las repeticiones muy antiguas no se incluyen. Todos los premios y el motivo por el que se otorgan aparecen en <a href=\"#awards\" class=\"link\">Premios de partida</a>, más abajo."
+        },
+        "77eb65776c03f5b4": {
+            "q": "¿Qué es la Búsqueda de repeticiones y cómo se usa?",
+            "a": "La <a href=\"/Match/Search\" class=\"link\">Búsqueda de repeticiones</a> encuentra partidas recientes subidas a Heroes Profile. Elige tus filtros y pulsa Filtrar. Cada resultado enlaza a la página completa de la partida.<p class=\"mt-2\"><b>Qué busca</b></p><ul class=\"list-disc list-inside mt-1 space-y-1\"><li>Partidas jugadas en la temporada actual y en la anterior, de la más reciente a la más antigua.</li><li>Partida rápida, Liga de la Tormenta y ARAM. Draft sin clasificación, Liga de héroes y Liga de equipos no tienen partidas en ese periodo.</li><li>Los resultados se muestran de 1000 en 1000. Usa <b>Cargar 1000 más</b> para ver partidas más antiguas.</li></ul><p class=\"mt-2\"><b>Filtros</b></p><ul class=\"list-disc list-inside mt-1 space-y-1\"><li><b>Modo de juego, Regiones, Mapa, Versión del juego, Desde/Hasta</b>: limitan la búsqueda a esas partidas. Versión del juego solo muestra los parches del periodo de búsqueda.</li><li><b>Héroes</b>: elige uno o varios. Si eliges varios, el selector <b>O / Y</b> permite elegir entre partidas con cualquiera de ellos o partidas con todos ellos, en cualquiera de los dos equipos.</li><li><b>Jugadores</b>: escribe un BattleTag y pulsa Añadir. Si coinciden varias cuentas, elige la correcta. No se pueden buscar perfiles privados. Con varios jugadores, <b>O / Y</b> funciona igual que con los héroes.</li></ul><p class=\"mt-2\"><b>Filtros avanzados</b></p><ul class=\"list-disc list-inside mt-1 space-y-1\"><li><b>MMR de jugador, héroe y rol HP</b>, mínimo y máximo, según la puntuación que tenía cada jugador en esa partida.</li><li><b>Rango de jugador, héroe y rol HP</b> (de Bronce a Maestro). Los rangos usan los límites de liga actuales de cada modo de juego. El rango de héroe HP aparece cuando eliges un héroe, ya que cada héroe tiene sus propios límites.</li><li>Todos los filtros de MMR y rango deben cumplirse para el <em>mismo</em> jugador. Si no eliges héroes, puede ser cualquier jugador de la partida. Con héroes en O, es el jugador que lleva uno de esos héroes. Con héroes en Y, el jugador de cada héroe elegido tiene que cumplirlos.</li></ul><p class=\"mt-2\"><b>¿Por qué aparece «Seguir buscando»?</b></p><p class=\"mt-1\">Las combinaciones poco habituales, como varios héroes en Maestro, pueden tardar mucho en encontrarse. La Búsqueda de repeticiones revisa las partidas por tandas de unos segundos, muestra lo que ha encontrado hasta el momento y hasta qué fecha ha buscado, y te permite pulsar <b>Seguir buscando</b> para continuar. El mensaje «Ninguna repetición coincide con esos filtros» solo aparece cuando se ha revisado todo el periodo de búsqueda.</p><p class=\"mt-2\"><b>Límites</b></p><p class=\"mt-1\">Para que el sitio vaya rápido para todos, las búsquedas están limitadas a 10 por minuto, y cada uso de Cargar más o Seguir buscando cuenta como una. Si llegas al límite, espera un minuto y vuelve a intentarlo.</p>"
+        },
+        "e62237f1953d9ea2": {
+            "q": "¿Qué es el Juego de predicción de partidas?",
+            "a": "El Juego de predicción de partidas te permite ver un draft e intentar adivinar qué equipo ganará antes de ver el resultado. Es una forma divertida de poner a prueba tus conocimientos del juego y comparar tus predicciones con el resultado real."
+        },
+        "d5a1dac9a60a2bba": {
+            "q": "¿Tiene Heroes Profile estadísticas de esports, torneos, series o ligas?",
+            "a": "Sí. <a href=\"/Esports\" class=\"link\">Esports de la comunidad</a>, en el menú superior, abarca ligas y torneos de la comunidad: NGS (Nexus Gaming Series), CCL (Community Clash League), Masters Clash, Heroes International, Nut Cup y HGC and More, que recoge torneos y series pasados como la HGC. Cada uno tiene sus propios equipos, jugadores, partidas y estadísticas de héroes y talentos."
+        },
+        "bf4555b9f7c4901c": {
+            "q": "¿Qué es el Asistente de draft de Heroes Profile?",
+            "a": "El <a href=\"/Drafter\" class=\"link\">Asistente de draft de Heroes Profile</a> es una herramienta que usa los datos de tasas de victoria de Heroes Profile para ayudarte a valorar composiciones durante la fase de draft. No pretende predecir a la perfección: úsalo como complemento a tus conocimientos de draft y para investigar cómo rinden las composiciones. Consulta la sección del Asistente de draft más abajo para ver cómo funciona."
+        },
+        "ac97e4684901a4e5": {
+            "q": "¿Puedo copiar una build de talentos del sitio al juego?",
+            "a": "Sí. En las páginas globales de héroes, en la página de partida individual y en otros lugares del sitio encontrarás un botón «Copiar build» junto a las builds de talentos. Al pulsarlo, la build se copia al portapapeles en un formato que Heroes of the Storm acepta, así que puedes pegarla directamente en la pantalla de configuración del juego."
+        },
+        "7fceba2017cd384d": {
+            "q": "¿Cómo uso el Asistente de draft?",
+            "a": "<p>El Asistente de draft no predice un draft a la perfección. Se creó para estudiar y valorar composiciones, así que úsalo como complemento de tus propios conocimientos sobre drafts.</p><ol class=\"list-decimal pl-6 mt-2 flex flex-col gap-2\"><li>Abre el <a href=\"/Drafter\" class=\"link\">Asistente de draft</a> y elige tus filtros. Los datos del Asistente de draft son solo de la Liga de la Tormenta y de los cinco últimos parches. Con filtros muy restrictivos pueden quedar pocas partidas, así que fíjate en Partidas jugadas, Partidas baneadas y Confianza de la tasa de victorias en las ventanas emergentes de los héroes.</li><li>Elige qué equipo selecciona primero. El equipo 1 está a la izquierda y el equipo 2 a la derecha. Esto solo afecta a la disposición del draft, así que hazlo coincidir con tu draft en el juego.</li><li>Haz clic en <strong>Empezar draft</strong>. El Asistente de draft carga las mejores opciones para el baneo o la selección actual y las ordena de mejor a peor, de izquierda a derecha y de arriba abajo. Los héroes que considera especialmente fuertes en esa posición llevan una estrella. Pasa el ratón sobre un héroe para ver sus estadísticas.</li><li>Haz clic en un héroe para banearlo o seleccionarlo. El Asistente de draft alterna automáticamente entre el equipo 1 y el equipo 2 a medida que avanza el draft, y <strong>Deshacer</strong> retrocede una selección.</li></ol><p class=\"mt-2\">El cuadro de búsqueda y los iconos de rol reducen los héroes mostrados sin cambiar su orden. <strong>Mostrar filtros</strong> te permite cambiar los filtros en cualquier momento del draft, y las sugerencias para la selección actual se recargan con los nuevos filtros.</p><p class=\"mt-2\"><strong>Draft sin datos</strong> te permite recorrer un draft con todos los héroes en orden alfabético y sin sugerencias.</p><p class=\"mt-2\">El Asistente de draft se usa mejor en un ordenador. Funciona en el móvil, pero hay mucha información que mostrar.</p>"
+        },
+        "f328f73f255bc9e4": {
+            "q": "¿Cómo sugiere baneos el Asistente de draft?",
+            "a": "<p><strong>Los baneos 1 a 4</strong> parten de los héroes más baneados con tus filtros, ponderados según la frecuencia con que se banea cada héroe en esa posición concreta del draft (su <em>tasa de selección por orden de draft</em>).</p><p class=\"mt-2\">Por ejemplo, supongamos que los héroes más baneados son D.Va (200 baneos), Imperius (150), Chromie (76) y Orphea (25), y que en la posición actual D.Va se banea el 5 % de las veces, Imperius el 20 %, Chromie el 57 % y Orphea el 2 %. Al ponderar cada uno por su tasa, Chromie obtiene 43,3, Imperius 30, D.Va 10 y Orphea 0,5, así que el orden cambia mucho según quién suele banearse en ese momento del draft.</p><p class=\"mt-2\"><strong>Los baneos 5 y 6</strong> funcionan igual, pero además tienen en cuenta la composición del equipo rival para encontrar su siguiente mejor selección y sugerirla como baneo.</p>"
+        },
+        "7e8baf289c326dc9": {
+            "q": "¿Cómo sugiere selecciones el Asistente de draft?",
+            "a": "<p><strong>Las selecciones 1 y 2</strong> usan la Influencia de cada héroe ponderada por su tasa de selección por orden de draft. La Influencia combina la tasa de victorias con la frecuencia con que se selecciona o banea un héroe.</p><p class=\"mt-2\"><strong>Las selecciones 3 a 10</strong> usan datos de composiciones ponderados por la tasa de selección por orden de draft. A partir de los roles que un equipo ya ha seleccionado, el Asistente de draft busca la composición más jugada que incluya esos roles y sugiere los héroes más jugados de esa composición para los roles que quedan libres.</p><p class=\"mt-2\">Por ejemplo, si la composición más popular es Tanque, Agresor, Sanador, Asesino a distancia y Asesino a distancia, y un equipo selecciona primero a Orphea, héroes como Diablo, D.Va, Brightwing, Li-Ming y Greymane aparecerán cerca de los primeros puestos. Si después el equipo selecciona a The Lost Vikings, el Asistente de draft busca en su lugar composiciones populares que incluyan un Apoyo y un Asesino a distancia. Esto continúa hasta que termina el draft.</p>"
+        },
+        "fff296fb94a79713": {
+            "q": "¿Qué es la tasa de selección por orden de draft?",
+            "a": "<p>De todas las partidas en las que un héroe fue baneado o seleccionado, la tasa de selección por orden de draft indica con qué frecuencia ocurrió en cada posición del draft. Aquí tienes un ejemplo ficticio para Li-Ming:</p><table class=\"my-3 text-sm\"><thead><tr><th class=\"px-2 text-left\">Posición en el draft</th><th class=\"px-2 text-left\">Baneo o selección</th><th class=\"px-2 text-left\">Tasa</th></tr></thead><tbody><tr><td class=\"px-2\">1</td><td class=\"px-2\">Baneo</td><td class=\"px-2\">7 %</td></tr><tr><td class=\"px-2\">2</td><td class=\"px-2\">Baneo</td><td class=\"px-2\">7 %</td></tr><tr><td class=\"px-2\">3</td><td class=\"px-2\">Baneo</td><td class=\"px-2\">10 %</td></tr><tr><td class=\"px-2\">4</td><td class=\"px-2\">Baneo</td><td class=\"px-2\">10 %</td></tr><tr><td class=\"px-2\">5</td><td class=\"px-2\">Selección</td><td class=\"px-2\">15 %</td></tr><tr><td class=\"px-2\">6</td><td class=\"px-2\">Selección</td><td class=\"px-2\">12 %</td></tr><tr><td class=\"px-2\">7</td><td class=\"px-2\">Selección</td><td class=\"px-2\">7 %</td></tr><tr><td class=\"px-2\">8</td><td class=\"px-2\">Selección</td><td class=\"px-2\">5 %</td></tr><tr><td class=\"px-2\">9</td><td class=\"px-2\">Selección</td><td class=\"px-2\">4 %</td></tr><tr><td class=\"px-2\">10</td><td class=\"px-2\">Baneo</td><td class=\"px-2\">6 %</td></tr><tr><td class=\"px-2\">11</td><td class=\"px-2\">Baneo</td><td class=\"px-2\">5 %</td></tr><tr><td class=\"px-2\">12</td><td class=\"px-2\">Selección</td><td class=\"px-2\">3 %</td></tr><tr><td class=\"px-2\">13</td><td class=\"px-2\">Selección</td><td class=\"px-2\">3 %</td></tr><tr><td class=\"px-2\">14</td><td class=\"px-2\">Selección</td><td class=\"px-2\">2 %</td></tr><tr><td class=\"px-2\">15</td><td class=\"px-2\">Selección</td><td class=\"px-2\">2 %</td></tr><tr><td class=\"px-2\">16</td><td class=\"px-2\">Selección</td><td class=\"px-2\">2 %</td></tr></tbody></table><p>En este ejemplo, Li-Ming se elige con más frecuencia en la posición 5 (la primera selección de héroe) y con menos frecuencia en las tres últimas posiciones.</p><p class=\"mt-2\">Cada héroe tiene su propia distribución, y el Asistente de draft la usa para ajustar el valor de draft HP de cada héroe al momento actual del draft. Los héroes que suelen elegirse pronto suben a lo más alto al principio y bajan después. Por ejemplo, Li-Ming suele aparecer como una buena selección temprana, mientras que Tychus toma el relevo hacia el final del draft.</p>"
+        },
+        "13924ed966ec1eef": {
+            "q": "¿Qué significan las estadísticas de las ventanas emergentes del Asistente de draft?",
+            "a": "<ul class=\"list-disc pl-6 flex flex-col gap-2\"><li><strong>Valor de draft HP</strong>: el valor por el que se ordenan los héroes. Se calcula de forma distinta para baneos y selecciones, como se describe arriba, y se escala para que la mejor opción en la posición actual valga 100.</li><li><strong>Partidas jugadas / Partidas baneadas</strong>: el número total de partidas en las que el héroe se jugó o fue baneado.</li><li><strong>Influencia</strong>: un valor de -5000 a 5000 que muestra el poder relativo de un héroe. <code>round((Wins / Games Played - 0.5) * Adjusted Pick Rate * 10000)</code>, donde la tasa de selección ajustada es <code>(Games Played / Total Games * 100) / (100 - Ban Rate)</code>.</li><li><strong>Tasa de baneo</strong>: <code>Games Banned / Total Games * 100</code>.</li><li><strong>Tasa de victorias</strong>: <code>Wins / Games Played</code>.</li><li><strong>Confianza de la tasa de victorias</strong>: suma o resta este valor a la tasa de victorias para obtener un intervalo en el que se encuentra la tasa de victorias real del héroe. <code>1.96 * sqrt((Win Rate * (1 - Win Rate)) / Games Played)</code>.</li><li><strong>Tasa por orden de selección en el draft</strong>: la tasa de selección por orden de draft del héroe en la posición actual.</li></ul>"
+        },
+        "541b245993b1fbbc": {
+            "q": "¿Qué hacen los filtros del Asistente de draft?",
+            "a": "<ul class=\"list-disc pl-6 flex flex-col gap-2\"><li><strong>Periodos</strong>: qué parches de los cinco últimos incluir.</li><li><strong>Región</strong>: incluye solo partidas de las regiones seleccionadas.</li><li><strong>Nivel de héroe</strong>: incluye solo partidas en las que los jugadores tenían los niveles de héroe seleccionados; por ejemplo, solo drafts en los que todos los jugadores tenían el héroe entre el nivel 40 y el 60.</li><li><strong>Mapa</strong>: incluye solo partidas en los mapas seleccionados.</li><li><strong>Rango de jugador, Rango de héroe y Rango de rol</strong>: filtran por habilidad usando el MMR propio de Heroes Profile, ya sea el general del jugador, el del héroe concreto o el del rol. Los niveles imitan a los del juego, pero se calculan con nuestra fórmula, así que no coincidirán con los rangos del juego.</li></ul>"
+        },
+        "d0239e003a57d18b": {
+            "q": "¿Qué requisitos hay para aparecer en la clasificación?",
+            "a": "Para optar a una clasificación, debes cumplir estas tres condiciones:<ul class=\"list-disc list-inside mt-2 space-y-1\"><li>Nivel de cuenta 250 o superior</li><li>Una tasa de victorias del 50 % o más en esa temporada</li><li>Un número mínimo de partidas jugadas: en concreto, 5 partidas por semana (en las clasificaciones de jugadores) o 2 partidas por semana (en las de héroes y roles) multiplicadas por el número de semanas transcurridas desde el inicio de la temporada. Así, en la semana 4, la clasificación de jugadores exige 20 partidas jugadas esa temporada.</li></ul>Si menos de 50 jugadores cumplen los requisitos, el mínimo de partidas jugadas se reduce por escalones y los jugadores adicionales aparecen en grupos separados. Consulta «¿Por qué la clasificación está dividida en grupos?» más abajo."
+        },
+        "0bc744e4ecdb1b37": {
+            "q": "¿Por qué la clasificación está dividida en grupos?",
+            "a": "Al principio de una temporada, o con héroes y tamaños de grupo menos jugados, puede que menos de 50 jugadores cumplan el mínimo completo de partidas jugadas. Cuando ocurre, el requisito se reduce en una partida por semana cada vez, hasta un mínimo de 5 partidas, hasta que al menos 50 jugadores cumplan los requisitos. Cada escalón forma su propio grupo, y cada grupo muestra el número de partidas que exigía.<ul class=\"list-disc list-inside mt-2 space-y-1\"><li>El <strong>grupo A</strong> cumplió el requisito completo.</li><li>El <strong>grupo B</strong> lo cumplió tras reducirse un escalón, el <strong>grupo C</strong> tras dos, y así sucesivamente.</li></ul>Todos los jugadores de un grupo superior quedan por encima de todos los de un grupo inferior, aunque su puntuación de Heroes Profile sea menor. Sin grupos, un jugador con solo unas pocas partidas y una tasa de victorias afortunada podría adelantar a jugadores que han jugado todas las partidas exigidas. Dentro de cada grupo, los jugadores se ordenan por puntuación de Heroes Profile como siempre, y la numeración continúa de un grupo al siguiente."
+        },
+        "079b26f1586074d5": {
+            "q": "¿Qué es la puntuación de Heroes Profile y cómo se calcula?",
+            "a": "La puntuación HP es una puntuación propia que se usa para ordenar a los jugadores en la clasificación. A propósito, no es una clasificación basada solo en el MMR: una clasificación de MMR puro acabaría dominada rápidamente por smurfs y por jugadores que alcanzan un MMR alto y dejan de jugar, lo que la volvería estancada y poco interesante.<br><br>En su lugar, la puntuación HP combina tres factores: tu <strong>MMR</strong>, tu <strong>tasa de victorias</strong> y tus <strong>partidas jugadas</strong> en la temporada, todos escalados en relación con los demás jugadores de esa clasificación. Las partidas jugadas tienen un límite relativo a los mejores jugadores, de modo que jugar partidas sin parar no basta para llegar arriba. El resultado premia a quienes juegan activamente, ganan y rinden a un nivel alto. Puedes ver la fórmula exacta haciendo clic en «Requisitos de la clasificación» en la <a href=\"/Global/Leaderboard\" class=\"link\">página de clasificaciones</a>."
+        },
+        "2799edd46240bfe7": {
+            "q": "¿Por qué Heroes Profile usa la puntuación HP en lugar de mostrar solo el MMR?",
+            "a": "Una clasificación basada solo en el MMR tiene un fallo fundamental: cuando un jugador alcanza un MMR alto, apenas cambia. Eso significa que las mismas cuentas ocuparían lo más alto de todas las clasificaciones indefinidamente, sobre todo los smurfs, que pueden inflar artificialmente su MMR y luego dejar de jugar. La puntuación HP lo soluciona teniendo en cuenta la actividad en cada temporada. Si dejas de jugar, tu posición baja aunque tu MMR siga siendo alto. Hay cosas concretas que puedes hacer para subir: ganar más partidas y jugar de forma constante durante toda la temporada."
+        },
+        "ab28c1d2159d507d": {
+            "q": "¿Por qué puedo filtrar las clasificaciones por tamaño de grupo?",
+            "a": "Un grupo de 5 premade tiene una ventaja de coordinación importante sobre los jugadores en solitario. Ponerlos en la misma clasificación hace que a los jugadores en solitario les cueste competir por los primeros puestos. Filtrar por tamaño de grupo (en solitario, grupo de 2, grupo de 3, etc.) te permite ver tu posición frente a jugadores que entraron a la cola en las mismas condiciones que tú."
+        },
+        "0661aaccad1cf05b": {
+            "q": "¿Cuándo empiezan y terminan las temporadas?",
+            "a": "Las clasificaciones se dividen por temporada, según la fecha de inicio y fin de cada una. Consulta <a href=\"#season-dates\" class=\"link\">Fechas de temporada</a> más abajo para ver todas las temporadas hasta ahora."
+        },
+        "e84d33fa67b6bd91": {
+            "q": "¿Por qué algunas de mis partidas cuentan en la temporada equivocada?",
+            "a": "Los archivos de repetición no indican en qué temporada se jugó una partida, y Blizzard no publica la hora exacta de inicio de las temporadas. Heroes Profile fija el inicio de una nueva temporada cuando detecta que ha cambiado, así que la hora de inicio que usamos puede ser unas horas posterior a la real. Las partidas que jugaste en ese intervalo cuentan en la temporada anterior, por eso tus estadísticas de temporada pueden diferir en una o dos partidas de lo que ves en el juego.<br><br>La temporada de una partida se guarda al procesar la repetición, y las clasificaciones y otras páginas se generan a partir de ese dato. Mover después la hora de inicio de una temporada dejaría esas partidas desincronizadas con la nueva fecha, así que no cambiamos las fechas de una temporada una vez que ha empezado."
+        },
+        "468e8905eba2fc53": {
+            "q": "¿Cuándo se actualizan las clasificaciones?",
+            "a": "Las clasificaciones se recalculan a diario a partir de las 2:00 (hora del este de EE. UU.). El cálculo tarda unas 12-14 horas en completarse para todos los tipos de clasificación. Si has jugado partidas hoy, puede que aparezcan en algunas clasificaciones el mismo día, pero vuelve a mirar la tarde siguiente para asegurarte de que todas están completamente actualizadas."
+        },
+        "19de013de5252428": {
+            "q": "¿Cómo puedo apoyar a Heroes Profile?",
+            "a": "Las mejores formas de apoyarnos son: <ul class=\"list-disc list-inside mt-2 space-y-1\"><li>Suscribirte en <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> (con cualquier cantidad obtienes el sitio sin anuncios, distintivos y <a href=\"/Analytics\" class=\"link\">Análisis de jugador</a>)</li><li>Hablar del sitio a otros jugadores: el boca a boca es lo que más nos ayuda a crecer</li><li>Subir tus repeticiones de forma constante para ampliar los datos</li><li>Enviar informes de errores y comentarios en <a href=\"https://github.com/Heroes-Profile/heroesprofile/issues\" target=\"_blank\" class=\"link\">GitHub</a></li></ul>"
+        },
+        "52de9f21d698303e": {
+            "q": "¿Cómo consigo el Análisis de jugador?",
+            "a": "El <a href=\"/Analytics\" class=\"link\">Análisis de jugador</a> está en fase prealfa. Cualquier cuenta de Battle.net puede empezar una prueba gratuita desde la página de Análisis; empieza cuando pulsas el botón y procesa tus 100 partidas más recientes, y cada nueva fase de desarrollo (alfa, beta y posteriores) incluye una nueva prueba gratuita. Para mantenerlo después de la prueba, suscríbete en <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> en cualquier nivel y vincúlalo a tu cuenta de Heroes Profile, o ten cualquier <a href=\"/Api\" class=\"link\">plan de pago de la API</a> y vincula tu cuenta de Battle.net en la <a href=\"/Api/Account#analytics\" class=\"link\">página de tu cuenta de la API</a>. Tus partidas procesadas se conservan entre pruebas y suscripciones."
+        },
+        "e19915550dcb29d8": {
+            "q": "¿Heroes Profile es de código abierto?",
+            "a": "¡Sí! El código del sitio está disponible públicamente en GitHub, en <a href=\"https://github.com/Heroes-Profile/heroesprofile\" target=\"_blank\" class=\"link\">Heroes-Profile/heroesprofile</a>. El cargador también es de código abierto, en <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>. Las contribuciones y los comentarios son bienvenidos."
+        },
+        "fd2f1bcf5ec4497d": {
+            "q": "¿Cómo informo de un error o solicito una función?",
+            "a": "Envía los informes de errores en <a href=\"https://github.com/Heroes-Profile/heroesprofile/issues\" target=\"_blank\" class=\"link\">GitHub Issues</a>. Para solicitudes de funciones e ideas, abre un debate en <a href=\"https://github.com/Heroes-Profile/heroesprofile/discussions\" target=\"_blank\" class=\"link\">GitHub Discussions</a>. También puedes usar el formulario de contacto de abajo o escribir a <a href=\"mailto:Zemill@heroesprofile.com\" class=\"link\">Zemill@heroesprofile.com</a>."
+        },
+        "f9ae99a59d56f8f0": {
+            "q": "¿Heroes Profile tiene una API?",
+            "a": "Sí, ofrecemos una API pública. La documentación está disponible en <a href=\"/Api/Docs\" class=\"link\">heroesprofile.com/Api/Docs</a>. La API tiene límites de solicitudes y está pensada para un uso razonable, no para descargar de forma masiva toda la base de datos de repeticiones. Cualquier plan de pago de la API incluye también el <a href=\"/Analytics\" class=\"link\">Análisis de jugador</a> para una cuenta de Battle.net que vincules en la página de tu cuenta de la API."
+        }
+    }
+}

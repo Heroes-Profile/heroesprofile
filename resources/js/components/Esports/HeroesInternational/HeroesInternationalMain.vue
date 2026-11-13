@@ -5,12 +5,12 @@
 
       <!---You are going to have to design this better, I am going to use buttons for now -->
       <div class="flex flex-wrap justify-center gap-1 bg-teal rounded p-1 w-fit max-w-[calc(100%-2rem)] mx-auto mb-6 max-md:text-xs">
-        <button type="button" :disabled="isLoading && activeButton !== 'teams'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'teams' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('teams')">Teams</button>
-        <button type="button" :disabled="isLoading && activeButton !== 'recentMatches'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'recentMatches' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('recentMatches')">Recent Matches</button>
+        <button type="button" :disabled="isLoading && activeButton !== 'teams'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'teams' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('teams')">{{ $t('Teams') }}</button>
+        <button type="button" :disabled="isLoading && activeButton !== 'recentMatches'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'recentMatches' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('recentMatches')">{{ $t('Recent Matches') }}</button>
 
-        <button type="button" :disabled="isLoading && activeButton !== 'overallHeroStats'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallHeroStats' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('overallHeroStats')">Overall Hero Stats</button>
+        <button type="button" :disabled="isLoading && activeButton !== 'overallHeroStats'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallHeroStats' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('overallHeroStats')">{{ $t('Overall Hero Stats') }}</button>
 
-      <button type="button" :disabled="isLoading && activeButton !== 'overallTalentStats'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallTalentStats' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('overallTalentStats')">Overall Talent Stats</button>
+      <button type="button" :disabled="isLoading && activeButton !== 'overallTalentStats'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallTalentStats' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('overallTalentStats')">{{ $t('Overall Talent Stats') }}</button>
       </div>
 
 
@@ -19,26 +19,26 @@
 
         <div class="text-center md:w-[15%] mb-15 mx-5">
           <i class="fas fa-users" style="font-size: 6.25rem"></i>
-          <h3>Teams</h3>
+          <h3>{{ $t('Teams') }}</h3>
           <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="mt-10" :active="teamsClicked" :ignoreclick="true"></custom-button>
         </div>
 
 
         <div class="text-center md:w-[15%] mb-15 mx-5">
           <i class="fas fa-list" style="font-size: 6.25rem"></i>
-          <h3>Recent Matches</h3>
+          <h3>{{ $t('Recent Matches') }}</h3>
           <custom-button @click="setButtonActive('recentMatches')" :text="'Recent Matches'" :size="'big'" class="mt-10" :active="recentMatchesClicked" :ignoreclick="true"></custom-button>
         </div>
         
           <div class="text-center md:w-[15%] mb-15 mx-5">
           <i class="fa-solid fa-chart-bar" style="font-size: 6.25rem"></i>
-          <h3>Overall Hero Stats</h3>
+          <h3>{{ $t('Overall Hero Stats') }}</h3>
           <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="mt-10" :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
         </div>
 
         <div class="text-center md:w-[15%] mb-15 mx-5">
           <i class="fas fa-chart-line" style="font-size: 6.25rem"></i>
-          <h3>Overall Talent Stats</h3>
+          <h3>{{ $t('Overall Talent Stats') }}</h3>
           <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="mt-10" :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
         </div>
 

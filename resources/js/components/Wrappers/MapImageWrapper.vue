@@ -1,9 +1,9 @@
 <template>
   <div>
-    <round-image :size="size" :image="getMapImage()" :title="map.name" :excludehover="hovertextstyleoverride" :href="href" :link-text="linkText">
+    <round-image :size="size" :image="getMapImage()" :title="$mapName(map)" :excludehover="hovertextstyleoverride" :href="href" :link-text="linkText">
       <slot>
         <div v-if="!hasSlotContent">
-          <h2>{{ map.name }}</h2>
+          <h2>{{ $mapName(map) }}</h2>
         </div>
       </slot>
     </round-image>

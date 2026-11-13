@@ -7,10 +7,10 @@
     </a>
     <span class="inline-flex items-center ml-1 transition-transform peer-hover/name:translate-x-4">
       <icon-with-hover v-if="hpOwner" class="[&>span]:h-full" size="small" icon="fas fa-crown" title="info" popupsize="small" style="color:gold">
-        <p class="max-sm:text-xs">Site Owner</p>
+        <p class="max-sm:text-xs">{{ $t('Site Owner') }}</p>
       </icon-with-hover>
       <icon-with-hover v-else-if="patreon" class="[&>span]:h-full" size="small" icon="fas fa-star" title="info" popupsize="small" style="color:gold">
-        <p class="max-sm:text-xs">Patreon Subscriber</p>
+        <p class="max-sm:text-xs">{{ $t('Patreon Subscriber') }}</p>
       </icon-with-hover>
       <void-eye-flair v-if="voidEye" class="[&>span]:h-full" :blizz-id="blizzId" :region="region"></void-eye-flair>
     </span>

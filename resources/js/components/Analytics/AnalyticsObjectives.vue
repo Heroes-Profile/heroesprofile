@@ -25,7 +25,7 @@
       <analytics-numbers>
         <table class="min-w-0 w-full responsive-table mb-4">
           <thead>
-            <tr><th>Boss take</th><th>Where you were</th><th v-for="w in whos()" :key="w">{{ whoLabel(w) }}: share / win rate (takes)</th></tr>
+            <tr><th>{{ $t('Boss take') }}</th><th>{{ $t('Where you were') }}</th><th v-for="w in whos()" :key="w">{{ whoLabel(w) }}: share / win rate (takes)</th></tr>
           </thead>
           <tbody>
             <template v-for="own in [true, false]" :key="'own' + own">
@@ -57,7 +57,7 @@
         <analytics-numbers>
           <table class="min-w-0 w-full responsive-table mb-8">
             <thead>
-              <tr><th>Objective</th><th v-for="w in whos()" :key="w">{{ whoLabel(w) }}: there / win when there / win when not ({{ 'n' }})</th></tr>
+              <tr><th>{{ $t('Objective') }}</th><th v-for="w in whos()" :key="w">{{ whoLabel(w) }}: there / win when there / win when not ({{ 'n' }})</th></tr>
             </thead>
             <tbody>
               <tr v-for="r in presenceRows" :key="r.side + r.name">

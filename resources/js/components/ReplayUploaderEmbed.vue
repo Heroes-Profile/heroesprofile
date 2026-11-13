@@ -1,9 +1,9 @@
 <template>
   <div ref="card" class="p-4 bg-black">
     <a class="flex justify-center items-center font-logo text-2xl mb-4" href="/" target="_blank" rel="noopener">
-      Heroes
+      {{ $t('Heroes') }}
       <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
-      Profile
+      {{ $t('Profile') }}
     </a>
 
     <replay-upload-dropzone

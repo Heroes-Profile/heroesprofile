@@ -7,9 +7,9 @@
     </template>
 
     <ul class="list-disc ml-8 space-y-1">
-      <li>Automatically uploads replays</li>
-      <li>Pre-match Game Analysis</li>
-      <li>Post-match Game Analysis</li>
+      <li>{{ $t('Automatically uploads replays') }}</li>
+      <li>{{ $t('Pre-match Game Analysis') }}</li>
+      <li>{{ $t('Post-match Game Analysis') }}</li>
     </ul>
     <img src="/images/miscellaneous/uploader.png" alt="The Heroes Profile replay uploader" class="w-full mt-6 rounded-[0.5rem]" />
 

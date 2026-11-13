@@ -28,7 +28,7 @@
       <div v-else-if="hero" class="flex flex-col items-center gap-8">
         <div class="flex flex-col items-center">
           <hero-image-wrapper :key="hero.id" :rectangle="true" :hero="hero" :title="hero.name" size="large"></hero-image-wrapper>
-          <h2 class="text-2xl font-bold mt-4">{{ hero.name }}</h2>
+          <h2 class="text-2xl font-bold mt-4">{{ $heroName(hero) }}</h2>
         </div>
 
         <panel-box v-if="build" class="w-full">
@@ -51,14 +51,14 @@
               ></i>
             </div>
             <div class="flex flex-wrap gap-4 mt-3 text-sm justify-center">
-              <span v-if="build.game_type"><span class="text-subtext">Mode:</span> {{ build.game_type }}</span>
-              <span v-if="build.region"><span class="text-subtext">Region:</span> {{ build.region }}</span>
-              <span v-if="build.game_map"><span class="text-subtext">Map:</span> {{ build.game_map }}</span>
+              <span v-if="build.game_type"><span class="text-subtext">{{ $t('Mode:') }}</span> {{ build.game_type }}</span>
+              <span v-if="build.region"><span class="text-subtext">{{ $t('Region:') }}</span> {{ build.region }}</span>
+              <span v-if="build.game_map"><span class="text-subtext">{{ $t('Map:') }}</span> {{ $mapName(build.game_map) }}</span>
             </div>
           </div>
         </panel-box>
 
-        <div v-else class="text-subtext text-center">No complete build found for this hero.</div>
+        <div v-else class="text-subtext text-center">{{ $t('No complete build found for this hero.') }}</div>
       </div>
     </div>
 

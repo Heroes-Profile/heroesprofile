@@ -43,7 +43,7 @@
       <analytics-numbers>
         <table class="min-w-0 w-full responsive-table">
           <thead>
-            <tr><th>Map</th><th>Games</th><th><span class="inline-flex items-center gap-1">Average length <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true"><slot><p class="text-sm p-2 text-left">Mean game length on that map, in minutes:seconds.</p></slot></round-image></span></th><th v-for="b in lengthBuckets" :key="b.label">{{ b.label }}</th></tr>
+            <tr><th>{{ $t('Map') }}</th><th>{{ $t('Games') }}</th><th><span class="inline-flex items-center gap-1">{{ $t('Average length') }} <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true"><slot><p class="text-sm p-2 text-left">Mean game length on that map, in minutes:seconds.</p></slot></round-image></span></th><th v-for="b in lengthBuckets" :key="b.label">{{ b.label }}</th></tr>
           </thead>
           <tbody>
             <tr v-for="row in byMap" :key="row.map">

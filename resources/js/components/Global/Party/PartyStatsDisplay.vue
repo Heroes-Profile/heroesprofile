@@ -2,10 +2,10 @@
   <div>
     <div class="flex items-start gap-6 mb-8 mt-2">
       <div v-if="partyWinRates.length" class="flex-1 min-w-0">
-        <h2 class="text-lg font-semibold mb-3">Party Size Win Rates</h2>
+        <h2 class="text-lg font-semibold mb-3">{{ $t('Party Size Win Rates') }}</h2>
         <div v-for="row in partyWinRates" :key="row.label" class="mb-3">
           <div class="text-sm mb-1">
-            <span class="font-medium">{{ row.label }}</span>
+            <span class="font-medium">{{ $t(row.label) }}</span>
             <span class="ml-4 text-subtext">Total Games: {{ (row.wins + row.losses).toLocaleString('en-US') }}</span>
           </div>
           <div class="flex items-center w-full h-7 rounded overflow-hidden bg-surface-3">
@@ -17,13 +17,13 @@
       </div>
 
       <div class="w-auto shrink-0 m-1">
-        <h2 class="text-lg font-semibold mb-3">Legend</h2>
+        <h2 class="text-lg font-semibold mb-3">{{ $t('Legend') }}</h2>
         <div class="bg-surface-1 rounded p-5 flex flex-col gap-1">
-          <span class="block">Group of 1 <i class="fas fa-user solo"></i></span>
-          <span class="block">Group of 2 <i class="fas fa-user double"></i><i class="fas fa-user double"></i></span>
-          <span class="block">Group of 3 <i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></span>
-          <span class="block">Group of 4 <i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></span>
-          <span class="block">Group of 5 <i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></span>
+          <span class="block">{{ $t('Group of 1') }} <i class="fas fa-user solo"></i></span>
+          <span class="block">{{ $t('Group of 2') }} <i class="fas fa-user double"></i><i class="fas fa-user double"></i></span>
+          <span class="block">{{ $t('Group of 3') }} <i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></span>
+          <span class="block">{{ $t('Group of 4') }} <i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></span>
+          <span class="block">{{ $t('Group of 5') }} <i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></span>
         </div>
       </div>
     </div>
@@ -35,16 +35,16 @@
         <thead>
           <tr >
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Enemy Team
+              {{ $t('Enemy Team') }}
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Win Rate %
+              {{ $t('Win Rate %') }}
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Wins
+              {{ $t('Wins') }}
             </th>                
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Losses
+              {{ $t('Losses') }}
             </th>                                 
           </tr>
         </thead>
@@ -91,7 +91,7 @@
             <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
           </tr>
           <tr v-else>
-            <td colspan="4" class="text-center">No Data</td>
+            <td colspan="4" class="text-center">{{ $t('No Data') }}</td>
           </tr>
         </tbody>
       </table>  
@@ -104,16 +104,16 @@
         <thead>
           <tr>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Enemy Team
+              {{ $t('Enemy Team') }}
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Win Rate %
+              {{ $t('Win Rate %') }}
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Wins
+              {{ $t('Wins') }}
             </th>                
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Losses
+              {{ $t('Losses') }}
             </th>                                 
           </tr>
         </thead>
@@ -159,7 +159,7 @@
             <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
           </tr>
           <tr v-else>
-            <td colspan="4" class="text-center">No Data</td>
+            <td colspan="4" class="text-center">{{ $t('No Data') }}</td>
           </tr>
         </tbody>
       </table>  
@@ -172,16 +172,16 @@
         <thead>
           <tr>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Enemy Team
+              {{ $t('Enemy Team') }}
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Win Rate %
+              {{ $t('Win Rate %') }}
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Wins
+              {{ $t('Wins') }}
             </th>                
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Losses
+              {{ $t('Losses') }}
             </th>                                 
           </tr>
         </thead>
@@ -227,7 +227,7 @@
             <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
           </tr>
           <tr v-else>
-            <td colspan="4" class="text-center">No Data</td>
+            <td colspan="4" class="text-center">{{ $t('No Data') }}</td>
           </tr>
         </tbody>
       </table>  
@@ -240,16 +240,16 @@
         <thead>
           <tr>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Enemy Team
+              {{ $t('Enemy Team') }}
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Win Rate %
+              {{ $t('Win Rate %') }}
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Wins
+              {{ $t('Wins') }}
             </th>                
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Losses
+              {{ $t('Losses') }}
             </th>                                 
           </tr>
         </thead>
@@ -295,7 +295,7 @@
             <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
           </tr>
           <tr v-else>
-            <td colspan="4" class="text-center">No Data</td>
+            <td colspan="4" class="text-center">{{ $t('No Data') }}</td>
           </tr>
         </tbody>
       </table>  
@@ -308,16 +308,16 @@
         <thead>
           <tr>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Enemy Team
+              {{ $t('Enemy Team') }}
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Win Rate %
+              {{ $t('Win Rate %') }}
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Wins
+              {{ $t('Wins') }}
             </th>                
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Losses
+              {{ $t('Losses') }}
             </th>                                 
           </tr>
         </thead>
@@ -363,7 +363,7 @@
             <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
           </tr>
           <tr v-else>
-            <td colspan="4" class="text-center">No Data</td>
+            <td colspan="4" class="text-center">{{ $t('No Data') }}</td>
           </tr>
         </tbody>
       </table>  
@@ -376,16 +376,16 @@
         <thead>
           <tr>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Enemy Team
+              {{ $t('Enemy Team') }}
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Win Rate %
+              {{ $t('Win Rate %') }}
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Wins
+              {{ $t('Wins') }}
             </th>                
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Losses
+              {{ $t('Losses') }}
             </th>                                 
           </tr>
         </thead>
@@ -431,7 +431,7 @@
             <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
           </tr>
           <tr v-else>
-            <td colspan="4" class="text-center">No Data</td>
+            <td colspan="4" class="text-center">{{ $t('No Data') }}</td>
           </tr>
         </tbody>
       </table>  
@@ -445,16 +445,16 @@
         <thead>
           <tr>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Enemy Team
+              {{ $t('Enemy Team') }}
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Win Rate %
+              {{ $t('Win Rate %') }}
             </th>
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Wins
+              {{ $t('Wins') }}
             </th>                
             <th class="py-2 px-3 text-center text-sm leading-4">
-              Losses
+              {{ $t('Losses') }}
             </th>                                 
           </tr>
         </thead>
@@ -500,7 +500,7 @@
             <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
           </tr>
           <tr v-else>
-            <td colspan="4" class="text-center">No Data</td>
+            <td colspan="4" class="text-center">{{ $t('No Data') }}</td>
           </tr>
         </tbody>
       </table>  

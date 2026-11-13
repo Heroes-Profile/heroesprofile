@@ -1,7 +1,7 @@
 <template>
   <div class="bg-lighten rounded">
     <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 font-bold text-lg">
-      <span><i class="fa-solid fa-circle-info mr-2"></i>How to set this up</span>
+      <span><i class="fa-solid fa-circle-info mr-2"></i>{{ $t('How to set this up') }}</span>
       <i :class="['fa-solid', open ? 'fa-chevron-up' : 'fa-chevron-down']"></i>
     </button>
 

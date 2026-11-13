@@ -6,6 +6,8 @@
   <profile-settings 
     :user="{{ json_encode(Auth::user()) }}" 
     :filters="{{ json_encode($filters) }}"
+    :locale="'{{ app()->getLocale() }}'"
+    :locales="{{ json_encode(config('app.supported_locales')) }}"
     :available-flair="{{ json_encode($availableFlair) }}"
   >
   </profile-settings>

@@ -8,9 +8,9 @@
 
     <panel-box v-if="expanded">
       <div class="flex justify-between items-center pb-4 mb-4 border-b border-gray-dark font-medium text-subtext max-2xl:hidden">
-        <span class="flex-1 max-w-[25.625rem] pl-6">Match</span>
-        <span class="flex-1 px-4 text-center">Teams</span>
-        <span class="w-[22.625rem] shrink-0 px-4">Players</span>
+        <span class="flex-1 max-w-[25.625rem] pl-6">{{ $t('Match') }}</span>
+        <span class="flex-1 px-4 text-center">{{ $t('Teams') }}</span>
+        <span class="w-[22.625rem] shrink-0 px-4">{{ $t('Players') }}</span>
       </div>
 
       <div v-for="row in data" :key="row.replayID" class="group/replay relative mb-1.5">
@@ -40,7 +40,7 @@
               <img v-if="teamImage(row, team)" class="w-12 h-12 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="teamImage(row, team)" :alt="teamName(row, team)"/>
               <div :class="['flex flex-col gap-1 min-w-0', position === 0 ? 'items-end' : 'items-start']">
                 <span :class="['text-xl font-semibold leading-tight break-words', row.winner === team ? 'text-white' : 'text-subtext']">{{ teamName(row, team) }}</span>
-                <span v-if="row.winner === team" class="bg-win text-white rounded px-1.5 text-xs font-semibold">Won</span>
+                <span v-if="row.winner === team" class="bg-win text-white rounded px-1.5 text-xs font-semibold">{{ $t('Won') }}</span>
               </div>
             </div>
             <div class="col-start-2 row-start-1 flex flex-col items-center">
@@ -76,11 +76,11 @@
       <div class="overflow-x-auto">
         <div class="md:min-w-max w-full">
           <div class="max-md:hidden flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
-            <span class="w-[20rem] shrink-0 pl-5">Match</span>
-            <span class="w-[11.25rem] shrink-0 px-4">Game</span>
+            <span class="w-[20rem] shrink-0 pl-5">{{ $t('Match') }}</span>
+            <span class="w-[11.25rem] shrink-0 px-4">{{ $t('Game') }}</span>
             <span class="w-[10rem] shrink-0 px-4">{{ leagueName }} Match ID</span>
-            <span class="w-[35rem] shrink-0 px-4">Teams</span>
-            <span class="w-[15rem] shrink-0 px-4">Series</span>
+            <span class="w-[35rem] shrink-0 px-4">{{ $t('Teams') }}</span>
+            <span class="w-[15rem] shrink-0 px-4">{{ $t('Series') }}</span>
           </div>
           <template v-for="(row, index) in data" :key="row.replayID">
             <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="matchUrl(row)" :title="row.game_map ? row.game_map.name : ''" :date="formatRowDate(row.game_date)" :map-art="row.game_map ? row.game_map.sanitized_map_name : null">
@@ -106,7 +106,7 @@
                 <span class="flex items-center gap-2 min-w-0">
                   <img v-if="teamImage(row, team)" class="w-6 h-6 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="teamImage(row, team)" :alt="teamName(row, team)"/>
                   <span :class="['truncate font-medium', row.winner === team ? 'text-white' : 'text-subtext']">{{ teamName(row, team) }}</span>
-                  <span v-if="row.winner === team" class="bg-win text-white rounded px-1 text-xs font-semibold">Won</span>
+                  <span v-if="row.winner === team" class="bg-win text-white rounded px-1 text-xs font-semibold">{{ $t('Won') }}</span>
                 </span>
               </template>
             </div>

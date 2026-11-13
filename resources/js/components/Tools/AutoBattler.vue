@@ -13,7 +13,7 @@
           @click="downloadFiles"
           class="btn bg-teal hover:bg-lteal font-bold px-6"
         >
-          <i class="fa-solid fa-download mr-2"></i>Download Files
+          <i class="fa-solid fa-download mr-2"></i>{{ $t('Download Files') }}
         </button>
       </div>
 
@@ -88,7 +88,7 @@
 
           <div v-else-if="mode === 'talents'">
             <div v-if="loadingTalents" class="py-10">
-              <loading-component :compact="true" :textoverride="true">Loading talents...</loading-component>
+              <loading-component :compact="true" :textoverride="true">{{ $t('Loading talents...') }}</loading-component>
             </div>
             <div v-else-if="talentError" class="text-center text-red py-10">{{ talentError }}</div>
             <auto-battler-talent-selection

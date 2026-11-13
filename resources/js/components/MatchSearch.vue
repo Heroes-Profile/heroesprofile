@@ -13,7 +13,7 @@
 
     <!-- Blocks the page while a battletag lookup runs -->
     <div v-if="playerSearching" class="fixed inset-0 z-[60] bg-black/80 flex items-center justify-center">
-      <loading-component :textoverride="true">Searching for players...</loading-component>
+      <loading-component :textoverride="true">{{ $t('Searching for players...') }}</loading-component>
     </div>
 
     <filters
@@ -48,7 +48,7 @@
       </panel-box>
 
       <template v-if="rows">
-        <p v-if="rows.length == 0 && !isLoading && !nextBeforeReplayID">No replays match those filters.</p>
+        <p v-if="rows.length == 0 && !isLoading && !nextBeforeReplayID">{{ $t('No replays match those filters.') }}</p>
         <div v-if="rows.length" class="flex flex-wrap justify-end items-center gap-4">
           <tab-button :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="expanded ? 'right' : 'left'"></tab-button>
           <pagination-bar :current="currentPage" :last="lastPage" @page="goToPage"></pagination-bar>
@@ -56,9 +56,9 @@
         <!-- Laid out like the esports team match history: match rows without a player, so a teal strip and both teams -->
         <panel-box v-if="shownRows.length && expanded">
           <div class="flex justify-between items-center pb-4 mb-4 border-b border-gray-dark font-medium text-subtext max-2xl:hidden">
-            <span class="flex-1 max-w-[25.625rem] pl-6">Match</span>
-            <span class="flex-1 px-4 text-center">Scoreboard</span>
-            <span class="w-[22.625rem] shrink-0 px-4">Players</span>
+            <span class="flex-1 max-w-[25.625rem] pl-6">{{ $t('Match') }}</span>
+            <span class="flex-1 px-4 text-center">{{ $t('Scoreboard') }}</span>
+            <span class="w-[22.625rem] shrink-0 px-4">{{ $t('Players') }}</span>
           </div>
 
           <div v-for="row in shownRows" :key="row.replayID" class="group/replay relative mb-1.5">
@@ -75,7 +75,7 @@
                   <span class="text-sm">{{ Math.round(row.game_length / 60) }} minutes · {{ row.region }} · {{ row.game_version }}</span>
                   <span class="text-xs">{{ formatDate(row.game_date) }}</span>
                   <span class="relative z-[2] text-sm">
-                    Match ID
+                    {{ $t('Match ID') }}
                     <a class="group/bt inline-flex items-center" :href="matchUrl(row)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                   </span>
                 </div>
@@ -108,7 +108,7 @@
                     <div class="flex flex-col gap-1.5 flex-1 min-w-0 ml-0.5">
                       <div v-for="(player, groupIndex) in group.players" :key="groupIndex" class="flex gap-1 h-4 items-center">
                         <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover bg-surface-3 text-[0rem]" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name"/>
-                        <span v-if="player.check" class="flex-1 min-w-0 truncate text-sm font-medium text-subtext">Hidden</span>
+                        <span v-if="player.check" class="flex-1 min-w-0 truncate text-sm font-medium text-subtext">{{ $t('Hidden') }}</span>
                         <icon-with-hover v-else class="flex-1" popupsize="fit">
                           <template #trigger>
                             <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="$redirectToProfile(player.battletag, player.blizz_id, player.region, false)" class="group/bt min-w-0 inline-flex items-center text-sm font-medium text-subtext hover:text-lteal"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-[0.625rem] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
@@ -145,14 +145,14 @@
           <div class="overflow-x-auto">
             <div class="md:min-w-max w-full">
               <div class="max-md:hidden flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
-                <span class="w-[20rem] shrink-0 pl-5">Match</span>
-                <span class="w-[10rem] shrink-0 px-4">Game Type</span>
-                <span class="w-[8.75rem] shrink-0 px-4">Match ID</span>
-                <span class="w-[5.5rem] shrink-0 px-4">Length</span>
-                <span class="w-[5.5rem] shrink-0 px-4">Region</span>
-                <span class="w-[8rem] shrink-0 px-4">Version</span>
-                <span class="w-[18rem] shrink-0 px-4">Winner</span>
-                <span class="w-[18rem] shrink-0 px-4">Loser</span>
+                <span class="w-[20rem] shrink-0 pl-5">{{ $t('Match') }}</span>
+                <span class="w-[10rem] shrink-0 px-4">{{ $t('Game Type') }}</span>
+                <span class="w-[8.75rem] shrink-0 px-4">{{ $t('Match ID') }}</span>
+                <span class="w-[5.5rem] shrink-0 px-4">{{ $t('Length') }}</span>
+                <span class="w-[5.5rem] shrink-0 px-4">{{ $t('Region') }}</span>
+                <span class="w-[8rem] shrink-0 px-4">{{ $t('Version') }}</span>
+                <span class="w-[18rem] shrink-0 px-4">{{ $t('Winner') }}</span>
+                <span class="w-[18rem] shrink-0 px-4">{{ $t('Loser') }}</span>
                 <span class="w-20 shrink-0"></span>
               </div>
               <div v-for="(row, index) in shownRows" :key="row.replayID" class="group/replay relative">
@@ -197,12 +197,12 @@
         <!-- A search that ran out of time before filling a page says how far it got -->
         <p v-if="nextBeforeReplayID && !pageFull && searchedBackTo && !isLoading" class="text-sm text-center">
           {{ rows.length ? 'Found ' + rows.length.toLocaleString('en-US') + ' so far.' : 'No matches yet.' }} Searched back to {{ formatDay(searchedBackTo) }}.
-          <button type="button" class="underline" @click="loadMore">Keep Searching</button>
+          <button type="button" class="underline" @click="loadMore">{{ $t('Keep Searching') }}</button>
         </p>
       </template>
 
       <template v-if="isLoading">
-        <loading-component :compact="true" :textoverride="true">Searching replays...</loading-component>
+        <loading-component :compact="true" :textoverride="true">{{ $t('Searching replays...') }}</loading-component>
         <panel-box v-if="!rows || !shownRows.length">
           <!-- The rows above with grey blocks, same column widths -->
           <template v-if="expanded">

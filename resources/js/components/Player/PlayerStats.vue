@@ -25,7 +25,7 @@
 
     <div v-if="data == ''" class="flex md:p-20 gap-10 mx-auto justify-center items-between">
       <div class="flex items-center">
-        <span>No data for this player and filters</span>
+        <span>{{ $t('No data for this player and filters') }}</span>
       </div>
     </div>
     <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
@@ -48,7 +48,7 @@
               <region-tag :region="regionsmap[region]" :full="true"></region-tag>
             </div>
             <div class="card-actions ml-auto flex gap-1 text-header">
-              <loading-component v-if="cardDownloading" :compact="true" :textoverride="true">Processing image for download...</loading-component>
+              <loading-component v-if="cardDownloading" :compact="true" :textoverride="true">{{ $t('Processing image for download...') }}</loading-component>
               <template v-else>
                 <button v-if="canCopyImage" type="button" class="p-1.5 hover:text-lteal" :title="cardCopied ? 'Copied' : 'Copy card image'" @click="copyCard"><i :class="cardCopied ? 'fa-solid fa-check' : 'fa-solid fa-copy'"></i></button>
                 <button type="button" class="p-1.5 hover:text-lteal" title="Download card image" @click="downloadCard"><i class="fa-solid fa-download"></i></button>
@@ -64,7 +64,7 @@
 
             <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
               <div class="flex flex-col gap-1">
-                <span class="text-header">Win Rate</span>
+                <span class="text-header">{{ $t('Win Rate') }}</span>
                 <stat-bar size="big" :value="data.win_rate.toFixed(2)" suffix="%" :color="$winRateColor(data.win_rate)"></stat-bar>
               </div>
 
@@ -76,7 +76,7 @@
 
           <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
             <div class="flex justify-between items-baseline">
-              <h3 class="text-2xl font-bold">{{ section.title }}</h3>
+              <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
               <a class="text-header whitespace-nowrap hover:underline" :href="profileUrl + section.allPath">{{ section.allText }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
             </div>
             <div class="flex flex-wrap gap-6 max-md:justify-center">
@@ -84,7 +84,7 @@
             </div>
           </div>
 
-          <p class="flex flex-wrap gap-2"><span class="text-subtext">Total Time Played:</span><span class="text-header">{{ data.total_time_played }}</span></p>
+          <p class="flex flex-wrap gap-2"><span class="text-subtext">{{ $t('Total Time Played:') }}</span><span class="text-header">{{ data.total_time_played }}</span></p>
         </panel-box>
 
         <div class="flex-1 flex flex-col gap-6 min-w-0">
@@ -133,7 +133,7 @@
     </div>
     <!-- The page's layout with grey blocks while it loads; the nav logo spins meanwhile -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
-      <loading-component :compact="true" :textoverride="true">Large amount of data. Please be patient. Loading data...</loading-component>
+      <loading-component :compact="true" :textoverride="true">{{ $t('Large amount of data. Please be patient. Loading data...') }}</loading-component>
       <panel-box>
         <div class="flex flex-col xl:flex-row gap-6">
           <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">

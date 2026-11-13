@@ -8,15 +8,15 @@
 
     <div class="flex flex-col gap-4">
       <div>
-        <p class="font-bold mb-1">Zero Tolerance Policy:</p>
+        <p class="font-bold mb-1">{{ $t('Zero Tolerance Policy:') }}</p>
         <p>
-          You must agree to the following conditions. There will be zero tolerance if users are found to be violating these rules:
+          {{ $t('You must agree to the following conditions. There will be zero tolerance if users are found to be violating these rules:') }}
         </p>
         <ul class="list-disc ml-8 mt-1 space-y-1">
-          <li>Do not cheat or try to game the system</li>
-          <li>Do not only upload wins</li>
-          <li>Do not upload losses through excluded uploaders to try and game the system into excluding it</li>
-          <li>Use automatic uploaders to prevent friends/other players from making your account appear to violate these rules</li>
+          <li>{{ $t('Do not cheat or try to game the system') }}</li>
+          <li>{{ $t('Do not only upload wins') }}</li>
+          <li>{{ $t('Do not upload losses through excluded uploaders to try and game the system into excluding it') }}</li>
+          <li>{{ $t('Use automatic uploaders to prevent friends/other players from making your account appear to violate these rules') }}</li>
           <li>Do not turn the uploader on and off during playtime between matches, as this results in behavior that looks like replay pruning and may cause a review or account to be flagged</li>
         </ul>
       </div>
@@ -26,8 +26,8 @@
       </p>
 
       <div>
-        <p class="mb-1">Automatic Uploader Recommendation:</p>
-        <p>Keep the uploader running continuously throughout your playtime.</p>
+        <p class="mb-1">{{ $t('Automatic Uploader Recommendation:') }}</p>
+        <p>{{ $t('Keep the uploader running continuously throughout your playtime.') }}</p>
       </div>
     </div>
 
@@ -40,7 +40,7 @@
           class="mt-0.5 cursor-pointer w-6 h-6 shrink-0 accent-teal"
         />
         <label for="agreeConditions" class="cursor-pointer">
-          I agree to the conditions above and understand that violations will result in zero tolerance enforcement.
+          {{ $t('I agree to the conditions above and understand that violations will result in zero tolerance enforcement.') }}
         </label>
       </div>
       <custom-button class="ml-auto" color="teal" text="I agree & Close" :disabled="!agreedToConditions" :ignoreclick="true" @click="closePopup"></custom-button>

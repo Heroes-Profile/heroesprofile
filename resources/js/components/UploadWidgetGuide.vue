@@ -65,8 +65,8 @@
           <thead>
             <tr>
               <th class="py-2 px-3 text-left text-sm">type</th>
-              <th class="py-2 px-3 text-left text-sm">Sent</th>
-              <th class="py-2 px-3 text-left text-sm">Fields</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Sent') }}</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Fields') }}</th>
             </tr>
           </thead>
           <tbody>

@@ -41,7 +41,7 @@
     <analytics-numbers>
       <table class="min-w-0 w-full responsive-table">
         <thead>
-          <tr><th>At</th><th>Behind (you)</th><th>Behind (global)</th><th>Even (you)</th><th>Even (global)</th><th>Ahead (you)</th><th>Ahead (global)</th></tr>
+          <tr><th>{{ $t('At') }}</th><th>{{ $t('Behind (you)') }}</th><th>{{ $t('Behind (global)') }}</th><th>{{ $t('Even (you)') }}</th><th>{{ $t('Even (global)') }}</th><th>{{ $t('Ahead (you)') }}</th><th>{{ $t('Ahead (global)') }}</th></tr>
         </thead>
         <tbody>
           <tr v-for="minute in checkpoints" :key="minute">

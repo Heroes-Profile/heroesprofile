@@ -44,9 +44,9 @@
 
 
   <div v-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-    <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">Very large amount of data. Compiling can take 5-10 minutes. Please be patient.</loading-component>
-    <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">Large amount of data. Please be patient.</loading-component>
-    <loading-component v-else :compact="true" :textoverride="true">Loading talents...</loading-component>
+    <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
+    <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+    <loading-component v-else :compact="true" :textoverride="true">{{ $t('Loading talents...') }}</loading-component>
     <!-- Mirrors the builder's level columns in whichever layout will load -->
     <div v-if="effectiveStyle === 'horizontal'" class="flex px-3 gap-5 mx-auto justify-center">
       <div v-for="level in 7" :key="level" class="w-[10.625rem] m-1 bg-surface rounded overflow-hidden">
@@ -70,7 +70,7 @@
     </div>
   </div>
   <div v-else-if="dataError" class="flex items-center justify-center">
-      Error: Reload page/filter
+      {{ $t('Error: Reload page/filter') }}
   </div>
   <div v-if="data && !isLoading">
     <div class="flex justify-between max-w-[120rem] mx-auto px-4 md:px-8 max-md:flex-wrap max-md:gap-2">
@@ -81,7 +81,7 @@
             :defaultValue="selectedHero.id"
             @input-changed="handleInputChange"
           ></single-select-filter>
-          <span @click="resetTalentData" class="mt-auto ml-auto link text-sm">Reset Talent data</span>
+          <span @click="resetTalentData" class="mt-auto ml-auto link text-sm">{{ $t('Reset Talent data') }}</span>
         </span>
         <span class="flex items-center gap-4">
           <tab-button :tab1text="'Auto Load'" :tab2text="'On Filter'" :ignoreclick="true" @tab-click="loadStyleSelected" :overridedefaultside="localLoad === 'filter' ? 'right' : 'left'"></tab-button>
@@ -115,23 +115,23 @@
       <template #title>
         <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
           <p class="font-normal">Build win rate and how many players have played that exact build. Win rate for builds to level 20 are inflated because teams that make it to level 20 win more. Therefore it is not an accurate representation of a builds viabllity. See table below for that calculation</p>
-          <p class="font-normal mt-2">Calculated build win chance tries to gauge what the builds win rate will be at any point during the game.</p>
+          <p class="font-normal mt-2">{{ $t('Calculated build win chance tries to gauge what the builds win rate will be at any point during the game.') }}</p>
         </round-image>
       </template>
     <table v-if="builddata" class="min-w-0 w-full responsive-table">
       <thead>
         <tr>
           <th class="py-2 px-3 text-center text-sm leading-4">
-            Talents
+            {{ $t('Talents') }}
           </th>
           <th class="py-2 px-3 text-center text-sm leading-4">
-            Copy Build to Game
+            {{ $t('Copy Build to Game') }}
           </th>
           <th class="py-2 px-3 text-center text-sm leading-4">
-            Games Played with Build
+            {{ $t('Games Played with Build') }}
           </th>
           <th class="py-2 px-3 text-center text-sm leading-4">
-            Win rate
+            {{ $t('Win rate') }}
           </th>
         </tr>
       </thead>
@@ -165,7 +165,7 @@
     <panel-box title="Matching Replays">
       <template #title>
         <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-          <p class="font-normal">Possible Replays do not take into account Hero Level, Player Rank, Hero Rank, Role Rank, or Mirror Match Filter options</p>
+          <p class="font-normal">{{ $t('Possible Replays do not take into account Hero Level, Player Rank, Hero Rank, Role Rank, or Mirror Match Filter options') }}</p>
         </round-image>
       </template>
     <div>
@@ -175,10 +175,10 @@
       <thead>
         <tr>
           <th class="py-2 px-3 text-center text-sm leading-4 w-[12.5rem]">
-            Match ID
+            {{ $t('Match ID') }}
           </th>
           <th class="py-2 px-3 text-center text-sm leading-4">
-            Talents
+            {{ $t('Talents') }}
           </th>
         </tr>
       </thead>

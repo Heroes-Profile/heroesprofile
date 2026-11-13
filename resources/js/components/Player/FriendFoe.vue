@@ -48,26 +48,26 @@
         <table ref="friendtable" class="min-w-0 w-full">
           <thead >
             <tr>
-              <th colspan="5" class="py-2 px-3 text-center text-base font-bold tracking-wider">Friends</th>
+              <th colspan="5" class="py-2 px-3 text-center text-base font-bold tracking-wider">{{ $t('Friends') }}</th>
             </tr>
             <tr >
               <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 <div class="flex items-center gap-3">
-                  <span class="cursor-pointer" @click="sortTableFriend('battletag')">Player<sort-indicator :column="'battletag'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator></span>
+                  <span class="cursor-pointer" @click="sortTableFriend('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator></span>
                   <search-input v-model="friendSearch" placeholder="Search player" :collapsible="true" class="w-40"></search-input>
                 </div>
               </th>
               <th @click="sortTableFriend('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Favorite Hero<sort-indicator :column="'hero'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
+                {{ $t('Favorite Hero') }}<sort-indicator :column="'hero'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>            
               <th @click="sortTableFriend('total_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Games With<sort-indicator :column="'total_games_played'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
+                {{ $t('Games With') }}<sort-indicator :column="'total_games_played'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>
               <th  @click="sortTableFriend('win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer ">
                 Win Rate with<sort-indicator :column="'win_rate'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>
               <th v-if="!esport" class="py-2 px-3 text-center text-sm leading-4 text-gray-500 tracking-wider w-px whitespace-nowrap">
-                Matches
+                {{ $t('Matches') }}
               </th>
             </tr>
           </thead>
@@ -82,7 +82,7 @@
                   <hero-image-wrapper class="mr-2" :hero="row.heroData.hero" :mobile-click="true">
                     <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played: ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
                   </hero-image-wrapper>
-                  <a :href="heroLink(row)" class="group/bt hidden md:inline-flex items-center"><span class="font-bold group-hover/bt:underline">{{ row.heroData.hero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                  <a :href="heroLink(row)" class="group/bt hidden md:inline-flex items-center"><span class="font-bold group-hover/bt:underline">{{ $heroName(row.heroData.hero) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                 </div>
               </td>
               <td class="py-2 px-3 text-center">{{ row.total_games_played.toLocaleString('en-US') }}</td>
@@ -98,26 +98,26 @@
         <table ref="enemytable" class="min-w-0 w-full">
           <thead class="bg-red">
             <tr>
-              <th colspan="5" class="py-2 px-3 text-center text-base font-bold tracking-wider">Foes</th>
+              <th colspan="5" class="py-2 px-3 text-center text-base font-bold tracking-wider">{{ $t('Foes') }}</th>
             </tr>
             <tr>
               <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 <div class="flex items-center gap-3">
-                  <span class="cursor-pointer" @click="sortTableEnemy('battletag')">Player<sort-indicator :column="'battletag'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator></span>
+                  <span class="cursor-pointer" @click="sortTableEnemy('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator></span>
                   <search-input v-model="enemySearch" placeholder="Search player" :collapsible="true" class="w-40"></search-input>
                 </div>
               </th>
               <th @click="sortTableEnemy('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Favorite Hero<sort-indicator :column="'hero'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
+                {{ $t('Favorite Hero') }}<sort-indicator :column="'hero'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>            
               <th @click="sortTableEnemy('total_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Games Against<sort-indicator :column="'total_games_played'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
+                {{ $t('Games Against') }}<sort-indicator :column="'total_games_played'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>
               <th @click="sortTableEnemy('win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Win Rate Against<sort-indicator :column="'win_rate'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
+                {{ $t('Win Rate Against') }}<sort-indicator :column="'win_rate'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>
               <th v-if="!esport" class="py-2 px-3 text-center text-sm leading-4 text-gray-500 tracking-wider w-px whitespace-nowrap">
-                Matches
+                {{ $t('Matches') }}
               </th>
             </tr>
           </thead>
@@ -134,7 +134,7 @@
                   <hero-image-wrapper class="mr-2" :hero="row.heroData.hero" :mobile-click="true">
                     <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played: ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
                   </hero-image-wrapper>
-                  <a :href="heroLink(row)" class="group/bt hidden md:inline-flex items-center"><span class="font-bold group-hover/bt:underline">{{ row.heroData.hero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                  <a :href="heroLink(row)" class="group/bt hidden md:inline-flex items-center"><span class="font-bold group-hover/bt:underline">{{ $heroName(row.heroData.hero) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                 </div>
               </td>
               <td class="py-2 px-3 text-center">{{ row.total_games_played.toLocaleString('en-US') }}</td>
@@ -148,8 +148,8 @@
       </div>
     </div>
     <div v-else-if="friendIsLoading || enemyIsLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">This is taking longer than expected. A background task is computing your results. Please be patient.</loading-component>
-      <loading-component v-else :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">Large amount of data. Please be patient.</loading-component>
+      <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
+      <loading-component v-else :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
       <div class="grid md:grid-cols-2 gap-6">
         <table-skeleton v-for="side in 2" :key="side" :bare="true" :rows="10" :columns="['text', 'hero', 'stat', 'stat', 'rank']"></table-skeleton>
       </div>
