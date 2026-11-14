@@ -99,6 +99,8 @@
 </template>
 
 <script>
+import moment from 'moment-timezone';
+
 // The conversation lasts for the browser tab, so moving between pages keeps it. The panel itself starts closed on every page, except the first visit.
 const STORAGE_KEY = 'helpChat';
 // Bump the number to show the intro to everyone again
@@ -303,14 +305,20 @@ export default {
     },
     // Answers are plain text: escape them, then turn site paths and links into anchors
     linkify(text) {
-      const escaped = String(text)
+      // Site data times come back as {asof:<UTC>}: shown in the reader's own time zone
+      const localized = String(text).replace(/\{asof:([0-9T:\-.]+Z)\}/g, (match, utc) => {
+        const local = moment.tz(utc, 'Atlantic/Reykjavik').clone().tz(moment.tz.guess());
+        return local.isValid() ? local.format('MM/DD/YYYY h:mm:ss a') : utc;
+      });
+
+      const escaped = localized
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
 
       // Paths can carry a query (?hero=Li%20Li) and names with apostrophes (Kel'Thuzad)
-      return escaped.replace(/(^|[\s(])((?:https:\/\/[^\s<)]+)|(?:\/[A-Za-z][A-Za-z0-9_\-\/#?=&%.']*))/g, (match, lead, url) => {
+      const linked = escaped.replace(/(^|[\s(])((?:https:\/\/[^\s<)]+)|(?:\/[A-Za-z][A-Za-z0-9_\-\/#?=&%.']*))/g, (match, lead, url) => {
         const trimmed = url.replace(/[.,!?']+$/, '');
         const rest = url.slice(trimmed.length);
         const external = trimmed.startsWith('https://');
@@ -321,6 +329,12 @@ export default {
           // A stray % that isn't an escape: show the path as written
         }
         return `${lead}<a href="${trimmed}" class="underline"${external ? ' target="_blank" rel="noopener"' : ''}>${shown}</a>${rest}`;
+      });
+
+      // Runs of "- " lines become a list, styled like the FAQ's
+      return linked.replace(/(?:^|\n)((?:[ \t]*[-•][ \t]+[^\n]*(?:\n|$))+)/g, (match, block) => {
+        const items = block.trim().split('\n').map(line => `<li>${line.replace(/^[ \t]*[-•][ \t]+/, '')}</li>`).join('');
+        return `${match.startsWith('\n') ? '\n' : ''}<ul class="list-disc list-inside mt-1 space-y-1">${items}</ul>`;
       });
     },
   },
