@@ -35,7 +35,7 @@
     </div>
 
     <div v-if="ignoredCount" class="text-xs text-gray-medium mb-3">
-      {{ $t('Ignored :ignoredcount file:s that :were not a .StormReplay.', { ignoredcount: ignoredCount, s: ignoredCount === 1 ? '' : $t('s'), were: ignoredCount === 1 ? $t('was') : $t('were') }) }}
+      {{ ignoredCount === 1 ? $t('Ignored 1 file that was not a .StormReplay.') : $t('Ignored :count files that were not a .StormReplay.', { count: ignoredCount }) }}
     </div>
 
     <div v-if="files.length" class="mb-4">

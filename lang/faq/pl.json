@@ -83,6 +83,10 @@
             "q": "Czym jest MMR bohatera?",
             "a": "MMR bohatera to ocena MMR dla każdego bohatera osobno. Zamiast jednej ogólnej oceny masz osobny MMR dla każdego bohatera, którym grasz. Ta ocena porównuje Cię z wynikami innych graczy na tym samym bohaterze. Bycie wysoko notowanym graczem Ligi Burzy nie oznacza automatycznie wysokiego MMR bohatera na postaci, którą grasz rzadko."
         },
+        "ce9abd80c6b80a74": {
+            "q": "Gdzie mogę dowiedzieć się więcej o matematyce stojącej za MMR?",
+            "a": "Nasz MMR opiera się na TrueSkill – systemie ocen, który śledzi zarówno szacunkowy poziom umiejętności, jak i pewność tego szacunku. Szczegółowe i przystępne wyjaśnienie, jak to działa, znajdziesz w artykule <a href=\"https://www.moserware.com/2010/03/computing-your-skill.html\" target=\"_blank\" class=\"link\">Computing Your Skill</a> autorstwa Jeffa Mosera."
+        },
         "4f0391d0e1d4e289": {
             "q": "Jak dokładne są dane na Heroes Profile?",
             "a": "Dane są tak dokładne, jak pozwala na to liczba powtórek przesłanych do naszego systemu. Nie mamy dostępu do każdego rozegranego meczu, a tylko do tych, w których gracze użyli naszej przesyłarki lub przesłali powtórki ręcznie. Mimo to niezmiennie mamy jedną z największych baz powtórek w społeczności, liczącą dziesiątki milionów meczów."

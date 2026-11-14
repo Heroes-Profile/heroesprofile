@@ -2,7 +2,7 @@
     "categories": {
         "Getting Started": "Erste Schritte",
         "Uploading Replays": "Replays hochladen",
-        "MMR & Rankings": "MMR & Ranglisten",
+        "MMR & Rankings": "MMR und Ranglisten",
         "Global Stats & Data": "Globale Statistiken und Daten",
         "Filters": "Filter",
         "Site Features": "Website-Funktionen",
@@ -82,6 +82,10 @@
         "d9046734a5b347eb": {
             "q": "Was ist die Helden-MMR?",
             "a": "Die Helden-MMR ist eine MMR pro Held. Statt einer einzigen Gesamtwertung hast du für jeden gespielten Helden eine eigene MMR. Sie vergleicht dich mit der Leistung anderer Spieler auf demselben Helden. Wer in der Sturmliga weit oben spielt, hat nicht automatisch eine hohe Helden-MMR auf einem Helden, den er selten spielt."
+        },
+        "ce9abd80c6b80a74": {
+            "q": "Wo erfahre ich mehr über die Mathematik hinter dem MMR?",
+            "a": "Unser MMR basiert auf TrueSkill, einem Wertungssystem, das sowohl eine Schätzung des Könnens als auch die Sicherheit dieser Schätzung erfasst. Eine ausführliche, gut lesbare Erklärung der Funktionsweise findest du in <a href=\"https://www.moserware.com/2010/03/computing-your-skill.html\" target=\"_blank\" class=\"link\">Computing Your Skill</a> von Jeff Moser."
         },
         "4f0391d0e1d4e289": {
             "q": "Wie genau sind die Daten auf Heroes Profile?",

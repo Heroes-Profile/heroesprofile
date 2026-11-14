@@ -83,6 +83,10 @@
             "q": "Cos'è l'MMR eroe?",
             "a": "L'MMR eroe è un punteggio MMR specifico per ciascun eroe. Invece di un unico punteggio complessivo, hai un MMR diverso per ogni eroe che giochi. Questo punteggio ti confronta con il rendimento degli altri giocatori con lo stesso eroe. Essere un giocatore di alto livello nella Lega della Tempesta non significa automaticamente avere un MMR eroe alto con un eroe che giochi di rado."
         },
+        "ce9abd80c6b80a74": {
+            "q": "Dove posso approfondire la matematica alla base dell'MMR?",
+            "a": "Il nostro MMR si basa su TrueSkill, un sistema di valutazione che tiene traccia sia di una stima dell'abilità sia di quanto quella stima sia affidabile. Per una spiegazione approfondita e accessibile del suo funzionamento, leggi <a href=\"https://www.moserware.com/2010/03/computing-your-skill.html\" target=\"_blank\" class=\"link\">Computing Your Skill</a> di Jeff Moser."
+        },
         "4f0391d0e1d4e289": {
             "q": "Quanto sono precisi i dati di Heroes Profile?",
             "a": "I dati sono precisi quanto lo permette il numero di replay caricati nel nostro sistema. Non abbiamo accesso a tutte le partite giocate, ma solo a quelle in cui i giocatori hanno usato il nostro caricatore o inviato i replay manualmente. Detto questo, abbiamo costantemente uno dei database di replay più grandi della community, con decine di milioni di partite."

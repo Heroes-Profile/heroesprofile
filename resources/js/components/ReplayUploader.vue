@@ -28,7 +28,7 @@
         <uploader-downloads class="text-sm mb-4" :show-ranks="true"></uploader-downloads>
 
         <p class="text-sm mb-4">
-          {{ $t('The') }} <strong>{{ $t('with rank reading') }}</strong> {{ $t('downloads are the same uploader plus an opt-in reader for the Storm League loading screen, which helps us get real in-game ranks onto Heroes Profile.') }}
+          {{ $t('The "with rank reading" downloads are the same uploader plus an opt-in reader for the Storm League loading screen, which helps us get real in-game ranks onto Heroes Profile.') }}
           <a class="link" href="/Upload/Uploader#rank-reading">{{ $t('How rank reading works') }}</a>.
         </p>
 

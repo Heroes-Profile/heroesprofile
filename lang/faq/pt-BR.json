@@ -83,6 +83,10 @@
             "q": "O que é MMR de herói?",
             "a": "O MMR de herói é uma pontuação de MMR por herói. Em vez de uma única pontuação geral, você tem um MMR diferente para cada herói que joga. Essa pontuação compara você com o desempenho de outros jogadores com aquele mesmo herói. Ser um jogador de nível alto na Liga da Tempestade não significa automaticamente ter um MMR de herói alto com um herói que você raramente joga."
         },
+        "ce9abd80c6b80a74": {
+            "q": "Onde posso saber mais sobre a matemática por trás do MMR?",
+            "a": "Nosso MMR é baseado no TrueSkill, um sistema de pontuação que acompanha tanto uma estimativa de habilidade quanto o grau de certeza sobre essa estimativa. Para uma explicação completa e acessível de como ele funciona, veja <a href=\"https://www.moserware.com/2010/03/computing-your-skill.html\" target=\"_blank\" class=\"link\">Computing Your Skill</a>, de Jeff Moser."
+        },
         "4f0391d0e1d4e289": {
             "q": "Qual é a precisão dos dados do Heroes Profile?",
             "a": "A precisão dos dados depende da quantidade de replays enviados ao nosso sistema. Não temos acesso a todas as partidas jogadas, apenas às partidas em que os jogadores usaram nosso enviador ou enviaram replays manualmente. Mesmo assim, temos consistentemente um dos maiores bancos de replays da comunidade, com dezenas de milhões de partidas."

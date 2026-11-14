@@ -83,6 +83,10 @@
             "q": "Qu'est-ce que le MMR de héros ?",
             "a": "Le MMR de héros est une note de MMR propre à chaque héros. Au lieu d'une note globale unique, vous avez un MMR différent pour chaque héros que vous jouez. Cette note vous compare aux performances des autres joueurs sur ce même héros. Être un joueur de haut niveau en Ligue du Nexus ne signifie pas automatiquement que vous avez un MMR de héros élevé sur un héros que vous jouez rarement."
         },
+        "ce9abd80c6b80a74": {
+            "q": "Où en savoir plus sur les mathématiques derrière le MMR ?",
+            "a": "Notre MMR repose sur TrueSkill, un système de notation qui suit à la fois une estimation du niveau et le degré de certitude de cette estimation. Pour une explication complète et accessible de son fonctionnement, consultez <a href=\"https://www.moserware.com/2010/03/computing-your-skill.html\" target=\"_blank\" class=\"link\">Computing Your Skill</a> de Jeff Moser."
+        },
         "4f0391d0e1d4e289": {
             "q": "Quelle est la fiabilité des données de Heroes Profile ?",
             "a": "La précision des données dépend du nombre de replays envoyés sur notre système. Nous n'avons pas accès à toutes les parties jouées, seulement à celles dont les joueurs ont utilisé notre outil d'envoi ou envoyé les replays manuellement. Cela dit, nous disposons toujours de l'une des plus grandes bases de replays de la communauté, avec des dizaines de millions de parties."
