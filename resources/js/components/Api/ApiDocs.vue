@@ -34,7 +34,7 @@
         </ul>
 
         <div v-for="group in groups" :key="group.name" class="mb-4">
-          <h3 class="text-lteal text-sm uppercase tracking-wider mb-1">{{ group.name }}</h3>
+          <h3 class="text-lteal text-sm uppercase mb-1">{{ group.name }}</h3>
           <ul class="text-sm space-y-1">
             <li v-for="op in group.operations" :key="op.id">
               <a :href="'#' + op.id" class="hover:text-lteal break-all">{{ op.path }}</a>
@@ -93,7 +93,7 @@
         <section v-if="!search" id="getting-started" class="bg-lighten p-6 mb-10 scroll-mt-4">
           <h2 class="text-2xl mb-4">Getting started</h2>
 
-          <h3 class="text-sm uppercase tracking-wider text-lteal mb-2">Base URL</h3>
+          <h3 class="text-sm uppercase text-lteal mb-2">Base URL</h3>
           <p class="text-sm mb-2">
             Every endpoint on this page is relative to
             <code class="text-lteal break-all">{{ baseUrl }}</code>.
@@ -103,7 +103,7 @@
             <code class="break-all">https://www.heroesprofile.com/heroes</code>, which is the website.
           </p>
 
-          <h3 class="text-sm uppercase tracking-wider text-lteal mb-2">Authentication</h3>
+          <h3 class="text-sm uppercase text-lteal mb-2">Authentication</h3>
           <p class="text-sm mb-4">
             Create a key on your <a href="/Api/Account" class="link">account page</a> and send it
             with every call as <code class="text-lteal">Authorization: Bearer &lt;key&gt;</code>.
@@ -111,7 +111,7 @@
             are the exception.
           </p>
 
-          <h3 class="text-sm uppercase tracking-wider text-lteal mb-2">Example</h3>
+          <h3 class="text-sm uppercase text-lteal mb-2">Example</h3>
           <pre class="bg-darken p-3 text-xs overflow-x-auto">curl -H "Authorization: Bearer &lt;key&gt;"   "{{ baseUrl }}/heroes"</pre>
         </section>
 
@@ -166,7 +166,7 @@
             </p>
 
             <template v-if="op.parameters.length">
-              <h3 class="text-sm uppercase tracking-wider text-lteal mb-2">Parameters</h3>
+              <h3 class="text-sm uppercase text-lteal mb-2">Parameters</h3>
               <table class="min-w-0 w-full responsive-table mb-4">
                 <thead>
                   <tr>
@@ -285,7 +285,7 @@
               </template>
             </div>
 
-            <h3 class="text-sm uppercase tracking-wider text-lteal mb-2">Responses</h3>
+            <h3 class="text-sm uppercase text-lteal mb-2">Responses</h3>
             <div v-for="response in op.responses" :key="response.status" class="mb-3">
               <div class="flex flex-wrap items-baseline gap-2 text-sm">
                 <span :class="response.status.startsWith('2') ? 'text-lteal' : 'text-yellow'">{{ response.status }}</span>

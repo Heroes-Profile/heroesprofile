@@ -72,7 +72,7 @@
             </div>
             <template v-for="(row, index) in tableRows" :key="row.replayID">
             <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="'/Match/Single/' + row.replayID" :hero="row.hero" :title="row.game_map.name" :date="formatRowDate(row.game_date)" :winner="row.winner == 1" :result="row.winner == 1 ? 'Win' : 'Loss'" :map-art="row.game_map.sanitized_map_name">
-              <span class="text-white font-medium">{{ row.award.title }}</span> · {{ row.game_type.name }}
+              <span class="text-white font-medium">{{ row.award.title }}</span> · {{ $t(row.game_type.name) }}
             </match-row-mobile>
 <div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
               <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
@@ -89,7 +89,7 @@
                   </div>
                 </div>
               </div>
-              <span class="relative w-[10rem] shrink-0 px-4 font-medium text-header">{{ row.game_type.name }}</span>
+              <span class="relative w-[10rem] shrink-0 px-4 font-medium text-header">{{ $t(row.game_type.name) }}</span>
               <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="'/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
               <div class="relative w-[18.75rem] shrink-0 px-4 flex items-center gap-3">
                 <img :src="`/images/awards/${row.award.icon}_${row.winner == 1 ? 'blue' : 'red'}.png`" :alt="row.award.title" class="w-10 h-10" />

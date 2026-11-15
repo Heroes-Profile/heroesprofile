@@ -4,13 +4,13 @@
     <div class="xalatath-scoreboard px-4 py-8">
       <article class="void-gazette max-w-[68.75rem] mx-auto px-5 md:px-10 py-6 md:py-8">
         <header class="text-center">
-          <div class="flex justify-between text-[0.6875rem] md:text-xs uppercase tracking-widest border-b border-[#1a1a1a] pb-1">
+          <div class="flex justify-between text-[0.6875rem] md:text-xs uppercase border-b border-[#1a1a1a] pb-1">
             <span>{{ $t('Final Edition') }}</span>
             <span class="max-md:hidden">Heroes Profile</span>
             <span>{{ $t('Price: One Soul') }}</span>
           </div>
           <h1 class="void-gazette-masthead text-5xl md:text-7xl py-3">{{ $t('The Void Gazette') }}</h1>
-          <div class="flex justify-between text-[0.6875rem] md:text-xs uppercase tracking-widest border-y-[0.1875rem] border-double border-[#1a1a1a] py-1">
+          <div class="flex justify-between text-[0.6875rem] md:text-xs uppercase border-y-[0.1875rem] border-double border-[#1a1a1a] py-1">
             <span>{{ $t(':formatdate to :formatdate2', { formatdate: formatDate(recap.startsAt), formatdate2: formatDate(recap.endsAt) }) }}</span>
             <span class="max-md:hidden">"All the news that's fit to consume"</span>
             <span>{{ $t('Stage :stage of 5', { stage: final.stage }) }}</span>
@@ -36,7 +36,7 @@
 
         <!-- Inside this edition: jump links to everything below -->
         <nav class="border-b border-[#1a1a1a] py-4">
-          <div class="void-gazette-headline text-center text-lg uppercase tracking-widest">{{ $t('Inside This Edition') }}</div>
+          <div class="void-gazette-headline text-center text-lg uppercase">{{ $t('Inside This Edition') }}</div>
           <div class="text-center text-xs italic mb-3">{{ $t('Click a section to jump straight to it.') }}</div>
           <ul class="void-gazette-index text-sm">
             <li v-for="entry in indexEntries" :key="entry.id" class="flex items-baseline gap-2 break-inside-avoid">
@@ -75,7 +75,7 @@
         <!-- What each stage changed, one card per stage, all the same size. The Before/After
              toggle above flips every card at once. -->
         <div class="flex flex-wrap items-center gap-3 mt-6 mb-2">
-          <h3 class="text-sm uppercase tracking-widest xalatath-title">{{ $t('What Changed') }}</h3>
+          <h3 class="text-sm uppercase xalatath-title">{{ $t('What Changed') }}</h3>
           <multi-tab-button :options="changeOptions" :model-value="paletteOn ? 'after' : 'before'" @update:model-value="setChangeView"></multi-tab-button>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
@@ -374,7 +374,7 @@
         <h2 class="recap-heading">{{ $t('Single-Game Records') }}</h2>
         <p class="mb-4 text-sm opacity-75">{{ $t('Her best single games for every stat. Click a record to see the top 10.') }}</p>
         <div v-for="group in recordGroups" :key="group.title" class="mb-5">
-          <h3 class="text-sm uppercase tracking-widest xalatath-title mb-2">{{ group.title }}</h3>
+          <h3 class="text-sm uppercase xalatath-title mb-2">{{ group.title }}</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 items-start">
             <details v-for="item in group.records" :key="item.record" class="xalatath-recap-card group">
               <summary class="px-3 py-2 flex justify-between items-center gap-3 cursor-pointer list-none">
@@ -508,7 +508,7 @@
           <div v-if="cardEmpty" class="void-contribution-card max-w-[43.75rem] rounded p-4 md:p-5 flex items-center gap-4">
             <img class="w-16 md:w-20 shrink-0" :src="`/images/event/xalatath/xalatath-logo-stage-${final.stage}.svg`" alt="" />
             <div class="min-w-0">
-              <div class="text-xs uppercase tracking-widest xalatath-title">{{ $t("Xal'atath Void Corruption") }}<span v-if="mode !== 'all'"> · {{ modeLabel }}</span></div>
+              <div class="text-xs uppercase xalatath-title">{{ $t("Xal'atath Void Corruption") }}<span v-if="mode !== 'all'"> · {{ modeLabel }}</span></div>
               <div class="text-2xl md:text-3xl font-bold">{{ contribution.battletag }}</div>
               <div class="text-lg">{{ noGamesLine }}</div>
               <div class="text-xs opacity-60 mt-2">heroesprofile.com/Event/Xalatath</div>
@@ -519,7 +519,7 @@
               <img class="w-40 md:w-52" :src="`/images/event/xalatath/xalatath-logo-stage-${final.stage}.svg`" alt="" />
             </div>
             <div class="min-w-0">
-              <div class="text-xs uppercase tracking-widest xalatath-title">{{ $t("Xal'atath Void Corruption") }}<span v-if="mode !== 'all'"> · {{ modeLabel }}</span></div>
+              <div class="text-xs uppercase xalatath-title">{{ $t("Xal'atath Void Corruption") }}<span v-if="mode !== 'all'"> · {{ modeLabel }}</span></div>
               <div class="text-3xl md:text-4xl font-bold mb-1">{{ contribution.battletag }}</div>
               <template v-if="card.games > 0">
                 <div class="text-lg mb-4">

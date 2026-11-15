@@ -13,7 +13,6 @@
             background-color: #0F121D;
             color: #ffffff;
             font-size: 1rem;
-            letter-spacing: .14em;
             min-height: 100vh;
             display: flex;
             flex-direction: column;

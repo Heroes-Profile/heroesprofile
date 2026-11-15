@@ -48,25 +48,25 @@
         <table ref="friendtable" class="min-w-0 w-full">
           <thead >
             <tr>
-              <th colspan="5" class="py-2 px-3 text-center text-base font-bold tracking-wider">{{ $t('Friends') }}</th>
+              <th colspan="5" class="py-2 px-3 text-center text-base font-bold">{{ $t('Friends') }}</th>
             </tr>
             <tr >
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500">
                 <div class="flex items-center gap-3">
                   <span class="cursor-pointer" @click="sortTableFriend('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator></span>
                   <search-input v-model="friendSearch" :placeholder="$t('Search player')" :collapsible="true" class="w-40"></search-input>
                 </div>
               </th>
-              <th @click="sortTableFriend('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTableFriend('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer">
                 {{ $t('Favorite Hero') }}<sort-indicator :column="'hero'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>            
-              <th @click="sortTableFriend('total_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTableFriend('total_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer">
                 {{ $t('Games With') }}<sort-indicator :column="'total_games_played'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>
-              <th  @click="sortTableFriend('win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer ">
+              <th  @click="sortTableFriend('win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer ">
                 Win Rate with<sort-indicator :column="'win_rate'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>
-              <th v-if="!esport" class="py-2 px-3 text-center text-sm leading-4 text-gray-500 tracking-wider w-px whitespace-nowrap">
+              <th v-if="!esport" class="py-2 px-3 text-center text-sm leading-4 text-gray-500 w-px whitespace-nowrap">
                 {{ $t('Matches') }}
               </th>
             </tr>
@@ -98,25 +98,25 @@
         <table ref="enemytable" class="min-w-0 w-full">
           <thead class="bg-red">
             <tr>
-              <th colspan="5" class="py-2 px-3 text-center text-base font-bold tracking-wider">{{ $t('Foes') }}</th>
+              <th colspan="5" class="py-2 px-3 text-center text-base font-bold">{{ $t('Foes') }}</th>
             </tr>
             <tr>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500">
                 <div class="flex items-center gap-3">
                   <span class="cursor-pointer" @click="sortTableEnemy('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator></span>
                   <search-input v-model="enemySearch" :placeholder="$t('Search player')" :collapsible="true" class="w-40"></search-input>
                 </div>
               </th>
-              <th @click="sortTableEnemy('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTableEnemy('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer">
                 {{ $t('Favorite Hero') }}<sort-indicator :column="'hero'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>            
-              <th @click="sortTableEnemy('total_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTableEnemy('total_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer">
                 {{ $t('Games Against') }}<sort-indicator :column="'total_games_played'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>
-              <th @click="sortTableEnemy('win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTableEnemy('win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer">
                 {{ $t('Win Rate Against') }}<sort-indicator :column="'win_rate'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>
-              <th v-if="!esport" class="py-2 px-3 text-center text-sm leading-4 text-gray-500 tracking-wider w-px whitespace-nowrap">
+              <th v-if="!esport" class="py-2 px-3 text-center text-sm leading-4 text-gray-500 w-px whitespace-nowrap">
                 {{ $t('Matches') }}
               </th>
             </tr>

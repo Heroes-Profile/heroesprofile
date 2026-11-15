@@ -49,7 +49,7 @@
     </div>
     
     <!-- Looks pressed in while pinned open -->
-    <span :class="['bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em] flex justify-center items-center font-bold tracking-normal leading-none transition', { 'bg-surface-1 shadow-[inset_0_2px_0.25rem_rgba(0,0,0,0.6)] translate-y-px': pinned }]" v-if="icon" >
+    <span :class="['bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em] flex justify-center items-center font-bold leading-none transition', { 'bg-surface-1 shadow-[inset_0_2px_0.25rem_rgba(0,0,0,0.6)] translate-y-px': pinned }]" v-if="icon" >
       <i :class="icon" ></i>
     </span>
   
@@ -99,7 +99,7 @@
           'w-max max-w-[24em]' : popupsize == 'fit'
         }
         ]" >
-        <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft tracking-normal text-left p-4 rounded drop-shadow-md z-30">
+        <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft text-left p-4 rounded drop-shadow-md z-30">
           <div class="bg-yellow" v-if="hpowner">{{ $t('Heroes Profile Owner') }}</div>
           <div class="bg-red" v-if="ispatreon">{{ $t('Patreon Subscriber') }}</div>
           <div class="bg-[#4c1d95]" v-if="voideye">{{ $t('Marked by the Void') }}</div>

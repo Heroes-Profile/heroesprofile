@@ -59,9 +59,30 @@ module.exports = {
       // => @media (min-width: 1500px) { ... } -- where the site starts scaling (app.css), so 1500 looks like 2133
     },
     fontFamily: {
-      'sans' : ['Roboto', 'sans-serif'],
+      // --lang-font is the page language's own font (app.css), for the characters Roboto doesn't have
+      'sans' : ['Roboto', 'var(--lang-font)', 'sans-serif'],
       'logo' : ['Ruslan Display'],
     },
+    // Tailwind's sizes, times --text-scale (app.css): 1 normally, larger for Korean and Chinese.
+    // Only text grows; widths, padding and gaps stay as they are.
+    fontSize: Object.fromEntries(Object.entries({
+      'xs': ['0.75rem', '1rem'],
+      'sm': ['0.875rem', '1.25rem'],
+      'base': ['1rem', '1.5rem'],
+      'lg': ['1.125rem', '1.75rem'],
+      'xl': ['1.25rem', '1.75rem'],
+      '2xl': ['1.5rem', '2rem'],
+      '3xl': ['1.875rem', '2.25rem'],
+      '4xl': ['2.25rem', '2.5rem'],
+      '5xl': ['3rem', '1'],
+      '6xl': ['3.75rem', '1'],
+      '7xl': ['4.5rem', '1'],
+      '8xl': ['6rem', '1'],
+      '9xl': ['8rem', '1'],
+    }).map(([name, [size, lineHeight]]) => [name, [
+      `calc(${size} * var(--text-scale))`,
+      { lineHeight: lineHeight === '1' ? '1' : `calc(${lineHeight} * var(--text-scale))` },
+    ]])),
     extend: {
       borderRadius: {
         DEFAULT: '.7rem',

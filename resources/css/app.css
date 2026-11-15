@@ -6,7 +6,15 @@
 
 
 
-html{background-color:lightgrey; font-family: 'Roboto', sans-serif; box-sizing:border-box; }
+html{background-color:lightgrey; font-family: 'Roboto', var(--lang-font), sans-serif; box-sizing:border-box; }
+
+/* Per-language type. Roboto covers Latin and Cyrillic; Korean and Chinese characters fall through to their
+   own Noto Sans (loaded in layouts/app.blade.php), and their text is set a little larger to stay readable.
+   --text-scale multiplies every Tailwind text size (tailwind.config.js) and the body text. */
+:root { --lang-font: sans-serif; --text-scale: 1; }
+:root:lang(ko) { --lang-font: 'Noto Sans KR'; --text-scale: 1.1; }
+:root:lang(zh-CN) { --lang-font: 'Noto Sans SC'; --text-scale: 1.1; }
+:root:lang(zh-TW) { --lang-font: 'Noto Sans TC'; --text-scale: 1.1; }
 
 /* Site scale. Sizes are in rem, so this one value scales text, spacing and layout together.
    Between 1500px and 2133px the root size follows the window width, so every width in that
@@ -109,7 +117,7 @@ details.group.is-closing[open] .group-open\:rotate-180 {
   @apply hover:bg-darken hover:text-white;
 }
 body{
-  font-size:1rem;
+  font-size: calc(1rem * var(--text-scale));
 }
 
 
@@ -215,7 +223,7 @@ nav .search-component{
 }
 /* Group label inside a dropdown; groups after the first get a divider above */
 .nav-dropdown-label{
-  @apply block px-4 md:px-[1.375rem] pt-2 pb-1 text-xs uppercase tracking-wide text-gray-medium;
+  @apply block px-4 md:px-[1.375rem] pt-2 pb-1 text-xs uppercase text-gray-medium;
 }
 .nav-dropdown-label ~ .nav-dropdown-label{
   @apply mt-2 pt-3 border-t border-gray-dark;
@@ -393,13 +401,12 @@ tr.bg-yellow{
 
 
 th{
-  @apply text-left text-sm leading-4  tracking-wider py-1 px-3 border-b;
+  @apply text-left text-sm leading-4 py-1 px-3 border-b;
 }
 /* Figma table header: medium-weight 1rem over a line, the same in both modes so only the colours change.
    Under the mode class so it beats the text-sm each table puts on its headers */
 .dark-mode th, .light-mode th{
   @apply text-base font-medium;
-  letter-spacing: inherit;
 }
 
 td{
@@ -729,22 +736,18 @@ thead{border-color:transparent;}
   background: #f3eee2;
   color: #1a1a1a;
   font-family: Georgia, 'Times New Roman', serif;
-  letter-spacing: normal;
   box-shadow: 0 0.625rem 2.5rem rgba(0, 0, 0, 0.6);
 }
 .void-gazette-masthead{
   font-family: 'Old English Text MT', 'UnifrakturMaguntia', Georgia, serif;
   font-weight: 700;
-  letter-spacing: 0.02em;
 }
 .void-gazette-headline{
   font-family: Georgia, 'Times New Roman', serif;
   font-weight: 700;
-  letter-spacing: normal;
 }
 .void-gazette-body{
   line-height: 1.5;
-  letter-spacing: normal;
   text-align: justify;
 }
 .void-gazette-photo{

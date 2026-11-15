@@ -69,6 +69,17 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ url()->current() }}">
 
+    <!-- Korean and Chinese pages: their own Noto Sans, which the font stack in app.css puts after Roboto.
+         Google splits it into small pieces by character, so a page only downloads the characters it uses. -->
+    @php
+      $languageFont = ['ko' => 'Noto+Sans+KR', 'zh-CN' => 'Noto+Sans+SC', 'zh-TW' => 'Noto+Sans+TC'][str_replace('_', '-', app()->getLocale())] ?? null;
+    @endphp
+    @if($languageFont)
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{ $languageFont }}:wght@400;500;700&display=swap">
+    @endif
+
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="preconnect" href="https://www.google-analytics.com">

@@ -24,7 +24,7 @@
       Heroes
       <img class="w-8 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
       Profile
-      <span class="ml-2 text-sm font-sans uppercase tracking-widest text-lteal">API</span>
+      <span class="ml-2 text-sm font-sans uppercase text-lteal">API</span>
     </a>
 
     <div class="flex flex-wrap items-center gap-4 text-sm">

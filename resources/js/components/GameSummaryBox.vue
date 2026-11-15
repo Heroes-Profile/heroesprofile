@@ -3,7 +3,7 @@
   <!-- Phones: the compact row as two short lines -->
   <match-row-mobile v-if="compact" class="md:hidden !mb-0" bg="group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2" :href="getHref()" :hero="data.hero" :title="data.game_map.name" :date="formatRowDate(data.game_date)" :winner="data.winner === 1" :result="data.winner === 1 ? 'Win' : 'Loss'" :map-art="data.game_map.sanitized_map_name">
     <template v-if="esport">{{ $t('Game :game · Round :round · :team vs :team2', { game: data.game, round: data.round, team: $ngsTeam(data.own_team).name, team2: $ngsTeam(data.opponent_team).name }) }}</template>
-    <template v-else>{{ data.game_type.name }} · <span class="text-white font-medium">{{ data.player_mmr.toLocaleString('en-US') }}</span><span v-if="data.player_change !== null" :class="data.player_change >= 0 ? 'text-win' : 'text-red'"> ({{ data.player_change > 0 ? '+' : '' }}{{ data.player_change.toFixed(2) }})</span><template v-if="data.kills !== undefined"> · {{ data.kills }}/{{ data.deaths }}/{{ data.assists }}</template></template>
+    <template v-else>{{ $t(data.game_type.name) }} · <span class="text-white font-medium">{{ data.player_mmr.toLocaleString('en-US') }}</span><span v-if="data.player_change !== null" :class="data.player_change >= 0 ? 'text-win' : 'text-red'"> ({{ data.player_change > 0 ? '+' : '' }}{{ data.player_change.toFixed(2) }})</span><template v-if="data.kills !== undefined"> · {{ data.kills }}/{{ data.deaths }}/{{ data.assists }}</template></template>
   </match-row-mobile>
   <!-- One line per game: the match history's Compact view -->
   <div v-if="compact" class="max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2">
@@ -21,7 +21,7 @@
         </div>
       </div>
     </div>
-    <span class="relative w-[10rem] shrink-0 px-4 font-medium text-header">{{ esport ? `Game ${data.game} · Round ${data.round}` : data.game_type.name }}</span>
+    <span class="relative w-[10rem] shrink-0 px-4 font-medium text-header">{{ esport ? $t('Game :game · Round :round', { game: data.game, round: data.round }) : $t(data.game_type.name) }}</span>
     <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="getHref()"><span class="group-hover/bt:underline">{{ data.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
     <!-- Esports games: their team against the other, where a ranked game shows MMR -->
     <div v-if="esport" class="relative w-[16.875rem] shrink-0 px-4 flex flex-col min-w-0">
@@ -62,7 +62,7 @@
         <div class="flex flex-col gap-1.5 whitespace-nowrap">
           <span class="font-bold">{{ $mapName(data.game_map) }}</span>
           <div class="flex flex-col">
-            <span class="text-base font-medium text-header">{{ esport ? `Game ${data.game} · Round ${data.round}` : data.game_type.name }}</span>
+            <span class="text-base font-medium text-header">{{ esport ? $t('Game :game · Round :round', { game: data.game, round: data.round }) : $t(data.game_type.name) }}</span>
             <span v-if="data.game_length" class="text-sm">{{ $t(':round minutes', { round: Math.round(data.game_length / 60) }) }}</span>
           </div>
           <span class="text-xs">{{ formatRowDate(data.game_date) }}</span>

@@ -257,7 +257,7 @@
       it from.
     </p>
 
-    <h4 class="text-sm uppercase tracking-wider text-lteal mb-2">1. Your call returns 202</h4>
+    <h4 class="text-sm uppercase text-lteal mb-2">1. Your call returns 202</h4>
     <pre class="bg-darken p-3 text-xs overflow-x-auto mb-2">GET /v1/heroes/stats?timeframe_type=minor&amp;timeframe=2.55.17.97771&amp;game_type=sl
 
 HTTP/1.1 202 Accepted
@@ -272,7 +272,7 @@ Retry-After: 10
       the CSV comes from the job.
     </p>
 
-    <h4 class="text-sm uppercase tracking-wider text-lteal mb-2">2. Poll the job until it is ready</h4>
+    <h4 class="text-sm uppercase text-lteal mb-2">2. Poll the job until it is ready</h4>
     <pre class="bg-darken p-3 text-xs overflow-x-auto mb-2">GET /v1/jobs/9f2c1a7e-...
 
 HTTP/1.1 202 Accepted        still working
@@ -287,7 +287,7 @@ HTTP/1.1 200 OK              done — this is the data
       endpoint documents — there is no envelope to unwrap.
     </p>
 
-    <h4 class="text-sm uppercase tracking-wider text-lteal mb-2">3. Handle the failure cases</h4>
+    <h4 class="text-sm uppercase text-lteal mb-2">3. Handle the failure cases</h4>
     <table class="min-w-0 w-full responsive-table mb-4">
       <thead>
         <tr>
@@ -315,7 +315,7 @@ HTTP/1.1 200 OK              done — this is the data
       </tbody>
     </table>
 
-    <h4 class="text-sm uppercase tracking-wider text-lteal mb-2">What this means for your code</h4>
+    <h4 class="text-sm uppercase text-lteal mb-2">What this means for your code</h4>
     <ul class="list-disc list-inside text-sm space-y-1 mb-6">
       <li>Treat <code>202</code> as success-in-progress, not an error. Anything checking <code>status === 200</code> will drop these on the floor.</li>
       <li>Follow <code>Location</code> rather than building the job URL yourself.</li>

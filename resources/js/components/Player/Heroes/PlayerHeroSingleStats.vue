@@ -41,7 +41,7 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     
     <div v-if="data && esport && !data.games_played" class="flex items-center justify-center mt-8">
-      {{ $t('No :heroobject games in :league for these filters.', { heroobject: heroobject.name, league: league.name }) }}
+      {{ $t('No :heroobject games in :league for these filters.', { heroobject: $heroName(heroobject), league: league.name }) }}
     </div>
     <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
 
@@ -80,7 +80,7 @@
 
           <details class="bg-surface-3 rounded text-sm w-fit max-w-full group open:w-full">
             <summary class="px-4 py-3 flex gap-4 justify-between items-center cursor-pointer list-none">
-              <h3 class="text-lg">{{ $t('Maps played on :heroobject', { heroobject: heroobject.name }) }}</h3>
+              <h3 class="text-lg">{{ $t('Maps played on :heroobject', { heroobject: $heroName(heroobject) }) }}</h3>
               <i class="fas fa-chevron-down transition-transform group-open:rotate-180"></i>
             </summary>
             <!-- Zero width so the list wraps to the card instead of widening it -->
@@ -202,7 +202,7 @@
       <panel-box>
         <div class="flex flex-col xl:flex-row gap-6">
           <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">
-            <h2 class="text-3xl font-bold">{{ heroobject.name }}</h2>
+            <h2 class="text-3xl font-bold">{{ $heroName(heroobject) }}</h2>
             <div class="flex gap-8 max-sm:flex-col">
               <skeleton-box class="w-40 md:w-72 h-[23em] shrink-0 rounded"></skeleton-box>
               <div class="flex-1 flex flex-col gap-6">

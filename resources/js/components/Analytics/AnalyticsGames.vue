@@ -78,7 +78,7 @@
                 {{ formatDate(row.game_date) }}
               </td>
               <td>
-                {{ row.game_type ? row.game_type.name : '' }}
+                {{ row.game_type ? $t(row.game_type.name) : '' }}
               </td>
               <td>
                 {{ row.game_map ? row.game_map.name : '' }}

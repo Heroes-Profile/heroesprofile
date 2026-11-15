@@ -15,7 +15,7 @@
       type="text"
       :placeholder="$t(placeholder)"
       :aria-label="$t(placeholder)"
-      class="w-full bg-field text-white rounded-control pl-9 pr-3 py-2 text-sm normal-case tracking-normal font-normal"
+      class="w-full bg-field text-white rounded-control pl-9 pr-3 py-2 text-sm normal-case font-normal"
     />
   </div>
 </template>

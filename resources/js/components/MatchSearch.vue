@@ -71,7 +71,7 @@
                 <div class="absolute inset-y-0 left-0 w-1.5 bg-teal"></div>
                 <div class="relative flex flex-col gap-1.5 whitespace-nowrap">
                   <span class="font-bold">{{ row.game_map ? row.game_map.name : '' }}</span>
-                  <span class="text-base font-medium text-header">{{ row.game_type ? row.game_type.name : '' }}</span>
+                  <span class="text-base font-medium text-header">{{ row.game_type ? $t(row.game_type.name) : '' }}</span>
                   <span class="text-sm">{{ $t(':round minutes · :region · :version', { round: Math.round(row.game_length / 60), region: row.region, version: row.game_version }) }}</span>
                   <span class="text-xs">{{ formatDate(row.game_date) }}</span>
                   <span class="relative z-[2] text-sm">
@@ -157,7 +157,7 @@
               </div>
               <div v-for="(row, index) in shownRows" :key="row.replayID" class="group/replay relative">
                 <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="matchUrl(row)" :title="row.game_map ? row.game_map.name : ''" :date="formatDate(row.game_date)" :map-art="row.game_map ? row.game_map.sanitized_map_name : null">
-                  {{ row.game_type ? row.game_type.name : '' }} · {{ formatLength(row.game_length) }} · {{ row.region }}
+                  {{ row.game_type ? $t(row.game_type.name) : '' }} · {{ formatLength(row.game_length) }} · {{ row.region }}
                 </match-row-mobile>
                 <div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
                   <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
@@ -170,7 +170,7 @@
                       <span class="text-xs">{{ formatDate(row.game_date) }}</span>
                     </div>
                   </div>
-                  <span class="relative w-[10rem] shrink-0 px-4 font-medium text-header">{{ row.game_type ? row.game_type.name : '' }}</span>
+                  <span class="relative w-[10rem] shrink-0 px-4 font-medium text-header">{{ row.game_type ? $t(row.game_type.name) : '' }}</span>
                   <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="matchUrl(row)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
                   <span class="relative w-[5.5rem] shrink-0 px-4">{{ formatLength(row.game_length) }}</span>
                   <span class="relative w-[5.5rem] shrink-0 px-4">{{ row.region }}</span>

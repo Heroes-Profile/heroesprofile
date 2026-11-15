@@ -41,13 +41,13 @@
       <table class="max-sm:text-xs">
         <thead>
           <tr>
-            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500">
               {{ $t('League') }}
             </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500">
               {{ $t('Min HP MMR') }}
             </th>            
-            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500">
               {{ $t('Max HP MMR') }}
             </th>                
           </tr>

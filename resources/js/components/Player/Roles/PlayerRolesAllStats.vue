@@ -65,27 +65,27 @@
 <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
       <thead>
         <tr>
-          <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer">
             {{ $t('Role') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>    
-          <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer">
             {{ $t('Win Rate') }}<sort-indicator column="win_rate" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>
-          <th @click="sortTable('games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer">
             {{ $t('Total Games') }}<sort-indicator column="games_played" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>
-          <th @click="sortTable('kda')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('kda')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer">
             <div class="">
               {{ $t('KDA') }}
             </div><sort-indicator :column="'kda'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>  
-          <th @click="sortTable('kdr')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('kdr')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer">
             <div class="">
               {{ $t('KDR') }}
             </div><sort-indicator :column="'kdr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>
           <template   v-for="stat in selectedStats">
-            <th  v-if="stat.selected" @click="sortTable(stat.value)" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th  v-if="stat.selected" @click="sortTable(stat.value)" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer">
               {{ $t(stat.name) }}<sort-indicator :column="stat.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
           </template> 
