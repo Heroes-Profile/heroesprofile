@@ -84,7 +84,7 @@
       </div>
     </div>
 
-    <div class="relative w-[8.75rem] shrink-0 flex flex-col gap-0.5 items-center text-center">
+    <div class="relative w-[8.75rem] shrink-0 flex flex-col gap-0.5 items-center text-center max-md:mx-4">
       <template v-if="data.kills !== undefined">
         <!-- Same grid as the header's icons. Kills right-align against the first bar so their
              ones digits line up row to row; deaths sit centred; assists start right after the second bar. -->
