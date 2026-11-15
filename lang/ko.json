@@ -1784,6 +1784,7 @@
     "Win Rate on Hero": "영웅 승률",
     "Win Rate Per Season": "시즌별 승률",
     "Win rate when your team took the first boss, by game time": "아군 팀이 첫 우두머리를 점령했을 때 게임 시간별 승률",
+    "Win Rate With": "함께한 승률",
     "Win rate, pick rate, ban rate and more for every hero, with a bubble chart. The Stat Filter in Show Advanced Filters shows each hero's average per game for a stat instead, like siege, hero or spell damage.": "모든 영웅의 승률, 선택률, 금지율 등을 버블 차트와 함께 제공합니다. 고급 필터 표시의 통계 필터를 사용하면 공성 피해, 영웅 피해, 주문 피해 등 특정 통계의 영웅별 경기당 평균을 대신 보여 줍니다.",
     "Win Rate: :rate%": "승률: :rate%",
     "Win rates by party size and with their party members.": "파티 규모별 및 파티원별 승률.",

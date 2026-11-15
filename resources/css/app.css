@@ -423,8 +423,17 @@ thead{
    Table wrappers use overflow-clip rather than overflow-hidden, which would stop this from working. */
 thead{
   position: sticky;
-  top: 0;
+  top: -2px; /* sits 2px higher while stuck */
   z-index: 30;
+}
+/* Header cells paint the header's colour themselves. A stuck header's own background isn't drawn where it sticks, so
+   a row without one (a title row like Friends & Foes') let the rows scrolling underneath show through. In the base
+   layer, so a cell's own colour (a sorted column's teal) still wins. */
+@layer base {
+  thead tr,
+  thead th {
+    background-color: inherit;
+  }
 }
 /* A table with a summary header above its column headings (Global Hero Stats' averages): only the headings stick */
 thead:not(:last-of-type){
@@ -432,7 +441,7 @@ thead:not(:last-of-type){
 }
 /* Phones: just under the sticky mobile header (#mobile-header in nav.blade.php, 2.75rem tall) */
 @media (max-width: 1023.98px){
-  thead{ top: 2.75rem; }
+  thead{ top: calc(2.75rem - 2px); }
 }
 thead tr{
   @apply py-3;

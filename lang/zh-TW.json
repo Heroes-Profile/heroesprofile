@@ -1784,6 +1784,7 @@
     "Win Rate on Hero": "該英雄勝率",
     "Win Rate Per Season": "各賽季勝率",
     "Win rate when your team took the first boss, by game time": "我方奪取第一隻首領時的勝率（依比賽時間）",
+    "Win Rate With": "同隊勝率",
     "Win rate, pick rate, ban rate and more for every hero, with a bubble chart. The Stat Filter in Show Advanced Filters shows each hero's average per game for a stat instead, like siege, hero or spell damage.": "每位英雄的勝率、選取率、禁用率等，並附泡泡圖。在「顯示進階篩選」中的「統計篩選」可改為顯示各英雄某項統計的每場平均，例如攻城、英雄或法術傷害。",
     "Win Rate: :rate%": "勝率：:rate%",
     "Win rates by party size and with their party members.": "依組隊人數及與隊友組隊時的勝率。",

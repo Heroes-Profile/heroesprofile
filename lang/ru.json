@@ -1784,6 +1784,7 @@
     "Win Rate on Hero": "Процент побед на герое",
     "Win Rate Per Season": "Процент побед по сезонам",
     "Win rate when your team took the first boss, by game time": "Процент побед, когда ваша команда захватила первого босса, по времени матча",
+    "Win Rate With": "Процент побед вместе",
     "Win rate, pick rate, ban rate and more for every hero, with a bubble chart. The Stat Filter in Show Advanced Filters shows each hero's average per game for a stat instead, like siege, hero or spell damage.": "Процент побед, выбора, банов и другое для каждого героя, с пузырьковой диаграммой. Фильтр статистики в разделе «Показать расширенные фильтры» вместо этого показывает среднее значение показателя героя за матч, например осадного урона, урона героям или урона от заклинаний.",
     "Win Rate: :rate%": "Процент побед: :rate%",
     "Win rates by party size and with their party members.": "Процент побед по размеру группы и с участниками группы.",

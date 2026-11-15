@@ -43,9 +43,20 @@
     
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="frienddata && enemydata" class="max-w-[120rem] mx-auto px-4 md:px-8 flex gap-6 max-md:flex-col max-md:text-sm max-md:max-w-[100vw]">
+    <div v-if="frienddata && enemydata" class="max-w-[120rem] mx-auto px-4 md:px-8 max-md:text-sm max-md:max-w-[100vw]">
+      <!-- One panel around both tables, like the leaderboard's -->
+      <panel-box>
+      <div class="flex gap-6 max-md:flex-col">
       <div ref="friendcontainer" class="flex-1 min-w-0 max-md:overflow-clip">
-        <table ref="friendtable" class="min-w-0 w-full">
+        <table ref="friendtable" class="w-full min-w-[36rem] table-fixed">
+          <!-- The same column widths in both tables, so their columns line up -->
+          <colgroup>
+            <col class="w-[30%]">
+            <col class="w-[22%]">
+            <col class="w-[17%]">
+            <col class="w-[21%]">
+            <col v-if="!esport" class="w-[10%]">
+          </colgroup>
           <thead >
             <tr>
               <th colspan="5" class="py-2 px-3 text-center text-base font-bold">{{ $t('Friends') }}</th>
@@ -60,11 +71,11 @@
               <th @click="sortTableFriend('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer">
                 {{ $t('Favorite Hero') }}<sort-indicator :column="'hero'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>            
-              <th @click="sortTableFriend('total_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer">
+              <th @click="sortTableFriend('total_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer whitespace-nowrap">
                 {{ $t('Games With') }}<sort-indicator :column="'total_games_played'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>
-              <th  @click="sortTableFriend('win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer ">
-                Win Rate with<sort-indicator :column="'win_rate'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
+              <th  @click="sortTableFriend('win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer whitespace-nowrap">
+                {{ $t('Win Rate With') }}<sort-indicator :column="'win_rate'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>
               <th v-if="!esport" class="py-2 px-3 text-center text-sm leading-4 text-gray-500 w-px whitespace-nowrap">
                 {{ $t('Matches') }}
@@ -95,7 +106,15 @@
         </table>
       </div>
       <div ref="enemycontainer" class="flex-1 min-w-0 max-md:overflow-clip">
-        <table ref="enemytable" class="min-w-0 w-full">
+        <table ref="enemytable" class="w-full min-w-[36rem] table-fixed">
+          <!-- The same column widths in both tables, so their columns line up -->
+          <colgroup>
+            <col class="w-[30%]">
+            <col class="w-[22%]">
+            <col class="w-[17%]">
+            <col class="w-[21%]">
+            <col v-if="!esport" class="w-[10%]">
+          </colgroup>
           <thead class="bg-red">
             <tr>
               <th colspan="5" class="py-2 px-3 text-center text-base font-bold">{{ $t('Foes') }}</th>
@@ -110,10 +129,10 @@
               <th @click="sortTableEnemy('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer">
                 {{ $t('Favorite Hero') }}<sort-indicator :column="'hero'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>            
-              <th @click="sortTableEnemy('total_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer">
+              <th @click="sortTableEnemy('total_games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer whitespace-nowrap">
                 {{ $t('Games Against') }}<sort-indicator :column="'total_games_played'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>
-              <th @click="sortTableEnemy('win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer">
+              <th @click="sortTableEnemy('win_rate')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer whitespace-nowrap">
                 {{ $t('Win Rate Against') }}<sort-indicator :column="'win_rate'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>
               <th v-if="!esport" class="py-2 px-3 text-center text-sm leading-4 text-gray-500 w-px whitespace-nowrap">
@@ -146,13 +165,17 @@
           </tbody>
         </table>
       </div>
+      </div>
+      </panel-box>
     </div>
     <div v-else-if="friendIsLoading || enemyIsLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
       <loading-component v-else :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
-      <div class="grid md:grid-cols-2 gap-6">
-        <table-skeleton v-for="side in 2" :key="side" :bare="true" :rows="10" :columns="['text', 'hero', 'stat', 'stat', 'rank']"></table-skeleton>
-      </div>
+      <panel-box>
+        <div class="grid md:grid-cols-2 gap-6">
+          <table-skeleton v-for="side in 2" :key="side" :bare="true" :rows="10" :columns="['text', 'hero', 'stat', 'stat', 'rank']"></table-skeleton>
+        </div>
+      </panel-box>
     </div>
   </div>
 </template>

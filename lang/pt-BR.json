@@ -1785,6 +1785,7 @@
     "Win Rate on Hero": "Taxa de vitória com o herói",
     "Win Rate Per Season": "Taxa de vitória por temporada",
     "Win rate when your team took the first boss, by game time": "Taxa de vitória quando sua equipe capturou o primeiro chefe, por tempo de jogo",
+    "Win Rate With": "Taxa de vitória com",
     "Win rate, pick rate, ban rate and more for every hero, with a bubble chart. The Stat Filter in Show Advanced Filters shows each hero's average per game for a stat instead, like siege, hero or spell damage.": "Taxa de vitória, de escolha, de banimento e mais para cada herói, com gráfico de bolhas. O Filtro de estatística em Mostrar filtros avançados mostra, em vez disso, a média por partida de cada herói em uma estatística, como dano de cerco, a heróis ou mágico.",
     "Win Rate: :rate%": "Taxa de vitória: :rate%",
     "Win rates by party size and with their party members.": "Taxas de vitória por tamanho do grupo e com os membros do grupo.",
