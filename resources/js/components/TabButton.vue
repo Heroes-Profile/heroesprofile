@@ -1,5 +1,5 @@
 <template>
-  <div class="inline-flex flex-col md:flex-row bg-teal rounded p-1 gap-1">
+  <div class="inline-flex bg-teal rounded p-1 gap-1">
     <a
       v-for="side in ['left', 'right']"
       :key="side"
