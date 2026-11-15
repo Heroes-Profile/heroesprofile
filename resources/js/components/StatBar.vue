@@ -3,7 +3,8 @@
     <div :class="['flex-1 min-w-0 rounded bg-surface-3 overflow-hidden', size === 'big' ? 'h-[1.875rem]' : 'h-4']" aria-hidden="true">
       <div :class="['h-full', colorClasses[color] || colorClasses.blue]" :style="{ width }"></div>
     </div>
-    <span v-if="mainText !== '' || suffix" :class="['shrink-0 font-semibold text-header whitespace-nowrap tabular-nums', { 'text-2xl': size === 'big' }]">
+    <!-- hideValue keeps the number's space, so the bar lines up with ones that show theirs -->
+    <span v-if="mainText !== '' || suffix" :class="['shrink-0 font-semibold text-header whitespace-nowrap tabular-nums', { 'text-2xl': size === 'big', invisible: hideValue }]" :aria-hidden="hideValue || null">
       {{ mainText }}<span :class="suffixClass">{{ suffix }}</span>
     </span>
   </div>
@@ -24,6 +25,8 @@ export default {
   props: {
     value: { type: [Number, String], required: true },
     displayText: { type: [Number, String], default: null },
+    // No data: the bar shows as usual but its number is hidden
+    hideValue: { type: Boolean, default: false },
     suffix: { type: String, default: '' },
     suffixClass: { type: String, default: '' },
     color: {

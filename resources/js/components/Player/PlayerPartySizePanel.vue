@@ -4,9 +4,10 @@
       <div v-for="stack in partySizes" :key="stack.label" class="flex flex-col gap-1.5">
         <div class="flex justify-between">
           <span class="text-header">{{ $t(stack.label) }}</span>
-          <span class="text-subtext">{{ $t('Games: :games', { games: stack.games.toLocaleString('en-US') }) }}</span>
+          <span v-if="stack.games" class="text-subtext">{{ $t('Games: :games', { games: stack.games.toLocaleString('en-US') }) }}</span>
         </div>
-        <stat-bar :value="stack.winRate.toFixed(2)" suffix="%" :color="$winRateColor(stack.winRate)"></stat-bar>
+        <!-- No games at this party size: the empty bar without its 0.00% -->
+        <stat-bar :value="stack.winRate.toFixed(2)" suffix="%" :color="$winRateColor(stack.winRate)" :hide-value="!stack.games"></stat-bar>
       </div>
     </div>
   </panel-box>

@@ -10,11 +10,12 @@ html{background-color:lightgrey; font-family: 'Roboto', var(--lang-font), sans-s
 
 /* Per-language type. Roboto covers Latin and Cyrillic; Korean and Chinese characters fall through to their
    own Noto Sans (loaded in layouts/app.blade.php), and their text is set a little larger to stay readable.
-   --text-scale multiplies every Tailwind text size (tailwind.config.js) and the body text. */
-:root { --lang-font: sans-serif; --text-scale: 1; }
-:root:lang(ko) { --lang-font: 'Noto Sans KR'; --text-scale: 1.1; }
-:root:lang(zh-CN) { --lang-font: 'Noto Sans SC'; --text-scale: 1.1; }
-:root:lang(zh-TW) { --lang-font: 'Noto Sans TC'; --text-scale: 1.1; }
+   --text-scale multiplies the Tailwind text sizes (tailwind.config.js) and the body text; --text-scale-small
+   multiplies text-xs and text-sm, the labels and captions, which need the most help. */
+:root { --lang-font: sans-serif; --text-scale: 1; --text-scale-small: 1; }
+:root:lang(ko) { --lang-font: 'Noto Sans KR'; --text-scale: 1.1; --text-scale-small: 1.25; }
+:root:lang(zh-CN) { --lang-font: 'Noto Sans SC'; --text-scale: 1.1; --text-scale-small: 1.25; }
+:root:lang(zh-TW) { --lang-font: 'Noto Sans TC'; --text-scale: 1.1; --text-scale-small: 1.25; }
 
 /* Site scale. Sizes are in rem, so this one value scales text, spacing and layout together.
    Between 1500px and 2133px the root size follows the window width, so every width in that

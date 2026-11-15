@@ -21,9 +21,10 @@
           <a v-if="linkHref" class="max-md:flex-1 md:w-[12.5rem] shrink-0 font-semibold text-header truncate hover:underline" :href="modeHref(mode)">{{ $t(mode.label) }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
           <span v-else class="max-md:flex-1 md:w-[12.5rem] shrink-0 font-semibold text-header truncate">{{ $t(mode.label) }}</span>
           <span class="md:hidden text-xs text-subtext">{{ $t('Win Rate') }}</span>
-          <stat-bar class="max-md:w-full md:flex-1 min-w-0" :value="mode.data ? mode.data.win_rate.toFixed(2) : '0.00'" suffix="%" :color="$winRateColor(mode.data ? mode.data.win_rate : 0)"></stat-bar>
+          <!-- No games in this mode: the empty bar, without a 00.00% or an MMR of 0 -->
+          <stat-bar class="max-md:w-full md:flex-1 min-w-0" :value="mode.data ? mode.data.win_rate.toFixed(2) : '0.00'" suffix="%" :color="$winRateColor(mode.data ? mode.data.win_rate : 0)" :hide-value="!mode.data"></stat-bar>
           <span v-if="tiers" class="md:flex-1 md:max-w-[12.5rem]"><rank-tier-pill v-if="mode.data" :tier="mode.data.rank_tier"></rank-tier-pill></span>
-          <span class="md:flex-1 md:max-w-[6.25rem] md:text-center font-semibold max-md:ml-auto"><span class="md:hidden text-xs text-subtext font-normal mr-2">{{ $t('HP MMR') }}</span>{{ mode.data ? mode.data.mmr.toLocaleString('en-US') : 0 }}</span>
+          <span class="md:flex-1 md:max-w-[6.25rem] md:text-center font-semibold max-md:ml-auto"><template v-if="mode.data"><span class="md:hidden text-xs text-subtext font-normal mr-2">{{ $t('HP MMR') }}</span>{{ mode.data.mmr.toLocaleString('en-US') }}</template></span>
         </div>
       </template>
     </div>

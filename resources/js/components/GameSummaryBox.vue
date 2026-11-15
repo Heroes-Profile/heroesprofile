@@ -125,10 +125,10 @@
                   <img v-if="player.party" class="w-5 h-5" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${player.party}.png`" alt=""/>
                 </div>
                 <image-hover-box
-                  :paragraph-one="player.hero ? `Hero: ${player.hero.name}` : null"
-                  :paragraph-two="player.account_level != null ? `Account Level: ${player.account_level}` : null"
-                  :paragraph-three="player.hero_level != null ? `Hero Level: ${player.hero_level}` : null"
-                  :paragraph-four="player.player_mmr != null ? `Player MMR: ${player.player_mmr.toLocaleString('en-US')}` : null"
+                  :paragraph-one="player.hero ? $t('Hero') + ': ' + $heroName(player.hero) : null"
+                  :paragraph-two="player.account_level != null ? $t('Account Level') + ': ' + player.account_level : null"
+                  :paragraph-three="player.hero_level != null ? $t('Hero Level') + ': ' + player.hero_level : null"
+                  :paragraph-four="player.player_mmr != null ? $t('Player MMR') + ': ' + player.player_mmr.toLocaleString('en-US') : null"
                 ></image-hover-box>
               </icon-with-hover>
             </div>

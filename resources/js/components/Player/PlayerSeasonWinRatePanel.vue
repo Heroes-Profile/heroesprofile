@@ -2,7 +2,7 @@
   <!-- Every season, not just the filtered ones: the latest on the right, 10 at a time, sliding one season per click -->
   <panel-box :title="$t('Win Rate Per Season')">
     <div v-if="seasons.length" class="relative text-sm">
-      <line-chart :data="seasons" :visible-count="windowSize" :end-index="end" :aspect-ratio="3.1" :gridded="true" :dataAttribute="'win_rate'" top-attribute="games_played" top-label="Games" :point-radius="3" :point-hover-radius="5" :percent="true" :dim-empty="true" :title="title"></line-chart>
+      <line-chart :data="seasons" :visible-count="windowSize" :end-index="end" :aspect-ratio="3.1" :gridded="true" :dataAttribute="'win_rate'" top-attribute="games_played" :top-label="$t('Games')" :tooltip-label="$t('Win Rate')" :point-radius="3" :point-hover-radius="5" :percent="true" :dim-empty="true" :title="title"></line-chart>
       <!-- Arrows at both ends of the games row and the season labels -->
       <template v-for="row in ['top-1', 'bottom-0']" :key="row">
         <button v-if="end > windowSize" type="button" :class="['absolute left-0 text-subtext hover:text-white', row]" :aria-label="$t('Older seasons')" @click="shift(-1)"><i class="fas fa-chevron-left"></i></button>
@@ -33,7 +33,8 @@ export default {
       if (!this.data) {
         return [];
       }
-      return this.data.season_history ?? Object.values(this.data.season_win_rate_data ?? {});
+      const seasons = this.data.season_history ?? Object.values(this.data.season_win_rate_data ?? {});
+      return seasons.map(season => ({ ...season, x_label: this.seasonLabel(season.x_label) }));
     },
     end() {
       return this.windowEnd ?? this.seasons.length;
@@ -45,6 +46,14 @@ export default {
     },
   },
   methods: {
+    // The server's "S2 2026", as "2026 Season 2" in the page's language; English pages keep the short form
+    seasonLabel(label) {
+      const match = String(label ?? '').match(/^S(\S+) (\d{4})$/);
+      if (!match || !window.translations?.[':year Season :season']) {
+        return label;
+      }
+      return this.$t(':year Season :season', { year: match[2], season: match[1] });
+    },
     shift(step) {
       const length = this.seasons.length;
       this.windowEnd = Math.min(length, Math.max(Math.min(this.windowSize, length), this.end + step));

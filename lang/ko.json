@@ -1203,6 +1203,7 @@
     "Play Storm League. Once a game's replay is uploaded, the ranks read from its loading screen show up here, for you and for everyone else in that game.": "폭풍 리그를 플레이하세요. 경기 리플레이가 업로드되면 로딩 화면에서 판독한 등급이 나와 그 경기의 다른 모든 플레이어에 대해 여기에 표시됩니다.",
     "Played": "플레이",
     "Played build": "플레이한 빌드",
+    "Played by": "플레이어",
     "Player": "플레이어",
     "Player :number": "플레이어 :number",
     "Player Analytics": "플레이어 분석",

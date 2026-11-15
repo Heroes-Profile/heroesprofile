@@ -63,8 +63,9 @@ module.exports = {
       'sans' : ['Roboto', 'var(--lang-font)', 'sans-serif'],
       'logo' : ['Ruslan Display'],
     },
-    // Tailwind's sizes, times --text-scale (app.css): 1 normally, larger for Korean and Chinese.
-    // Only text grows; widths, padding and gaps stay as they are.
+    // Tailwind's sizes, times a scale from app.css: 1 normally, larger for Korean and Chinese.
+    // xs and sm (labels, captions) use --text-scale-small, which grows more, since small characters
+    // are the hardest to read; the rest use --text-scale. Only text grows; widths, padding and gaps don't.
     fontSize: Object.fromEntries(Object.entries({
       'xs': ['0.75rem', '1rem'],
       'sm': ['0.875rem', '1.25rem'],
@@ -79,10 +80,13 @@ module.exports = {
       '7xl': ['4.5rem', '1'],
       '8xl': ['6rem', '1'],
       '9xl': ['8rem', '1'],
-    }).map(([name, [size, lineHeight]]) => [name, [
-      `calc(${size} * var(--text-scale))`,
-      { lineHeight: lineHeight === '1' ? '1' : `calc(${lineHeight} * var(--text-scale))` },
-    ]])),
+    }).map(([name, [size, lineHeight]]) => {
+      const scale = ['xs', 'sm'].includes(name) ? 'var(--text-scale-small)' : 'var(--text-scale)';
+      return [name, [
+        `calc(${size} * ${scale})`,
+        { lineHeight: lineHeight === '1' ? '1' : `calc(${lineHeight} * ${scale})` },
+      ]];
+    })),
     extend: {
       borderRadius: {
         DEFAULT: '.7rem',

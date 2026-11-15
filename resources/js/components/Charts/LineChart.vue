@@ -215,7 +215,7 @@ export default {
             displayColors: false,
             callbacks: {
               title: items => this.tooltipTitle(this.visibleCount ? this.data[items[0].parsed.x]?.x_label : items[0].label),
-              ...(this.tooltipLabel ? { label: item => `${this.tooltipLabel}: ${item.formattedValue}` } : {}),
+              ...(this.tooltipLabel ? { label: item => `${this.tooltipLabel}: ${item.formattedValue}${this.percent ? '%' : ''}` } : {}),
             },
           },
         },
@@ -231,7 +231,11 @@ export default {
           y: {
             position: this.gridded ? 'right' : 'left',
             beginAtZero: false,
-            ...(this.percent ? { min: 0, max: 100 } : {}),
+            // A little room past the top and bottom, so a point at 100% (or 0%) isn't clipped by the plot's
+            // edge. Percent charts keep their 0-100 ticks and grid bands; the extra 5% each side is unmarked.
+            ...(this.percent
+              ? { min: -5, max: 105, afterBuildTicks: scale => { scale.ticks = [0, 20, 40, 60, 80, 100].map(value => ({ value })); } }
+              : { grace: '5%' }),
             grid: {
               display: !this.gridded,
               color: 'rgba(255, 255, 255, 0.06)',

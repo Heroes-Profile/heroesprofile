@@ -72,7 +72,7 @@
             :disabled="!isSelectable(row.value.code)"
             class="form-checkbox h-5 w-5 shrink-0 text-indigo-600"
             >
-            <label :for="row.value.code" class="text-sm variable-text">{{ groupbyyear ? String(row.value.name).split(' ').slice(1).join(' ') : (row.value.label || $t(row.value.name)) }}</label>
+            <label :for="row.value.code" class="text-sm variable-text">{{ groupbyyear ? seasonLabel(row.value.name) : (row.value.label || $t(row.value.name)) }}</label>
             <span v-if="row.value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="'Added ' + patchDate(row.value.date_added)">{{ patchAge(row.value.date_added) }}</span>
           </div>
           </template>
@@ -138,7 +138,11 @@ const RANK_INFO = "Heroes Profile Rank is based on a custom MMR algorithm develo
       selectedOptionsName() {
         return this.selectedOptions.map(code => {
           const value = this.values.find(v => v.code === code);
-          return value ? (value.label || this.$t(value.name)) : '';
+          if (!value) return '';
+          // Seasons are named "2026 Season 3"
+          const season = this.groupbyyear && String(value.name).match(/^(\d{4}) Season (.+)$/);
+          if (season) return this.$t(':year Season :season', { year: season[1], season: season[2] });
+          return value.label || this.$t(value.name);
         });
       },
       highlighttimesframes(){
@@ -204,6 +208,12 @@ const RANK_INFO = "Heroes Profile Rank is based on a custom MMR algorithm develo
       },
     },
     methods: {
+      // "2026 Season 3" under its year's heading: "Season 3", in the page's language
+      seasonLabel(name) {
+        const rest = String(name).split(' ').slice(1).join(' ');
+        const numbered = rest.match(/^Season (.+)$/);
+        return numbered ? this.$t('Season :season', { season: numbered[1] }) : this.$t(rest);
+      },
       patchAge,
       patchDate,
       handleClickOutside(event) {
