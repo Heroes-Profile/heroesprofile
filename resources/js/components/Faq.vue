@@ -27,7 +27,7 @@
       <!-- FAQ Categories -->
       <div v-for="category in filteredCategories" :key="category.name" class="mb-8">
         <panel-box :title="category.name">
-        <div class="overflow-hidden -mx-4 md:-mx-6 -mb-4 md:-mb-6">
+        <div class="overflow-clip -mx-4 md:-mx-6 -mb-4 md:-mb-6">
           <div
             v-for="(item, index) in category.items"
             :key="index"

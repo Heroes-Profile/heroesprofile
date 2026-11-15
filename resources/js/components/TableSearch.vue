@@ -7,7 +7,7 @@
       <template v-else-if="phase === 'picked'">{{ $t('Opening profile...') }}</template>
     </p>
 
-    <div class="relative overflow-hidden">
+    <div class="relative overflow-clip">
       <table class="min-w-0 w-full responsive-table relative">
         <thead>
           <tr>

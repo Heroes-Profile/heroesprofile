@@ -1,6 +1,6 @@
 <template>
   <div class="max-md:w-full">
-    <div id="table-container2" ref="tablecontainer2" class=" max-md:overflow-hidden max-md:w-full min-w-0 max-sm:text-xs  2xl:mx-auto " style=" ">
+    <div id="table-container2" ref="tablecontainer2" class=" max-md:overflow-clip max-md:w-full min-w-0 max-sm:text-xs  2xl:mx-auto " style=" ">
       <table class="min-w-0 w-auto mx-auto max-sm:text-xs" ref="responsivetable2">
           <thead v-if="!$slots.heading">
             <tr>

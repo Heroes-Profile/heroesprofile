@@ -94,16 +94,14 @@
           </div>
 
           <panel-box>
-          <div id="table-container" ref="tablecontainer" class="overflow-hidden">
-            <!-- Shrinks to fit the screen like a single table would (wrapping cell text first), and every group
-                 table stretches to the same width so headings line up and the small-screen scaling covers them all -->
+          <!-- overflow-clip, not overflow-hidden: it clips the scaled-down table the same way but, unlike hidden, lets the
+               headers below stick to the top of the screen -->
+          <div id="table-container" ref="tablecontainer" class="overflow-clip">
+            <!-- Shrinks to fit the screen (wrapping cell text first). One table for every group, so its header stays
+                 on screen through all of them and the columns line up; each group is a tbody headed by its title. -->
             <div ref="responsivetable" class="grid min-w-full" style="width: fit-content">
-            <template v-for="group in groupedData" :key="group.group">
-            <h3 v-if="showGroupHeadings" class="stack-header !mx-0 mt-6 first:mt-0 mb-2">
-              {{ group.name ?? groupName(group.group) }}<span v-if="group.minGamesRequired !== null">&nbsp;- {{ $t('At least :count games played', { count: group.minGamesRequired.toLocaleString('en-US') }) }}</span>
-            </h3>
             <table class="min-w-0 w-full responsive-table relative">
-              <thead class=" top-0 w-full  z-40">
+              <thead class="w-full">
                 <tr class="">
                   <th @click="sortTable('rank')" class="py-2 px-3  text-center text-sm leading-4 cursor-pointer">
                     {{ $t(getHeaderRankText("rank")) }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
@@ -171,7 +169,17 @@
                   </template>
                 </tr>
               </thead>
-              <tbody class="text-center">
+              <tbody v-for="(group, groupIndex) in groupedData" :key="group.group" class="text-center">
+                <tr v-if="showGroupHeadings" class="!bg-transparent hover:!bg-transparent">
+                  <td colspan="20" :class="['!bg-transparent !border-0 text-left px-0 pb-2', groupIndex ? 'pt-6' : 'pt-0']">
+                    <h3 class="stack-header !m-0">
+                      {{ group.name ?? groupName(group.group) }}<span v-if="group.minGamesRequired !== null">&nbsp;- {{ $t('At least :count games played', { count: group.minGamesRequired.toLocaleString('en-US') }) }}</span>
+                    </h3>
+                  </td>
+                </tr>
+                <tr v-if="group.noMatch">
+                  <td colspan="10" class="py-6 text-subtext">{{ $t('No players match ":playersearch".', { playersearch: searchTerm }) }}</td>
+                </tr>
                 <template v-for="(row, index) in group.rows">
                   <tr v-if="!patreonUser && group.offset + index != 0 && (group.offset + index) % 50 === 0">
                     <td colspan="10" class="align-content-center">
@@ -218,7 +226,6 @@
                 </template>
               </tbody>
             </table>
-            </template>
             </div>
           </div>
           </panel-box>
@@ -320,18 +327,9 @@ export default {
         this.showPopup = false;
       }
 
-    // Sorting, searching and new data change which rows each group table holds. Only once there is data:
-    // groupedData reads it, and a plain watcher would read it before the first load.
-    this.$watch(() => (this.data ? this.groupedData : null), () => this.$nextTick(this.alignGroupColumns));
-
     this.getData();
   },
   mounted() {
-    window.addEventListener('resize', this.queueAlignGroupColumns);
-  },
-  beforeUnmount() {
-    window.removeEventListener('resize', this.queueAlignGroupColumns);
-    cancelAnimationFrame(this.alignFrame);
   },
   computed: {
     // leaderboard_rating_calculation.png in English; leaderboard_rating_calculation.ko.png and so on in other languages
@@ -391,6 +389,10 @@ export default {
       });
 
       const sorted = [...groups.values()].sort((a, b) => a.group - b.group);
+      // A search that matches no one still shows one table, so its header and search box stay to change or clear it
+      if (!sorted.length && this.searchTerm && this.sortedData.length) {
+        return [{ group: 0, name: null, minGamesRequired: null, rows: [], offset: 0, noMatch: true }];
+      }
       let offset = 0;
       sorted.forEach(group => {
         group.offset = offset;
@@ -445,33 +447,6 @@ export default {
   watch: {
   },
   methods: {
-    // Every group table gets the same column widths: each column as wide as its widest version across the
-    // tables, then fixed layout so a long name can't push one table's column wider than the others'.
-    // offsetWidth is the layout width, so the small-screen scaling (a transform) doesn't skew it.
-    alignGroupColumns() {
-      const wrapper = this.$refs.responsivetable;
-      const tables = wrapper ? [...wrapper.querySelectorAll(':scope > table')] : [];
-      const headerCells = table => [...table.querySelectorAll(':scope > thead > tr > th')];
-      for (const table of tables) {
-        table.style.tableLayout = '';
-        headerCells(table).forEach(th => { th.style.width = ''; });
-      }
-      if (tables.length < 2) {
-        return;
-      }
-      const widths = [];
-      for (const table of tables) {
-        headerCells(table).forEach((th, index) => { widths[index] = Math.max(widths[index] || 0, th.offsetWidth); });
-      }
-      for (const table of tables) {
-        headerCells(table).forEach((th, index) => { th.style.width = `${widths[index]}px`; });
-        table.style.tableLayout = 'fixed';
-      }
-    },
-    queueAlignGroupColumns() {
-      cancelAnimationFrame(this.alignFrame);
-      this.alignFrame = requestAnimationFrame(this.alignGroupColumns);
-    },
     async getData(){
       this.isLoading = true;
       try{
@@ -503,7 +478,6 @@ export default {
         this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
           if (responsivetable) {
-            this.alignGroupColumns();
             scaleTableToFit(responsivetable, this.$refs.tablecontainer);
           }
         });

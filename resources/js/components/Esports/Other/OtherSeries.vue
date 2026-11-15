@@ -67,7 +67,7 @@
         </div>
 
 
-        <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[25vw]   2xl:mx-auto  " style=" ">
+        <div id="table-container" ref="tablecontainer" class="w-auto  overflow-clip w-[25vw]   2xl:mx-auto  " style=" ">
           <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
             <thead>
               <tr>
@@ -97,7 +97,7 @@
         </div>
 
 
-        <div v-if="battletagresponse" id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden   2xl:mx-auto  " style=" ">
+        <div v-if="battletagresponse" id="table-container" ref="tablecontainer" class="w-auto  overflow-clip   2xl:mx-auto  " style=" ">
           <table id="responsive-table" class="responsive-table  relative min-w-[30em]" ref="responsivetable">
             <thead>
               <tr>

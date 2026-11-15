@@ -77,7 +77,7 @@
         <bubble-chart :heroData="this.data.data"></bubble-chart>
       </div>
       <panel-box>
-        <div id="table-container" ref="tablecontainer" class="overflow-hidden">
+        <div id="table-container" ref="tablecontainer" class="overflow-clip">
       <table id="responsive-table" class="min-w-0 w-full responsive-table relative" ref="responsivetable">
         <thead>
           <tr>

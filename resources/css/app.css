@@ -419,6 +419,21 @@ td:last-child{border-right:none;}
 thead{
   @apply bg-teal text-white ;
 }
+/* Every table's header stays on screen while its table scrolls past, and the next table's takes over below it.
+   Table wrappers use overflow-clip rather than overflow-hidden, which would stop this from working. */
+thead{
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+/* A table with a summary header above its column headings (Global Hero Stats' averages): only the headings stick */
+thead:not(:last-of-type){
+  position: static;
+}
+/* Phones: just under the sticky mobile header (#mobile-header in nav.blade.php, 2.75rem tall) */
+@media (max-width: 1023.98px){
+  thead{ top: 2.75rem; }
+}
 thead tr{
   @apply py-3;
 }

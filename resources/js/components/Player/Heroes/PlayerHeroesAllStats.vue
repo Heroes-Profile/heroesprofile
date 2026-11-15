@@ -61,7 +61,7 @@
           </div>
         </div>
       </div>
-      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-clip w-[100vw]   2xl:mx-auto  " style=" ">
 
         <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
         <thead>

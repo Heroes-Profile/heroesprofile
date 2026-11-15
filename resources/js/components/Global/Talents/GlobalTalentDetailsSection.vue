@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="table-container" ref="tablecontainer" class="max-md:overflow-hidden w-full max-sm:text-xs">
+    <div id="table-container" ref="tablecontainer" class="max-md:overflow-clip w-full max-sm:text-xs">
     <div id="resizeTable" ref="scaledtables" class="max-md:inline-grid">
     <div v-for="level in talentlevels" ref="resizeTable">
       <table :id="'responsivetable'+level" class="responsive-table  relative max-md:w-full" :ref="'responsivetable'+level">

@@ -328,7 +328,7 @@
  </div>
   <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
 
-<div v-if="data.experience_breakdown" class="max-w-[93.75rem] mx-auto px-4 max-md:px-2 my-6 overflow-x-hidden">
+<div v-if="data.experience_breakdown" class="max-w-[93.75rem] mx-auto px-4 max-md:px-2 my-6 overflow-x-clip">
   <panel-box :title="$t('Experience')">
     <dual-line-chart :data="data.experience_breakdown" :winner="data.winner"></dual-line-chart>
   </panel-box>

@@ -1,5 +1,5 @@
 <template>
-  <div ref="tablecontainer" class="w-full max-md:overflow-hidden">
+  <div ref="tablecontainer" class="w-full max-md:overflow-clip">
     <table ref="responsivetable" class="w-full text-sm">
       <thead>
         <tr>

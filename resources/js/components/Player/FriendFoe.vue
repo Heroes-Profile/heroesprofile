@@ -44,7 +44,7 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
     <div v-if="frienddata && enemydata" class="max-w-[120rem] mx-auto px-4 md:px-8 flex gap-6 max-md:flex-col max-md:text-sm max-md:max-w-[100vw]">
-      <div ref="friendcontainer" class="flex-1 min-w-0 max-md:overflow-hidden">
+      <div ref="friendcontainer" class="flex-1 min-w-0 max-md:overflow-clip">
         <table ref="friendtable" class="min-w-0 w-full">
           <thead >
             <tr>
@@ -94,7 +94,7 @@
           </tbody>
         </table>
       </div>
-      <div ref="enemycontainer" class="flex-1 min-w-0 max-md:overflow-hidden">
+      <div ref="enemycontainer" class="flex-1 min-w-0 max-md:overflow-clip">
         <table ref="enemytable" class="min-w-0 w-full">
           <thead class="bg-red">
             <tr>

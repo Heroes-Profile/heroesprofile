@@ -80,7 +80,7 @@
       <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
 
       <panel-box>
-      <div id="table-container" ref="tablecontainer" class="max-md:overflow-hidden">
+      <div id="table-container" ref="tablecontainer" class="max-md:overflow-clip">
         <table id="responsive-table" class="min-w-0 w-full responsive-table relative" ref="responsivetable">
           <thead class="top-0 w-full sticky z-40">
           <tr>

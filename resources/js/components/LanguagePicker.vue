@@ -1,5 +1,6 @@
 <template>
-  <div class="relative group flex md:ml-4 max-md:my-3">
+  <!-- Phones: mr-3.5 leaves the same visible gap before Login as the 8px before it, allowing for the EN badge that overhangs the right edge -->
+  <div class="relative group flex md:ml-4 max-md:my-3 max-md:mr-3.5">
     <div data-battletag="nav-language-menu" class="mobile-secondary-nav-open flex cursor-pointer">
       <span class="relative flex items-center bg-teal rounded p-1 max-md:p-0.5" :aria-label="$t('Language') + ': ' + locales[current]">
         <span class="w-8 h-8 max-md:w-6 max-md:h-6 rounded flex items-center justify-center text-surface hover:bg-lteal transition-colors">
