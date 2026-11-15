@@ -72,14 +72,14 @@
           <panel-box :title="$t('Heroes Played')">
             <div class="flex flex-wrap gap-2">
               <hero-image-wrapper v-for="item in data.heroes" :key="item.hero_id" size="big" :hero="item.hero">
-                <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+                <image-hover-box :title="item.name" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + (item.wins + item.losses)"></image-hover-box>
               </hero-image-wrapper>
             </div>
           </panel-box>
           <panel-box :title="$t('Maps Played')">
             <div class="flex flex-wrap gap-2">
               <map-image-wrapper v-for="item in data.maps" :key="item.map_id" size="big" :map="item.map">
-                <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+                <image-hover-box :title="item.name" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + (item.wins + item.losses)"></image-hover-box>
               </map-image-wrapper>
             </div>
           </panel-box>
@@ -117,7 +117,7 @@
               </div>
             </div>
             <div v-for="title in ['Heroes', 'Maps']" :key="title" class="flex flex-col gap-4">
-              <h3 class="text-2xl font-bold">{{ title }}</h3>
+              <h3 class="text-2xl font-bold">{{ $t(title) }}</h3>
               <div class="flex flex-wrap gap-6">
                 <div v-for="group in 3" :key="group" class="flex gap-3">
                   <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>

@@ -59,7 +59,7 @@
                 <span class="w-[2px] ml-[0.1875rem] self-stretch shrink-0 rounded-l-full" :style="{ backgroundColor: PARTY_COLORS[TEAM_PARTY[position]] }"></span>
                 <div class="flex flex-col gap-1.5 flex-1 min-w-0 ml-0.5">
                   <div v-for="(player, playerIndex) in teamPlayers(row, team)" :key="playerIndex" class="flex gap-1 h-4 items-center">
-                    <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover bg-surface-3 text-[0rem]" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name" :title="player.hero.name"/>
+                    <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover bg-surface-3 text-[0rem]" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name" :title="$heroName(player.hero)"/>
                     <a v-if="player.battletag" :href="playerUrl(row, player)" class="group/bt min-w-0 inline-flex items-center text-sm font-medium text-subtext hover:text-lteal"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-[0.625rem] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                     <span v-else class="min-w-0 truncate text-sm font-medium text-subtext">{{ player.hero ? player.hero.name : '' }}</span>
                   </div>

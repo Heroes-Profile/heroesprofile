@@ -52,7 +52,7 @@
             v-for="hero in notes.heroes"
             :key="hero.name"
             class="w-16 cursor-pointer text-center group"
-            :title="hero.name"
+            :title="$heroName(hero)"
             @click="toggleHero(hero.name)"
           >
             <div class="relative inline-block">
@@ -112,7 +112,7 @@
                 v-for="hero in notes.bug_fixes.heroes"
                 :key="hero.name"
                 class="w-16 cursor-pointer text-center group"
-                :title="hero.name"
+                :title="$heroName(hero)"
                 @click="toggleBugFixHero(hero.name)"
               >
                 <img

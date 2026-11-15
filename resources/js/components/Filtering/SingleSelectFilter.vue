@@ -2,8 +2,9 @@
   <div id="filter-label" class="relative" :class="compact ? 'min-w-0 w-full' : 'filter-fill max-md:w-full md:w-[12.5rem]'">
     <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'" @keydown="handleKeyPress" tabindex="0">
       <span class="relative">
-        <span class="relative">{{ $t(text) }}
-          <round-image v-if="showrankinfo" class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large" mobileClick="true" style="position:absolute; bottom:0; right:-1.5625rem;">
+        <!-- The info icon sits beside the label, so a longer or larger label pushes it along instead of under it -->
+        <span class="relative inline-flex items-center gap-1.5">{{ $t(text) }}
+          <round-image v-if="showrankinfo" size="small"    icon="fas fa-info"   title="info"  popupsize="large" mobileClick="true">
             <slot>
               <div>
                 <p class="max-sm:text-xs">{{ $t(rankInfo) }}</p>
@@ -36,7 +37,7 @@
               :disabled="disabled"
             >
             <label :for="value.code" class="text-sm variable-text">{{ value.label || $t(value.name) }}</label>
-            <span v-if="value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="'Added ' + patchDate(value.date_added)">{{ patchAge(value.date_added) }}</span>
+            <span v-if="value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="$t('Added :date', { date: patchDate(value.date_added) })">{{ patchAge(value.date_added) }}</span>
           </div>
         </div>
       </div>

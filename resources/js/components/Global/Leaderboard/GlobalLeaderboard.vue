@@ -9,15 +9,12 @@
       <template #headingInfo>
         <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
           <p v-if="leaderboardtype == 'Match Prediction'" class="font-normal">
-            Match Prediction leaderboard data is based on users making predictions about match outcomes through
-            <a href="/Match/Prediction/Game" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('Match Prediction') }}</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
+            <template v-for="(part, index) in $t('Match Prediction leaderboard data is based on users making predictions about match outcomes through :link.').split(':link')" :key="index">{{ part }}<template v-if="index === 0"><a href="/Match/Prediction/Game" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('Match Prediction') }}</span><i class="fas fa-chevron-right text-xs ml-2"></i></a></template></template>
           </p>
           <p v-else class="font-normal">
             {{ $t('Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards.') }}
-            The
-            <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases" target="_blank" rel="noopener noreferrer" class="underline">Heroes Profile Uploader</a>
-            works on Windows, macOS and Linux.
-            For any questions, please contact zemill@heroesprofile.com.
+            <template v-for="(part, index) in $t('The :link works on Windows, macOS and Linux.').split(':link')" :key="index">{{ part }}<template v-if="index === 0"><a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases" target="_blank" rel="noopener noreferrer" class="underline">{{ $t('Heroes Profile Uploader') }}</a></template></template>
+            {{ $t('For any questions, please contact :email.', { email: 'zemill@heroesprofile.com' }) }}
           </p>
         </round-image>
       </template>
@@ -28,7 +25,7 @@
         {{ $t('Leaderboard Requirements') }}<i :class="['fas fa-chevron-down text-xs transition-transform', { 'rotate-180': showLeaderboardRequirements }]"></i>
       </button>
       <div v-if="showLeaderboardRequirements" class="absolute z-40 left-4 md:left-8 top-full mt-2 w-[40rem] max-w-[calc(100vw-2rem)] max-h-[75vh] overflow-y-auto bg-surface-3 rounded p-6 shadow-lg flex flex-col gap-4 text-sm">
-        <h3 class="font-bold text-base">{{ $t('To be eligible for') }} <span v-if="leaderboardtype == 'Match Prediction'">{{ $t('Match Prediction') }}</span> leaderboards, the following conditions must be met:</h3>
+        <h3 class="font-bold text-base">{{ leaderboardtype == 'Match Prediction' ? $t('To be eligible for Match Prediction leaderboards, the following conditions must be met:') : $t('To be eligible for leaderboards, the following conditions must be met:') }}</h3>
         <ol v-if="leaderboardtype != 'Match Prediction'" class="list-disc ml-5 space-y-1">
           <li>{{ $t('Account level must be greater than or equal to 250.') }}</li>
           <li>{{ $t('Must have played at least :weekssincestartscalar times the number of weeks since the season started. (Currently that is :weekssincestartscalar2 games).', { weekssincestartscalar: weeksSinceStartScalar, weekssincestartscalar2: weekssincestart * weeksSinceStartScalar }) }}</li>
@@ -41,12 +38,13 @@
         <div class="flex flex-col gap-2">
           <h4 class="font-bold">{{ $t('Leaderboard groups') }}</h4>
           <p>{{ leaderboardtype == 'Match Prediction' ? $t('If fewer than 50 players meet the predictions requirement, it is lowered by one game per week at a time until at least 50 players qualify, down to a minimum of 5 games. Each step down is a new group: Group A met the full requirement, Group B met the next step down, and so on. Each group shows the games it required.') : $t('If fewer than 50 players meet the games played requirement, it is lowered by one game per week at a time until at least 50 players qualify, down to a minimum of 5 games. Each step down is a new group: Group A met the full requirement, Group B met the next step down, and so on. Each group shows the games it required.') }}</p>
-          <p>Everyone in Group A ranks above everyone in Group B, even with a lower {{ leaderboardtype == 'Match Prediction' ? 'prediction rate' : $t('Heroes Profile Rating') }}, so players who met the full requirement are never passed by players who have played fewer games. Within a group, players are ranked by {{ leaderboardtype == 'Match Prediction' ? 'prediction rate' : $t('Heroes Profile Rating') }}.</p>
+          <p>{{ leaderboardtype == 'Match Prediction' ? $t('Everyone in Group A ranks above everyone in Group B, even with a lower prediction rate, so players who met the full requirement are never passed by players who have played fewer games. Within a group, players are ranked by prediction rate.') : $t('Everyone in Group A ranks above everyone in Group B, even with a lower Heroes Profile Rating, so players who met the full requirement are never passed by players who have played fewer games. Within a group, players are ranked by Heroes Profile Rating.') }}</p>
         </div>
         <template v-if="leaderboardtype != 'Match Prediction'">
-          <h4 class="font-bold">Heroes Profile Rating formula</h4>
-          <!-- Black on white; inverted and screened so only the white text shows on the panel -->
-          <img class="w-full invert mix-blend-screen" :src="'/images/miscellaneous/leaderboard_rating_calculation.png'" alt="Heroes Profile Rating formula"/>
+          <h4 class="font-bold">{{ $t('Heroes Profile Rating formula') }}</h4>
+          <!-- Black on white; inverted and screened so only the white text shows on the panel. The page language's own
+               version (leaderboard_rating_calculation.ko.png), or the English one if that language has none yet. -->
+          <img class="w-full invert mix-blend-screen" :src="formulaImage" :alt="$t('Heroes Profile Rating formula')" @error="formulaImageFailed = true"/>
         </template>
       </div>
     </div>
@@ -113,7 +111,7 @@
                   <th :class="['py-2 px-3  text-center text-sm leading-4',{ 'bg-teal text-white': sortKey === 'battletag'}]">
                     <div class="flex items-center justify-center gap-3">
                       <span class="cursor-pointer" @click="sortTable('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                      <search-input v-model="searchTerm" :placeholder="$t('Search BattleTag')" :collapsible="true" class="w-40"></search-input>
+                      <search-input v-model="searchTerm" :placeholder="$t('Search player')" :collapsible="true" class="w-40"></search-input>
                     </div>
                   </th>            
                   <th @click="sortTable('region_id')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'region_id'}]">
@@ -124,7 +122,7 @@
                       <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                         <p class="font-normal normal-case">
                           {{ $t("Real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is listed by the latest rank read for them this season, grouped by league: Grandmasters by ladder position, then Master, then each league by division. Within a division, players with at least :games Storm League games this season (the Player leaderboard's games requirement) come first, by Storm League win rate; players under it follow, by games played. Ties go to the rank read in more games. Shows the top 500 in each league.", { games: data.length ? data[0].min_games : 0 }) }}
-                          <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">How rank reading works</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
+                          <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('How rank reading works') }}</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
                         </p>
                       </round-image>
                     </span>
@@ -139,8 +137,8 @@
                     <span class="inline-flex items-center gap-2">{{ $t('HP Rating') }}<sort-indicator :column="'rating'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                       <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" @click.stop>
                         <p class="font-normal normal-case">
-                          Heroes Profile Rating ranks players by combining their MMR, win rate and games played this season, each measured against the other players on this leaderboard. Games played is capped relative to the top players, so playing lots of games alone can't carry someone to the top.
-                          The exact formula is under Leaderboard Requirements, and the <a href="/FAQ" class="underline">{{ $t('FAQ') }}</a> explains why it is used instead of MMR.
+                          {{ $t("Heroes Profile Rating ranks players by combining their MMR, win rate and games played this season, each measured against the other players on this leaderboard. Games played is capped relative to the top players, so playing lots of games alone can't carry someone to the top.") }}
+                          <template v-for="(part, index) in $t('The exact formula is under Leaderboard Requirements, and the :link explains why it is used instead of MMR.').split(':link')" :key="index">{{ part }}<template v-if="index === 0"><a href="/FAQ" class="underline">{{ $t('FAQ') }}</a></template></template>
                         </p>
                       </round-image>
                     </span>
@@ -196,7 +194,7 @@
                     <td class="py-2 px-3" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role')">
                       <div v-if="row.most_played_hero" class="flex items-center">
                         <hero-image-wrapper :hero="row.most_played_hero">
-                          <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played: ' + row.hero_build_games_played"></image-hover-box>
+                          <image-hover-box :title="$heroName(row.most_played_hero)" :paragraph-one="$t('Games Played') + ': ' + row.hero_build_games_played"></image-hover-box>
                         </hero-image-wrapper><a :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}/Hero/${encodeURIComponent(row.most_played_hero.name)}`" class="group/bt hidden md:inline-flex items-center ml-2"><span class="font-bold group-hover/bt:underline">{{ $heroName(row.most_played_hero) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                       </div>
                     </td>
@@ -240,6 +238,7 @@
 
 <script>
 import { scaleTableToFit } from '../../../utils/scaleTable';
+import { siteLocale } from '../../../utils/translate';
 export default {
   name: 'GlobalLeaderboard',
   components: {
@@ -286,6 +285,8 @@ export default {
       sortKey: '',
       sortDir: 'desc',
       showLeaderboardRequirements: false,
+      // The page language has no formula image of its own: use the English one
+      formulaImageFailed: false,
       searchTerm: '',
       playerRating: null,
       ratingLoading: false,
@@ -319,11 +320,26 @@ export default {
         this.showPopup = false;
       }
 
+    // Sorting, searching and new data change which rows each group table holds. Only once there is data:
+    // groupedData reads it, and a plain watcher would read it before the first load.
+    this.$watch(() => (this.data ? this.groupedData : null), () => this.$nextTick(this.alignGroupColumns));
+
     this.getData();
   },
   mounted() {
+    window.addEventListener('resize', this.queueAlignGroupColumns);
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.queueAlignGroupColumns);
+    cancelAnimationFrame(this.alignFrame);
   },
   computed: {
+    // leaderboard_rating_calculation.png in English; leaderboard_rating_calculation.ko.png and so on in other languages
+    formulaImage() {
+      const base = '/images/miscellaneous/leaderboard_rating_calculation';
+      const lang = siteLocale();
+      return lang && !this.formulaImageFailed ? `${base}.${lang}.png` : `${base}.png`;
+    },
     skeletonColumns() {
       const lead = ['stat', 'stat', 'stat'];
       switch (this.leaderboardtype) {
@@ -429,6 +445,33 @@ export default {
   watch: {
   },
   methods: {
+    // Every group table gets the same column widths: each column as wide as its widest version across the
+    // tables, then fixed layout so a long name can't push one table's column wider than the others'.
+    // offsetWidth is the layout width, so the small-screen scaling (a transform) doesn't skew it.
+    alignGroupColumns() {
+      const wrapper = this.$refs.responsivetable;
+      const tables = wrapper ? [...wrapper.querySelectorAll(':scope > table')] : [];
+      const headerCells = table => [...table.querySelectorAll(':scope > thead > tr > th')];
+      for (const table of tables) {
+        table.style.tableLayout = '';
+        headerCells(table).forEach(th => { th.style.width = ''; });
+      }
+      if (tables.length < 2) {
+        return;
+      }
+      const widths = [];
+      for (const table of tables) {
+        headerCells(table).forEach((th, index) => { widths[index] = Math.max(widths[index] || 0, th.offsetWidth); });
+      }
+      for (const table of tables) {
+        headerCells(table).forEach((th, index) => { th.style.width = `${widths[index]}px`; });
+        table.style.tableLayout = 'fixed';
+      }
+    },
+    queueAlignGroupColumns() {
+      cancelAnimationFrame(this.alignFrame);
+      this.alignFrame = requestAnimationFrame(this.alignGroupColumns);
+    },
     async getData(){
       this.isLoading = true;
       try{
@@ -460,6 +503,7 @@ export default {
         this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
           if (responsivetable) {
+            this.alignGroupColumns();
             scaleTableToFit(responsivetable, this.$refs.tablecontainer);
           }
         });

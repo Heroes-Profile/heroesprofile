@@ -53,7 +53,7 @@
                 <div v-for="(row, index) in playerList" :key="index" class="flex items-center gap-3 rounded bg-surface-2 px-3 py-2">
                   <a v-if="row.most_played_hero" class="shrink-0" :href="row.herolink">
                     <hero-image-wrapper :hero="row.most_played_hero">
-                      <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Win Rate on Hero: ' + row.win_rate_on_hero + '%'"></image-hover-box>
+                      <image-hover-box :title="$heroName(row.most_played_hero)" :paragraph-one="$t('Win Rate on Hero') + ': ' + row.win_rate_on_hero + '%'"></image-hover-box>
                     </hero-image-wrapper>
                   </a>
                   <div class="flex flex-col min-w-0 flex-1">
@@ -93,14 +93,14 @@
         <panel-box :title="$t('Heroes Played')">
           <div class="flex flex-wrap gap-2">
             <hero-image-wrapper v-for="(item, index) in data.heroes" :key="index" size="big" :hero="item.hero">
-              <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+              <image-hover-box :title="item.name" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + (item.wins + item.losses)"></image-hover-box>
             </hero-image-wrapper>
           </div>
         </panel-box>
         <panel-box :title="$t('Maps Played')">
           <div class="flex flex-wrap gap-2">
             <map-image-wrapper v-for="(item, index) in data.maps" :key="index" size="big" :map="item.game_map">
-              <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+              <image-hover-box :title="$mapName(item.game_map)" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + (item.wins + item.losses)"></image-hover-box>
             </map-image-wrapper>
           </div>
         </panel-box>
@@ -145,7 +145,7 @@
         <panel-box v-if="esport != 'Other'" :title="'Maps Banned by ' + teamName(team)">
           <div class="flex flex-wrap gap-2">
             <map-image-wrapper v-for="(item, index) in data.maps_banned" :key="index" size="big" :map="item.game_map">
-              <image-hover-box :title="item.game_map.name" :paragraph-one="item.inputhover"></image-hover-box>
+              <image-hover-box :title="$mapName(item.game_map)" :paragraph-one="item.inputhover"></image-hover-box>
             </map-image-wrapper>
           </div>
         </panel-box>
@@ -181,7 +181,7 @@
               </div>
             </div>
             <div v-for="title in ['Heroes', 'Maps']" :key="title" class="flex flex-col gap-4">
-              <h3 class="text-2xl font-bold">{{ title }}</h3>
+              <h3 class="text-2xl font-bold">{{ $t(title) }}</h3>
               <div class="flex flex-wrap gap-6">
                 <div v-for="group in 3" :key="group" class="flex gap-3">
                   <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>

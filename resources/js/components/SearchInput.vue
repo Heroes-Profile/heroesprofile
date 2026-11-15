@@ -1,9 +1,26 @@
 <template>
   <!-- The site's search box: magnifying glass inside a field. Use with v-model.
-       collapsible: just the glass until clicked; closes again when left empty. -->
-  <button v-if="collapsible && !open && !modelValue" type="button" class="text-teal hover:text-lteal px-1" :aria-label="$t(placeholder)" :title="$t(placeholder)" @click="expand">
-    <i class="fas fa-magnifying-glass text-sm"></i>
-  </button>
+       collapsible: just the glass until clicked; closes again when left empty. The open box is laid over the
+       header, anchored to the glass and reaching left, so a table column keeps its width while searching. -->
+  <span v-if="collapsible" class="relative inline-flex items-center">
+    <button type="button" :class="['text-teal hover:text-lteal px-1', { invisible: isOpen }]" :aria-label="$t(placeholder)" :title="$t(placeholder)" :tabindex="isOpen ? -1 : null" @click="expand">
+      <i class="fas fa-magnifying-glass text-sm"></i>
+    </button>
+    <div v-if="isOpen" v-bind="$attrs" class="absolute right-0 top-1/2 -translate-y-1/2 z-20">
+      <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-teal text-sm pointer-events-none"></i>
+      <input
+        ref="input"
+        :value="modelValue"
+        @input="$emit('update:modelValue', $event.target.value)"
+        @blur="collapse"
+        @keydown.esc="clear"
+        type="text"
+        :placeholder="$t(placeholder)"
+        :aria-label="$t(placeholder)"
+        class="w-full bg-field text-white rounded-control pl-9 pr-3 py-2 text-sm normal-case font-normal shadow-[0_0_0.5rem_rgba(0,0,0,0.4)]"
+      />
+    </div>
+  </span>
   <div v-else v-bind="$attrs" class="relative">
     <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-teal text-sm pointer-events-none"></i>
     <input
@@ -41,6 +58,12 @@ export default {
     return {
       open: false,
     };
+  },
+  computed: {
+    // The collapsible box stays open while it holds a search
+    isOpen() {
+      return this.open || !!this.modelValue;
+    },
   },
   methods: {
     expand() {

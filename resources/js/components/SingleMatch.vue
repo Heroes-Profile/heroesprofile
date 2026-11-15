@@ -92,10 +92,10 @@
               {{ $t('Map Bans') }}
               <div class="flex gap-2 justify-center mt-4">
                 <map-image-wrapper v-if="data.map_bans.team_zero_ban_data.map_ban_one" :map="data.map_bans.team_zero_ban_data.map_ban_one" :size="'big'">
-                  <image-hover-box :title="data.map_bans.team_zero_ban_data.map_ban_one.name"></image-hover-box>
+                  <image-hover-box :title="$mapName(data.map_bans.team_zero_ban_data.map_ban_one)"></image-hover-box>
                 </map-image-wrapper>
                 <map-image-wrapper v-if="data.map_bans.team_zero_ban_data.map_ban_two" :map="data.map_bans.team_zero_ban_data.map_ban_two" :size="'big'">
-                  <image-hover-box :title="data.map_bans.team_zero_ban_data.map_ban_two.name"></image-hover-box>
+                  <image-hover-box :title="$mapName(data.map_bans.team_zero_ban_data.map_ban_two)"></image-hover-box>
                 </map-image-wrapper>
               </div>
             </div>
@@ -130,10 +130,10 @@
               {{ $t('Map Bans') }}
               <div class="flex gap-2 justify-center mt-4">
               <map-image-wrapper v-if="data.map_bans.team_one_ban_data.map_ban_one" :map="data.map_bans.team_one_ban_data.map_ban_one" :size="'big'">
-                <image-hover-box :title="data.map_bans.team_one_ban_data.map_ban_one.name"></image-hover-box>
+                <image-hover-box :title="$mapName(data.map_bans.team_one_ban_data.map_ban_one)"></image-hover-box>
               </map-image-wrapper>
               <map-image-wrapper v-if="data.map_bans.team_one_ban_data.map_ban_two" :map="data.map_bans.team_one_ban_data.map_ban_two" :size="'big'">
-                <image-hover-box :title="data.map_bans.team_one_ban_data.map_ban_two.name"></image-hover-box>
+                <image-hover-box :title="$mapName(data.map_bans.team_one_ban_data.map_ban_two)"></image-hover-box>
               </map-image-wrapper>
             </div>
             </div>
@@ -171,7 +171,7 @@
               <td width="25%">{{ row.game }}</td>
               <td width="25%">
                 <map-image-wrapper size="small" :map="row.game_map">
-                  <image-hover-box :title="row.game_map.name"></image-hover-box>
+                  <image-hover-box :title="$mapName(row.game_map)"></image-hover-box>
                 </map-image-wrapper>
               </td>
             </tr>

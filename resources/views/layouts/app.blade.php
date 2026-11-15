@@ -166,9 +166,8 @@
           {{ __('The backend is currently offline. Some features may not be available. Please contact :email', ['email' => 'zemill@heroesprofile.com']) }}
         </div>
       @endif
-      {{-- Room for the help button fixed at the bottom-left (help-chat: 3.5rem, 1rem from the edges):
-           beside it on desktop, under the centred text on phones --}}
-      <div class="bg-surface text-sm px-4 md:pr-8 md:pl-24 py-6 max-md:pb-24">
+      {{-- data-footer-bar: the help button (help-chat) rises to sit just above this once it scrolls into view --}}
+      <div data-footer-bar class="bg-surface text-sm px-4 md:px-8 py-6">
         <div class="max-w-[116rem] mx-auto flex flex-wrap items-center justify-between gap-4 max-md:flex-col max-md:text-center">
           <div>
             @if(isset($maxReplayID) && ! (isset($isBackendOff) && $isBackendOff))

@@ -27,7 +27,7 @@
 
       <div v-else-if="hero" class="flex flex-col items-center gap-8">
         <div class="flex flex-col items-center">
-          <hero-image-wrapper :key="hero.id" :rectangle="true" :hero="hero" :title="hero.name" size="large"></hero-image-wrapper>
+          <hero-image-wrapper :key="hero.id" :rectangle="true" :hero="hero" :title="$heroName(hero)" size="large"></hero-image-wrapper>
           <h2 class="text-2xl font-bold mt-4">{{ $heroName(hero) }}</h2>
         </div>
 

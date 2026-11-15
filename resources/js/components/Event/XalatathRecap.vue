@@ -357,7 +357,7 @@
             <div v-for="hour in 24" :key="'h' + hour" class="text-center opacity-60">{{ shortHour(hour - 1) }}</div>
             <template v-for="(row, day) in heatmap.rows" :key="'d' + day">
               <div class="opacity-75 pr-1">{{ weekdayNames[day] }}</div>
-              <div v-for="(games, hour) in row" :key="day + '-' + hour" class="h-5 rounded bg-[#7b3fe4]" :style="{ opacity: heatOpacity(games / heatmap.max) }" :title="`${weekdayNames[day]} ${hour12(hour)} - ${format(games)} games`"></div>
+              <div v-for="(games, hour) in row" :key="day + '-' + hour" class="h-5 rounded bg-[#7b3fe4]" :style="{ opacity: heatOpacity(games / heatmap.max) }" :title="`${weekdayNames[day]} ${hour12(hour)} - ${$t(':count games', { count: format(games) })}`"></div>
             </template>
           </div>
         </div>

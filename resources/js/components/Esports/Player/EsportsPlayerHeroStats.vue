@@ -29,7 +29,7 @@
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
         </div>
         <div class="my-auto">
-          <hero-image-wrapper :rectangle="true" :hero="hero" :title="hero.name" size="large"></hero-image-wrapper>
+          <hero-image-wrapper :rectangle="true" :hero="hero" :title="$heroName(hero)" size="large"></hero-image-wrapper>
         </div>
         <div class="flex-1 flex flex-wrap justify-between max-w-[28.125rem] w-full items-between mt-[1em]">
           <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString('en-US')"></stat-box>

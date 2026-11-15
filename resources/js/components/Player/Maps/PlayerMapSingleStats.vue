@@ -3,8 +3,8 @@
     <player-page-top>
       <template #heading>
         <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="'Map data for ' + battletag + ' on ' + map" -->
-        <page-heading v-if="esport" :heading="'Map Stats: ' + map" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
-        <page-heading v-else :heading="'Map Stats: '+  map" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+        <page-heading v-if="esport" :heading="$t('Map Stats') + ': ' + $mapName(map)" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
+        <page-heading v-else :heading="$t('Map Stats') + ': ' + $mapName(map)" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
       </template>
     <div class="w-full">
       <filters v-if="esport && ngsFilterOptions"
@@ -53,9 +53,11 @@
             <hero-heading-select type="map" :heroes="filters.game_maps" :value="map" textclass="" @hero-changed="changeMap($event)"></hero-heading-select>
           </h2>
 
-          <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
-            <div class="shrink-0 w-40 md:w-60 aspect-[3/4] overflow-hidden rounded">
-              <round-image class="!w-full !h-full" :image="`/images/maps/icon/${formatMapName(map)}`" :excludehover="true" :rectangle="true" size="large"></round-image>
+          <!-- The whole map image, not cropped to a portrait box. Desktop: a column beside the stats, the image dropped 20%
+               (of the column's width) so it lines up with the win rate bar. Below md: centred, about the size of the hero pages' image. -->
+          <div class="flex gap-8 max-md:flex-col">
+            <div class="shrink-0 max-md:w-52 max-md:self-center md:w-60">
+              <img :src="`/images/maps/icon/${formatMapName(map)}`" :alt="$mapName(map)" class="w-full h-auto rounded md:mt-[20%]">
             </div>
 
             <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
@@ -108,7 +110,7 @@
         <div class="flex flex-wrap gap-2">
           <a :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes" :key="index">
             <hero-image-wrapper :hero="item.hero" size="big" :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" link-text="View Hero">
-              <image-hover-box :title="item.hero.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
+              <image-hover-box :title="$heroName(item.hero)" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + item.games_played"></image-hover-box>
             </hero-image-wrapper>
           </a>
         </div>
@@ -139,8 +141,11 @@
         <div class="flex flex-col xl:flex-row gap-6">
           <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">
             <h2 class="text-3xl font-bold">{{ $mapName(map) }}</h2>
-            <div class="flex gap-8 max-sm:flex-col">
-              <skeleton-box class="w-40 md:w-60 aspect-[3/4] shrink-0 rounded"></skeleton-box>
+            <div class="flex gap-8 max-md:flex-col">
+              <!-- Same shape and place as the map image (290 x 251) -->
+              <div class="shrink-0 max-md:w-52 max-md:self-center md:w-60">
+                <skeleton-box class="w-full aspect-[290/251] rounded md:mt-[20%]"></skeleton-box>
+              </div>
               <div class="flex-1 flex flex-col gap-6">
                 <skeleton-box class="h-[1.875rem]"></skeleton-box>
                 <div class="grid grid-cols-2 gap-x-6 gap-y-4">

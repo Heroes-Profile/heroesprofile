@@ -80,7 +80,7 @@
               <td class="py-2 px-3">
                 <div class="flex items-center">
                   <hero-image-wrapper class="mr-2" :hero="row.heroData.hero" :mobile-click="true">
-                    <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played: ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
+                    <image-hover-box :title="$heroName(row.heroData.hero)" :paragraph-one="$t('Games Played') + ': ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
                   </hero-image-wrapper>
                   <a :href="heroLink(row)" class="group/bt hidden md:inline-flex items-center"><span class="font-bold group-hover/bt:underline">{{ $heroName(row.heroData.hero) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                 </div>
@@ -132,7 +132,7 @@
               <td class="py-2 px-3">
                 <div class="flex items-center">
                   <hero-image-wrapper class="mr-2" :hero="row.heroData.hero" :mobile-click="true">
-                    <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played: ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
+                    <image-hover-box :title="$heroName(row.heroData.hero)" :paragraph-one="$t('Games Played') + ': ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
                   </hero-image-wrapper>
                   <a :href="heroLink(row)" class="group/bt hidden md:inline-flex items-center"><span class="font-bold group-hover/bt:underline">{{ $heroName(row.heroData.hero) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                 </div>

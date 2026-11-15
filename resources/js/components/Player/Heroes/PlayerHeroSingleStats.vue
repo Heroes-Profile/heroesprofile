@@ -56,7 +56,7 @@
 
           <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
             <div class="shrink-0">
-              <hero-image-wrapper :rectangle="true" :hero="heroobject" :title="heroobject.name" size="large"></hero-image-wrapper>
+              <hero-image-wrapper :rectangle="true" :hero="heroobject" :title="$heroName(heroobject)" size="large"></hero-image-wrapper>
             </div>
 
             <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
@@ -87,7 +87,7 @@
             <div class="w-0 min-w-full flex flex-wrap gap-2 max-md:justify-center px-4 pb-4">
               <a :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
                 <map-image-wrapper :map="item.game_map" size="big" :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" link-text="View Map">
-                  <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
+                  <image-hover-box :title="$mapName(item.game_map)" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + item.games_played"></image-hover-box>
                 </map-image-wrapper>
               </a>
             </div>
@@ -277,6 +277,7 @@
 </template>
 
 <script>
+  import { formatDuration } from '../../../utils/formatDuration';
   export default {
     name: 'PlayerHeroSingleStats',
     components: {
@@ -648,16 +649,7 @@
         value = value || 0;
 
         if (key == "game_length") {
-          let seconds = Math.floor(value);
-          const parts = [];
-          [[86400, 'd'], [3600, 'h'], [60, 'm']].forEach(([size, unit]) => {
-            const count = Math.floor(seconds / size);
-            seconds %= size;
-            if (count || parts.length) {
-              parts.push(count + unit);
-            }
-          });
-          return [...parts, seconds + 's'].join(', ');
+          return formatDuration(value);
         }
 
         if (average && value < 1000) {

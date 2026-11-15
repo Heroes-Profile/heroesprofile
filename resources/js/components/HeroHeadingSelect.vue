@@ -13,7 +13,9 @@
         @click="selectHero(h)"
       >
         <hero-image-wrapper v-if="type === 'hero'" :hero="h" :includehover="false" class="flex-shrink-0"></hero-image-wrapper>
-        <round-image v-else-if="type === 'role'" :image="`/images/roles/${h.name.toLowerCase()}.PNG`" :excludehover="true" class="flex-shrink-0"></round-image>
+        <!-- The whole shield, scaled to fit: a round crop cut its edges into a jagged fringe -->
+        <img v-else-if="type === 'role'" :src="`/images/roles/${h.name.toLowerCase()}.PNG`" alt="" class="w-8 h-10 object-contain shrink-0">
+
         <span>{{ displayName(h.name) }}</span>
       </div>
     </div>
@@ -60,7 +62,7 @@ export default {
   },
   methods: {
     displayName(name) {
-      return { hero: this.$heroName, map: this.$mapName }[this.type]?.(name) ?? name;
+      return { hero: this.$heroName, map: this.$mapName, role: this.$t }[this.type]?.(name) ?? name;
     },
     keyOf(item) {
       return this.type === 'hero' ? item.id : item.name;

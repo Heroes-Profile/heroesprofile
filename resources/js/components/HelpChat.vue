@@ -1,8 +1,9 @@
 <template>
   <!-- Bottom-left help (the video ad takes bottom-right). One box: the FAQ and site pages answer first, the assistant only when asked. Sits above the cookie banner while it shows. -->
   <!-- Above the nav (z-[52]), so a tall panel's close button isn't under it -->
-  <div class="fixed left-4 z-[53] flex flex-col items-start gap-3" :style="{ bottom: 'calc(var(--disclaimer-height, 0px) + 1rem)' }">
-    <div v-if="open" :class="expanded ? 'w-[47.5rem]' : 'w-[26.25rem] h-[35rem]'" :style="{ height: expanded ? 'calc(100dvh - 8rem - var(--disclaimer-height, 0px))' : null, maxHeight: 'calc(100dvh - 8rem - var(--disclaimer-height, 0px))' }" class="max-w-[calc(100vw-2rem)] bg-surface-4 rounded-2xl border border-white/20 shadow-[0_0.5rem_2rem_rgba(0,0,0,0.7)] flex flex-col overflow-hidden">
+  <!-- Above the cookie banner while it shows, and above the footer once it scrolls into view (footerLift) -->
+  <div class="fixed left-4 z-[53] flex flex-col items-start gap-3" :style="{ bottom: `calc(max(var(--disclaimer-height, 0px), ${footerLift}px) + 1rem)` }">
+    <div v-if="open" :class="expanded ? 'w-[47.5rem]' : 'w-[26.25rem] h-[35rem]'" :style="{ height: expanded ? `calc(100dvh - 8rem - max(var(--disclaimer-height, 0px), ${footerLift}px))` : null, maxHeight: `calc(100dvh - 8rem - max(var(--disclaimer-height, 0px), ${footerLift}px))` }" class="max-w-[calc(100vw-2rem)] bg-surface-4 rounded-2xl border border-white/20 shadow-[0_0.5rem_2rem_rgba(0,0,0,0.7)] flex flex-col overflow-hidden">
       <!-- Window controls top-right: expand, divider, close -->
       <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
         <div class="flex items-center gap-4">
@@ -128,6 +129,8 @@ export default {
       talkingIndex: null,
       showIntro: false,
       teaser: false,
+      // How far the footer has come up into the window, in px, so the button can sit just above it
+      footerLift: 0,
     };
   },
   created() {
@@ -161,11 +164,38 @@ export default {
   mounted() {
     // The nav's Help > Help Assistant link
     window.addEventListener('open-help-chat', this.openFromNav);
+    // Rise with the footer as it scrolls into view; pages also change height as their data loads
+    this.footerBar = document.querySelector('[data-footer-bar]');
+    window.addEventListener('scroll', this.queueFooterLift, { passive: true });
+    window.addEventListener('resize', this.queueFooterLift);
+    if (this.footerBar && window.ResizeObserver) {
+      this.footerObserver = new ResizeObserver(this.queueFooterLift);
+      this.footerObserver.observe(document.body);
+    }
+    this.updateFooterLift();
   },
   beforeUnmount() {
     window.removeEventListener('open-help-chat', this.openFromNav);
+    window.removeEventListener('scroll', this.queueFooterLift);
+    window.removeEventListener('resize', this.queueFooterLift);
+    this.footerObserver?.disconnect();
+    cancelAnimationFrame(this.footerFrame);
   },
   methods: {
+    // Once per frame at most while scrolling
+    queueFooterLift() {
+      cancelAnimationFrame(this.footerFrame);
+      this.footerFrame = requestAnimationFrame(this.updateFooterLift);
+    },
+    updateFooterLift() {
+      if (!this.footerBar) {
+        return;
+      }
+      const lift = Math.max(0, Math.round(window.innerHeight - this.footerBar.getBoundingClientRect().top));
+      if (lift !== this.footerLift) {
+        this.footerLift = lift;
+      }
+    },
     openFromNav() {
       if (!this.open) {
         this.toggle();

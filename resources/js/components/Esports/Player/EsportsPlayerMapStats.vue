@@ -28,7 +28,7 @@ EsportsPlayerHeroStats<template>
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
         </div>
         <div class="my-auto">
-          <map-image-wrapper :rectangle="true" :map="game_map" :title="game_map.name" size="large"></map-image-wrapper>
+          <map-image-wrapper :rectangle="true" :map="game_map" :title="$mapName(game_map)" size="large"></map-image-wrapper>
         </div>
         <div class="flex-1 flex flex-wrap justify-between max-w-[28.125rem] w-full items-between mt-[1em]">
           <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString('en-US')"></stat-box>
@@ -63,7 +63,7 @@ EsportsPlayerHeroStats<template>
 
         <div class="flex flex-wrap gap-2 justify-center mt-10">
           <hero-image-wrapper v-for="(item, index) in data.heroes" :size="'big'" :hero="item.hero">
-            <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+            <image-hover-box :title="item.name" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + (item.wins + item.losses)"></image-hover-box>
           </hero-image-wrapper>
         </div>
       </div>

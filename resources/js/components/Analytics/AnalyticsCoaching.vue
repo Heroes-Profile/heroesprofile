@@ -238,7 +238,7 @@
               <td :title="evidenceText(signal)">
                 <span :class="confidenceClass(signal.confidence)">{{ signal.confidence }}</span>
               </td>
-              <td :title="signal.sampleGames + ' games'">
+              <td :title="$t(':count games', { count: signal.sampleGames })">
                 <span :class="confidenceClass(signal.sample)">{{ signal.sample }}</span>
               </td>
             </tr>

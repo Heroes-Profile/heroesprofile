@@ -88,7 +88,7 @@
                 <div v-if="!patreonUser && index != 0 && index % 50 === 0" class="my-2">
                   <dynamic-banner-ad :patreon-user="patreonUser" :index="index + 3" :mobile-override="false"></dynamic-banner-ad>
                 </div>
-                <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="'/Match/Single/' + row.replayID" :hero="row.hero" :title="row.hero.name" :date="formatRowDate(row.game_date)" :winner="row.winner === 'True'" :result="row.winner === 'True' ? 'Win' : 'Loss'">
+                <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="'/Match/Single/' + row.replayID" :hero="row.hero" :title="$heroName(row.hero)" :date="formatRowDate(row.game_date)" :winner="row.winner === 'True'" :result="row.winner === 'True' ? 'Win' : 'Loss'">
                   <template v-if="notCalculated(row)">{{ $t('HP MMR not calculated yet') }}</template>
                   <template v-else>HP MMR <span class="text-white font-medium">{{ row.mmr.toLocaleString('en-US') }}</span> <span :class="row.mmr_change >= 0 ? 'text-win' : 'text-red'">({{ row.mmr_change > 0 ? '+' : '' }}{{ row.mmr_change.toFixed(2) }})</span></template>
                 </match-row-mobile>

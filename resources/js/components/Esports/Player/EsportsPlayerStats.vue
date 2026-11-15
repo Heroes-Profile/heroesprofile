@@ -47,14 +47,14 @@
             <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
               <div class="flex justify-between items-baseline gap-6">
                 <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
-                <a class="text-header whitespace-nowrap hover:underline" :href="ngsPageUrl(section.allPath)">{{ section.allText }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+                <a class="text-header whitespace-nowrap hover:underline" :href="ngsPageUrl(section.allPath)">{{ $t(section.allText) }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
               </div>
               <div class="flex flex-wrap gap-6 max-md:justify-center">
                 <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :esport="esport" :playerlink="true" :text="group.label" :data="group.data"></group-box>
               </div>
             </div>
             <div class="flex flex-col gap-1">
-              <p v-if="data.total_time_played" class="flex flex-wrap gap-2"><span class="text-subtext">{{ $t('Total Time Played:') }}</span><span class="text-header">{{ data.total_time_played }}</span></p>
+              <p v-if="data.total_time_played" class="flex flex-wrap gap-2"><span class="text-subtext">{{ $t('Total Time Played:') }}</span><span class="text-header">{{ formatDurationText(data.total_time_played) }}</span></p>
               <p class="flex flex-wrap gap-2"><span class="text-subtext">{{ $t('Total Time Spent Dead:') }}</span><span class="text-header">{{ data.time_spent_dead }}</span></p>
             </div>
           </panel-box>
@@ -174,7 +174,7 @@
               </div>
             </div>
             <div v-for="title in ['Heroes', 'Maps']" :key="title" class="flex flex-col gap-4">
-              <h3 class="text-2xl font-bold">{{ title }}</h3>
+              <h3 class="text-2xl font-bold">{{ $t(title) }}</h3>
               <div class="flex flex-wrap gap-6">
                 <div v-for="group in 3" :key="group" class="flex gap-3">
                   <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
@@ -207,6 +207,7 @@
 </template>
 
 <script>
+import { formatDurationText } from '../../../utils/formatDuration';
 export default {
   name: 'EsportsPlayerStats',
   components: {
@@ -326,6 +327,7 @@ export default {
   watch: {
   },
   methods: {
+    formatDurationText,
     async getData(){
       this.isLoading = true;
 

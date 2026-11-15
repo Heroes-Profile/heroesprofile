@@ -1,7 +1,17 @@
 <template>
-  <!-- Chart.js sizes the canvas from this wrapper; it must be relative and hold only the canvas -->
+  <!-- Chart.js sizes the canvas from this wrapper; it must be relative, and anything else in it absolutely positioned -->
   <div class="relative">
     <canvas ref="canvas" width="1500" height="750"></canvas>
+    <!-- The hover tooltip as page text rather than drawn on the canvas, so it's as sharp as the rest of the page and
+         uses the site's fonts (canvas text blurs on standard-resolution screens). Above the point, kept inside the chart. -->
+    <div
+      v-if="tip.visible"
+      class="pointer-events-none absolute z-10 bg-surface-4 rounded-control px-3 py-2.5 text-sm text-white whitespace-nowrap shadow-[0_0.25rem_1rem_rgba(0,0,0,0.4)]"
+      :style="{ left: tip.x + 'px', top: tip.y + 'px', transform: tip.transform }"
+    >
+      <div v-if="tip.title" class="font-bold mb-1">{{ tip.title }}</div>
+      <div v-for="(line, index) in tip.lines" :key="index">{{ line }}</div>
+    </div>
   </div>
 </template>
 
@@ -45,6 +55,7 @@ export default {
   data() {
     return {
       chart: null,
+      tip: { visible: false, x: 0, y: 0, transform: '', title: '', lines: [] },
     };
   },
   mounted() {
@@ -116,7 +127,7 @@ export default {
             ctx.fillStyle = '#9ca3af';
             ctx.font = '12px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('No data', (x1 + x2) / 2, top + 18);
+            ctx.fillText(this.$t('No data'), (x1 + x2) / 2, top + 18);
             ctx.restore();
           }
         }
@@ -210,8 +221,9 @@ export default {
             labels: { color: '#9ca3af', boxWidth: 24 },
           },
           tooltip: {
-            backgroundColor: '#393e4d',
-            padding: 12,
+            // Chart.js works out the title and lines; showTooltip lays them out as page text
+            enabled: false,
+            external: context => this.showTooltip(context),
             displayColors: false,
             callbacks: {
               title: items => this.tooltipTitle(this.visibleCount ? this.data[items[0].parsed.x]?.x_label : items[0].label),
@@ -295,6 +307,26 @@ export default {
       this.chart.update();
     },
     // Timestamps ("2017-05-22 03:29:30", UTC) in the viewer's locale and timezone; other labels as they are
+    // Chart.js's tooltip state as the HTML tooltip: centred above the point, flipped right/left near the
+    // chart's sides and below the point near its top, so it stays inside the chart
+    showTooltip({ chart, tooltip }) {
+      if (!tooltip || tooltip.opacity === 0 || !tooltip.dataPoints?.length) {
+        this.tip.visible = false;
+        return;
+      }
+      const x = tooltip.caretX;
+      const y = tooltip.caretY;
+      const horizontal = x < chart.width * 0.15 ? '0%' : x > chart.width * 0.85 ? '-100%' : '-50%';
+      const vertical = y < 70 ? '0.75rem' : 'calc(-100% - 0.75rem)';
+      this.tip = {
+        visible: true,
+        x,
+        y,
+        transform: `translate(${horizontal}, ${vertical})`,
+        title: (tooltip.title || []).join(' '),
+        lines: (tooltip.body || []).flatMap(part => part.lines),
+      };
+    },
     tooltipTitle(label) {
       if (typeof label !== 'string' || !/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(label)) {
         return label;

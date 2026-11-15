@@ -3,8 +3,8 @@
     <player-page-top>
       <template #heading>
         <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="'Role data for ' + battletag + ' on ' + role" -->
-        <page-heading v-if="esport" :heading="'Role Stats: ' + role" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
-        <page-heading v-else :heading="'Role Stats: '+ role" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+        <page-heading v-if="esport" :heading="$t('Role Stats') + ': ' + $t(role)" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
+        <page-heading v-else :heading="$t('Role Stats') + ': ' + $t(role)" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
       </template>
     <div class="w-full">
       <filters v-if="esport && ngsFilterOptions"
@@ -74,7 +74,7 @@
           <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
             <div class="flex justify-between items-baseline gap-6">
               <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
-              <a class="text-header whitespace-nowrap hover:underline" :href="esport ? ngsPlayerUrl + section.allPath + ngsQuery : profileUrl + section.allPath">{{ section.allText }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+              <a class="text-header whitespace-nowrap hover:underline" :href="esport ? ngsPlayerUrl + section.allPath + ngsQuery : profileUrl + section.allPath">{{ $t(section.allText) }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
             </div>
             <div class="flex flex-wrap gap-6 max-md:justify-center">
               <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :esport="esport" :playerlink="true" :text="group.label" :data="group.data"></group-box>
@@ -105,21 +105,21 @@
           <player-mmr-panel v-if="!esport" :data="data" :link-href="profileUrl + '/MMR'" :link-query="{ role: role }"></player-mmr-panel>
 
           <div class="grid 2xl:grid-cols-2 gap-6">
-            <panel-box :inner="true" :title="'Heroes Played As ' + role">
+            <panel-box :inner="true" :title="$t('Heroes Played As :role', { role: $t(role) })">
               <div class="flex flex-wrap gap-2">
                 <a :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes" :key="index">
                   <hero-image-wrapper :hero="item.hero" :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" link-text="View Hero">
-                    <image-hover-box :title="item.hero.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
+                    <image-hover-box :title="$heroName(item.hero)" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + item.games_played"></image-hover-box>
                   </hero-image-wrapper>
                 </a>
               </div>
             </panel-box>
 
-            <panel-box :inner="true" :title="'Maps Played As ' + role">
+            <panel-box :inner="true" :title="$t('Maps Played As :role', { role: $t(role) })">
               <div class="flex flex-wrap gap-2">
                 <a :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
                   <map-image-wrapper :map="item.game_map" :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" link-text="View Map">
-                    <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate + '%'" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
+                    <image-hover-box :title="$mapName(item.game_map)" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + item.games_played"></image-hover-box>
                   </map-image-wrapper>
                 </a>
               </div>
@@ -155,7 +155,7 @@
       <panel-box>
         <div class="flex flex-col xl:flex-row gap-6">
           <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">
-            <h2 class="text-3xl font-bold">{{ role }}</h2>
+            <h2 class="text-3xl font-bold">{{ $t(role) }}</h2>
             <div class="flex gap-8 max-sm:flex-col">
               <skeleton-box class="w-40 md:w-60 h-40 md:h-60 shrink-0 !rounded-full"></skeleton-box>
               <div class="flex-1 flex flex-col gap-6">
@@ -166,7 +166,7 @@
               </div>
             </div>
             <div v-for="title in ['Heroes', 'Maps']" :key="title" class="flex flex-col gap-4">
-              <h3 class="text-2xl font-bold">{{ title }}</h3>
+              <h3 class="text-2xl font-bold">{{ $t(title) }}</h3>
               <div class="flex flex-wrap gap-6 max-md:justify-center">
                 <div v-for="group in 3" :key="group" class="flex gap-3">
                   <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
@@ -186,7 +186,7 @@
               <skeleton-box v-for="index in 6" :key="index" class="h-9"></skeleton-box>
             </panel-box>
             <div class="grid 2xl:grid-cols-2 gap-6">
-              <panel-box v-for="title in ['Heroes Played As ' + role, 'Maps Played As ' + role]" :key="title" :inner="true" :title="title">
+              <panel-box v-for="title in [$t('Heroes Played As :role', { role: $t(role) }), $t('Maps Played As :role', { role: $t(role) })]" :key="title" :inner="true" :title="title">
                 <div class="flex flex-wrap gap-2">
                   <skeleton-box v-for="tile in 12" :key="tile" class="w-10 h-10 !rounded-full"></skeleton-box>
                 </div>

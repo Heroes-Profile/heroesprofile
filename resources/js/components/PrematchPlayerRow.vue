@@ -7,7 +7,7 @@
         <div class="flex gap-1 shrink-0">
           <template v-for="(heroEntry, i) in player.top_heroes" :key="i">
             <hero-image-wrapper :size="'small'" :hero="heroEntry.hero">
-              <image-hover-box :title="heroEntry.hero.name" :paragraph-one="'Games Played: ' + heroEntry.count"></image-hover-box>
+              <image-hover-box :title="$heroName(heroEntry.hero)" :paragraph-one="$t('Games Played') + ': ' + heroEntry.count"></image-hover-box>
             </hero-image-wrapper>
           </template>
         </div>
@@ -23,7 +23,7 @@
           </div>
         </div>
 
-        <stat-box class="shrink-0 w-[13em] !min-w-[13em]" :title="gamesPlayed + ' games'" :value="mmr === null ? '—' : mmr + '|' + rank" :color="lowSample ? 'gray-dark' : color"></stat-box>
+        <stat-box class="shrink-0 w-[13em] !min-w-[13em]" :title="$t(':count games', { count: gamesPlayed })" :value="mmr === null ? '—' : mmr + '|' + rank" :color="lowSample ? 'gray-dark' : color"></stat-box>
         <i :class="['fas text-xs text-gray-medium', expanded ? 'fa-chevron-up' : 'fa-chevron-down']"></i>
       </div>
 

@@ -84,7 +84,7 @@
             </div>
           </div>
 
-          <p class="flex flex-wrap gap-2"><span class="text-subtext">{{ $t('Total Time Played:') }}</span><span class="text-header">{{ data.total_time_played }}</span></p>
+          <p class="flex flex-wrap gap-2"><span class="text-subtext">{{ $t('Total Time Played:') }}</span><span class="text-header">{{ formatDurationText(data.total_time_played) }}</span></p>
         </panel-box>
 
         <div class="flex-1 flex flex-col gap-6 min-w-0">
@@ -148,7 +148,7 @@
               </div>
             </div>
             <div v-for="title in ['Heroes', 'Maps']" :key="title" class="flex flex-col gap-4">
-              <h3 class="text-2xl font-bold">{{ title }}</h3>
+              <h3 class="text-2xl font-bold">{{ $t(title) }}</h3>
               <div class="flex flex-wrap gap-6">
                 <div v-for="group in 3" :key="group" class="flex gap-3">
                   <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
@@ -190,6 +190,7 @@
 
 <script>
 import { toBlob } from 'html-to-image';
+import { formatDurationText } from '../../utils/formatDuration';
 
 // html-to-image can't pull Roboto through app.css's @import, so the card image
 // gets the latin Roboto faces embedded directly. Fetched once, on first use.
@@ -307,7 +308,7 @@ function cardFonts() {
           { label: 'KDR', value: this.data.kdr },
           { label: 'KDA', value: this.data.kda },
           { label: 'MVP', value: this.data.mvp_rate.toFixed(2) + '%' },
-          { label: 'AVG. Time On Fire', value: this.data.average_time_on_fire },
+          { label: 'AVG. Time On Fire', value: formatDurationText(this.data.average_time_on_fire) },
         ];
       },
       topSections(){
@@ -344,6 +345,7 @@ function cardFonts() {
     watch: {
     },
     methods: {
+      formatDurationText,
       async getData(){
         this.disableFilterInput = true;
         this.isLoading = true;
