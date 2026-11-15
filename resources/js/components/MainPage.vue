@@ -101,8 +101,7 @@
     <div class="bg-surface-2 text-sm px-4 md:px-8 py-6">
       <div class="max-w-[116rem] mx-auto space-y-2">
         <p>{{ $t('Heroes Profile uses data from the Heroes Profile API, an open Heroes of the Storm replay database built from user-uploaded replays.') }}
-          So far, Heroes Profile has pulled {{ getValueLocal(maxreplayid) }} replays into its dataset, up to and including patch
-        {{ latestpatch }} and games played through <format-date :input="latestgamedate"></format-date>.</p>
+          {{ $t('So far, Heroes Profile has pulled :count replays into its dataset, up to and including patch :patch and games played through :date.', { count: getValueLocal(maxreplayid), patch: latestpatch, date: formatGameDate(latestgamedate) }) }}</p>
         <p>{{ $t('For more information on the Heroes Profile API, visit') }} <a class="underline" href="/Api">heroesprofile.com/Api</a>.</p>
       </div>
     </div>
@@ -112,6 +111,7 @@
 <script>
 import Cookies from 'js-cookie';
 import moment from 'moment-timezone';
+import { formatGameDate } from '../utils/formatGameDate';
 
 
   export default {
@@ -203,6 +203,7 @@ import moment from 'moment-timezone';
         input.scrollIntoView({ behavior: 'smooth', block: 'center' });
         input.focus({ preventScroll: true });
       },
+      formatGameDate,
       getValueLocal(value){
         return value ? value.toLocaleString('en-US') : "";
       },
