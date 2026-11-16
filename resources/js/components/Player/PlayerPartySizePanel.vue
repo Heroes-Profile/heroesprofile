@@ -1,8 +1,9 @@
 <template>
   <panel-box :inner="true" :title="$t('Party Size Win Rates')" :link-text="linkText" :link-href="linkHref">
-    <div class="flex flex-col gap-3">
+    <!-- Spread over the card, so it lines up with a taller card beside it -->
+    <div class="flex-1 flex flex-col justify-between gap-3">
       <div v-for="stack in partySizes" :key="stack.label" class="flex flex-col gap-1.5">
-        <div class="flex justify-between">
+        <div class="flex justify-between leading-[1.2]">
           <span class="text-header">{{ $t(stack.label) }}</span>
           <span v-if="stack.games" class="text-subtext">{{ $t('Games: :games', { games: stack.games.toLocaleString('en-US') }) }}</span>
         </div>

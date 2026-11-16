@@ -1,6 +1,6 @@
 <template>
   <span v-if="region && full" class="text-subtext">{{ fullName }}</span>
-  <span v-else-if="region" class="bg-surface rounded px-2 py-1 text-xs font-semibold">{{ region }}</span>
+  <span v-else-if="region" :class="['bg-surface rounded font-semibold', large ? 'px-3 py-1 text-sm' : 'px-2 py-1 text-xs']">{{ region }}</span>
 </template>
 
 <script>
@@ -13,6 +13,8 @@ export default {
     region: String,
     // Spelled out as plain text, e.g. "North America"
     full: Boolean,
+    // Beside a page's big BattleTag heading
+    large: Boolean,
   },
   computed: {
     fullName() {

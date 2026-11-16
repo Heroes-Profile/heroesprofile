@@ -4,7 +4,7 @@
       <div :class="['h-full', colorClasses[color] || colorClasses.blue]" :style="{ width }"></div>
     </div>
     <!-- hideValue keeps the number's space, so the bar lines up with ones that show theirs -->
-    <span v-if="mainText !== '' || suffix" :class="['shrink-0 font-semibold text-header whitespace-nowrap tabular-nums', { 'text-2xl': size === 'big', invisible: hideValue }]" :aria-hidden="hideValue || null">
+    <span v-if="mainText !== '' || suffix" :class="['shrink-0 font-semibold text-header whitespace-nowrap tabular-nums leading-none', { 'text-2xl': size === 'big', invisible: hideValue }]" :aria-hidden="hideValue || null">
       {{ mainText }}<span :class="suffixClass">{{ suffix }}</span>
     </span>
   </div>

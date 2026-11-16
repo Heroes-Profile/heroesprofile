@@ -38,7 +38,10 @@
           <div class="flex items-center gap-3">
             <icon-with-hover v-if="realRank && realRank.current && realRank.current.league != 'unranked'" popupsize="fit">
               <template #trigger>
-                <real-rank-badge :rank="realRank.current" :width="48"></real-rank-badge>
+                <!-- A league badge's height; Master and Grand Master art is larger and spills over it, so the card keeps one height -->
+                <div class="h-12 flex items-center">
+                  <real-rank-badge :rank="realRank.current" :width="48"></real-rank-badge>
+                </div>
               </template>
               <image-hover-box :title="$t('Storm League')"></image-hover-box>
               <real-rank-badge :rank="realRank.current" :width="96" label="below" label-class="text-subtext mt-1"></real-rank-badge>
@@ -59,18 +62,22 @@
           <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
             <div class="flex flex-col items-center gap-2 shrink-0">
               <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name" :excludehover="inputHero.name == 'Auto Select'" size="large"></hero-image-wrapper>
-              <div class="font-bold text-subtext">{{ $t('Level:') }} <span class="text-header">{{ data.account_level.toLocaleString('en-US') }}</span></div>
+              <div class="text-lg font-bold text-subtext">{{ $t('Level:') }} <span class="text-header">{{ data.account_level.toLocaleString('en-US') }}</span></div>
             </div>
 
             <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
-              <div class="flex flex-col gap-1">
-                <span class="text-header">{{ $t('Win Rate') }}</span>
-                <stat-bar size="big" :value="data.win_rate.toFixed(2)" suffix="%" :color="$winRateColor(data.win_rate)"></stat-bar>
+              <!-- The rate large above its bar -->
+              <div class="flex flex-col gap-1.5">
+                <span class="text-lg leading-[1.2] text-header">{{ $t('Win Rate') }}</span>
+                <div class="flex flex-col gap-2">
+                  <span class="text-3xl leading-[1.2] font-semibold text-[#a7e9e9]">{{ data.win_rate.toFixed(2) }}%</span>
+                  <stat-bar size="big" :value="data.win_rate.toFixed(2)" display-text="" :color="$winRateColor(data.win_rate)"></stat-bar>
+                </div>
               </div>
 
-              <!-- A divider under each row but the last -->
+              <!-- 44px rows with a divider under each but the last -->
               <div class="grid grid-cols-2 gap-x-6 gap-y-2">
-                <stat-box v-for="stat in overviewStats" :key="stat.label" class="!m-0 !px-0 !min-w-0 !rounded-none pb-2 border-b border-field [&:nth-last-child(-n+2)]:border-b-0 [&:nth-last-child(-n+2)]:pb-0" :title="stat.label" :value="stat.value"></stat-box>
+                <stat-box v-for="stat in overviewStats" :key="stat.label" class="!m-0 !px-0 !pt-0 !min-w-0 !rounded-none [&_.text-sm]:!text-[1rem] [&_span]:!leading-[1.2] pb-2 border-b border-field [&:nth-last-child(-n+2)]:border-b-0 [&:nth-last-child(-n+2)]:pb-0" :title="stat.label" :value="stat.value"></stat-box>
               </div>
             </div>
           </div>
@@ -92,9 +99,10 @@
           <div class="grid 2xl:grid-cols-2 gap-6">
             <!-- Win rate by role -->
             <panel-box :inner="true" :title="$t('Win Rate By Role')" link-text="All Roles" :link-href="profileUrl + '/Role'">
-              <div class="flex flex-col gap-3">
+              <!-- Spread over the card, so it and the party card beside it line up -->
+              <div class="flex-1 flex flex-col justify-between gap-3">
                 <div v-for="role in roleWinRates" :key="role.label" class="flex flex-col gap-1.5">
-                  <a class="text-header w-fit hover:underline" :href="profileUrl + '/Role/' + role.label">{{ $t(role.label) }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+                  <a class="text-header leading-[1.2] w-fit hover:underline" :href="profileUrl + '/Role/' + role.label">{{ $t(role.label) }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
                   <stat-bar :value="role.value.toFixed(2)" suffix="%" :color="$winRateColor(role.value)"></stat-bar>
                 </div>
               </div>

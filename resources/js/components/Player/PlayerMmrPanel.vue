@@ -23,7 +23,8 @@
           <span class="md:hidden text-xs text-subtext">{{ $t('Win Rate') }}</span>
           <!-- No games in this mode: the empty bar, without a 00.00% or an MMR of 0 -->
           <stat-bar class="max-md:w-full md:flex-1 min-w-0" :value="mode.data ? mode.data.win_rate.toFixed(2) : '0.00'" suffix="%" :color="$winRateColor(mode.data ? mode.data.win_rate : 0)" :hide-value="!mode.data"></stat-bar>
-          <span v-if="tiers" class="md:flex-1 md:max-w-[12.5rem]"><rank-tier-pill v-if="mode.data" :tier="mode.data.rank_tier"></rank-tier-pill></span>
+          <!-- An invisible pill holds the row's height when there's no tier, so every row lines up -->
+          <span v-if="tiers" class="md:flex-1 md:max-w-[12.5rem]"><rank-tier-pill :class="{ invisible: !mode.data }" :tier="mode.data ? mode.data.rank_tier : 'Unranked'" :aria-hidden="!mode.data || null"></rank-tier-pill></span>
           <span class="md:flex-1 md:max-w-[6.25rem] md:text-center font-semibold max-md:ml-auto"><template v-if="mode.data"><span class="md:hidden text-xs text-subtext font-normal mr-2">{{ $t('HP MMR') }}</span>{{ mode.data.mmr.toLocaleString('en-US') }}</template></span>
         </div>
       </template>
