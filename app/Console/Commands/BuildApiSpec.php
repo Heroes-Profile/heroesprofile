@@ -427,6 +427,10 @@ class BuildApiSpec extends Command
             array_push($invalid, 'timeframe_unavailable', 'timeframe_too_wide', 'group_by_map_unsupported');
         }
 
+        if (ApiSpecConfig::declaresParameter($name, 'group_by_map')) {
+            $invalid[] = 'group_by_map_timeframe_too_old';
+        }
+
         if ($async) {
             $invalid[] = 'query_too_large';
         }

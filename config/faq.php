@@ -62,6 +62,10 @@ return [
                     'a' => 'Blizzard does not include MMR or rank data in replay files, so we cannot get your official in-game rank or MMR from a replay. Instead, we calculate our own MMR based on the wins and losses in your uploaded replays. This is an approximation — the more games you upload, the more accurate it becomes. New game modes (like when Storm League launched) start everyone fresh, so early MMR values have high uncertainty. Your real Storm League rank can be shown separately, read from the loading screen (see below).',
                 ],
                 [
+                    'q' => 'Where can I learn more about the math behind the MMR?',
+                    'a' => 'Our MMR is built on TrueSkill, a rating system that tracks both a skill estimate and how certain it is about that estimate. For a thorough, readable walkthrough of how it works, see <a href="https://www.moserware.com/2010/03/computing-your-skill.html" target="_blank" class="link">Computing Your Skill</a> by Jeff Moser.',
+                ],
+                [
                     'q' => 'Why doesn\'t my Heroes Profile MMR match my in-game rank?',
                     'a' => 'Our MMR is an independent calculation based only on the replays uploaded to our system. It is not sourced from Blizzard\'s servers and does not reflect your official in-game ranking. The more games you upload, the closer it will converge to your actual skill level. If you\'re new to uploading, play more games and the value will stabilize. Your real in-game rank, when we have it, is shown in its own Storm League Rank section on your profile.',
                 ],

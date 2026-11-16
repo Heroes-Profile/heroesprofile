@@ -671,7 +671,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
                     'description' => 'Which statistic to report. Defaults to `win_rate`. Anything other than `win_rate` needs `timeframe_type=minor` and at most five timeframes, and is ignored when `groupsize` is sent — party-size data carries win rate only.',
                     'example' => 'win_rate',
                 ],
-                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
             ],
         ],
 
@@ -684,7 +684,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'except' => ['groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
-                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
             ],
         ],
@@ -712,7 +712,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'except' => ['role', 'groupsize', 'statfilter', 'region', 'hero_level', 'hero_league_tier', 'role_league_tier', 'mirror'],
             'async' => true,
             'parameters' => [
-                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
                 'ally_enemy' => ['required' => true, 'description' => 'The other hero, by name.', 'example' => 'Johanna'],
                 'type' => ['enum' => ['Enemy', 'Ally'], 'description' => 'Whether the other hero is an opponent or a team-mate. Defaults to `Enemy`.'],
@@ -728,7 +728,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'except' => ['role', 'groupsize'],
             'async' => true,
             'parameters' => [
-                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
             ],
         ],
@@ -742,7 +742,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'except' => ['role', 'groupsize'],
             'async' => true,
             'parameters' => [
-                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
                 'talentbuildtype' => [
                     'enum' => ['Popular', 'HP Algorithm', 'Unique Lvl 1', 'Unique Lvl 4', 'Unique Lvl 7', 'Unique Lvl 10', 'Unique Lvl 13', 'Unique Lvl 16', 'Unique Lvl 20'],
@@ -839,7 +839,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
-                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'minimum_games' => ['type' => 'integer', 'description' => 'Drop compositions below this many games. Defaults to 100.'],
             ],
         ],
@@ -853,7 +853,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'except' => ['role', 'groupsize', 'statfilter', 'hero'],
             'async' => true,
             'parameters' => [
-                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'composition_id' => ['required' => true, 'type' => 'integer', 'description' => 'A `composition_id` from the `/compositions` response.', 'example' => 1],
             ],
         ],
@@ -867,7 +867,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'except' => ['role', 'groupsize', 'statfilter', 'mirror'],
             'async' => true,
             'parameters' => [
-                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
             ],
         ],
@@ -881,7 +881,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
-                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'teamoneparty' => ['description' => 'Party combination code for the first team — see Variables.', 'example' => '00005'],
                 'teamtwoparty' => ['description' => 'Party combination code for the second team — see Variables.', 'example' => '00005'],
             ],
