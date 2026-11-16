@@ -8,6 +8,7 @@ use Anthropic\Core\Exceptions\RateLimitException;
 use App\Models\HelpChatMiss;
 use App\Services\FaqMatcher;
 use App\Services\GlobalDataService;
+use App\Services\HeroPageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -149,7 +150,8 @@ class HelpChatController extends Controller
         try {
             $response = (new Client(apiKey: $apiKey))->messages->create(
                 model: self::MODEL,
-                maxTokens: 1024,
+                // Thinking counts against this too
+                maxTokens: 4096,
                 system: [
                     ['type' => 'text', 'text' => $systemPrompt, 'cacheControl' => ['type' => 'ephemeral']],
                 ],
@@ -179,7 +181,11 @@ class HelpChatController extends Controller
                 ->map(fn ($block) => $block->text)
                 ->implode("\n\n"));
 
-            if ($cacheKey && $answer !== '') {
+            // The example profile is never the asker's
+            $answer = str_replace(FaqMatcher::EXAMPLE_PROFILE, '{profile}', $answer);
+
+            // A reply cut off at the token cap isn't kept
+            if ($cacheKey && $answer !== '' && $response->stopReason === 'end_turn') {
                 Cache::store('database')->put($cacheKey, $answer, now()->addDays(self::ANSWER_CACHE_DAYS));
             }
         }
@@ -228,10 +234,10 @@ class HelpChatController extends Controller
     // Digest chunks for this question, as the "Site data" the prompt refers to
     private function siteData(array $digest): string
     {
-        return "# Site data\n\n".collect($digest)->map(fn ($chunk) => '## '.$chunk['title'].' ('.$chunk['url'].")\n"
+        return str_replace(FaqMatcher::EXAMPLE_PROFILE, '{profile}', "# Site data\n\n".collect($digest)->map(fn ($chunk) => '## '.$chunk['title'].' ('.$chunk['url'].")\n"
             .($chunk['filters'] ? 'Filters: '.$chunk['filters']."\n" : '')
             .'As of: {asof:'.$chunk['as_of']."}\n"
-            .$chunk['text'])->implode("\n\n");
+            .$chunk['text'])->implode("\n\n"));
     }
 
     // The FAQ didn't answer this one: keep it for improving the FAQ. Cached repeats count too, to show what's asked often.
@@ -260,17 +266,25 @@ class HelpChatController extends Controller
             return '## '.$category['name']."\n\n".$items->implode("\n\n");
         })->implode("\n\n");
 
+        // Only logged-in users get here, so profile links are always their own
         $pages = collect(config('faq.pages'))->map(function ($section) {
             $items = collect($section['items'])->map(fn ($page) => '- '.$page['name'].': '.$page['url'].' : '.$page['description']
                 .(isset($page['hero_url']) ? ' For one hero: '.$page['hero_url'] : ''));
+            $note = $section['viewer_note'] ?? $section['note'] ?? null;
 
-            return '## '.$section['name'].(isset($section['note']) ? '
-'.$section['note'] : '').'
+            return '## '.$section['name'].($note ? '
+'.$note : '').'
 '.$items->implode('
 ');
         })->implode('
 
 ');
+
+        $franchises = collect(app(HeroPageService::class)->getIndex())->pluck('franchise')->filter()->unique()->sort()->implode(', ');
+
+        // The model never sees a real player's path to copy
+        $faq = str_replace(FaqMatcher::EXAMPLE_PROFILE, '{profile}', $faq);
+        $pages = str_replace(FaqMatcher::EXAMPLE_PROFILE, '{profile}', $pages);
 
         return <<<PROMPT
             You are the help assistant on Heroes Profile (heroesprofile.com), a statistics site for the game Heroes of the Storm.
@@ -281,13 +295,14 @@ class HelpChatController extends Controller
             - When a page helps, give its path starting with "/" (for example /Global/Draft) so it becomes a link.
             - If the guide doesn't cover something, say you're not sure and point to /FAQ or /Contact. Never make up features, numbers or stats.
             - When the question is about one hero and the page has a "For one hero" path, link that path with the hero's name in place of {hero}, written as it appears in the game (spaces as %20, e.g. /Global/Hero?hero=Li%20Li).
-            - The person asking is logged in, and you can link their own profile. Player profile paths in the guide are Zemill's examples: for the person asking, write {profile} in place of /Player/Zemill/67280/1, e.g. {profile}/Match/History. Never write {profile} with anything in front of it.
+            - The person asking is logged in. {profile} in the guide is their own profile: link it as written, e.g. {profile}/Match/History. Never write {profile} with anything in front of it.
             - Player profile pages take a season. For questions about "this season" or a season count, add ?season={season} for the current season (&season={season} if the path already has a ?), e.g. {profile}?season={season}.
             - Only for someone else's profile, tell them to search that BattleTag in the bar at the top.
             - A "Site data" message may follow the question: each page's default view, snapshotted daily. You may quote its numbers, saying which filters they're for, and link the page.
             - When you quote Site data, say when it's from by writing its "As of" value exactly as given, e.g. "as of {asof:2026-11-12T13:00:00Z}". Never convert or reformat that time yourself.
             - Site data marked "Sample profile (Zemill#1940)" only shows what a player page contains. Never quote, summarize or compare its numbers, even when asked about Zemill. Describe the page and link {profile} instead.
             - Outside Site data you can't see stats, matches or numbers. Link the page that shows what they want instead.
+            - Every Heroes of the Storm hero has a franchise: {$franchises}. A question about heroes from one of those, like "best Warcraft assassins", is a Heroes of the Storm question. Hero Stats site data lists each hero's franchise.
             - For questions unrelated to Heroes Profile or Heroes of the Storm, politely say you can only help with Heroes Profile.
 
             # Site guide

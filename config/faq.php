@@ -16,6 +16,10 @@ return [
                     'a' => 'Use the search bar at the top of the site and type in your BattleTag (e.g. <code>Zemill#1940</code>). Once found, you can view your match history, hero stats, MMR, maps, matchups, and more. Make sure you\'ve uploaded your replays first so your data appears.',
                 ],
                 [
+                    'q' => 'How many games have I played this season?',
+                    'a' => 'Open your profile and set the <strong>Season</strong> filter to the current season. The overview then shows your games, wins and win rate for that season, and <a href="/Player/Zemill/67280/1/Match/History" class="link">Match History</a> lists every one of those games. Only uploaded games are counted, so the total can be lower than what you played in game.',
+                ],
+                [
                     'q' => 'Is Heroes Profile free to use?',
                     'a' => 'Yes, Heroes Profile is completely free. We are supported by the community through <a href="https://www.patreon.com/heroesprofile" target="_blank" class="link">Patreon</a>. Patreon supporters receive an ad-free experience and special site flair.',
                 ],
@@ -108,6 +112,11 @@ return [
                     'a' => 'When a hero faces itself in a mirror match, the result is always one win and one loss for that hero in the same game. Including mirrors would always push the average win rate toward 50% for every hero, giving you no useful information. Excluding them lets the matchup data actually reflect meaningful competitive dynamics.',
                 ],
                 [
+                    'id' => 'hero-counters',
+                    'q' => 'How do I find counters for a hero?',
+                    'a' => 'Open the hero on <a href="/Global/Matchups" class="link">Matchups</a>, e.g. <a href="/Global/Matchups/Li-Ming" class="link">/Global/Matchups/Li-Ming</a>. <strong>Top 5 Threats on Enemies Team</strong> shows the heroes that do best against them. In the table, sort by <strong>Win Rate Against</strong> that hero: the highest win rates are its counters, and the Difference column shows how much better each hero does against it than usual. Check Games Played Against so a small sample doesn\'t mislead you. <a href="/Global/Matchups/Talents" class="link">Matchup Talents</a> then shows which talents to take into that matchup.',
+                ],
+                [
                     'q' => 'How does the Performance Score work?',
                     'a' => 'The Performance Score on match pages is calculated by taking each stat from a game (damage, healing, kills, etc.), ranking all 10 players in that game from best to worst, and assigning a score based on rank position. It is a relative measure within that single game — not a global benchmark.',
                 ],
@@ -141,6 +150,10 @@ return [
                 [
                     'q' => 'What is the Talent Builder?',
                     'a' => 'The <a href="/Global/Talents/Builder" class="link">Talent Builder</a> lets you construct a specific talent build and see win rate data for exactly that combination. It\'s great for comparing two builds head-to-head with real game data.',
+                ],
+                [
+                    'q' => 'What is the best build for a hero?',
+                    'a' => 'Open the hero on <a href="/Global/Talents" class="link">Talents</a>, e.g. <a href="/Global/Talents/Valla" class="link">/Global/Talents/Valla</a>. It defaults to the latest patch. The builds table lists complete level 1 to 20 builds; sort it by <strong>Win Chance</strong> and check games played, since a build with few games can look better than it is. <strong>Talent Build Type</strong> switches between the most played builds and different early-game paths. The talent table above it shows each talent\'s win rate on its own, which isn\'t the same as a full build. To test a combination of your own, use the <a href="/Global/Talents/Builder" class="link">Talent Builder</a>.',
                 ],
             ],
         ],
@@ -251,6 +264,14 @@ return [
                 [
                     'q' => 'Can I copy a talent build from the site into the game?',
                     'a' => 'Yes. On Global Hero pages, the Single Match page, and several other places around the site you will find a "Copy Build" button next to talent builds. Clicking it copies the build to your clipboard in a format that Heroes of the Storm accepts, so you can paste it directly into the game\'s loadout screen.',
+                ],
+                [
+                    'q' => 'What is "Marked by the Void"?',
+                    'a' => 'It\'s the flair from the Xal\'atath takeover event. Players who found her eye hidden on the site earned the Mark of the Void, a void eye shown with their name. The event is over, but the flair is permanent. The <a href="/Event/Xalatath" class="link">Xal\'atath Event Recap</a> has the final totals, including how many players earned it, plus the top players and your own contribution.',
+                ],
+                [
+                    'q' => 'How does the help assistant work?',
+                    'a' => 'The help assistant in the bottom-right corner runs on Claude Haiku 5.5, an AI model made by Anthropic. It answers from this FAQ and the list of site pages, plus a daily snapshot of the main stats pages in their default view (latest patch, Storm League, all ranks). Snapshot pages are picked by matching words in your question; there is no vector search, and it can\'t look anything up live, so it can\'t see your stats or any filtered view. For those it links you to the page. It needs a Battle.net login and allows 20 questions a day, 25 for Patreon supporters.',
                 ],
             ],
         ],
