@@ -191,7 +191,7 @@ export default {
     },
     matchUrl(row) {
       const base = `/Esports/${this.getUrlValue(this.esport, row)}/Match/Single/${row.replayID}`;
-      return this.tournament ? `${base}/?tournament=${this.tournament}` : base;
+      return this.tournament ? `${base}?tournament=${this.tournament}` : base;
     },
     mapArt(row) {
       return row.game_map ? { backgroundImage: `url('/images/maps/match/match-${row.game_map.sanitized_map_name}.jpg')` } : null;
