@@ -21,7 +21,6 @@ use App\Http\Controllers\Player\PlayerPartyController;
 use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\Tools\ActivityGraphsController;
 use App\Http\Controllers\XalatathRecapController;
-use App\Services\FaqMatcher;
 use App\Services\GlobalDataService;
 use App\Services\HeroPageService;
 use Carbon\Carbon;
@@ -47,6 +46,9 @@ class HelpDigestBuilder
     private const MAX_ROWS = 25;
 
     private const MAX_CHARS = 8000;
+
+    // The Hero Stats list of every hero, about 3,000 tokens
+    private const MAX_CHARS_ALL_HEROES = 12000;
 
     private const ACTIVITY_MONTHS = 24;
 
@@ -146,7 +148,8 @@ class HelpDigestBuilder
                 }
 
                 $chunk += ['hero' => null, 'filters' => null, 'as_of' => $this->asOf];
-                $chunk['text'] = mb_substr($chunk['text'], 0, self::MAX_CHARS);
+                $chunk['text'] = mb_substr($chunk['text'], 0, $chunk['max_chars'] ?? self::MAX_CHARS);
+                unset($chunk['max_chars']);
                 $cache->put(self::CHUNK_PREFIX.$chunk['id'], $chunk, $ttl);
                 $index[] = [
                     'id' => $chunk['id'],
@@ -180,19 +183,21 @@ class HelpDigestBuilder
             return [$this->pending('global-hero'), ...$this->heroes()->map(fn ($hero) => $this->pending('global-hero-'.$hero->id))];
         }
 
+        $franchises = collect(app(HeroPageService::class)->getIndex())->pluck('franchise', 'id')->filter();
         $line = fn ($hero) => sprintf(
-            '%s (%s): win %s%%, pick %s%%, ban %s%%, popularity %s%%, change %+.2f, games %s',
-            $hero['name'], $hero['role'], $hero['win_rate'], $hero['pick_rate'], $hero['ban_rate'],
+            '%s (%s, %s): win %s%%, pick %s%%, ban %s%%, popularity %s%%, change %+.2f, games %s',
+            $hero['name'], $hero['role'], $franchises[$hero['hero_id']] ?? 'Unknown', $hero['win_rate'], $hero['pick_rate'], $hero['ban_rate'],
             $hero['popularity'], $hero['win_rate_change'], number_format($hero['games_played'])
         );
         $filters = $this->globalFilters();
         $averages = 'Average win rate '.$data['average_win_rate'].'%, pick rate '.$data['average_pick_rate'].'%, ban rate '.$data['average_ban_rate'].'%. Change is the win rate change from the previous patch.';
 
+        // Every hero doesn't fit in MAX_CHARS
         $chunks = [$this->chunk('global-hero', 'Hero Stats', '/Global/Hero', $filters, [
+            'Every hero with its role and franchise ('.$franchises->unique()->sort()->implode(', ').'), sorted by win rate.',
             $averages,
-            'Every hero, sorted by win rate.',
             ...collect($data['data'] ?? [])->map($line),
-        ])];
+        ]) + ['max_chars' => self::MAX_CHARS_ALL_HEROES]];
 
         foreach ($data['data'] ?? [] as $rank => $hero) {
             $chunks[] = $this->chunk('global-hero-'.$hero['hero_id'], $hero['name'].' Hero Stats', '/Global/Hero?hero='.rawurlencode($hero['name']), $filters, [
@@ -302,7 +307,8 @@ class HelpDigestBuilder
         // Both ends of ~90 heroes; the middle would overflow the chunk
         $ends = fn ($rows, $best, $worst) => [$best.':', ...collect($rows)->take(10)->map($line), $worst.':', ...collect($rows)->take(-10)->map($line)];
 
-        return $this->perHero('global-matchups', 'Matchups', '/Global/Matchups/', GlobalHeroMatchupStatsController::class, 'getHeroMatchupData', $this->globalDefaults(), fn ($data) => [
+        // Same as the page heading, so "counter" questions find it
+        return $this->perHero('global-matchups', 'Counters & Matchups', '/Global/Matchups/', GlobalHeroMatchupStatsController::class, 'getHeroMatchupData', $this->globalDefaults(), fn ($data) => [
             'Ally numbers are the win rate when this hero has that hero on its team.',
             ...$ends($data['ally'] ?? [], 'Best allies', 'Worst allies'),
             'Enemy numbers are the loss rate when this hero plays against that hero (high means a hard counter).',
@@ -380,7 +386,6 @@ class HelpDigestBuilder
 
     private function player(): array
     {
-        $profile = FaqMatcher::EXAMPLE_PROFILE;
         $base = self::SAMPLE_PLAYER + [
             'game_type' => $this->globalDataService->getGameTypeDefault('multi'),
             'season' => $this->globalDataService->getDefaultSeason(),
@@ -403,7 +408,7 @@ class HelpDigestBuilder
             ['player-match-history', 'Match History', '/Match/History', PlayerMatchHistory::class, 'getData', ['pagination_page' => 1]],
         ];
 
-        return collect($pages)->map(function ($page) use ($base, $profile) {
+        return collect($pages)->map(function ($page) use ($base) {
             [$id, $title, $path, $controller, $method, $parameters] = $page;
             $data = $this->call($controller, $method, $parameters + $base);
             if ($data === null || isset($data['status']) || isset($data['errors'])) {
@@ -411,7 +416,7 @@ class HelpDigestBuilder
             }
 
             return $this->chunk($id, 'Player '.$title, '{profile}'.$path, 'Current season, '.$this->gameTypeName($base['game_type']), [
-                self::SAMPLE_NOTE.' Link it as {profile}'.$path.' (example: '.$profile.$path.').',
+                self::SAMPLE_NOTE.' Link it as {profile}'.$path.'.',
                 $this->json($data),
             ]);
         })->all();
