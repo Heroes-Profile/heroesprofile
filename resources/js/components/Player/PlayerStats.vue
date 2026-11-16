@@ -115,10 +115,21 @@
         <panel-box v-if="data.weekday_data" :title="$t('Week Day Win Rates')">
           <player-weekday-win-rates :data="data.weekday_data"></player-weekday-win-rates>
         </panel-box>
-        <!-- Week days are only shown to the profile's owner; everyone else gets an ad in their place -->
-        <div v-else class="flex items-center justify-center">
-          <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
-        </div>
+        <!-- Week days are only shown to the profile's owner; everyone else sees the panel's shape and why -->
+        <panel-box v-else :title="$t('Week Day Win Rates')" :link-text="authenticated ? null : 'Log in with Battle.net to see your week day win rates'" :link-href="authenticated ? null : '/Authenticate/Battlenet'">
+          <template v-if="authenticated" #right>
+            <span class="text-subtext">{{ $t("Only shown to the profile's owner") }}</span>
+          </template>
+          <div class="flex flex-col gap-3" aria-hidden="true">
+            <div v-for="day in 7" :key="day" class="flex flex-col gap-1.5">
+              <div class="flex justify-between">
+                <skeleton-box class="w-24 h-5"></skeleton-box>
+                <skeleton-box class="w-20 h-5"></skeleton-box>
+              </div>
+              <skeleton-box class="h-4"></skeleton-box>
+            </div>
+          </div>
+        </panel-box>
       </div>
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
@@ -238,6 +249,7 @@ function cardFonts() {
       replayViewerAllowed: Boolean,
       analyticsCutover: String,
       replayDownloadBlocked: Boolean,
+      authenticated: Boolean,
 
     },
     data(){

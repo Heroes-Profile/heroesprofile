@@ -1,14 +1,14 @@
 <template>
   <div class="inline-flex bg-teal rounded p-1 gap-1">
     <a
-      v-for="side in ['left', 'right']"
+      v-for="side in sides"
       :key="side"
       :class="[staticClasses, 'rounded-control text-white', selectedSide === side ? 'bg-surface-1' : 'hover:bg-lteal']"
-      :alt="side === 'left' ? tab1alt : tab2alt"
+      :alt="{ left: tab1alt, right: tab2alt, third: tab3alt }[side]"
       role="button"
       @click="handleClick(side)"
     >
-      {{ $t(side === 'left' ? tab1text : tab2text) }}
+      {{ $t({ left: tab1text, right: tab2text, third: tab3text }[side]) }}
     </a>
   </div>
 </template>
@@ -26,7 +26,11 @@
       
       tab2text: String,
       tab2alt: String,
-      
+
+      // Optional third tab, after the other two; it reports its side as 'third'
+      tab3text: String,
+      tab3alt: String,
+
       ignoreclick: Boolean,
       loading: false,
       overridedefaultside: String,
@@ -45,6 +49,9 @@
     mounted() {
     },
     computed: {
+      sides() {
+        return this.tab3text ? ['left', 'right', 'third'] : ['left', 'right'];
+      },
       staticClasses() {
         return 'transition-colors inline-block cursor-pointer text-center ' + (this.small ? 'py-1 px-2 text-sm' : 'py-1.5 px-4');
       },

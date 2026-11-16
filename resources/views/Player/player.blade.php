@@ -17,5 +17,6 @@
     :replay-viewer-allowed="{{ json_encode($replayViewerAllowed) }}"
     :analytics-cutover="{{ json_encode($analyticsCutover) }}"
     :replay-download-blocked="{{ json_encode($replayDownloadBlocked) }}"
+    :authenticated="{{ json_encode(auth()->check()) }}"
   ></player-stats>
 @endsection
