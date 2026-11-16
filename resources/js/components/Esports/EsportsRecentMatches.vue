@@ -29,7 +29,7 @@
         <tbody>
           <tr v-for="(row, index) in sortedData" :key="index">
             <td v-if="tournament">
-              <a class="link" :href="`/Esports/${getUrlValue(esport)}/Match/Single/${row.replayID}/?tournament=${tournament}`">{{ row.replayID }}</a>
+              <a class="link" :href="`/Esports/${getUrlValue(esport)}/Match/Single/${row.replayID}?tournament=${tournament}`">{{ row.replayID }}</a>
             </td>
             <td v-else>
               <a class="link" :href="`/Esports/${getUrlValue(esport)}/Match/Single/${row.replayID}`">{{ row.replayID }}</a>

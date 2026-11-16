@@ -126,7 +126,7 @@
           <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
           <game-summary-box v-for="(item, index) in data.latestGames" :data="item" :esport="!!esport" :esport-league="esport" :esport-series="esportfilters?.series" :tournament="esportfilters?.tournament"></game-summary-box>
           <div class="max-w-[1500px] mx-auto text-right my-2 max-md:text-center">
-            <custom-button :href="esport ? ngsPlayerUrl + '/Match/History' + ngsQuery : '/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Match/History/?role=' + role" class="" text="View Match History"></custom-button>
+            <custom-button :href="esport ? ngsPlayerUrl + '/Match/History' + ngsQuery : '/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Match/History?role=' + encodeURIComponent(role)" class="" text="View Match History"></custom-button>
           </div>
         </div>
       </div>
