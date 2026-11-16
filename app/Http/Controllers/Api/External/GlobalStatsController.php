@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\External;
 
+use App\Auth\ApiKeyContext;
+use App\Auth\ApiKeyGuard;
 use App\Http\Controllers\Api\External\Concerns\TranslatesInternalFailures;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Global\GlobalCompositionsController;
@@ -54,6 +56,9 @@ class GlobalStatsController extends Controller
 
     /** What the site's own composition pages send. Required by the controller. */
     private const DEFAULT_MINIMUM_GAMES = 100;
+
+    /** `group_by_map` runs one query per map, so it only takes builds released this recently. */
+    private const GROUP_BY_MAP_MONTHS = 6;
 
     /**
      * The site controller behind each patch-scoped route. Its `MINIMUM_PATCH` is the
@@ -330,8 +335,19 @@ class GlobalStatsController extends Controller
      * on purpose: a five minute query polled every ten seconds would otherwise cost
      * thirty calls to deliver one result.
      */
-    public function job(string $jobId, GlobalQueryService $queries): Response
+    public function job(Request $request, string $jobId, GlobalQueryService $queries): Response
     {
+        // This route carries no `api.quota`, which is where suspension is enforced. A
+        // poll also tops a batch up, so without this a suspended account's open batch
+        // keeps starting queries.
+        $context = $request->attributes->get(ApiKeyGuard::REQUEST_ATTRIBUTE);
+
+        if ($context instanceof ApiKeyContext && $context->isSuspended()) {
+            return response()->json([
+                'error' => ['code' => $context->suspensionCode(), 'message' => $context->suspensionMessage()],
+            ], 403);
+        }
+
         $response = $queries->poll($jobId);
 
         // The service's own bodies are shaped for the site's poller, and a failed
@@ -482,6 +498,10 @@ class GlobalStatsController extends Controller
             return $rejection;
         }
 
+        if ($rejection = $this->rejectOldGroupByMap($request)) {
+            return $rejection;
+        }
+
         // Names in, codes out. These controllers want short codes and region names;
         // the API takes either those or the display names, so `Storm League` and
         // `sl` both work, as do `NA` and `1`.
@@ -557,14 +577,7 @@ class GlobalStatsController extends Controller
      */
     private function rejectUnqueryableTimeframe(Request $request, string $minimumPatch): ?Response
     {
-        $input = $request->input('timeframe', []);
-
-        // Runs before the list is split for the controllers, so a comma string is split
-        // here. Checked whole, `a,b` matched no build and every multi-patch call failed.
-        $timeframes = array_values(array_filter(
-            array_map('trim', is_array($input) ? $input : explode(',', (string) $input)),
-            fn ($timeframe) => $timeframe !== ''
-        ));
+        $timeframes = $this->requestedTimeframes($request);
 
         if ($timeframes === []) {
             return null;
@@ -601,6 +614,63 @@ class GlobalStatsController extends Controller
         }
 
         return null;
+    }
+
+    /**
+     * Refuses `group_by_map` when any requested build is older than the window.
+     * `major` and `major_grouped` count every build they expand to. A build with
+     * no release date is treated as too old.
+     */
+    private function rejectOldGroupByMap(Request $request): ?Response
+    {
+        if (! $request->boolean('group_by_map')) {
+            return null;
+        }
+
+        $timeframes = $this->requestedTimeframes($request);
+        $exact = $request->input('timeframe_type', 'minor') === 'minor';
+        $cutoff = now()->subMonths(self::GROUP_BY_MAP_MONTHS);
+
+        foreach ($this->globalDataService->getQueryablePatches() as $patch) {
+            $requested = false;
+
+            foreach ($timeframes as $timeframe) {
+                if ($exact ? $patch->game_version === $timeframe : str_starts_with($patch->game_version, $timeframe)) {
+                    $requested = true;
+                    break;
+                }
+            }
+
+            if ($requested && ($patch->date_added === null || $patch->date_added->lt($cutoff))) {
+                return response()->json([
+                    'error' => [
+                        'code' => 'group_by_map_timeframe_too_old',
+                        'message' => '`group_by_map` only covers the last '.self::GROUP_BY_MAP_MONTHS.' months.'
+                            .' Every build in `timeframe` must have been released since '.$cutoff->toDateString().';'
+                            .' '.$patch->game_version.' was not. Drop `group_by_map` or send newer builds.',
+                    ],
+                ], 422);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * `timeframe` as a list. Runs before the list is split for the controllers, so a
+     * comma string is split here. Checked whole, `a,b` matched no build and every
+     * multi-patch call failed.
+     *
+     * @return array<int, string>
+     */
+    private function requestedTimeframes(Request $request): array
+    {
+        $input = $request->input('timeframe', []);
+
+        return array_values(array_filter(
+            array_map('trim', is_array($input) ? $input : explode(',', (string) $input)),
+            fn ($timeframe) => $timeframe !== ''
+        ));
     }
 
     /**
