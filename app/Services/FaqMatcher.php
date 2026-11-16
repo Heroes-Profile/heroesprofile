@@ -154,6 +154,27 @@ class FaqMatcher
     // Can't come out of keywords(), which only keeps letters and digits
     private const HERO_KEYWORD = '{hero}';
 
+    // Short names players use that aren't a hero's name or short_name. Keys are lowercase letters and digits, words run together.
+    private const HERO_ALIASES = [
+        'luci' => 'Lúcio',
+        'kt' => 'Kel\'Thuzad',
+        'ktz' => 'Kel\'Thuzad',
+        'kael' => 'Kael\'thas',
+        'tlv' => 'The Lost Vikings',
+        'vikings' => 'The Lost Vikings',
+        'morales' => 'Lt. Morales',
+        'hammer' => 'Sgt. Hammer',
+        'cain' => 'Deckard',
+        'deckardcain' => 'Deckard',
+        'zj' => 'Zul\'jin',
+        'malg' => 'Mal\'Ganis',
+        'alex' => 'Alexstrasza',
+        'genn' => 'Greymane',
+        'naz' => 'Nazeebo',
+        'tass' => 'Tassadar',
+        'xal' => 'Xal\'atath',
+    ];
+
     /**
      * The hero named in the question, and the question without it. "Kel'Thuzad", "kelthuzad" and "the butcher"/"butcher" all count.
      *
@@ -170,6 +191,11 @@ class FaqMatcher
             $heroes[$compact] = $hero->name;
             if (str_starts_with($compact, 'the') && strlen($compact) > 6) {
                 $heroes[substr($compact, 3)] = $hero->name;
+            }
+        }
+        foreach (self::HERO_ALIASES as $alias => $name) {
+            if (in_array($name, $heroes, true)) {
+                $heroes[$alias] ??= $name;
             }
         }
 
