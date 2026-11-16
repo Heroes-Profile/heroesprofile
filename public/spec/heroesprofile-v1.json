@@ -270,7 +270,7 @@
                                 "false"
                             ]
                         },
-                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
                     },
                     {
                         "name": "minimum_games",
@@ -503,7 +503,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `group_by_map_timeframe_too_old`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -710,7 +710,7 @@
                                 "false"
                             ]
                         },
-                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
                     },
                     {
                         "name": "composition_id",
@@ -1181,7 +1181,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `group_by_map_timeframe_too_old`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1466,7 +1466,7 @@
                                 "false"
                             ]
                         },
-                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
                     },
                     {
                         "name": "mode",
@@ -1590,7 +1590,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `group_by_map_timeframe_too_old`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2339,7 +2339,7 @@
                                 "false"
                             ]
                         },
-                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
                     },
                     {
                         "name": "mode",
@@ -2802,7 +2802,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `group_by_map_timeframe_too_old`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2948,7 +2948,7 @@
                                 "false"
                             ]
                         },
-                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
                     },
                     {
                         "name": "ally_enemy",
@@ -3898,7 +3898,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `group_by_map_timeframe_too_old`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -4195,7 +4195,7 @@
                                 "false"
                             ]
                         },
-                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
                     },
                     {
                         "name": "mode",
@@ -4365,7 +4365,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `group_by_map_timeframe_too_old`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -6410,7 +6410,7 @@
                                 "false"
                             ]
                         },
-                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
                     },
                     {
                         "name": "talentbuildtype",
@@ -7107,7 +7107,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `group_by_map_timeframe_too_old`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -60016,7 +60016,7 @@
                                 "false"
                             ]
                         },
-                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
                     },
                     {
                         "name": "mode",
@@ -60961,7 +60961,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `group_by_map_timeframe_too_old`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -78398,7 +78398,7 @@
                                 "false"
                             ]
                         },
-                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Only covers the last 6 months: every build in `timeframe` must have been released within that window, or the call is refused with `group_by_map_timeframe_too_old`. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
                     },
                     {
                         "name": "teamoneparty",
@@ -80186,7 +80186,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `group_by_map_timeframe_too_old`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {

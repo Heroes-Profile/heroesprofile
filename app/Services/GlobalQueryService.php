@@ -10,6 +10,7 @@ use App\Support\DatabaseCacheReader;
 use App\Support\DatabaseTimer;
 use App\Support\GlobalCacheFreshness;
 use App\Support\GlobalCacheWindow;
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Events\ConnectionEstablished;
 use Illuminate\Database\QueryException;
@@ -58,6 +59,12 @@ class GlobalQueryService
 
     /** Cloud Tasks' `maxRetryDuration`: a retry that hasn't come by then won't. */
     private const RETRY_WINDOW_SECONDS = 3600;
+
+    /** Held while one call tops a batch up. Outlasts a top-up that starts ten children. */
+    private const TOP_UP_LOCK_SECONDS = 60;
+
+    /** How long a top-up waits for the one ahead of it before leaving it to the next trigger. */
+    private const TOP_UP_LOCK_WAIT_SECONDS = 10;
 
     /** Slack before a job past its deadline is taken for dead. */
     private const DEAD_GRACE_SECONDS = 120;
@@ -466,6 +473,20 @@ class GlobalQueryService
      */
     public function topUp(string $parentJobId): void
     {
+        // Polls and finishing children call this at the same time. Unserialised, two
+        // calls read the same parent, both start the same children, and the parent
+        // keeps only one set of job ids: the rest run untracked, past the in-flight cap.
+        try {
+            Cache::store('database')
+                ->lock('global_batch_topup:'.$parentJobId, self::TOP_UP_LOCK_SECONDS)
+                ->block(self::TOP_UP_LOCK_WAIT_SECONDS, fn () => $this->topUpLocked($parentJobId));
+        } catch (LockTimeoutException) {
+            // Another call is topping up and the next poll or finishing child runs it again.
+        }
+    }
+
+    private function topUpLocked(string $parentJobId): void
+    {
         $cache = Cache::store('database');
         $job = $cache->get($this->jobKey($parentJobId));
 
@@ -605,11 +626,11 @@ class GlobalQueryService
             return;
         }
 
-        // An earlier attempt still marked processing, started over ten minutes ago, is
-        // not rerun: it may yet finish, and if its worker died the job closes once
-        // past its deadline. See isDead().
-        if ($attempt > 1 && $job['status'] === 'processing'
-            && time() - (int) ($job['started_at'] ?? time()) > self::NO_RETRY_AFTER_SECONDS) {
+        // Already running: Cloud Tasks delivered the task twice, or retried one whose
+        // worker it lost track of. A second copy would run the same query alongside the
+        // first. If that worker died, the job closes once past its deadline (isDead()),
+        // and a failed attempt is marked `failed`, not `processing`, so real retries run.
+        if ($job['status'] === 'processing' && ! $this->isDead($job)) {
             return;
         }
 
@@ -1159,6 +1180,22 @@ class GlobalQueryService
             return $jobId;
         }
 
+        // Claimed before the job record is written: a claim whose job record isn't
+        // there yet reads as still running, so nobody starts a second copy meanwhile.
+        // With no index yet, `add` lets exactly one caller in. Another batch asking
+        // the same question can be claiming it right now.
+        $claim = ['job_id' => $jobId, 'status' => 'pending'];
+
+        if ($existing === null) {
+            if (! $cache->add($cacheIndexKey, $claim, self::STATUS_TTL_SECONDS)) {
+                $winner = $cache->get($cacheIndexKey);
+
+                return is_array($winner) ? $winner['job_id'] : null;
+            }
+        } else {
+            $cache->put($cacheIndexKey, $claim, self::STATUS_TTL_SECONDS);
+        }
+
         $cache->put($this->jobKey($jobId), [
             'status' => 'pending',
             'cache_key' => $child['cache_key'],
@@ -1172,11 +1209,6 @@ class GlobalQueryService
             'label' => $label,
             'attempts' => 0,
             'error' => null,
-        ], self::STATUS_TTL_SECONDS);
-
-        $cache->put($cacheIndexKey, [
-            'job_id' => $jobId,
-            'status' => 'pending',
         ], self::STATUS_TTL_SECONDS);
 
         try {
