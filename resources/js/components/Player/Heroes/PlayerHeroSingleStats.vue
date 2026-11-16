@@ -59,17 +59,10 @@
               <hero-image-wrapper :rectangle="true" :hero="heroobject" :title="$heroName(heroobject)" size="large"></hero-image-wrapper>
             </div>
 
-            <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
-              <div class="flex flex-col gap-1">
-                <span class="text-header">{{ $t('Win Rate') }}</span>
-                <stat-bar size="big" :value="data.win_rate.toFixed(2)" suffix="%" :color="$winRateColor(data.win_rate)"></stat-bar>
-              </div>
-
-              <div class="grid grid-cols-2 gap-x-6 gap-y-1">
-                <stat-box v-for="stat in overviewStats" :key="stat.label" class="!m-0 !px-0 !min-w-0" :title="stat.label" :value="stat.value"></stat-box>
-              </div>
-            </div>
+            <overview-stats class="flex-1 min-w-0 w-full" :win-rate="data.win_rate" :stats="overviewStats"></overview-stats>
           </div>
+
+          <a href="#advanced-stats" class="text-header w-fit hover:underline" @click.prevent="scrollToAdvancedStats">{{ $t('See advanced stats below') }}<i class="fas fa-chevron-down text-sm ml-3"></i></a>
 
           <div class="flex flex-col gap-4 w-fit max-w-full">
             <h3 class="text-2xl font-bold">{{ $t('Maps') }}</h3>
@@ -78,20 +71,17 @@
             </div>
           </div>
 
-          <details class="bg-surface-3 rounded text-sm w-fit max-w-full group open:w-full">
-            <summary class="px-4 py-3 flex gap-4 justify-between items-center cursor-pointer list-none">
-              <h3 class="text-lg">{{ $t('Maps played on :heroobject', { heroobject: $heroName(heroobject) }) }}</h3>
-              <i class="fas fa-chevron-down transition-transform group-open:rotate-180"></i>
-            </summary>
-            <!-- Zero width so the list wraps to the card instead of widening it -->
-            <div class="w-0 min-w-full flex flex-wrap gap-2 max-md:justify-center px-4 pb-4">
+          <div class="flex flex-col gap-4">
+            <h3 class="text-2xl font-bold">{{ $t('Maps played on :heroobject', { heroobject: $heroName(heroobject) }) }}</h3>
+            <!-- Zero width so the list wraps to the card instead of widening it; tiles as in Maps above -->
+            <div class="w-0 min-w-full flex flex-wrap gap-3 max-md:gap-2 max-md:justify-center">
               <a :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
-                <map-image-wrapper :map="item.game_map" size="big" :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" link-text="View Map">
+                <map-image-wrapper :map="item.game_map" size="tile" :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" link-text="View Map">
                   <image-hover-box :title="$mapName(item.game_map)" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + item.games_played"></image-hover-box>
                 </map-image-wrapper>
               </a>
             </div>
-          </details>
+          </div>
 
           <div class="flex flex-col gap-4">
             <div class="flex justify-between items-baseline gap-3">
@@ -100,8 +90,8 @@
             </div>
             <tab-button v-if="!esport" class="self-start max-md:self-center" tab1text="All Seasons" tab2text="This Season" :ignoreclick="true" @tab-click="buildThisSeason = $event === 'right'" :overridedefaultside="buildThisSeason ? 'right' : 'left'"></tab-button>
             <div v-if="topBuild" class="flex flex-wrap items-center gap-x-6 gap-y-3 max-md:justify-center">
-              <div class="flex flex-wrap gap-1.5 max-md:justify-center">
-                <talent-image-wrapper v-for="level in talentLevels" :key="level" :talent="topBuild[level]" size="talent"></talent-image-wrapper>
+              <div class="flex flex-wrap gap-3 max-md:gap-2 max-md:justify-center">
+                <talent-image-wrapper v-for="level in talentLevels" :key="level" :talent="topBuild[level]" size="tile"></talent-image-wrapper>
               </div>
               <div class="flex gap-6 max-md:justify-center max-md:text-center">
                 <stat-box class="!m-0 !px-0 !min-w-0" :title="$t('Games')" :value="topBuild.games_played.toLocaleString('en-US')"></stat-box>
@@ -142,6 +132,8 @@
           <player-party-size-panel v-if="!esport" :data="data" prefix="stack_size_" link-text="Party Stats" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Party?hero=' + heroobject.name"></player-party-size-panel>
 
           <player-mmr-panel v-if="!esport" :data="data" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/MMR'" :link-query="{ hero: heroobject.name }"></player-mmr-panel>
+
+          <player-awards-panel v-if="!esport" class="flex-1" :battletag="battletag" :blizzid="blizzid" :region="region" :params="{ game_type: modifiedgametype, hero: heroobject.id, season: modifiedseason, game_map: modifiedgamemap, start_date: startdate, end_date: enddate }"></player-awards-panel>
         </div>
       </div>
       </panel-box>
@@ -165,10 +157,11 @@
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
-      <panel-box :title="$t('Advanced Stats')">
+      <panel-box id="advanced-stats" class="scroll-mt-4" :title="$t('Advanced Stats')">
         <div class="grid xl:grid-cols-2 gap-6 items-start">
           <div v-for="(column, columnIndex) in sectionColumns" :key="columnIndex" class="flex flex-col gap-6 min-w-0">
-            <table v-for="section in visibleSections(column)" :key="section.title" class="min-w-0 w-full responsive-table max-md:text-xs">
+            <!-- Short tables side by side: their headers don't stick -->
+            <table v-for="section in visibleSections(column)" :key="section.title" class="min-w-0 w-full responsive-table rounded-table max-md:text-xs [&_thead]:static">
               <thead>
                 <tr>
                   <th class="py-2 px-3 text-left text-sm w-[31%]">{{ $t(section.title) }}</th>
@@ -183,7 +176,7 @@
                   <td class="py-2 px-3">{{ formatValue(row.key, data["sum_" + row.key]) }}</td>
                   <td class="py-2 px-3">{{ formatValue(row.key, data["avg_" + row.key], true) }}</td>
                   <td class="py-2 px-3">
-                    <span v-if="data['max_' + row.key] && !esport" class="text-header whitespace-nowrap cursor-pointer hover:underline" :title="$t('Navigate to this match')" @click="navigateToMaxStatMatch(row.key, data['max_' + row.key])">{{ formatValue(row.key, data["max_" + row.key]) }}<i class="fas fa-chevron-right text-sm ml-3"></i></span>
+                    <span v-if="data['max_' + row.key] && !esport" class="group/bt inline-flex items-center text-header whitespace-nowrap cursor-pointer" :title="$t('Navigate to this match')" @click="navigateToMaxStatMatch(row.key, data['max_' + row.key])"><span class="group-hover/bt:underline">{{ formatValue(row.key, data["max_" + row.key]) }}</span><i class="fas fa-chevron-right text-sm ml-3 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></span>
                     <template v-else>{{ formatValue(row.key, data["max_" + row.key]) }}</template>
                   </td>
                 </tr>
@@ -204,14 +197,10 @@
           <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">
             <h2 class="text-3xl font-bold">{{ $heroName(heroobject) }}</h2>
             <div class="flex gap-8 max-sm:flex-col">
-              <skeleton-box class="w-40 md:w-72 h-[23em] shrink-0 rounded"></skeleton-box>
-              <div class="flex-1 flex flex-col gap-6">
-                <skeleton-box class="h-[1.875rem]"></skeleton-box>
-                <div class="grid grid-cols-2 gap-x-6 gap-y-4">
-                  <skeleton-box v-for="index in 10" :key="index" class="h-11"></skeleton-box>
-                </div>
-              </div>
+              <skeleton-box class="w-40 md:w-[14rem] h-[20.125rem] shrink-0 rounded"></skeleton-box>
+              <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="9"></overview-stats>
             </div>
+            <span class="text-header w-fit">{{ $t('See advanced stats below') }}<i class="fas fa-chevron-down text-sm ml-3"></i></span>
             <div class="flex flex-col gap-4">
               <h3 class="text-2xl font-bold">{{ $t('Maps') }}</h3>
               <div class="flex flex-wrap gap-6 max-md:justify-center">
@@ -221,9 +210,15 @@
               </div>
             </div>
             <div class="flex flex-col gap-4">
+              <h3 class="text-2xl font-bold">{{ $t('Maps played on :heroobject', { heroobject: $heroName(heroobject) }) }}</h3>
+              <div class="flex flex-wrap gap-3 max-md:gap-2 max-md:justify-center">
+                <skeleton-box v-for="tile in 8" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
+              </div>
+            </div>
+            <div class="flex flex-col gap-4">
               <h3 class="text-2xl font-bold">{{ $t('Most Played Build') }}</h3>
-              <div class="flex flex-wrap gap-1.5">
-                <skeleton-box v-for="level in 7" :key="level" class="w-[2.625rem] h-[2.625rem] !rounded"></skeleton-box>
+              <div class="flex flex-wrap gap-3 max-md:gap-2">
+                <skeleton-box v-for="level in 7" :key="level" class="w-16 h-16 rounded"></skeleton-box>
               </div>
             </div>
           </panel-box>
@@ -245,6 +240,7 @@
             <panel-box :inner="true" :title="$t('Heroes Profile MMR')">
               <skeleton-box v-for="index in 6" :key="index" class="h-9"></skeleton-box>
             </panel-box>
+            <player-awards-panel class="flex-1" :placeholder="true" :battletag="battletag" :blizzid="blizzid" :region="region"></player-awards-panel>
           </div>
         </div>
       </panel-box>
@@ -489,6 +485,9 @@
     watch: {
     },
     methods: {
+    scrollToAdvancedStats() {
+      document.getElementById('advanced-stats')?.scrollIntoView({ behavior: 'smooth' });
+    },
       async getData(){
         this.disableFilterInput = true;
         this.isLoading = true;

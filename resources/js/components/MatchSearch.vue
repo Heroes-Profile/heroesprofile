@@ -85,10 +85,10 @@
               <div class="relative z-[2] flex-1 flex flex-wrap justify-center gap-x-16 gap-y-4 px-4 py-4 min-w-0">
                 <div v-for="side in sides(row)" :key="side.team" class="flex flex-col gap-0.5 items-center text-center">
                   <span :class="['text-sm font-semibold', side.won ? 'text-win' : 'text-red']">{{ side.won ? $t('Winner') : $t('Loser') }}</span>
-                  <span class="grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] gap-x-[0.4375rem] w-[8.75rem] items-center justify-items-center my-1">
+                  <span class="grid grid-cols-[1fr_0.5rem_minmax(0.875rem,auto)_0.5rem_1fr] gap-x-[0.5rem] w-[7.375rem] items-center justify-items-center my-1">
                     <kda-icon v-for="(stat, index) in ['kills', 'deaths', 'assists']" :key="stat" :stat="stat" :style="{ gridColumn: index * 2 + 1 }"></kda-icon>
                   </span>
-                  <span class="grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] gap-x-[0.4375rem] w-[8.75rem] text-2xl font-semibold whitespace-nowrap tabular-nums">
+                  <span class="grid grid-cols-[1fr_0.5rem_minmax(0.875rem,auto)_0.5rem_1fr] gap-x-[0.5rem] w-[7.375rem] text-2xl font-semibold whitespace-nowrap tabular-nums">
                     <span class="text-right text-win">{{ teamTotal(row, side.team, 'kills') }}</span><span>|</span><span class="font-normal text-red">{{ teamTotal(row, side.team, 'deaths') }}</span><span>|</span><span class="text-left font-normal">{{ teamTotal(row, side.team, 'assists') }}</span>
                   </span>
                   <span class="text-sm font-medium text-subtext">{{ $t(':teamkda KDA', { teamkda: teamKda(row, side.team) }) }}</span>
@@ -221,7 +221,7 @@
                 <!-- Label, the three scoreboard icons, kills | deaths | assists, KDA -->
                 <div v-for="side in 2" :key="side" class="flex flex-col gap-0.5 items-center">
                   <skeleton-box class="w-14 h-4"></skeleton-box>
-                  <span class="grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] gap-x-[0.4375rem] w-[8.75rem] justify-items-center my-1">
+                  <span class="grid grid-cols-[1fr_0.5rem_minmax(0.875rem,auto)_0.5rem_1fr] gap-x-[0.5rem] w-[7.375rem] justify-items-center my-1">
                     <skeleton-box v-for="(icon, index) in 3" :key="icon" class="w-6 h-6" :style="{ gridColumn: index * 2 + 1 }"></skeleton-box>
                   </span>
                   <skeleton-box class="w-[8.75rem] h-8"></skeleton-box>

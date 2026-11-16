@@ -64,21 +64,28 @@
         <pagination-bar :current="data.current_page" :last="data.last_page" @page="getData"></pagination-bar>
       </div>
     </div>
-    <!-- The page's layout with grey blocks while it loads, like the profile -->
-    <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 py-4 space-y-8">
-      <loading-component :compact="true" :textoverride="true">{{ asyncLoading ? $t('This is taking longer than expected. A background task is computing your results. Please be patient.') : $t('Loading data...') }}</loading-component>
-      <panel-box>
-        <div v-if="compact">
-          <game-summary-header></game-summary-header>
-          <game-summary-skeleton v-for="index in 8" :key="index"></game-summary-skeleton>
-        </div>
-        <div v-else class="overflow-x-auto">
-          <div class="md:min-w-max w-full">
-            <game-summary-header :compact="true"></game-summary-header>
-            <game-summary-skeleton v-for="row in 12" :key="row" :compact="true"></game-summary-skeleton>
+    <!-- Grey blocks while it loads, in the loaded table's rows so the panel doesn't jump when the data arrives -->
+    <div v-else-if="isLoading || asyncLoading">
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-wrap justify-end items-center gap-4">
+        <loading-component class="mr-auto" :compact="true" :textoverride="true">{{ asyncLoading ? $t('This is taking longer than expected. A background task is computing your results. Please be patient.') : $t('Loading data...') }}</loading-component>
+        <!-- The Compact / Expanded toggle and the page numbers -->
+        <skeleton-box class="w-[13.25rem] h-[2.75rem]"></skeleton-box>
+        <skeleton-box class="w-[17.75rem] h-[2.75rem]"></skeleton-box>
+      </div>
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 py-4">
+        <panel-box>
+          <div v-if="compact">
+            <game-summary-header></game-summary-header>
+            <game-summary-skeleton v-for="index in 8" :key="index"></game-summary-skeleton>
           </div>
-        </div>
-      </panel-box>
+          <div v-else class="overflow-x-auto">
+            <div class="md:min-w-max w-full">
+              <game-summary-header :compact="true"></game-summary-header>
+              <game-summary-skeleton v-for="row in 12" :key="row" :compact="true"></game-summary-skeleton>
+            </div>
+          </div>
+        </panel-box>
+      </div>
     </div>
   </div>
 </template>

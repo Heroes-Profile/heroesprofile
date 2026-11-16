@@ -15,7 +15,7 @@
     <h1 v-else class="max-md:w-full max-md:text-center">
       <div v-if="battletag" class="flex items-center gap-3 flex-wrap md:flex-nowrap max-md:justify-center">
         <!-- The region tag sits level with the top of the BattleTag, which lines up with the filters' top -->
-        <a :href="`/Player/${battletag}/${blizzid}/${region}`" class="group/bt inline-flex items-start gap-3"><span class="text-3xl md:text-4xl font-bold group-hover/bt:underline">{{ battletag }}</span><region-tag :region="regionstring" :large="true"></region-tag><i class="fas fa-chevron-right text-base opacity-0 group-hover/bt:opacity-100 transition-opacity self-center"></i></a>
+        <a :href="`/Player/${battletag}/${blizzid}/${region}`" class="group/bt inline-flex items-start gap-3"><span class="text-3xl md:text-4xl font-bold group-hover/bt:underline">{{ battletag }}</span><region-tag :region="regionstring" :large="true"></region-tag></a>
       </div>
       <div v-if="battletag" class="flex items-center gap-1 text-[1.25rem] mt-1 max-md:justify-center">
           <icon-with-hover v-if="isOwner && !ownerHidden" size="small" icon="fas fa-crown" title="info" popupsize="small" style="color:gold">

@@ -60,16 +60,7 @@
               <img :src="`/images/maps/icon/${formatMapName(map)}`" :alt="$mapName(map)" class="w-full h-auto rounded md:mt-[20%]">
             </div>
 
-            <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
-              <div class="flex flex-col gap-1">
-                <span class="text-header">{{ $t('Win Rate') }}</span>
-                <stat-bar size="big" :value="data.win_rate.toFixed(2)" suffix="%" :color="$winRateColor(data.win_rate)"></stat-bar>
-              </div>
-
-              <div class="grid grid-cols-2 gap-x-6 gap-y-1">
-                <stat-box v-for="stat in overviewStats" :key="stat.label" class="!m-0 !px-0 !min-w-0" :title="stat.label" :value="stat.value"></stat-box>
-              </div>
-            </div>
+            <overview-stats class="flex-1 min-w-0 w-full" :win-rate="data.win_rate" :stats="overviewStats"></overview-stats>
           </div>
 
           <div class="flex flex-col gap-4 w-fit max-w-full">
@@ -98,6 +89,8 @@
             </div>
           </panel-box>
           <player-party-size-panel v-if="!esport" :data="data" prefix="stack_size_"></player-party-size-panel>
+
+          <player-awards-panel v-if="!esport" class="flex-1" :battletag="battletag" :blizzid="blizzid" :region="region" :params="{ game_type: modifiedgametype, game_map: map, season: modifiedseason, start_date: startdate, end_date: enddate }"></player-awards-panel>
         </div>
       </div>
       </panel-box>
@@ -146,12 +139,7 @@
               <div class="shrink-0 max-md:w-52 max-md:self-center md:w-60">
                 <skeleton-box class="w-full aspect-[290/251] rounded md:mt-[20%]"></skeleton-box>
               </div>
-              <div class="flex-1 flex flex-col gap-6">
-                <skeleton-box class="h-[1.875rem]"></skeleton-box>
-                <div class="grid grid-cols-2 gap-x-6 gap-y-4">
-                  <skeleton-box v-for="index in 10" :key="index" class="h-11"></skeleton-box>
-                </div>
-              </div>
+              <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="9"></overview-stats>
             </div>
             <div class="flex flex-col gap-4">
               <h3 class="text-2xl font-bold">{{ $t('Heroes') }}</h3>
@@ -170,6 +158,7 @@
             <panel-box v-else :inner="true" :title="$t('Party Size Win Rates')">
               <skeleton-box v-for="index in 5" :key="index" class="h-10"></skeleton-box>
             </panel-box>
+            <player-awards-panel v-if="!esport" class="flex-1" :placeholder="true" :battletag="battletag" :blizzid="blizzid" :region="region"></player-awards-panel>
           </div>
         </div>
       </panel-box>

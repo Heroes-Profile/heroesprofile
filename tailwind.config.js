@@ -42,6 +42,7 @@ module.exports = {
       'soft' : '#c9cdd6',
       'quest' : '#e4b800',
       'win' : '#8cd9b8',
+      'loss' : '#e5461d', // the redesign's accent: a lost match's edge, deaths, MMR drops
       'lighten' : 'rgba(255, 255, 255, 0.1)',
       'darken' : 'rgba(0,0,0,.3)'
     },

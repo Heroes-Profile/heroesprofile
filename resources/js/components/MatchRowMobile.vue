@@ -5,12 +5,12 @@
     <a :href="href" class="absolute inset-0 z-[1]" :aria-label="$t('Open match')"></a>
     <div v-if="winner !== null" class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="winner ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
     <div v-if="mapArt" class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="{ backgroundImage: `url('/images/maps/match/match-${mapArt}.jpg')` }"></div>
-    <div v-if="winner !== null" class="absolute inset-y-0 left-0 w-1.5" :class="winner ? 'bg-win' : 'bg-red'"></div>
+    <div v-if="winner !== null" class="absolute inset-y-0 left-0 w-1.5" :class="winner ? 'bg-win' : 'bg-loss'"></div>
     <hero-image-wrapper v-if="hero" class="relative shrink-0" size="row" :hero="hero" :excludehover="true"></hero-image-wrapper>
     <div class="relative flex-1 min-w-0 flex flex-col gap-0.5">
       <div class="flex items-baseline justify-between gap-2">
         <span class="font-bold truncate">{{ title }}</span>
-        <span v-if="result" class="shrink-0 text-sm font-medium" :class="winner ? 'text-win' : 'text-red'">{{ result }}</span>
+        <span v-if="result" class="shrink-0 text-sm font-medium" :class="winner ? 'text-win' : 'text-loss'">{{ result }}</span>
       </div>
       <span class="text-xs truncate">{{ date }}</span>
       <div class="text-sm text-subtext truncate"><slot></slot></div>

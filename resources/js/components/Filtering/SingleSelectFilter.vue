@@ -33,7 +33,7 @@
               :value="value.code"
               :checked="isChecked(value.code)"
               @click="toggleSelectedOptions(value.code)"
-              class="form-checkbox h-5 w-5 shrink-0 text-indigo-600"
+              class="form-checkbox"
               :disabled="disabled"
             >
             <label :for="value.code" class="text-sm variable-text">{{ value.label || $t(value.name) }}</label>

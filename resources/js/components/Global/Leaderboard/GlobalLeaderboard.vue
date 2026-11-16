@@ -100,16 +100,19 @@
             <!-- Shrinks to fit the screen (wrapping cell text first). One table for every group, so its header stays
                  on screen through all of them and the columns line up; each group is a tbody headed by its title. -->
             <div ref="responsivetable" class="grid min-w-full" style="width: fit-content">
-            <table class="min-w-0 w-full responsive-table relative">
+            <table class="min-w-0 w-full responsive-table rounded-table relative">
               <thead class="w-full">
                 <tr class="">
                   <th @click="sortTable('rank')" class="py-2 px-3  text-center text-sm leading-4 cursor-pointer">
-                    {{ $t(getHeaderRankText("rank")) }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                    <!-- Sorted by another column: "#" over each row's position in the sort, "Rank" over the leaderboard rank,
+                         on the same grid as the cells so both line up -->
+                    <span v-if="rankchange" class="inline-grid grid-cols-[2rem_2.5rem] gap-2 items-center"><span class="text-center">#</span><span class="text-left whitespace-nowrap">{{ $t('Rank') }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span></span>
+                    <template v-else>{{ $t('Rank') }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></template>
                   </th>
-                  <th :class="['py-2 px-3  text-center text-sm leading-4',{ 'bg-teal text-white': sortKey === 'battletag'}]">
-                    <div class="flex items-center justify-center gap-3">
+                  <th :class="['py-2 px-3  text-left text-sm leading-4',{ 'bg-teal text-white': sortKey === 'battletag'}]">
+                    <div class="relative flex items-center justify-start gap-3">
                       <span class="cursor-pointer" @click="sortTable('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                      <search-input v-model="searchTerm" :placeholder="$t('Search player')" :collapsible="true" class="w-40"></search-input>
+                      <search-input v-model="searchTerm" :placeholder="$t('Search player')" :collapsible="true" :centered="true" class="w-40"></search-input>
                     </div>
                   </th>            
                   <th @click="sortTable('region_id')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'region_id'}]">
@@ -171,7 +174,7 @@
               </thead>
               <tbody v-for="(group, groupIndex) in groupedData" :key="group.group" class="text-center">
                 <tr v-if="showGroupHeadings" class="!bg-transparent hover:!bg-transparent">
-                  <td colspan="20" :class="['!bg-transparent !border-0 text-left px-0 pb-2', groupIndex ? 'pt-6' : 'pt-0']">
+                  <td colspan="20" :class="['!bg-transparent !border-0 text-left px-3 pb-2', groupIndex ? 'pt-6' : 'pt-0']">
                     <h3 class="stack-header !m-0">
                       {{ group.name ?? groupName(group.group) }}<span v-if="group.minGamesRequired !== null">&nbsp;- {{ $t('At least :count games played', { count: group.minGamesRequired.toLocaleString('en-US') }) }}</span>
                     </h3>
@@ -187,8 +190,8 @@
                     </td>
                   </tr>
                   <tr>
-                    <td><div class="flex justify-center gap-1"><div v-if="rankchange" class="bg-blue text-white min-w-[2em] p-1 rounded-control text-center"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  group.rows.length - index }}</span></div><span class="p-1">{{ row.rank }}</span></div></td>
-                    <td>
+                    <td><div v-if="rankchange" class="inline-grid grid-cols-[2rem_2.5rem] gap-2 items-center"><div class="bg-blue text-white w-8 p-1 rounded-control text-center tabular-nums"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  group.rows.length - index }}</span></div><span class="text-left tabular-nums">{{ row.rank }}</span></div><span v-else class="p-1">{{ row.rank }}</span></td>
+                    <td class="text-left">
                       <player-name :battletag="row.split_battletag" :blizz-id="row.blizz_id" :region="row.region_id" :redirect="true" :hp-owner="!!row.hp_owner" :patreon="!!row.patreon"></player-name>
                     </td>
                     <td>{{ row.region }}</td>
@@ -203,7 +206,7 @@
                       <div v-if="row.most_played_hero" class="flex items-center">
                         <hero-image-wrapper :hero="row.most_played_hero">
                           <image-hover-box :title="$heroName(row.most_played_hero)" :paragraph-one="$t('Games Played') + ': ' + row.hero_build_games_played"></image-hover-box>
-                        </hero-image-wrapper><a :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}/Hero/${encodeURIComponent(row.most_played_hero.name)}`" class="group/bt hidden md:inline-flex items-center ml-2"><span class="font-bold group-hover/bt:underline">{{ $heroName(row.most_played_hero) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                        </hero-image-wrapper><a :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}/Hero/${encodeURIComponent(row.most_played_hero.name)}`" class="group/bt hidden md:inline-flex items-center ml-2"><span class="group-hover/bt:underline">{{ $heroName(row.most_played_hero) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
                       </div>
                     </td>
 
@@ -569,12 +572,6 @@ export default {
         }
       }
 
-    },
-    getHeaderRankText(){
-      if(this.rankchange){
-        return "Sorted Rank|(Rank)"; 
-      }
-      return "Rank"
     },
     convertRankIDtoName(rankID) {
       const tier = this.filters.rank_tiers.find(tier => tier.code === rankID);

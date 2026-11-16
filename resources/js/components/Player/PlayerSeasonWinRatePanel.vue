@@ -1,8 +1,8 @@
 <template>
-  <!-- Every season, not just the filtered ones: the latest on the right, 10 at a time, sliding one season per click -->
+  <!-- Every season, not just the filtered ones: the latest on the right, 20 at a time (10 on phones), sliding one season per click or dragged -->
   <panel-box :title="$t('Win Rate Per Season')">
     <div v-if="seasons.length" class="relative text-sm">
-      <line-chart :data="seasons" :visible-count="windowSize" :end-index="end" :aspect-ratio="3.1" :gridded="true" :dataAttribute="'win_rate'" top-attribute="games_played" :top-label="$t('Games')" :tooltip-label="$t('Win Rate')" :point-radius="3" :point-hover-radius="5" :percent="true" :dim-empty="true" :title="title"></line-chart>
+      <line-chart :data="seasons" :visible-count="windowSize" :end-index="end" :aspect-ratio="3.1" :gridded="true" :dataAttribute="'win_rate'" top-attribute="games_played" :top-label="$t('Games')" :tooltip-label="$t('Win Rate')" :point-radius="3" :point-hover-radius="5" :percent="true" :dim-empty="true" :title="title" @pan="windowEnd = $event"></line-chart>
       <!-- Arrows at both ends of the games row and the season labels -->
       <template v-for="row in ['top-1', 'bottom-0']" :key="row">
         <button v-if="end > windowSize" type="button" :class="['absolute left-0 text-subtext hover:text-white', row]" :aria-label="$t('Older seasons')" @click="shift(-1)"><i class="fas fa-chevron-left"></i></button>
@@ -25,10 +25,22 @@ export default {
     return {
       // Index after the right-most season shown; null = the latest
       windowEnd: null,
-      windowSize: 10,
+      phone: window.matchMedia('(max-width: 767px)').matches,
     };
   },
+  mounted() {
+    this.phoneQuery = window.matchMedia('(max-width: 767px)');
+    this.onPhoneChange = (event) => { this.phone = event.matches; };
+    this.phoneQuery.addEventListener('change', this.onPhoneChange);
+  },
+  beforeUnmount() {
+    this.phoneQuery?.removeEventListener('change', this.onPhoneChange);
+  },
   computed: {
+    // Seasons in view: 20 on wider screens, 10 on phones so their labels fit
+    windowSize() {
+      return this.phone ? 10 : 20;
+    },
     seasons() {
       if (!this.data) {
         return [];

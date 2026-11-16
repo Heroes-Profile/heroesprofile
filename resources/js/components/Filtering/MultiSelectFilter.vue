@@ -46,7 +46,7 @@
           id="select-all" 
           :checked="selectedOptions.length === selectableValues.length"
           @click="toggleAll"
-          class="form-checkbox h-5 w-5 shrink-0 text-indigo-600"
+          class="form-checkbox"
           >
           <label for="select-all" class="text-sm variable-text">{{ $t('Select All') }}</label>
         </div>
@@ -60,7 +60,7 @@
             :indeterminate="row.codes.some(code => selectedOptions.includes(code)) && !row.codes.every(code => selectedOptions.includes(code))"
             :disabled="!row.codes.some(code => isSelectable(code))"
             @click="toggleHeading(row)"
-            class="form-checkbox h-5 w-5 shrink-0 text-indigo-600"
+            class="form-checkbox"
             >
             <label :for="row.key" class="text-sm font-bold variable-text">{{ $t(row.name) }}</label>
           </div>
@@ -71,7 +71,7 @@
             :value="row.value.code"
             v-model="selectedOptions"
             :disabled="!isSelectable(row.value.code)"
-            class="form-checkbox h-5 w-5 shrink-0 text-indigo-600"
+            class="form-checkbox"
             >
             <label :for="row.value.code" class="text-sm variable-text">{{ groupbyyear ? seasonLabel(row.value.name) : (row.value.label || $t(row.value.name)) }}</label>
             <span v-if="row.value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="$t('Added :date', { date: patchDate(row.value.date_added) })">{{ patchAge(row.value.date_added) }}</span>

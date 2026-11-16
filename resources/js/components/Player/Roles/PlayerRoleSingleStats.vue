@@ -59,27 +59,44 @@
               <round-image :image="`/images/roles/${role.toLowerCase()}.PNG`" :excludehover="true" size="large"></round-image>
             </div>
 
-            <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
-              <div class="flex flex-col gap-1">
-                <span class="text-header">{{ $t('Win Rate') }}</span>
-                <stat-bar size="big" :value="data.win_rate.toFixed(2)" suffix="%" :color="$winRateColor(data.win_rate)"></stat-bar>
-              </div>
-
-              <div class="grid grid-cols-2 gap-x-6 gap-y-1">
-                <stat-box v-for="stat in overviewStats" :key="stat.label" class="!m-0 !px-0 !min-w-0" :title="stat.label" :value="stat.value"></stat-box>
-              </div>
-            </div>
+            <overview-stats class="flex-1 min-w-0 w-full" :win-rate="data.win_rate" :stats="overviewStats"></overview-stats>
           </div>
 
-          <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
-            <div class="flex justify-between items-baseline gap-6">
-              <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
-              <a class="text-header whitespace-nowrap hover:underline" :href="esport ? ngsPlayerUrl + section.allPath + ngsQuery : profileUrl + section.allPath">{{ $t(section.allText) }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+          <!-- Each group followed by every hero (or map) played in the role, as tiles like the hero page's "Maps played on";
+               the lists have zero width so they wrap to the card instead of widening it -->
+          <template v-for="section in topSections" :key="section.title">
+            <div class="flex flex-col gap-4 w-fit max-w-full">
+              <div class="flex justify-between items-baseline gap-6">
+                <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
+                <a class="text-header whitespace-nowrap hover:underline" :href="esport ? ngsPlayerUrl + section.allPath + ngsQuery : profileUrl + section.allPath">{{ $t(section.allText) }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+              </div>
+              <div class="flex flex-wrap gap-6 max-md:justify-center">
+                <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :esport="esport" :playerlink="true" :text="group.label" :data="group.data"></group-box>
+              </div>
             </div>
-            <div class="flex flex-wrap gap-6 max-md:justify-center">
-              <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :esport="esport" :playerlink="true" :text="group.label" :data="group.data"></group-box>
+            <div v-if="section.title === 'Heroes'" class="flex flex-col gap-4">
+              <h3 class="text-2xl font-bold">{{ $t('Heroes Played As :role', { role: $t(role) }) }}</h3>
+              <div class="w-0 min-w-full flex flex-wrap gap-3 max-md:gap-2 max-md:justify-center">
+                <a :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes" :key="index">
+                  <hero-image-wrapper :hero="item.hero" size="tile" :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" link-text="View Hero">
+                    <image-hover-box :title="$heroName(item.hero)" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + item.games_played"></image-hover-box>
+                  </hero-image-wrapper>
+                </a>
+              </div>
             </div>
-          </div>
+
+            <div v-else class="flex flex-col gap-4">
+              <h3 class="text-2xl font-bold">{{ $t('Maps Played As :role', { role: $t(role) }) }}</h3>
+              <div class="w-0 min-w-full flex flex-wrap gap-3 max-md:gap-2 max-md:justify-center">
+                <a :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
+                  <map-image-wrapper :map="item.game_map" size="tile" :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" link-text="View Map">
+                    <image-hover-box :title="$mapName(item.game_map)" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + item.games_played"></image-hover-box>
+                  </map-image-wrapper>
+                </a>
+              </div>
+            </div>
+          </template>
+
         </panel-box>
 
         <div class="flex-1 flex flex-col gap-6 min-w-0">
@@ -104,27 +121,7 @@
 
           <player-mmr-panel v-if="!esport" :data="data" :link-href="profileUrl + '/MMR'" :link-query="{ role: role }"></player-mmr-panel>
 
-          <div class="grid 2xl:grid-cols-2 gap-6">
-            <panel-box :inner="true" :title="$t('Heroes Played As :role', { role: $t(role) })">
-              <div class="flex flex-wrap gap-2">
-                <a :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes" :key="index">
-                  <hero-image-wrapper :hero="item.hero" :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" link-text="View Hero">
-                    <image-hover-box :title="$heroName(item.hero)" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + item.games_played"></image-hover-box>
-                  </hero-image-wrapper>
-                </a>
-              </div>
-            </panel-box>
-
-            <panel-box :inner="true" :title="$t('Maps Played As :role', { role: $t(role) })">
-              <div class="flex flex-wrap gap-2">
-                <a :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
-                  <map-image-wrapper :map="item.game_map" :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" link-text="View Map">
-                    <image-hover-box :title="$mapName(item.game_map)" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + item.games_played"></image-hover-box>
-                  </map-image-wrapper>
-                </a>
-              </div>
-            </panel-box>
-          </div>
+          <player-awards-panel v-if="!esport" class="flex-1" :battletag="battletag" :blizzid="blizzid" :region="region" :params="{ game_type: modifiedgametype, role: role, season: modifiedseason, game_map: modifiedgamemap, start_date: startdate, end_date: enddate }"></player-awards-panel>
         </div>
       </div>
       </panel-box>
@@ -158,21 +155,24 @@
             <h2 class="text-3xl font-bold">{{ $t(role) }}</h2>
             <div class="flex gap-8 max-sm:flex-col">
               <skeleton-box class="w-40 md:w-60 h-40 md:h-60 shrink-0 !rounded-full"></skeleton-box>
-              <div class="flex-1 flex flex-col gap-6">
-                <skeleton-box class="h-[1.875rem]"></skeleton-box>
-                <div class="grid grid-cols-2 gap-x-6 gap-y-4">
-                  <skeleton-box v-for="index in 10" :key="index" class="h-11"></skeleton-box>
+              <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="9"></overview-stats>
+            </div>
+            <template v-for="title in ['Heroes', 'Maps']" :key="title">
+              <div class="flex flex-col gap-4">
+                <h3 class="text-2xl font-bold">{{ $t(title) }}</h3>
+                <div class="flex flex-wrap gap-6 max-md:justify-center">
+                  <div v-for="group in 3" :key="group" class="flex gap-3">
+                    <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div v-for="title in ['Heroes', 'Maps']" :key="title" class="flex flex-col gap-4">
-              <h3 class="text-2xl font-bold">{{ $t(title) }}</h3>
-              <div class="flex flex-wrap gap-6 max-md:justify-center">
-                <div v-for="group in 3" :key="group" class="flex gap-3">
-                  <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
+              <div class="flex flex-col gap-4">
+                <h3 class="text-2xl font-bold">{{ $t(title === 'Heroes' ? 'Heroes Played As :role' : 'Maps Played As :role', { role: $t(role) }) }}</h3>
+                <div class="flex flex-wrap gap-3 max-md:gap-2 max-md:justify-center">
+                  <skeleton-box v-for="tile in 18" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
                 </div>
               </div>
-            </div>
+            </template>
           </panel-box>
 
           <div class="flex-1 flex flex-col gap-6 min-w-0">
@@ -185,13 +185,7 @@
             <panel-box v-if="!esport" :inner="true" :title="$t('Heroes Profile MMR')">
               <skeleton-box v-for="index in 6" :key="index" class="h-9"></skeleton-box>
             </panel-box>
-            <div class="grid 2xl:grid-cols-2 gap-6">
-              <panel-box v-for="title in [$t('Heroes Played As :role', { role: $t(role) }), $t('Maps Played As :role', { role: $t(role) })]" :key="title" :inner="true" :title="title">
-                <div class="flex flex-wrap gap-2">
-                  <skeleton-box v-for="tile in 12" :key="tile" class="w-10 h-10 !rounded-full"></skeleton-box>
-                </div>
-              </panel-box>
-            </div>
+            <player-awards-panel v-if="!esport" class="flex-1" :placeholder="true" :battletag="battletag" :blizzid="blizzid" :region="region"></player-awards-panel>
           </div>
         </div>
       </panel-box>

@@ -3,7 +3,7 @@
   <!-- Phones: the compact row as two short lines -->
   <match-row-mobile v-if="compact" class="md:hidden !mb-0" bg="group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2" :href="getHref()" :hero="data.hero" :title="$mapName(data.game_map)" :date="formatRowDate(data.game_date)" :winner="data.winner === 1" :result="data.winner === 1 ? 'Win' : 'Loss'" :map-art="data.game_map.sanitized_map_name">
     <template v-if="esport">{{ $t('Game :game · Round :round · :team vs :team2', { game: data.game, round: data.round, team: $ngsTeam(data.own_team).name, team2: $ngsTeam(data.opponent_team).name }) }}</template>
-    <template v-else>{{ $t(data.game_type.name) }} · <span class="text-white font-medium">{{ data.player_mmr.toLocaleString('en-US') }}</span><span v-if="data.player_change !== null" :class="data.player_change >= 0 ? 'text-win' : 'text-red'"> ({{ data.player_change > 0 ? '+' : '' }}{{ data.player_change.toFixed(2) }})</span><template v-if="data.kills !== undefined"> · {{ data.kills }}/{{ data.deaths }}/{{ data.assists }}</template></template>
+    <template v-else>{{ $t(data.game_type.name) }} · <span class="text-white font-medium">{{ data.player_mmr.toLocaleString('en-US') }}</span><span v-if="data.player_change !== null" :class="data.player_change >= 0 ? 'text-win' : 'text-loss'"> ({{ data.player_change > 0 ? '+' : '' }}{{ data.player_change.toFixed(2) }})</span><template v-if="data.kills !== undefined"> · {{ data.kills }}/{{ data.deaths }}/{{ data.assists }}</template></template>
   </match-row-mobile>
   <!-- One line per game: the match history's Compact view -->
   <div v-if="compact" class="max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2">
@@ -12,7 +12,7 @@
     <div class="relative w-[20rem] shrink-0 self-stretch flex items-center pl-5 py-2.5">
       <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="data.winner === 1 ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
       <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"></div>
-      <div class="absolute inset-y-0 left-0 w-1.5" :class="data.winner === 1 ? 'bg-win' : 'bg-red'"></div>
+      <div class="absolute inset-y-0 left-0 w-1.5" :class="data.winner === 1 ? 'bg-win' : 'bg-loss'"></div>
       <div class="relative flex items-center gap-4">
         <hero-image-wrapper size="row" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
         <div class="flex flex-col whitespace-nowrap">
@@ -30,13 +30,13 @@
     </div>
     <div v-else class="relative w-[8.125rem] shrink-0 px-4 flex flex-col">
       <span class="text-2xl font-semibold">{{ data.player_mmr.toLocaleString('en-US') }}</span>
-      <span v-if="data.player_change !== null" class="text-sm font-medium" :class="data.player_change >= 0 ? 'text-win' : 'text-red'">{{ data.player_change > 0 ? '+' : '' }}{{ data.player_change.toFixed(2) }}</span>
+      <span v-if="data.player_change !== null" class="text-sm font-medium" :class="data.player_change >= 0 ? 'text-win' : 'text-loss'">{{ data.player_change > 0 ? '+' : '' }}{{ data.player_change.toFixed(2) }}</span>
     </div>
     <!-- Esports rows give this space to the teams -->
     <div v-if="!esport" class="relative w-[8.75rem] shrink-0 flex flex-col items-center text-center">
       <template v-if="data.kills !== undefined">
-        <span class="grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] gap-x-[0.4375rem] w-[8.75rem] text-2xl font-semibold whitespace-nowrap tabular-nums">
-          <span class="text-right text-win">{{ data.kills }}</span><span>|</span><span class="font-normal text-red">{{ data.deaths }}</span><span>|</span><span class="text-left font-normal">{{ data.assists }}</span>
+        <span class="grid grid-cols-[1fr_0.5rem_minmax(0.875rem,auto)_0.5rem_1fr] gap-x-[0.5rem] w-[7.375rem] text-2xl font-semibold whitespace-nowrap tabular-nums">
+          <span class="text-right text-win">{{ data.kills }}</span><span>|</span><span class="font-normal text-loss">{{ data.deaths }}</span><span>|</span><span class="text-left font-normal">{{ data.assists }}</span>
         </span>
         <span class="text-sm font-medium text-subtext">{{ $t(':kda KDA', { kda: kda }) }}</span>
       </template>
@@ -55,7 +55,7 @@
     <div class="relative flex-1 max-w-[25.625rem] min-w-[18.75rem] self-stretch flex items-center pl-6 py-4">
       <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="data.winner === 1 ?'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
       <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"></div>
-      <div class="absolute inset-y-0 left-0 w-1.5" :class="data.winner === 1 ?'bg-win' : 'bg-red'"></div>
+      <div class="absolute inset-y-0 left-0 w-1.5" :class="data.winner === 1 ?'bg-win' : 'bg-loss'"></div>
 
       <div class="relative flex items-center gap-4">
         <hero-image-wrapper size="match" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
@@ -80,16 +80,16 @@
       <div v-for="stat in mmrStats" :key="stat.title" class="flex flex-col gap-0.5 flex-none w-[7.375rem] min-w-0">
         <span class="text-base font-medium text-subtext whitespace-nowrap">{{ $t(stat.title) }}</span>
         <span class="text-2xl font-semibold">{{ stat.value.toLocaleString('en-US') }}</span>
-        <span v-if="stat.change !== null" class="text-sm font-medium" :class="stat.change >= 0 ?'text-win' : 'text-red'">{{ stat.change > 0 ? '+' : '' }}{{ stat.change.toFixed(2) }}</span>
+        <span v-if="stat.change !== null" class="text-sm font-medium" :class="stat.change >= 0 ?'text-win' : 'text-loss'">{{ stat.change > 0 ? '+' : '' }}{{ stat.change.toFixed(2) }}</span>
       </div>
     </div>
 
     <div class="relative w-[8.75rem] shrink-0 flex flex-col gap-0.5 items-center text-center max-md:mx-4">
       <template v-if="data.kills !== undefined">
-        <!-- Same grid as the header's icons. Kills right-align against the first bar so their
+        <!-- Same grid as the header's icons, 7.375rem wide in the middle of the column, deaths in a one-digit slot that widens for the odd 10+. Kills right-align against the first bar so their
              ones digits line up row to row; deaths sit centred; assists start right after the second bar. -->
-        <span class="grid grid-cols-[1fr_0.75rem_1fr_0.75rem_1fr] gap-x-[0.4375rem] w-[8.75rem] text-2xl font-semibold whitespace-nowrap text-center tabular-nums">
-          <span class="text-right text-win">{{ data.kills }}</span><span>|</span><span class="font-normal text-red">{{ data.deaths }}</span><span>|</span><span class="text-left font-normal">{{ data.assists }}</span>
+        <span class="grid grid-cols-[1fr_0.5rem_minmax(0.875rem,auto)_0.5rem_1fr] gap-x-[0.5rem] w-[7.375rem] text-2xl font-semibold whitespace-nowrap text-center tabular-nums">
+          <span class="text-right text-win">{{ data.kills }}</span><span>|</span><span class="font-normal text-loss">{{ data.deaths }}</span><span>|</span><span class="text-left font-normal">{{ data.assists }}</span>
         </span>
         <span class="text-sm font-medium text-subtext">{{ $t(':kda KDA', { kda: kda }) }}</span>
       </template>

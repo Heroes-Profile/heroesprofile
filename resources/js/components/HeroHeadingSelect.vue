@@ -4,8 +4,11 @@
       <span>{{ displayName(selectedName) }}</span>
       <i class="fas fa-chevron-down text-xs"></i>
     </button>
-    <div v-if="open" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg font-normal" style="width: 13.75rem; max-height: 21.25rem; overflow-y: auto;">
-      <input v-if="type !== 'role'" v-model="search" type="text" :placeholder="'Search ' + label.toLowerCase() + '...'" class="w-full px-2 py-1 text-xs bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
+    <div v-if="open" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg font-normal" style="width: 17.5rem; max-height: 26.25rem;">
+      <!-- The search spans the dropdown's full width above the list; only the list scrolls -->
+      <div class="flex flex-col overflow-hidden rounded" style="max-height: inherit;">
+      <input v-if="type !== 'role'" v-model="search" type="text" :placeholder="'Search ' + label.toLowerCase() + '...'" class="shrink-0 block w-full px-3 py-2.5 text-sm bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
+      <div class="overflow-y-auto">
       <div
         v-for="h in filteredHeroes"
         :key="keyOf(h)"
@@ -17,6 +20,8 @@
         <img v-else-if="type === 'role'" :src="`/images/roles/${h.name.toLowerCase()}.PNG`" alt="" class="w-8 h-10 object-contain shrink-0">
 
         <span>{{ displayName(h.name) }}</span>
+      </div>
+      </div>
       </div>
     </div>
   </div>

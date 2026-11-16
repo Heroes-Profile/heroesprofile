@@ -103,7 +103,7 @@ class TranslateStrings extends Command
             // $t('...'), this.$t("..."), translate(`...`), __('...')
             '/(?:\$t|translate|__)\(\s*(?:\'((?:[^\'\\\\]|\\\\.)*)\'|"((?:[^"\\\\]|\\\\.)*)"|`([^`$]*)`)/',
             // Props the shared components pass through $t
-            '/:(?:text|heading|title|label|all-label|button-text|buttonText|label-text|labelText)="\'([^\']+)\'"/',
+            '/:(?:text|heading|title|label|all-label|button-text|buttonText|label-text|labelText|link-text|linkText)="\'([^\']+)\'"/',
             '/<(?:custom-button|page-heading|panel-box|modal-box|group-box|tab-button|search-input)\b[^>]*?\s(?:text|heading|title|tab1text|tab2text|tab3text|placeholder|label)="([A-Z][^"{]*)"/',
             '/:(?:tab1text|tab2text|tab3text)="\'([^\']+)\'"/',
         ];

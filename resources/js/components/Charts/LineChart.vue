@@ -23,6 +23,7 @@ Chart.register(...registerables);
 
 export default {
   name: 'LineChart',
+  emits: ['pan'],
   components: {},
   props: {
     data: Array,
@@ -97,7 +98,8 @@ export default {
         const ctx = chart.ctx;
         ctx.save();
         ctx.beginPath();
-        ctx.rect(left, top, right - left, bottom - top);
+        // The season chart's plot has slightly rounded corners, like the rank chart
+        ctx.roundRect(left, top, right - left, bottom - top, this.gridded ? 6 : 0);
         ctx.clip();
         if (this.gridded) {
           const ticks = chart.scales.y.ticks;
@@ -132,6 +134,25 @@ export default {
           }
         }
         ctx.restore();
+      },
+    };
+    // The line's shaded area keeps to the same rounded corners
+    const roundedPlot = {
+      id: 'roundedPlot',
+      beforeDatasetsDraw: (chart) => {
+        if (!this.gridded) {
+          return;
+        }
+        const { left, right, top, bottom } = chart.chartArea;
+        chart.ctx.save();
+        chart.ctx.beginPath();
+        chart.ctx.roundRect(left, top, right - left, bottom - top, 6);
+        chart.ctx.clip();
+      },
+      afterDatasetsDraw: (chart) => {
+        if (this.gridded) {
+          chart.ctx.restore();
+        }
       },
     };
     const topRow = {
@@ -202,7 +223,7 @@ export default {
     this.phoneQuery = window.matchMedia('(max-width: 767px)');
     this.chart = markRaw(new Chart(this.$refs.canvas.getContext('2d'), {
       type: 'line',
-      plugins: [backdrop, markerLines, topRow],
+      plugins: [backdrop, roundedPlot, markerLines, topRow],
       data: {
         labels: this.data.map(item => item.x_label),
         datasets: this.datasets(),
@@ -275,6 +296,10 @@ export default {
       });
     });
     this.resizeObserver.observe(this.$el.parentElement);
+
+    if (this.visibleCount) {
+      this.addDrag();
+    }
   },
   watch: {
     data() {
@@ -286,8 +311,12 @@ export default {
     endIndex() {
       this.slide();
     },
+    visibleCount() {
+      this.refresh();
+    },
   },
   beforeUnmount() {
+    this.removeDrag?.();
     cancelAnimationFrame(this.slideFrame);
     cancelAnimationFrame(this.resizeFrame);
     this.resizeObserver?.disconnect();
@@ -337,6 +366,74 @@ export default {
     windowRange() {
       const end = this.endIndex ?? this.data.length;
       return { min: Math.max(0, end - this.visibleCount) - 0.5, max: end - 0.5 };
+    },
+    // Dragging a windowed chart sideways moves the window with the pointer; letting go snaps it to whole points
+    // and reports the new end (the 'pan' event), which comes back as endIndex and eases into place.
+    // Vertical swipes still scroll the page on phones.
+    addDrag() {
+      const canvas = this.$refs.canvas;
+      canvas.style.touchAction = 'pan-y';
+      let drag = null;
+
+      const canDrag = () => this.data.length > this.visibleCount;
+      const setCursor = () => { canvas.style.cursor = !canDrag() ? '' : drag?.moved ? 'grabbing' : 'grab'; };
+
+      const down = (event) => {
+        if (!canDrag() || event.button > 0) {
+          return;
+        }
+        cancelAnimationFrame(this.slideFrame);
+        const { left, right } = this.chart.chartArea;
+        drag = { x: event.clientX, min: this.chart.options.scales.x.min, perPoint: (right - left) / this.visibleCount, moved: false };
+        canvas.setPointerCapture(event.pointerId);
+      };
+      const move = (event) => {
+        if (!drag) {
+          setCursor();
+          return;
+        }
+        const dx = event.clientX - drag.x;
+        if (!drag.moved && Math.abs(dx) < 4) {
+          return;
+        }
+        drag.moved = true;
+        this.tip.visible = false;
+        const lowest = -0.5;
+        const highest = this.data.length - 0.5 - this.visibleCount;
+        const scale = this.chart.options.scales.x;
+        scale.min = Math.min(highest, Math.max(lowest, drag.min - dx / drag.perPoint));
+        scale.max = scale.min + this.visibleCount;
+        this.chart.update('none');
+        setCursor();
+      };
+      const up = () => {
+        if (!drag) {
+          return;
+        }
+        const moved = drag.moved;
+        drag = null;
+        setCursor();
+        if (!moved) {
+          return;
+        }
+        const end = Math.round(this.chart.options.scales.x.min + 0.5) + this.visibleCount;
+        if (end === (this.endIndex ?? this.data.length)) {
+          this.slide();
+        } else {
+          this.$emit('pan', end);
+        }
+      };
+
+      canvas.addEventListener('pointerdown', down);
+      canvas.addEventListener('pointermove', move);
+      canvas.addEventListener('pointerup', up);
+      canvas.addEventListener('pointercancel', up);
+      this.removeDrag = () => {
+        canvas.removeEventListener('pointerdown', down);
+        canvas.removeEventListener('pointermove', move);
+        canvas.removeEventListener('pointerup', up);
+        canvas.removeEventListener('pointercancel', up);
+      };
     },
     // Eases the x range to the new window instead of redrawing
     slide() {

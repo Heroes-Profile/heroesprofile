@@ -65,21 +65,7 @@
               <div class="text-lg font-bold text-subtext">{{ $t('Level:') }} <span class="text-header">{{ data.account_level.toLocaleString('en-US') }}</span></div>
             </div>
 
-            <div class="flex-1 min-w-0 w-full flex flex-col gap-6">
-              <!-- The rate large above its bar -->
-              <div class="flex flex-col gap-1.5">
-                <span class="text-lg leading-[1.2] text-header">{{ $t('Win Rate') }}</span>
-                <div class="flex flex-col gap-2">
-                  <span class="text-3xl leading-[1.2] font-semibold text-[#a7e9e9]">{{ data.win_rate.toFixed(2) }}%</span>
-                  <stat-bar size="big" :value="data.win_rate.toFixed(2)" display-text="" :color="$winRateColor(data.win_rate)"></stat-bar>
-                </div>
-              </div>
-
-              <!-- 44px rows with a divider under each but the last -->
-              <div class="grid grid-cols-2 gap-x-6 gap-y-2">
-                <stat-box v-for="stat in overviewStats" :key="stat.label" class="!m-0 !px-0 !pt-0 !min-w-0 !rounded-none [&_.text-sm]:!text-[1rem] [&_span]:!leading-[1.2] pb-2 border-b border-field [&:nth-last-child(-n+2)]:border-b-0 [&:nth-last-child(-n+2)]:pb-0" :title="stat.label" :value="stat.value"></stat-box>
-              </div>
-            </div>
+            <overview-stats class="flex-1 min-w-0 w-full" :win-rate="data.win_rate" :stats="overviewStats"></overview-stats>
           </div>
 
           <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
@@ -160,13 +146,8 @@
           <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">
             <h2 class="text-3xl font-bold">{{ battletag }}</h2>
             <div class="flex gap-8 max-sm:flex-col">
-              <skeleton-box class="w-40 md:w-72 h-[23em] shrink-0 rounded"></skeleton-box>
-              <div class="flex-1 flex flex-col gap-6">
-                <skeleton-box class="h-[1.875rem]"></skeleton-box>
-                <div class="grid grid-cols-2 gap-x-6 gap-y-4">
-                  <skeleton-box v-for="index in 8" :key="index" class="h-11"></skeleton-box>
-                </div>
-              </div>
+              <skeleton-box class="w-40 md:w-[14rem] h-[20.125rem] shrink-0 rounded"></skeleton-box>
+              <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="8"></overview-stats>
             </div>
             <div v-for="title in ['Heroes', 'Maps']" :key="title" class="flex flex-col gap-4">
               <h3 class="text-2xl font-bold">{{ $t(title) }}</h3>
