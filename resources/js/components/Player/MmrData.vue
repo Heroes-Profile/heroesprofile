@@ -101,7 +101,7 @@
                     <div class="relative flex items-center gap-4">
                       <hero-image-wrapper size="row" :hero="row.hero" :excludehover="true"></hero-image-wrapper>
                       <div class="flex flex-col whitespace-nowrap">
-                        <span class="font-bold">{{ $heroName(row.hero) }}</span>
+                        <span class="">{{ $heroName(row.hero) }}</span>
                         <span class="text-xs">{{ formatRowDate(row.game_date) }}</span>
                       </div>
                     </div>

@@ -31,7 +31,7 @@
           <void-eye-flair v-if="!esport && voidEye" class="md:-translate-y-[0.3em]" :force="true"></void-eye-flair>
       </div>
       <slot name="aboveHeading"></slot>
-      <div :class="['heading flex items-center gap-3 max-md:justify-center', battletag ? 'text-base text-gray-medium mt-1' : 'text-3xl md:text-4xl font-bold']">{{ $t(heading) }}<slot name="headingInfo"></slot></div>
+      <div :class="['heading flex items-center gap-3 max-md:justify-center', battletag ? 'text-base text-gray-medium mt-1' : 'text-3xl md:text-4xl font-bold']">{{ $t(heading) }}<!-- An info icon sits raised at the top of the title, like a superscript --><span v-if="$slots.headingInfo" class="page-title-info self-start flex"><slot name="headingInfo"></slot></span></div>
     </h1>
     <div v-if="hasInfo && !hideText" class="text-gray-medium md:ml-auto md:max-w-[50%]">
       <infobox :input="infoText1"></infobox>

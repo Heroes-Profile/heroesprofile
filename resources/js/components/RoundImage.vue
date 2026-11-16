@@ -50,7 +50,16 @@
     </div>
     
     <!-- Looks pressed in while pinned open -->
-    <span :class="['bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em] flex justify-center items-center font-bold leading-none transition', { 'bg-surface-1 shadow-[inset_0_2px_0.25rem_rgba(0,0,0,0.6)] translate-y-px': pinned }]" v-if="icon" >
+    <!-- The info icon, the redesign's rounded square: in card and table headers, small in the old badge's dark tint with a
+         white "i" (pressed in while pinned open); beside a page title (.page-title-info, PageHeading), larger and white
+         with a dark "i" (light grey while pinned). Other icons keep the round badge. -->
+    <span v-if="icon && isInfoIcon" :class="['text-sm w-[1.15em] h-[1.15em] [.page-title-info_&]:w-[1.3em] [.page-title-info_&]:h-[1.3em] rounded-[0.25em] flex justify-center items-center leading-none transition',
+      pinned
+        ? 'bg-surface-1 text-white shadow-[inset_0_1px_0.2rem_rgba(0,0,0,0.6)] [.page-title-info_&]:bg-soft [.page-title-info_&]:text-surface-1 [.page-title-info_&]:shadow-none'
+        : 'bg-lighten text-white hover:bg-white/20 [.page-title-info_&]:bg-white [.page-title-info_&]:text-surface-1 [.page-title-info_&]:hover:bg-soft']">
+      <i :class="[icon, 'text-[0.7em]']"></i>
+    </span>
+    <span v-else-if="icon" :class="['bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em] flex justify-center items-center font-bold leading-none transition', { 'bg-surface-1 shadow-[inset_0_2px_0.25rem_rgba(0,0,0,0.6)] translate-y-px': pinned }]" >
       <i :class="icon" ></i>
     </span>
   
@@ -180,6 +189,9 @@ export default {
     this.hideTooltip();
   },
   computed: {
+    isInfoIcon() {
+      return (this.icon || '').split(' ').includes('fa-info');
+    },
     // Name-only portraits and tiles link elsewhere on tap, so phones don't open a popup for them
     noMobileHover() {
       return this.hidemobiletext || this.size === 'tile';

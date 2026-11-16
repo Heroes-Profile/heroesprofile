@@ -97,7 +97,7 @@
                   <div  v-if="row.most_played_hero" class="flex gap-x-2 items-center justify-center">
                     <hero-image-wrapper :hero="row.most_played_hero">
                       <image-hover-box :title="$heroName(row.most_played_hero)" :paragraph-one="$t('Games Played') + ': ' + row.hero_build_games_played"></image-hover-box>
-                    </hero-image-wrapper><span class="hidden md:block font-bold">{{ $heroName(row.most_played_hero) }}</span>
+                    </hero-image-wrapper><span class="hidden md:block">{{ $heroName(row.most_played_hero) }}</span>
                   </div>
                 </div>
                 <div v-else>

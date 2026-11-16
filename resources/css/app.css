@@ -417,20 +417,22 @@ th{
   height: 1.125rem;
   border-radius: 0.25rem;
   background-repeat: no-repeat;
-  background-position: center;
-  background-size: 0.75rem;
+  /* The tick is drawn on a canvas the size of the box, centred within it, so nothing has to be positioned */
+  background-size: 100% 100%;
 }
 .form-checkbox:checked{
   @apply bg-teal;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='white' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 6.25l2.25 2.25 4.75-5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18' fill='none' stroke='white' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.5 9.25l2.25 2.25 4.75-5'/%3E%3C/svg%3E");
 }
 input[type="radio"].form-checkbox{
   border-radius: 9999px;
 }
+/* Selected, as in the UI kit: a thin teal outer ring, a dark gap, and a teal dot. A teal fill with two inset shadows on
+   top, which follow the circle so the dot is always centred (a radial gradient could land half a pixel off) */
 input[type="radio"].form-checkbox:checked{
-  @apply bg-surface-4;
-  background-image: radial-gradient(circle, #008b8b 0 0.3125rem, transparent calc(0.3125rem + 0.5px));
-  background-size: 100%;
+  @apply bg-teal;
+  background-image: none;
+  box-shadow: inset 0 0 0 1px #008b8b, inset 0 0 0 0.25rem #393e4d;
 }
 .form-checkbox:focus-visible{
   outline: 2px solid #008b8b;

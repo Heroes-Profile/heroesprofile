@@ -138,7 +138,7 @@
             <td class="py-2 px-3 ">
               <div class="flex items-center">
                 <hero-image-wrapper class="mr-2" :hero="row.ally ? row.ally.hero : row.enemy.hero " ></hero-image-wrapper>
-                <span class="hidden md:block font-bold">{{ $heroName(row.ally && row.ally.hero ? row.ally.hero : row.enemy.hero) }}</span>
+                <span class="hidden md:block">{{ $heroName(row.ally && row.ally.hero ? row.ally.hero : row.enemy.hero) }}</span>
               </div>
             </td>
             <td class="py-2 px-3 ">

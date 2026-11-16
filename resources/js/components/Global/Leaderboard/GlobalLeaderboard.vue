@@ -112,7 +112,7 @@
                   <th :class="['py-2 px-3  text-left text-sm leading-4',{ 'bg-teal text-white': sortKey === 'battletag'}]">
                     <div class="relative flex items-center justify-start gap-3">
                       <span class="cursor-pointer" @click="sortTable('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                      <search-input v-model="searchTerm" :placeholder="$t('Search player')" :collapsible="true" :centered="true" class="w-40"></search-input>
+                      <search-input v-model="searchTerm" :placeholder="$t('Search player')" :collapsible="true" align="left" class="w-40"></search-input>
                     </div>
                   </th>            
                   <th @click="sortTable('region_id')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'region_id'}]">

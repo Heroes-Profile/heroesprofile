@@ -3,12 +3,13 @@
        a teal edge while typing or once filled). Use with v-model.
        collapsible: just the glass until clicked; closes again when left empty. The open box is laid over the
        header, anchored to the glass and reaching left, so a table column keeps its width while searching. -->
-  <!-- centered: the open box is placed by the nearest positioned ancestor (the header cell's content), centred over it -->
-  <span v-if="collapsible" :class="['inline-flex items-center', { relative: !centered }]">
+  <!-- align: 'center' or 'left' places the open box by the nearest positioned ancestor (the header cell's content),
+       centred over it or along its left edge -->
+  <span v-if="collapsible" :class="['inline-flex items-center', { relative: !align }]">
     <button type="button" :class="['search-input-glass text-teal hover:text-lteal px-1', { invisible: isOpen }]" :aria-label="$t(placeholder)" :title="$t(placeholder)" :tabindex="isOpen ? -1 : null" @click="expand">
       <i class="fas fa-magnifying-glass text-sm"></i>
     </button>
-    <div v-if="isOpen" v-bind="$attrs" :class="['absolute top-1/2 -translate-y-1/2 z-20', centered ? 'left-1/2 -translate-x-1/2' : 'right-0']">
+    <div v-if="isOpen" v-bind="$attrs" :class="['absolute top-1/2 -translate-y-1/2 z-20', align === 'center' ? 'left-1/2 -translate-x-1/2' : align === 'left' ? 'left-0' : 'right-0']">
       <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-teal text-sm pointer-events-none"></i>
       <input
         ref="input"
@@ -54,8 +55,8 @@ export default {
       default: 'Search',
     },
     collapsible: Boolean,
-    // Collapsible only: open centred over a positioned ancestor rather than reaching left from the glass
-    centered: Boolean,
+    // Collapsible only: 'center' or 'left' to open over a positioned ancestor rather than reaching left from the glass
+    align: { type: String, default: null },
   },
   emits: ['update:modelValue'],
   data() {

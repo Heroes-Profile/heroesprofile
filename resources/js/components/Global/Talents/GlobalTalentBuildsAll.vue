@@ -16,7 +16,7 @@
         <tr v-for="hero in shownHeroes" :key="hero.id">
           <td class="py-2 px-3">
             <div class="flex items-center justify-center">
-              <hero-image-wrapper :hero="hero" :includehover="false"></hero-image-wrapper><span class="hidden md:block font-bold ml-2">{{ $heroName(hero) }}</span>
+              <hero-image-wrapper :hero="hero" :includehover="false"></hero-image-wrapper><span class="hidden md:block ml-2">{{ $heroName(hero) }}</span>
             </div>
           </td>
           <td v-for="gt in gameTypes" :key="gt.key" class="py-2 px-3">

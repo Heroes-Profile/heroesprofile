@@ -175,7 +175,7 @@
               <td class="py-2 px-3"><div class="flex justify-center gap-1"><div v-if="rankChanged" class="bg-blue text-white min-w-[2em] p-1 rounded-control text-center">{{ sortDir == 'desc' ? index + 1 : sortedData.length - index }}</div><span class="p-1">{{ row.rank }}</span></div></td>
               <td class="py-2 px-3 flex items-center gap-1 max-md:w-[9.375rem]">
                 <a class="group/bt flex w-full items-center justify-start" :href="getGlobalTalentsURL(row)" >
-                  <hero-image-wrapper class="mr-2" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block font-bold group-hover/bt:underline">{{ $heroName(row.name) }}</span>
+                  <hero-image-wrapper class="mr-2" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block group-hover/bt:underline">{{ $heroName(row.name) }}</span>
                 </a>
               </td>
               <td class="  ">{{ getValueFixed(row.win_rate) }}</td>
