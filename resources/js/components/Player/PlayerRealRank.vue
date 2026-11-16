@@ -28,7 +28,8 @@
         <tab-button tab1text="7 days" tab2text="30 days" tab3text="This Season" overridedefaultside="third" :ignoreclick="true" @tab-click="setRange"></tab-button>
       </div>
 
-      <div v-if="rankedPeriods.length" class="relative h-[16.25rem]">
+      <div v-if="rankedPeriods.length" class="relative h-[18.25rem]">
+        <tab-button class="absolute z-[1] -translate-y-[calc(100%+0.25rem)] !p-0.5 !rounded-[0.25rem] [&_a]:!rounded-[0.1875rem] [&_a]:!text-xs [&_a]:!px-1.5 [&_a]:!py-0.5" :style="{ left: plot.left + 'px', top: plot.top + 'px' }" :small="true" tab1text="Day's Peak" tab2text="End of Day" overridedefaultside="right" :ignoreclick="true" @tab-click="setDayRank"></tab-button>
         <canvas ref="chart"></canvas>
       </div>
       <div v-else class="text-subtext">{{ $t('Only an unranked badge has been read this season.') }}</div>
@@ -118,7 +119,11 @@ export default {
       loading: true,
       // A number of days, or 'season'
       range: 'season',
+      // Which rank stands for a day: 'peak' or 'end'
+      dayRank: 'end',
       chart: null,
+      // Where the plot starts, so the toggle sits just above its top-left corner
+      plot: { left: 0, top: 0 },
     }
   },
   mounted() {
@@ -136,33 +141,45 @@ export default {
     },
     // The header follows the toggle: the season, or the days the chart covers
     rangeLabel(){
-      const days = this.chartDays;
-      if(this.range == 'season' || !days.length){
+      const span = this.chartWindow;
+      if(this.range == 'season' || !span){
         return this.data?.season;
       }
-      const first = days[0].day;
-      const last = days[days.length - 1].day;
+      const first = span.start;
+      const last = span.end;
       return first.format(first.year() == last.year() ? 'MMM D' : 'MMM D, YYYY') + ' – ' + last.format('MMM D, YYYY');
     },
     games(){
       return (this.data?.periods || []).reduce((total, period) => total + period.read_count, 0);
     },
-    // Each day of the range, ending on the last day a rank was read, with the rank read latest that day
-    chartDays(){
+    // The days the chart covers, ending on the last day a rank was read; start and end are local midnights
+    chartWindow(){
       if(!this.data?.current){
-        return [];
+        return null;
       }
       const end = this.localDay(this.data.current.last_game_date);
       // This season: from the first rank read this season
       const first = this.rankedPeriods.reduce((earliest, period) => (!earliest || period.first_game_date < earliest ? period.first_game_date : earliest), null);
       const count = this.range == 'season' ? (first ? end.diff(this.localDay(first), 'days') + 1 : 1) : this.range;
+      return { start: end.clone().subtract(count - 1, 'days'), end };
+    },
+    // Each day of the window with the best rank held that day, or the one it ended on; days with no rank read are gaps
+    chartDays(){
+      const span = this.chartWindow;
+      if(!span){
+        return [];
+      }
       const days = [];
-      for(let offset = count - 1; offset >= 0; offset--){
-        const day = end.clone().subtract(offset, 'days');
-        const period = this.rankedPeriods
+      for(let day = span.start.clone(); !day.isAfter(span.end); day = day.clone().add(1, 'day')){
+        const rank = this.rankedPeriods
           .filter(period => !this.localDay(period.first_game_date).isAfter(day) && !this.localDay(period.last_game_date).isBefore(day))
-          .reduce((latest, period) => (!latest || period.last_game_date > latest.last_game_date ? period : latest), null);
-        days.push({ day, rank: period, value: period ? rankValue(period) : null });
+          .reduce((chosen, period) => {
+            if(!chosen){
+              return period;
+            }
+            return (this.dayRank == 'peak' ? isBetter(period, chosen) : period.last_game_date > chosen.last_game_date) ? period : chosen;
+          }, null);
+        days.push({ day, rank });
       }
       return days;
     },
@@ -188,6 +205,10 @@ export default {
       this.range = { left: 7, right: 30, third: 'season' }[side];
       this.$nextTick(() => this.drawChart());
     },
+    setDayRank(side){
+      this.dayRank = side == 'left' ? 'peak' : 'end';
+      this.$nextTick(() => this.drawChart());
+    },
     localDay(dateString){
       return moment.tz(dateString, 'UTC').tz(moment.tz.guess()).startOf('day');
     },
@@ -197,7 +218,7 @@ export default {
     drawChart(){
       this.chart?.destroy();
       this.chart = null;
-      const ranked = this.chartDays.filter(day => day.value !== null);
+      const ranked = this.chartDays.filter(day => day.rank);
       if(!ranked.length || !this.$refs.chart){
         return;
       }
@@ -206,8 +227,10 @@ export default {
       // A Grandmaster read without a position sits on the worst one.
       const positions = ranked.filter(day => day.rank.league == 'grandmaster' && day.rank.ladder_position).map(day => day.rank.ladder_position);
       const worst = positions.length ? Math.max(...positions) : null;
+      // A single position has nothing to group, so it gets a plain "GM #5" label and no bracket
+      const bracket = positions.length && Math.min(...positions) < worst;
       const stepValue = (rank) => (rank.league == 'grandmaster' && rank.ladder_position ? 27 + worst - rank.ladder_position : rankValue(rank));
-      const label = (value) => (value >= 27 && worst ? String(worst - (value - 27)) : stepLabel(value));
+      const label = (value) => (value >= 27 && worst ? (bracket ? String(worst - (value - 27)) : 'GM #' + worst) : stepLabel(value));
       const days = this.chartDays.map(day => ({ ...day, value: day.rank ? stepValue(day.rank) : null }));
       const values = days.map(day => day.value).filter(value => value !== null);
 
@@ -216,15 +239,23 @@ export default {
       const max = Math.max(...values);
       const steps = max - min + 1;
 
+      // The plot as a slightly rounded box, under the rank labels too, out to the canvas edge
+      const clipPlot = (chart) => {
+        const { ctx, width, chartArea: { left, top, bottom } } = chart;
+        ctx.beginPath();
+        ctx.roundRect(left, top, width - left, bottom - top, 6);
+        ctx.clip();
+      };
+
       const rankBands = {
         id: 'rankBands',
         beforeDraw(chart) {
           if(steps > 12){
             return;
           }
-          // Under the rank labels too, out to the canvas edge
           const { ctx, width, chartArea: { left }, scales: { y } } = chart;
           ctx.save();
+          clipPlot(chart);
           for(let value = min; value <= max; value++){
             const top = y.getPixelForValue(value + 0.5);
             ctx.fillStyle = (max - value) % 2 == 0 ? '#303340' : '#272a34';
@@ -235,12 +266,24 @@ export default {
       };
 
       // The ladder positions read as one group: a bracket beside them and "GM" centred on it
+      // The area under the line keeps to the same rounded corners
+      const roundedPlot = {
+        id: 'roundedPlot',
+        beforeDatasetsDraw(chart) {
+          chart.ctx.save();
+          clipPlot(chart);
+        },
+        afterDatasetsDraw(chart) {
+          chart.ctx.restore();
+        },
+      };
+
       const gmTop = max;
       const gmBottom = Math.max(min, 27);
       const gmGroup = {
         id: 'gmGroup',
         afterDraw(chart) {
-          if(!worst || gmTop < 27){
+          if(!bracket || gmTop < 27){
             return;
           }
           const { ctx, scales: { y } } = chart;
@@ -268,7 +311,7 @@ export default {
 
       this.chart = markRaw(new Chart(this.$refs.chart.getContext('2d'), {
         type: 'line',
-        plugins: [rankBands, gmGroup],
+        plugins: [rankBands, roundedPlot, gmGroup, { id: 'plotCorner', afterLayout: (chart) => { this.plot = { left: chart.chartArea.left, top: chart.chartArea.top }; } }],
         data: {
           labels: days.map(day => day.day.format('DD MMM.')),
           datasets: [{
@@ -278,17 +321,18 @@ export default {
             backgroundColor: 'rgba(0, 139, 139, 0.35)',
             fill: 'start',
             spanGaps: true,
-            pointRadius: 3,
-            pointHoverRadius: 5,
+            pointRadius: 4,
+            pointHoverRadius: 6,
             pointBackgroundColor: '#1f2229',
+            pointHoverBackgroundColor: '#008b8b',
             pointBorderColor: '#008b8b',
           }],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          // Room right of the axis for the GM group label
-          layout: { padding: { right: worst && max >= 27 ? 36 : 0 } },
+          // Room above for the Day's Peak / End of Day toggle, and right of the axis for the GM group label
+          layout: { padding: { top: 28, right: bracket && max >= 27 ? 36 : 0 } },
           plugins: {
             legend: { display: false },
             tooltip: {

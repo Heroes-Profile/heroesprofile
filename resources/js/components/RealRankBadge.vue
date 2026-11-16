@@ -2,7 +2,7 @@
   <div :class="label == 'right' ? 'flex items-center gap-2' : 'flex flex-col items-center'">
     <div v-if="image" class="relative shrink-0" :style="{ width: badgeWidth + 'px' }">
       <img :src="image" :alt="name" class="w-full">
-      <span v-if="rank.league == 'grandmaster' && rank.ladder_position" class="absolute left-0 right-0 text-center font-bold text-white leading-none" :style="ladderStyle">#{{ rank.ladder_position }}</span>
+      <span v-if="rank.league == 'grandmaster' && rank.ladder_position" class="absolute left-0 right-0 text-center font-bold text-white leading-none" :style="ladderStyle">{{ rank.ladder_position }}</span>
     </div>
     <div v-if="label" :class="labelClass">{{ name }}</div>
   </div>
@@ -65,14 +65,15 @@ export default {
     badgeWidth(){
       return Math.round(this.width * (IMAGE_WIDTHS[this.rank.league] || 292) / 292);
     },
-    // The ladder number sits between the "Grand Master" label and the crown's tip.
-    // Longer numbers get a smaller font so "#999" still fits inside the disc (about half the badge's width).
+    // The ladder number, bare as the game shows it, centred in the gap between the "Grand Master" label (ends 36% down)
+    // and the crown's spikes (start 53% down). Longer numbers get a smaller font so "999" still fits the disc.
     ladderStyle(){
       const width = this.badgeWidth;
       const height = width;
-      const characters = String(this.rank.ladder_position).length + 1;
-      const fontSize = Math.min(height * 0.19, width * 0.44 / (0.62 * characters));
-      return { top: (height * 0.36 + (height * 0.19 - fontSize) / 2) + 'px', fontSize: fontSize + 'px', textShadow: '0 0 6px rgba(110, 180, 255, 0.9)' };
+      const characters = String(this.rank.ladder_position).length;
+      const fontSize = Math.min(height * 0.19, width * 0.44 / (0.6 * characters));
+      // Roboto's digits sit 0.12em above the middle of their line box
+      return { top: (height * 0.445 - fontSize * 0.38) + 'px', fontSize: fontSize + 'px', textShadow: '0 0 6px rgba(110, 180, 255, 0.9)' };
     },
   },
 }

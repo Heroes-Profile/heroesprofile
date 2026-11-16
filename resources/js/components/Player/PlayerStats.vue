@@ -68,8 +68,9 @@
                 <stat-bar size="big" :value="data.win_rate.toFixed(2)" suffix="%" :color="$winRateColor(data.win_rate)"></stat-bar>
               </div>
 
-              <div class="grid grid-cols-2 gap-x-6 gap-y-1">
-                <stat-box v-for="stat in overviewStats" :key="stat.label" class="!m-0 !px-0 !min-w-0" :title="stat.label" :value="stat.value"></stat-box>
+              <!-- A divider under each row but the last -->
+              <div class="grid grid-cols-2 gap-x-6 gap-y-2">
+                <stat-box v-for="stat in overviewStats" :key="stat.label" class="!m-0 !px-0 !min-w-0 !rounded-none pb-2 border-b border-field [&:nth-last-child(-n+2)]:border-b-0 [&:nth-last-child(-n+2)]:pb-0" :title="stat.label" :value="stat.value"></stat-box>
               </div>
             </div>
           </div>
