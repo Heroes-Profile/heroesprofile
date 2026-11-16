@@ -27,6 +27,7 @@ class CreateReplayTable extends Migration
             $table->double('player_match_quality')->nullable();
             $table->double('hero_match_quality')->nullable();
             $table->double('role_match_quality')->nullable();
+            $table->double('map_match_quality')->nullable();
 
             $table->index(['replayID', 'region', 'game_date'], 'replayID_Region_GameDate');
             $table->index('region');

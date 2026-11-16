@@ -37,6 +37,10 @@ class CreatePlayerTable extends Migration
             $table->double('role_mean')->nullable();
             $table->double('role_standard_deviation')->nullable();
             $table->double('role_change')->nullable();
+            $table->double('map_conservative_rating')->nullable();
+            $table->double('map_mean')->nullable();
+            $table->double('map_standard_deviation')->nullable();
+            $table->double('map_change')->nullable();
             $table->dateTime('mmr_date_parsed')->nullable();
 
             $table->unique(['replayID', 'battletag', 'hero'], 'UNIQUE');
@@ -44,7 +48,7 @@ class CreatePlayerTable extends Migration
             $table->index(['blizz_id', 'hero'], 'blizzID_hero');
             $table->index(['replayID', 'hero', 'player_conservative_rating'], 'replayID_hero_ConservativeRating');
             $table->index(['hero', 'player_conservative_rating'], 'hero_conservativeratinbg');
-            $table->index(['replayID', 'blizz_id', 'mmr_date_parsed'], 'replayID_blizzID_mmrDate');
+            $table->index(['blizz_id', 'replayID'], 'blizzID_replayID');
         });
     }
 

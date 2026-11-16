@@ -331,7 +331,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
        return mapping[pick_number];
      },
      redirectChangeHero(){
-      window.location.href = "/Global/Draft/";
+      window.location.href = "/Global/Draft";
     },
     convertRankIDtoName(rankIDs) {
       return rankIDs.map(rankID => this.filters.rank_tiers.find(tier => tier.code == rankID).name);
