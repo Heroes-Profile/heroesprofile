@@ -5,7 +5,7 @@
         "MMR & Rankings": "MMR und Ranglisten",
         "Global Stats & Data": "Globale Statistiken und Daten",
         "Filters": "Filter",
-        "Site Features": "Website-Funktionen",
+        "Site Features": "Funktionen der Website",
         "Drafter": "Draft-Helfer",
         "Leaderboards": "Bestenlisten",
         "Supporting Heroes Profile": "Heroes Profile unterstützen"
@@ -22,6 +22,10 @@
         "fee6b20b0ee8251f": {
             "q": "Ist Heroes Profile kostenlos?",
             "a": "Ja, Heroes Profile ist komplett kostenlos. Wir werden von der Community über <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> unterstützt. Patreon-Unterstützer nutzen die Seite ohne Werbung und erhalten besondere Abzeichen."
+        },
+        "718a29824ecf8cbe": {
+            "q": "Wie viele Spiele habe ich in dieser Saison gespielt?",
+            "a": "Öffne dein Profil und stelle den Filter <strong>Saison</strong> auf die aktuelle Saison. Die Übersicht zeigt dann deine Spiele, Siege und deine Siegesrate in dieser Saison, und der <a href=\"/Player/Zemill/67280/1/Match/History\" class=\"link\">Spielverlauf</a> listet alle diese Spiele auf. Gezählt werden nur hochgeladene Spiele, daher kann die Gesamtzahl niedriger sein als die Zahl deiner tatsächlich gespielten Spiele."
         },
         "7ba1b5ca799e4b7a": {
             "q": "Wie kommen meine Statistiken auf Heroes Profile?",
@@ -55,6 +59,10 @@
             "q": "Wie funktioniert MMR auf Heroes Profile?",
             "a": "Blizzard speichert weder MMR noch Rangdaten in Replay-Dateien. Deshalb können wir deinen offiziellen Rang oder MMR im Spiel nicht aus einem Replay auslesen. Stattdessen berechnen wir eine eigene MMR aus den Siegen und Niederlagen in deinen hochgeladenen Replays. Das ist eine Annäherung: Je mehr Spiele du hochlädst, desto genauer wird sie. In neuen Spielmodi (etwa beim Start der Sturmliga) fangen alle bei null an, daher sind frühe MMR-Werte sehr ungenau. Deinen echten Sturmliga-Rang können wir separat anzeigen. Er wird vom Ladebildschirm ausgelesen (siehe unten)."
         },
+        "ce9abd80c6b80a74": {
+            "q": "Wo erfahre ich mehr über die Mathematik hinter dem MMR?",
+            "a": "Unser MMR basiert auf TrueSkill, einem Wertungssystem, das sowohl eine Schätzung des Könnens als auch die Sicherheit dieser Schätzung erfasst. Eine ausführliche, gut lesbare Erklärung der Funktionsweise findest du in <a href=\"https://www.moserware.com/2010/03/computing-your-skill.html\" target=\"_blank\" class=\"link\">Computing Your Skill</a> von Jeff Moser."
+        },
         "628d7a2936bd5087": {
             "q": "Warum stimmt meine Heroes-Profile-MMR nicht mit meinem Rang im Spiel überein?",
             "a": "Unsere MMR ist eine unabhängige Berechnung, die nur auf den Replays in unserem System beruht. Sie stammt nicht von Blizzards Servern und gibt nicht deinen offiziellen Rang im Spiel wieder. Je mehr Spiele du hochlädst, desto näher kommt sie deinem tatsächlichen Können. Wenn du gerade erst mit dem Hochladen angefangen hast, spiel weitere Spiele, dann pendelt sich der Wert ein. Deinen echten Rang im Spiel zeigen wir, sofern vorhanden, in einem eigenen Bereich „Sturmliga-Rang“ in deinem Profil."
@@ -82,10 +90,6 @@
         "d9046734a5b347eb": {
             "q": "Was ist die Helden-MMR?",
             "a": "Die Helden-MMR ist eine MMR pro Held. Statt einer einzigen Gesamtwertung hast du für jeden gespielten Helden eine eigene MMR. Sie vergleicht dich mit der Leistung anderer Spieler auf demselben Helden. Wer in der Sturmliga weit oben spielt, hat nicht automatisch eine hohe Helden-MMR auf einem Helden, den er selten spielt."
-        },
-        "ce9abd80c6b80a74": {
-            "q": "Wo erfahre ich mehr über die Mathematik hinter dem MMR?",
-            "a": "Unser MMR basiert auf TrueSkill, einem Wertungssystem, das sowohl eine Schätzung des Könnens als auch die Sicherheit dieser Schätzung erfasst. Eine ausführliche, gut lesbare Erklärung der Funktionsweise findest du in <a href=\"https://www.moserware.com/2010/03/computing-your-skill.html\" target=\"_blank\" class=\"link\">Computing Your Skill</a> von Jeff Moser."
         },
         "4f0391d0e1d4e289": {
             "q": "Wie genau sind die Daten auf Heroes Profile?",
@@ -126,6 +130,14 @@
         "da9672cbf4c59a90": {
             "q": "Was ist der Talent-Planer?",
             "a": "Mit dem <a href=\"/Global/Talents/Builder\" class=\"link\">Talent-Planer</a> stellst du einen bestimmten Talent-Build zusammen und siehst Siegesratendaten für genau diese Kombination. Damit kannst du zwei Builds anhand echter Spieldaten direkt miteinander vergleichen."
+        },
+        "a95840c72f0aa9a4": {
+            "q": "Wie finde ich Konter für einen Helden?",
+            "a": "Öffne den Helden unter <a href=\"/Global/Matchups\" class=\"link\">Duelle</a>, z. B. <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>. <strong>TOP 5 BEDROHUNGEN IM GEGNERISCHEN TEAM</strong> zeigt die Helden, die gegen ihn am besten abschneiden. Sortiere die Tabelle nach <strong>Siegesrate gegen</strong> diesen Helden: Die höchsten Siegesraten sind seine Konter, und die Spalte Differenz zeigt, um wie viel besser jeder Held gegen ihn abschneidet als üblich. Achte auf „Spiele gegen“, damit dich eine kleine Stichprobe nicht täuscht. <a href=\"/Global/Matchups/Talents\" class=\"link\">Duell-Talente</a> zeigt dir dann, welche Talente du in diesem Duell wählen solltest."
+        },
+        "970140e24d9bb059": {
+            "q": "Was ist der beste Build für einen Helden?",
+            "a": "Öffne den Helden unter <a href=\"/Global/Talents\" class=\"link\">Talente</a>, z. B. <a href=\"/Global/Talents/Valla\" class=\"link\">/Global/Talents/Valla</a>. Standardmäßig wird der neueste Patch angezeigt. Die Build-Tabelle listet vollständige Builds von Stufe 1 bis 20 auf. Sortiere sie nach <strong>Siegeschance</strong> und achte auf die Anzahl gespielter Spiele, denn ein Build mit wenigen Spielen kann besser aussehen, als er ist. <strong>Talent-Build-Typ</strong> wechselt zwischen den meistgespielten Builds und verschiedenen Pfaden im frühen Spiel. Die Talenttabelle darüber zeigt die Siegesrate jedes einzelnen Talents für sich, und das ist nicht dasselbe wie ein vollständiger Build. Um eine eigene Kombination zu testen, nutze den <a href=\"/Global/Talents/Builder\" class=\"link\">Talent-Planer</a>."
         },
         "2df01fc91ad6f6f6": {
             "q": "Wie funktionieren die Filter?",
@@ -226,6 +238,14 @@
         "ac97e4684901a4e5": {
             "q": "Kann ich einen Talent-Build von der Website ins Spiel kopieren?",
             "a": "Ja. Auf den globalen Heldenseiten, der Seite eines einzelnen Spiels und an mehreren anderen Stellen der Website findest du neben Talent-Builds den Button „Build ins Spiel kopieren“. Ein Klick darauf kopiert den Build in einem Format, das Heroes of the Storm akzeptiert, in deine Zwischenablage, sodass du ihn direkt im Spiel einfügen kannst."
+        },
+        "d8d835d1b1e2096e": {
+            "q": "Was bedeutet „Von der Leere gezeichnet“?",
+            "a": "Das ist das Abzeichen aus dem Xal'atath-Übernahme-Event. Spieler, die ihr auf der Website verstecktes Auge gefunden haben, erhielten das Mal der Leere, ein Leerenauge, das neben ihrem Namen angezeigt wird. Das Event ist vorbei, aber das Abzeichen bleibt dauerhaft. Der <a href=\"/Event/Xalatath\" class=\"link\">Xal'atath-Event-Rückblick</a> zeigt die Endergebnisse, darunter wie viele Spieler es erhalten haben, sowie die Top-Spieler und deinen eigenen Beitrag."
+        },
+        "3db0a7ab161af721": {
+            "q": "Wie funktioniert der Hilfe-Assistent?",
+            "a": "Der Hilfe-Assistent in der unteren rechten Ecke läuft mit Claude Haiku 5.5, einem KI-Modell von Anthropic. Er antwortet auf Basis dieser FAQ und der Liste der Seiten der Website sowie eines täglichen Schnappschusses der wichtigsten Statistikseiten in ihrer Standardansicht (neuester Patch, Sturmliga, alle Ränge). Die Seiten aus dem Schnappschuss werden anhand der Wörter in deiner Frage ausgewählt; es gibt keine Vektorsuche, und er kann nichts live nachschlagen. Deshalb sieht er weder deine Statistiken noch gefilterte Ansichten. Dafür verlinkt er dich auf die entsprechende Seite. Er erfordert eine Battle.net-Anmeldung und erlaubt 20 Fragen pro Tag, 25 für Patreon-Unterstützer."
         },
         "7fceba2017cd384d": {
             "q": "Wie benutze ich den Draft-Helfer?",

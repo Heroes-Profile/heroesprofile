@@ -1,6 +1,6 @@
 {
     "categories": {
-        "Getting Started": "入门",
+        "Getting Started": "入门指南",
         "Uploading Replays": "上传录像",
         "MMR & Rankings": "MMR 与排名",
         "Global Stats & Data": "全球统计与数据",
@@ -22,6 +22,10 @@
         "fee6b20b0ee8251f": {
             "q": "Heroes Profile 是免费的吗？",
             "a": "是的，Heroes Profile 完全免费。我们通过 <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> 获得社区支持。Patreon 赞助者可享受无广告体验和专属网站标识。"
+        },
+        "718a29824ecf8cbe": {
+            "q": "我本赛季打了多少场比赛？",
+            "a": "打开你的个人资料，将<strong>赛季</strong>筛选设置为当前赛季。概览中便会显示你在该赛季的场次、胜场和胜率，<a href=\"/Player/Zemill/67280/1/Match/History\" class=\"link\">比赛历史</a>会列出其中的每一场比赛。只有已上传的比赛才会计入，因此总数可能低于你在游戏中实际进行的场次。"
         },
         "7ba1b5ca799e4b7a": {
             "q": "如何让我的数据出现在 Heroes Profile 上？",
@@ -55,6 +59,10 @@
             "q": "Heroes Profile 的 MMR 是如何计算的？",
             "a": "Blizzard 不会在录像文件中包含 MMR 或段位数据，因此我们无法从录像中获取你官方的游戏内段位或 MMR。我们会根据你上传录像中的胜负计算自己的 MMR。这只是估算值，上传的比赛越多就越准确。新游戏模式（例如风暴联赛刚推出时）会让所有人从头开始，因此早期的 MMR 数值不确定性较高。你真实的风暴联赛段位可以单独显示，它是从载入画面中读取的（见下文）。"
         },
+        "ce9abd80c6b80a74": {
+            "q": "在哪里可以进一步了解 MMR 背后的数学原理？",
+            "a": "我们的 MMR 基于 TrueSkill，这是一种评分系统，既会追踪对水平的估计值，也会追踪该估计的确定程度。如需详尽易懂的原理讲解，请参阅 Jeff Moser 撰写的 <a href=\"https://www.moserware.com/2010/03/computing-your-skill.html\" target=\"_blank\" class=\"link\">Computing Your Skill</a>。"
+        },
         "628d7a2936bd5087": {
             "q": "为什么我的 Heroes Profile MMR 与游戏内段位不一致？",
             "a": "我们的 MMR 是独立计算的，只依据上传到我们系统的录像。它并非来自 Blizzard 的服务器，也不代表你官方的游戏内排名。上传的比赛越多，它就越接近你的实际水平。如果你刚开始上传录像，多打几场后数值就会趋于稳定。如果我们获取到了你真实的游戏内段位，它会显示在你个人资料中单独的风暴联赛段位区域。"
@@ -82,10 +90,6 @@
         "d9046734a5b347eb": {
             "q": "什么是英雄 MMR？",
             "a": "英雄 MMR 是针对每个英雄单独计算的 MMR 评分。你不只有一个总体评分，而是每个使用过的英雄都有各自的 MMR。该评分会将你与其他玩家使用同一英雄的表现进行比较。即使你是高水平的风暴联赛玩家，也不代表你在很少使用的英雄上就有很高的英雄 MMR。"
-        },
-        "ce9abd80c6b80a74": {
-            "q": "在哪里可以进一步了解 MMR 背后的数学原理？",
-            "a": "我们的 MMR 基于 TrueSkill，这是一种评分系统，既会追踪对水平的估计值，也会追踪该估计的确定程度。如需详尽易懂的原理讲解，请参阅 Jeff Moser 撰写的 <a href=\"https://www.moserware.com/2010/03/computing-your-skill.html\" target=\"_blank\" class=\"link\">Computing Your Skill</a>。"
         },
         "4f0391d0e1d4e289": {
             "q": "Heroes Profile 的数据有多准确？",
@@ -126,6 +130,14 @@
         "da9672cbf4c59a90": {
             "q": "什么是天赋构建器？",
             "a": "<a href=\"/Global/Talents/Builder\" class=\"link\">天赋构建器</a>让你组建特定的天赋构筑，并查看该组合的胜率数据。用它基于真实比赛数据对比两套构筑非常方便。"
+        },
+        "a95840c72f0aa9a4": {
+            "q": "如何查找克制某个英雄的英雄？",
+            "a": "在<a href=\"/Global/Matchups\" class=\"link\">对位</a>中打开该英雄，例如 <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>。<strong>敌方队伍中的前 5 名威胁</strong>会显示对阵该英雄表现最好的英雄。在表格中按对该英雄的<strong>对阵胜率</strong>排序：胜率最高的就是克制它的英雄，差值列显示各英雄对阵它时比平常表现好多少。请同时查看对阵场次，以免被小样本误导。之后可在<a href=\"/Global/Matchups/Talents\" class=\"link\">对位天赋</a>中查看该对位应选择哪些天赋。"
+        },
+        "970140e24d9bb059": {
+            "q": "某个英雄的最佳构筑是什么？",
+            "a": "在<a href=\"/Global/Talents\" class=\"link\">天赋</a>中打开该英雄，例如 <a href=\"/Global/Talents/Valla\" class=\"link\">/Global/Talents/Valla</a>。默认显示最新补丁。构筑表列出了 1 级到 20 级的完整构筑；按<strong>胜利概率</strong>排序，并查看比赛场次，因为场次较少的构筑可能看起来比实际更好。<strong>天赋构筑类型</strong>可在最常用构筑和不同的前期路线之间切换。上方的天赋表显示每个天赋单独的胜率，这与完整构筑的胜率并不相同。如需测试你自己的天赋组合，请使用<a href=\"/Global/Talents/Builder\" class=\"link\">天赋构建器</a>。"
         },
         "2df01fc91ad6f6f6": {
             "q": "筛选功能如何使用？",
@@ -226,6 +238,14 @@
         "ac97e4684901a4e5": {
             "q": "可以把网站上的天赋构筑复制到游戏中吗？",
             "a": "可以。在全球英雄页面、单场比赛页面以及网站上的其他多个位置，天赋构筑旁都有一个“复制构筑”按钮。点击后，构筑会以《风暴英雄》支持的格式复制到剪贴板，你可以直接将其粘贴到游戏的配置界面中。"
+        },
+        "d8d835d1b1e2096e": {
+            "q": "什么是“虚空印记”？",
+            "a": "这是来自萨拉塔斯入侵活动的标识。在网站上找到她隐藏的眼睛的玩家获得了虚空印记，即显示在其名字旁的虚空之眼。活动已经结束，但该标识永久保留。<a href=\"/Event/Xalatath\" class=\"link\">萨拉塔斯活动回顾</a>中有最终统计，包括获得该标识的玩家人数，以及顶尖玩家和你自己的贡献。"
+        },
+        "3db0a7ab161af721": {
+            "q": "帮助助手是如何工作的？",
+            "a": "右下角的帮助助手基于 Anthropic 开发的 AI 模型 Claude Haiku 5.5 运行。它根据本常见问题和网站页面列表作答，并参考主要统计页面默认视图（最新补丁、风暴联赛、所有段位）的每日快照。快照页面通过匹配你问题中的词语来选取；没有向量搜索，也无法实时查询任何内容，因此看不到你的统计或任何筛选后的视图。遇到这类问题时，它会给出相应页面的链接。使用助手需要 Battle.net 登录，每天可提问 20 个问题，Patreon 支持者为 25 个。"
         },
         "7fceba2017cd384d": {
             "q": "如何使用选秀助手？",

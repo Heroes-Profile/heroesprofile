@@ -23,6 +23,10 @@
             "q": "Heroes Profile est-il gratuit ?",
             "a": "Oui, Heroes Profile est entièrement gratuit. Nous sommes soutenus par la communauté via <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a>. Les soutiens Patreon profitent du site sans publicité et reçoivent un badge spécial sur le site."
         },
+        "718a29824ecf8cbe": {
+            "q": "Combien de parties ai-je jouées cette saison ?",
+            "a": "Ouvrez votre profil et réglez le filtre <strong>Saison</strong> sur la saison actuelle. L'aperçu affiche alors vos parties, victoires et votre taux de victoire pour cette saison, et l'<a href=\"/Player/Zemill/67280/1/Match/History\" class=\"link\">historique des parties</a> répertorie chacune de ces parties. Seules les parties envoyées sont comptées : le total peut donc être inférieur au nombre de parties réellement jouées en jeu."
+        },
         "7ba1b5ca799e4b7a": {
             "q": "Comment faire apparaître mes statistiques sur Heroes Profile ?",
             "a": "Vous devez envoyer vos fichiers de replay. Le plus simple est de télécharger le <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a>, qui tourne en arrière-plan et envoie automatiquement les replays après chaque partie. Vous pouvez aussi <a href=\"/Upload\" class=\"link\">envoyer des replays manuellement</a>. Après l'envoi, comptez 5 à 10 minutes pour le traitement."
@@ -55,6 +59,10 @@
             "q": "Comment fonctionne le MMR sur Heroes Profile ?",
             "a": "Blizzard n'inclut aucune donnée de MMR ou de rang dans les fichiers de replay. Nous ne pouvons donc pas obtenir votre rang ou votre MMR officiel en jeu à partir d'un replay. À la place, nous calculons notre propre MMR à partir des victoires et défaites de vos replays envoyés. C'est une approximation : plus vous envoyez de parties, plus elle devient précise. Les nouveaux modes de jeu (comme au lancement de la Ligue du Nexus) font repartir tout le monde de zéro, si bien que les premières valeurs de MMR sont très incertaines. Votre vrai rang de Ligue du Nexus peut être affiché à part, lu sur l'écran de chargement (voir ci-dessous)."
         },
+        "ce9abd80c6b80a74": {
+            "q": "Où en savoir plus sur les mathématiques derrière le MMR ?",
+            "a": "Notre MMR repose sur TrueSkill, un système de notation qui suit à la fois une estimation du niveau et le degré de certitude de cette estimation. Pour une explication complète et accessible de son fonctionnement, consultez <a href=\"https://www.moserware.com/2010/03/computing-your-skill.html\" target=\"_blank\" class=\"link\">Computing Your Skill</a> de Jeff Moser."
+        },
         "628d7a2936bd5087": {
             "q": "Pourquoi mon MMR Heroes Profile ne correspond-il pas à mon rang en jeu ?",
             "a": "Notre MMR est un calcul indépendant, basé uniquement sur les replays envoyés sur notre système. Il ne provient pas des serveurs de Blizzard et ne reflète pas votre classement officiel en jeu. Plus vous envoyez de parties, plus il se rapproche de votre niveau réel. Si vous venez de commencer à envoyer vos replays, jouez davantage de parties et la valeur se stabilisera. Votre vrai rang en jeu, quand nous l'avons, est affiché dans une section Rang de Ligue du Nexus dédiée sur votre profil."
@@ -82,10 +90,6 @@
         "d9046734a5b347eb": {
             "q": "Qu'est-ce que le MMR de héros ?",
             "a": "Le MMR de héros est une note de MMR propre à chaque héros. Au lieu d'une note globale unique, vous avez un MMR différent pour chaque héros que vous jouez. Cette note vous compare aux performances des autres joueurs sur ce même héros. Être un joueur de haut niveau en Ligue du Nexus ne signifie pas automatiquement que vous avez un MMR de héros élevé sur un héros que vous jouez rarement."
-        },
-        "ce9abd80c6b80a74": {
-            "q": "Où en savoir plus sur les mathématiques derrière le MMR ?",
-            "a": "Notre MMR repose sur TrueSkill, un système de notation qui suit à la fois une estimation du niveau et le degré de certitude de cette estimation. Pour une explication complète et accessible de son fonctionnement, consultez <a href=\"https://www.moserware.com/2010/03/computing-your-skill.html\" target=\"_blank\" class=\"link\">Computing Your Skill</a> de Jeff Moser."
         },
         "4f0391d0e1d4e289": {
             "q": "Quelle est la fiabilité des données de Heroes Profile ?",
@@ -126,6 +130,14 @@
         "da9672cbf4c59a90": {
             "q": "Qu'est-ce que le Créateur de talents ?",
             "a": "Le <a href=\"/Global/Talents/Builder\" class=\"link\">Créateur de talents</a> vous permet de composer un build de talents précis et de voir les données de taux de victoire pour exactement cette combinaison. Il est idéal pour comparer deux builds face à face à partir de données de parties réelles."
+        },
+        "a95840c72f0aa9a4": {
+            "q": "Comment trouver les contres d'un héros ?",
+            "a": "Ouvrez le héros dans <a href=\"/Global/Matchups\" class=\"link\">Affrontements</a>, par ex. <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>. <strong>Top 5 des menaces dans l'équipe ennemie</strong> affiche les héros qui s'en sortent le mieux contre lui. Dans le tableau, triez par <strong>Taux de victoire contre</strong> ce héros : les taux de victoire les plus élevés correspondent à ses contres, et la colonne Différence indique de combien chaque héros fait mieux que d'habitude contre lui. Vérifiez Parties jouées contre pour ne pas vous laisser tromper par un petit échantillon. <a href=\"/Global/Matchups/Talents\" class=\"link\">Talents par affrontement</a> indique ensuite quels talents prendre pour cet affrontement."
+        },
+        "970140e24d9bb059": {
+            "q": "Quel est le meilleur build pour un héros ?",
+            "a": "Ouvrez le héros dans <a href=\"/Global/Talents\" class=\"link\">Talents</a>, par ex. <a href=\"/Global/Talents/Valla\" class=\"link\">/Global/Talents/Valla</a>. Le dernier patch est sélectionné par défaut. Le tableau des builds liste les builds complets du niveau 1 au niveau 20 ; triez-le par <strong>Chance de victoire</strong> et vérifiez le nombre de parties jouées, car un build avec peu de parties peut sembler meilleur qu'il ne l'est. <strong>Type de build de talents</strong> permet de basculer entre les builds les plus joués et différents parcours en début de partie. Le tableau des talents au-dessus affiche le taux de victoire de chaque talent pris isolément, ce qui n'équivaut pas à un build complet. Pour tester votre propre combinaison, utilisez le <a href=\"/Global/Talents/Builder\" class=\"link\">Créateur de talents</a>."
         },
         "2df01fc91ad6f6f6": {
             "q": "Comment fonctionnent les filtres ?",
@@ -226,6 +238,14 @@
         "ac97e4684901a4e5": {
             "q": "Puis-je copier un build de talents du site dans le jeu ?",
             "a": "Oui. Sur les pages globales des héros, la page d'une partie et plusieurs autres pages du site, un bouton « Copier le build » se trouve à côté des builds de talents. Un clic copie le build dans votre presse-papiers, dans un format reconnu par Heroes of the Storm. Vous pouvez ensuite le coller directement dans l'écran de configuration du jeu."
+        },
+        "d8d835d1b1e2096e": {
+            "q": "Qu'est-ce que « Marqué par le Vide » ?",
+            "a": "C'est le badge de l'événement de prise de contrôle de Xal'atath. Les joueurs qui ont trouvé son œil caché sur le site ont obtenu la Marque du Vide, un œil du Vide affiché à côté de leur nom. L'événement est terminé, mais le badge est permanent. Le <a href=\"/Event/Xalatath\" class=\"link\">Récapitulatif de l'événement Xal'atath</a> présente le bilan final, dont le nombre de joueurs qui l'ont obtenu, ainsi que les meilleurs joueurs et votre propre contribution."
+        },
+        "3db0a7ab161af721": {
+            "q": "Comment fonctionne l'assistant d'aide ?",
+            "a": "L'assistant d'aide, en bas à droite, fonctionne avec Claude Haiku 5.5, un modèle d'IA conçu par Anthropic. Il répond à partir de cette FAQ et de la liste des pages du site, ainsi que d'un instantané quotidien des principales pages de statistiques dans leur vue par défaut (dernier patch, Ligue du Nexus, tous les rangs). Les pages de l'instantané sont choisies en fonction des mots de votre question ; il n'y a pas de recherche vectorielle, et il ne peut rien consulter en direct : il ne voit donc ni vos statistiques ni aucune vue filtrée. Dans ce cas, il vous renvoie vers la page concernée. Il nécessite une connexion Battle.net et accepte 20 questions par jour, 25 pour les soutiens Patreon."
         },
         "7fceba2017cd384d": {
             "q": "Comment utiliser l'Assistant de draft ?",

@@ -1,6 +1,6 @@
 {
     "categories": {
-        "Getting Started": "入門指南",
+        "Getting Started": "新手入門",
         "Uploading Replays": "上傳重播",
         "MMR & Rankings": "MMR 與排名",
         "Global Stats & Data": "全球統計與資料",
@@ -22,6 +22,10 @@
         "fee6b20b0ee8251f": {
             "q": "Heroes Profile 是免費的嗎？",
             "a": "是的，Heroes Profile 完全免費。我們透過 <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> 獲得社群支持。Patreon 贊助者可享有無廣告體驗及專屬的網站標誌。"
+        },
+        "718a29824ecf8cbe": {
+            "q": "我本賽季玩了幾場比賽？",
+            "a": "開啟你的個人檔案，並將<strong>賽季</strong>篩選設為目前賽季。概覽便會顯示你在該賽季的場次、勝場與勝率，而<a href=\"/Player/Zemill/67280/1/Match/History\" class=\"link\">比賽紀錄</a>會列出所有這些比賽。只有已上傳的比賽才會計入，因此總數可能少於你在遊戲中實際玩的場次。"
         },
         "7ba1b5ca799e4b7a": {
             "q": "如何讓我的統計資料出現在 Heroes Profile 上？",
@@ -55,6 +59,10 @@
             "q": "Heroes Profile 的 MMR 是如何運作的？",
             "a": "Blizzard 的重播檔案中不包含 MMR 或段位資料，因此我們無法從重播取得你官方的遊戲內段位或 MMR。我們會根據你上傳的重播中的勝敗，自行計算 MMR。這只是估算值，上傳的比賽越多就越準確。新的遊戲模式（例如風暴聯賽剛推出時）會讓所有人從頭開始，因此早期的 MMR 數值不確定性較高。你真實的風暴聯賽段位可以另外顯示，從載入畫面讀取（見下方）。"
         },
+        "ce9abd80c6b80a74": {
+            "q": "哪裡可以進一步了解 MMR 背後的數學原理？",
+            "a": "我們的 MMR 以 TrueSkill 為基礎，這是一套同時追蹤實力估計值及其確定程度的評分系統。如需深入且易讀的運作原理說明，請參閱 Jeff Moser 撰寫的 <a href=\"https://www.moserware.com/2010/03/computing-your-skill.html\" target=\"_blank\" class=\"link\">Computing Your Skill</a>。"
+        },
         "628d7a2936bd5087": {
             "q": "為什麼我的 Heroes Profile MMR 和遊戲內段位不一致？",
             "a": "我們的 MMR 是獨立計算的，只依據上傳到我們系統的重播。它並非來自 Blizzard 的伺服器，也不代表你官方的遊戲內排名。上傳的比賽越多，數值就越接近你的實際實力。如果你剛開始上傳，多打幾場比賽，數值就會趨於穩定。你真實的遊戲內段位（若我們有資料）會顯示在個人檔案中獨立的「風暴聯賽段位」區塊。"
@@ -82,10 +90,6 @@
         "d9046734a5b347eb": {
             "q": "什麼是英雄 MMR？",
             "a": "英雄 MMR 是針對個別英雄的 MMR 評分。你不只有單一的整體評分，而是你玩的每位英雄都有各自的 MMR。此評分會將你與其他玩家在同一位英雄上的表現進行比較。身為高段位的風暴聯賽玩家，並不代表你在很少使用的英雄上也會有很高的英雄 MMR。"
-        },
-        "ce9abd80c6b80a74": {
-            "q": "哪裡可以進一步了解 MMR 背後的數學原理？",
-            "a": "我們的 MMR 以 TrueSkill 為基礎，這是一套同時追蹤實力估計值及其確定程度的評分系統。如需深入且易讀的運作原理說明，請參閱 Jeff Moser 撰寫的 <a href=\"https://www.moserware.com/2010/03/computing-your-skill.html\" target=\"_blank\" class=\"link\">Computing Your Skill</a>。"
         },
         "4f0391d0e1d4e289": {
             "q": "Heroes Profile 的資料有多準確？",
@@ -126,6 +130,14 @@
         "da9672cbf4c59a90": {
             "q": "什麼是天賦建構器？",
             "a": "<a href=\"/Global/Talents/Builder\" class=\"link\">天賦建構器</a>讓你建立特定的天賦組合，並查看該組合確切的勝率資料。非常適合用真實比賽資料直接比較兩個組合。"
+        },
+        "a95840c72f0aa9a4": {
+            "q": "如何找到剋制某位英雄的英雄？",
+            "a": "在<a href=\"/Global/Matchups\" class=\"link\">對位</a>中開啟該英雄，例如 <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>。<strong>敵方隊伍中的前 5 大威脅</strong>會顯示對陣該英雄表現最好的英雄。在表格中依該英雄的<strong>對陣勝率</strong>排序：勝率最高的就是它的剋星，差值欄則顯示各英雄對陣它時比平常好多少。請同時查看對陣場次，以免被過小的樣本誤導。接著，<a href=\"/Global/Matchups/Talents\" class=\"link\">對位天賦</a>會顯示在該對位中應選擇哪些天賦。"
+        },
+        "970140e24d9bb059": {
+            "q": "某位英雄的最佳組合是什麼？",
+            "a": "在<a href=\"/Global/Talents\" class=\"link\">天賦</a>中開啟該英雄，例如 <a href=\"/Global/Talents/Valla\" class=\"link\">/Global/Talents/Valla</a>。預設顯示最新版本。組合表格列出 1 級到 20 級的完整組合；請依<strong>勝利機率</strong>排序並查看場次，因為場次少的組合可能看起來比實際更好。<strong>天賦組合類型</strong>可在最常用組合與不同的前期路線之間切換。上方的天賦表格顯示各天賦單獨的勝率，這與完整組合並不相同。若要測試你自己的天賦搭配，請使用<a href=\"/Global/Talents/Builder\" class=\"link\">天賦建構器</a>。"
         },
         "2df01fc91ad6f6f6": {
             "q": "篩選功能怎麼用？",
@@ -226,6 +238,14 @@
         "ac97e4684901a4e5": {
             "q": "我可以把網站上的天賦組合複製到遊戲中嗎？",
             "a": "可以。在全球英雄頁面、單場比賽頁面以及網站上其他多處，你會在天賦組合旁看到「複製組合」按鈕。點擊後會以《暴雪英霸》可接受的格式將組合複製到剪貼簿，讓你可以直接貼到遊戲的天賦配置畫面中。"
+        },
+        "d8d835d1b1e2096e": {
+            "q": "什麼是「受虛無標記」？",
+            "a": "這是薩拉塔斯入侵活動的標誌。在網站上找到她藏起來的眼睛的玩家，獲得了虛無印記，也就是顯示在名稱旁的虛空之眼。活動已經結束，但此標誌永久保留。<a href=\"/Event/Xalatath\" class=\"link\">薩拉塔斯活動回顧</a>中有最終統計，包括獲得此標誌的玩家人數，以及頂尖玩家與你自己的貢獻。"
+        },
+        "3db0a7ab161af721": {
+            "q": "說明助手如何運作？",
+            "a": "右下角的說明助手使用 Anthropic 開發的 AI 模型 Claude Haiku 5.5。它會根據本常見問題、網站頁面清單，以及主要統計頁面預設檢視（最新版本、風暴聯賽、所有段位）的每日快照來回答。快照頁面是透過比對你問題中的字詞來挑選；它不使用向量搜尋，也無法即時查詢任何資料，因此看不到你的統計或任何篩選後的檢視。遇到這類問題時，它會提供相關頁面的連結。使用助手需要以 Battle.net 登入，每天可提問 20 次，Patreon 贊助者為 25 次。"
         },
         "7fceba2017cd384d": {
             "q": "如何使用選角助手？",

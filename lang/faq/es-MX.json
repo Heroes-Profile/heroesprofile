@@ -23,6 +23,10 @@
             "q": "¿Heroes Profile es gratis?",
             "a": "Sí, Heroes Profile es completamente gratis. La comunidad nos apoya a través de <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a>. Quienes nos apoyan en Patreon disfrutan del sitio sin anuncios y obtienen distintivos especiales."
         },
+        "718a29824ecf8cbe": {
+            "q": "¿Cuántas partidas he jugado esta temporada?",
+            "a": "Abre tu perfil y pon el filtro <strong>Temporada</strong> en la temporada actual. El resumen mostrará tus partidas, victorias y tasa de victorias de esa temporada, y el <a href=\"/Player/Zemill/67280/1/Match/History\" class=\"link\">Historial de partidas</a> muestra cada una de esas partidas. Solo se cuentan las partidas subidas, así que el total puede ser menor que lo que jugaste en el juego."
+        },
         "7ba1b5ca799e4b7a": {
             "q": "¿Cómo hago para que mis estadísticas aparezcan en Heroes Profile?",
             "a": "Necesitas subir tus archivos de repetición. La forma más fácil es descargar el <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">cargador de Heroes Profile</a>, que funciona en segundo plano y sube automáticamente las repeticiones después de cada partida. También puedes <a href=\"/Upload\" class=\"link\">subir repeticiones manualmente</a>. Después de subirlas, espera de 5 a 10 minutos a que se procesen."
@@ -55,6 +59,10 @@
             "q": "¿Cómo funciona el MMR en Heroes Profile?",
             "a": "Blizzard no incluye datos de MMR ni de rango en los archivos de repetición, así que no podemos obtener tu rango ni tu MMR oficiales del juego a partir de una repetición. En su lugar, calculamos nuestro propio MMR según las victorias y derrotas de las repeticiones que subes. Es una aproximación: cuantas más partidas subas, más preciso será. Los modos de juego nuevos (como cuando se lanzó la Liga de la Tormenta) hacen que todos empiecen desde cero, por lo que los primeros valores de MMR tienen mucha incertidumbre. Tu rango real de la Liga de la Tormenta se puede mostrar aparte, leído de la pantalla de carga (consulta más abajo)."
         },
+        "ce9abd80c6b80a74": {
+            "q": "¿Dónde puedo aprender más sobre las matemáticas detrás del MMR?",
+            "a": "Nuestro MMR se basa en TrueSkill, un sistema de puntuación que registra tanto una estimación de la habilidad como qué tan seguro está de esa estimación. Para una explicación completa y fácil de leer sobre cómo funciona, consulta <a href=\"https://www.moserware.com/2010/03/computing-your-skill.html\" target=\"_blank\" class=\"link\">Computing Your Skill</a>, de Jeff Moser."
+        },
         "628d7a2936bd5087": {
             "q": "¿Por qué mi MMR de Heroes Profile no coincide con mi rango del juego?",
             "a": "Nuestro MMR es un cálculo independiente basado solo en las repeticiones subidas a nuestro sistema. No proviene de los servidores de Blizzard y no refleja tu clasificación oficial del juego. Cuantas más partidas subas, más se acercará a tu nivel de habilidad real. Si apenas empiezas a subir repeticiones, juega más partidas y el valor se estabilizará. Tu rango real del juego, cuando lo tenemos, aparece en su propia sección de Rango de Liga de la Tormenta en tu perfil."
@@ -82,10 +90,6 @@
         "d9046734a5b347eb": {
             "q": "¿Qué es el MMR de héroe?",
             "a": "El MMR de héroe es una puntuación de MMR por héroe. En lugar de una sola puntuación general, tienes un MMR distinto para cada héroe que juegas. Esta puntuación te compara con el rendimiento de otros jugadores con ese mismo héroe. Ser un jugador de alto nivel en la Liga de la Tormenta no significa automáticamente que tengas un MMR de héroe alto con un héroe que casi no juegas."
-        },
-        "ce9abd80c6b80a74": {
-            "q": "¿Dónde puedo aprender más sobre las matemáticas detrás del MMR?",
-            "a": "Nuestro MMR se basa en TrueSkill, un sistema de puntuación que registra tanto una estimación de la habilidad como qué tan seguro está de esa estimación. Para una explicación completa y fácil de leer sobre cómo funciona, consulta <a href=\"https://www.moserware.com/2010/03/computing-your-skill.html\" target=\"_blank\" class=\"link\">Computing Your Skill</a>, de Jeff Moser."
         },
         "4f0391d0e1d4e289": {
             "q": "¿Qué tan precisos son los datos de Heroes Profile?",
@@ -126,6 +130,14 @@
         "da9672cbf4c59a90": {
             "q": "¿Qué es el Creador de talentos?",
             "a": "El <a href=\"/Global/Talents/Builder\" class=\"link\">Creador de talentos</a> te permite armar una build de talentos específica y ver los datos de tasa de victorias exactamente de esa combinación. Es ideal para comparar dos builds frente a frente con datos de partidas reales."
+        },
+        "a95840c72f0aa9a4": {
+            "q": "¿Cómo encuentro los counters de un héroe?",
+            "a": "Abre el héroe en <a href=\"/Global/Matchups\" class=\"link\">Enfrentamientos</a>, p. ej., <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>. <strong>Top 5 amenazas en el equipo enemigo</strong> muestra los héroes a los que mejor les va contra él. En la tabla, ordena por <strong>Tasa de victorias en contra</strong> de ese héroe: las tasas de victoria más altas son sus counters, y la columna Diferencia muestra cuánto mejor le va a cada héroe contra él de lo habitual. Revisa Partidas jugadas en contra para que una muestra pequeña no te engañe. Después, <a href=\"/Global/Matchups/Talents\" class=\"link\">Talentos por enfrentamiento</a> muestra qué talentos elegir para ese enfrentamiento."
+        },
+        "970140e24d9bb059": {
+            "q": "¿Cuál es la mejor build para un héroe?",
+            "a": "Abre el héroe en <a href=\"/Global/Talents\" class=\"link\">Talentos</a>, p. ej., <a href=\"/Global/Talents/Valla\" class=\"link\">/Global/Talents/Valla</a>. De forma predeterminada muestra el parche más reciente. La tabla de builds lista builds completas del nivel 1 al 20; ordénala por <strong>Probabilidad de victoria</strong> y revisa las partidas jugadas, ya que una build con pocas partidas puede parecer mejor de lo que es. <strong>Tipo de build de talentos</strong> alterna entre las builds más jugadas y distintas rutas para el inicio de la partida. La tabla de talentos de arriba muestra la tasa de victorias de cada talento por separado, que no es lo mismo que una build completa. Para probar una combinación propia, usa el <a href=\"/Global/Talents/Builder\" class=\"link\">Creador de talentos</a>."
         },
         "2df01fc91ad6f6f6": {
             "q": "¿Cómo funcionan los filtros?",
@@ -226,6 +238,14 @@
         "ac97e4684901a4e5": {
             "q": "¿Puedo copiar una build de talentos del sitio al juego?",
             "a": "Sí. En las páginas globales de héroes, la página de partida individual y otros lugares del sitio encontrarás un botón \"Copiar build\" junto a las builds de talentos. Al hacer clic, la build se copia al portapapeles en un formato que acepta Heroes of the Storm, para que puedas pegarla directamente en el juego."
+        },
+        "d8d835d1b1e2096e": {
+            "q": "¿Qué es «Marcado por el Vacío»?",
+            "a": "Es el distintivo del evento de la invasión de Xal'atath. Los jugadores que encontraron su ojo escondido en el sitio obtuvieron la Marca del Vacío, un ojo del Vacío que se muestra junto a su nombre. El evento terminó, pero el distintivo es permanente. El <a href=\"/Event/Xalatath\" class=\"link\">Resumen del evento de Xal'atath</a> tiene los totales finales, incluido cuántos jugadores lo obtuvieron, además de los mejores jugadores y tu propia contribución."
+        },
+        "3db0a7ab161af721": {
+            "q": "¿Cómo funciona el asistente de ayuda?",
+            "a": "El asistente de ayuda de la esquina inferior derecha funciona con Claude Haiku 5.5, un modelo de IA creado por Anthropic. Responde a partir de estas preguntas frecuentes y de la lista de páginas del sitio, además de una captura diaria de las principales páginas de estadísticas en su vista predeterminada (último parche, Liga de la Tormenta, todos los rangos). Las páginas de la captura se eligen según las palabras de tu pregunta; no hay búsqueda vectorial y no puede consultar nada en tiempo real, así que no puede ver tus estadísticas ni ninguna vista filtrada. Para eso, te da el enlace a la página. Requiere iniciar sesión con Battle.net y permite 20 preguntas al día, 25 para quienes apoyan en Patreon."
         },
         "7fceba2017cd384d": {
             "q": "¿Cómo uso el Asistente de draft?",
