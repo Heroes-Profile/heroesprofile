@@ -34,8 +34,8 @@
       <div v-else class="text-subtext">{{ $t('Only an unranked badge has been read this season.') }}</div>
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <stat-box v-if="peakName" class="!m-0 !min-w-0" :tier="peakName" :value-first="true" :title="'Peak'" :value="peakName"></stat-box>
-        <stat-box class="!m-0 !min-w-0" :tier="data.current.league == 'unranked' ? null : currentName" :value-first="true" :title="'Current'" :value="currentName"></stat-box>
+        <stat-box v-if="peak" class="!m-0 !min-w-0" :tier="rankName(peak)" :value-first="true" :title="'Peak'" :value="localRankName(peak)"></stat-box>
+        <stat-box class="!m-0 !min-w-0" :tier="data.current.league == 'unranked' ? null : rankName(data.current)" :value-first="true" :title="'Current'" :value="localRankName(data.current)"></stat-box>
         <stat-box class="!m-0 !min-w-0" :value-first="true" :title="'Games'" :value="games.toLocaleString('en-US')"></stat-box>
         <stat-box class="!m-0 !min-w-0" :value-first="true" :title="'Last seen'" :value="formatDay(data.current.last_game_date)"></stat-box>
       </div>
@@ -68,7 +68,7 @@ import { markRaw } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import { toFont } from 'chart.js/helpers';
 import moment from 'moment-timezone';
-import { rankName } from '../RealRankBadge.vue';
+import { rankName, localRankName } from '../RealRankBadge.vue';
 
 Chart.register(...registerables);
 
@@ -131,9 +131,8 @@ export default {
     rankedPeriods(){
       return (this.data?.periods || []).filter(period => rankValue(period) !== null);
     },
-    peakName(){
-      const peak = this.rankedPeriods.reduce((best, period) => (!best || isBetter(period, best) ? period : best), null);
-      return peak ? rankName(peak) : null;
+    peak(){
+      return this.rankedPeriods.reduce((best, period) => (!best || isBetter(period, best) ? period : best), null);
     },
     // The header follows the toggle: the season, or the days the chart covers
     rangeLabel(){
@@ -144,9 +143,6 @@ export default {
       const first = days[0].day;
       const last = days[days.length - 1].day;
       return first.format(first.year() == last.year() ? 'MMM D' : 'MMM D, YYYY') + ' – ' + last.format('MMM D, YYYY');
-    },
-    currentName(){
-      return this.data?.current ? rankName(this.data.current) : null;
     },
     games(){
       return (this.data?.periods || []).reduce((total, period) => total + period.read_count, 0);
@@ -172,6 +168,8 @@ export default {
     },
   },
   methods: {
+    rankName,
+    localRankName,
     async getData(){
       try{
         const response = await this.$axios.post("/api/v1/player/realrank", {
@@ -299,7 +297,7 @@ export default {
               displayColors: false,
               callbacks: {
                 title: (items) => days[items[0].dataIndex].day.format('MMM D, YYYY'),
-                label: (item) => rankName(days[item.dataIndex].rank),
+                label: (item) => localRankName(days[item.dataIndex].rank),
               },
             },
           },

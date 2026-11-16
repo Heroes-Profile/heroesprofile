@@ -13,7 +13,7 @@ export const TIER_COLORS = {
   Master: ['#7352c7', '#fff0ff'],
 };
 
-// Background and text colour for a tier or rank name ("Platinum 3", "Grandmaster #2")
+// Background and text colour for a tier or rank name ("Platinum 3", "Grand Master #2")
 export function tierStyle(tier) {
   const name = Object.keys(TIER_COLORS).find(key => String(tier).includes(key));
   const [backgroundColor, color] = name ? TIER_COLORS[name] : ['#393e4d', '#ffffff'];

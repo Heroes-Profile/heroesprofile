@@ -9,21 +9,29 @@
 </template>
 
 <script>
-// "Platinum 3", "Master", "Grandmaster #2"
-export function rankName(rank) {
+import { translate as translateText } from '../utils/translate';
+
+// "Platinum 3", "Master", "Grand Master #2", in English: tierStyle() picks the colour by these names.
+// Pass the translator to get them in the visitor's language.
+export function rankName(rank, translate = (text) => text) {
   if (rank.league == 'unranked') {
-    return 'Unranked';
+    return translate('Unranked');
   }
   if (rank.league == 'grandmaster') {
-    return 'Grandmaster' + (rank.ladder_position ? ' #' + rank.ladder_position : '');
+    return translate('Grand Master') + (rank.ladder_position ? ' #' + rank.ladder_position : '');
   }
   if (rank.league == 'master') {
-    return 'Master';
+    return translate('Master');
   }
-  return rank.league.charAt(0).toUpperCase() + rank.league.slice(1) + ' ' + rank.division;
+  return translate(rank.league.charAt(0).toUpperCase() + rank.league.slice(1)) + ' ' + rank.division;
 }
 
-// Image widths in public/images/ranks: league badges are 292 wide (cropped from the game's 350), Master and Grandmaster 380,
+// The same name in the visitor's language, for showing
+export function localRankName(rank) {
+  return rankName(rank, translateText);
+}
+
+// Image widths in public/images/ranks: league badges are 292 wide (cropped from the game's 350), Master and Grand Master 380,
 // all at the game's scale
 const IMAGE_WIDTHS = { master: 380, grandmaster: 380 };
 // Bump when the badge art changes so Cloudflare and browsers fetch the new files
@@ -34,7 +42,7 @@ export default {
   props: {
     // { league, division, ladder_position }
     rank: Object,
-    // Width of a league badge; Master and Grandmaster come out a little larger, as in the game
+    // Width of a league badge; Master and Grand Master come out a little larger, as in the game
     width: Number,
     // Where the rank's name goes: 'below', 'right', or nothing for the badge alone
     label: String,
@@ -52,7 +60,7 @@ export default {
       return '/images/ranks/' + league + '_' + this.rank.division + '.png?v=' + IMAGE_VERSION;
     },
     name(){
-      return rankName(this.rank);
+      return localRankName(this.rank);
     },
     badgeWidth(){
       return Math.round(this.width * (IMAGE_WIDTHS[this.rank.league] || 292) / 292);

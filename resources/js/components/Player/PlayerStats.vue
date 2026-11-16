@@ -116,17 +116,18 @@
           <player-weekday-win-rates :data="data.weekday_data"></player-weekday-win-rates>
         </panel-box>
         <!-- Week days are only shown to the profile's owner; everyone else sees the panel's shape and why -->
-        <panel-box v-else :title="$t('Week Day Win Rates')" :link-text="authenticated ? null : 'Log in with Battle.net to see your week day win rates'" :link-href="authenticated ? null : '/Authenticate/Battlenet'">
+        <panel-box v-else :title="$t('Week Day Win Rates')" :link-text="authenticated ? null : $t('Log in with Battle.net to see your week day win rates')" :link-href="authenticated ? null : '/Authenticate/Battlenet'">
           <template v-if="authenticated" #right>
             <span class="text-subtext">{{ $t("Only shown to the profile's owner") }}</span>
           </template>
+          <!-- Not loading, so the blocks hold still -->
           <div class="flex flex-col gap-3" aria-hidden="true">
             <div v-for="day in 7" :key="day" class="flex flex-col gap-1.5">
               <div class="flex justify-between">
-                <skeleton-box class="w-24 h-5"></skeleton-box>
-                <skeleton-box class="w-20 h-5"></skeleton-box>
+                <skeleton-box class="w-24 h-5 !animate-none"></skeleton-box>
+                <skeleton-box class="w-20 h-5 !animate-none"></skeleton-box>
               </div>
-              <skeleton-box class="h-4"></skeleton-box>
+              <skeleton-box class="h-4 !animate-none"></skeleton-box>
             </div>
           </div>
         </panel-box>

@@ -1810,7 +1810,7 @@ class GlobalDataService
         ];
 
         $filterData->sl_leagues = [
-            ['code' => 'grandmaster', 'name' => 'Grandmaster'],
+            ['code' => 'grandmaster', 'name' => 'Grand Master'],
             ['code' => 'master', 'name' => 'Master'],
             ['code' => 'diamond', 'name' => 'Diamond'],
             ['code' => 'platinum', 'name' => 'Platinum'],

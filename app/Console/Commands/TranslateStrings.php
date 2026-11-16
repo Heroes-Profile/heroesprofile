@@ -104,8 +104,8 @@ class TranslateStrings extends Command
             '/(?:\$t|translate|__)\(\s*(?:\'((?:[^\'\\\\]|\\\\.)*)\'|"((?:[^"\\\\]|\\\\.)*)"|`([^`$]*)`)/',
             // Props the shared components pass through $t
             '/:(?:text|heading|title|label|all-label|button-text|buttonText|label-text|labelText)="\'([^\']+)\'"/',
-            '/<(?:custom-button|page-heading|panel-box|modal-box|group-box|tab-button|search-input)\b[^>]*?\s(?:text|heading|title|tab1text|tab2text|placeholder|label)="([A-Z][^"{]*)"/',
-            '/:(?:tab1text|tab2text)="\'([^\']+)\'"/',
+            '/<(?:custom-button|page-heading|panel-box|modal-box|group-box|tab-button|search-input)\b[^>]*?\s(?:text|heading|title|tab1text|tab2text|tab3text|placeholder|label)="([A-Z][^"{]*)"/',
+            '/:(?:tab1text|tab2text|tab3text)="\'([^\']+)\'"/',
         ];
 
         $finder = (new Finder)->files()->in([resource_path('js'), resource_path('views')])->name(['*.vue', '*.js', '*.blade.php']);
