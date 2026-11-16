@@ -5,7 +5,7 @@
        header, anchored to the glass and reaching left, so a table column keeps its width while searching. -->
   <!-- centered: the open box is placed by the nearest positioned ancestor (the header cell's content), centred over it -->
   <span v-if="collapsible" :class="['inline-flex items-center', { relative: !centered }]">
-    <button type="button" :class="['text-teal hover:text-lteal px-1', { invisible: isOpen }]" :aria-label="$t(placeholder)" :title="$t(placeholder)" :tabindex="isOpen ? -1 : null" @click="expand">
+    <button type="button" :class="['search-input-glass text-teal hover:text-lteal px-1', { invisible: isOpen }]" :aria-label="$t(placeholder)" :title="$t(placeholder)" :tabindex="isOpen ? -1 : null" @click="expand">
       <i class="fas fa-magnifying-glass text-sm"></i>
     </button>
     <div v-if="isOpen" v-bind="$attrs" :class="['absolute top-1/2 -translate-y-1/2 z-20', centered ? 'left-1/2 -translate-x-1/2' : 'right-0']">

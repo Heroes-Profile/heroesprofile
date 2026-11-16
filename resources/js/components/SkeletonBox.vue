@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-surface-3 rounded animate-pulse"></div>
+  <div class="skeleton-box bg-surface-3 rounded animate-pulse"></div>
 </template>
 
 <script>

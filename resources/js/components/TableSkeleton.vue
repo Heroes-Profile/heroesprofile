@@ -2,11 +2,12 @@
   <!-- A table's grey placeholder while it loads. Pass columns to mirror the real table's cells. -->
   <component :is="bare ? 'div' : 'panel-box'" :class="{ 'bg-surface rounded overflow-hidden': bare }">
     <skeleton-box v-if="heading" class="h-8 w-80 max-w-full"></skeleton-box>
-    <div v-if="columns.length" class="flex flex-col">
-      <div class="grid gap-3 md:gap-6 px-3 py-5 border-b border-gray-dark" :style="gridStyle">
+    <!-- table-skeleton-*: light mode draws these like its light tables (app.css) -->
+    <div v-if="columns.length" class="table-skeleton flex flex-col">
+      <div class="table-skeleton-head grid gap-3 md:gap-6 px-3 py-5 border-b border-gray-dark" :style="gridStyle">
         <skeleton-box v-for="(column, index) in shownColumns" :key="index" :class="['h-4', column === 'num' ? 'w-2/3 ml-auto' : ['icon', 'role', 'avatar', 'stat', 'rank', 'pill', 'talentrow', 'copy', 'code'].includes(column) ? 'w-2/3 mx-auto' : 'w-3/4']"></skeleton-box>
       </div>
-      <div v-for="row in rows" :key="row" :class="['grid gap-3 md:gap-6 px-3 py-4 items-center', { 'bg-surface-1': row % 2 === 0 }]" :style="gridStyle">
+      <div v-for="row in rows" :key="row" :class="['grid gap-3 md:gap-6 px-3 py-4 items-center', { 'table-skeleton-stripe bg-surface-1': row % 2 === 0 }]" :style="gridStyle">
         <template v-for="(column, index) in shownColumns" :key="index">
           <div v-if="column === 'portrait'" class="flex flex-col gap-2">
             <skeleton-box class="w-12 h-12 max-md:w-10 max-md:h-10 !rounded-full"></skeleton-box>

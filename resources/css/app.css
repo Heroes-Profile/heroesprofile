@@ -449,6 +449,28 @@ input[type="radio"].form-checkbox:checked{
 .dark-mode .rounded-table tbody{
   @apply bg-surface-1;
 }
+/* Light mode's tables are light grey under a teal header, so their loading placeholders are too: the table skeleton
+   takes the same colours, and grey blocks in a light table are a mid grey rather than the dark one */
+.light-mode .table-skeleton{
+  @apply bg-gray-light rounded-control overflow-hidden;
+}
+.light-mode .table-skeleton-head{
+  @apply bg-teal border-b-0;
+}
+.light-mode .table-skeleton-stripe{
+  @apply bg-gray-xlight;
+}
+.light-mode .table-skeleton .skeleton-box,
+.light-mode table .skeleton-box{
+  @apply bg-gray-md;
+}
+.light-mode .table-skeleton-head .skeleton-box{
+  @apply bg-white/40;
+}
+/* Light mode's table headers are teal, which hid the teal search glass in them */
+.light-mode thead .search-input-glass{
+  @apply text-white hover:text-white/75;
+}
 /* Light mode only lightens tables, so the near-white header text meant for dark panels (the clickable values in
    Advanced Stats and other table links) takes the table's own colour: black on rows, white on the teal header */
 .light-mode table .text-header{
