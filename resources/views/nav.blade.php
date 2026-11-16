@@ -227,7 +227,7 @@
               
             </div>
 </div>
-              <div id="right-nav-wrapper" class="flex max-md:flex-wrap max-md:items-center justify-center flex-none mx-auto">
+              <div id="right-nav-wrapper" class="flex max-md:flex-wrap max-md:items-center justify-center flex-none mx-auto md:mr-0">
 
                 <div id="nav-buttons" class="flex gap-3 md:pl-4 max-md:gap-2 max-md:w-full max-md:px-3 max-md:pt-4 max-md:flex-wrap max-md:justify-center">
                     <custom-button id="nav-api-button" class="font-semibold max-md:text-xs max-md:px-3 max-md:py-1.5" :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'"></custom-button>
