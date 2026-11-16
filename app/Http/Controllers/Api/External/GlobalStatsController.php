@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\External;
 
+use App\Auth\ApiKeyContext;
+use App\Auth\ApiKeyGuard;
 use App\Http\Controllers\Api\External\Concerns\TranslatesInternalFailures;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Global\GlobalCompositionsController;
@@ -333,8 +335,19 @@ class GlobalStatsController extends Controller
      * on purpose: a five minute query polled every ten seconds would otherwise cost
      * thirty calls to deliver one result.
      */
-    public function job(string $jobId, GlobalQueryService $queries): Response
+    public function job(Request $request, string $jobId, GlobalQueryService $queries): Response
     {
+        // This route carries no `api.quota`, which is where suspension is enforced. A
+        // poll also tops a batch up, so without this a suspended account's open batch
+        // keeps starting queries.
+        $context = $request->attributes->get(ApiKeyGuard::REQUEST_ATTRIBUTE);
+
+        if ($context instanceof ApiKeyContext && $context->isSuspended()) {
+            return response()->json([
+                'error' => ['code' => $context->suspensionCode(), 'message' => $context->suspensionMessage()],
+            ], 403);
+        }
+
         $response = $queries->poll($jobId);
 
         // The service's own bodies are shaped for the site's poller, and a failed

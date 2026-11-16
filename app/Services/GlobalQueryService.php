@@ -672,23 +672,30 @@ class GlobalQueryService
             ]);
         } catch (\Throwable $exception) {
             $tooLarge = $limited && $this->isQueryTimeout($exception);
+            $killed = $this->isQueryKilled($exception);
             $ranTooLong = microtime(true) - $start > self::NO_RETRY_AFTER_SECONDS;
 
             Log::error('Global query job failed', [
                 'job_id' => $jobId,
                 'cache_key' => $job['cache_key'],
                 'too_large' => $tooLarge,
+                'killed' => $killed,
                 'error' => $exception->getMessage(),
             ]);
 
             if ($tooLarge) {
                 $this->markTooLarge($jobId, $job);
             } else {
-                $this->markFailed($jobId, $job, $exception->getMessage(), $ranTooLong ? self::MAX_ATTEMPTS : $attempt);
+                $this->markFailed($jobId, $job, $exception->getMessage(), ($ranTooLong || $killed) ? self::MAX_ATTEMPTS : $attempt);
             }
 
             $this->chargeJob($job, $start, $dbMark);
-            $this->topUpParent($job);
+
+            // A kill doesn't hand its slot to the next child either. A poll still tops
+            // the batch up; deleting the parent record stops it.
+            if (! $killed) {
+                $this->topUpParent($job);
+            }
 
             if ($tooLarge) {
                 foreach (array_keys(DB::getConnections()) as $name) {
@@ -699,7 +706,7 @@ class GlobalQueryService
             }
 
             // Answered 200 so Cloud Tasks doesn't retry it.
-            if ($ranTooLong) {
+            if ($ranTooLong || $killed) {
                 report($exception);
 
                 return;
@@ -808,8 +815,19 @@ class GlobalQueryService
     /** MySQL's "maximum statement execution time exceeded", anywhere in the chain. */
     private function isQueryTimeout(\Throwable $exception): bool
     {
+        return $this->hasMysqlError($exception, 3024);
+    }
+
+    /** Stopped by hand with `KILL QUERY`, so it isn't run again. */
+    private function isQueryKilled(\Throwable $exception): bool
+    {
+        return $this->hasMysqlError($exception, 1317);
+    }
+
+    private function hasMysqlError(\Throwable $exception, int $code): bool
+    {
         for ($e = $exception; $e !== null; $e = $e->getPrevious()) {
-            if ($e instanceof QueryException && (int) ($e->errorInfo[1] ?? 0) === 3024) {
+            if ($e instanceof QueryException && (int) ($e->errorInfo[1] ?? 0) === $code) {
                 return true;
             }
         }
