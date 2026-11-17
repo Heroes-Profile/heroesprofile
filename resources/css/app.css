@@ -188,6 +188,12 @@ body{
  
 }
 
+/* The nav's links and buttons wrapped onto two rows (MobileNavHack): a right padding as wide as the logo puts both
+   rows' centre on the page's centre instead of the space beside the logo */
+@media (min-width:1024px){
+  #main-nav.nav-wrapped #nav-content{ padding-right: var(--nav-logo-w); }
+  #main-nav.nav-wrapped #right-nav-wrapper{ margin-left: auto; margin-right: auto; }
+}
 .nav-item{
   padding-top:0.625rem;
   padding-bottom:0.625rem;

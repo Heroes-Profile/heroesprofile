@@ -9,7 +9,8 @@
         <span class="absolute -top-1.5 -right-1.5 px-1 rounded bg-surface text-white text-[0.625rem] font-bold leading-[0.875rem]" aria-hidden="true">{{ shortCode }}</span>
       </span>
     </div>
-    <div data-battletag="nav-language-menu" class="nav-dropdown nav-dropdown-secondary-nav md:!left-auto md:!right-0 max-md:fixed max-md:top-0 max-md:w-full max-md:h-full max-md:bg-gray-dark">
+    <!-- md:top-full: this wrapper is flex, so unlike the user menu's the panel would start level with the button, over it -->
+    <div data-battletag="nav-language-menu" class="nav-dropdown nav-dropdown-secondary-nav md:!left-auto md:!right-0 md:top-full max-md:fixed max-md:top-0 max-md:w-full max-md:h-full max-md:bg-gray-dark">
       <div class="nav-dropdown-inner-wrapper">
         <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal">{{ $t('Language') }} <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg" :aria-label="$t('Close menu')">x</button></div>
         <a

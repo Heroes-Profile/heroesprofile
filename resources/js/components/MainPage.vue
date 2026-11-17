@@ -44,7 +44,8 @@
     <div class="flex-[1.5_1_0] min-h-28 md:[@media(max-height:700px)]:min-h-10 max-md:min-h-0"></div>
 
     <!-- md+: one row of cards that shrink to fit; below md the two wrappers keep the mobile order -->
-    <div class="flex flex-wrap md:flex-nowrap justify-center gap-x-10 md:gap-x-6 2xl:gap-x-10 gap-y-16 max-w-[120rem] mx-auto px-4 md:px-8 max-md:pt-8">
+    <!-- Full width on desktop with the outer cards on its edges, so they line up with the nav above -->
+    <div class="flex flex-wrap md:flex-nowrap justify-center md:justify-between gap-x-10 md:gap-x-6 2xl:gap-x-10 gap-y-16 w-full max-w-[120rem] mx-auto px-4 md:px-8 max-md:pt-8">
       <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem] md:contents">
       <div :class="cardClasses">
         <i class="fas fa-address-card text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>

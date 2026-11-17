@@ -13,18 +13,20 @@
 
 <div id="main-menu" class="  main-navigation-wrapper"> <!-- max-md:hidden  - This needs to hide/show on click of the button but only on mobile - either detect mobile with vue, or have a class that is added/taken away that only applies to mobile -->
     {{-- Desktop: above the battletag row (z-[51]), which is above page dropdowns like filters (z-50). Mobile keeps z-50 so a battletag menu can open full screen over it. --}}
-    <nav id="main-nav" class="bg-surface-1 text-white z-50 md:z-[52] relative md:px-8 md:py-3 text-sm max-md:pt-2">
+    <nav id="main-nav" class="bg-surface-1 text-white z-50 md:z-[52] relative md:py-3 text-sm max-md:pt-2">
       <button  id="mobile-nav-close" class="hidden bg-blue rounded-control px-2 py-1 min-w-[2.25rem] min-h-[2rem] text-base leading-none ml-auto  mr-2" aria-label="{{ __('Close menu') }}"><basil-icon name="cross" aria-hidden="true"></basil-icon></button>
        
-        <div class="flex items-start justify-center flex-wrap  mx-auto max-md:flex-col max-md:items-stretch max-w-[120rem]" >
+        {{-- Padding inside the 120rem box, like the page content, so the logo and the right-hand buttons line up with it --}}
+        <div class="flex items-start justify-center flex-wrap mx-auto max-md:flex-col max-md:items-stretch max-w-[120rem] md:px-8" >
              <div class="flex justify-start items-start flex-wrap max-md:flex-col max-md:items-stretch grow mr-auto max-md:mr-0 max-md:w-full max-md:justify-center">
             <a id="nav-logo" class="flex shrink-0 items-center whitespace-nowrap font-logo text-2xl md:mt-[0.375rem] max-md:self-center max-md:mb-2" href="/">
                 Heroes
                 <img class="w-10 shrink-0 mx-2" src="/images/logo/heroesprofilelogo.png" alt="{{ __('Heroes Profile Logo') }}" />
                 Profile
             </a>
-            <div id="nav-content" class="ml-auto flex justify-between flex-wrap  text-sm md:flex-1 md:ml-8 max-md:flex-col max-md:ml-0 max-md:w-full">
-                <div id="nav-links" class=" grow-1 flex items-left md:space-x-5 md:ml-auto flex-wrap md:flex-nowrap max-md:flex-col max-md:w-full ">
+            <div id="nav-content" class="ml-auto flex justify-between flex-wrap  text-sm md:flex-1 max-md:flex-col max-md:ml-0 max-md:w-full">
+                {{-- Its own group: equal space to the logo and to the buttons, as in the redesign; the padding is the least of it --}}
+                <div id="nav-links" class=" grow-1 flex items-left md:space-x-5 md:mx-auto md:px-8 flex-wrap md:flex-nowrap max-md:flex-col max-md:w-full ">
                     
                     <div id="nav-global-stats" class="relative group inline-block nav-item">
                         <a class=" cursor-pointer">{{ __('Global Hero Stats') }}<basil-icon name="arrow" class="rotate-90 text-xs ml-2" aria-hidden="true"></basil-icon></a>
@@ -227,9 +229,9 @@
               
             </div>
 </div>
-              <div id="right-nav-wrapper" class="flex max-md:flex-wrap max-md:items-center justify-center flex-none mx-auto md:mr-0">
+              <div id="right-nav-wrapper" class="flex max-md:flex-wrap max-md:items-center justify-center flex-none mx-auto md:mx-0">
 
-                <div id="nav-buttons" class="flex gap-3 md:pl-4 max-md:gap-2 max-md:w-full max-md:px-3 max-md:pt-4 max-md:flex-wrap max-md:justify-center">
+                <div id="nav-buttons" class="flex gap-3 max-md:gap-2 max-md:w-full max-md:px-3 max-md:pt-4 max-md:flex-wrap max-md:justify-center">
                     <custom-button id="nav-api-button" class="font-semibold max-md:text-xs max-md:px-3 max-md:py-1.5" :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'"></custom-button>
                     <custom-button id="nav-uploader-button" class="font-semibold max-md:text-xs max-md:px-3 max-md:py-1.5" :href="'/Upload'" :text="'Replay Uploader'" :alt="'Replay Uploader'" :color="'teal'"></custom-button>
                     <custom-button id="nav-patreon-button" class="font-semibold max-md:text-xs max-md:px-3 max-md:py-1.5" :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Remove Ads / Patreon'" :alt="'Patreon'" :color="'red'"></custom-button>

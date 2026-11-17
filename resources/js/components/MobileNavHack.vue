@@ -148,12 +148,37 @@ mobileNavButtons.forEach(function(button){
   },
   mounted() {
     const openButtons = document.querySelectorAll('.mobile-secondary-nav-open');
+    this.centreWrappedNav();
   },
   computed: {
   },
   watch: {
   },
   methods: {
+    // When the text links and buttons don't fit beside the logo they wrap onto two rows. Those rows then centre on
+    // the page (app.css .nav-wrapped) rather than on the space right of the logo.
+    centreWrappedNav() {
+      const nav = document.getElementById('main-nav');
+      const content = document.getElementById('nav-content');
+      const links = document.getElementById('nav-links');
+      const right = document.getElementById('right-nav-wrapper');
+      const logo = nav && nav.querySelector('a');
+      if (!nav || !content || !links || !right || !logo || !window.ResizeObserver) {
+        return;
+      }
+      // Measured without the class, so a nav that fits again goes back to one row
+      const check = () => {
+        nav.classList.remove('nav-wrapped');
+        if (window.innerWidth < 1024) {
+          return;
+        }
+        if (right.getBoundingClientRect().top > links.getBoundingClientRect().top + 4) {
+          nav.style.setProperty('--nav-logo-w', (content.getBoundingClientRect().left - logo.getBoundingClientRect().left) + 'px');
+          nav.classList.add('nav-wrapped');
+        }
+      };
+      new ResizeObserver(check).observe(nav);
+    },
   }
 }
 </script>
