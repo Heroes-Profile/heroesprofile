@@ -67,6 +67,13 @@ details.group.is-closing[open] .group-open\:rotate-180 {
 .expandable-dropdown .variable-text{
   @apply text-white;
 }
+/* The option text ticks its box too */
+.expandable-dropdown label, .expandable-dropdown input[type="checkbox"], .expandable-dropdown input[type="radio"]{
+  cursor: pointer;
+}
+.expandable-dropdown input:disabled, .expandable-dropdown input:disabled + label{
+  cursor: default;
+}
 .expandable-dropdown input[type="text"]{
   @apply bg-field text-white;
 }

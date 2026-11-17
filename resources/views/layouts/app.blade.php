@@ -132,7 +132,7 @@
     <style>.void-eye-img{ background-image: url('{{ asset('images/event/xalatath/void-eye.svg') }}'); }</style>
 
 </head>
-<body class="bg-page bg-[radial-gradient(ellipse_62.5rem_56.25rem_at_50%_9.375rem,#1c2f5a,#14182a)] bg-no-repeat text-white {{ $bladeGlobals ? $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' : 'light-mode' }}">
+<body class="bg-page bg-[radial-gradient(ellipse_137.5rem_193.75rem_at_50%_9.6875rem,rgba(33,61,122,0.6),rgba(33,61,122,0.57)_12.5%,rgba(33,61,122,0.48)_25%,rgba(33,61,122,0.37)_37.5%,rgba(33,61,122,0.25)_50%,rgba(33,61,122,0.14)_62.5%,rgba(33,61,122,0.07)_75%,rgba(33,61,122,0.03)_87.5%,transparent)] bg-no-repeat text-white {{ $bladeGlobals ? $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' : 'light-mode' }}">
   <div id="app" class="relative flex flex-col align-stretch " style="min-height:100vh; ">
     <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" ></horizontal-banner-ad>
 

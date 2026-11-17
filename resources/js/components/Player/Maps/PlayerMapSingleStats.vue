@@ -42,7 +42,7 @@
     <div v-if="data && esport && !data.games_played" class="flex items-center justify-center mt-8">
       {{ $t('No :map games in :league for these filters.', { map: $mapName(map), league: league.name }) }}
     </div>
-    <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
+    <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 space-y-8">
 
       <panel-box>
       <div class="flex flex-col xl:flex-row gap-6">
@@ -128,7 +128,7 @@
       {{ $t('No data') }}
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
-    <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
+    <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 space-y-8">
       <loading-component :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ asyncLoading ? $t('This is taking longer than expected. A background task is computing your results. Please be patient.') : $t('Loading data...') }}</loading-component>
       <panel-box>
         <div class="flex flex-col xl:flex-row gap-6">

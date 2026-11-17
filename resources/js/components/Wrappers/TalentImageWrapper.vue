@@ -1,6 +1,6 @@
 <template>
     <div :class="{ 'grayscale': isRemoved }">
-      <round-image v-if="talent" :size="size" popupsize="large" mobileClick="true" :image="getTalentImage()" :title="displayTitle">
+      <round-image v-if="talent" :size="size" popupsize="large" mobileClick="true" :popup-hoverable="popupHoverable" :hidedelay="popupHoverable ? undefined : 0" :image="getTalentImage()" :title="displayTitle">
         <h2 v-if="isRemoved" class="text-yellow font-bold mb-1">{{ $t('Talent no longer available') }}</h2>
         <h2 class="text-base font-bold text-white">{{ displayTitle }}</h2>
         <game-tooltip v-if="$gameText(talent, 'raw_description')" class="mt-2.5" :text="$gameText(talent, 'raw_description')" :level="level"></game-tooltip>
@@ -30,6 +30,7 @@ export default {
     talent: Object,
     size: String,
     mobileClick: true,
+    popupHoverable: { type: Boolean, default: true },
     // Hero level for tooltips that scale; only used when the talent has raw_description
     level: {
       type: Number,

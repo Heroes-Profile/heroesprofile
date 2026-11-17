@@ -27,11 +27,12 @@
           <span v-if="toggletabs" class="uppercase whitespace-nowrap font-bold px-1 shrink-0">{{ $t(toggleside === 'right' ? toggletabs[1] : toggletabs[0]) }}</span>
           <span v-if="selectedOptions.length" class="uppercase font-bold px-1 truncate min-w-0">{{ selectedlabel || (selectedOptions.length <= 3 ? selectedOptionsName.join(', ') : $t(':selected of :total selected', { selected: selectedOptions.length, total: values.length })) }}</span>
         </span>
-        <i class="fa-solid fa-chevron-down ml-auto shrink-0 text-xs"></i>
+        <i class="fa-solid fa-chevron-down ml-auto shrink-0 text-xs transition-transform" :class="{ 'rotate-180': showOptions }"></i>
       </span>
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
-    <div v-if="showOptions" class="absolute left-0 mt-2 w-max max-w-[calc(100vw-2rem)] rounded overflow-hidden shadow-lg expandable-dropdown z-50">
+    <!-- As wide as its longest option, lined up under the box -->
+    <div v-if="showOptions" class="absolute mt-2 w-max max-w-[calc(100vw-2rem)] rounded overflow-hidden shadow-lg expandable-dropdown z-50" :class="compact ? 'left-0 !min-w-0' : 'left-2 !min-w-0'">
       <div class="space-y-2 p-2">
         <div v-if="toggletabs" class="flex justify-center">
           <tab-button :tab1text="$t(toggletabs[0])" :tab2text="$t(toggletabs[1])" :ignoreclick="true" :small="true"

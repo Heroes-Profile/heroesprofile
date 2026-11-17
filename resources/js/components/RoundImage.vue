@@ -102,6 +102,8 @@
     <Teleport to="body">
       <div v-if="showTooltip" ref="popup" @mouseover="handleMouseOver" @mouseleave="scheduleHide" :style="tooltipStyle" :class="[
           'fixed text-xs z-[55]',
+          // Closes as soon as the pointer leaves the image, even onto the popup
+          { 'pointer-events-none': !popupHoverable },
         {
           'w-[14em]' : popupsize != 'large' && popupsize != 'xlarge' && popupsize != 'fit',
           'w-[25rem] max-w-[90vw]' : popupsize == 'large',
@@ -160,6 +162,7 @@ export default {
     // Name-only hero portraits link elsewhere on tap, so phones show neither the inline text nor a popup
     hidemobiletext: Boolean,
     // Grace before closing, so a quick or slightly off move between icon and popup doesn't close it
+    popupHoverable: { type: Boolean, default: true },
     hidedelay: {
       type: Number,
       default: 150,

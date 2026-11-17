@@ -13,7 +13,7 @@
     >
       <span class="font-bold uppercase whitespace-nowrap">{{ modelValue ? formatDate(modelValue) : placeholder }}</span>
       <button v-if="modelValue" type="button" class="relative z-[1] ml-auto" :aria-label="$t('Clear :field', { field: $t(label) })" @click.stop="pick(null)"><i class="fa-solid fa-xmark"></i></button>
-      <i v-else class="fa-solid fa-chevron-down ml-auto text-xs"></i>
+      <i v-else class="fa-solid fa-chevron-down ml-auto text-xs transition-transform" :class="{ 'rotate-180': open }"></i>
     </div>
 
     <!-- The calendar: same panel as the filter dropdowns -->

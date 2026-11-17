@@ -1,8 +1,8 @@
 <template>
-  <panel-box v-if="loading" :title="$t('Storm League Rank')" :loading="true">
+  <panel-box v-if="loading" :inner="true" :title="$t('Storm League Rank')" :loading="true">
     <skeleton-box class="h-[22.5rem]"></skeleton-box>
   </panel-box>
-  <panel-box v-else-if="data" :title="$t('Storm League Rank')">
+  <panel-box v-else-if="data" :inner="true" :title="$t('Storm League Rank')">
     <template #title>
       <round-image size="small" icon="fas fa-info" title="info" popupsize="large">
         <slot>
@@ -29,10 +29,11 @@
       </div>
 
       <div v-if="rankedPeriods.length" class="relative h-[18.25rem]">
-        <tab-button class="absolute z-[1] -translate-y-[calc(100%+0.25rem)] !p-0.5 !rounded-[0.25rem] [&_a]:!rounded-[0.1875rem] [&_a]:!text-xs [&_a]:!px-1.5 [&_a]:!py-0.5" :style="{ left: plot.left + 'px', top: plot.top + 'px' }" :small="true" tab1text="Day's Peak" tab2text="End of Day" overridedefaultside="right" :ignoreclick="true" @tab-click="setDayRank"></tab-button>
+        <tab-button v-if="!oneDay" class="absolute z-[1] -translate-y-[calc(100%+0.25rem)] !p-0.5 !rounded-[0.25rem] [&_a]:!rounded-[0.1875rem] [&_a]:!text-xs [&_a]:!px-1.5 [&_a]:!py-0.5" :style="{ left: plot.left + 'px', top: plot.top + 'px' }" :small="true" tab1text="Day's Peak" tab2text="End of Day" overridedefaultside="right" :ignoreclick="true" @tab-click="setDayRank"></tab-button>
         <canvas ref="chart"></canvas>
       </div>
       <div v-else class="text-subtext">{{ $t('Only an unranked badge has been read this season.') }}</div>
+      <p v-if="rankedPeriods.length && oneDay" class="-mt-2 text-sm text-subtext">{{ $t("The chart fills in once a rank has been read on more than one day.") }}</p>
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <stat-box v-if="peak" class="!m-0 !min-w-0" :tier="rankName(peak)" :value-first="true" :title="'Peak'" :value="localRankName(peak)"></stat-box>
@@ -42,7 +43,8 @@
       </div>
     </template>
 
-    <div v-else>{{ $t('No in-game rank has been read for this player yet.') }}</div>
+    <!-- Holds the chart's place -->
+    <div v-else class="h-[18.25rem] rounded-control bg-surface-3 flex items-center justify-center p-6 text-center text-subtext">{{ $t('No in-game rank has been read for this player yet.') }}</div>
 
     <details class="bg-surface-3 rounded text-sm w-fit max-w-full group open:w-full">
       <summary class="px-4 py-3 flex gap-4 justify-between items-center cursor-pointer list-none">
@@ -149,6 +151,11 @@ export default {
       const last = span.end;
       return first.format(first.year() == last.year() ? 'MMM D' : 'MMM D, YYYY') + ' – ' + last.format('MMM D, YYYY');
     },
+    // Every rank this season was read on the same day, so there's no history to draw yet
+    oneDay(){
+      const days = new Set(this.rankedPeriods.flatMap(period => [period.first_game_date, period.last_game_date].map(date => this.localDay(date).format('YYYY-MM-DD'))));
+      return days.size == 1;
+    },
     games(){
       return (this.data?.periods || []).reduce((total, period) => total + period.read_count, 0);
     },
@@ -232,6 +239,11 @@ export default {
       const stepValue = (rank) => (rank.league == 'grandmaster' && rank.ladder_position ? 27 + worst - rank.ladder_position : rankValue(rank));
       const label = (value) => (value >= 27 && worst ? (bracket ? String(worst - (value - 27)) : 'GM #' + worst) : stepLabel(value));
       const days = this.chartDays.map(day => ({ ...day, value: day.rank ? stepValue(day.rank) : null }));
+      // A lone day sits in the middle, with an empty day either side
+      if(days.length == 1){
+        days.unshift({ day: null, rank: null, value: null });
+        days.push({ day: null, rank: null, value: null });
+      }
       const values = days.map(day => day.value).filter(value => value !== null);
 
       // Only the ranks the player had, so one division up or down is easy to see
@@ -239,11 +251,11 @@ export default {
       const max = Math.max(...values);
       const steps = max - min + 1;
 
-      // The plot as a slightly rounded box, under the rank labels too, out to the canvas edge
+      // The plot as a slightly rounded box, edge to edge, so it lines up with the boxes below
       const clipPlot = (chart) => {
-        const { ctx, width, chartArea: { left, top, bottom } } = chart;
+        const { ctx, width, chartArea: { top, bottom } } = chart;
         ctx.beginPath();
-        ctx.roundRect(left, top, width - left, bottom - top, 6);
+        ctx.roundRect(0, top, width, bottom - top, 6);
         ctx.clip();
       };
 
@@ -253,13 +265,13 @@ export default {
           if(steps > 12){
             return;
           }
-          const { ctx, width, chartArea: { left }, scales: { y } } = chart;
+          const { ctx, width, scales: { y } } = chart;
           ctx.save();
           clipPlot(chart);
           for(let value = min; value <= max; value++){
             const top = y.getPixelForValue(value + 0.5);
             ctx.fillStyle = (max - value) % 2 == 0 ? '#303340' : '#272a34';
-            ctx.fillRect(left, top, width - left, y.getPixelForValue(value - 0.5) - top);
+            ctx.fillRect(0, top, width, y.getPixelForValue(value - 0.5) - top);
           }
           ctx.restore();
         },
@@ -311,9 +323,9 @@ export default {
 
       this.chart = markRaw(new Chart(this.$refs.chart.getContext('2d'), {
         type: 'line',
-        plugins: [rankBands, roundedPlot, gmGroup, { id: 'plotCorner', afterLayout: (chart) => { this.plot = { left: chart.chartArea.left, top: chart.chartArea.top }; } }],
+        plugins: [rankBands, roundedPlot, gmGroup, { id: 'plotCorner', afterLayout: (chart) => { this.plot = { left: 0, top: chart.chartArea.top }; } }],
         data: {
-          labels: days.map(day => day.day.format('DD MMM.')),
+          labels: days.map(day => (day.day ? day.day.format('DD MMM.') : '')),
           datasets: [{
             data: days.map(day => day.value),
             borderColor: '#008b8b',

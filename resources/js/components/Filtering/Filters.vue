@@ -467,7 +467,7 @@
           ></multi-select-filter>
           <slot></slot>
         </div>
-        <button v-if="!autoapply" :disabled="disabledFilter" @click="applyFilter" class="btn" :class="compact ? 'bg-blue px-5 h-10 disabled:opacity-50 hover:bg-lblue' : ['font-semibold h-10 m-2 md:w-[7.5rem] max-md:flex-[1_1_8rem]', disabledFilter ? 'bg-gray-md' : 'bg-blue hover:bg-lblue']">
+        <button v-if="!autoapply" :disabled="disabledFilter" @click="applyFilter" class="btn bg-blue enabled:hover:bg-[#425a8e] disabled:bg-[#223562] disabled:text-[#b7b7bb]" :class="compact ? 'px-5 h-10' : 'font-semibold h-10 m-2 md:w-[7.5rem] max-md:flex-[1_1_8rem]'">
           {{ $t('Filter') }}
         </button>
 

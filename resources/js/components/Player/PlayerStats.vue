@@ -28,7 +28,7 @@
         <span>{{ $t('No data for this player and filters') }}</span>
       </div>
     </div>
-    <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
+    <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 space-y-8">
 
       <panel-box>
       <div class="flex flex-col xl:flex-row gap-6">
@@ -105,26 +105,31 @@
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
       <div class="grid xl:grid-cols-2 gap-6">
-        <player-real-rank :blizzid="blizzid" :region="region" @loaded="realRank = $event"></player-real-rank>
-
-        <panel-box v-if="data.weekday_data" :title="$t('Week Day Win Rates')">
-          <player-weekday-win-rates :data="data.weekday_data"></player-weekday-win-rates>
+        <!-- Each card sits in its own outer panel, like the overview above -->
+        <panel-box>
+          <player-real-rank class="flex-1" :blizzid="blizzid" :region="region" @loaded="realRank = $event"></player-real-rank>
         </panel-box>
-        <!-- Week days are only shown to the profile's owner; everyone else sees the panel's shape and why -->
-        <panel-box v-else :title="$t('Week Day Win Rates')" :link-text="authenticated ? null : $t('Log in with Battle.net to see your week day win rates')" :link-href="authenticated ? null : '/Authenticate/Battlenet'">
-          <template v-if="authenticated" #right>
-            <span class="text-subtext">{{ $t("Only shown to the profile's owner") }}</span>
-          </template>
-          <!-- Not loading, so the blocks hold still -->
-          <div class="flex flex-col gap-3" aria-hidden="true">
-            <div v-for="day in 7" :key="day" class="flex flex-col gap-1.5">
-              <div class="flex justify-between">
-                <skeleton-box class="w-24 h-5 !animate-none"></skeleton-box>
-                <skeleton-box class="w-20 h-5 !animate-none"></skeleton-box>
+
+        <panel-box>
+          <panel-box v-if="data.weekday_data" class="flex-1" :inner="true" :title="$t('Week Day Win Rates')">
+            <player-weekday-win-rates :data="data.weekday_data"></player-weekday-win-rates>
+          </panel-box>
+          <!-- Week days are only shown to the profile's owner; everyone else sees the panel's shape and why -->
+          <panel-box v-else class="flex-1" :inner="true" :title="$t('Week Day Win Rates')" :link-text="authenticated ? null : $t('Log in with Battle.net to see your week day win rates')" :link-href="authenticated ? null : '/Authenticate/Battlenet'">
+            <template v-if="authenticated" #right>
+              <span class="text-subtext">{{ $t("Only shown to the profile's owner") }}</span>
+            </template>
+            <!-- Not loading, so the blocks hold still -->
+            <div class="flex flex-col gap-3" aria-hidden="true">
+              <div v-for="day in 7" :key="day" class="flex flex-col gap-1.5">
+                <div class="flex justify-between">
+                  <skeleton-box class="w-24 h-5 !animate-none"></skeleton-box>
+                  <skeleton-box class="w-20 h-5 !animate-none"></skeleton-box>
+                </div>
+                <skeleton-box class="h-4 !animate-none"></skeleton-box>
               </div>
-              <skeleton-box class="h-4 !animate-none"></skeleton-box>
             </div>
-          </div>
+          </panel-box>
         </panel-box>
       </div>
 
@@ -139,7 +144,7 @@
 
     </div>
     <!-- The page's layout with grey blocks while it loads; the nav logo spins meanwhile -->
-    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
+    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 space-y-8">
       <loading-component :compact="true" :textoverride="true">{{ $t('Large amount of data. Please be patient. Loading data...') }}</loading-component>
       <panel-box>
         <div class="flex flex-col xl:flex-row gap-6">
@@ -173,8 +178,10 @@
       </panel-box>
 
       <div class="grid xl:grid-cols-2 gap-6">
-        <panel-box v-for="title in ['Storm League Rank', 'Week Day Win Rates']" :key="title" :title="title">
-          <skeleton-box class="h-[22.5rem]"></skeleton-box>
+        <panel-box v-for="title in ['Storm League Rank', 'Week Day Win Rates']" :key="title">
+          <panel-box class="flex-1" :inner="true" :title="title">
+            <skeleton-box class="h-[22.5rem]"></skeleton-box>
+          </panel-box>
         </panel-box>
       </div>
 
@@ -390,6 +397,8 @@ function cardFonts() {
       },
       async downloadCard() {
         this.cardDownloading = true;
+        // Shown for at least a second, so a fast download doesn't flash it
+        const shown = new Promise(resolve => setTimeout(resolve, 1000));
         try {
           const blob = await this.cardImage();
           const link = document.createElement('a');
@@ -398,6 +407,7 @@ function cardFonts() {
           link.click();
           URL.revokeObjectURL(link.href);
         } finally {
+          await shown;
           this.cardDownloading = false;
         }
       },

@@ -43,7 +43,7 @@
     </div>
     <div class="relative z-[2] w-[26.625rem] flex gap-1.5 items-center px-4 pr-20 shrink-0">
       <template v-for="level in talentLevels" :key="level">
-        <talent-image-wrapper v-if="data[level]" :talent="data[level]" size="talent"></talent-image-wrapper>
+        <talent-image-wrapper v-if="data[level]" :talent="data[level]" size="talent" :popup-hoverable="false"></talent-image-wrapper>
         <div v-else class="w-[2.625rem] h-[2.625rem] shrink-0 rounded bg-surface-3"></div>
       </template>
     </div>
@@ -97,7 +97,7 @@
 
     <div class="relative z-[2] flex flex-wrap gap-1.5 items-center px-4 w-[22.625rem] shrink-0">
       <template v-for="level in talentLevels" :key="level">
-        <talent-image-wrapper v-if="data[level]" :talent="data[level]" size="talent"></talent-image-wrapper>
+        <talent-image-wrapper v-if="data[level]" :talent="data[level]" size="talent" :popup-hoverable="false"></talent-image-wrapper>
         <div v-else class="w-[2.625rem] h-[2.625rem] shrink-0 rounded bg-surface-3"></div>
       </template>
     </div>
