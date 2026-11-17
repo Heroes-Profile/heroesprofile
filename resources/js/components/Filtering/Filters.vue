@@ -34,6 +34,7 @@
           <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="leaderboardfiltertype"
             :values="filters.leaderboard_type" 
             :text="'Leaderboard Type'"
+            :class="leaderboardOrder('Leaderboard Type')"
             @input-changed="handleInputChange" 
             :defaultValue="leaderboardtypeinput || 'Player'"
             :disabledeselectfilters="disabledeselectfilters"
@@ -43,6 +44,7 @@
           <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludeheroes && swapHeroesFilter"
             :values="filters.heroes" 
             :text="'Heroes'" 
+            :class="leaderboardOrder('Heroes')"
             :defaultValue="heroinput"
             @input-changed="handleInputChange"
           ></single-select-filter>
@@ -51,6 +53,7 @@
           <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincluderole && swapRolesFilter"
             :values="filters.role" 
             :text="'Role'" 
+            :class="leaderboardOrder('Role')"
             :defaultValue="role"
             @input-changed="handleInputChange"
           ></single-select-filter>
@@ -102,6 +105,7 @@
           <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && !groupsizeadvanced && !groupsizemulti"
             :values="filters.group_size"
             :text="'Group Size'"
+            :class="leaderboardOrder('Group Size')"
             @input-changed="handleInputChange"
             :defaultValue="modifiedGroupSizeDefaultValue"
             :disabledeselectfilters="disabledeselectfilters"
@@ -110,6 +114,7 @@
           <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && !groupsizeadvanced && groupsizemulti"
             :values="groupSizeOptions"
             :text="'Group Size'"
+            :class="leaderboardOrder('Group Size')"
             @input-changed="handleInputChange"
             :defaultValue="modifiedGroupSizeDefaultValue"
           ></multi-select-filter>
@@ -118,6 +123,7 @@
           <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includesinglegametypeleaderboard && selectedSingleFilters['Leaderboard Type'] != 'SL Rank'"
             :values="leaderboardGameTypes" 
             :text="'Game Type'" 
+            :class="leaderboardOrder('Game Type')"
             @input-changed="handleInputChange" 
             :defaultValue="gametype[0]"
             :disabledeselectfilters="disabledeselectfilters"
@@ -151,7 +157,8 @@
           <!-- Regions Single-->
           <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includesingleregion"
             :values="filters.regions" 
-            :text="'Regions'"
+            :text="'Region'"
+            :class="leaderboardOrder('Region')"
             :defaultValue="region"
             @input-changed="handleInputChange"
           ></single-select-filter>
@@ -160,6 +167,7 @@
           <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="leaderboardfiltertype && selectedSingleFilters['Leaderboard Type'] == 'SL Rank' && filters.sl_leagues"
             :values="filters.sl_leagues"
             :text="'League'"
+            :class="leaderboardOrder('League')"
             :defaultValue="leagueinput"
             @input-changed="handleInputChange"
           ></single-select-filter>
@@ -203,6 +211,7 @@
           <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludeseason"
             :values="seasons" 
             :text="'Season'" 
+            :class="leaderboardOrder('Season')"
             @input-changed="handleInputChange" 
             :defaultValue="defaultSeason"
             :disabledeselectfilters="disabledeselectfilters"
@@ -212,6 +221,7 @@
           <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludematchpredictionseason"
             :values="this.filters.match_prediction_seasons" 
             :text="'Match Prediction Season'" 
+            :class="leaderboardOrder('Match Prediction Season')"
             @input-changed="handleInputChange" 
             :defaultValue="defaultpredictionseason"
           ></single-select-filter>
@@ -310,6 +320,7 @@
           <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludetier"
             :values="filters.rank_tiers" 
             :text="'HP Rank'" 
+            :class="leaderboardOrder('HP Rank')"
             :showrankinfo="true"
             :defaultValue="tierrank"
             @input-changed="handleInputChange"
@@ -467,7 +478,7 @@
           ></multi-select-filter>
           <slot></slot>
         </div>
-        <button v-if="!autoapply" :disabled="disabledFilter" @click="applyFilter" class="btn bg-blue enabled:hover:bg-[#425a8e] disabled:bg-[#223562] disabled:text-[#b7b7bb]" :class="compact ? 'px-5 h-10' : 'font-semibold h-10 m-2 md:w-[7.5rem] max-md:flex-[1_1_8rem]'">
+        <button v-if="!autoapply" :disabled="disabledFilter" @click="applyFilter" class="btn bg-blue enabled:hover:bg-[#425a8e] disabled:bg-[#223562] disabled:text-[#b7b7bb]" :class="[compact ? 'px-5 h-10' : 'font-semibold h-10 m-2 md:w-[7.5rem] max-md:flex-[1_1_8rem]', leaderboardOrder('Filter')]">
           {{ $t('Filter') }}
         </button>
 
@@ -921,6 +932,23 @@
       }
     },
     methods: {
+      // The leaderboard lays its filters out in the redesign's order; other pages keep the template order
+      leaderboardOrder(name) {
+        if (!this.leaderboardfiltertype) return '';
+        return {
+          'Leaderboard Type': 'order-1',
+          'Heroes': 'order-1',
+          'Role': 'order-1',
+          'Game Type': 'order-2',
+          'HP Rank': 'order-3',
+          'League': 'order-3',
+          'Season': 'order-4',
+          'Match Prediction Season': 'order-4',
+          'Group Size': 'order-5',
+          'Region': 'order-6',
+          'Filter': 'order-7',
+        }[name];
+      },
       // Whether a Group Size selection actually narrows anything. `All` means the
       // unfiltered table rather than a stack size, so it counts as no filter even
       // when picked alongside real sizes. Takes the string the single select emits
@@ -1047,7 +1075,7 @@
         }
 
         if(this.region){
-          this.selectedSingleFilters['Regions'] = this.region;
+          this.selectedSingleFilters['Region'] = this.region;
         }
 
         if(this.tierrank){

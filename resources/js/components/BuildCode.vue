@@ -3,7 +3,7 @@
        show="talents" or show="code" draws one part, for tables that split them into columns. -->
   <div :class="['flex flex-col gap-2', alignClass]">
     <div v-if="show !== 'code'" class="flex flex-nowrap gap-1.5">
-      <talent-image-wrapper v-for="level in LEVELS" :key="level" :talent="build[level]" size="talent"></talent-image-wrapper>
+      <talent-image-wrapper v-for="level in LEVELS" :key="level" :talent="build[level]" size="talent" :popup-hoverable="popupHoverable"></talent-image-wrapper>
     </div>
     <div v-if="show !== 'talents' && code" :class="['flex items-center gap-1 text-sm', alignClass]">
       <span>{{ code }}</span>
@@ -39,6 +39,11 @@ export default {
     align: {
       type: String,
       default: 'center',
+    },
+    // false: talent popups close as soon as the pointer leaves the icon
+    popupHoverable: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {

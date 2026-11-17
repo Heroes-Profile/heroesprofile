@@ -81,8 +81,13 @@
       <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
       <div v-if="data">
         <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-          <div v-if="season == defaultseason && leaderboardtype != 'SL Rank'" class="flex flex-wrap items-center gap-4">
-            <div class="flex flex-wrap items-center justify-end gap-4 ml-auto">
+          <!-- One table per group, each under its own heading; the rating sits beside the first heading -->
+          <template v-for="(group, groupIndex) in groupedData" :key="group.group">
+          <div v-if="showGroupHeadings || (groupIndex == 0 && showRating)" class="flex flex-wrap items-center gap-4">
+            <h2 v-if="showGroupHeadings" class="text-2xl font-bold">
+              {{ group.name ?? groupName(group.group) }}<span v-if="group.minGamesRequired !== null"> - {{ $t('At least :count games played', { count: group.minGamesRequired.toLocaleString('en-US') }) }}</span>
+            </h2>
+            <div v-if="groupIndex == 0 && showRating" class="flex flex-wrap items-center justify-end gap-4 ml-auto">
               <span v-if="playerRating" class="text-sm">
                 {{ ratingText(playerRating, playerRatingGamesPlayed) }}
               </span>
@@ -96,9 +101,8 @@
           <panel-box>
           <!-- overflow-clip, not overflow-hidden: it clips the scaled-down table the same way but, unlike hidden, lets the
                headers below stick to the top of the screen -->
-          <div id="table-container" ref="tablecontainer" class="overflow-clip">
-            <!-- Shrinks to fit the screen (wrapping cell text first). One table for every group, so its header stays
-                 on screen through all of them and the columns line up; each group is a tbody headed by its title. -->
+          <div class="overflow-clip">
+            <!-- Shrinks to fit the screen, wrapping cell text first -->
             <div ref="responsivetable" class="grid min-w-full" style="width: fit-content">
             <table class="min-w-0 w-full responsive-table rounded-table relative">
               <thead class="w-full">
@@ -109,10 +113,14 @@
                     <span v-if="rankchange" class="inline-grid grid-cols-[2rem_2.5rem] gap-2 items-center"><span class="text-center">#</span><span class="text-left whitespace-nowrap">{{ $t('Rank') }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span></span>
                     <template v-else>{{ $t('Rank') }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></template>
                   </th>
-                  <th :class="['py-2 px-3  text-left text-sm leading-4',{ 'bg-teal text-white': sortKey === 'battletag'}]">
-                    <div class="relative flex items-center justify-start gap-3">
+                  <th :class="['py-2 px-3 text-center text-sm leading-4',{ 'bg-teal text-white': sortKey === 'battletag'}]">
+                    <!-- "Player" is centred on its own and the glass sits after it; the open search box centres on the column -->
+                    <div class="relative grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+                      <span></span>
                       <span class="cursor-pointer" @click="sortTable('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                      <search-input v-model="searchTerm" :placeholder="$t('Search player')" :collapsible="true" align="left" class="w-40"></search-input>
+                      <span class="justify-self-start flex">
+                        <search-input v-model="searchTerm" :placeholder="$t('Search player')" :collapsible="true" align="center" class="w-40"></search-input>
+                      </span>
                     </div>
                   </th>            
                   <th @click="sortTable('region_id')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'region_id'}]">
@@ -172,14 +180,7 @@
                   </template>
                 </tr>
               </thead>
-              <tbody v-for="(group, groupIndex) in groupedData" :key="group.group" class="text-center">
-                <tr v-if="showGroupHeadings" class="!bg-transparent hover:!bg-transparent">
-                  <td colspan="20" :class="['!bg-transparent !border-0 text-left px-3 pb-2', groupIndex ? 'pt-6' : 'pt-0']">
-                    <h3 class="stack-header !m-0">
-                      {{ group.name ?? groupName(group.group) }}<span v-if="group.minGamesRequired !== null">&nbsp;- {{ $t('At least :count games played', { count: group.minGamesRequired.toLocaleString('en-US') }) }}</span>
-                    </h3>
-                  </td>
-                </tr>
+              <tbody class="text-center">
                 <tr v-if="group.noMatch">
                   <td colspan="10" class="py-6 text-subtext">{{ $t('No players match ":playersearch".', { playersearch: searchTerm }) }}</td>
                 </tr>
@@ -191,8 +192,8 @@
                   </tr>
                   <tr>
                     <td><div v-if="rankchange" class="inline-grid grid-cols-[2rem_2.5rem] gap-2 items-center"><div class="bg-blue text-white w-8 p-1 rounded-control text-center tabular-nums"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  group.rows.length - index }}</span></div><span class="text-left tabular-nums">{{ row.rank }}</span></div><span v-else class="p-1">{{ row.rank }}</span></td>
-                    <td class="text-left">
-                      <player-name :battletag="row.split_battletag" :blizz-id="row.blizz_id" :region="row.region_id" :redirect="true" :hp-owner="!!row.hp_owner" :patreon="!!row.patreon"></player-name>
+                    <td>
+                      <player-name :flair-outside="true" :battletag="row.split_battletag" :blizz-id="row.blizz_id" :region="row.region_id" :redirect="true" :hp-owner="!!row.hp_owner" :patreon="!!row.patreon"></player-name>
                     </td>
                     <td>{{ row.region }}</td>
                     <td v-if="leaderboardtype == 'SL Rank'"><real-rank-badge :rank="row" :width="36" label="right"></real-rank-badge></td>
@@ -213,7 +214,7 @@
 
                     <template v-else-if="leaderboardtype == 'Hero'">
                       <td class="py-2 px-3 ">
-                        <build-code v-if="row.level_one" :build="row" :hero="row.hero" show="talents"></build-code>
+                        <build-code v-if="row.level_one" :build="row" :hero="row.hero" show="talents" :popup-hoverable="false"></build-code>
                       </td>
                       <td class="py-2 px-3">
                         <build-code v-if="row.level_one" :build="row" :hero="row.hero" show="code"></build-code>
@@ -232,16 +233,18 @@
             </div>
           </div>
           </panel-box>
+          </template>
         </div>
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <loading-component :compact="true" :textoverride="true">{{ $t('Loading leaderboard...') }}</loading-component>
-      <div v-if="leaderboardtype != 'SL Rank' && leaderboardtype != 'Match Prediction'" class="flex justify-end">
-        <skeleton-box class="h-10 w-56"></skeleton-box>
+      <!-- On the group heading's line, with the rating button where it loads, so nothing moves when the data arrives -->
+      <div class="flex flex-wrap items-center gap-4 min-h-8">
+        <loading-component :compact="true" :textoverride="true">{{ $t('Loading leaderboard...') }}</loading-component>
+        <skeleton-box v-if="showRating" class="h-10 w-56 ml-auto"></skeleton-box>
       </div>
       <!-- Shaped like the table for this leaderboard type -->
-      <table-skeleton :heading="true" :rows="12" :columns="skeletonColumns"></table-skeleton>
+      <table-skeleton :rows="12" :columns="skeletonColumns"></table-skeleton>
     </div>
   </div>
 </template>
@@ -382,26 +385,28 @@ export default {
     // Splits rows into leaderboard groups (0 = Group A), keeping the current sort and search within each group.
     // Match Prediction and boards calculated before groups existed come back as a single Group A.
     groupedData() {
+      if (!this.data) return [];
+      // Every group keeps its table while searching, so the search box being typed in never disappears
       const groups = new Map();
-      this.filteredData.forEach(row => {
+      this.sortedData.forEach(row => {
         const key = row.leaderboard_group ?? 0;
         if (!groups.has(key)) {
           groups.set(key, { group: key, name: row.group_name ?? null, minGamesRequired: row.min_games_required ?? null, rows: [] });
         }
-        groups.get(key).rows.push(row);
       });
+      this.filteredData.forEach(row => groups.get(row.leaderboard_group ?? 0).rows.push(row));
 
       const sorted = [...groups.values()].sort((a, b) => a.group - b.group);
-      // A search that matches no one still shows one table, so its header and search box stay to change or clear it
-      if (!sorted.length && this.searchTerm && this.sortedData.length) {
-        return [{ group: 0, name: null, minGamesRequired: null, rows: [], offset: 0, noMatch: true }];
-      }
       let offset = 0;
       sorted.forEach(group => {
         group.offset = offset;
+        group.noMatch = !!this.searchTerm && !group.rows.length;
         offset += group.rows.length;
       });
       return sorted;
+    },
+    showRating() {
+      return this.season == this.defaultseason && this.leaderboardtype != 'SL Rank';
     },
     showGroupHeadings() {
       return this.groupedData.length > 1 || this.groupedData.some(group => group.minGamesRequired !== null);
@@ -448,8 +453,15 @@ export default {
     },
   },
   watch: {
+    // A group's table can be new after a filter change
+    groupedData() {
+      this.$nextTick(this.fitTables);
+    },
   },
   methods: {
+    fitTables() {
+      [].concat(this.$refs.responsivetable || []).forEach(table => scaleTableToFit(table, table.parentElement));
+    },
     async getData(){
       this.isLoading = true;
       try{
@@ -478,12 +490,7 @@ export default {
         //Do something here
       }finally {
         this.isLoading = false;
-        this.$nextTick(() => {
-        const responsivetable = this.$refs.responsivetable;
-          if (responsivetable) {
-            scaleTableToFit(responsivetable, this.$refs.tablecontainer);
-          }
-        });
+        this.$nextTick(this.fitTables);
       }
     },
     filterData(filteredData){
@@ -505,7 +512,7 @@ export default {
         this.season = filteredData.single["Season"] ? filteredData.single["Season"] : fallbackseason;
       }
 
-      this.region = filteredData.single["Regions"] ? filteredData.single["Regions"] : null;
+      this.region = filteredData.single["Region"] ? filteredData.single["Region"] : null;
       this.tierrank = filteredData.single["HP Rank"] ? filteredData.single["HP Rank"]  : null;
       this.league = filteredData.single["League"] ? filteredData.single["League"] : null;
       this.sortKey = '';

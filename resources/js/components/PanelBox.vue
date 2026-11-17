@@ -2,12 +2,12 @@
   <!-- A filter panel: on mobile it hides behind Show Filters and opens full screen, like Filters.vue -->
   <div v-if="filters">
     <button class="md:hidden p-2 bg-blue w-full" @click="showNav = !showNav">{{ $t('Show Filters') }}</button>
-    <div v-show="showNav" :class="[inner ? 'bg-surface-1' : 'bg-surface', 'md:rounded p-4 md:p-6 flex flex-col gap-4 min-w-0 max-md:fixed max-md:inset-0 max-md:z-50 max-md:h-[100dvh] max-md:overflow-y-auto']" @click="closeOnApply">
+    <div v-show="showNav" :class="[inner ? 'bg-surface-1 md:rounded-control' : 'bg-surface md:rounded', 'p-4 md:p-6 flex flex-col gap-4 min-w-0 max-md:fixed max-md:inset-0 max-md:z-50 max-md:h-[100dvh] max-md:overflow-y-auto']" @click="closeOnApply">
       <button class="md:hidden ml-auto text-2xl min-w-[2.75rem] min-h-[2.75rem]" :aria-label="$t('Close filters')" @click="showNav = false">x</button>
       <slot></slot>
     </div>
   </div>
-  <div v-else :class="[inner ? 'bg-surface-1' : 'bg-surface', 'rounded p-4 md:p-6 flex flex-col gap-4 min-w-0']">
+  <div v-else :class="[inner ? 'bg-surface-1 rounded-control' : 'bg-surface rounded', 'p-4 md:p-6 flex flex-col gap-4 min-w-0']">
     <template v-if="title">
       <div class="flex flex-wrap justify-between items-baseline gap-x-4 gap-y-1">
         <h3 class="text-2xl font-bold flex items-center gap-2">{{ $t(title) }}<!-- An info icon sits raised at the top of the title; the wrapper hides itself when nothing is passed --><span class="self-start flex empty:hidden"><slot name="title"></slot></span></h3>
@@ -28,7 +28,7 @@ export default {
     title: String,
     linkText: String,
     linkHref: String,
-    // A card inside another panel, one shade lighter
+    // A card inside another panel, one shade lighter and less rounded than the panel around it
     inner: Boolean,
     // A spinning logo in the header while the panel's data loads
     loading: Boolean,

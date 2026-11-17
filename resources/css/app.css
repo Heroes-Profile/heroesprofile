@@ -526,8 +526,21 @@ thead tr{
   @apply py-3;
 }
 
+/* In a table header an info icon takes no width and hangs just past its label, so the label alone is centred.
+   The parent's gap is taken back so it doesn't push the label off centre either. */
+th .info-icon{
+  width: 0;
+  overflow: visible;
+}
+th .info-icon > span{
+  flex-shrink: 0;
+  margin-left: 0.375rem;
+}
+th .gap-1 > .info-icon{ margin-left: -0.25rem; }
+th .gap-2 > .info-icon{ margin-left: -0.5rem; }
+th .gap-3 > .info-icon{ margin-left: -0.75rem; }
+
 h1{
-  text-transform:uppercase;
   @apply text-5xl;
 }
 

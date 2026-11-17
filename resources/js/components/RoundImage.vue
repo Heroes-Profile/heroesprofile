@@ -20,6 +20,8 @@
       'md:h-[20.125rem]': size === 'large',
       'overflow-hidden rounded': size === 'large',
       'flex flex-col': !icon,
+      // A hook for app.css: in a table header the icon hangs past its label
+      'info-icon': isInfoIcon,
       // Badges size themselves (the circle is 1.7em of its own text size)
       'inline-flex': icon,
       

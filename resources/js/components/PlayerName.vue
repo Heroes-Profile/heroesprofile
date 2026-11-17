@@ -1,11 +1,12 @@
 <template>
   <!-- A player's name link with their flairs beside it. The chevron floats past the name on hover and the flairs slide over, so the name never moves. -->
-  <span class="inline-flex items-center">
+  <span class="relative inline-flex items-center">
     <a :href="href" :target="newTab ? '_blank' : null" :rel="newTab ? 'noopener' : null" class="peer/name group/bt relative inline-flex items-center" @click="redirect && $redirectToProfile(battletag, blizzId, region, false)">
       <span class="group-hover/bt:underline">{{ battletag }}</span>
       <i class="fas fa-chevron-right text-xs absolute left-full ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i>
     </a>
-    <span class="inline-flex items-center ml-1 transition-transform peer-hover/name:translate-x-4">
+    <!-- flairOutside: the flairs hang past the name, so a centred name is centred on its own -->
+    <span :class="['inline-flex items-center ml-1 transition-transform peer-hover/name:translate-x-4', { 'absolute left-full top-1/2 -translate-y-1/2': flairOutside }]">
       <icon-with-hover v-if="hpOwner" class="[&>span]:h-full" size="small" icon="fas fa-crown" title="info" popupsize="small" style="color:gold">
         <p class="max-sm:text-xs">{{ $t('Site Owner') }}</p>
       </icon-with-hover>
@@ -28,6 +29,7 @@ export default {
     link: String,
     // Use the site's profile redirect on click (normal player pages)
     redirect: Boolean,
+    flairOutside: Boolean,
     newTab: Boolean,
     hpOwner: Boolean,
     patreon: Boolean,

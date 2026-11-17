@@ -14,7 +14,7 @@
         </span>
       </span> 
       <span class="h-[2.5rem] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 min-w-0 w-full">
-        <span class="uppercase font-bold px-1 text-nowrap truncate min-w-0" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span>
+        <span class="font-bold px-1 text-nowrap truncate min-w-0" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span>
         <i class="fa-solid fa-chevron-down ml-auto shrink-0 text-xs transition-transform" :class="{ 'rotate-180': showOptions }"></i>
       </span>
     </div>
