@@ -9,7 +9,7 @@
       :aria-pressed="isDark === (side === 'right')"
       @click="setMode(side)"
     >
-      <i :class="side === 'right' ? 'fa-solid fa-moon' : 'fa-solid fa-sun'"></i>
+      <basil-icon :name="side === 'right' ? 'dark' : 'light'"></basil-icon>
     </button>
   </div>
 </template>

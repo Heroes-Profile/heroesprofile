@@ -69,7 +69,7 @@
                 <td class="py-2 px-3">{{ row.name }}</td>
                 <td class="py-2 px-3">{{ row.migrated ? 'Live' : 'Fixtures' }}</td>
                 <td class="py-2 px-3">
-                  <a href="#" @click.prevent="load(row.id, 'search')" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">Open</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                  <a href="#" @click.prevent="load(row.id, 'search')" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">Open</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                 </td>
               </tr>
               <tr v-if="detailTarget === '#admin-detail-search' && detail.account.id === row.id">
@@ -128,7 +128,7 @@
             <tbody>
               <tr v-for="row in traceRows" :key="row.id">
                 <td class="py-2 px-3">
-                  <a href="#" @click.prevent="load(row.account_id, 'trace')" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ row.email || 'id ' + row.account_id }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                  <a href="#" @click.prevent="load(row.account_id, 'trace')" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ row.email || 'id ' + row.account_id }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                 </td>
                 <td class="py-2 px-3">{{ row.label }}</td>
                 <td class="py-2 px-3">
@@ -297,7 +297,7 @@
                    
                     :href="linkableWebsite"
                     target="_blank"
-                    rel="noopener noreferrer" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ detail.account.website }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                    rel="noopener noreferrer" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ detail.account.website }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                   <template v-else-if="detail.account.website">{{ detail.account.website }}</template>
                   <template v-else>Not given</template>
                 </td>

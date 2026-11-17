@@ -381,7 +381,7 @@
                 <div class="min-w-0">
                   <div class="text-sm font-bold truncate">{{ $t(item.label) }}</div>
                   <div class="text-xs opacity-70">
-                    <i class="fas fa-chevron-down mr-1 transition-transform group-open:rotate-180"></i>{{ $t('Top :top', { top: item.top.length }) }}
+                    <basil-icon name="arrow" class="rotate-90 mr-1 transition-transform group-open:-rotate-90"></basil-icon>{{ $t('Top :top', { top: item.top.length }) }}
                   </div>
                 </div>
                 <div class="text-lg font-bold tabular-nums xalatath-title whitespace-nowrap">{{ item.display }}</div>
@@ -587,7 +587,7 @@
           <div class="flex flex-wrap items-center gap-3 mt-3">
             <button type="button" class="bg-[#5b21b6] hover:bg-[#7b3fe4] text-white px-6 py-3 rounded" @click="downloadCard">{{ $t('Download your card') }}</button>
             <button v-if="canShareFiles" type="button" class="bg-[#5b21b6] hover:bg-[#7b3fe4] text-white px-6 py-3 rounded" @click="shareCard">
-              <i class="fas fa-share-alt mr-1"></i> {{ $t('Share your card') }}
+              <basil-icon name="share" class="mr-1"></basil-icon> {{ $t('Share your card') }}
             </button>
           </div>
         </div>

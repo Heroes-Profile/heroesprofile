@@ -418,7 +418,7 @@
             <div class="flex flex-col gap-1.5 text-sm font-medium text-subtext p-2">
               <span>{{ $t('Friend or Foe Player') }}</span>
               <div class="relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-subtext pointer-events-none"></i>
+                <basil-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-subtext pointer-events-none"></basil-icon>
                 <input
                   type="text"
                   v-model="ffBattletag"

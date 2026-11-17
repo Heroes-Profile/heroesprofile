@@ -26,7 +26,7 @@
           </span>
           <span>{{ data.game_length }}</span>
           <!-- Download requires login for all (esport and non-esport); blocked battletags get no control -->
-          <a v-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && user && !data.replay_download_blocked" class="group/bt inline-flex items-center cursor-pointer max-md:hidden" role="button" @click="downloadReplay(data, replayid)"><span class="group-hover/bt:underline">{{ $t('Download Replay') }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+          <a v-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && user && !data.replay_download_blocked" class="group/bt inline-flex items-center cursor-pointer max-md:hidden" role="button" @click="downloadReplay(data, replayid)"><span class="group-hover/bt:underline">{{ $t('Download Replay') }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
           <span v-else-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && !user" class="inline-flex items-center gap-1 opacity-60 max-md:hidden">
             {{ $t('Download Replay') }}
             <round-image size="small" icon="fas fa-info" :title="$t('Login required')" popupsize="large">
@@ -36,7 +36,7 @@
             </round-image>
           </span>
           <!-- Replay viewer: season games; needs a Battle.net login, like Download Replay -->
-          <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center" :href="'/Analytics/Match/Single/' + replayid + '/Replay'"><span class="group-hover/bt:underline">{{ $t('Watch Replay') }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+          <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center" :href="'/Analytics/Match/Single/' + replayid + '/Replay'"><span class="group-hover/bt:underline">{{ $t('Watch Replay') }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
           <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
             {{ $t('Watch Replay') }}
             <round-image size="small" icon="fas fa-info" :title="$t('Login required')" popupsize="large">
@@ -165,7 +165,7 @@
           <tbody class="text-center">
             <tr v-for="(row, index) in data.match_games" :key="index">
               <td width="25%">
-                <a v-if="esport" class="group/bt inline-flex items-center" :href="`/Esports/${esport}/Match/Single/${row.replayID}${tournament ? '?tournament=' + tournament : ''}`"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                <a v-if="esport" class="group/bt inline-flex items-center" :href="`/Esports/${esport}/Match/Single/${row.replayID}${tournament ? '?tournament=' + tournament : ''}`"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
               </td>
               <td width="25%">{{ row.round }}</td>
               <td width="25%">{{ row.game }}</td>
@@ -187,7 +187,7 @@
           <div class="flex flex-wrap items-baseline gap-4">
             <h2 class="text-2xl font-bold">{{ $t('Match Scores') }}</h2>
             <!-- Same rules as Watch Replay -->
-            <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center text-header" :href="'/Analytics/Match/Single/' + replayid + '/Replay#analytic-performance'"><span class="group-hover/bt:underline">{{ $t('How each player played') }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+            <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center text-header" :href="'/Analytics/Match/Single/' + replayid + '/Replay#analytic-performance'"><span class="group-hover/bt:underline">{{ $t('How each player played') }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
             <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
               {{ $t('How each player played') }}
               <round-image size="small" icon="fas fa-info" :title="$t('Login required')" popupsize="large">
@@ -362,7 +362,7 @@
       <tr v-for="(item, index) in data.players[0]" :key="index">
         <td class="bg-blue text-white border-white border">
           <div class="flex gap-2 items-center">
-            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ item.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a><span v-else>{{ $t('Hidden') }}</span>
+            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ item.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a><span v-else>{{ $t('Hidden') }}</span>
           </div>
         </td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
@@ -415,7 +415,7 @@
       <tr v-for="(item, index) in data.players[1]" :key="index">
         <td class="bg-blue text-white border-white border">
           <div class="flex gap-2 items-center">
-            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ item.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a><span v-else>{{ $t('Hidden') }}</span>
+            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ item.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a><span v-else>{{ $t('Hidden') }}</span>
           </div>
         </td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
@@ -457,7 +457,7 @@
         <td >{{ $t(section.title) }}</td>
         <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">
           <div class="flex gap-2 items-center">
-            <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+            <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
           </div>
         </td>
     </tr>
@@ -478,7 +478,7 @@
     <tr v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">
       <td>
         <div class="flex gap-2 items-center">
-          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
         </div>
       </td>
       <td v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ formatValue(player.score[row.key]) }}</td>
@@ -502,7 +502,7 @@
 
         >
         <div class="flex gap-2 items-center">
-          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
         </div>
       </td>
     </tr>
@@ -523,7 +523,7 @@
     <tr v-for="(player, playerIndex) in data.players[1]" :key="playerIndex">
       <td>
         <div class="flex gap-2 items-center">
-          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
         </div>
       </td>
       <td v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ formatValue(player.score[row.key]) }}</td>

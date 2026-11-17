@@ -41,7 +41,7 @@
             <td class="max-md:max-w-[0.9375rem] max-md:p-1">{{ team.rank }}</td>
             <td class="max-md:max-w-[6.25rem] text-left">
               <div class="flex items-center gap-2">
-                <a class="group/bt inline-flex items-center max-md:break-words" :href="`/Esports/NGS/Team/${encodeURIComponent($ngsTeam(team.team_name).name)}?season=${season}&division=${divisionName}`"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                <a class="group/bt inline-flex items-center max-md:break-words" :href="`/Esports/NGS/Team/${encodeURIComponent($ngsTeam(team.team_name).name)}?season=${season}&division=${divisionName}`"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                 <round-image v-if="$ngsTeam(team.team_name).withdrawnSeason" class="text-xs" size="small" icon="fa-solid fa-ban" :title="$t('Withdrawn')" popupsize="small" mobileClick="true"><p class="font-normal">{{ $t('Withdrew from the league in Season :withdrawnseason.', { withdrawnseason: $ngsTeam(team.team_name).withdrawnSeason }) }}</p></round-image>
               </div>
             </td>

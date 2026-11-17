@@ -106,7 +106,7 @@
                       </div>
                     </div>
                   </div>
-                  <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="'/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
+                  <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="'/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></span>
                   <!-- 1800 is the starting value before the game's MMR has been calculated -->
                   <template v-if="notCalculated(row)">
                   <span class="relative w-[16.25rem] shrink-0 px-4 text-sm text-subtext italic">{{ $t('Pending') }}</span>
@@ -121,7 +121,7 @@
                     <!-- Down after a win or up after a loss: the FAQ explains why -->
                     <round-image v-if="isUnexpectedChange(row)" class="text-xs" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                       <p class="font-normal">{{ $t('HP MMR measures your skill against everyone else, so it can :players. The system is finding the bracket you belong in, not only rewarding wins.', { players: row.winner === 'True' ? $t('drop after a win against much lower rated players') : $t('rise after a loss against much higher rated players') }) }}</p>
-                      <a href="/FAQ#mmr-change-direction" class="group/bt inline-flex items-center mt-2 font-normal"><span class="group-hover/bt:underline">Read more in the FAQ</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
+                      <a href="/FAQ#mmr-change-direction" class="group/bt inline-flex items-center mt-2 font-normal"><span class="group-hover/bt:underline">Read more in the FAQ</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
                     </round-image>
                   </div>
                   </template>

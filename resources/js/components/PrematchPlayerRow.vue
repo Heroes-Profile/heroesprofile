@@ -24,7 +24,7 @@
         </div>
 
         <stat-box class="shrink-0 w-[13em] !min-w-[13em]" :title="$t(':count games', { count: gamesPlayed })" :value="mmr === null ? '—' : mmr + '|' + rank" :color="lowSample ? 'gray-dark' : color"></stat-box>
-        <i :class="['fas text-xs text-gray-medium', expanded ? 'fa-chevron-up' : 'fa-chevron-down']"></i>
+        <basil-icon name="arrow" :class="['text-xs text-gray-medium', expanded ? '-rotate-90' : 'rotate-90']"></basil-icon>
       </div>
 
       <div v-if="expanded" class="bg-lighten p-3 text-left">

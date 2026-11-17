@@ -13,7 +13,7 @@
           @click="downloadFiles"
           class="btn bg-teal hover:bg-lteal font-bold px-6"
         >
-          <i class="fa-solid fa-download mr-2"></i>{{ $t('Download Files') }}
+          <basil-icon name="download" class="mr-2"></basil-icon>{{ $t('Download Files') }}
         </button>
       </div>
 
@@ -39,14 +39,14 @@
               class="absolute top-0 right-0 hidden group-hover:flex items-center justify-center w-6 h-6 rounded-tr bg-darken hover:bg-red text-white text-sm"
               :title="$t('Clear')"
             >
-              <i class="fa-solid fa-xmark"></i>
+              <basil-icon name="cross"></basil-icon>
             </div>
             <div
               v-if="slots[team][index].talents"
               class="absolute bottom-0 right-0 flex items-center justify-center w-6 h-6 rounded-br bg-teal text-white text-xs"
               :title="$t('Talents locked in')"
             >
-              <i class="fa-solid fa-check"></i>
+              <basil-icon name="check"></basil-icon>
             </div>
           </div>
         </div>

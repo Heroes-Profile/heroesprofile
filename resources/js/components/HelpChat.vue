@@ -16,7 +16,7 @@
           </button>
           <span class="w-px h-5 bg-white/20" aria-hidden="true"></span>
           <button class="w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="$t('Close help')" :title="$t('Close')" @click="toggle">
-            <i class="fas fa-xmark text-lg"></i>
+            <basil-icon name="cross" class="text-lg"></basil-icon>
           </button>
         </div>
       </div>
@@ -86,13 +86,13 @@
         :aria-expanded="open"
         @click="toggle"
       >
-        <i :class="open ? 'fas fa-xmark' : 'fas fa-question'"></i>
+        <basil-icon v-if="open" name="cross"></basil-icon><i v-else class="fas fa-question"></i>
       </button>
       <!-- Phones' first visit, instead of opening the panel over the page -->
       <div v-if="teaser && !open" class="help-teaser animate-bounce flex items-center gap-2 rounded-xl pl-3 pr-1 py-1 text-sm">
         <button class="text-left" @click="toggle"><span class="font-bold">{{ $t('New:') }}</span> {{ $t('questions? Ask here') }}</button>
         <button class="w-6 h-6 flex items-center justify-center rounded-control hover:bg-black/10" :aria-label="$t('Dismiss')" :title="$t('Dismiss')" @click="teaser = false">
-          <i class="fas fa-xmark"></i>
+          <basil-icon name="cross"></basil-icon>
         </button>
       </div>
     </div>

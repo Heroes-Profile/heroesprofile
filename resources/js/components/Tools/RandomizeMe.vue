@@ -44,11 +44,12 @@
             </div>
             <div class="flex flex-wrap flex-col md:flex-row items-center justify-center gap-2 mt-2">
               <span class="text-sm text-subtext">{{ copyString }}</span>
-              <i
-                :class="['fa-solid fa-copy cursor-pointer', copied ? 'text-teal' : 'text-subtext', 'hover:text-white']"
+              <basil-icon
+                name="share"
+                :class="['cursor-pointer', copied ? 'text-teal' : 'text-subtext', 'hover:text-white']"
                 :title="copied ? $t('COPIED') : $t('COPY TO CLIPBOARD')"
                 @click="copyToClipboard"
-              ></i>
+              ></basil-icon>
             </div>
             <div class="flex flex-wrap gap-4 mt-3 text-sm justify-center">
               <span v-if="build.game_type"><span class="text-subtext">{{ $t('Mode:') }}</span> {{ build.game_type }}</span>

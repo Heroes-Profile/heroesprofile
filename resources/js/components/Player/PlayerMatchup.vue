@@ -72,7 +72,7 @@
         <tr v-for="row in shownData" :key="row.hero.id">
           <td class="py-2 px-3">
             <a class="group/bt inline-flex items-center" :href="(esport ? ngsPlayerUrl : '/Player/' + battletag + '/' + blizzid + '/' + region) + '/Hero/' + row.hero.name + (league ? league.query : '')">
-              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="hidden md:block ml-2 group-hover/bt:underline">{{ $heroName(row.hero) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></i>
+              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="hidden md:block ml-2 group-hover/bt:underline">{{ $heroName(row.hero) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></basil-icon>
             </a>
           </td>
            <td class="py-2 px-3 text-center">

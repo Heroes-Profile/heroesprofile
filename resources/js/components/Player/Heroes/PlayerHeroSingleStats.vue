@@ -62,7 +62,7 @@
             <overview-stats class="flex-1 min-w-0 w-full" :win-rate="data.win_rate" :stats="overviewStats"></overview-stats>
           </div>
 
-          <a href="#advanced-stats" class="text-header w-fit hover:underline" @click.prevent="scrollToAdvancedStats">{{ $t('See advanced stats below') }}<i class="fas fa-chevron-down text-sm ml-3"></i></a>
+          <a href="#advanced-stats" class="text-header w-fit hover:underline" @click.prevent="scrollToAdvancedStats">{{ $t('See advanced stats below') }}<basil-icon name="arrow" class="rotate-90 text-sm ml-3"></basil-icon></a>
 
           <div class="flex flex-col gap-4 w-fit max-w-full">
             <h3 class="text-2xl font-bold">{{ $t('Maps') }}</h3>
@@ -86,7 +86,7 @@
           <div class="flex flex-col gap-4">
             <div class="flex justify-between items-baseline gap-3">
               <h3 class="text-2xl font-bold">{{ $t('Most Played Build') }}</h3>
-              <a class="text-header whitespace-nowrap hover:underline" :href="getTalentPageUrl()">{{ $t('Talent Data') }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+              <a class="text-header whitespace-nowrap hover:underline" :href="getTalentPageUrl()">{{ $t('Talent Data') }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
             </div>
             <tab-button v-if="!esport" class="self-start max-md:self-center" tab1text="All Seasons" tab2text="This Season" :ignoreclick="true" @tab-click="buildThisSeason = $event === 'right'" :overridedefaultside="buildThisSeason ? 'right' : 'left'"></tab-button>
             <div v-if="topBuild" class="flex flex-wrap items-center gap-x-6 gap-y-3 max-md:justify-center">
@@ -111,7 +111,7 @@
               <a v-for="team in data.teams_played_for" :key="team.team_name + team.season" :href="team.link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
                 <img v-if="team.image" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image" :alt="$ngsTeam(team.team_name).name"/>
                 <div class="flex flex-col min-w-0 flex-1">
-                  <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></span>
+                  <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
                   <span class="text-sm text-subtext">{{ [team.season ? $t('Season :season', { season: team.season }) : null, team.division ? $t('Division :division', { division: team.division }) : null].filter(Boolean).join(' · ') }}</span>
                 </div>
                 <div class="flex flex-col items-end shrink-0 text-sm">
@@ -176,7 +176,7 @@
                   <td class="py-2 px-3">{{ formatValue(row.key, data["sum_" + row.key]) }}</td>
                   <td class="py-2 px-3">{{ formatValue(row.key, data["avg_" + row.key], true) }}</td>
                   <td class="py-2 px-3">
-                    <span v-if="data['max_' + row.key] && !esport" class="group/bt inline-flex items-center text-header whitespace-nowrap cursor-pointer" :title="$t('Navigate to this match')" @click="navigateToMaxStatMatch(row.key, data['max_' + row.key])"><span class="group-hover/bt:underline">{{ formatValue(row.key, data["max_" + row.key]) }}</span><i class="fas fa-chevron-right text-sm ml-3 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></span>
+                    <span v-if="data['max_' + row.key] && !esport" class="group/bt inline-flex items-center text-header whitespace-nowrap cursor-pointer" :title="$t('Navigate to this match')" @click="navigateToMaxStatMatch(row.key, data['max_' + row.key])"><span class="group-hover/bt:underline">{{ formatValue(row.key, data["max_" + row.key]) }}</span><basil-icon name="arrow-small" class="text-sm ml-3 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
                     <template v-else>{{ formatValue(row.key, data["max_" + row.key]) }}</template>
                   </td>
                 </tr>
@@ -200,7 +200,7 @@
               <skeleton-box class="w-40 md:w-[14rem] h-[20.125rem] shrink-0 rounded"></skeleton-box>
               <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="9"></overview-stats>
             </div>
-            <span class="text-header w-fit">{{ $t('See advanced stats below') }}<i class="fas fa-chevron-down text-sm ml-3"></i></span>
+            <span class="text-header w-fit">{{ $t('See advanced stats below') }}<basil-icon name="arrow" class="rotate-90 text-sm ml-3"></basil-icon></span>
             <div class="flex flex-col gap-4">
               <h3 class="text-2xl font-bold">{{ $t('Maps') }}</h3>
               <div class="flex flex-wrap gap-6 max-md:justify-center">

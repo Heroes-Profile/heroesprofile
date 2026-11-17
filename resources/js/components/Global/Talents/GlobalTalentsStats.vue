@@ -27,7 +27,7 @@
           <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
             <p class="font-normal">
               {{ $t("In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.") }}
-              <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">How rank reading works</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
+              <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">How rank reading works</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
             </p>
           </round-image>
         </template>
@@ -104,7 +104,7 @@
               <div class="flex items-center gap-2 max-md:hidden">
                 <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" :overridedefaultside="isCompact ? 'right' : 'left'" @tab-click="setLayout"></tab-button>
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-                  <p class="max-sm:text-xs">{{ $t('Your default layout can be set in your') }} <a href="/Profile/Settings" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('Profile Settings') }}</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>.</p>
+                  <p class="max-sm:text-xs">{{ $t('Your default layout can be set in your') }} <a href="/Profile/Settings" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('Profile Settings') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>.</p>
                 </round-image>
               </div>
             </div>
@@ -152,7 +152,7 @@
             <div class="mt-4">
               {{ $t('Create your own builds at') }}
               <a :href="'/Global/Talents/Builder/' + selectedHero.name" class="group/bt inline-flex items-center" target="_blank" rel="noopener">
-                <span class="group-hover/bt:underline">{{ '/Global/Talents/Builder/' + selectedHero.name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i>
+                <span class="group-hover/bt:underline">{{ '/Global/Talents/Builder/' + selectedHero.name }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon>
               </a>
             </div>
           </panel-box>

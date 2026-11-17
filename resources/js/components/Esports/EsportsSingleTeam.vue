@@ -57,7 +57,7 @@
                     </hero-image-wrapper>
                   </a>
                   <div class="flex flex-col min-w-0 flex-1">
-                    <a class="group/bt font-semibold truncate" :href="row.playerlink"><span class="group-hover/bt:underline">{{ row.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                    <a class="group/bt font-semibold truncate" :href="row.playerlink"><span class="group-hover/bt:underline">{{ row.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                     <span v-if="row.most_played_role" class="text-sm text-subtext">{{ row.most_played_role }}</span>
                   </div>
                   <span class="shrink-0 text-sm text-subtext">{{ $t(':played games', { played: row.games_played }) }}</span>
@@ -70,7 +70,7 @@
                 <a v-for="(enemy, index) in data.enemy_teams" :key="index" :href="enemy.enemy_link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
                   <img v-if="enemy.icon_url" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="enemy.icon_url" :alt="teamName(enemy.team_name || enemy.team)"/>
                   <div class="flex flex-col min-w-0 flex-1">
-                    <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ teamName(enemy.team_name || enemy.team) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></span>
+                    <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ teamName(enemy.team_name || enemy.team) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
                     <span class="text-sm text-subtext">{{ enemy.inputhover }}</span>
                   </div>
                 </a>
@@ -155,7 +155,7 @@
 
       <div class="flex justify-between items-baseline gap-6">
         <h2 class="text-2xl font-bold">{{ $t('Recent Matches') }}</h2>
-        <a class="text-header whitespace-nowrap hover:underline" :href="matchHistoryUrl">{{ $t('Match History') }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+        <a class="text-header whitespace-nowrap hover:underline" :href="matchHistoryUrl">{{ $t('Match History') }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
       </div>
     </div>
     <!-- The league pages' own recent match rows -->

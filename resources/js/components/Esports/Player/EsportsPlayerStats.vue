@@ -39,7 +39,7 @@
             <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
               <div class="flex justify-between items-baseline gap-6">
                 <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
-                <a class="text-header whitespace-nowrap hover:underline" :href="ngsPageUrl(section.allPath)">{{ $t(section.allText) }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+                <a class="text-header whitespace-nowrap hover:underline" :href="ngsPageUrl(section.allPath)">{{ $t(section.allText) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
               </div>
               <div class="flex flex-wrap gap-6 max-md:justify-center">
                 <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :esport="esport" :playerlink="true" :text="group.label" :data="group.data"></group-box>
@@ -58,7 +58,7 @@
                 <a v-for="team in data.teams_played_for" :key="team.team_name + team.season" :href="team.link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
                   <img v-if="team.image" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image" :alt="$ngsTeam(team.team_name).name"/>
                   <div class="flex flex-col min-w-0 flex-1">
-                    <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></span>
+                    <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
                     <span class="text-sm text-subtext">{{ [team.season ? $t('Season :season', { season: team.season }) : null, team.division ? $t('Division :division', { division: team.division }) : null].filter(Boolean).join(' · ') }}</span>
                   </div>
                   <div class="flex flex-col items-end shrink-0 text-sm">
@@ -74,7 +74,7 @@
               <panel-box v-if="data.role_win_rates && data.role_win_rates.length" :inner="true" :title="$t('Win Rate By Role')"  link-text="All Roles" :link-href="ngsPageUrl('/Role')">
                 <div class="flex flex-col gap-3">
                   <div v-for="role in data.role_win_rates" :key="role.role" class="flex flex-col gap-1.5">
-                    <span class="text-header"><a class="hover:underline" :href="ngsPageUrl('/Role/' + role.role)">{{ role.role }}<i class="fas fa-chevron-right text-sm ml-3"></i></a> <span class="text-sm text-subtext">{{ $t('· :played games', { played: role.games_played }) }}</span></span>
+                    <span class="text-header"><a class="hover:underline" :href="ngsPageUrl('/Role/' + role.role)">{{ role.role }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a> <span class="text-sm text-subtext">{{ $t('· :played games', { played: role.games_played }) }}</span></span>
                     <stat-bar :value="role.win_rate.toFixed(2)" suffix="%" :color="$winRateColor(role.win_rate)"></stat-bar>
                   </div>
                 </div>
@@ -120,7 +120,7 @@
               <tr v-for="(row, index) in sortedData" :key="index">
                 <td>
                   <a class="group/bt flex items-center justify-center" :href="row.link">
-                    <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="hidden md:block ml-2 group-hover/bt:underline">{{ $heroName(row.hero) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></i>
+                    <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="hidden md:block ml-2 group-hover/bt:underline">{{ $heroName(row.hero) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></basil-icon>
                   </a>
                 </td>
                 <td>{{ row.win_rate }}</td>

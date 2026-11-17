@@ -12,16 +12,16 @@
       @keydown.space.prevent="toggle"
     >
       <span class="font-bold uppercase whitespace-nowrap">{{ modelValue ? formatDate(modelValue) : placeholder }}</span>
-      <button v-if="modelValue" type="button" class="relative z-[1] ml-auto" :aria-label="$t('Clear :field', { field: $t(label) })" @click.stop="pick(null)"><i class="fa-solid fa-xmark"></i></button>
-      <i v-else class="fa-solid fa-chevron-down ml-auto text-xs transition-transform" :class="{ 'rotate-180': open }"></i>
+      <button v-if="modelValue" type="button" class="relative z-[1] ml-auto" :aria-label="$t('Clear :field', { field: $t(label) })" @click.stop="pick(null)"><basil-icon name="cross"></basil-icon></button>
+      <basil-icon name="arrow" v-else class="rotate-90 ml-auto text-xs transition-transform" :class="{ '-rotate-90': open }"></basil-icon>
     </div>
 
     <!-- The calendar: same panel as the filter dropdowns -->
     <div v-if="open" class="expandable-dropdown absolute left-0 mt-2 !w-[17.5rem] max-w-[calc(100vw-2rem)] !min-w-0 rounded p-3 z-50 text-sm font-normal normal-case">
       <div class="flex items-center justify-between mb-2">
-        <button type="button" class="w-8 h-8 rounded-control hover:bg-surface-4 disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!canGoBack" :aria-label="$t('Previous')" @click="step(-1)"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+        <button type="button" class="w-8 h-8 rounded-control hover:bg-surface-4 disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!canGoBack" :aria-label="$t('Previous')" @click="step(-1)"><basil-icon name="arrow-small" class="rotate-180 text-xs"></basil-icon></button>
         <button type="button" class="px-3 h-8 rounded-control hover:bg-surface-4 font-bold" @click="zoomOut">{{ heading }}</button>
-        <button type="button" class="w-8 h-8 rounded-control hover:bg-surface-4 disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!canGoForward" :aria-label="$t('Next')" @click="step(1)"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+        <button type="button" class="w-8 h-8 rounded-control hover:bg-surface-4 disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!canGoForward" :aria-label="$t('Next')" @click="step(1)"><basil-icon name="arrow-small" class="text-xs"></basil-icon></button>
       </div>
 
       <!-- Days -->

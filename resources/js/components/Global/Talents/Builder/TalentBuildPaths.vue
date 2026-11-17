@@ -3,7 +3,7 @@
   <details :open="open" @toggle="$emit('update:open', $event.target.open)" class="bg-lighten rounded-lg w-0 min-w-full my-5 group">
     <summary class="px-6 py-4 flex justify-between items-center cursor-pointer list-none">
       <h3 class="text-lg">{{ $t('Alluvial Diagram') }}</h3>
-      <i class="fas fa-chevron-down transition-transform group-open:rotate-180"></i>
+      <basil-icon name="arrow" class="rotate-90 transition-transform group-open:-rotate-90"></basil-icon>
     </summary>
     <div class="px-3 pb-3">
     <div class="bg-gray-dark text-white rounded-2xl p-3">

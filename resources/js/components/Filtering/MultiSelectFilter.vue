@@ -6,7 +6,7 @@
         <span class="relative inline-flex items-center gap-1.5">{{ $t(text) }}
           <round-image v-if="infolink" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
             <div>
-              <p class="max-sm:text-xs">{{ $t('Timeframes correspond to game patches.') }} <a :href="infolink" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('View the full patch & season history.') }}</span><i class="fas fa-chevron-right text-xs ml-2"></i></a></p>
+              <p class="max-sm:text-xs">{{ $t('Timeframes correspond to game patches.') }} <a :href="infolink" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('View the full patch & season history.') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a></p>
             </div>
           </round-image>
           <round-image v-if="showrankinfo" size="small"    icon="fas fa-info"   title="info"  popupsize="large" mobileClick="true">
@@ -27,7 +27,7 @@
           <span v-if="toggletabs" class="whitespace-nowrap font-bold px-1 shrink-0">{{ $t(toggleside === 'right' ? toggletabs[1] : toggletabs[0]) }}</span>
           <span v-if="selectedOptions.length" class="font-bold px-1 truncate min-w-0">{{ selectedlabel || (selectedOptions.length <= 3 ? selectedOptionsName.join(', ') : $t(':selected of :total selected', { selected: selectedOptions.length, total: values.length })) }}</span>
         </span>
-        <i class="fa-solid fa-chevron-down ml-auto shrink-0 text-xs transition-transform" :class="{ 'rotate-180': showOptions }"></i>
+        <basil-icon name="arrow" class="rotate-90 ml-auto shrink-0 text-xs transition-transform" :class="{ '-rotate-90': showOptions }"></basil-icon>
       </span>
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->

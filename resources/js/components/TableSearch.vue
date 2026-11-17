@@ -37,13 +37,13 @@
             @click="pick(index)"
           >
             <td>
-              <a class="group/bt inline-flex items-center" :href="profileUrl(item)" @click.prevent.stop="pick(index)"><span class="group-hover/bt:underline">{{ item.battletagShort }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+              <a class="group/bt inline-flex items-center" :href="profileUrl(item)" @click.prevent.stop="pick(index)"><span class="group-hover/bt:underline">{{ item.battletagShort }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
             </td>
             <td v-if="showRegion">{{ item.regionName }}</td>
             <td>{{ Number(item.totalGamesPlayed).toLocaleString('en-US') }}</td>
             <td><div v-if="item.latestHero" class="flex items-center justify-center"><hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper><span class="hidden md:block font-bold ml-2">{{ item.latestHero.name }}</span></div></td>
             <td>
-              <a v-if="item.latestReplayID" class="group/bt inline-flex items-center" :href="matchUrl(item)" target="_blank" rel="noopener" @click.stop><span class="group-hover/bt:underline">{{ item.latest_game }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+              <a v-if="item.latestReplayID" class="group/bt inline-flex items-center" :href="matchUrl(item)" target="_blank" rel="noopener" @click.stop><span class="group-hover/bt:underline">{{ item.latest_game }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
               <template v-else>{{ item.latest_game }}</template>
             </td>
           </tr>

@@ -9,10 +9,10 @@
     <div v-show="canScrollRight" class="pointer-events-none absolute inset-y-0 right-0 w-20" :style="{ background: 'linear-gradient(to left, rgba(15, 18, 29, 0.9), rgba(15, 18, 29, 0))' }"></div>
 
     <button v-show="canScrollLeft" type="button" :aria-label="$t('Scroll left')" class="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-blue hover:bg-lblue text-white flex items-center justify-center drop-shadow-md" @click="scrollLeft">
-      <i class="fas fa-chevron-left"></i>
+      <basil-icon name="arrow-small" class="rotate-180"></basil-icon>
     </button>
     <button v-show="canScrollRight" type="button" :aria-label="$t('Scroll right')" class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-blue hover:bg-lblue text-white flex items-center justify-center drop-shadow-md" @click="scrollRight">
-      <i class="fas fa-chevron-right"></i>
+      <basil-icon name="arrow-small"></basil-icon>
     </button>
   </div>
 </template>

@@ -172,7 +172,7 @@
               <td class="py-2 px-3">{{ invoice.date }}</td>
               <td class="py-2 px-3">{{ invoice.total }}</td>
               <td class="py-2 px-3">
-                <a v-if="invoice.url" :href="invoice.url" target="_blank" rel="noopener" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">View</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                <a v-if="invoice.url" :href="invoice.url" target="_blank" rel="noopener" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">View</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
               </td>
             </tr>
           </tbody>

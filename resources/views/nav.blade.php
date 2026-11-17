@@ -14,7 +14,7 @@
 <div id="main-menu" class="  main-navigation-wrapper"> <!-- max-md:hidden  - This needs to hide/show on click of the button but only on mobile - either detect mobile with vue, or have a class that is added/taken away that only applies to mobile -->
     {{-- Desktop: above the battletag row (z-[51]), which is above page dropdowns like filters (z-50). Mobile keeps z-50 so a battletag menu can open full screen over it. --}}
     <nav id="main-nav" class="bg-surface-1 text-white z-50 md:z-[52] relative md:px-8 md:py-3 text-sm max-md:pt-2">
-      <button  id="mobile-nav-close" class="hidden bg-blue rounded-control px-2 py-1 min-w-[2.25rem] min-h-[2rem] text-base leading-none ml-auto  mr-2" aria-label="{{ __('Close menu') }}"><i class="fas fa-xmark" aria-hidden="true"></i></button>
+      <button  id="mobile-nav-close" class="hidden bg-blue rounded-control px-2 py-1 min-w-[2.25rem] min-h-[2rem] text-base leading-none ml-auto  mr-2" aria-label="{{ __('Close menu') }}"><basil-icon name="cross" aria-hidden="true"></basil-icon></button>
        
         <div class="flex items-start justify-center flex-wrap  mx-auto max-md:flex-col max-md:items-stretch max-w-[120rem]" >
              <div class="flex justify-start items-start flex-wrap max-md:flex-col max-md:items-stretch grow mr-auto max-md:mr-0 max-md:w-full max-md:justify-center">
@@ -27,7 +27,7 @@
                 <div id="nav-links" class=" grow-1 flex items-left md:space-x-5 md:ml-auto flex-wrap md:flex-nowrap max-md:flex-col max-md:w-full ">
                     
                     <div id="nav-global-stats" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">{{ __('Global Hero Stats') }}<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
+                        <a class=" cursor-pointer">{{ __('Global Hero Stats') }}<basil-icon name="arrow" class="rotate-90 text-xs ml-2" aria-hidden="true"></basil-icon></a>
                         <div class="nav-dropdown ">
                             <div class="nav-dropdown-inner-wrapper ">
                                 {{-- ... (Global Hero Stats dropdown items) --}}
@@ -67,7 +67,7 @@
                     <a id="nav-leaderboards" class="  nav-item" href="/Global/Leaderboard"><span>{{ __('Leaderboards') }}</span></a>
 
                     <div id="nav-tools" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">{{ __('Tools') }}<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
+                        <a class=" cursor-pointer">{{ __('Tools') }}<basil-icon name="arrow" class="rotate-90 text-xs ml-2" aria-hidden="true"></basil-icon></a>
                         <div class="nav-dropdown ">
                             <div class=" nav-dropdown-inner-wrapper ">
                                 <span class="nav-dropdown-label">{{ __('Tools') }}</span>
@@ -99,7 +99,7 @@
                     <a id="nav-esports" class=" nav-item" href="/Esports"><span>{{ __('Community Esports') }}</span></a>
 
                     <div id="nav-help" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">{{ __('Help') }}<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
+                        <a class=" cursor-pointer">{{ __('Help') }}<basil-icon name="arrow" class="rotate-90 text-xs ml-2" aria-hidden="true"></basil-icon></a>
                         <div class="nav-dropdown ">
                             <div class="nav-dropdown-inner-wrapper ">
                                  <a href="https://github.com/Heroes-Profile/heroesprofile/issues/new?assignees=&labels=&projects=&template=bug_report.md" target="_blank" >{{ __('Submit an Issue') }}</a>
@@ -120,7 +120,7 @@
                     
 
                     <div id="nav-donate" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">{{ __('Donate') }}<i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i></a>
+                        <a class=" cursor-pointer">{{ __('Donate') }}<basil-icon name="arrow" class="rotate-90 text-xs ml-2" aria-hidden="true"></basil-icon></a>
                         <div class="nav-dropdown ">
                             <div class="nav-dropdown-inner-wrapper ">
                                  <a href="https://www.patreon.com/c/heroesprofile" target="_blank" >{{ __('Patreon') }}</a>
@@ -142,7 +142,7 @@
                             @else
                                 ({{ __('Region not found, log out and back in') }})
                             @endif
-                            <i class="fas fa-chevron-down text-xs ml-2 md:hidden" aria-hidden="true"></i>
+                            <basil-icon name="arrow" class="rotate-90 text-xs ml-2" aria-hidden="true"></basil-icon>
                             </a>
                             <div class="nav-dropdown  ">
                                 <div class="nav-dropdown-inner-wrapper ">

@@ -189,7 +189,7 @@
                       <template v-if="p.schema && p.schema.enum">
                         <a
                           v-if="listedInVariables(p)"
-                          :href="'#variable-' + p.name" class="group/bt inline-flex items-center text-xs"><span class="group-hover/bt:underline">{{ p.schema.enum.length }} values — see Variables</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                          :href="'#variable-' + p.name" class="group/bt inline-flex items-center text-xs"><span class="group-hover/bt:underline">{{ p.schema.enum.length }} values — see Variables</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                         <div v-else class="text-xs break-all max-w-[15rem]">{{ p.schema.enum.join(', ') }}</div>
                       </template>
                     </td>
@@ -276,7 +276,7 @@
                       :aria-label="copied === op.id ? 'Copied' : 'Copy response'"
                       @click="copy(op)"
                     >
-                      <i :class="copied === op.id ? 'fas fa-check' : 'fas fa-copy'"></i>
+                      <basil-icon :name="copied === op.id ? 'check' : 'share'"></basil-icon>
                     </button>
 
                     <pre class="bg-darken p-3 pr-20 text-xs overflow-x-auto max-h-96">{{ pretty(results[op.id].body) }}</pre>

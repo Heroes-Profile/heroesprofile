@@ -44,8 +44,8 @@ html{background-color:lightgrey; font-family: 'Roboto', var(--lang-font), sans-s
   }
 }
 /* A <details> sliding shut is still [open] until it finishes (utils/animateDetails.js), so turn its chevron back now */
-details.group.is-closing[open] .group-open\:rotate-180 {
-  --tw-rotate: 0deg;
+details.group.is-closing[open] .group-open\:-rotate-90 {
+  --tw-rotate: 90deg;
 }
 @keyframes hover-fade-in {
   from { opacity: 0; }
@@ -476,7 +476,8 @@ input[type="radio"].form-checkbox:checked{
 .light-mode .table-skeleton-head .skeleton-box{
   @apply bg-white/40;
 }
-/* Light mode's table headers are teal, which hid the teal search glass in them */
+/* The teal search glass goes white on a teal header: light mode's headers, and a sorted column's in either mode */
+th.bg-teal .search-input-glass,
 .light-mode thead .search-input-glass{
   @apply text-white hover:text-white/75;
 }
@@ -521,6 +522,13 @@ thead:not(:last-of-type){
 /* Phones: just under the sticky mobile header (#mobile-header in nav.blade.php, 2.75rem tall) */
 @media (max-width: 1023.98px){
   thead{ top: calc(2.75rem - 2px); }
+}
+/* Clicking a header sorts; without this a quick double click highlights its text. The search field inside still selects. */
+thead{
+  user-select: none;
+}
+thead input{
+  user-select: text;
 }
 thead tr{
   @apply py-3;

@@ -8,7 +8,7 @@
         <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
           <p class="font-normal">
             {{ $t("In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.") }}
-            <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">How rank reading works</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
+            <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">How rank reading works</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
           </p>
         </round-image>
       </template>
@@ -193,7 +193,7 @@
                 <!-- Like Friend Foe's Matches column: a chevron that opens this hero's builds below the row -->
                 <button type="button" @click="viewtalentbuilds(row.name, index)" :aria-expanded="!!toggletalentbuilds[row.name]" :aria-label="$t(':hero talent builds', { hero: $heroName(row.name) })" :title="$t('Talent Builds')" class="w-full flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors">
                   <img v-if="loadingStates[row.name]" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="Loading"/>
-                  <i v-else :class="['fas fa-chevron-right transition-transform', { 'rotate-90': toggletalentbuilds[row.name] }]"></i>
+                  <basil-icon v-else name="arrow-small" :class="['transition-transform', { 'rotate-90': toggletalentbuilds[row.name] }]"></basil-icon>
                 </button>
               </td>
             </tr>

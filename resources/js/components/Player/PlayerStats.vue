@@ -53,8 +53,8 @@
             <div class="card-actions ml-auto flex gap-1 text-header">
               <loading-component v-if="cardDownloading" :compact="true" :textoverride="true">{{ $t('Processing image for download...') }}</loading-component>
               <template v-else>
-                <button v-if="canCopyImage" type="button" class="p-1.5 hover:text-lteal" :title="cardCopied ? $t('Copied') : $t('Copy card image')" @click="copyCard"><i :class="cardCopied ? 'fa-solid fa-check' : 'fa-solid fa-copy'"></i></button>
-                <button type="button" class="p-1.5 hover:text-lteal" :title="$t('Download card image')" @click="downloadCard"><i class="fa-solid fa-download"></i></button>
+                <button v-if="canCopyImage" type="button" class="p-1.5 hover:text-lteal" :title="cardCopied ? $t('Copied') : $t('Copy card image')" @click="copyCard"><basil-icon :name="cardCopied ? 'check' : 'share'"></basil-icon></button>
+                <button type="button" class="p-1.5 hover:text-lteal" :title="$t('Download card image')" @click="downloadCard"><basil-icon name="download"></basil-icon></button>
               </template>
             </div>
           </div>
@@ -71,7 +71,7 @@
           <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
             <div class="flex justify-between items-baseline">
               <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
-              <a class="text-header whitespace-nowrap hover:underline" :href="profileUrl + section.allPath">{{ $t(section.allText) }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+              <a class="text-header whitespace-nowrap hover:underline" :href="profileUrl + section.allPath">{{ $t(section.allText) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
             </div>
             <div class="flex flex-wrap gap-6 max-md:justify-center">
               <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :playerlink="true" :text="group.label" :data="group.data"></group-box>
@@ -88,7 +88,7 @@
               <!-- Spread over the card, so it and the party card beside it line up -->
               <div class="flex-1 flex flex-col justify-between gap-3">
                 <div v-for="role in roleWinRates" :key="role.label" class="flex flex-col gap-1.5">
-                  <a class="text-header leading-[1.2] w-fit hover:underline" :href="profileUrl + '/Role/' + role.label">{{ $t(role.label) }}<i class="fas fa-chevron-right text-sm ml-3"></i></a>
+                  <a class="text-header leading-[1.2] w-fit hover:underline" :href="profileUrl + '/Role/' + role.label">{{ $t(role.label) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
                   <stat-bar :value="role.value.toFixed(2)" suffix="%" :color="$winRateColor(role.value)"></stat-bar>
                 </div>
               </div>

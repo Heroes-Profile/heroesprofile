@@ -185,7 +185,7 @@
       <tbody class="text-center">
         <tr v-for="(row, index) in replays" :key="index">
           <td>
-            <a class="group/bt inline-flex items-center" :href="`/Match/Single/${row.replayID}`"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+            <a class="group/bt inline-flex items-center" :href="`/Match/Single/${row.replayID}`"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
           </td>
           <td>
             <div class="flex gap-x-1 mx-2 items-center justify-center">

@@ -111,7 +111,7 @@
 
           <tr>
             <td colspan="4" class="text-center">
-              <a href="/Api/EndpointLimits" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">View Detailed Endpoint Limits</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+              <a href="/Api/EndpointLimits" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">View Detailed Endpoint Limits</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
             </td>
           </tr>
 

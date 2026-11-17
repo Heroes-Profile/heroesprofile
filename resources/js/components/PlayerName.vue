@@ -3,7 +3,7 @@
   <span class="relative inline-flex items-center">
     <a :href="href" :target="newTab ? '_blank' : null" :rel="newTab ? 'noopener' : null" class="peer/name group/bt relative inline-flex items-center" @click="redirect && $redirectToProfile(battletag, blizzId, region, false)">
       <span class="group-hover/bt:underline">{{ battletag }}</span>
-      <i class="fas fa-chevron-right text-xs absolute left-full ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i>
+      <basil-icon name="arrow-small" class="text-xs absolute left-full ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon>
     </a>
     <!-- flairOutside: the flairs hang past the name, so a centred name is centred on its own -->
     <span :class="['inline-flex items-center ml-1 transition-transform peer-hover/name:translate-x-4', { 'absolute left-full top-1/2 -translate-y-1/2': flairOutside }]">

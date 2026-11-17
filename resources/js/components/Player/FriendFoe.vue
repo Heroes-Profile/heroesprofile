@@ -93,13 +93,13 @@
                   <hero-image-wrapper class="mr-2" :hero="row.heroData.hero" :mobile-click="true">
                     <image-hover-box :title="$heroName(row.heroData.hero)" :paragraph-one="$t('Games Played') + ': ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
                   </hero-image-wrapper>
-                  <a :href="heroLink(row)" class="group/bt hidden md:inline-flex items-center"><span class=" group-hover/bt:underline">{{ $heroName(row.heroData.hero) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                  <a :href="heroLink(row)" class="group/bt hidden md:inline-flex items-center"><span class=" group-hover/bt:underline">{{ $heroName(row.heroData.hero) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                 </div>
               </td>
               <td class="py-2 px-3 text-center">{{ row.total_games_played.toLocaleString('en-US') }}</td>
               <td class="py-2 px-3 text-center">{{ row.win_rate.toFixed(2) }}</td>
               <td v-if="!esport" class="py-2 px-3">
-                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" :aria-label="`Matches with ${row.battletag}`" :title="$t('Matches')" class="flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors"><i class="fas fa-chevron-right"></i></a>
+                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" :aria-label="`Matches with ${row.battletag}`" :title="$t('Matches')" class="flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors"><basil-icon name="arrow-small"></basil-icon></a>
               </td>
             </tr>
           </tbody>
@@ -153,13 +153,13 @@
                   <hero-image-wrapper class="mr-2" :hero="row.heroData.hero" :mobile-click="true">
                     <image-hover-box :title="$heroName(row.heroData.hero)" :paragraph-one="$t('Games Played') + ': ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
                   </hero-image-wrapper>
-                  <a :href="heroLink(row)" class="group/bt hidden md:inline-flex items-center"><span class=" group-hover/bt:underline">{{ $heroName(row.heroData.hero) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                  <a :href="heroLink(row)" class="group/bt hidden md:inline-flex items-center"><span class=" group-hover/bt:underline">{{ $heroName(row.heroData.hero) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                 </div>
               </td>
               <td class="py-2 px-3 text-center">{{ row.total_games_played.toLocaleString('en-US') }}</td>
               <td class="py-2 px-3 text-center">{{ row.win_rate.toFixed(2) }}</td>
               <td v-if="!esport" class="py-2 px-3">
-                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" :aria-label="`Matches with ${row.battletag}`" :title="$t('Matches')" class="flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors"><i class="fas fa-chevron-right"></i></a>
+                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" :aria-label="`Matches with ${row.battletag}`" :title="$t('Matches')" class="flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors"><basil-icon name="arrow-small"></basil-icon></a>
               </td>
             </tr>
           </tbody>

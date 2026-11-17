@@ -13,7 +13,7 @@
       </thead>
       <tbody class="text-center">
         <tr v-for="division in data" :key="division">
-          <td><a class="group/bt inline-flex items-center" :href="getUrl(division.division_0)"><span class="group-hover/bt:underline">{{ division.division_0 }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></td>
+          <td><a class="group/bt inline-flex items-center" :href="getUrl(division.division_0)"><span class="group-hover/bt:underline">{{ division.division_0 }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></td>
           <td>{{ division.count }}</td>
         </tr>
       </tbody>

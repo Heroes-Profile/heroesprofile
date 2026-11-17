@@ -29,7 +29,7 @@
               <span class="text-xs">{{ formatRowDate(row.game_date) }}</span>
               <span class="relative z-[2] text-sm">
                 {{ $t(':leaguename Match ID', { leaguename: leagueName }) }}
-                <a class="group/bt inline-flex items-center" :href="matchUrl(row)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                <a class="group/bt inline-flex items-center" :href="matchUrl(row)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
               </span>
             </div>
           </div>
@@ -60,7 +60,7 @@
                 <div class="flex flex-col gap-1.5 flex-1 min-w-0 ml-0.5">
                   <div v-for="(player, playerIndex) in teamPlayers(row, team)" :key="playerIndex" class="flex gap-1 h-4 items-center">
                     <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover bg-surface-3 text-[0rem]" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name" :title="$heroName(player.hero)"/>
-                    <a v-if="player.battletag" :href="playerUrl(row, player)" class="group/bt min-w-0 inline-flex items-center text-sm font-medium text-subtext hover:text-lteal"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-[0.625rem] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                    <a v-if="player.battletag" :href="playerUrl(row, player)" class="group/bt min-w-0 inline-flex items-center text-sm font-medium text-subtext hover:text-lteal"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="text-[0.625rem] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                     <span v-else class="min-w-0 truncate text-sm font-medium text-subtext">{{ player.hero ? player.hero.name : '' }}</span>
                   </div>
                 </div>
@@ -99,7 +99,7 @@
               </div>
             </div>
             <span class="relative w-[11.25rem] shrink-0 px-4 font-medium text-header">{{ $t('Game :game · Round :round', { game: row.game, round: row.round }) }}</span>
-            <span class="relative z-[2] w-[10rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="matchUrl(row)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
+            <span class="relative z-[2] w-[10rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="matchUrl(row)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></span>
             <div class="relative w-[35rem] shrink-0 px-4 flex items-center gap-4">
               <template v-for="(team, position) in sidesOf(row)" :key="team">
                 <span v-if="position === 1" class="text-subtext text-sm">{{ $t('vs') }}</span>

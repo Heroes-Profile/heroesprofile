@@ -2,7 +2,7 @@
   <div class="relative" :class="textclass" @mouseleave="open = false">
     <button type="button" class="inline-flex items-center gap-2 focus:underline focus:outline-none" :aria-label="'Change ' + label" :aria-expanded="open" @click="open = !open">
       <span>{{ displayName(selectedName) }}</span>
-      <i class="fas fa-chevron-down text-xs"></i>
+      <basil-icon name="arrow" class="rotate-90 text-xs"></basil-icon>
     </button>
     <div v-if="open" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg font-normal" style="width: 17.5rem; max-height: 26.25rem;">
       <!-- The search spans the dropdown's full width above the list; only the list scrolls -->

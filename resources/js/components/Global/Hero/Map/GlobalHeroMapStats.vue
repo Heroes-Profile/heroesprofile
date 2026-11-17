@@ -91,7 +91,7 @@
             <tr v-for="row in sortedData" :key="row.rank">
               <td v-for="column in dynamicColumns" :key="column.value" class="">
                 <div v-if="column.value === 'battletag'">
-                  <a class="group/bt inline-flex items-center" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank" rel="noopener"><span class="group-hover/bt:underline">{{ row[column.value] }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                  <a class="group/bt inline-flex items-center" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank" rel="noopener"><span class="group-hover/bt:underline">{{ row[column.value] }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                 </div>
                 <div v-else-if="column.value === 'most_played_hero'">
                   <div  v-if="row.most_played_hero" class="flex gap-x-2 items-center justify-center">

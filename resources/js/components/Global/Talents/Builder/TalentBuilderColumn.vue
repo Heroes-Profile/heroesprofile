@@ -4,7 +4,7 @@
     <div v-if="horizontal" :class="[compact ? 'w-[9.375rem]' : 'w-[10.625rem]', 'inline-block m-1 bg-gray-light rounded']">
       <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase relative">{{ $t('Level :level', { level: level }) }}
         <div @click="removeAnySelections" class="absolute right-0 top-0 text-bold p-2 rounded hover:bg-teal">
-          <i class="fa-solid fa-xmark"></i>
+          <basil-icon name="cross"></basil-icon>
         </div>
       </h2>
       <div v-for="(talent, index) in data" :key="talent.title">
@@ -21,7 +21,7 @@
     <div v-else class="m-1 bg-gray-light rounded flex max-md:flex-col">
       <h2 class="bg-blue rounded-l max-md:rounded-l-none max-md:rounded-t p-2 text-sm text-center uppercase relative pr-8 min-w-[9em] max-md:min-w-0">{{ $t('Level :level', { level: level }) }}
         <div @click="removeAnySelections" class="absolute right-0 top-0 text-bold p-2 rounded hover:bg-teal">
-          <i class="fa-solid fa-xmark"></i>
+          <basil-icon name="cross"></basil-icon>
         </div>
       </h2>
       <div class="flex flex-wrap w-full max-md:justify-center text-sm max-md:text-sm">

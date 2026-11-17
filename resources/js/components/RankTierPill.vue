@@ -1,5 +1,6 @@
 <template>
-  <span v-if="tier" class="inline-block min-w-[10.5em] text-center px-3 py-1.5 rounded font-medium whitespace-nowrap" :style="style">{{ tierLabel }}</span>
+  <!-- A label, not a button: fills its cell up to 200px, with the inputs' corner rather than the buttons' -->
+  <span v-if="tier" :class="['block w-full max-w-[12.5rem] min-w-[10.25rem] px-3 py-2 rounded-control font-medium whitespace-nowrap', align === 'left' ? 'text-left' : 'mx-auto text-center']" :style="style">{{ tierLabel }}</span>
 </template>
 
 <script>
@@ -24,6 +25,8 @@ export default {
   name: 'RankTierPill',
   props: {
     tier: [String, Number],
+    // 'center' (tables) or 'left' (the MMR card's fixed column)
+    align: { type: String, default: 'center' },
   },
   computed: {
     tierLabel() {

@@ -80,7 +80,7 @@
               <template v-for="(row, index) in filteredTeams">
                 <tr>
                   <td>
-                    <a class="group/bt inline-flex items-center" :href="'./' + series.name + '/Team/' + row"><span class="group-hover/bt:underline">{{ row }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                    <a class="group/bt inline-flex items-center" :href="'./' + series.name + '/Team/' + row"><span class="group-hover/bt:underline">{{ row }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                   </td>
                 </tr>
               </template>
@@ -110,7 +110,7 @@
               <template v-for="(row, index) in battletagresponse">
                 <tr>
                   <td>
-                    <a class="group/bt inline-flex items-center" :href="'./' + series.name + '/Player/' + row.battletag + '/' + row.blizz_id"><span class="group-hover/bt:underline">{{ row.battletag }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                    <a class="group/bt inline-flex items-center" :href="'./' + series.name + '/Player/' + row.battletag + '/' + row.blizz_id"><span class="group-hover/bt:underline">{{ row.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                   </td>
                 </tr>
               </template>

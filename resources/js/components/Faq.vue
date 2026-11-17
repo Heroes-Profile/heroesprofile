@@ -8,7 +8,7 @@
       <!-- Search -->
       <div class="mb-8">
         <div class="relative">
-          <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-teal text-sm"></i>
+          <basil-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-teal text-sm"></basil-icon>
           <input
             v-model="search"
             type="text"
@@ -71,7 +71,7 @@
                 <tr v-for="page in section.items" :key="page.url">
                   <td style="padding:0.1875rem 0.5rem; white-space:nowrap;">{{ page.name }}</td>
                   <td style="padding:0.1875rem 0.5rem; white-space:nowrap;">
-                    <a v-if="!page.url.includes('{')" :href="page.url" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ page.url }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                    <a v-if="!page.url.includes('{')" :href="page.url" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ page.url }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                     <span v-else>{{ page.url }}</span>
                     <div v-if="page.hero_url" class="text-xs text-soft">{{ $t('One hero:') }} <a :href="page.hero_url.replace('{hero}', 'Abathur')" class="underline">{{ page.hero_url.replace('{hero}', 'Abathur') }}</a></div>
                   </td>
@@ -103,7 +103,7 @@
               <tr v-for="(row, i) in patchHistory" :key="i">
                 <td style="padding:0.1875rem 0.5rem;">{{ row.season }}</td>
                 <td style="padding:0.1875rem 0.5rem;">
-                  <a v-if="row.patch_notes_url" :href="row.patch_notes_url" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ row.game_version }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                  <a v-if="row.patch_notes_url" :href="row.patch_notes_url" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ row.game_version }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                   <span v-else>{{ row.game_version }}</span>
                 </td>
                 <td style="padding:0.1875rem 0.5rem;">{{ formatDate(row.start_date) }}</td>

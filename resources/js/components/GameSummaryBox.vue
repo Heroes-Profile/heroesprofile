@@ -22,7 +22,7 @@
       </div>
     </div>
     <span class="relative w-[10rem] shrink-0 px-4 font-medium text-header">{{ esport ? $t('Game :game · Round :round', { game: data.game, round: data.round }) : $t(data.game_type.name) }}</span>
-    <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="getHref()"><span class="group-hover/bt:underline">{{ data.replayID }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a></span>
+    <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="getHref()"><span class="group-hover/bt:underline">{{ data.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></span>
     <!-- Esports games: their team against the other, where a ranked game shows MMR -->
     <div v-if="esport" class="relative w-[16.875rem] shrink-0 px-4 flex flex-col min-w-0">
       <span class="font-semibold truncate">{{ $ngsTeam(data.own_team).name }}</span>
@@ -117,7 +117,7 @@
               <span v-if="player.check" class="flex-1 min-w-0 truncate text-sm font-medium text-subtext">{{ $t('Hidden') }}</span>
               <icon-with-hover v-else class="flex-1" popupsize="fit">
                 <template #trigger>
-                  <a :href="player.link || `/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="!player.link && $redirectToProfile(player.battletag, player.blizz_id, player.region, false)" :class="['group/bt min-w-0 inline-flex items-center text-sm font-medium hover:text-lteal', player.own ? 'text-white' : 'text-subtext']"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><i class="fas fa-chevron-right text-[0.625rem] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                  <a :href="player.link || `/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="!player.link && $redirectToProfile(player.battletag, player.blizz_id, player.region, false)" :class="['group/bt min-w-0 inline-flex items-center text-sm font-medium hover:text-lteal', player.own ? 'text-white' : 'text-subtext']"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="text-[0.625rem] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                 </template>
                 <div class="flex items-center gap-2 text-base font-bold text-white">
                   <img v-if="player.hero" class="w-6 h-6 rounded-full object-cover bg-surface-3 text-[0rem]" :src="`/images/heroes/${player.hero.short_name}.png`" alt=""/>
@@ -139,10 +139,10 @@
   </div>
 
   <div v-if="data.downloadable || isWatchableGame" :class="['absolute z-[3] flex transition-opacity', compact ? 'right-4 top-1/2 -translate-y-1/2 flex-row-reverse gap-4' : 'right-2 top-2 flex-col gap-2']" class="md:opacity-0 md:group-hover/replay:opacity-100 md:focus-within:opacity-100">
-    <a v-if="data.downloadable && replayViewerAllowed && !replayDownloadBlocked" class="max-md:hidden hover:text-lteal" :href="'/Match/Single/' + data.replayID + '/Download'" :title="$t('Download Replay')"><i class="fa-solid fa-download"></i></a>
-    <span v-else-if="data.downloadable && !replayViewerAllowed" class="max-md:hidden opacity-60" :title="$t('Log in to download replays')"><i class="fa-solid fa-download"></i></span>
-    <a v-if="isWatchableGame && replayViewerAllowed" class="hover:text-lteal" :href="'/Analytics/Match/Single/' + data.replayID" :title="$t('Watch Replay')"><i class="fa-solid fa-video"></i></a>
-    <span v-else-if="isWatchableGame" class="opacity-60" :title="$t('Log in with Battle.net to watch replays')"><i class="fa-solid fa-video"></i></span>
+    <a v-if="data.downloadable && replayViewerAllowed && !replayDownloadBlocked" class="max-md:hidden hover:text-lteal" :href="'/Match/Single/' + data.replayID + '/Download'" :title="$t('Download Replay')"><basil-icon name="download"></basil-icon></a>
+    <span v-else-if="data.downloadable && !replayViewerAllowed" class="max-md:hidden opacity-60" :title="$t('Log in to download replays')"><basil-icon name="download"></basil-icon></span>
+    <a v-if="isWatchableGame && replayViewerAllowed" class="hover:text-lteal" :href="'/Analytics/Match/Single/' + data.replayID" :title="$t('Watch Replay')"><basil-icon name="replay"></basil-icon></a>
+    <span v-else-if="isWatchableGame" class="opacity-60" :title="$t('Log in with Battle.net to watch replays')"><basil-icon name="replay"></basil-icon></span>
   </div>
   </div>
 

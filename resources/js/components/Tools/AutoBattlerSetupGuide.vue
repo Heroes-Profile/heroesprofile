@@ -2,7 +2,7 @@
   <div class="bg-lighten rounded">
     <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 font-bold text-lg">
       <span><i class="fa-solid fa-circle-info mr-2"></i>{{ $t('How to set this up') }}</span>
-      <i :class="['fa-solid', open ? 'fa-chevron-up' : 'fa-chevron-down']"></i>
+      <basil-icon name="arrow" :class="open ? '-rotate-90' : 'rotate-90'"></basil-icon>
     </button>
 
     <ol v-if="open" class="list-decimal pl-10 pr-4 pb-4 flex flex-col gap-3">

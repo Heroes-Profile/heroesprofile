@@ -1,7 +1,7 @@
 <template>
   <!-- A teal pill like tab-button: chevrons at the ends, the current page on a dark chip -->
   <nav class="inline-flex items-center gap-1 bg-teal rounded p-1 text-white" :aria-label="$t('Pages')">
-    <button type="button" class="w-9 h-9 rounded-control hover:bg-lteal disabled:opacity-40 disabled:hover:bg-transparent" :disabled="current <= 1" :aria-label="$t('Previous page')" @click="$emit('page', current - 1)"><i class="fa-solid fa-chevron-left"></i></button>
+    <button type="button" class="w-9 h-9 rounded-control hover:bg-lteal disabled:opacity-40 disabled:hover:bg-transparent" :disabled="current <= 1" :aria-label="$t('Previous page')" @click="$emit('page', current - 1)"><basil-icon name="arrow-small" class="rotate-180"></basil-icon></button>
     <template v-for="(page, index) in pages" :key="index">
       <!-- A gap: click it to type any page number -->
       <template v-if="page === null">
@@ -10,7 +10,7 @@
       </template>
       <button v-else type="button" :class="['min-w-[2.25rem] h-9 px-2 rounded-control', page === current ? 'bg-surface-1' : 'hover:bg-lteal']" :aria-current="page === current ? 'page' : null" @click="page !== current && $emit('page', page)">{{ page }}</button>
     </template>
-    <button type="button" class="w-9 h-9 rounded-control hover:bg-lteal disabled:opacity-40 disabled:hover:bg-transparent" :disabled="current >= last" :aria-label="$t('Next page')" @click="$emit('page', current + 1)"><i class="fa-solid fa-chevron-right"></i></button>
+    <button type="button" class="w-9 h-9 rounded-control hover:bg-lteal disabled:opacity-40 disabled:hover:bg-transparent" :disabled="current >= last" :aria-label="$t('Next page')" @click="$emit('page', current + 1)"><basil-icon name="arrow-small"></basil-icon></button>
   </nav>
 </template>
 

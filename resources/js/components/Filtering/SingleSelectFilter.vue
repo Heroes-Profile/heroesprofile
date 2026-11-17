@@ -15,7 +15,7 @@
       </span> 
       <span class="h-[2.5rem] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 min-w-0 w-full">
         <span class="font-bold px-1 text-nowrap truncate min-w-0" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span>
-        <i class="fa-solid fa-chevron-down ml-auto shrink-0 text-xs transition-transform" :class="{ 'rotate-180': showOptions }"></i>
+        <basil-icon name="arrow" class="rotate-90 ml-auto shrink-0 text-xs transition-transform" :class="{ '-rotate-90': showOptions }"></basil-icon>
       </span>
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->

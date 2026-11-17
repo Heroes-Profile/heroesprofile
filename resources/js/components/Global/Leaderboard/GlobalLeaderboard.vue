@@ -9,7 +9,7 @@
       <template #headingInfo>
         <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
           <p v-if="leaderboardtype == 'Match Prediction'" class="font-normal">
-            <template v-for="(part, index) in $t('Match Prediction leaderboard data is based on users making predictions about match outcomes through :link.').split(':link')" :key="index">{{ part }}<template v-if="index === 0"><a href="/Match/Prediction/Game" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('Match Prediction') }}</span><i class="fas fa-chevron-right text-xs ml-2"></i></a></template></template>
+            <template v-for="(part, index) in $t('Match Prediction leaderboard data is based on users making predictions about match outcomes through :link.').split(':link')" :key="index">{{ part }}<template v-if="index === 0"><a href="/Match/Prediction/Game" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('Match Prediction') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a></template></template>
           </p>
           <p v-else class="font-normal">
             {{ $t('Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards.') }}
@@ -22,7 +22,7 @@
     <!-- Opens over the filters and table -->
     <div v-if="leaderboardtype != 'SL Rank'" class="relative max-w-[120rem] mx-auto px-4 md:px-8 -mt-2 mb-6">
       <button type="button" class="bg-surface-3 rounded px-4 py-2 text-sm flex items-center gap-3" :aria-expanded="showLeaderboardRequirements" @click="showLeaderboardRequirements = !showLeaderboardRequirements">
-        {{ $t('Leaderboard Requirements') }}<i :class="['fas fa-chevron-down text-xs transition-transform', { 'rotate-180': showLeaderboardRequirements }]"></i>
+        {{ $t('Leaderboard Requirements') }}<basil-icon name="arrow" :class="['text-xs transition-transform', showLeaderboardRequirements ? '-rotate-90' : 'rotate-90']"></basil-icon>
       </button>
       <div v-if="showLeaderboardRequirements" class="absolute z-40 left-4 md:left-8 top-full mt-2 w-[40rem] max-w-[calc(100vw-2rem)] max-h-[75vh] overflow-y-auto bg-surface-3 rounded p-6 shadow-lg flex flex-col gap-4 text-sm">
         <h3 class="font-bold text-base">{{ leaderboardtype == 'Match Prediction' ? $t('To be eligible for Match Prediction leaderboards, the following conditions must be met:') : $t('To be eligible for leaderboards, the following conditions must be met:') }}</h3>
@@ -107,10 +107,11 @@
             <table class="min-w-0 w-full responsive-table rounded-table relative">
               <thead class="w-full">
                 <tr class="">
-                  <th @click="sortTable('rank')" class="py-2 px-3  text-center text-sm leading-4 cursor-pointer">
+                  <!-- Wide enough for the "#" box beside the rank, so sorting by another column doesn't widen it -->
+                  <th @click="sortTable('rank')" class="w-[7.25rem] py-2 px-3 text-center text-sm leading-4 cursor-pointer">
                     <!-- Sorted by another column: "#" over each row's position in the sort, "Rank" over the leaderboard rank,
                          on the same grid as the cells so both line up -->
-                    <span v-if="rankchange" class="inline-grid grid-cols-[2rem_2.5rem] gap-2 items-center"><span class="text-center">#</span><span class="text-left whitespace-nowrap">{{ $t('Rank') }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span></span>
+                    <span v-if="rankchange" class="inline-grid grid-cols-[2.75rem_2.5rem] gap-2 items-center"><span class="text-center">#</span><span class="text-left whitespace-nowrap">{{ $t('Rank') }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span></span>
                     <template v-else>{{ $t('Rank') }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></template>
                   </th>
                   <th :class="['py-2 px-3 text-center text-sm leading-4',{ 'bg-teal text-white': sortKey === 'battletag'}]">
@@ -131,7 +132,7 @@
                       <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                         <p class="font-normal normal-case">
                           {{ $t("Real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is listed by the latest rank read for them this season, grouped by league: Grand Masters by ladder position, then Master, then each league by division. Within a division, players with at least :games Storm League games this season (the Player leaderboard's games requirement) come first, by Storm League win rate; players under it follow, by games played. Ties go to the rank read in more games. Shows the top 500 in each league.", { games: data.length ? data[0].min_games : 0 }) }}
-                          <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('How rank reading works') }}</span><i class="fas fa-chevron-right text-xs ml-2"></i></a>
+                          <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('How rank reading works') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
                         </p>
                       </round-image>
                     </span>
@@ -191,7 +192,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td><div v-if="rankchange" class="inline-grid grid-cols-[2rem_2.5rem] gap-2 items-center"><div class="bg-blue text-white w-8 p-1 rounded-control text-center tabular-nums"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  group.rows.length - index }}</span></div><span class="text-left tabular-nums">{{ row.rank }}</span></div><span v-else class="p-1">{{ row.rank }}</span></td>
+                    <td><div v-if="rankchange" class="inline-grid grid-cols-[2.75rem_2.5rem] gap-2 items-center"><div class="bg-blue text-white py-1 rounded-control text-center tabular-nums"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  group.rows.length - index }}</span></div><span class="text-left tabular-nums">{{ row.rank }}</span></div><span v-else class="p-1">{{ row.rank }}</span></td>
                     <td>
                       <player-name :flair-outside="true" :battletag="row.split_battletag" :blizz-id="row.blizz_id" :region="row.region_id" :redirect="true" :hp-owner="!!row.hp_owner" :patreon="!!row.patreon"></player-name>
                     </td>
@@ -200,14 +201,17 @@
                     <td>{{ row.win_rate === null ? '-' : row.win_rate.toFixed(2) }}</td>
                     <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'">{{ row.rating.toFixed(2) }}</td>
                     <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'">{{ row.mmr.toLocaleString('en-US') }}</td>
-                    <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'"><rank-tier-pill :tier="row.tier"></rank-tier-pill></td>
+                    <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" class="px-6"><rank-tier-pill :tier="row.tier"></rank-tier-pill></td>
                     <td>{{ row.games_played.toLocaleString('en-US') }}</td>
 
                     <td class="py-2 px-3" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role')">
-                      <div v-if="row.most_played_hero" class="flex items-center">
+                      <!-- Holds a portrait's height when there's no hero, so every row is the same height -->
+                      <div class="flex items-center min-h-10">
+                        <template v-if="row.most_played_hero">
                         <hero-image-wrapper :hero="row.most_played_hero">
                           <image-hover-box :title="$heroName(row.most_played_hero)" :paragraph-one="$t('Games Played') + ': ' + row.hero_build_games_played"></image-hover-box>
-                        </hero-image-wrapper><a :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}/Hero/${encodeURIComponent(row.most_played_hero.name)}`" class="group/bt hidden md:inline-flex items-center ml-2"><span class="group-hover/bt:underline">{{ $heroName(row.most_played_hero) }}</span><i class="fas fa-chevron-right text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></i></a>
+                        </hero-image-wrapper><a :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}/Hero/${encodeURIComponent(row.most_played_hero.name)}`" class="group/bt hidden md:inline-flex items-center ml-2"><span class="group-hover/bt:underline">{{ $heroName(row.most_played_hero) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                        </template>
                       </div>
                     </td>
 

@@ -7,10 +7,10 @@
        centred over it or along its left edge -->
   <span v-if="collapsible" :class="['inline-flex items-center', { relative: !align }]">
     <button type="button" :class="['search-input-glass text-teal hover:text-lteal px-1', { invisible: isOpen }]" :aria-label="$t(placeholder)" :title="$t(placeholder)" :tabindex="isOpen ? -1 : null" @click="expand">
-      <i class="fas fa-magnifying-glass text-sm"></i>
+      <basil-icon name="search" class="text-sm"></basil-icon>
     </button>
     <div v-if="isOpen" v-bind="$attrs" :class="['absolute top-1/2 -translate-y-1/2 z-20', align === 'center' ? 'left-1/2 -translate-x-1/2' : align === 'left' ? 'left-0' : 'right-0']">
-      <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-teal text-sm pointer-events-none"></i>
+      <basil-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-teal text-sm pointer-events-none"></basil-icon>
       <input
         ref="input"
         :value="modelValue"
@@ -25,7 +25,7 @@
     </div>
   </span>
   <div v-else v-bind="$attrs" class="relative">
-    <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-teal text-sm pointer-events-none"></i>
+    <basil-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-teal text-sm pointer-events-none"></basil-icon>
     <input
       ref="input"
       :value="modelValue"
