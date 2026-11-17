@@ -194,6 +194,50 @@ body{
   #main-nav.nav-wrapped #nav-content{ padding-right: var(--nav-logo-w); }
   #main-nav.nav-wrapped #right-nav-wrapper{ margin-left: auto; margin-right: auto; }
 }
+/* A Patreon member's nav avatar: a steady gold glow, brighter on hover */
+.patreon-glow{
+  box-shadow: 0 0 0.5rem rgba(255, 215, 0, 0.6);
+}
+.patreon-glow:hover{
+  box-shadow: 0 0 0.875rem rgba(255, 215, 0, 0.9);
+}
+/* A Void eye holder's: the picture is purple already, so a pale violet edge, a dark ring outside it, then a strong glow */
+.void-glow{
+  box-shadow: 0 0 0 0.125rem #0b0614, 0 0 0.625rem 0.125rem rgba(167, 123, 243, 0.85);
+}
+.void-glow:hover{
+  box-shadow: 0 0 0 0.125rem #0b0614, 0 0 1rem 0.25rem rgba(167, 123, 243, 1);
+}
+/* The site owner's: a dark navy edge with a faint blue haze; OwnerSparks flashes little lightning bolts around it */
+.owner-glow{
+  border-color: #0b1530;
+  box-shadow: 0 0 0 0.0625rem rgba(79, 195, 255, 0.35), 0 0 0.4rem rgba(79, 195, 255, 0.35);
+}
+@keyframes owner-spark{
+  0%{ opacity: 0; }
+  15%{ opacity: 1; }
+  35%{ opacity: 0.3; }
+  50%{ opacity: 1; }
+  100%{ opacity: 0; }
+}
+.owner-spark{
+  filter: drop-shadow(0 0 0.15rem #4fc3ff) drop-shadow(0 0 0.3rem rgba(79, 195, 255, 0.8));
+  animation: owner-spark 0.45s linear forwards;
+}
+/* The Site Owner crown beside a name: electric blue with a dark edge and a blue glow, to match the owner avatar border */
+.owner-crown,
+.owner-crown i{
+  color: #4fc3ff !important;
+  -webkit-text-stroke: 0.06em #0b1530;
+  filter: drop-shadow(0 0 0.15em rgba(79, 195, 255, 0.8));
+}
+/* Sparks sized to a crown rather than an avatar */
+.owner-sparks-small svg{
+  width: 0.625rem;
+  height: 0.625rem;
+  margin-top: -0.3125rem;
+}
+
 .nav-item{
   padding-top:0.625rem;
   padding-bottom:0.625rem;

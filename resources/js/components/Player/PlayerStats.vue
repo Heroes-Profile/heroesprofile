@@ -53,8 +53,8 @@
             <div class="card-actions ml-auto flex gap-1 text-header">
               <loading-component v-if="cardDownloading" :compact="true" :textoverride="true">{{ $t('Processing image for download...') }}</loading-component>
               <template v-else>
-                <button v-if="canCopyImage" type="button" class="p-1.5 hover:text-lteal" :title="cardCopied ? $t('Copied') : $t('Copy card image')" @click="copyCard"><basil-icon :name="cardCopied ? 'check' : 'share'"></basil-icon></button>
-                <button type="button" class="p-1.5 hover:text-lteal" :title="$t('Download card image')" @click="downloadCard"><basil-icon name="download"></basil-icon></button>
+                <button v-if="canCopyImage" type="button" class="flex p-1.5 hover:text-lteal" :title="cardCopied ? $t('Copied') : $t('Copy card image')" @click="copyCard"><basil-icon class="text-2xl" :name="cardCopied ? 'check' : 'share'"></basil-icon></button>
+                <button type="button" class="flex p-1.5 hover:text-lteal" :title="$t('Download card image')" @click="downloadCard"><basil-icon class="text-2xl" name="download"></basil-icon></button>
               </template>
             </div>
           </div>

@@ -18,11 +18,14 @@
         <a :href="`/Player/${battletag}/${blizzid}/${region}`" class="group/bt inline-flex items-start gap-3"><span class="text-3xl md:text-4xl font-bold group-hover/bt:underline">{{ battletag }}</span><region-tag :region="regionstring" :large="true"></region-tag></a>
       </div>
       <div v-if="battletag" class="flex items-center gap-1 text-[1.25rem] mt-1 max-md:justify-center">
-          <icon-with-hover v-if="isOwner && !ownerHidden" size="small" icon="fas fa-crown" title="info" popupsize="small" style="color:gold">
+          <span v-if="isOwner && !ownerHidden" class="relative inline-flex">
+          <icon-with-hover class="owner-crown" size="small" icon="fas fa-crown" title="info" popupsize="small">
             <div>
               <p class="max-sm:text-xs">{{ $t('Site Owner') }}</p>
             </div>
           </icon-with-hover>
+          <owner-sparks class="owner-sparks-small"></owner-sparks>
+          </span>
           <icon-with-hover v-else-if="isPatreon" size="small" icon="fas fa-star" title="info" popupsize="small" style="color:gold">
             <div>
               <p class="max-sm:text-xs">{{ $t('Patreon Subscriber') }}</p>

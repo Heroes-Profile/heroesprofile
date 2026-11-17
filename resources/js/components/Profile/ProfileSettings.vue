@@ -197,6 +197,23 @@
         <h2 class="text-2xl font-bold mb-6">{{ $t('Flair') }}</h2>
         <p class="text-sm text-subtext mb-6">{{ $t('Choose which flair shows next to your BattleTag. Hidden flair is hidden for everyone.') }}</p>
         <div class="space-y-6">
+          <div v-if="availableBorders.length">
+            <h3 class="mb-1">{{ $t('Avatar border') }}</h3>
+            <p class="text-sm text-subtext mb-3">{{ $t('The border around your picture in the top bar.') }}</p>
+            <!-- Each choice drawn on the top bar's picture; click one to use it. Up to four, so pictures rather than the tab button. -->
+            <div class="flex flex-wrap gap-4">
+              <button v-for="option in borderOptions" :key="option.key" type="button" :aria-pressed="option.key === avatarBorder" @click="avatarbordersetting(option.key)"
+                :class="['flex flex-col items-center gap-2 px-3 py-2 rounded-control transition-colors', option.key === avatarBorder ? 'bg-surface-3 text-white' : 'text-subtext hover:bg-surface-3/60']">
+                <span class="relative block">
+                  <span :class="['relative block w-11 h-11 rounded overflow-hidden', borderPreviewClass[option.key], option.key === avatarBorder ? '' : 'opacity-60']">
+                    <img class="w-full h-full object-cover" src="/images/heroes/auto_select.jpg" alt="">
+                  </span>
+                  <owner-sparks v-if="option.key === 'owner'"></owner-sparks>
+                </span>
+                <span class="text-sm">{{ $t(option.label) }}</span>
+              </button>
+            </div>
+          </div>
           <div v-for="flair in flairOptions" :key="flair.key">
             <h3 class="mb-1 flex items-center gap-2">
               <i v-if="flair.icon" :class="flair.icon" :style="flair.iconStyle"></i>
@@ -264,6 +281,11 @@ export default {
       type: Array,
       default: () => [],
     },
+    // Avatar borders this account has earned: 'owner', 'patreon', 'void_eye'
+    availableBorders: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -274,12 +296,15 @@ export default {
         { key: 'general',     label: 'General' },
         { key: 'global',      label: 'Global Pages' },
         { key: 'player',      label: 'Player' },
-        ...(this.availableFlair.length ? [{ key: 'flair', label: 'Flair' }] : []),
+        ...(this.availableFlair.length || this.availableBorders.length ? [{ key: 'flair', label: 'Flair' }] : []),
         { key: 'connections', label: 'Connections' },
       ],
       // 'left' = show, 'right' = hide
       flairSides: { owner: 'left', patreon: 'left', void_eye: 'left' },
       flairHide: {},
+      // The nav avatar's border: 'owner', 'patreon', 'void_eye' or 'none'
+      avatarBorder: null,
+      borderChange: {},
 
       usergametype: null,
       playermultigametype: null,
@@ -338,6 +363,8 @@ export default {
     this.playerhistorytable = this.defaultPlayerhistorytable;
     this.customgames = this.defaultCustomGames;
     this.playerload = this.defaultPlayerLoad;
+    const border = this.user.user_settings.find(item => item.setting === 'avatar_border');
+    this.avatarBorder = border && (border.value === 'none' || this.availableBorders.includes(border.value)) ? border.value : (this.availableBorders[0] || 'none');
     ['owner', 'patreon', 'void_eye'].forEach((key) => {
       const setting = this.user.user_settings.find(item => item.setting === `flair_hide_${key}`);
       this.flairSides[key] = setting && setting.value == 1 ? 'right' : 'left';
@@ -347,9 +374,18 @@ export default {
     localeOptions() {
       return Object.entries(this.locales).map(([code, name]) => ({ code, name }));
     },
+    // The same classes the nav gives the picture (nav.blade.php)
+    borderPreviewClass() {
+      return { owner: 'border-2 owner-glow', patreon: 'border-2 border-[#ffd700] patreon-glow', void_eye: 'border-2 border-[#a77bf3] void-glow', none: '' };
+    },
+    // The earned borders, then None, in the tab button's order
+    borderOptions() {
+      const labels = { owner: 'Site Owner', patreon: 'Patreon', void_eye: 'Mark of the Void' };
+      return [...this.availableBorders.map(key => ({ key, label: labels[key] })), { key: 'none', label: 'None' }];
+    },
     flairOptions() {
       const all = [
-        { key: 'owner', label: 'Site Owner', description: 'The crown shown for the Heroes Profile owner.', icon: 'fas fa-crown', iconStyle: 'color:gold' },
+        { key: 'owner', label: 'Site Owner', description: 'The crown shown for the Heroes Profile owner.', icon: 'fas fa-crown owner-crown' },
         { key: 'patreon', label: 'Patreon', description: 'The star shown for Patreon supporters.', icon: 'fas fa-star', iconStyle: 'color:gold' },
         { key: 'void_eye', label: 'Mark of the Void', description: "Earned by finding Xal'atath's eye. Hiding it does not affect your ad-free time.", icon: 'void-eye-img' },
       ];
@@ -450,8 +486,10 @@ export default {
           customgames: this.customgames,
           playerhistorytable: playerhistorytableinput,
           ...this.flairHide,
+          ...this.borderChange,
         });
         this.flairHide = {};
+        this.borderChange = {};
         this.settingsSaved = true;
         setTimeout(() => { this.settingsSaved = false; }, 5000);
         this.usermultigametype = this.savemultigametype;
@@ -532,6 +570,11 @@ export default {
     },
     playermatchhistorystylesetting(side) {
       this.playerhistorytable = side;
+      this.saveSettings();
+    },
+    avatarbordersetting(key) {
+      this.avatarBorder = key;
+      this.borderChange = { avatar_border: this.avatarBorder };
       this.saveSettings();
     },
     flairsetting(key, side) {

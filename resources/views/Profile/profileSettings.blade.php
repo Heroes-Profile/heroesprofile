@@ -9,6 +9,7 @@
     :locale="'{{ app()->getLocale() }}'"
     :locales="{{ json_encode(config('app.supported_locales')) }}"
     :available-flair="{{ json_encode($availableFlair) }}"
+    :available-borders="{{ json_encode($availableBorders) }}"
   >
   </profile-settings>
 @endsection

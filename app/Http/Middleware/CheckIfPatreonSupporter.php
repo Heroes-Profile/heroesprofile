@@ -27,12 +27,14 @@ class CheckIfPatreonSupporter
             $patreonUser = $user->patreonAccount;
             $override = $user->flair_adfree_override == 1;
 
-            // Event flair can grant a stretch of ad-free (e.g. 3 months for finding the Xal'atath eye).
+            // The account's event flair in one query: it can grant a stretch of ad-free (e.g. 3 months for
+            // finding the Xal'atath eye), and the nav's user menu lists the eye.
+            $flair = BattlenetAccountFlair::where('battlenet_accounts_id', $user->battlenet_accounts_id)
+                ->get(['flair', 'ad_free_until']);
+
             $adFree = ($patreonUser && $patreonUser->ad_free == 1)
                 || $override
-                || BattlenetAccountFlair::where('battlenet_accounts_id', $user->battlenet_accounts_id)
-                    ->where('ad_free_until', '>', now())
-                    ->exists();
+                || $flair->contains(fn ($row) => $row->ad_free_until && $row->ad_free_until->isFuture());
 
             $siteFlair = ($patreonUser && $patreonUser->site_flair == 1) || $override;
 
@@ -40,6 +42,7 @@ class CheckIfPatreonSupporter
             session([
                 'patreonSubscriberAdFree' => $adFree,
                 'patreonSubscriberSiteFlair' => $siteFlair,
+                'voidEyeFlair' => $flair->contains('flair', BattlenetAccountFlair::XALATATH_EYE),
             ]);
         }
 

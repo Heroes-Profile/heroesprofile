@@ -43,15 +43,16 @@
       </div>
     </template>
 
-    <!-- Holds the chart's place -->
-    <div v-else class="h-[18.25rem] rounded-control bg-surface-3 flex items-center justify-center p-6 text-center text-subtext">{{ $t('No in-game rank has been read for this player yet.') }}</div>
+    <!-- Holds the chart's place and grows with the card, so nothing is left empty under the dropdown -->
+    <div v-else class="flex-1 min-h-[24.125rem] rounded-control bg-surface-3 flex items-center justify-center p-8 text-center text-xl text-subtext/50">{{ $t('No in-game rank has been read for this player yet.') }}</div>
 
-    <details class="bg-surface-3 rounded text-sm w-fit max-w-full group open:w-full">
-      <summary class="px-4 py-3 flex gap-4 justify-between items-center cursor-pointer list-none">
-        <h3 class="text-lg">{{ $t('How to get your rank on Heroes Profile') }}</h3>
-        <basil-icon name="arrow" class="rotate-90 transition-transform group-open:-rotate-90"></basil-icon>
-      </summary>
-      <div class="px-6 pb-6 space-y-4">
+    <!-- Opens over the page, like the leaderboard's requirements, so the cards below don't move -->
+    <div class="relative w-fit max-w-full">
+      <button type="button" class="bg-surface-3 rounded px-4 py-3 flex gap-4 justify-between items-center text-left" :aria-expanded="showRankHelp" @click="showRankHelp = !showRankHelp">
+        <h3 class="text-xl">{{ $t('How to get your rank on Heroes Profile') }}</h3>
+        <basil-icon name="arrow" :class="['transition-transform', showRankHelp ? '-rotate-90' : 'rotate-90']"></basil-icon>
+      </button>
+      <div v-if="showRankHelp" class="absolute z-40 left-0 top-full mt-2 w-[40rem] max-w-[calc(100vw-2rem)] max-h-[75vh] overflow-y-auto bg-surface-3 rounded p-6 shadow-lg space-y-4 text-sm">
         <ol class="list-decimal list-inside space-y-1">
           <li>{{ $t('Install the') }} <strong>{{ $t('with rank reading') }}</strong> {{ $t('version of the Heroes Profile uploader for your system: Windows, macOS or Linux.') }}</li>
           <li>{{ $t("In the uploader's Settings, turn on") }} <strong>{{ $t('Read ranks from the loading screen') }}</strong>.</li>
@@ -62,7 +63,7 @@
         </p>
         <custom-button href="/Upload" text="Get The Uploader" alt="Download the Heroes Profile replay uploader" color="blue"></custom-button>
       </div>
-    </details>
+    </div>
   </panel-box>
 </template>
 
@@ -123,6 +124,8 @@ export default {
       range: 'season',
       // Which rank stands for a day: 'peak' or 'end'
       dayRank: 'end',
+      // The "How to get your rank" panel
+      showRankHelp: false,
       chart: null,
       // Where the plot starts, so the toggle sits just above its top-left corner
       plot: { left: 0, top: 0 },

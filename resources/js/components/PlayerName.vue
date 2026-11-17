@@ -7,9 +7,12 @@
     </a>
     <!-- flairOutside: the flairs hang past the name, so a centred name is centred on its own -->
     <span :class="['inline-flex items-center ml-1 transition-transform peer-hover/name:translate-x-4', { 'absolute left-full top-1/2 -translate-y-1/2': flairOutside }]">
-      <icon-with-hover v-if="hpOwner" class="[&>span]:h-full" size="small" icon="fas fa-crown" title="info" popupsize="small" style="color:gold">
-        <p class="max-sm:text-xs">{{ $t('Site Owner') }}</p>
-      </icon-with-hover>
+      <span v-if="hpOwner" class="relative inline-flex">
+        <icon-with-hover class="owner-crown [&>span]:h-full" size="small" icon="fas fa-crown" title="info" popupsize="small">
+          <p class="max-sm:text-xs">{{ $t('Site Owner') }}</p>
+        </icon-with-hover>
+        <owner-sparks class="owner-sparks-small"></owner-sparks>
+      </span>
       <icon-with-hover v-else-if="patreon" class="[&>span]:h-full" size="small" icon="fas fa-star" title="info" popupsize="small" style="color:gold">
         <p class="max-sm:text-xs">{{ $t('Patreon Subscriber') }}</p>
       </icon-with-hover>

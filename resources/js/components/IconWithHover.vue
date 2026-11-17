@@ -39,6 +39,8 @@
     <Teleport to="body">
       <div v-if="showTooltip" ref="popup" @mouseover="handleMouseOver" @mouseleave="scheduleHide" :style="tooltipStyle" :class="[
           'fixed text-xs z-[55]',
+          // Closes as soon as the pointer leaves the trigger, even onto the popup
+          { 'pointer-events-none': !popupHoverable },
         {
           'w-[14em]' : popupsize != 'large' && popupsize != 'fit',
           'w-[25rem] max-w-[90vw]' : popupsize == 'large',
@@ -68,6 +70,7 @@ export default {
   components: {
   },
   props: {
+    popupHoverable: { type: Boolean, default: true },
     title: String,
     image: String,
     size: String,
@@ -146,6 +149,10 @@ export default {
     // Short grace so a quick or slightly off move between icon and popup doesn't close it
     scheduleHide() {
       if (this.pinned) return;
+      if (!this.popupHoverable) {
+        this.hideTooltip();
+        return;
+      }
       this.hideTimer = setTimeout(this.hideTooltip, 150);
     },
     handleClick() {

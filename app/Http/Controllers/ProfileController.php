@@ -24,6 +24,12 @@ class ProfileController extends Controller
             'user' => $user,
             'filters' => $this->globalDataService->getFilterData(),
             'availableFlair' => $this->globalDataService->getAvailableFlair($user),
+            // Avatar borders this account can pick from; the flags come from CheckIfPatreonSupporter on this request
+            'availableBorders' => array_keys(array_filter([
+                'owner' => $user->blizz_id == 67280 && $user->region == 1,
+                'patreon' => session('patreonSubscriberAdFree') || session('patreonSubscriberSiteFlair'),
+                'void_eye' => session('voidEyeFlair'),
+            ])),
         ]);
     }
 
@@ -49,6 +55,7 @@ class ProfileController extends Controller
             'flair_hide_owner' => 'nullable|boolean',
             'flair_hide_patreon' => 'nullable|boolean',
             'flair_hide_void_eye' => 'nullable|boolean',
+            'avatar_border' => 'nullable|in:owner,patreon,void_eye,none',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -189,6 +196,13 @@ class ProfileController extends Controller
             $user->userSettings()->updateOrCreate(
                 ['setting' => 'playerload'],
                 ['value' => $playerload]
+            );
+        }
+
+        if (! is_null($request['avatar_border'])) {
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'avatar_border'],
+                ['value' => $request['avatar_border']]
             );
         }
 

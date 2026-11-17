@@ -115,21 +115,24 @@
               <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover bg-surface-3 text-[0rem]" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name"/>
               <!-- The profile's own player comes first -->
               <span v-if="player.check" class="flex-1 min-w-0 truncate text-sm font-medium text-subtext">{{ $t('Hidden') }}</span>
-              <icon-with-hover v-else class="flex-1" popupsize="fit">
+              <icon-with-hover v-else class="flex-1" popupsize="fit" :popup-hoverable="false">
                 <template #trigger>
                   <a :href="player.link || `/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="!player.link && $redirectToProfile(player.battletag, player.blizz_id, player.region, false)" :class="['group/bt min-w-0 inline-flex items-center text-sm font-medium hover:text-lteal', player.own ? 'text-white' : 'text-subtext']"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="text-[0.625rem] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                 </template>
-                <div class="flex items-center gap-2 text-base font-bold text-white">
-                  <img v-if="player.hero" class="w-6 h-6 rounded-full object-cover bg-surface-3 text-[0rem]" :src="`/images/heroes/${player.hero.short_name}.png`" alt=""/>
-                  <span class="min-w-0 break-words">{{ player.battletag }}</span>
-                  <img v-if="player.party" class="w-5 h-5" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${player.party}.png`" alt=""/>
+                <!-- As the redesign's popup: 18px name, then grey labels with white values -->
+                <div class="flex flex-col gap-2 text-base">
+                  <div class="flex items-center gap-2 text-lg font-bold text-white">
+                    <img v-if="player.hero" class="w-6 h-6 rounded-full object-cover bg-surface-3 text-[0rem]" :src="`/images/heroes/${player.hero.short_name}.png`" alt=""/>
+                    <span class="min-w-0 break-words">{{ player.battletag }}</span>
+                    <img v-if="player.party" class="w-5 h-5" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${player.party}.png`" alt=""/>
+                  </div>
+                  <div class="flex flex-col gap-1 text-subtext whitespace-nowrap">
+                    <p v-if="player.hero">{{ $t('Hero') }}: <span class="text-white">{{ $heroName(player.hero) }}</span></p>
+                    <p v-if="player.account_level != null">{{ $t('Account Level') }}: <span class="text-white">{{ player.account_level }}</span></p>
+                    <p v-if="player.hero_level != null">{{ $t('Hero Level') }}: <span class="text-white">{{ player.hero_level }}</span></p>
+                    <p v-if="player.player_mmr != null">{{ $t('Player MMR') }}: <span class="text-white">{{ player.player_mmr.toLocaleString('en-US') }}</span></p>
+                  </div>
                 </div>
-                <image-hover-box
-                  :paragraph-one="player.hero ? $t('Hero') + ': ' + $heroName(player.hero) : null"
-                  :paragraph-two="player.account_level != null ? $t('Account Level') + ': ' + player.account_level : null"
-                  :paragraph-three="player.hero_level != null ? $t('Hero Level') + ': ' + player.hero_level : null"
-                  :paragraph-four="player.player_mmr != null ? $t('Player MMR') + ': ' + player.player_mmr.toLocaleString('en-US') : null"
-                ></image-hover-box>
               </icon-with-hover>
             </div>
           </div>

@@ -36,7 +36,10 @@
     </div>
     <div :class="['absolute -top-2 left-0 z-10']" v-if="hpowner">
       <!-- {{ "HP Owner" }} -->
-      <i class="fas fa-crown text" style="color:gold;"></i>
+      <span class="relative inline-flex">
+        <i class="fas fa-crown text owner-crown"></i>
+        <owner-sparks class="owner-sparks-small"></owner-sparks>
+      </span>
     </div>
 
     <div :class="['absolute z-10 -top-2 left-0']" v-else-if="ispatreon">
