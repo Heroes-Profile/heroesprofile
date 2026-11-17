@@ -3,7 +3,7 @@
   <page-heading :heading="'Settings'"></page-heading>
   <!-- While a dropdown is open, a click anywhere just closes it (which saves) instead of opening another setting -->
   <div v-if="dropdownOpen" class="fixed inset-0 z-40"></div>
-  <div class="relative flex mx-auto w-full max-w-[1200px] mt-[2vh] h-[85vh]">
+  <div class="relative flex mx-auto w-full max-w-[1200px] mt-[2vh] min-h-[85vh]">
     <div v-if="isLoading" class="absolute inset-0 z-50 rounded-lg overflow-hidden">
       <loading-component :textoverride="true">Saving...</loading-component>
     </div>
@@ -24,7 +24,7 @@
     </div>
 
     <!-- Right panel -->
-    <div class="flex-1 bg-lighten rounded-r-lg border-l border-gray-600 overflow-y-auto">
+    <div class="flex-1 bg-lighten rounded-r-lg border-l border-gray-600">
       <transition name="fade">
         <div v-if="settingsSaved" class="bg-teal text-white text-center py-2 text-sm rounded-tr-lg">
           Settings Saved
