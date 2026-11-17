@@ -157,7 +157,7 @@ class HelpDigestBuilder
                     'title' => $chunk['title'],
                     'url' => $chunk['url'],
                     'hero' => $chunk['hero'],
-                    'description' => $this->description($chunk['url']),
+                    'description' => $this->description($chunk['url'], $chunk['hero']),
                     // For matching questions without loading every chunk
                     'summary' => mb_substr($chunk['text'], 0, 400),
                     'as_of' => $chunk['as_of'],
@@ -548,11 +548,18 @@ class HelpDigestBuilder
         return $this->globalDataService->getHeroes();
     }
 
-    private function description(string $url): ?string
+    private function description(string $url, ?string $hero = null): ?string
     {
         $this->pageDescriptions ??= collect(config('faq.pages'))->pluck('items')->flatten(1)
             ->mapWithKeys(fn ($page) => [preg_replace('#^/Player/[^/]+/\d+/\d+#', '{profile}', $page['url']) => $page['description']])
             ->all();
+
+        // /Global/Hero?hero=Sonya and /Global/Hero/Maps/Sonya use their page's description
+        $url = strtok($url, '?');
+        $suffix = $hero !== null ? '/'.rawurlencode($hero) : null;
+        if ($suffix && str_ends_with($url, $suffix)) {
+            $url = substr($url, 0, -strlen($suffix));
+        }
 
         return $this->pageDescriptions[$url] ?? null;
     }
