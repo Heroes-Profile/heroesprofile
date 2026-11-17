@@ -312,7 +312,10 @@ class FaqMatcher
 
     private function keywords(string $text): array
     {
-        preg_match_all('/[a-z0-9]+/', strtolower(html_entity_decode($text, ENT_QUOTES | ENT_HTML5)), $matches);
+        $text = strtolower(html_entity_decode($text, ENT_QUOTES | ENT_HTML5));
+        // "win rate", "win-rate", "winrates" -> "winrate"
+        $text = preg_replace('/\b(win|pick|ban)[\s-]*rates?\b/', '$1rate', $text);
+        preg_match_all('/[a-z0-9]+/', $text, $matches);
 
         $words = [];
         foreach ($matches[0] as $word) {
