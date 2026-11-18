@@ -5,7 +5,7 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-bcmath": "*",
         "anthropic-ai/sdk": "^1.6",
         "firebase/php-jwt": "^7.1",
@@ -13,8 +13,8 @@
         "google/cloud-tasks": "^2.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/cashier": "^16.7",
-        "laravel/framework": "^10.10",
-        "laravel/sanctum": "^3.2",
+        "laravel/framework": "^11.0",
+        "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.8",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.2",
@@ -31,7 +31,7 @@
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^7.0",
+        "nunomaduro/collision": "^8.1",
         "phpunit/phpunit": "^10.1"
     },
     "autoload": {

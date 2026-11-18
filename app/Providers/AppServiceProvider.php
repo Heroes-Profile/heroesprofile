@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Cashier\Cashier;
-use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,7 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        Sanctum::ignoreMigrations();
         $maxExecutionTime = env('PHP_MAX_EXECUTION_TIME', 300);
         $this->app->bind(GlobalDataService::class, function ($app) {
             return new GlobalDataService;
