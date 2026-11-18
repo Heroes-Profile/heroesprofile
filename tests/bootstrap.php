@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Foundation\Bootstrap\HandleExceptions;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -16,9 +17,16 @@ $bootstrapper = new class
 
 $app = $bootstrapper::bootTestApplication();
 
+// Booting registered the app's error and exception handlers. Released once done, so each test starts with only
+// PHPUnit's own (PHPUnit 11 flags a test whose teardown removes handlers that were there before it)
+$release = function () use ($app) {
+    $app->flush();
+    HandleExceptions::flushState();
+};
+
 // Unit tests don't touch the database (php artisan hp:test unit sets this)
 if (getenv('TEST_SKIP_DATABASE')) {
-    $app->flush();
+    $release();
 
     return;
 }
@@ -66,4 +74,4 @@ if (! Schema::hasTable('test_database_seeded')) {
     DB::table('test_database_seeded')->insert(['seeded_at' => now()]);
 }
 
-$app->flush();
+$release();

@@ -877,16 +877,19 @@
             {
                 "url": null,
                 "label": "&laquo; Previous",
+                "page": null,
                 "active": false
             },
             {
                 "url": "http://localhost/api/external/v1/ngs/player/matches?battletag=Linehouse%231400&blizz_id=621300&pagination_page=1",
                 "label": "1",
+                "page": 1,
                 "active": true
             },
             {
                 "url": null,
                 "label": "Next &raquo;",
+                "page": null,
                 "active": false
             }
         ],

@@ -78,12 +78,12 @@
 
         <div v-if="recentMatchesData">
           <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
-            <li class="page-item mr-auto" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
+            <li class="page-item mr-auto" :class="{ disabled: recentMatchesData.pagination.current_page <= 1 }">
               <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
                 Previous
               </a>
             </li>
-            <li class="page-item ml-auto" :class="{ disabled: !recentMatchesData.pagination.next_page_url }">
+            <li class="page-item ml-auto" :class="{ disabled: recentMatchesData.pagination.current_page >= recentMatchesData.pagination.last_page }">
               <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page + 1)" href="#">
                 Next
               </a>
@@ -91,12 +91,12 @@
           </ul>
           <esports-recent-matches :data="recentMatchesData.data" :esport="'hi'" :tournament="tournament"></esports-recent-matches>
           <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
-            <li class="page-item mr-auto" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
+            <li class="page-item mr-auto" :class="{ disabled: recentMatchesData.pagination.current_page <= 1 }">
               <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
                 Previous
               </a>
             </li>
-            <li class="page-item ml-auto" :class="{ disabled: !recentMatchesData.pagination.next_page_url }">
+            <li class="page-item ml-auto" :class="{ disabled: recentMatchesData.pagination.current_page >= recentMatchesData.pagination.last_page }">
               <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page + 1)" href="#">
                 Next
               </a>

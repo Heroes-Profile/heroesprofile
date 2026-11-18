@@ -332,16 +332,19 @@
         {
             "url": null,
             "label": "&laquo; Previous",
+            "page": null,
             "active": false
         },
         {
             "url": "http://localhost/api/external/v1/ngs/team/matches?team=Little%20Buff%20Boyz&season=22&pagination_page=1",
             "label": "1",
+            "page": 1,
             "active": true
         },
         {
             "url": null,
             "label": "Next &raquo;",
+            "page": null,
             "active": false
         }
     ],
