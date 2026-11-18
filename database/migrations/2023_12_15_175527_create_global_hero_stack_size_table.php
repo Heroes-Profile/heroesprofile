@@ -1,64 +1,37 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateGlobalHeroStackSizeTable extends Migration
 {
     public function up()
     {
-        Schema::connection('heroesprofile_globals')->create('global_hero_stack_size', function (Blueprint $table) {
-            $table->increments('global_hero_stack_size_id');
-            $table->integer('game_version');
-            $table->tinyInteger('game_type');
-            $table->tinyInteger('league_tier');
-            $table->tinyInteger('hero_league_tier')->default(0);
-            $table->tinyInteger('role_league_tier')->default(0);
-            $table->tinyInteger('game_map');
-            $table->integer('hero_level');
-            $table->tinyInteger('mirror')->default(0);
-            $table->integer('region');
-            $table->tinyInteger('win_loss');
-            $table->tinyInteger('hero');
-            $table->integer('hero_stack_size')->nullable();
-            $table->string('team_ally_stack_value')->nullable();
-            $table->string('team_enemy_stack_value')->nullable();
-            $table->integer('games_played')->default(0);
-
-            $table->unique([
-                'game_version',
-                'game_type',
-                'league_tier',
-                'hero_league_tier',
-                'role_league_tier',
-                'game_map',
-                'hero_level',
-                'mirror',
-                'region',
-                'win_loss',
-                'hero',
-                'hero_stack_size',
-                'team_ally_stack_value',
-                'team_enemy_stack_value',
-            ], 'unique');
-
-            $table->index([
-                'game_version',
-                'game_type',
-                'league_tier',
-                'hero_league_tier',
-                'role_league_tier',
-                'game_map',
-                'hero_level',
-                'mirror',
-                'region',
-                'win_loss',
-                'team_ally_stack_value',
-                'hero',
-                'games_played',
-            ], 'primary_gamesPlayed');
-        });
+        DB::connection('heroesprofile_globals')->statement(<<<'SQL'
+            CREATE TABLE `global_hero_stack_size` (
+                `global_hero_stack_size_id` bigint NOT NULL AUTO_INCREMENT,
+                `game_version` int NOT NULL,
+                `game_type` tinyint NOT NULL,
+                `league_tier` tinyint NOT NULL,
+                `hero_league_tier` tinyint NOT NULL DEFAULT 0,
+                `role_league_tier` tinyint NOT NULL DEFAULT 0,
+                `game_map` tinyint NOT NULL,
+                `hero_level` int unsigned NOT NULL,
+                `mirror` tinyint NOT NULL DEFAULT 0,
+                `region` int NOT NULL,
+                `win_loss` tinyint NOT NULL,
+                `hero` tinyint NOT NULL,
+                `hero_stack_size` int NULL,
+                `team_ally_stack_value` varchar(5) NULL,
+                `team_enemy_stack_value` varchar(5) NULL,
+                `games_played` int unsigned NOT NULL DEFAULT 0,
+                PRIMARY KEY (`global_hero_stack_size_id`, `game_version`),
+                KEY `primary_gamesPlayed` (`game_version`, `game_type`, `league_tier`, `hero_league_tier`, `role_league_tier`, `game_map`, `hero_level`, `mirror`, `region`, `win_loss`, `team_ally_stack_value`, `hero`, `games_played`),
+                UNIQUE KEY `unique` (`game_version`, `game_type`, `league_tier`, `hero_league_tier`, `role_league_tier`, `game_map`, `hero_level`, `mirror`, `region`, `win_loss`, `hero`, `hero_stack_size`, `team_ally_stack_value`, `team_enemy_stack_value`)
+            ) ENGINE=InnoDB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            PARTITION BY RANGE (`game_version`) (PARTITION pmax VALUES LESS THAN MAXVALUE)
+            SQL);
     }
 
     public function down()

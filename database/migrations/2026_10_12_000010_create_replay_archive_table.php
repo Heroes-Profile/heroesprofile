@@ -22,12 +22,15 @@ return new class extends Migration
         }
 
         Schema::connection(self::CONNECTION)->create('replay_archive', function (Blueprint $table) {
-            $table->unsignedInteger('replayID')->primary();
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->unsignedInteger('replayID');
             $table->string('bundle', 64);
             $table->unsignedBigInteger('byte_offset');
             $table->unsignedInteger('byte_length');
             $table->dateTime('archived_at');
 
+            $table->primary('replayID');
             $table->index('bundle', 'bundle');
         });
 

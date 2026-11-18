@@ -14,16 +14,19 @@ class CreateSessionsTable extends Migration
     public function up()
     {
         Schema::create('heroesprofile_cache.sessions', function (Blueprint $table) {
-            $table->string('id', 700)->collation('utf8mb4_0900_ai_ci');
-            $table->bigInteger('user_id')->unsigned()->nullable();
-            $table->string('ip_address', 45)->nullable()->collation('utf8mb4_0900_ai_ci');
-            $table->text('user_agent')->nullable()->collation('utf8mb4_0900_ai_ci');
-            $table->longText('payload')->collation('utf8mb4_0900_ai_ci');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->string('id', 700);
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
             $table->integer('last_activity');
 
+            $table->index('last_activity', 'idx_last_activity');
             // Unique constraint
             $table->unique('id', 'sessions_id_unique');
-
         });
     }
 

@@ -29,7 +29,6 @@ class GameTypesSeeder extends Seeder
             DB::table('game_types')->insert([
                 'type_id' => $row[0],
                 'name' => $row[1],
-                'no_space_name' => $row[2],
                 'short_name' => $row[3],
             ]);
         }

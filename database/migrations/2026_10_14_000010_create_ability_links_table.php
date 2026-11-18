@@ -22,6 +22,8 @@ return new class extends Migration
         }
 
         Schema::connection(self::CONNECTION)->create('ability_links', function (Blueprint $table) {
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
             $table->unsignedInteger('build');
             $table->unsignedSmallInteger('abil_link');
             $table->string('ability_id', 100);

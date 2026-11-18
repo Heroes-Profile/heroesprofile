@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
+         bootstrap="tests/bootstrap.php"
          colors="true"
 >
+    <!-- php artisan hp:test {full|user|backend|unit|schema} runs these; see README "Testing" -->
     <testsuites>
-        <testsuite name="Unit">
+        <testsuite name="unit">
             <directory>tests/Unit</directory>
         </testsuite>
-        <testsuite name="Feature">
-            <directory>tests/Feature</directory>
+        <testsuite name="user">
+            <directory>tests/Feature/Characterization</directory>
+        </testsuite>
+        <testsuite name="backend">
+            <directory>tests/Feature/Backend</directory>
+        </testsuite>
+        <testsuite name="schema">
+            <file>tests/Feature/SchemaTest.php</file>
         </testsuite>
     </testsuites>
     <source>
@@ -18,11 +25,12 @@
         </include>
     </source>
     <php>
-        <env name="APP_ENV" value="testing"/>
+        <!-- APP_ENV=testing makes Laravel load .env.testing instead of .env -->
+        <env name="APP_ENV" value="testing" force="true"/>
+        <env name="HEROESPROFILE_DB_HOST" value="127.0.0.1" force="true"/>
+        <env name="HEROESPROFILE_DB_PORT" value="33061" force="true"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_DRIVER" value="array"/>
-        <!-- <env name="DB_CONNECTION" value="sqlite"/> -->
-        <!-- <env name="DB_DATABASE" value=":memory:"/> -->
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>

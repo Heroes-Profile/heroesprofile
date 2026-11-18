@@ -1,0 +1,11 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "data": [],
+        "next_before_replayID": null,
+        "page_full": false,
+        "searched_back_to": null,
+        "oldest_date": "2026-02-02 17:00:01"
+    }
+}

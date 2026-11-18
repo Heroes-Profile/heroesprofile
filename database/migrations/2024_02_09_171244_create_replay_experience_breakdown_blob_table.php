@@ -14,9 +14,12 @@ class CreateReplayExperienceBreakdownBlobTable extends Migration
     public function up()
     {
         Schema::create('replay_experience_breakdown_blob', function (Blueprint $table) {
-            $table->id('replay_experience_breakdown_id');
-            $table->unsignedBigInteger('replayID');
-            $table->unsignedTinyInteger('team');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('replay_experience_breakdown_id', true);
+            $table->integer('replayID');
+            $table->tinyInteger('team');
             $table->longText('data')->nullable();
 
             $table->unique(['replayID', 'team'], 'UNIQUE');

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateGlobalHeroMatchupsAllyTable extends Migration
@@ -13,25 +13,28 @@ class CreateGlobalHeroMatchupsAllyTable extends Migration
      */
     public function up()
     {
-        Schema::connection('heroesprofile_globals')->create('global_hero_matchups_ally', function (Blueprint $table) {
-            $table->increments('global_hero_matchups_ally_id');
-            $table->integer('game_version')->notNull();
-            $table->tinyInteger('game_type');
-            $table->tinyInteger('league_tier');
-            $table->tinyInteger('hero_league_tier')->default(0);
-            $table->tinyInteger('role_league_tier')->default(0);
-            $table->tinyInteger('game_map');
-            $table->unsignedInteger('hero_level')->default(0);
-            $table->tinyInteger('hero');
-            $table->tinyInteger('ally');
-            $table->tinyInteger('mirror')->default(0);
-            $table->integer('region');
-            $table->tinyInteger('win_loss');
-            $table->unsignedInteger('games_played')->default(0);
-
-            $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'ally', 'mirror', 'region', 'win_loss'], 'Unique');
-            $table->index(['game_version', 'game_type', 'hero', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'ally', 'mirror', 'region', 'win_loss', 'games_played'], 'index_WithHero');
-        });
+        DB::connection('heroesprofile_globals')->statement(<<<'SQL'
+            CREATE TABLE `global_hero_matchups_ally` (
+                `global_hero_matchups_ally_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                `game_version` int unsigned NOT NULL,
+                `game_type` tinyint NOT NULL,
+                `league_tier` tinyint NOT NULL,
+                `hero_league_tier` tinyint NOT NULL DEFAULT 0,
+                `role_league_tier` tinyint NOT NULL DEFAULT 0,
+                `game_map` tinyint NOT NULL,
+                `hero_level` int unsigned NOT NULL DEFAULT 0,
+                `hero` tinyint NOT NULL,
+                `ally` tinyint NOT NULL,
+                `mirror` tinyint NOT NULL DEFAULT 0,
+                `region` int NOT NULL,
+                `win_loss` tinyint NOT NULL,
+                `games_played` int unsigned NOT NULL DEFAULT 0,
+                PRIMARY KEY (`global_hero_matchups_ally_id`, `game_version`),
+                KEY `index_WithHero` (`game_version`, `game_type`, `hero`, `league_tier`, `hero_league_tier`, `role_league_tier`, `game_map`, `hero_level`, `ally`, `mirror`, `region`, `win_loss`, `games_played`),
+                UNIQUE KEY `Unique` (`game_version`, `game_type`, `league_tier`, `hero_league_tier`, `role_league_tier`, `game_map`, `hero_level`, `hero`, `ally`, `mirror`, `region`, `win_loss`)
+            ) ENGINE=InnoDB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            PARTITION BY RANGE (`game_version`) (PARTITION pmax VALUES LESS THAN MAXVALUE)
+            SQL);
     }
 
     /**

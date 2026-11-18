@@ -111,7 +111,7 @@ class TwitchGameData
             $talents[$talent->talent_id] = [
                 'e' => $heroIdsByName[$talent->hero_name] ?? null,
                 't' => $talent->title,
-                'd' => $talent->description,
+                'd' => TalentDescription::segments($talent->raw_description, $talent->description),
                 'i' => $talent->icon,
                 'l' => (int) $talent->level,
                 's' => (int) $talent->sort,

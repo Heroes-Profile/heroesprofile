@@ -1,0 +1,10 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "changes": [],
+        "next_since": null,
+        "next_after_id": null,
+        "has_more": false
+    }
+}

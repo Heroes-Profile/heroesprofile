@@ -230,10 +230,10 @@ class PlanService
         $presented = [];
 
         foreach ($plans as $planId => $plan) {
-            $presented[] = $plan + [
+            $presented[] = array_replace($plan, [
                 'id' => $planId,
                 'price' => $this->priceFor($planId),
-            ];
+            ]);
         }
 
         return $presented;

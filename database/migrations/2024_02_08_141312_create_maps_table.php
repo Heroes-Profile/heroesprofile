@@ -14,12 +14,17 @@ class CreateMapsTable extends Migration
     public function up()
     {
         Schema::create('maps', function (Blueprint $table) {
-            $table->tinyInteger('map_id')->primary();
-            $table->string('name', 255)->unique();
-            $table->string('short_name', 255)->nullable();
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->tinyIncrements('map_id');
+            $table->string('name');
+            $table->string('short_name')->nullable();
             $table->string('type', 45)->nullable();
             $table->tinyInteger('ranked_rotation')->nullable();
             $table->tinyInteger('playable')->nullable();
+
+            $table->unique('name', 'unique');
         });
     }
 

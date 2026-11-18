@@ -80,6 +80,9 @@ class ApiAccountsSeeder extends Seeder
             'password' => Hash::make(self::PASSWORD),
             'terms_version_accepted' => config('api.terms_version'),
             'terms_accepted_at' => now(),
+            // Without these the quota middleware refuses every call
+            'project_name' => $name.' project',
+            'project_description' => 'Local test account.',
         ], array_fill_keys($comped, 1), $overrides));
 
         $account->save();

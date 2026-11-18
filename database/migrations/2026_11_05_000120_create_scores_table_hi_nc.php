@@ -14,6 +14,9 @@ class CreateScoresTableHiNc extends Migration
     public function up()
     {
         Schema::create('heroesprofile_hi_nc.scores', function (Blueprint $table) {
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
             $table->unsignedInteger('replayID');
             $table->string('battletag', 50);
             $table->integer('level')->nullable();

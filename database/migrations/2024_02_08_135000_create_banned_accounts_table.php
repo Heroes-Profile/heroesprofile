@@ -14,12 +14,14 @@ class CreateBannedAccountsTable extends Migration
     public function up()
     {
         Schema::create('banned_accounts', function (Blueprint $table) {
-            $table->increments('banned_accounts_id');
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('banned_accounts_id', true);
             $table->string('battletag', 45)->nullable();
             $table->integer('blizz_id')->nullable();
             $table->integer('region')->nullable();
             $table->longText('notes')->nullable();
-            $table->dateTime('date_banned')->nullable();
+            $table->dateTime('date_banned')->nullable()->useCurrent();
         });
     }
 

@@ -14,11 +14,14 @@ class CreatePlayerCameraDistanceTable extends Migration
     public function up()
     {
         Schema::create('player_camera_distance', function (Blueprint $table) {
-            $table->id('player_camera_distance_id');
-            $table->unsignedBigInteger('replayID')->nullable();
-            $table->unsignedBigInteger('blizz_id')->nullable();
-            $table->unsignedBigInteger('battletag')->nullable();
-            $table->unsignedInteger('camera_distance')->nullable();
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('player_camera_distance_id', true);
+            $table->integer('replayID')->nullable();
+            $table->integer('blizz_id')->nullable();
+            $table->integer('battletag')->nullable();
+            $table->integer('camera_distance')->nullable();
 
             $table->index('camera_distance', 'INDEX1');
             $table->index('blizz_id', 'INDEX2');

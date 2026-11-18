@@ -1,0 +1,46 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "battletag": "Zemill#194",
+        "region": 1,
+        "ratings": {
+            "Quick Match": {
+                "mmr": 2827,
+                "games_played": 3635,
+                "games_played_last_90_days": 0,
+                "league_tier": "Master"
+            },
+            "Unranked Draft": {
+                "mmr": 2906,
+                "games_played": 161,
+                "games_played_last_90_days": 0,
+                "league_tier": "Master"
+            },
+            "Hero League": {
+                "mmr": 2860,
+                "games_played": 1073,
+                "games_played_last_90_days": 0,
+                "league_tier": "Master"
+            },
+            "Team League": {
+                "mmr": 2903,
+                "games_played": 70,
+                "games_played_last_90_days": 0,
+                "league_tier": "Diamond 2"
+            },
+            "Storm League": {
+                "mmr": 2956,
+                "games_played": 88,
+                "games_played_last_90_days": 0,
+                "league_tier": "Master"
+            },
+            "ARAM": {
+                "mmr": 2916,
+                "games_played": 1117,
+                "games_played_last_90_days": 91,
+                "league_tier": "Master"
+            }
+        }
+    }
+}

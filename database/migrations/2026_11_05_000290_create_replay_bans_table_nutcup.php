@@ -14,7 +14,10 @@ class CreateReplayBansTableNutcup extends Migration
     public function up()
     {
         Schema::create('heroesprofile_nutcup.replay_bans', function (Blueprint $table) {
-            $table->increments('ban_id');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('ban_id', true);
             $table->integer('replayID');
             $table->unsignedInteger('hero');
 

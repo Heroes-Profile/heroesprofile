@@ -14,16 +14,21 @@ class CreateTalentsTable extends Migration
     public function up()
     {
         Schema::create('talents', function (Blueprint $table) {
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
             $table->unsignedInteger('replayID');
-            $table->unsignedInteger('battletag');
-            $table->unsignedInteger('level_one')->nullable();
-            $table->unsignedInteger('level_four')->nullable();
-            $table->unsignedInteger('level_seven')->nullable();
-            $table->unsignedInteger('level_ten')->nullable();
-            $table->unsignedInteger('level_thirteen')->nullable();
-            $table->unsignedInteger('level_sixteen')->nullable();
-            $table->unsignedInteger('level_twenty')->nullable();
+            $table->integer('battletag');
+            $table->integer('level_one')->nullable();
+            $table->integer('level_four')->nullable();
+            $table->integer('level_seven')->nullable();
+            $table->integer('level_ten')->nullable();
+            $table->integer('level_thirteen')->nullable();
+            $table->integer('level_sixteen')->nullable();
+            $table->integer('level_twenty')->nullable();
+
             $table->primary(['replayID', 'battletag']);
+            $table->index(['replayID', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'], 'replayIDTalents');
         });
     }
 

@@ -1,0 +1,14 @@
+[
+    {
+        "setting": "darkmode",
+        "value": "1"
+    },
+    {
+        "setting": "playerhistorytable",
+        "value": "1"
+    },
+    {
+        "setting": "talentbuilderstyle",
+        "value": "vertical"
+    }
+]

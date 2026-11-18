@@ -14,19 +14,28 @@ class CreateCacheTable extends Migration
     public function up()
     {
         Schema::connection('heroesprofile_cache')->create('cache', function (Blueprint $table) {
-            $table->string('key', 750)->charset('utf8mb4')->collation('utf8mb4_0900_ai_ci')->primary();
-            $table->mediumText('value')->charset('utf8mb4')->collation('utf8mb4_0900_ai_ci');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->string('key', 750);
+            $table->mediumText('value');
             $table->integer('expiration');
-            $table->index('expiration');
+
+            $table->primary('key');
+            $table->index('expiration', 'expiration');
         });
 
         // Required by the database cache driver's atomic locks. `Cache::lock()` is
         // what serialises billing changes, so without this a subscribe throws before
         // it reaches Stripe.
         Schema::connection('heroesprofile_cache')->create('cache_locks', function (Blueprint $table) {
-            $table->string('key', 255)->charset('utf8mb4')->collation('utf8mb4_0900_ai_ci')->primary();
-            $table->string('owner', 255)->charset('utf8mb4')->collation('utf8mb4_0900_ai_ci');
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->string('key');
+            $table->string('owner');
             $table->integer('expiration');
+
+            $table->primary('key');
         });
     }
 

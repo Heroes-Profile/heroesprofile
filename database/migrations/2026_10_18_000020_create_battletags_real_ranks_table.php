@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -17,6 +16,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('battletags_real_ranks', function (Blueprint $table) {
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
             $table->increments('id');
             $table->unsignedInteger('player_id');
             $table->unsignedBigInteger('blizz_id');
@@ -43,14 +44,14 @@ return new class extends Migration
             $table->string('reporter', 64);
             $table->string('uploader_version', 45)->nullable();
 
-            $table->index(['blizz_id', 'region', 'last_game_date'], 'player_history');
             $table->index('player_id');
+            $table->index('reporter');
+            $table->index(['blizz_id', 'region', 'last_game_date'], 'player_history');
+            $table->index(['season', 'blizz_id', 'region', 'last_game_date'], 'season_player_latest');
+            $table->index('last_game_date', 'season_range');
             // The rank leaderboard reads one season's periods
             $table->index(['season', 'region'], 'season_region');
-            $table->index('reporter');
         });
-
-        DB::statement('ALTER TABLE `battletags_real_ranks` ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci');
     }
 
     public function down(): void

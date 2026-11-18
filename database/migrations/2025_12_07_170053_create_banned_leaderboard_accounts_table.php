@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -13,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('banned_leaderboard_accounts', function (Blueprint $table) {
-            $table->unsignedInteger('banned_leaderboard_accounts')->autoIncrement();
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->increments('banned_leaderboard_accounts');
             $table->string('battletag', 45)->nullable();
             $table->integer('blizz_id')->nullable();
             $table->integer('region')->nullable();
@@ -21,12 +22,11 @@ return new class extends Migration
             $table->text('info')->nullable();
 
             $table->index(['battletag', 'blizz_id', 'season'], 'index');
-            $table->index('season', 'season');
             $table->index('region', 'region');
+            $table->index('season', 'season');
         });
 
         // Set charset and collation
-        DB::statement('ALTER TABLE `banned_leaderboard_accounts` ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci');
 
     }
 

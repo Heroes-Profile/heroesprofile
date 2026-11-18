@@ -14,9 +14,12 @@ class CreateMmrTypeIdsTable extends Migration
     public function up()
     {
         Schema::create('mmr_type_ids', function (Blueprint $table) {
-            $table->id('mmr_type_table_id');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('mmr_type_table_id', true);
             $table->unsignedInteger('mmr_type_id');
-            $table->string('name', 45)->collation('utf8mb4_0900_ai_ci');
+            $table->string('name', 45);
 
             $table->unique('mmr_type_id', 'UNIQUE');
         });

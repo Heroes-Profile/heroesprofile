@@ -14,7 +14,10 @@ class CreateLeagueTiersTable extends Migration
     public function up()
     {
         Schema::create('league_tiers', function (Blueprint $table) {
-            $table->integer('tier_id');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->increments('tier_id');
             $table->string('name', 45);
         });
     }

@@ -1,0 +1,136 @@
+{
+    "players": [
+        {
+            "idx": 0,
+            "team": 0,
+            "winner": true,
+            "hero_id": 84,
+            "hero": "Mal'Ganis",
+            "short_name": "malganis",
+            "battletag": null,
+            "you": false
+        },
+        {
+            "idx": 1,
+            "team": 0,
+            "winner": true,
+            "hero_id": 57,
+            "hero": "Thrall",
+            "short_name": "thrall",
+            "battletag": null,
+            "you": false
+        },
+        {
+            "idx": 2,
+            "team": 0,
+            "winner": true,
+            "hero_id": 46,
+            "hero": "Rehgar",
+            "short_name": "rehgar",
+            "battletag": null,
+            "you": false
+        },
+        {
+            "idx": 3,
+            "team": 0,
+            "winner": true,
+            "hero_id": 1,
+            "hero": "Abathur",
+            "short_name": "abathur",
+            "battletag": null,
+            "you": false
+        },
+        {
+            "idx": 4,
+            "team": 0,
+            "winner": true,
+            "hero_id": 64,
+            "hero": "Valla",
+            "short_name": "valla",
+            "battletag": null,
+            "you": false
+        },
+        {
+            "idx": 5,
+            "team": 1,
+            "winner": false,
+            "hero_id": 6,
+            "hero": "Auriel",
+            "short_name": "auriel",
+            "battletag": null,
+            "you": true
+        },
+        {
+            "idx": 6,
+            "team": 1,
+            "winner": false,
+            "hero_id": 65,
+            "hero": "Varian",
+            "short_name": "varian",
+            "battletag": null,
+            "you": false
+        },
+        {
+            "idx": 7,
+            "team": 1,
+            "winner": false,
+            "hero_id": 49,
+            "hero": "Sgt. Hammer",
+            "short_name": "sgthammer",
+            "battletag": null,
+            "you": false
+        },
+        {
+            "idx": 8,
+            "team": 1,
+            "winner": false,
+            "hero_id": 75,
+            "hero": "Hanzo",
+            "short_name": "hanzo",
+            "battletag": null,
+            "you": false
+        },
+        {
+            "idx": 9,
+            "team": 1,
+            "winner": false,
+            "hero_id": 19,
+            "hero": "Garrosh",
+            "short_name": "garrosh",
+            "battletag": null,
+            "you": false
+        }
+    ],
+    "sections": {
+        "replay_id": 66135342,
+        "extract_v": 5,
+        "game_date": "2026-10-18 21:35:23",
+        "game_map": "Battlefield of Eternity",
+        "length_s": 850,
+        "gates_open": 38,
+        "positions": 10,
+        "moves": 5965,
+        "globe_points": 172,
+        "deaths": 15,
+        "structures": 2,
+        "units": 70,
+        "objective_units": null,
+        "lives": 24,
+        "unit_tracks": 4,
+        "selections": 10,
+        "team_levels": 31,
+        "xp_breakdown": 28,
+        "objectives": 4,
+        "camps": 9,
+        "talents": 55,
+        "disconnects": 1,
+        "minion_deaths": 723,
+        "mounts": 484,
+        "travel": 21,
+        "symbiotes": 72,
+        "camera": 10,
+        "pings": 100,
+        "win_model": null
+    },
+    "sha1": "ecf796d396396ceb5722ca914a69a1b3beb9e7fb"
+}

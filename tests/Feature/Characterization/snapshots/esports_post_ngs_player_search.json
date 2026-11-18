@@ -1,0 +1,40 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": [
+        {
+            "blizz_id": 621300,
+            "battletag": "Linehouse#1400",
+            "region": 1,
+            "totalGamesPlayed": 5,
+            "latestMap": {
+                "map_id": 12,
+                "name": "Towers of Doom",
+                "short_name": "TowersOfDoom",
+                "type": "standard",
+                "ranked_rotation": 1,
+                "playable": 1,
+                "sanitized_map_name": "towers_of_doom"
+            },
+            "latestHero": {
+                "id": 80,
+                "name": "Deckard",
+                "short_name": "deckard",
+                "alt_name": "",
+                "role": "Support",
+                "new_role": "Healer",
+                "type": "Melee",
+                "release_date": "2018-04-24 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.54.3.86223",
+                "attribute_id": "DECK",
+                "build_copy_name": "Deckard",
+                "last_updated": null
+            },
+            "latest_game": "2020-07-20 01:33:45",
+            "latestReplayID": 4781,
+            "battletagShort": "Linehouse",
+            "regionName": "NA"
+        }
+    ]
+}

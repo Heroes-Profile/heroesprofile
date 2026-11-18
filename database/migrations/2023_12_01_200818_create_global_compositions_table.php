@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateGlobalCompositionsTable extends Migration
@@ -13,24 +13,28 @@ class CreateGlobalCompositionsTable extends Migration
      */
     public function up()
     {
-        Schema::connection('heroesprofile_globals')->create('global_compositions', function (Blueprint $table) {
-            $table->increments('global_compositions_id');
-            $table->integer('game_version');
-            $table->tinyInteger('game_type');
-            $table->tinyInteger('league_tier');
-            $table->tinyInteger('hero_league_tier')->default(0);
-            $table->tinyInteger('role_league_tier')->default(0);
-            $table->tinyInteger('game_map');
-            $table->unsignedInteger('hero_level');
-            $table->integer('composition_id');
-            $table->tinyInteger('hero')->nullable();
-            $table->tinyInteger('mirror')->default(0);
-            $table->integer('region');
-            $table->tinyInteger('win_loss');
-            $table->unsignedInteger('games_played')->default(0);
-            $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'composition_id', 'hero', 'mirror', 'region', 'win_loss'], 'unique');
-            $table->index(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'composition_id', 'hero', 'mirror', 'region', 'win_loss', 'games_played'], 'primary_gamesPlayed');
-        });
+        DB::connection('heroesprofile_globals')->statement(<<<'SQL'
+            CREATE TABLE `global_compositions` (
+                `global_compositions_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                `game_version` int NOT NULL,
+                `game_type` tinyint NOT NULL,
+                `league_tier` tinyint NOT NULL,
+                `hero_league_tier` tinyint NOT NULL DEFAULT 0,
+                `role_league_tier` tinyint NOT NULL DEFAULT 0,
+                `game_map` tinyint NOT NULL,
+                `hero_level` int unsigned NOT NULL,
+                `composition_id` int NOT NULL,
+                `hero` tinyint NULL,
+                `mirror` tinyint NOT NULL DEFAULT 0,
+                `region` int NOT NULL,
+                `win_loss` tinyint NOT NULL,
+                `games_played` int unsigned NOT NULL DEFAULT 0,
+                PRIMARY KEY (`global_compositions_id`, `game_version`),
+                KEY `index` (`game_version`, `game_type`, `league_tier`, `hero_league_tier`, `role_league_tier`, `game_map`, `hero_level`, `composition_id`, `hero`, `mirror`, `region`, `win_loss`, `games_played`),
+                UNIQUE KEY `UNIQUE` (`game_version`, `game_type`, `league_tier`, `hero_league_tier`, `role_league_tier`, `game_map`, `hero_level`, `composition_id`, `hero`, `mirror`, `region`, `win_loss`)
+            ) ENGINE=InnoDB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            PARTITION BY RANGE (`game_version`) (PARTITION pmax VALUES LESS THAN MAXVALUE)
+            SQL);
     }
 
     /**

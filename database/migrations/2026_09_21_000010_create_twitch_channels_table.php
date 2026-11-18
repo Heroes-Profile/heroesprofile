@@ -22,9 +22,9 @@ return new class extends Migration
 
         Schema::connection(self::CONNECTION)->create('twitch_channels', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedInteger('user_id')->nullable()->unique();
+            $table->unsignedInteger('user_id')->nullable();
 
-            $table->string('twitch_user_id', 32)->unique();
+            $table->string('twitch_user_id', 32);
             $table->string('twitch_login', 64);
             $table->string('twitch_display_name', 64)->nullable();
 
@@ -33,7 +33,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('region')->nullable();
             $table->string('battletag', 45)->nullable();
 
-            $table->string('uploader_key_hash', 64)->nullable()->unique();
+            $table->string('uploader_key_hash', 64)->nullable();
             $table->string('uploader_key_last4', 4)->nullable();
             $table->timestamp('uploader_last_seen_at')->nullable();
 
@@ -52,7 +52,12 @@ return new class extends Migration
             $table->timestamp('listing_hidden_at')->nullable();
             $table->string('listing_hidden_reason')->nullable();
 
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
+
+            $table->unique('twitch_user_id', 'twitch_user_id');
+            $table->unique('uploader_key_hash', 'uploader_key_hash');
+            $table->unique('user_id', 'user_id');
         });
     }
 

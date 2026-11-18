@@ -14,8 +14,10 @@ class CreateRosterTableCcl extends Migration
     public function up()
     {
         Schema::create('heroesprofile_ccl.roster', function (Blueprint $table) {
-            $table->increments('roster_id');
-            $table->integer('season')->default(1);
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('roster_id', true);
+            $table->integer('season')->nullable()->default(1);
             $table->integer('team_id')->nullable();
             $table->integer('blizz_id')->nullable();
             $table->integer('region')->nullable();

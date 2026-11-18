@@ -14,6 +14,9 @@ class CreatePlayerTableNutcup extends Migration
     public function up()
     {
         Schema::create('heroesprofile_nutcup.player', function (Blueprint $table) {
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
             $table->unsignedInteger('replayID');
             $table->unsignedInteger('blizz_id');
             $table->string('battletag', 50);
@@ -23,8 +26,8 @@ class CreatePlayerTableNutcup extends Migration
             $table->unsignedTinyInteger('winner');
 
             $table->primary(['replayID', 'battletag', 'hero']);
-            $table->index(['replayID', 'blizz_id', 'hero'], 'replayID_blizzID_Hero');
             $table->index(['blizz_id', 'hero'], 'blizzID_hero');
+            $table->index(['replayID', 'blizz_id', 'hero'], 'replayID_blizzID_Hero');
         });
     }
 

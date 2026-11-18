@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -13,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('patreon_total_tracker', function (Blueprint $table) {
-            $table->integer('patreon_total_tracker_id')->autoIncrement();
-            $table->decimal('total', 10, 2)->nullable();
-            $table->decimal('goal', 10, 2)->nullable()->default(800);
-            $table->dateTime('date_added')->useCurrent()->nullable();
-        });
+            $table->collation = 'utf8mb4_0900_ai_ci';
 
-        DB::statement('ALTER TABLE `patreon_total_tracker` ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci');
+            $table->integer('patreon_total_tracker_id', true);
+            $table->decimal('total', 10, 2)->nullable();
+            $table->decimal('goal', 10, 2)->nullable()->default(850.00);
+            $table->dateTime('date_added')->nullable()->useCurrent();
+        });
     }
 
     /**

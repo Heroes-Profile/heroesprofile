@@ -1,0 +1,5 @@
+{
+    "status": 302,
+    "content_type": "text/html",
+    "location": "http://localhost/Api/Login"
+}

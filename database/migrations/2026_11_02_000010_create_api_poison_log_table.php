@@ -40,11 +40,12 @@ return new class extends Migration
 
             $table->unsignedInteger('times_sent')->default(1);
             $table->timestamp('first_sent_at');
-            $table->timestamp('last_sent_at')->index();
+            $table->timestamp('last_sent_at');
 
-            $table->unique(['api_account_id', 'params_hash', 'identity', 'real_value'], 'uniq_poison_value');
+            $table->index('last_sent_at');
             $table->index(['api_account_id', 'last_sent_at'], 'idx_account_sent');
             $table->index(['label', 'sent_value'], 'idx_label_value');
+            $table->unique(['api_account_id', 'params_hash', 'identity', 'real_value'], 'uniq_poison_value');
         });
     }
 

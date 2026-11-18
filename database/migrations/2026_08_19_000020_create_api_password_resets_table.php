@@ -19,9 +19,12 @@ return new class extends Migration
         }
 
         Schema::connection(self::CONNECTION)->create('password_resets', function (Blueprint $table) {
-            $table->string('email')->index();
-            $table->string('token')->index();
+            $table->string('email');
+            $table->string('token');
             $table->timestamp('created_at')->nullable();
+
+            $table->index('email');
+            $table->index('token');
         });
     }
 

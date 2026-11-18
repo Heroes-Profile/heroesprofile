@@ -14,13 +14,17 @@ class CreateBattlenetUserSettingsTable extends Migration
     public function up()
     {
         Schema::create('battlenet_user_settings', function (Blueprint $table) {
-            $table->id('battlenet_user_settings_id');
-            $table->unsignedBigInteger('battlenet_accounts_id')->nullable();
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('battlenet_user_settings_id', true);
+            $table->integer('battlenet_accounts_id')->nullable();
             $table->string('setting')->nullable();
             $table->string('value')->nullable();
+            $table->dateTime('updated_at')->nullable();
+            $table->dateTime('created_at')->nullable();
 
             // Indexes
-            $table->index(['battlenet_accounts_id', 'setting', 'value'], 'battlenet_user_settings_index');
+            $table->index(['battlenet_accounts_id', 'setting', 'value'], 'INDEX');
         });
     }
 

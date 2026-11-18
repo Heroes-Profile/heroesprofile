@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('unit_id', 64);
             $table->string('name', 100);
             $table->boolean('is_main');
-            $table->tinyInteger('sort')->unsigned();
+            $table->unsignedTinyInteger('sort');
             $table->decimal('life', 10, 4)->nullable();
             $table->decimal('life_scale', 10, 4)->nullable();
             $table->decimal('life_regen', 10, 4)->nullable();

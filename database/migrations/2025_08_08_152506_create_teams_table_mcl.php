@@ -14,14 +14,17 @@ class CreateTeamsTableMcl extends Migration
     public function up()
     {
         Schema::create('heroesprofile_mcl.teams', function (Blueprint $table) {
-            $table->increments('team_id');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('team_id', true);
             $table->integer('season');
             $table->string('team_name', 200);
-            $table->string('image', 200)->default('no-image.png');
+            $table->string('image', 200)->nullable()->default('no-image.png');
 
-            $table->unique(['season', 'team_name'], 'Unique');
+            $table->index('team_name', 'team_name');
             $table->index(['team_id', 'season', 'team_name'], 'teamID_season_division_');
-            $table->index('team_name');
+            $table->unique(['season', 'team_name'], 'Unique');
         });
     }
 

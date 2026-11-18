@@ -25,7 +25,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->unsignedSmallInteger('sort_order')->default(0);
 
-            $table->index('poll_id', 'poll_options_poll_id_index');
+            $table->index('poll_id');
         });
 
         DB::connection(self::CONNECTION)->statement('ALTER TABLE `poll_options` ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci');

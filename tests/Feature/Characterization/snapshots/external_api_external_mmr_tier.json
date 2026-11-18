@@ -1,0 +1,9 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "game_type": "sl",
+        "mmr": 2400,
+        "tier": "Bronze 1"
+    }
+}

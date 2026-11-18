@@ -1,0 +1,4246 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "current_page": 1,
+        "data": [
+            {
+                "replayID": 51987324,
+                "game_date": "2024-02-07 18:08:26",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 17,
+                    "name": "Industrial District",
+                    "short_name": "IndustrialDistrict",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "industrial_district"
+                },
+                "hero": {
+                    "id": 41,
+                    "name": "Nazeebo",
+                    "short_name": "nazeebo",
+                    "alt_name": "WitchDoctor",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Witc",
+                    "build_copy_name": "Nazeebo",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51986763,
+                "game_date": "2024-02-07 17:37:17",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 23,
+                    "name": "Gul'dan",
+                    "short_name": "guldan",
+                    "alt_name": "Guldan",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2016-07-12 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.2.87774",
+                    "attribute_id": "Guld",
+                    "build_copy_name": "Guldan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51976638,
+                "game_date": "2024-02-07 00:32:05",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 17,
+                    "name": "Industrial District",
+                    "short_name": "IndustrialDistrict",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "industrial_district"
+                },
+                "hero": {
+                    "id": 9,
+                    "name": "Cassia",
+                    "short_name": "cassia",
+                    "alt_name": "Amazon",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-04-04 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.2.87774",
+                    "attribute_id": "Amaz",
+                    "build_copy_name": "Cassia",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51848012,
+                "game_date": "2024-01-29 01:18:38",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 32,
+                    "name": "Li-Ming",
+                    "short_name": "liming",
+                    "alt_name": "Wizard",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2016-02-02 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.50.1.79515",
+                    "attribute_id": "Wiza",
+                    "build_copy_name": "LiMing",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51800233,
+                "game_date": "2024-01-26 03:47:31",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 70,
+                    "name": "Zul'jin",
+                    "short_name": "zuljin",
+                    "alt_name": "Zuljin",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-01-04 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "ZULJ",
+                    "build_copy_name": "Zuljin",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51799943,
+                "game_date": "2024-01-26 03:28:10",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 17,
+                    "name": "Industrial District",
+                    "short_name": "IndustrialDistrict",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "industrial_district"
+                },
+                "hero": {
+                    "id": 32,
+                    "name": "Li-Ming",
+                    "short_name": "liming",
+                    "alt_name": "Wizard",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2016-02-02 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.50.1.79515",
+                    "attribute_id": "Wiza",
+                    "build_copy_name": "LiMing",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51799762,
+                "game_date": "2024-01-26 03:04:58",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 41,
+                    "name": "Nazeebo",
+                    "short_name": "nazeebo",
+                    "alt_name": "WitchDoctor",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Witc",
+                    "build_copy_name": "Nazeebo",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51762462,
+                "game_date": "2024-01-23 01:19:50",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 7,
+                    "name": "Azmodan",
+                    "short_name": "azmodan",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-10-07 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Azmo",
+                    "build_copy_name": "Azmodan",
+                    "last_updated": null
+                },
+                "winner": 0,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51746895,
+                "game_date": "2024-01-22 03:39:43",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 23,
+                    "name": "Gul'dan",
+                    "short_name": "guldan",
+                    "alt_name": "Guldan",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2016-07-12 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.2.87774",
+                    "attribute_id": "Guld",
+                    "build_copy_name": "Guldan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51745753,
+                "game_date": "2024-01-22 01:49:55",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 70,
+                    "name": "Zul'jin",
+                    "short_name": "zuljin",
+                    "alt_name": "Zuljin",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-01-04 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "ZULJ",
+                    "build_copy_name": "Zuljin",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51714865,
+                "game_date": "2024-01-21 02:11:16",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 17,
+                    "name": "Falstad",
+                    "short_name": "falstad",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Fals",
+                    "build_copy_name": "Falstad",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51567174,
+                "game_date": "2024-01-11 00:25:32",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 20,
+                    "name": "Gazlowe",
+                    "short_name": "gazlowe",
+                    "alt_name": "Tinker",
+                    "role": "Specialist",
+                    "new_role": "Bruiser",
+                    "type": "Melee",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Tink",
+                    "build_copy_name": "Gazlowe",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51566801,
+                "game_date": "2024-01-10 23:20:05",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 17,
+                    "name": "Industrial District",
+                    "short_name": "IndustrialDistrict",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "industrial_district"
+                },
+                "hero": {
+                    "id": 53,
+                    "name": "Sylvanas",
+                    "short_name": "sylvanas",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2015-03-24 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.52.2.82624",
+                    "attribute_id": "Sylv",
+                    "build_copy_name": "Sylvanas",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51566723,
+                "game_date": "2024-01-10 22:58:00",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 61,
+                    "name": "Tyrande",
+                    "short_name": "tyrande",
+                    "alt_name": "",
+                    "role": "Support",
+                    "new_role": "Healer",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "Tyrd",
+                    "build_copy_name": "Tyrande",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51549321,
+                "game_date": "2024-01-09 17:40:27",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 41,
+                    "name": "Nazeebo",
+                    "short_name": "nazeebo",
+                    "alt_name": "WitchDoctor",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Witc",
+                    "build_copy_name": "Nazeebo",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51548714,
+                "game_date": "2024-01-09 17:10:07",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 17,
+                    "name": "Industrial District",
+                    "short_name": "IndustrialDistrict",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "industrial_district"
+                },
+                "hero": {
+                    "id": 71,
+                    "name": "Kel'Thuzad",
+                    "short_name": "kelthuzad",
+                    "alt_name": "KelThuzad",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-09-05 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "KelT",
+                    "build_copy_name": "KelThuzad",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51548307,
+                "game_date": "2024-01-09 16:48:50",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 68,
+                    "name": "Zarya",
+                    "short_name": "zarya",
+                    "alt_name": "",
+                    "role": "Warrior",
+                    "new_role": "Support",
+                    "type": "Ranged",
+                    "release_date": "2016-09-27 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "Zary",
+                    "build_copy_name": "Zarya",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 51539742,
+                "game_date": "2024-01-08 23:39:35",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 7,
+                    "name": "Azmodan",
+                    "short_name": "azmodan",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-10-07 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Azmo",
+                    "build_copy_name": "Azmodan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 50599728,
+                "game_date": "2023-11-09 18:11:53",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 70,
+                    "name": "Zul'jin",
+                    "short_name": "zuljin",
+                    "alt_name": "Zuljin",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-01-04 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "ZULJ",
+                    "build_copy_name": "Zuljin",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 50599592,
+                "game_date": "2023-11-09 17:25:49",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 68,
+                    "name": "Zarya",
+                    "short_name": "zarya",
+                    "alt_name": "",
+                    "role": "Warrior",
+                    "new_role": "Support",
+                    "type": "Ranged",
+                    "release_date": "2016-09-27 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "Zary",
+                    "build_copy_name": "Zarya",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 50567459,
+                "game_date": "2023-11-07 01:21:53",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 32,
+                    "name": "Li-Ming",
+                    "short_name": "liming",
+                    "alt_name": "Wizard",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2016-02-02 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.50.1.79515",
+                    "attribute_id": "Wiza",
+                    "build_copy_name": "LiMing",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 50567351,
+                "game_date": "2023-11-07 01:04:52",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 17,
+                    "name": "Industrial District",
+                    "short_name": "IndustrialDistrict",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "industrial_district"
+                },
+                "hero": {
+                    "id": 43,
+                    "name": "Probius",
+                    "short_name": "probius",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-03-14 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Prob",
+                    "build_copy_name": "Probius",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 50252452,
+                "game_date": "2023-10-13 12:11:17",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 17,
+                    "name": "Industrial District",
+                    "short_name": "IndustrialDistrict",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "industrial_district"
+                },
+                "hero": {
+                    "id": 67,
+                    "name": "Zagara",
+                    "short_name": "zagara",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-06-25 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "Zaga",
+                    "build_copy_name": "Zagara",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 50230073,
+                "game_date": "2023-10-12 02:31:50",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 17,
+                    "name": "Industrial District",
+                    "short_name": "IndustrialDistrict",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "industrial_district"
+                },
+                "hero": {
+                    "id": 73,
+                    "name": "Junkrat",
+                    "short_name": "junkrat",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-10-17 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Junk",
+                    "build_copy_name": "Junkrat",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 50217028,
+                "game_date": "2023-10-10 22:42:12",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 17,
+                    "name": "Industrial District",
+                    "short_name": "IndustrialDistrict",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "industrial_district"
+                },
+                "hero": {
+                    "id": 7,
+                    "name": "Azmodan",
+                    "short_name": "azmodan",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-10-07 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Azmo",
+                    "build_copy_name": "Azmodan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 50216454,
+                "game_date": "2023-10-10 21:52:14",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 17,
+                    "name": "Industrial District",
+                    "short_name": "IndustrialDistrict",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "industrial_district"
+                },
+                "hero": {
+                    "id": 83,
+                    "name": "Mephisto",
+                    "short_name": "mephisto",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2018-09-03 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.53.2.84200",
+                    "attribute_id": "MEPH",
+                    "build_copy_name": "Mephisto",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 50196737,
+                "game_date": "2023-10-09 01:39:32",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 17,
+                    "name": "Industrial District",
+                    "short_name": "IndustrialDistrict",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "industrial_district"
+                },
+                "hero": {
+                    "id": 67,
+                    "name": "Zagara",
+                    "short_name": "zagara",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-06-25 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "Zaga",
+                    "build_copy_name": "Zagara",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 50186132,
+                "game_date": "2023-10-07 21:02:39",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 7,
+                    "name": "Azmodan",
+                    "short_name": "azmodan",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-10-07 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Azmo",
+                    "build_copy_name": "Azmodan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 50185680,
+                "game_date": "2023-10-07 20:50:07",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 23,
+                    "name": "Gul'dan",
+                    "short_name": "guldan",
+                    "alt_name": "Guldan",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2016-07-12 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.2.87774",
+                    "attribute_id": "Guld",
+                    "build_copy_name": "Guldan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 50175610,
+                "game_date": "2023-10-07 01:31:36",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 86,
+                    "name": "Imperius",
+                    "short_name": "imperius",
+                    "alt_name": "",
+                    "role": "Warrior",
+                    "new_role": "Bruiser",
+                    "type": "Melee",
+                    "release_date": "2019-01-08 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "IMPE",
+                    "build_copy_name": "Imperius",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 50169914,
+                "game_date": "2023-10-06 18:31:33",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 83,
+                    "name": "Mephisto",
+                    "short_name": "mephisto",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2018-09-03 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.53.2.84200",
+                    "attribute_id": "MEPH",
+                    "build_copy_name": "Mephisto",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 50075348,
+                "game_date": "2023-09-28 23:29:42",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 32,
+                    "name": "Li-Ming",
+                    "short_name": "liming",
+                    "alt_name": "Wizard",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2016-02-02 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.50.1.79515",
+                    "attribute_id": "Wiza",
+                    "build_copy_name": "LiMing",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 49998709,
+                "game_date": "2023-09-23 23:36:11",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 17,
+                    "name": "Industrial District",
+                    "short_name": "IndustrialDistrict",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "industrial_district"
+                },
+                "hero": {
+                    "id": 7,
+                    "name": "Azmodan",
+                    "short_name": "azmodan",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-10-07 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Azmo",
+                    "build_copy_name": "Azmodan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 49987579,
+                "game_date": "2023-09-23 02:42:46",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 7,
+                    "name": "Azmodan",
+                    "short_name": "azmodan",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-10-07 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Azmo",
+                    "build_copy_name": "Azmodan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 46986347,
+                "game_date": "2023-01-04 03:41:48",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 83,
+                    "name": "Mephisto",
+                    "short_name": "mephisto",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2018-09-03 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.53.2.84200",
+                    "attribute_id": "MEPH",
+                    "build_copy_name": "Mephisto",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 46676007,
+                "game_date": "2022-12-04 15:48:00",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 20,
+                    "name": "Gazlowe",
+                    "short_name": "gazlowe",
+                    "alt_name": "Tinker",
+                    "role": "Specialist",
+                    "new_role": "Bruiser",
+                    "type": "Melee",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Tink",
+                    "build_copy_name": "Gazlowe",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 46675322,
+                "game_date": "2022-12-04 14:15:23",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 75,
+                    "name": "Hanzo",
+                    "short_name": "hanzo",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-12-12 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Hanz",
+                    "build_copy_name": "Hanzo",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 46621061,
+                "game_date": "2022-11-29 15:49:18",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 83,
+                    "name": "Mephisto",
+                    "short_name": "mephisto",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2018-09-03 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.53.2.84200",
+                    "attribute_id": "MEPH",
+                    "build_copy_name": "Mephisto",
+                    "last_updated": null
+                },
+                "winner": 0,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 46614753,
+                "game_date": "2022-11-28 17:45:19",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 41,
+                    "name": "Nazeebo",
+                    "short_name": "nazeebo",
+                    "alt_name": "WitchDoctor",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Witc",
+                    "build_copy_name": "Nazeebo",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 46547910,
+                "game_date": "2022-11-22 19:19:10",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 12,
+                    "name": "Chromie",
+                    "short_name": "chromie",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2016-05-17 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.2.87774",
+                    "attribute_id": "Chro",
+                    "build_copy_name": "Chromie",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 46187657,
+                "game_date": "2022-10-22 19:04:31",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 7,
+                    "name": "Azmodan",
+                    "short_name": "azmodan",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-10-07 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Azmo",
+                    "build_copy_name": "Azmodan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45932684,
+                "game_date": "2022-09-29 21:05:06",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 7,
+                    "name": "Azmodan",
+                    "short_name": "azmodan",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-10-07 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Azmo",
+                    "build_copy_name": "Azmodan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45866535,
+                "game_date": "2022-09-25 19:57:04",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 7,
+                    "name": "Azmodan",
+                    "short_name": "azmodan",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-10-07 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Azmo",
+                    "build_copy_name": "Azmodan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45865555,
+                "game_date": "2022-09-25 19:12:57",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 66,
+                    "name": "Xul",
+                    "short_name": "xul",
+                    "alt_name": "Necromancer",
+                    "role": "Specialist",
+                    "new_role": "Bruiser",
+                    "type": "Melee",
+                    "release_date": "2016-03-01 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "Necr",
+                    "build_copy_name": "Xul",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45838391,
+                "game_date": "2022-09-23 17:34:53",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 91,
+                    "name": "Hogger",
+                    "short_name": "hogger",
+                    "alt_name": "",
+                    "role": "",
+                    "new_role": "Bruiser",
+                    "type": "Melee",
+                    "release_date": "2020-12-01 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.0.85027",
+                    "attribute_id": "HOGG",
+                    "build_copy_name": "Hogger",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45795583,
+                "game_date": "2022-09-19 15:59:21",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 32,
+                    "name": "Li-Ming",
+                    "short_name": "liming",
+                    "alt_name": "Wizard",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2016-02-02 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.50.1.79515",
+                    "attribute_id": "Wiza",
+                    "build_copy_name": "LiMing",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45762009,
+                "game_date": "2022-09-16 18:56:52",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 75,
+                    "name": "Hanzo",
+                    "short_name": "hanzo",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-12-12 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Hanz",
+                    "build_copy_name": "Hanzo",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45761328,
+                "game_date": "2022-09-16 17:53:34",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 27,
+                    "name": "Kael'thas",
+                    "short_name": "kaelthas",
+                    "alt_name": "Kaelthas",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2015-05-12 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Kael",
+                    "build_copy_name": "Kaelthas",
+                    "last_updated": null
+                },
+                "winner": 0,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45752957,
+                "game_date": "2022-09-16 00:04:40",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 54,
+                    "name": "Tassadar",
+                    "short_name": "tassadar",
+                    "alt_name": "",
+                    "role": "Support",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.0.85027",
+                    "attribute_id": "Tass",
+                    "build_copy_name": "Tassadar",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45727849,
+                "game_date": "2022-09-13 22:19:42",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 68,
+                    "name": "Zarya",
+                    "short_name": "zarya",
+                    "alt_name": "",
+                    "role": "Warrior",
+                    "new_role": "Support",
+                    "type": "Ranged",
+                    "release_date": "2016-09-27 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "Zary",
+                    "build_copy_name": "Zarya",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45696299,
+                "game_date": "2022-09-11 18:16:54",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 46,
+                    "name": "Rehgar",
+                    "short_name": "rehgar",
+                    "alt_name": "",
+                    "role": "Support",
+                    "new_role": "Healer",
+                    "type": "Melee",
+                    "release_date": "2014-07-23 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.2.87774",
+                    "attribute_id": "Rehg",
+                    "build_copy_name": "Rehgar",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45692517,
+                "game_date": "2022-09-11 14:08:17",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 41,
+                    "name": "Nazeebo",
+                    "short_name": "nazeebo",
+                    "alt_name": "WitchDoctor",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Witc",
+                    "build_copy_name": "Nazeebo",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45688722,
+                "game_date": "2022-09-11 01:08:42",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 27,
+                    "name": "Kael'thas",
+                    "short_name": "kaelthas",
+                    "alt_name": "Kaelthas",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2015-05-12 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Kael",
+                    "build_copy_name": "Kaelthas",
+                    "last_updated": null
+                },
+                "winner": 0,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45688227,
+                "game_date": "2022-09-11 00:07:20",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 89,
+                    "name": "Deathwing",
+                    "short_name": "deathwing",
+                    "alt_name": "",
+                    "role": "",
+                    "new_role": "Bruiser",
+                    "type": "Melee",
+                    "release_date": "2019-12-03 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.52.1.82169",
+                    "attribute_id": "DEAT",
+                    "build_copy_name": "Deathwing",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45687917,
+                "game_date": "2022-09-10 23:12:37",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 68,
+                    "name": "Zarya",
+                    "short_name": "zarya",
+                    "alt_name": "",
+                    "role": "Warrior",
+                    "new_role": "Support",
+                    "type": "Ranged",
+                    "release_date": "2016-09-27 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "Zary",
+                    "build_copy_name": "Zarya",
+                    "last_updated": null
+                },
+                "winner": 0,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45675481,
+                "game_date": "2022-09-10 03:36:23",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 68,
+                    "name": "Zarya",
+                    "short_name": "zarya",
+                    "alt_name": "",
+                    "role": "Warrior",
+                    "new_role": "Support",
+                    "type": "Ranged",
+                    "release_date": "2016-09-27 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "Zary",
+                    "build_copy_name": "Zarya",
+                    "last_updated": null
+                },
+                "winner": 0,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45642604,
+                "game_date": "2022-09-07 03:15:03",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 23,
+                    "name": "Gul'dan",
+                    "short_name": "guldan",
+                    "alt_name": "Guldan",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2016-07-12 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.2.87774",
+                    "attribute_id": "Guld",
+                    "build_copy_name": "Guldan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45642492,
+                "game_date": "2022-09-07 02:53:29",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 54,
+                    "name": "Tassadar",
+                    "short_name": "tassadar",
+                    "alt_name": "",
+                    "role": "Support",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.0.85027",
+                    "attribute_id": "Tass",
+                    "build_copy_name": "Tassadar",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45625695,
+                "game_date": "2022-09-05 23:32:48",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 71,
+                    "name": "Kel'Thuzad",
+                    "short_name": "kelthuzad",
+                    "alt_name": "KelThuzad",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-09-05 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "KelT",
+                    "build_copy_name": "KelThuzad",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45625640,
+                "game_date": "2022-09-05 23:17:26",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 89,
+                    "name": "Deathwing",
+                    "short_name": "deathwing",
+                    "alt_name": "",
+                    "role": "",
+                    "new_role": "Bruiser",
+                    "type": "Melee",
+                    "release_date": "2019-12-03 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.52.1.82169",
+                    "attribute_id": "DEAT",
+                    "build_copy_name": "Deathwing",
+                    "last_updated": null
+                },
+                "winner": 0,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45624634,
+                "game_date": "2022-09-05 21:24:24",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 17,
+                    "name": "Falstad",
+                    "short_name": "falstad",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Fals",
+                    "build_copy_name": "Falstad",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45618394,
+                "game_date": "2022-09-05 04:16:15",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 70,
+                    "name": "Zul'jin",
+                    "short_name": "zuljin",
+                    "alt_name": "Zuljin",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-01-04 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "ZULJ",
+                    "build_copy_name": "Zuljin",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45614517,
+                "game_date": "2022-09-04 18:59:56",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 67,
+                    "name": "Zagara",
+                    "short_name": "zagara",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-06-25 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "Zaga",
+                    "build_copy_name": "Zagara",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45610060,
+                "game_date": "2022-09-04 14:59:24",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 64,
+                    "name": "Valla",
+                    "short_name": "valla",
+                    "alt_name": "DemonHunter",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "Demo",
+                    "build_copy_name": "Valla",
+                    "last_updated": null
+                },
+                "winner": 0,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45596213,
+                "game_date": "2022-09-03 19:53:00",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 74,
+                    "name": "Alexstrasza",
+                    "short_name": "alexstrasza",
+                    "alt_name": "",
+                    "role": "Support",
+                    "new_role": "Healer",
+                    "type": "Ranged",
+                    "release_date": "2017-11-14 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.2.87774",
+                    "attribute_id": "Alex",
+                    "build_copy_name": "Alexstrasza",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45596059,
+                "game_date": "2022-09-03 19:14:52",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 83,
+                    "name": "Mephisto",
+                    "short_name": "mephisto",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2018-09-03 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.53.2.84200",
+                    "attribute_id": "MEPH",
+                    "build_copy_name": "Mephisto",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45514377,
+                "game_date": "2022-08-29 03:09:07",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 70,
+                    "name": "Zul'jin",
+                    "short_name": "zuljin",
+                    "alt_name": "Zuljin",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-01-04 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "ZULJ",
+                    "build_copy_name": "Zuljin",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45514337,
+                "game_date": "2022-08-29 02:55:44",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 7,
+                    "name": "Azmodan",
+                    "short_name": "azmodan",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-10-07 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Azmo",
+                    "build_copy_name": "Azmodan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45511601,
+                "game_date": "2022-08-28 20:41:00",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 17,
+                    "name": "Falstad",
+                    "short_name": "falstad",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Fals",
+                    "build_copy_name": "Falstad",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45509324,
+                "game_date": "2022-08-28 17:42:55",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 7,
+                    "name": "Azmodan",
+                    "short_name": "azmodan",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-10-07 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Azmo",
+                    "build_copy_name": "Azmodan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45496441,
+                "game_date": "2022-08-28 01:40:41",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 34,
+                    "name": "Lúcio",
+                    "short_name": "lucio",
+                    "alt_name": "",
+                    "role": "Support",
+                    "new_role": "Healer",
+                    "type": "Ranged",
+                    "release_date": "2017-02-14 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.2.85551",
+                    "attribute_id": "Luci",
+                    "build_copy_name": "Lucio",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45472738,
+                "game_date": "2022-08-26 03:23:05",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 7,
+                    "name": "Azmodan",
+                    "short_name": "azmodan",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-10-07 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Azmo",
+                    "build_copy_name": "Azmodan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45472561,
+                "game_date": "2022-08-26 02:55:37",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 33,
+                    "name": "Lt. Morales",
+                    "short_name": "ltmorales",
+                    "alt_name": "Medic",
+                    "role": "Support",
+                    "new_role": "Healer",
+                    "type": "Ranged",
+                    "release_date": "2015-10-06 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Medi",
+                    "build_copy_name": "LtMorales",
+                    "last_updated": null
+                },
+                "winner": 0,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45470111,
+                "game_date": "2022-08-25 22:33:38",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 23,
+                    "name": "Gul'dan",
+                    "short_name": "guldan",
+                    "alt_name": "Guldan",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2016-07-12 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.2.87774",
+                    "attribute_id": "Guld",
+                    "build_copy_name": "Guldan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45470028,
+                "game_date": "2022-08-25 22:19:51",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 17,
+                    "name": "Falstad",
+                    "short_name": "falstad",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Fals",
+                    "build_copy_name": "Falstad",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45449065,
+                "game_date": "2022-08-24 01:21:28",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 41,
+                    "name": "Nazeebo",
+                    "short_name": "nazeebo",
+                    "alt_name": "WitchDoctor",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Witc",
+                    "build_copy_name": "Nazeebo",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45426896,
+                "game_date": "2022-08-22 23:23:58",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 27,
+                    "name": "Kael'thas",
+                    "short_name": "kaelthas",
+                    "alt_name": "Kaelthas",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2015-05-12 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Kael",
+                    "build_copy_name": "Kaelthas",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45424243,
+                "game_date": "2022-08-22 19:24:51",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 83,
+                    "name": "Mephisto",
+                    "short_name": "mephisto",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2018-09-03 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.53.2.84200",
+                    "attribute_id": "MEPH",
+                    "build_copy_name": "Mephisto",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45407603,
+                "game_date": "2022-08-21 22:24:33",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 64,
+                    "name": "Valla",
+                    "short_name": "valla",
+                    "alt_name": "DemonHunter",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "Demo",
+                    "build_copy_name": "Valla",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45395517,
+                "game_date": "2022-08-20 22:02:21",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 68,
+                    "name": "Zarya",
+                    "short_name": "zarya",
+                    "alt_name": "",
+                    "role": "Warrior",
+                    "new_role": "Support",
+                    "type": "Ranged",
+                    "release_date": "2016-09-27 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "Zary",
+                    "build_copy_name": "Zarya",
+                    "last_updated": null
+                },
+                "winner": 0,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45357273,
+                "game_date": "2022-08-18 01:22:11",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 32,
+                    "name": "Li-Ming",
+                    "short_name": "liming",
+                    "alt_name": "Wizard",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2016-02-02 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.50.1.79515",
+                    "attribute_id": "Wiza",
+                    "build_copy_name": "LiMing",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45354714,
+                "game_date": "2022-08-17 21:40:41",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 71,
+                    "name": "Kel'Thuzad",
+                    "short_name": "kelthuzad",
+                    "alt_name": "KelThuzad",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-09-05 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "KelT",
+                    "build_copy_name": "KelThuzad",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45313226,
+                "game_date": "2022-08-14 22:31:48",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 19,
+                    "name": "Garrosh",
+                    "short_name": "garrosh",
+                    "alt_name": "",
+                    "role": "Warrior",
+                    "new_role": "Tank",
+                    "type": "Melee",
+                    "release_date": "2017-08-08 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.1.85267",
+                    "attribute_id": "Garr",
+                    "build_copy_name": "Garrosh",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45312848,
+                "game_date": "2022-08-14 21:49:36",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 83,
+                    "name": "Mephisto",
+                    "short_name": "mephisto",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2018-09-03 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.53.2.84200",
+                    "attribute_id": "MEPH",
+                    "build_copy_name": "Mephisto",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45312239,
+                "game_date": "2022-08-14 21:34:02",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 7,
+                    "name": "Azmodan",
+                    "short_name": "azmodan",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-10-07 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Azmo",
+                    "build_copy_name": "Azmodan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45216269,
+                "game_date": "2022-08-07 21:22:36",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 27,
+                    "name": "Kael'thas",
+                    "short_name": "kaelthas",
+                    "alt_name": "Kaelthas",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2015-05-12 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Kael",
+                    "build_copy_name": "Kaelthas",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45204523,
+                "game_date": "2022-08-07 01:57:41",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 41,
+                    "name": "Nazeebo",
+                    "short_name": "nazeebo",
+                    "alt_name": "WitchDoctor",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Witc",
+                    "build_copy_name": "Nazeebo",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45203686,
+                "game_date": "2022-08-07 01:20:22",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 52,
+                    "name": "Stukov",
+                    "short_name": "stukov",
+                    "alt_name": "",
+                    "role": "Support",
+                    "new_role": "Healer",
+                    "type": "Melee",
+                    "release_date": "2017-07-11 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "STUK",
+                    "build_copy_name": "Stukov",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45203071,
+                "game_date": "2022-08-07 00:41:51",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 57,
+                    "name": "Thrall",
+                    "short_name": "thrall",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Bruiser",
+                    "type": "Melee",
+                    "release_date": "2015-01-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.2.87774",
+                    "attribute_id": "Thra",
+                    "build_copy_name": "Thrall",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45202745,
+                "game_date": "2022-08-06 23:48:27",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 71,
+                    "name": "Kel'Thuzad",
+                    "short_name": "kelthuzad",
+                    "alt_name": "KelThuzad",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-09-05 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "KelT",
+                    "build_copy_name": "KelThuzad",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45202441,
+                "game_date": "2022-08-06 23:20:48",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 7,
+                    "name": "Azmodan",
+                    "short_name": "azmodan",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-10-07 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.1.87306",
+                    "attribute_id": "Azmo",
+                    "build_copy_name": "Azmodan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45163853,
+                "game_date": "2022-08-05 00:48:11",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 87,
+                    "name": "Anduin",
+                    "short_name": "anduin",
+                    "alt_name": "",
+                    "role": "Healer",
+                    "new_role": "Healer",
+                    "type": "Ranged",
+                    "release_date": "2019-04-30 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.1.85267",
+                    "attribute_id": "Andu",
+                    "build_copy_name": "Anduin",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45139549,
+                "game_date": "2022-08-04 00:44:38",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 12,
+                    "name": "Chromie",
+                    "short_name": "chromie",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2016-05-17 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.2.87774",
+                    "attribute_id": "Chro",
+                    "build_copy_name": "Chromie",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 45139224,
+                "game_date": "2022-08-04 00:26:08",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 71,
+                    "name": "Kel'Thuzad",
+                    "short_name": "kelthuzad",
+                    "alt_name": "KelThuzad",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-09-05 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "KelT",
+                    "build_copy_name": "KelThuzad",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 44992949,
+                "game_date": "2022-07-26 04:01:26",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 70,
+                    "name": "Zul'jin",
+                    "short_name": "zuljin",
+                    "alt_name": "Zuljin",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2017-01-04 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "ZULJ",
+                    "build_copy_name": "Zuljin",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 44961116,
+                "game_date": "2022-07-24 15:15:04",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 67,
+                    "name": "Zagara",
+                    "short_name": "zagara",
+                    "alt_name": "",
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2014-06-25 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.0.86938",
+                    "attribute_id": "Zaga",
+                    "build_copy_name": "Zagara",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 44943210,
+                "game_date": "2022-07-23 15:33:26",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 12,
+                    "name": "Chromie",
+                    "short_name": "chromie",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2016-05-17 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.2.87774",
+                    "attribute_id": "Chro",
+                    "build_copy_name": "Chromie",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 44926058,
+                "game_date": "2022-07-22 00:55:09",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 18,
+                    "name": "Lost Cavern",
+                    "short_name": "LostCavern",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "lost_cavern"
+                },
+                "hero": {
+                    "id": 83,
+                    "name": "Mephisto",
+                    "short_name": "mephisto",
+                    "alt_name": "",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2018-09-03 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.53.2.84200",
+                    "attribute_id": "MEPH",
+                    "build_copy_name": "Mephisto",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 44926024,
+                "game_date": "2022-07-22 00:44:15",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 20,
+                    "name": "Silver City",
+                    "short_name": "SilverCity",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "silver_city"
+                },
+                "hero": {
+                    "id": 23,
+                    "name": "Gul'dan",
+                    "short_name": "guldan",
+                    "alt_name": "Guldan",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2016-07-12 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.2.87774",
+                    "attribute_id": "Guld",
+                    "build_copy_name": "Guldan",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            },
+            {
+                "replayID": 43936557,
+                "game_date": "2022-05-23 20:55:07",
+                "game_type": {
+                    "type_id": 6,
+                    "name": "ARAM",
+                    "no_space_name": "ARAM",
+                    "short_name": "ar"
+                },
+                "game_map": {
+                    "map_id": 21,
+                    "name": "Braxis Outpost",
+                    "short_name": "BraxisOutpost",
+                    "type": "ARAM",
+                    "ranked_rotation": 0,
+                    "playable": 1,
+                    "sanitized_map_name": "braxis_outpost"
+                },
+                "hero": {
+                    "id": 27,
+                    "name": "Kael'thas",
+                    "short_name": "kaelthas",
+                    "alt_name": "Kaelthas",
+                    "role": "Assassin",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2015-05-12 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.54.3.86223",
+                    "attribute_id": "Kael",
+                    "build_copy_name": "Kaelthas",
+                    "last_updated": null
+                },
+                "winner": 1,
+                "award": {
+                    "award_table_id": 1,
+                    "award_id": 1,
+                    "title": "MVP",
+                    "icon": "storm_ui_mvp_mvp",
+                    "description": "Highest overall performance score in the match."
+                }
+            }
+        ],
+        "first_page_url": "http://localhost/api/external/v1/players/awards/games?battletag=Zemill%23194&region=NA&award_id=1&pagination_page=1",
+        "from": 1,
+        "last_page": 3,
+        "last_page_url": "http://localhost/api/external/v1/players/awards/games?battletag=Zemill%23194&region=NA&award_id=1&pagination_page=3",
+        "links": [
+            {
+                "url": null,
+                "label": "&laquo; Previous",
+                "active": false
+            },
+            {
+                "url": "http://localhost/api/external/v1/players/awards/games?battletag=Zemill%23194&region=NA&award_id=1&pagination_page=1",
+                "label": "1",
+                "active": true
+            },
+            {
+                "url": "http://localhost/api/external/v1/players/awards/games?battletag=Zemill%23194&region=NA&award_id=1&pagination_page=2",
+                "label": "2",
+                "active": false
+            },
+            {
+                "url": "http://localhost/api/external/v1/players/awards/games?battletag=Zemill%23194&region=NA&award_id=1&pagination_page=3",
+                "label": "3",
+                "active": false
+            },
+            {
+                "url": "http://localhost/api/external/v1/players/awards/games?battletag=Zemill%23194&region=NA&award_id=1&pagination_page=2",
+                "label": "Next &raquo;",
+                "active": false
+            }
+        ],
+        "next_page_url": "http://localhost/api/external/v1/players/awards/games?battletag=Zemill%23194&region=NA&award_id=1&pagination_page=2",
+        "path": "http://localhost/api/external/v1/players/awards/games",
+        "per_page": 100,
+        "prev_page_url": null,
+        "to": 100,
+        "total": 262
+    }
+}

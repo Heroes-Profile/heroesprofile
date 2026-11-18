@@ -14,10 +14,13 @@ class CreateGameTypesTable extends Migration
     public function up()
     {
         Schema::create('game_types', function (Blueprint $table) {
-            $table->integer('type_id');
-            $table->string('name');
-            $table->string('no_space_name');
-            $table->string('short_name');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('type_id', true);
+            $table->string('name', 45);
+            $table->string('no_space_name', 45)->virtualAs('replace(`name`,_utf8mb4\' \',_utf8mb4\'\')')->nullable();
+            $table->string('short_name', 45);
         });
     }
 

@@ -53,6 +53,50 @@ NOTE:  The data provided in the seeders is not complete.  A lot of player data m
 -   Run `npm run dev` - - watches for any changes and automatically recompiles
 
 
+## Testing
+
+The tests run against their own MySQL 8.4 container on `127.0.0.1:33061`, never the database in `.env`.
+`.env.testing` points every connection there, and the tests refuse to start if any connection points
+anywhere else. Docker has to be running.
+
+```
+php artisan hp:test               # everything
+php artisan hp:test user          # what a visitor or API client sees
+php artisan hp:test backend       # background processes, external services simulated
+php artisan hp:test unit          # pure logic, no database (seconds)
+php artisan hp:test schema        # every model's table exists in the migrated database
+```
+
+| Suite | What it covers |
+|---|---|
+| `full` | All of the suites below. Run this before and after a framework or dependency upgrade. |
+| `user` | Every page, the site's data endpoints (`api/v1/*`), every public API endpoint, the esports pages, the public Analytics sample and the signed-in pages. Each response is compared to a recorded snapshot in `tests/Feature/Characterization/snapshots`. |
+| `backend` | The machinery behind those pages, with outside services faked at their edges and our own code running for real: the global stats pipeline through Cloud Tasks; Player Analytics with BigQuery faked; the API portal, billing (Cashier on a faked Stripe API, signed webhooks) and the admin console; the site's own writes, including help chat with Claude faked; replay uploads and NGS ingest, the parser answering with its own output for real replays; the Twitch extension on a faked Helix API; the middleware rules (privacy, bans, origins, rate limits, portal gates, API keys, quotas, poison markers); and the artisan commands, each writing to a temp directory. |
+| `unit` | Support classes and input validation rules. |
+| `schema` | Every Eloquent model's table exists, on its own connection. |
+
+Options:
+
+-   `--filter=...` runs only the tests whose name matches (`php artisan hp:test user --filter=Global`).
+-   `--update-snapshots` re-records every snapshot instead of comparing. Only use it when a response is *meant*
+    to change, and check the diff of `tests/Feature/Characterization/snapshots` before committing.
+
+The first run builds the test database from the migrations and seeders, which takes about 10 minutes.
+Later runs reuse it and roll back every test's writes. To start again from nothing (after changing a
+migration or seeder):
+
+```
+docker compose -f docker-compose/docker-compose.testing.yaml down -v
+```
+
+The test clock is frozen at 2024-02-10, a week after the seed data's newest game, so "current season"
+defaults land on seeded data. Values the tests rely on (player, heroes, patches, esports teams) are in
+`tests/Feature/Characterization/SeedFixtures.php`.
+
+GitHub Actions runs the full suite on every pull request and every push to `develop`
+(`.github/workflows/tests.yaml`), in the same container, built and seeded from scratch each time. There a
+missing snapshot fails the test instead of being recorded, so new snapshots have to be committed.
+
 ## Public API fixtures
 
 Endpoints under `/v1/*` serve a canned response instead of live data whenever an

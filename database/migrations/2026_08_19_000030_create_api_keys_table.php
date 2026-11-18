@@ -22,11 +22,13 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedInteger('api_account_id');
             $table->string('name');
-            $table->string('secret_hash', 64)->unique();
+            $table->string('secret_hash', 64);
             $table->timestamp('last_used_at')->nullable();
             $table->timestamp('revoked_at')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
 
+            $table->unique('secret_hash');
             $table->index(['api_account_id', 'revoked_at'], 'idx_account_active');
         });
     }

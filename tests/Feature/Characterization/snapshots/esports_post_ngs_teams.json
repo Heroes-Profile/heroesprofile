@@ -1,0 +1,195 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": [
+        {
+            "team_name": "Aba Murky Cult",
+            "division": "B West",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Aba+Murky+Cult8167_logo.jpg",
+            "wins": 2,
+            "losses": 0,
+            "games_played": 2,
+            "win_rate": 100
+        },
+        {
+            "team_name": "Amateur Opponents",
+            "division": "C West",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Amateur+Opponents7376_logo.png",
+            "wins": 1,
+            "losses": 3,
+            "games_played": 4,
+            "win_rate": 25
+        },
+        {
+            "team_name": "Arrogant Nephalem",
+            "division": "B West",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Arrogant+Nephalem9912_logo.png",
+            "wins": 0,
+            "losses": 2,
+            "games_played": 2,
+            "win_rate": 0
+        },
+        {
+            "team_name": "Artemis",
+            "division": "D West",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Artemis3285_logo.jpg",
+            "wins": 3,
+            "losses": 0,
+            "games_played": 3,
+            "win_rate": 100
+        },
+        {
+            "team_name": "Bunker Fun Time",
+            "division": "D East",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Bunker+Fun+Time5988_logo.png",
+            "wins": 0,
+            "losses": 3,
+            "games_played": 3,
+            "win_rate": 0
+        },
+        {
+            "team_name": "COSMOS",
+            "division": "C West",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/COSMOS9324_logo.png",
+            "wins": 3,
+            "losses": 1,
+            "games_played": 4,
+            "win_rate": 75
+        },
+        {
+            "team_name": "CPogX Fanclub",
+            "division": "Heroic",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/CPogX+Fanclub7911_logo.jpg",
+            "wins": 6,
+            "losses": 2,
+            "games_played": 8,
+            "win_rate": 75
+        },
+        {
+            "team_name": "Caffeinated Knights",
+            "division": "B West",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Caffeinated+Knights9674_logo.jpg",
+            "wins": 2,
+            "losses": 0,
+            "games_played": 2,
+            "win_rate": 100
+        },
+        {
+            "team_name": "Die for Vision",
+            "division": "B East",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Die+for+Vision4295_logo.png",
+            "wins": 3,
+            "losses": 2,
+            "games_played": 5,
+            "win_rate": 60
+        },
+        {
+            "team_name": "ParsleySnagRosemary&Line",
+            "division": "A East",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/ParsleySnagRosemary%26Line1630_logo.png",
+            "wins": 3,
+            "losses": 2,
+            "games_played": 5,
+            "win_rate": 60
+        },
+        {
+            "team_name": "Press Forward",
+            "division": "Heroic",
+            "icon_url": "/images/NGS/no-image-clipped.png",
+            "wins": 0,
+            "losses": 3,
+            "games_played": 3,
+            "win_rate": 0
+        },
+        {
+            "team_name": "Quaranteam",
+            "division": "Heroic",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Quaranteam3770_logo.jpg",
+            "wins": 4,
+            "losses": 3,
+            "games_played": 7,
+            "win_rate": 57.14
+        },
+        {
+            "team_name": "ReGen Retro",
+            "division": "A West",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/ReGen+Retro7460_logo.png",
+            "wins": 1,
+            "losses": 3,
+            "games_played": 4,
+            "win_rate": 25
+        },
+        {
+            "team_name": "Sky5",
+            "division": "A East",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Sky52452_logo.png",
+            "wins": 0,
+            "losses": 2,
+            "games_played": 2,
+            "win_rate": 0
+        },
+        {
+            "team_name": "T@inted Orphans",
+            "division": "A West",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/T%40inted+Orphans3476_logo.jpg",
+            "wins": 3,
+            "losses": 1,
+            "games_played": 4,
+            "win_rate": 75
+        },
+        {
+            "team_name": "Team Happy Cloud",
+            "division": "A East",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Team+Happy+Cloud5311_logo.png",
+            "wins": 4,
+            "losses": 3,
+            "games_played": 7,
+            "win_rate": 57.14
+        },
+        {
+            "team_name": "Team Rainbow Strike Go!",
+            "division": "D West",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Team+Rainbow+Strike+Go%213583_logo.jpg",
+            "wins": 0,
+            "losses": 3,
+            "games_played": 3,
+            "win_rate": 0
+        },
+        {
+            "team_name": "Tiny Dancers",
+            "division": "B East",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Tiny+Dancers3806_logo.png",
+            "wins": 2,
+            "losses": 3,
+            "games_played": 5,
+            "win_rate": 40
+        },
+        {
+            "team_name": "We Take These",
+            "division": "Heroic",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/We+Take+These7466_logo.jpg",
+            "wins": 0,
+            "losses": 2,
+            "games_played": 2,
+            "win_rate": 0
+        },
+        {
+            "team_name": "Your Math Teachers",
+            "division": "D East",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Your+Math+Teachers7361_logo.jpg",
+            "wins": 3,
+            "losses": 0,
+            "games_played": 3,
+            "win_rate": 100
+        },
+        {
+            "team_name": "sOaK eVeRy LaNe",
+            "division": "B West",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/sOaK+eVeRy+LaNe7575_logo.png",
+            "wins": 0,
+            "losses": 2,
+            "games_played": 2,
+            "win_rate": 0
+        }
+    ]
+}

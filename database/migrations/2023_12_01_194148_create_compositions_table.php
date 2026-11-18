@@ -14,7 +14,10 @@ class CreateCompositionsTable extends Migration
     public function up()
     {
         Schema::create('compositions', function (Blueprint $table) {
-            $table->increments('composition_id');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('composition_id', true);
             $table->integer('role_one')->nullable();
             $table->integer('role_two')->nullable();
             $table->integer('role_three')->nullable();

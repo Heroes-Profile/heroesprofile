@@ -9,15 +9,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('heroesprofile_cache.player_stats_cache', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->unsignedInteger('blizz_id');
             $table->unsignedTinyInteger('region');
-            $table->char('params_hash', 64)->unique();
+            $table->char('params_hash', 64);
             $table->unsignedBigInteger('latest_replayID')->default(0);
             $table->longText('data')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
 
-            $table->index(['blizz_id', 'region']);
+            $table->index(['blizz_id', 'region'], 'player_stats_cache_blizz_id_region_index');
+            $table->unique('params_hash', 'player_stats_cache_params_hash_unique');
         });
     }
 

@@ -14,16 +14,19 @@ class CreatePlayerTable extends Migration
     public function up()
     {
         Schema::create('player', function (Blueprint $table) {
-            $table->increments('player_table_id');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->bigIncrements('player_table_id');
             $table->unsignedInteger('replayID');
-            $table->unsignedBigInteger('blizz_id');
-            $table->unsignedInteger('battletag');
-            $table->tinyInteger('hero');
+            $table->unsignedInteger('blizz_id');
+            $table->integer('battletag');
+            $table->unsignedTinyInteger('hero');
             $table->unsignedSmallInteger('hero_level');
             $table->unsignedSmallInteger('mastery_taunt')->nullable();
             $table->unsignedTinyInteger('team');
             $table->unsignedTinyInteger('winner');
-            $table->string('party', 45)->nullable();
+            $table->integer('party')->nullable();
             $table->integer('stack_size')->nullable();
             $table->double('player_conservative_rating')->nullable();
             $table->double('player_mean')->nullable();
@@ -43,12 +46,11 @@ class CreatePlayerTable extends Migration
             $table->double('map_change')->nullable();
             $table->dateTime('mmr_date_parsed')->nullable();
 
-            $table->unique(['replayID', 'battletag', 'hero'], 'UNIQUE');
-            $table->index(['replayID', 'blizz_id', 'hero'], 'replayID_blizzID_Hero');
-            $table->index(['blizz_id', 'hero'], 'blizzID_hero');
-            $table->index(['replayID', 'hero', 'player_conservative_rating'], 'replayID_hero_ConservativeRating');
-            $table->index(['hero', 'player_conservative_rating'], 'hero_conservativeratinbg');
+            $table->index('battletag', 'battletag');
+            $table->index(['blizz_id', 'hero'], 'blizzid_hero');
             $table->index(['blizz_id', 'replayID'], 'blizzID_replayID');
+            $table->index(['replayID', 'blizz_id', 'hero'], 'replayID_blizzID_Hero');
+            $table->unique(['replayID', 'battletag', 'hero'], 'UNIQUE');
         });
     }
 

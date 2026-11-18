@@ -14,7 +14,10 @@ class CreateTalentCombinationsTableHeroesprofile extends Migration
     public function up()
     {
         Schema::connection('heroesprofile_globals')->create('talent_combinations', function (Blueprint $table) {
-            $table->increments('talent_combination_id');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('talent_combination_id', true);
             $table->tinyInteger('hero')->nullable();
             $table->integer('level_one')->nullable();
             $table->integer('level_four')->nullable();
@@ -24,13 +27,9 @@ class CreateTalentCombinationsTableHeroesprofile extends Migration
             $table->integer('level_sixteen')->nullable();
             $table->integer('level_twenty')->nullable();
 
-            $table->unique([
-                'hero', 'level_one', 'level_four', 'level_seven',
-                'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty',
-            ], 'Unique');
-
             $table->index(['hero', 'level_twenty'], 'index');
-            $table->index(['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'], 'idx_talent_levels');
+            $table->index(['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'], 'index2');
+            $table->unique(['hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'], 'Unique');
         });
     }
 

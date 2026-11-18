@@ -14,26 +14,29 @@ class CreatePrematchTable extends Migration
     public function up()
     {
         Schema::create('prematch', function (Blueprint $table) {
-            $table->increments('prematch_id');
-            $table->unsignedBigInteger('prematch_replayID')->nullable();
-            $table->unsignedInteger('game_type')->nullable();
-            $table->unsignedInteger('game_map')->nullable();
-            $table->unsignedInteger('team')->nullable();
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('prematch_id', true);
+            $table->integer('prematch_replayID')->nullable();
+            $table->integer('game_type')->nullable();
+            $table->integer('game_map')->nullable();
+            $table->integer('team')->nullable();
             $table->string('battletag', 45)->nullable();
-            $table->unsignedInteger('blizz_id')->nullable();
-            $table->unsignedInteger('region')->nullable();
-            $table->unsignedInteger('hero')->nullable();
-            $table->unsignedInteger('talent_one')->nullable();
-            $table->unsignedInteger('talent_four')->nullable();
-            $table->unsignedInteger('talent_seven')->nullable();
-            $table->unsignedInteger('talent_ten')->nullable();
-            $table->unsignedInteger('talent_thirteen')->nullable();
-            $table->unsignedInteger('talent_sixteen')->nullable();
-            $table->unsignedInteger('talent_twenty')->nullable();
-            $table->dateTime('date_added')->default(now());
+            $table->integer('blizz_id')->nullable();
+            $table->integer('region')->nullable();
+            $table->integer('hero')->nullable();
+            $table->integer('talent_one')->nullable();
+            $table->integer('talent_four')->nullable();
+            $table->integer('talent_seven')->nullable();
+            $table->integer('talent_ten')->nullable();
+            $table->integer('talent_thirteen')->nullable();
+            $table->integer('talent_sixteen')->nullable();
+            $table->integer('talent_twenty')->nullable();
+            $table->dateTime('date_added')->nullable()->useCurrent();
 
             $table->index('prematch_replayID', 'prematchID');
-            $table->unique(['game_type', 'game_map', 'team', 'battletag', 'blizz_id', 'region'], 'UNIQUE');
+            $table->index(['game_type', 'game_map', 'team', 'battletag', 'blizz_id', 'region'], 'UNIQUE');
         });
     }
 

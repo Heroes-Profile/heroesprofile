@@ -14,12 +14,15 @@ class CreateMapHackersTable extends Migration
     public function up()
     {
         Schema::create('map_hackers', function (Blueprint $table) {
-            $table->id('map_hackers_id');
-            $table->string('battletag', 255)->nullable();
-            $table->tinyInteger('set_opt_out')->default(1);
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
 
-            $table->unique('battletag', 'UNIQUE');
+            $table->integer('map_hackers_id', true);
+            $table->string('battletag')->nullable();
+            $table->tinyInteger('set_opt_out')->nullable()->default(1);
+
             $table->index(['battletag', 'set_opt_out'], 'INDEX');
+            $table->unique('battletag', 'UNIQUE');
         });
     }
 

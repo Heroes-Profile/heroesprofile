@@ -14,6 +14,9 @@ class CreateReplayTableCcl extends Migration
     public function up()
     {
         Schema::create('heroesprofile_ccl.replay', function (Blueprint $table) {
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
             $table->increments('replayID');
             $table->string('season', 45)->nullable();
             $table->integer('type')->nullable();
@@ -34,13 +37,13 @@ class CreateReplayTableCcl extends Migration
             $table->dateTime('date_added');
             $table->tinyInteger('mmr_ran')->default(0);
 
-            $table->index(['replayID', 'region', 'game_date'], 'replayID_Region_GameDate');
-            $table->index(['replayID', 'season', 'round', 'game', 'game_date'], 'replayID_season_division_round');
-            $table->index('region');
-            $table->index('game_date');
-            $table->index(['season', 'round'], 'season_division_round');
+            $table->index('game_date', 'game_date');
             $table->index(['season', 'team_0_id', 'team_1_id', 'round'], 'index');
             $table->index(['mmr_ran', 'game_date'], 'mmr_ran');
+            $table->index('region', 'region');
+            $table->index(['replayID', 'region', 'game_date'], 'replayID_Region_GameDate');
+            $table->index(['replayID', 'season', 'round', 'game', 'game_date'], 'replayID_season_division_round');
+            $table->index(['season', 'round'], 'season_division_round');
         });
     }
 

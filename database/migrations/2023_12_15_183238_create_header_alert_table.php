@@ -9,12 +9,15 @@ class CreateHeaderAlertTable extends Migration
     public function up()
     {
         Schema::create('header_alert', function (Blueprint $table) {
-            $table->id('header_alert_id');
-            $table->string('cateogry')->nullable();
-            $table->longText('text');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('header_alert_id', true);
+            $table->string('cateogry', 45)->nullable();
+            $table->longText('text')->nullable();
             $table->tinyInteger('valid')->nullable();
 
-            $table->index('valid');
+            $table->index('valid', 'index');
         });
     }
 

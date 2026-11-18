@@ -1,0 +1,151 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "A East": {
+            "2": {
+                "standings_id": 238,
+                "season": 9,
+                "division": "A East",
+                "rank": 3,
+                "team_id": 303,
+                "team_name": "Team Happy Cloud",
+                "points": 19,
+                "dominations": 4,
+                "games_won": 15,
+                "games_lost": 10,
+                "matches_played": 10
+            },
+            "3": {
+                "standings_id": 239,
+                "season": 9,
+                "division": "A East",
+                "rank": 4,
+                "team_id": 275,
+                "team_name": "ParsleySnagRosemary&Line",
+                "points": 17,
+                "dominations": 3,
+                "games_won": 14,
+                "games_lost": 11,
+                "matches_played": 10
+            },
+            "4": {
+                "standings_id": 240,
+                "season": 9,
+                "division": "A East",
+                "rank": 5,
+                "team_id": 376,
+                "team_name": "Nsomnia",
+                "points": 17,
+                "dominations": 2,
+                "games_won": 15,
+                "games_lost": 12,
+                "matches_played": 10
+            },
+            "5": {
+                "standings_id": 241,
+                "season": 9,
+                "division": "A East",
+                "rank": 6,
+                "team_id": 383,
+                "team_name": "gillyShark",
+                "points": 14,
+                "dominations": 3,
+                "games_won": 11,
+                "games_lost": 12,
+                "matches_played": 10
+            },
+            "6": {
+                "standings_id": 242,
+                "season": 9,
+                "division": "A East",
+                "rank": 7,
+                "team_id": 304,
+                "team_name": "Party Time",
+                "points": 14,
+                "dominations": 2,
+                "games_won": 12,
+                "games_lost": 13,
+                "matches_played": 10
+            },
+            "7": {
+                "standings_id": 243,
+                "season": 9,
+                "division": "A East",
+                "rank": 8,
+                "team_id": 363,
+                "team_name": "2Calculated2Throw",
+                "points": 14,
+                "dominations": 2,
+                "games_won": 12,
+                "games_lost": 14,
+                "matches_played": 10
+            },
+            "8": {
+                "standings_id": 244,
+                "season": 9,
+                "division": "A East",
+                "rank": 9,
+                "team_id": 351,
+                "team_name": "ReGen Phoenix",
+                "points": 13,
+                "dominations": 2,
+                "games_won": 11,
+                "games_lost": 15,
+                "matches_played": 10
+            },
+            "9": {
+                "standings_id": 245,
+                "season": 9,
+                "division": "A East",
+                "rank": 10,
+                "team_id": 382,
+                "team_name": "Heroes of the United States",
+                "points": 11,
+                "dominations": 2,
+                "games_won": 9,
+                "games_lost": 15,
+                "matches_played": 10
+            },
+            "0": {
+                "standings_id": 236,
+                "season": 9,
+                "division": "A East",
+                "rank": 1,
+                "team_id": 364,
+                "team_name": "Beast Coast",
+                "points": 0,
+                "dominations": 0,
+                "games_won": 0,
+                "games_lost": 0,
+                "matches_played": 0
+            },
+            "1": {
+                "standings_id": 237,
+                "season": 9,
+                "division": "A East",
+                "rank": 2,
+                "team_id": 362,
+                "team_name": "Sky5",
+                "points": 0,
+                "dominations": 0,
+                "games_won": 0,
+                "games_lost": 0,
+                "matches_played": 0
+            },
+            "10": {
+                "standings_id": 246,
+                "season": 9,
+                "division": "A East",
+                "rank": 11,
+                "team_id": 276,
+                "team_name": "Pixie Dusters",
+                "points": 0,
+                "dominations": 0,
+                "games_won": 0,
+                "games_lost": 0,
+                "matches_played": 0
+            }
+        }
+    }
+}
