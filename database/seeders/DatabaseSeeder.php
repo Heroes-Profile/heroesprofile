@@ -3,14 +3,29 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
+    /** Every timestamp the seeders write, so a database built today matches one built any other day. */
+    private const SEEDED_AT = '2024-02-01 00:00:00';
+
     /**
      * Seed the application's database.
      */
     public function run(): void
+    {
+        Carbon::setTestNow(Carbon::parse(self::SEEDED_AT, 'UTC'));
+
+        try {
+            $this->seedTables();
+        } finally {
+            Carbon::setTestNow();
+        }
+    }
+
+    private function seedTables(): void
     {
         // Rows like game_types 0 (Custom) and league_tiers 0 (wood) keep their 0 instead of taking the next auto-increment id
         DB::statement("SET SESSION sql_mode = CONCAT(@@SESSION.sql_mode, ',NO_AUTO_VALUE_ON_ZERO')");
