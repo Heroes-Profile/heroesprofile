@@ -17,6 +17,9 @@ $bootstrapper = new class
 
 $app = $bootstrapper::bootTestApplication();
 
+// Views compile from scratch each run, as they do on CI and in production; a stale compiled copy hides Blade errors
+Artisan::call('view:clear');
+
 // Booting registered the app's error and exception handlers. Released once done, so each test starts with only
 // PHPUnit's own (PHPUnit 11 flags a test whose teardown removes handlers that were there before it)
 $release = function () use ($app) {
