@@ -74,8 +74,7 @@
     <link rel="preconnect" href="https://www.google-analytics.com">
     <link rel="preconnect" href="https://hb.vntsm.com">
 
-    <!-- Organization structured data for Google search branding -->
-    {{-- Its "context" key is written with @@: Blade reads a single @ before it as its own context directive --}}
+    <!-- Organization structured data for Google search branding -->{{-- Its "context" key is written with @@: Blade reads a single @ before it as its own context directive --}}
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
