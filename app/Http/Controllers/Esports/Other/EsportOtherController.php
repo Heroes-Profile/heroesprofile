@@ -1384,7 +1384,8 @@ class EsportOtherController extends Controller
                 'popularity' => round((($gamesPlayed + $bans) / $totalGames) * 100, 2),
             ];
         })
-            ->sortByDesc('win_rate')
+            // Name breaks ties: the query has no order of its own
+            ->sortBy([['win_rate', 'desc'], ['hero.name', 'asc']])
             ->values()
             ->all();
 
