@@ -8,8 +8,8 @@
                 "name": "Basic Account",
                 "email": "basic@heroesprofile.test",
                 "status": "active",
-                "started_at": "2026-11-18 14:30:45",
-                "changed_at": "2026-11-18 14:30:45",
+                "started_at": "2024-02-01 00:00:00",
+                "changed_at": "2024-02-01 00:00:00",
                 "ends_at": null
             },
             {
@@ -17,8 +17,8 @@
                 "name": "Developer Account",
                 "email": "developer@heroesprofile.test",
                 "status": "active",
-                "started_at": "2026-11-18 14:30:45",
-                "changed_at": "2026-11-18 14:30:45",
+                "started_at": "2024-02-01 00:00:00",
+                "changed_at": "2024-02-01 00:00:00",
                 "ends_at": null
             },
             {
@@ -26,8 +26,8 @@
                 "name": "Admin Account",
                 "email": "admin@heroesprofile.test",
                 "status": "active",
-                "started_at": "2026-11-18 14:30:45",
-                "changed_at": "2026-11-18 14:30:45",
+                "started_at": "2024-02-01 00:00:00",
+                "changed_at": "2024-02-01 00:00:00",
                 "ends_at": null
             }
         ]
