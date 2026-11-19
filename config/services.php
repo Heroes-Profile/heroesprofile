@@ -15,12 +15,10 @@ return [
     */
 
     /*
-    | Commits for the public change log. The repo is public, so the token is
-    | optional: it only raises GitHub's rate limit, and never leaves the server.
+    | Commits for the public change log, read anonymously: the repo is public.
     */
     'github' => [
         'repo' => 'Heroes-Profile/heroesprofile',
-        'token' => env('GITHUB_PERSONAL_ACCESS_TOKEN'),
     ],
 
     'mailgun' => [
