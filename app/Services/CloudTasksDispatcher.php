@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Google\ApiCore\ApiException;
+use Google\ApiCore\ApiStatus;
 use Google\Cloud\Tasks\V2\Client\CloudTasksClient;
 use Google\Cloud\Tasks\V2\CreateTaskRequest;
 use Google\Cloud\Tasks\V2\HttpMethod;
@@ -15,6 +16,9 @@ use Illuminate\Support\Facades\Log;
 
 class CloudTasksDispatcher
 {
+    // A few seconds per try rather than the library's 20, so an outage fails the request fast instead of holding it a minute
+    private const CREATE_TIMEOUT_MS = 5000;
+
     /** Reused across dispatchHttp calls, so a burst of tasks opens one connection. */
     private ?CloudTasksClient $httpClient = null;
 
@@ -30,7 +34,7 @@ class CloudTasksDispatcher
             throw new \RuntimeException('Cloud Tasks is not configured. Set CLOUD_TASKS_* environment variables.');
         }
 
-        $client = new CloudTasksClient;
+        $client = $this->newClient();
         $queueName = $client->queueName($projectId, $location, $queue);
 
         $httpRequest = new HttpRequest([
@@ -44,7 +48,9 @@ class CloudTasksDispatcher
             ]),
         ]);
 
+        // Named after the job, so a retry after a try that timed out but did get through is refused as a duplicate
         $task = new Task([
+            'name' => $client->taskName($projectId, $location, $queue, $jobId),
             'http_request' => $httpRequest,
             'dispatch_deadline' => new Duration(['seconds' => 1800]),
         ]);
@@ -57,7 +63,7 @@ class CloudTasksDispatcher
         $lastException = null;
         for ($attempt = 1; $attempt <= 3; $attempt++) {
             try {
-                $client->createTask($request);
+                $client->createTask($request, ['timeoutMillis' => self::CREATE_TIMEOUT_MS]);
                 Log::info('Cloud Task enqueued for global query', [
                     'job_id' => $jobId,
                     'queue' => $queue,
@@ -66,6 +72,10 @@ class CloudTasksDispatcher
 
                 return;
             } catch (ApiException $e) {
+                if ($e->getStatus() === ApiStatus::ALREADY_EXISTS) {
+                    return;
+                }
+
                 $lastException = $e;
                 if ($attempt < 3) {
                     usleep(250000 * $attempt); // 250ms, 500ms
@@ -74,6 +84,11 @@ class CloudTasksDispatcher
         }
 
         throw $lastException;
+    }
+
+    protected function newClient(): CloudTasksClient
+    {
+        return new CloudTasksClient;
     }
 
     /**
