@@ -52,7 +52,8 @@
           >
           <label for="select-all" class="text-sm variable-text">{{ $t('Select All') }}</label>
         </div>
-        <div class="max-h-80 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable] !mt-0">
+        <!-- pr-3 keeps the longest option clear of the scrollbar -->
+        <div class="max-h-80 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable] !mt-0 pr-3">
           <template v-for="row in rows" :key="row.key">
           <div v-if="row.heading" class="whitespace-nowrap flex items-center gap-2 py-1" :class="[indentClass(row.depth), { 'opacity-40': !row.codes.some(code => isSelectable(code)) }]">
             <input

@@ -14,14 +14,14 @@
   </div>
   <!-- Same column widths and padding as the game-summary-box rows -->
   <div v-else class="flex justify-between items-center pb-4 mb-4 border-b border-gray-dark font-medium text-subtext max-2xl:hidden">
-    <span class="flex-1 max-w-[25.625rem] pl-6">{{ $t('Match') }}</span>
-    <span class="w-[26.875rem] shrink-0 px-4">{{ esport ? $t('Teams') : $t('Statistics') }}</span>
+    <span class="flex-1 max-w-[25.625rem] pl-6"><span :class="{ 'skeleton-text': skeleton }">{{ $t('Match') }}</span></span>
+    <span class="w-[26.875rem] shrink-0 px-4"><span :class="{ 'skeleton-text': skeleton }">{{ esport ? $t('Teams') : $t('Statistics') }}</span></span>
     <!-- The in-game scoreboard icons, in the same order as the row's kills | deaths | assists -->
     <span class="w-[8.75rem] px-[0.6875rem] shrink-0 grid grid-cols-[1fr_0.5rem_minmax(0.875rem,auto)_0.5rem_1fr] gap-x-[0.5rem] items-center justify-items-center">
-      <kda-icon v-for="(stat, index) in kdaStats" :key="stat" :stat="stat" :style="{ gridColumn: index * 2 + 1 }"></kda-icon>
+      <kda-icon v-for="(stat, index) in kdaStats" :key="stat" :class="{ 'skeleton-text': skeleton }" :stat="stat" :style="{ gridColumn: index * 2 + 1 }"></kda-icon>
     </span>
-    <span class="w-[22.625rem] shrink-0 px-4">{{ $t('Talents') }}</span>
-    <span class="w-[22.625rem] shrink-0 pl-1.5">{{ $t('Players') }}</span>
+    <span class="w-[22.625rem] shrink-0 px-4"><span :class="{ 'skeleton-text': skeleton }">{{ $t('Talents') }}</span></span>
+    <span class="w-[22.625rem] shrink-0 pl-1.5"><span :class="{ 'skeleton-text': skeleton }">{{ $t('Players') }}</span></span>
   </div>
 </template>
 
@@ -29,6 +29,8 @@
 export default {
   name: 'GameSummaryHeader',
   props: {
+    // A loading skeleton: the column names as grey blocks their size
+    skeleton: Boolean,
     compact: Boolean,
     // Esports rows show the game and teams where others show game type and MMR
     esport: Boolean,

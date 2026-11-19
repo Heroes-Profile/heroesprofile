@@ -1,9 +1,13 @@
 <template>
   <!-- A player's end of match awards under the page's filters, most earned first -->
-  <panel-box :inner="true" :title="$t('Awards')" :link-text="'All Awards'" :link-href="`/Player/${battletag}/${blizzid}/${region}/Awards`">
-    <div v-if="loading" class="flex-1 grid grid-cols-2 md:grid-cols-3 auto-rows-fr gap-3">
-      <skeleton-box v-for="index in limit" :key="index" class="h-14"></skeleton-box>
-    </div>
+  <panel-box :inner="true" :title="$t('Awards')" :link-text="'All Awards'" :link-href="`/Player/${battletag}/${blizzid}/${region}/Awards`" :skeleton="loading">
+    <template v-if="loading">
+      <div class="flex-1 grid grid-cols-2 md:grid-cols-3 auto-rows-fr gap-3">
+        <skeleton-box v-for="index in limit" :key="index" class="h-14"></skeleton-box>
+      </div>
+      <!-- The "Awards across" line's height, so the card is as tall as when it loads -->
+      <skeleton-box class="h-[1rem] w-40"></skeleton-box>
+    </template>
     <template v-else-if="earned.length">
       <!-- Rows share the card's height, so the tiles grow when the card is stretched to its neighbour -->
       <div class="flex-1 grid grid-cols-2 md:grid-cols-3 auto-rows-fr gap-3">

@@ -63,7 +63,7 @@
             </tr>
             <tr >
               <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500">
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-[1.125rem]">
                   <span class="cursor-pointer" @click="sortTableFriend('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator></span>
                   <search-input v-model="friendSearch" :placeholder="$t('Search player')" :collapsible="true" class="w-40"></search-input>
                 </div>
@@ -121,7 +121,7 @@
             </tr>
             <tr>
               <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500">
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-[1.125rem]">
                   <span class="cursor-pointer" @click="sortTableEnemy('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator></span>
                   <search-input v-model="enemySearch" :placeholder="$t('Search player')" :collapsible="true" class="w-40"></search-input>
                 </div>
@@ -169,11 +169,54 @@
       </panel-box>
     </div>
     <div v-else-if="friendIsLoading || enemyIsLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
-      <loading-component v-else :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
-      <panel-box>
-        <div class="grid md:grid-cols-2 gap-6">
-          <table-skeleton v-for="side in 2" :key="side" :bare="true" :rows="10" :columns="['text', 'hero', 'stat', 'stat', 'rank']"></table-skeleton>
+      <!-- The tables start where the loaded ones do; the message sits on a tab of the panel above them -->
+      <panel-box class="relative md:!rounded-tl-none">
+        <loading-component :tab="true" v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
+        <loading-component :tab="true" v-else :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+        <!-- The loaded tables themselves: titles as text, the column names as grey blocks their size, and grey rows the same height -->
+        <div class="flex gap-6 max-md:flex-col">
+          <div v-for="side in [{ title: 'Friends', games: 'Games With', rate: 'Win Rate With' }, { title: 'Foes', games: 'Games Against', rate: 'Win Rate Against' }]" :key="side.title" class="flex-1 min-w-0 max-md:overflow-clip">
+            <table class="w-full min-w-[36rem] table-fixed">
+              <colgroup>
+                <col class="w-[30%]">
+                <col class="w-[22%]">
+                <col class="w-[17%]">
+                <col class="w-[21%]">
+                <col v-if="!esport" class="w-[10%]">
+              </colgroup>
+              <thead :class="{ 'bg-red': side.title === 'Foes' }">
+                <tr>
+                  <th colspan="5" class="py-2 px-3 text-center text-base font-bold">{{ $t(side.title) }}</th>
+                </tr>
+                <tr>
+                  <th class="py-2 px-3 text-left text-sm leading-4">
+                    <div class="flex items-center gap-[1.125rem]">
+                      <span class="skeleton-text">{{ $t('Player') }}</span>
+                      <search-input class="w-40 invisible" :collapsible="true" aria-hidden="true"></search-input>
+                    </div>
+                  </th>
+                  <th class="py-2 px-3 text-left text-sm leading-4"><span class="skeleton-text">{{ $t('Favorite Hero') }}</span></th>
+                  <th class="py-2 px-3 text-center text-sm leading-4 whitespace-nowrap"><span class="skeleton-text">{{ $t(side.games) }}</span></th>
+                  <th class="py-2 px-3 text-center text-sm leading-4 whitespace-nowrap"><span class="skeleton-text">{{ $t(side.rate) }}</span></th>
+                  <th v-if="!esport" class="py-2 px-3 text-center text-sm leading-4 w-px whitespace-nowrap"><span class="skeleton-text">{{ $t('Matches') }}</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in 15" :key="row">
+                  <td class="py-2 px-3"><skeleton-box class="h-4 w-24"></skeleton-box></td>
+                  <td class="py-2 px-3">
+                    <div class="flex items-center">
+                      <skeleton-box class="w-10 h-10 mr-2 shrink-0 !rounded-full"></skeleton-box>
+                      <skeleton-box class="h-4 w-20 max-md:hidden"></skeleton-box>
+                    </div>
+                  </td>
+                  <td class="py-2 px-3"><skeleton-box class="h-4 w-12 mx-auto"></skeleton-box></td>
+                  <td class="py-2 px-3"><skeleton-box class="h-4 w-14 mx-auto"></skeleton-box></td>
+                  <td v-if="!esport" class="py-2 px-3"><skeleton-box class="h-8 w-14 mx-auto"></skeleton-box></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </panel-box>
     </div>

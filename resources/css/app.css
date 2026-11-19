@@ -519,11 +519,26 @@ input[type="radio"].form-checkbox:checked{
 .light-mode .table-skeleton-stripe{
   @apply bg-gray-xlight;
 }
+/* Words in a loading skeleton: the text keeps its exact size but is hidden under a grey block, like skeleton-box */
+.skeleton-text{
+  @apply bg-surface-3 rounded animate-pulse;
+  color: transparent !important;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.skeleton-text *{
+  color: transparent !important;
+}
+.skeleton-text img{
+  opacity: 0;
+}
 .light-mode .table-skeleton .skeleton-box,
-.light-mode table .skeleton-box{
+.light-mode table .skeleton-box,
+.light-mode table .skeleton-text{
   @apply bg-gray-md;
 }
-.light-mode .table-skeleton-head .skeleton-box{
+.light-mode .table-skeleton-head .skeleton-box,
+.light-mode thead .skeleton-text{
   @apply bg-white/40;
 }
 /* The teal search glass goes white on a teal header: light mode's headers, and a sorted column's in either mode */
@@ -597,6 +612,10 @@ th .info-icon > span{
 th .gap-1 > .info-icon{ margin-left: -0.25rem; }
 th .gap-2 > .info-icon{ margin-left: -0.5rem; }
 th .gap-3 > .info-icon{ margin-left: -0.75rem; }
+/* The sort chevron hangs the same way (SortIndicator.vue) */
+.gap-1 > .sort-indicator{ margin-left: -0.25rem; }
+.gap-2 > .sort-indicator{ margin-left: -0.5rem; }
+.gap-3 > .sort-indicator{ margin-left: -0.75rem; }
 
 h1{
   @apply text-5xl;

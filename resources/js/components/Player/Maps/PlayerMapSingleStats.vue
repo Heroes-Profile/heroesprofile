@@ -130,23 +130,31 @@
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 space-y-8">
-      <loading-component :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ asyncLoading ? $t('This is taking longer than expected. A background task is computing your results. Please be patient.') : $t('Loading data...') }}</loading-component>
-      <panel-box>
+      <!-- The cards start where the loaded ones do; the message sits on a tab of the panel above them -->
+      <panel-box class="relative md:!rounded-tl-none">
+        <loading-component :compact="true" :tab="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ asyncLoading ? $t('This is taking longer than expected. A background task is computing your results. Please be patient.') : $t('Loading data...') }}</loading-component>
         <div class="flex flex-col xl:flex-row gap-6">
-          <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">
-            <h2 class="text-3xl font-bold">{{ $mapName(map) }}</h2>
+          <!-- Built from the loaded card's own parts (the same heading, map image and labels, with grey blocks), so nothing moves when the data arrives -->
+          <panel-box :inner="true" class="!gap-8 xl:shrink-0">
+            <h2 class="text-3xl font-bold">
+              <hero-heading-select type="map" :heroes="filters.game_maps" :value="map" textclass="" @hero-changed="changeMap($event)"></hero-heading-select>
+            </h2>
             <div class="flex gap-8 max-md:flex-col">
-              <!-- Same shape and place as the map image (290 x 251) -->
-              <div class="shrink-0 max-md:w-52 max-md:self-center md:w-60">
+              <div class="flex flex-col items-center justify-between gap-1 shrink-0 max-md:w-52 max-md:self-center md:w-60">
+                <!-- The map image's shape (290 x 251) and place -->
                 <skeleton-box class="w-full aspect-[290/251] rounded md:mt-[20%]"></skeleton-box>
+                <skeleton-box class="h-[1.5rem] w-32"></skeleton-box>
               </div>
               <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="8"></overview-stats>
             </div>
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-4 w-fit max-w-full">
               <h3 class="text-2xl font-bold">{{ $t('Heroes') }}</h3>
               <div class="flex flex-wrap gap-6 max-md:justify-center">
-                <div v-for="group in 3" :key="group" class="flex gap-3">
-                  <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
+                <div v-for="label in ['Most Played', 'Highest Win Rate', esport ? 'Lowest Win Rate' : 'Latest Played']" :key="label" class="w-auto inline-block">
+                  <h4 class="text-sm mb-2"><span class="skeleton-text">{{ $t(label) }}</span></h4>
+                  <div class="flex flex-wrap gap-3 max-md:gap-2">
+                    <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
+                  </div>
                 </div>
               </div>
             </div>
@@ -156,21 +164,27 @@
             <panel-box v-if="esport" :inner="true" :title="$t('Teams Played For')">
               <skeleton-box v-for="index in 2" :key="index" class="h-14"></skeleton-box>
             </panel-box>
-            <panel-box v-else :inner="true" :title="$t('Party Size Win Rates')">
-              <skeleton-box v-for="index in 5" :key="index" class="h-10"></skeleton-box>
-            </panel-box>
+            <player-party-size-panel v-else :data="emptyPartyData" prefix="stack_size_" :skeleton="true"></player-party-size-panel>
             <player-awards-panel v-if="!esport" class="flex-1" :placeholder="true" :battletag="battletag" :blizzid="blizzid" :region="region"></player-awards-panel>
           </div>
         </div>
       </panel-box>
 
       <panel-box :title="$t('Win Rate Per Season')">
-        <skeleton-box class="h-72"></skeleton-box>
+        <!-- The season chart's shape: as wide as the panel, 3.1 times wider than tall -->
+        <skeleton-box class="w-full aspect-[3.1]"></skeleton-box>
       </panel-box>
 
-      <panel-box :title="$t('Recent Matches')" :divider="false">
+      <!-- Every hero played on the map loads here as a 5rem tile; most players have played most of them -->
+      <panel-box :title="'Heroes Played On ' + map">
+        <div class="flex flex-wrap gap-2">
+          <skeleton-box v-for="tile in 80" :key="tile" class="w-20 h-20 rounded"></skeleton-box>
+        </div>
+      </panel-box>
+
+      <panel-box :title="$t('Recent Matches')" link-text="Match History" :skeleton="true" :divider="false">
         <div>
-          <game-summary-header :esport="!!esport"></game-summary-header>
+          <game-summary-header :esport="!!esport" :skeleton="true"></game-summary-header>
           <game-summary-skeleton v-for="index in 7" :key="index"></game-summary-skeleton>
         </div>
       </panel-box>
@@ -249,6 +263,12 @@ export default {
         { label: 'Assists', value: this.data.sum_assists.toLocaleString('en-US') },
         { label: 'Takedowns', value: this.data.sum_takedowns.toLocaleString('en-US') },
       ];
+    },
+    // The party card with no games, for the skeleton: its labels and empty bars
+    emptyPartyData() {
+      const data = {};
+      ['one', 'two', 'three', 'four', 'five'].forEach(key => { data[`stack_size_${key}_wins`] = 0; data[`stack_size_${key}_losses`] = 0; data[`stack_size_${key}_win_rate`] = 0; });
+      return data;
     },
     heroGroups() {
       // Esports has no latest-played lists; its profile shows the lowest win rates there

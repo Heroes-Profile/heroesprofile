@@ -13,8 +13,7 @@
       </span>
     </div>
 
-    <div class="grid md:grid-cols-2 gap-6">
-      <div class="flex flex-col gap-6 min-w-0">
+    <div class="grid md:grid-cols-2 gap-6 [&>*]:min-w-0">
         <panel-box title="General" subtitle="Appearance, privacy and language." :divider="false">
           <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
             <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
@@ -51,62 +50,6 @@
           </div>
         </panel-box>
 
-        <panel-box class="flex-1" title="Player Pages" subtitle="Defaults for player profile and match history pages." :divider="false">
-          <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
-            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
-              <div class="min-w-0">
-                <h4 class="font-medium">{{ $t('Match History Style') }}</h4>
-                <p class="text-sm text-subtext">{{ $t('Compact table or expanded game rows.') }}</p>
-              </div>
-              <!-- Labelled as on the Match History page -->
-              <tab-button class="shrink-0 self-start sm:self-auto" tab1text="Compact" tab2text="Expanded" :small="true" :ignoreclick="true" @tab-click="playermatchhistorystylesetting" :overridedefaultside="playerhistorytable"></tab-button>
-            </div>
-            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
-              <div class="min-w-0">
-                <h4 class="font-medium">{{ $t('Default Game Type') }}</h4>
-                <p class="text-sm text-subtext">{{ $t('Nothing ticked shows every game type. HP MMR uses the first one ticked, or Storm League.') }}</p>
-              </div>
-              <div class="w-full sm:w-2/5 sm:max-w-[20rem] shrink-0">
-                <multi-select-filter :compact="true" :hidelabel="true" placeholder="All game types"
-                  :values="filters.game_types_full"
-                  :text="'Player Game Type'"
-                  @dropdown-closed="dropdownOpen = false; saveSettings()"
-                  @input-changed="handleInputChange"
-                  :defaultValue="playermultigametype"
-                  :trackclosure="true"
-                  @dropdown-opened="dropdownOpen = true"
-                ></multi-select-filter>
-              </div>
-            </div>
-            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
-              <div class="min-w-0">
-                <h4 class="font-medium">{{ $t('Initial Load Style') }}</h4>
-                <p class="text-sm text-subtext">{{ $t('How player data is loaded when a profile opens.') }}</p>
-              </div>
-              <div class="w-full sm:w-2/5 sm:max-w-[20rem] shrink-0">
-                <single-select-filter :compact="true" :hidelabel="true"
-                  :values="playerdataloadstyles"
-                  :text="'Player Load'"
-                  @dropdown-closed="dropdownOpen = false; saveSettings()"
-                  @input-changed="handleInputChange"
-                  :defaultValue="playerload"
-                  :trackclosure="true"
-                  @dropdown-opened="dropdownOpen = true"
-                ></single-select-filter>
-              </div>
-            </div>
-            <label class="flex items-center justify-between gap-x-6 cursor-pointer">
-              <div class="min-w-0">
-                <h4 class="font-medium">{{ $t('Show Custom Games') }}</h4>
-                <p class="text-sm text-subtext">{{ $t('Applies to Match History only.') }}</p>
-              </div>
-              <input type="checkbox" class="form-checkbox" :checked="customgames" @change="customgames = $event.target.checked; saveSettings()">
-            </label>
-          </div>
-        </panel-box>
-      </div>
-
-      <div class="flex flex-col gap-6 min-w-0">
         <panel-box title="Global Pages" subtitle="Defaults for hero, talent and global statistics pages." :divider="false">
           <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
             <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
@@ -170,7 +113,61 @@
           </div>
         </panel-box>
 
-        <panel-box class="flex-1" title="Talents" subtitle="Talent builder and talent statistics on global pages." :divider="false">
+        <panel-box title="Player Pages" subtitle="Defaults for player profile and match history pages." :divider="false">
+          <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
+            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+              <div class="min-w-0">
+                <h4 class="font-medium">{{ $t('Match History Style') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('Compact table or expanded game rows.') }}</p>
+              </div>
+              <!-- Labelled as on the Match History page -->
+              <tab-button class="shrink-0 self-start sm:self-auto" tab1text="Compact" tab2text="Expanded" :small="true" :ignoreclick="true" @tab-click="playermatchhistorystylesetting" :overridedefaultside="playerhistorytable"></tab-button>
+            </div>
+            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+              <div class="min-w-0">
+                <h4 class="font-medium">{{ $t('Default Game Type') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('Nothing selected shows every game type. HP MMR uses the first one selected, or Storm League.') }}</p>
+              </div>
+              <div class="w-full sm:w-2/5 sm:max-w-[20rem] shrink-0">
+                <multi-select-filter :compact="true" :hidelabel="true" placeholder="All game types"
+                  :values="filters.game_types_full"
+                  :text="'Player Game Type'"
+                  @dropdown-closed="dropdownOpen = false; saveSettings()"
+                  @input-changed="handleInputChange"
+                  :defaultValue="playermultigametype"
+                  :trackclosure="true"
+                  @dropdown-opened="dropdownOpen = true"
+                ></multi-select-filter>
+              </div>
+            </div>
+            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+              <div class="min-w-0">
+                <h4 class="font-medium">{{ $t('Initial Load Style') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('How player data is loaded when a profile opens.') }}</p>
+              </div>
+              <div class="w-full sm:w-2/5 sm:max-w-[20rem] shrink-0">
+                <single-select-filter :compact="true" :hidelabel="true"
+                  :values="playerdataloadstyles"
+                  :text="'Player Load'"
+                  @dropdown-closed="dropdownOpen = false; saveSettings()"
+                  @input-changed="handleInputChange"
+                  :defaultValue="playerload"
+                  :trackclosure="true"
+                  @dropdown-opened="dropdownOpen = true"
+                ></single-select-filter>
+              </div>
+            </div>
+            <label class="flex items-center justify-between gap-x-6 cursor-pointer">
+              <div class="min-w-0">
+                <h4 class="font-medium">{{ $t('Show Custom Games') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('Applies to Match History only.') }}</p>
+              </div>
+              <input type="checkbox" class="form-checkbox" :checked="customgames" @change="customgames = $event.target.checked; saveSettings()">
+            </label>
+          </div>
+        </panel-box>
+
+        <panel-box title="Talents" subtitle="Talent builder and talent statistics on global pages." :divider="false">
           <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
             <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
               <h4 class="font-medium">{{ $t('Talent Builder Layout') }}</h4>
@@ -190,72 +187,68 @@
           </div>
         </panel-box>
 
-      </div>
-    </div>
-
-      <panel-box v-if="flairOptions.length || availableBorders.length" class="w-full md:w-3/5 mx-auto" title="Flair" subtitle="Choose which flair shows next to your BattleTag. Hidden flair is hidden for everyone." :divider="false">
-        <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
-          <div v-if="availableBorders.length" class="flex flex-col gap-3">
-            <div>
-              <h4 class="font-medium">{{ $t('Avatar border') }}</h4>
-              <p class="text-sm text-subtext">{{ $t('The border around your picture in the top bar.') }}</p>
-            </div>
-            <!-- Each choice drawn on the top bar's picture; click one to use it. Up to four, so pictures rather than the tab button. -->
-            <div class="flex flex-wrap gap-4">
-              <button v-for="option in borderOptions" :key="option.key" type="button" :aria-pressed="option.key === avatarBorder" @click="avatarbordersetting(option.key)"
-                :class="['flex flex-col items-center gap-2 px-3 py-2 rounded-control transition-colors', option.key === avatarBorder ? 'bg-surface-3 text-white' : 'text-subtext hover:bg-surface-3/60']">
-                <span class="relative block">
-                  <span :class="['relative block w-11 h-11 rounded overflow-hidden', borderPreviewClass[option.key], option.key === avatarBorder ? '' : 'opacity-60']">
-                    <img class="w-full h-full object-cover" src="/images/heroes/auto_select.jpg" alt="">
+        <panel-box v-if="flairOptions.length || availableBorders.length" title="Flair" subtitle="Choose which flair shows next to your BattleTag. Hidden flair is hidden for everyone." :divider="false">
+          <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
+            <div v-if="availableBorders.length" class="flex flex-col gap-3">
+              <div>
+                <h4 class="font-medium">{{ $t('Avatar border') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('The border around your picture in the top bar.') }}</p>
+              </div>
+              <!-- Each choice drawn on the top bar's picture; click one to use it. Up to four, so pictures rather than the tab button. -->
+              <div class="flex flex-wrap gap-4">
+                <button v-for="option in borderOptions" :key="option.key" type="button" :aria-pressed="option.key === avatarBorder" @click="avatarbordersetting(option.key)"
+                  :class="['flex flex-col items-center gap-3 w-[8.5rem] px-3 pt-4 pb-3 rounded-control border-2 transition-colors', option.key === avatarBorder ? 'bg-surface-1 border-teal text-white' : 'bg-surface-1 border-transparent text-subtext hover:bg-surface-2']">
+                  <span class="relative block">
+                    <span :class="['relative block w-14 h-14 rounded overflow-hidden', borderPreviewClass[option.key], option.key === avatarBorder ? '' : 'opacity-60']">
+                      <img class="w-full h-full object-cover" src="/images/heroes/auto_select.jpg" alt="">
+                    </span>
+                    <owner-sparks v-if="option.key === 'owner'"></owner-sparks>
                   </span>
-                  <owner-sparks v-if="option.key === 'owner'"></owner-sparks>
-                </span>
-                <span class="text-sm">{{ $t(option.label) }}</span>
-              </button>
+                  <span class="text-sm">{{ $t(option.label) }}</span>
+                </button>
+              </div>
+            </div>
+            <div v-for="flair in flairOptions" :key="flair.key" class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+              <div class="min-w-0 flex items-center gap-4">
+                <i v-if="flair.icon" :class="['shrink-0', flair.icon]" :style="flair.iconStyle"></i>
+                <div class="min-w-0">
+                  <h4 class="font-medium">{{ flair.label }}</h4>
+                  <p class="text-sm text-subtext">{{ flair.description }}</p>
+                </div>
+              </div>
+              <tab-button class="shrink-0 self-start sm:self-auto" tab1text="Show" tab2text="Hide" :small="true" :ignoreclick="true" @tab-click="(side) => flairsetting(flair.key, side)" :overridedefaultside="flairSides[flair.key]"></tab-button>
             </div>
           </div>
-          <div v-for="flair in flairOptions" :key="flair.key" class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+        </panel-box>
+  
+        <panel-box title="Connections" subtitle="Linked accounts." :divider="false">
+          <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2 mt-2">
             <div class="min-w-0">
-              <h4 class="font-medium flex items-center gap-2">
-                <i v-if="flair.icon" :class="flair.icon" :style="flair.iconStyle"></i>
-                {{ flair.label }}
-              </h4>
-              <p class="text-sm text-subtext">{{ flair.description }}</p>
+              <h4 class="font-medium">Patreon</h4>
+              <p class="text-sm text-subtext">{{ $t('Link your Patreon account to unlock supporter features.') }}</p>
             </div>
-            <tab-button class="shrink-0 self-start sm:self-auto" tab1text="Show" tab2text="Hide" :small="true" :ignoreclick="true" @tab-click="(side) => flairsetting(flair.key, side)" :overridedefaultside="flairSides[flair.key]"></tab-button>
+            <div class="flex items-center gap-4 shrink-0">
+              <span v-if="user.patreon_account" class="bg-teal px-3 py-1 rounded text-sm">{{ $t('Connected') }}</span>
+              <custom-button
+                v-if="!user.patreon_account"
+                :href="'/authenticate/patreon'"
+                text="Login with Patreon"
+                alt="Login with Patreon"
+                size="medium"
+                color="red"
+              ></custom-button>
+              <custom-button
+                v-if="user.patreon_account"
+                :ignoreclick="true"
+                text="Remove Patreon"
+                alt="Remove Patreon"
+                size="medium"
+                color="red"
+                @click="removePatreon()"
+              ></custom-button>
+            </div>
           </div>
-        </div>
-      </panel-box>
-
-    <div class="w-full md:w-3/5 mx-auto bg-surface rounded p-4 md:p-6 flex flex-wrap items-center gap-x-10 gap-y-4">
-      <div>
-        <h3 class="text-2xl font-bold">{{ $t('Connections') }}</h3>
-        <p class="text-sm text-subtext mt-1">{{ $t('Linked accounts.') }}</p>
-      </div>
-      <div class="min-w-0 flex-1">
-        <h4 class="font-medium">Patreon</h4>
-        <p class="text-sm text-subtext">{{ $t('Link your Patreon account to unlock supporter features.') }}</p>
-      </div>
-      <div class="flex items-center gap-4">
-        <span v-if="user.patreon_account" class="bg-teal px-3 py-1 rounded text-sm">{{ $t('Connected') }}</span>
-        <custom-button
-          v-if="!user.patreon_account"
-          :href="'/authenticate/patreon'"
-          text="Login with Patreon"
-          alt="Login with Patreon"
-          size="medium"
-          color="red"
-        ></custom-button>
-        <custom-button
-          v-if="user.patreon_account"
-          :ignoreclick="true"
-          text="Remove Patreon"
-          alt="Remove Patreon"
-          size="medium"
-          color="red"
-          @click="removePatreon()"
-        ></custom-button>
-      </div>
+        </panel-box>
     </div>
 
     <div class="text-center text-sm text-subtext">

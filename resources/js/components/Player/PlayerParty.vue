@@ -25,13 +25,15 @@
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="partydata" class="max-w-[93.75rem] mx-auto">
-      <party-stats-display :partydata="partydata" teamlabel="Your Team"></party-stats-display>
+    <div v-if="partydata" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <party-stats-display :partydata="partydata" mode="player"></party-stats-display>
     </div>
-    <div v-else-if="isLoading || asyncLoading" class="max-w-[93.75rem] mx-auto px-4 flex flex-col gap-6">
-      <loading-component v-if="asyncLoading" :compact="true" :textoverride="true">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
-      <loading-component v-else :compact="true" :textoverride="true">{{ $t('Loading party stats...') }}</loading-component>
-      <party-stats-skeleton></party-stats-skeleton>
+    <!-- The same layout in grey, the message on a tab of the first panel -->
+    <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <party-stats-skeleton mode="player">
+        <loading-component v-if="asyncLoading" :compact="true" :tab="true" :textoverride="true">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
+        <loading-component v-else :compact="true" :tab="true" :textoverride="true">{{ $t('Loading party stats...') }}</loading-component>
+      </party-stats-skeleton>
     </div>
     <div v-else-if="dataError" class="flex items-center justify-center">
       {{ $t('Error: Reload page/filter') }}

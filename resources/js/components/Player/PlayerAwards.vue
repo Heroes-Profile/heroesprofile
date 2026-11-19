@@ -25,90 +25,172 @@
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="data" class="max-w-[93.75rem] mx-auto px-4 max-md:px-2">
-      <p class="text-center mb-4">{{ $t('Awards across :games games', { games: data.total_games.toLocaleString('en-US') }) }}</p>
+    <div v-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 space-y-8">
+      <panel-box :title="$t('Awards')" :subtitle="$t('Earned in :games games · :earned of :total award types unlocked', { games: data.total_games.toLocaleString('en-US'), earned: earnedCount, total: data.awards.length })">
+        <template #right>
+          <div class="flex flex-wrap items-center gap-4 max-md:w-full">
+            <tab-button :small="true" tab1text="Earned" tab2text="All awards" :ignoreclick="true" :overridedefaultside="awardView === 'all' ? 'right' : 'left'" @tab-click="awardView = $event === 'right' ? 'all' : 'earned'"></tab-button>
+            <search-input v-model="awardSearch" :placeholder="$t('Search awards')" class="w-full md:w-[20rem]"></search-input>
+          </div>
+        </template>
 
-      <div class="flex justify-center mb-4">
-        <input type="text" v-model="awardSearch" :placeholder="$t('Search awards')" class="md:w-[18.75rem] w-full h-[2.5rem] border-solid border-[1px] border-white bg-blue p-2 text-white focus:outline-none" />
-      </div>
-
-      <div class="flex flex-wrap justify-center gap-4 mb-10">
-        <p v-if="filteredAwards.length == 0">{{ $t('No awards match ":awardsearch".', { awardsearch: awardSearch }) }}</p>
-        <div v-for="award in filteredAwards" :key="award.award_id" @click="selectAward(award)" :class="['bg-gray-dark rounded p-4 w-[12em] max-md:w-[45%] flex flex-col items-center text-center cursor-pointer border-2 hover:border-lteal', selectedAward && selectedAward.award_id == award.award_id ? 'border-teal' : 'border-gray-dark']">
-          <img :src="`/images/awards/${award.icon}_blue.png`" :alt="award.title" class="w-14 h-14" />
-          <span class="mt-2">{{ award.title }}</span>
-          <span v-if="award.description" class="text-xs opacity-75 mb-1">{{ award.description }}</span>
-          <span class="text-2xl font-bold">{{ award.rate.toFixed(2) }}%</span>
-          <span class="text-sm">{{ $t(':count games', { count: award.count.toLocaleString('en-US') }) }}</span>
-        </div>
-      </div>
-
-      <div ref="gamestable" class="flex items-center gap-4 mb-2 scroll-mt-4">
-        <h2 class="text-xl flex items-center gap-2">
-          <img v-if="selectedAward" :src="`/images/awards/${selectedAward.icon}_blue.png`" :alt="selectedAward.title" class="w-10 h-10" />
-          {{ selectedAward ? selectedAward.title + ' Games' : $t('Recent Awards') }}
-        </h2>
-        <custom-button v-if="selectedAward" @click="clearAward" :text="'Show Recent Awards'" :alt="'Show Recent Awards'" size="small" :ignoreclick="true"></custom-button>
-      </div>
-
-      <!-- One award's games, or every award's (Recent Awards), a page at a time -->
-      <loading-component v-if="awardGamesLoading" :compact="true" :textoverride="true">{{ $t('Loading :awards...', { awards: selectedAward ? selectedAward.title + ' games' : $t('recent awards') }) }}</loading-component>
-      <template v-else-if="awardGames">
-        <p v-if="awardGames.data.length == 0">{{ selectedAward ? 'No ' + selectedAward.title + ' games' : $t('No awards') }} for the selected filters.</p>
-        <div v-if="awardGames.last_page > 1" class="flex justify-end mb-4">
-          <pagination-bar :current="awardGames.current_page" :last="awardGames.last_page" @page="getAwardGames"></pagination-bar>
-        </div>
-      </template>
-      <!-- Styled like the match history's compact rows -->
-      <panel-box v-if="tableRows.length">
-        <!-- Wide rows scroll sideways on narrow screens -->
-        <div class="overflow-x-auto">
-          <div class="md:min-w-max w-full">
-            <div class="max-md:hidden flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
-              <span class="w-[20rem] shrink-0 pl-5">{{ $t('Match') }}</span>
-              <span class="w-[10rem] shrink-0 px-4">{{ $t('Game Type') }}</span>
-              <span class="w-[8.75rem] shrink-0 px-4">{{ $t('Game ID') }}</span>
-              <span class="w-[18.75rem] shrink-0 px-4">{{ $t('Award') }}</span>
+        <p v-if="filteredAwards.length == 0" class="text-subtext">{{ awardSearch ? $t('No awards match ":awardsearch".', { awardsearch: awardSearch }) : $t('No awards earned for these filters.') }}</p>
+        <!-- Click an award to list its games below -->
+        <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <button v-for="award in shownAwards" :key="award.award_id" type="button" @click="selectAward(award)" :title="$t('Show :award games', { award: award.title })"
+            :class="['flex gap-4 p-5 rounded-control text-left transition-colors min-w-0', selectedAward && selectedAward.award_id == award.award_id ? 'bg-surface-2 ring-2 ring-inset ring-teal' : 'bg-surface-1 hover:bg-surface-2']">
+            <img :src="`/images/awards/${award.icon}_blue.png`" :alt="award.title" class="w-14 h-14 shrink-0" />
+            <div class="flex-1 min-w-0 flex flex-col gap-1">
+              <span class="text-lg font-medium text-header leading-tight">{{ award.title }}</span>
+              <span v-if="award.description" class="text-sm text-subtext">{{ award.description }}</span>
+              <!-- The bar is against the most-earned award, so the top one fills it -->
+              <stat-bar class="mt-auto pt-2" :value="maxRate ? (award.rate / maxRate) * 100 : 0" :display-text="award.rate.toFixed(2)" suffix="%" color="teal"></stat-bar>
+              <span class="text-sm text-subtext">{{ $t(':count games', { count: award.count.toLocaleString('en-US') }) }}</span>
             </div>
-            <template v-for="(row, index) in tableRows" :key="row.replayID">
-            <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="'/Match/Single/' + row.replayID" :hero="row.hero" :title="$mapName(row.game_map)" :date="formatRowDate(row.game_date)" :winner="row.winner == 1" :result="row.winner == 1 ? 'Win' : 'Loss'" :map-art="row.game_map.sanitized_map_name">
-              <span class="text-white font-medium">{{ row.award.title }}</span> · {{ $t(row.game_type.name) }}
-            </match-row-mobile>
-<div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
-              <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
-              <a :href="'/Match/Single/' + row.replayID" class="absolute inset-0 z-[1]" :aria-label="$t('Open match')"></a>
-              <div class="relative w-[20rem] shrink-0 self-stretch flex items-center pl-5 py-2.5">
-                <div class="absolute inset-0 [mask-image:linear-gradient(to_right,black_60%,transparent)]" :class="row.winner == 1 ? 'bg-[rgba(0,139,139,0.35)]' : 'bg-[rgba(179,54,22,0.13)]'"></div>
-                <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="{ backgroundImage: `url('/images/maps/match/match-${row.game_map.sanitized_map_name}.jpg')` }"></div>
-                <div class="absolute inset-y-0 left-0 w-1.5" :class="row.winner == 1 ? 'bg-win' : 'bg-red'"></div>
-                <div class="relative flex items-center gap-4">
-                  <hero-image-wrapper size="row" :hero="row.hero" :excludehover="true"></hero-image-wrapper>
-                  <div class="flex flex-col whitespace-nowrap">
-                    <span class="font-bold">{{ $mapName(row.game_map) }}</span>
-                    <span class="text-xs">{{ formatRowDate(row.game_date) }}</span>
-                  </div>
-                </div>
-              </div>
-              <span class="relative w-[10rem] shrink-0 px-4 font-medium text-header">{{ $t(row.game_type.name) }}</span>
-              <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="'/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></span>
-              <div class="relative w-[18.75rem] shrink-0 px-4 flex items-center gap-3">
-                <img :src="`/images/awards/${row.award.icon}_${row.winner == 1 ? 'blue' : 'red'}.png`" :alt="row.award.title" class="w-10 h-10" />
-                <span class="font-medium">{{ row.award.title }}</span>
-              </div>
+          </button>
+        </div>
+        <div v-if="!awardSearch && filteredAwards.length > awardPreviewCount" class="flex justify-center">
+          <custom-button @click="showAllAwards = !showAllAwards" :text="showAllAwards ? $t('Show fewer awards') : $t('Show all :count awards', { count: filteredAwards.length })" :alt="showAllAwards ? 'Show fewer awards' : 'Show all awards'" :ignoreclick="true"></custom-button>
+        </div>
+      </panel-box>
+
+      <div ref="gamestable" class="scroll-mt-4">
+        <panel-box :title="selectedAward ? $t(':award Games', { award: selectedAward.title }) : $t('Recent Awards')" :subtitle="selectedAward ? null : $t('Awards from your latest matches.')">
+          <template #right>
+            <div class="flex flex-wrap items-center gap-4">
+              <custom-button v-if="selectedAward" @click="clearAward" :text="'Show Recent Awards'" :alt="'Show Recent Awards'" size="small" :ignoreclick="true"></custom-button>
+              <pagination-bar v-if="awardGames && awardGames.last_page > 1" :current="awardGames.current_page" :last="awardGames.last_page" @page="getAwardGames"></pagination-bar>
             </div>
-</template>
+          </template>
+
+          <p v-if="awardGames && !awardGamesLoading && awardGames.data.length == 0" class="text-subtext">{{ selectedAward ? 'No ' + selectedAward.title + ' games' : $t('No awards') }} for the selected filters.</p>
+          <div v-else class="min-w-0 max-md:overflow-clip">
+            <table class="w-full responsive-table rounded-table table-fixed">
+              <colgroup>
+                <col class="w-[55%] md:w-[28%]">
+                <col class="max-md:hidden w-[21.5%]">
+                <col class="max-md:hidden w-[19.5%]">
+                <col class="w-[45%] md:w-[31%]">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th class="py-2 px-3 text-left text-sm">{{ $t('Match') }}</th>
+                  <th class="max-md:hidden py-2 px-3 text-center text-sm">{{ $t('Game Type') }}</th>
+                  <th class="max-md:hidden py-2 px-3 text-center text-sm">{{ $t('Game ID') }}</th>
+                  <th class="py-2 px-3 text-left text-sm">{{ $t('Award') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Grey rows of the same height while a page loads -->
+                <template v-if="awardGamesLoading || !awardGames">
+                  <tr v-for="row in 8" :key="row">
+                    <td class="py-2 px-3"><div class="flex items-center gap-3"><skeleton-box class="w-[2.6rem] h-[2.6rem] shrink-0 !rounded-full"></skeleton-box><div class="flex flex-col items-start"><span class="font-bold skeleton-text">Map name</span><span class="text-xs skeleton-text mt-px">November 11, 2026</span></div></div></td>
+                    <td class="max-md:hidden py-2 px-3"><skeleton-box class="h-4 w-24 mx-auto"></skeleton-box></td>
+                    <td class="max-md:hidden py-2 px-3"><skeleton-box class="h-4 w-20 mx-auto"></skeleton-box></td>
+                    <td class="py-2 px-3"><div class="flex items-center gap-3"><skeleton-box class="w-9 h-9 shrink-0 !rounded-full"></skeleton-box><skeleton-box class="h-4 w-32"></skeleton-box></div></td>
+                  </tr>
+                </template>
+                <template v-else>
+                  <tr v-for="row in tableRows" :key="row.replayID">
+                    <td class="py-2 px-3">
+                      <div class="flex items-center gap-3 min-w-0">
+                        <hero-image-wrapper size="row" :hero="row.hero" :excludehover="true"></hero-image-wrapper>
+                        <div class="flex flex-col min-w-0">
+                          <span class="font-bold truncate md:hidden"><a class="inline-flex items-center" :href="'/Match/Single/' + row.replayID">{{ $mapName(row.game_map) }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a></span>
+                          <span class="font-bold truncate max-md:hidden">{{ $mapName(row.game_map) }}</span>
+                          <span class="text-xs text-subtext">{{ formatRowDate(row.game_date) }}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="max-md:hidden py-2 px-3 text-center">{{ $t(row.game_type.name) }}</td>
+                    <td class="max-md:hidden py-2 px-3 text-center"><a class="group/bt inline-flex items-center" :href="'/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></td>
+                    <td class="py-2 px-3">
+                      <div class="flex items-center gap-3">
+                        <img :src="`/images/awards/${row.award.icon}_${row.winner == 1 ? 'blue' : 'red'}.png`" :alt="row.award.title" class="w-9 h-9 shrink-0" />
+                        <span class="font-medium">{{ row.award.title }}</span>
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </panel-box>
+      </div>
+    </div>
+
+    <!-- The same layout in grey while the awards load, the message on a tab of the first panel. Placeholder words sit under
+         grey blocks (skeleton-text) so every line is exactly as tall as the real text. -->
+    <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 space-y-8">
+      <panel-box :title="$t('Awards')" :subtitle="'Earned in 0,000 games · 00 of 00 award types unlocked'" :skeleton="true" class="relative md:!rounded-tl-none">
+        <loading-component :compact="true" :tab="true" :textoverride="true">{{ asyncLoading ? $t('This is taking longer than expected. A background task is computing your results. Please be patient.') : $t('Loading awards...') }}</loading-component>
+        <template #right>
+          <div class="flex flex-wrap items-center gap-4 max-md:w-full">
+            <div class="relative">
+              <tab-button class="invisible" :small="true" tab1text="Earned" tab2text="All awards" aria-hidden="true"></tab-button>
+              <skeleton-box class="absolute inset-0"></skeleton-box>
+            </div>
+            <div class="relative w-full md:w-[20rem]">
+              <search-input class="invisible" placeholder="Search awards" aria-hidden="true"></search-input>
+              <skeleton-box class="absolute inset-0"></skeleton-box>
+            </div>
+          </div>
+        </template>
+        <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div v-for="card in awardPreviewCount" :key="card" class="flex gap-4 p-5 rounded-control bg-surface-1 min-w-0">
+            <skeleton-box class="w-14 h-14 shrink-0 !rounded-full"></skeleton-box>
+            <div class="flex-1 min-w-0 flex flex-col gap-1 items-start">
+              <span class="text-lg font-medium leading-tight skeleton-text">Award name</span>
+              <!-- After the first row most rows have a description that wraps, so those cards get two lines -->
+              <span class="text-sm skeleton-text">Most damage dealt<template v-if="card > 4"><br>to enemy heroes.</template></span>
+              <stat-bar class="mt-auto pt-2 w-full" value="0" display-text="00.00" suffix="%" :hide-value="true"></stat-bar>
+              <span class="text-sm skeleton-text">000 games</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center">
+          <div class="relative">
+            <custom-button class="invisible" text="Show all 00 awards" alt="" :ignoreclick="true" aria-hidden="true"></custom-button>
+            <skeleton-box class="absolute inset-0"></skeleton-box>
           </div>
         </div>
       </panel-box>
-      <div v-if="selectedAward && awardGames && !awardGamesLoading && awardGames.last_page > 1" class="flex justify-end mt-4">
-        <pagination-bar :current="awardGames.current_page" :last="awardGames.last_page" @page="goToAwardPage"></pagination-bar>
-      </div>
-    </div>
-    <div v-if="asyncLoading">
-      <loading-component :textoverride="true">{{ $t('This is taking longer than expected.') }}<br/>{{ $t('A background task is computing your results.') }}<br/>{{ $t('Please be patient.') }}</loading-component>
-    </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+
+      <panel-box :title="$t('Recent Awards')" :subtitle="$t('Awards from your latest matches.')" :skeleton="true">
+        <template #right>
+          <!-- The pager's size as a grey block -->
+          <div class="relative">
+            <pagination-bar class="invisible" :current="1" :last="10" aria-hidden="true"></pagination-bar>
+            <skeleton-box class="absolute inset-0"></skeleton-box>
+          </div>
+        </template>
+        <div class="min-w-0 max-md:overflow-clip">
+          <table class="w-full responsive-table rounded-table table-fixed">
+            <colgroup>
+              <col class="w-[55%] md:w-[28%]">
+              <col class="max-md:hidden w-[21.5%]">
+              <col class="max-md:hidden w-[19.5%]">
+              <col class="w-[45%] md:w-[31%]">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="py-2 px-3 text-left text-sm"><span class="skeleton-text">{{ $t('Match') }}</span></th>
+                <th class="max-md:hidden py-2 px-3 text-center text-sm"><span class="skeleton-text">{{ $t('Game Type') }}</span></th>
+                <th class="max-md:hidden py-2 px-3 text-center text-sm"><span class="skeleton-text">{{ $t('Game ID') }}</span></th>
+                <th class="py-2 px-3 text-left text-sm"><span class="skeleton-text">{{ $t('Award') }}</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in 8" :key="row">
+                <td class="py-2 px-3"><div class="flex items-center gap-3"><skeleton-box class="w-[2.6rem] h-[2.6rem] shrink-0 !rounded-full"></skeleton-box><div class="flex flex-col items-start"><span class="font-bold skeleton-text">Map name</span><span class="text-xs skeleton-text mt-px">November 11, 2026</span></div></div></td>
+                <td class="max-md:hidden py-2 px-3"><skeleton-box class="h-4 w-24 mx-auto"></skeleton-box></td>
+                <td class="max-md:hidden py-2 px-3"><skeleton-box class="h-4 w-20 mx-auto"></skeleton-box></td>
+                <td class="py-2 px-3"><div class="flex items-center gap-3"><skeleton-box class="w-9 h-9 shrink-0 !rounded-full"></skeleton-box><skeleton-box class="h-4 w-32"></skeleton-box></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </panel-box>
     </div>
   </div>
 </template>
@@ -149,6 +231,11 @@ import { siteLocale } from '../../utils/translate';
         startdate: null,
         enddate: null,
         awardSearch: '',
+        // 'earned' hides the awards never earned under these filters; 'all' shows every award
+        awardView: 'earned',
+        // The first rows of awards, then a button to show the rest
+        awardPreviewCount: 12,
+        showAllAwards: false,
         selectedAward: null,
         awardGames: null,
         awardGamesLoading: false,
@@ -166,10 +253,21 @@ import { siteLocale } from '../../utils/translate';
     computed: {
       filteredAwards(){
         const search = this.awardSearch.trim().toLowerCase();
+        const awards = this.awardView === 'earned' ? this.data.awards.filter(award => award.count > 0) : this.data.awards;
         if(!search){
-          return this.data.awards;
+          return awards;
         }
-        return this.data.awards.filter(award => award.title.toLowerCase().includes(search) || (award.description || '').toLowerCase().includes(search));
+        return awards.filter(award => award.title.toLowerCase().includes(search) || (award.description || '').toLowerCase().includes(search));
+      },
+      // While searching every match shows; otherwise the first rows until Show all
+      shownAwards(){
+        return this.awardSearch.trim() || this.showAllAwards ? this.filteredAwards : this.filteredAwards.slice(0, this.awardPreviewCount);
+      },
+      earnedCount(){
+        return this.data.awards.filter(award => award.count > 0).length;
+      },
+      maxRate(){
+        return Math.max(0, ...this.data.awards.map(award => award.rate));
       },
       tableRows(){
         return this.awardGames && !this.awardGamesLoading ? this.awardGames.data : [];

@@ -35,20 +35,23 @@
 
 
     
-        <div v-if="!selectedHero">
-          <div class="flex justify-between max-w-[93.75rem] mx-auto md:px-4">
-            <hero-selection :heroes="heroes" linkbase="/Global/Talents" @search="heroSearchQuery = $event"></hero-selection>
+        <div v-if="!selectedHero" class="flex flex-col gap-6">
+          <div v-if="defaulttimeframe && defaulttimeframe.length" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 -mt-2">
+            <span class="uppercase text-gray-medium">{{ $t('Most popular builds · Patch :patch', { patch: defaulttimeframe[0] }) }}</span>
           </div>
+
+          <hero-selection :heroes="heroes" linkbase="/Global/Talents" subtitle="Open a hero to see talent win rates and all builds." @search="heroSearchQuery = $event" @role="heroRole = $event"></hero-selection>
 
           <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
 
-          <div class="max-w-[93.75rem] mx-auto md:px-4 mt-8 w-full">
-            <h2 class="heading mb-4">{{ $t('Most Popular Builds for Latest Patch Per Hero and Game Type') }}</h2>
-            <div v-if="!talentbuilddataall" class="flex flex-col gap-4">
-              <loading-component :compact="true" :textoverride="true">{{ $t('Loading all talent builds...') }}</loading-component>
-              <table-skeleton :bare="true" :rows="10" :columns="['avatar', 'talents', 'talents', 'talents']"></table-skeleton>
-            </div>
-            <global-talent-builds-all v-else :heroes="filteredHeroesForTable" :talentbuilddataall="talentbuilddataall"></global-talent-builds-all>
+          <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8">
+            <panel-box title="Most Popular Builds" subtitle="Latest patch, per hero and game type. Copy a build code and paste it in game chat.">
+              <div v-if="!talentbuilddataall" class="flex flex-col gap-4">
+                <loading-component :compact="true" :textoverride="true">{{ $t('Loading all talent builds...') }}</loading-component>
+                <table-skeleton :bare="true" :rows="10" :columns="['avatar', 'talents', 'talents', 'talents']"></table-skeleton>
+              </div>
+              <global-talent-builds-all v-else :heroes="filteredHeroesForTable" :talentbuilddataall="talentbuilddataall"></global-talent-builds-all>
+            </panel-box>
           </div>
         </div>
 
@@ -213,6 +216,7 @@
        talentbuilddata: null,
        talentbuilddataall: null,
        heroSearchQuery: "",
+       heroRole: 'All',
        buildtypes: [
         { code: 'Popular', name: 'Popular' },
         { code: 'HP Algorithm', name: 'HP Algorithm' },
@@ -299,9 +303,9 @@
         return this.heroes.filter(h => [h.name, this.$heroName(h)].some(name => name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().includes(q)));
       },
       filteredHeroesForTable() {
-        if (!this.heroSearchQuery) return this.heroes;
         const q = this.heroSearchQuery.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-        return this.heroes.filter(h => [h.name, this.$heroName(h)].some(name => name.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().includes(q)));
+        return this.heroes.filter(h => (this.heroRole === 'All' || h.new_role === this.heroRole)
+          && (!q || [h.name, this.$heroName(h)].some(name => name.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().includes(q))));
       },
       patchNotesUrl() {
         if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {

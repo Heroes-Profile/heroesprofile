@@ -35,7 +35,7 @@
     <!-- Esports rows give this space to the teams -->
     <div v-if="!esport" class="relative w-[8.75rem] shrink-0 flex flex-col items-center text-center">
       <template v-if="data.kills !== undefined">
-        <span class="grid grid-cols-[1fr_0.5rem_minmax(0.875rem,auto)_0.5rem_1fr] gap-x-[0.5rem] w-[7.375rem] text-2xl font-semibold whitespace-nowrap tabular-nums">
+        <span class="grid grid-cols-[1fr_0.5rem_minmax(0.875rem,auto)_0.5rem_1fr] gap-x-[0.5rem] w-max min-w-[7.375rem] text-2xl font-semibold whitespace-nowrap tabular-nums">
           <span class="text-right text-win">{{ data.kills }}</span><span>|</span><span class="font-normal text-loss">{{ data.deaths }}</span><span>|</span><span class="text-left font-normal">{{ data.assists }}</span>
         </span>
         <span class="text-sm font-medium text-subtext">{{ $t(':kda KDA', { kda: kda }) }}</span>
@@ -86,9 +86,9 @@
 
     <div class="relative w-[8.75rem] shrink-0 flex flex-col gap-0.5 items-center text-center max-md:mx-4">
       <template v-if="data.kills !== undefined">
-        <!-- Same grid as the header's icons, 7.375rem wide in the middle of the column, deaths in a one-digit slot that widens for the odd 10+. Kills right-align against the first bar so their
+        <!-- Same grid as the header's icons, 7.375rem wide in the middle of the column, deaths in a one-digit slot that widens for the odd 10+, the whole grid growing evenly both ways when it no longer fits. Kills right-align against the first bar so their
              ones digits line up row to row; deaths sit centred; assists start right after the second bar. -->
-        <span class="grid grid-cols-[1fr_0.5rem_minmax(0.875rem,auto)_0.5rem_1fr] gap-x-[0.5rem] w-[7.375rem] text-2xl font-semibold whitespace-nowrap text-center tabular-nums">
+        <span class="grid grid-cols-[1fr_0.5rem_minmax(0.875rem,auto)_0.5rem_1fr] gap-x-[0.5rem] w-max min-w-[7.375rem] text-2xl font-semibold whitespace-nowrap text-center tabular-nums">
           <span class="text-right text-win">{{ data.kills }}</span><span>|</span><span class="font-normal text-loss">{{ data.deaths }}</span><span>|</span><span class="text-left font-normal">{{ data.assists }}</span>
         </span>
         <span class="text-sm font-medium text-subtext">{{ $t(':kda KDA', { kda: kda }) }}</span>

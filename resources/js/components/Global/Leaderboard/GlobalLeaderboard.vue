@@ -107,8 +107,8 @@
             <table class="min-w-0 w-full responsive-table rounded-table relative">
               <thead class="w-full">
                 <tr class="">
-                  <!-- Wide enough for the "#" box beside the rank, so sorting by another column doesn't widen it -->
-                  <th @click="sortTable('rank')" class="w-[7.25rem] py-2 px-3 text-center text-sm leading-4 cursor-pointer">
+                  <!-- Wide enough for the "#" box beside the rank, so sorting by another column doesn't widen it; the 1.5px is the cells' right border -->
+                  <th @click="sortTable('rank')" class="w-[calc(7.25rem+1.5px)] py-2 px-3 text-center text-sm leading-4 cursor-pointer">
                     <!-- Sorted by another column: "#" over each row's position in the sort, "Rank" over the leaderboard rank,
                          on the same grid as the cells so both line up -->
                     <span v-if="rankchange" class="inline-grid grid-cols-[2.75rem_2.5rem] gap-2 items-center"><span class="text-center">#</span><span class="text-left whitespace-nowrap">{{ $t('Rank') }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span></span>
@@ -116,7 +116,7 @@
                   </th>
                   <th :class="['py-2 px-3 text-center text-sm leading-4',{ 'bg-teal text-white': sortKey === 'battletag'}]">
                     <!-- "Player" is centred on its own and the glass sits after it; the open search box centres on the column -->
-                    <div class="relative grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+                    <div class="relative grid grid-cols-[1fr_auto_1fr] items-center gap-[1.125rem]">
                       <span></span>
                       <span class="cursor-pointer" @click="sortTable('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
                       <span class="justify-self-start flex">

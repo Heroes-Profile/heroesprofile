@@ -137,12 +137,23 @@
       </div>
     </div>
     <!-- The graph, tier line, league table and match table in grey while it loads -->
-    <div v-else-if="isLoading" class="max-w-[93.75rem] mx-auto px-4 flex flex-col gap-6">
-      <loading-component :compact="true" :textoverride="true">{{ $t('Loading HP MMR...') }}</loading-component>
-      <skeleton-box class="w-full aspect-[2/1]"></skeleton-box>
-      <skeleton-box class="h-5 w-96 max-w-full"></skeleton-box>
-      <table-skeleton :bare="true" :rows="7" :columns="['text', 'text', 'text']"></table-skeleton>
-      <table-skeleton :rows="10" :columns="['portrait', 'text', 'text', 'stat', 'stat', 'stat']"></table-skeleton>
+    <!-- The loaded page's boxes in grey, the message in the middle of the graph -->
+    <div v-else-if="isLoading">
+      <div class="max-w-[93.75rem] mx-auto px-4">
+        <div class="relative">
+          <skeleton-box class="w-full aspect-[2/1]"></skeleton-box>
+          <div class="absolute inset-0 flex items-center justify-center p-4">
+            <loading-component :compact="true" :textoverride="true">{{ $t('Loading HP MMR...') }}</loading-component>
+          </div>
+        </div>
+      </div>
+      <div class="max-w-[93.75rem] mx-auto mt-2 px-4 h-6 flex items-center"><skeleton-box class="h-4 w-96 max-w-full"></skeleton-box></div>
+      <div class="max-w-[93.75rem] mx-auto">
+        <table-skeleton :bare="true" :rows="8" :columns="['text', 'text', 'text']"></table-skeleton>
+      </div>
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 py-4">
+        <table-skeleton :rows="10" :columns="['portrait', 'text', 'text', 'stat', 'stat', 'stat']"></table-skeleton>
+      </div>
     </div>
 
   </div>

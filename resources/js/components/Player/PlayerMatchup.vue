@@ -49,7 +49,7 @@
       <thead>
         <tr>
           <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500">
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-[1.125rem]">
               <span class="cursor-pointer" @click="sortTable('name')">{{ $t('Hero') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
               <search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" class="w-40"></search-input>
             </div>
@@ -91,9 +91,18 @@
       </tbody>
     </table>
   </div>
-  <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-    <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
-    <loading-component v-else :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+  <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
+    <!-- The Top 5 rows in grey, with the message at their left on desktop, so the table starts where the loaded one does -->
+    <div class="relative flex flex-wrap justify-center">
+      <loading-component class="max-md:w-full md:absolute md:left-0 md:top-1/2 md:-translate-y-1/2 md:max-w-[calc(50%-18rem)]" v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
+      <loading-component class="max-md:w-full md:absolute md:left-0 md:top-1/2 md:-translate-y-1/2 md:max-w-[calc(50%-18rem)]" v-else :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+      <div v-for="side in 2" :key="side" class="inline-block m-1">
+        <skeleton-box class="h-5 w-48 mb-2"></skeleton-box>
+        <div class="flex flex-wrap gap-3 max-md:gap-2">
+          <skeleton-box v-for="tile in 5" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
+        </div>
+      </div>
+    </div>
     <table-skeleton :bare="true" :rows="10" :columns="['hero', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
   </div>
 

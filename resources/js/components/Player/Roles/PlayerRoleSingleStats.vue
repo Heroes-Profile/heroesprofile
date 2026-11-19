@@ -149,28 +149,42 @@
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 space-y-8">
-      <loading-component :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ asyncLoading ? $t('This is taking longer than expected. A background task is computing your results. Please be patient.') : $t('Loading data...') }}</loading-component>
-      <panel-box>
+      <!-- The cards start where the loaded ones do; the message sits on a tab of the panel above them -->
+      <panel-box class="relative md:!rounded-tl-none">
+        <loading-component :compact="true" :tab="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ asyncLoading ? $t('This is taking longer than expected. A background task is computing your results. Please be patient.') : $t('Loading data...') }}</loading-component>
         <div class="flex flex-col xl:flex-row gap-6">
-          <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">
-            <h2 class="text-3xl font-bold">{{ $t(role) }}</h2>
-            <div class="flex gap-8 max-sm:flex-col">
-              <skeleton-box class="w-40 md:w-[14rem] h-[20.125rem] shrink-0 rounded"></skeleton-box>
+          <!-- Built from the loaded card's own parts (the same headings, links, icon and boxes, empty), so nothing moves when the data arrives -->
+          <panel-box :inner="true" class="!gap-8 xl:shrink-0">
+            <h2 class="text-3xl font-bold">
+              <hero-heading-select type="role" :heroes="filters.role" :value="role" textclass="" @hero-changed="changeRole($event)"></hero-heading-select>
+            </h2>
+            <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
+              <div class="flex flex-col items-center justify-between gap-1 shrink-0 max-sm:self-center [&_img]:!object-contain">
+                <!-- The icon's box, the same size as the hero pages' picture -->
+                <skeleton-box class="my-auto w-40 md:w-[14rem] h-[20.125rem] rounded"></skeleton-box>
+                <skeleton-box class="h-[1.5rem] w-32"></skeleton-box>
+              </div>
               <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="8"></overview-stats>
             </div>
-            <template v-for="title in ['Heroes', 'Maps']" :key="title">
-              <div class="flex flex-col gap-4">
-                <h3 class="text-2xl font-bold">{{ $t(title) }}</h3>
+            <template v-for="section in [{ title: 'Heroes', allText: 'All Heroes', played: 'Heroes Played As :role', tiles: 18 }, { title: 'Maps', allText: 'All Maps', played: 'Maps Played As :role', tiles: 19 }]" :key="section.title">
+              <div class="flex flex-col gap-4 w-fit max-w-full">
+                <div class="flex justify-between items-baseline gap-6">
+                  <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
+                  <span class="skeleton-text whitespace-nowrap">{{ $t(section.allText) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></span>
+                </div>
                 <div class="flex flex-wrap gap-6 max-md:justify-center">
-                  <div v-for="group in 3" :key="group" class="flex gap-3">
-                    <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
+                  <div v-for="label in ['Most Played', 'Highest Win Rate', esport ? 'Lowest Win Rate' : 'Latest Played']" :key="label" class="w-auto inline-block">
+                    <h4 class="text-sm mb-2"><span class="skeleton-text">{{ $t(label) }}</span></h4>
+                    <div class="flex flex-wrap gap-3 max-md:gap-2">
+                      <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="flex flex-col gap-4">
-                <h3 class="text-2xl font-bold">{{ $t(title === 'Heroes' ? 'Heroes Played As :role' : 'Maps Played As :role', { role: $t(role) }) }}</h3>
-                <div class="flex flex-wrap gap-3 max-md:gap-2 max-md:justify-center">
-                  <skeleton-box v-for="tile in 18" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
+                <h3 class="text-2xl font-bold">{{ $t(section.played, { role: $t(role) }) }}</h3>
+                <div class="w-0 min-w-full flex flex-wrap gap-3 max-md:gap-2 max-md:justify-center">
+                  <skeleton-box v-for="tile in section.tiles" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
                 </div>
               </div>
             </template>
@@ -180,24 +194,21 @@
             <panel-box v-if="esport" :inner="true" :title="$t('Teams Played For')">
               <skeleton-box v-for="index in 2" :key="index" class="h-14"></skeleton-box>
             </panel-box>
-            <panel-box v-if="!esport" :inner="true" :title="$t('Party Size Win Rates')">
-              <skeleton-box v-for="index in 5" :key="index" class="h-10"></skeleton-box>
-            </panel-box>
-            <panel-box v-if="!esport" :inner="true" :title="$t('Heroes Profile MMR')">
-              <skeleton-box v-for="index in 6" :key="index" class="h-9"></skeleton-box>
-            </panel-box>
+            <player-party-size-panel v-if="!esport" :data="emptyPartyData" prefix="stack_size_" :skeleton="true"></player-party-size-panel>
+            <player-mmr-panel v-if="!esport" :data="{}" :skeleton="true"></player-mmr-panel>
             <player-awards-panel v-if="!esport" class="flex-1" :placeholder="true" :battletag="battletag" :blizzid="blizzid" :region="region"></player-awards-panel>
           </div>
         </div>
       </panel-box>
 
       <panel-box :title="$t('Win Rate Per Season')">
-        <skeleton-box class="h-72"></skeleton-box>
+        <!-- The season chart's shape: as wide as the panel, 3.1 times wider than tall -->
+        <skeleton-box class="w-full aspect-[3.1]"></skeleton-box>
       </panel-box>
 
-      <panel-box :title="$t('Recent Matches')" :divider="false">
+      <panel-box :title="$t('Recent Matches')" link-text="Match History" :skeleton="true" :divider="false">
         <div>
-          <game-summary-header></game-summary-header>
+          <game-summary-header :skeleton="true"></game-summary-header>
           <game-summary-skeleton v-for="index in 7" :key="index"></game-summary-skeleton>
         </div>
       </panel-box>
@@ -275,6 +286,12 @@
           { label: 'Assists', value: this.data.sum_assists.toLocaleString('en-US') },
           { label: 'Takedowns', value: this.data.sum_takedowns.toLocaleString('en-US') },
         ];
+      },
+      // The party card with no games, for the skeleton: its labels and empty bars
+      emptyPartyData() {
+        const data = {};
+        ['one', 'two', 'three', 'four', 'five'].forEach(key => { data[`stack_size_${key}_wins`] = 0; data[`stack_size_${key}_losses`] = 0; data[`stack_size_${key}_win_rate`] = 0; });
+        return data;
       },
       topSections() {
         // Esports has no latest-played lists; its profile shows the lowest win rates there

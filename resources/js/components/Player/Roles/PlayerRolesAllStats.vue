@@ -114,13 +114,16 @@
     </table>
     </div>
   </div>
-  <div v-else-if="isLoading || asyncLoading" class="max-w-[93.75rem] mx-auto px-4 flex flex-col gap-6">
-    <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
-    <loading-component v-else :compact="true" :textoverride="true" :timer="!esport" :starttime="timertime" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
-    <div>
-      <skeleton-box class="h-14 rounded-b-none"></skeleton-box>
-      <table-skeleton :bare="true" :rows="6" :columns="['portrait', 'bar', 'stat', 'text', 'text', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat']" :mobile-columns="['portrait', 'bar', 'stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
+  <!-- Where the loaded page puts them: the column button's bar with the message on it, then the table, as wide as the loaded one -->
+  <div v-else-if="isLoading || asyncLoading" class="max-w-[93.75rem] mx-auto">
+    <div class="relative">
+      <skeleton-box class="h-12"></skeleton-box>
+      <div class="absolute inset-0 flex items-center justify-center px-4">
+        <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
+        <loading-component v-else :compact="true" :textoverride="true" :timer="!esport" :starttime="timertime" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+      </div>
     </div>
+    <table-skeleton class="relative w-[95.25rem] max-w-[calc(100vw-2rem)] left-1/2 -translate-x-1/2" :bare="true" :rows="6" :columns="['portrait', 'bar', 'stat', 'text', 'text', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat']" :mobile-columns="['portrait', 'bar', 'stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
   </div>
   <match-lookup v-if="matchIsLoading" :text="matchLookupText"></match-lookup>
     <div v-if="matchNotFound" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red text-white px-4 py-2 rounded z-50">

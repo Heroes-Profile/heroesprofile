@@ -44,20 +44,21 @@
     </player-page-top>
 
     <div v-if="!selectedHero">
-      <hero-selection :heroes="heroes" @search="heroSearchQuery = $event"></hero-selection>
+      <hero-selection :heroes="heroes" subtitle="Open a hero to see your talent win rates and builds." @search="heroSearchQuery = $event" @role="heroRole = $event"></hero-selection>
 
       <!-- The player's most played build per hero, like the list on /Global/Talents -->
-      <div class="max-w-[93.75rem] mx-auto md:px-4 mt-8 w-full flex flex-col gap-4">
-        <div class="flex flex-wrap items-center justify-between gap-4 max-md:justify-center max-md:text-center">
-          <h2 class="heading">{{ esport ? $t('Most Played Builds Per Hero') : $t('Most Played Builds Per Hero and Game Type') }}</h2>
+      <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6">
+        <panel-box :title="esport ? 'Most Played Builds Per Hero' : 'Most Played Builds Per Hero and Game Type'">
+        <template #right>
           <tab-button :key="esport ? 'ngs-' + ngsRangeSide : 'range'" :tab1text="'All Time'" :tab2text="'Current Season'" :ignoreclick="true" @tab-click="setBuildsRange" :overridedefaultside="esport ? ngsRangeSide : (buildsCurrentSeason ? 'right' : 'left')"></tab-button>
-        </div>
+        </template>
         <loading-component v-if="isBuildsLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">Loading talent builds{{ buildsTotal ? ` (${buildsLoaded} of ${buildsTotal} heroes)` : '' }}...</loading-component>
         <p v-if="buildsError" class="text-sm text-subtext">{{ $t("Couldn't load talent builds. Reload the page to try again.") }}</p>
         <global-talent-builds-all v-else-if="heroesWithBuilds.length" :key="buildsCurrentSeason ? 'season' : 'all'" :heroes="heroesWithBuilds" :talentbuilddataall="talentbuilddataall" :game-types="esport ? [{ key: 'ngs', label: league.name }] : undefined"></global-talent-builds-all>
         <table-skeleton v-else-if="isBuildsLoading" :bare="true" :rows="10" :columns="['avatar', 'talents', 'talents', 'talents']"></table-skeleton>
         <p v-else-if="talentbuilddataall && esport" class="text-sm text-subtext">{{ $t('No :league builds for these filters.', { league: league.name }) }}</p>
         <p v-else-if="talentbuilddataall" class="text-sm text-subtext">{{ $t('No builds :yet for Quick Match, Storm League or ARAM.', { yet: buildsCurrentSeason ? $t('this season') : $t('yet') }) }}</p>
+        </panel-box>
       </div>
     </div>
     <div v-else>
@@ -68,12 +69,13 @@
         <global-talent-details-section :talentdetaildata="talentdetaildata" :esport="esport ? 'true' : undefined" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
       </div>
       <!-- The talent tables' layout with grey blocks while they load, like Overall Talent Stats on the NGS page -->
-      <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-        <loading-component :compact="true" :overrideimage="league?.loaderImage"></loading-component>
-        <div class="container mx-auto md:px-4 flex flex-col items-center">
-          <div v-for="level in 7" :key="level" class="w-full bg-surface overflow-hidden">
+      <!-- In the loaded page's box: the message on the "Talent Stats" line, the levels where the tables load -->
+      <div v-else-if="isLoading" class="container mx-auto md:px-4">
+        <span class="flex gap-4 mb-2"><loading-component :compact="true" :overrideimage="league?.loaderImage"></loading-component></span>
+        <div class="flex flex-col items-center">
+          <div v-for="level in 7" :key="level" class="w-full max-w-[93.75rem] bg-surface overflow-hidden">
             <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-20"></skeleton-box></div>
-            <table-skeleton :bare="true" :rows="3" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
+            <table-skeleton :bare="true" :rows="4" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
           </div>
           <div class="w-full max-w-[50rem] bg-surface overflow-hidden mt-6">
             <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-16"></skeleton-box></div>
@@ -133,6 +135,7 @@ export default {
       startdate: null,
       enddate: null,
       heroSearchQuery: '',
+      heroRole: 'All',
       talentbuilddataall: null,
       isBuildsLoading: false,
       buildsLoaded: 0,
@@ -186,6 +189,7 @@ export default {
       if (!this.talentbuilddataall) return [];
       const q = this.heroSearchQuery.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
       return this.heroes.filter(hero => this.talentbuilddataall[hero.name]
+        && (this.heroRole === 'All' || hero.new_role === this.heroRole)
         && (!q || hero.name.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().includes(q)));
     },
     isOwner(){

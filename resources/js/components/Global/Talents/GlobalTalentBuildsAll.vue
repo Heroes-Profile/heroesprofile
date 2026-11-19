@@ -1,27 +1,35 @@
 <template>
   <div ref="tablecontainer" class="w-full max-md:overflow-clip">
-    <table ref="responsivetable" class="w-full text-sm">
+    <table ref="responsivetable" class="w-full text-sm responsive-table rounded-table">
+      <colgroup>
+        <col class="w-[15%]">
+        <col v-for="gt in gameTypes" :key="gt.key">
+      </colgroup>
       <thead>
         <tr>
-          <th class="py-2 px-3 text-center text-sm leading-4">
-            <div class="flex items-center justify-center gap-3">
-              <span>{{ $t('Hero') }}</span>
-              <search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" class="w-40"></search-input>
+          <th class="py-2 px-4 text-left text-sm leading-4">{{ $t('Hero') }}</th>
+          <th v-for="gt in gameTypes" :key="gt.key" class="py-2 px-4 text-left text-sm leading-4">{{ $t(gt.label) }}</th>
+        </tr>
+        <!-- The talent level over each column of talent icons -->
+        <tr>
+          <th></th>
+          <th v-for="gt in gameTypes" :key="gt.key" class="pb-2 px-4 font-normal text-xs">
+            <div class="flex gap-1.5">
+              <span v-for="level in levels" :key="level" class="w-[2.625rem] text-center">{{ level }}</span>
             </div>
           </th>
-          <th v-for="gt in gameTypes" :key="gt.key" class="py-2 px-3 text-center text-sm leading-4">{{ gt.label }}</th>
         </tr>
       </thead>
-      <tbody class="text-center">
-        <tr v-for="hero in shownHeroes" :key="hero.id">
-          <td class="py-2 px-3">
-            <div class="flex items-center justify-center">
-              <hero-image-wrapper :hero="hero" :includehover="false"></hero-image-wrapper><span class="hidden md:block ml-2">{{ $heroName(hero) }}</span>
+      <tbody>
+        <tr v-for="hero in heroes" :key="hero.id">
+          <td class="py-3 px-4">
+            <div class="flex items-center gap-3">
+              <hero-image-wrapper :hero="hero" :includehover="false"></hero-image-wrapper><span class="hidden md:block font-medium">{{ $heroName(hero) }}</span>
             </div>
           </td>
-          <td v-for="gt in gameTypes" :key="gt.key" class="py-2 px-3">
-            <build-code v-if="firstBuild(hero.name, gt.key)" :build="firstBuild(hero.name, gt.key)" :hero="firstBuild(hero.name, gt.key).hero"></build-code>
-            <span v-else class="text-subtext">—</span>
+          <td v-for="gt in gameTypes" :key="gt.key" class="py-3 px-4">
+            <build-code v-if="firstBuild(hero.name, gt.key)" align="start" :build="firstBuild(hero.name, gt.key)" :hero="firstBuild(hero.name, gt.key).hero"></build-code>
+            <span v-else class="text-subtext">{{ $t('No data for this patch') }}</span>
           </td>
         </tr>
       </tbody>
@@ -51,14 +59,8 @@ export default {
   },
   data() {
     return {
-      heroSearch: '',
+      levels: [1, 4, 7, 10, 13, 16, 20],
     };
-  },
-  computed: {
-    shownHeroes() {
-      const search = this.heroSearch.trim().toLowerCase();
-      return search ? this.heroes.filter(hero => hero.name.toLowerCase().includes(search) || this.$heroName(hero).toLowerCase().includes(search)) : this.heroes;
-    },
   },
   mounted() {
     this.$nextTick(() => {

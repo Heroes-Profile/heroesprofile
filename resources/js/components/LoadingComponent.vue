@@ -1,6 +1,8 @@
 <template>
-  <!-- One line above a page's skeleton, rather than covering the page -->
-  <div v-if="compact" class="flex flex-wrap items-center gap-3 text-sm text-soft">
+  <!-- One line above a page's skeleton, rather than covering the page. With tab, on desktop it sits on a tab of the skeleton
+       panel's background, just above the panel, so the panel can start where the loaded one does (the panel squares its
+       top-left corner with md:!rounded-tl-none); below md it is the plain line again. -->
+  <div v-if="compact" :class="['flex flex-wrap items-center gap-3 text-sm text-soft', { 'md:absolute md:left-0 md:bottom-[calc(100%-1rem)] md:bg-surface md:rounded-t md:px-6 md:py-2': tab }]">
     <img class="logo-spin h-7 w-auto shrink-0" :src="overrideimage || '/images/logo/heroesprofilelogo.png'" alt="Loading" />
     <span v-if="textoverride"><slot></slot></span>
     <span v-else>{{ $t('Loading data...') }}</span>
@@ -32,6 +34,7 @@
       overrideimage: String,
       timer: Boolean,
       compact: Boolean,
+      tab: Boolean,
       starttime: Number,
     },
     data(){

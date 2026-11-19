@@ -152,49 +152,76 @@
     </div>
     <!-- The page's layout with grey blocks while it loads; the nav logo spins meanwhile -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 space-y-8">
-      <loading-component :compact="true" :textoverride="true">{{ $t('Large amount of data. Please be patient. Loading data...') }}</loading-component>
-      <panel-box>
+      <!-- The cards start where the loaded ones do; the message sits on a tab of the panel above them -->
+      <panel-box class="relative md:!rounded-tl-none">
+        <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Large amount of data. Please be patient. Loading data...') }}</loading-component>
+        <!-- Built from the loaded cards' own parts (the same labels, bars and boxes, empty), so nothing moves when the data arrives -->
         <div class="flex flex-col xl:flex-row gap-6">
-          <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">
-            <h2 class="text-3xl font-bold">{{ battletag }}</h2>
-            <div class="flex gap-8 max-sm:flex-col">
-              <skeleton-box class="w-40 md:w-[14rem] h-[20.125rem] shrink-0 rounded"></skeleton-box>
+          <panel-box :inner="true" class="!gap-8 xl:shrink-0">
+            <div class="flex items-center gap-3">
+              <div class="flex flex-col">
+                <h2 class="text-3xl font-bold">{{ battletag }}</h2>
+                <region-tag class="skeleton-text w-fit" :region="regionsmap[region]" :full="true"></region-tag>
+              </div>
+              <div class="ml-auto self-start flex gap-2 invisible" aria-hidden="true">
+                <span class="flex p-1.5"><basil-icon class="text-2xl" name="share"></basil-icon></span>
+                <span class="flex p-1.5"><basil-icon class="text-2xl" name="download"></basil-icon></span>
+              </div>
+            </div>
+            <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
+              <div class="flex flex-col items-center justify-between gap-1 shrink-0">
+                <skeleton-box class="w-40 md:w-[14rem] h-[20.125rem] rounded"></skeleton-box>
+                <skeleton-box class="h-[1.5rem] w-32"></skeleton-box>
+              </div>
               <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="8"></overview-stats>
             </div>
-            <div v-for="title in ['Heroes', 'Maps']" :key="title" class="flex flex-col gap-4">
-              <h3 class="text-2xl font-bold">{{ $t(title) }}</h3>
-              <div class="flex flex-wrap gap-6">
-                <div v-for="group in 3" :key="group" class="flex gap-3">
-                  <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
+            <div v-for="section in [{ title: 'Heroes', allText: 'All Heroes' }, { title: 'Maps', allText: 'All Maps' }]" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
+              <div class="flex justify-between items-baseline">
+                <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
+                <span class="skeleton-text whitespace-nowrap">{{ $t(section.allText) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></span>
+              </div>
+              <div class="flex flex-wrap gap-6 max-md:justify-center">
+                <div v-for="label in ['Most Played', 'Highest Win Rate', 'Latest Played']" :key="label" class="w-auto inline-block">
+                  <h4 class="text-sm mb-2"><span class="skeleton-text">{{ $t(label) }}</span></h4>
+                  <div class="flex flex-wrap gap-3 max-md:gap-2">
+                    <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
+                  </div>
                 </div>
               </div>
             </div>
+            <p class="flex flex-wrap items-center gap-2"><span class="skeleton-text">{{ $t('Total Time Played:') }}</span><skeleton-box class="h-4 w-36"></skeleton-box></p>
           </panel-box>
 
           <div class="flex-1 flex flex-col gap-6 min-w-0">
             <div class="grid 2xl:grid-cols-2 gap-6">
-              <panel-box v-for="title in ['Win Rate By Role', 'Party Size Win Rates']" :key="title" :inner="true" :title="title">
-                <skeleton-box v-for="index in 6" :key="index" class="h-10"></skeleton-box>
+              <panel-box :inner="true" :title="$t('Win Rate By Role')" link-text="All Roles" :skeleton="true">
+                <div class="flex-1 flex flex-col justify-between gap-3">
+                  <div v-for="role in ['Bruiser', 'Healer', 'Melee Assassin', 'Ranged Assassin', 'Support', 'Tank']" :key="role" class="flex flex-col gap-1.5">
+                    <span class="skeleton-text leading-[1.2] w-fit">{{ $t(role) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></span>
+                    <stat-bar value="0.00" suffix="%" :hide-value="true"></stat-bar>
+                  </div>
+                </div>
               </panel-box>
+              <player-party-size-panel :data="emptyPartyData" link-text="Party Stats" :skeleton="true"></player-party-size-panel>
             </div>
-            <panel-box :inner="true" :title="$t('Heroes Profile MMR')">
-              <skeleton-box v-for="index in 6" :key="index" class="h-9"></skeleton-box>
-            </panel-box>
+            <player-mmr-panel :data="{}" :skeleton="true"></player-mmr-panel>
           </div>
         </div>
       </panel-box>
 
       <div class="grid xl:grid-cols-2 gap-6">
+        <!-- The rank card's shape with no rank read (its box and the "How to get your rank" button); the week days stretch beside it -->
         <panel-box v-for="title in ['Storm League Rank', 'Week Day Win Rates']" :key="title">
           <panel-box class="flex-1" :inner="true" :title="title">
-            <skeleton-box class="h-[22.5rem]"></skeleton-box>
+            <skeleton-box class="flex-1 min-h-[24.125rem]"></skeleton-box>
+            <skeleton-box v-if="title == 'Storm League Rank'" class="h-[3.25rem] w-[26rem] max-w-full"></skeleton-box>
           </panel-box>
         </panel-box>
       </div>
 
-      <panel-box :title="$t('Recent Matches')" :divider="false">
+      <panel-box :title="$t('Recent Matches')" link-text="Match History" :skeleton="true" :divider="false">
         <div>
-          <game-summary-header></game-summary-header>
+          <game-summary-header :skeleton="true"></game-summary-header>
           <game-summary-skeleton v-for="index in 7" :key="index"></game-summary-skeleton>
         </div>
       </panel-box>
@@ -343,6 +370,12 @@ function cardFonts() {
             { label: 'Latest Played', data: this.data.maps_three_latest_played },
           ] },
         ];
+      },
+      // The party card with no games, for the skeleton: its labels and empty bars
+      emptyPartyData(){
+        const data = {};
+        ['one', 'two', 'three', 'four', 'five'].forEach(key => { data[`stack_${key}_wins`] = 0; data[`stack_${key}_losses`] = 0; data[`stack_${key}_win_rate`] = 0; });
+        return data;
       },
       roleWinRates(){
         return [
