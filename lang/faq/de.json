@@ -19,21 +19,17 @@
             "q": "Wie finde ich mein Spielerprofil?",
             "a": "Nutze die Suchleiste oben auf der Seite und gib deinen BattleTag ein (z. B. <code>Zemill#1940</code>). Sobald dein Profil gefunden ist, kannst du deinen Spielverlauf, deine Heldenstatistiken, deinen MMR, Karten, Duelle und mehr ansehen. Lade vorher deine Replays hoch, damit deine Daten angezeigt werden."
         },
-        "fee6b20b0ee8251f": {
-            "q": "Ist Heroes Profile kostenlos?",
-            "a": "Ja, Heroes Profile ist komplett kostenlos. Wir werden von der Community über <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> unterstützt. Patreon-Unterstützer nutzen die Seite ohne Werbung und erhalten besondere Abzeichen."
-        },
         "718a29824ecf8cbe": {
             "q": "Wie viele Spiele habe ich in dieser Saison gespielt?",
             "a": "Öffne dein Profil und stelle den Filter <strong>Saison</strong> auf die aktuelle Saison. Die Übersicht zeigt dann deine Spiele, Siege und deine Siegesrate in dieser Saison, und der <a href=\"/Player/Zemill/67280/1/Match/History\" class=\"link\">Spielverlauf</a> listet alle diese Spiele auf. Gezählt werden nur hochgeladene Spiele, daher kann die Gesamtzahl niedriger sein als die Zahl deiner tatsächlich gespielten Spiele."
         },
+        "fee6b20b0ee8251f": {
+            "q": "Ist Heroes Profile kostenlos?",
+            "a": "Ja, Heroes Profile ist komplett kostenlos. Wir werden von der Community über <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> unterstützt. Patreon-Unterstützer nutzen die Seite ohne Werbung und erhalten besondere Abzeichen."
+        },
         "7ba1b5ca799e4b7a": {
             "q": "Wie kommen meine Statistiken auf Heroes Profile?",
             "a": "Du musst deine Replay-Dateien hochladen. Am einfachsten lädst du den <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a> herunter. Er läuft im Hintergrund und lädt Replays nach jedem Spiel automatisch hoch. Du kannst <a href=\"/Upload\" class=\"link\">Replays auch manuell hochladen</a>. Nach dem Hochladen dauert die Verarbeitung 5–10 Minuten."
-        },
-        "4015e4f47fc40628": {
-            "q": "Ist der Heroes Profile Uploader sicher?",
-            "a": "Ja. Der Uploader ist vollständig Open Source – den gesamten Quellcode findest du auf GitHub: <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>. Er enthält keine Werbung, keine Bloatware und kein Tracking über einfache Seitenanalysen hinaus. Wenn du möchtest, kannst du Replays stattdessen auch manuell hochladen.<br><br>Manche Antivirenprogramme oder Browser stufen das Installationsprogramm möglicherweise als verdächtig ein. Das ist ein Fehlalarm. Er entsteht, weil die ausführbare Datei nicht mit einem kostenpflichtigen Code-Signing-Zertifikat signiert ist, nicht weil sie Schadsoftware enthält. Du kannst das selbst anhand des offenen Quellcodes prüfen. Wenn dir das nicht geheuer ist, nutze stattdessen die <a href=\"/Upload\" class=\"link\">Seite zum manuellen Hochladen</a>."
         },
         "be6aba0fe5a58edc": {
             "q": "Warum werden nicht alle meine Spiele angezeigt?",
@@ -54,6 +50,10 @@
         "a1eb614636680760": {
             "q": "Wie mache ich mein Profil privat?",
             "a": "Melde dich mit deinem Battle.net-Account an, öffne die <a href=\"/Profile/Settings\" class=\"link\">Profileinstellungen</a> und stelle die Sichtbarkeit des Accounts auf „Privat“. Dein BattleTag erscheint weiterhin im Spielverlauf anderer Spieler, da er Teil der Replay-Datei ist. Deine eigene Profilseite ist dann aber nicht mehr öffentlich zugänglich."
+        },
+        "1784061c5e512b03": {
+            "q": "Ist der Heroes Profile Uploader sicher?",
+            "a": "Ja. Der Uploader ist vollständig Open Source – du kannst den gesamten Quellcode auf GitHub einsehen: <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>. Er enthält keine Werbung, keine Bloatware und kein Tracking über einfache Seitenanalysen hinaus. Wenn du möchtest, kannst du Replays stattdessen auch manuell hochladen.<br><br>Die Installationsprogramme für Windows und Mac sind codesigniert, und die Linux-Downloads haben signierte Prüfsummen. Wenn ein Antivirenprogramm oder Browser einen Download trotzdem als gefährlich markiert, handelt es sich um einen Fehlalarm – das kannst du selbst überprüfen, indem du dir den Open-Source-Code ansiehst. Wenn du dich damit nicht wohlfühlst, nutze stattdessen die <a href=\"/Upload\" class=\"link\">Seite zum manuellen Hochladen</a>."
         },
         "c4b452b25e56c717": {
             "q": "Wie funktioniert MMR auf Heroes Profile?",
@@ -99,6 +99,10 @@
             "q": "Warum sind Spiegelmatches bei den Siegesraten der Duelle ausgeschlossen?",
             "a": "Wenn ein Held in einem Spiegelmatch auf sich selbst trifft, ergibt das im selben Spiel immer genau einen Sieg und eine Niederlage für diesen Helden. Würde man Spiegelmatches einbeziehen, würde die durchschnittliche Siegesrate jedes Helden immer in Richtung 50 % gedrückt, ohne dass du daraus etwas Nützliches ablesen kannst. Ohne sie spiegeln die Duelldaten tatsächlich aussagekräftige Wettkampfdynamiken wider."
         },
+        "a95840c72f0aa9a4": {
+            "q": "Wie finde ich Konter für einen Helden?",
+            "a": "Öffne den Helden unter <a href=\"/Global/Matchups\" class=\"link\">Duelle</a>, z. B. <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>. <strong>TOP 5 BEDROHUNGEN IM GEGNERISCHEN TEAM</strong> zeigt die Helden, die gegen ihn am besten abschneiden. Sortiere die Tabelle nach <strong>Siegesrate gegen</strong> diesen Helden: Die höchsten Siegesraten sind seine Konter, und die Spalte Differenz zeigt, um wie viel besser jeder Held gegen ihn abschneidet als üblich. Achte auf „Spiele gegen“, damit dich eine kleine Stichprobe nicht täuscht. <a href=\"/Global/Matchups/Talents\" class=\"link\">Duell-Talente</a> zeigt dir dann, welche Talente du in diesem Duell wählen solltest."
+        },
         "507d49de8fb485c2": {
             "q": "Wie funktioniert der Leistungswert?",
             "a": "Der Leistungswert auf den Spielseiten wird so berechnet: Für jede Statistik eines Spiels (Schaden, Heilung, Tötungen usw.) werden alle 10 Spieler dieses Spiels vom besten zum schlechtesten eingestuft, und je nach Platzierung wird ein Wert vergeben. Es ist ein relatives Maß innerhalb dieses einen Spiels, kein globaler Vergleichswert."
@@ -130,10 +134,6 @@
         "da9672cbf4c59a90": {
             "q": "Was ist der Talent-Planer?",
             "a": "Mit dem <a href=\"/Global/Talents/Builder\" class=\"link\">Talent-Planer</a> stellst du einen bestimmten Talent-Build zusammen und siehst Siegesratendaten für genau diese Kombination. Damit kannst du zwei Builds anhand echter Spieldaten direkt miteinander vergleichen."
-        },
-        "a95840c72f0aa9a4": {
-            "q": "Wie finde ich Konter für einen Helden?",
-            "a": "Öffne den Helden unter <a href=\"/Global/Matchups\" class=\"link\">Duelle</a>, z. B. <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>. <strong>TOP 5 BEDROHUNGEN IM GEGNERISCHEN TEAM</strong> zeigt die Helden, die gegen ihn am besten abschneiden. Sortiere die Tabelle nach <strong>Siegesrate gegen</strong> diesen Helden: Die höchsten Siegesraten sind seine Konter, und die Spalte Differenz zeigt, um wie viel besser jeder Held gegen ihn abschneidet als üblich. Achte auf „Spiele gegen“, damit dich eine kleine Stichprobe nicht täuscht. <a href=\"/Global/Matchups/Talents\" class=\"link\">Duell-Talente</a> zeigt dir dann, welche Talente du in diesem Duell wählen solltest."
         },
         "970140e24d9bb059": {
             "q": "Was ist der beste Build für einen Helden?",

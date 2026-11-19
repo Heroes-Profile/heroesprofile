@@ -36,7 +36,7 @@
           <li>{{ $t('Windows, macOS (Apple Silicon and Intel) and Linux, all from the same app.') }}</li>
           <li>{{ $t("On Linux, point it at your Wine/Proton prefix. There's also a plain tar.gz build that can run headless as a systemd service.") }}</li>
           <li>{{ $t("Nothing else to install (no .NET), and it updates itself. When an update is ready you'll see a") }} <strong>{{ $t('Restart now') }}</strong> banner.</li>
-          <li>{{ $t('The Windows builds are code-signed, and the Linux downloads come with signed checksums. Mac signing is waiting on Apple.') }}</li>
+          <li>{{ $t('The Windows and Mac builds are code-signed, and the Linux downloads come with signed checksums.') }}</li>
           <li>{{ $t('A new pre-match page, and a second theme to choose from.') }}</li>
           <li>{{ $t('Each replay in the list shows its Heroes Profile ID and links to its match page.') }}</li>
           <li>{{ $t("AI games and Brawls are skipped. AI games don't open a pre-match page either.") }}</li>

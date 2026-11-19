@@ -4,11 +4,11 @@
       v-for="side in sides"
       :key="side"
       :class="[staticClasses, 'rounded-control text-white', selectedSide === side ? 'bg-surface-1' : 'hover:bg-lteal']"
-      :alt="{ left: tab1alt, right: tab2alt, third: tab3alt }[side]"
+      :alt="tabs ? labels[side] : { left: tab1alt, right: tab2alt, third: tab3alt }[side]"
       role="button"
       @click="handleClick(side)"
     >
-      {{ $t({ left: tab1text, right: tab2text, third: tab3text }[side]) }}
+      {{ $t(tabs ? labels[side] : { left: tab1text, right: tab2text, third: tab3text }[side]) }}
     </a>
   </div>
 </template>
@@ -31,6 +31,9 @@
       tab3text: String,
       tab3alt: String,
 
+      // Any number of tabs instead of tab1-3: [{ key, text }]; a click reports the tab's key
+      tabs: Array,
+
       ignoreclick: Boolean,
       loading: false,
       overridedefaultside: String,
@@ -44,13 +47,21 @@
     created(){
       if(this.overridedefaultside){
         this.selectedSide = this.overridedefaultside;
+      } else if (this.tabs && this.tabs.length) {
+        this.selectedSide = this.tabs[0].key;
       }
     },
     mounted() {
     },
     computed: {
       sides() {
+        if (this.tabs) {
+          return this.tabs.map(tab => tab.key);
+        }
         return this.tab3text ? ['left', 'right', 'third'] : ['left', 'right'];
+      },
+      labels() {
+        return Object.fromEntries((this.tabs || []).map(tab => [tab.key, tab.text]));
       },
       staticClasses() {
         return 'transition-colors inline-block cursor-pointer text-center ' + (this.small ? 'py-1 px-2 text-sm' : 'py-1.5 px-4');

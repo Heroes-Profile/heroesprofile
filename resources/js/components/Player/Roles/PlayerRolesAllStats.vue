@@ -42,23 +42,8 @@
   <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
   <div v-if="data">
-    <div  class="relative max-w-[93.75rem] mx-auto">
-      <custom-button class="ml-auto" @click="showOptions = !showOptions" :text="showOptions ? $t('Hide Column Selection') : $t('Show Column Selection')" :ignoreclick="true"></custom-button>
-
-      <div v-if="showOptions">
-        <div class="absolute left-0 mt-2 w-full variable-background border border-gray-300 rounded shadow-lg text-black z-50 flex flex-wrap  p-2 ">
-          <input class="w-full p-2" type="text" v-model="searchQuery" :placeholder="$t('Search...')" />
-          <div v-for="(stat, index) in filteredStats" :class="[
-            'flex-1 min-w-[24%] border-gray border cursor-pointer variable-hover',
-            {
-              'bg-teal text-white' : stat.selected
-            } ]
-            ">
-            <label class="cursor-pointer block h-full p-1"><input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
-            {{ $t(stat.name) }}</label>
-          </div>
-        </div>
-      </div>
+    <div class="relative max-w-[93.75rem] mx-auto flex justify-end">
+      <column-chooser :stats="stats" note="Role, Win Rate, Games, KDA and KDR are always visible" @apply="applyColumns"></column-chooser>
     </div>
     <div id="table-container" ref="tablecontainer" class="w-auto  overflow-clip w-[100vw]   2xl:mx-auto  " style=" ">
 
@@ -105,7 +90,7 @@
               v-if="stat.selected" 
               :class="{ flash: stat.flash }"
               class="py-2 px-3 text-center">
-              <a v-if="statContainsMax(stat) && !esport" class="group/bt inline-flex items-center cursor-pointer" role="button" @click="navigateToMaxStatMatch(row.name, stat.value, row[stat.value])" :title="$t('Navigate to this match')"><span class="group-hover/bt:underline">{{ showStatValue(row[stat.value]) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+              <a v-if="statContainsMax(stat) && !esport" class="group/bt inline-flex items-center text-header cursor-pointer" role="button" @click="navigateToMaxStatMatch(row.name, stat.value, row[stat.value])" :title="$t('Navigate to this match')"><span class="group-hover/bt:underline">{{ showStatValue(row[stat.value]) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                 <template v-else>{{ showStatValue(row[stat.value]) }}</template>
             </td>
           </template>
@@ -494,6 +479,16 @@ methods: {
       return `${this.ngsPlayerUrl}/Role/${role}${window.location.search}`;
     }
     return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/" + "Role/" + role;
+  },
+  // The column picker's Apply: newly shown columns flash once
+  applyColumns(values) {
+    this.stats.forEach(stat => {
+      const show = values.includes(stat.value);
+      if (show && !stat.selected) {
+        this.onCheckboxChange(stat);
+      }
+      stat.selected = show;
+    });
   },
   isDisabled(stat) {
     return this.selectedStatsCount >= 15 && !stat.selected;

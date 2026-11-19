@@ -19,21 +19,17 @@
             "q": "Come trovo il mio profilo giocatore?",
             "a": "Usa la barra di ricerca in cima al sito e digita il tuo BattleTag (ad esempio <code>Zemill#1940</code>). Una volta trovato, potrai vedere la cronologia partite, le statistiche degli eroi, l'MMR, le mappe, gli scontri e altro ancora. Assicurati di aver prima caricato i tuoi replay, così i tuoi dati verranno visualizzati."
         },
-        "fee6b20b0ee8251f": {
-            "q": "Heroes Profile è gratuito?",
-            "a": "Sì, Heroes Profile è completamente gratuito. Siamo sostenuti dalla community tramite <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a>. I sostenitori Patreon navigano senza pubblicità e ricevono distintivi speciali sul sito."
-        },
         "718a29824ecf8cbe": {
             "q": "Quante partite ho giocato in questa stagione?",
             "a": "Apri il tuo profilo e imposta il filtro <strong>Stagione</strong> sulla stagione attuale. La panoramica mostra quindi le partite, le vittorie e la percentuale di vittorie di quella stagione, e la <a href=\"/Player/Zemill/67280/1/Match/History\" class=\"link\">Cronologia partite</a> elenca tutte quelle partite. Vengono contate solo le partite caricate, quindi il totale può essere inferiore a quello che hai giocato in gioco."
         },
+        "fee6b20b0ee8251f": {
+            "q": "Heroes Profile è gratuito?",
+            "a": "Sì, Heroes Profile è completamente gratuito. Siamo sostenuti dalla community tramite <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a>. I sostenitori Patreon navigano senza pubblicità e ricevono distintivi speciali sul sito."
+        },
         "7ba1b5ca799e4b7a": {
             "q": "Come faccio a far comparire le mie statistiche su Heroes Profile?",
             "a": "Devi caricare i tuoi file replay. Il modo più semplice è scaricare l'<a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a>, che funziona in background e carica automaticamente i replay dopo ogni partita. Puoi anche <a href=\"/Upload\" class=\"link\">caricare i replay manualmente</a>. Dopo il caricamento, attendi 5-10 minuti per l'elaborazione."
-        },
-        "4015e4f47fc40628": {
-            "q": "L'Heroes Profile Uploader è sicuro?",
-            "a": "Sì. Il caricatore è completamente open source: puoi esaminare tutto il codice sorgente su GitHub: <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>. Non contiene pubblicità, bloatware né tracciamento oltre alle analisi di base delle pagine. Se preferisci, puoi caricare i replay manualmente.<br><br>Alcuni antivirus o browser potrebbero segnalare il programma di installazione come sospetto. Si tratta di un falso positivo dovuto al fatto che l'eseguibile non è firmato con un certificato di firma del codice a pagamento, non perché contenga malware. Puoi verificarlo tu stesso esaminando il codice open source. Se non ti senti tranquillo, usa la <a href=\"/Upload\" class=\"link\">pagina di caricamento manuale</a>."
         },
         "be6aba0fe5a58edc": {
             "q": "Perché non compaiono tutte le mie partite?",
@@ -54,6 +50,10 @@
         "a1eb614636680760": {
             "q": "Come rendo privato il mio profilo?",
             "a": "Accedi con il tuo account Battle.net, vai nelle <a href=\"/Profile/Settings\" class=\"link\">Impostazioni profilo</a> e imposta la Visibilità dell'account su Privato. Il tuo BattleTag comparirà comunque nella cronologia partite degli altri giocatori (perché fa parte del file replay), ma la pagina del tuo profilo non sarà accessibile pubblicamente."
+        },
+        "1784061c5e512b03": {
+            "q": "Il caricatore di Heroes Profile è sicuro?",
+            "a": "Sì. Il caricatore è completamente open source: puoi consultare tutto il codice sorgente su GitHub: <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>. Non contiene pubblicità, bloatware né tracciamento oltre alle semplici statistiche di visita delle pagine. Se preferisci, puoi caricare i replay manualmente.<br><br>I programmi di installazione per Windows e Mac sono firmati digitalmente e i download per Linux includono checksum firmati. Se un antivirus o un browser segnala comunque un download, si tratta di un falso positivo: puoi verificarlo tu stesso consultando il codice open source. Se non ti senti tranquillo, usa la <a href=\"/Upload\" class=\"link\">pagina di caricamento manuale</a>."
         },
         "c4b452b25e56c717": {
             "q": "Come funziona l'MMR su Heroes Profile?",
@@ -99,6 +99,10 @@
             "q": "Perché gli scontri speculari sono esclusi dalle percentuali di vittoria degli scontri?",
             "a": "Quando un eroe affronta se stesso in uno scontro speculare, il risultato è sempre una vittoria e una sconfitta per quell'eroe nella stessa partita. Includere gli scontri speculari spingerebbe sempre la percentuale di vittorie media verso il 50% per ogni eroe, senza darti informazioni utili. Escludendoli, i dati degli scontri riflettono davvero dinamiche competitive significative."
         },
+        "a95840c72f0aa9a4": {
+            "q": "Come trovo i counter di un eroe?",
+            "a": "Apri l'eroe in <a href=\"/Global/Matchups\" class=\"link\">Scontri</a>, ad esempio <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>. <strong>Le 5 minacce principali nella squadra nemica</strong> mostra gli eroi che se la cavano meglio contro di lui. Nella tabella, ordina per <strong>Percentuale di vittorie contro</strong> quell'eroe: le percentuali più alte sono i suoi counter, e la colonna Differenza mostra quanto ogni eroe fa meglio del solito contro di lui. Controlla le Partite giocate contro, così un campione ridotto non ti trae in inganno. <a href=\"/Global/Matchups/Talents\" class=\"link\">Talenti per scontro</a> mostra poi quali talenti scegliere in quello scontro."
+        },
         "507d49de8fb485c2": {
             "q": "Come funziona il punteggio di prestazione?",
             "a": "Il punteggio di prestazione nelle pagine delle partite si calcola prendendo ogni statistica della partita (danni, cure, uccisioni, ecc.), ordinando i 10 giocatori di quella partita dal migliore al peggiore e assegnando un punteggio in base alla posizione. È una misura relativa a quella singola partita, non un riferimento globale."
@@ -130,10 +134,6 @@
         "da9672cbf4c59a90": {
             "q": "Cos'è il Costruttore di talenti?",
             "a": "Il <a href=\"/Global/Talents/Builder\" class=\"link\">Costruttore di talenti</a> ti permette di creare una build specifica e vedere i dati sulla percentuale di vittorie proprio per quella combinazione. È perfetto per confrontare due build fianco a fianco con dati di partite reali."
-        },
-        "a95840c72f0aa9a4": {
-            "q": "Come trovo i counter di un eroe?",
-            "a": "Apri l'eroe in <a href=\"/Global/Matchups\" class=\"link\">Scontri</a>, ad esempio <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>. <strong>Le 5 minacce principali nella squadra nemica</strong> mostra gli eroi che se la cavano meglio contro di lui. Nella tabella, ordina per <strong>Percentuale di vittorie contro</strong> quell'eroe: le percentuali più alte sono i suoi counter, e la colonna Differenza mostra quanto ogni eroe fa meglio del solito contro di lui. Controlla le Partite giocate contro, così un campione ridotto non ti trae in inganno. <a href=\"/Global/Matchups/Talents\" class=\"link\">Talenti per scontro</a> mostra poi quali talenti scegliere in quello scontro."
         },
         "970140e24d9bb059": {
             "q": "Qual è la build migliore per un eroe?",

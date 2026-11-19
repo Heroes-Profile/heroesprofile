@@ -121,7 +121,7 @@
 
       <div v-if="activeButton === 'overallTalentStats'">
         <div v-if="!selectedHero">
-          <hero-selection :heroes="heroes"></hero-selection>
+          <hero-selection :heroes="heroes" :subtitle="$t('Open a hero to see their talent win rates and builds in :league games.', { league: 'Heroes International' })"></hero-selection>
         </div>
 
 

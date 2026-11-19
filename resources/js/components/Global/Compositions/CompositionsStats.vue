@@ -2,10 +2,14 @@
   <div>
     <global-async-debug-banner page-label="Global Compositions" />
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-    <page-heading :heading="'Compositional Statistics'"></page-heading>
-    <filters 
-      :onFilter="filterData" 
-      :filters="filters" 
+    <page-heading :heading="'Composition Statistics'"></page-heading>
+    <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 -mt-2 mb-4 flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+      <span class="uppercase text-gray-medium">{{ selectedPatch ? $t('All players · Patch :patch', { patch: selectedPatch }) : $t('All players') }}</span>
+      <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
+    </div>
+    <filters
+      :onFilter="filterData"
+      :filters="filters"
       :isLoading="isLoading"
 
       :timeframetypeinput="timeframetype"
@@ -38,123 +42,187 @@
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="compositiondata" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <div class="flex justify-between">
-        <span></span>
-        <span>
-          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
-        </span>
-      </div>
-
       <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
 
-      <panel-box>
-      <div id="table-container" ref="tablecontainer" class="overflow-clip">
-      <table id="responsive-table" class="min-w-0 w-full responsive-table relative" ref="responsivetable">
-     
-    
-        <thead>
-          <tr>
-            <th class="py-2 px-3 text-center text-sm leading-4">
-              {{ $t('Composition') }}
-            </th>
-            <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
-              {{ $t('Win Rate %') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>            
-            <th @click="sortTable('popularity')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'popularity' }">
-              {{ $t('Popularity %') }}<sort-indicator :column="'popularity'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>
-            <th @click="sortTable('games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
-              {{ $t('Games Played') }}<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>       
-            <th></th>          
-          </tr>
-        </thead>
-        <tbody class="text-center">
-          <template v-for="(row, index) in sortedData">
-            <tr>
-              <td >
-                <div class="flex flex-wrap gap-1 justify-center w-auto max-md:flex-col ">
-                <role-box :role="row.role_one.name"></role-box>
-                <role-box :role="row.role_two.name"></role-box>
-                <role-box :role="row.role_three.name"></role-box>
-                <role-box :role="row.role_four.name"></role-box>
-                <role-box :role="row.role_five.name"></role-box>
-              </div>
-              </td>
-              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3 ">{{ row.popularity.toFixed(2) }}</td>
-              <td class="py-2 px-3 ">{{ row.games_played.toLocaleString('en-US') }}</td>
-              <td>
-                <custom-button 
-                  @click="viewTopHeroes(row.composition_id, index)" 
-                  :text="'View Top Heroes'" 
-                  :alt="'View Top Heroes'" 
-                  size="small" 
-                  :ignoreclick="true"
-                  :loading="loadingStates[index]"
-                  >
-                  </custom-button>
-              </td>
-            </tr>
-            <tr v-if="row.compositionheroes">
-              <td colspan=5>
-                <table class="min-w-0 w-full max-md:text-[.5em]">
-                  <thead>
-                    <tr>
-                      <th class="py-2 px-3 text-center text-sm leading-4">
-                        {{ $t('Top :one', { one: row.role_one.name }) }}
-                      </th>
-                      <th class="py-2 px-3 text-center text-sm leading-4">
-                        {{ $t('Top :two', { two: row.role_two.name }) }}
-                      </th>
-                      <th class="py-2 px-3 text-center text-sm leading-4">
-                        {{ $t('Top :three', { three: row.role_three.name }) }}
-                      </th>
-                      <th class="py-2 px-3 text-center text-sm leading-4">
-                        {{ $t('Top :four', { four: row.role_four.name }) }}
-                      </th>
-                      <th class="py-2 px-3 text-center text-sm leading-4">
-                        {{ $t('Top :five', { five: row.role_five.name }) }}
-                      </th>
-                    </tr>
-   
-                  </thead>
-                  <tbody class="text-center">
-                    <tr v-for="index in range">
-                      <td>
-                        <hero-image-wrapper v-if="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)" :hero="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(1, row, row.compositionheroes[row.role_one.name], index) ? getHeroData(1, row, row.compositionheroes[row.role_one.name], index).name : "" }}</span>
-                      </td>
-
-                      <td>
-                        <hero-image-wrapper v-if="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)" :hero="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(2, row, row.compositionheroes[row.role_two.name], index) ? getHeroData(2, row, row.compositionheroes[row.role_two.name], index).name : "" }}</span>
-                      </td>
-
-                      <td>
-                        <hero-image-wrapper v-if="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)" :hero="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(3, row, row.compositionheroes[row.role_three.name], index) ? getHeroData(3, row, row.compositionheroes[row.role_three.name], index).name : "" }}</span>
-                      </td>
-
-                      <td>
-                        <hero-image-wrapper v-if="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)" :hero="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(4, row, row.compositionheroes[row.role_four.name], index) ? getHeroData(4, row, row.compositionheroes[row.role_four.name], index).name : "" }}</span>
-                      </td>
-
-                      <td>
-                        <hero-image-wrapper v-if="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)" :hero="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(5, row, row.compositionheroes[row.role_five.name], index) ? getHeroData(5, row, row.compositionheroes[row.role_five.name], index).name : "" }}</span>
-                      </td>
-
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr> 
-          </template>
-        </tbody>
-      </table>
+      <!-- Headline tiles -->
+      <div v-if="summaryTiles.length" class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div v-for="tile in summaryTiles" :key="tile.label" class="bg-surface rounded p-6 flex flex-col gap-2 min-w-0">
+          <span class="text-sm text-subtext">{{ $t(tile.label) }}</span>
+          <span :class="['text-3xl font-semibold leading-[1.2]', tile.class || 'text-header']">{{ tile.value }}</span>
+          <div v-if="tile.row" class="flex gap-1.5">
+            <img v-for="(role, slot) in rowRoles(tile.row)" :key="slot" :src="roleImage(role)" :alt="$t(role)" :title="$t(role)" class="role-icon h-7 w-auto">
+          </div>
+          <span class="text-sm text-subtext">{{ tile.caption }}</span>
+        </div>
       </div>
+
+      <panel-box title="Team Compositions" subtitle="Win rate and popularity of every 5-role team composition. Roles are listed Tank → Support; win rate bars span 40–60%.">
+        <template #right>
+          <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <div class="flex items-center gap-4">
+              <span class="text-sm text-subtext">{{ $t('Sort by') }}</span>
+              <tab-button :small="true" tab1text="Win rate" tab2text="Popularity" :ignoreclick="true" :overridedefaultside="sortKey === 'popularity' ? 'right' : 'left'" @tab-click="sortBy($event === 'right' ? 'popularity' : 'win_rate')"></tab-button>
+            </div>
+            <pagination-bar v-if="lastPage > 1" :current="page" :last="lastPage" @page="page = $event"></pagination-bar>
+          </div>
+        </template>
+
+        <div id="table-container" ref="tablecontainer" class="overflow-clip">
+          <table id="responsive-table" class="min-w-0 w-full responsive-table rounded-table table-fixed relative" ref="responsivetable">
+            <colgroup>
+              <col class="w-[4%]">
+              <col class="w-[42%]">
+              <col class="w-[17%]">
+              <col class="w-[17%]">
+              <col class="w-[9%]">
+              <col class="w-[11%]">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="py-2 px-4 text-left text-sm leading-4">#</th>
+                <th class="py-2 px-4 text-left text-sm leading-4">{{ $t('Composition') }}</th>
+                <th @click="sortTable('win_rate')" class="py-2 px-4 text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
+                  {{ $t('Win Rate') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                </th>
+                <th @click="sortTable('popularity')" class="py-2 px-4 text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'popularity' }">
+                  {{ $t('Popularity') }}<sort-indicator :column="'popularity'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                </th>
+                <th @click="sortTable('games_played')" class="py-2 px-4 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
+                  {{ $t('Games') }}<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                </th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <template v-for="(row, index) in pagedData" :key="row.composition_id">
+                <tr>
+                  <td class="py-3 px-4">{{ pageStart + index + 1 }}</td>
+                  <td class="py-3 px-4">
+                    <div class="grid grid-cols-5 gap-2 max-w-[36rem]">
+                      <div v-for="(role, slot) in rowRoles(row)" :key="slot" class="flex flex-col items-center gap-1.5 min-w-0">
+                        <img :src="roleImage(role)" :alt="$t(role)" class="role-icon h-8 w-auto">
+                        <span class="text-xs text-subtext text-center leading-tight max-md:hidden">{{ $t(role) }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <!-- Win rate bars run from 40% to 60%; popularity against the most popular composition -->
+                  <td class="py-3 px-4"><stat-bar :value="Math.min(100, Math.max(0, (row.win_rate - 40) * 5))" :display-text="row.win_rate.toFixed(2)" suffix="%" color="teal"></stat-bar></td>
+                  <td class="py-3 px-4"><stat-bar :value="maxPopularity ? (row.popularity / maxPopularity) * 100 : 0" :display-text="row.popularity.toFixed(2)" suffix="%" color="teal"></stat-bar></td>
+                  <td class="py-3 px-4 text-center">{{ row.games_played.toLocaleString('en-US') }}</td>
+                  <td class="py-3 px-4 text-right">
+                    <button type="button" class="group/bt inline-flex items-center whitespace-nowrap" :aria-expanded="!!expanded[row.composition_id]" @click="viewTopHeroes(row)">
+                      <img v-if="loadingStates[row.composition_id]" class="logo-spin h-4 w-auto mr-2" src="/images/logo/heroesprofilelogo.png" alt="" />
+                      <span class="group-hover/bt:underline">{{ expanded[row.composition_id] ? $t('Hide heroes') : $t('Top heroes') }}</span>
+                      <basil-icon name="arrow-small" :class="['text-xs ml-2 transition-transform', expanded[row.composition_id] ? 'rotate-90' : '']"></basil-icon>
+                    </button>
+                  </td>
+                </tr>
+                <!-- The five most played heroes in each of the composition's roles -->
+                <tr v-if="expanded[row.composition_id] && row.compositionheroes">
+                  <td colspan="6" class="p-4">
+                    <div class="grid grid-cols-5 gap-4">
+                      <div v-for="(role, slot) in rowRoles(row)" :key="slot" class="flex flex-col gap-2 min-w-0">
+                        <span class="text-sm text-subtext">{{ $t('Top :role', { role: $t(role) }) }}</span>
+                        <template v-for="place in range" :key="place">
+                          <div v-if="getHeroData(slot + 1, row, row.compositionheroes[role], place)" class="flex items-center gap-2 min-w-0">
+                            <hero-image-wrapper :hero="getHeroData(slot + 1, row, row.compositionheroes[role], place)"></hero-image-wrapper>
+                            <span class="truncate max-md:hidden">{{ $heroName(getHeroData(slot + 1, row, row.compositionheroes[role], place)) }}</span>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <span class="text-sm text-subtext">{{ $t('Showing :from–:to of :total compositions', { from: sortedData.length ? pageStart + 1 : 0, to: pageStart + pagedData.length, total: sortedData.length }) }}</span>
+          <pagination-bar v-if="lastPage > 1" :current="page" :last="lastPage" @page="page = $event"></pagination-bar>
+        </div>
       </panel-box>
     </div>
+    <!-- The same layout in grey while the compositions load, the message on a tab of the table's panel -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <loading-component :compact="true" :textoverride="true">{{ $t('Loading compositions...') }}</loading-component>
-      <table-skeleton :rows="8" :columns="['role', 'role', 'role', 'role', 'role', 'stat', 'stat', 'stat', 'pill']"></table-skeleton>
+      <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div v-for="tile in 4" :key="tile" class="bg-surface rounded p-6 flex flex-col gap-2 min-w-0">
+          <span class="text-sm skeleton-text w-fit">Highest win rate</span>
+          <span class="text-3xl font-semibold leading-[1.2] skeleton-text w-fit">00.00%</span>
+          <div v-if="tile > 1" class="flex gap-1.5">
+            <skeleton-box v-for="slot in 5" :key="slot" class="h-7 w-[1.2rem]"></skeleton-box>
+          </div>
+          <span class="text-sm skeleton-text w-fit">0,000 games · 1,000+ games only</span>
+        </div>
+      </div>
+
+      <panel-box title="Team Compositions" subtitle="Win rate and popularity of every 5-role team composition. Roles are listed Tank → Support; win rate bars span 40–60%." :skeleton="true" class="relative md:!rounded-tl-none">
+        <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading compositions...') }}</loading-component>
+        <template #right>
+          <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <div class="flex items-center gap-4">
+              <span class="text-sm skeleton-text">{{ $t('Sort by') }}</span>
+              <div class="relative">
+                <tab-button class="invisible" :small="true" tab1text="Win rate" tab2text="Popularity" aria-hidden="true"></tab-button>
+                <skeleton-box class="absolute inset-0"></skeleton-box>
+              </div>
+            </div>
+            <div class="relative">
+              <pagination-bar class="invisible" :current="1" :last="3" aria-hidden="true"></pagination-bar>
+              <skeleton-box class="absolute inset-0"></skeleton-box>
+            </div>
+          </div>
+        </template>
+
+        <div class="overflow-clip">
+          <table class="min-w-0 w-full responsive-table rounded-table table-fixed">
+            <colgroup>
+              <col class="w-[4%]">
+              <col class="w-[42%]">
+              <col class="w-[17%]">
+              <col class="w-[17%]">
+              <col class="w-[9%]">
+              <col class="w-[11%]">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="py-2 px-4 text-left text-sm leading-4"><span class="skeleton-text">#</span></th>
+                <th class="py-2 px-4 text-left text-sm leading-4"><span class="skeleton-text">{{ $t('Composition') }}</span></th>
+                <th class="py-2 px-4 text-left text-sm leading-4"><span class="skeleton-text">{{ $t('Win Rate') }}</span></th>
+                <th class="py-2 px-4 text-left text-sm leading-4"><span class="skeleton-text">{{ $t('Popularity') }}</span></th>
+                <th class="py-2 px-4 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Games') }}</span></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in perPage" :key="row">
+                <td class="py-3 px-4"><span class="skeleton-text">00</span></td>
+                <td class="py-3 px-4">
+                  <div class="grid grid-cols-5 gap-2 max-w-[36rem]">
+                    <div v-for="slot in 5" :key="slot" class="flex flex-col items-center gap-1.5 min-w-0">
+                      <skeleton-box class="h-8 w-[1.375rem]"></skeleton-box>
+                      <span class="text-xs leading-tight skeleton-text max-md:hidden">Bruiser</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3 px-4"><stat-bar value="0" display-text="00.00" suffix="%" :hide-value="true"></stat-bar></td>
+                <td class="py-3 px-4"><stat-bar value="0" display-text="00.00" suffix="%" :hide-value="true"></stat-bar></td>
+                <td class="py-3 px-4 text-center"><span class="skeleton-text">0,000</span></td>
+                <td class="py-3 px-4 text-right"><span class="skeleton-text whitespace-nowrap">Top heroes<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <span class="text-sm skeleton-text">Showing 1–15 of 00 compositions</span>
+          <div class="relative">
+            <pagination-bar class="invisible" :current="1" :last="3" aria-hidden="true"></pagination-bar>
+            <skeleton-box class="absolute inset-0"></skeleton-box>
+          </div>
+        </div>
+      </panel-box>
     </div>
     <div v-else-if="dataError" class="flex items-center justify-center">
       {{ $t('Error: Reload page/filter') }}
@@ -189,7 +257,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
       dataError: false,
       windowWidth: window.innerWidth,
       infoText: "Composition stats based on differing increments, stat types, game type, or Rank. Click on a Composition to see detailed composition information.",
-      sortKey: '',
+      sortKey: 'win_rate',
       sortDir: 'desc',
       compositiondata: null,
       cancelTokenSource: null,
@@ -206,8 +274,12 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
       mirrormatch: 0,
       minimumgames: 100,
       isLoading: false,
+      // By composition id
       loadingStates: {},
+      expanded: {},
       showPatchNotes: false,
+      page: 1,
+      perPage: 15,
     }
   },
   created(){
@@ -245,7 +317,52 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
     },
     range() {
       return Array.from({ length: 5 }, (_, i) => i);
-    }
+    },
+    lastPage() {
+      return Math.max(1, Math.ceil(this.sortedData.length / this.perPage));
+    },
+    pageStart() {
+      return (this.page - 1) * this.perPage;
+    },
+    pagedData() {
+      return this.sortedData.slice(this.pageStart, this.pageStart + this.perPage);
+    },
+    maxPopularity() {
+      return Math.max(0, ...this.compositiondata.map(row => row.popularity));
+    },
+    selectedPatch() {
+      return this.timeframetype === 'minor' && this.timeframe && this.timeframe.length === 1 ? this.timeframe[0] : null;
+    },
+    // Popularity is a composition's share of every team in the filters, so any row gives the total back
+    gamesAnalysed() {
+      const top = this.compositiondata.find(row => row.popularity > 0);
+      return top ? Math.round(top.games_played / (top.popularity / 100)) : 0;
+    },
+    // Highest/lowest only count compositions with 1% of the games, up to 1,000
+    cardMinimumGames() {
+      return Math.min(1000, Math.max(1, Math.round(this.gamesAnalysed / 100)));
+    },
+    summaryTiles() {
+      const rows = this.compositiondata;
+      if (!rows.length) {
+        return [];
+      }
+      const byPopularity = rows.slice().sort((a, b) => b.popularity - a.popularity);
+      let eligible = rows.filter(row => row.games_played >= this.cardMinimumGames);
+      if (!eligible.length) {
+        eligible = rows;
+      }
+      const byWinRate = eligible.slice().sort((a, b) => b.win_rate - a.win_rate);
+      const minimum = this.$t(':count+ games only', { count: this.cardMinimumGames.toLocaleString('en-US') });
+      const best = byWinRate[0];
+      const worst = byWinRate[byWinRate.length - 1];
+      return [
+        { label: 'Games analysed', value: this.gamesAnalysed.toLocaleString('en-US'), caption: this.$t(':count team compositions', { count: rows.length }) },
+        { label: 'Most popular', value: byPopularity[0].popularity.toFixed(2) + '%', row: byPopularity[0], caption: this.$t(':games games · :rate% win rate', { games: byPopularity[0].games_played.toLocaleString('en-US'), rate: byPopularity[0].win_rate.toFixed(2) }) },
+        { label: 'Highest win rate', value: best.win_rate.toFixed(2) + '%', class: 'text-win', row: best, caption: best.games_played.toLocaleString('en-US') + ' ' + this.$t('games') + ' · ' + minimum },
+        { label: 'Lowest win rate', value: worst.win_rate.toFixed(2) + '%', class: 'text-loss', row: worst, caption: worst.games_played.toLocaleString('en-US') + ' ' + this.$t('games') + ' · ' + minimum },
+      ];
+    },
   },
   watch: {
   },
@@ -282,7 +399,9 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
           throw new Error("Failure to validate inputs");
         }
         this.compositiondata = response.data;
-        this.loadingStates = this.sortedData.map(() => false);
+        this.loadingStates = {};
+        this.expanded = {};
+        this.page = 1;
       }catch(error){
         this.dataError = true;
       }finally {
@@ -296,7 +415,8 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         });
       }
     },
-    async getTopHeroesData(compositionid, index){
+    async getTopHeroesData(row){
+      const compositionid = row.composition_id;
       try{
         this.isLoading = true;
 
@@ -305,7 +425,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         }
         this.cancelTokenSource = this.$axios.CancelToken.source();
 
-        this.loadingStates[index] = true;
+        this.loadingStates[compositionid] = true;
         const response = await this.$globalAsyncPost("/api/v1/global/compositions/heroes", {
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,
@@ -328,12 +448,13 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         if(response.data.status == "failure to validate inputs"){
           throw new Error("Failure to validate inputs");
         }
-        this.sortedData[index].compositionheroes = response.data;
-        this.loadingStates[index] = false;
+        row.compositionheroes = response.data;
+        this.expanded[compositionid] = true;
 
       }catch(error){
         //Do something here
       }finally {
+        this.loadingStates[compositionid] = false;
         this.cancelTokenSource = null;
         this.isLoading = false;
       }
@@ -417,10 +538,29 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         this.sortDir = 'desc';
       }
       this.sortKey = key;
+      this.page = 1;
     },
-    viewTopHeroes(compositionid, index){
-      this.loadingStates[index] = true;
-      this.getTopHeroesData(compositionid, index);
+    // The Sort by toggle: always highest first
+    sortBy(key) {
+      this.sortKey = key;
+      this.sortDir = 'desc';
+      this.page = 1;
+    },
+    // Opens the row's top heroes, fetching them the first time; a second click closes them
+    viewTopHeroes(row){
+      if (this.expanded[row.composition_id]) {
+        this.expanded[row.composition_id] = false;
+      } else if (row.compositionheroes) {
+        this.expanded[row.composition_id] = true;
+      } else {
+        this.getTopHeroesData(row);
+      }
+    },
+    rowRoles(row) {
+      return [row.role_one.name, row.role_two.name, row.role_three.name, row.role_four.name, row.role_five.name];
+    },
+    roleImage(role) {
+      return `/images/roles/${role.toLowerCase()}.PNG`;
     },
 
     getHeroData(location, row, data, index) {

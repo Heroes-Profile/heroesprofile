@@ -34,7 +34,7 @@ return [
                 ],
                 [
                     'q' => 'Is the Heroes Profile Uploader safe?',
-                    'a' => 'Yes. The uploader is completely open source — you can review the full source code on GitHub: <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader" target="_blank" class="link">HeroesProfile.Uploader</a>. It does not contain ads, bloatware, or tracking beyond basic page analytics. If you prefer, you can upload replays manually instead.<br><br>Some antivirus tools or browsers may flag the installer as suspicious. This is a false positive caused by the executable not being signed with a paid code-signing certificate — not because it contains malware. You can verify this yourself by reviewing the open source code. If you\'re uncomfortable, use the <a href="/Upload" class="link">manual upload page</a> instead.',
+                    'a' => 'Yes. The uploader is completely open source — you can review the full source code on GitHub: <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader" target="_blank" class="link">HeroesProfile.Uploader</a>. It does not contain ads, bloatware, or tracking beyond basic page analytics. If you prefer, you can upload replays manually instead.<br><br>The Windows and Mac installers are code-signed, and the Linux downloads come with signed checksums. If an antivirus tool or browser still flags a download, it is a false positive — you can verify this yourself by reviewing the open source code. If you\'re uncomfortable, use the <a href="/Upload" class="link">manual upload page</a> instead.',
                 ],
                 [
                     'q' => 'Why aren\'t all of my games showing up?',

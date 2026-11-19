@@ -1,27 +1,68 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-[93.75rem] mx-auto">
-    <div v-for="column in columns" :key="column.title" class="col-span-1">
-      <h2 class="text-2xl">{{ $t(column.title) }}</h2>
-      <p v-if="column.commits === null" class="text-sm">{{ $t("Couldn't load commits from GitHub. Try again in a few minutes.") }}</p>
-      <ul v-else>
-        <li v-for="commit in column.commits" :key="commit.sha" class="commit-item">
-          <span class="text-xs block">
-            <a v-if="commit.author_login" class="link" :href="`https://github.com/${commit.author_login}`" target="_blank">{{ commit.author_login }}</a>
-            <template v-else>{{ commit.author_name }}</template>
-            {{ $t('committed') }} <a class="link" :href="commit.url" target="_blank">{{ commit.short_sha }}</a> {{ $t('on :formatdate:', { formatdate: formatDate(commit.date) }) }}
-          </span>
-          <span class="border p-1 block" :class="column.background">{{ commit.message }}</span>
-        </li>
-      </ul>
+  <div>
+    <page-heading heading="GitHub Changes"></page-heading>
+    <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 -mt-2 mb-4">
+      <span class="uppercase text-gray-medium">{{ $t('Latest commits to Heroes Profile') }}</span>
+    </div>
+
+    <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 grid md:grid-cols-2 gap-6 md:gap-8 items-start">
+      <div v-for="branch in branches" :key="branch.name" class="bg-surface rounded p-4 md:p-8 flex flex-col gap-5 min-w-0">
+        <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+          <div>
+            <div class="flex items-center gap-3">
+              <h2 class="text-2xl font-bold">{{ $t(branch.title) }}</h2>
+              <span :class="['text-xs font-bold rounded-control px-2.5 py-1 text-white', branch.chip]">{{ branch.name }}</span>
+            </div>
+            <p class="text-sm text-subtext mt-1.5">{{ $t(branch.description) }}</p>
+          </div>
+          <a v-if="repoUrl" class="group/bt inline-flex items-center text-sm" :href="`${repoUrl}/commits/${branch.name}`" target="_blank" rel="noopener"><span class="group-hover/bt:underline">{{ $t('View on GitHub') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+        </div>
+        <div class="h-px bg-gray-dark"></div>
+
+        <p v-if="branch.commits === null" class="text-sm text-subtext">{{ $t("Couldn't load commits from GitHub. Try again in a few minutes.") }}</p>
+
+        <!-- Commits grouped by day; click one to read its full message -->
+        <template v-else>
+        <div v-for="day in groupByDay(branch.commits)" :key="day.label" class="flex flex-col gap-3">
+          <span class="text-xs font-bold uppercase text-subtext">{{ day.label }}</span>
+          <div class="flex flex-col gap-px rounded-control overflow-hidden">
+            <div v-for="commit in day.commits" :key="commit.sha" :class="['bg-surface-1 transition-colors', open[branch.name + commit.sha] ? 'bg-surface-2 border-l-4 border-teal' : 'hover:bg-surface-2']">
+              <button type="button" class="w-full flex items-center gap-4 px-5 py-4 text-left" :aria-expanded="!!open[branch.name + commit.sha]" @click="open[branch.name + commit.sha] = !open[branch.name + commit.sha]">
+                <span class="w-9 h-9 rounded-full bg-teal text-white font-bold flex items-center justify-center shrink-0">{{ initial(commit) }}</span>
+                <span class="flex-1 min-w-0">
+                  <span :class="['block font-bold leading-snug', { 'line-clamp-2': !open[branch.name + commit.sha] }]">{{ title(commit) }}</span>
+                  <span class="block text-xs text-subtext mt-1.5">{{ author(commit) }} · {{ commit.short_sha }} · {{ formatTime(commit.date) }}</span>
+                </span>
+                <basil-icon name="arrow-small" :class="['text-sm shrink-0 transition-transform', open[branch.name + commit.sha] ? '-rotate-90' : 'rotate-90']"></basil-icon>
+              </button>
+
+              <div v-if="open[branch.name + commit.sha]" class="pl-[4.75rem] pr-5 pb-5 flex flex-col gap-3 text-sm">
+                <template v-for="(block, index) in body(commit)" :key="index">
+                  <ul v-if="block.list" class="flex flex-col gap-2">
+                    <li v-for="(item, itemIndex) in block.list" :key="itemIndex" class="flex gap-3"><span class="w-1.5 h-1.5 rounded-full bg-teal shrink-0 mt-2"></span><span class="text-subtext">{{ item }}</span></li>
+                  </ul>
+                  <p v-else class="text-subtext">{{ block.text }}</p>
+                </template>
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                  <span class="flex flex-wrap items-center gap-3">
+                    <span class="bg-surface-3 rounded-control px-3 py-1 font-mono text-xs">{{ commit.short_sha }}</span>
+                    <span v-if="commit.additions != null" class="flex items-center gap-2 tabular-nums">
+                      <span class="text-win">+{{ commit.additions.toLocaleString('en-US') }}</span>
+                      <span class="text-loss">−{{ commit.deletions.toLocaleString('en-US') }}</span>
+                      <span class="text-subtext">· {{ $t(commit.files === 1 ? '1 file' : ':count files', { count: commit.files }) }}</span>
+                    </span>
+                  </span>
+                  <a class="group/bt inline-flex items-center text-lteal" :href="commit.url" target="_blank" rel="noopener"><span class="group-hover/bt:underline">{{ $t('Open commit on GitHub') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </template>
+      </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.commit-item {
-  margin-bottom: 0.625rem;
-}
-</style>
 
 <script>
 import moment from 'moment-timezone';
@@ -32,21 +73,73 @@ export default {
     masterCommits: { type: Array, default: null },
     developCommits: { type: Array, default: null },
   },
+  data() {
+    return {
+      // By branch and commit sha: whether its full message is showing, so a commit on both branches opens in one card only
+      open: {},
+    };
+  },
   computed: {
-    columns() {
+    branches() {
       return [
-        { title: 'Master Branch Commits', commits: this.masterCommits, background: 'bg-blue' },
-        { title: 'Develop Branch Commits', commits: this.developCommits, background: 'bg-gray-dark' },
+        { name: 'develop', title: 'Develop branch', description: 'Work in progress, deployed to the test site.', chip: 'bg-teal', commits: this.developCommits },
+        { name: 'master', title: 'Master branch', description: 'Released to heroesprofile.com.', chip: 'bg-blue', commits: this.masterCommits },
       ];
+    },
+    // The repository's GitHub address, taken from a commit's link
+    repoUrl() {
+      const commit = (this.developCommits || [])[0] || (this.masterCommits || [])[0];
+      return commit ? commit.url.replace(/\/commit\/[^/]+$/, '') : null;
     },
   },
   methods: {
-    formatDate(dateString) {
-      if (!dateString) {
-        return '';
+    groupByDay(commits) {
+      const days = [];
+      (commits || []).forEach(commit => {
+        const label = commit.date ? moment.utc(commit.date).tz(moment.tz.guess()).format('D MMM YYYY') : '';
+        const day = days[days.length - 1];
+        if (day && day.label === label) {
+          day.commits.push(commit);
+        } else {
+          days.push({ label, commits: [commit] });
+        }
+      });
+      return days;
+    },
+    author(commit) {
+      return commit.author_login || commit.author_name || '';
+    },
+    initial(commit) {
+      return this.author(commit).charAt(0).toUpperCase();
+    },
+    title(commit) {
+      return commit.message.split('\n')[0];
+    },
+    // The rest of the message: paragraphs, and runs of "- " lines as lists
+    body(commit) {
+      const rest = commit.message.split('\n').slice(1).join('\n').trim();
+      if (!rest) {
+        return [];
       }
-
-      return moment.utc(dateString).tz(moment.tz.guess()).format('MM/DD/YYYY h:mm:ss a');
+      return rest.split(/\n\s*\n/).map(chunk => {
+        const lines = chunk.split('\n').map(line => line.trim()).filter(line => line);
+        // A bullet that wraps onto the next lines stays one item
+        if (/^[-*] /.test(lines[0])) {
+          const list = [];
+          lines.forEach(line => {
+            if (/^[-*] /.test(line)) {
+              list.push(line.slice(2));
+            } else {
+              list[list.length - 1] += ' ' + line;
+            }
+          });
+          return { list };
+        }
+        return { text: lines.join(' ') };
+      });
+    },
+    formatTime(dateString) {
+      return dateString ? moment.utc(dateString).tz(moment.tz.guess()).format('h:mm A') : '';
     },
   },
 };

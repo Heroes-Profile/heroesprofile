@@ -616,6 +616,11 @@ th .gap-3 > .info-icon{ margin-left: -0.75rem; }
 .gap-1 > .sort-indicator{ margin-left: -0.25rem; }
 .gap-2 > .sort-indicator{ margin-left: -0.5rem; }
 .gap-3 > .sort-indicator{ margin-left: -0.75rem; }
+/* After a label with an info icon, the chevron hangs past the icon instead of on top of it */
+th :has(> .info-icon:not(.hidden)) + .sort-indicator > *{ margin-left: calc(0.375rem + 1.15 * 0.875rem + 0.375rem); }
+@media (min-width: 1024px){
+  th :has(> .info-icon.md\:block) + .sort-indicator > *{ margin-left: calc(0.375rem + 1.15 * 0.875rem + 0.375rem); }
+}
 
 h1{
   @apply text-5xl;
@@ -1005,3 +1010,8 @@ thead{border-color:transparent;}
 .standing-text a { text-decoration: underline; }
 .standing-editor .ProseMirror { min-height: 5rem; outline: none; }
 .standing-editor-expanded .ProseMirror { min-height: 100%; }
+
+/* Role glyphs are white; on light-mode tables they turn dark */
+.light-mode table .role-icon{
+  filter: invert(1);
+}

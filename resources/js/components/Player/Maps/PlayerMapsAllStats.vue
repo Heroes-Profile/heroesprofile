@@ -40,93 +40,84 @@
     </player-page-top>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="data">
-      <div  class="relative max-w-[93.75rem] mx-auto">
-        <custom-button class="ml-auto" @click="showOptions = !showOptions" :text="showOptions ? $t('Hide Column Selection') : $t('Show Column Selection')" :ignoreclick="true"></custom-button>
-          
-        <div v-if="showOptions">
-          <div class="absolute left-0 mt-2 w-full variable-background border border-gray-300 rounded shadow-lg variable-text z-50 flex flex-wrap  p-2 ">
-            <input class="w-full p-2" type="text" v-model="searchQuery" :placeholder="$t('Search...')" />
-              <div v-for="(stat, index) in filteredStats" :class="[
-              'flex-1 min-w-[24%] border-gray border cursor-pointer variable-hover',
-              {
-                'bg-teal text-white' : stat.selected
-              } ]
-              ">
-                <label class="cursor-pointer block h-full p-1"><input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
-              {{ $t(stat.name) }}</label>
-            </div>
-          </div>
+    <div v-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <panel-box title="All Maps" :subtitle="$t(':count maps · averages are per game', { count: data.length })">
+        <template #right>
+          <column-chooser :stats="stats" note="Map, Win Rate and Games are always visible" @apply="applyColumns"></column-chooser>
+        </template>
+        <div id="table-container" ref="tablecontainer" class="overflow-clip">
+          <table id="responsive-table" class="min-w-0 w-full responsive-table rounded-table relative" ref="responsivetable">
+            <thead>
+              <tr>
+                <th class="py-2 px-3 text-left text-sm leading-4">
+                  <div class="flex items-center gap-[1.125rem]">
+                    <span class="cursor-pointer" @click="sortTable('name')">{{ $t('Map') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                    <search-input v-model="mapSearch" :placeholder="$t('Search map')" :collapsible="true" class="w-40"></search-input>
+                  </div>
+                </th>
+                <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">
+                  {{ $t('Win Rate') }}<sort-indicator column="win_rate" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                </th>
+                <th @click="sortTable('games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">
+                  {{ $t('Games') }}<sort-indicator column="games_played" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                </th>
+                <th v-for="stat in selectedStats" :key="stat.value" @click="sortTable(stat.value)" :title="$t(stat.name)" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">
+                  {{ $t(columnLabel(stat)) }}<sort-indicator :column="stat.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in shownData" :key="row.id">
+                <td class="py-2 px-3"><a class="group/bt inline-flex items-center font-medium" :href="getPlayerMapPageUrl(row.name)"><span class="group-hover/bt:underline">{{ $mapName(row.name) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></td>
+                <td class="py-2 px-3"><div class="min-w-[8em]"><div class="text-sm font-semibold text-header tabular-nums mb-1.5">{{ row.win_rate }}<span class="text-xs">%</span></div><stat-bar :value="row.win_rate" display-text="" :color="$winRateColor(row.win_rate)"></stat-bar></div></td>
+                <td class="py-2 px-3 text-center">{{ (row.wins + row.losses) }}</td>
+                <td v-for="stat in selectedStats" :key="stat.value" :class="{ flash: stat.flash }" class="py-2 px-3 text-center">
+                  <a v-if="statContainsMax(stat) && !esport" class="group/bt inline-flex items-center text-header cursor-pointer" role="button" @click="navigateToMaxStatMatch(row.name, stat.value, row[stat.value])" :title="$t('Navigate to this match')"><span class="group-hover/bt:underline">{{ showStatValue(row[stat.value]) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                  <template v-else>{{ showStatValue(row[stat.value]) }}</template>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      </div>
-      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-clip w-[100vw]   2xl:mx-auto  " style=" ">
-      <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
-        <thead>
-          <tr>
-            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500">
-              <div class="flex items-center gap-[1.125rem]">
-                <span class="cursor-pointer" @click="sortTable('name')">{{ $t('Map') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                <search-input v-model="mapSearch" :placeholder="$t('Search map')" :collapsible="true" class="w-40"></search-input>
-              </div>
-            </th>    
-            <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer">
-              {{ $t('Win Rate') }}<sort-indicator column="win_rate" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>
-            <th @click="sortTable('games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer">
-              {{ $t('Total Games') }}<sort-indicator column="games_played" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>
-            <th @click="sortTable('kda')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer">
-              <div class="">
-                {{ $t('KDA') }}
-              </div><sort-indicator :column="'kda'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>  
-            <th @click="sortTable('kdr')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer">
-              <div class="">
-                {{ $t('KDR') }}
-              </div><sort-indicator :column="'kdr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-            </th>
-            <template   v-for="stat in selectedStats">
-              <th  v-if="stat.selected" @click="sortTable(stat.value)" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer">
-                {{ $t(stat.name) }}<sort-indicator :column="stat.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </th>
-            </template> 
-         
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="row in shownData" :key="row.id">
-            <td class="py-2 px-3 "><a class="group/bt inline-flex items-center" :href="getPlayerMapPageUrl(row.name)"><span class="group-hover/bt:underline">{{ $mapName(row.name) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></td>
-            <td class="py-2 px-3"><div class="min-w-[8em]"><div class="text-sm font-semibold text-header tabular-nums mb-1.5">{{ row.win_rate }}<span class="text-xs">%</span></div><stat-bar :value="row.win_rate" display-text="" :color="getWinRateColor(row.win_rate)"></stat-bar></div></td>
-            <td class="py-2 px-3 text-center">{{ (row.wins + row.losses) }}</td>
-            <td class="max-md:hidden py-2 px-3 ">{{ row.kda }}</td>
-            <td class="max-md:hidden py-2 px-3 ">{{ row.kdr }}</td>
-            
-            <template v-for="stat in selectedStats" >
-              <td 
-                v-if="stat.selected" 
-                :class="{ flash: stat.flash }"
-                class="py-2 px-3 text-center">
-                <a v-if="statContainsMax(stat) && !esport" class="group/bt inline-flex items-center cursor-pointer" role="button" @click="navigateToMaxStatMatch(row.name, stat.value, row[stat.value])" :title="$t('Navigate to this match')"><span class="group-hover/bt:underline">{{ showStatValue(row[stat.value]) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-                <template v-else>{{ showStatValue(row[stat.value]) }}</template>
-              </td>
-            </template>
-
-    
-          </tr>
-        </tbody>
-      </table>
-</div>
+      </panel-box>
     </div>
-    <!-- Where the loaded page puts them: the column button's bar with the message on it, then the table, as wide as the loaded one -->
-    <div v-else-if="isLoading || asyncLoading" class="max-w-[93.75rem] mx-auto">
-      <div class="relative">
-        <skeleton-box class="h-12"></skeleton-box>
-        <div class="absolute inset-0 flex items-center justify-center px-4">
-          <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
-          <loading-component v-else :compact="true" :textoverride="true" :timer="!esport" :starttime="timertime" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+    <!-- The same card in grey while the maps load, the message on its tab -->
+    <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <panel-box title="All Maps" subtitle="00 maps · averages are per game" :skeleton="true" class="relative md:!rounded-tl-none">
+        <loading-component v-if="asyncLoading" :compact="true" :tab="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
+        <loading-component v-else :compact="true" :tab="true" :textoverride="true" :timer="!esport" :starttime="timertime" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+        <template #right>
+          <div class="relative">
+            <custom-button class="invisible min-w-[11.75rem]" text="Choose columns" alt="" :ignoreclick="true" aria-hidden="true"></custom-button>
+            <skeleton-box class="absolute inset-0"></skeleton-box>
+          </div>
+        </template>
+        <div class="overflow-clip">
+          <table class="min-w-0 w-full responsive-table rounded-table relative">
+            <thead>
+              <tr>
+                <th class="py-2 px-3 text-left text-sm leading-4">
+                  <div class="flex items-center gap-[1.125rem]">
+                    <span class="skeleton-text">{{ $t('Map') }}</span>
+                    <span class="invisible" aria-hidden="true"><search-input class="w-40" :collapsible="true"></search-input></span>
+                  </div>
+                </th>
+                <th class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Win Rate') }}</span></th>
+                <th class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Games') }}</span></th>
+                <th v-for="stat in selectedStats" :key="stat.value" class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t(columnLabel(stat)) }}</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in 19" :key="row">
+                <td class="py-2 px-3"><span class="inline-flex items-center font-medium"><span class="skeleton-text">Tomb of the Spider Queen</span><basil-icon name="arrow-small" class="text-xs ml-2 invisible"></basil-icon></span></td>
+                <td class="py-2 px-3"><div class="min-w-[8em]"><div class="text-sm font-semibold tabular-nums mb-1.5"><span class="skeleton-text">00.0<span class="text-xs">%</span></span></div><stat-bar value="0" display-text="" :hide-value="true"></stat-bar></div></td>
+                <td class="py-2 px-3 text-center"><span class="skeleton-text">000</span></td>
+                <td v-for="stat in selectedStats" :key="stat.value" class="py-2 px-3 text-center"><span class="skeleton-text">{{ skeletonValue(stat) }}</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      </div>
-      <table-skeleton class="relative w-[100.5rem] max-w-[calc(100vw-2rem)] left-1/2 -translate-x-1/2" :bare="true" :rows="10" :columns="['text', 'bar', 'stat', 'text', 'text', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat']" :mobile-columns="['text', 'bar', 'stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
+      </panel-box>
     </div>
 
     <match-lookup v-if="matchIsLoading" :text="matchLookupText"></match-lookup>
@@ -230,8 +221,8 @@ showOptions: false,
         { name: "Avg Vengeance", value: 'avg_vengeance', selected: false, flash: false},
         { name: "Avg Watch Tower Captures", value: 'avg_watch_tower_captures', selected: false, flash: false},
         { name: "Avg Total Healing", value: 'combined_healing', selected: false, flash: false},
-        { name: "KDA", value: 'kda', selected: false, flash: false},
-        { name: "KDR", value: 'kdr', selected: false, flash: false},
+        { name: "KDA", value: 'kda', selected: true, flash: false},
+        { name: "KDR", value: 'kdr', selected: true, flash: false},
         { name: "Losses", value: 'losses', selected: false, flash: false},
         { name: "Max Assists", value: 'max_assists', selected: false, flash: false},
         { name: "Max Clutch Heals", value: 'max_clutch_heals', selected: false, flash: false},
@@ -279,7 +270,7 @@ showOptions: false,
     // Phones start with fewer columns: kills, deaths, siege and hero damage
     if (window.matchMedia('(max-width: 1023px)').matches) {
       this.stats.forEach(stat => {
-        if (['avg_assists', 'avg_damage_taken', 'avg_experience_contribution'].includes(stat.value)) stat.selected = false;
+        if (['kda', 'kdr', 'avg_assists', 'avg_damage_taken', 'avg_experience_contribution'].includes(stat.value)) stat.selected = false;
       });
     }
     this.gametype = this.gametypedefault;
@@ -318,7 +309,7 @@ if(this.playerloadsetting == null || this.playerloadsetting == true || this.play
     },
     // Same order as the in-game scoreboard, then anything else picked
     selectedStats() {
-      const order = ['avg_kills', 'avg_assists', 'avg_deaths', 'avg_siege_damage', 'avg_hero_damage', 'avg_damage_taken', 'avg_experience_contribution'];
+      const order = ['kda', 'kdr', 'avg_kills', 'avg_assists', 'avg_deaths', 'avg_siege_damage', 'avg_hero_damage', 'avg_damage_taken', 'avg_experience_contribution'];
       const rank = stat => (order.includes(stat.value) ? order.indexOf(stat.value) : order.length);
       return this.stats.filter(stat => stat.selected).sort((a, b) => rank(a) - rank(b));
     },
@@ -502,6 +493,24 @@ async getData(type){
         return `${this.ngsPlayerUrl}/Map/${map}${window.location.search}`;
       }
       return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/Map/" + map;
+    },
+    // The column picker's Apply: newly shown columns flash once
+    applyColumns(values) {
+      this.stats.forEach(stat => {
+        const show = values.includes(stat.value);
+        if (show && !stat.selected) {
+          this.onCheckboxChange(stat);
+        }
+        stat.selected = show;
+      });
+    },
+    // Short header names: averages drop "Avg", and long words are cut down; the full name is the header's tooltip
+    // A placeholder as wide as the column's usual numbers
+    skeletonValue(stat) {
+      return /damage|healing|experience|taken|protection/.test(stat.value) ? '00,000' : '0.00';
+    },
+    columnLabel(stat) {
+      return stat.name.replace(/^Avg /, '').replace('Experience Contribution', 'XP Contrib.').replace(/Damage/g, 'Dmg');
     },
     isDisabled(stat) {
       return this.selectedStatsCount >= 15 && !stat.selected;

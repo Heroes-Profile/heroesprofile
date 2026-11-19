@@ -19,21 +19,17 @@
             "q": "如何找到我的玩家檔案？",
             "a": "使用網站頂端的搜尋列，輸入你的 BattleTag（例如 <code>Zemill#1940</code>）。找到後，即可查看你的比賽紀錄、英雄統計、MMR、地圖、對位等更多資料。請先確認你已上傳重播，這樣你的資料才會顯示。"
         },
-        "fee6b20b0ee8251f": {
-            "q": "Heroes Profile 是免費的嗎？",
-            "a": "是的，Heroes Profile 完全免費。我們透過 <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> 獲得社群支持。Patreon 贊助者可享有無廣告體驗及專屬的網站標誌。"
-        },
         "718a29824ecf8cbe": {
             "q": "我本賽季玩了幾場比賽？",
             "a": "開啟你的個人檔案，並將<strong>賽季</strong>篩選設為目前賽季。概覽便會顯示你在該賽季的場次、勝場與勝率，而<a href=\"/Player/Zemill/67280/1/Match/History\" class=\"link\">比賽紀錄</a>會列出所有這些比賽。只有已上傳的比賽才會計入，因此總數可能少於你在遊戲中實際玩的場次。"
         },
+        "fee6b20b0ee8251f": {
+            "q": "Heroes Profile 是免費的嗎？",
+            "a": "是的，Heroes Profile 完全免費。我們透過 <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> 獲得社群支持。Patreon 贊助者可享有無廣告體驗及專屬的網站標誌。"
+        },
         "7ba1b5ca799e4b7a": {
             "q": "如何讓我的統計資料出現在 Heroes Profile 上？",
             "a": "你需要上傳你的重播檔案。最簡單的方法是下載 <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a>，它會在背景運行，並在每場比賽結束後自動上傳重播。你也可以<a href=\"/Upload\" class=\"link\">手動上傳重播</a>。上傳後，請等待 5–10 分鐘讓系統處理。"
-        },
-        "4015e4f47fc40628": {
-            "q": "Heroes Profile Uploader 安全嗎？",
-            "a": "安全。上傳工具完全開源，你可以在 GitHub 上查看完整原始碼：<a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>。它不含廣告、冗贅軟體，除了基本的頁面分析之外也不會進行任何追蹤。如果你願意，也可以改為手動上傳重播。<br><br>部分防毒軟體或瀏覽器可能會將安裝程式標記為可疑。這是誤報，原因是執行檔沒有使用付費的程式碼簽章憑證簽署，而不是因為它含有惡意軟體。你可以自行查看開源程式碼來確認。如果仍有疑慮，請改用<a href=\"/Upload\" class=\"link\">手動上傳頁面</a>。"
         },
         "be6aba0fe5a58edc": {
             "q": "為什麼我的比賽沒有全部顯示？",
@@ -54,6 +50,10 @@
         "a1eb614636680760": {
             "q": "如何將我的個人檔案設為不公開？",
             "a": "使用你的 Battle.net 帳號登入，前往<a href=\"/Profile/Settings\" class=\"link\">個人檔案設定</a>，將帳號可見性設為不公開。你的 BattleTag 仍會出現在其他玩家的比賽紀錄中（因為它是重播檔案的一部分），但你的個人檔案頁面將不會公開。"
+        },
+        "1784061c5e512b03": {
+            "q": "Heroes Profile 上傳工具安全嗎？",
+            "a": "安全。上傳工具完全開放原始碼，你可以在 GitHub 上查看完整原始碼：<a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>。它不含廣告或垃圾軟體，除了基本的頁面分析外也不會進行任何追蹤。如果你願意，也可以改為手動上傳重播。<br><br>Windows 與 Mac 安裝程式已進行程式碼簽署，Linux 下載檔則附有簽署的校驗碼。如果防毒軟體或瀏覽器仍將下載檔標記為可疑，那是誤判，你可以自行查看開放原始碼加以確認。如果你仍不放心，請改用<a href=\"/Upload\" class=\"link\">手動上傳頁面</a>。"
         },
         "c4b452b25e56c717": {
             "q": "Heroes Profile 的 MMR 是如何運作的？",
@@ -99,6 +99,10 @@
             "q": "為什麼對位勝率會排除鏡像對局？",
             "a": "在鏡像對局中，英雄的對手是同一位英雄，因此該英雄在同一場比賽中必定是一勝一敗。如果納入鏡像對局，每位英雄的平均勝率都會被拉向 50%，無法提供有用的資訊。排除鏡像對局後，對位資料才能真正反映有意義的對戰關係。"
         },
+        "a95840c72f0aa9a4": {
+            "q": "如何找到剋制某位英雄的英雄？",
+            "a": "在<a href=\"/Global/Matchups\" class=\"link\">對位</a>中開啟該英雄，例如 <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>。<strong>敵方隊伍中的前 5 大威脅</strong>會顯示對陣該英雄表現最好的英雄。在表格中依該英雄的<strong>對陣勝率</strong>排序：勝率最高的就是它的剋星，差值欄則顯示各英雄對陣它時比平常好多少。請同時查看對陣場次，以免被過小的樣本誤導。接著，<a href=\"/Global/Matchups/Talents\" class=\"link\">對位天賦</a>會顯示在該對位中應選擇哪些天賦。"
+        },
         "507d49de8fb485c2": {
             "q": "表現分數是如何計算的？",
             "a": "比賽頁面上的表現分數計算方式如下：取該場比賽的每項統計（傷害、治療量、擊殺等），將該場 10 名玩家由高到低排名，再依排名位置給分。這是單場比賽內的相對衡量，並非全球基準。"
@@ -130,10 +134,6 @@
         "da9672cbf4c59a90": {
             "q": "什麼是天賦建構器？",
             "a": "<a href=\"/Global/Talents/Builder\" class=\"link\">天賦建構器</a>讓你建立特定的天賦組合，並查看該組合確切的勝率資料。非常適合用真實比賽資料直接比較兩個組合。"
-        },
-        "a95840c72f0aa9a4": {
-            "q": "如何找到剋制某位英雄的英雄？",
-            "a": "在<a href=\"/Global/Matchups\" class=\"link\">對位</a>中開啟該英雄，例如 <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>。<strong>敵方隊伍中的前 5 大威脅</strong>會顯示對陣該英雄表現最好的英雄。在表格中依該英雄的<strong>對陣勝率</strong>排序：勝率最高的就是它的剋星，差值欄則顯示各英雄對陣它時比平常好多少。請同時查看對陣場次，以免被過小的樣本誤導。接著，<a href=\"/Global/Matchups/Talents\" class=\"link\">對位天賦</a>會顯示在該對位中應選擇哪些天賦。"
         },
         "970140e24d9bb059": {
             "q": "某位英雄的最佳組合是什麼？",

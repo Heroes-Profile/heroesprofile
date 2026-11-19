@@ -1,36 +1,39 @@
 <template>
   <div>
-    <p class="text-sm mb-4 text-yellow">
-      {{ $t('Games uploaded through the web uploader may not be eligible for leaderboard consideration.') }}
-    </p>
+    <div class="flex gap-3 rounded-control bg-surface-1 border-l-4 border-yellow px-5 py-3 text-sm mb-6">
+      <basil-icon name="info" class="text-yellow text-xl shrink-0"></basil-icon>
+      <span>{{ $t('Games uploaded here may not count towards the leaderboards. Use the Replay Uploader for that.') }}</span>
+    </div>
 
     <div
-      class="border-2 border-dashed p-6 text-center mb-4 transition-colors"
-      :class="dragging ? 'border-lteal bg-darken' : 'border-gray-medium'"
+      class="rounded-control border-2 border-dashed px-6 py-10 flex flex-col items-center text-center mb-4 transition-colors"
+      :class="dragging ? 'border-lteal bg-surface-1' : 'border-surface-4'"
       @dragenter.prevent="dragging = true"
       @dragover.prevent="dragging = true"
       @dragleave.prevent="dragging = false"
       @drop.prevent="onDrop"
     >
-      <p class="mb-4 text-sm">{{ $t('Drop replays here, or choose them below.') }}</p>
+      <span class="w-16 h-16 rounded-full bg-surface-3 flex items-center justify-center mb-4"><basil-icon name="replay" class="text-3xl"></basil-icon></span>
+      <p class="text-lg font-bold">{{ $t('Drop replays here') }}</p>
+      <p class="text-sm text-subtext mt-2 mb-4">{{ $t('StormReplay files, up to :size each', { size: formatSize(maxBytes) }) }}</p>
 
       <div class="flex flex-wrap gap-3 justify-center">
-        <label class="btn bg-teal hover:bg-lteal cursor-pointer text-sm">
+        <label class="btn bg-teal hover:bg-lteal">
           <span>{{ $t('Select replays') }}</span>
           <input type="file" class="hidden" multiple accept=".StormReplay" @change="onSelect" />
         </label>
 
         <label
           v-if="directorySupported"
-          class="btn bg-teal hover:bg-lteal cursor-pointer text-sm"
+          class="btn bg-blue hover:bg-lblue"
         >
           <span>{{ $t('Select a folder') }}</span>
           <input type="file" class="hidden" multiple webkitdirectory directory @change="onSelect" />
         </label>
       </div>
 
-      <p class="text-xs text-gray-medium mt-3">
-        {{ $t('.StormReplay files, up to :size each. Uploading more than about 700 at once is easier by folder.', { size: formatSize(maxBytes) }) }}
+      <p class="text-xs text-subtext mt-4">
+        {{ $t('Uploading more than ~700 replays? Selecting a folder is easier.') }}
       </p>
     </div>
 

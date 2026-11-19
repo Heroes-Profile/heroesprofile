@@ -19,21 +19,17 @@
             "q": "Jak znaleźć swój profil gracza?",
             "a": "Skorzystaj z paska wyszukiwania u góry strony i wpisz swój BattleTag (np. <code>Zemill#1940</code>). Po znalezieniu profilu zobaczysz historię meczów, statystyki bohaterów, MMR, mapy, pojedynki i wiele więcej. Najpierw prześlij swoje powtórki, aby Twoje dane się pojawiły."
         },
-        "fee6b20b0ee8251f": {
-            "q": "Czy Heroes Profile jest darmowy?",
-            "a": "Tak, Heroes Profile jest całkowicie darmowy. Wspiera nas społeczność za pośrednictwem <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a>. Wspierający na Patreonie korzystają z serwisu bez reklam i otrzymują specjalne wyróżnienia."
-        },
         "718a29824ecf8cbe": {
             "q": "Ile meczów rozegrałem w tym sezonie?",
             "a": "Otwórz swój profil i ustaw filtr <strong>Sezon</strong> na bieżący sezon. Przegląd pokaże wtedy Twoje mecze, zwycięstwa i odsetek zwycięstw w tym sezonie, a <a href=\"/Player/Zemill/67280/1/Match/History\" class=\"link\">Historia meczów</a> wyświetli listę wszystkich tych meczów. Liczone są tylko przesłane mecze, więc suma może być niższa niż liczba meczów rozegranych w grze."
         },
+        "fee6b20b0ee8251f": {
+            "q": "Czy Heroes Profile jest darmowy?",
+            "a": "Tak, Heroes Profile jest całkowicie darmowy. Wspiera nas społeczność za pośrednictwem <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a>. Wspierający na Patreonie korzystają z serwisu bez reklam i otrzymują specjalne wyróżnienia."
+        },
         "7ba1b5ca799e4b7a": {
             "q": "Jak sprawić, by moje statystyki pojawiły się na Heroes Profile?",
             "a": "Musisz przesłać swoje pliki powtórek. Najprościej jest pobrać <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a>, który działa w tle i automatycznie przesyła powtórki po każdym meczu. Możesz też <a href=\"/Upload\" class=\"link\">przesłać powtórki ręcznie</a>. Po przesłaniu poczekaj 5–10 minut na przetworzenie."
-        },
-        "4015e4f47fc40628": {
-            "q": "Czy Heroes Profile Uploader jest bezpieczny?",
-            "a": "Tak. Przesyłarka jest w pełni open source – cały kod źródłowy możesz przejrzeć na GitHub: <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>. Nie zawiera reklam, zbędnego oprogramowania ani śledzenia poza podstawową analityką strony. Jeśli wolisz, możesz zamiast tego przesyłać powtórki ręcznie.<br><br>Niektóre programy antywirusowe lub przeglądarki mogą oznaczyć instalator jako podejrzany. To fałszywy alarm wynikający z tego, że plik wykonywalny nie jest podpisany płatnym certyfikatem podpisywania kodu – a nie z tego, że zawiera złośliwe oprogramowanie. Możesz to sprawdzić sam, przeglądając otwarty kod źródłowy. Jeśli nie czujesz się z tym pewnie, skorzystaj ze <a href=\"/Upload\" class=\"link\">strony ręcznego przesyłania</a>."
         },
         "be6aba0fe5a58edc": {
             "q": "Dlaczego nie widzę wszystkich swoich meczów?",
@@ -54,6 +50,10 @@
         "a1eb614636680760": {
             "q": "Jak ustawić profil jako prywatny?",
             "a": "Zaloguj się kontem Battle.net, przejdź do <a href=\"/Profile/Settings\" class=\"link\">Ustawień profilu</a> i ustaw Widoczność konta na Prywatne. Twój BattleTag nadal będzie widoczny w historii meczów innych graczy (ponieważ jest częścią pliku powtórki), ale Twoja strona profilu nie będzie publicznie dostępna."
+        },
+        "1784061c5e512b03": {
+            "q": "Czy przesyłarka Heroes Profile jest bezpieczna?",
+            "a": "Tak. Przesyłarka ma w pełni otwarty kod źródłowy — cały kod możesz przejrzeć na GitHubie: <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>. Nie zawiera reklam, zbędnego oprogramowania ani śledzenia poza podstawową analityką stron. Jeśli wolisz, możesz zamiast tego przesyłać powtórki ręcznie.<br><br>Instalatory dla Windows i Maca są podpisane cyfrowo, a pliki dla Linuksa mają podpisane sumy kontrolne. Jeśli program antywirusowy lub przeglądarka mimo to oznaczy pobrany plik, jest to fałszywy alarm — możesz to sprawdzić samodzielnie, przeglądając otwarty kod źródłowy. Jeśli nie czujesz się z tym pewnie, skorzystaj ze <a href=\"/Upload\" class=\"link\">strony ręcznego przesyłania</a>."
         },
         "c4b452b25e56c717": {
             "q": "Jak działa MMR na Heroes Profile?",
@@ -99,6 +99,10 @@
             "q": "Dlaczego mecze lustrzane są wykluczone z odsetka zwycięstw w pojedynkach?",
             "a": "Gdy bohater mierzy się sam ze sobą w meczu lustrzanym, wynikiem jest zawsze jedno zwycięstwo i jedna porażka tego bohatera w tym samym meczu. Uwzględnienie meczów lustrzanych zawsze przesuwałoby średni odsetek zwycięstw każdego bohatera w stronę 50% i nie dawało żadnych użytecznych informacji. Dzięki ich wykluczeniu dane o pojedynkach naprawdę odzwierciedlają istotną dynamikę rywalizacji."
         },
+        "a95840c72f0aa9a4": {
+            "q": "Jak znaleźć kontry na bohatera?",
+            "a": "Otwórz bohatera w zakładce <a href=\"/Global/Matchups\" class=\"link\">Pojedynki</a>, np. <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>. Sekcja <strong>5 największych zagrożeń w drużynie wroga</strong> pokazuje bohaterów, którzy radzą sobie przeciw niemu najlepiej. W tabeli posortuj według kolumny <strong>Odsetek zwycięstw przeciw</strong> temu bohaterowi: najwyższe wartości to jego kontry, a kolumna Różnica pokazuje, o ile lepiej niż zwykle radzi sobie przeciw niemu każdy bohater. Sprawdzaj kolumnę Mecze rozegrane przeciw, by mała próba nie wprowadziła Cię w błąd. Następnie <a href=\"/Global/Matchups/Talents\" class=\"link\">Talenty według pojedynków</a> pokażą, które talenty wybrać w tym pojedynku."
+        },
         "507d49de8fb485c2": {
             "q": "Jak działa Wynik występu?",
             "a": "Wynik występu na stronach meczów jest obliczany tak: bierzemy każdą statystykę z meczu (obrażenia, leczenie, zabójstwa itd.), szeregujemy wszystkich 10 graczy tego meczu od najlepszego do najgorszego i przyznajemy punkty według zajętego miejsca. To miara względna w obrębie jednego meczu, a nie globalny punkt odniesienia."
@@ -130,10 +134,6 @@
         "da9672cbf4c59a90": {
             "q": "Czym jest Kreator talentów?",
             "a": "<a href=\"/Global/Talents/Builder\" class=\"link\">Kreator talentów</a> pozwala ułożyć konkretny build talentów i zobaczyć odsetek zwycięstw dokładnie dla tej kombinacji. Świetnie nadaje się do bezpośredniego porównywania dwóch buildów na podstawie prawdziwych danych z meczów."
-        },
-        "a95840c72f0aa9a4": {
-            "q": "Jak znaleźć kontry na bohatera?",
-            "a": "Otwórz bohatera w zakładce <a href=\"/Global/Matchups\" class=\"link\">Pojedynki</a>, np. <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>. Sekcja <strong>5 największych zagrożeń w drużynie wroga</strong> pokazuje bohaterów, którzy radzą sobie przeciw niemu najlepiej. W tabeli posortuj według kolumny <strong>Odsetek zwycięstw przeciw</strong> temu bohaterowi: najwyższe wartości to jego kontry, a kolumna Różnica pokazuje, o ile lepiej niż zwykle radzi sobie przeciw niemu każdy bohater. Sprawdzaj kolumnę Mecze rozegrane przeciw, by mała próba nie wprowadziła Cię w błąd. Następnie <a href=\"/Global/Matchups/Talents\" class=\"link\">Talenty według pojedynków</a> pokażą, które talenty wybrać w tym pojedynku."
         },
         "970140e24d9bb059": {
             "q": "Jaki jest najlepszy build dla bohatera?",

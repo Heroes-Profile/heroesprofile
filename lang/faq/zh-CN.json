@@ -19,21 +19,17 @@
             "q": "如何找到我的玩家资料？",
             "a": "使用网站顶部的搜索栏，输入你的战网昵称（例如 <code>Zemill#1940</code>）。找到后，你可以查看自己的比赛历史、英雄统计、MMR、地图、对位等内容。请确保你已先上传录像，这样你的数据才会显示。"
         },
-        "fee6b20b0ee8251f": {
-            "q": "Heroes Profile 是免费的吗？",
-            "a": "是的，Heroes Profile 完全免费。我们通过 <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> 获得社区支持。Patreon 赞助者可享受无广告体验和专属网站标识。"
-        },
         "718a29824ecf8cbe": {
             "q": "我本赛季打了多少场比赛？",
             "a": "打开你的个人资料，将<strong>赛季</strong>筛选设置为当前赛季。概览中便会显示你在该赛季的场次、胜场和胜率，<a href=\"/Player/Zemill/67280/1/Match/History\" class=\"link\">比赛历史</a>会列出其中的每一场比赛。只有已上传的比赛才会计入，因此总数可能低于你在游戏中实际进行的场次。"
         },
+        "fee6b20b0ee8251f": {
+            "q": "Heroes Profile 是免费的吗？",
+            "a": "是的，Heroes Profile 完全免费。我们通过 <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a> 获得社区支持。Patreon 赞助者可享受无广告体验和专属网站标识。"
+        },
         "7ba1b5ca799e4b7a": {
             "q": "如何让我的数据出现在 Heroes Profile 上？",
             "a": "你需要上传录像文件。最简单的方法是下载 <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a>，它会在后台运行，并在每场比赛结束后自动上传录像。你也可以<a href=\"/Upload\" class=\"link\">手动上传录像</a>。上传后，请等待 5–10 分钟完成处理。"
-        },
-        "4015e4f47fc40628": {
-            "q": "Heroes Profile Uploader 安全吗？",
-            "a": "安全。上传工具完全开源，你可以在 GitHub 上查看全部源代码：<a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>。它不含广告或捆绑软件，除基本的页面统计外也没有任何追踪。如果你愿意，也可以改为手动上传录像。<br><br>部分杀毒软件或浏览器可能会将安装程序标记为可疑。这是误报，原因是该可执行文件没有使用付费的代码签名证书签名，而不是因为它含有恶意软件。你可以自行查看开源代码来验证。如果仍有顾虑，请改用<a href=\"/Upload\" class=\"link\">手动上传页面</a>。"
         },
         "be6aba0fe5a58edc": {
             "q": "为什么我的比赛没有全部显示？",
@@ -54,6 +50,10 @@
         "a1eb614636680760": {
             "q": "如何将我的个人资料设为私密？",
             "a": "使用你的 Battle.net 账号登录，前往<a href=\"/Profile/Settings\" class=\"link\">个人资料设置</a>，将“账号可见性”设为“私密”。你的战网昵称仍会出现在其他玩家的比赛历史中（因为它是录像文件的一部分），但你的个人资料页面将无法被公开访问。"
+        },
+        "1784061c5e512b03": {
+            "q": "Heroes Profile 上传工具安全吗？",
+            "a": "安全。上传工具完全开源——你可以在 GitHub 上查看完整源代码：<a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>。它不含广告或捆绑软件，除基本的页面分析外也不进行任何追踪。如果你愿意，也可以改为手动上传录像。<br><br>Windows 和 Mac 安装程序均已进行代码签名，Linux 下载附带签名校验和。如果杀毒软件或浏览器仍然标记某个下载，那属于误报——你可以查看开源代码自行验证。如果你仍不放心，请改用<a href=\"/Upload\" class=\"link\">手动上传页面</a>。"
         },
         "c4b452b25e56c717": {
             "q": "Heroes Profile 的 MMR 是如何计算的？",
@@ -99,6 +99,10 @@
             "q": "为什么对位胜率中排除了镜像对局？",
             "a": "在镜像对局中，英雄与自己对阵，同一场比赛里该英雄必然是一胜一负。如果计入镜像对局，每个英雄的平均胜率都会被拉向 50%，无法提供有用的信息。排除镜像对局后，对位数据才能真正反映有意义的对抗关系。"
         },
+        "a95840c72f0aa9a4": {
+            "q": "如何查找克制某个英雄的英雄？",
+            "a": "在<a href=\"/Global/Matchups\" class=\"link\">对位</a>中打开该英雄，例如 <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>。<strong>敌方队伍中的前 5 名威胁</strong>会显示对阵该英雄表现最好的英雄。在表格中按对该英雄的<strong>对阵胜率</strong>排序：胜率最高的就是克制它的英雄，差值列显示各英雄对阵它时比平常表现好多少。请同时查看对阵场次，以免被小样本误导。之后可在<a href=\"/Global/Matchups/Talents\" class=\"link\">对位天赋</a>中查看该对位应选择哪些天赋。"
+        },
         "507d49de8fb485c2": {
             "q": "表现评分是如何计算的？",
             "a": "比赛页面上的表现评分的计算方式是：针对比赛中的每项统计（伤害、治疗量、击杀等），将该场比赛的全部 10 名玩家从高到低排名，并根据名次给出分数。这是该场比赛内部的相对衡量，而不是全球基准。"
@@ -130,10 +134,6 @@
         "da9672cbf4c59a90": {
             "q": "什么是天赋构建器？",
             "a": "<a href=\"/Global/Talents/Builder\" class=\"link\">天赋构建器</a>让你组建特定的天赋构筑，并查看该组合的胜率数据。用它基于真实比赛数据对比两套构筑非常方便。"
-        },
-        "a95840c72f0aa9a4": {
-            "q": "如何查找克制某个英雄的英雄？",
-            "a": "在<a href=\"/Global/Matchups\" class=\"link\">对位</a>中打开该英雄，例如 <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>。<strong>敌方队伍中的前 5 名威胁</strong>会显示对阵该英雄表现最好的英雄。在表格中按对该英雄的<strong>对阵胜率</strong>排序：胜率最高的就是克制它的英雄，差值列显示各英雄对阵它时比平常表现好多少。请同时查看对阵场次，以免被小样本误导。之后可在<a href=\"/Global/Matchups/Talents\" class=\"link\">对位天赋</a>中查看该对位应选择哪些天赋。"
         },
         "970140e24d9bb059": {
             "q": "某个英雄的最佳构筑是什么？",

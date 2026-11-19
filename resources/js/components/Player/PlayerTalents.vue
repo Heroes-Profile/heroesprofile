@@ -44,7 +44,7 @@
     </player-page-top>
 
     <div v-if="!selectedHero">
-      <hero-selection :heroes="heroes" subtitle="Open a hero to see your talent win rates and builds." @search="heroSearchQuery = $event" @role="heroRole = $event"></hero-selection>
+      <hero-selection :heroes="heroes" :subtitle="esport ? $t('Open a hero to see talent win rates and builds from :league games.', { league: league.name }) : 'Open a hero to see your talent win rates and builds.'" @search="heroSearchQuery = $event" @role="heroRole = $event"></hero-selection>
 
       <!-- The player's most played build per hero, like the list on /Global/Talents -->
       <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6">

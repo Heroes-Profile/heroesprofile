@@ -19,21 +19,17 @@
             "q": "Como encontro meu perfil de jogador?",
             "a": "Use a barra de busca no topo do site e digite seu BattleTag (por exemplo, <code>Zemill#1940</code>). Depois de encontrá-lo, você pode ver seu histórico de partidas, estatísticas de heróis, MMR, mapas, confrontos e mais. Lembre-se de enviar seus replays antes para que seus dados apareçam."
         },
-        "fee6b20b0ee8251f": {
-            "q": "O Heroes Profile é gratuito?",
-            "a": "Sim, o Heroes Profile é totalmente gratuito. Somos mantidos pela comunidade por meio do <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a>. Os apoiadores do Patreon navegam sem anúncios e recebem insígnias especiais no site."
-        },
         "718a29824ecf8cbe": {
             "q": "Quantas partidas joguei nesta temporada?",
             "a": "Abra seu perfil e defina o filtro <strong>Temporada</strong> para a temporada atual. A visão geral passa a mostrar suas partidas, vitórias e taxa de vitória nessa temporada, e o <a href=\"/Player/Zemill/67280/1/Match/History\" class=\"link\">Histórico de partidas</a> lista cada uma dessas partidas. Só as partidas enviadas são contadas, então o total pode ser menor do que o que você jogou no jogo."
         },
+        "fee6b20b0ee8251f": {
+            "q": "O Heroes Profile é gratuito?",
+            "a": "Sim, o Heroes Profile é totalmente gratuito. Somos mantidos pela comunidade por meio do <a href=\"https://www.patreon.com/heroesprofile\" target=\"_blank\" class=\"link\">Patreon</a>. Os apoiadores do Patreon navegam sem anúncios e recebem insígnias especiais no site."
+        },
         "7ba1b5ca799e4b7a": {
             "q": "Como coloco minhas estatísticas no Heroes Profile?",
             "a": "Você precisa enviar seus arquivos de replay. O jeito mais fácil é baixar o <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe\" class=\"link\">Heroes Profile Uploader</a>, que roda em segundo plano e envia os replays automaticamente após cada partida. Você também pode <a href=\"/Upload\" class=\"link\">enviar replays manualmente</a>. Depois do envio, aguarde de 5 a 10 minutos para o processamento."
-        },
-        "4015e4f47fc40628": {
-            "q": "O Heroes Profile Uploader é seguro?",
-            "a": "Sim. O enviador é totalmente de código aberto — você pode conferir todo o código-fonte no GitHub: <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>. Ele não contém anúncios, bloatware nem rastreamento além de análises básicas de página. Se preferir, você pode enviar os replays manualmente.<br><br>Alguns antivírus ou navegadores podem marcar o instalador como suspeito. Isso é um falso positivo causado pelo executável não ter uma assinatura de código paga — não porque contenha malware. Você mesmo pode verificar isso conferindo o código aberto. Se não se sentir à vontade, use a <a href=\"/Upload\" class=\"link\">página de envio manual</a>."
         },
         "be6aba0fe5a58edc": {
             "q": "Por que nem todas as minhas partidas aparecem?",
@@ -54,6 +50,10 @@
         "a1eb614636680760": {
             "q": "Como deixo meu perfil privado?",
             "a": "Entre com sua conta Battle.net, vá até <a href=\"/Profile/Settings\" class=\"link\">Configurações do perfil</a> e defina a Visibilidade da conta como Privada. Seu BattleTag continuará aparecendo no histórico de partidas de outros jogadores (já que faz parte do arquivo de replay), mas a sua página de perfil não ficará acessível publicamente."
+        },
+        "1784061c5e512b03": {
+            "q": "O enviador do Heroes Profile é seguro?",
+            "a": "Sim. O enviador é totalmente de código aberto, e você pode conferir todo o código-fonte no GitHub: <a href=\"https://github.com/Heroes-Profile/HeroesProfile.Uploader\" target=\"_blank\" class=\"link\">HeroesProfile.Uploader</a>. Ele não tem anúncios, bloatware nem rastreamento além de análises básicas de página. Se preferir, você pode enviar os replays manualmente.<br><br>Os instaladores para Windows e Mac têm assinatura de código, e os downloads para Linux vêm com checksums assinados. Se um antivírus ou navegador ainda sinalizar um download, é um falso positivo, e você mesmo pode confirmar isso revisando o código aberto. Se não se sentir à vontade, use a <a href=\"/Upload\" class=\"link\">página de envio manual</a>."
         },
         "c4b452b25e56c717": {
             "q": "Como funciona o MMR no Heroes Profile?",
@@ -99,6 +99,10 @@
             "q": "Por que os confrontos espelhados são excluídos das taxas de vitória por confronto?",
             "a": "Quando um herói enfrenta a si mesmo em um confronto espelhado, o resultado é sempre uma vitória e uma derrota para esse herói na mesma partida. Incluir os espelhados sempre puxaria a taxa de vitória média de todos os heróis para 50%, sem trazer nenhuma informação útil. Excluí-los permite que os dados de confrontos reflitam de fato as dinâmicas competitivas relevantes."
         },
+        "a95840c72f0aa9a4": {
+            "q": "Como encontro counters para um herói?",
+            "a": "Abra o herói em <a href=\"/Global/Matchups\" class=\"link\">Confrontos</a>, por exemplo <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>. <strong>5 maiores ameaças na equipe inimiga</strong> mostra os heróis que se saem melhor contra ele. Na tabela, ordene por <strong>Taxa de vitória contra</strong> esse herói: as maiores taxas de vitória são os counters dele, e a coluna Diferença mostra o quanto cada herói se sai melhor contra ele do que o normal. Confira Partidas jogadas contra para que uma amostra pequena não engane você. Depois, <a href=\"/Global/Matchups/Talents\" class=\"link\">Talentos por confronto</a> mostra quais talentos levar para esse confronto."
+        },
         "507d49de8fb485c2": {
             "q": "Como funciona a pontuação de desempenho?",
             "a": "A pontuação de desempenho nas páginas de partida é calculada pegando cada estatística de uma partida (dano, cura, abates etc.), classificando os 10 jogadores dessa partida do melhor ao pior e atribuindo uma pontuação conforme a posição. É uma medida relativa dentro daquela única partida, não uma referência global."
@@ -130,10 +134,6 @@
         "da9672cbf4c59a90": {
             "q": "O que é o Construtor de talentos?",
             "a": "O <a href=\"/Global/Talents/Builder\" class=\"link\">Construtor de talentos</a> permite montar uma build de talentos específica e ver os dados de taxa de vitória exatamente dessa combinação. É ótimo para comparar duas builds frente a frente com dados reais de partidas."
-        },
-        "a95840c72f0aa9a4": {
-            "q": "Como encontro counters para um herói?",
-            "a": "Abra o herói em <a href=\"/Global/Matchups\" class=\"link\">Confrontos</a>, por exemplo <a href=\"/Global/Matchups/Li-Ming\" class=\"link\">/Global/Matchups/Li-Ming</a>. <strong>5 maiores ameaças na equipe inimiga</strong> mostra os heróis que se saem melhor contra ele. Na tabela, ordene por <strong>Taxa de vitória contra</strong> esse herói: as maiores taxas de vitória são os counters dele, e a coluna Diferença mostra o quanto cada herói se sai melhor contra ele do que o normal. Confira Partidas jogadas contra para que uma amostra pequena não engane você. Depois, <a href=\"/Global/Matchups/Talents\" class=\"link\">Talentos por confronto</a> mostra quais talentos levar para esse confronto."
         },
         "970140e24d9bb059": {
             "q": "Qual é a melhor build para um herói?",
