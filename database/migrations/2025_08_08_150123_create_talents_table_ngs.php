@@ -14,8 +14,11 @@ class CreateTalentsTableNgs extends Migration
     public function up()
     {
         Schema::create('heroesprofile_ngs.talents', function (Blueprint $table) {
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
             $table->unsignedInteger('replayID');
-            $table->unsignedBigInteger('battletag');
+            $table->integer('battletag');
             $table->integer('level_one')->nullable();
             $table->integer('level_four')->nullable();
             $table->integer('level_seven')->nullable();

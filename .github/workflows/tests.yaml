@@ -1,0 +1,60 @@
+# The full test suite (php artisan hp:test full) on a fresh test database: the same
+# MySQL 8.4 container local runs use, migrated and seeded from scratch every run.
+# See the README's Testing section for the suites.
+
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: develop
+
+# A newer push to the same branch or pull request makes an older run pointless
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # Started first so MySQL initialises while dependencies install
+    - name: Start the test database
+      run: docker compose -f docker-compose/docker-compose.testing.yaml up -d
+
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+        extensions: bcmath, intl, mbstring, pdo_mysql
+        coverage: none
+
+    - name: Composer cache directory
+      id: composer-cache
+      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+    - uses: actions/cache@v4
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
+
+    - name: Install dependencies
+      run: composer install --no-interaction --no-progress --prefer-dist
+
+    # Artisan needs an .env to boot, as in ci.yaml. hp:test keeps its values away from PHPUnit, which reads .env.testing
+    - name: Prepare the application
+      run: |
+        cp .env.example .env
+        php artisan key:generate
+
+    # Waits for the container, then migrates and seeds it (tests/bootstrap.php) before running
+    - name: Run the full suite
+      run: php artisan hp:test full
+
+    - name: Test database log on failure
+      if: failure()
+      run: docker compose -f docker-compose/docker-compose.testing.yaml logs --tail 200

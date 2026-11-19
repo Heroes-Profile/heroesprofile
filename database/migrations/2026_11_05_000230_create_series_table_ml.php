@@ -14,7 +14,9 @@ class CreateSeriesTableMl extends Migration
     public function up()
     {
         Schema::create('heroesprofile_ml.series', function (Blueprint $table) {
-            $table->increments('series_id');
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('series_id', true);
             $table->string('name', 45)->nullable();
             $table->string('icon', 45)->nullable();
         });

@@ -1,29 +1,32 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateGlobalHeroStatsBansTable extends Migration
 {
     public function up()
     {
-        Schema::connection('heroesprofile_globals')->create('global_hero_stats_bans', function (Blueprint $table) {
-            $table->increments('global_hero_stats_bans_id');
-            $table->integer('game_version')->notNull();
-            $table->tinyInteger('game_type');
-            $table->tinyInteger('league_tier');
-            $table->tinyInteger('hero_league_tier')->default(0);
-            $table->tinyInteger('role_league_tier')->default(0);
-            $table->tinyInteger('game_map');
-            $table->integer('hero_level');
-            $table->integer('region');
-            $table->tinyInteger('hero');
-            $table->double('bans')->default(0);
-
-            $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'region', 'hero'], 'unique');
-            $table->index(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'region', 'hero', 'bans'], 'Index_Bans');
-        });
+        DB::connection('heroesprofile_globals')->statement(<<<'SQL'
+            CREATE TABLE `global_hero_stats_bans` (
+                `global_hero_stats_bans_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                `game_version` int unsigned NOT NULL,
+                `game_type` tinyint NOT NULL,
+                `league_tier` tinyint NOT NULL,
+                `hero_league_tier` tinyint NOT NULL DEFAULT 0,
+                `role_league_tier` tinyint NOT NULL DEFAULT 0,
+                `game_map` tinyint NOT NULL,
+                `hero_level` int NOT NULL,
+                `region` int NOT NULL,
+                `hero` tinyint NOT NULL,
+                `bans` double unsigned NULL DEFAULT 0,
+                PRIMARY KEY (`global_hero_stats_bans_id`, `game_version`),
+                KEY `Index_Bans` (`game_version`, `game_type`, `league_tier`, `hero_league_tier`, `role_league_tier`, `game_map`, `hero_level`, `region`, `hero`, `bans`),
+                UNIQUE KEY `UNIQUE` (`game_version`, `game_type`, `league_tier`, `hero_league_tier`, `role_league_tier`, `game_map`, `hero_level`, `region`, `hero`)
+            ) ENGINE=InnoDB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            PARTITION BY RANGE (`game_version`) (PARTITION pmax VALUES LESS THAN MAXVALUE)
+            SQL);
     }
 
     public function down()

@@ -1,0 +1,287 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "filters": {
+            "seasons": [
+                {
+                    "code": null,
+                    "name": "All"
+                },
+                {
+                    "code": "9",
+                    "name": "9"
+                }
+            ],
+            "divisions": [
+                {
+                    "code": null,
+                    "name": "All"
+                },
+                {
+                    "code": "A East",
+                    "name": "A East"
+                }
+            ],
+            "teams": [
+                "ParsleySnagRosemary&Line"
+            ]
+        },
+        "friend": [
+            {
+                "blizz_id": 12497,
+                "battletag": "Snaginanehs",
+                "link": "/Esports/NGS/Player/Snaginanehs/12497",
+                "hero": "Garrosh",
+                "hero_games": 1,
+                "heroData": {
+                    "hero": {
+                        "id": 19,
+                        "name": "Garrosh",
+                        "short_name": "garrosh",
+                        "alt_name": "",
+                        "role": "Warrior",
+                        "new_role": "Tank",
+                        "type": "Melee",
+                        "release_date": "2017-08-08 00:00:00",
+                        "rework_date": null,
+                        "last_change_patch_version": "2.54.1.85267",
+                        "attribute_id": "Garr",
+                        "build_copy_name": "Garrosh",
+                        "last_updated": null
+                    }
+                },
+                "total_wins": 3,
+                "total_losses": 2,
+                "total_games_played": 5,
+                "win_rate": 60
+            },
+            {
+                "blizz_id": 428967,
+                "battletag": "Winterharte",
+                "link": "/Esports/NGS/Player/Winterharte/428967",
+                "hero": "Cassia",
+                "hero_games": 2,
+                "heroData": {
+                    "hero": {
+                        "id": 9,
+                        "name": "Cassia",
+                        "short_name": "cassia",
+                        "alt_name": "Amazon",
+                        "role": "Assassin",
+                        "new_role": "Ranged Assassin",
+                        "type": "Ranged",
+                        "release_date": "2017-04-04 00:00:00",
+                        "rework_date": null,
+                        "last_change_patch_version": "2.55.2.87774",
+                        "attribute_id": "Amaz",
+                        "build_copy_name": "Cassia",
+                        "last_updated": null
+                    }
+                },
+                "total_wins": 3,
+                "total_losses": 2,
+                "total_games_played": 5,
+                "win_rate": 60
+            },
+            {
+                "blizz_id": 904535,
+                "battletag": "Crow",
+                "link": "/Esports/NGS/Player/Crow/904535",
+                "hero": "Artanis",
+                "hero_games": 2,
+                "heroData": {
+                    "hero": {
+                        "id": 4,
+                        "name": "Artanis",
+                        "short_name": "artanis",
+                        "alt_name": "",
+                        "role": "Warrior",
+                        "new_role": "Bruiser",
+                        "type": "Melee",
+                        "release_date": "2015-10-20 00:00:00",
+                        "rework_date": null,
+                        "last_change_patch_version": "2.55.2.87774",
+                        "attribute_id": "Arts",
+                        "build_copy_name": "Artanis",
+                        "last_updated": null
+                    }
+                },
+                "total_wins": 3,
+                "total_losses": 2,
+                "total_games_played": 5,
+                "win_rate": 60
+            },
+            {
+                "blizz_id": 3384481,
+                "battletag": "ProfBobo",
+                "link": "/Esports/NGS/Player/ProfBobo/3384481",
+                "hero": "Tassadar",
+                "hero_games": 2,
+                "heroData": {
+                    "hero": {
+                        "id": 54,
+                        "name": "Tassadar",
+                        "short_name": "tassadar",
+                        "alt_name": "",
+                        "role": "Support",
+                        "new_role": "Ranged Assassin",
+                        "type": "Ranged",
+                        "release_date": "2014-03-13 00:00:00",
+                        "rework_date": null,
+                        "last_change_patch_version": "2.54.0.85027",
+                        "attribute_id": "Tass",
+                        "build_copy_name": "Tassadar",
+                        "last_updated": null
+                    }
+                },
+                "total_wins": 3,
+                "total_losses": 2,
+                "total_games_played": 5,
+                "win_rate": 60
+            }
+        ],
+        "enemy": [
+            {
+                "blizz_id": 222720,
+                "battletag": "OjJuice",
+                "link": "/Esports/NGS/Player/OjJuice/222720",
+                "hero": "Gall",
+                "hero_games": 1,
+                "heroData": {
+                    "hero": {
+                        "id": 18,
+                        "name": "Gall",
+                        "short_name": "gall",
+                        "alt_name": "",
+                        "role": "Assassin",
+                        "new_role": "Ranged Assassin",
+                        "type": "Ranged",
+                        "release_date": "2015-11-17 00:00:00",
+                        "rework_date": null,
+                        "last_change_patch_version": "2.52.1.82169",
+                        "attribute_id": "Gall",
+                        "build_copy_name": "Gall",
+                        "last_updated": null
+                    }
+                },
+                "total_wins": 2,
+                "total_losses": 3,
+                "total_games_played": 5,
+                "win_rate": 40
+            },
+            {
+                "blizz_id": 1285555,
+                "battletag": "Sweetbuns",
+                "link": "/Esports/NGS/Player/Sweetbuns/1285555",
+                "hero": "E.T.C.",
+                "hero_games": 2,
+                "heroData": {
+                    "hero": {
+                        "id": 16,
+                        "name": "E.T.C.",
+                        "short_name": "etc",
+                        "alt_name": "L90ETC",
+                        "role": "Warrior",
+                        "new_role": "Tank",
+                        "type": "Melee",
+                        "release_date": "2014-03-13 00:00:00",
+                        "rework_date": null,
+                        "last_change_patch_version": "2.55.1.87306",
+                        "attribute_id": "L90E",
+                        "build_copy_name": "ETC",
+                        "last_updated": null
+                    }
+                },
+                "total_wins": 2,
+                "total_losses": 3,
+                "total_games_played": 5,
+                "win_rate": 40
+            },
+            {
+                "blizz_id": 4855284,
+                "battletag": "FFerret",
+                "link": "/Esports/NGS/Player/FFerret/4855284",
+                "hero": "Thrall",
+                "hero_games": 1,
+                "heroData": {
+                    "hero": {
+                        "id": 57,
+                        "name": "Thrall",
+                        "short_name": "thrall",
+                        "alt_name": "",
+                        "role": "Assassin",
+                        "new_role": "Bruiser",
+                        "type": "Melee",
+                        "release_date": "2015-01-13 00:00:00",
+                        "rework_date": null,
+                        "last_change_patch_version": "2.55.2.87774",
+                        "attribute_id": "Thra",
+                        "build_copy_name": "Thrall",
+                        "last_updated": null
+                    }
+                },
+                "total_wins": 2,
+                "total_losses": 3,
+                "total_games_played": 5,
+                "win_rate": 40
+            },
+            {
+                "blizz_id": 4880583,
+                "battletag": "r275delta",
+                "link": "/Esports/NGS/Player/r275delta/4880583",
+                "hero": "Deckard",
+                "hero_games": 3,
+                "heroData": {
+                    "hero": {
+                        "id": 80,
+                        "name": "Deckard",
+                        "short_name": "deckard",
+                        "alt_name": "",
+                        "role": "Support",
+                        "new_role": "Healer",
+                        "type": "Melee",
+                        "release_date": "2018-04-24 00:00:00",
+                        "rework_date": null,
+                        "last_change_patch_version": "2.54.3.86223",
+                        "attribute_id": "DECK",
+                        "build_copy_name": "Deckard",
+                        "last_updated": null
+                    }
+                },
+                "total_wins": 2,
+                "total_losses": 3,
+                "total_games_played": 5,
+                "win_rate": 40
+            },
+            {
+                "blizz_id": 6850656,
+                "battletag": "bretmichales",
+                "link": "/Esports/NGS/Player/bretmichales/6850656",
+                "hero": "Dehaka",
+                "hero_games": 2,
+                "heroData": {
+                    "hero": {
+                        "id": 14,
+                        "name": "Dehaka",
+                        "short_name": "dehaka",
+                        "alt_name": "",
+                        "role": "Warrior",
+                        "new_role": "Bruiser",
+                        "type": "Melee",
+                        "release_date": "2016-03-29 00:00:00",
+                        "rework_date": null,
+                        "last_change_patch_version": "2.55.0.86938",
+                        "attribute_id": "Deha",
+                        "build_copy_name": "Dehaka",
+                        "last_updated": null
+                    }
+                },
+                "total_wins": 2,
+                "total_losses": 3,
+                "total_games_played": 5,
+                "win_rate": 40
+            }
+        ]
+    }
+}

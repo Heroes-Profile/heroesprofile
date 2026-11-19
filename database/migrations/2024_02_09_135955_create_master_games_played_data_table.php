@@ -14,8 +14,11 @@ class CreateMasterGamesPlayedDataTable extends Migration
     public function up()
     {
         Schema::create('master_games_played_data', function (Blueprint $table) {
-            $table->increments('master_games_played_data_id');
-            $table->unsignedBigInteger('type_value');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('master_games_played_data_id', true);
+            $table->integer('type_value');
             $table->integer('stack_size')->default(0);
             $table->double('season');
             $table->tinyInteger('game_type');
@@ -28,11 +31,14 @@ class CreateMasterGamesPlayedDataTable extends Migration
             $table->integer('loss_leaderboard')->nullable();
             $table->integer('games_played_leaderboard')->nullable();
 
-            $table->unique(['type_value', 'stack_size', 'season', 'game_type', 'blizz_id', 'region'], 'UNIQUE');
-            $table->index('games_played');
-            $table->index(['season', 'game_type', 'games_played']);
+            $table->index(['season', 'game_type', 'games_played'], '1');
+            $table->index('games_played', 'games_played');
+            $table->index(['type_value', 'season', 'game_type', 'games_played_leaderboard', 'win_leaderboard', 'loss_leaderboard', 'blizz_id', 'region'], 'leaderboard1');
+            $table->index(['type_value', 'stack_size', 'season', 'game_type', 'games_played_leaderboard', 'win_leaderboard', 'loss_leaderboard', 'blizz_id', 'region'], 'leaderboard2');
             $table->index(['type_value', 'season', 'game_type', 'region'], 'primaryMinusBlizzID');
             $table->index(['type_value', 'stack_size', 'season', 'game_type', 'blizz_id', 'region', 'games_played'], 'total');
+            $table->index(['type_value', 'stack_size', 'season', 'game_type', 'games_played_leaderboard'], 'totalLeaderboard');
+            $table->unique(['type_value', 'stack_size', 'season', 'game_type', 'blizz_id', 'region'], 'UNIQUE');
         });
     }
 

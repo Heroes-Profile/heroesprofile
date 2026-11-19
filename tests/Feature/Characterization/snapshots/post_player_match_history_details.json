@@ -1,0 +1,100 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "52026698": {
+            "game_length": 865,
+            "downloadable": true,
+            "players": [
+                [
+                    {
+                        "replayID": 52026698,
+                        "blizz_id": 626423,
+                        "hero": {
+                            "id": 12,
+                            "name": "Chromie",
+                            "short_name": "chromie",
+                            "alt_name": "",
+                            "role": "Assassin",
+                            "new_role": "Ranged Assassin",
+                            "type": "Ranged",
+                            "release_date": "2016-05-17 00:00:00",
+                            "rework_date": null,
+                            "last_change_patch_version": "2.55.2.87774",
+                            "attribute_id": "Chro",
+                            "build_copy_name": "Chromie",
+                            "last_updated": null
+                        },
+                        "team": 0,
+                        "party": null,
+                        "hero_level": "15-25",
+                        "battletag": "Bereaver",
+                        "account_level": 1436,
+                        "check": false,
+                        "own": false,
+                        "region": 1,
+                        "player_mmr": 2940
+                    },
+                    {
+                        "replayID": 52026698,
+                        "blizz_id": 3573168,
+                        "hero": {
+                            "id": 33,
+                            "name": "Lt. Morales",
+                            "short_name": "ltmorales",
+                            "alt_name": "Medic",
+                            "role": "Support",
+                            "new_role": "Healer",
+                            "type": "Ranged",
+                            "release_date": "2015-10-06 00:00:00",
+                            "rework_date": null,
+                            "last_change_patch_version": "2.54.3.86223",
+                            "attribute_id": "Medi",
+                            "build_copy_name": "LtMorales",
+                            "last_updated": null
+                        },
+                        "team": 0,
+                        "party": null,
+                        "hero_level": 1,
+                        "battletag": "Charmox",
+                        "account_level": 2001,
+                        "check": false,
+                        "own": false,
+                        "region": 1,
+                        "player_mmr": 2738
+                    }
+                ],
+                [
+                    {
+                        "replayID": 52026698,
+                        "blizz_id": 1823499,
+                        "hero": {
+                            "id": 70,
+                            "name": "Zul'jin",
+                            "short_name": "zuljin",
+                            "alt_name": "Zuljin",
+                            "role": "Assassin",
+                            "new_role": "Ranged Assassin",
+                            "type": "Ranged",
+                            "release_date": "2017-01-04 00:00:00",
+                            "rework_date": null,
+                            "last_change_patch_version": "2.55.0.86938",
+                            "attribute_id": "ZULJ",
+                            "build_copy_name": "Zuljin",
+                            "last_updated": null
+                        },
+                        "team": 1,
+                        "party": null,
+                        "hero_level": "15-25",
+                        "battletag": "ThaiRow",
+                        "account_level": 1230,
+                        "check": false,
+                        "own": false,
+                        "region": 1,
+                        "player_mmr": 2796
+                    }
+                ]
+            ]
+        }
+    }
+}

@@ -14,11 +14,13 @@ class CreateMapsTranslationsTable extends Migration
     public function up()
     {
         Schema::create('maps_translations', function (Blueprint $table) {
-            $table->id('maps_translations_id');
-            $table->string('name', 45)->collation('utf8mb4_0900_ai_ci');
-            $table->string('short_name', 45)->collation('utf8mb4_0900_ai_ci');
-            $table->string('translation', 45)->collation('utf8mb4_0900_ai_ci');
-            $table->timestamps(); // Add this line if you want timestamps
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('maps_translations_id', true);
+            $table->string('name', 45);
+            $table->string('short_name', 45);
+            $table->string('translation', 45);
 
             $table->index(['name', 'short_name', 'translation'], 'INDEX');
         });

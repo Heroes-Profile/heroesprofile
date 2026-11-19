@@ -21,7 +21,9 @@ return new class extends Migration
         }
 
         Schema::connection(self::CONNECTION)->create('xalatath_data', function (Blueprint $table) {
-            $table->unsignedTinyInteger('game_type')->primary();
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->unsignedTinyInteger('game_type');
             $table->unsignedBigInteger('games_played')->default(0);
             $table->unsignedBigInteger('wins')->default(0);
             $table->unsignedBigInteger('bans')->default(0);
@@ -40,6 +42,8 @@ return new class extends Migration
             $table->unsignedBigInteger('escapes')->default(0);
             $table->unsignedBigInteger('outnumbered_deaths')->default(0);
             $table->unsignedBigInteger('time_spent_dead')->default(0);
+
+            $table->primary('game_type');
         });
     }
 

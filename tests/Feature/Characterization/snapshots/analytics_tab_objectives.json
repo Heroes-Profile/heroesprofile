@@ -1,0 +1,838 @@
+{
+    "response": {
+        "takes": [
+            {
+                "who": "you",
+                "own": false,
+                "status": "objective",
+                "takes": 7,
+                "games": 7,
+                "win_rate": 0.2857142857142857
+            },
+            {
+                "who": "you",
+                "own": false,
+                "status": "dead",
+                "takes": 2,
+                "games": 2,
+                "win_rate": 0.5
+            },
+            {
+                "who": "global",
+                "own": true,
+                "status": "present",
+                "takes": 50256,
+                "games": 7067,
+                "win_rate": 0.7392749124482647
+            },
+            {
+                "who": "global",
+                "own": false,
+                "status": "lane",
+                "takes": 8656,
+                "games": 3826,
+                "win_rate": 0.23267097966728276
+            },
+            {
+                "who": "global",
+                "own": false,
+                "status": "elsewhere",
+                "takes": 3714,
+                "games": 1899,
+                "win_rate": 0.34114162627894445
+            },
+            {
+                "who": "global",
+                "own": false,
+                "status": "objective",
+                "takes": 25749,
+                "games": 5521,
+                "win_rate": 0.26606858518777426
+            },
+            {
+                "who": "global",
+                "own": false,
+                "status": "dead",
+                "takes": 17752,
+                "games": 5790,
+                "win_rate": 0.22650968904912117
+            },
+            {
+                "who": "global",
+                "own": true,
+                "status": "elsewhere",
+                "takes": 2266,
+                "games": 1751,
+                "win_rate": 0.8380406001765224
+            },
+            {
+                "who": "global",
+                "own": true,
+                "status": "lane",
+                "takes": 1940,
+                "games": 1512,
+                "win_rate": 0.6979381443298969
+            },
+            {
+                "who": "you",
+                "own": true,
+                "status": "dead",
+                "takes": 1,
+                "games": 1,
+                "win_rate": 1
+            },
+            {
+                "who": "you",
+                "own": true,
+                "status": "present",
+                "takes": 27,
+                "games": 16,
+                "win_rate": 0.8148148148148148
+            },
+            {
+                "who": "global",
+                "own": false,
+                "status": "present",
+                "takes": 8019,
+                "games": 2929,
+                "win_rate": 0.30764434468138174
+            },
+            {
+                "who": "you",
+                "own": false,
+                "status": "present",
+                "takes": 2,
+                "games": 2,
+                "win_rate": 0
+            },
+            {
+                "who": "global",
+                "own": true,
+                "status": "dead",
+                "takes": 3190,
+                "games": 2287,
+                "win_rate": 0.6965517241379311
+            },
+            {
+                "who": "global",
+                "own": true,
+                "status": "objective",
+                "takes": 6238,
+                "games": 3297,
+                "win_rate": 0.7441487656300096
+            }
+        ],
+        "first_boss": [
+            {
+                "who": "you",
+                "own": true,
+                "minute": 9,
+                "games": 4,
+                "win_rate": 0.5
+            },
+            {
+                "who": "global",
+                "own": false,
+                "minute": 21,
+                "games": 820,
+                "win_rate": 0.2865853658536585
+            },
+            {
+                "who": "global",
+                "own": true,
+                "minute": 12,
+                "games": 11465,
+                "win_rate": 0.7579590056694289
+            },
+            {
+                "who": "global",
+                "own": false,
+                "minute": 9,
+                "games": 9420,
+                "win_rate": 0.2441613588110403
+            },
+            {
+                "who": "global",
+                "own": true,
+                "minute": 24,
+                "games": 250,
+                "win_rate": 0.78
+            },
+            {
+                "who": "you",
+                "own": false,
+                "minute": 15,
+                "games": 2,
+                "win_rate": 0
+            },
+            {
+                "who": "you",
+                "own": true,
+                "minute": 6,
+                "games": 5,
+                "win_rate": 0.8
+            },
+            {
+                "who": "you",
+                "own": true,
+                "minute": 18,
+                "games": 1,
+                "win_rate": 1
+            },
+            {
+                "who": "global",
+                "own": false,
+                "minute": 6,
+                "games": 4825,
+                "win_rate": 0.25699481865284973
+            },
+            {
+                "who": "global",
+                "own": true,
+                "minute": 9,
+                "games": 9420,
+                "win_rate": 0.7558386411889595
+            },
+            {
+                "who": "global",
+                "own": false,
+                "minute": 18,
+                "games": 2630,
+                "win_rate": 0.2509505703422053
+            },
+            {
+                "who": "global",
+                "own": true,
+                "minute": 21,
+                "games": 820,
+                "win_rate": 0.7134146341463415
+            },
+            {
+                "who": "global",
+                "own": false,
+                "minute": 30,
+                "games": 15,
+                "win_rate": 0
+            },
+            {
+                "who": "global",
+                "own": false,
+                "minute": 33,
+                "games": 5,
+                "win_rate": 0
+            },
+            {
+                "who": "you",
+                "own": true,
+                "minute": 15,
+                "games": 1,
+                "win_rate": 1
+            },
+            {
+                "who": "you",
+                "own": false,
+                "minute": 12,
+                "games": 1,
+                "win_rate": 0
+            },
+            {
+                "who": "global",
+                "own": false,
+                "minute": 15,
+                "games": 5840,
+                "win_rate": 0.2363013698630137
+            },
+            {
+                "who": "global",
+                "own": true,
+                "minute": 18,
+                "games": 2630,
+                "win_rate": 0.7490494296577946
+            },
+            {
+                "who": "global",
+                "own": true,
+                "minute": 6,
+                "games": 4825,
+                "win_rate": 0.7430051813471503
+            },
+            {
+                "who": "global",
+                "own": false,
+                "minute": 27,
+                "games": 65,
+                "win_rate": 0.23076923076923075
+            },
+            {
+                "who": "global",
+                "own": true,
+                "minute": 30,
+                "games": 15,
+                "win_rate": 1
+            },
+            {
+                "who": "global",
+                "own": true,
+                "minute": 33,
+                "games": 5,
+                "win_rate": 1
+            },
+            {
+                "who": "global",
+                "own": false,
+                "minute": 3,
+                "games": 5,
+                "win_rate": 0
+            },
+            {
+                "who": "you",
+                "own": true,
+                "minute": 12,
+                "games": 3,
+                "win_rate": 0.6666666666666667
+            },
+            {
+                "who": "you",
+                "own": false,
+                "minute": 9,
+                "games": 3,
+                "win_rate": 0.6666666666666666
+            },
+            {
+                "who": "global",
+                "own": true,
+                "minute": 15,
+                "games": 5840,
+                "win_rate": 0.7636986301369862
+            },
+            {
+                "who": "global",
+                "own": false,
+                "minute": 12,
+                "games": 11465,
+                "win_rate": 0.2420409943305713
+            },
+            {
+                "who": "global",
+                "own": false,
+                "minute": 24,
+                "games": 250,
+                "win_rate": 0.21999999999999995
+            },
+            {
+                "who": "global",
+                "own": true,
+                "minute": 27,
+                "games": 65,
+                "win_rate": 0.7692307692307693
+            },
+            {
+                "who": "global",
+                "own": true,
+                "minute": 3,
+                "games": 5,
+                "win_rate": 1
+            }
+        ],
+        "per_game": [
+            {
+                "who": "global",
+                "games": 43954,
+                "own_takes": 1.4535650907767212,
+                "enemy_takes": 1.4535650907767217,
+                "win_more_bosses": 0.8439821693907874,
+                "win_fewer_bosses": 0.15601783060921248
+            },
+            {
+                "who": "you",
+                "games": 117,
+                "own_takes": 0.23931623931623935,
+                "enemy_takes": 0.09401709401709403,
+                "win_more_bosses": 0.923076923076923,
+                "win_fewer_bosses": 0
+            }
+        ],
+        "presence": [
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "VehicleDragon",
+                "objectives": 6420,
+                "present_share": 0.6644859813084111,
+                "win_present": 0.5447726207219876,
+                "win_absent": 0.4113277623026926
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "DragonShireShrineSun",
+                "objectives": 1530,
+                "present_share": 0.2437908496732026,
+                "win_present": 0.5013404825737267,
+                "win_absent": 0.49956784788245456
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "BossDuelBossHell",
+                "objectives": 5160,
+                "present_share": 0.8240310077519379,
+                "win_present": 0.5308090310442145,
+                "win_absent": 0.355726872246696
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "DiabloShrine",
+                "objectives": 4710,
+                "present_share": 0.6148619957537156,
+                "win_present": 0.5086325966850828,
+                "win_absent": 0.48621830209481814
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "AllianceCavalry",
+                "objectives": 4080,
+                "present_share": 0.43210784313725487,
+                "win_present": 0.7787861599546227,
+                "win_absent": 0.7345705653862756
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "MercPunisherLaner",
+                "objectives": 2905,
+                "present_share": 0.8695352839931152,
+                "win_present": 0.7664291369754551,
+                "win_absent": 0.7097625329815305
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "GardenTerror",
+                "objectives": 5010,
+                "present_share": 0.8405189620758483,
+                "win_present": 0.7874614105913085,
+                "win_absent": 0.7684605757196495
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "ZergZergling",
+                "objectives": 70035,
+                "present_share": 0.27673306204040854,
+                "win_present": 0.7470202775914558,
+                "win_absent": 0.46989378923678304
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "ZergBaneling",
+                "objectives": 29670,
+                "present_share": 0.07441860465116285,
+                "win_present": 0.7993659420289854,
+                "win_absent": 0.7066127740150028
+            },
+            {
+                "who": "global",
+                "side": "defend",
+                "name": "ZergGuardian",
+                "objectives": 8710,
+                "present_share": 0.6285878300803672,
+                "win_present": 0.26867579908675804,
+                "win_absent": 0.2902627511591963
+            },
+            {
+                "who": "global",
+                "side": "defend",
+                "name": "ZergHydralisk",
+                "objectives": 24350,
+                "present_share": 0.5845174537987681,
+                "win_present": 0.2834961006112554,
+                "win_absent": 0.44232479984185036
+            },
+            {
+                "who": "global",
+                "side": "defend",
+                "name": "ControlPointMinimapIconA",
+                "objectives": 1190,
+                "present_share": 0.13781512605042018,
+                "win_present": 0.5914634146341463,
+                "win_absent": 0.6072124756335283
+            },
+            {
+                "who": "global",
+                "side": "defend",
+                "name": "ControlPointMinimapIconB",
+                "objectives": 595,
+                "present_share": 0.24537815126050425,
+                "win_present": 0.23972602739726023,
+                "win_absent": 0.44543429844097987
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "JungleBattleship",
+                "objectives": 730,
+                "present_share": 0.6410958904109587,
+                "win_present": 0.5000000000000001,
+                "win_absent": 0.5
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "WarheadSingle",
+                "objectives": 8190,
+                "present_share": 0.3190476190476192,
+                "win_present": 0.5472636815920399,
+                "win_absent": 0.4778554778554779
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "NukeTargetMinimapIconUnit",
+                "objectives": 6805,
+                "present_share": 0.5066862601028654,
+                "win_present": 0.6197795823665893,
+                "win_absent": 0.5504915102770331
+            },
+            {
+                "who": "global",
+                "side": "defend",
+                "name": "VolskayaVehicle",
+                "objectives": 2970,
+                "present_share": 0.893265993265993,
+                "win_present": 0.3136072370900866,
+                "win_absent": 0.26182965299684535
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "ControlPointMinimapIconC",
+                "objectives": 1680,
+                "present_share": 0.5714285714285715,
+                "win_present": 0.5406249999999999,
+                "win_absent": 0.44583333333333336
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "SoulEater",
+                "objectives": 11445,
+                "present_share": 0.4662297946701617,
+                "win_present": 0.6489880059970013,
+                "win_absent": 0.584711082010149
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "BossDuelLanerHeaven",
+                "objectives": 1225,
+                "present_share": 0.9183673469387755,
+                "win_present": 0.808,
+                "win_absent": 0.7600000000000001
+            },
+            {
+                "who": "global",
+                "side": "defend",
+                "name": "BossDuelLanerHell",
+                "objectives": 1240,
+                "present_share": 0.9290322580645161,
+                "win_present": 0.3472222222222221,
+                "win_absent": 0.28409090909090906
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "RavenLordTribute",
+                "objectives": 13020,
+                "present_share": 0.5789554531490017,
+                "win_present": 0.5352878747678427,
+                "win_absent": 0.451477562933236
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "Seed",
+                "objectives": 12380,
+                "present_share": 0.6316639741518578,
+                "win_present": 0.5441176470588235,
+                "win_absent": 0.4243421052631579
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "HordeCavalry",
+                "objectives": 4125,
+                "present_share": 0.41987878787878785,
+                "win_present": 0.7719399538106235,
+                "win_absent": 0.7074801504387798
+            },
+            {
+                "who": "global",
+                "side": "defend",
+                "name": "ZergUltralisk",
+                "objectives": 15870,
+                "present_share": 0.32709514807813483,
+                "win_present": 0.29994220766711605,
+                "win_absent": 0.5972469332334487
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "UnderworldBoss",
+                "objectives": 7310,
+                "present_share": 0.48331053351573205,
+                "win_present": 0.5561845457118595,
+                "win_absent": 0.4474450622186922
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "UnderworldSummonedBoss",
+                "objectives": 10960,
+                "present_share": 0.22335766423357664,
+                "win_present": 0.6200980392156862,
+                "win_absent": 0.4654605263157895
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "ControlPointMinimapIconC",
+                "objectives": 355,
+                "present_share": 0.15774647887323945,
+                "win_present": 0.8928571428571428,
+                "win_absent": 0.6354515050167224
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "DragonShireShrineMoon",
+                "objectives": 1530,
+                "present_share": 0.4143790849673203,
+                "win_present": 0.5141955835962145,
+                "win_absent": 0.4899553571428572
+            },
+            {
+                "who": "global",
+                "side": "defend",
+                "name": "MercPunisherLaner",
+                "objectives": 2905,
+                "present_share": 0.8667814113597248,
+                "win_present": 0.24066719618745036,
+                "win_absent": 0.24289405684754528
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "ControlPointMinimapIconB",
+                "objectives": 2070,
+                "present_share": 0.7434782608695651,
+                "win_present": 0.5269655620532813,
+                "win_absent": 0.4218455743879473
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "ControlPointMinimapIconA",
+                "objectives": 2800,
+                "present_share": 0.8607142857142854,
+                "win_present": 0.5149377593360996,
+                "win_absent": 0.4076923076923077
+            },
+            {
+                "who": "global",
+                "side": "defend",
+                "name": "AllianceCavalry",
+                "objectives": 4080,
+                "present_share": 0.4865196078431371,
+                "win_present": 0.23828715365239297,
+                "win_absent": 0.2539379474940335
+            },
+            {
+                "who": "global",
+                "side": "defend",
+                "name": "GardenTerror",
+                "objectives": 5010,
+                "present_share": 0.6417165668662675,
+                "win_present": 0.2186625194401244,
+                "win_absent": 0.21002785515320332
+            },
+            {
+                "who": "global",
+                "side": "defend",
+                "name": "ZergBaneling",
+                "objectives": 29670,
+                "present_share": 0.10404448938321542,
+                "win_present": 0.2267573696145125,
+                "win_absent": 0.29342060715494883
+            },
+            {
+                "who": "global",
+                "side": "defend",
+                "name": "ZergZergling",
+                "objectives": 70035,
+                "present_share": 0.3685728564289283,
+                "win_present": 0.3234416766745438,
+                "win_absent": 0.5292840667541042
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "ZergGuardian",
+                "objectives": 8710,
+                "present_share": 0.46406429391504,
+                "win_present": 0.7798119742701628,
+                "win_absent": 0.6743787489288774
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "ZergHydralisk",
+                "objectives": 24350,
+                "present_share": 0.42517453798767957,
+                "win_present": 0.768569496764223,
+                "win_absent": 0.563192112595556
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "ControlPointMinimapIconA",
+                "objectives": 1190,
+                "present_share": 0.11596638655462187,
+                "win_present": 0.4999999999999999,
+                "win_absent": 0.3811787072243346
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "Payload_Neutral",
+                "objectives": 2140,
+                "present_share": 0.6345794392523365,
+                "win_present": 0.5839469808541974,
+                "win_absent": 0.35421994884910485
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "DocksTreasureChest",
+                "objectives": 6660,
+                "present_share": 0.30510510510510525,
+                "win_present": 0.5625,
+                "win_absent": 0.47255834053586865
+            },
+            {
+                "who": "global",
+                "side": "defend",
+                "name": "NukeTargetMinimapIconUnit",
+                "objectives": 6805,
+                "present_share": 0.3701689933872152,
+                "win_present": 0.47479158396188964,
+                "win_absent": 0.37890807279514704
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "ControlPointMinimapIconB",
+                "objectives": 595,
+                "present_share": 0.14453781512605043,
+                "win_present": 0.813953488372093,
+                "win_absent": 0.5697445972495089
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "LuxoriaTemple",
+                "objectives": 4200,
+                "present_share": 0.3709523809523811,
+                "win_present": 0.49999999999999994,
+                "win_absent": 0.5
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "BossDuelBossHeaven",
+                "objectives": 5160,
+                "present_share": 0.8395348837209304,
+                "win_present": 0.5258541089566021,
+                "win_absent": 0.3647342995169082
+            },
+            {
+                "who": "global",
+                "side": "escort",
+                "name": "BossDuelLanerHell",
+                "objectives": 1240,
+                "present_share": 0.9064516129032256,
+                "win_present": 0.6690391459074734,
+                "win_absent": 0.5431034482758622
+            },
+            {
+                "who": "global",
+                "side": "defend",
+                "name": "BossDuelLanerHeaven",
+                "objectives": 1225,
+                "present_share": 0.9265306122448981,
+                "win_present": 0.1991189427312775,
+                "win_absent": 0.15555555555555559
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "ScoringAltar",
+                "objectives": 6720,
+                "present_share": 0.4178571428571429,
+                "win_present": 0.49679487179487164,
+                "win_absent": 0.5023006134969326
+            },
+            {
+                "who": "global",
+                "side": "defend",
+                "name": "SoulEater",
+                "objectives": 11445,
+                "present_share": 0.49628658802970727,
+                "win_present": 0.3797535211267606,
+                "win_absent": 0.3908065915004337
+            },
+            {
+                "who": "global",
+                "side": "attack",
+                "name": "CapturedSoldier",
+                "objectives": 11920,
+                "present_share": 0.739261744966443,
+                "win_present": 0.5212210621879255,
+                "win_absent": 0.43983268983268986
+            }
+        ]
+    },
+    "bigquery": [
+        {
+            "queries": {
+                "v": "cc6888d2389f8cf3a196d934c74982618b53bdc2"
+            },
+            "params": []
+        },
+        {
+            "queries": {
+                "takes": "6be55502195c993901752958269fd5f826883e3a",
+                "first_boss": "15b5877c874f4d413eb4bd146f343276a7917f87",
+                "per_game": "8b7748ba64f07c6c32c5c630f2ca5a545bf97551",
+                "presence": "438612ff1ba6df3094415d7b58bcad9590492d6a"
+            },
+            "params": {
+                "blizz": 900010,
+                "region": 1,
+                "game_types": [
+                    5
+                ],
+                "maps": [
+                    1
+                ],
+                "hero": 80,
+                "cutover": "2026-10-02 16:00:01",
+                "sample": 50,
+                "replay": 0
+            }
+        }
+    ]
+}

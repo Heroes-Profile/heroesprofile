@@ -74,10 +74,10 @@
     <link rel="preconnect" href="https://www.google-analytics.com">
     <link rel="preconnect" href="https://hb.vntsm.com">
 
-    <!-- Organization structured data for Google search branding -->
+    <!-- Organization structured data for Google search branding -->{{-- Its "context" key is written with @@: Blade reads a single @ before it as its own context directive --}}
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
+      "@@context": "https://schema.org",
       "@type": "Organization",
       "name": "Heroes Profile",
       "url": "https://www.heroesprofile.com",

@@ -14,6 +14,9 @@ class CreateReplayTableHi extends Migration
     public function up()
     {
         Schema::create('heroesprofile_hi.replay', function (Blueprint $table) {
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
             $table->increments('replayID');
             $table->string('season', 45)->nullable();
             $table->integer('type')->nullable();
@@ -33,12 +36,12 @@ class CreateReplayTableHi extends Migration
             $table->string('game_version', 32);
             $table->dateTime('date_added');
 
+            $table->index('game_date', 'game_date');
+            $table->index(['season', 'type', 'region', 'team_0_id', 'team_1_id', 'round'], 'index');
+            $table->index('region', 'region');
             $table->index(['replayID', 'region', 'game_date'], 'replayID_Region_GameDate');
             $table->index(['replayID', 'season', 'round', 'game', 'game_date'], 'replayID_season_division_round');
-            $table->index('region');
-            $table->index('game_date');
             $table->index(['season', 'round'], 'season_division_round');
-            $table->index(['season', 'type', 'region', 'team_0_id', 'team_1_id', 'round'], 'index');
         });
     }
 

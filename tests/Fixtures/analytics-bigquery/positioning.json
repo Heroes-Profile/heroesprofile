@@ -1,0 +1,191 @@
+{
+    "fights": [
+        {
+            "who": "you",
+            "games": 115,
+            "fights": 1141,
+            "fight_ahead": -0.055651200334286055,
+            "front_share": 0.18780770380514625,
+            "back_share": 0.20478534821245825,
+            "late_share": 0.04856114899593163,
+            "front_deaths_10": 0.4108521640575193
+        },
+        {
+            "who": "global",
+            "games": 212756,
+            "fights": 1844372,
+            "fight_ahead": -0.06263452632576343,
+            "front_share": 0.22580103777204283,
+            "back_share": 0.2260191656268501,
+            "late_share": 0.07558615367635542,
+            "front_deaths_10": 0.4663344004181949
+        }
+    ],
+    "laning": [
+        {
+            "who": "you",
+            "phase": "late",
+            "games": 11,
+            "lane_share": 0.6135111936762737,
+            "camp_share": 0.10626665365507731,
+            "away_share": 0.28022215266864897,
+            "main_lane_share": 0.673395889456261,
+            "solo_lane_share": 0.27220888520397435,
+            "lane_push": 0.5141503986951983,
+            "enemy_side_share": 0.47759482030726824,
+            "switches_10": 0.8350098515748362
+        },
+        {
+            "who": "global",
+            "phase": "all",
+            "games": 219331,
+            "lane_share": 0.7357331425537933,
+            "camp_share": 0.091447924186143,
+            "away_share": 0.17281893326006303,
+            "main_lane_share": 0.703634017520995,
+            "solo_lane_share": 0.21607969237986108,
+            "lane_push": 0.47780810675460134,
+            "enemy_side_share": 0.4107440212556062,
+            "switches_10": 3.3234620314613506
+        },
+        {
+            "who": "you",
+            "phase": "mid",
+            "games": 92,
+            "lane_share": 0.7355931806123357,
+            "camp_share": 0.10802278489491975,
+            "away_share": 0.15638403449274446,
+            "main_lane_share": 0.837963466076183,
+            "solo_lane_share": 0.12319180152538921,
+            "lane_push": 0.515850079281575,
+            "enemy_side_share": 0.5356847443703147,
+            "switches_10": 0.8913527761299485
+        },
+        {
+            "who": "global",
+            "phase": "late",
+            "games": 36118,
+            "lane_share": 0.6500431557768536,
+            "camp_share": 0.13929706739921058,
+            "away_share": 0.21065977682393638,
+            "main_lane_share": 0.6876960159408478,
+            "solo_lane_share": 0.23155415692467773,
+            "lane_push": 0.48189316796945303,
+            "enemy_side_share": 0.45827121514234603,
+            "switches_10": 1.2083413520906778
+        },
+        {
+            "who": "you",
+            "phase": "all",
+            "games": 117,
+            "lane_share": 0.7730682618421858,
+            "camp_share": 0.07741899820706168,
+            "away_share": 0.14951273995075245,
+            "main_lane_share": 0.8350667405403573,
+            "solo_lane_share": 0.10909060779244763,
+            "lane_push": 0.4975086148247825,
+            "enemy_side_share": 0.47010770516662165,
+            "switches_10": 1.6223196363101153
+        },
+        {
+            "who": "global",
+            "phase": "mid",
+            "games": 182995,
+            "lane_share": 0.6948185278885637,
+            "camp_share": 0.11684651511096894,
+            "away_share": 0.1883349570004678,
+            "main_lane_share": 0.7009722519915136,
+            "solo_lane_share": 0.21378059641596045,
+            "lane_push": 0.48567371924727426,
+            "enemy_side_share": 0.46346626727708684,
+            "switches_10": 1.6806373880081578
+        },
+        {
+            "who": "you",
+            "phase": "early",
+            "games": 116,
+            "lane_share": 0.7872075727712086,
+            "camp_share": 0.06479396063166798,
+            "away_share": 0.14799846659712307,
+            "main_lane_share": 0.8618314734176651,
+            "solo_lane_share": 0.11584807140942861,
+            "lane_push": 0.48488808571140546,
+            "enemy_side_share": 0.424360057660866,
+            "switches_10": 0.8077565424061058
+        },
+        {
+            "who": "global",
+            "phase": "early",
+            "games": 219087,
+            "lane_share": 0.7588745677036292,
+            "camp_share": 0.07574316827103758,
+            "away_share": 0.16538226402533596,
+            "main_lane_share": 0.7599626644414414,
+            "solo_lane_share": 0.22565919882083146,
+            "lane_push": 0.4754536088095667,
+            "enemy_side_share": 0.38086227907713516,
+            "switches_10": 1.6137502776148762
+        }
+    ],
+    "main_lanes": [
+        {
+            "who": "global",
+            "lane_name": "Top",
+            "games": 33941
+        },
+        {
+            "who": "you",
+            "lane_name": "Bottom",
+            "games": 15
+        },
+        {
+            "who": "global",
+            "lane_name": "Bottom",
+            "games": 61279
+        },
+        {
+            "who": "global",
+            "lane_name": "Single",
+            "games": 56551
+        },
+        {
+            "who": "global",
+            "lane_name": "Middle",
+            "games": 64858
+        },
+        {
+            "who": "you",
+            "lane_name": "Top",
+            "games": 9
+        },
+        {
+            "who": "you",
+            "lane_name": "Middle",
+            "games": 18
+        },
+        {
+            "who": "you",
+            "lane_name": "Single",
+            "games": 73
+        }
+    ],
+    "objectives": [
+        {
+            "who": "you",
+            "games": 117,
+            "objective_lead": 40.98319010120744,
+            "contest_share": 0.45881449580002404,
+            "objective_presence": 0.842487732003816,
+            "camp_presence": 0.8064995377384907
+        },
+        {
+            "who": "global",
+            "games": 220220,
+            "objective_lead": 37.37218143905534,
+            "contest_share": 0.3179133276370957,
+            "objective_presence": 0.6584756059527889,
+            "camp_presence": 0.7113595417583153
+        }
+    ],
+    "weights": []
+}

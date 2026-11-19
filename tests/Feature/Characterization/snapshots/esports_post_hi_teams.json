@@ -1,0 +1,54 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": [
+        {
+            "team_id": 1,
+            "season": 1,
+            "team_name": "30k",
+            "image": "30k"
+        },
+        {
+            "team_id": 2,
+            "season": 1,
+            "team_name": "5 Shots Of Copium",
+            "image": "5_Shots_Of_Copium"
+        },
+        {
+            "team_id": 3,
+            "season": 1,
+            "team_name": "Ammonite",
+            "image": "Ammonite"
+        },
+        {
+            "team_id": 4,
+            "season": 1,
+            "team_name": "Bang Bush",
+            "image": "Bang_Bush"
+        },
+        {
+            "team_id": 5,
+            "season": 1,
+            "team_name": "Diamond Hands",
+            "image": "Diamond_Hands"
+        },
+        {
+            "team_id": 6,
+            "season": 1,
+            "team_name": "Performance Enhancing Zugs",
+            "image": "Performance_Enhancing_Zugs"
+        },
+        {
+            "team_id": 7,
+            "season": 1,
+            "team_name": "Tempest",
+            "image": "Tempest"
+        },
+        {
+            "team_id": 8,
+            "season": 1,
+            "team_name": "Washed Up",
+            "image": "Washed_Up"
+        }
+    ]
+}

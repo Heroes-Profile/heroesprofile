@@ -21,9 +21,13 @@ return new class extends Migration
         }
 
         Schema::connection(self::CONNECTION)->create('replay_deep', function (Blueprint $table) {
-            $table->unsignedInteger('replayID')->primary();
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->unsignedInteger('replayID');
             $table->unsignedSmallInteger('extract_v');
             $table->dateTime('loaded_at');
+
+            $table->primary('replayID');
         });
 
         DB::connection(self::CONNECTION)->statement('ALTER TABLE `replay_deep` ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci');

@@ -21,13 +21,14 @@ return new class extends Migration
         Schema::connection(self::CONNECTION)->create('polls', function (Blueprint $table) {
             $table->increments('poll_id');
             $table->string('slug', 100);
-            $table->string('title', 255);
+            $table->string('title');
             $table->text('description')->nullable();
             $table->boolean('allow_multiple')->default(true);
             $table->dateTime('closes_at')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
 
-            $table->unique('slug', 'polls_slug_unique');
+            $table->unique('slug');
         });
 
         DB::connection(self::CONNECTION)->statement('ALTER TABLE `polls` ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci');

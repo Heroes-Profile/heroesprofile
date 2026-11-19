@@ -13298,26 +13298,31 @@
         {
             "url": null,
             "label": "&laquo; Previous",
+            "page": null,
             "active": false
         },
         {
             "url": "http://localhost/api/external/v1/ngs/player/matches?battletag=Topgun707%231875&blizz_id=2215383&pagination_page=1",
             "label": "1",
+            "page": 1,
             "active": true
         },
         {
             "url": "http://localhost/api/external/v1/ngs/player/matches?battletag=Topgun707%231875&blizz_id=2215383&pagination_page=2",
             "label": "2",
+            "page": 2,
             "active": false
         },
         {
             "url": "http://localhost/api/external/v1/ngs/player/matches?battletag=Topgun707%231875&blizz_id=2215383&pagination_page=3",
             "label": "3",
+            "page": 3,
             "active": false
         },
         {
             "url": "http://localhost/api/external/v1/ngs/player/matches?battletag=Topgun707%231875&blizz_id=2215383&pagination_page=2",
             "label": "Next &raquo;",
+            "page": 2,
             "active": false
         }
     ],

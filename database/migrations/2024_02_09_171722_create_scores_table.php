@@ -14,8 +14,12 @@ class CreateScoresTable extends Migration
     public function up()
     {
         Schema::create('scores', function (Blueprint $table) {
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->bigIncrements('scores_id');
             $table->unsignedInteger('replayID');
-            $table->unsignedInteger('battletag');
+            $table->integer('battletag');
             $table->integer('level')->nullable();
             $table->integer('kills')->nullable();
             $table->integer('assists')->nullable();
@@ -38,7 +42,7 @@ class CreateScoresTable extends Migration
             $table->integer('merc_camp_captures')->nullable();
             $table->integer('watch_tower_captures')->nullable();
             $table->integer('meta_experience')->nullable();
-            $table->string('match_award', 10)->charset('utf8mb4')->collation('utf8mb4_0900_ai_ci')->nullable();
+            $table->string('match_award', 10)->nullable();
             $table->integer('protection_allies')->nullable();
             $table->integer('silencing_enemies')->nullable();
             $table->integer('rooting_enemies')->nullable();
@@ -58,7 +62,7 @@ class CreateScoresTable extends Migration
             $table->tinyInteger('first_to_ten')->nullable();
             $table->integer('time_on_fire')->nullable();
 
-            $table->primary(['replayID', 'battletag']);
+            $table->unique(['replayID', 'battletag'], 'replayIDBattletag');
         });
     }
 

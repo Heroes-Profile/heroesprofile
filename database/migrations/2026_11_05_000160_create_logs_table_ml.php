@@ -14,11 +14,14 @@ class CreateLogsTableMl extends Migration
     public function up()
     {
         Schema::create('heroesprofile_ml.logs', function (Blueprint $table) {
-            $table->increments('log_id');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('log_id', true);
             $table->integer('replayID')->nullable();
             $table->string('dev_prod', 45)->nullable();
             $table->string('api_key', 250)->nullable();
-            $table->string('tournament', 255)->nullable();
+            $table->string('tournament')->nullable();
             $table->string('season', 45)->nullable();
             $table->string('replay_url', 200)->nullable();
             $table->string('round', 45)->nullable();

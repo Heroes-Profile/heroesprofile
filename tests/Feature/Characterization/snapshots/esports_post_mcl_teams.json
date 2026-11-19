@@ -1,0 +1,54 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": [
+        {
+            "team_id": 1,
+            "season": 1,
+            "team_name": "30k",
+            "image": "30k_logo.png"
+        },
+        {
+            "team_id": 8,
+            "season": 1,
+            "team_name": "ArthasStroitHram",
+            "image": "ArthasStroitHram-logo_last_version.png"
+        },
+        {
+            "team_id": 2,
+            "season": 1,
+            "team_name": "Chilly Mountain",
+            "image": "Chilly_Mountain_logo.png"
+        },
+        {
+            "team_id": 6,
+            "season": 1,
+            "team_name": "Go Next",
+            "image": "Go_Next_logo2019.png"
+        },
+        {
+            "team_id": 7,
+            "season": 1,
+            "team_name": "Inting for Ruby",
+            "image": "Inting_For_Ruby_logo.png"
+        },
+        {
+            "team_id": 5,
+            "season": 1,
+            "team_name": "Soundless",
+            "image": "Soundless_logo.png"
+        },
+        {
+            "team_id": 3,
+            "season": 1,
+            "team_name": "The Donuts",
+            "image": "Big_Donut_logo.png"
+        },
+        {
+            "team_id": 4,
+            "season": 1,
+            "team_name": "The Hardos",
+            "image": "The_Hardos_logo.png"
+        }
+    ]
+}

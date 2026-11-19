@@ -27,12 +27,12 @@
     <div v-if="data">
       <div>
         <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
-          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: !data.prev_page_url }">
+          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: data.current_page <= 1 }">
             <a class="page-link" @click.prevent="getMatches(data.current_page - 1)" href="#">
               Previous
             </a>
           </li>
-          <li v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: !data.next_page_url }">
+          <li v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: data.current_page >= data.last_page }">
             <a class="page-link" @click.prevent="getMatches(data.current_page + 1)" href="#">
               Next
             </a>
@@ -111,12 +111,12 @@
 
       <div>
         <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
-          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: !data.prev_page_url }">
+          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: data.current_page <= 1 }">
             <a class="page-link" @click.prevent="getMatches(data.current_page - 1)" href="#">
               Previous
             </a>
           </li>
-          <li v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: !data.next_page_url }">
+          <li v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: data.current_page >= data.last_page }">
             <a class="page-link" @click.prevent="getMatches(data.current_page + 1)" href="#">
               Next
             </a>

@@ -14,15 +14,19 @@ class CreateBattlenetAccountsTable extends Migration
     public function up()
     {
         Schema::create('battlenet_accounts', function (Blueprint $table) {
-            $table->increments('battlenet_accounts_id');
-            $table->unsignedBigInteger('battlenet_id')->nullable();
-            $table->string('battletag')->unique();
-            $table->unsignedBigInteger('blizz_id')->nullable();
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('battlenet_accounts_id', true);
+            $table->integer('battlenet_id')->nullable();
+            $table->string('battletag')->nullable();
+            $table->integer('blizz_id')->nullable();
             $table->string('region')->nullable();
             $table->string('battlenet_access_token')->nullable();
             $table->string('remember_token')->nullable();
             $table->tinyInteger('patreon')->nullable();
-            $table->timestamps();
+            $table->dateTime('updated_at')->nullable();
+            $table->dateTime('created_at')->nullable();
             $table->longText('response')->nullable();
             $table->tinyInteger('private')->nullable();
 
@@ -32,7 +36,7 @@ class CreateBattlenetAccountsTable extends Migration
 
             // Grants ad-free and site flair regardless of Patreon status.
             // Read by CheckIfPatreonSupporter and listed in BattlenetAccount::$fillable.
-            $table->tinyInteger('flair_adfree_override')->default(0);
+            $table->tinyInteger('flair_adfree_override')->nullable()->default(0);
 
             // When the account started its free Analytics trial, and for which development stage
             // (config analytics.trial_stage). Each new stage gets a new trial; null = never started.
@@ -42,11 +46,12 @@ class CreateBattlenetAccountsTable extends Migration
             $table->unsignedSmallInteger('analytics_free_games')->default(0);
             $table->string('analytics_free_stage', 20)->nullable();
 
-            // Indexes
-            $table->index('battlenet_id');
-            $table->index('private_changed_at');
             $table->index(['blizz_id', 'region'], 'battlenet_accounts_blizz_id_region');
             $table->index('private', 'battlenet_accounts_private');
+            $table->index('private_changed_at');
+            // Indexes
+            $table->index('battlenet_id', 'battlenet_id');
+            $table->unique('battletag', 'UNIQUE');
         });
     }
 

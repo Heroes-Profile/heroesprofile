@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('damage_scale', 10, 4);
             $table->decimal('range', 10, 4);
             $table->decimal('period', 10, 4);
-            $table->tinyInteger('sort')->unsigned();
+            $table->unsignedTinyInteger('sort');
 
             $table->unique(['hero_id', 'unit_id', 'weapon_id']);
         });

@@ -14,10 +14,13 @@ class CreateReplayTableMl extends Migration
     public function up()
     {
         Schema::create('heroesprofile_ml.replay', function (Blueprint $table) {
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
             $table->increments('replayID');
             $table->string('series', 45)->nullable();
             $table->unsignedTinyInteger('region');
-            $table->string('tournament', 255)->nullable();
+            $table->string('tournament')->nullable();
             $table->string('season', 45)->nullable();
             $table->string('team_0_name', 200)->nullable();
             $table->string('team_1_name', 200)->nullable();

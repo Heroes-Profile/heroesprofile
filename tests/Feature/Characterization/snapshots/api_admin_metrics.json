@@ -1,0 +1,14 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "accounts": 5,
+        "migrated": 4,
+        "subscriptions_by_status": {
+            "active": 3
+        },
+        "active_keys": 5,
+        "active_subscribers": 3,
+        "mrr": 55
+    }
+}

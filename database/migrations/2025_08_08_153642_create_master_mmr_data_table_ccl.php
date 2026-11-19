@@ -14,7 +14,10 @@ class CreateMasterMmrDataTableCcl extends Migration
     public function up()
     {
         Schema::create('heroesprofile_ccl.master_mmr_data', function (Blueprint $table) {
-            $table->increments('master_mmr_data_id');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('master_mmr_data_id', true);
             $table->unsignedInteger('blizz_id');
             $table->unsignedTinyInteger('region');
             $table->double('conservative_rating');

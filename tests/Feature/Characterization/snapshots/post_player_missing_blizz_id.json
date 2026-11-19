@@ -1,0 +1,24 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "data": {
+            "blizz_id": null,
+            "battletag": "Zemill",
+            "region": 1,
+            "game_type": [
+                "qm",
+                "ud",
+                "hl",
+                "tl",
+                "sl",
+                "ar"
+            ],
+            "season": null
+        },
+        "errors": [
+            "The blizz id field is required."
+        ],
+        "status": "failure to validate inputs"
+    }
+}

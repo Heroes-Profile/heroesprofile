@@ -1,0 +1,35 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "activity": [
+            {
+                "id": 1,
+                "name": "Basic Account",
+                "email": "basic@heroesprofile.test",
+                "status": "active",
+                "started_at": "2024-02-01 00:00:00",
+                "changed_at": "2024-02-01 00:00:00",
+                "ends_at": null
+            },
+            {
+                "id": 2,
+                "name": "Developer Account",
+                "email": "developer@heroesprofile.test",
+                "status": "active",
+                "started_at": "2024-02-01 00:00:00",
+                "changed_at": "2024-02-01 00:00:00",
+                "ends_at": null
+            },
+            {
+                "id": 3,
+                "name": "Admin Account",
+                "email": "admin@heroesprofile.test",
+                "status": "active",
+                "started_at": "2024-02-01 00:00:00",
+                "changed_at": "2024-02-01 00:00:00",
+                "ends_at": null
+            }
+        ]
+    }
+}

@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -14,19 +13,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::connection('heroesprofile_globals')->create('global_hero_stats_bans_real_rank', function (Blueprint $table) {
-            $table->bigInteger('global_hero_stats_bans_real_rank_id');
-            $table->integer('game_version');
-            $table->tinyInteger('real_league_tier');
-            $table->tinyInteger('game_map');
-            $table->integer('region');
-            $table->tinyInteger('hero');
-            $table->double('bans')->default(0);
-
-            $table->primary(['global_hero_stats_bans_real_rank_id', 'game_version']);
-            $table->unique(['game_version', 'real_league_tier', 'game_map', 'region', 'hero'], 'unique');
-            $table->index(['game_version', 'real_league_tier', 'game_map', 'region', 'hero', 'bans'], 'Index_Bans');
-        });
+        DB::connection('heroesprofile_globals')->statement(<<<'SQL'
+            CREATE TABLE `global_hero_stats_bans_real_rank` (
+                `global_hero_stats_bans_real_rank_id` bigint NOT NULL AUTO_INCREMENT,
+                `game_version` int NOT NULL,
+                `real_league_tier` tinyint NOT NULL,
+                `game_map` tinyint NOT NULL,
+                `region` int NOT NULL,
+                `hero` tinyint NOT NULL,
+                `bans` double NOT NULL DEFAULT 0,
+                PRIMARY KEY (`global_hero_stats_bans_real_rank_id`, `game_version`),
+                KEY `Index_Bans` (`game_version`, `real_league_tier`, `game_map`, `region`, `hero`, `bans`),
+                UNIQUE KEY `unique` (`game_version`, `real_league_tier`, `game_map`, `region`, `hero`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            PARTITION BY RANGE (`game_version`) (PARTITION pmax VALUES LESS THAN MAXVALUE)
+            SQL);
 
         // Partitioned by game_version like the other global tables; BackendServerApplication's AddNewPartition
         // splits a new p_<id> off p_future for each new patch

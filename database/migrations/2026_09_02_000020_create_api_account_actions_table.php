@@ -47,7 +47,8 @@ return new class extends Migration
             // The admin account that acted. Null means it was not a person.
             $table->unsignedInteger('performed_by')->nullable();
 
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
 
             $table->index(['api_account_id', 'created_at'], 'idx_account_history');
         });

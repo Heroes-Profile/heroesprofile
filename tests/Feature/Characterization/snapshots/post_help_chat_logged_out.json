@@ -1,0 +1,7 @@
+{
+    "status": 401,
+    "content_type": "application/json",
+    "json": {
+        "error": "Log in with Battle.net to use the help chat."
+    }
+}

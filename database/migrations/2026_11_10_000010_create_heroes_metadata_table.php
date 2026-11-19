@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('heroes_metadata', function (Blueprint $table) {
-            $table->tinyInteger('hero_id')->primary();
+            $table->tinyInteger('hero_id');
             $table->string('title', 100)->nullable();
             $table->string('franchise', 32)->nullable();
             $table->string('difficulty', 20)->nullable();
@@ -20,12 +20,14 @@ return new class extends Migration
             $table->text('lore')->nullable();
             $table->string('rarity', 20)->nullable();
             $table->boolean('is_melee')->nullable();
-            $table->tinyInteger('rating_complexity')->unsigned()->nullable();
-            $table->tinyInteger('rating_damage')->unsigned()->nullable();
-            $table->tinyInteger('rating_survivability')->unsigned()->nullable();
-            $table->tinyInteger('rating_utility')->unsigned()->nullable();
+            $table->unsignedTinyInteger('rating_complexity')->nullable();
+            $table->unsignedTinyInteger('rating_damage')->nullable();
+            $table->unsignedTinyInteger('rating_survivability')->nullable();
+            $table->unsignedTinyInteger('rating_utility')->nullable();
             $table->string('playstyles')->nullable();
-            $table->integer('game_data_build')->unsigned();
+            $table->unsignedInteger('game_data_build');
+
+            $table->primary('hero_id');
         });
     }
 

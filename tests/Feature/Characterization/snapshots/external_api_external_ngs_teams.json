@@ -1,0 +1,33 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": [
+        {
+            "team_name": "ParsleySnagRosemary&Line",
+            "division": "A East",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/ParsleySnagRosemary%26Line1630_logo.png",
+            "wins": 3,
+            "losses": 2,
+            "games_played": 5,
+            "win_rate": 60
+        },
+        {
+            "team_name": "Sky5",
+            "division": "A East",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Sky52452_logo.png",
+            "wins": 0,
+            "losses": 2,
+            "games_played": 2,
+            "win_rate": 0
+        },
+        {
+            "team_name": "Team Happy Cloud",
+            "division": "A East",
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Team+Happy+Cloud5311_logo.png",
+            "wins": 4,
+            "losses": 3,
+            "games_played": 7,
+            "win_rate": 57.14
+        }
+    ]
+}

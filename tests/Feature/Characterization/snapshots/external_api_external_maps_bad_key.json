@@ -1,0 +1,10 @@
+{
+    "status": 401,
+    "content_type": "application/json",
+    "json": {
+        "error": {
+            "code": "unauthenticated",
+            "message": "A valid API key is required."
+        }
+    }
+}

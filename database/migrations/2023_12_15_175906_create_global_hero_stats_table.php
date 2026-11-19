@@ -1,68 +1,71 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateGlobalHeroStatsTable extends Migration
 {
     public function up()
     {
-        Schema::connection('heroesprofile_globals')->create('global_hero_stats', function (Blueprint $table) {
-            $table->increments('global_hero_stats_id');
-            $table->integer('game_version')->notNull();
-            $table->tinyInteger('game_type');
-            $table->tinyInteger('league_tier');
-            $table->tinyInteger('hero_league_tier')->default(0);
-            $table->tinyInteger('role_league_tier')->default(0);
-            $table->tinyInteger('game_map');
-            $table->integer('hero_level')->unsigned();
-            $table->tinyInteger('hero');
-            $table->tinyInteger('mirror')->default(0);
-            $table->integer('region');
-            $table->tinyInteger('win_loss');
-            $table->integer('game_time')->unsigned()->nullable();
-            $table->integer('kills')->unsigned()->nullable();
-            $table->integer('assists')->unsigned()->nullable();
-            $table->integer('takedowns')->unsigned()->nullable();
-            $table->integer('deaths')->unsigned()->nullable();
-            $table->integer('highest_kill_streak')->unsigned()->nullable();
-            $table->integer('hero_damage')->unsigned()->nullable();
-            $table->integer('siege_damage')->unsigned()->nullable();
-            $table->integer('structure_damage')->unsigned()->nullable();
-            $table->integer('minion_damage')->unsigned()->nullable();
-            $table->integer('creep_damage')->unsigned()->nullable();
-            $table->integer('summon_damage')->unsigned()->nullable();
-            $table->integer('time_cc_enemy_heroes')->unsigned()->nullable();
-            $table->integer('healing')->unsigned()->nullable();
-            $table->integer('self_healing')->unsigned()->nullable();
-            $table->integer('damage_taken')->unsigned()->nullable();
-            $table->integer('experience_contribution')->unsigned()->nullable();
-            $table->integer('town_kills')->unsigned()->nullable();
-            $table->integer('time_spent_dead')->unsigned()->nullable();
-            $table->integer('merc_camp_captures')->unsigned()->nullable();
-            $table->integer('watch_tower_captures')->unsigned()->nullable();
-            $table->integer('protection_allies')->unsigned()->nullable();
-            $table->integer('silencing_enemies')->unsigned()->nullable();
-            $table->integer('rooting_enemies')->unsigned()->nullable();
-            $table->integer('stunning_enemies')->unsigned()->nullable();
-            $table->integer('clutch_heals')->unsigned()->nullable();
-            $table->integer('escapes')->unsigned()->nullable();
-            $table->integer('vengeance')->unsigned()->nullable();
-            $table->integer('outnumbered_deaths')->unsigned()->nullable();
-            $table->integer('teamfight_escapes')->unsigned()->nullable();
-            $table->integer('teamfight_healing')->unsigned()->nullable();
-            $table->integer('teamfight_damage_taken')->unsigned()->nullable();
-            $table->integer('teamfight_hero_damage')->unsigned()->nullable();
-            $table->integer('multikill')->unsigned()->nullable();
-            $table->integer('physical_damage')->unsigned()->nullable();
-            $table->integer('spell_damage')->unsigned()->nullable();
-            $table->integer('regen_globes')->nullable();
-            $table->integer('games_played')->unsigned()->default(0);
-
-            $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'region', 'win_loss'], 'unique');
-            $table->index(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'region', 'win_loss', 'games_played'], 'primary_gamesPlayed');
-        });
+        DB::connection('heroesprofile_globals')->statement(<<<'SQL'
+            CREATE TABLE `global_hero_stats` (
+                `global_hero_stats_id` bigint NOT NULL AUTO_INCREMENT,
+                `game_version` int NOT NULL,
+                `game_type` tinyint NOT NULL,
+                `league_tier` tinyint NOT NULL,
+                `hero_league_tier` tinyint NOT NULL DEFAULT 0,
+                `role_league_tier` tinyint NOT NULL DEFAULT 0,
+                `game_map` tinyint NOT NULL,
+                `hero_level` int unsigned NOT NULL,
+                `hero` tinyint NOT NULL,
+                `mirror` tinyint NOT NULL DEFAULT 0,
+                `region` int NOT NULL,
+                `win_loss` tinyint NOT NULL,
+                `game_time` int unsigned NULL,
+                `kills` int unsigned NULL,
+                `assists` int unsigned NULL,
+                `takedowns` int unsigned NULL,
+                `deaths` int unsigned NULL,
+                `highest_kill_streak` int unsigned NULL,
+                `hero_damage` int unsigned NULL,
+                `siege_damage` int unsigned NULL,
+                `structure_damage` int unsigned NULL,
+                `minion_damage` int unsigned NULL,
+                `creep_damage` int unsigned NULL,
+                `summon_damage` int unsigned NULL,
+                `time_cc_enemy_heroes` int unsigned NULL,
+                `healing` int unsigned NULL,
+                `self_healing` int unsigned NULL,
+                `damage_taken` int unsigned NULL,
+                `experience_contribution` int unsigned NULL,
+                `town_kills` int unsigned NULL,
+                `time_spent_dead` int unsigned NULL,
+                `merc_camp_captures` int unsigned NULL,
+                `watch_tower_captures` int unsigned NULL,
+                `protection_allies` int unsigned NULL,
+                `silencing_enemies` int unsigned NULL,
+                `rooting_enemies` int unsigned NULL,
+                `stunning_enemies` int unsigned NULL,
+                `clutch_heals` int unsigned NULL,
+                `escapes` int unsigned NULL,
+                `vengeance` int unsigned NULL,
+                `outnumbered_deaths` int unsigned NULL,
+                `teamfight_escapes` int unsigned NULL,
+                `teamfight_healing` int unsigned NULL,
+                `teamfight_damage_taken` int unsigned NULL,
+                `teamfight_hero_damage` int unsigned NULL,
+                `multikill` int unsigned NULL,
+                `physical_damage` int unsigned NULL,
+                `spell_damage` int unsigned NULL,
+                `regen_globes` int NULL,
+                `games_played` int unsigned NOT NULL DEFAULT 0,
+                PRIMARY KEY (`global_hero_stats_id`, `game_version`),
+                KEY `primary_gamesPlayed` (`game_version`, `game_type`, `league_tier`, `hero_league_tier`, `role_league_tier`, `game_map`, `hero_level`, `hero`, `mirror`, `region`, `win_loss`, `games_played`),
+                UNIQUE KEY `UNIQUE` (`game_version`, `game_type`, `league_tier`, `hero_league_tier`, `role_league_tier`, `game_map`, `hero_level`, `hero`, `mirror`, `region`, `win_loss`)
+            ) ENGINE=InnoDB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            PARTITION BY RANGE (`game_version`) (PARTITION pmax VALUES LESS THAN MAXVALUE)
+            SQL);
     }
 
     public function down()

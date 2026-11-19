@@ -9,6 +9,8 @@ class CreateHeroesDataAbilitiesTable extends Migration
     public function up()
     {
         Schema::create('heroes_data_abilities', function (Blueprint $table) {
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
             $table->string('hero_name', 100);
             $table->string('short_name', 100);
             $table->string('attribute_id', 10);
@@ -26,11 +28,12 @@ class CreateHeroesDataAbilitiesTable extends Migration
             $table->string('parent_link_id', 150)->nullable();
             $table->string('short_description')->nullable();
             $table->text('raw_description')->nullable();
-            $table->smallInteger('charges')->unsigned()->nullable();
+            $table->unsignedSmallInteger('charges')->nullable();
             $table->decimal('charge_cooldown', 6, 2)->nullable();
-            $table->tinyInteger('sort')->unsigned()->nullable();
-            $table->unique(['hero_name', 'link_id']);
+            $table->unsignedTinyInteger('sort')->nullable();
+
             $table->index('attribute_id');
+            $table->unique(['hero_name', 'link_id']);
         });
     }
 

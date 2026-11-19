@@ -1,0 +1,134 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": [
+        {
+            "pick_number": 0,
+            "wins": 2,
+            "losses": 3,
+            "games_played": 5,
+            "popularity": 12.69,
+            "win_rate": 40
+        },
+        {
+            "pick_number": 1,
+            "wins": 2,
+            "losses": 0,
+            "games_played": 2,
+            "popularity": 5.08,
+            "win_rate": 100
+        },
+        {
+            "pick_number": 2,
+            "wins": 1,
+            "losses": 1,
+            "games_played": 2,
+            "popularity": 5.08,
+            "win_rate": 50
+        },
+        {
+            "pick_number": 3,
+            "wins": 2,
+            "losses": 1,
+            "games_played": 3,
+            "popularity": 7.61,
+            "win_rate": 66.67
+        },
+        {
+            "pick_number": 4,
+            "wins": 0,
+            "losses": 2,
+            "games_played": 2,
+            "popularity": 5.08,
+            "win_rate": 0
+        },
+        {
+            "pick_number": 5,
+            "wins": 1,
+            "losses": 2,
+            "games_played": 3,
+            "popularity": 7.61,
+            "win_rate": 33.33
+        },
+        {
+            "pick_number": 6,
+            "wins": 1,
+            "losses": 3,
+            "games_played": 4,
+            "popularity": 10.15,
+            "win_rate": 25
+        },
+        {
+            "pick_number": 7,
+            "wins": 1,
+            "losses": 2,
+            "games_played": 3,
+            "popularity": 7.61,
+            "win_rate": 33.33
+        },
+        {
+            "pick_number": 8,
+            "wins": 1,
+            "losses": 1,
+            "games_played": 2,
+            "popularity": 5.08,
+            "win_rate": 50
+        },
+        {
+            "pick_number": 9,
+            "wins": 1,
+            "losses": 1,
+            "games_played": 2,
+            "popularity": 5.08,
+            "win_rate": 50
+        },
+        {
+            "pick_number": 10,
+            "wins": 1,
+            "losses": 0,
+            "games_played": 1,
+            "popularity": 2.54,
+            "win_rate": 100
+        },
+        {
+            "pick_number": 11,
+            "wins": 0,
+            "losses": 2,
+            "games_played": 2,
+            "popularity": 5.08,
+            "win_rate": 0
+        },
+        {
+            "pick_number": 12,
+            "wins": 3,
+            "losses": 1,
+            "games_played": 4,
+            "popularity": 10.15,
+            "win_rate": 75
+        },
+        {
+            "pick_number": 13,
+            "wins": 0,
+            "losses": 2,
+            "games_played": 2,
+            "popularity": 5.08,
+            "win_rate": 0
+        },
+        {
+            "pick_number": 14,
+            "wins": 0,
+            "losses": 1,
+            "games_played": 1,
+            "popularity": 2.54,
+            "win_rate": 0
+        },
+        {
+            "pick_number": 15,
+            "wins": 1,
+            "losses": 2,
+            "games_played": 3,
+            "popularity": 7.61,
+            "win_rate": 33.33
+        }
+    ]
+}

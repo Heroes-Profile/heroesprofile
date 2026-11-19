@@ -1,0 +1,38 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": [
+        {
+            "division_0": "A East",
+            "count": 7
+        },
+        {
+            "division_0": "A West",
+            "count": 4
+        },
+        {
+            "division_0": "B East",
+            "count": 5
+        },
+        {
+            "division_0": "B West",
+            "count": 4
+        },
+        {
+            "division_0": "C West",
+            "count": 4
+        },
+        {
+            "division_0": "D East",
+            "count": 3
+        },
+        {
+            "division_0": "D West",
+            "count": 3
+        },
+        {
+            "division_0": "Heroic",
+            "count": 10
+        }
+    ]
+}

@@ -14,14 +14,17 @@ class CreateBattletagsTableHiNc extends Migration
     public function up()
     {
         Schema::create('heroesprofile_hi_nc.battletags', function (Blueprint $table) {
-            $table->increments('player_id');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('player_id', true);
             $table->integer('blizz_id');
             $table->string('battletag', 45);
             $table->dateTime('latest_game_played')->nullable()->default('2014-06-26 13:13:34');
 
-            $table->unique(['blizz_id', 'battletag'], 'BlizzID_Battletag_Region');
-            $table->index('battletag');
+            $table->index('battletag', 'battletag');
             $table->index('battletag', 'battletag_region');
+            $table->unique(['blizz_id', 'battletag'], 'BlizzID_Battletag_Region');
         });
     }
 

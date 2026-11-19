@@ -1,0 +1,18 @@
+{
+    "status": 422,
+    "content_type": "application/json",
+    "json": {
+        "message": "The battletag field is required. (and 2 more errors)",
+        "errors": {
+            "battletag": [
+                "The battletag field is required."
+            ],
+            "email": [
+                "The email field is required."
+            ],
+            "message": [
+                "The message field is required."
+            ]
+        }
+    }
+}

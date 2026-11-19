@@ -33,6 +33,11 @@ class PlayerController extends Controller
     // Starts at 3 because those hashes already used 1 and 2.
     private const PROFILE_CACHE_VERSION = 4;
 
+    // A cached profile checks for newer games only among replays uploaded since its own latest_replayID.
+    // That search costs about the number of replays uploaded site-wide since then, not the player's game
+    // count, so past this many (a long-idle player) the full search of the player's games is cheaper.
+    private const NEWER_REPLAY_WINDOW = 250000;
+
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
         $validationRules = [
@@ -123,28 +128,12 @@ class PlayerController extends Controller
             ->sort()
             ->values();
 
-        $latestReplayID = Replay::select('replay.replayID')
-            ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->where('blizz_id', $blizz_id)
-            ->where('region', $region)
-            // Same exclusion the profile query applies when no game type is chosen, or a
-            // newest custom game would look like new data on every load.
-            ->when(! is_null($game_type), function ($query) use ($game_type) {
-                return $query->whereIn('game_type', (array) $game_type);
-            }, function ($query) {
-                return $query->where('game_type', '<>', 0);
-            })
-            ->tap(function ($query) use ($seasonIds, $startDate, $endDate) {
-                $this->globalDataService->applySeasonsOrDateRange($query, $seasonIds->all(), $startDate, $endDate);
-            })
-            ->orderBy('replayID', 'DESC')
-            ->limit(1)
-            ->first()
-            ->replayID ?? null;
+        // The player's newest replay for these filters, given the newest one a cache already holds (or null)
+        $newestReplayId = fn (?int $knownLatest) => $this->newestReplayId($blizz_id, $region, $game_type, $seasonIds->all(), $startDate, $endDate, $knownLatest);
 
         // profile_page only holds totals for one season (or all) and one game type (or all)
         if ($startDate || $endDate || $seasonIds->count() > 1 || is_array($game_type)) {
-            $cachedData = $this->getCustomProfile($blizz_id, $region, $game_type, $seasonIds->all(), $startDate, $endDate, $latestReplayID);
+            $cachedData = $this->getCustomProfile($blizz_id, $region, $game_type, $seasonIds->all(), $startDate, $endDate, $newestReplayId);
 
             return $cachedData ? $this->formatProfile($cachedData, $blizz_id, $region, $battletag) : null;
         }
@@ -198,6 +187,9 @@ class PlayerController extends Controller
                 ->first();
         }
 
+        // Only replays newer than the cached row's own latest_replayID can make it stale
+        $latestReplayID = $cachedData ? $newestReplayId((int) $cachedData->latest_replayID) : null;
+
         if (($latestReplayID && $cachedData) && $cachedData->latest_replayID < $latestReplayID) {
             $this->calculateProfile($blizz_id, $region, $game_type, $season, $cachedData);
             $cachedData = ProfilePage::filterByBlizzID($blizz_id)
@@ -233,7 +225,50 @@ class PlayerController extends Controller
      * Several seasons or a date range. Computed in full and kept in player_stats_cache
      * until the player has a newer replay in that window.
      */
-    private function getCustomProfile($blizz_id, $region, $game_type, $seasons, $startDate, $endDate, $latestReplayID)
+    /**
+     * The player's newest replay for these filters. With $knownLatest (a cache's latest_replayID) it only
+     * looks at the player's replays above it, through player's replayID-first index, and returns
+     * $knownLatest when there are none, so the cache is current. Without one, or when it is so old that
+     * too many replays have been uploaded since, it searches all of the player's games.
+     */
+    private function newestReplayId($blizz_id, $region, $game_type, $seasons, $startDate, $endDate, ?int $knownLatest): ?int
+    {
+        $filters = function ($query) use ($region, $game_type, $seasons, $startDate, $endDate) {
+            $query->where('replay.region', $region)
+                // Same exclusion the profile query applies when no game type is chosen, or a
+                // newest custom game would look like new data on every load.
+                ->when(! is_null($game_type), function ($query) use ($game_type) {
+                    return $query->whereIn('replay.game_type', (array) $game_type);
+                }, function ($query) {
+                    return $query->where('replay.game_type', '<>', 0);
+                });
+            $this->globalDataService->applySeasonsOrDateRange($query, $seasons, $startDate, $endDate);
+        };
+
+        if ($knownLatest && Replay::max('replayID') - $knownLatest <= self::NEWER_REPLAY_WINDOW) {
+            $newer = DB::table('player')
+                ->forceIndex('replayID_blizzID_Hero')
+                ->join('replay', 'replay.replayID', '=', 'player.replayID')
+                ->where('player.replayID', '>', $knownLatest)
+                ->where('player.blizz_id', $blizz_id)
+                ->tap($filters)
+                ->orderByDesc('player.replayID')
+                ->limit(1)
+                ->value('player.replayID');
+
+            return $newer ?? $knownLatest;
+        }
+
+        return Replay::select('replay.replayID')
+            ->join('player', 'player.replayID', '=', 'replay.replayID')
+            ->where('player.blizz_id', $blizz_id)
+            ->tap($filters)
+            ->orderBy('replay.replayID', 'DESC')
+            ->limit(1)
+            ->value('replay.replayID');
+    }
+
+    private function getCustomProfile($blizz_id, $region, $game_type, $seasons, $startDate, $endDate, callable $newestReplayId)
     {
         $paramsHash = hash('sha256', json_encode(GlobalCacheKey::normalize([
             'page' => 'profile',
@@ -247,6 +282,9 @@ class PlayerController extends Controller
         ])));
 
         $dbCache = PlayerStatsCache::where('params_hash', $paramsHash)->first();
+
+        // Only replays newer than the cached entry's own latest_replayID can make it stale
+        $latestReplayID = $newestReplayId($dbCache ? (int) $dbCache->latest_replayID : null);
 
         if ($dbCache && (! $latestReplayID || $dbCache->latest_replayID >= $latestReplayID)) {
             $payload = $dbCache->data;

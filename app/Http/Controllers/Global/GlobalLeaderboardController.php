@@ -242,7 +242,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             $weeks = 1;
             if ($predictionSeason) {
                 $end = $predictionSeason->end_date ? Carbon::parse($predictionSeason->end_date) : Carbon::now();
-                $weeks = max(1, (int) floor(Carbon::parse($predictionSeason->start_date)->diffInDays($end) / 7));
+                $weeks = max(1, intdiv((int) Carbon::parse($predictionSeason->start_date)->diffInDays($end, absolute: true), 7));
             }
 
             $requirements = [];
@@ -303,7 +303,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         // The Player leaderboard's requirement: 5 games per week of the season so far (a past season's full length)
         $weeks = $seasonDates->id == SeasonDate::max('id')
             ? $this->globalDataService->getWeeksSinceSeasonStart()
-            : max(1, (int) round(Carbon::parse($seasonDates->start_date)->diffInDays(Carbon::parse($seasonDates->end_date)) / 7));
+            : max(1, (int) round((int) Carbon::parse($seasonDates->start_date)->diffInDays(Carbon::parse($seasonDates->end_date), absolute: true) / 7));
         $minGames = $weeks * 5;
 
         $build = function () use ($seasonDates, $region, $minGames) {

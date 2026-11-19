@@ -14,7 +14,9 @@ class CreatePlayersListTableCcl extends Migration
     public function up()
     {
         Schema::create('heroesprofile_ccl.players_list', function (Blueprint $table) {
-            $table->increments('players_list_id');
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('players_list_id', true);
             $table->string('full_battletag', 45)->nullable();
             $table->string('battletag', 45)->nullable();
             $table->integer('blizz_id')->nullable();

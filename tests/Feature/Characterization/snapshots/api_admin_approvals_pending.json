@@ -1,0 +1,36 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "pending": [
+            {
+                "id": 2,
+                "email": "basic@heroesprofile.test",
+                "project_name": "Basic Account project",
+                "project_updated_at": null,
+                "approved_at": null
+            },
+            {
+                "id": 3,
+                "email": "developer@heroesprofile.test",
+                "project_name": "Developer Account project",
+                "project_updated_at": null,
+                "approved_at": null
+            },
+            {
+                "id": 4,
+                "email": "partner@heroesprofile.test",
+                "project_name": "Partner Account project",
+                "project_updated_at": null,
+                "approved_at": null
+            },
+            {
+                "id": 5,
+                "email": "admin@heroesprofile.test",
+                "project_name": "Admin Account project",
+                "project_updated_at": null,
+                "approved_at": null
+            }
+        ]
+    }
+}

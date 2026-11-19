@@ -1,0 +1,7 @@
+{
+    "status": 404,
+    "content_type": "application/json",
+    "json": {
+        "message": ""
+    }
+}

@@ -1,0 +1,698 @@
+{
+    "comebacks": [
+        {
+            "who": "global",
+            "minute": 10,
+            "state": "ahead",
+            "games": 80005,
+            "win_rate": 0.8118867570776829
+        },
+        {
+            "who": "global",
+            "minute": 10,
+            "state": "behind",
+            "games": 80005,
+            "win_rate": 0.18811324292231701
+        },
+        {
+            "who": "global",
+            "minute": 10,
+            "state": "even",
+            "games": 57220,
+            "win_rate": 0.5000000000000004
+        },
+        {
+            "who": "global",
+            "minute": 15,
+            "state": "ahead",
+            "games": 71160,
+            "win_rate": 0.8522344013490724
+        },
+        {
+            "who": "global",
+            "minute": 15,
+            "state": "behind",
+            "games": 71160,
+            "win_rate": 0.14776559865092764
+        },
+        {
+            "who": "global",
+            "minute": 15,
+            "state": "even",
+            "games": 37680,
+            "win_rate": 0.49999999999999994
+        },
+        {
+            "who": "global",
+            "minute": 20,
+            "state": "ahead",
+            "games": 29005,
+            "win_rate": 0.8317531460093087
+        },
+        {
+            "who": "global",
+            "minute": 20,
+            "state": "behind",
+            "games": 29005,
+            "win_rate": 0.16824685399069128
+        },
+        {
+            "who": "global",
+            "minute": 20,
+            "state": "even",
+            "games": 31710,
+            "win_rate": 0.5000000000000003
+        },
+        {
+            "who": "you",
+            "minute": 10,
+            "state": "ahead",
+            "games": 49,
+            "win_rate": 0.9183673469387755
+        },
+        {
+            "who": "you",
+            "minute": 10,
+            "state": "behind",
+            "games": 38,
+            "win_rate": 0.3157894736842105
+        },
+        {
+            "who": "you",
+            "minute": 10,
+            "state": "even",
+            "games": 28,
+            "win_rate": 0.39285714285714285
+        },
+        {
+            "who": "you",
+            "minute": 15,
+            "state": "ahead",
+            "games": 38,
+            "win_rate": 0.9736842105263158
+        },
+        {
+            "who": "you",
+            "minute": 15,
+            "state": "behind",
+            "games": 32,
+            "win_rate": 0.125
+        },
+        {
+            "who": "you",
+            "minute": 15,
+            "state": "even",
+            "games": 21,
+            "win_rate": 0.6666666666666667
+        },
+        {
+            "who": "you",
+            "minute": 20,
+            "state": "ahead",
+            "games": 11,
+            "win_rate": 1.0
+        },
+        {
+            "who": "you",
+            "minute": 20,
+            "state": "behind",
+            "games": 11,
+            "win_rate": 0.0909090909090909
+        },
+        {
+            "who": "you",
+            "minute": 20,
+            "state": "even",
+            "games": 16,
+            "win_rate": 0.5625
+        }
+    ],
+    "level_lead": [
+        {
+            "who": "global",
+            "minute": 0,
+            "lead": null,
+            "lead_won": null,
+            "lead_lost": null,
+            "games": 219860
+        },
+        {
+            "who": "global",
+            "minute": 1,
+            "lead": 0.0,
+            "lead_won": 0.0,
+            "lead_lost": 0.0,
+            "games": 219860
+        },
+        {
+            "who": "global",
+            "minute": 2,
+            "lead": 5.312590645178972e-18,
+            "lead_won": 0.04175574255173988,
+            "lead_lost": -0.04175574255173977,
+            "games": 219860
+        },
+        {
+            "who": "global",
+            "minute": 3,
+            "lead": -6.993104012531504e-18,
+            "lead_won": 0.13609279053900383,
+            "lead_lost": -0.13609279053900386,
+            "games": 219860
+        },
+        {
+            "who": "global",
+            "minute": 4,
+            "lead": 1.2441219929271163e-17,
+            "lead_won": 0.1747100295656129,
+            "lead_lost": -0.17471002956561313,
+            "games": 219860
+        },
+        {
+            "who": "global",
+            "minute": 5,
+            "lead": -1.2088854223213374e-17,
+            "lead_won": 0.2642977387506254,
+            "lead_lost": -0.2642977387506255,
+            "games": 219800
+        },
+        {
+            "who": "global",
+            "minute": 6,
+            "lead": 3.198396408832238e-18,
+            "lead_won": 0.3981245447924254,
+            "lead_lost": -0.3981245447924256,
+            "games": 219690
+        },
+        {
+            "who": "global",
+            "minute": 7,
+            "lead": 6.80336863234654e-18,
+            "lead_won": 0.5277929651904503,
+            "lead_lost": -0.5277929651904508,
+            "games": 219490
+        },
+        {
+            "who": "global",
+            "minute": 8,
+            "lead": 1.81603863891322e-18,
+            "lead_won": 0.5771407704947971,
+            "lead_lost": -0.5771407704947965,
+            "games": 219090
+        },
+        {
+            "who": "global",
+            "minute": 9,
+            "lead": 6.451002926288751e-18,
+            "lead_won": 0.6622395237004806,
+            "lead_lost": -0.6622395237004814,
+            "games": 218360
+        },
+        {
+            "who": "global",
+            "minute": 10,
+            "lead": 7.26415455565288e-18,
+            "lead_won": 0.7990056164257439,
+            "lead_lost": -0.7990056164257441,
+            "games": 217230
+        },
+        {
+            "who": "global",
+            "minute": 11,
+            "lead": 4.7704895589362195e-18,
+            "lead_won": 0.9284053928405394,
+            "lead_lost": -0.9284053928405399,
+            "games": 215110
+        },
+        {
+            "who": "global",
+            "minute": 12,
+            "lead": -1.2847795743953228e-17,
+            "lead_won": 1.0146996064298934,
+            "lead_lost": -1.0146996064298919,
+            "games": 210900
+        },
+        {
+            "who": "global",
+            "minute": 13,
+            "lead": 3.144186300207963e-18,
+            "lead_won": 1.0427865080530667,
+            "lead_lost": -1.0427865080530656,
+            "games": 204280
+        },
+        {
+            "who": "global",
+            "minute": 14,
+            "lead": 8.673617379884035e-18,
+            "lead_won": 1.048897115532933,
+            "lead_lost": -1.0488971155329307,
+            "games": 194500
+        },
+        {
+            "who": "global",
+            "minute": 15,
+            "lead": 6.7220534694101275e-18,
+            "lead_won": 1.0448913828546036,
+            "lead_lost": -1.0448913828546038,
+            "games": 180000
+        },
+        {
+            "who": "global",
+            "minute": 16,
+            "lead": 1.22514845490862e-17,
+            "lead_won": 0.9807280513918633,
+            "lead_lost": -0.9807280513918627,
+            "games": 163460
+        },
+        {
+            "who": "global",
+            "minute": 17,
+            "lead": -1.6263032587282567e-19,
+            "lead_won": 0.8628050900493706,
+            "lead_lost": -0.8628050900493707,
+            "games": 143820
+        },
+        {
+            "who": "global",
+            "minute": 18,
+            "lead": 1.463672932855431e-17,
+            "lead_won": 0.7440116138398254,
+            "lead_lost": -0.7440116138398255,
+            "games": 124000
+        },
+        {
+            "who": "global",
+            "minute": 19,
+            "lead": 2.9815559743351372e-18,
+            "lead_won": 0.6457860922146633,
+            "lead_lost": -0.6457860922146633,
+            "games": 105850
+        },
+        {
+            "who": "global",
+            "minute": 20,
+            "lead": -3.686287386450715e-18,
+            "lead_won": 0.5797569947608961,
+            "lead_lost": -0.5797569947608968,
+            "games": 89720
+        },
+        {
+            "who": "global",
+            "minute": 21,
+            "lead": 1.463672932855431e-18,
+            "lead_won": 0.5026426345033201,
+            "lead_lost": -0.5026426345033203,
+            "games": 73800
+        },
+        {
+            "who": "global",
+            "minute": 22,
+            "lead": 6.179952383167375e-18,
+            "lead_won": 0.4431685804626395,
+            "lead_lost": -0.44316858046263924,
+            "games": 60100
+        },
+        {
+            "who": "global",
+            "minute": 23,
+            "lead": 8.673617379884035e-19,
+            "lead_won": 0.4122898069337761,
+            "lead_lost": -0.4122898069337762,
+            "games": 48180
+        },
+        {
+            "who": "global",
+            "minute": 24,
+            "lead": -1.0842021724855044e-18,
+            "lead_won": 0.3513157894736842,
+            "lead_lost": -0.35131578947368425,
+            "games": 38010
+        },
+        {
+            "who": "global",
+            "minute": 25,
+            "lead": -1.0570971181733668e-18,
+            "lead_won": 0.3288409703504042,
+            "lead_lost": -0.3288409703504043,
+            "games": 29680
+        },
+        {
+            "who": "global",
+            "minute": 26,
+            "lead": 5.312590645178972e-18,
+            "lead_won": 0.292415607189829,
+            "lead_lost": -0.292415607189829,
+            "games": 22810
+        },
+        {
+            "who": "global",
+            "minute": 27,
+            "lead": -1.1275702593849246e-17,
+            "lead_won": 0.27555816686251466,
+            "lead_lost": -0.27555816686251466,
+            "games": 17020
+        },
+        {
+            "who": "global",
+            "minute": 28,
+            "lead": -9.324138683375338e-18,
+            "lead_won": 0.2463884430176565,
+            "lead_lost": -0.24638844301765653,
+            "games": 12460
+        },
+        {
+            "who": "global",
+            "minute": 29,
+            "lead": -4.9873299934333204e-18,
+            "lead_won": 0.2367303609341826,
+            "lead_lost": -0.2367303609341826,
+            "games": 9420
+        },
+        {
+            "who": "global",
+            "minute": 30,
+            "lead": 8.348356728138384e-18,
+            "lead_won": 0.2070921985815603,
+            "lead_lost": -0.2070921985815603,
+            "games": 7050
+        },
+        {
+            "who": "global",
+            "minute": 31,
+            "lead": -1.1275702593849246e-17,
+            "lead_won": 0.1814595660749507,
+            "lead_lost": -0.18145956607495067,
+            "games": 5070
+        },
+        {
+            "who": "global",
+            "minute": 32,
+            "lead": -4.336808689942018e-18,
+            "lead_won": 0.15405405405405406,
+            "lead_lost": -0.15405405405405403,
+            "games": 3700
+        },
+        {
+            "who": "global",
+            "minute": 33,
+            "lead": -5.204170427930421e-18,
+            "lead_won": 0.12996389891696755,
+            "lead_lost": -0.12996389891696752,
+            "games": 2770
+        },
+        {
+            "who": "global",
+            "minute": 34,
+            "lead": -1.474514954580286e-17,
+            "lead_won": 0.12365591397849462,
+            "lead_lost": -0.12365591397849464,
+            "games": 1860
+        },
+        {
+            "who": "global",
+            "minute": 35,
+            "lead": -6.071532165918825e-18,
+            "lead_won": 0.12195121951219513,
+            "lead_lost": -0.12195121951219513,
+            "games": 1230
+        },
+        {
+            "who": "global",
+            "minute": 36,
+            "lead": 4.553649124439119e-18,
+            "lead_won": 0.20224719101123598,
+            "lead_lost": -0.202247191011236,
+            "games": 890
+        },
+        {
+            "who": "global",
+            "minute": 37,
+            "lead": 5.637851296924623e-18,
+            "lead_won": 0.1864406779661017,
+            "lead_lost": -0.1864406779661017,
+            "games": 590
+        },
+        {
+            "who": "global",
+            "minute": 38,
+            "lead": 6.938893903907228e-18,
+            "lead_won": 0.3448275862068965,
+            "lead_lost": -0.3448275862068966,
+            "games": 290
+        },
+        {
+            "who": "global",
+            "minute": 39,
+            "lead": -3.469446951953614e-18,
+            "lead_won": 0.1111111111111111,
+            "lead_lost": -0.11111111111111112,
+            "games": 180
+        },
+        {
+            "who": "global",
+            "minute": 40,
+            "lead": -5.204170427930421e-18,
+            "lead_won": 0.16666666666666663,
+            "lead_lost": -0.16666666666666669,
+            "games": 120
+        },
+        {
+            "who": "you",
+            "minute": 0,
+            "lead": null,
+            "lead_won": null,
+            "lead_lost": null,
+            "games": 117
+        },
+        {
+            "who": "you",
+            "minute": 1,
+            "lead": 0.0,
+            "lead_won": 0.0,
+            "lead_lost": 0.0,
+            "games": 117
+        },
+        {
+            "who": "you",
+            "minute": 2,
+            "lead": -0.04273504273504273,
+            "lead_won": 0.0289855072463768,
+            "lead_lost": -0.14583333333333331,
+            "games": 117
+        },
+        {
+            "who": "you",
+            "minute": 3,
+            "lead": 0.02564102564102564,
+            "lead_won": 0.08695652173913043,
+            "lead_lost": -0.06249999999999999,
+            "games": 117
+        },
+        {
+            "who": "you",
+            "minute": 4,
+            "lead": 0.09401709401709402,
+            "lead_won": 0.27536231884057977,
+            "lead_lost": -0.16666666666666669,
+            "games": 117
+        },
+        {
+            "who": "you",
+            "minute": 5,
+            "lead": 0.13675213675213674,
+            "lead_won": 0.42028985507246375,
+            "lead_lost": -0.27083333333333337,
+            "games": 117
+        },
+        {
+            "who": "you",
+            "minute": 6,
+            "lead": 0.09401709401709402,
+            "lead_won": 0.4927536231884058,
+            "lead_lost": -0.47916666666666663,
+            "games": 117
+        },
+        {
+            "who": "you",
+            "minute": 7,
+            "lead": 0.11965811965811972,
+            "lead_won": 0.5362318840579711,
+            "lead_lost": -0.47916666666666663,
+            "games": 117
+        },
+        {
+            "who": "you",
+            "minute": 8,
+            "lead": 0.06837606837606836,
+            "lead_won": 0.5797101449275363,
+            "lead_lost": -0.6666666666666667,
+            "games": 117
+        }
+    ],
+    "objective_timing": [
+        {
+            "who": "global",
+            "games": 219770,
+            "avg_first_objective": 527.628589018861,
+            "avg_first_camp": 287.6110811829986,
+            "avg_first_fort": 631.0853396198615,
+            "win_rate_first_objective": 0.7234171604535067,
+            "win_rate_first_camp": 0.5588326286480356,
+            "win_rate_first_fort": 0.7797583770230223
+        },
+        {
+            "who": "you",
+            "games": 117,
+            "avg_first_objective": 617.2934782608695,
+            "avg_first_camp": 369.445945945946,
+            "avg_first_fort": 650.1847826086956,
+            "win_rate_first_objective": 0.8769230769230771,
+            "win_rate_first_camp": 0.6000000000000001,
+            "win_rate_first_fort": 0.9016393442622951
+        }
+    ],
+    "takedown_phases": [
+        {
+            "who": "global",
+            "phase": 0,
+            "enemy_deaths": 687635,
+            "takedowns": 530208
+        },
+        {
+            "who": "global",
+            "phase": 1,
+            "enemy_deaths": 1228360,
+            "takedowns": 964417
+        },
+        {
+            "who": "global",
+            "phase": 2,
+            "enemy_deaths": 1248065,
+            "takedowns": 988763
+        },
+        {
+            "who": "global",
+            "phase": 3,
+            "enemy_deaths": 795425,
+            "takedowns": 621497
+        },
+        {
+            "who": "global",
+            "phase": 4,
+            "enemy_deaths": 404530,
+            "takedowns": 306836
+        },
+        {
+            "who": "you",
+            "phase": 0,
+            "enemy_deaths": 436,
+            "takedowns": 382
+        },
+        {
+            "who": "you",
+            "phase": 1,
+            "enemy_deaths": 773,
+            "takedowns": 681
+        },
+        {
+            "who": "you",
+            "phase": 2,
+            "enemy_deaths": 741,
+            "takedowns": 639
+        },
+        {
+            "who": "you",
+            "phase": 3,
+            "enemy_deaths": 485,
+            "takedowns": 431
+        },
+        {
+            "who": "you",
+            "phase": 4,
+            "enemy_deaths": 178,
+            "takedowns": 137
+        }
+    ],
+    "takedowns": [
+        {
+            "who": "you",
+            "games": 117,
+            "enemy_deaths": 22.333333333333336,
+            "takedowns": 19.401709401709407,
+            "participation": 0.8687332567929583,
+            "solo_kills": 0.12820512820512822
+        },
+        {
+            "who": "global",
+            "games": 219770,
+            "enemy_deaths": 19.85719160940982,
+            "takedowns": 15.524052418437462,
+            "participation": 0.7817848930400102,
+            "solo_kills": 0.15705510306229242
+        }
+    ],
+    "tier_windows": [
+        {
+            "who": "global",
+            "games": 219860,
+            "first_to_10": 108900,
+            "win_rate_first_to_10": 0.7039485766758496,
+            "first_to_20": 88875,
+            "win_rate_first_to_20": 0.8077637130801687,
+            "avg_seconds_ahead_10": 0.33455857172211245,
+            "avg_seconds_ahead_20": 15.35951427464152
+        },
+        {
+            "who": "you",
+            "games": 117,
+            "first_to_10": 60,
+            "win_rate_first_to_10": 0.8166666666666668,
+            "first_to_20": 50,
+            "win_rate_first_to_20": 0.9400000000000001,
+            "avg_seconds_ahead_10": 4.923076923076923,
+            "avg_seconds_ahead_20": 11.763440860215054
+        }
+    ],
+    "xp_sources": [
+        {
+            "who": "global",
+            "winner": true,
+            "games": 109895,
+            "minion": 36791.31088766551,
+            "creep": 2916.312298102734,
+            "structure": 2492.995586696392,
+            "hero": 23515.253287228712,
+            "trickle": 34657.4595750489
+        },
+        {
+            "who": "you",
+            "winner": true,
+            "games": 69,
+            "minion": 36069.536231884056,
+            "creep": 2170.4347826086955,
+            "structure": 1681.8840579710145,
+            "hero": 27475.73913043478,
+            "trickle": 36273.78260869566
+        },
+        {
+            "who": "global",
+            "winner": false,
+            "games": 109895,
+            "minion": 35107.30570089629,
+            "creep": 1860.2891396332873,
+            "structure": 1087.8804768187815,
+            "hero": 16689.34978843442,
+            "trickle": 31453.572091541933
+        },
+        {
+            "who": "you",
+            "winner": false,
+            "games": 48,
+            "minion": 35973.916666666664,
+            "creep": 1335.666666666667,
+            "structure": 733.3333333333333,
+            "hero": 24625.47916666667,
+            "trickle": 36694.083333333336
+        }
+    ]
+}

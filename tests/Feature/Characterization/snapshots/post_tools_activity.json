@@ -1,0 +1,472 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": [
+        {
+            "x_label": "2014-10",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2014-11",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2014-12",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2015-01",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2015-02",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2015-03",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2015-04",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2015-05",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2015-06",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2015-07",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2015-08",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2015-09",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2015-10",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2015-11",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2015-12",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2016-01",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2016-02",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2016-03",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2016-04",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2016-05",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2016-06",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2016-07",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2016-08",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2016-09",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2016-10",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2016-11",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2016-12",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2017-01",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2017-02",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2017-03",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2017-04",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2017-05",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2017-06",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2017-07",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2017-08",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2017-09",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2017-10",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2017-11",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2017-12",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2018-01",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2018-02",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2018-03",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2018-04",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2018-05",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2018-06",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2018-07",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2018-08",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2018-09",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2018-10",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2018-11",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2018-12",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2019-01",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2019-02",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2019-03",
+            "unique_players": 82
+        },
+        {
+            "x_label": "2019-04",
+            "unique_players": 26
+        },
+        {
+            "x_label": "2019-05",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2019-06",
+            "unique_players": 51
+        },
+        {
+            "x_label": "2019-07",
+            "unique_players": 10
+        },
+        {
+            "x_label": "2019-08",
+            "unique_players": 134
+        },
+        {
+            "x_label": "2019-09",
+            "unique_players": 42
+        },
+        {
+            "x_label": "2019-10",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2019-11",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2019-12",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2020-01",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2020-02",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2020-03",
+            "unique_players": 10
+        },
+        {
+            "x_label": "2020-04",
+            "unique_players": 27
+        },
+        {
+            "x_label": "2020-05",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2020-06",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2020-07",
+            "unique_players": 32
+        },
+        {
+            "x_label": "2020-08",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2020-09",
+            "unique_players": 502
+        },
+        {
+            "x_label": "2020-10",
+            "unique_players": 588
+        },
+        {
+            "x_label": "2020-11",
+            "unique_players": 467
+        },
+        {
+            "x_label": "2020-12",
+            "unique_players": 58
+        },
+        {
+            "x_label": "2021-01",
+            "unique_players": 173
+        },
+        {
+            "x_label": "2021-02",
+            "unique_players": 136
+        },
+        {
+            "x_label": "2021-03",
+            "unique_players": 181
+        },
+        {
+            "x_label": "2021-04",
+            "unique_players": 382
+        },
+        {
+            "x_label": "2021-05",
+            "unique_players": 466
+        },
+        {
+            "x_label": "2021-06",
+            "unique_players": 241
+        },
+        {
+            "x_label": "2021-07",
+            "unique_players": 42
+        },
+        {
+            "x_label": "2021-08",
+            "unique_players": 50
+        },
+        {
+            "x_label": "2021-09",
+            "unique_players": 57
+        },
+        {
+            "x_label": "2021-10",
+            "unique_players": 157
+        },
+        {
+            "x_label": "2021-11",
+            "unique_players": 394
+        },
+        {
+            "x_label": "2021-12",
+            "unique_players": 224
+        },
+        {
+            "x_label": "2022-01",
+            "unique_players": 507
+        },
+        {
+            "x_label": "2022-02",
+            "unique_players": 213
+        },
+        {
+            "x_label": "2022-03",
+            "unique_players": 85
+        },
+        {
+            "x_label": "2022-04",
+            "unique_players": 96
+        },
+        {
+            "x_label": "2022-05",
+            "unique_players": 110
+        },
+        {
+            "x_label": "2022-06",
+            "unique_players": 31
+        },
+        {
+            "x_label": "2022-07",
+            "unique_players": 300
+        },
+        {
+            "x_label": "2022-08",
+            "unique_players": 679
+        },
+        {
+            "x_label": "2022-09",
+            "unique_players": 616
+        },
+        {
+            "x_label": "2022-10",
+            "unique_players": 47
+        },
+        {
+            "x_label": "2022-11",
+            "unique_players": 214
+        },
+        {
+            "x_label": "2022-12",
+            "unique_players": 37
+        },
+        {
+            "x_label": "2023-01",
+            "unique_players": 54
+        },
+        {
+            "x_label": "2023-02",
+            "unique_players": 10
+        },
+        {
+            "x_label": "2023-03",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2023-04",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2023-05",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2023-06",
+            "unique_players": 16
+        },
+        {
+            "x_label": "2023-07",
+            "unique_players": 10
+        },
+        {
+            "x_label": "2023-08",
+            "unique_players": 0
+        },
+        {
+            "x_label": "2023-09",
+            "unique_players": 140
+        },
+        {
+            "x_label": "2023-10",
+            "unique_players": 209
+        },
+        {
+            "x_label": "2023-11",
+            "unique_players": 140
+        },
+        {
+            "x_label": "2023-12",
+            "unique_players": 10
+        },
+        {
+            "x_label": "2024-01",
+            "unique_players": 406
+        },
+        {
+            "x_label": "2024-02",
+            "unique_players": 178,
+            "previous_months_to_date": [
+                {
+                    "x_label": "2024-01",
+                    "unique_players": 119
+                },
+                {
+                    "x_label": "2023-12",
+                    "unique_players": 0
+                },
+                {
+                    "x_label": "2023-11",
+                    "unique_players": 60
+                }
+            ]
+        }
+    ]
+}

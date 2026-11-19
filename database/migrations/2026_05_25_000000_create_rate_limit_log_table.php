@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('heroesprofile_logs.rate_limit_log', function (Blueprint $table) {
-            $table->id('rate_limit_log_id');
+            $table->bigIncrements('rate_limit_log_id');
             $table->string('ip', 45)->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('http_method', 10)->nullable();
@@ -24,11 +24,12 @@ return new class extends Migration
             $table->longText('user_agent')->nullable();
             $table->string('referer', 500)->nullable();
             $table->unsignedSmallInteger('retry_after')->nullable();
-            $table->timestamp('date_time')->useCurrent()->nullable();
-            $table->index('ip', 'idx_ip');
+            $table->timestamp('date_time')->nullable()->useCurrent();
+
             $table->index('date_time', 'idx_date_time');
-            $table->index('limiter', 'idx_limiter');
+            $table->index('ip', 'idx_ip');
             $table->index(['ip', 'date_time'], 'idx_ip_date');
+            $table->index('limiter', 'idx_limiter');
             $table->index('replay_id', 'idx_replay_id');
         });
     }
