@@ -1,0 +1,13 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "data": {
+            "userinput": "x' OR 1=1"
+        },
+        "errors": [
+            "The userinput must not contain prohibited characters or patterns."
+        ],
+        "status": "failure to validate inputs"
+    }
+}

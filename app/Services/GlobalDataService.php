@@ -703,7 +703,7 @@ class GlobalDataService
         $latestGameUtc = Carbon::parse($latestGame, 'UTC');
         $nowUtc = Carbon::now('UTC');
 
-        $isBackendOff = $nowUtc->diffInSeconds($latestGameUtc) > self::PARSING_STALE_MINUTES * 60;
+        $isBackendOff = $nowUtc->diffInSeconds($latestGameUtc, absolute: true) > self::PARSING_STALE_MINUTES * 60;
 
         return [
             'regions' => $regions,
@@ -867,7 +867,7 @@ class GlobalDataService
             }
         }
 
-        $days = $startDate->diffInDays($effective);
+        $days = (int) $startDate->diffInDays($effective, absolute: true);
         $weeks = max(1, (int) round($days / 7));
 
         return $this->cachedWeeksSinceSeasonStart = $weeks;
@@ -879,7 +879,7 @@ class GlobalDataService
         $startDateCarbon = Carbon::parse($startDate);
         $currentDate = Carbon::now();
 
-        return $startDateCarbon->diffInWeeks($currentDate);
+        return (int) $startDateCarbon->diffInWeeks($currentDate, absolute: true);
     }
 
     public function getBlizzIDGivenFullBattletag($battletag, $region)
@@ -965,7 +965,7 @@ class GlobalDataService
     {
         $latestPatch = $this->getLatestPatch();
         $latestAdded = SeasonGameVersion::where('game_version', $latestPatch)->value('date_added');
-        $sinceLatest = Carbon::now()->diffInMinutes(new Carbon($latestAdded));
+        $sinceLatest = (int) Carbon::now()->diffInMinutes(new Carbon($latestAdded), absolute: true);
 
         // Any timeframe that includes the live patch is still receiving games: a major
         // patch or a multi-build selection included, not only the latest build on its own.
@@ -1004,7 +1004,7 @@ class GlobalDataService
             return new GlobalCacheWindow(365 * 24 * 60 * 60, null);
         }
 
-        $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
+        $changeInMinutes = (int) Carbon::now()->diffInMinutes(new Carbon($date), absolute: true);
 
         return new GlobalCacheWindow(max(60, (int) $changeInMinutes * 60), null);
     }

@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::connection('heroesprofile_globals')->create('global_real_rank_processed', function (Blueprint $table) {
-            $table->unsignedInteger('replayID')->primary();
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->unsignedInteger('replayID');
+
+            $table->primary('replayID');
         });
     }
 

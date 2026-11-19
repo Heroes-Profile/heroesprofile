@@ -1,0 +1,272 @@
+{
+    "advantage": [
+        {
+            "who": "global",
+            "diff": -3,
+            "games": 11575,
+            "win_rate": 0.6237580993520516
+        },
+        {
+            "who": "global",
+            "diff": -2,
+            "games": 17905,
+            "win_rate": 0.5280647863725217
+        },
+        {
+            "who": "global",
+            "diff": -1,
+            "games": 42685,
+            "win_rate": 0.5036898207801336
+        },
+        {
+            "who": "global",
+            "diff": 0,
+            "games": 75460,
+            "win_rate": 0.5000000000000002
+        },
+        {
+            "who": "global",
+            "diff": 1,
+            "games": 42685,
+            "win_rate": 0.4963101792198666
+        },
+        {
+            "who": "global",
+            "diff": 2,
+            "games": 17905,
+            "win_rate": 0.4719352136274784
+        },
+        {
+            "who": "global",
+            "diff": 3,
+            "games": 11575,
+            "win_rate": 0.3762419006479481
+        },
+        {
+            "who": "you",
+            "diff": -3,
+            "games": 2,
+            "win_rate": 0.0
+        },
+        {
+            "who": "you",
+            "diff": -2,
+            "games": 8,
+            "win_rate": 0.75
+        },
+        {
+            "who": "you",
+            "diff": -1,
+            "games": 23,
+            "win_rate": 0.4782608695652174
+        },
+        {
+            "who": "you",
+            "diff": 0,
+            "games": 45,
+            "win_rate": 0.6888888888888889
+        },
+        {
+            "who": "you",
+            "diff": 1,
+            "games": 20,
+            "win_rate": 0.7500000000000001
+        },
+        {
+            "who": "you",
+            "diff": 2,
+            "games": 6,
+            "win_rate": 0.5
+        },
+        {
+            "who": "you",
+            "diff": 3,
+            "games": 13,
+            "win_rate": 0.23076923076923078
+        }
+    ],
+    "beat_stacks": [
+        {
+            "win": 1,
+            "teams": 4160,
+            "overstay": 0.18168269230769224,
+            "picked_alone": 0.7437019230769228,
+            "caught_first": 0.7370192307692309,
+            "lost_absent": 0.3462499999999998,
+            "fight_presence": 0.8989052608553125,
+            "objective_presence": 0.6726562495193592,
+            "camps": 4.878317307692308,
+            "tier_down_fights": 0.12394230769230778,
+            "deaths": 2.958749999999999,
+            "bush_deaths": 0.3771153846153845,
+            "unmounted_travel": 0.6006842569829136
+        },
+        {
+            "win": 0,
+            "teams": 5071,
+            "overstay": 0.7086176296588442,
+            "picked_alone": 1.1447051863537763,
+            "caught_first": 1.2454348254782095,
+            "lost_absent": 0.7643068428317883,
+            "fight_presence": 0.8712064542140846,
+            "objective_presence": 0.5945493504720372,
+            "camps": 2.9611516466180223,
+            "tier_down_fights": 0.7547623742851507,
+            "deaths": 4.985210017747978,
+            "bush_deaths": 0.5555906132912645,
+            "unmounted_travel": 0.6718954191645192
+        }
+    ],
+    "enemy_stack": [
+        {
+            "who": "global",
+            "enemy_party": 1,
+            "games": 76595,
+            "win_rate": 0.503949343951955
+        },
+        {
+            "who": "global",
+            "enemy_party": 2,
+            "games": 80450,
+            "win_rate": 0.5189558732131763
+        },
+        {
+            "who": "global",
+            "enemy_party": 3,
+            "games": 34230,
+            "win_rate": 0.5036517674554484
+        },
+        {
+            "who": "global",
+            "enemy_party": 4,
+            "games": 15285,
+            "win_rate": 0.4723585214262349
+        },
+        {
+            "who": "global",
+            "enemy_party": 5,
+            "games": 13230,
+            "win_rate": 0.38435374149659857
+        },
+        {
+            "who": "you",
+            "enemy_party": 1,
+            "games": 56,
+            "win_rate": 0.5714285714285714
+        },
+        {
+            "who": "you",
+            "enemy_party": 2,
+            "games": 30,
+            "win_rate": 0.7333333333333334
+        },
+        {
+            "who": "you",
+            "enemy_party": 3,
+            "games": 17,
+            "win_rate": 0.6470588235294118
+        },
+        {
+            "who": "you",
+            "enemy_party": 4,
+            "games": 7,
+            "win_rate": 0.4285714285714286
+        },
+        {
+            "who": "you",
+            "enemy_party": 5,
+            "games": 7,
+            "win_rate": 0.14285714285714285
+        }
+    ],
+    "mine_vs_stacks": [
+        {
+            "facing_stack": true,
+            "games": 27,
+            "win_rate": 0.4444444444444444,
+            "overstay": 0.37037037037037035,
+            "picked_alone": 0.7777777777777778,
+            "caught_first": 0.925925925925926,
+            "lost_absent": 0.4074074074074074,
+            "fight_presence": 0.9388760416538194,
+            "objective_presence": 0.8366640246846413,
+            "camps": 2.592592592592593,
+            "tier_down_fights": 0.6296296296296297,
+            "deaths": 3.962962962962963,
+            "bush_deaths": 0.4814814814814815,
+            "unmounted_travel": 0.759297848638546
+        },
+        {
+            "facing_stack": false,
+            "games": 90,
+            "win_rate": 0.6333333333333334,
+            "overstay": 0.47777777777777775,
+            "picked_alone": 0.5,
+            "caught_first": 0.7666666666666667,
+            "lost_absent": 0.32222222222222224,
+            "fight_presence": 0.947696212076226,
+            "objective_presence": 0.8443376155052006,
+            "camps": 2.8555555555555556,
+            "tier_down_fights": 0.4222222222222222,
+            "deaths": 3.3111111111111113,
+            "bush_deaths": 0.24444444444444444,
+            "unmounted_travel": 0.6997449750628235
+        }
+    ],
+    "party_size": [
+        {
+            "who": "global",
+            "party": 1,
+            "games": 133275,
+            "win_rate": 0.4908947664603265
+        },
+        {
+            "who": "global",
+            "party": 2,
+            "games": 40602,
+            "win_rate": 0.48556721343776177
+        },
+        {
+            "who": "global",
+            "party": 3,
+            "games": 20538,
+            "win_rate": 0.4965429934755086
+        },
+        {
+            "who": "global",
+            "party": 4,
+            "games": 12220,
+            "win_rate": 0.527659574468085
+        },
+        {
+            "who": "global",
+            "party": 5,
+            "games": 13215,
+            "win_rate": 0.615966704502459
+        },
+        {
+            "who": "you",
+            "party": 1,
+            "games": 81,
+            "win_rate": 0.6419753086419753
+        },
+        {
+            "who": "you",
+            "party": 2,
+            "games": 30,
+            "win_rate": 0.4666666666666667
+        },
+        {
+            "who": "you",
+            "party": 3,
+            "games": 3,
+            "win_rate": 0.6666666666666667
+        },
+        {
+            "who": "you",
+            "party": 4,
+            "games": 3,
+            "win_rate": 0.3333333333333333
+        }
+    ]
+}

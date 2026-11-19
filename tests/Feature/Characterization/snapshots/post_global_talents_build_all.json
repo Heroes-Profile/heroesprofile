@@ -1,0 +1,456 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "Abathur": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Alarak": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Alexstrasza": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Ana": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Anduin": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Anub'arak": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Artanis": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Arthas": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Auriel": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Azmodan": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Blaze": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Brightwing": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Cassia": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Chen": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Cho": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Chromie": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "D.Va": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Deathwing": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Deckard": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Dehaka": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Diablo": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "E.T.C.": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Falstad": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Fenix": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Gall": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Garrosh": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Gazlowe": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Genji": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Greymane": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Gul'dan": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Hanzo": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Hogger": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Illidan": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Imperius": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Jaina": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Johanna": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Junkrat": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Kael'thas": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Kel'Thuzad": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Kerrigan": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Kharazim": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Leoric": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Li Li": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Li-Ming": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Lt. Morales": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Lúcio": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Lunara": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Maiev": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Mal'Ganis": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Malfurion": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Malthael": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Medivh": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Mei": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Mephisto": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Muradin": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Murky": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Nazeebo": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Nova": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Orphea": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Probius": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Qhira": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Ragnaros": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Raynor": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Rehgar": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Rexxar": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Samuro": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Sgt. Hammer": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Sonya": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Stitches": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Stukov": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Sylvanas": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Tassadar": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "The Butcher": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "The Lost Vikings": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Thrall": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Tracer": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Tychus": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Tyrael": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Tyrande": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Uther": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Valeera": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Valla": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Varian": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Whitemane": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Xul": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Yrel": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Zagara": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Zarya": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Zeratul": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        },
+        "Zul'jin": {
+            "qm": null,
+            "sl": null,
+            "ar": null
+        }
+    }
+}

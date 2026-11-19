@@ -21,13 +21,13 @@ return new class extends Migration
         Schema::connection(self::CONNECTION)->create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email');
 
             // Non-null default in production; new accounts arrive pre-verified.
             $table->timestamp('email_verified_at')->nullable()->default('2024-10-09 22:34:00');
 
             $table->string('password');
-            $table->rememberToken();
+            $table->string('remember_token', 100)->nullable();
             $table->text('photo_url')->nullable();
 
             $table->tinyInteger('uses_two_factor_auth')->default(0);
@@ -60,27 +60,28 @@ return new class extends Migration
 
             $table->string('terms_version_accepted')->nullable();
             $table->dateTime('terms_accepted_at')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
 
             // Comped access, granted by hand alongside Stripe subscriptions.
-            $table->tinyInteger('d_approved')->default(0);
+            $table->tinyInteger('d_approved')->nullable()->default(0);
 
             // Sits with d_approved because it pairs with it: that one lets the account
             // buy Developer, this one raises the replay download allowance once it
             // has. Neither comps anything on its own, unlike the rest of the block.
             $table->tinyInteger('do_approved')->default(0);
-            $table->tinyInteger('p_approved')->default(0);
-            $table->tinyInteger('n_approved')->default(0);
-            $table->tinyInteger('n_upload_approved')->default(0);
-            $table->tinyInteger('h_approved')->default(0);
-            $table->tinyInteger('c_upload_approved')->default(0);
-            $table->tinyInteger('hi_upload_approved')->default(0);
-            $table->tinyInteger('nut_upload_approved')->default(0);
-            $table->tinyInteger('m_upload_approved')->default(0);
-            $table->tinyInteger('ml_upload_approved')->default(0);
+            $table->tinyInteger('p_approved')->nullable()->default(0);
+            $table->tinyInteger('n_approved')->nullable()->default(0);
+            $table->tinyInteger('n_upload_approved')->nullable()->default(0);
+            $table->tinyInteger('h_approved')->nullable()->default(0);
+            $table->tinyInteger('c_upload_approved')->nullable()->default(0);
+            $table->tinyInteger('hi_upload_approved')->nullable()->default(0);
+            $table->tinyInteger('nut_upload_approved')->nullable()->default(0);
+            $table->tinyInteger('m_upload_approved')->nullable()->default(0);
+            $table->tinyInteger('ml_upload_approved')->nullable()->default(0);
 
-            $table->tinyInteger('twitch_extension')->default(0);
-            $table->tinyInteger('battlenet')->default(0);
+            $table->tinyInteger('twitch_extension')->nullable()->default(0);
+            $table->tinyInteger('battlenet')->nullable()->default(0);
             $table->string('timezone', 45)->nullable();
             $table->string('promotion_days', 45)->nullable();
 
@@ -106,14 +107,19 @@ return new class extends Migration
             // Unique because one pledge entitles one API account. Without it a single
             // $10 supporter could supply as many keys as they cared to register.
             $table->unsignedBigInteger('patreon_accounts_id')->nullable();
-            $table->unique('patreon_accounts_id', 'users_patreon_accounts_id_unique');
 
-            // The Battle.net account a paid plan unlocks Player Analytics for, linked on the
-            // account page. Unique so one Battle.net account is unlocked through one API account.
-            $table->unsignedBigInteger('analytics_blizz_id')->nullable();
-            $table->unsignedTinyInteger('analytics_region')->nullable();
-            $table->string('analytics_battletag')->nullable();
-            $table->unique(['analytics_blizz_id', 'analytics_region'], 'users_analytics_player_unique');
+            // Enforcement state. Denormalised here rather than derived from
+            // `api_account_actions` because both sites read it on the hot path: the
+            // resolver already joins this table, and the old site asks for it in raw
+            // SQL on every request. The actions table holds the history.
+            //
+            // `suspension_type` is 'suspension' or 'termination'; the reason is shown
+            // to the customer verbatim, in the API error, the portal banner and the
+            // email, so the three cannot tell different stories.
+            $table->timestamp('suspended_at')->nullable();
+            $table->string('suspension_type', 20)->nullable();
+            $table->text('suspension_reason')->nullable();
+            $table->unsignedInteger('suspended_by')->nullable();
 
             // Where the account's integration can be seen. Self-declared, optional,
             // and stored exactly as typed — a note about where to look rather than a
@@ -131,22 +137,20 @@ return new class extends Migration
             // What the portal header shows for them: 'email', 'name' or 'none'.
             $table->string('header_display', 10)->default('email');
 
-            // Enforcement state. Denormalised here rather than derived from
-            // `api_account_actions` because both sites read it on the hot path: the
-            // resolver already joins this table, and the old site asks for it in raw
-            // SQL on every request. The actions table holds the history.
-            //
-            // `suspension_type` is 'suspension' or 'termination'; the reason is shown
-            // to the customer verbatim, in the API error, the portal banner and the
-            // email, so the three cannot tell different stories.
-            $table->timestamp('suspended_at')->nullable()->index();
-            $table->string('suspension_type', 20)->nullable();
-            $table->text('suspension_reason')->nullable();
-            $table->unsignedInteger('suspended_by')->nullable();
-
             // Set while the account's global stats carry markers (PoisonPill), so
             // data republished elsewhere can be traced back to it. Never shown to them.
             $table->timestamp('poisoned_at')->nullable();
+
+            // The Battle.net account a paid plan unlocks Player Analytics for, linked on the
+            // account page. Unique so one Battle.net account is unlocked through one API account.
+            $table->unsignedBigInteger('analytics_blizz_id')->nullable();
+            $table->unsignedTinyInteger('analytics_region')->nullable();
+            $table->string('analytics_battletag')->nullable();
+
+            $table->unique(['analytics_blizz_id', 'analytics_region'], 'users_analytics_player_unique');
+            $table->unique('email');
+            $table->unique('patreon_accounts_id');
+            $table->index('suspended_at');
         });
     }
 

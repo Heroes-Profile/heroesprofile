@@ -14,15 +14,18 @@ class CreateSeasonDatesTable extends Migration
     public function up()
     {
         Schema::create('season_dates', function (Blueprint $table) {
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
             $table->increments('id');
             $table->unsignedInteger('year');
-            $table->double('season', 10, 2)->unsigned();
+            $table->double('season')->unsigned();
             // Entered in Eastern time. start_date/end_date are the UTC values every
             // system compares game_date (UTC) against.
             $table->dateTime('start_date_est');
             $table->dateTime('end_date_est');
-            $table->dateTime('start_date')->storedAs("CONVERT_TZ(start_date_est, 'America/New_York', 'UTC')");
-            $table->dateTime('end_date')->storedAs("CONVERT_TZ(end_date_est, 'America/New_York', 'UTC')");
+            $table->dateTime('start_date')->storedAs('convert_tz(`start_date_est`,_utf8mb4\'America/New_York\',_utf8mb4\'UTC\')');
+            $table->dateTime('end_date')->storedAs('convert_tz(`end_date_est`,_utf8mb4\'America/New_York\',_utf8mb4\'UTC\')');
         });
     }
 

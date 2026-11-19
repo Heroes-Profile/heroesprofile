@@ -14,10 +14,10 @@ class CreateReplayDownloadsNotApiTable extends Migration
     public function up()
     {
         Schema::create('replay_downloads_not_api', function (Blueprint $table) {
-            $table->id('replay_downloads_not_api_id');
+            $table->bigIncrements('replay_downloads_not_api_id');
             $table->unsignedInteger('replayID')->nullable();
             $table->unsignedInteger('user_id')->nullable();
-            $table->string('battletag', 255)->nullable();
+            $table->string('battletag')->nullable();
             $table->dateTime('date_pulled')->nullable();
 
             $table->index(['battletag', 'date_pulled'], 'replay_downloads_not_api_battletag_date_pulled');

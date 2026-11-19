@@ -14,13 +14,15 @@ class CreateReplayDraftOrderTable extends Migration
     public function up()
     {
         Schema::create('replay_draft_order', function (Blueprint $table) {
-            $table->id('replay_draft_order_id');
-            $table->unsignedBigInteger('replayID');
-            $table->unsignedInteger('pick_number');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('replay_draft_order_id', true);
+            $table->integer('replayID');
+            $table->integer('pick_number');
             $table->string('type', 45);
             $table->integer('player_slot')->nullable();
-            $table->unsignedBigInteger('hero');
-            $table->timestamps(); // Add this line if you want timestamps
+            $table->integer('hero');
 
             $table->unique(['replayID', 'type', 'pick_number', 'hero'], 'UNIQUE');
         });

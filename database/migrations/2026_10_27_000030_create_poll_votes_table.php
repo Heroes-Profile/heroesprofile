@@ -23,7 +23,8 @@ return new class extends Migration
             $table->unsignedInteger('poll_id');
             $table->unsignedInteger('battlenet_accounts_id');
             $table->text('comment')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
 
             $table->unique(['poll_id', 'battlenet_accounts_id'], 'poll_votes_poll_account_unique');
         });

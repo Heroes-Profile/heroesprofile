@@ -14,6 +14,9 @@ class CreateTalentsTableHiNc extends Migration
     public function up()
     {
         Schema::create('heroesprofile_hi_nc.talents', function (Blueprint $table) {
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
             $table->unsignedInteger('replayID');
             $table->integer('battletag');
             $table->integer('level_one')->nullable();

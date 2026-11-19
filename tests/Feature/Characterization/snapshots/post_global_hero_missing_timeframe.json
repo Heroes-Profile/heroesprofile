@@ -1,0 +1,23 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "data": {
+            "timeframe": null,
+            "timeframe_type": "minor",
+            "game_type": [
+                "sl"
+            ],
+            "region": null,
+            "statfilter": "win_rate",
+            "hero_level": null,
+            "role": null,
+            "game_map": null,
+            "league_tier": null,
+            "hero_league_tier": null,
+            "role_league_tier": null,
+            "mirror": 0
+        },
+        "status": "failure to validate inputs"
+    }
+}

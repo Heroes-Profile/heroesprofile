@@ -23,18 +23,21 @@ return new class extends Migration
         }
 
         Schema::connection(self::CONNECTION)->create('api_tokens', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->unsignedBigInteger('user_id');
+            $table->string('id');
+            $table->unsignedInteger('user_id');
             $table->string('name');
-            $table->string('token', 100)->unique();
+            $table->string('token', 100);
             $table->text('metadata');
             $table->tinyInteger('transient')->default(0);
-            $table->integer('calls')->default(0);
             $table->timestamp('last_used_at')->nullable();
             $table->timestamp('expires_at')->nullable();
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
 
+            $table->primary('id');
+            $table->unique('token');
             $table->index(['user_id', 'expires_at']);
+            $table->unique('user_id', 'unique');
         });
     }
 

@@ -20,14 +20,16 @@ return new class extends Migration
         }
 
         Schema::connection(self::CONNECTION)->create('battlenet_account_flair', function (Blueprint $table) {
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
             $table->bigIncrements('id');
             $table->unsignedInteger('battlenet_accounts_id');
             $table->string('flair', 50);
             $table->timestamp('awarded_at')->useCurrent();
             $table->timestamp('ad_free_until')->nullable();
 
-            $table->unique(['battlenet_accounts_id', 'flair'], 'uniq_account_flair');
             $table->index('flair', 'idx_flair');
+            $table->unique(['battlenet_accounts_id', 'flair'], 'uniq_account_flair');
         });
     }
 

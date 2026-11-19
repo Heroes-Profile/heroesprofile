@@ -36,6 +36,7 @@ use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\ThrottleNonApiRequests;
 use App\Http\Middleware\ThrottleOldReplayRequests;
 use App\Http\Middleware\TrackSlowRequests;
+use App\Http\Middleware\TrimSitePagination;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\ValidateApiPostOrigin;
@@ -178,6 +179,7 @@ class Kernel extends HttpKernel
         'checkIfPrivateProfilePage' => CheckIfPrivateProfilePage::class,
         'checkIfPrivateProfileData' => CheckIfPrivateProfileData::class,
         'restrictCustomGames' => RestrictCustomGames::class,
+        'trimPagination' => TrimSitePagination::class,
         'logIpAndUserAgent' => LogIPAndUserAgent::class,
         'communitySupportRedirect' => CommunitySupportRedirect::class,
         'requireWebsiteAuthForAll' => RequireWebsiteAuthForAll::class,

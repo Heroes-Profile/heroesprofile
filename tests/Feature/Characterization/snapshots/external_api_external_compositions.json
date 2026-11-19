@@ -1,0 +1,204 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": [
+        {
+            "composition_id": 1,
+            "wins": 73.2,
+            "losses": 84,
+            "win_rate": 46.56,
+            "games_played": 157,
+            "popularity": 8.11,
+            "role_one": {
+                "mmr_type_table_id": 92,
+                "mmr_type_id": 100001,
+                "name": "Melee Assassin"
+            },
+            "role_two": {
+                "mmr_type_table_id": 93,
+                "mmr_type_id": 100002,
+                "name": "Tank"
+            },
+            "role_three": {
+                "mmr_type_table_id": 94,
+                "mmr_type_id": 100003,
+                "name": "Bruiser"
+            },
+            "role_four": {
+                "mmr_type_table_id": 95,
+                "mmr_type_id": 100004,
+                "name": "Healer"
+            },
+            "role_five": {
+                "mmr_type_table_id": 96,
+                "mmr_type_id": 100005,
+                "name": "Ranged Assassin"
+            }
+        },
+        {
+            "composition_id": 4,
+            "wins": 344.8,
+            "losses": 404.2,
+            "win_rate": 46.03,
+            "games_played": 749,
+            "popularity": 38.65,
+            "role_one": {
+                "mmr_type_table_id": 93,
+                "mmr_type_id": 100002,
+                "name": "Tank"
+            },
+            "role_two": {
+                "mmr_type_table_id": 94,
+                "mmr_type_id": 100003,
+                "name": "Bruiser"
+            },
+            "role_three": {
+                "mmr_type_table_id": 95,
+                "mmr_type_id": 100004,
+                "name": "Healer"
+            },
+            "role_four": {
+                "mmr_type_table_id": 96,
+                "mmr_type_id": 100005,
+                "name": "Ranged Assassin"
+            },
+            "role_five": {
+                "mmr_type_table_id": 96,
+                "mmr_type_id": 100005,
+                "name": "Ranged Assassin"
+            }
+        },
+        {
+            "composition_id": 10,
+            "wins": 46,
+            "losses": 56.2,
+            "win_rate": 45.01,
+            "games_played": 102,
+            "popularity": 5.27,
+            "role_one": {
+                "mmr_type_table_id": 93,
+                "mmr_type_id": 100002,
+                "name": "Tank"
+            },
+            "role_two": {
+                "mmr_type_table_id": 94,
+                "mmr_type_id": 100003,
+                "name": "Bruiser"
+            },
+            "role_three": {
+                "mmr_type_table_id": 94,
+                "mmr_type_id": 100003,
+                "name": "Bruiser"
+            },
+            "role_four": {
+                "mmr_type_table_id": 95,
+                "mmr_type_id": 100004,
+                "name": "Healer"
+            },
+            "role_five": {
+                "mmr_type_table_id": 96,
+                "mmr_type_id": 100005,
+                "name": "Ranged Assassin"
+            }
+        },
+        {
+            "composition_id": 5,
+            "wins": 47.4,
+            "losses": 58,
+            "win_rate": 44.97,
+            "games_played": 105,
+            "popularity": 5.44,
+            "role_one": {
+                "mmr_type_table_id": 93,
+                "mmr_type_id": 100002,
+                "name": "Tank"
+            },
+            "role_two": {
+                "mmr_type_table_id": 95,
+                "mmr_type_id": 100004,
+                "name": "Healer"
+            },
+            "role_three": {
+                "mmr_type_table_id": 96,
+                "mmr_type_id": 100005,
+                "name": "Ranged Assassin"
+            },
+            "role_four": {
+                "mmr_type_table_id": 96,
+                "mmr_type_id": 100005,
+                "name": "Ranged Assassin"
+            },
+            "role_five": {
+                "mmr_type_table_id": 96,
+                "mmr_type_id": 100005,
+                "name": "Ranged Assassin"
+            }
+        },
+        {
+            "composition_id": 18,
+            "wins": 48.6,
+            "losses": 61.2,
+            "win_rate": 44.26,
+            "games_played": 110,
+            "popularity": 5.67,
+            "role_one": {
+                "mmr_type_table_id": 93,
+                "mmr_type_id": 100002,
+                "name": "Tank"
+            },
+            "role_two": {
+                "mmr_type_table_id": 93,
+                "mmr_type_id": 100002,
+                "name": "Tank"
+            },
+            "role_three": {
+                "mmr_type_table_id": 95,
+                "mmr_type_id": 100004,
+                "name": "Healer"
+            },
+            "role_four": {
+                "mmr_type_table_id": 96,
+                "mmr_type_id": 100005,
+                "name": "Ranged Assassin"
+            },
+            "role_five": {
+                "mmr_type_table_id": 96,
+                "mmr_type_id": 100005,
+                "name": "Ranged Assassin"
+            }
+        },
+        {
+            "composition_id": 11,
+            "wins": 50,
+            "losses": 65.4,
+            "win_rate": 43.33,
+            "games_played": 115,
+            "popularity": 5.95,
+            "role_one": {
+                "mmr_type_table_id": 92,
+                "mmr_type_id": 100001,
+                "name": "Melee Assassin"
+            },
+            "role_two": {
+                "mmr_type_table_id": 93,
+                "mmr_type_id": 100002,
+                "name": "Tank"
+            },
+            "role_three": {
+                "mmr_type_table_id": 95,
+                "mmr_type_id": 100004,
+                "name": "Healer"
+            },
+            "role_four": {
+                "mmr_type_table_id": 96,
+                "mmr_type_id": 100005,
+                "name": "Ranged Assassin"
+            },
+            "role_five": {
+                "mmr_type_table_id": 96,
+                "mmr_type_id": 100005,
+                "name": "Ranged Assassin"
+            }
+        }
+    ]
+}

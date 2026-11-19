@@ -1,0 +1,1428 @@
+{
+    "response": {
+        "apm": [
+            {
+                "who": "global",
+                "minute": 0,
+                "commands": 4.316455926498679,
+                "games": 219860
+            },
+            {
+                "who": "global",
+                "minute": 1,
+                "commands": 27.909674338215222,
+                "games": 219860
+            },
+            {
+                "who": "global",
+                "minute": 2,
+                "commands": 29.54464204493769,
+                "games": 219860
+            },
+            {
+                "who": "global",
+                "minute": 3,
+                "commands": 28.76187119075775,
+                "games": 219860
+            },
+            {
+                "who": "global",
+                "minute": 4,
+                "commands": 28.974561084326396,
+                "games": 219860
+            },
+            {
+                "who": "global",
+                "minute": 5,
+                "commands": 28.93168334849864,
+                "games": 219800
+            },
+            {
+                "who": "global",
+                "minute": 6,
+                "commands": 28.57420911284083,
+                "games": 219690
+            },
+            {
+                "who": "global",
+                "minute": 7,
+                "commands": 27.84852157273678,
+                "games": 219490
+            },
+            {
+                "who": "global",
+                "minute": 8,
+                "commands": 27.45722305901684,
+                "games": 219090
+            },
+            {
+                "who": "global",
+                "minute": 9,
+                "commands": 27.1933412712951,
+                "games": 218360
+            },
+            {
+                "who": "global",
+                "minute": 10,
+                "commands": 26.773571790268385,
+                "games": 217230
+            },
+            {
+                "who": "global",
+                "minute": 11,
+                "commands": 26.284993724141156,
+                "games": 215110
+            },
+            {
+                "who": "global",
+                "minute": 12,
+                "commands": 25.465926979611194,
+                "games": 210900
+            },
+            {
+                "who": "global",
+                "minute": 13,
+                "commands": 24.725915410221255,
+                "games": 204280
+            },
+            {
+                "who": "global",
+                "minute": 14,
+                "commands": 23.910647814910035,
+                "games": 194500
+            },
+            {
+                "who": "global",
+                "minute": 15,
+                "commands": 23.174072222222225,
+                "games": 180000
+            },
+            {
+                "who": "global",
+                "minute": 16,
+                "commands": 22.344390064847666,
+                "games": 163460
+            },
+            {
+                "who": "global",
+                "minute": 17,
+                "commands": 21.929397858434157,
+                "games": 143820
+            },
+            {
+                "who": "global",
+                "minute": 18,
+                "commands": 21.462782258064525,
+                "games": 124000
+            },
+            {
+                "who": "global",
+                "minute": 19,
+                "commands": 21.06802078412847,
+                "games": 105850
+            },
+            {
+                "who": "global",
+                "minute": 20,
+                "commands": 20.321957200178332,
+                "games": 89720
+            },
+            {
+                "who": "global",
+                "minute": 21,
+                "commands": 19.758319783197837,
+                "games": 73800
+            },
+            {
+                "who": "global",
+                "minute": 22,
+                "commands": 19.279700499168044,
+                "games": 60100
+            },
+            {
+                "who": "global",
+                "minute": 23,
+                "commands": 19.29640929846409,
+                "games": 48180
+            },
+            {
+                "who": "global",
+                "minute": 24,
+                "commands": 18.674901341752168,
+                "games": 38010
+            },
+            {
+                "who": "global",
+                "minute": 25,
+                "commands": 18.429851752021563,
+                "games": 29680
+            },
+            {
+                "who": "global",
+                "minute": 26,
+                "commands": 17.888513809732576,
+                "games": 22810
+            },
+            {
+                "who": "global",
+                "minute": 27,
+                "commands": 17.384665099882497,
+                "games": 17020
+            },
+            {
+                "who": "global",
+                "minute": 28,
+                "commands": 17.901605136436604,
+                "games": 12460
+            },
+            {
+                "who": "global",
+                "minute": 29,
+                "commands": 17.326751592356683,
+                "games": 9420
+            },
+            {
+                "who": "global",
+                "minute": 30,
+                "commands": 16.73829787234043,
+                "games": 7050
+            },
+            {
+                "who": "global",
+                "minute": 31,
+                "commands": 16.654635108481266,
+                "games": 5070
+            },
+            {
+                "who": "global",
+                "minute": 32,
+                "commands": 16.777567567567566,
+                "games": 3700
+            },
+            {
+                "who": "global",
+                "minute": 33,
+                "commands": 15.168231046931407,
+                "games": 2770
+            },
+            {
+                "who": "global",
+                "minute": 34,
+                "commands": 15.40268817204301,
+                "games": 1860
+            },
+            {
+                "who": "global",
+                "minute": 35,
+                "commands": 16.104065040650408,
+                "games": 1230
+            },
+            {
+                "who": "global",
+                "minute": 36,
+                "commands": 14.174157303370785,
+                "games": 890
+            },
+            {
+                "who": "global",
+                "minute": 37,
+                "commands": 10.949152542372884,
+                "games": 590
+            },
+            {
+                "who": "global",
+                "minute": 38,
+                "commands": 13.044827586206896,
+                "games": 290
+            },
+            {
+                "who": "global",
+                "minute": 39,
+                "commands": 12.661111111111111,
+                "games": 180
+            },
+            {
+                "who": "you",
+                "minute": 0,
+                "commands": 12.247863247863247,
+                "games": 117
+            },
+            {
+                "who": "you",
+                "minute": 1,
+                "commands": 78.12820512820512,
+                "games": 117
+            },
+            {
+                "who": "you",
+                "minute": 2,
+                "commands": 76.14529914529915,
+                "games": 117
+            },
+            {
+                "who": "you",
+                "minute": 3,
+                "commands": 72.66666666666669,
+                "games": 117
+            },
+            {
+                "who": "you",
+                "minute": 4,
+                "commands": 70.05982905982906,
+                "games": 117
+            },
+            {
+                "who": "you",
+                "minute": 5,
+                "commands": 70.43589743589743,
+                "games": 117
+            },
+            {
+                "who": "you",
+                "minute": 6,
+                "commands": 66.83760683760684,
+                "games": 117
+            },
+            {
+                "who": "you",
+                "minute": 7,
+                "commands": 63.794871794871796,
+                "games": 117
+            },
+            {
+                "who": "you",
+                "minute": 8,
+                "commands": 61.76923076923076,
+                "games": 117
+            },
+            {
+                "who": "you",
+                "minute": 9,
+                "commands": 55.310344827586206,
+                "games": 116
+            }
+        ],
+        "talent_timing": [
+            {
+                "who": "global",
+                "tier": 0,
+                "avg_seconds": 39.08752407447033,
+                "picks": 219631
+            },
+            {
+                "who": "global",
+                "tier": 1,
+                "avg_seconds": 182.8091739439572,
+                "picks": 219404
+            },
+            {
+                "who": "global",
+                "tier": 2,
+                "avg_seconds": 297.59798520168545,
+                "picks": 219079
+            },
+            {
+                "who": "global",
+                "tier": 3,
+                "avg_seconds": 430.4182757545752,
+                "picks": 218136
+            },
+            {
+                "who": "global",
+                "tier": 4,
+                "avg_seconds": 585.6656547569088,
+                "picks": 214446
+            },
+            {
+                "who": "global",
+                "tier": 5,
+                "avg_seconds": 734.8426272102502,
+                "picks": 201674
+            },
+            {
+                "who": "global",
+                "tier": 6,
+                "avg_seconds": 949.3977857724944,
+                "picks": 150933
+            },
+            {
+                "who": "global",
+                "tier": 7,
+                "avg_seconds": 1384,
+                "picks": 1
+            },
+            {
+                "who": "you",
+                "tier": 0,
+                "avg_seconds": 38.88888888888889,
+                "picks": 117
+            },
+            {
+                "who": "you",
+                "tier": 1,
+                "avg_seconds": 181.61538461538458,
+                "picks": 117
+            },
+            {
+                "who": "you",
+                "tier": 2,
+                "avg_seconds": 284.49572649572656,
+                "picks": 117
+            },
+            {
+                "who": "you",
+                "tier": 3,
+                "avg_seconds": 405.6837606837607,
+                "picks": 117
+            },
+            {
+                "who": "you",
+                "tier": 4,
+                "avg_seconds": 536.301724137931,
+                "picks": 116
+            },
+            {
+                "who": "you",
+                "tier": 5,
+                "avg_seconds": 668.2972972972973,
+                "picks": 111
+            },
+            {
+                "who": "you",
+                "tier": 6,
+                "avg_seconds": 865.5760869565217,
+                "picks": 92
+            }
+        ],
+        "hero_games": [
+            {
+                "who": "global",
+                "hero_id": 15,
+                "games": 2780
+            },
+            {
+                "who": "you",
+                "hero_id": 17,
+                "games": 2
+            },
+            {
+                "who": "you",
+                "hero_id": 59,
+                "games": 1
+            },
+            {
+                "who": "global",
+                "hero_id": 64,
+                "games": 5113
+            },
+            {
+                "who": "you",
+                "hero_id": 74,
+                "games": 1
+            },
+            {
+                "who": "global",
+                "hero_id": 7,
+                "games": 4269
+            },
+            {
+                "who": "you",
+                "hero_id": 54,
+                "games": 1
+            },
+            {
+                "who": "you",
+                "hero_id": 70,
+                "games": 4
+            },
+            {
+                "who": "you",
+                "hero_id": 44,
+                "games": 3
+            },
+            {
+                "who": "you",
+                "hero_id": 66,
+                "games": 1
+            },
+            {
+                "who": "global",
+                "hero_id": 28,
+                "games": 1280
+            },
+            {
+                "who": "global",
+                "hero_id": 54,
+                "games": 3112
+            },
+            {
+                "who": "you",
+                "hero_id": 31,
+                "games": 1
+            },
+            {
+                "who": "you",
+                "hero_id": 61,
+                "games": 1
+            },
+            {
+                "who": "global",
+                "hero_id": 32,
+                "games": 4534
+            },
+            {
+                "who": "you",
+                "hero_id": 6,
+                "games": 3
+            },
+            {
+                "who": "you",
+                "hero_id": 89,
+                "games": 1
+            },
+            {
+                "who": "global",
+                "hero_id": 26,
+                "games": 3681
+            },
+            {
+                "who": "global",
+                "hero_id": 65,
+                "games": 3337
+            },
+            {
+                "who": "global",
+                "hero_id": 82,
+                "games": 2608
+            },
+            {
+                "who": "global",
+                "hero_id": 72,
+                "games": 1953
+            },
+            {
+                "who": "you",
+                "hero_id": 72,
+                "games": 3
+            },
+            {
+                "who": "you",
+                "hero_id": 83,
+                "games": 1
+            },
+            {
+                "who": "you",
+                "hero_id": 73,
+                "games": 3
+            },
+            {
+                "who": "you",
+                "hero_id": 88,
+                "games": 1
+            },
+            {
+                "who": "you",
+                "hero_id": 5,
+                "games": 1
+            },
+            {
+                "who": "global",
+                "hero_id": 87,
+                "games": 4241
+            },
+            {
+                "who": "you",
+                "hero_id": 13,
+                "games": 1
+            },
+            {
+                "who": "you",
+                "hero_id": 46,
+                "games": 4
+            },
+            {
+                "who": "you",
+                "hero_id": 41,
+                "games": 3
+            },
+            {
+                "who": "global",
+                "hero_id": 71,
+                "games": 2113
+            },
+            {
+                "who": "global",
+                "hero_id": 5,
+                "games": 3661
+            },
+            {
+                "who": "you",
+                "hero_id": 92,
+                "games": 43
+            },
+            {
+                "who": "you",
+                "hero_id": 10,
+                "games": 2
+            },
+            {
+                "who": "global",
+                "hero_id": 17,
+                "games": 3976
+            },
+            {
+                "who": "global",
+                "hero_id": 27,
+                "games": 4496
+            },
+            {
+                "who": "global",
+                "hero_id": 89,
+                "games": 2315
+            },
+            {
+                "who": "global",
+                "hero_id": 52,
+                "games": 2220
+            },
+            {
+                "who": "you",
+                "hero_id": 82,
+                "games": 1
+            },
+            {
+                "who": "global",
+                "hero_id": 68,
+                "games": 1585
+            },
+            {
+                "who": "global",
+                "hero_id": 75,
+                "games": 2467
+            },
+            {
+                "who": "you",
+                "hero_id": 67,
+                "games": 1
+            },
+            {
+                "who": "global",
+                "hero_id": 6,
+                "games": 3159
+            },
+            {
+                "who": "global",
+                "hero_id": 74,
+                "games": 2109
+            },
+            {
+                "who": "global",
+                "hero_id": 92,
+                "games": 6912
+            },
+            {
+                "who": "you",
+                "hero_id": 75,
+                "games": 3
+            },
+            {
+                "who": "global",
+                "hero_id": 46,
+                "games": 2998
+            },
+            {
+                "who": "global",
+                "hero_id": 73,
+                "games": 2238
+            },
+            {
+                "who": "global",
+                "hero_id": 67,
+                "games": 2156
+            },
+            {
+                "who": "global",
+                "hero_id": 31,
+                "games": 3129
+            }
+        ],
+        "ability_usage": [
+            {
+                "who": "global",
+                "hero_id": 46,
+                "ability_id": "Hearthstone",
+                "name": "Hearthstone",
+                "slot": "Hearth",
+                "icon": "storm_ui_icon_miscrune_1.png",
+                "confidence": "pinned",
+                "generic": true,
+                "games": 2998,
+                "games_used": 1535,
+                "uses": 4667,
+                "casts": 3816,
+                "casts_games": 1535,
+                "avg_first_use": 321.24951140065144
+            },
+            {
+                "who": "global",
+                "hero_id": 15,
+                "ability_id": "DiabloFireStomp",
+                "name": "Fire Stomp",
+                "slot": "Basic",
+                "icon": "storm_ui_icon_diablo_firestomp.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 2780,
+                "games_used": 2462,
+                "uses": 214817,
+                "casts": 166479,
+                "casts_games": 2462,
+                "avg_first_use": 66.67871649065799
+            },
+            {
+                "who": "global",
+                "hero_id": 92,
+                "ability_id": "XalatathVoidStepCancel",
+                "name": "Cancel Void Step",
+                "slot": "Basic (sub)",
+                "icon": "hud_btn_bg_ability_cancel.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 6912,
+                "games_used": 5805,
+                "uses": 108423,
+                "casts": 85899,
+                "casts_games": 5805,
+                "avg_first_use": 132.71145564168822
+            },
+            {
+                "who": "global",
+                "hero_id": 10,
+                "ability_id": "ChenEarth",
+                "name": "Earth",
+                "slot": "Basic (sub)",
+                "icon": "storm_temp_war3_btnearthquake.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 0,
+                "games_used": 277,
+                "uses": 1325,
+                "casts": 998,
+                "casts_games": 277,
+                "avg_first_use": 521.8375451263537
+            },
+            {
+                "who": "global",
+                "hero_id": 5,
+                "ability_id": "ArthasArmyOfTheDeadSacrifice",
+                "name": "Sacrifice",
+                "slot": "Heroic (sub)",
+                "icon": "storm_ui_icon_arthas_sacrifice.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 3661,
+                "games_used": 737,
+                "uses": 15909,
+                "casts": 10247,
+                "casts_games": 737,
+                "avg_first_use": 503.0162822252374
+            },
+            {
+                "who": "global",
+                "hero_id": 5,
+                "ability_id": "Mount",
+                "name": "Summon Mount",
+                "slot": "Mount",
+                "icon": "storm_ui_icon_generic_mount.png",
+                "confidence": "pinned",
+                "generic": true,
+                "games": 3661,
+                "games_used": 3193,
+                "uses": 70658,
+                "casts": 59094,
+                "casts_games": 3193,
+                "avg_first_use": 141.2903225806452
+            },
+            {
+                "who": "global",
+                "hero_id": 5,
+                "ability_id": "ArthasFrozenTempestCancel",
+                "name": "Cancel Frozen Tempest",
+                "slot": "Basic (sub)",
+                "icon": "hud_btn_bg_ability_cancel.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 3661,
+                "games_used": 3286,
+                "uses": 90796,
+                "casts": 89662,
+                "casts_games": 3286,
+                "avg_first_use": 88.664942178941
+            },
+            {
+                "who": "global",
+                "hero_id": 6,
+                "ability_id": "AurielDetainmentStrike",
+                "name": "Detainment Strike",
+                "slot": "Basic",
+                "icon": "storm_ui_icon_auriel_restrainingblow.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 3159,
+                "games_used": 2849,
+                "uses": 94206,
+                "casts": 81675,
+                "casts_games": 2849,
+                "avg_first_use": 79.11969111969113
+            },
+            {
+                "who": "global",
+                "hero_id": 92,
+                "ability_id": "XalatathVoidEruption",
+                "name": "Void Eruption",
+                "slot": "Heroic",
+                "icon": "storm_ui_icon_xalatath_r1_voideruption.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 6912,
+                "games_used": 4871,
+                "uses": 29730,
+                "casts": 28625,
+                "casts_games": 4871,
+                "avg_first_use": 485.8981728597825
+            },
+            {
+                "who": "global",
+                "hero_id": 27,
+                "ability_id": "KaelthasVerdantSpheres",
+                "name": "Verdant Spheres",
+                "slot": "Trait",
+                "icon": "storm_ui_icon_kaelthas_verdantspheres.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 4496,
+                "games_used": 3994,
+                "uses": 299173,
+                "casts": 271264,
+                "casts_games": 3994,
+                "avg_first_use": 59.206309464196295
+            },
+            {
+                "who": "global",
+                "hero_id": 72,
+                "ability_id": "AnaEyeOfHorusAttack",
+                "name": "High Powered Round",
+                "slot": "Heroic (sub)",
+                "icon": "storm_ui_icon_ana_overwatch.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 1953,
+                "games_used": 545,
+                "uses": 21200,
+                "casts": 4392,
+                "casts_games": 545,
+                "avg_first_use": 497.6605504587156
+            },
+            {
+                "who": "global",
+                "hero_id": 8,
+                "ability_id": "FaerieDragonArcaneFlare",
+                "name": "Arcane Flare",
+                "slot": "Basic",
+                "icon": "storm_ui_icon_brightwing_arcaneflare.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 0,
+                "games_used": 3452,
+                "uses": 242257,
+                "casts": 189015,
+                "casts_games": 3452,
+                "avg_first_use": 70.59791425260717
+            },
+            {
+                "who": "global",
+                "hero_id": 26,
+                "ability_id": "CrusaderIronSkin",
+                "name": "Iron Skin",
+                "slot": "Trait",
+                "icon": "storm_ui_icon_johanna_iron_skin.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 3681,
+                "games_used": 3311,
+                "uses": 75705,
+                "casts": 64323,
+                "casts_games": 3311,
+                "avg_first_use": 92.02536997885836
+            },
+            {
+                "who": "global",
+                "hero_id": 62,
+                "ability_id": "UtherHolyLight",
+                "name": "Holy Light",
+                "slot": "Basic",
+                "icon": "storm_ui_icon_uther_holylight.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 0,
+                "games_used": 1525,
+                "uses": 80454,
+                "casts": 66180,
+                "casts_games": 1525,
+                "avg_first_use": 75.03868852459021
+            },
+            {
+                "who": "global",
+                "hero_id": 31,
+                "ability_id": "LiLiBlindingWind",
+                "name": "Blinding Wind",
+                "slot": "Basic",
+                "icon": "storm_ui_icon_lili_blindingwind.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 3129,
+                "games_used": 2793,
+                "uses": 179464,
+                "casts": 138216,
+                "casts_games": 2793,
+                "avg_first_use": 70.48585750089508
+            },
+            {
+                "who": "global",
+                "hero_id": 92,
+                "ability_id": "stop",
+                "name": "Stop / Hold",
+                "slot": null,
+                "icon": null,
+                "confidence": "pinned",
+                "generic": true,
+                "games": 6912,
+                "games_used": 1152,
+                "uses": 15576,
+                "casts": 8065,
+                "casts_games": 1152,
+                "avg_first_use": 295.73611111111114
+            },
+            {
+                "who": "global",
+                "hero_id": 92,
+                "ability_id": "VolskayaVehicleTacticalStrikes",
+                "name": "Tactical Strikes",
+                "slot": "Triglav Protector",
+                "icon": null,
+                "confidence": "exact",
+                "generic": true,
+                "games": 6912,
+                "games_used": 103,
+                "uses": 833,
+                "casts": 749,
+                "casts_games": 103,
+                "avg_first_use": 656.9902912621361
+            },
+            {
+                "who": "global",
+                "hero_id": 80,
+                "ability_id": "DeckardStayAWhileAndListenCancel",
+                "name": "Cancel Stay Awhile and Listen",
+                "slot": "Heroic (sub)",
+                "icon": "hud_btn_bg_ability_cancel.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 0,
+                "games_used": 992,
+                "uses": 4171,
+                "casts": 3720,
+                "casts_games": 992,
+                "avg_first_use": 588.5584677419356
+            },
+            {
+                "who": "global",
+                "hero_id": 87,
+                "ability_id": "AnduinChastise",
+                "name": "Chastise",
+                "slot": "Basic",
+                "icon": "storm_ui_icon_anduin_chastise.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 4241,
+                "games_used": 3786,
+                "uses": 168934,
+                "casts": 147750,
+                "casts_games": 3786,
+                "avg_first_use": 72.57791864764921
+            },
+            {
+                "who": "global",
+                "hero_id": 10,
+                "ability_id": "ChenKegSmash",
+                "name": "Keg Smash",
+                "slot": "Basic",
+                "icon": "storm_ui_icon_chen_kegsmash.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 0,
+                "games_used": 1882,
+                "uses": 149097,
+                "casts": 114870,
+                "casts_games": 1882,
+                "avg_first_use": 66.40170031880982
+            },
+            {
+                "who": "global",
+                "hero_id": 59,
+                "ability_id": "TychusRunAndGunOverkill",
+                "name": "Run and Gun",
+                "slot": "Basic (sub)",
+                "icon": "storm_ui_icon_tychus_runandgun.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 0,
+                "games_used": 2554,
+                "uses": 12802,
+                "casts": 11083,
+                "casts_games": 2554,
+                "avg_first_use": 306.0043069694597
+            },
+            {
+                "who": "global",
+                "hero_id": 59,
+                "ability_id": "TychusMinigunActive",
+                "name": "Minigun",
+                "slot": "Trait (sub)",
+                "icon": "storm_ui_icon_tychus_minigun.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 0,
+                "games_used": 2890,
+                "uses": 65741,
+                "casts": 58389,
+                "casts_games": 2890,
+                "avg_first_use": 81.7356401384083
+            },
+            {
+                "who": "global",
+                "hero_id": 87,
+                "ability_id": "AnduinFlashHeal",
+                "name": "Flash Heal",
+                "slot": "Basic",
+                "icon": "storm_ui_icon_anduin_flash_heal.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 4241,
+                "games_used": 3787,
+                "uses": 423585,
+                "casts": 284297,
+                "casts_games": 3787,
+                "avg_first_use": 69.97781885397414
+            },
+            {
+                "who": "global",
+                "hero_id": 52,
+                "ability_id": "StukovWeightedPustuleReactiveBallistospores",
+                "name": "Reactive Ballistospores",
+                "slot": "Activable (sub)",
+                "icon": "storm_ui_icon_stukov_bio-killswitch.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 2220,
+                "games_used": 301,
+                "uses": 2395,
+                "casts": 2129,
+                "casts_games": 301,
+                "avg_first_use": 136.0830564784053
+            },
+            {
+                "who": "global",
+                "hero_id": 41,
+                "ability_id": "WitchDoctorRavenousSpiritCancel",
+                "name": "Ravenous Spirit",
+                "slot": "Heroic (sub)",
+                "icon": "hud_btn_bg_ability_cancel.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 0,
+                "games_used": 2146,
+                "uses": 5547,
+                "casts": 5377,
+                "casts_games": 2146,
+                "avg_first_use": 644.5973904939422
+            },
+            {
+                "who": "global",
+                "hero_id": 68,
+                "ability_id": "VolskayaVehicleTShield",
+                "name": "Shield",
+                "slot": "Triglav Protector",
+                "icon": null,
+                "confidence": "exact",
+                "generic": true,
+                "games": 1585,
+                "games_used": 21,
+                "uses": 115,
+                "casts": 78,
+                "casts_games": 21,
+                "avg_first_use": 561.7619047619048
+            },
+            {
+                "who": "global",
+                "hero_id": 7,
+                "ability_id": "AzmodanTrample",
+                "name": "Trample",
+                "slot": "Activable (sub)",
+                "icon": "storm_ui_icon_azmodan_trample.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 4269,
+                "games_used": 371,
+                "uses": 2596,
+                "casts": 2041,
+                "casts_games": 371,
+                "avg_first_use": 814.7547169811321
+            },
+            {
+                "who": "global",
+                "hero_id": 62,
+                "ability_id": "Mount",
+                "name": "Summon Mount",
+                "slot": "Mount",
+                "icon": "storm_ui_icon_generic_mount.png",
+                "confidence": "pinned",
+                "generic": true,
+                "games": 0,
+                "games_used": 1454,
+                "uses": 33186,
+                "casts": 28017,
+                "casts_games": 1454,
+                "avg_first_use": 163.21114167812934
+            },
+            {
+                "who": "global",
+                "hero_id": 7,
+                "ability_id": "AzmodanTideOfSin",
+                "name": "Tide of Sin",
+                "slot": "Heroic",
+                "icon": "storm_ui_icon_azmodan_blackpool.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 4269,
+                "games_used": 2650,
+                "uses": 59954,
+                "casts": 55679,
+                "casts_games": 2650,
+                "avg_first_use": 436.0169811320754
+            },
+            {
+                "who": "global",
+                "hero_id": 44,
+                "ability_id": "attack",
+                "name": "Attack",
+                "slot": null,
+                "icon": null,
+                "confidence": "pinned",
+                "generic": true,
+                "games": 0,
+                "games_used": 1253,
+                "uses": 265688,
+                "casts": 49755,
+                "casts_games": 1253,
+                "avg_first_use": 121.83000798084599
+            },
+            {
+                "who": "global",
+                "hero_id": 88,
+                "ability_id": "NexusHunterFinalStrikeActivate",
+                "name": "Final Strike",
+                "slot": "Heroic",
+                "icon": "storm_ui_icon_nexushunter_r2.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 0,
+                "games_used": 1286,
+                "uses": 11462,
+                "casts": 10163,
+                "casts_games": 1286,
+                "avg_first_use": 478.15396578538105
+            },
+            {
+                "who": "global",
+                "hero_id": 27,
+                "ability_id": "Hearthstone",
+                "name": "Hearthstone",
+                "slot": "Hearth",
+                "icon": "storm_ui_icon_miscrune_1.png",
+                "confidence": "pinned",
+                "generic": true,
+                "games": 4496,
+                "games_used": 2498,
+                "uses": 9641,
+                "casts": 8149,
+                "casts_games": 2498,
+                "avg_first_use": 295.38470776621295
+            },
+            {
+                "who": "global",
+                "hero_id": 17,
+                "ability_id": "FalstadHinterlandBlast",
+                "name": "Hinterland Blast",
+                "slot": "Heroic",
+                "icon": "storm_ui_icon_falstad_hinterlandblast.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 3976,
+                "games_used": 1415,
+                "uses": 9665,
+                "casts": 8935,
+                "casts_games": 1415,
+                "avg_first_use": 476.57102473498225
+            },
+            {
+                "who": "global",
+                "hero_id": 32,
+                "ability_id": "VehicleDragonFireBreath",
+                "name": "Dragon Breath",
+                "slot": "Dragon Knight",
+                "icon": null,
+                "confidence": "pinned",
+                "generic": true,
+                "games": 4534,
+                "games_used": 69,
+                "uses": 605,
+                "casts": 509,
+                "casts_games": 69,
+                "avg_first_use": 711.9565217391306
+            },
+            {
+                "who": "global",
+                "hero_id": 44,
+                "ability_id": "RagnarosLivingMeteor",
+                "name": "Living Meteor",
+                "slot": "Basic",
+                "icon": "storm_ui_icon_ragnaros_livingmeteor.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 0,
+                "games_used": 2142,
+                "uses": 109447,
+                "casts": 104751,
+                "casts_games": 2142,
+                "avg_first_use": 64.82026143790851
+            },
+            {
+                "who": "global",
+                "hero_id": 64,
+                "ability_id": "attack",
+                "name": "Attack",
+                "slot": null,
+                "icon": null,
+                "confidence": "pinned",
+                "generic": true,
+                "games": 5113,
+                "games_used": 3344,
+                "uses": 1944765,
+                "casts": 190891,
+                "casts_games": 3344,
+                "avg_first_use": 78.86872009569377
+            },
+            {
+                "who": "global",
+                "hero_id": 54,
+                "ability_id": "Mount",
+                "name": "Summon Mount",
+                "slot": "Mount",
+                "icon": "storm_ui_icon_generic_mount.png",
+                "confidence": "pinned",
+                "generic": true,
+                "games": 3112,
+                "games_used": 2669,
+                "uses": 58127,
+                "casts": 49323,
+                "casts_games": 2669,
+                "avg_first_use": 181.21955788684897
+            },
+            {
+                "who": "global",
+                "hero_id": 89,
+                "ability_id": "attack",
+                "name": "Attack",
+                "slot": null,
+                "icon": null,
+                "confidence": "pinned",
+                "generic": true,
+                "games": 2315,
+                "games_used": 1296,
+                "uses": 196567,
+                "casts": 47785,
+                "casts_games": 1296,
+                "avg_first_use": 120.06095679012344
+            },
+            {
+                "who": "global",
+                "hero_id": 67,
+                "ability_id": "ZagaraSummonNydusWorm",
+                "name": "Nydus Network",
+                "slot": "Heroic",
+                "icon": "storm_ui_icon_zagara_nydusworm.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 2156,
+                "games_used": 620,
+                "uses": 3694,
+                "casts": 3515,
+                "casts_games": 620,
+                "avg_first_use": 446.7758064516128
+            },
+            {
+                "who": "global",
+                "hero_id": 88,
+                "ability_id": "attack",
+                "name": "Attack",
+                "slot": null,
+                "icon": null,
+                "confidence": "pinned",
+                "generic": true,
+                "games": 0,
+                "games_used": 1799,
+                "uses": 413091,
+                "casts": 74165,
+                "casts_games": 1799,
+                "avg_first_use": 113.54085603112843
+            },
+            {
+                "who": "global",
+                "hero_id": 88,
+                "ability_id": "NexusHunterCarnage",
+                "name": "Carnage",
+                "slot": "Basic",
+                "icon": "storm_ui_icon_nexushunter_q.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 0,
+                "games_used": 2840,
+                "uses": 210978,
+                "casts": 176985,
+                "casts_games": 2840,
+                "avg_first_use": 68.0464788732394
+            },
+            {
+                "who": "global",
+                "hero_id": 92,
+                "ability_id": "VolskayaVehicleInitiateParticleCannon",
+                "name": "Particle Cannon",
+                "slot": "Triglav Protector",
+                "icon": null,
+                "confidence": "exact",
+                "generic": true,
+                "games": 6912,
+                "games_used": 104,
+                "uses": 799,
+                "casts": 760,
+                "casts_games": 104,
+                "avg_first_use": 656.4999999999999
+            },
+            {
+                "who": "global",
+                "hero_id": 27,
+                "ability_id": "KaelthasPyroblast",
+                "name": "Pyroblast",
+                "slot": "Heroic",
+                "icon": "storm_ui_icon_kaelthas_pyroblast.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 4496,
+                "games_used": 2741,
+                "uses": 21073,
+                "casts": 15831,
+                "casts_games": 2741,
+                "avg_first_use": 486.01130974097043
+            },
+            {
+                "who": "global",
+                "hero_id": 7,
+                "ability_id": "VolskayaVehicleCharge",
+                "name": "Charge",
+                "slot": "Triglav Protector",
+                "icon": null,
+                "confidence": "exact",
+                "generic": true,
+                "games": 4269,
+                "games_used": 51,
+                "uses": 414,
+                "casts": 316,
+                "casts_games": 51,
+                "avg_first_use": 787.0000000000001
+            },
+            {
+                "who": "global",
+                "hero_id": 15,
+                "ability_id": "DiabloShadowCharge",
+                "name": "Shadow Charge",
+                "slot": "Basic",
+                "icon": "storm_ui_icon_diablo_shadowcharge_var1.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 2780,
+                "games_used": 2462,
+                "uses": 140519,
+                "casts": 92072,
+                "casts_games": 2462,
+                "avg_first_use": 76.43866774979692
+            },
+            {
+                "who": "global",
+                "hero_id": 6,
+                "ability_id": "attack",
+                "name": "Attack",
+                "slot": null,
+                "icon": null,
+                "confidence": "pinned",
+                "generic": true,
+                "games": 3159,
+                "games_used": 1833,
+                "uses": 600344,
+                "casts": 99887,
+                "casts_games": 1833,
+                "avg_first_use": 87.46917621385707
+            },
+            {
+                "who": "global",
+                "hero_id": 13,
+                "ability_id": "DVaMechBunnyHopHeroic",
+                "name": "Bunny Hop",
+                "slot": "Heroic",
+                "icon": "storm_ui_icon_dva_bunnyhop.png",
+                "confidence": "exact",
+                "generic": false,
+                "games": 0,
+                "games_used": 1226,
+                "uses": 8482,
+                "casts": 7410,
+                "casts_games": 1226,
+                "avg_first_use": 487.20717781402936
+            }
+        ]
+    },
+    "bigquery": [
+        {
+            "queries": {
+                "apm": "71cf065933e68544c89b3233232cc0b978b84798",
+                "talent_timing": "6d2114a42457d2d620489ef28aa13f81e9399ef1",
+                "hero_games": "ba1195ee092c2b98135d3c51b4022f1ca203cf0f",
+                "ability_usage": "ce3f9c34d77a47e546e8e97001e1bff2e930daf5"
+            },
+            "params": {
+                "blizz": 900010,
+                "region": 1,
+                "game_types": [
+                    5
+                ],
+                "maps": [
+                    1
+                ],
+                "hero": 80,
+                "cutover": "2026-10-02 16:00:01",
+                "sample": 50,
+                "replay": 0
+            }
+        }
+    ]
+}

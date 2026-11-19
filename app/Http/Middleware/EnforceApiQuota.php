@@ -361,7 +361,7 @@ class EnforceApiQuota
     {
         $resetsAt = ($usage->window_started_at ?? now())->copy()->addDays(ApiUsage::WINDOW_DAYS);
 
-        return max(0, now()->diffInSeconds($resetsAt, false));
+        return max(0, (int) now()->diffInSeconds($resetsAt, absolute: false));
     }
 
     private function error(string $code, string $message, int $status, ?string $endpoint = null): Response

@@ -73214,6 +73214,12 @@
                                                     "label": {
                                                         "type": "string"
                                                     },
+                                                    "page": {
+                                                        "type": [
+                                                            "null",
+                                                            "integer"
+                                                        ]
+                                                    },
                                                     "active": {
                                                         "type": "boolean"
                                                     }
@@ -73221,6 +73227,7 @@
                                                 "required": [
                                                     "url",
                                                     "label",
+                                                    "page",
                                                     "active"
                                                 ]
                                             }
@@ -77946,6 +77953,12 @@
                                                     "label": {
                                                         "type": "string"
                                                     },
+                                                    "page": {
+                                                        "type": [
+                                                            "null",
+                                                            "integer"
+                                                        ]
+                                                    },
                                                     "active": {
                                                         "type": "boolean"
                                                     }
@@ -77953,6 +77966,7 @@
                                                 "required": [
                                                     "url",
                                                     "label",
+                                                    "page",
                                                     "active"
                                                 ]
                                             }
@@ -83007,6 +83021,12 @@
                                                     "label": {
                                                         "type": "string"
                                                     },
+                                                    "page": {
+                                                        "type": [
+                                                            "null",
+                                                            "integer"
+                                                        ]
+                                                    },
                                                     "active": {
                                                         "type": "boolean"
                                                     }
@@ -83014,6 +83034,7 @@
                                                 "required": [
                                                     "url",
                                                     "label",
+                                                    "page",
                                                     "active"
                                                 ]
                                             }
@@ -92077,6 +92098,12 @@
                                                     "label": {
                                                         "type": "string"
                                                     },
+                                                    "page": {
+                                                        "type": [
+                                                            "null",
+                                                            "integer"
+                                                        ]
+                                                    },
                                                     "active": {
                                                         "type": "boolean"
                                                     }
@@ -92084,6 +92111,7 @@
                                                 "required": [
                                                     "url",
                                                     "label",
+                                                    "page",
                                                     "active"
                                                 ]
                                             }

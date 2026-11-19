@@ -14,10 +14,13 @@ class CreateReplayBansTable extends Migration
     public function up()
     {
         Schema::create('replay_bans', function (Blueprint $table) {
-            $table->id('ban_id');
-            $table->unsignedBigInteger('replayID');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('ban_id', true);
+            $table->integer('replayID');
             $table->unsignedTinyInteger('team');
-            $table->unsignedBigInteger('hero');
+            $table->unsignedInteger('hero');
 
             $table->index(['replayID', 'team', 'hero'], 'index');
         });

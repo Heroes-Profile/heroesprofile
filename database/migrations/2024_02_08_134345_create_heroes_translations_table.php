@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('heroes_translations', function (Blueprint $table) {
-            $table->increments('heroes_translations_id');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('heroes_translations_id', true);
             $table->string('name', 45);
             $table->string('short_name', 45);
             $table->string('translation', 45);

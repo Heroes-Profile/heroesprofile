@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateSeasonGameVersionsTable extends Migration
@@ -15,27 +14,23 @@ class CreateSeasonGameVersionsTable extends Migration
     public function up()
     {
         Schema::create('season_game_versions', function (Blueprint $table) {
-            $table->increments('id');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('id', true);
             $table->integer('season');
             $table->string('game_version', 45);
+            $table->integer('major')->storedAs('cast(substring_index(`game_version`,_utf8mb4\'.\',1) as unsigned)')->nullable();
+            $table->integer('minor')->storedAs('cast(substring_index(substring_index(`game_version`,_utf8mb4\'.\',-(3)),_utf8mb4\'.\',1) as unsigned)')->nullable();
+            $table->integer('patch')->storedAs('cast(substring_index(substring_index(`game_version`,_utf8mb4\'.\',-(2)),_utf8mb4\'.\',1) as unsigned)')->nullable();
+            $table->integer('build')->storedAs('cast(substring_index(`game_version`,_utf8mb4\'.\',-(1)) as unsigned)')->nullable();
             $table->dateTime('date_added')->nullable();
-            $table->tinyInteger('valid_globals')->default(1);
+            $table->tinyInteger('valid_globals')->nullable()->default(1);
             $table->mediumText('patch_notes_url')->nullable();
-        });
 
-        // Generated (stored) columns are not directly supported in Laravel schema builder
-        DB::statement("
-            ALTER TABLE `season_game_versions`
-            ADD COLUMN `major` int GENERATED ALWAYS AS (CAST(SUBSTRING_INDEX(`game_version`, '.', 1) AS UNSIGNED)) STORED,
-            ADD COLUMN `minor` int GENERATED ALWAYS AS (CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(`game_version`, '.', -3), '.', 1) AS UNSIGNED)) STORED,
-            ADD COLUMN `patch` int GENERATED ALWAYS AS (CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(`game_version`, '.', -2), '.', 1) AS UNSIGNED)) STORED,
-            ADD COLUMN `build` int GENERATED ALWAYS AS (CAST(SUBSTRING_INDEX(`game_version`, '.', -1) AS UNSIGNED)) STORED
-        ");
-
-        Schema::table('season_game_versions', function (Blueprint $table) {
-            $table->index(['season', 'game_version'], 'unique');
             $table->index('valid_globals', 'globals');
-            $table->index('game_version', 'gameversion');
+            $table->index(['season', 'game_version'], 'unique');
+            $table->unique('game_version', 'uq_season_game_versions_game_version');
         });
     }
 

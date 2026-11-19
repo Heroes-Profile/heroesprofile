@@ -20,8 +20,12 @@ return new class extends Migration
         }
 
         Schema::connection(self::CONNECTION)->create('xalatath_recap', function (Blueprint $table) {
-            $table->string('section', 32)->primary();
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->string('section', 32);
             $table->json('data');
+
+            $table->primary('section');
         });
     }
 

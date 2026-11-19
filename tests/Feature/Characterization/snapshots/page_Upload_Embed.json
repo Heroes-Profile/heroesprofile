@@ -1,0 +1,36 @@
+{
+    "status": 200,
+    "content_type": "text/html",
+    "view": "upload-embed",
+    "view_data_keys": [
+        "alt_search_account1",
+        "alt_search_account2",
+        "alt_search_account3",
+        "main_search_account",
+        "maxBytes",
+        "uploadUrl"
+    ],
+    "body": [
+        "<!doctype html>",
+        "<html lang=\"en\" style=\"background: transparent\">",
+        "  <head>",
+        "    <meta charset=\"utf-8\">",
+        "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=yes\">",
+        "    <meta name=\"robots\" content=\"noindex\">",
+        "    <meta name=\"csrf-token\" content=\"[csrf]\">",
+        "",
+        "    <title>Upload Replays | Heroes Profile</title>",
+        "",
+        "      </head>",
+        "",
+        "  <body class=\"text-white dark-mode\" style=\"background: transparent\">",
+        "    <div id=\"app\">",
+        "        <replay-uploader-embed",
+        "    :upload-url=\"'/api/external/v1/upload/heroesprofile/web'\"",
+        "    :max-bytes=\"10485760\"",
+        "  ></replay-uploader-embed>",
+        "    </div>",
+        "  </body>",
+        "</html>"
+    ]
+}

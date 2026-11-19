@@ -1,0 +1,23 @@
+# Throwaway MySQL for the test suite. Never point this file's port at anything else.
+#   docker compose -f docker-compose/docker-compose.testing.yaml up -d
+services:
+  mysql-testing:
+    image: mysql:8.4
+    # Disposable data: skip the per-commit disk flushes that make seeding crawl
+    command: ["--innodb-flush-log-at-trx-commit=0", "--sync-binlog=0", "--skip-log-bin", "--innodb-doublewrite=OFF"]
+    container_name: heroesprofile-mysql-testing
+    ports:
+      - 127.0.0.1:33061:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: testing
+    volumes:
+      - mysql_testing_data:/var/lib/mysql
+      - ./mysql/testing-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ptesting"]
+      timeout: 10s
+      interval: 2s
+      retries: 30
+
+volumes:
+  mysql_testing_data:

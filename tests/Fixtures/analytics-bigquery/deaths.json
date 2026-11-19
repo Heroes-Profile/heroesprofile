@@ -1,0 +1,722 @@
+{
+    "death_context": [
+        {
+            "who": "global",
+            "deaths": 872803,
+            "no_hero_killer": 1754,
+            "ganked": 110855,
+            "teamfight": 760194,
+            "level_behind": 426865,
+            "level_even": 292714,
+            "level_ahead": 153224,
+            "enemy_half": 322571
+        },
+        {
+            "who": "you",
+            "deaths": 405,
+            "no_hero_killer": 0,
+            "ganked": 43,
+            "teamfight": 362,
+            "level_behind": 185,
+            "level_even": 129,
+            "level_ahead": 91,
+            "enemy_half": 154
+        }
+    ],
+    "death_points": [
+        {
+            "game_map": 18,
+            "x": 115,
+            "y": 105,
+            "t_s": 246,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 18,
+            "x": 44,
+            "y": 114,
+            "t_s": 819,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 18,
+            "x": 114,
+            "y": 114,
+            "t_s": 468,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 18,
+            "x": 127,
+            "y": 116,
+            "t_s": 527,
+            "killers": 5,
+            "enemy_half": true
+        },
+        {
+            "game_map": 18,
+            "x": 81,
+            "y": 110,
+            "t_s": 753,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 18,
+            "x": 119,
+            "y": 108,
+            "t_s": 102,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 18,
+            "x": 137,
+            "y": 104,
+            "t_s": 373,
+            "killers": 2,
+            "enemy_half": true
+        },
+        {
+            "game_map": 18,
+            "x": 135,
+            "y": 106,
+            "t_s": 219,
+            "killers": 4,
+            "enemy_half": true
+        },
+        {
+            "game_map": 18,
+            "x": 125,
+            "y": 110,
+            "t_s": 281,
+            "killers": 5,
+            "enemy_half": true
+        },
+        {
+            "game_map": 18,
+            "x": 129,
+            "y": 118,
+            "t_s": 428,
+            "killers": 5,
+            "enemy_half": true
+        },
+        {
+            "game_map": 21,
+            "x": 125,
+            "y": 106,
+            "t_s": 223,
+            "killers": 4,
+            "enemy_half": false
+        },
+        {
+            "game_map": 21,
+            "x": 139,
+            "y": 121,
+            "t_s": 581,
+            "killers": 4,
+            "enemy_half": false
+        },
+        {
+            "game_map": 21,
+            "x": 157,
+            "y": 98,
+            "t_s": 528,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 21,
+            "x": 161,
+            "y": 95,
+            "t_s": 622,
+            "killers": 3,
+            "enemy_half": false
+        },
+        {
+            "game_map": 21,
+            "x": 132,
+            "y": 103,
+            "t_s": 398,
+            "killers": 4,
+            "enemy_half": false
+        },
+        {
+            "game_map": 21,
+            "x": 185,
+            "y": 120,
+            "t_s": 805,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 21,
+            "x": 173,
+            "y": 112,
+            "t_s": 688,
+            "killers": 4,
+            "enemy_half": false
+        },
+        {
+            "game_map": 20,
+            "x": 140,
+            "y": 86,
+            "t_s": 582,
+            "killers": 4,
+            "enemy_half": true
+        },
+        {
+            "game_map": 20,
+            "x": 89,
+            "y": 118,
+            "t_s": 759,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 20,
+            "x": 125,
+            "y": 94,
+            "t_s": 463,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 20,
+            "x": 79,
+            "y": 116,
+            "t_s": 1635,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 20,
+            "x": 164,
+            "y": 107,
+            "t_s": 942,
+            "killers": 5,
+            "enemy_half": true
+        },
+        {
+            "game_map": 20,
+            "x": 108,
+            "y": 98,
+            "t_s": 187,
+            "killers": 4,
+            "enemy_half": false
+        },
+        {
+            "game_map": 20,
+            "x": 189,
+            "y": 112,
+            "t_s": 1082,
+            "killers": 5,
+            "enemy_half": true
+        },
+        {
+            "game_map": 17,
+            "x": 132,
+            "y": 160,
+            "t_s": 1053,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 17,
+            "x": 132,
+            "y": 156,
+            "t_s": 1127,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 17,
+            "x": 95,
+            "y": 125,
+            "t_s": 413,
+            "killers": 5,
+            "enemy_half": true
+        },
+        {
+            "game_map": 20,
+            "x": 158,
+            "y": 107,
+            "t_s": 696,
+            "killers": 4,
+            "enemy_half": false
+        },
+        {
+            "game_map": 20,
+            "x": 176,
+            "y": 108,
+            "t_s": 495,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 20,
+            "x": 142,
+            "y": 105,
+            "t_s": 101,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 20,
+            "x": 154,
+            "y": 102,
+            "t_s": 774,
+            "killers": 4,
+            "enemy_half": false
+        },
+        {
+            "game_map": 20,
+            "x": 170,
+            "y": 109,
+            "t_s": 791,
+            "killers": 3,
+            "enemy_half": false
+        },
+        {
+            "game_map": 20,
+            "x": 130,
+            "y": 101,
+            "t_s": 335,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 20,
+            "x": 203,
+            "y": 99,
+            "t_s": 595,
+            "killers": 3,
+            "enemy_half": false
+        },
+        {
+            "game_map": 20,
+            "x": 156,
+            "y": 98,
+            "t_s": 465,
+            "killers": 4,
+            "enemy_half": false
+        },
+        {
+            "game_map": 20,
+            "x": 137,
+            "y": 101,
+            "t_s": 397,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 18,
+            "x": 117,
+            "y": 89,
+            "t_s": 242,
+            "killers": 4,
+            "enemy_half": true
+        },
+        {
+            "game_map": 18,
+            "x": 105,
+            "y": 110,
+            "t_s": 443,
+            "killers": 5,
+            "enemy_half": true
+        },
+        {
+            "game_map": 18,
+            "x": 75,
+            "y": 103,
+            "t_s": 681,
+            "killers": 4,
+            "enemy_half": true
+        },
+        {
+            "game_map": 18,
+            "x": 155,
+            "y": 98,
+            "t_s": 707,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 18,
+            "x": 119,
+            "y": 97,
+            "t_s": 237,
+            "killers": 5,
+            "enemy_half": false
+        },
+        {
+            "game_map": 18,
+            "x": 107,
+            "y": 113,
+            "t_s": 388,
+            "killers": 5,
+            "enemy_half": true
+        },
+        {
+            "game_map": 17,
+            "x": 83,
+            "y": 66,
+            "t_s": 1147,
+            "killers": 3,
+            "enemy_half": true
+        },
+        {
+            "game_map": 17,
+            "x": 101,
+            "y": 110,
+            "t_s": 762,
+            "killers": 5,
+            "enemy_half": true
+        },
+        {
+            "game_map": 17,
+            "x": 98,
+            "y": 71,
+            "t_s": 1008,
+            "killers": 5,
+            "enemy_half": true
+        },
+        {
+            "game_map": 17,
+            "x": 112,
+            "y": 90,
+            "t_s": 671,
+            "killers": 4,
+            "enemy_half": true
+        },
+        {
+            "game_map": 17,
+            "x": 120,
+            "y": 87,
+            "t_s": 853,
+            "killers": 5,
+            "enemy_half": true
+        },
+        {
+            "game_map": 17,
+            "x": 113,
+            "y": 92,
+            "t_s": 628,
+            "killers": 4,
+            "enemy_half": true
+        },
+        {
+            "game_map": 17,
+            "x": 106,
+            "y": 83,
+            "t_s": 659,
+            "killers": 5,
+            "enemy_half": true
+        },
+        {
+            "game_map": 18,
+            "x": 64,
+            "y": 111,
+            "t_s": 855,
+            "killers": 5,
+            "enemy_half": false
+        }
+    ],
+    "death_timing": [
+        {
+            "who": "you",
+            "games": 117,
+            "p0": 0.6068376068376071,
+            "p1": 1.0854700854700854,
+            "p2": 1.0170940170940168,
+            "p3": 0.5299145299145299,
+            "p4": 0.22222222222222218,
+            "avg_first_death": 364.5588235294117,
+            "deathless_share": 0.1282051282051282
+        },
+        {
+            "who": "global",
+            "games": 219770,
+            "p0": 0.6257769486281108,
+            "p1": 1.1178595804704918,
+            "p2": 1.1357919643263412,
+            "p3": 0.7238704099740643,
+            "p4": 0.3681394184829594,
+            "avg_first_death": 372.03372093606316,
+            "deathless_share": 0.09254675342403422
+        }
+    ],
+    "nemesis_heroes": [
+        {
+            "hero_id": 41,
+            "n": 65
+        },
+        {
+            "hero_id": 92,
+            "n": 53
+        },
+        {
+            "hero_id": 87,
+            "n": 52
+        },
+        {
+            "hero_id": 64,
+            "n": 44
+        },
+        {
+            "hero_id": 17,
+            "n": 43
+        },
+        {
+            "hero_id": 44,
+            "n": 39
+        },
+        {
+            "hero_id": 14,
+            "n": 38
+        },
+        {
+            "hero_id": 71,
+            "n": 37
+        },
+        {
+            "hero_id": 82,
+            "n": 36
+        },
+        {
+            "hero_id": 57,
+            "n": 36
+        },
+        {
+            "hero_id": 29,
+            "n": 36
+        },
+        {
+            "hero_id": 80,
+            "n": 32
+        },
+        {
+            "hero_id": 7,
+            "n": 31
+        },
+        {
+            "hero_id": 27,
+            "n": 30
+        },
+        {
+            "hero_id": 77,
+            "n": 29
+        }
+    ],
+    "nemesis_players": [
+        {
+            "blizz_id": 9694737,
+            "n": 13
+        },
+        {
+            "blizz_id": 10442928,
+            "n": 13
+        },
+        {
+            "blizz_id": 591026,
+            "n": 12
+        },
+        {
+            "blizz_id": 351767,
+            "n": 12
+        },
+        {
+            "blizz_id": 10911159,
+            "n": 11
+        },
+        {
+            "blizz_id": 1832762,
+            "n": 11
+        },
+        {
+            "blizz_id": 12609,
+            "n": 10
+        },
+        {
+            "blizz_id": 11675624,
+            "n": 10
+        },
+        {
+            "blizz_id": 377519,
+            "n": 10
+        },
+        {
+            "blizz_id": 6062838,
+            "n": 10
+        }
+    ],
+    "overextension": [
+        {
+            "who": "global",
+            "phase": 0,
+            "deaths": 137527,
+            "enemy_half": 45982
+        },
+        {
+            "who": "global",
+            "phase": 1,
+            "deaths": 245672,
+            "enemy_half": 88200
+        },
+        {
+            "who": "global",
+            "phase": 2,
+            "deaths": 249613,
+            "enemy_half": 91384
+        },
+        {
+            "who": "global",
+            "phase": 3,
+            "deaths": 159085,
+            "enemy_half": 62228
+        },
+        {
+            "who": "global",
+            "phase": 4,
+            "deaths": 80906,
+            "enemy_half": 34777
+        },
+        {
+            "who": "you",
+            "phase": 0,
+            "deaths": 71,
+            "enemy_half": 19
+        },
+        {
+            "who": "you",
+            "phase": 1,
+            "deaths": 127,
+            "enemy_half": 44
+        },
+        {
+            "who": "you",
+            "phase": 2,
+            "deaths": 119,
+            "enemy_half": 52
+        },
+        {
+            "who": "you",
+            "phase": 3,
+            "deaths": 62,
+            "enemy_half": 28
+        },
+        {
+            "who": "you",
+            "phase": 4,
+            "deaths": 26,
+            "enemy_half": 11
+        }
+    ],
+    "victim_heroes": [
+        {
+            "hero_id": 92,
+            "n": 78
+        },
+        {
+            "hero_id": 64,
+            "n": 64
+        },
+        {
+            "hero_id": 41,
+            "n": 61
+        },
+        {
+            "hero_id": 44,
+            "n": 61
+        },
+        {
+            "hero_id": 71,
+            "n": 60
+        },
+        {
+            "hero_id": 4,
+            "n": 57
+        },
+        {
+            "hero_id": 40,
+            "n": 49
+        },
+        {
+            "hero_id": 59,
+            "n": 48
+        },
+        {
+            "hero_id": 86,
+            "n": 48
+        },
+        {
+            "hero_id": 57,
+            "n": 47
+        },
+        {
+            "hero_id": 82,
+            "n": 44
+        },
+        {
+            "hero_id": 55,
+            "n": 42
+        },
+        {
+            "hero_id": 5,
+            "n": 42
+        },
+        {
+            "hero_id": 51,
+            "n": 41
+        },
+        {
+            "hero_id": 68,
+            "n": 41
+        }
+    ],
+    "victim_players": [
+        {
+            "blizz_id": 11254303,
+            "n": 27
+        },
+        {
+            "blizz_id": 10651598,
+            "n": 27
+        },
+        {
+            "blizz_id": 5342720,
+            "n": 21
+        },
+        {
+            "blizz_id": 5059317,
+            "n": 14
+        },
+        {
+            "blizz_id": 9926147,
+            "n": 14
+        },
+        {
+            "blizz_id": 1255546,
+            "n": 13
+        },
+        {
+            "blizz_id": 10807971,
+            "n": 12
+        },
+        {
+            "blizz_id": 664344,
+            "n": 12
+        },
+        {
+            "blizz_id": 491904,
+            "n": 12
+        },
+        {
+            "blizz_id": 750031,
+            "n": 11
+        }
+    ]
+}

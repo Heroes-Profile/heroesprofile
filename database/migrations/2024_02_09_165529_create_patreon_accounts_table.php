@@ -14,13 +14,15 @@ class CreatePatreonAccountsTable extends Migration
     public function up()
     {
         Schema::create('patreon_accounts', function (Blueprint $table) {
-            $table->id('patreon_accounts_id');
-            $table->unsignedBigInteger('battlenet_accounts_id')->nullable();
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('patreon_accounts_id', true);
+            $table->integer('battlenet_accounts_id')->nullable();
             $table->string('patreon_id')->nullable();
             $table->string('name')->nullable();
             $table->string('email')->nullable();
-            $table->tinyInteger('site_flair')->default(0);
-            $table->tinyInteger('ad_free')->default(0);
+            $table->tinyInteger('site_flair')->nullable()->default(0);
+            $table->tinyInteger('ad_free')->nullable()->default(0);
             // The pledge amount, so API tier thresholds live in config rather than
             // needing a new boolean and a PatreonSubscriberChecker release per tier.
             // `ad_free` cannot serve: it is one flag set at $5 and up, so a $5 and a
@@ -29,7 +31,8 @@ class CreatePatreonAccountsTable extends Migration
             $table->string('access_token')->nullable();
             $table->string('remember_token')->nullable();
             $table->integer('expires_in')->nullable();
-            $table->timestamps(); // Add this line if you want timestamps
+            $table->dateTime('updated_at')->nullable();
+            $table->dateTime('created_at')->nullable();
 
             $table->index('battlenet_accounts_id', 'patreon_accounts_battlenet_accounts_id');
         });

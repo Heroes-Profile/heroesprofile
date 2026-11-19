@@ -1,0 +1,11 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "blizz_id": 67280,
+        "battletag": "Zemill#194",
+        "region": 1,
+        "account_level": 0,
+        "profile": "https://www.heroesprofile.com/Player/Zemill/67280/1"
+    }
+}

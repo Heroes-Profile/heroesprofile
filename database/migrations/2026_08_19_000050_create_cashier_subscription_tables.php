@@ -22,26 +22,28 @@ return new class extends Migration
 
         if (! $schema->hasTable('cashier_subscriptions')) {
             $schema->create('cashier_subscriptions', function (Blueprint $table) {
-                $table->id();
+                $table->bigIncrements('id');
                 $table->unsignedInteger('user_id');
                 $table->string('type');
-                $table->string('stripe_id')->unique();
+                $table->string('stripe_id');
                 $table->string('stripe_status');
                 $table->string('stripe_price')->nullable();
                 $table->integer('quantity')->nullable();
                 $table->timestamp('trial_ends_at')->nullable();
                 $table->timestamp('ends_at')->nullable();
-                $table->timestamps();
+                $table->timestamp('created_at')->nullable();
+                $table->timestamp('updated_at')->nullable();
 
+                $table->unique('stripe_id');
                 $table->index(['user_id', 'stripe_status']);
             });
         }
 
         if (! $schema->hasTable('cashier_subscription_items')) {
             $schema->create('cashier_subscription_items', function (Blueprint $table) {
-                $table->id();
+                $table->bigIncrements('id');
                 $table->unsignedBigInteger('subscription_id');
-                $table->string('stripe_id')->unique();
+                $table->string('stripe_id');
                 $table->string('stripe_product');
                 $table->string('stripe_price');
                 // Cashier 16 writes both on every item it touches, meter or no
@@ -49,8 +51,10 @@ return new class extends Migration
                 $table->string('meter_id')->nullable();
                 $table->integer('quantity')->nullable();
                 $table->string('meter_event_name')->nullable();
-                $table->timestamps();
+                $table->timestamp('created_at')->nullable();
+                $table->timestamp('updated_at')->nullable();
 
+                $table->unique('stripe_id');
                 $table->unique(['subscription_id', 'stripe_price']);
             });
         }

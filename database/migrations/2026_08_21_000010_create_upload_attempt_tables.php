@@ -25,7 +25,7 @@ return new class extends Migration
                 $table->bigIncrements('id');
                 $table->string('ip', 45);
                 $table->char('file_hash', 64);
-                $table->string('file_name', 255);
+                $table->string('file_name');
                 $table->unsignedInteger('file_size');
                 $table->string('status', 20)->default('Pending');
 
@@ -50,16 +50,16 @@ return new class extends Migration
                 $table->bigIncrements('id');
                 $table->string('ip', 45);
                 $table->char('file_hash', 64);
-                $table->string('file_name', 255);
+                $table->string('file_name');
                 $table->unsignedInteger('file_size');
                 $table->string('source', 50)->default('unknown');
                 $table->string('status', 50);
-                $table->string('message', 255)->nullable();
+                $table->string('message')->nullable();
                 $table->timestamp('created_at')->nullable()->useCurrent();
 
+                $table->index('file_hash', 'idx_file_hash');
                 $table->index(['ip', 'created_at'], 'idx_ip_created_at');
                 $table->index(['status', 'created_at'], 'idx_status_created_at');
-                $table->index('file_hash', 'idx_file_hash');
             });
         }
     }

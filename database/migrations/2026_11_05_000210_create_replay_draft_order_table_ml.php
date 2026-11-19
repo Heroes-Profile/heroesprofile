@@ -14,7 +14,10 @@ class CreateReplayDraftOrderTableMl extends Migration
     public function up()
     {
         Schema::create('heroesprofile_ml.replay_draft_order', function (Blueprint $table) {
-            $table->increments('replay_draft_order_id');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('replay_draft_order_id', true);
             $table->integer('replayID');
             $table->integer('pick_number');
             $table->string('type', 45);

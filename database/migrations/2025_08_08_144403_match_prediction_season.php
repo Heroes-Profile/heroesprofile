@@ -12,12 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('match_prediction_season', function (Blueprint $table) {
-            $table->id('match_prediction_season_id');
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('match_prediction_season_id', true);
             $table->integer('season')->nullable();
             $table->dateTime('start_date')->nullable();
             $table->dateTime('end_date')->nullable();
             // The game season that opened it; a new season_dates row opens the next one.
-            $table->unsignedInteger('season_dates_id')->nullable()->unique();
+            $table->unsignedInteger('season_dates_id')->nullable();
+
+            $table->unique('season_dates_id');
         });
     }
 

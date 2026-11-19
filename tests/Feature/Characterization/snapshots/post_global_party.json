@@ -1,0 +1,16 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "solo": {
+            "00005|00005": {
+                "ally_combo": "00005",
+                "enemy_combo": "00005",
+                "wins": 140,
+                "losses": 145,
+                "win_rate": 49.12,
+                "stack_size_name": "5 Solo"
+            }
+        }
+    }
+}

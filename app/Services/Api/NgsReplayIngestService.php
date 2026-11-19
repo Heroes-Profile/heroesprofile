@@ -30,7 +30,10 @@ class NgsReplayIngestService
     /** Written when a team supplies no image. */
     private const PLACEHOLDER_IMAGE = 'no-image.png';
 
-    public function __construct(private readonly ReplayParserClient $parser) {}
+    public function __construct(
+        private readonly ReplayParserClient $parser,
+        private readonly Client $http = new Client,
+    ) {}
 
     /**
      * @param  array<string, mixed>  $input  the validated request
@@ -134,7 +137,7 @@ class NgsReplayIngestService
         }
 
         // No redirects: a redirect is a second, unvalidated URL.
-        $response = (new Client)->get($url, ['http_errors' => false, 'allow_redirects' => false]);
+        $response = $this->http->get($url, ['http_errors' => false, 'allow_redirects' => false]);
 
         if ($response->getStatusCode() !== 200) {
             throw new RuntimeException('Could not fetch the replay from that URL');

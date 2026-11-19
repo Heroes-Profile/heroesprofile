@@ -1,0 +1,47 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "patches": [
+            {
+                "id": 248,
+                "season": 30,
+                "game_version": "2.55.12.94786",
+                "major": 2,
+                "minor": 55,
+                "patch": 12,
+                "build": 94786,
+                "date_added": "2025-08-04T19:29:22.000000Z",
+                "valid_globals": true,
+                "patch_notes_url": null
+            },
+            {
+                "id": 231,
+                "season": 25,
+                "game_version": "2.55.4.91418",
+                "major": 2,
+                "minor": 55,
+                "patch": 4,
+                "build": 91418,
+                "date_added": "2023-11-21T18:24:07.000000Z",
+                "valid_globals": true,
+                "patch_notes_url": null
+            }
+        ],
+        "oldest_patch": {
+            "heroes/stats": "2.47.0.75589",
+            "heroes/maps": "2.47.0.75589",
+            "heroes/matchups": "2.47.0.75589",
+            "heroes/matchups/talents": "2.55.12.94786",
+            "heroes/talents/details": "2.50.0.79155",
+            "heroes/talents/builds": "2.50.0.79155",
+            "heroes/talents/builds/all": "2.50.0.79155",
+            "heroes/talents/builder": "2.47.0.75589",
+            "heroes/talents/builder/replays": "2.47.0.75589",
+            "compositions": "2.47.0.75589",
+            "compositions/heroes": "2.47.0.75589",
+            "draft": "2.52.0.81700",
+            "party": "2.53.0.83004"
+        }
+    }
+}

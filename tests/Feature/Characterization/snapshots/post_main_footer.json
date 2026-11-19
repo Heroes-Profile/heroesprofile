@@ -1,0 +1,9 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "maxReplayID": 52026698,
+        "latestPatch": "2.55.12.94786",
+        "latestGameDate": "2024-02-09 16:12:08"
+    }
+}

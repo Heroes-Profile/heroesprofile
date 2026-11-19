@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
@@ -16,6 +15,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('uploaded_replay_players', function (Blueprint $table) {
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
             $table->increments('id');
             $table->unsignedInteger('replayID');
             $table->string('battletag', 45);
@@ -26,8 +27,6 @@ return new class extends Migration
             $table->unique(['replayID', 'battletag', 'region'], 'replay_player');
             $table->index('created_at');
         });
-
-        DB::statement('ALTER TABLE `uploaded_replay_players` ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci');
     }
 
     public function down(): void

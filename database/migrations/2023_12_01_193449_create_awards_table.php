@@ -14,11 +14,15 @@ class CreateAwardsTable extends Migration
     public function up()
     {
         Schema::create('awards', function (Blueprint $table) {
-            $table->id('award_table_id');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('award_table_id', true);
             $table->integer('award_id');
-            $table->string('title')->collation('utf8mb4_0900_ai_ci');
-            $table->string('icon')->collation('utf8mb4_0900_ai_ci');
-            $table->string('description')->collation('utf8mb4_0900_ai_ci')->nullable();
+            $table->string('title', 45);
+            $table->string('icon', 45);
+            $table->string('description')->nullable();
+
             $table->unique(['award_id', 'title', 'icon'], 'UNIQUE');
         });
     }

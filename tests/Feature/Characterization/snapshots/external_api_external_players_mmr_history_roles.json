@@ -1,0 +1,8 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "history": [],
+        "league_tiers": []
+    }
+}

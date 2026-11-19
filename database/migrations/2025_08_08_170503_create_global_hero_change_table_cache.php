@@ -14,10 +14,13 @@ class CreateGlobalHeroChangeTableCache extends Migration
     public function up()
     {
         Schema::create('heroesprofile_cache.global_hero_change', function (Blueprint $table) {
-            $table->increments('global_hero_change_id');
+            $table->engine = 'InnoDB ROW_FORMAT=COMPRESSED';
+            $table->collation = 'utf8mb4_0900_ai_ci';
+
+            $table->integer('global_hero_change_id', true);
             $table->string('game_version', 45);
             $table->integer('game_type');
-            $table->tinyInteger('hero');
+            $table->integer('hero');
             $table->double('win_rate')->nullable();
             $table->double('popularity')->nullable();
             $table->double('ban_rate')->nullable();

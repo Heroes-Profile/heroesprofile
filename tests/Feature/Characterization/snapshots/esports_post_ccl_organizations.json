@@ -1,0 +1,54 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": [
+        {
+            "team_id": 25,
+            "season": 4,
+            "team_name": "30k",
+            "image": "30k.png"
+        },
+        {
+            "team_id": 26,
+            "season": 4,
+            "team_name": "Chilly Mountain",
+            "image": "chilly_mountain.png"
+        },
+        {
+            "team_id": 27,
+            "season": 4,
+            "team_name": "Diamond Hands",
+            "image": "diamond_hands.png"
+        },
+        {
+            "team_id": 28,
+            "season": 4,
+            "team_name": "Granit Gaming",
+            "image": "Granit_Gaming.png"
+        },
+        {
+            "team_id": 29,
+            "season": 4,
+            "team_name": "Oxygen Esports",
+            "image": "Oxygen_Esports.png"
+        },
+        {
+            "team_id": 30,
+            "season": 4,
+            "team_name": "Simplicity",
+            "image": "Simplicity.png"
+        },
+        {
+            "team_id": 31,
+            "season": 4,
+            "team_name": "STORM Esports",
+            "image": "storm_esports.png"
+        },
+        {
+            "team_id": 32,
+            "season": 4,
+            "team_name": "WildHeart Esports",
+            "image": "WildHeart_Esports.png"
+        }
+    ]
+}
