@@ -29,37 +29,35 @@
         @yield('content')
       </main>
 
-      <div class="mt-auto">
-        <div class="text-center mx-auto bg-lighten border-t-4 border-teal mt-[2em] w-full px-4">
-          <div class="container-boxed py-8 mx-auto">
-            <a class="flex justify-center items-center font-logo text-2xl py-3 mx-auto text-center" href="/">
-              Heroes
-              <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
-              Profile
-            </a>
+      <footer class="mt-auto pt-[2em]">
+        <div class="bg-surface text-center text-sm px-4 py-12 flex flex-col items-center gap-4">
+          <a class="flex justify-center items-center gap-[0.875rem] whitespace-nowrap" href="/Api">
+            <img class="w-10 shrink-0" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
+            <span class="text-[1.375rem] font-bold">Heroes Profile</span>
+            <span class="text-base font-bold tracking-[0.06em] text-teal bg-teal/[0.18] rounded-[0.375rem] px-2.5 py-1 leading-[1.1875rem]">API</span>
+          </a>
 
-            {{-- The main site keeps these behind a hover dropdown, which has no
-                 touch fallback. Flat links here work everywhere. --}}
-            <p class="text-xs space-x-3 mb-2">
-              <a href="https://github.com/Heroes-Profile/heroesprofile/issues/new?assignees=&labels=&projects=&template=bug_report.md" target="_blank" rel="noopener" class="underline">Report a Bug</a>
-              <a href="https://github.com/Heroes-Profile/heroesprofile/discussions/new?category=ideas" target="_blank" rel="noopener" class="underline">Request a Feature</a>
-              <a href="https://github.com/Heroes-Profile/heroesprofile/discussions" target="_blank" rel="noopener" class="underline">Discussions</a>
-              <a href="/Github/Change/Log" class="underline">Change Log</a>
-              <a href="/Contact" class="underline">Contact</a>
-            </p>
+          {{-- The main site keeps these behind a hover dropdown, which has no
+               touch fallback. Flat links here work everywhere. --}}
+          <p class="flex flex-wrap justify-center gap-x-6 gap-y-1">
+            <a href="https://github.com/Heroes-Profile/heroesprofile/issues/new?assignees=&labels=&projects=&template=bug_report.md" target="_blank" rel="noopener" class="underline">Report a Bug</a>
+            <a href="https://github.com/Heroes-Profile/heroesprofile/discussions/new?category=ideas" target="_blank" rel="noopener" class="underline">Request a Feature</a>
+            <a href="https://github.com/Heroes-Profile/heroesprofile/discussions" target="_blank" rel="noopener" class="underline">Discussions</a>
+            <a href="/Github/Change/Log" class="underline">Change Log</a>
+            <a href="/Contact" class="underline">Contact</a>
+          </p>
 
-            <p class="text-xs space-x-3">
-              <a href="/Api/Privacy" class="underline">Privacy Policy</a>
-              <a href="/Api/Terms" class="underline">Terms of Service</a>
-              <a href="/" class="underline">Main Site</a>
-            </p>
+          <p class="flex flex-wrap justify-center gap-x-6 gap-y-1">
+            <a href="/Api/Privacy" class="underline">Privacy Policy</a>
+            <a href="/Api/Terms" class="underline">Terms of Service</a>
+            <a href="/" class="underline">Main Site</a>
+          </p>
 
-            <div class="text-xs mt-2 text-gray-medium">
-              Skill Tree Development, LLC | <a href="https://heroesprofile.com">Heroes Profile</a>
-            </div>
+          <div class="text-xs text-subtext">
+            Skill Tree Development, LLC<span class="mx-2">·</span><a href="https://heroesprofile.com">Heroes Profile</a>
           </div>
         </div>
-      </div>
+      </footer>
     </div>
 
     @stack('scripts')

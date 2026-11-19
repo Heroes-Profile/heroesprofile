@@ -115,7 +115,7 @@ export default {
     ngsTeamOptions() {
       return [{ code: null, name: 'All' }, ...(this.ngsFilterOptions?.teams || []).map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
     },
-    // The one-line view sorts by Game ID, as the player match history does
+    // The one-line view sorts by Match ID, as the player match history does
     sortedRows() {
       if (this.sortKey !== 'replayID') return this.data.data;
       const direction = this.sortDir === 'asc' ? 1 : -1;

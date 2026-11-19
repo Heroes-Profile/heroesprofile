@@ -19,6 +19,9 @@ class GithubChangeController extends Controller
     /** Short, so a GitHub outage clears itself instead of sticking for an hour. */
     private const FAILURE_CACHE_SECONDS = 60;
 
+    /** Part of every cache key here; bump it when what's cached changes so old entries are ignored. */
+    private const CACHE_VERSION = 'v2';
+
     /** A commit never changes, so its line and file counts are kept a long time. */
     private const STATS_CACHE_SECONDS = 2592000;
 
@@ -46,7 +49,7 @@ class GithubChangeController extends Controller
      */
     private function commits(string $branch): ?array
     {
-        $key = 'github_commits|'.$branch;
+        $key = 'github_commits_'.self::CACHE_VERSION.'|'.$branch;
 
         if (Cache::has($key)) {
             $commits = Cache::get($key);
@@ -115,7 +118,7 @@ class GithubChangeController extends Controller
         $missing = [];
 
         foreach (array_unique($shas) as $sha) {
-            $cached = Cache::get('github_commit_stats|'.$sha);
+            $cached = Cache::get('github_commit_stats_'.self::CACHE_VERSION.'|'.$sha);
 
             if ($cached !== null) {
                 $stats[$sha] = $cached;
@@ -124,7 +127,7 @@ class GithubChangeController extends Controller
             }
         }
 
-        if ($missing === [] || Cache::has('github_commit_stats_paused')) {
+        if ($missing === [] || Cache::has('github_commit_stats_paused_'.self::CACHE_VERSION)) {
             return $stats;
         }
 
@@ -138,7 +141,7 @@ class GithubChangeController extends Controller
             ));
         } catch (Throwable $e) {
             report($e);
-            Cache::put('github_commit_stats_paused', true, self::FAILURE_CACHE_SECONDS);
+            Cache::put('github_commit_stats_paused_'.self::CACHE_VERSION, true, self::FAILURE_CACHE_SECONDS);
 
             return $stats;
         }
@@ -147,7 +150,7 @@ class GithubChangeController extends Controller
             $response = $responses[$sha] ?? null;
 
             if (! $response instanceof Response || ! $response->successful()) {
-                Cache::put('github_commit_stats_paused', true, self::FAILURE_CACHE_SECONDS);
+                Cache::put('github_commit_stats_paused_'.self::CACHE_VERSION, true, self::FAILURE_CACHE_SECONDS);
 
                 continue;
             }
@@ -158,7 +161,7 @@ class GithubChangeController extends Controller
                 'deletions' => (int) ($commit['stats']['deletions'] ?? 0),
                 'files' => count($commit['files'] ?? []),
             ];
-            Cache::put('github_commit_stats|'.$sha, $stats[$sha], self::STATS_CACHE_SECONDS);
+            Cache::put('github_commit_stats_'.self::CACHE_VERSION.'|'.$sha, $stats[$sha], self::STATS_CACHE_SECONDS);
         }
 
         return $stats;

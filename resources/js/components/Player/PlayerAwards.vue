@@ -76,7 +76,7 @@
                 <tr>
                   <th class="py-2 px-3 text-left text-sm">{{ $t('Match') }}</th>
                   <th class="max-md:hidden py-2 px-3 text-center text-sm">{{ $t('Game Type') }}</th>
-                  <th class="max-md:hidden py-2 px-3 text-center text-sm">{{ $t('Game ID') }}</th>
+                  <th class="max-md:hidden py-2 px-3 text-center text-sm">{{ $t('Match ID') }}</th>
                   <th class="py-2 px-3 text-left text-sm">{{ $t('Award') }}</th>
                 </tr>
               </thead>
@@ -176,7 +176,7 @@
               <tr>
                 <th class="py-2 px-3 text-left text-sm"><span class="skeleton-text">{{ $t('Match') }}</span></th>
                 <th class="max-md:hidden py-2 px-3 text-center text-sm"><span class="skeleton-text">{{ $t('Game Type') }}</span></th>
-                <th class="max-md:hidden py-2 px-3 text-center text-sm"><span class="skeleton-text">{{ $t('Game ID') }}</span></th>
+                <th class="max-md:hidden py-2 px-3 text-center text-sm"><span class="skeleton-text">{{ $t('Match ID') }}</span></th>
                 <th class="py-2 px-3 text-left text-sm"><span class="skeleton-text">{{ $t('Award') }}</span></th>
               </tr>
             </thead>

@@ -17,26 +17,22 @@
   </div>
 @endif
 
-<nav class="w-full bg-lighten border-b-4 border-teal">
-  <div class="container-boxed mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+{{-- Laid out like the main site's nav (nav.blade.php): logo left, links centred, buttons right --}}
+<nav class="w-full bg-surface-1 border-b-2 border-teal text-sm">
+  <div class="max-w-[120rem] mx-auto px-4 md:px-8 py-3 flex flex-wrap items-center justify-between gap-x-8 gap-y-3">
 
-    <a href="/Api" class="flex items-center font-logo text-xl">
-      Heroes
-      <img class="w-8 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
-      Profile
-      <span class="ml-2 text-sm font-sans uppercase text-lteal">API</span>
+    {{-- The logo, "Heroes Profile" and an API tag, as in the design --}}
+    <a href="/Api" class="flex shrink-0 items-center gap-[0.875rem] whitespace-nowrap">
+      <img class="w-10 shrink-0" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
+      <span class="text-[1.375rem] font-bold">Heroes Profile</span>
+      <span class="text-base font-bold tracking-[0.06em] text-teal bg-teal/[0.18] rounded-[0.375rem] px-2.5 py-1 leading-[1.1875rem]">API</span>
     </a>
 
-    <div class="flex flex-wrap items-center gap-4 text-sm">
-      {{-- The portal has its own shell, so nothing else here leads back out. --}}
-      <a href="/" class="hover:text-lteal flex items-center gap-1">
-        <i class="fas fa-arrow-left text-xs"></i> Main Site
-      </a>
-
-      <a href="/Api/Docs" class="hover:text-lteal">Docs</a>
+    <div class="flex flex-wrap items-center justify-center gap-1 md:mx-auto [&>a]:px-6 [&>a]:py-3.5 [&>a]:rounded-control [&>a:hover]:bg-surface-2">
+      <a href="/Api/Docs" class="hover:text-lteal">Documentation</a>
       <a href="/Api/Migrating" class="hover:text-lteal">Migrating</a>
       <a href="https://github.com/Heroes-Profile/heroesprofile" target="_blank" rel="noopener"
-         class="hover:text-lteal flex items-center gap-1" title="Heroes Profile on GitHub">
+         class="hover:text-lteal flex items-center gap-1.5" title="Heroes Profile on GitHub">
         <i class="fab fa-github"></i> GitHub
       </a>
 
@@ -52,29 +48,36 @@
         @if($apiUser->isAdmin())
           <a href="/Api/Admin" class="hover:text-lteal">Admin</a>
         @endif
+      @endif
+    </div>
 
+    <div class="flex flex-wrap items-center justify-center gap-4">
+      {{-- The portal has its own shell, so nothing else here leads back out. --}}
+      <custom-button class="font-semibold min-w-[10.3125rem]" :href="'/'" :alt="'Main Site'" :color="'red'"><basil-icon name="arrow-small" class="text-xs mr-2 rotate-180"></basil-icon>Main Site</custom-button>
+
+      @if($apiUser)
         {{-- Keyed on what the API will actually answer with, not on `migrated`
              alone — an account with no plan is on fixtures too. --}}
         @if($navServesFixtures)
-          <a href="/Api/Account" class="px-2 py-1 rounded bg-yellow text-black text-xs" title="Your API calls are returning example data, not live data">
+          <a href="/Api/Account" class="px-2 py-1 rounded-control bg-yellow text-black text-xs" title="Your API calls are returning example data, not live data">
             Test data
           </a>
         @endif
 
         @if($apiUser->headerLabel() !== null)
-          <span class="text-gray-medium hidden md:inline">{{ $apiUser->headerLabel() }}</span>
+          <span class="text-subtext hidden md:inline">{{ $apiUser->headerLabel() }}</span>
         @endif
 
         <form method="POST" action="/Api/Logout" class="inline">
           @csrf
-          <button type="submit" class="hover:text-lteal underline">Logout</button>
+          <button type="submit" class="btn bg-blue hover:bg-lblue font-semibold">Logout</button>
         </form>
       @else
-        <a href="/Api/Login" class="hover:text-lteal">Login</a>
-        <custom-button :href="'/Api/Register'" :text="'Register'" :alt="'Register'" :size="'small'"></custom-button>
+        <custom-button class="font-semibold" :href="'/Api/Login'" :text="'Login'" :alt="'Login'" :color="'teal'"></custom-button>
+        <custom-button class="font-semibold min-w-[10.3125rem]" :href="'/Api/Register'" :text="'Register'" :alt="'Register'"></custom-button>
       @endif
 
-      <dark-mode-toggle :darkmode="{{ json_encode($darkmode) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></dark-mode-toggle>
+      <dark-mode-toggle class="!flex items-center" :darkmode="{{ json_encode($darkmode) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></dark-mode-toggle>
     </div>
   </div>
 </nav>

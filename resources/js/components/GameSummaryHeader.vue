@@ -1,10 +1,10 @@
 <template>
-  <!-- The compact rows' columns; Game Type and Game ID sort -->
+  <!-- The compact rows' columns; Game Type and Match ID sort -->
   <div v-if="compact" class="max-md:hidden flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext select-none">
     <span class="w-[20rem] shrink-0 pl-5 cursor-default">{{ $t('Match') }}</span>
     <span v-if="esport" class="w-[10rem] shrink-0 px-4 cursor-default">{{ $t('Game') }}</span>
     <span v-else class="w-[10rem] shrink-0 px-4 cursor-pointer" @click="$emit('sort', 'game_type_id')">{{ $t('Game Type') }}<sort-indicator column="game_type_id" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-    <span class="w-[8.75rem] shrink-0 px-4 cursor-pointer" @click="$emit('sort', 'replayID')">{{ $t('Game ID') }}<sort-indicator column="replayID" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+    <span class="w-[8.75rem] shrink-0 px-4 cursor-pointer" @click="$emit('sort', 'replayID')">{{ $t('Match ID') }}<sort-indicator column="replayID" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
     <span v-if="esport" class="w-[16.875rem] shrink-0 px-4">{{ $t('Team') }}</span>
     <span v-else class="w-[8.125rem] shrink-0 px-4">{{ $t('Player') }}</span>
     <span v-if="!esport" class="w-[8.75rem] px-[0.6875rem] shrink-0 grid grid-cols-[1fr_0.5rem_minmax(0.875rem,auto)_0.5rem_1fr] gap-x-[0.5rem] items-center justify-items-center">
