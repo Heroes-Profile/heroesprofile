@@ -10,7 +10,10 @@
   <div v-else :class="[inner ? 'bg-surface-1 rounded-control' : 'bg-surface rounded', 'p-4 md:p-6 flex flex-col gap-4 min-w-0']">
     <template v-if="title">
       <div class="flex flex-wrap justify-between items-baseline gap-x-4 gap-y-1">
-        <h3 class="text-2xl font-bold flex items-center gap-2">{{ $t(title) }}<!-- An info icon sits raised at the top of the title; the wrapper hides itself when nothing is passed --><span class="self-start flex empty:hidden"><slot name="title"></slot></span></h3>
+        <div>
+          <h3 class="text-2xl font-bold flex items-center gap-2">{{ $t(title) }}<!-- An info icon sits raised at the top of the title; the wrapper hides itself when nothing is passed --><span class="self-start flex empty:hidden"><slot name="title"></slot></span></h3>
+          <p v-if="subtitle" class="text-sm text-subtext mt-1">{{ $t(subtitle) }}</p>
+        </div>
         <a v-if="linkHref" class="text-header whitespace-nowrap hover:underline" :href="linkHref">{{ $t(linkText) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
         <slot name="right"></slot>
         <img v-if="loading" class="logo-spin h-7 w-auto shrink-0 ml-auto self-center" src="/images/logo/heroesprofilelogo.png" alt="Loading" />
@@ -26,6 +29,8 @@ export default {
   name: 'PanelBox',
   props: {
     title: String,
+    // A line of grey text under the title
+    subtitle: String,
     linkText: String,
     linkHref: String,
     // A card inside another panel, one shade lighter and less rounded than the panel around it

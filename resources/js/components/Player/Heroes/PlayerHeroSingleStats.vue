@@ -55,8 +55,9 @@
           </h2>
 
           <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
-            <div class="shrink-0">
+            <div class="flex flex-col items-center justify-between gap-1 shrink-0">
               <hero-image-wrapper :rectangle="true" :hero="heroobject" :title="$heroName(heroobject)" size="large"></hero-image-wrapper>
+              <div class="text-xl font-semibold leading-[1.2] text-subtext">{{ $t('Games:') }} <span class="text-header">{{ data.games_played.toLocaleString('en-US') }}</span></div>
             </div>
 
             <overview-stats class="flex-1 min-w-0 w-full" :win-rate="data.win_rate" :stats="overviewStats"></overview-stats>
@@ -198,7 +199,7 @@
             <h2 class="text-3xl font-bold">{{ $heroName(heroobject) }}</h2>
             <div class="flex gap-8 max-sm:flex-col">
               <skeleton-box class="w-40 md:w-[14rem] h-[20.125rem] shrink-0 rounded"></skeleton-box>
-              <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="9"></overview-stats>
+              <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="8"></overview-stats>
             </div>
             <span class="text-header w-fit">{{ $t('See advanced stats below') }}<basil-icon name="arrow" class="rotate-90 text-sm ml-3"></basil-icon></span>
             <div class="flex flex-col gap-4">
@@ -432,7 +433,6 @@
           { label: 'Deaths', value: this.data.sum_deaths.toLocaleString('en-US') },
           { label: 'Assists', value: this.data.sum_assists.toLocaleString('en-US') },
           { label: 'Takedowns', value: this.data.sum_takedowns.toLocaleString('en-US') },
-          { label: 'Games', value: this.data.games_played.toLocaleString('en-US') },
         ];
       },
       mapGroups() {

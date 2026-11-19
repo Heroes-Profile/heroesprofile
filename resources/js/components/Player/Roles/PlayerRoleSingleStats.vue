@@ -55,8 +55,9 @@
           </h2>
 
           <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
-            <div class="shrink-0 w-40 md:w-72 self-center [&_img]:!object-contain">
-              <round-image :image="`/images/roles/${role.toLowerCase()}.PNG`" :excludehover="true" size="large"></round-image>
+            <div class="flex flex-col items-center justify-between gap-1 shrink-0 max-sm:self-center [&_img]:!object-contain">
+              <round-image class="my-auto" :image="`/images/roles/${role.toLowerCase()}.PNG`" :excludehover="true" size="large"></round-image>
+              <div class="text-xl font-semibold leading-[1.2] text-subtext">{{ $t('Games:') }} <span class="text-header">{{ data.games_played.toLocaleString('en-US') }}</span></div>
             </div>
 
             <overview-stats class="flex-1 min-w-0 w-full" :win-rate="data.win_rate" :stats="overviewStats"></overview-stats>
@@ -154,8 +155,8 @@
           <panel-box :inner="true" class="!gap-8 xl:shrink-0 xl:w-[48.75rem]">
             <h2 class="text-3xl font-bold">{{ $t(role) }}</h2>
             <div class="flex gap-8 max-sm:flex-col">
-              <skeleton-box class="w-40 md:w-60 h-40 md:h-60 shrink-0 !rounded-full"></skeleton-box>
-              <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="9"></overview-stats>
+              <skeleton-box class="w-40 md:w-[14rem] h-[20.125rem] shrink-0 rounded"></skeleton-box>
+              <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="8"></overview-stats>
             </div>
             <template v-for="title in ['Heroes', 'Maps']" :key="title">
               <div class="flex flex-col gap-4">
@@ -273,7 +274,6 @@
           { label: 'Deaths', value: this.data.sum_deaths.toLocaleString('en-US') },
           { label: 'Assists', value: this.data.sum_assists.toLocaleString('en-US') },
           { label: 'Takedowns', value: this.data.sum_takedowns.toLocaleString('en-US') },
-          { label: 'Games', value: this.data.games_played.toLocaleString('en-US') },
         ];
       },
       topSections() {

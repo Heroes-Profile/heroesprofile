@@ -1,7 +1,7 @@
 <template>
   <div id="filter-label" class="relative" :class="compact ? 'min-w-0 w-full' : 'filter-fill max-md:w-full md:w-[12.5rem]'">
     <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'" @keydown="handleKeyPress" tabindex="0">
-      <span class="relative">
+      <span v-if="!hidelabel" class="relative">
         <!-- The info icon sits beside the label, so a longer or larger label pushes it along instead of under it -->
         <span class="relative inline-flex items-center gap-1.5">{{ $t(text) }}
           <round-image v-if="showrankinfo" size="small"    icon="fas fa-info"   title="info"  popupsize="large" mobileClick="true">
@@ -59,6 +59,8 @@ export default {
   },
   props: {
     compact: { type: Boolean, default: false },
+    // No label above the box, for rows that put it beside the box instead
+    hidelabel: Boolean,
     values: Array,
     text: String,
     defaultValue: {

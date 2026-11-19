@@ -56,8 +56,9 @@
           <!-- The whole map image, not cropped to a portrait box. Desktop: a column beside the stats, the image dropped 20%
                (of the column's width) so it lines up with the win rate bar. Below md: centred, about the size of the hero pages' image. -->
           <div class="flex gap-8 max-md:flex-col">
-            <div class="shrink-0 max-md:w-52 max-md:self-center md:w-60">
+            <div class="flex flex-col items-center justify-between gap-1 shrink-0 max-md:w-52 max-md:self-center md:w-60">
               <img :src="`/images/maps/icon/${formatMapName(map)}`" :alt="$mapName(map)" class="w-full h-auto rounded md:mt-[20%]">
+              <div class="text-xl font-semibold leading-[1.2] text-subtext">{{ $t('Games:') }} <span class="text-header">{{ data.games_played.toLocaleString('en-US') }}</span></div>
             </div>
 
             <overview-stats class="flex-1 min-w-0 w-full" :win-rate="data.win_rate" :stats="overviewStats"></overview-stats>
@@ -139,7 +140,7 @@
               <div class="shrink-0 max-md:w-52 max-md:self-center md:w-60">
                 <skeleton-box class="w-full aspect-[290/251] rounded md:mt-[20%]"></skeleton-box>
               </div>
-              <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="9"></overview-stats>
+              <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="8"></overview-stats>
             </div>
             <div class="flex flex-col gap-4">
               <h3 class="text-2xl font-bold">{{ $t('Heroes') }}</h3>
@@ -247,7 +248,6 @@ export default {
         { label: 'Deaths', value: this.data.sum_deaths.toLocaleString('en-US') },
         { label: 'Assists', value: this.data.sum_assists.toLocaleString('en-US') },
         { label: 'Takedowns', value: this.data.sum_takedowns.toLocaleString('en-US') },
-        { label: 'Games', value: this.data.games_played.toLocaleString('en-US') },
       ];
     },
     heroGroups() {

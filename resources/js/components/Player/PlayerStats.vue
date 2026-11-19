@@ -50,7 +50,8 @@
               <h2 class="text-3xl font-bold">{{ battletag }}</h2>
               <region-tag :region="regionsmap[region]" :full="true"></region-tag>
             </div>
-            <div class="card-actions ml-auto flex gap-1 text-header">
+            <!-- Pinned to the top, so they sit in the corner the same distance from the top and the right, as in the redesign -->
+            <div class="card-actions ml-auto self-start flex gap-2 text-header">
               <loading-component v-if="cardDownloading" :compact="true" :textoverride="true">{{ $t('Processing image for download...') }}</loading-component>
               <template v-else>
                 <button v-if="canCopyImage" type="button" class="flex p-1.5 hover:text-lteal" :title="cardCopied ? $t('Copied') : $t('Copy card image')" @click="copyCard"><basil-icon class="text-2xl" :name="cardCopied ? 'check' : 'share'"></basil-icon></button>
@@ -60,9 +61,9 @@
           </div>
 
           <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
-            <div class="flex flex-col items-center gap-2 shrink-0">
+            <div class="flex flex-col items-center justify-between gap-1 shrink-0">
               <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name" :excludehover="inputHero.name == 'Auto Select'" size="large"></hero-image-wrapper>
-              <div class="text-lg font-bold text-subtext">{{ $t('Level:') }} <span class="text-header">{{ data.account_level.toLocaleString('en-US') }}</span></div>
+              <div class="text-xl font-semibold leading-[1.2] text-subtext">{{ $t('Level:') }} <span class="text-header">{{ data.account_level.toLocaleString('en-US') }}</span></div>
             </div>
 
             <overview-stats class="flex-1 min-w-0 w-full" :win-rate="data.win_rate" :stats="overviewStats"></overview-stats>
@@ -111,8 +112,14 @@
         </panel-box>
 
         <panel-box>
-          <panel-box v-if="data.weekday_data" class="flex-1" :inner="true" :title="$t('Week Day Win Rates')">
-            <player-weekday-win-rates :data="data.weekday_data"></player-weekday-win-rates>
+          <!-- The same hourly counts, by day of the week or by hour of the day -->
+          <panel-box v-if="data.weekday_data" class="flex-1" :inner="true" :title="weekdayView === 'hour' ? $t('Time of Day Win Rates') : $t('Week Day Win Rates')">
+            <template #right>
+              <tab-button :small="true" tab1text="Week Day" tab2text="Time of Day" :ignoreclick="true" :overridedefaultside="weekdayView === 'hour' ? 'right' : 'left'" @tab-click="weekdayView = $event === 'right' ? 'hour' : 'week'"></tab-button>
+            </template>
+            <player-time-of-day-win-rates v-if="weekdayView === 'hour'" :data="data.weekday_data"></player-time-of-day-win-rates>
+            <!-- The days spread down to the bottom of the card, level with the rank card beside it -->
+            <player-weekday-win-rates v-else class="flex-1 justify-between" :data="data.weekday_data"></player-weekday-win-rates>
           </panel-box>
           <!-- Week days are only shown to the profile's owner; everyone else sees the panel's shape and why -->
           <panel-box v-else class="flex-1" :inner="true" :title="$t('Week Day Win Rates')" :link-text="authenticated ? null : $t('Log in with Battle.net to see your week day win rates')" :link-href="authenticated ? null : '/Authenticate/Battlenet'">
@@ -265,6 +272,8 @@ function cardFonts() {
         realRank: null,
         cardCopied: false,
         cardDownloading: false,
+        // Week Day Win Rates panel: 'week' or 'hour'
+        weekdayView: 'week',
         canCopyImage: typeof window.ClipboardItem !== 'undefined' && !!(navigator.clipboard && navigator.clipboard.write),
       }
     },

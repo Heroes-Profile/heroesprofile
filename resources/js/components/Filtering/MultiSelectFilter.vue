@@ -1,7 +1,7 @@
 <template>
   <div id="filter-label" class="relative" :class="[compact ? 'min-w-0 w-full' : 'filter-fill max-md:w-full md:min-w-[12.5rem]', { 'bg-red': highlighttimesframes }]">
     <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'">
-      <span class="relative">
+      <span v-if="!hidelabel" class="relative">
         <!-- The info icon sits beside the label, so a longer or larger label pushes it along instead of under it -->
         <span class="relative inline-flex items-center gap-1.5">{{ $t(text) }}
           <round-image v-if="infolink" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
@@ -26,6 +26,7 @@
         <span class="flex min-w-0 gap-1">
           <span v-if="toggletabs" class="whitespace-nowrap font-bold px-1 shrink-0">{{ $t(toggleside === 'right' ? toggletabs[1] : toggletabs[0]) }}</span>
           <span v-if="selectedOptions.length" class="font-bold px-1 truncate min-w-0">{{ selectedlabel || (selectedOptions.length <= 3 ? selectedOptionsName.join(', ') : $t(':selected of :total selected', { selected: selectedOptions.length, total: values.length })) }}</span>
+          <span v-else-if="placeholder" class="font-bold px-1 truncate min-w-0">{{ $t(placeholder) }}</span>
         </span>
         <basil-icon name="arrow" class="rotate-90 ml-auto shrink-0 text-xs transition-transform" :class="{ '-rotate-90': showOptions }"></basil-icon>
       </span>
@@ -96,6 +97,10 @@ const RANK_INFO = "Heroes Profile Rank is based on a custom MMR algorithm develo
     },
     props: {
       compact: { type: Boolean, default: false },
+      // No label above the box, for rows that put it beside the box instead
+      hidelabel: Boolean,
+      // Shown in the box while nothing is ticked
+      placeholder: String,
       values: Array,
       text: String,
       defaultValue: Array,
