@@ -21,8 +21,11 @@ use App\Rules\GameTypeInputValidation;
 use App\Rules\SeasonInputValidation;
 use App\Support\GameLength;
 use App\Support\GlobalCacheKey;
+use Illuminate\Contracts\Cache\LockTimeoutException;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -37,6 +40,11 @@ class PlayerController extends Controller
     // That search costs about the number of replays uploaded site-wide since then, not the player's game
     // count, so past this many (a long-idle player) the full search of the player's games is cheaper.
     private const NEWER_REPLAY_WINDOW = 250000;
+
+    // Building a row is held to one request; a second waits this long for it before building alongside
+    private const PROFILE_LOCK_SECONDS = 300;
+
+    private const PROFILE_LOCK_WAIT_SECONDS = 30;
 
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
@@ -140,11 +148,70 @@ class PlayerController extends Controller
 
         $season = $seasonIds->first();
 
-        $cachedData = ProfilePage::filterByBlizzID($blizz_id)
+        $cachedData = $this->currentProfileRow($blizz_id, $region, $game_type, $season, $newestReplayId)
+            ?? $this->buildProfileRowLocked($blizz_id, $region, $game_type, $season, $newestReplayId);
+
+        if ($cachedData) {
+            if ($this->refreshPendingRatings($cachedData, $blizz_id)) {
+                $cachedData->save();
+            }
+
+            return $this->formatProfile($cachedData, $blizz_id, $region, $battletag);
+        }
+
+        return null;
+    }
+
+    private function profileRow($blizz_id, $region, $game_type, $season): ?ProfilePage
+    {
+        return ProfilePage::filterByBlizzID($blizz_id)
             ->filterByRegion($region)
             ->where('game_type', $game_type)
             ->where('season', $season)
             ->first();
+    }
+
+    /** The stored row when it can be served as is: current version, complete, and no newer replay for it. */
+    private function currentProfileRow($blizz_id, $region, $game_type, $season, callable $newestReplayId): ?ProfilePage
+    {
+        $row = $this->profileRow($blizz_id, $region, $game_type, $season);
+
+        if (! $row
+            || $row->cache_version != self::PROFILE_CACHE_VERSION
+            || is_null($row->weekday_data)
+            || is_null($row->latest_replayID)
+            || ! $this->matchesHaveDetails($row->matches)) {
+            return null;
+        }
+
+        $latestReplayID = $newestReplayId((int) $row->latest_replayID);
+
+        return ($latestReplayID && $row->latest_replayID < $latestReplayID) ? null : $row;
+    }
+
+    /**
+     * Builds or tops up the row one request at a time. Unserialised, two loads of the same profile both find
+     * no row, both compute it, and the second insert hits the unique key (or, with a null game type or
+     * season, which the key doesn't cover, stores a second copy).
+     */
+    private function buildProfileRowLocked($blizz_id, $region, $game_type, $season, callable $newestReplayId): ?ProfilePage
+    {
+        $build = fn () => $this->buildProfileRow($blizz_id, $region, $game_type, $season, $newestReplayId);
+        $key = 'profile_page:'.implode(':', [$blizz_id, $region, $game_type ?? 'all', $season ?? 'all']);
+
+        try {
+            return Cache::store('database')
+                ->lock($key, self::PROFILE_LOCK_SECONDS)
+                ->block(self::PROFILE_LOCK_WAIT_SECONDS, $build);
+        } catch (LockTimeoutException) {
+            // Still being built after the wait; build alongside it, and calculateProfile catches a duplicate insert
+            return $build();
+        }
+    }
+
+    private function buildProfileRow($blizz_id, $region, $game_type, $season, callable $newestReplayId): ?ProfilePage
+    {
+        $cachedData = $this->profileRow($blizz_id, $region, $game_type, $season);
 
         if ($cachedData && $cachedData->cache_version != self::PROFILE_CACHE_VERSION) {
             $cachedData->delete();
@@ -168,23 +235,14 @@ class PlayerController extends Controller
         }
         if (! $cachedData) {
             $this->calculateProfile($blizz_id, $region, $game_type, $season);
-
-            $cachedData = ProfilePage::filterByBlizzID($blizz_id)
-                ->filterByRegion($region)
-                ->where('game_type', $game_type)
-                ->where('season', $season)
-                ->first();
+            $cachedData = $this->profileRow($blizz_id, $region, $game_type, $season);
         }
 
         // A half-written row can't be added to; rebuild it in full.
         if ($cachedData && is_null($cachedData->latest_replayID)) {
             $cachedData->delete();
             $this->calculateProfile($blizz_id, $region, $game_type, $season);
-            $cachedData = ProfilePage::filterByBlizzID($blizz_id)
-                ->filterByRegion($region)
-                ->where('game_type', $game_type)
-                ->where('season', $season)
-                ->first();
+            $cachedData = $this->profileRow($blizz_id, $region, $game_type, $season);
         }
 
         // Only replays newer than the cached row's own latest_replayID can make it stale
@@ -192,22 +250,10 @@ class PlayerController extends Controller
 
         if (($latestReplayID && $cachedData) && $cachedData->latest_replayID < $latestReplayID) {
             $this->calculateProfile($blizz_id, $region, $game_type, $season, $cachedData);
-            $cachedData = ProfilePage::filterByBlizzID($blizz_id)
-                ->filterByRegion($region)
-                ->where('game_type', $game_type)
-                ->where('season', $season)
-                ->first();
+            $cachedData = $this->profileRow($blizz_id, $region, $game_type, $season);
         }
 
-        if ($cachedData) {
-            if ($this->refreshPendingRatings($cachedData, $blizz_id)) {
-                $cachedData->save();
-            }
-
-            return $this->formatProfile($cachedData, $blizz_id, $region, $battletag);
-        }
-
-        return null;
+        return $cachedData;
     }
 
     private function formatProfile($cachedData, $blizz_id, $region, $battletag)
@@ -535,7 +581,11 @@ class PlayerController extends Controller
         $dataToSave->weekday_data = json_encode($weekdayData);
 
         if ($persist) {
-            $dataToSave->save();
+            try {
+                $dataToSave->save();
+            } catch (UniqueConstraintViolationException) {
+                // Another request inserted this row first; the caller reads theirs
+            }
         }
 
         return $dataToSave;
