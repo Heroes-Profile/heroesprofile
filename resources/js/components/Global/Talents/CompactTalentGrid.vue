@@ -1,54 +1,71 @@
 <template>
-  <section v-if="tiers.some(tier => tier.talents.length)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-2" :aria-label="$t('Talent statistics')">
-    <article v-for="tier in tiers" :key="tier.level" class="min-w-0">
-      <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">{{ $t('Level :level', { level: tier.level }) }}</h2>
-      <div class="rounded-b overflow-hidden variable-background variable-text">
-        <div v-for="talent in tier.talents" :key="talent.talentInfo.talent_id"
-          class="py-2 px-3 border-b border-white last:border-b-0"
-          :class="talent.games_played > 0 && talent.win_rate === tier.highestWinRate ? 'talent-card-row-highlight' : 'talent-card-row'">
-          <div class="flex items-center gap-2">
+  <!-- A row per talent level: the level, then a tile per talent. The best win rate on each level is marked BEST -->
+  <section v-if="skeleton || tiers.some(tier => tier.talents.length)" class="flex flex-col gap-2" :aria-label="$t('Talent statistics')">
+    <div v-for="tier in (skeleton ? skeletonTiers : tiers)" :key="tier.level" class="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-2">
+      <div class="rounded-control bg-surface-1 flex flex-col items-center justify-center py-3">
+        <span class="text-[0.625rem] font-bold uppercase tracking-wider text-subtext">{{ $t('Level') }}</span>
+        <span class="text-2xl font-bold leading-none mt-1">{{ tier.level }}</span>
+      </div>
+      <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-2 min-w-0">
+        <template v-if="skeleton">
+          <div v-for="talent in tier.count" :key="talent" class="rounded-control bg-surface-1 border-2 border-surface-1 p-3 flex flex-col gap-2.5 min-w-0">
+            <div class="flex items-center gap-2"><skeleton-box class="w-[2.625rem] h-[2.625rem] !rounded-full shrink-0"></skeleton-box><span class="text-sm font-semibold skeleton-text">Pressurized Glands</span></div>
+            <div class="grid grid-cols-[auto_minmax(0,1fr)_auto] gap-3 items-end">
+              <span class="flex flex-col"><span class="text-[0.625rem] skeleton-text">Win rate</span><span class="font-semibold skeleton-text">00.00%</span></span>
+              <stat-bar value="0" display-text="" :hide-value="true"></stat-bar>
+              <span class="flex flex-col items-end"><span class="text-[0.625rem] skeleton-text">Games</span><span class="font-semibold skeleton-text">0,000</span></span>
+            </div>
+          </div>
+        </template>
+        <div v-else v-for="talent in tier.talents" :key="talent.talentInfo.talent_id"
+          :class="['rounded-control bg-surface-1 border-2 p-3 flex flex-col gap-2.5 min-w-0', isBest(talent, tier) ? 'border-teal' : 'border-surface-1']">
+          <div class="flex items-center gap-2 min-w-0">
             <talent-image-wrapper class="shrink-0" :talent="talent.talentInfo"></talent-image-wrapper>
-            <h3 class="text-sm">{{ $talentName(talent.talentInfo) }}</h3>
+            <h3 class="text-sm font-semibold truncate min-w-0">{{ $talentName(talent.talentInfo) }}</h3>
+            <span v-if="isBest(talent, tier)" class="ml-auto shrink-0 px-1.5 py-0.5 rounded-[0.25rem] bg-teal/20 text-lteal text-[0.625rem] font-bold uppercase">{{ $t('Best') }}</span>
           </div>
-          <dl class="grid grid-cols-[max-content_minmax(0,1fr)] items-center gap-x-2 gap-y-1 mt-2">
-            <dt class="text-[0.625rem] uppercase">{{ $t('Win Rate') }}</dt>
-            <dd>
-              <stat-bar :value="talent.win_rate" :display-text="talent.win_rate.toFixed(2)" suffix="%"
-                color="blue" class="stat-bar-light rounded-l w-full text-xs"></stat-bar>
-            </dd>
-            <dt class="text-[0.625rem] uppercase">{{ $t('Popularity') }}</dt>
-            <dd>
-              <stat-bar :value="talent.popularity" :display-text="talent.popularity.toFixed(2)" suffix="%"
-                color="yellow" class="stat-bar-light rounded-l w-full text-xs"></stat-bar>
-            </dd>
-          </dl>
-          <div class="flex justify-between gap-2 mt-1 text-[0.625rem]">
-            <span v-if="statFilter && statFilter !== 'win_rate'">{{ statFilterLabel(statFilter) }}: {{ formatNumber(talent.total_filter_type) }}</span>
-            <span class="ml-auto">{{ formatGames(talent.games_played) }}</span>
+          <div class="grid grid-cols-[auto_minmax(0,1fr)_auto] gap-3 items-end">
+            <span class="flex flex-col">
+              <span class="text-[0.625rem] text-subtext">{{ $t('Win rate') }}</span>
+              <span :class="['font-semibold tabular-nums', talent.win_rate > 50 ? 'text-win' : '']">{{ talent.win_rate.toFixed(2) }}%</span>
+            </span>
+            <span class="flex flex-col gap-1 min-w-0">
+              <span class="flex justify-between gap-2 text-[0.625rem] text-subtext"><span>{{ $t('Popularity') }}</span><span class="tabular-nums">{{ talent.popularity.toFixed(2) }}%</span></span>
+              <stat-bar :value="talent.popularity" display-text="" color="teal"></stat-bar>
+            </span>
+            <span class="flex flex-col items-end">
+              <span class="text-[0.625rem] text-subtext">{{ $t('Games') }}</span>
+              <span class="font-semibold tabular-nums">{{ formatNumber(talent.games_played) }}</span>
+            </span>
           </div>
+          <span v-if="statFilter && statFilter !== 'win_rate'" class="text-[0.625rem] text-subtext">{{ statFilterLabel(statFilter) }}: {{ formatNumber(talent.total_filter_type) }}</span>
         </div>
       </div>
-    </article>
+    </div>
   </section>
-  <p v-else class="p-4 text-center bg-lighten">{{ $t('No talent statistics match these filters.') }}</p>
+  <p v-else class="p-4 text-center text-subtext">{{ $t('No talent statistics match these filters.') }}</p>
 </template>
 
 <script>
-import StatBar from '../../StatBar.vue';
 import { statFilterLabel } from '../../../utils/statFilterLabel';
 
 export default {
-  components: {
-    StatBar,
-  },
+  name: 'CompactTalentGrid',
   props: {
-    talentData: { type: Object, required: true },
+    talentData: { type: Object, default: () => ({}) },
     statFilter: { type: String, default: 'win_rate' },
+    // A loading layout: the rows and tiles in grey
+    skeleton: { type: Boolean, default: false },
+  },
+  data() {
+    return {
+      skeletonTiers: [1, 4, 7, 10, 13, 16, 20].map(level => ({ level, count: level === 10 ? 2 : 3 })),
+    };
   },
   computed: {
     tiers() {
       return [1, 4, 7, 10, 13, 16, 20].map(level => {
-        const talents = [...(this.talentData[level] || [])].sort((a, b) => a.sort - b.sort);
+        const talents = [...(this.talentData?.[level] || [])].sort((a, b) => a.sort - b.sort);
         return {
           level,
           talents,
@@ -59,9 +76,8 @@ export default {
   },
   methods: {
     statFilterLabel,
-    formatGames(value) {
-      const games = Number(value) || 0;
-      return `${games.toLocaleString('en-US')} ${games === 1 ? 'game' : 'games'}`;
+    isBest(talent, tier) {
+      return talent.games_played > 0 && talent.win_rate === tier.highestWinRate && tier.talents.length > 1;
     },
     formatNumber(value) {
       return value == null ? '—' : Number(value).toLocaleString('en-US');

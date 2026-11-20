@@ -1,34 +1,29 @@
 <template>
   <div>
     <global-async-debug-banner page-label="Global Draft" />
-    <div class="grid gap-5 grid-cols-1">
-      <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" :infoText2="infoText2" -->
-      <page-heading :heading="selectedHero ? $t(':hero Draft Stats & Pick Order', { hero: $heroName(selectedHero) }) : $t('Hero Draft Stats & Pick Order')">
-        <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
-          <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
-          <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 13.75rem; max-height: 21.25rem; overflow-y: auto;">
-            <input v-model="heroDropdownSearch" type="text" :placeholder="$t('Search hero...')" class="w-full px-2 py-1 text-xs bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
-            <div v-for="h in filteredDropdownHeroes" :key="h.id" class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-lighten text-sm" @click="clickedHero(h); heroDropdownOpen = false">
-              <hero-image-wrapper :hero="h" :includehover="false" class="flex-shrink-0"></hero-image-wrapper>
-              <span>{{ $heroName(h) }}</span>
-            </div>
-          </div>
-        </div>
-        <template v-if="selectedHero" #aboveHeading>
-          <hero-heading-select :heroes="heroes" :value="selectedHero.id" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" :infoText2="infoText2" -->
+    <page-heading v-if="!selectedHero" :heading="'Hero Draft Stats & Pick Order'" :subheading="'Pick & ban order by hero'"></page-heading>
+    <div v-if="!selectedHero">
+      <hero-selection :heroes="heroes" subtitle="Pick a hero to see when it is usually picked and banned in the draft, and how its win rate changes with pick order."></hero-selection>
+    </div>
+
+    <div v-else>
+      <!-- The hero on the left, the filters (with the hero among them) in their card beside it, as on the player pages -->
+      <player-page-top>
+        <template #heading>
+          <page-heading :heading="$heroName(selectedHero)" :subheading="'Draft stats & pick order'">
+            <hero-image-wrapper :hero="selectedHero" size="big" :includehover="false"></hero-image-wrapper>
+            <template #aboveHeading>
+              <a href="/Global/Draft" class="inline-flex items-center gap-1.5 text-sm font-normal text-lteal hover:underline mb-1"><basil-icon name="arrow-small" class="rotate-180 text-xs"></basil-icon>{{ $t('All heroes') }}</a>
+            </template>
+          </page-heading>
         </template>
-      </page-heading>
-
-      <div v-if="!selectedHero">
-        <hero-selection :heroes="heroes"></hero-selection>
-      </div>
-
-      <div v-else>
-        <filters 
-          :onFilter="filterData" 
-          :filters="filters" 
+        <filters
+          :onFilter="filterData"
+          :filters="filters"
           :isLoading="isLoading"
-
+          :includehero="true"
+          :heroinput="selectedHero.id"
           :timeframetypeinput="timeframetype"
           :timeframeinput="timeframe"
           :regioninput="region"
@@ -37,7 +32,6 @@
           :playerrankinput="playerrank"
           :herorankinput="herorank"
           :rolerankinput="rolerank"
-
           :gametypedefault="gametypedefault"
           :includetimeframe="true"
           :includeregion="true"
@@ -49,72 +43,86 @@
           :advancedfiltering="advancedfiltering"
           >
         </filters>
-        <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
+      </player-page-top>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-   
-        <div v-if="draftdata" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-          <div class="flex justify-between">
-            <span class="flex gap-4">
-              <single-select-filter
-                :values="filters.heroes" 
-                :text="'Change Hero'" 
-                :defaultValue="selectedHero.id"
-                @input-changed="handleInputChange"
-              ></single-select-filter>
-            </span>
+      <div v-if="draftdata" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <patch-notes-panel v-if="patchNotesUrl" :version="timeframe[0]" class="!max-w-none !mb-0"></patch-notes-panel>
+
+        <!-- Headline tiles -->
+        <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
+          <div v-for="tile in summaryTiles" :key="tile.label" :class="['bg-surface rounded p-6 flex flex-col gap-1 min-w-0 border-l-4', tile.border]">
+            <span class="text-sm text-subtext">{{ $t(tile.label) }}</span>
+            <span class="text-3xl font-semibold leading-[1.2]">{{ tile.value }}</span>
+            <span class="text-sm text-subtext">{{ tile.caption }}</span>
           </div>
+        </div>
 
-          <patch-notes-panel v-if="patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
-          <panel-box>
-          <div id="table-container" ref="tablecontainer" class="overflow-clip max-sm:text-xs">
-            <table id="responsive-table" class="min-w-0 w-full responsive-table relative max-sm:text-xs" ref="responsivetable">
+        <panel-box title="Pick & ban order" :subtitle="$t('How often :hero is picked or banned at each draft slot, and how the team does afterwards.', { hero: $heroName(selectedHero) })">
+          <template #right>
+            <span class="flex items-center gap-4 text-sm text-subtext">
+              <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-[0.125rem] bg-red"></span>{{ $t('Ban') }}</span>
+              <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-[0.125rem] bg-teal"></span>{{ $t('Pick') }}</span>
+            </span>
+          </template>
+          <div id="table-container" ref="tablecontainer" class="overflow-clip">
+            <table id="responsive-table" class="min-w-0 w-full responsive-table rounded-table table-fixed" ref="responsivetable">
+              <colgroup>
+                <col class="w-[15%]">
+                <col class="w-[40%]">
+                <col class="w-[15%]">
+                <col class="w-[15%]">
+                <col class="w-[15%]">
+              </colgroup>
               <thead>
                 <tr>
-                  <th class="py-2 px-3 text-center text-sm leading-4">
-                    {{ $t('Pick Order') }}
-                  </th>
-                  <th class="py-2 px-3 text-center text-sm leading-4">
-                    {{ $t('Pick/Ban Rate % at position') }}
-                  </th>            
-                  <th class="py-2 px-3 text-center text-sm leading-4">
-                    {{ $t('Team Wins') }}
-                  </th>
-                  <th class="py-2 px-3 text-center text-sm leading-4">
-                    {{ $t('Team Losses') }}
-                  </th>
-                  <th class="py-2 px-3 text-center text-sm leading-4">
-                    {{ $t('Team Win Rate %') }}
-                  </th>                 
+                  <th class="py-2 px-4 text-left text-sm leading-4">{{ $t('Pick order') }}</th>
+                  <th class="py-2 px-4 text-left text-sm leading-4">{{ $t('Pick / ban rate at position') }}</th>
+                  <th class="py-2 px-4 text-center text-sm leading-4">{{ $t('Team wins') }}</th>
+                  <th class="py-2 px-4 text-center text-sm leading-4">{{ $t('Team losses') }}</th>
+                  <th class="py-2 px-4 text-center text-sm leading-4">{{ $t('Team win rate') }}</th>
                 </tr>
               </thead>
-              <tbody class="text-center">
-                <tr 
-                  v-for="row in draftdata" 
-                  :key="row.pick_number"
-                  :class="determinePickOrBan(row.pick_number).includes('Ban') ? 'bg-hred border-b border-gray-light' : ''"
-                  >
-                  <td class="py-2 px-3 ">
-                    {{ determinePickOrBan(row.pick_number) }}
-                  </td>
-                  <td class="py-2 px-3 ">{{ row.popularity.toFixed(2) }}</td>
-                  <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
-                  <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
-                  <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-                </tr>
+              <tbody>
+                <template v-for="phase in phases" :key="phase.label">
+                  <tr>
+                    <td colspan="5" class="px-4 pt-4 pb-2 text-xs font-bold uppercase tracking-wider text-subtext">{{ $t(phase.label) }}</td>
+                  </tr>
+                  <tr v-for="row in phase.rows" :key="row.pick_number">
+                    <td class="py-2.5 px-4">
+                      <span :class="['flex items-center gap-2 border-l-2 pl-2', row.ban ? 'border-red' : 'border-teal']">
+                        <span :class="['px-1.5 py-0.5 rounded-[0.25rem] text-[0.625rem] font-bold uppercase', row.ban ? 'bg-red/20 text-lred' : 'bg-teal/20 text-lteal']">{{ row.ban ? $t('Ban') : $t('Pick') }}</span>
+                        <span class="font-semibold">{{ $t(row.label) }}</span>
+                      </span>
+                    </td>
+                    <td class="py-2.5 px-4"><stat-bar :value="maxPopularity ? (row.popularity / maxPopularity) * 100 : 0" :display-text="row.popularity.toFixed(2)" suffix="%" :color="row.ban ? 'red' : 'teal'"></stat-bar></td>
+                    <td class="py-2.5 px-4 text-center tabular-nums">{{ row.wins.toLocaleString('en-US') }}</td>
+                    <td class="py-2.5 px-4 text-center tabular-nums">{{ row.losses.toLocaleString('en-US') }}</td>
+                    <td :class="['py-2.5 px-4 text-center font-semibold tabular-nums', row.win_rate > 50 ? 'text-win' : '']">{{ row.win_rate.toFixed(2) }}%</td>
+                  </tr>
+                </template>
               </tbody>
             </table>
           </div>
-          </panel-box>
-        </div>
-        <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-          <loading-component :compact="true" :textoverride="true">{{ $t('Loading draft stats...') }}</loading-component>
-          <table-skeleton :rows="16" :columns="['stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
-        </div>
-        <div v-else-if="dataError" class="flex items-center justify-center">
-          {{ $t('Error: Reload page/filter') }}
-        </div>
+        </panel-box>
       </div>
-
+      <!-- The same layout in grey while the draft stats load, the message on the order card's tab -->
+      <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
+          <div v-for="tile in 4" :key="tile" class="bg-surface rounded p-6 flex flex-col gap-1 min-w-0 border-l-4 border-surface-3">
+            <span class="text-sm skeleton-text w-fit">Banned most at</span>
+            <span class="text-3xl font-semibold leading-[1.2] skeleton-text w-fit">Ban 1</span>
+            <span class="text-sm skeleton-text w-fit">00.00% of drafts</span>
+          </div>
+        </div>
+        <panel-box title="Pick & ban order" subtitle="How often this hero is picked or banned at each draft slot, and how the team does afterwards." :skeleton="true" class="relative md:!rounded-tl-none">
+          <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading draft stats...') }}</loading-component>
+          <table-skeleton :bare="true" :rows="16" :columns="['text', 'bar', 'stat', 'stat', 'stat']"></table-skeleton>
+        </panel-box>
+      </div>
+      <div v-else-if="dataError" class="flex items-center justify-center">
+        {{ $t('Error: Reload page/filter') }}
+      </div>
     </div>
   </div>
 </template>
@@ -144,8 +152,6 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         windowWidth: window.innerWidth,
         isLoading: null,
         cancelTokenSource: null,
-        heroDropdownOpen: false,
-        heroDropdownSearch: '',
         infoText1: "Storm League Hero pick rates, ban rates, and pick order rate.",
         infoText2: "Teams win, losses, and win rate are based on where they pick a hero in the draft. So if a team bans Abathur at the first position of the draft, we are showing those teams wins and losses and win rates as well as when teams actually pick Abathur.",
         selectedHero: null,
@@ -179,10 +185,45 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
     mounted() {
     },
     computed: {
-      filteredDropdownHeroes() {
-        const q = this.heroDropdownSearch.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-        if (!q) return this.heroes;
-        return this.heroes.filter(h => [h.name, this.$heroName(h)].some(name => name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().includes(q)));
+      // The draft's slots in order, each marked ban or pick
+      rows() {
+        return (Array.isArray(this.draftdata) ? this.draftdata : [])
+          .slice()
+          .sort((a, b) => a.pick_number - b.pick_number)
+          .map(row => {
+            const label = this.determinePickOrBan(row.pick_number) || '';
+            return { ...row, label, ban: label.startsWith('Ban') };
+          });
+      },
+      // The draft's four phases, in the order they happen
+      phases() {
+        return [
+          { label: 'First ban phase', numbers: [0, 1, 2, 3] },
+          { label: 'First pick phase', numbers: [4, 5, 6, 7, 8] },
+          { label: 'Second ban phase', numbers: [9, 10] },
+          { label: 'Second pick phase', numbers: [11, 12, 13, 14, 15] },
+        ].map(phase => ({ label: phase.label, rows: this.rows.filter(row => phase.numbers.includes(row.pick_number)) }))
+          .filter(phase => phase.rows.length);
+      },
+      maxPopularity() {
+        return Math.max(0, ...this.rows.map(row => row.popularity));
+      },
+      // Where the hero is banned and picked most, and the slots its team does best from
+      summaryTiles() {
+        const best = (rows, field) => rows.reduce((top, row) => (!top || row[field] > top[field] ? row : top), null);
+        const bans = this.rows.filter(row => row.ban);
+        const picks = this.rows.filter(row => !row.ban);
+        const percent = value => value.toFixed(2);
+        const tiles = [];
+        const banned = best(bans, 'popularity');
+        if (banned) tiles.push({ label: 'Banned most at', value: this.$t(banned.label), caption: this.$t(':rate% of drafts', { rate: percent(banned.popularity) }), border: 'border-red' });
+        const picked = best(picks, 'popularity');
+        if (picked) tiles.push({ label: 'Picked most at', value: this.$t(picked.label), caption: this.$t(':rate% of drafts', { rate: percent(picked.popularity) }), border: 'border-teal' });
+        const bestTeam = best(this.rows, 'win_rate');
+        if (bestTeam) tiles.push({ label: 'Best team win rate', value: this.$t(bestTeam.label), caption: this.$t(bestTeam.ban ? ':rate% when banned there' : ':rate% when picked there', { rate: percent(bestTeam.win_rate) }), border: 'border-win' });
+        const bestPick = best(picks, 'win_rate');
+        if (bestPick) tiles.push({ label: 'Best pick slot', value: this.$t(bestPick.label), caption: this.$t(':rate% team win rate', { rate: percent(bestPick.win_rate) }), border: 'border-yellow' });
+        return tiles;
       },
       patchNotesUrl() {
         if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {
@@ -256,6 +297,12 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
       herochanged(eventPayload){
       },
       filterData(filteredData){
+        const heroId = filteredData.single.Heroes;
+        if (heroId && heroId !== this.selectedHero.id) {
+          this.selectedHero = this.heroes.find(hero => hero.id === heroId) || this.selectedHero;
+          document.title = `${this.selectedHero.name} Draft Stats | Heroes Profile`;
+          history.pushState(null, null, window.location.pathname.replace(/\/[^/]*$/, `/${this.selectedHero.name}`));
+        }
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
         this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaulttimeframe;
         this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;

@@ -608,6 +608,14 @@ thead tr{
   @apply py-3;
 }
 
+/* Info icons sit raised just after what they explain, like a superscript. Only the glyph moves, so the label beside it
+   stays put; page titles already raise theirs (PageHeading's .page-title-info) */
+.info-icon > span{
+  transform: translateY(-0.4em);
+}
+.page-title-info .info-icon > span{
+  transform: none;
+}
 /* In a table header an info icon takes no width and hangs just past its label, so the label alone is centred.
    The parent's gap is taken back so it doesn't push the label off centre either. */
 th .info-icon{

@@ -180,10 +180,6 @@
               </div>
               <tab-button class="shrink-0 self-start sm:self-auto" tab1text="Auto Load" tab2text="On Filter" :small="true" :ignoreclick="true" @tab-click="talentbuilderloadsetting" :overridedefaultside="talentbuilderload"></tab-button>
             </div>
-            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
-              <h4 class="font-medium">{{ $t('Talent Statistics Layout') }}</h4>
-              <tab-button class="shrink-0 self-start sm:self-auto" tab1text="Table" tab2text="Compact" :small="true" :ignoreclick="true" @tab-click="setTalentStatsLayout" :overridedefaultside="talentStatsLayout"></tab-button>
-            </div>
           </div>
         </panel-box>
 
@@ -305,7 +301,6 @@ export default {
       darkmode: 'left',
       talentbuilderstyle: 'left',
       talentbuilderload: 'left',
-      talentStatsLayout: 'left',
       userLocale: this.locale,
       playerhistorytable: 'left',
       playerload: 'true',
@@ -330,7 +325,6 @@ export default {
     this.darkmode = this.defaultDarkMode;
     this.talentbuilderstyle = this.defaultTalentBuilderStyle;
     this.talentbuilderload = this.user.user_settings.some(item => item.setting === 'talentbuilderload' && item.value === 'filter') ? 'right' : 'left';
-    this.talentStatsLayout = this.user.user_settings.some(item => item.setting === 'talentStatsLayout' && item.value === 'compact') ? 'right' : 'left';
     this.playerhistorytable = this.defaultPlayerhistorytable;
     this.customgames = this.defaultCustomGames;
     this.playerload = this.defaultPlayerLoad;
@@ -463,7 +457,6 @@ export default {
         talentbuildtype: this.talentBuildType,
         talentbuilderstyle: this.talentbuilderstyle === 'right' ? 'horizontal' : 'vertical',
         talentbuilderload: this.talentbuilderload === 'right' ? 'filter' : 'auto',
-        talentStatsLayout: this.talentStatsLayout === 'right' ? 'compact' : 'table',
         darkmode: darkmodeinput,
         playerload: this.playerload,
         customgames: this.customgames,
@@ -530,10 +523,6 @@ export default {
     },
     talentbuilderloadsetting(side) {
       this.talentbuilderload = side;
-      this.saveSettings();
-    },
-    setTalentStatsLayout(side) {
-      this.talentStatsLayout = side;
       this.saveSettings();
     },
     playermatchhistorystylesetting(side) {
