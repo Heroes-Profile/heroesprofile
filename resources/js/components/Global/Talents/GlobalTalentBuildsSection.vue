@@ -23,7 +23,7 @@
       </thead>
       <tbody>
         <tr v-for="(row, index) in talentbuilddata" :key="index">
-          <td class="py-2.5 px-4"><build-code :build="row" :hero="row.hero" show="talents" align="start"></build-code></td>
+          <td class="py-2.5 px-4"><build-code :build="row" :hero="row.hero" show="talents" align="start" :popup-hoverable="false"></build-code></td>
           <td class="py-2.5 px-4 text-center tabular-nums whitespace-nowrap">{{ getValueLocal(row.games_played) }}</td>
           <td class="py-2.5 px-4"><stat-bar class="min-w-[9rem]" :value="Number(row.win_rate) || 0" :display-text="(Number(row.win_rate) || 0).toFixed(2)" suffix="%" color="teal"></stat-bar></td>
           <td v-if="heroWinRate != null" :class="['py-2.5 px-4 text-center font-semibold tabular-nums whitespace-nowrap', vsHero(row) >= 0 ? 'text-win' : 'text-loss']">{{ vsHeroText(row) }}</td>
