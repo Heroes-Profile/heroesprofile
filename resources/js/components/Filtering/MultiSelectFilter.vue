@@ -22,7 +22,7 @@
 
 
       
-      <span class="h-[2.5rem] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 relative min-w-0 w-full">
+      <span :class="['h-[2.5rem] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 relative min-w-0 w-full', { 'ring-1 ring-teal': showOptions }]">
         <span class="flex min-w-0 gap-1">
           <span v-if="toggletabs" class="whitespace-nowrap font-bold px-1 shrink-0">{{ $t(toggleside === 'right' ? toggletabs[1] : toggletabs[0]) }}</span>
           <span v-if="selectedOptions.length" class="font-bold px-1 truncate min-w-0">{{ selectedlabel || (selectedOptions.length <= 3 ? selectedOptionsName.join(', ') : $t(':selected of :total selected', { selected: selectedOptions.length, total: values.length })) }}</span>
@@ -33,8 +33,8 @@
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
     <!-- As wide as its longest option, lined up under the box -->
-    <div v-if="showOptions" class="absolute mt-2 w-max max-w-[calc(100vw-2rem)] rounded overflow-hidden shadow-lg expandable-dropdown z-50" :class="compact ? 'left-0 !min-w-0' : 'left-2 !min-w-0'">
-      <div class="space-y-2 p-2">
+    <div v-if="showOptions" class="absolute mt-2 w-max max-w-[calc(100vw-2rem)] overflow-hidden expandable-dropdown z-50" :class="compact ? 'left-0 !min-w-0' : 'left-2 !min-w-0'">
+      <div class="flex flex-col gap-1">
         <div v-if="toggletabs" class="flex justify-center">
           <tab-button :tab1text="$t(toggletabs[0])" :tab2text="$t(toggletabs[1])" :ignoreclick="true" :small="true"
             :overridedefaultside="toggleside"
@@ -42,7 +42,7 @@
           ></tab-button>
         </div>
         <!-- Heading checkboxes stand in for Select All -->
-        <div v-if="!headings && !groupbyyear" class="whitespace-nowrap flex items-center gap-2 py-1">
+        <label v-if="!headings && !groupbyyear" for="select-all" class="whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded-control hover:bg-surface-4 transition-colors cursor-pointer">
           <input 
           type="checkbox" 
           id="select-all" 
@@ -50,12 +50,12 @@
           @click="toggleAll"
           class="form-checkbox"
           >
-          <label for="select-all" class="text-sm variable-text">{{ $t('Select All') }}</label>
-        </div>
+          <span :class="['text-sm transition-colors', selectedOptions.length === selectableValues.length ? 'text-white' : 'text-subtext group-hover:text-white']">{{ $t('Select All') }}</span>
+        </label>
         <!-- pr-3 keeps the longest option clear of the scrollbar -->
-        <div class="max-h-80 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable] !mt-0 pr-3">
+        <div class="max-h-80 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable] pr-1 flex flex-col gap-1">
           <template v-for="row in rows" :key="row.key">
-          <div v-if="row.heading" class="whitespace-nowrap flex items-center gap-2 py-1" :class="[indentClass(row.depth), { 'opacity-40': !row.codes.some(code => isSelectable(code)) }]">
+          <label v-if="row.heading" :for="row.key" class="whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded-control hover:bg-surface-4 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !row.codes.some(code => isSelectable(code)) }]">
             <input
             type="checkbox"
             :id="row.key"
@@ -65,9 +65,9 @@
             @click="toggleHeading(row)"
             class="form-checkbox"
             >
-            <label :for="row.key" class="text-sm font-bold variable-text">{{ $t(row.name) }}</label>
-          </div>
-          <div v-else class="whitespace-nowrap flex items-center gap-2 py-1" :class="[indentClass(row.depth), { 'opacity-40': !isSelectable(row.value.code) }]">
+            <span class="text-sm font-bold text-white">{{ $t(row.name) }}</span>
+          </label>
+          <label v-else :for="row.value.code" class="whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded-control hover:bg-surface-4 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !isSelectable(row.value.code) }]">
             <input
             type="checkbox"
             :id="row.value.code"
@@ -76,9 +76,11 @@
             :disabled="!isSelectable(row.value.code)"
             class="form-checkbox"
             >
-            <label :for="row.value.code" class="text-sm variable-text">{{ groupbyyear ? seasonLabel(row.value.name) : (row.value.label || $t(row.value.name)) }}</label>
+            <!-- A short code in a chip, then what it covers (the regions) -->
+            <span v-if="row.value.badge" class="px-2 py-0.5 rounded-[0.375rem] bg-surface-1 text-sm font-bold text-white">{{ row.value.badge }}</span>
+            <span :class="['text-sm transition-colors', selectedOptions.includes(row.value.code) ? 'text-white' : 'text-subtext group-hover:text-white']">{{ groupbyyear ? seasonLabel(row.value.name) : (row.value.detail ? $t(row.value.detail) : (row.value.label || $t(row.value.name))) }}</span>
             <span v-if="row.value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="$t('Added :date', { date: patchDate(row.value.date_added) })">{{ patchAge(row.value.date_added) }}</span>
-          </div>
+          </label>
           </template>
         </div>
       </div>
@@ -248,7 +250,8 @@ const RANK_INFO = "Heroes Profile Rank is based on a custom MMR algorithm develo
         return year ? [{ key: 'year-' + year, name: year }] : [];
       },
       indentClass(depth) {
-        return ['', 'pl-6', 'pl-12'][depth] || '';
+        // On top of the row's own px-3
+        return ['', 'pl-9', 'pl-[3.75rem]'][depth] || '';
       },
       toggleHeading(row) {
         if(row.codes.every(code => this.selectedOptions.includes(code))){

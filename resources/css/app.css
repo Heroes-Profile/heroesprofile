@@ -60,9 +60,18 @@ details.group.is-closing[open] .group-open\:-rotate-90 {
 }
 
 /* Filter option panels: the select boxes' colour in both modes; width comes from w-max on the element */
+/* Filter dropdowns, as the redesign's Dropdown: a panel one level up from the page, rounded, with a deep soft shadow.
+   Rounded at the site's own radius, a little tighter than the Figma's 16px */
 .expandable-dropdown {
   min-width: 100%;
-  @apply bg-surface-3 text-white shadow-[0_0_0.5rem_rgba(0,0,0,0.4)];
+  @apply bg-surface-2 text-white rounded p-2 shadow-[0_0.75rem_2rem_rgba(0,0,0,0.45)];
+}
+/* Empty boxes a shade lighter than the panel; the radio's dark ring matches the panel */
+.expandable-dropdown .form-checkbox:not(:checked){
+  @apply bg-surface-3;
+}
+.expandable-dropdown input[type="radio"].form-checkbox:checked{
+  box-shadow: inset 0 0 0 1px #008b8b, inset 0 0 0 0.25rem #272a34;
 }
 .expandable-dropdown .variable-text{
   @apply text-white;
@@ -75,7 +84,7 @@ details.group.is-closing[open] .group-open\:-rotate-90 {
   cursor: default;
 }
 .expandable-dropdown input[type="text"]{
-  @apply bg-field text-white;
+  @apply bg-field text-white rounded-control px-3 py-2 text-sm;
 }
 
 /* Every scrolling box gets the nav flyout's thin scrollbar; the page's own scrollbar (html/body) is left alone */

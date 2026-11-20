@@ -15,7 +15,7 @@
       <div class="flex items-end gap-4 max-sm:flex-col max-sm:items-stretch">
         <div class="flex-1 min-w-0 flex flex-col gap-2">
           <span class="text-lg text-subtext">{{ $t('Region') }}</span>
-          <single-select-filter :values="regions" :text="'Region'" :compact="true" :hidelabel="true" @input-changed="handleInputChange"></single-select-filter>
+          <single-select-filter :values="regions" :text="'Region'" :compact="true" :hidelabel="true" :nosearch="true" placeholder="Choose your region" @input-changed="handleInputChange"></single-select-filter>
         </div>
         <custom-button class="text-center" :href="'/redirect/authenticate/battlenet'" :text="'Login with Battle.net'" :alt="'Login with Battle.net'" :color="'blue'" :disabled="!selectedRegion"></custom-button>
       </div>
@@ -39,15 +39,12 @@
 
   // Battle.net region ids, as the login callback reads them from the cookie
   const REGION_IDS = { NA: 1, EU: 2, KR: 3, CN: 5 };
+  // What each region covers, beside its code in the dropdown
+  const REGION_NAMES = { NA: 'Americas', EU: 'Europe', KR: 'Korea · Taiwan', CN: 'China' };
 
   export default {
     name: 'BattlenetAuthenticate',
     props: {
-      // The page passes the site filters; the popup has none and uses the same four regions
-      filters: {
-        type: Object,
-        default: null,
-      },
       // Shown in the popup, with a close button
       closable: Boolean,
     },
@@ -59,7 +56,7 @@
     },
     computed: {
       regions() {
-        return this.filters?.regions || Object.keys(REGION_IDS).map(code => ({ code, name: code }));
+        return Object.keys(REGION_IDS).map(code => ({ code, badge: code, name: REGION_NAMES[code] }));
       },
     },
     methods: {

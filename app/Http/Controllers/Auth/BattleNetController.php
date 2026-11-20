@@ -21,7 +21,6 @@ class BattleNetController extends Controller
         return view('Battlenet.authenticate')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-                'filters' => $this->globalDataService->getFilterData(),
             ]);
     }
 

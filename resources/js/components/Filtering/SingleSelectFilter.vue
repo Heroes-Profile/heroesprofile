@@ -13,21 +13,20 @@
           </round-image>
         </span>
       </span> 
-      <span class="h-[2.5rem] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 min-w-0 w-full">
+      <span :class="['h-[2.5rem] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 min-w-0 w-full', { 'ring-1 ring-teal': showOptions }]">
         <span class="font-bold px-1 text-nowrap truncate min-w-0" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span>
+        <span v-else-if="placeholder" class="px-1 text-nowrap truncate min-w-0 text-subtext">{{ $t(placeholder) }}</span>
         <basil-icon name="arrow" class="rotate-90 ml-auto shrink-0 text-xs transition-transform" :class="{ '-rotate-90': showOptions }"></basil-icon>
       </span>
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
     <!-- As wide as its longest option, lined up under the box -->
-    <div v-if="showOptions" class="absolute mt-2 w-max max-w-[calc(100vw-2rem)] rounded overflow-hidden shadow-lg expandable-dropdown z-50" :class="compact ? 'left-0 !min-w-0' : 'left-2 !min-w-0'">
-      <div>
-        <!-- Search Input -->
-        <input v-model="searchQuery" type="text" :placeholder="$t('Search')" class="w-full p-2 variable-text"/>
-      </div>
+    <div v-if="showOptions" class="absolute mt-2 w-max max-w-[calc(100vw-2rem)] overflow-hidden expandable-dropdown z-50 flex flex-col gap-2" :class="[compact ? 'left-0' : 'left-2', { '!min-w-0': !nosearch }]">
+      <input v-if="!nosearch" v-model="searchQuery" type="text" :placeholder="$t('Search')" class="w-full"/>
       <div class="max-h-80 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable]">
-        <div class="p-2" :class="{ 'pr-6 whitespace-nowrap': text === 'Stat Filter' }">
-          <div v-for="value in filteredValues" :key="value.code" class="flex items-center gap-2 py-1" :class="{ 'whitespace-nowrap': hasPatchDates }">
+        <div class="flex flex-col gap-1" :class="{ 'pr-4 whitespace-nowrap': text === 'Stat Filter' }">
+          <!-- The whole row picks its option: the label is tied to the radio -->
+          <label v-for="value in filteredValues" :key="value.code" :for="value.code" class="group flex items-center gap-3 px-3 py-2 rounded-control hover:bg-surface-4 transition-colors cursor-pointer" :class="{ 'whitespace-nowrap': hasPatchDates }">
             <input
               type="radio"
               :id="value.code"
@@ -37,9 +36,11 @@
               class="form-checkbox"
               :disabled="disabled"
             >
-            <label :for="value.code" class="text-sm variable-text">{{ value.label || $t(value.name) }}</label>
+            <!-- A short code before the name, as in the login's regions -->
+            <span v-if="value.badge" class="px-2 py-0.5 rounded-[0.375rem] bg-surface-1 text-sm font-bold text-white">{{ value.badge }}</span>
+            <span :class="['text-sm transition-colors', isChecked(value.code) ? 'text-white' : 'text-subtext group-hover:text-white']">{{ value.detail ? $t(value.detail) : (value.label || $t(value.name)) }}</span>
             <span v-if="value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="$t('Added :date', { date: patchDate(value.date_added) })">{{ patchAge(value.date_added) }}</span>
-          </div>
+          </label>
         </div>
       </div>
     </div>
@@ -70,6 +71,10 @@ export default {
     disabled: Boolean,
     showrankinfo: Boolean,
     disabledeselectfilters: Boolean,
+    // No search box above the options, for short lists
+    nosearch: Boolean,
+    // Shown in the box until an option is picked
+    placeholder: String,
   },
   data(){
     return {

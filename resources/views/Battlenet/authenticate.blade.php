@@ -5,5 +5,5 @@
 @section('meta_description', 'Authenticate your Battlenet account for profile login and settings on our platform.')
 
 @section('content')
-  <battlenet-authenticate :filters="{{ json_encode($filters) }}"></battlenet-authenticate>
+  <battlenet-authenticate></battlenet-authenticate>
 @endsection
