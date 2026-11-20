@@ -186,11 +186,11 @@ return [
                 ],
                 [
                     'q' => 'What do the HP Player Rank, HP Hero Rank and HP Role Rank filters do?',
-                    'a' => 'They filter by skill using Heroes Profile\'s own MMR: the player\'s overall MMR, their MMR on that specific hero, or their MMR on that hero\'s role. The tiers mirror the in-game ones but use our formula, so they won\'t match in-game ranks. The MMR &amp; Rankings section explains how our MMR works.',
+                    'a' => 'They filter by skill using Heroes Profile\'s own MMR: the player\'s overall MMR, their MMR on that specific hero, or their MMR on that hero\'s role. The tiers mirror the in-game ones but use our formula, so they won\'t match in-game ranks. The MMR &amp; Rankings section explains how our MMR works. On Hero Stats and Talents the player one is called <strong>Player Rank</strong> and sits with the main filters, with an HP / In-Game switch.',
                 ],
                 [
                     'q' => 'What is the HP / In-Game switch on Player Rank?',
-                    'a' => 'On Hero Stats and Talents, Player Rank can use either Heroes Profile MMR tiers (HP) or the Storm League rank Blizzard shows on the loading screen (In-Game). In-game rank is read by players using the Heroes Profile uploader\'s opt-in rank reader, and each player counts in the rank they had going into that game. Only players whose rank was read count, so sample sizes are smaller, and only patches since the rank reader started are listed in Timeframes.',
+                    'a' => 'On Hero Stats and Talents, Player Rank can use either Heroes Profile MMR tiers (HP) or the Storm League rank Blizzard shows on the loading screen (In-Game). To see a hero\'s win rate in an in-game league, like Silver, switch it to In-Game, pick the league and click Filter. In-game rank is read by players using the Heroes Profile uploader\'s opt-in rank reader, and each player counts in the rank they had going into that game. Only players whose rank was read count, so sample sizes are smaller, and only patches since the rank reader started are listed in Timeframes.',
                 ],
                 [
                     'q' => 'What does the Hero Level filter do?',
@@ -244,6 +244,10 @@ return [
                 [
                     'q' => 'What is the Awards page?',
                     'a' => 'The Awards page on your player profile shows how often you earn each end of match award, such as MVP, Painbringer or Main Healer, as a percentage of your games. For example, see <a href="/Player/Zemill/67280/1/Awards" class="link">this Awards page</a>. Click an award to list every game where you earned it. Awards are only counted for games played after Heroes Profile began tracking them, so very old replays are not included. Every award and what it is given for is listed under <a href="#awards" class="link">Match Awards</a> below.',
+                ],
+                [
+                    'q' => 'Can I download a replay file?',
+                    'a' => 'Yes. Open the game\'s match page, from Match History, Replay Search or any match list, and click <strong>Download Replay</strong> next to the map and game length. You need to be logged in with Battle.net, and the button is not shown on mobile. You can download up to 100 replays a day, which resets at midnight UTC. Replay files are kept for a limited time, so very old games may not have the button.',
                 ],
                 [
                     'q' => 'What is Replay Search and how do I use it?',
@@ -396,11 +400,11 @@ return [
             'name' => 'Global Stats',
             'note' => 'Stats across every uploaded replay.',
             'items' => [
-                ['name' => 'Hero Stats', 'url' => '/Global/Hero', 'description' => 'Win rate, pick rate, ban rate and more for every hero, with a bubble chart. The Stat Filter in Show Advanced Filters shows each hero\'s average per game for a stat instead, like siege, hero or spell damage.', 'hero_url' => '/Global/Hero?hero={hero}'],
+                ['name' => 'Hero Stats', 'url' => '/Global/Hero', 'description' => 'Win rate, pick rate, ban rate and more for every hero, with a bubble chart: the current meta and tier list. The Stat Filter in Show Advanced Filters shows each hero\'s average per game for a stat instead, like siege, hero or spell damage.', 'hero_url' => '/Global/Hero?hero={hero}'],
                 ['name' => 'Hero Map Stats', 'url' => '/Global/Hero/Maps', 'description' => 'How each hero does on each map.', 'hero_url' => '/Global/Hero/Maps/{hero}'],
                 ['name' => 'Talents', 'url' => '/Global/Talents', 'description' => 'Pick a hero to see talent win rates and popular builds.', 'hero_url' => '/Global/Talents/{hero}'],
                 ['name' => 'Hero Talents', 'url' => '/Global/Talents/Abathur', 'description' => 'One hero\'s talents and builds.'],
-                ['name' => 'Talent Builder', 'url' => '/Global/Talents/Builder', 'description' => 'Build a talent path and see how it performs.'],
+                ['name' => 'Talent Builder', 'url' => '/Global/Talents/Builder', 'description' => 'Build a talent path and see how it performs. Its Alluvial Diagram shows every build path through the talent tiers: line width is games played, colour is win rate.'],
                 ['name' => 'Matchups', 'url' => '/Global/Matchups', 'description' => 'How each hero does with and against every other hero.', 'hero_url' => '/Global/Matchups/{hero}'],
                 ['name' => 'Matchup Talents', 'url' => '/Global/Matchups/Talents', 'description' => 'Talent win rates for a hero when playing with or against another hero.'],
                 ['name' => 'Draft Stats', 'url' => '/Global/Draft', 'description' => 'Pick and ban rates by draft order.', 'hero_url' => '/Global/Draft/{hero}'],
