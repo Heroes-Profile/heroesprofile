@@ -930,6 +930,15 @@ thead{border-color:transparent;}
 .void-whisper-enter-from, .void-whisper-leave-to{ opacity: 0; }
 
 .void-eye-flair{ color: #a855f7; }
+/* Flair beside a BattleTag: each hover box shrinks to its icon and centres it, so the crown, star and eye sit on one
+   line at their own sizes */
+.flair-icon{
+  width: auto !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
 /* The logo's eye as an icon, usable anywhere a Font Awesome class goes.
    The image URL is set in layouts/app.blade.php so it resolves against the site, not the Vite dev server. */
 .void-eye-img{

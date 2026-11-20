@@ -27,7 +27,8 @@ class ProfileController extends Controller
             // Avatar borders this account can pick from; the flags come from CheckIfPatreonSupporter on this request
             'availableBorders' => array_keys(array_filter([
                 'owner' => $user->blizz_id == 67280 && $user->region == 1,
-                'patreon' => session('patreonSubscriberAdFree') || session('patreonSubscriberSiteFlair'),
+                // Patreon subscribers only; being ad-free (the eye's time, a $5 pledge alone) doesn't give the border
+                'patreon' => session('patreonSubscriberSiteFlair'),
                 'void_eye' => session('voidEyeFlair'),
             ])),
         ]);

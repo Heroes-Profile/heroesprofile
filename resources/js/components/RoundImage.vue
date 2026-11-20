@@ -42,7 +42,8 @@
       </span>
     </div>
 
-    <div :class="['absolute z-10 -top-2 left-0']" v-else-if="ispatreon">
+    <!-- Every flair the player has shows; beside the crown, the star moves over so they don't overlap -->
+    <div :class="['absolute z-10 -top-2', hpowner ? 'left-4' : 'left-0']" v-if="ispatreon">
       <!-- {{ "Patreon Subscriber" }} -->
       <i class="fas fa-star" style="color:gold"></i>
     </div>

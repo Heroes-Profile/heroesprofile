@@ -36,7 +36,9 @@ class CheckIfPatreonSupporter
                 || $override
                 || $flair->contains(fn ($row) => $row->ad_free_until && $row->ad_free_until->isFuture());
 
-            $siteFlair = ($patreonUser && $patreonUser->site_flair == 1) || $override;
+            // Flair and ad-free are separate: the Patreon star is for Patreon subscribers only. The override and the
+            // eye's time only ever give ad-free
+            $siteFlair = $patreonUser && $patreonUser->site_flair == 1;
 
             // Written both ways every request, so a lapsed pledge or expired flair takes effect immediately.
             session([

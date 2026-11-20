@@ -6,15 +6,18 @@
   <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
     <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
       <span class="uppercase text-gray-medium">{{ $t('Profile preferences') }}</span>
-      <span class="flex items-center gap-2 text-sm text-subtext" aria-live="polite">
-        <img v-if="saveState === 'saving'" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
-        <basil-icon v-else name="check" :class="saveState === 'saved' ? 'text-teal' : ''"></basil-icon>
-        {{ $t({ saving: 'Saving...', saved: 'Saved' }[saveState] || 'Changes are saved automatically') }}
-      </span>
+      <span class="flex items-center gap-2 text-sm text-subtext"><basil-icon name="check"></basil-icon>{{ $t('Changes are saved automatically') }}</span>
     </div>
 
     <div class="grid md:grid-cols-2 gap-6 [&>*]:min-w-0">
-        <panel-box title="General" subtitle="Appearance, privacy and language." :divider="false">
+        <panel-box title="General" subtitle="Appearance, privacy and language." :divider="false" @click.capture="saveCard = 'general'">
+          <template #right>
+            <span v-if="saveState && saveCard === 'general'" class="ml-auto self-start flex items-center gap-2 text-sm text-subtext" aria-live="polite">
+              <img v-if="saveState === 'saving'" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
+              <basil-icon v-else name="check" class="text-teal"></basil-icon>
+              {{ saveState === 'saving' ? $t('Saving...') : $t('Saved') }}
+            </span>
+          </template>
           <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
             <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
               <div class="min-w-0">
@@ -50,7 +53,14 @@
           </div>
         </panel-box>
 
-        <panel-box title="Global Pages" subtitle="Defaults for hero, talent and global statistics pages." :divider="false">
+        <panel-box title="Global Pages" subtitle="Defaults for hero, talent and global statistics pages." :divider="false" @click.capture="saveCard = 'global'">
+          <template #right>
+            <span v-if="saveState && saveCard === 'global'" class="ml-auto self-start flex items-center gap-2 text-sm text-subtext" aria-live="polite">
+              <img v-if="saveState === 'saving'" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
+              <basil-icon v-else name="check" class="text-teal"></basil-icon>
+              {{ saveState === 'saving' ? $t('Saving...') : $t('Saved') }}
+            </span>
+          </template>
           <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
             <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
               <div class="min-w-0">
@@ -113,7 +123,14 @@
           </div>
         </panel-box>
 
-        <panel-box title="Player Pages" subtitle="Defaults for player profile and match history pages." :divider="false">
+        <panel-box title="Player Pages" subtitle="Defaults for player profile and match history pages." :divider="false" @click.capture="saveCard = 'player'">
+          <template #right>
+            <span v-if="saveState && saveCard === 'player'" class="ml-auto self-start flex items-center gap-2 text-sm text-subtext" aria-live="polite">
+              <img v-if="saveState === 'saving'" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
+              <basil-icon v-else name="check" class="text-teal"></basil-icon>
+              {{ saveState === 'saving' ? $t('Saving...') : $t('Saved') }}
+            </span>
+          </template>
           <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
             <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
               <div class="min-w-0">
@@ -167,7 +184,14 @@
           </div>
         </panel-box>
 
-        <panel-box title="Talents" subtitle="Talent builder and talent statistics on global pages." :divider="false">
+        <panel-box title="Talents" subtitle="Talent builder and talent statistics on global pages." :divider="false" @click.capture="saveCard = 'talents'">
+          <template #right>
+            <span v-if="saveState && saveCard === 'talents'" class="ml-auto self-start flex items-center gap-2 text-sm text-subtext" aria-live="polite">
+              <img v-if="saveState === 'saving'" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
+              <basil-icon v-else name="check" class="text-teal"></basil-icon>
+              {{ saveState === 'saving' ? $t('Saving...') : $t('Saved') }}
+            </span>
+          </template>
           <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
             <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
               <h4 class="font-medium">{{ $t('Talent Builder Layout') }}</h4>
@@ -183,7 +207,14 @@
           </div>
         </panel-box>
 
-        <panel-box v-if="flairOptions.length || availableBorders.length" title="Flair" subtitle="Choose which flair shows next to your BattleTag. Hidden flair is hidden for everyone." :divider="false">
+        <panel-box v-if="flairOptions.length || availableBorders.length" title="Flair" subtitle="Choose which flair shows next to your BattleTag. Hidden flair is hidden for everyone." :divider="false" @click.capture="saveCard = 'flair'">
+          <template #right>
+            <span v-if="saveState && saveCard === 'flair'" class="ml-auto self-start flex items-center gap-2 text-sm text-subtext" aria-live="polite">
+              <img v-if="saveState === 'saving'" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
+              <basil-icon v-else name="check" class="text-teal"></basil-icon>
+              {{ saveState === 'saving' ? $t('Saving...') : $t('Saved') }}
+            </span>
+          </template>
           <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
             <div v-if="availableBorders.length" class="flex flex-col gap-3">
               <div>
@@ -218,6 +249,12 @@
         </panel-box>
   
         <panel-box title="Connections" subtitle="Linked accounts." :divider="false">
+          <template #right>
+            <span v-if="saveState && saveCard === 'connections'" class="ml-auto self-start flex items-center gap-2 text-sm text-subtext" aria-live="polite">
+              <img v-if="saveState === 'saving'" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
+              {{ $t('Removing Patreon...') }}
+            </span>
+          </template>
           <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2 mt-2">
             <div class="min-w-0">
               <h4 class="font-medium">Patreon</h4>
@@ -240,6 +277,8 @@
                 alt="Remove Patreon"
                 size="medium"
                 color="red"
+                :loading="saveCard === 'connections' && saveState === 'saving'"
+                :disabled="saveCard === 'connections' && saveState === 'saving'"
                 @click="removePatreon()"
               ></custom-button>
             </div>
@@ -281,8 +320,10 @@ export default {
   data() {
     return {
       dropdownOpen: false,
-      // null, 'saving' or 'saved', shown in the note above the cards
+      // null, 'saving' or 'saved', shown in the top right of the card the change was made in
       saveState: null,
+      // The card last clicked in: general, global, player, talents, flair or connections
+      saveCard: null,
       savedTimer: null,
       // 'left' = show, 'right' = hide
       flairSides: { owner: 'left', patreon: 'left', void_eye: 'left' },
@@ -484,13 +525,16 @@ export default {
         accountVisibility: this.accountVisibility,
       }));
     },
+    // Shows "Removing Patreon..." in the card until the page reloads with the account unlinked
     async removePatreon() {
+      if (this.saveCard === 'connections' && this.saveState === 'saving') return;
+      this.saveCard = 'connections';
+      this.saveState = 'saving';
       try {
-        await this.$axios.post('/api/v1/profile/remove/patreon', {
-        });
+        await this.$axios.post('/api/v1/profile/remove/patreon', {});
         window.location.href = '/Profile/Settings';
       } catch (error) {
-        // handle error
+        this.saveState = null;
       }
     },
     handleInputChange(eventPayload) {

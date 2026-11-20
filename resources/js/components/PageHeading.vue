@@ -13,25 +13,28 @@
     </a>
 
     <h1 v-else class="max-md:w-full max-md:text-center">
+      <!-- BattleTag, then its flair, then the region tag, which sits level with the top of the BattleTag (lined up with
+           the filters' top) -->
       <div v-if="battletag" class="flex items-center gap-3 flex-wrap md:flex-nowrap max-md:justify-center">
-        <!-- The region tag sits level with the top of the BattleTag, which lines up with the filters' top -->
-        <a :href="`/Player/${battletag}/${blizzid}/${region}`" class="group/bt inline-flex items-start gap-3"><span class="text-3xl md:text-4xl font-bold group-hover/bt:underline">{{ battletag }}</span><region-tag :region="regionstring" :large="true"></region-tag></a>
-      </div>
-      <div v-if="battletag" class="flex items-center gap-1 text-[1.25rem] mt-1 max-md:justify-center">
+        <a :href="`/Player/${battletag}/${blizzid}/${region}`" class="group/bt inline-flex"><span class="text-3xl md:text-4xl font-bold group-hover/bt:underline">{{ battletag }}</span></a>
+        <!-- Each flair in a box its own size, centred on the BattleTag (flair-icon, app.css) -->
+        <span v-if="(isOwner && !ownerHidden) || isPatreon || (!esport && voidEye)" class="flex items-center gap-2.5 text-[1.25rem]">
           <span v-if="isOwner && !ownerHidden" class="relative inline-flex">
-          <icon-with-hover class="owner-crown" size="small" icon="fas fa-crown" title="info" popupsize="small">
+          <icon-with-hover class="owner-crown flair-icon" size="small" icon="fas fa-crown" title="info" popupsize="small">
             <div>
               <p class="max-sm:text-xs">{{ $t('Site Owner') }}</p>
             </div>
           </icon-with-hover>
           <owner-sparks class="owner-sparks-small"></owner-sparks>
           </span>
-          <icon-with-hover v-else-if="isPatreon" size="small" icon="fas fa-star" title="info" popupsize="small" style="color:gold">
+          <icon-with-hover v-if="isPatreon" class="flair-icon" size="small" icon="fas fa-star" title="info" popupsize="small" style="color:gold">
             <div>
               <p class="max-sm:text-xs">{{ $t('Patreon Subscriber') }}</p>
             </div>
           </icon-with-hover>
-          <void-eye-flair v-if="!esport && voidEye" class="md:-translate-y-[0.3em]" :force="true"></void-eye-flair>
+          <void-eye-flair v-if="!esport && voidEye" class="flair-icon" :force="true"></void-eye-flair>
+        </span>
+        <region-tag class="self-start" :region="regionstring" :large="true"></region-tag>
       </div>
       <slot name="aboveHeading"></slot>
       <div :class="['heading flex items-center gap-3 max-md:justify-center', battletag ? 'text-base uppercase text-gray-medium mt-1' : 'text-4xl md:text-6xl font-bold']">{{ $t(heading) }}<!-- An info icon sits raised at the top of the title, like a superscript --><span v-if="$slots.headingInfo" class="page-title-info self-start flex"><slot name="headingInfo"></slot></span></div>

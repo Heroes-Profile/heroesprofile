@@ -151,7 +151,7 @@
                                     {{-- ... (mainSearchAccount dropdown items) --}}
                                     @if (Auth::check() && app(\App\Services\AnalyticsService::class)->isAllowed(Auth::user()))
                                     <div class="nav-flyout-wrapper">
-                                        <a href="/Analytics" class="flex justify-between items-center bg-teal font-bold"><span><i class="fas fa-chart-line mr-2"></i>{{ __('Analytics') }}</span> <span class="nav-flyout-arrow ml-2">›</span></a>
+                                        <a href="/Analytics" class="flex justify-between items-center bg-blue hover:bg-teal [.nav-flyout-wrapper:hover>&]:bg-teal font-bold"><span><i class="fas fa-chart-line mr-2"></i>{{ __('Analytics') }}</span> <span class="nav-flyout-arrow ml-2">›</span></a>
                                         <div class="nav-flyout">
                                             <div class="nav-dropdown-inner-wrapper rounded-b rounded-r">
                                                 <a href="/Analytics">{{ __('Summary') }}</a>
@@ -168,7 +168,7 @@
                                         </div>
                                     </div>
                                     @else
-                                    <a href="/Analytics" class="bg-teal font-bold"><i class="fas fa-chart-line mr-2"></i>{{ __('Analytics') }}</a>
+                                    <a href="/Analytics" class="bg-blue hover:bg-teal font-bold"><i class="fas fa-chart-line mr-2"></i>{{ __('Analytics') }}</a>
                                     @endif
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" >{{ __('Profile') }}</a>
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/FriendFoe" >{{ __('Friends and Foes') }}</a>
@@ -245,8 +245,8 @@
                 @if($isAuthenticated)
                     <div id="nav-user-menu" class="relative group inline-block md:ml-4 max-md:my-3 max-md:flex max-md:items-center">
                             {{-- On mobile a tap opens the panel full screen, like the alt-player buttons (MobileNavHack) --}}
-                            {{-- Patreon members (ad-free or site flair) can have a gold border and glow, the Patreon star's gold; Void eye holders a purple one (app.css) --}}
-                            @php($navPatreon = session('patreonSubscriberAdFree') || session('patreonSubscriberSiteFlair'))
+                            {{-- Patreon subscribers can have a gold border and glow, the Patreon star's gold; Void eye holders a purple one (app.css). Ad-free alone gives neither --}}
+                            @php($navPatreon = session('patreonSubscriberSiteFlair'))
                             {{-- Listed under the battletag in the menu, owner first; the account's own flair, shown even if hidden in Profile Settings --}}
                             @php($navOwner = Auth::user()->blizz_id == 67280 && Auth::user()->region == 1)
                             {{-- The avatar's border: the one chosen in Profile Settings if it's still earned, else Site Owner, Patreon, then the Void eye --}}
