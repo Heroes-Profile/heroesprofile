@@ -198,7 +198,7 @@
                 </tr>
                 <tr v-if="toggletalentbuilds[row.name] && talentbuilddata[row.name]">
                   <td colspan="12">
-                    <global-talent-builds-section v-if="toggletalentbuilds[row.name] && talentbuilddata[row.name]" :talentbuilddata="talentbuilddata[row.name]" :buildtype="selectedbuildtype"></global-talent-builds-section>
+                    <global-talent-builds-section v-if="toggletalentbuilds[row.name] && talentbuilddata[row.name]" :talentbuilddata="talentbuilddata[row.name]" :buildtype="selectedbuildtype" :hero-win-rate="Number(row.win_rate)"></global-talent-builds-section>
                   </td>
                 </tr>
               </template>
