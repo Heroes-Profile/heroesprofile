@@ -93,6 +93,9 @@ class PlayerHeroesMapsRolesController extends Controller
             'start_date' => $request['start_date'],
             'end_date' => $request['end_date'],
             'minimumgames' => $request['minimumgames'],
+            // All pages only filter on role since fc230a85; a new key for those so results cached before, unfiltered, aren't
+            // served. Null otherwise, which normalize drops, so every other key is unchanged
+            'all_role_filtered' => $request['type'] === 'all' && $request['role'] ? 1 : null,
         ])));
 
         $dbCache = PlayerStatsCache::where('params_hash', $paramsHash)->first();
@@ -166,7 +169,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 ->when(($type == 'single' && $page == 'hero') || ($type == 'all' && $hero), function ($query) use ($hero) {
                     return $query->where('hero', $hero);
                 })
-                ->when($type == 'single' && $page == 'role', function ($query) use ($role) {
+                ->when(($type == 'single' && $page == 'role') || ($type == 'all' && $role), function ($query) use ($role) {
                     return $query->where('new_role', $role);
                 })
                 ->when($game_map, function ($query) use ($game_map) {
