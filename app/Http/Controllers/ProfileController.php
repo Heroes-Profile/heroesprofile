@@ -218,7 +218,8 @@ class ProfileController extends Controller
         }
 
         if ($flairChanged) {
-            Cache::forget('global_hidden_flair');
+            // Through the memo, so a later read in this request doesn't serve the old list
+            Cache::memo()->forget('global_hidden_flair');
         }
 
         return ['success' => true];

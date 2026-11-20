@@ -104,9 +104,12 @@ class GlobalDataService
 
     public function __construct() {}
 
+    // Lookups below read through Cache::memo(): one cache-table read per key per request, however many
+    // GlobalDataService instances ask
+
     public function getHeaderAlert()
     {
-        return Cache::remember('global_header_alert', 60, function () {
+        return Cache::memo()->remember('global_header_alert', 60, function () {
             $text = HeaderAlert::where('valid', 1)->value('text');
 
             return $text ?? null;
@@ -140,7 +143,7 @@ class GlobalDataService
             return true;
         }
 
-        $loaded = Cache::remember('xalatath_recap_checked', 300, function () {
+        $loaded = Cache::memo()->remember('xalatath_recap_checked', 300, function () {
             // Ready only once the snapshot has written every section, so a run still going can't be shown or cached.
             return DB::connection('heroesprofile')->table('xalatath_recap')->count() >= self::XALATATH_RECAP_SECTIONS;
         });
@@ -174,7 +177,7 @@ class GlobalDataService
             return $callback();
         }
 
-        return Cache::rememberForever($key, $callback);
+        return Cache::memo()->rememberForever($key, $callback);
     }
 
     /**
@@ -233,7 +236,7 @@ class GlobalDataService
      */
     public function getVoidEyeHolders(): array
     {
-        $holders = Cache::remember('global_void_eye_holders', 60, function () {
+        $holders = Cache::memo()->remember('global_void_eye_holders', 60, function () {
             return BattlenetAccountFlair::query()
                 ->join('battlenet_accounts', 'battlenet_accounts.battlenet_accounts_id', '=', 'battlenet_account_flair.battlenet_accounts_id')
                 ->where('battlenet_account_flair.flair', BattlenetAccountFlair::XALATATH_EYE)
@@ -267,7 +270,7 @@ class GlobalDataService
      */
     public function getHiddenFlair(): array
     {
-        return $this->cachedHiddenFlair ??= Cache::remember('global_hidden_flair', 60, function () {
+        return $this->cachedHiddenFlair ??= Cache::memo()->remember('global_hidden_flair', 60, function () {
             $rows = BattlenetUserSetting::query()
                 ->join('battlenet_accounts', 'battlenet_accounts.battlenet_accounts_id', '=', 'battlenet_user_settings.battlenet_accounts_id')
                 ->whereIn('battlenet_user_settings.setting', array_values(self::FLAIR_HIDE_SETTINGS))
@@ -332,7 +335,7 @@ class GlobalDataService
      */
     public function restrictedAccountKeys(): array
     {
-        return $this->cachedRestrictedKeys ??= Cache::remember('restricted_account_keys', self::RESTRICTED_KEYS_SECONDS, function () {
+        return $this->cachedRestrictedKeys ??= Cache::memo()->remember('restricted_account_keys', self::RESTRICTED_KEYS_SECONDS, function () {
             $keys = [];
 
             foreach (BattlenetAccount::without(['patreonAccount', 'userSettings'])->where('private', 1)->get(['blizz_id', 'region']) as $account) {
@@ -576,7 +579,7 @@ class GlobalDataService
 
     public function getMaxReplayId(): int
     {
-        return (int) Cache::remember('max_replay_id', 300, function () {
+        return (int) Cache::memo()->remember('max_replay_id', 300, function () {
             Cache::put('max_replay_id_at', now()->timestamp, 300);
 
             return Replay::max('replayID') ?? 0;
@@ -667,14 +670,14 @@ class GlobalDataService
 
     public function getLatestPatch()
     {
-        return Cache::remember('global_latest_patch', 300, function () {
+        return Cache::memo()->remember('global_latest_patch', 300, function () {
             return SeasonGameVersion::orderBy('id', 'desc')->limit(1)->value('game_version');
         });
     }
 
     public function getLatestGameDate()
     {
-        return Cache::remember('global_latest_game_date', 300, function () {
+        return Cache::memo()->remember('global_latest_game_date', 300, function () {
             return Replay::where('game_date', '<=', now())
                 ->orderByDesc('game_date')
                 ->value('game_date');
@@ -952,7 +955,7 @@ class GlobalDataService
         sort($normalized);
         $cacheKey = 'global_cache_window|'.hash('sha256', json_encode($normalized));
 
-        [$ttl, $fresh] = Cache::remember($cacheKey, 60, function () use ($timeframe) {
+        [$ttl, $fresh] = Cache::memo()->remember($cacheKey, 60, function () use ($timeframe) {
             $window = $this->resolveCacheWindow($timeframe);
 
             return [$window->ttl, $window->fresh];
@@ -1026,7 +1029,7 @@ class GlobalDataService
     public function getGameTypes()
     {
         if ($this->cachedGameTypes === null) {
-            $this->cachedGameTypes = Cache::remember('global_game_types', 3600, function () {
+            $this->cachedGameTypes = Cache::memo()->remember('global_game_types', 3600, function () {
                 return GameType::orderBy('type_id', 'ASC')->get();
             });
         }
@@ -1037,7 +1040,7 @@ class GlobalDataService
     public function getHeroes()
     {
         if ($this->cachedHeroes === null) {
-            $this->cachedHeroes = Cache::remember('global_heroes', 3600, function () {
+            $this->cachedHeroes = Cache::memo()->remember('global_heroes', 3600, function () {
                 return Hero::orderBy('name', 'ASC')->get();
             });
         }
@@ -1048,7 +1051,7 @@ class GlobalDataService
     /** Every talent, playable or not, keyed by talent_id. Old builds reference retired talents. */
     public function getAllTalentsKeyed()
     {
-        return Cache::remember('heroes_data_talents_all_statuses_keyed', 3600, fn () => HeroesDataTalent::withAllStatuses()->get()->keyBy('talent_id'));
+        return Cache::memo()->remember('heroes_data_talents_all_statuses_keyed', 3600, fn () => HeroesDataTalent::withAllStatuses()->get()->keyBy('talent_id'));
     }
 
     /** Esports leagues with player pages, for the nav's recent-player menus. Row colours are in nav.blade.php. */
@@ -1124,7 +1127,7 @@ class GlobalDataService
     /** Other's series names => icon file. */
     private function getEsportOtherSeriesIcons(): array
     {
-        return Cache::remember('esport_other_series_icons', 3600, fn () => DB::table('heroesprofile_ml.series')->whereNotNull('name')->pluck('icon', 'name')->all());
+        return Cache::memo()->remember('esport_other_series_icons', 3600, fn () => DB::table('heroesprofile_ml.series')->whereNotNull('name')->pluck('icon', 'name')->all());
     }
 
     private function esportNavDescriptor(string $key, $battletag, $blizz_id, $series = null): ?array
@@ -1167,13 +1170,13 @@ class GlobalDataService
     /** Every map, playable or not, keyed by map_id. */
     public function getAllMapsKeyed()
     {
-        return Cache::remember('maps_all_keyed', 3600, fn () => Map::all()->keyBy('map_id'));
+        return Cache::memo()->remember('maps_all_keyed', 3600, fn () => Map::all()->keyBy('map_id'));
     }
 
     public function getMaps()
     {
         if ($this->cachedMaps === null) {
-            $this->cachedMaps = Cache::remember('global_maps', 3600, function () {
+            $this->cachedMaps = Cache::memo()->remember('global_maps', 3600, function () {
                 return Map::where('playable', 1)->orderBy('name', 'ASC')->get();
             });
         }
@@ -1192,7 +1195,7 @@ class GlobalDataService
     {
         $cacheKey = 'global_playable_heroes_talents|'.($heroName ?? 'all');
 
-        return Cache::remember($cacheKey, 3600, function () use ($heroName) {
+        return Cache::memo()->remember($cacheKey, 3600, function () use ($heroName) {
             return HeroesDataTalent::where('level', '!=', 0)
                 ->when($heroName, fn ($query) => $query->where('hero_name', $heroName))
                 ->orderBy('hero_name')
@@ -1210,7 +1213,7 @@ class GlobalDataService
      */
     public function getPatches()
     {
-        return Cache::remember('global_patches', 600, function () {
+        return Cache::memo()->remember('global_patches', 600, function () {
             return SeasonGameVersion::orderBy('major', 'DESC')
                 ->orderBy('minor', 'DESC')
                 ->orderBy('patch', 'DESC')
@@ -1289,7 +1292,7 @@ class GlobalDataService
     public function getSeasonsData()
     {
         if ($this->cachedSeasonsData === null) {
-            $this->cachedSeasonsData = Cache::remember('global_seasons_data', 600, function () {
+            $this->cachedSeasonsData = Cache::memo()->remember('global_seasons_data', 600, function () {
                 return SeasonDate::orderBy('id', 'desc')->get();
             });
         }
@@ -1574,7 +1577,7 @@ class GlobalDataService
      */
     public function getQueryablePatches()
     {
-        return Cache::remember('global_patches_queryable_oldest', 600, function () {
+        return Cache::memo()->remember('global_patches_queryable_oldest', 600, function () {
             return $this->applyVersionFilter(
                 SeasonGameVersion::where('valid_globals', 1),
                 self::MINIMUM_GLOBALS_PATCH_OLDEST
@@ -1633,7 +1636,7 @@ class GlobalDataService
 
         $cacheKey = 'filter_data_'.str_replace('.', '_', $filtersMinimumPatch);
 
-        return $this->localizeFilterLabels(Cache::remember($cacheKey, 600, function () use ($filtersMinimumPatch) {
+        return $this->localizeFilterLabels(Cache::memo()->remember($cacheKey, 600, function () use ($filtersMinimumPatch) {
             return $this->buildFilterData($filtersMinimumPatch);
         }));
     }
@@ -2041,7 +2044,7 @@ class GlobalDataService
 
     public function getRankTiers($game_type, $type)
     {
-        return Cache::remember("rank_tiers|{$game_type}|{$type}", 3600, function () use ($game_type, $type) {
+        return Cache::memo()->remember("rank_tiers|{$game_type}|{$type}", 3600, function () use ($game_type, $type) {
             return $this->buildRankTiers($game_type, $type);
         });
     }

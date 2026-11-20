@@ -310,7 +310,7 @@ class TwitchSnapshotService
 
         $channelName = (string) ($channel->twitch_display_name ?: $channel->twitch_login);
 
-        app()->terminating(function () use ($address, $channelName, $version, $heroes, $talents) {
+        defer(function () use ($address, $channelName, $version, $heroes, $talents) {
             try {
                 Mail::to($address)->send(new ExtensionOutdated($channelName, $version, $heroes, $talents));
             } catch (Throwable $e) {
