@@ -71,7 +71,7 @@ details.group.is-closing[open] .group-open\:-rotate-90 {
   @apply bg-surface-3;
 }
 .expandable-dropdown input[type="radio"].form-checkbox:checked{
-  box-shadow: inset 0 0 0 1px #008b8b, inset 0 0 0 0.25rem #272a34;
+  box-shadow: inset 0 0 0 1px #008b8b, inset 0 0 0 0.25rem #2c2f3b;
 }
 .expandable-dropdown .variable-text{
   @apply text-white;
@@ -341,7 +341,7 @@ nav .search-component{
 
     /* Pinned to the screen, so it opens where you are rather than at the top of the page */
     .main-navigation-wrapper{
-      @apply fixed inset-0 z-50 overflow-y-auto hidden bg-surface-1;
+      @apply fixed inset-0 z-50 overflow-y-auto hidden bg-surface;
     }
     .main-navigation-wrapper nav:not(.alt-acct-nav){
       @apply flex-col;

@@ -29,7 +29,8 @@
           <div class="h-px bg-gray-dark"></div>
           <div class="flex flex-col gap-3 pt-2">
             <span class="px-2 font-semibold">{{ $t("Can't find an answer?") }}</span>
-            <a href="#ask" class="btn bg-teal hover:bg-lteal font-semibold text-center">{{ $t('Ask a question') }}</a>
+            <!-- Opens the help assistant, as the nav's Help Assistant link does -->
+            <button type="button" class="btn bg-teal hover:bg-lteal font-semibold text-center" @click="openHelpChat">{{ $t('Ask a question') }}</button>
           </div>
         </div>
       </aside>
@@ -63,7 +64,9 @@
         <panel-box id="site-pages" title="Site Pages" subtitle="Every page on the site and its address. Examples use Zemill." :divider="false" class="scroll-mt-4" data-faq-topic>
           <div class="flex flex-wrap items-center gap-4">
             <tab-button :small="true" :tabs="faqPages.map(section => ({ key: section.name, text: section.name }))" :ignoreclick="true" :overridedefaultside="sitePagesSection.name" @tab-click="sitePagesTab = $event; sitePagesPage = 1"></tab-button>
-            <span v-if="sitePagesSection.note" class="text-sm text-subtext">{{ sitePagesSection.note }}</span>
+            <span v-if="sitePagesSection.note && !sitePagesSearch" class="text-sm text-subtext">{{ sitePagesSection.note }}</span>
+            <!-- Searching looks through every tab -->
+            <search-input v-model="sitePagesSearch" :placeholder="$t('Search pages')" class="w-full sm:w-[16rem] ml-auto" @update:model-value="sitePagesPage = 1"></search-input>
           </div>
           <div class="min-w-0 overflow-x-auto">
             <table class="min-w-0 w-full responsive-table rounded-table">
@@ -75,7 +78,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="page in pageOf(sitePagesSection.items, sitePagesPage)" :key="page.url">
+                <tr v-for="page in pageOf(sitePagesRows, sitePagesPage)" :key="page.url">
                   <td class="py-3 px-4 whitespace-nowrap">{{ page.name }}</td>
                   <td class="py-3 px-4 whitespace-nowrap">
                     <a v-if="!page.url.includes('{')" :href="page.url" class="group/bt inline-flex items-center text-header"><span class="group-hover/bt:underline">{{ page.url }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
@@ -88,8 +91,8 @@
             </table>
           </div>
           <div class="flex flex-wrap items-center justify-between gap-4">
-            <span class="text-sm text-subtext">{{ showing(sitePagesSection.items, sitePagesPage, 'pages') }}</span>
-            <pagination-bar v-if="pageCount(sitePagesSection.items) > 1" :current="sitePagesPage" :last="pageCount(sitePagesSection.items)" @page="sitePagesPage = $event"></pagination-bar>
+            <span class="text-sm text-subtext">{{ showing(sitePagesRows, sitePagesPage, 'pages') }}</span>
+            <pagination-bar v-if="pageCount(sitePagesRows) > 1" :current="sitePagesPage" :last="pageCount(sitePagesRows)" @page="sitePagesPage = $event"></pagination-bar>
           </div>
         </panel-box>
 
@@ -274,6 +277,7 @@ export default {
       activeTopic: null,
       sitePagesTab: null,
       sitePagesPage: 1,
+      sitePagesSearch: '',
       patchPage: 1,
       seasonPage: 1,
       showAllAwards: false,
@@ -291,6 +295,13 @@ export default {
   computed: {
     sitePagesSection() {
       return this.faqPages.find(section => section.name === this.sitePagesTab) || this.faqPages[0] || { name: '', items: [] };
+    },
+    // The open tab's pages, or every page matching the search (name, address or description)
+    sitePagesRows() {
+      const query = this.sitePagesSearch.trim().toLowerCase();
+      if (!query) return this.sitePagesSection.items;
+      return this.faqPages.flatMap(section => section.items)
+        .filter(page => `${page.name} ${page.url} ${page.description}`.toLowerCase().includes(query));
     },
     // Every meaningful word has to appear, in any order: "how do I upload my replays" -> upload, replay
     filteredCategories() {
@@ -314,6 +325,9 @@ export default {
     },
   },
   methods: {
+    openHelpChat() {
+      window.dispatchEvent(new Event('open-help-chat'));
+    },
     slug(text) {
       return 'topic-' + text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     },

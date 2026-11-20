@@ -1,4 +1,4 @@
-<div id="mobile-header" class="md:hidden max-md:bg-surface-1 max-md:sticky max-md:top-0 max-md:order-first max-md:z-40 max-md:w-full">
+<div id="mobile-header" class="md:hidden max-md:bg-surface max-md:sticky max-md:top-0 max-md:order-first max-md:z-40 max-md:w-full">
     <div class="relative flex p-2 px-4 justify-center">
 <a id="mobile-logo" class="flex shrink-0 items-center whitespace-nowrap font-logo text-lg sm:text-2xl md:hidden" href="/">
                 Heroes
@@ -13,7 +13,7 @@
 
 <div id="main-menu" class="  main-navigation-wrapper"> <!-- max-md:hidden  - This needs to hide/show on click of the button but only on mobile - either detect mobile with vue, or have a class that is added/taken away that only applies to mobile -->
     {{-- Desktop: above the battletag row (z-[51]), which is above page dropdowns like filters (z-50). Mobile keeps z-50 so a battletag menu can open full screen over it. --}}
-    <nav id="main-nav" class="bg-surface-1 text-white z-50 md:z-[52] relative md:py-3 text-sm max-md:pt-2">
+    <nav id="main-nav" class="bg-surface text-white z-50 md:z-[52] relative md:py-3 text-sm max-md:pt-2">
       <button  id="mobile-nav-close" class="hidden bg-blue rounded-control px-2 py-1 min-w-[2.25rem] min-h-[2rem] text-base leading-none ml-auto  mr-2" aria-label="{{ __('Close menu') }}"><basil-icon name="cross" aria-hidden="true"></basil-icon></button>
        
         {{-- Padding inside the 120rem box, like the page content, so the logo and the right-hand buttons line up with it --}}

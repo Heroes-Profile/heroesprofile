@@ -29,16 +29,18 @@ module.exports = {
       'lred' : '#e44a23',
       'black' : '#0F121D',
       'white' : '#ffffff',
-      // Redesign surfaces, darkest to lightest (Figma Background levels)
-      'page' : '#14182a',
-      'surface' : '#1f2229',
-      'surface-1' : '#23252f',
-      'surface-2' : '#272a34',
+      // Redesign surfaces, darkest to lightest, on the Figma's Background levels: page lvl 0, surface lvl 1 (the nav
+      // and every card), surface-1 lvl 2 (what sits on a card: table rows, tiles, inner cards), surface-2 halfway to
+      // lvl 3 (stripes and hovers on those), surface-3 lvl 3, surface-4 lvl 4
+      'page' : '#141725',
+      'surface' : '#23252f',
+      'surface-1' : '#282b36',
+      'surface-2' : '#2c2f3b',
       'surface-3' : '#303340',
       'surface-4' : '#393e4d',
       'field' : '#2b2e3a', // input backgrounds: header hue, a little lighter
       'header' : '#deffff',
-      'subtext' : '#9ca3af',
+      'subtext' : '#a1a9b5',
       'soft' : '#c9cdd6',
       'quest' : '#e4b800',
       'win' : '#8cd9b8',

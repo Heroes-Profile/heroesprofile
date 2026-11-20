@@ -18,7 +18,7 @@
 @endif
 
 {{-- Laid out like the main site's nav (nav.blade.php): logo left, links centred, buttons right --}}
-<nav class="w-full bg-surface-1 border-b-2 border-teal text-sm">
+<nav class="w-full bg-surface border-b-2 border-teal text-sm">
   <div class="max-w-[120rem] mx-auto px-4 md:px-8 py-3 flex flex-wrap items-center justify-between gap-x-8 gap-y-3">
 
     {{-- The logo, "Heroes Profile" and an API tag, as in the design --}}

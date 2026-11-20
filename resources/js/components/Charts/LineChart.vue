@@ -126,7 +126,7 @@ export default {
             const x2 = chart.scales.x.getPixelForValue(last + 1 < this.data.length ? last + 1 : last + 0.5);
             ctx.fillRect(x1, top, x2 - x1, bottom - top);
             ctx.save();
-            ctx.fillStyle = '#9ca3af';
+            ctx.fillStyle = '#a1a9b5';
             ctx.font = '12px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText(this.$t('No data'), (x1 + x2) / 2, top + 18);
@@ -167,7 +167,7 @@ export default {
         ctx.save();
         ctx.font = '11px sans-serif';
         ctx.textBaseline = 'middle';
-        ctx.fillStyle = '#9ca3af';
+        ctx.fillStyle = '#a1a9b5';
         ctx.fillText(this.topLabel, chart.scales.y.left + 4, y);
         ctx.beginPath();
         ctx.rect(left, 0, right - left, top);
@@ -175,7 +175,7 @@ export default {
         ctx.textAlign = 'center';
         this.data.forEach((item, index) => {
           const value = item[this.topAttribute] ?? 0;
-          ctx.fillStyle = value ? '#9ca3af' : 'rgba(156, 163, 175, 0.4)';
+          ctx.fillStyle = value ? '#a1a9b5' : 'rgba(161, 169, 181, 0.4)';
           ctx.fillText(value.toLocaleString(), chart.scales.x.getPixelForValue(index), y);
         });
         ctx.restore();
@@ -196,7 +196,7 @@ export default {
       ticks: {
         autoSkip: false,
         maxRotation: 0,
-        color: (context) => dim(context.tick.value) ? 'rgba(156, 163, 175, 0.4)' : '#9ca3af',
+        color: (context) => dim(context.tick.value) ? 'rgba(161, 169, 181, 0.4)' : '#a1a9b5',
         font: { size: 11 },
         callback: value => Number.isInteger(value) ? this.data[value]?.x_label ?? '' : '',
       },
@@ -204,7 +204,7 @@ export default {
       // A few flat labels instead of one per point; the tooltip still has the full label
       ticks: {
         display: true,
-        color: (context) => dim(context.index) ? 'rgba(156, 163, 175, 0.4)' : '#9ca3af',
+        color: (context) => dim(context.index) ? 'rgba(161, 169, 181, 0.4)' : '#a1a9b5',
         font: { size: 11 },
         autoSkip: true,
         maxRotation: 0,
@@ -239,7 +239,7 @@ export default {
           // The legend only names the dashed projected line; a single line needs none
           legend: {
             display: this.projected !== null,
-            labels: { color: '#9ca3af', boxWidth: 24 },
+            labels: { color: '#a1a9b5', boxWidth: 24 },
           },
           tooltip: {
             // Chart.js works out the title and lines; showTooltip lays them out as page text
@@ -276,7 +276,7 @@ export default {
             border: { display: false },
             ticks: {
               display: true,
-              color: '#9ca3af',
+              color: '#a1a9b5',
               font: { size: 11 },
               ...(this.percent ? { callback: value => value + '%' } : {}),
             },
@@ -469,7 +469,7 @@ export default {
         fill: 'start',
         pointRadius: this.pointRadius,
         pointHoverRadius: this.pointHoverRadius,
-        pointBackgroundColor: '#1f2229',
+        pointBackgroundColor: '#23252f',
         pointBorderColor: '#008b8b',
       }];
 
