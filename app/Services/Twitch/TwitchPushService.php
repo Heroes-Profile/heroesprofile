@@ -62,7 +62,7 @@ class TwitchPushService
         }
 
         // No delay: after the response, so the uploader is not kept waiting on Twitch.
-        app()->terminating(fn () => $this->publish($channelId, $gameId, $seq, $payload));
+        defer(fn () => $this->publish($channelId, $gameId, $seq, $payload));
     }
 
     /**
@@ -106,7 +106,8 @@ class TwitchPushService
 
         Cache::forget('twitch_published:'.$channelId);
 
-        app()->terminating(function () use ($channelId) {
+        // always(): sent on the uploader's 402, and deferred callbacks otherwise skip error responses
+        defer(function () use ($channelId) {
             try {
                 $payload = TwitchPayload::inactive();
                 $this->helix->sendPubSub($channelId, $payload);
@@ -114,7 +115,7 @@ class TwitchPushService
             } catch (Throwable $e) {
                 report($e);
             }
-        });
+        })->always();
     }
 
     /** Called when a channel is active again, so a later lapse is announced too. */
