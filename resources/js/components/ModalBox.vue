@@ -1,18 +1,18 @@
 <template>
   <!-- A full-screen popup: header and footer stay on screen, only the body scrolls -->
   <div class="modal-mask">
-    <div class="modal-wrapper">
-      <div :class="['modal-container bg-surface-4 rounded-2xl p-10 max-md:p-4 w-[90%]', width]">
-        <div class="modal-header">
+    <div class="modal-wrapper" @click.self="$emit('close')">
+      <div :class="['modal-container w-[90%]', containerClass, width]">
+        <div v-if="title || $slots.header" class="modal-header">
           <h3 v-if="title" class="text-3xl max-md:text-2xl font-bold text-center mb-6">{{ $t(title) }}</h3>
           <slot name="header"></slot>
         </div>
 
-        <div class="modal-body">
+        <div :class="['modal-body', { 'my-5': title || $slots.header || $slots.footer }]">
           <slot></slot>
         </div>
 
-        <div class="modal-footer flex flex-col gap-6">
+        <div v-if="$slots.footer" class="modal-footer flex flex-col gap-6">
           <slot name="footer"></slot>
         </div>
       </div>
@@ -26,7 +26,11 @@ export default {
   props: {
     title: String,
     width: { type: String, default: 'max-w-[59rem]' },
+    // A popup that draws its own card passes '' here
+    containerClass: { type: String, default: 'bg-surface-4 rounded-2xl p-10 max-md:p-4' },
   },
+  // A click on the dark backdrop
+  emits: ['close'],
   mounted() {
     document.body.style.overflow = 'hidden';
   },
@@ -72,7 +76,6 @@ export default {
 }
 
 .modal-body {
-  margin: 1.25rem 0;
   overflow-y: auto;
   flex: 1 1 auto;
   min-height: 0;

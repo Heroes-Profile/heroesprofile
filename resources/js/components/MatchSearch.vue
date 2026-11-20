@@ -114,13 +114,13 @@
                             <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="$redirectToProfile(player.battletag, player.blizz_id, player.region, false)" class="group/bt min-w-0 inline-flex items-center text-sm font-medium text-subtext hover:text-lteal"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="text-[0.625rem] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                           </template>
                           <!-- As the redesign's popup: 18px name, then grey labels with white values -->
-                          <div class="flex flex-col gap-2 text-base">
+                          <div class="flex flex-col gap-1.5 text-base">
                             <div class="flex items-center gap-2 text-lg font-bold text-white">
                               <img v-if="player.hero" class="w-6 h-6 rounded-full object-cover bg-surface-3 text-[0rem]" :src="`/images/heroes/${player.hero.short_name}.png`" alt=""/>
                               <span class="min-w-0 break-words">{{ player.battletag }}</span>
                               <img v-if="player.party" class="w-5 h-5" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${player.party}.png`" alt=""/>
                             </div>
-                            <div class="flex flex-col gap-1 text-subtext whitespace-nowrap">
+                            <div class="flex flex-col gap-0.5 leading-snug text-subtext whitespace-nowrap">
                               <p v-if="player.hero">{{ $t('Hero') }}: <span class="text-white">{{ $heroName(player.hero) }}</span></p>
                               <p v-if="player.account_level != null">{{ $t('Account Level') }}: <span class="text-white">{{ player.account_level }}</span></p>
                               <p v-if="player.hero_level != null">{{ $t('Hero Level') }}: <span class="text-white">{{ player.hero_level }}</span></p>
@@ -136,9 +136,9 @@
             </div>
             <div v-if="row.downloadable || isWatchable(row)" class="absolute z-[3] flex transition-opacity right-2 top-2 flex-col gap-2 md:opacity-0 md:group-hover/replay:opacity-100 md:focus-within:opacity-100">
                     <a v-if="row.downloadable && authenticated && !replayDownloadBlocked" class="max-md:hidden hover:text-lteal" :href="'/Match/Single/' + row.replayID + '/Download'" :title="$t('Download Replay')"><basil-icon name="download"></basil-icon></a>
-                    <span v-else-if="row.downloadable && !authenticated" class="max-md:hidden opacity-60" :title="$t('Log in to download replays')"><basil-icon name="download"></basil-icon></span>
+                    <login-required-hover v-else-if="row.downloadable && !authenticated" class="max-md:hidden" message="You need to be logged in to download replays."><span class="opacity-60 cursor-pointer"><basil-icon name="download"></basil-icon></span></login-required-hover>
                     <a v-if="isWatchable(row) && authenticated" class="hover:text-lteal" :href="'/Analytics/Match/Single/' + row.replayID" :title="$t('Watch Replay')"><basil-icon name="replay"></basil-icon></a>
-                    <span v-else-if="isWatchable(row)" class="opacity-60" :title="$t('Log in with Battle.net to watch replays')"><basil-icon name="replay"></basil-icon></span>
+                    <login-required-hover v-else-if="isWatchable(row)" message="You need to be logged in with Battle.net to watch replays."><span class="opacity-60 cursor-pointer"><basil-icon name="replay"></basil-icon></span></login-required-hover>
                   </div>
           </div>
         </panel-box>
@@ -185,9 +185,9 @@
                 </div>
                 <div v-if="row.downloadable || isWatchable(row)" class="absolute z-[3] flex transition-opacity right-4 top-1/2 -translate-y-1/2 flex-row-reverse gap-4 md:opacity-0 md:group-hover/replay:opacity-100 md:focus-within:opacity-100">
                     <a v-if="row.downloadable && authenticated && !replayDownloadBlocked" class="max-md:hidden hover:text-lteal" :href="'/Match/Single/' + row.replayID + '/Download'" :title="$t('Download Replay')"><basil-icon name="download"></basil-icon></a>
-                    <span v-else-if="row.downloadable && !authenticated" class="max-md:hidden opacity-60" :title="$t('Log in to download replays')"><basil-icon name="download"></basil-icon></span>
+                    <login-required-hover v-else-if="row.downloadable && !authenticated" class="max-md:hidden" message="You need to be logged in to download replays."><span class="opacity-60 cursor-pointer"><basil-icon name="download"></basil-icon></span></login-required-hover>
                     <a v-if="isWatchable(row) && authenticated" class="hover:text-lteal" :href="'/Analytics/Match/Single/' + row.replayID" :title="$t('Watch Replay')"><basil-icon name="replay"></basil-icon></a>
-                    <span v-else-if="isWatchable(row)" class="opacity-60" :title="$t('Log in with Battle.net to watch replays')"><basil-icon name="replay"></basil-icon></span>
+                    <login-required-hover v-else-if="isWatchable(row)" message="You need to be logged in with Battle.net to watch replays."><span class="opacity-60 cursor-pointer"><basil-icon name="replay"></basil-icon></span></login-required-hover>
                   </div>
               </div>
             </div>

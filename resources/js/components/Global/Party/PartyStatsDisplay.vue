@@ -95,10 +95,10 @@
 // quad, triple, double and solo, one digit each. key is where partydata keeps that party's matchups.
 const COMPOSITIONS = [
   { key: 'solo', code: '00005', label: '5 Solo', groups: [1, 1, 1, 1, 1] },
-  { key: 'double', code: '00023', label: '1 Double, 3 Solo', groups: [2, 1, 1, 1] },
-  { key: 'double_double', code: '00041', label: '2 Double, 1 Solo', groups: [2, 2, 1] },
-  { key: 'triple', code: '00302', label: '1 Triple, 2 Solo', groups: [3, 1, 1] },
-  { key: 'triple_double', code: '00320', label: '1 Triple, 1 Double', groups: [3, 2] },
+  { key: 'double', code: '00023', label: '1 Duo, 3 Solo', groups: [2, 1, 1, 1] },
+  { key: 'double_double', code: '00041', label: '2 Duo, 1 Solo', groups: [2, 2, 1] },
+  { key: 'triple', code: '00302', label: '1 Trio, 2 Solo', groups: [3, 1, 1] },
+  { key: 'triple_double', code: '00320', label: '1 Trio, 1 Duo', groups: [3, 2] },
   { key: 'quadruple', code: '04001', label: '1 Quad, 1 Solo', groups: [4, 1] },
   { key: 'quintuple', code: '50000', label: '5 Stack', groups: [5] },
 ];

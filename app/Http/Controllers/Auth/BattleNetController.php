@@ -16,14 +16,7 @@ class BattleNetController extends Controller
 {
     public function show(Request $request)
     {
-        // Send the user back to the page they clicked Login from.
-        $previous = $request->headers->get('referer');
-        if ($previous && parse_url($previous, PHP_URL_HOST) === $request->getHost()) {
-            $path = strtolower(ltrim(parse_url($previous, PHP_URL_PATH) ?? '', '/'));
-            if (! str_starts_with($path, 'authenticate/') && ! str_starts_with($path, 'redirect/authenticate/')) {
-                $request->session()->put('url.intended', $previous);
-            }
-        }
+        $this->rememberPreviousPage($request);
 
         return view('Battlenet.authenticate')
             ->with([
@@ -32,9 +25,24 @@ class BattleNetController extends Controller
             ]);
     }
 
-    public function redirectToProvider()
+    public function redirectToProvider(Request $request)
     {
+        // The login popup comes straight here, skipping show()
+        $this->rememberPreviousPage($request);
+
         return Socialite::driver('battlenet')->redirect();
+    }
+
+    // Send the user back to the page they clicked Login from; the login page itself is skipped, so show()'s page stands
+    private function rememberPreviousPage(Request $request): void
+    {
+        $previous = $request->headers->get('referer');
+        if ($previous && parse_url($previous, PHP_URL_HOST) === $request->getHost()) {
+            $path = strtolower(ltrim(parse_url($previous, PHP_URL_PATH) ?? '', '/'));
+            if (! str_starts_with($path, 'authenticate/') && ! str_starts_with($path, 'redirect/authenticate/')) {
+                $request->session()->put('url.intended', $previous);
+            }
+        }
     }
 
     public function handleProviderCallback(Request $request)

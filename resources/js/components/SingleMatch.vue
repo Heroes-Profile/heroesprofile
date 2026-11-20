@@ -27,24 +27,10 @@
           <span>{{ data.game_length }}</span>
           <!-- Download requires login for all (esport and non-esport); blocked battletags get no control -->
           <a v-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && user && !data.replay_download_blocked" class="group/bt inline-flex items-center cursor-pointer max-md:hidden" role="button" @click="downloadReplay(data, replayid)"><span class="group-hover/bt:underline">{{ $t('Download Replay') }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-          <span v-else-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && !user" class="inline-flex items-center gap-1 opacity-60 max-md:hidden">
-            {{ $t('Download Replay') }}
-            <round-image size="small" icon="fas fa-info" :title="$t('Login required')" popupsize="large">
-              <slot>
-                <p>{{ $t('You need to be logged in to download replays.') }}</p>
-              </slot>
-            </round-image>
-          </span>
+          <login-required-hover v-else-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && !user" class="max-md:hidden" message="You need to be logged in to download replays."><span class="opacity-60 cursor-pointer">{{ $t('Download Replay') }}</span></login-required-hover>
           <!-- Replay viewer: season games; needs a Battle.net login, like Download Replay -->
           <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center" :href="'/Analytics/Match/Single/' + replayid + '/Replay'"><span class="group-hover/bt:underline">{{ $t('Watch Replay') }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-          <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
-            {{ $t('Watch Replay') }}
-            <round-image size="small" icon="fas fa-info" :title="$t('Login required')" popupsize="large">
-              <slot>
-                <p>{{ $t('You need to be logged in with Battle.net to watch replays.') }}</p>
-              </slot>
-            </round-image>
-          </span>
+          <login-required-hover v-else-if="isWatchableGame" message="You need to be logged in with Battle.net to watch replays."><span class="opacity-60 cursor-pointer">{{ $t('Watch Replay') }}</span></login-required-hover>
         </div>
       </div>
 
@@ -188,14 +174,7 @@
             <h2 class="text-2xl font-bold">{{ $t('Match Scores') }}</h2>
             <!-- Same rules as Watch Replay -->
             <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center text-header" :href="'/Analytics/Match/Single/' + replayid + '/Replay#analytic-performance'"><span class="group-hover/bt:underline">{{ $t('How each player played') }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-            <span v-else-if="isWatchableGame" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
-              {{ $t('How each player played') }}
-              <round-image size="small" icon="fas fa-info" :title="$t('Login required')" popupsize="large">
-                <slot>
-                  <p>{{ $t('You need to be logged in with Battle.net to see how each player played.') }}</p>
-                </slot>
-              </round-image>
-            </span>
+            <login-required-hover v-else-if="isWatchableGame" message="You need to be logged in with Battle.net to see how each player played."><span class="opacity-60 cursor-pointer">{{ $t('How each player played') }}</span></login-required-hover>
           </div>
           <p class="text-subtext">{{ $t('See advanced stats below') }}</p>
          

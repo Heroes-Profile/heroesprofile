@@ -29,7 +29,7 @@
                 <div id="nav-links" class=" grow-1 flex items-left md:space-x-5 md:mx-auto md:px-8 flex-wrap md:flex-nowrap max-md:flex-col max-md:w-full ">
                     
                     <div id="nav-global-stats" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">{{ __('Global Hero Stats') }}<basil-icon name="arrow" class="rotate-90 text-xs ml-2" aria-hidden="true"></basil-icon></a>
+                        <a class=" cursor-pointer">{{ __('Global Hero Stats') }}<basil-icon name="arrow" class="rotate-90 group-hover:-rotate-90 transition-transform text-xs ml-2" aria-hidden="true"></basil-icon></a>
                         <div class="nav-dropdown ">
                             <div class="nav-dropdown-inner-wrapper ">
                                 {{-- ... (Global Hero Stats dropdown items) --}}
@@ -69,7 +69,7 @@
                     <a id="nav-leaderboards" class="  nav-item" href="/Global/Leaderboard"><span>{{ __('Leaderboards') }}</span></a>
 
                     <div id="nav-tools" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">{{ __('Tools') }}<basil-icon name="arrow" class="rotate-90 text-xs ml-2" aria-hidden="true"></basil-icon></a>
+                        <a class=" cursor-pointer">{{ __('Tools') }}<basil-icon name="arrow" class="rotate-90 group-hover:-rotate-90 transition-transform text-xs ml-2" aria-hidden="true"></basil-icon></a>
                         <div class="nav-dropdown ">
                             <div class=" nav-dropdown-inner-wrapper ">
                                 <span class="nav-dropdown-label">{{ __('Tools') }}</span>
@@ -101,7 +101,7 @@
                     <a id="nav-esports" class=" nav-item" href="/Esports"><span>{{ __('Community Esports') }}</span></a>
 
                     <div id="nav-help" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">{{ __('Help') }}<basil-icon name="arrow" class="rotate-90 text-xs ml-2" aria-hidden="true"></basil-icon></a>
+                        <a class=" cursor-pointer">{{ __('Help') }}<basil-icon name="arrow" class="rotate-90 group-hover:-rotate-90 transition-transform text-xs ml-2" aria-hidden="true"></basil-icon></a>
                         <div class="nav-dropdown ">
                             <div class="nav-dropdown-inner-wrapper ">
                                  <a href="https://github.com/Heroes-Profile/heroesprofile/issues/new?assignees=&labels=&projects=&template=bug_report.md" target="_blank" >{{ __('Submit an Issue') }}</a>
@@ -122,7 +122,7 @@
                     
 
                     <div id="nav-donate" class="relative group inline-block nav-item">
-                        <a class=" cursor-pointer">{{ __('Donate') }}<basil-icon name="arrow" class="rotate-90 text-xs ml-2" aria-hidden="true"></basil-icon></a>
+                        <a class=" cursor-pointer">{{ __('Donate') }}<basil-icon name="arrow" class="rotate-90 group-hover:-rotate-90 transition-transform text-xs ml-2" aria-hidden="true"></basil-icon></a>
                         <div class="nav-dropdown ">
                             <div class="nav-dropdown-inner-wrapper ">
                                  <a href="https://www.patreon.com/c/heroesprofile" target="_blank" >{{ __('Patreon') }}</a>
@@ -144,7 +144,7 @@
                             @else
                                 ({{ __('Region not found, log out and back in') }})
                             @endif
-                            <basil-icon name="arrow" class="rotate-90 text-xs ml-2" aria-hidden="true"></basil-icon>
+                            <basil-icon name="arrow" class="rotate-90 group-hover:-rotate-90 transition-transform text-xs ml-2" aria-hidden="true"></basil-icon>
                             </a>
                             <div class="nav-dropdown  ">
                                 <div class="nav-dropdown-inner-wrapper ">

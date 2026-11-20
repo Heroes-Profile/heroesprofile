@@ -98,6 +98,12 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     // Route::get('/test', [MainPageController::class, 'test']);
     // Route::get('/testJS', [MainPageController::class, 'testJS']);
 
+    // Error page previews for design work, local only: /Error/Preview/403, 404, 429 or 500
+    if (app()->isLocal()) {
+        Route::get('/Error/Preview/{code}', fn (string $code) => response()->view("errors.$code", [], (int) $code))
+            ->whereIn('code', ['403', '404', '429', '500']);
+    }
+
     Route::redirect('/Search', '/', 301);
 
     Route::get('/Contact', [ContactController::class, 'show']);

@@ -187,6 +187,9 @@
       <translation-notice :locale="'{{ app()->getLocale() }}'"></translation-notice>
       @endif
       <help-chat :logged-in="{{ json_encode(Auth::check()) }}"></help-chat>
+      @guest
+      <login-popup></login-popup>
+      @endguest
     </footer>
   </div>
 
