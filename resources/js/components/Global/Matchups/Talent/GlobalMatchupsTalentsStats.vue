@@ -87,12 +87,9 @@
           <tab-button :tab1text="'Enemy'" :ignoreclick="true" :tab2text="'Ally'" @tab-click="heroOrEnemySideSelected" > </tab-button>
         </div>
       </div>
-      <span>
-        <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
-      </span>
     </div>
 
-    <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
+    <patch-notes-panel v-if="patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
     <div class="max-w-[120rem] mx-auto px-4 md:px-8">
       <panel-box v-if="talentdetaildata">
         <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="null"></global-talent-details-section>
@@ -145,7 +142,6 @@
         type: "Enemy",
         firstwinratedata: null,
         secondwinratedata: null,
-        showPatchNotes: false,
       }
     },
     created(){
@@ -309,7 +305,6 @@
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}${queryString}`);
 
-        this.showPatchNotes = false;
 
         this.talentdetaildata = null;
         this.getData();
@@ -345,9 +340,6 @@
           this.talentdetaildata = null;
           this.getData();
         }
-      },
-      togglePatchNotes() {
-        this.showPatchNotes = !this.showPatchNotes;
       },
       convertRankIDtoName(rankIDs) {
         return rankIDs.map(rankID => this.filters.rank_tiers.find(tier => tier.code == rankID).name);

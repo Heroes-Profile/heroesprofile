@@ -2,8 +2,8 @@
   <div id="filter-label" class="relative" :class="[compact ? 'min-w-0 w-full' : 'filter-fill max-md:w-full md:min-w-[12.5rem]', { 'bg-red': highlighttimesframes }]">
     <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'">
       <span v-if="!hidelabel" class="relative">
-        <!-- The info icon sits beside the label, so a longer or larger label pushes it along instead of under it -->
-        <span class="relative inline-flex items-center gap-1.5">{{ $t(text) }}
+        <!-- The info icon sits raised just after the label, like a superscript; a longer or larger label pushes it along -->
+        <span class="relative inline-flex items-start gap-1 [&>*]:-translate-y-0.5">{{ $t(text) }}
           <round-image v-if="infolink" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
             <div>
               <p class="max-sm:text-xs">{{ $t('Timeframes correspond to game patches.') }} <a :href="infolink" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('View the full patch & season history.') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a></p>

@@ -1,9 +1,10 @@
 <template>
   <div>
-    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-    <page-heading :heading="'Drafter'"></page-heading>
-
-    <div v-show="!started || showFilters">
+    <!-- Title on the left, the filters in their card beside it, as on the player pages -->
+    <player-page-top>
+      <template #heading>
+        <page-heading :heading="'Drafter'" :subheading="'Draft helper'"></page-heading>
+      </template>
       <filters
         :isLoading="isLoading"
         :onFilter="filterData"
@@ -28,83 +29,106 @@
         :advancedfiltersinfo="'Advanced filters may take a lot longer to run.'"
         :autoapply="true"
       ></filters>
-    </div>
+    </player-page-top>
 
-    <div v-if="!started" class="flex flex-col items-center gap-4 py-10 px-4">
-      <div class="flex gap-8">
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input type="radio" value="team1" v-model="firstPickTeam" /> {{ $t('Team 1 First Pick') }}
-        </label>
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input type="radio" value="team2" v-model="firstPickTeam" /> {{ $t('Team 2 First Pick') }}
-        </label>
-      </div>
-      <div class="flex gap-4">
-        <button @click="startDraft(false)" class="btn bg-blue hover:bg-lblue font-bold px-6 uppercase">{{ $t('Start Draft') }}</button>
-        <button @click="startDraft(true)" class="btn bg-red hover:bg-lred font-bold px-6 uppercase">{{ $t('Draft With No Data') }}</button>
-      </div>
-    </div>
-
-    <div v-else class="max-w-[93.75rem] mx-auto px-4 py-6">
-      <div class="flex justify-between mb-4">
-        <div v-if="picks.length > 0" class="flex gap-2">
-          <button @click="undo" :disabled="isLoading" class="btn bg-blue hover:bg-lblue font-bold px-6 disabled:opacity-50">
-            <i class="fa-solid fa-reply mr-2"></i>{{ $t('Undo') }}
-          </button>
-          <button @click="restartDraft" :disabled="isLoading" class="btn bg-red hover:bg-lred font-bold px-6 disabled:opacity-50">
-            <i class="fa-solid fa-rotate-left mr-2"></i>{{ $t('Restart Draft') }}
+    <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <!-- Whose turn it is, the whole ban and pick order, and the draft controls -->
+      <div class="bg-surface rounded px-4 md:px-8 py-3 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <div class="shrink-0 w-[15rem]">
+          <span class="block text-xs font-semibold uppercase tracking-wider text-subtext">{{ $t('Now') }}</span>
+          <span class="flex items-center gap-2.5 text-lg font-semibold">
+            <span v-if="!draftComplete" :class="['w-2.5 h-2.5 rounded-full shrink-0', currentTeam === 'team1' ? 'bg-teal' : 'bg-red']"></span>
+            {{ stepLabel }}
+          </span>
+        </div>
+        <!-- A step already taken can be clicked to go back to it -->
+        <div class="flex-1 min-w-[16rem] grid grid-cols-[repeat(16,minmax(0,1fr))] gap-1.5">
+          <button v-for="(slot, index) in pickOrder" :key="slot" type="button" :disabled="index >= currentPick || isLoading"
+            :title="index < currentPick ? $t('Go back to :step', { step: slotLabel(slot) }) : slotLabel(slot)"
+            :class="['h-9 rounded-control flex items-center justify-center text-xs font-bold transition-[opacity,background-color] disabled:cursor-default', chipClass(slot, index)]"
+            @click="goBackTo(index)">
+            {{ slot.includes('ban') ? 'B' : 'P' }}
           </button>
         </div>
-        <span v-else></span>
-        <button @click="showFilters = !showFilters" class="btn bg-blue hover:bg-lblue font-bold px-6">
-          <i class="fa-solid fa-filter mr-2"></i>{{ showFilters ? $t('Hide Filters') : $t('Show Filters') }}
-        </button>
-      </div>
-
-      <div class="flex gap-4 max-md:flex-col items-start">
-        <div v-for="team in ['team1', 'team2']" :key="team + '-bans'" :class="['border border-[gray] rounded p-2 text-xs uppercase', team === 'team1' ? 'order-1' : 'order-3 md:ml-auto']">
-          <span>{{ $t('Bans') }}</span>
-          <div class="flex">
-            <div v-for="ban in [1, 2, 3]" :key="ban" :class="slotClasses(team, team + '-ban' + ban, 'w-16 h-16')" :style="slotStyle(team + '-ban' + ban)"></div>
-          </div>
-        </div>
-
-        <div class="flex flex-col items-center gap-2 order-2 flex-1">
-          <input type="text" v-model="searchQuery" class="w-60 bg-field text-white rounded-control px-3 py-2 text-sm" :placeholder="$t('Search Heroes')" />
-          <div class="flex justify-center">
-            <round-image
-              v-for="role in roles"
-              :key="role"
-              :image="'/images/roles/' + role.toLowerCase() + (selectedRoles.includes(role) ? '-highlighted' : '') + '.PNG'"
-              :title="role"
-              :hidemobiletext="true"
-              @click="toggleRole(role)"
-              class="cursor-pointer"
-            >{{ role }}</round-image>
-          </div>
+        <div class="flex flex-wrap items-center gap-3 ml-auto">
+          <label class="flex items-center gap-2 text-sm text-subtext cursor-pointer">
+            <input type="checkbox" class="form-checkbox" :checked="mockDraft" @change="setMockDraft($event.target.checked)">{{ $t('No data') }}
+          </label>
+          <custom-button :text="'Swap sides'" :alt="'Swap sides'" color="blue" :ignoreclick="true" @click="swapSides"></custom-button>
+          <custom-button :text="'Reset draft'" :alt="'Reset draft'" color="red" :ignoreclick="true" @click="restartDraft"></custom-button>
         </div>
       </div>
 
-      <div class="flex gap-4 mt-8 max-md:flex-col">
-        <div v-for="team in ['team1', 'team2']" :key="team + '-picks'" :class="['flex md:flex-col items-center max-md:justify-center shrink-0', team === 'team1' ? 'order-1' : 'order-3']">
-          <div v-for="pick in [1, 2, 3, 4, 5]" :key="pick" :class="slotClasses(team, team + '-pick' + pick, 'w-20 h-20 max-md:w-14 max-md:h-14')" :style="slotStyle(team + '-pick' + pick)"></div>
-        </div>
-
-        <div class="flex-1 min-w-0 order-2">
-          <div v-if="waiting" class="flex flex-col gap-4">
-            <loading-component :compact="true" :textoverride="true">{{ $t('Loading draft options...') }}</loading-component>
-            <div class="flex flex-wrap justify-center gap-2">
-              <skeleton-box v-for="hero in 30" :key="hero" class="w-16 h-16 !rounded-full"></skeleton-box>
+      <div class="grid xl:grid-cols-[320fr_1220fr_320fr] gap-6 items-stretch">
+        <!-- Your team, then the hero board, then the enemy team -->
+        <div v-for="team in ['team1', 'team2']" :key="team" :class="['bg-surface rounded p-4 md:p-6 flex flex-col gap-5 min-w-0', team === 'team1' ? 'xl:order-1' : 'xl:order-3']">
+          <h3 class="flex items-center gap-2.5 text-xl font-bold">
+            <span :class="['w-1 h-5 rounded-full', team === 'team1' ? 'bg-teal' : 'bg-red']"></span>{{ team === 'team1' ? $t('Your team') : $t('Enemy team') }}
+          </h3>
+          <div class="flex flex-col gap-3">
+            <span class="text-xs font-semibold uppercase tracking-wider text-subtext">{{ $t('Bans') }}</span>
+            <div class="grid grid-cols-3 gap-2">
+              <div v-for="ban in [1, 2, 3]" :key="ban" :title="slotHero(team + '-ban' + ban) ? $heroName(slotHero(team + '-ban' + ban)) : null"
+                :class="['h-12 rounded-control bg-surface-1 bg-cover bg-center border-2', isActive(team + '-ban' + ban) ? (team === 'team1' ? 'border-teal' : 'border-red') : 'border-surface-1']"
+                :style="slotStyle(team + '-ban' + ban)"></div>
             </div>
           </div>
-          <div v-else-if="dataError || (needsCompositions && compositionsError)" class="text-center text-red py-10">{{ $t('Failed to load draft data. Please try again.') }}</div>
-          <div v-else-if="draftComplete" class="text-center text-gray-medium py-10">{{ $t('Draft complete.') }}</div>
-          <div v-else class="flex flex-wrap justify-center">
-            <div v-for="hero in visibleSuggestions" :key="hero.id" class="relative m-2 cursor-pointer" @click="pickHero(hero)">
-              <i v-if="hero.starred" class="fa-solid fa-star absolute -top-1 -left-1 z-10 text-[gold] text-xl"></i>
-              <hero-image-wrapper :hero="hero" size="big">
+          <div class="flex flex-col gap-3 flex-1">
+            <span class="text-xs font-semibold uppercase tracking-wider text-subtext">{{ $t('Picks') }}</span>
+            <div class="flex flex-col gap-2 flex-1">
+              <div v-for="pick in [1, 2, 3, 4, 5]" :key="pick"
+                :class="['flex-1 min-h-[4rem] rounded-control bg-surface-1 px-3 py-2 flex items-center gap-3 border-2', isActive(team + '-pick' + pick) ? (team === 'team1' ? 'border-teal' : 'border-red') : 'border-surface-1']">
+                <span class="w-12 h-12 shrink-0 rounded-full bg-surface-3 bg-cover bg-center" :style="slotStyle(team + '-pick' + pick)"></span>
+                <span class="flex flex-col min-w-0">
+                  <span class="font-semibold truncate">{{ slotHero(team + '-pick' + pick) ? $heroName(slotHero(team + '-pick' + pick)) : $t('Pick :number', { number: pick }) }}</span>
+                  <span class="text-sm text-subtext truncate">{{ slotHero(team + '-pick' + pick) ? $t(slotHero(team + '-pick' + pick).new_role) : (isActive(team + '-pick' + pick) ? $t('Picking') : $t('Waiting')) }}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-surface rounded p-4 md:p-6 flex flex-col gap-5 min-w-0 xl:order-2">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <search-input v-model="searchQuery" :placeholder="$t('Search heroes')" class="w-full sm:w-[19.75rem]"></search-input>
+            <div class="flex flex-wrap items-center gap-3">
+              <tab-button :small="true" :tabs="roleTabs" :ignoreclick="true" :overridedefaultside="selectedRole" @tab-click="selectedRole = $event"></tab-button>
+              <tab-button v-if="!mockDraft" :small="true" :tabs="sortTabs" :ignoreclick="true" :overridedefaultside="sortMode" @tab-click="sortMode = $event"></tab-button>
+              <tab-button v-if="!mockDraft" :small="true" :tabs="suggestTabs" :ignoreclick="true" :overridedefaultside="suggestBy" @tab-click="suggestBy = $event"></tab-button>
+            </div>
+          </div>
+
+          <!-- The three best HP Draft Values for this step. It always keeps its place, so the board doesn't move as the draft goes on -->
+          <div v-if="!mockDraft" :class="['rounded-control bg-[rgba(245,197,66,0.08)] px-5 py-4 min-h-[4.75rem] flex flex-wrap items-center gap-x-6 gap-y-3', { invisible: !waiting && !topSuggestions.length }]">
+            <loading-component v-if="waiting" :compact="true" :textoverride="true">{{ $t('Loading draft options...') }}</loading-component>
+            <template v-else>
+            <div class="flex flex-col">
+              <span class="font-semibold text-[#f5c542]">{{ isBanStep ? $t('Suggested bans') : $t('Suggested picks') }}</span>
+              <span class="text-sm text-subtext">{{ $t(suggestMetric.caption) }}</span>
+            </div>
+            <button v-for="hero in topSuggestions" :key="hero.id" type="button" class="flex items-center gap-2.5 rounded-full bg-surface-1 hover:bg-surface-3 transition-colors pl-1 pr-4 py-1" @click="pickHero(hero)">
+              <img :src="'/images/heroes/' + hero.short_name + '.png'" :alt="$heroName(hero)" class="w-9 h-9 rounded-full object-cover">
+              <span class="flex flex-col items-start leading-tight">
+                <span class="text-sm font-semibold">{{ $heroName(hero) }}</span>
+                <span class="text-xs text-header">{{ suggestMetric.format(hero) }}</span>
+              </span>
+            </button>
+            </template>
+          </div>
+
+          <div v-if="dataError || (needsCompositions && compositionsError)" class="text-center text-red py-10">{{ $t('Failed to load draft data. Please try again.') }}</div>
+          <div v-else-if="waiting" class="grid grid-cols-[repeat(auto-fill,minmax(4.75rem,1fr))] gap-y-3">
+            <div v-for="hero in visibleSuggestions.length" :key="hero" class="flex flex-col items-center gap-1.5">
+              <skeleton-box class="w-16 h-16 !rounded-full"></skeleton-box>
+              <span class="text-xs skeleton-text">Abathur</span>
+            </div>
+          </div>
+          <div v-else class="grid grid-cols-[repeat(auto-fill,minmax(4.75rem,1fr))] gap-y-3">
+            <div v-for="hero in visibleSuggestions" :key="hero.id" :class="['relative flex flex-col items-center gap-1.5 min-w-0', hero.unavailable ? 'opacity-30 grayscale' : 'cursor-pointer']" @click="!hero.unavailable && pickHero(hero)">
+              <!-- Suggested heroes glow in the suggestions strip's gold -->
+              <hero-image-wrapper :hero="hero" size="medium" :class="['rounded-full', { 'ring-[3px] ring-[#f5c542] shadow-[0_0_1.25rem_0.25rem_rgba(245,197,66,0.8)]': glowIds.has(hero.id) }]">
                 <h2>{{ $heroName(hero) }}</h2>
-                <div v-if="!mockDraft" class="text-left">
+                <div v-if="!mockDraft && !hero.unavailable" class="text-left">
                   <p>{{ $t('HP Draft Value: :value', { value: hero.value.toFixed(2) }) }}</p>
                   <p>{{ isBanStep ? $t('Games Banned') : $t('Games Played') }}: {{ hero.games.toLocaleString('en-US') }}</p>
                   <p>{{ $t('Influence: :influence', { influence: hero.influence }) }}</p>
@@ -114,6 +138,7 @@
                   <p>{{ $t('Draft Pick Order Rate: :percent%', { percent: hero.pick_order_percent.toFixed(2) }) }}</p>
                 </div>
               </hero-image-wrapper>
+              <span class="text-xs text-subtext text-center truncate max-w-full">{{ $heroName(hero) }}</span>
             </div>
           </div>
         </div>
@@ -143,6 +168,14 @@ const COMPOSITION_POSITIONS = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 // Cho'gall picks where the other half would land on the opposing team
 const CHO_GALL_BLOCKED_PICKS = [4, 6, 8, 12, 14, 15];
 const CHO = 11;
+
+// What the suggestions can rank by: the field on each suggestion, the strip's caption, and how each hero's figure reads
+const SUGGEST_METRICS = {
+  value: { label: 'HP Value', field: 'value', caption: 'Best HP Draft Value for this step', format: 'Value :value', round: value => Math.round(value) },
+  win_rate: { label: 'Win Rate', field: 'win_rate', caption: 'Highest win rate in these filters', format: ':value% win', round: value => value.toFixed(1) },
+  influence: { label: 'Influence', field: 'influence', caption: 'Highest influence in these filters', format: 'Influence :value', round: value => Math.round(value) },
+  pick_order: { label: 'Draft Pick Order', field: 'pick_order_percent', caption: 'Most often taken at this step', format: ':value% at this step', round: value => value.toFixed(1) },
+};
 const GALL = 18;
 
 export default {
@@ -167,13 +200,16 @@ export default {
     return {
       infoText: 'Get ban and pick suggestions at every step of a Storm League draft. HP Draft Value combines how often a hero is taken at that point in the draft with their win rate, bans, and the team compositions they fit into.',
       roles: ['Tank', 'Bruiser', 'Healer', 'Support', 'Melee Assassin', 'Ranged Assassin'],
-      started: false,
       mockDraft: false,
-      showFilters: false,
+      // team1 is your team, team2 the enemy; this is whichever bans and picks first
       firstPickTeam: 'team1',
       picks: [],
       searchQuery: '',
-      selectedRoles: [],
+      selectedRole: 'All',
+      // The hero board: best HP Draft Value first, or A-Z
+      sortMode: 'value',
+      // What the suggestions rank by: one of suggestTabs' keys
+      suggestBy: 'value',
 
       isLoading: false,
       dataError: false,
@@ -199,12 +235,48 @@ export default {
     this.timeframe = this.defaulttimeframe;
     this.gametype = this.gametypedefault;
   },
+  mounted() {
+    this.loadBaseData();
+  },
   computed: {
     drafterFilters() {
       return { ...this.filters, timeframes: this.filters.timeframes.slice(0, 5) };
     },
     pickOrder() {
       return this.firstPickTeam === 'team1' ? PICK_ORDER_TEAM1_FIRST : PICK_ORDER_TEAM2_FIRST;
+    },
+    currentTeam() {
+      return (this.pickOrder[this.currentPick] || '').startsWith('team1') ? 'team1' : 'team2';
+    },
+    // "Your team · Ban 1"
+    stepLabel() {
+      return this.draftComplete ? this.$t('Draft complete') : this.slotLabel(this.pickOrder[this.currentPick]);
+    },
+    roleTabs() {
+      return [{ key: 'All', text: 'All' }, ...this.roles.map(role => ({ key: role, text: role.replace(' Assassin', '') }))];
+    },
+    sortTabs() {
+      return [{ key: 'value', text: 'Suggested' }, { key: 'alpha', text: 'A–Z' }];
+    },
+    suggestTabs() {
+      return Object.entries(SUGGEST_METRICS).map(([key, metric]) => ({ key, text: metric.label }));
+    },
+    suggestMetric() {
+      const metric = SUGGEST_METRICS[this.suggestBy] || SUGGEST_METRICS.value;
+      return { ...metric, format: hero => this.$t(metric.format, { value: metric.round(Number(hero[metric.field]) || 0) }) };
+    },
+    // The heroes that can be taken now, best first by the chosen metric
+    rankedSuggestions() {
+      const field = this.suggestMetric.field;
+      return this.suggestions.slice().sort((a, b) => (Number(b[field]) || 0) - (Number(a[field]) || 0));
+    },
+    topSuggestions() {
+      const field = this.suggestMetric.field;
+      return this.rankedSuggestions.filter(hero => Number(hero[field]) > 0).slice(0, 3);
+    },
+    // The strip's heroes glow on the board too
+    glowIds() {
+      return new Set(this.mockDraft ? [] : this.topSuggestions.map(hero => hero.id));
     },
     currentPick() {
       return this.picks.length;
@@ -284,20 +356,48 @@ export default {
       // Unicode letters, so translated names (Cyrillic, Hangul, CJK) survive; matches English or translated name
       const strip = (text) => this.normalizeString(text).replace(/[^\p{L}\p{N}\s]/gu, '');
       const query = strip(this.searchQuery);
-      return this.suggestions.filter(hero => {
-        if (this.selectedRoles.length && !this.selectedRoles.includes(hero.new_role)) return false;
-        return !query || strip(hero.name).includes(query) || strip(this.$heroName(hero)).includes(query);
-      });
+      const matches = hero => (this.selectedRole === 'All' || hero.new_role === this.selectedRole)
+        && (!query || strip(hero.name).includes(query) || strip(this.$heroName(hero)).includes(query));
+      const byName = (a, b) => this.$heroName(a).localeCompare(this.$heroName(b));
+      // Every hero, so the board keeps its size; ones that can't be taken now are marked and go last
+      const available = new Set(this.suggestions.map(hero => hero.id));
+      const unavailable = this.heroes
+        .filter(hero => !available.has(hero.id) && matches(hero))
+        .map(hero => ({ ...hero, unavailable: true }))
+        .sort(byName);
+      const heroes = this.rankedSuggestions.filter(matches);
+      return this.sortMode === 'alpha' || this.mockDraft
+        ? [...heroes, ...unavailable].sort(byName)
+        : [...heroes, ...unavailable];
     },
   },
   methods: {
     normalizeString(input) {
       return (input || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
     },
-    toggleRole(role) {
-      this.selectedRoles = this.selectedRoles.includes(role)
-        ? this.selectedRoles.filter(r => r !== role)
-        : [...this.selectedRoles, role];
+    slotLabel(slotId) {
+      const [, team, kind, number] = slotId.match(/^(team\d)-(ban|pick)(\d)$/);
+      return (team === 'team1' ? this.$t('Your team') : this.$t('Enemy team')) + ' · ' + (kind === 'ban' ? this.$t('Ban :number', { number }) : this.$t('Pick :number', { number }));
+    },
+    isActive(slotId) {
+      return !this.draftComplete && this.pickOrder[this.currentPick] === slotId;
+    },
+    // The order bar: the current step solid, the rest tinted by team, steps already taken faded
+    chipClass(slotId, index) {
+      const ours = slotId.startsWith('team1');
+      if (index === this.currentPick && !this.draftComplete) {
+        return ours ? 'bg-teal text-white' : 'bg-red text-white';
+      }
+      return [ours ? 'bg-teal/20 text-lteal' : 'bg-red/20 text-lred', index < this.currentPick ? 'opacity-40 hover:opacity-100' : ''];
+    },
+    swapSides() {
+      this.firstPickTeam = this.firstPickTeam === 'team1' ? 'team2' : 'team1';
+    },
+    setMockDraft(mock) {
+      this.mockDraft = mock;
+      if (!mock && !Object.keys(this.heroStats).length) {
+        this.loadBaseData();
+      }
     },
     slotHero(slotId) {
       const index = this.pickOrder.indexOf(slotId);
@@ -307,22 +407,6 @@ export default {
     slotStyle(slotId) {
       const hero = this.slotHero(slotId);
       return hero ? { backgroundImage: 'url(/images/heroes/' + hero.short_name + '.png)' } : {};
-    },
-    slotClasses(team, slotId, size) {
-      const active = !this.draftComplete && this.pickOrder[this.currentPick] === slotId;
-      return [
-        size, 'm-2 max-md:m-1 rounded border bg-cover',
-        team === 'team1' ? 'bg-[rgba(33,61,122,0.2)]' : 'bg-[rgba(179,54,22,0.2)]',
-        active ? 'shadow-[0_0_0.5em_#ffd051] border-[#ffd051]' : 'border-[gray]',
-        !active && !this.slotHero(slotId) ? 'opacity-20' : '',
-      ];
-    },
-    startDraft(mock) {
-      this.mockDraft = mock;
-      this.started = true;
-      if (!mock) {
-        this.loadBaseData();
-      }
     },
     pickHero(hero) {
       if (this.waiting || this.draftComplete) return;
@@ -335,11 +419,14 @@ export default {
         this.picks.push({ heroId: hero.id === CHO ? GALL : CHO, auto: true });
       }
     },
-    undo() {
-      const last = this.picks.pop();
-      if (last && last.auto) {
-        this.picks.pop();
-      }
+    // Undo every step from this one on; a Cho'gall half filled in automatically goes back with the half that brought it
+    goBackTo(index) {
+      if (this.isLoading || index >= this.currentPick) return;
+      const keep = this.picks[index]?.auto ? index - 1 : index;
+      // Going back further than the last step asks first (the count includes a Cho'gall half that goes with it)
+      const undone = this.currentPick - keep;
+      if (this.currentPick - index > 1 && !confirm(this.$t('Go back to :step? This undoes the last :count bans and picks.', { step: this.slotLabel(this.pickOrder[keep]), count: undone }))) return;
+      this.picks = this.picks.slice(0, keep);
     },
     restartDraft() {
       this.picks = [];
@@ -353,7 +440,7 @@ export default {
       this.herorank = filteredData.multi['HP Hero Rank'] ? Array.from(filteredData.multi['HP Hero Rank']) : null;
       this.rolerank = filteredData.multi['HP Role Rank'] ? Array.from(filteredData.multi['HP Role Rank']) : null;
 
-      if (this.started && !this.mockDraft) {
+      if (!this.mockDraft) {
         this.loadBaseData();
       }
     },
@@ -436,7 +523,6 @@ export default {
       return {
         ...hero,
         value,
-        starred: false,
         games,
         influence: stats.influence ?? 0,
         ban_rate: stats.ban_rate ?? 0,
@@ -445,12 +531,8 @@ export default {
         pick_order_percent: share ? share * 100 : 0,
       };
     },
-    scale(entries, starThreshold, max = Math.max(0, ...entries.map(entry => entry.score))) {
-      return entries.map(({ hero, score, games, share }) => {
-        const suggestion = this.buildSuggestion(hero, max > 0 ? (score / max) * 100 : 0, games, share);
-        suggestion.starred = suggestion.value > starThreshold;
-        return suggestion;
-      });
+    scale(entries, max = Math.max(0, ...entries.map(entry => entry.score))) {
+      return entries.map(({ hero, score, games, share }) => this.buildSuggestion(hero, max > 0 ? (score / max) * 100 : 0, games, share));
     },
     // global/hero only returns ban rate, so the count is derived back from it
     estimatedBans(heroId) {
@@ -464,7 +546,7 @@ export default {
           const share = this.pickOrderShare(BAN_POSITIONS, hero.id);
           return { hero, score: share ? bans * share : 0, games: bans, share };
         });
-      return this.scale(entries, 50);
+      return this.scale(entries);
     },
     initialSuggestions() {
       const entries = this.heroes
@@ -474,7 +556,7 @@ export default {
           const share = this.pickOrderShare(INITIAL_POSITIONS, hero.id);
           return { hero, score: share ? stats.influence * share : 0, games: stats.games_played, share };
         });
-      return this.scale(entries, 50);
+      return this.scale(entries);
     },
     compositionSuggestions() {
       const compositionGames = Object.fromEntries((this.compositionData || []).map(row => [row.hero_id, row.games_played]));
@@ -493,7 +575,7 @@ export default {
           games: this.isBanStep ? this.estimatedBans(hero.id) : (this.heroStats[hero.id]?.games_played || 0),
           share: this.pickOrderShare(COMPOSITION_POSITIONS, hero.id),
         }));
-      return this.scale(entries, 75, max);
+      return this.scale(entries, max);
     },
   },
 };

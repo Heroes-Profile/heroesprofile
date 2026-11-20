@@ -35,6 +35,8 @@
       </div>
       <slot name="aboveHeading"></slot>
       <div :class="['heading flex items-center gap-3 max-md:justify-center', battletag ? 'text-base uppercase text-gray-medium mt-1' : 'text-4xl md:text-6xl font-bold']">{{ $t(heading) }}<!-- An info icon sits raised at the top of the title, like a superscript --><span v-if="$slots.headingInfo" class="page-title-info self-start flex"><slot name="headingInfo"></slot></span></div>
+      <!-- A short uppercase line under a page title, as under a BattleTag -->
+      <div v-if="subheading && !battletag" class="text-base md:text-2xl uppercase text-gray-medium mt-2 max-md:text-center">{{ $t(subheading) }}</div>
     </h1>
     <div v-if="hasInfo && !hideText" class="text-gray-medium md:ml-auto md:max-w-[50%]">
       <infobox :input="infoText1"></infobox>
@@ -57,6 +59,7 @@ export default {
   },
   props: {
     heading: String,
+    subheading: String,
     headingImage: String,
     headingImageUrl: String,
     infoText1: String,

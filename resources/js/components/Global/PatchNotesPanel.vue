@@ -1,5 +1,14 @@
 <template>
-  <div class="max-w-[93.75rem] mx-auto mb-4 p-4 rounded bg-lighten text-gray-light">
+  <!-- Collapsed until opened; the notes load the first time it opens -->
+  <panel-box title="Patch Notes" :subtitle="open ? version : null" :divider="open" :class="['w-full max-w-[93.75rem] mx-auto mb-4 md:!pt-4', { 'md:!pb-4 cursor-pointer': !open }]" @click="!open && toggle()">
+    <template #right>
+      <button type="button" class="flex items-center gap-2 text-sm text-subtext hover:text-white transition-colors" :aria-expanded="open" @click.stop="toggle">
+        {{ open ? $t('Hide') : $t('Show') }}
+        <basil-icon name="arrow-small" :class="['text-xs transition-transform', open ? '-rotate-90' : 'rotate-90']"></basil-icon>
+      </button>
+    </template>
+
+    <div v-if="open" class="text-gray-light">
     <div v-if="loading" class="text-center py-4">{{ $t('Loading patch notes...') }}</div>
 
     <div v-else-if="notes">
@@ -140,7 +149,8 @@
     </div>
 
     <div v-else class="text-center py-4 text-gray-medium">{{ $t('No summary available for this patch.') }}</div>
-  </div>
+    </div>
+  </panel-box>
 </template>
 
 <script>
@@ -154,6 +164,9 @@ export default {
   },
   data() {
     return {
+      open: false,
+      // The version the notes on hand are for
+      loadedVersion: null,
       loading: false,
       notes: null,
       selectedHero: null,
@@ -193,13 +206,18 @@ export default {
   },
   watch: {
     version() {
-      this.loadNotes();
+      if (this.open) {
+        this.loadNotes();
+      }
     },
   },
-  mounted() {
-    this.loadNotes();
-  },
   methods: {
+    toggle() {
+      this.open = !this.open;
+      if (this.open && this.loadedVersion !== this.version) {
+        this.loadNotes();
+      }
+    },
     badgeFor(type) {
       return this.badges[type] || this.badges.change;
     },
@@ -216,6 +234,7 @@ export default {
       event.target.src = '/images/heroes/no-image.png';
     },
     async loadNotes() {
+      this.loadedVersion = this.version;
       this.loading = true;
       this.notes = null;
       this.selectedHero = null;

@@ -1,5 +1,6 @@
 <template>
-  <div class="inline-flex bg-teal rounded p-1 gap-1">
+  <!-- select-none: clicking tabs quickly mustn't highlight their labels -->
+  <div class="inline-flex bg-teal rounded p-1 gap-1 select-none">
     <a
       v-for="side in sides"
       :key="side"
@@ -64,7 +65,8 @@
         return Object.fromEntries((this.tabs || []).map(tab => [tab.key, tab.text]));
       },
       staticClasses() {
-        return 'transition-colors inline-block cursor-pointer text-center ' + (this.small ? 'py-1 px-2 text-sm' : 'py-1.5 px-4');
+        // The full size is the pager's height (pagination-bar), so the two line up beside each other; a wrapped label can grow it
+        return 'transition-colors cursor-pointer text-center ' + (this.small ? 'inline-block py-1 px-2 text-sm' : 'inline-flex items-center justify-center min-h-9 px-4');
       },
     },
     watch: {

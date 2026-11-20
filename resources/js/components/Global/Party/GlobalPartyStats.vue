@@ -40,11 +40,8 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
     <div v-if="partydata" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <div class="flex justify-end">
-        <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
-      </div>
 
-      <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
+      <patch-notes-panel v-if="patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
 
       <party-stats-display :partydata="partydata"></party-stats-display>
 
@@ -102,7 +99,6 @@
       heropartysize: null,
       teamoneparty: null,
       teamtwoparty: null,
-      showPatchNotes: false,
     }
   },
   created(){
@@ -176,9 +172,6 @@
         this.cancelTokenSource.cancel('Request canceled by user');
       }
     },
-    togglePatchNotes() {
-      this.showPatchNotes = !this.showPatchNotes;
-    },
     filterData(filteredData){
       this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
       this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaultMinor;
@@ -244,7 +237,6 @@
       let currentPath = window.location.pathname;
       history.pushState(null, null, `${currentPath}${queryString}`);
 
-      this.showPatchNotes = false;
 
       this.partydata = null;
       this.getData();

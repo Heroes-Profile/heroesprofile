@@ -72,12 +72,9 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
         </span>
-        <span>
-          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
-        </span>
       </div>
 
-      <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
+      <patch-notes-panel v-if="patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
 
       <panel-box>
       <div id="table-container" ref="tablecontainer" class="max-md:overflow-clip">
@@ -223,7 +220,6 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         herorank: null,
         rolerank: null,
         mirrormatch: 0,
-        showPatchNotes: false,
       }
     },
     created(){
@@ -377,7 +373,6 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
 
 
-        this.showPatchNotes = false;
 
         this.updateQueryString();
         this.allyenemydata = null;
@@ -422,9 +417,6 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         const currentUrl = window.location.href;
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}${queryString}`);
-      },
-      togglePatchNotes() {
-        this.showPatchNotes = !this.showPatchNotes;
       },
       sortTable(key) {
         if (key === this.sortKey) {

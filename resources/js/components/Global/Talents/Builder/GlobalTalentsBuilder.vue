@@ -86,7 +86,6 @@
         <span class="flex items-center gap-4">
           <tab-button :tab1text="'Auto Load'" :tab2text="'On Filter'" :ignoreclick="true" @tab-click="loadStyleSelected" :overridedefaultside="localLoad === 'filter' ? 'right' : 'left'"></tab-button>
           <tab-button v-if="!isMobile" :tab1text="'Vertical'" :tab2text="'Horizontal'" :ignoreclick="true" @tab-click="layoutStyleSelected" :overridedefaultside="effectiveStyle === 'horizontal' ? 'right' : 'left'"></tab-button>
-          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
         </span>
         
 
@@ -94,7 +93,7 @@
 
       </div>
 
-    <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
+    <patch-notes-panel v-if="patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
 
     <!-- The chart takes the talent columns' width -->
     <div :class="effectiveStyle === 'horizontal' ? 'w-fit mx-auto' : 'max-w-[93.75rem] mx-auto'">
@@ -272,7 +271,6 @@
         isMobile: window.innerWidth < 1024,
         localStyle: 'vertical',
         localLoad: 'auto',
-        showPatchNotes: false,
       }
     },
     created(){
@@ -446,9 +444,6 @@
           this.cancelTokenSource.cancel('Request canceled by user');
         }
       },
-      togglePatchNotes() {
-        this.showPatchNotes = !this.showPatchNotes;
-      },
       talentClicked(talent, index, level){
         this.clickedData[level] = talent.talent_id;
         if (this.localLoad === 'auto') {
@@ -494,7 +489,6 @@
 
 
 
-        this.showPatchNotes = false;
 
         this.data = null;
         this.replays = null;

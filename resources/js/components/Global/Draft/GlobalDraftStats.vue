@@ -62,12 +62,9 @@
                 @input-changed="handleInputChange"
               ></single-select-filter>
             </span>
-            <span>
-              <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
-            </span>
           </div>
 
-          <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
+          <patch-notes-panel v-if="patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
           <panel-box>
           <div id="table-container" ref="tablecontainer" class="overflow-clip max-sm:text-xs">
             <table id="responsive-table" class="min-w-0 w-full responsive-table relative max-sm:text-xs" ref="responsivetable">
@@ -164,7 +161,6 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         playerrank: null,
         herorank: null,
         rolerank: null,
-        showPatchNotes: false,
       }
     },
     created(){
@@ -257,9 +253,6 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         history.pushState(null, null, `${basePath}/${this.selectedHero.name}`);
         this.getData();
       },
-      togglePatchNotes() {
-        this.showPatchNotes = !this.showPatchNotes;
-      },
       herochanged(eventPayload){
       },
       filterData(filteredData){
@@ -272,7 +265,6 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         this.herorank = filteredData.multi["HP Hero Rank"] ? Array.from(filteredData.multi["HP Hero Rank"]) : null;
         this.rolerank = filteredData.multi["HP Role Rank"] ? Array.from(filteredData.multi["HP Role Rank"]) : null;
 
-        this.showPatchNotes = false;
 
         this.updateQueryString();
         this.draftdata = null;

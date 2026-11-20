@@ -15,7 +15,6 @@
     </page-heading>
     <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 -mt-2 mb-4 flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
       <span class="uppercase text-gray-medium">{{ selectedPatch ? $t('All players · Patch :patch', { patch: selectedPatch }) : $t('All players') }}</span>
-      <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
     </div>
 
     
@@ -69,13 +68,14 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
     <div v-if="this.data.data" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
+      <patch-notes-panel v-if="patchNotesUrl" class="!max-w-none !mb-0" :version="timeframe[0]"></patch-notes-panel>
 
-      <panel-box title="Tier List" :subtitle="$t('Heroes grouped by :stat', { stat: $t(tierStatLabel).toLowerCase() })" :divider="!tierListCollapsed">
+      <panel-box title="Tier List" :subtitle="tierListCollapsed ? null : $t('Heroes grouped by :stat', { stat: $t(tierStatLabel).toLowerCase() })" :divider="!tierListCollapsed" :class="['md:!pt-4', { 'md:!pb-4 cursor-pointer': tierListCollapsed }]" @click="tierListCollapsed && toggleTierList()">
         <template #right>
           <div class="flex flex-wrap items-center gap-4">
+            <tab-button v-show="!tierListCollapsed" :small="true" :tabs="tierRoleTabs" :ignoreclick="true" :overridedefaultside="tierRole" :key="'role' + tierRoleTabs.length" @tab-click="tierRole = $event"></tab-button>
             <tab-button v-show="!tierListCollapsed" :small="true" :tabs="tierStatTabs" :ignoreclick="true" :overridedefaultside="tierStat" :key="tierStatTabs.length" @tab-click="tierStat = $event"></tab-button>
-            <button type="button" class="flex items-center gap-2 text-sm text-subtext hover:text-white transition-colors" :aria-expanded="!tierListCollapsed" @click="toggleTierList">
+            <button type="button" class="flex items-center gap-2 text-sm text-subtext hover:text-white transition-colors" :aria-expanded="!tierListCollapsed" @click.stop="toggleTierList">
               {{ tierListCollapsed ? $t('Show') : $t('Hide') }}
               <basil-icon name="arrow-small" :class="['text-xs transition-transform', tierListCollapsed ? 'rotate-90' : '-rotate-90']"></basil-icon>
             </button>
@@ -209,10 +209,21 @@
     </div>
     <!-- The same layout in grey while the stats load, the message on a tab of the first panel -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <panel-box title="Tier List" subtitle="Heroes grouped by win rate" :skeleton="true" :divider="!tierListCollapsed" class="relative md:!rounded-tl-none">
+      <!-- The collapsed Patch Notes card (patch-notes-panel); the loading message sits on its tab -->
+      <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="relative md:!rounded-tl-none md:!py-4">
         <loading-component :compact="true" :tab="true" :textoverride="true">{{ loadingMessage }}</loading-component>
         <template #right>
+          <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+        </template>
+      </panel-box>
+      <panel-box title="Tier List" :subtitle="tierListCollapsed ? null : 'Heroes grouped by win rate'" :skeleton="true" :divider="!tierListCollapsed" :class="['relative md:!pt-4', { 'md:!rounded-tl-none': !patchNotesUrl, 'md:!pb-4': tierListCollapsed }]">
+        <loading-component v-if="!patchNotesUrl" :compact="true" :tab="true" :textoverride="true">{{ loadingMessage }}</loading-component>
+        <template #right>
           <div class="flex flex-wrap items-center gap-4">
+            <div v-show="!tierListCollapsed" class="relative">
+              <tab-button class="invisible" :small="true" :tabs="skeletonRoleTabs" aria-hidden="true"></tab-button>
+              <skeleton-box class="absolute inset-0"></skeleton-box>
+            </div>
             <div v-show="!tierListCollapsed" class="relative">
               <tab-button class="invisible" :small="true" :tabs="tierStatTabs" aria-hidden="true"></tab-button>
               <skeleton-box class="absolute inset-0"></skeleton-box>
@@ -283,8 +294,10 @@ export default {
       togglechart: false,
       // The column the tier list groups by
       tierStat: 'win_rate',
+      // The tier list's role: 'All' or one role, picked separately from the filters' Role
+      tierRole: 'All',
+      skeletonRoleTabs: ['All', 'Bruiser', 'Healer', 'Melee Assassin', 'Ranged Assassin', 'Support', 'Tank'].map(role => ({ key: role, text: role })),
       tierListCollapsed: Cookies.get('heroTierListCollapsed') === 'true',
-      showPatchNotes: false,
       toggletalentbuilds: {},
       talentbuilddata: {},
       selectedbuildtype: null,
@@ -395,13 +408,20 @@ export default {
       tabs.push({ key: 'influence', text: 'Influence' });
       return tabs;
     },
+    // All, then each role among the loaded heroes
+    tierRoleTabs() {
+      const rows = Array.isArray(this.data?.data) ? this.data.data.filter(row => row) : [];
+      const roles = [...new Set(rows.map(row => row.role).filter(role => role))].sort();
+      return [{ key: 'All', text: 'All' }, ...roles.map(role => ({ key: role, text: role }))];
+    },
     tierStatLabel() {
       return (this.tierStatTabs.find(tab => tab.key === this.tierStat) || this.tierStatTabs[0]).text;
     },
     // Win rate uses fixed 2-point bands; the other columns split the heroes by percentile
     tiers() {
       const stat = this.tierStatTabs.some(tab => tab.key === this.tierStat) ? this.tierStat : 'win_rate';
-      const rows = (Array.isArray(this.data?.data) ? this.data.data.filter(row => row) : []).slice().sort((a, b) => b[stat] - a[stat]);
+      const role = this.tierRoleTabs.some(tab => tab.key === this.tierRole) ? this.tierRole : 'All';
+      const rows = (Array.isArray(this.data?.data) ? this.data.data.filter(row => row && (role === 'All' || row.role === role)) : []).sort((a, b) => b[stat] - a[stat]);
       const letters = [
         { letter: 'S', class: 'text-[#f5c542]' },
         { letter: 'A', class: 'text-teal' },
@@ -652,7 +672,6 @@ export default {
       this.talentbuilddata = {};
       this.toggletalentbuilds = {};
       this.loadingStates = {};
-      this.showPatchNotes = false;
       this.sortKey = '';
       this.sortDir = 'desc';
 
@@ -678,9 +697,6 @@ export default {
     },
     toggleChartValue() {
       this.togglechart = !this.togglechart;
-    },
-    togglePatchNotes() {
-      this.showPatchNotes = !this.showPatchNotes;
     },
     viewtalentbuilds(hero, index){
       if (!this.talentbuilddata[hero]) {

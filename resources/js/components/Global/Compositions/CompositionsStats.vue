@@ -5,7 +5,6 @@
     <page-heading :heading="'Composition Statistics'"></page-heading>
     <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 -mt-2 mb-4 flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
       <span class="uppercase text-gray-medium">{{ selectedPatch ? $t('All players · Patch :patch', { patch: selectedPatch }) : $t('All players') }}</span>
-      <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
     </div>
     <filters
       :onFilter="filterData"
@@ -42,7 +41,7 @@
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="compositiondata" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
+      <patch-notes-panel v-if="patchNotesUrl" class="!max-w-none !mb-0" :version="timeframe[0]"></patch-notes-panel>
 
       <!-- Headline tiles -->
       <div v-if="summaryTiles.length" class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -50,7 +49,10 @@
           <span class="text-sm text-subtext">{{ $t(tile.label) }}</span>
           <span :class="['text-3xl font-semibold leading-[1.2]', tile.class || 'text-header']">{{ tile.value }}</span>
           <div v-if="tile.row" class="flex gap-1.5">
-            <img v-for="(role, slot) in rowRoles(tile.row)" :key="slot" :src="roleImage(role)" :alt="$t(role)" :title="$t(role)" class="role-icon h-7 w-auto">
+            <icon-with-hover v-for="(role, slot) in rowRoles(tile.row)" :key="slot" popupsize="fit" :popup-hoverable="false">
+              <template #trigger><img :src="roleImage(role)" :alt="$t(role)" class="role-icon h-7 w-auto"></template>
+              <p class="font-bold text-white whitespace-nowrap">{{ $t(role) }}</p>
+            </icon-with-hover>
           </div>
           <span class="text-sm text-subtext">{{ tile.caption }}</span>
         </div>
@@ -59,10 +61,7 @@
       <panel-box title="Team Compositions" subtitle="Win rate and popularity of every 5-role team composition. Roles are listed Tank → Support; win rate bars span 40–60%.">
         <template #right>
           <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
-            <div class="flex items-center gap-4">
-              <span class="text-sm text-subtext">{{ $t('Sort by') }}</span>
-              <tab-button :small="true" tab1text="Win rate" tab2text="Popularity" :ignoreclick="true" :overridedefaultside="sortKey === 'popularity' ? 'right' : 'left'" @tab-click="sortBy($event === 'right' ? 'popularity' : 'win_rate')"></tab-button>
-            </div>
+            <tab-button tab1text="Win rate" tab2text="Popularity" :ignoreclick="true" :overridedefaultside="sortKey === 'popularity' ? 'right' : 'left'" @tab-click="sortBy($event === 'right' ? 'popularity' : 'win_rate')"></tab-button>
             <pagination-bar v-if="lastPage > 1" :current="page" :last="lastPage" @page="page = $event"></pagination-bar>
           </div>
         </template>
@@ -70,50 +69,49 @@
         <div id="table-container" ref="tablecontainer" class="overflow-clip">
           <table id="responsive-table" class="min-w-0 w-full responsive-table rounded-table table-fixed relative" ref="responsivetable">
             <colgroup>
-              <col class="w-[4%]">
-              <col class="w-[42%]">
-              <col class="w-[17%]">
-              <col class="w-[17%]">
-              <col class="w-[9%]">
-              <col class="w-[11%]">
+              <col class="w-[4.3%]">
+              <col class="w-[37.5%]">
+              <col class="w-[26.9%]">
+              <col class="w-[10.8%]">
+              <col class="w-[12.9%]">
+              <col class="w-[7.6%]">
             </colgroup>
             <thead>
               <tr>
-                <th class="py-2 px-4 text-left text-sm leading-4">#</th>
-                <th class="py-2 px-4 text-left text-sm leading-4">{{ $t('Composition') }}</th>
-                <th @click="sortTable('win_rate')" class="py-2 px-4 text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
+                <th class="py-2 px-4 text-center text-sm leading-4">#</th>
+                <th class="py-2 px-4 text-center text-sm leading-4">{{ $t('Composition') }}</th>
+                <th @click="sortTable('win_rate')" class="py-2 px-4 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
                   {{ $t('Win Rate') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
-                <th @click="sortTable('popularity')" class="py-2 px-4 text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'popularity' }">
+                <th @click="sortTable('popularity')" class="py-2 px-4 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'popularity' }">
                   {{ $t('Popularity') }}<sort-indicator :column="'popularity'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
                 <th @click="sortTable('games_played')" class="py-2 px-4 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
                   {{ $t('Games') }}<sort-indicator :column="'games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
-                <th></th>
+                <th class="py-2 px-4 text-center text-sm leading-4 whitespace-nowrap">{{ $t('Top heroes') }}</th>
               </tr>
             </thead>
             <tbody>
               <template v-for="(row, index) in pagedData" :key="row.composition_id">
                 <tr>
-                  <td class="py-3 px-4">{{ pageStart + index + 1 }}</td>
-                  <td class="py-3 px-4">
-                    <div class="grid grid-cols-5 gap-2 max-w-[36rem]">
+                  <td class="py-3.5 px-4 text-center text-lg font-semibold text-subtext">{{ pageStart + index + 1 }}</td>
+                  <td class="py-3.5 px-4">
+                    <div class="grid grid-cols-5 gap-2 max-w-[33.5rem] mx-auto">
                       <div v-for="(role, slot) in rowRoles(row)" :key="slot" class="flex flex-col items-center gap-1.5 min-w-0">
                         <img :src="roleImage(role)" :alt="$t(role)" class="role-icon h-8 w-auto">
                         <span class="text-xs text-subtext text-center leading-tight max-md:hidden">{{ $t(role) }}</span>
                       </div>
                     </div>
                   </td>
-                  <!-- Win rate bars run from 40% to 60%; popularity against the most popular composition -->
-                  <td class="py-3 px-4"><stat-bar :value="Math.min(100, Math.max(0, (row.win_rate - 40) * 5))" :display-text="row.win_rate.toFixed(2)" suffix="%" color="teal"></stat-bar></td>
-                  <td class="py-3 px-4"><stat-bar :value="maxPopularity ? (row.popularity / maxPopularity) * 100 : 0" :display-text="row.popularity.toFixed(2)" suffix="%" color="teal"></stat-bar></td>
-                  <td class="py-3 px-4 text-center">{{ row.games_played.toLocaleString('en-US') }}</td>
-                  <td class="py-3 px-4 text-right">
-                    <button type="button" class="group/bt inline-flex items-center whitespace-nowrap" :aria-expanded="!!expanded[row.composition_id]" @click="viewTopHeroes(row)">
-                      <img v-if="loadingStates[row.composition_id]" class="logo-spin h-4 w-auto mr-2" src="/images/logo/heroesprofilelogo.png" alt="" />
-                      <span class="group-hover/bt:underline">{{ expanded[row.composition_id] ? $t('Hide heroes') : $t('Top heroes') }}</span>
-                      <basil-icon name="arrow-small" :class="['text-xs ml-2 transition-transform', expanded[row.composition_id] ? 'rotate-90' : '']"></basil-icon>
+                  <!-- Win rate bars run from 40% to 60% -->
+                  <td class="py-3.5 px-8 text-lg"><stat-bar :value="Math.min(100, Math.max(0, (row.win_rate - 40) * 5))" :display-text="row.win_rate.toFixed(2)" suffix="%" color="teal"></stat-bar></td>
+                  <td class="py-3.5 px-4 text-center text-lg font-semibold text-header tabular-nums">{{ row.popularity.toFixed(2) }}%</td>
+                  <td class="py-3.5 px-4 text-center text-lg">{{ row.games_played.toLocaleString('en-US') }}</td>
+                  <td class="py-3.5 px-4 text-center">
+                    <button type="button" class="w-9 h-9 inline-flex items-center justify-center rounded-control hover:bg-surface-3 transition-colors" :aria-expanded="!!expanded[row.composition_id]" :aria-label="expanded[row.composition_id] ? $t('Hide heroes') : $t('Top heroes')" :title="expanded[row.composition_id] ? $t('Hide heroes') : $t('Top heroes')" @click="viewTopHeroes(row)">
+                      <img v-if="loadingStates[row.composition_id]" class="logo-spin h-4 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
+                      <basil-icon v-else name="arrow-small" :class="['text-xs transition-transform', expanded[row.composition_id] ? 'rotate-90' : '']"></basil-icon>
                     </button>
                   </td>
                 </tr>
@@ -146,6 +144,13 @@
     </div>
     <!-- The same layout in grey while the compositions load, the message on a tab of the table's panel -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <!-- The collapsed Patch Notes card (patch-notes-panel); the loading message sits on its tab -->
+      <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="relative md:!rounded-tl-none md:!py-4">
+        <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading compositions...') }}</loading-component>
+        <template #right>
+          <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+        </template>
+      </panel-box>
       <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
         <div v-for="tile in 4" :key="tile" class="bg-surface rounded p-6 flex flex-col gap-2 min-w-0">
           <span class="text-sm skeleton-text w-fit">Highest win rate</span>
@@ -157,16 +162,13 @@
         </div>
       </div>
 
-      <panel-box title="Team Compositions" subtitle="Win rate and popularity of every 5-role team composition. Roles are listed Tank → Support; win rate bars span 40–60%." :skeleton="true" class="relative md:!rounded-tl-none">
-        <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading compositions...') }}</loading-component>
+      <panel-box title="Team Compositions" subtitle="Win rate and popularity of every 5-role team composition. Roles are listed Tank → Support; win rate bars span 40–60%." :skeleton="true" :class="['relative', { 'md:!rounded-tl-none': !patchNotesUrl }]">
+        <loading-component v-if="!patchNotesUrl" :compact="true" :tab="true" :textoverride="true">{{ $t('Loading compositions...') }}</loading-component>
         <template #right>
           <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
-            <div class="flex items-center gap-4">
-              <span class="text-sm skeleton-text">{{ $t('Sort by') }}</span>
-              <div class="relative">
-                <tab-button class="invisible" :small="true" tab1text="Win rate" tab2text="Popularity" aria-hidden="true"></tab-button>
-                <skeleton-box class="absolute inset-0"></skeleton-box>
-              </div>
+            <div class="relative">
+              <tab-button class="invisible" tab1text="Win rate" tab2text="Popularity" aria-hidden="true"></tab-button>
+              <skeleton-box class="absolute inset-0"></skeleton-box>
             </div>
             <div class="relative">
               <pagination-bar class="invisible" :current="1" :last="3" aria-hidden="true"></pagination-bar>
@@ -178,38 +180,38 @@
         <div class="overflow-clip">
           <table class="min-w-0 w-full responsive-table rounded-table table-fixed">
             <colgroup>
-              <col class="w-[4%]">
-              <col class="w-[42%]">
-              <col class="w-[17%]">
-              <col class="w-[17%]">
-              <col class="w-[9%]">
-              <col class="w-[11%]">
+              <col class="w-[4.3%]">
+              <col class="w-[37.5%]">
+              <col class="w-[26.9%]">
+              <col class="w-[10.8%]">
+              <col class="w-[12.9%]">
+              <col class="w-[7.6%]">
             </colgroup>
             <thead>
               <tr>
-                <th class="py-2 px-4 text-left text-sm leading-4"><span class="skeleton-text">#</span></th>
-                <th class="py-2 px-4 text-left text-sm leading-4"><span class="skeleton-text">{{ $t('Composition') }}</span></th>
-                <th class="py-2 px-4 text-left text-sm leading-4"><span class="skeleton-text">{{ $t('Win Rate') }}</span></th>
-                <th class="py-2 px-4 text-left text-sm leading-4"><span class="skeleton-text">{{ $t('Popularity') }}</span></th>
+                <th class="py-2 px-4 text-center text-sm leading-4"><span class="skeleton-text">#</span></th>
+                <th class="py-2 px-4 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Composition') }}</span></th>
+                <th class="py-2 px-4 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Win Rate') }}</span></th>
+                <th class="py-2 px-4 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Popularity') }}</span></th>
                 <th class="py-2 px-4 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Games') }}</span></th>
-                <th></th>
+                <th class="py-2 px-4 text-center text-sm leading-4 whitespace-nowrap"><span class="skeleton-text">{{ $t('Top heroes') }}</span></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="row in perPage" :key="row">
-                <td class="py-3 px-4"><span class="skeleton-text">00</span></td>
-                <td class="py-3 px-4">
-                  <div class="grid grid-cols-5 gap-2 max-w-[36rem]">
+                <td class="py-3.5 px-4 text-center text-lg font-semibold"><span class="skeleton-text">00</span></td>
+                <td class="py-3.5 px-4">
+                  <div class="grid grid-cols-5 gap-2 max-w-[33.5rem] mx-auto">
                     <div v-for="slot in 5" :key="slot" class="flex flex-col items-center gap-1.5 min-w-0">
                       <skeleton-box class="h-8 w-[1.375rem]"></skeleton-box>
                       <span class="text-xs leading-tight skeleton-text max-md:hidden">Bruiser</span>
                     </div>
                   </div>
                 </td>
-                <td class="py-3 px-4"><stat-bar value="0" display-text="00.00" suffix="%" :hide-value="true"></stat-bar></td>
-                <td class="py-3 px-4"><stat-bar value="0" display-text="00.00" suffix="%" :hide-value="true"></stat-bar></td>
-                <td class="py-3 px-4 text-center"><span class="skeleton-text">0,000</span></td>
-                <td class="py-3 px-4 text-right"><span class="skeleton-text whitespace-nowrap">Top heroes<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span></td>
+                <td class="py-3.5 px-8 text-lg"><stat-bar value="0" display-text="00.00" suffix="%" :hide-value="true"></stat-bar></td>
+                <td class="py-3.5 px-4 text-center text-lg font-semibold"><span class="skeleton-text">00.00%</span></td>
+                <td class="py-3.5 px-4 text-center text-lg"><span class="skeleton-text">0,000</span></td>
+                <td class="py-3.5 px-4 text-center"><skeleton-box class="inline-block align-middle w-9 h-9"></skeleton-box></td>
               </tr>
             </tbody>
           </table>
@@ -277,7 +279,6 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
       // By composition id
       loadingStates: {},
       expanded: {},
-      showPatchNotes: false,
       page: 1,
       perPage: 15,
     }
@@ -326,9 +327,6 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
     },
     pagedData() {
       return this.sortedData.slice(this.pageStart, this.pageStart + this.perPage);
-    },
-    maxPopularity() {
-      return Math.max(0, ...this.compositiondata.map(row => row.popularity));
     },
     selectedPatch() {
       return this.timeframetype === 'minor' && this.timeframe && this.timeframe.length === 1 ? this.timeframe[0] : null;
@@ -523,13 +521,9 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
       let currentPath = window.location.pathname;
       history.pushState(null, null, `${currentPath}${queryString}`);
 
-      this.showPatchNotes = false;
 
       this.compositiondata = null;
       this.getData();
-    },
-    togglePatchNotes() {
-      this.showPatchNotes = !this.showPatchNotes;
     },
     sortTable(key) {
       if (key === this.sortKey) {
@@ -540,7 +534,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
       this.sortKey = key;
       this.page = 1;
     },
-    // The Sort by toggle: always highest first
+    // The Win rate / Popularity toggle: always highest first
     sortBy(key) {
       this.sortKey = key;
       this.sortDir = 'desc';

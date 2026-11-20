@@ -64,12 +64,9 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
         </span>
-        <span>
-          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
-        </span>
       </div>
 
-      <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
+      <patch-notes-panel v-if="patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
 
       <panel-box>
       <div id="table-container" ref="tablecontainer" class="overflow-clip max-sm:text-xs">
@@ -169,7 +166,6 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
         herorank: null,
         rolerank: null,
         mirrormatch: 0,
-        showPatchNotes: false,
       }
     },
     created(){
@@ -308,7 +304,6 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
         this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
 
 
-        this.showPatchNotes = false;
 
         this.updateQueryString();
         this.data = null; 
@@ -359,9 +354,6 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
       },
       redirectChangeHero(){
         window.location.href = "/Global/Hero/Maps";
-      },
-      togglePatchNotes() {
-        this.showPatchNotes = !this.showPatchNotes;
       },
       sortTable(key) {
         if (key === this.sortKey) {

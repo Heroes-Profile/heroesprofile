@@ -100,7 +100,6 @@
         <div v-if="talentdetaildata" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
           <div class="flex flex-wrap justify-between items-center gap-2">
             <div>
-              <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="$t(':patch Patch Notes', { patch: timeframe[0] })" :alt="$t(':patch Patch Notes', { patch: timeframe[0] })" size="small" :ignoreclick="true"></custom-button>
             </div>
             <div class="flex items-center gap-4">
               <button type="button" class="underline text-sm" @click="scrollToBuilds">{{ $t('Scroll To Builds') }}</button>
@@ -113,7 +112,7 @@
             </div>
           </div>
 
-          <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :class="{ '!max-w-none': isCompact }" :version="timeframe[0]"></patch-notes-panel>
+          <patch-notes-panel v-if="patchNotesUrl" :class="{ '!max-w-none': isCompact }" :version="timeframe[0]"></patch-notes-panel>
           <compact-talent-grid v-if="isCompact" :talent-data="talentdetaildata" :stat-filter="statfilter"></compact-talent-grid>
           <panel-box v-else>
             <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
@@ -247,7 +246,6 @@
        slrank: null,
        talentbuildtype: "Popular",
        tablewidth: null,
-       showPatchNotes: false,
        filtersKey: 0,
      }
    },
@@ -494,7 +492,6 @@
         this.talentdetaildata = null;
         this.talentbuilddata  = null;
         this.talentbuilddataall  = null;
-        this.showPatchNotes = false;
 
         this.updateQueryString();
         this.getTalentData();
@@ -598,7 +595,6 @@
 
         this.talentdetaildata = null;
         this.talentbuilddata = null;
-        this.showPatchNotes = false;
         this.filtersKey++;
 
         if(this.selectedHero){
@@ -635,9 +631,6 @@
       },
       redirectChangeHero(){
         window.location.href = "/Global/Talents";
-      },
-      togglePatchNotes() {
-        this.showPatchNotes = !this.showPatchNotes;
       },
       scrollToBuilds(){
         const buildsSection = document.getElementById('builds');
