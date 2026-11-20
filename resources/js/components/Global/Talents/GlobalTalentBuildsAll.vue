@@ -12,7 +12,8 @@
         </tr>
         <!-- The talent level over each column of talent icons -->
         <tr>
-          <th></th>
+          <!-- Narrows the list by hero, English or translated name, like All Maps' search; opens rightward, being the first column -->
+          <th class="pb-2 px-4 text-left font-normal"><div class="relative"><search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" align="left" class="w-40"></search-input></div></th>
           <th v-for="gt in gameTypes" :key="gt.key" class="pb-2 px-4 font-normal text-xs">
             <div class="flex gap-1.5">
               <span v-for="level in levels" :key="level" class="w-[2.625rem] text-center">{{ level }}</span>
@@ -21,7 +22,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="hero in heroes" :key="hero.id">
+        <tr v-for="hero in shownHeroes" :key="hero.id">
           <td class="py-3 px-4">
             <div class="flex items-center gap-3">
               <hero-image-wrapper :hero="hero" :includehover="false"></hero-image-wrapper><span class="hidden md:block font-medium">{{ $heroName(hero) }}</span>
@@ -60,7 +61,16 @@ export default {
   data() {
     return {
       levels: [1, 4, 7, 10, 13, 16, 20],
+      heroSearch: '',
     };
+  },
+  computed: {
+    shownHeroes() {
+      // Letters in any script, so translated names (Cyrillic, Hangul, CJK) match too
+      const strip = text => (text || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, '');
+      const query = strip(this.heroSearch);
+      return query ? this.heroes.filter(hero => strip(hero.name).includes(query) || strip(this.$heroName(hero)).includes(query)) : this.heroes;
+    },
   },
   mounted() {
     this.$nextTick(() => {
