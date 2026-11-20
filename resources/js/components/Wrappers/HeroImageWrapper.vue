@@ -15,6 +15,8 @@
       :mobileClick="mobileClick"
       :hidemobiletext="!hasSlotContent"
       :popupsize="popupsize || 'fit'"
+      :popup-hoverable="popupHoverable"
+      :hidedelay="popupHoverable ? undefined : 0"
       :href="href"
       :link-text="linkText"
     >
@@ -49,6 +51,8 @@ export default {
     mobileClick: Boolean,
     href: String,
     linkText: String,
+    // false: the popup closes as soon as the pointer leaves the portrait, like the talent icons'
+    popupHoverable: { type: Boolean, default: true },
   },
   data(){
     return {

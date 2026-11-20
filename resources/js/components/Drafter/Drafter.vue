@@ -41,14 +41,40 @@
             {{ stepLabel }}
           </span>
         </div>
-        <!-- A step already taken can be clicked to go back to it -->
-        <div class="flex-1 min-w-[16rem] grid grid-cols-[repeat(16,minmax(0,1fr))] gap-1.5">
-          <button v-for="(slot, index) in pickOrder" :key="slot" type="button" :disabled="index >= currentPick || isLoading"
-            :title="index < currentPick ? $t('Go back to :step', { step: slotLabel(slot) }) : slotLabel(slot)"
-            :class="['h-9 rounded-control flex items-center justify-center text-xs font-bold transition-[opacity,background-color] disabled:cursor-default', chipClass(slot, index)]"
-            @click="goBackTo(index)">
-            {{ slot.includes('ban') ? 'B' : 'P' }}
-          </button>
+        <!-- The draft as a timeline: a lane per team, each step in its own column in draft order, grouped by phase.
+             Steps taken show their hero and can be clicked to go back to them -->
+        <!-- Padded inside and pulled back out, so the scroll box doesn't crop the current step's glow -->
+        <div class="flex items-stretch gap-4 min-w-0 overflow-x-auto p-3 -m-3">
+          <div class="grid grid-rows-[1rem_2.5rem_2.5rem] gap-y-2 shrink-0 text-sm font-semibold">
+            <span></span>
+            <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-teal"></span>{{ $t('You') }}</span>
+            <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-red"></span>{{ $t('Enemy') }}</span>
+          </div>
+          <template v-for="(phase, phaseIndex) in draftPhases" :key="phaseIndex">
+            <div v-if="phaseIndex > 0" class="w-px bg-gray-dark shrink-0"></div>
+            <div class="grid grid-rows-[1rem_2.5rem_2.5rem] gap-y-2 gap-x-1.5 shrink-0" :style="{ gridTemplateColumns: `repeat(${phase.steps.length}, 2.625rem)` }">
+              <span class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-subtext whitespace-nowrap" :style="{ gridColumn: `1 / span ${phase.steps.length}` }">
+                <span v-if="phase.ban" class="text-sm font-normal leading-none">⊘</span>{{ $t(phase.ban ? 'Bans' : 'Picks') }}
+              </span>
+              <button v-for="(index, column) in phase.steps" :key="pickOrder[index]" type="button" :disabled="index >= currentPick || isLoading"
+                :style="{ gridColumn: column + 1, gridRow: pickOrder[index].startsWith('team1') ? 2 : 3 }"
+                :title="index < currentPick ? $t('Go back to :step', { step: slotLabel(pickOrder[index]) }) : slotLabel(pickOrder[index])"
+                :class="['relative w-full h-full flex items-center justify-center text-xs font-bold disabled:cursor-default', stepClass(index)]"
+                @click="goBackTo(index)">
+                <template v-if="index < currentPick && slotHero(pickOrder[index])">
+                  <span v-if="phase.ban" class="relative w-10 h-10">
+                    <span class="absolute inset-0 rounded-full bg-cover bg-center opacity-60" :style="slotStyle(pickOrder[index])"></span>
+                    <span :class="['absolute inset-0 rounded-full border-2', pickOrder[index].startsWith('team1') ? 'border-[rgba(0,153,148,0.8)]' : 'border-[rgba(228,74,35,0.8)]']"></span>
+                  </span>
+                  <span v-else :class="['w-10 h-10 rounded-full bg-cover bg-center border-2', pickOrder[index].startsWith('team1') ? 'border-teal' : 'border-red']" :style="slotStyle(pickOrder[index])"></span>
+                  <!-- A ban's portrait is struck through -->
+                  <span v-if="phase.ban" :class="['absolute inset-0 m-auto w-10 h-10 rounded-full', pickOrder[index].startsWith('team1') ? 'ban-strike-teal' : 'ban-strike-red']"></span>
+                </template>
+                <template v-else-if="phase.ban">⊘&nbsp;{{ slotNumber(pickOrder[index]) }}</template>
+                <template v-else>P{{ slotNumber(pickOrder[index]) }}</template>
+              </button>
+            </div>
+          </template>
         </div>
         <div class="flex flex-wrap items-center gap-3 ml-auto">
           <label class="flex items-center gap-2 text-sm text-subtext cursor-pointer">
@@ -68,9 +94,18 @@
           <div class="flex flex-col gap-3">
             <span class="text-xs font-semibold uppercase tracking-wider text-subtext">{{ $t('Bans') }}</span>
             <div class="grid grid-cols-3 gap-2">
-              <div v-for="ban in [1, 2, 3]" :key="ban" :title="slotHero(team + '-ban' + ban) ? $heroName(slotHero(team + '-ban' + ban)) : null"
-                :class="['h-12 rounded-control bg-surface-1 bg-cover bg-center border-2', isActive(team + '-ban' + ban) ? (team === 'team1' ? 'border-teal' : 'border-red') : 'border-surface-1']"
-                :style="slotStyle(team + '-ban' + ban)"></div>
+              <div v-for="ban in [1, 2, 3]" :key="ban"
+                :class="['h-[4.75rem] rounded-control flex flex-col items-center justify-center gap-1 px-1 min-w-0 border-2', slotHero(team + '-ban' + ban) ? 'bg-surface-1 border-surface-1'
+                  : ['!border-[1.5px] border-dashed', team === 'team1' ? 'border-[#009994]' : 'border-lred', isActive(team + '-ban' + ban) ? (team === 'team1' ? 'bg-teal/15' : 'bg-red/15') : 'bg-surface-1']]">
+                <template v-if="slotHero(team + '-ban' + ban)">
+                  <span class="relative w-10 h-10 shrink-0">
+                    <span class="absolute inset-0 rounded-full bg-cover bg-center opacity-60" :style="slotStyle(team + '-ban' + ban)"></span>
+                    <span :class="['absolute inset-0 rounded-full border-2', team === 'team1' ? 'border-[rgba(0,153,148,0.8)]' : 'border-[rgba(228,74,35,0.8)]']"></span>
+                    <span :class="['absolute inset-0 rounded-full', team === 'team1' ? 'ban-strike-teal' : 'ban-strike-red']"></span>
+                  </span>
+                  <span class="text-xs text-subtext truncate max-w-full">{{ $heroName(slotHero(team + '-ban' + ban)) }}</span>
+                </template>
+              </div>
             </div>
           </div>
           <div class="flex flex-col gap-3 flex-1">
@@ -78,10 +113,13 @@
             <div class="flex flex-col gap-2 flex-1">
               <div v-for="pick in [1, 2, 3, 4, 5]" :key="pick"
                 :class="['flex-1 min-h-[4rem] rounded-control bg-surface-1 px-3 py-2 flex items-center gap-3 border-2', isActive(team + '-pick' + pick) ? (team === 'team1' ? 'border-teal' : 'border-red') : 'border-surface-1']">
-                <span class="w-12 h-12 shrink-0 rounded-full bg-surface-3 bg-cover bg-center" :style="slotStyle(team + '-pick' + pick)"></span>
+                <span :class="['w-12 h-12 shrink-0 rounded-full bg-cover bg-center', slotHero(team + '-pick' + pick) ? (team === 'team1' ? 'border-2 border-teal' : 'border-2 border-red')
+                  : isActive(team + '-pick' + pick) ? (team === 'team1' ? 'border-2 border-dashed border-teal bg-teal/20' : 'border-2 border-dashed border-red bg-red/20') : 'bg-surface-3']" :style="slotStyle(team + '-pick' + pick)"></span>
                 <span class="flex flex-col min-w-0">
                   <span class="font-semibold truncate">{{ slotHero(team + '-pick' + pick) ? $heroName(slotHero(team + '-pick' + pick)) : $t('Pick :number', { number: pick }) }}</span>
-                  <span class="text-sm text-subtext truncate">{{ slotHero(team + '-pick' + pick) ? $t(slotHero(team + '-pick' + pick).new_role) : (isActive(team + '-pick' + pick) ? $t('Picking') : $t('Waiting')) }}</span>
+                  <span v-if="slotHero(team + '-pick' + pick)" class="text-sm text-subtext truncate">{{ $t('Pick :number', { number: pick }) }} · {{ $t(slotHero(team + '-pick' + pick).new_role) }}</span>
+                  <span v-else-if="isActive(team + '-pick' + pick)" :class="['text-sm truncate', team === 'team1' ? 'text-lteal' : 'text-lred']">{{ $t('Picking now...') }}</span>
+                  <span v-else class="text-sm text-subtext truncate">{{ $t('Waiting') }}</span>
                 </span>
               </div>
             </div>
@@ -126,7 +164,7 @@
           <div v-else class="grid grid-cols-[repeat(auto-fill,minmax(4.75rem,1fr))] gap-y-3">
             <div v-for="hero in visibleSuggestions" :key="hero.id" :class="['relative flex flex-col items-center gap-1.5 min-w-0', hero.unavailable ? 'opacity-30 grayscale' : 'cursor-pointer']" @click="!hero.unavailable && pickHero(hero)">
               <!-- Suggested heroes glow in the suggestions strip's gold -->
-              <hero-image-wrapper :hero="hero" size="medium" :class="['rounded-full', { 'ring-[3px] ring-[#f5c542] shadow-[0_0_1.25rem_0.25rem_rgba(245,197,66,0.8)]': glowIds.has(hero.id) }]">
+              <hero-image-wrapper :hero="hero" size="medium" :popup-hoverable="false" :class="['rounded-full', { 'ring-[3px] ring-[#f5c542] shadow-[0_0_1.25rem_0.25rem_rgba(245,197,66,0.8)]': glowIds.has(hero.id) }]">
                 <h2>{{ $heroName(hero) }}</h2>
                 <div v-if="!mockDraft && !hero.unavailable" class="text-left">
                   <p>{{ $t('HP Draft Value: :value', { value: hero.value.toFixed(2) }) }}</p>
@@ -138,6 +176,7 @@
                   <p>{{ $t('Draft Pick Order Rate: :percent%', { percent: hero.pick_order_percent.toFixed(2) }) }}</p>
                 </div>
               </hero-image-wrapper>
+              <span v-if="takenHeroes[hero.id]" :class="['absolute top-6 left-1/2 -translate-x-1/2 z-10 px-1.5 py-0.5 rounded-[0.25rem] text-[0.625rem] font-bold uppercase tracking-wide text-white', takenHeroes[hero.id].ban ? 'bg-surface-4' : takenHeroes[hero.id].ours ? 'bg-teal' : 'bg-red']">{{ takenHeroes[hero.id].ban ? $t('Banned') : $t('Picked') }}</span>
               <span class="text-xs text-subtext text-center truncate max-w-full">{{ $heroName(hero) }}</span>
             </div>
           </div>
@@ -251,6 +290,21 @@ export default {
     // "Your team · Ban 1"
     stepLabel() {
       return this.draftComplete ? this.$t('Draft complete') : this.slotLabel(this.pickOrder[this.currentPick]);
+    },
+    draftPhases() {
+      return [
+        { ban: true, steps: [0, 1, 2, 3] },
+        { ban: false, steps: [4, 5, 6, 7, 8] },
+        { ban: true, steps: [9, 10] },
+        { ban: false, steps: [11, 12, 13, 14, 15] },
+      ];
+    },
+    // Hero id -> who took it and how, for the board's Picked / Banned badges
+    takenHeroes() {
+      return Object.fromEntries(this.picks.map((pick, index) => {
+        const slotId = this.pickOrder[index] || '';
+        return [pick.heroId, { ours: slotId.startsWith('team1'), ban: slotId.includes('ban') }];
+      }));
     },
     roleTabs() {
       return [{ key: 'All', text: 'All' }, ...this.roles.map(role => ({ key: role, text: role.replace(' Assassin', '') }))];
@@ -383,12 +437,23 @@ export default {
       return !this.draftComplete && this.pickOrder[this.currentPick] === slotId;
     },
     // The order bar: the current step solid, the rest tinted by team, steps already taken faded
-    chipClass(slotId, index) {
+    slotNumber(slotId) {
+      return slotId.slice(-1);
+    },
+    // Timeline steps: taken ones are their portrait; picks to come are solid team-coloured chips, bans to come dashed
+    // outlines, and the current step stands out with a ring
+    stepClass(index) {
+      const slotId = this.pickOrder[index];
       const ours = slotId.startsWith('team1');
-      if (index === this.currentPick && !this.draftComplete) {
-        return ours ? 'bg-teal text-white' : 'bg-red text-white';
+      if (index < this.currentPick) {
+        return 'rounded-full hover:brightness-125 transition-[filter]';
       }
-      return [ours ? 'bg-teal/20 text-lteal' : 'bg-red/20 text-lred', index < this.currentPick ? 'opacity-40 hover:opacity-100' : ''];
+      const current = index === this.currentPick && !this.draftComplete;
+      const ring = current ? (ours ? 'ring-2 ring-lteal shadow-[0_0_0.75rem_rgba(0,192,192,0.6)]' : 'ring-2 ring-lred shadow-[0_0_0.75rem_rgba(228,74,35,0.6)]') : '';
+      if (slotId.includes('ban')) {
+        return ['rounded-control border-[1.5px] border-dashed bg-surface-1', ours ? 'border-[#009994] text-[#009994]' : 'border-lred text-lred', ring];
+      }
+      return ['rounded-control text-white', ours ? 'bg-teal' : 'bg-red', ring];
     },
     swapSides() {
       this.firstPickTeam = this.firstPickTeam === 'team1' ? 'team2' : 'team1';
@@ -580,3 +645,13 @@ export default {
   },
 };
 </script>
+
+<style>
+/* A ban's portrait struck through in the banning team's colour */
+.ban-strike-teal {
+  background: linear-gradient(45deg, transparent 46%, rgba(0, 153, 148, 0.9) 46%, rgba(0, 153, 148, 0.9) 54%, transparent 54%);
+}
+.ban-strike-red {
+  background: linear-gradient(45deg, transparent 46%, rgba(228, 74, 35, 0.9) 46%, rgba(228, 74, 35, 0.9) 54%, transparent 54%);
+}
+</style>
