@@ -1,7 +1,7 @@
 <template>
   <!-- The login card: the /Authenticate/Battlenet page shows it on its own, login-popup shows it over the page -->
   <div :class="['relative mx-auto w-full max-w-[45rem] bg-surface border-t-4 border-teal rounded-[1.75rem] p-12 max-md:px-5 max-md:py-8 flex flex-col items-center gap-8', { 'mt-[7.5rem] max-md:mt-10': !closable }]">
-    <button v-if="closable" type="button" class="absolute right-6 top-6 max-md:right-4 max-md:top-4 w-9 h-9 flex items-center justify-center rounded-control hover:bg-surface-3 transition-colors" :aria-label="$t('Close')" @click="$emit('close')"><basil-icon name="cross" class="text-2xl"></basil-icon></button>
+    <button v-if="closable && !redirecting" type="button" class="absolute right-6 top-6 max-md:right-4 max-md:top-4 w-9 h-9 flex items-center justify-center rounded-control hover:bg-surface-3 transition-colors" :aria-label="$t('Close')" @click="$emit('close')"><basil-icon name="cross" class="text-2xl"></basil-icon></button>
 
     <div class="flex flex-col items-center gap-3 text-center">
       <div class="w-[5.5rem] h-[5.5rem] rounded-full bg-teal/15 flex items-center justify-center">
@@ -17,9 +17,11 @@
           <span class="text-lg text-subtext">{{ $t('Region') }}</span>
           <single-select-filter :values="regions" :text="'Region'" :compact="true" :hidelabel="true" :nosearch="true" placeholder="Choose your region" @input-changed="handleInputChange"></single-select-filter>
         </div>
-        <custom-button class="text-center" :href="'/redirect/authenticate/battlenet'" :text="'Login with Battle.net'" :alt="'Login with Battle.net'" :color="'blue'" :disabled="!selectedRegion"></custom-button>
+        <!-- Battle.net can take a moment to open, so the button and the line below show it's on its way -->
+        <custom-button class="text-center" :href="'/redirect/authenticate/battlenet'" :text="'Login with Battle.net'" :alt="'Login with Battle.net'" :color="'blue'" :disabled="!selectedRegion" :loading="redirecting" @click="selectedRegion && setRedirecting(true)"></custom-button>
       </div>
-      <p class="flex items-center gap-2 text-sm text-subtext"><basil-icon name="info"></basil-icon>{{ $t('Choose the region your account plays on.') }}</p>
+      <p v-if="redirecting" class="flex items-center gap-2 text-sm text-lteal" role="status"><img class="logo-spin h-5 w-auto shrink-0" src="/images/logo/heroesprofilelogo.png" alt="">{{ $t('Logging in with Battle.net...') }}</p>
+      <p v-else class="flex items-center gap-2 text-sm text-subtext"><basil-icon name="info"></basil-icon>{{ $t('Choose the region your account plays on.') }}</p>
     </div>
 
     <div class="w-full h-px bg-gray-dark"></div>
@@ -48,11 +50,21 @@
       // Shown in the popup, with a close button
       closable: Boolean,
     },
-    emits: ['close'],
+    // redirecting: the popup holding it can't be closed while it's on its way to Battle.net
+    emits: ['close', 'redirecting'],
     data(){
       return {
         selectedRegion: null,
+        // Set once the button is clicked, while the browser heads to Battle.net
+        redirecting: false,
       }
+    },
+    // Coming back with the browser's Back button can restore the page as it was left, still "logging in"
+    mounted() {
+      window.addEventListener('pageshow', this.resetRedirect);
+    },
+    beforeUnmount() {
+      window.removeEventListener('pageshow', this.resetRedirect);
     },
     computed: {
       regions() {
@@ -60,6 +72,13 @@
       },
     },
     methods: {
+      resetRedirect(event) {
+        if (event.persisted) this.setRedirecting(false);
+      },
+      setRedirecting(value) {
+        this.redirecting = value;
+        this.$emit('redirecting', value);
+      },
       handleInputChange(value) {
         if (!value || !value.value) {
           this.selectedRegion = null;

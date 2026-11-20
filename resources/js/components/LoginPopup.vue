@@ -1,7 +1,7 @@
 <template>
   <!-- Any link to the login page opens this instead; the page itself still works when visited directly -->
-  <modal-box v-if="open" container-class="" width="max-w-[45rem]" @close="open = false">
-    <battlenet-authenticate :closable="true" @close="open = false"></battlenet-authenticate>
+  <modal-box v-if="open" container-class="" width="max-w-[45rem]" @close="close">
+    <battlenet-authenticate :closable="true" @close="close" @redirecting="redirecting = $event"></battlenet-authenticate>
   </modal-box>
 </template>
 
@@ -13,6 +13,8 @@ export default {
   data() {
     return {
       open: false,
+      // Logging in: the popup stays open until the browser reaches Battle.net
+      redirecting: false,
     };
   },
   mounted() {
@@ -44,6 +46,11 @@ export default {
     },
     handleEscape(event) {
       if (event.key === 'Escape') {
+        this.close();
+      }
+    },
+    close() {
+      if (!this.redirecting) {
         this.open = false;
       }
     },
