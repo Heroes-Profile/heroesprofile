@@ -1760,11 +1760,13 @@ class GlobalDataService
 
         $filterData->combinable_major_patches = $this->resolveCombinableMajorPatches($filterData->timeframes);
 
+        // name stays the short code everywhere it shows; badge and detail are for dropdowns that put the code in a chip
+        // beside what the region covers
         $filterData->regions = [
-            ['code' => 'NA', 'name' => 'NA'],
-            ['code' => 'EU', 'name' => 'EU'],
-            ['code' => 'KR', 'name' => 'KR'],
-            ['code' => 'CN', 'name' => 'CN'],
+            ['code' => 'NA', 'name' => 'NA', 'badge' => 'NA', 'detail' => 'Americas'],
+            ['code' => 'EU', 'name' => 'EU', 'badge' => 'EU', 'detail' => 'Europe'],
+            ['code' => 'KR', 'name' => 'KR', 'badge' => 'KR', 'detail' => 'Korea · Taiwan'],
+            ['code' => 'CN', 'name' => 'CN', 'badge' => 'CN', 'detail' => 'China'],
         ];
 
         $filterData->sl_leagues = [
