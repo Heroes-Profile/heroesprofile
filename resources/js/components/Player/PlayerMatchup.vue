@@ -65,7 +65,7 @@
             <span class="block text-sm font-bold uppercase tracking-wide text-teal">{{ $t('With them · On your team') }}</span>
             <span class="block text-xs text-subtext mt-1">{{ $t('Your win rate when this hero is your ally') }}</span>
           </div>
-          <div class="py-3 px-3 text-center bg-red/[0.18] border-l-2 border-red rounded-tr-control">
+          <div class="py-3 px-3 text-center bg-red/[0.18] rounded-tr-control">
             <span class="block text-sm font-bold uppercase tracking-wide text-red">{{ $t('Against them · On enemy team') }}</span>
             <span class="block text-xs text-subtext mt-1">{{ $t('Your win rate when this hero is your opponent') }}</span>
           </div>
@@ -88,7 +88,7 @@
               </th>
               <th @click="sortTable('ally_win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">{{ $t('Win rate with') }}<sort-indicator :column="'ally_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
               <th @click="sortTable('ally_games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">{{ $t('Games with') }}<sort-indicator :column="'ally_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
-              <th @click="sortTable('enemy_win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer border-l-2 border-red">{{ $t('Win rate against') }}<sort-indicator :column="'enemy_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+              <th @click="sortTable('enemy_win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">{{ $t('Win rate against') }}<sort-indicator :column="'enemy_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
               <th @click="sortTable('enemy_games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">{{ $t('Games against') }}<sort-indicator :column="'enemy_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
             </tr>
           </thead>
@@ -107,7 +107,7 @@
                 <span v-else class="block text-center text-subtext">{{ $t('No data') }}</span>
               </td>
               <td class="py-2.5 px-3 text-center">{{ row.ally_games_played ? row.ally_games_played.toLocaleString('en-US') : '—' }}</td>
-              <td class="py-2.5 px-6 border-l-2 border-red">
+              <td class="py-2.5 px-6">
                 <div v-if="row.enemy_games_played" class="flex items-center gap-3">
                   <stat-bar class="flex-1" :value="row.enemy_win_rate ?? 0" display-text="" :color="$winRateColor(row.enemy_win_rate)"></stat-bar>
                   <span :class="['w-[3.6rem] text-right font-semibold tabular-nums', rateClass(row.enemy_win_rate)]">{{ (row.enemy_win_rate ?? 0).toFixed(2) }}%</span>
@@ -148,7 +148,7 @@
             <span class="block text-sm font-bold uppercase tracking-wide"><span class="skeleton-text">{{ $t('With them · On your team') }}</span></span>
             <span class="block text-xs mt-1"><span class="skeleton-text">{{ $t('Your win rate when this hero is your ally') }}</span></span>
           </div>
-          <div class="py-3 px-3 text-center bg-red/[0.18] border-l-2 border-red rounded-tr-control">
+          <div class="py-3 px-3 text-center bg-red/[0.18] rounded-tr-control">
             <span class="block text-sm font-bold uppercase tracking-wide"><span class="skeleton-text">{{ $t('Against them · On enemy team') }}</span></span>
             <span class="block text-xs mt-1"><span class="skeleton-text">{{ $t('Your win rate when this hero is your opponent') }}</span></span>
           </div>
@@ -171,7 +171,7 @@
               </th>
               <th class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Win rate with') }}</span></th>
               <th class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Games with') }}</span></th>
-              <th class="py-2 px-3 text-center text-sm leading-4 border-l-2 border-red"><span class="skeleton-text">{{ $t('Win rate against') }}</span></th>
+              <th class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Win rate against') }}</span></th>
               <th class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Games against') }}</span></th>
             </tr>
           </thead>
@@ -180,7 +180,7 @@
               <td class="py-2.5 px-6"><span class="inline-flex items-center"><skeleton-box class="w-10 h-10 !rounded-full shrink-0"></skeleton-box><span class="hidden md:block ml-3 font-medium skeleton-text">Alexstrasza</span></span></td>
               <td class="py-2.5 px-6"><div class="flex items-center gap-3"><stat-bar class="flex-1" value="0" display-text=""></stat-bar><span class="w-[3.6rem] text-right font-semibold"><span class="skeleton-text">00.00%</span></span></div></td>
               <td class="py-2.5 px-3 text-center"><span class="skeleton-text">000</span></td>
-              <td class="py-2.5 px-6 border-l-2 border-red"><div class="flex items-center gap-3"><stat-bar class="flex-1" value="0" display-text=""></stat-bar><span class="w-[3.6rem] text-right font-semibold"><span class="skeleton-text">00.00%</span></span></div></td>
+              <td class="py-2.5 px-6"><div class="flex items-center gap-3"><stat-bar class="flex-1" value="0" display-text=""></stat-bar><span class="w-[3.6rem] text-right font-semibold"><span class="skeleton-text">00.00%</span></span></div></td>
               <td class="py-2.5 px-3 text-center"><span class="skeleton-text">000</span></td>
             </tr>
           </tbody>

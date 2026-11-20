@@ -10,13 +10,11 @@
       'md:h-20': size === 'big',
       'md:w-[6em]': size === 'xl',
       'md:h-[6em]': size === 'xl',
-      // Square 64px tile with a light border
-      'block w-16 h-16 md:w-16 md:h-16': size === 'tile',
+      // Square 64px tiles and round 64px portraits (the Drafter's board). One key: a second identical key would replace it
+      'block w-16 h-16 md:w-16 md:h-16': size === 'tile' || size === 'medium',
       // Fixed at every width: match rows (82px), compact rows (42px), talent icons (42px)
       'block w-[5.125rem] h-[5.125rem] md:w-[5.125rem] md:h-[5.125rem]': size === 'match',
       'block w-[2.625rem] h-[2.625rem] md:w-[2.625rem] md:h-[2.625rem]': size === 'row' || size === 'talent',
-      // Round 64px, between row and big (the Drafter's hero board)
-      'block w-16 h-16 md:w-16 md:h-16': size === 'medium',
       // 224 x 322, as in the redesign
       'md:w-[14rem]': size === 'large',
       'md:h-[20.125rem]': size === 'large',

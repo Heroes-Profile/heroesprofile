@@ -41,13 +41,14 @@
     </player-page-top>
   <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-  <div v-if="data">
-    <div class="relative max-w-[93.75rem] mx-auto flex justify-end">
-      <column-chooser :stats="stats" note="Role, Win Rate, Games, KDA and KDR are always visible" @apply="applyColumns"></column-chooser>
-    </div>
-    <div id="table-container" ref="tablecontainer" class="w-auto  overflow-clip w-[100vw]   2xl:mx-auto  " style=" ">
+  <div v-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8">
+    <panel-box title="All Roles" :subtitle="$t(':count roles · averages are per game', { count: data.length })">
+      <template #right>
+        <column-chooser :stats="stats" note="Role, Win Rate, Games, KDA and KDR are always visible" @apply="applyColumns"></column-chooser>
+      </template>
+    <div id="table-container" ref="tablecontainer" class="overflow-clip">
 
-<table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
+<table id="responsive-table" class="min-w-0 w-full responsive-table rounded-table relative" ref="responsivetable">
       <thead>
         <tr>
           <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer">
@@ -98,17 +99,21 @@
       </tbody>
     </table>
     </div>
+    </panel-box>
   </div>
-  <!-- Where the loaded page puts them: the column button's bar with the message on it, then the table, as wide as the loaded one -->
-  <div v-else-if="isLoading || asyncLoading" class="max-w-[93.75rem] mx-auto">
-    <div class="relative">
-      <skeleton-box class="h-12"></skeleton-box>
-      <div class="absolute inset-0 flex items-center justify-center px-4">
-        <loading-component v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
-        <loading-component v-else :compact="true" :textoverride="true" :timer="!esport" :starttime="timertime" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
-      </div>
-    </div>
-    <table-skeleton class="relative w-[95.25rem] max-w-[calc(100vw-2rem)] left-1/2 -translate-x-1/2" :bare="true" :rows="6" :columns="['portrait', 'bar', 'stat', 'text', 'text', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat']" :mobile-columns="['portrait', 'bar', 'stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
+  <!-- The same card in grey while the roles load, the message on its tab -->
+  <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
+    <panel-box title="All Roles" subtitle="00 roles · averages are per game" :skeleton="true" class="relative md:!rounded-tl-none">
+      <loading-component v-if="asyncLoading" :compact="true" :tab="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
+        <loading-component v-else :compact="true" :tab="true" :textoverride="true" :timer="!esport" :starttime="timertime" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+      <template #right>
+        <div class="relative">
+          <custom-button class="invisible min-w-[11.75rem]" text="Choose columns" alt="" :ignoreclick="true" aria-hidden="true"></custom-button>
+          <skeleton-box class="absolute inset-0"></skeleton-box>
+        </div>
+      </template>
+      <table-skeleton :bare="true" :rows="6" :columns="['portrait', 'bar', 'stat', 'text', 'text', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat']" :mobile-columns="['portrait', 'bar', 'stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
+    </panel-box>
   </div>
   <match-lookup v-if="matchIsLoading" :text="matchLookupText"></match-lookup>
     <div v-if="matchNotFound" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red text-white px-4 py-2 rounded z-50">

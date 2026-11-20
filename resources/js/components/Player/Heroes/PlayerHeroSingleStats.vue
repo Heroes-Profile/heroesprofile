@@ -66,7 +66,10 @@
           <a href="#advanced-stats" class="text-header w-fit hover:underline" @click.prevent="scrollToAdvancedStats">{{ $t('See advanced stats below') }}<basil-icon name="arrow" class="rotate-90 text-sm ml-3"></basil-icon></a>
 
           <div class="flex flex-col gap-4 w-fit max-w-full">
-            <h3 class="text-2xl font-bold">{{ $t('Maps') }}</h3>
+            <div class="flex justify-between items-baseline gap-6">
+              <h3 class="text-2xl font-bold">{{ $t('Maps') }}</h3>
+              <a v-if="!esport" class="text-header whitespace-nowrap hover:underline" :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Map?hero=' + encodeURIComponent(heroobject.name)">{{ $t('All Maps') }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
+            </div>
             <div class="flex flex-wrap gap-6 max-md:justify-center">
               <group-box v-for="group in mapGroups" :key="group.label" class="!m-0" :esport="esport" :playerlink="true" :text="group.label" :data="group.data"></group-box>
             </div>
@@ -134,7 +137,7 @@
 
           <player-mmr-panel v-if="!esport" :data="data" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/MMR'" :link-query="{ hero: heroobject.name }"></player-mmr-panel>
 
-          <player-awards-panel v-if="!esport" class="flex-1" :battletag="battletag" :blizzid="blizzid" :region="region" :params="{ game_type: modifiedgametype, hero: heroobject.id, season: modifiedseason, game_map: modifiedgamemap, start_date: startdate, end_date: enddate }"></player-awards-panel>
+          <player-awards-panel v-if="!esport" class="flex-1" :link-query="{ hero: heroobject.name }" :battletag="battletag" :blizzid="blizzid" :region="region" :params="{ game_type: modifiedgametype, hero: heroobject.id, season: modifiedseason, game_map: modifiedgamemap, start_date: startdate, end_date: enddate }"></player-awards-panel>
         </div>
       </div>
       </panel-box>
@@ -210,7 +213,10 @@
             </div>
             <span class="skeleton-text w-fit">{{ $t('See advanced stats below') }}<basil-icon name="arrow" class="rotate-90 text-sm ml-3"></basil-icon></span>
             <div class="flex flex-col gap-4 w-fit max-w-full">
-              <h3 class="text-2xl font-bold">{{ $t('Maps') }}</h3>
+              <div class="flex justify-between items-baseline gap-6">
+                <h3 class="text-2xl font-bold">{{ $t('Maps') }}</h3>
+                <span v-if="!esport" class="skeleton-text whitespace-nowrap">{{ $t('All Maps') }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></span>
+              </div>
               <div class="flex flex-wrap gap-6 max-md:justify-center">
                 <div v-for="label in ['Most Played', 'Highest Win Rate', esport ? 'Lowest Win Rate' : 'Latest Played']" :key="label" class="w-auto inline-block">
                   <h4 class="text-sm mb-2"><span class="skeleton-text">{{ $t(label) }}</span></h4>

@@ -13,8 +13,11 @@
         :gametypedefault="gametype"
         :includegametypefull="true"
         :includehero="true"
+        :heroinput="hero"
         :includerole="true"
+        :roleinput="role"
         :includegamemap="true"
+        :gamemapinput="gamemap"
         :includemultiseason="true"
         :includegamedaterange="true"
         :hideadvancedfilteringbutton="true"
@@ -215,6 +218,8 @@ import { siteLocale } from '../../utils/translate';
       patreonUser: Boolean,
       gametypedefault: Array,
       regionsmap: Object,
+      // ?hero=Alexstrasza, ?role=Bruiser or ?map=Alterac Pass opens the page filtered to it, as Match History does
+      urlparameters: [Object, Array],
     },
     data(){
       return {
@@ -244,6 +249,18 @@ import { siteLocale } from '../../utils/translate';
     },
     created(){
       this.gametype = this.gametypedefault;
+      // Strings only: an empty query string must not read [].map (Array's own function) as a map
+      const query = name => (typeof this.urlparameters?.[name] === 'string' ? this.urlparameters[name] : null);
+      if (query('hero')) {
+        const match = this.filters.heroes.find(hero => hero.name === query('hero'));
+        this.hero = match ? match.code : null;
+      }
+      if (query('role')) {
+        this.role = query('role');
+      }
+      if (query('map')) {
+        this.gamemap = [query('map')];
+      }
     },
     mounted() {
       if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){

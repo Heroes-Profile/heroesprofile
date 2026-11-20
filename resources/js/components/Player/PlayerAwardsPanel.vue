@@ -1,6 +1,6 @@
 <template>
   <!-- A player's end of match awards under the page's filters, most earned first -->
-  <panel-box :inner="true" :title="$t('Awards')" :link-text="'All Awards'" :link-href="`/Player/${battletag}/${blizzid}/${region}/Awards`" :skeleton="loading">
+  <panel-box :inner="true" :title="$t('Awards')" :link-text="'All Awards'" :link-href="awardsUrl" :skeleton="loading">
     <template v-if="loading">
       <div class="flex-1 grid grid-cols-2 md:grid-cols-3 auto-rows-fr gap-3">
         <skeleton-box v-for="index in limit" :key="index" class="h-14"></skeleton-box>
@@ -38,6 +38,8 @@ export default {
     region: [String, Number],
     // The page's filters as the awards API takes them: game_type, hero (an id), season, game_map, start_date, end_date
     params: Object,
+    // Carried onto the All Awards link, e.g. { hero: 'Alexstrasza' }
+    linkQuery: Object,
     // How many awards to show
     limit: { type: Number, default: 9 },
     // A page's loading layout: the grey tiles only, nothing fetched
@@ -51,6 +53,11 @@ export default {
     };
   },
   computed: {
+    // The Awards page, with linkQuery as its query string (templates can't reach URLSearchParams)
+    awardsUrl() {
+      const query = this.linkQuery ? '?' + new URLSearchParams(this.linkQuery).toString() : '';
+      return `/Player/${this.battletag}/${this.blizzid}/${this.region}/Awards${query}`;
+    },
     earned() {
       return this.awards.filter(award => award.count > 0).slice(0, this.limit);
     },

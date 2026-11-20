@@ -65,7 +65,10 @@
           </div>
 
           <div class="flex flex-col gap-4 w-fit max-w-full">
-            <h3 class="text-2xl font-bold">{{ $t('Heroes') }}</h3>
+            <div class="flex justify-between items-baseline gap-6">
+              <h3 class="text-2xl font-bold">{{ $t('Heroes') }}</h3>
+              <a v-if="!esport" class="text-header whitespace-nowrap hover:underline" :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero?map=' + encodeURIComponent(map)">{{ $t('All Heroes') }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
+            </div>
             <div class="flex flex-wrap gap-6 max-md:justify-center">
               <group-box v-for="group in heroGroups" :key="group.label" class="!m-0" :esport="esport" :playerlink="true" :text="group.label" :data="group.data"></group-box>
             </div>
@@ -91,7 +94,7 @@
           </panel-box>
           <player-party-size-panel v-if="!esport" :data="data" prefix="stack_size_"></player-party-size-panel>
 
-          <player-awards-panel v-if="!esport" class="flex-1" :battletag="battletag" :blizzid="blizzid" :region="region" :params="{ game_type: modifiedgametype, game_map: map, season: modifiedseason, start_date: startdate, end_date: enddate }"></player-awards-panel>
+          <player-awards-panel v-if="!esport" class="flex-1" :link-query="{ map: map }" :battletag="battletag" :blizzid="blizzid" :region="region" :params="{ game_type: modifiedgametype, game_map: map, season: modifiedseason, start_date: startdate, end_date: enddate }"></player-awards-panel>
         </div>
       </div>
       </panel-box>
@@ -148,7 +151,10 @@
               <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="8"></overview-stats>
             </div>
             <div class="flex flex-col gap-4 w-fit max-w-full">
-              <h3 class="text-2xl font-bold">{{ $t('Heroes') }}</h3>
+              <div class="flex justify-between items-baseline gap-6">
+                <h3 class="text-2xl font-bold">{{ $t('Heroes') }}</h3>
+                <span v-if="!esport" class="skeleton-text whitespace-nowrap">{{ $t('All Heroes') }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></span>
+              </div>
               <div class="flex flex-wrap gap-6 max-md:justify-center">
                 <div v-for="label in ['Most Played', 'Highest Win Rate', esport ? 'Lowest Win Rate' : 'Latest Played']" :key="label" class="w-auto inline-block">
                   <h4 class="text-sm mb-2"><span class="skeleton-text">{{ $t(label) }}</span></h4>

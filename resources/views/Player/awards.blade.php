@@ -11,6 +11,7 @@
     :filters="{{ json_encode($filters) }}"
     :gametypedefault="{{ json_encode($gametypedefault) }}"
     :regionsmap="{{ json_encode($bladeGlobals['regions']) }}"
+    :urlparameters="{{ json_encode((object) request()->query()) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   ></player-awards>

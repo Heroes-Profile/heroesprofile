@@ -69,7 +69,7 @@
             <div class="flex flex-col gap-4 w-fit max-w-full">
               <div class="flex justify-between items-baseline gap-6">
                 <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
-                <a class="text-header whitespace-nowrap hover:underline" :href="esport ? ngsPlayerUrl + section.allPath + ngsQuery : profileUrl + section.allPath">{{ $t(section.allText) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
+                <a class="text-header whitespace-nowrap hover:underline" :href="esport ? ngsPlayerUrl + section.allPath + ngsQuery : profileUrl + section.allPath + '?role=' + encodeURIComponent(role)">{{ $t(section.allText) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
               </div>
               <div class="flex flex-wrap gap-6 max-md:justify-center">
                 <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :esport="esport" :playerlink="true" :text="group.label" :data="group.data"></group-box>
@@ -122,7 +122,7 @@
 
           <player-mmr-panel v-if="!esport" :data="data" :link-href="profileUrl + '/MMR'" :link-query="{ role: role }"></player-mmr-panel>
 
-          <player-awards-panel v-if="!esport" class="flex-1" :battletag="battletag" :blizzid="blizzid" :region="region" :params="{ game_type: modifiedgametype, role: role, season: modifiedseason, game_map: modifiedgamemap, start_date: startdate, end_date: enddate }"></player-awards-panel>
+          <player-awards-panel v-if="!esport" class="flex-1" :link-query="{ role: role }" :battletag="battletag" :blizzid="blizzid" :region="region" :params="{ game_type: modifiedgametype, role: role, season: modifiedseason, game_map: modifiedgamemap, start_date: startdate, end_date: enddate }"></player-awards-panel>
         </div>
       </div>
       </panel-box>

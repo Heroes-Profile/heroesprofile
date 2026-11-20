@@ -11,6 +11,7 @@
     :accountlevel="{{ json_encode($account_level) }}" 
     :region="{{ json_encode($region) }}"
     :regionsmap="{{ json_encode($bladeGlobals['regions']) }}"
+    :urlparameters="{{ json_encode((object) request()->query()) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :esport="{{ json_encode($esport ?? null) }}"

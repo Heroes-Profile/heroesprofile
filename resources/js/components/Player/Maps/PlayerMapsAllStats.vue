@@ -19,6 +19,9 @@
         :includemultiseason="true"
         :includegamedaterange="true"
         :includehero="true"
+        :heroinput="heroInputId"
+        :includerole="true"
+        :roleinput="role"
         >
       </filters>
       <filters v-else-if="esport && ngsFilterOptions"
@@ -145,6 +148,7 @@ export default {
     blizzid: String, 
     region: String,
     regionsmap: Object,
+    urlparameters: [Object, Array],
     accountlevel: Number,
     isPatreon: Boolean,
     patreonUser: Boolean,
@@ -267,6 +271,11 @@ showOptions: false,
     }
   },
   created(){
+    // ?hero=, ?role= and ?map= (from the single hero, role and map pages) open the page filtered, as Match History does
+    // Strings only: an empty query string must not read [].map (Array's own function) as a map
+    const query = name => (typeof this.urlparameters?.[name] === 'string' ? this.urlparameters[name] : null);
+    if (query('hero')) this.hero = query('hero');
+    if (query('role')) this.role = query('role');
     // Phones start with fewer columns: kills, deaths, siege and hero damage
     if (window.matchMedia('(max-width: 1023px)').matches) {
       this.stats.forEach(stat => {
@@ -285,6 +294,11 @@ if(this.playerloadsetting == null || this.playerloadsetting == true || this.play
       }
   },
   computed: {
+    // The filter takes the hero's id; the page keeps its name
+    heroInputId() {
+      const match = this.hero ? this.filters.heroes.find(hero => hero.name === this.hero) : null;
+      return match ? match.code : null;
+    },
     league() {
       return this.esport ? this.$esportLeague(this.esport, this.esportfilters) : null;
     },
