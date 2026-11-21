@@ -20,7 +20,7 @@
         <div v-else v-for="talent in tier.talents" :key="talent.talentInfo.talent_id"
           :class="['rounded-control bg-surface-1 border-2 p-3 flex flex-col gap-2.5 min-w-0', isBest(talent, tier) ? 'border-teal' : 'border-surface-1']">
           <div class="flex items-center gap-2 min-w-0">
-            <talent-image-wrapper class="shrink-0" :talent="talent.talentInfo"></talent-image-wrapper>
+            <talent-image-wrapper class="shrink-0" :talent="talent.talentInfo" :popup-hoverable="false"></talent-image-wrapper>
             <h3 class="text-sm font-semibold truncate min-w-0">{{ $talentName(talent.talentInfo) }}</h3>
             <span v-if="isBest(talent, tier)" class="ml-auto shrink-0 px-1.5 py-0.5 rounded-[0.25rem] bg-teal/20 text-lteal text-[0.625rem] font-bold uppercase">{{ $t('Best') }}</span>
           </div>

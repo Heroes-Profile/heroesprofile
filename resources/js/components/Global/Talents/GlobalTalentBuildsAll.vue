@@ -29,7 +29,7 @@
             </div>
           </td>
           <td v-for="gt in gameTypes" :key="gt.key" class="py-3 px-4">
-            <build-code v-if="firstBuild(hero.name, gt.key)" align="start" :build="firstBuild(hero.name, gt.key)" :hero="firstBuild(hero.name, gt.key).hero"></build-code>
+            <build-code v-if="firstBuild(hero.name, gt.key)" align="start" :build="firstBuild(hero.name, gt.key)" :hero="firstBuild(hero.name, gt.key).hero" :popup-hoverable="false"></build-code>
             <span v-else class="text-subtext">{{ $t('No data for this patch') }}</span>
           </td>
         </tr>
