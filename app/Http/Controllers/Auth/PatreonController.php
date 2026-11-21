@@ -21,8 +21,12 @@ class PatreonController extends Controller
             ->redirect();
     }
 
-    public function handleProviderCallback()
+    public function handleProviderCallback(Request $request)
     {
+        // Patreon sends `error` (no `code`) when the user presses Deny
+        if ($request->filled('error') || ! $request->filled('code')) {
+            return redirect('/Authenticate/Patreon/Failed');
+        }
 
         try {
             $user = Socialite::driver('patreon')->user();
@@ -44,18 +48,23 @@ class PatreonController extends Controller
 
             $battlenetAccount = BattlenetAccount::find($currentBattlenetId);
 
-            if ($this->getUserDataCheckIfSubscribed($user->token)) {
-                $battlenetAccount->patreon = 1;
-                $battlenetAccount->save();
+            // The link is kept either way, so trying again once the membership shows up works
+            if (! $this->getUserDataCheckIfSubscribed($user->token)) {
+                return redirect('/Authenticate/Patreon/Failed');
             }
+
+            $battlenetAccount->patreon = 1;
+            $battlenetAccount->save();
 
             return redirect('/Profile/Settings');
 
         } catch (InvalidStateException $e) {
-            // Log the exception for debugging (optional)
             Log::error('InvalidStateException in PatreonController: '.$e->getMessage());
 
-            // Redirect the user to a custom login failed page
+            return redirect('/Authenticate/Patreon/Failed');
+        } catch (\Throwable $e) {
+            Log::error('Patreon login failed: '.$e->getMessage());
+
             return redirect('/Authenticate/Patreon/Failed');
         }
     }
