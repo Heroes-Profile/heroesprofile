@@ -58,7 +58,9 @@
       </panel-box>
 
       <div ref="gamestable" class="scroll-mt-4">
-        <panel-box :title="selectedAward ? $t(':award Games', { award: selectedAward.title }) : $t('Recent Awards')" :subtitle="selectedAward ? null : $t('Awards from your latest matches.')">
+        <!-- Recent Awards loads after the cards above, so while its rows are grey the loading tab sits on this panel -->
+        <panel-box :class="{ 'relative md:!rounded-tl-none': awardGamesLoading || !awardGames }" :title="selectedAward ? $t(':award Games', { award: selectedAward.title }) : $t('Recent Awards')" :subtitle="selectedAward ? null : $t('Awards from your latest matches.')">
+          <loading-component v-if="awardGamesLoading || !awardGames" :compact="true" :tab="true" :textoverride="true">{{ selectedAward ? $t('Loading :award games...', { award: selectedAward.title }) : $t('Loading recent awards...') }}</loading-component>
           <template #right>
             <div class="flex flex-wrap items-center gap-4">
               <custom-button v-if="selectedAward" @click="clearAward" :text="'Show Recent Awards'" :alt="'Show Recent Awards'" size="small" :ignoreclick="true"></custom-button>
