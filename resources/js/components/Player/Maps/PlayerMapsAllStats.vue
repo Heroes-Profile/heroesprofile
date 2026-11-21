@@ -58,13 +58,13 @@
                     <search-input v-model="mapSearch" :placeholder="$t('Search map')" :collapsible="true" class="w-40"></search-input>
                   </div>
                 </th>
-                <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">
+                <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
                   {{ $t('Win Rate') }}<sort-indicator column="win_rate" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
-                <th @click="sortTable('games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">
+                <th @click="sortTable('games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
                   {{ $t('Games') }}<sort-indicator column="games_played" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
-                <th v-for="stat in selectedStats" :key="stat.value" @click="sortTable(stat.value)" :title="$t(stat.name)" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">
+                <th v-for="stat in selectedStats" :key="stat.value" @click="sortTable(stat.value)" :title="$t(stat.name)" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === stat.value }">
                   {{ $t(columnLabel(stat)) }}<sort-indicator :column="stat.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
               </tr>

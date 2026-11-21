@@ -86,10 +86,10 @@
                   <search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" class="w-40"></search-input>
                 </div>
               </th>
-              <th @click="sortTable('ally_win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">{{ $t('Win rate with') }}<sort-indicator :column="'ally_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
-              <th @click="sortTable('ally_games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">{{ $t('Games with') }}<sort-indicator :column="'ally_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
-              <th @click="sortTable('enemy_win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">{{ $t('Win rate against') }}<sort-indicator :column="'enemy_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
-              <th @click="sortTable('enemy_games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">{{ $t('Games against') }}<sort-indicator :column="'enemy_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+              <th @click="sortTable('ally_win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'ally_win_rate' }">{{ $t('Win rate with') }}<sort-indicator :column="'ally_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+              <th @click="sortTable('ally_games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'ally_games_played' }">{{ $t('Games with') }}<sort-indicator :column="'ally_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+              <th @click="sortTable('enemy_win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'enemy_win_rate' }">{{ $t('Win rate against') }}<sort-indicator :column="'enemy_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+              <th @click="sortTable('enemy_games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'enemy_games_played' }">{{ $t('Games against') }}<sort-indicator :column="'enemy_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
             </tr>
           </thead>
           <tbody>

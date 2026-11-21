@@ -108,7 +108,7 @@
               <thead class="w-full">
                 <tr class="">
                   <!-- Wide enough for the "#" box beside the rank, so sorting by another column doesn't widen it; the 1.5px is the cells' right border -->
-                  <th @click="sortTable('rank')" class="w-[calc(7.25rem+1.5px)] py-2 px-3 text-center text-sm leading-4 cursor-pointer">
+                  <th @click="sortTable('rank')" class="w-[calc(7.25rem+1.5px)] py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'rank' }">
                     <!-- Sorted by another column: "#" over each row's position in the sort, "Rank" over the leaderboard rank,
                          on the same grid as the cells so both line up -->
                     <span v-if="rankchange" class="inline-grid grid-cols-[2.75rem_2.5rem] gap-2 items-center"><span class="text-center">#</span><span class="text-left whitespace-nowrap">{{ $t('Rank') }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span></span>
@@ -175,7 +175,7 @@
                     <th class="py-2 px-3  text-center text-sm leading-4">
                       {{ $t('Copy Build to Game') }}
                     </th>  
-                    <th @click="sortTable('hero_build_games_played')" class="cursor-pointer py-2 px-3  text-center text-sm leading-4">
+                    <th @click="sortTable('hero_build_games_played')" class="cursor-pointer py-2 px-3  text-center text-sm leading-4" :class="{ 'bg-teal text-white': sortKey === 'hero_build_games_played' }">
                       {{ $t('Played') }}<sort-indicator :column="'hero_build_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                     </th>    
                   </template>
