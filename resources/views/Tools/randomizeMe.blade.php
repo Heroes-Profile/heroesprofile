@@ -8,7 +8,8 @@
 @section('content')
   <randomize-me
     :heroes="{{ json_encode($heroes) }}"
-    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+    :maps="{{ json_encode($maps) }}"
+    :defaulttimeframe="{{ json_encode($defaulttimeframe) }}"
   >
   </randomize-me>
 @endsection
