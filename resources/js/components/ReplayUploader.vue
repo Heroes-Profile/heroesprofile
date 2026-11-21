@@ -29,6 +29,13 @@
                 <span class="w-5 h-5 rounded-[0.25rem] bg-teal flex items-center justify-center shrink-0"><basil-icon name="check" class="text-xs text-white"></basil-icon></span>
                 <span class="font-medium">{{ $t(feature) }}</span>
               </li>
+              <!-- Rank reading, with where to read how it works -->
+              <li class="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                <!-- Blue: optional, unlike the teal features every copy has -->
+                <span class="w-5 h-5 rounded-[0.25rem] bg-blue flex items-center justify-center shrink-0"><basil-icon name="check" class="text-xs text-white"></basil-icon></span>
+                <span class="font-medium">{{ $t('Optional rank reading for real Storm League ranks') }}</span>
+                <a class="group/bt inline-flex items-center text-sm text-lteal" href="/Upload/Uploader#rank-reading"><span class="group-hover/bt:underline">{{ $t('How it works') }}</span><basil-icon name="arrow-small" class="text-xs ml-1"></basil-icon></a>
+              </li>
             </ul>
           </div>
           <img

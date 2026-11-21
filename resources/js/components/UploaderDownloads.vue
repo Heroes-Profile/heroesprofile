@@ -11,6 +11,16 @@
           <span class="text-xs uppercase text-subtext">{{ $t('With rank reading') }}</span>
           <a v-for="file in platform.ranks" :key="file.file" class="group/bt inline-flex items-center w-fit" :href="link(file.file)" target="_blank" rel="noopener" :title="file.alt"><span class="group-hover/bt:underline">{{ $t(file.text) }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
         </div>
+        <!-- How this platform's downloads are signed, at the bottom of the card -->
+        <div class="mt-auto pt-3 border-t border-surface-3 flex items-start gap-2.5 text-xs text-subtext">
+          <i class="fas fa-shield-halved text-sm text-lteal mt-px"></i>
+          <span class="flex flex-col gap-1">
+            <span>{{ $t(platform.signed) }}</span>
+            <a v-if="platform.verify" class="group/bt inline-flex items-center w-fit text-lteal" :href="repository + platform.verify" target="_blank" rel="noopener"><span class="group-hover/bt:underline">{{ $t('How to check your download') }}</span><basil-icon name="arrow-small" class="text-xs ml-1"></basil-icon></a>
+            <!-- The link's line kept on the other cards, so every card's footer is the same height and their lines meet -->
+            <span v-else class="invisible" aria-hidden="true">{{ $t('How to check your download') }}</span>
+          </span>
+        </div>
       </div>
     </div>
 
@@ -43,6 +53,7 @@ export default {
         {
           name: 'macOS',
           icon: 'fab fa-apple',
+          signed: 'Signed by Skill Tree Development LLC and notarized by Apple, so macOS opens it without a warning.',
           files: [
             { file: 'Heroesprofile.Uploader-osx-arm64-Setup.pkg', text: 'Apple Silicon (M1 and later)', alt: 'Download the macOS replay uploader for Apple Silicon' },
             { file: 'Heroesprofile.Uploader-osx-x64-Setup.pkg', text: 'Intel', alt: 'Download the macOS replay uploader for Intel Macs' },
@@ -55,6 +66,8 @@ export default {
         {
           name: 'Linux',
           icon: 'fab fa-linux',
+          signed: 'Every download is listed in a SHA256SUMS file signed with our release key.',
+          verify: '/blob/master/packaging/linux/README.md#checking-your-download',
           files: [
             { file: 'Heroesprofile.Uploader.AppImage', text: 'AppImage', alt: 'Download the Linux replay uploader (AppImage)' },
             { file: 'HeroesProfileUploader-linux-x64.tar.gz', text: 'tar.gz (headless)', alt: 'Download the Linux replay uploader as a tar.gz' },
@@ -66,6 +79,7 @@ export default {
         {
           name: 'Windows',
           icon: 'fab fa-windows',
+          signed: 'Code-signed by Skill Tree Development LLC, so Windows shows a verified publisher.',
           files: [
             { file: 'HeroesProfileUploaderSetup.exe', text: 'Download for Windows', alt: 'Download the Windows replay uploader' },
           ],
