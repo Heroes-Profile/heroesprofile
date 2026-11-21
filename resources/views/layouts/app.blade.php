@@ -183,7 +183,8 @@
     <dynamic-banner-ad  :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" :index="{{ json_encode(0) }}" :mobile-override="{{ json_encode(false) }}"></dynamic-banner-ad>
     @endif
 
-    <footer class="mt-auto @yield('footer_gap', 'pt-[2em]')">
+    {{-- Phones: room above the footer for the help button, which sits there once the page reaches the bottom, so it doesn't cover the last of the content --}}
+    <footer class="mt-auto @yield('footer_gap', 'pt-[2em]') max-md:!pt-24">
       @if(isset($isBackendOff) && $isBackendOff)
         <div class="bg-red text-sm text-center p-1">
           {{ __('The backend is currently offline. Some features may not be available. Please contact :email', ['email' => 'zemill@heroesprofile.com']) }}

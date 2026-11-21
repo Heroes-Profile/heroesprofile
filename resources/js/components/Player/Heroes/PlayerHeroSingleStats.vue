@@ -310,7 +310,7 @@
     </div>
 
     <match-lookup v-if="matchIsLoading" :text="matchLookupText"></match-lookup>
-    <div v-if="matchNotFound" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red text-white px-4 py-2 rounded z-50">
+    <div v-if="matchNotFound" class="fixed bottom-4 max-md:bottom-24 left-1/2 -translate-x-1/2 bg-red text-white px-4 py-2 rounded z-50">
       {{ $t("Couldn't find the match for that value.") }}
     </div>
   </div>

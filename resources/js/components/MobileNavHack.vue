@@ -134,6 +134,29 @@ mobileNavButtons.forEach(function(button){
 
             });
 
+            // Phones: following a link out of the menu closes it, so the next page isn't left under an open menu
+            function closeMobileMenu() {
+                elementToToggle.style.display = 'none';
+                closeButton.style.display = 'none';
+                document.querySelectorAll('.nav-dropdown').forEach(function(dropdown){
+                    dropdown.style.display = '';
+                });
+            }
+            elementToToggle.addEventListener('click', function (event) {
+                const link = event.target.closest('a[href]');
+                const href = link ? link.getAttribute('href') : '';
+                if(!isSmallScreen() || !link || link.target === '_blank' || !href || href === '#' || href.startsWith('javascript:')){
+                    return;
+                }
+                closeMobileMenu();
+            });
+            // A page restored by the back or forward button comes back as it was left, menu open included
+            window.addEventListener('pageshow', function (event) {
+                if(event.persisted && isSmallScreen()){
+                    closeMobileMenu();
+                }
+            });
+
             // The mobile menu's inline display would otherwise stick when the window is widened
             window.addEventListener('resize', function () {
                 if(!isSmallScreen()){

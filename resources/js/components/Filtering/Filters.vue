@@ -1,7 +1,7 @@
 <template>
   <div :class="compact ? 'px-4' : 'max-w-[120rem] mx-auto md:px-8 mb-6'">
     <button v-if="!compact" class="md:hidden p-2 bg-blue w-full" @click="showMobile">{{ $t('Show Filters') }}</button>
-    <div v-show="compact || showNav" :class="compact ? 'bg-lighten rounded p-3' : 'bg-surface md:rounded p-4 md:p-6 max-md:fixed max-md:inset-0 max-md:z-50 max-md:h-[100dvh] max-md:overflow-y-auto max-md:flex max-md:flex-col'">
+    <div v-show="compact || showNav" :class="compact ? 'bg-lighten rounded p-3' : 'bg-surface md:rounded p-4 md:p-6 max-md:fixed max-md:inset-0 max-md:z-[54] max-md:h-[100dvh] max-md:overflow-y-auto max-md:flex max-md:flex-col'">
       <button v-if="!compact" class="md:hidden ml-auto text-2xl min-w-[2.75rem] min-h-[2.75rem]" :aria-label="$t('Close filters')" @click="showMobile">x</button>
       <div :class="compact ? 'flex flex-wrap items-end gap-3' : 'filter-row'">
         <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] flex-1 basis-[50rem] gap-2 min-w-0' : 'contents'">

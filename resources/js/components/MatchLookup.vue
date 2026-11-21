@@ -1,6 +1,6 @@
 <template>
   <!-- Covers the page while a lookup finds the game to open, like the player search's scanning rows -->
-  <div class="fixed inset-0 z-50 overflow-y-auto bg-page/95 px-4 pt-24 pb-6">
+  <div class="fixed inset-0 z-[54] overflow-y-auto bg-page/95 px-4 pt-24 pb-6">
     <div class="max-w-[93.75rem] mx-auto">
       <loading-component class="mb-4" :compact="true" :textoverride="true" :overrideimage="overrideimage">{{ text }}</loading-component>
       <div class="relative overflow-hidden">
