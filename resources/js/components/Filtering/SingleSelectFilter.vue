@@ -1,5 +1,5 @@
 <template>
-  <div id="filter-label" class="relative" :class="compact ? 'min-w-0 w-full' : 'filter-fill max-md:w-full md:w-[12.5rem]'">
+  <div id="filter-label" class="relative" :class="compact ? 'min-w-0 w-full' : fit ? 'filter-fit max-md:w-full' : 'filter-fill max-md:w-full md:w-[12.5rem]'">
     <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'" @keydown="handleKeyPress" tabindex="0">
       <span v-if="!hidelabel" class="relative">
         <!-- The info icon sits beside the label, so a longer or larger label pushes it along instead of under it -->
@@ -14,8 +14,14 @@
         </span>
       </span> 
       <span :class="['h-[2.5rem] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 min-w-0 w-full', { 'ring-1 ring-teal': showOptions }]">
-        <span class="font-bold px-1 text-nowrap truncate min-w-0" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span>
-        <span v-else-if="placeholder" class="px-1 text-nowrap truncate min-w-0 text-subtext">{{ $t(placeholder) }}</span>
+        <!-- fit: every option sits invisibly in the same cell, so the box is as wide as the longest one -->
+        <span class="grid min-w-0">
+          <span class="font-bold px-1 text-nowrap truncate min-w-0 [grid-area:1/1]" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span>
+          <span v-else-if="placeholder" class="px-1 text-nowrap truncate min-w-0 text-subtext [grid-area:1/1]">{{ $t(placeholder) }}</span>
+          <template v-if="fit && !compact">
+            <span v-for="value in values" :key="value.code" aria-hidden="true" class="font-bold px-1 text-nowrap invisible h-0 [grid-area:1/1]">{{ value.label || $t(value.name) }}</span>
+          </template>
+        </span>
         <basil-icon name="arrow" class="rotate-90 ml-auto shrink-0 text-xs transition-transform" :class="{ '-rotate-90': showOptions }"></basil-icon>
       </span>
     </div>
@@ -75,6 +81,8 @@ export default {
     nosearch: Boolean,
     // Shown in the box until an option is picked
     placeholder: String,
+    // As wide as the longest option instead of filling the row (Season, Group Size)
+    fit: Boolean,
   },
   data(){
     return {

@@ -1,5 +1,5 @@
 <template>
-  <div id="filter-label" class="relative" :class="[compact ? 'min-w-0 w-full' : 'filter-fill max-md:w-full md:min-w-[12.5rem]', { 'bg-red': highlighttimesframes }]">
+  <div id="filter-label" class="relative" :class="[compact ? 'min-w-0 w-full' : fit ? 'filter-fit max-md:w-full' : 'filter-fill max-md:w-full md:min-w-[12.5rem]', { 'bg-red': highlighttimesframes }]">
     <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'">
       <span v-if="!hidelabel" class="relative">
         <!-- The info icon sits beside the label, so a longer or larger label pushes it along instead of under it -->
@@ -25,8 +25,14 @@
       <span :class="['h-[2.5rem] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 relative min-w-0 w-full', { 'ring-1 ring-teal': showOptions }]">
         <span class="flex min-w-0 gap-1">
           <span v-if="toggletabs" class="whitespace-nowrap font-bold px-1 shrink-0">{{ $t(toggleside === 'right' ? toggletabs[1] : toggletabs[0]) }}</span>
-          <span v-if="selectedOptions.length" class="font-bold px-1 truncate min-w-0">{{ selectedlabel || (selectedOptions.length <= 3 ? selectedOptionsName.join(', ') : $t(':selected of :total selected', { selected: selectedOptions.length, total: values.length })) }}</span>
-          <span v-else-if="placeholder" class="font-bold px-1 truncate min-w-0">{{ $t(placeholder) }}</span>
+          <!-- fit: the options and the "6 of 6 selected" summary sit invisibly in the same cell, so the box is as wide as the longest -->
+          <span class="grid min-w-0">
+            <span v-if="selectedOptions.length" class="font-bold px-1 truncate min-w-0 [grid-area:1/1]">{{ selectedlabel || (selectedOptions.length <= 3 ? selectedOptionsName.join(', ') : $t(':selected of :total selected', { selected: selectedOptions.length, total: values.length })) }}</span>
+            <span v-else-if="placeholder" class="font-bold px-1 truncate min-w-0 [grid-area:1/1]">{{ $t(placeholder) }}</span>
+            <template v-if="fit && !compact">
+              <span v-for="label in fitLabels" :key="label" aria-hidden="true" class="font-bold px-1 whitespace-nowrap invisible h-0 [grid-area:1/1]">{{ label }}</span>
+            </template>
+          </span>
         </span>
         <basil-icon name="arrow" class="rotate-90 ml-auto shrink-0 text-xs transition-transform" :class="{ '-rotate-90': showOptions }"></basil-icon>
       </span>
@@ -99,6 +105,8 @@ const RANK_INFO = "Heroes Profile Rank is based on a custom MMR algorithm develo
     components: {
     },
     props: {
+      // As wide as the longest option instead of filling the row (Season)
+      fit: Boolean,
       compact: { type: Boolean, default: false },
       // No label above the box, for rows that put it beside the box instead
       hidelabel: Boolean,
@@ -144,6 +152,11 @@ const RANK_INFO = "Heroes Profile Rank is based on a custom MMR algorithm develo
     computed: {
       rankInfo() {
         return RANK_INFO;
+      },
+      // The widest things the box can show, for fit
+      fitLabels() {
+        const names = this.values.map(value => (this.groupbyyear ? this.seasonLabel(value.name) : (value.label || this.$t(value.name))));
+        return [...new Set([...names, this.$t(':selected of :total selected', { selected: this.values.length, total: this.values.length })])];
       },
       selectedOptionsName() {
         return this.selectedOptions.map(code => {

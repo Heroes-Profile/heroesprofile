@@ -102,7 +102,7 @@
           
 
           <!-- Group Size -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && !groupsizeadvanced && !groupsizemulti"
+          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && !groupsizeadvanced && !groupsizemulti" :fit="true"
             :values="filters.group_size"
             :text="'Group Size'"
             :class="leaderboardOrder('Group Size')"
@@ -111,7 +111,7 @@
             :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
 
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && !groupsizeadvanced && groupsizemulti"
+          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && !groupsizeadvanced && groupsizemulti" :fit="true"
             :values="groupSizeOptions"
             :text="'Group Size'"
             :class="leaderboardOrder('Group Size')"
@@ -183,13 +183,6 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
 
-          <!-- Hero Level -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeherolevel && toggleExtraFilters && !rankSourceSL"
-            :values="filters.hero_level" 
-            :text="'Hero Level'" 
-            :defaultValue="herolevel"
-            @input-changed="handleInputChange"
-          ></multi-select-filter>
 
           <!-- Heroes -->
           <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludeheroes && !swapHeroesFilter"
@@ -207,8 +200,10 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
 
+          <!-- Season, then the dates: one group, so they wrap onto a new row together -->
+          <div :class="!compact && includegamedaterange ? 'filter-group' : 'contents'">
           <!-- Season -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludeseason"
+          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludeseason" :fit="true"
             :values="seasons" 
             :text="'Season'" 
             :class="leaderboardOrder('Season')"
@@ -218,7 +213,7 @@
           ></single-select-filter>
 
           <!-- Match Prediction Seasons -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludematchpredictionseason"
+          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludematchpredictionseason" :fit="true"
             :values="this.filters.match_prediction_seasons" 
             :text="'Match Prediction Season'" 
             :class="leaderboardOrder('Match Prediction Season')"
@@ -228,7 +223,7 @@
 
 
           <!-- All Seasons -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeseasonwithall"
+          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeseasonwithall" :fit="true"
             :values="seasonsWithAll" 
             :text="'Season'" 
             @input-changed="handleInputChange" 
@@ -239,10 +234,19 @@
           <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includemultiseason"
             :values="seasons"
             :groupbyyear="true"
+            :fit="true"
             :text="'Season'"
             :defaultValue="multiSeasonValue"
             @input-changed="handleInputChange"
           ></multi-select-filter>
+
+          <!-- Game Date Range -->
+          <date-range-filter v-if="includegamedaterange"
+            :startDate="selectedStartDate"
+            :endDate="selectedEndDate"
+            @input-changed="handleDateRangeChange"
+          ></date-range-filter>
+          </div>
 
           <!-- Heroes Multiselect -->
           <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includemultihero"
@@ -258,32 +262,6 @@
             ></tab-button>
           </div>
 
-          <!-- HP MMR ranges and rank tiers (advanced) -->
-          <template v-if="includemmrranges && toggleExtraFilters">
-            <number-range-filter v-for="mmrType in ['HP Player MMR', 'HP Hero MMR', 'HP Role MMR']" :key="mmrType"
-              :text="mmrType"
-              @input-changed="handleInputChange"
-            ></number-range-filter>
-            <multi-select-filter :compact="compact" v-bind="autoApplyBindings"
-              :values="rankTiersByMmr"
-              :text="'HP Player Rank'"
-              :showrankinfo="true"
-              @input-changed="handleInputChange"
-            ></multi-select-filter>
-            <!-- Hero tiers are per hero, so this needs heroes to look up -->
-            <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="selectedMultiFilters['Heroes'] && selectedMultiFilters['Heroes'].length"
-              :values="rankTiersByMmr"
-              :text="'HP Hero Rank'"
-              :showrankinfo="true"
-              @input-changed="handleInputChange"
-            ></multi-select-filter>
-            <multi-select-filter :compact="compact" v-bind="autoApplyBindings"
-              :values="rankTiersByMmr"
-              :text="'HP Role Rank'"
-              :showrankinfo="true"
-              @input-changed="handleInputChange"
-            ></multi-select-filter>
-          </template>
 
           <!-- Players -->
           <player-picker-filter v-if="includeplayerpicker"
@@ -344,31 +322,8 @@
             </div>
           </multi-select-filter>
 
-          <!-- Hero Rank -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeherorank && toggleExtraFilters && !rankSourceSL"
-            :values="filters.rank_tiers" 
-            :text="'HP Hero Rank'" 
-            :showrankinfo="true"
-            :defaultValue="herorank"
-            @input-changed="handleInputChange"
-          ></multi-select-filter>
 
-          <!-- Role Rank -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includerolerank && toggleExtraFilters && !rankSourceSL"
-            :values="filters.rank_tiers" 
-            :text="'HP Role Rank'" 
-            :showrankinfo="true"
-            :defaultValue="rolerank"
-            @input-changed="handleInputChange"
-          ></multi-select-filter>
 
-          <!-- Talent built Type -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includetalentbuildtype"
-            :values="filters.talent_build_types" 
-            :text="'Talent Build Type'" 
-            @input-changed="handleInputChange" 
-            :defaultValue="talentbuildtype"
-          ></single-select-filter>
 
           <!-- Minimum Games -->
           <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeminimumgames"
@@ -398,20 +353,7 @@
           <!--<single-select-filter v-if="modifiedincludeminimumaccountlevel" :values="filters.minimum_account_level" :text="'Min. Account Level'" @input-changed="handleInputChange" :defaultValue="'100'"></single-select-filter>-->
           <!--<single-select-filter v-if="modifiedincludexaxisincrements" :values="filters.x_axis_increments" :text="'X Axis Increments'" @input-changed="handleInputChange" :defaultValue="'25'"></single-select-filter>-->
 
-          <!-- Mirror -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includemirror && toggleExtraFilters"
-            :values="filters.mirror" 
-            :text="'Mirror Matches'" 
-            @input-changed="handleInputChange" 
-            :defaultValue="mirrormatch"
-          ></single-select-filter>
 
-          <!-- Game Date Range -->
-          <date-range-filter v-if="includegamedaterange"
-            :startDate="selectedStartDate"
-            :endDate="selectedEndDate"
-            @input-changed="handleDateRangeChange"
-          ></date-range-filter>
 
           <!-- Friend/Foe Battletag Search -->
           <div v-if="matchhistorybattletagsearch" id="filter-label" class="filter-fill relative max-md:w-full md:w-[12.5rem]">
@@ -461,6 +403,80 @@
             </div>
           </div>
 
+          <slot></slot>
+        </div>
+        <button v-if="!autoapply" :disabled="disabledFilter" @click="applyFilter" class="btn bg-blue enabled:hover:bg-[#425a8e] disabled:bg-[#223562] disabled:text-[#b7b7bb]" :class="[compact ? 'px-5 h-10' : 'font-semibold h-10 m-2 md:w-[7.5rem] max-md:flex-[1_1_8rem]', leaderboardOrder('Filter')]">
+          {{ $t('Filter') }}
+        </button>
+
+        
+      </div>
+      <!-- Advanced filters: their own row under a divider, with Hide at the end where the Filter button sits above -->
+      <div v-if="toggleExtraFilters && hasAdvancedFilters" :class="compact ? 'mt-3' : 'border-t border-surface-3 mt-4 pt-4'">
+        <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] gap-2 items-end' : 'filter-row'">
+          <!-- Hero Level -->
+          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeherolevel && toggleExtraFilters && !rankSourceSL"
+            :values="filters.hero_level" 
+            :text="'Hero Level'" 
+            :defaultValue="herolevel"
+            @input-changed="handleInputChange"
+          ></multi-select-filter>
+          <!-- HP MMR ranges and rank tiers (advanced) -->
+          <template v-if="includemmrranges && toggleExtraFilters">
+            <number-range-filter v-for="mmrType in ['HP Player MMR', 'HP Hero MMR', 'HP Role MMR']" :key="mmrType"
+              :text="mmrType"
+              @input-changed="handleInputChange"
+            ></number-range-filter>
+            <multi-select-filter :compact="compact" v-bind="autoApplyBindings"
+              :values="rankTiersByMmr"
+              :text="'HP Player Rank'"
+              :showrankinfo="true"
+              @input-changed="handleInputChange"
+            ></multi-select-filter>
+            <!-- Hero tiers are per hero, so this needs heroes to look up -->
+            <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="selectedMultiFilters['Heroes'] && selectedMultiFilters['Heroes'].length"
+              :values="rankTiersByMmr"
+              :text="'HP Hero Rank'"
+              :showrankinfo="true"
+              @input-changed="handleInputChange"
+            ></multi-select-filter>
+            <multi-select-filter :compact="compact" v-bind="autoApplyBindings"
+              :values="rankTiersByMmr"
+              :text="'HP Role Rank'"
+              :showrankinfo="true"
+              @input-changed="handleInputChange"
+            ></multi-select-filter>
+          </template>
+          <!-- Hero Rank -->
+          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeherorank && toggleExtraFilters && !rankSourceSL"
+            :values="filters.rank_tiers" 
+            :text="'HP Hero Rank'" 
+            :showrankinfo="true"
+            :defaultValue="herorank"
+            @input-changed="handleInputChange"
+          ></multi-select-filter>
+          <!-- Role Rank -->
+          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includerolerank && toggleExtraFilters && !rankSourceSL"
+            :values="filters.rank_tiers" 
+            :text="'HP Role Rank'" 
+            :showrankinfo="true"
+            :defaultValue="rolerank"
+            @input-changed="handleInputChange"
+          ></multi-select-filter>
+          <!-- Talent built Type -->
+          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includetalentbuildtype && toggleExtraFilters"
+            :values="filters.talent_build_types" 
+            :text="'Talent Build Type'" 
+            @input-changed="handleInputChange" 
+            :defaultValue="talentbuildtype"
+          ></single-select-filter>
+          <!-- Mirror -->
+          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includemirror && toggleExtraFilters"
+            :values="filters.mirror" 
+            :text="'Mirror Matches'" 
+            @input-changed="handleInputChange" 
+            :defaultValue="mirrormatch"
+          ></single-select-filter>
           <!-- Group Size (advanced, global pages) -->
           <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters && !groupsizemulti"
             :values="filters.group_size"
@@ -476,17 +492,12 @@
             @input-changed="handleInputChange"
             :defaultValue="modifiedGroupSizeDefaultValue"
           ></multi-select-filter>
-          <slot></slot>
+          <button v-if="!hideadvancedfilteringbutton" type="button" :class="['underline text-sm text-subtext hover:text-white', compact ? 'h-10' : 'h-10 m-2 md:w-[7.5rem] max-md:flex-[1_1_8rem]']" :aria-expanded="true" @click="toggleExtraFilters = false">{{ $t(toggleButtonText) }}</button>
         </div>
-        <button v-if="!autoapply" :disabled="disabledFilter" @click="applyFilter" class="btn bg-blue enabled:hover:bg-[#425a8e] disabled:bg-[#223562] disabled:text-[#b7b7bb]" :class="[compact ? 'px-5 h-10' : 'font-semibold h-10 m-2 md:w-[7.5rem] max-md:flex-[1_1_8rem]', leaderboardOrder('Filter')]">
-          {{ $t('Filter') }}
-        </button>
-
-        
       </div>
       <div class="flex max-md:mb-auto" :class="compact && $slots['compact-footer'] ? 'justify-between items-start' : 'justify-end'">
         <div v-if="compact && $slots['compact-footer']" class="mt-2"><slot name="compact-footer"></slot></div>
-        <button class="m-l-auto underline" :class="{ 'text-sm mt-2': compact }" v-if="!hideadvancedfilteringbutton" :aria-expanded="!!toggleExtraFilters" @click="toggleExtraFilters = !toggleExtraFilters" >{{ $t(toggleButtonText) }}</button>
+        <button class="m-l-auto underline" :class="{ 'text-sm mt-2': compact }" v-if="!hideadvancedfilteringbutton && !(toggleExtraFilters && hasAdvancedFilters)" :aria-expanded="!!toggleExtraFilters" @click="toggleExtraFilters = !toggleExtraFilters" >{{ $t(toggleButtonText) }}</button>
         <round-image v-if="advancedfiltersinfo && !hideadvancedfilteringbutton" class="ml-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
           <p class="max-sm:text-xs">{{ advancedfiltersinfo }}</p>
         </round-image>
@@ -866,11 +877,16 @@
       autoApplyBindings(){
         return this.autoapply ? { trackclosure: true, onDropdownClosed: this.autoApply } : {};
       },
+      // Whether this page has any filter that lives in the advanced row
+      hasAdvancedFilters(){
+        return !!(this.includeherolevel || this.includemmrranges || this.includeherorank || this.includerolerank
+          || this.includetalentbuildtype || this.includemirror || (this.modifiedincludegroupsize && this.groupsizeadvanced));
+      },
       toggleButtonText(){
         if(this.toggleExtraFilters){
-          return "Hide Advanced Filters";
+          return "Hide Advanced";
         }
-        return "Show Advanced Filters";
+        return "Show Advanced";
       },
       // Wood is decided by games played, not MMR
       rankTiersByMmr() {

@@ -117,6 +117,25 @@ details.group.is-closing[open] .group-open\:-rotate-90 {
   min-width: 0;
   width: auto;
 }
+/* Season, Group Size and the dates: as wide as their longest option, never stretched */
+.filter-row .filter-fit{
+  flex: 0 0 auto;
+  width: auto;
+}
+/* Season with the dates: kept on one row, wrapping as a block */
+.filter-row .filter-group{
+  display: flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  align-items: flex-end;
+}
+/* Phones stack the filters in their panel, so the group wraps like the rest */
+@media (max-width: 1023px){
+  .filter-row .filter-group{
+    flex-wrap: wrap;
+    width: 100%;
+  }
+}
 .variable-text{
   @apply text-black;
 }
