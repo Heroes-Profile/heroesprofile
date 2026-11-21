@@ -9,6 +9,7 @@ use App\Models\Replay;
 use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class RandomizeMeController extends GlobalsInputValidationController
 {
@@ -17,6 +18,13 @@ class RandomizeMeController extends GlobalsInputValidationController
         return view('Tools.randomizeMe')
             ->with([
                 'heroes' => $this->globalDataService->getHeroes(),
+                // ARAM rolls an ARAM map, Storm League one in the ranked rotation
+                'maps' => $this->globalDataService->getMaps()->map(fn ($map) => [
+                    'name' => $map->name,
+                    'type' => $map->type,
+                    'ranked_rotation' => (int) $map->ranked_rotation,
+                ])->values(),
+                'defaulttimeframe' => $this->globalDataService->getDefaultTimeframe(),
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             ]);
     }
@@ -25,6 +33,7 @@ class RandomizeMeController extends GlobalsInputValidationController
     {
         $validationRules = [
             'hero' => ['required', new HeroInputValidation],
+            'game_type' => ['nullable', Rule::in(['sl', 'qm', 'ar'])],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -38,26 +47,13 @@ class RandomizeMeController extends GlobalsInputValidationController
         $heroName = $request['hero'];
         $heroId = $this->globalDataService->getHeroFilterValue($heroName);
 
-        $rows = Replay::query()
-            ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->join('talents', function ($join) {
-                $join->on('talents.replayID', '=', 'replay.replayID')
-                    ->on('talents.battletag', '=', 'player.battletag')
-                    ->where('talents.level_twenty', '!=', 0);
-            })
-            ->select(
-                'talents.level_one', 'talents.level_four', 'talents.level_seven', 'talents.level_ten',
-                'talents.level_thirteen', 'talents.level_sixteen', 'talents.level_twenty',
-                'replay.game_type', 'replay.region', 'replay.game_map'
-            )
-            ->where('player.hero', $heroId)
-            ->where('replay.game_type', '!=', 0)
-            // player.hero has no index, so without a floor a rarely played hero walks
-            // replay by date through the entire history.
-            ->where('replay.game_date', '>=', now()->subDays(30))
-            ->orderByDesc('replay.game_date')
-            ->limit(1000)
-            ->get();
+        $gameType = $request['game_type'] ? $this->globalDataService->getGameTypeFilterValues($request['game_type']) : null;
+
+        // A build from the rolled mode when the hero has one, otherwise from any mode
+        $rows = $gameType ? $this->recentBuilds($heroId, $gameType) : collect();
+        if ($rows->isEmpty()) {
+            $rows = $this->recentBuilds($heroId, null);
+        }
 
         if ($rows->isEmpty()) {
             return response()->json(['build' => null]);
@@ -84,5 +80,29 @@ class RandomizeMeController extends GlobalsInputValidationController
         ];
 
         return response()->json(['build' => $build]);
+    }
+
+    private function recentBuilds($heroId, $gameType)
+    {
+        return Replay::query()
+            ->join('player', 'player.replayID', '=', 'replay.replayID')
+            ->join('talents', function ($join) {
+                $join->on('talents.replayID', '=', 'replay.replayID')
+                    ->on('talents.battletag', '=', 'player.battletag')
+                    ->where('talents.level_twenty', '!=', 0);
+            })
+            ->select(
+                'talents.level_one', 'talents.level_four', 'talents.level_seven', 'talents.level_ten',
+                'talents.level_thirteen', 'talents.level_sixteen', 'talents.level_twenty',
+                'replay.game_type', 'replay.region', 'replay.game_map'
+            )
+            ->where('player.hero', $heroId)
+            ->when($gameType, fn ($query) => $query->where('replay.game_type', $gameType), fn ($query) => $query->where('replay.game_type', '!=', 0))
+            // player.hero has no index, so without a floor a rarely played hero walks
+            // replay by date through the entire history.
+            ->where('replay.game_date', '>=', now()->subDays(30))
+            ->orderByDesc('replay.game_date')
+            ->limit(1000)
+            ->get();
     }
 }

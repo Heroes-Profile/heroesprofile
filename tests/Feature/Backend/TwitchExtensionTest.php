@@ -170,6 +170,8 @@ class TwitchExtensionTest extends FeatureTestCase
 
     public function test_a_delayed_channel_is_pushed_by_cloud_task_when_the_delay_is_up(): void
     {
+        // The request and the assertion below read now(); a second ticking over between them was a one-off failure
+        $this->freezeSecond();
         $this->channel->forceFill(['delay_seconds' => 120])->save();
 
         $this->sendSnapshot($this->snapshot(1))->assertOk()->assertJson(['accepted' => true]);

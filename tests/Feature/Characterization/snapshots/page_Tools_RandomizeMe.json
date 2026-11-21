@@ -7,8 +7,10 @@
         "alt_search_account2",
         "alt_search_account3",
         "bladeGlobals",
+        "defaulttimeframe",
         "heroes",
-        "main_search_account"
+        "main_search_account",
+        "maps"
     ],
     "body": [
         "<!doctype html>",

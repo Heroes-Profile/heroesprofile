@@ -334,5 +334,6 @@ Route::prefix('v1')->middleware(['web', 'trimPagination'])->group(function () {
     Route::post('match/prediction/game', [MatchPredictionGameController::class, 'getReplayData']);
     Route::post('match/search', [MatchSearchController::class, 'getData'])->middleware(['throttle:match-search', 'restrictCustomGames:never']);
     Route::post('match/prediction/game/choose/winner', [MatchPredictionGameController::class, 'chooseWinner']);
+    Route::post('match/prediction/game/skip/practice', [MatchPredictionGameController::class, 'skipPractice']);
 
 });
