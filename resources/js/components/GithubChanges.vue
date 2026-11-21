@@ -5,8 +5,13 @@
       <span class="uppercase text-gray-medium">{{ $t('Latest commits to Heroes Profile') }}</span>
     </div>
 
+    <!-- Phones show one branch at a time; wider screens show both side by side -->
+    <div class="md:hidden max-w-[120rem] w-full mx-auto px-4 mb-4 flex justify-center">
+      <tab-button :tabs="branches.map(branch => ({ key: branch.name, text: branch.title }))" :ignoreclick="true" :overridedefaultside="mobileBranch" @tab-click="mobileBranch = $event"></tab-button>
+    </div>
+
     <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 grid md:grid-cols-2 gap-6 md:gap-8 items-start">
-      <div v-for="branch in branches" :key="branch.name" class="bg-surface rounded p-4 md:p-8 flex flex-col gap-5 min-w-0">
+      <div v-for="branch in branches" :key="branch.name" :class="['bg-surface rounded p-4 md:p-8 flex flex-col gap-5 min-w-0', { 'max-md:hidden': branch.name !== mobileBranch }]">
         <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
           <div>
             <div class="flex items-center gap-3">
@@ -77,6 +82,8 @@ export default {
     return {
       // By branch and commit sha: whether its full message is showing, so a commit on both branches opens in one card only
       open: {},
+      // The branch a phone shows
+      mobileBranch: 'develop',
     };
   },
   computed: {
