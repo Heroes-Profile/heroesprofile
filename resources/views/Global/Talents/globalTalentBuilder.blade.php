@@ -4,8 +4,8 @@
   @section('title', __(':hero Talent Calculator & Builder', ['hero' => $userinput["name"]]))
   @section('meta_description', 'Build your own ' . $userinput["name"] . ' talent build for Heroes of the Storm and see how it performs, with win rates from real games on Heroes Profile.')
 @else
-  @section('title', __('Talent Calculator & Builder'))
-  @section('meta_description', 'Heroes of the Storm talent builder and custom build creator. Build and customize your own hero talent builds. Analyze talent performance with real data to optimize your hero builds for success on Heroes Profile.')
+  @section('title', __('Heroes of the Storm Talent Calculator & Builder'))
+  @section('meta_description', 'Pick talents tier by tier and watch Heroes of the Storm talent win rates update as your build changes, from real games on Heroes Profile.')
 @endif
 
 

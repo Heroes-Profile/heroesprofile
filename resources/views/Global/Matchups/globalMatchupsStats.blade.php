@@ -4,8 +4,8 @@
   @section('title', __(':hero Counters & Matchups', ['hero' => $userinput["name"]]))
   @section('meta_description', $userinput["name"] . ' counters and matchups for Heroes of the Storm. Win rates against every enemy hero and alongside every ally, from real games on the latest patch.')
 @else
-  @section('title', __('Hero Counters & Matchups'))
-  @section('meta_description', 'Heroes of the Storm hero matchup statistics and counters. Explore hero matchup statistics to see which heroes perform well against others. Analyze hero counters and matchups to improve your gameplay on Heroes Profile.')
+  @section('title', __('Heroes of the Storm Counters & Matchups'))
+  @section('meta_description', 'Heroes of the Storm counters and synergies: win rates for every hero against each enemy and alongside each ally, from real games. Pick a hero to see its matchups.')
 @endif
 
 

@@ -8,8 +8,8 @@
     @section('meta_description', 'Best ' . $userinput["name"] . ' builds for Heroes of the Storm on patch ' . $defaulttimeframe[0] . '. Talent win rates and popularity at every level.')
   @endif
 @else
-  @section('title', __('Talent Stats & Builds'))
-  @section('meta_description', 'Heroes of the Storm talent statistics and builds. Explore talent stats for heroes, including talent win rates and talent builds. Analyze which talents perform well and customize your hero builds for success on Heroes Profile.')
+  @section('title', __('Heroes of the Storm Talent Stats & Builds'))
+  @section('meta_description', 'Heroes of the Storm talent win rates and builds for every hero, by patch, hero level, game mode, map and rank. Pick a hero to see its best builds.')
 @endif
 
 @section('meta_keywords', 'heroes of the storm talents, hots talents, talent stats, talent win rates, talent builds, hero talents, heroes of the storm builds')
