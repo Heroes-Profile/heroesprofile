@@ -1,20 +1,24 @@
 <template>
   <!-- A player table is scanned while the search runs, then the matches drop in -->
-  <div class="max-w-[93.75rem] mx-auto w-full px-4 mt-10 pb-10">
-    <loading-component v-if="phase === 'searching'" class="mb-4" :compact="true" :textoverride="true" :overrideimage="loaderImage">{{ $t('Searching for :query...', { query: query }) }}</loading-component>
-    <p v-else class="text-center text-subtext text-sm mb-4">
+  <div :class="picker ? 'w-full' : 'max-w-[93.75rem] mx-auto w-full px-4 mt-10 pb-10'">
+    <!-- While searching the message sits on a tab of the table, as on the profile's skeleton. The table's header starts
+         at its top edge, so the tab sits fully above it rather than overlapping like it does on padded panels -->
+    <p v-if="phase !== 'searching'" class="text-center text-subtext text-sm mb-4">
       <template v-if="phase === 'choose'">{{ $t(':results players named :query. Pick one.', { results: results.length, query: query }) }}</template>
-      <template v-else-if="phase === 'picked'">{{ $t('Opening profile...') }}</template>
+      <template v-else-if="phase === 'picked'">{{ picker ? $t('Player chosen') : $t('Opening profile...') }}</template>
     </p>
 
+    <div :class="['relative', { 'md:mt-9': phase === 'searching' }]">
+    <loading-component v-if="phase === 'searching'" :compact="true" :tab="true" :textoverride="true" :overrideimage="loaderImage" class="max-md:mb-4 md:!bottom-full">{{ $t('Searching for :query...', { query: query }) }}</loading-component>
     <div class="relative overflow-clip">
       <table class="min-w-0 w-full responsive-table relative">
         <thead>
           <tr>
             <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Player') }}</th>
             <th v-if="showRegion" class="py-2 px-3 text-center text-sm leading-4">{{ $t('Region') }}</th>
+            <th v-if="showTogether" class="py-2 px-3 text-center text-sm leading-4">{{ $t('Games Together') }}</th>
             <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Games Played') }}</th>
-            <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Latest Hero') }}</th>
+            <th class="py-2 px-3 text-left text-sm leading-4">{{ $t('Latest Hero') }}</th>
             <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Latest Game') }}</th>
           </tr>
         </thead>
@@ -23,8 +27,9 @@
           <tr v-for="row in SKELETON_ROWS" :key="row">
             <td><skeleton-box class="w-32 h-4 mx-auto"></skeleton-box></td>
             <td v-if="showRegion"><skeleton-box class="w-12 h-4 mx-auto"></skeleton-box></td>
+            <td v-if="showTogether"><skeleton-box class="w-12 h-4 mx-auto"></skeleton-box></td>
             <td><skeleton-box class="w-16 h-4 mx-auto"></skeleton-box></td>
-            <td><skeleton-box class="w-10 h-10 mx-auto !rounded-full"></skeleton-box></td>
+            <td class="py-2 px-3"><div class="flex items-center gap-3"><skeleton-box class="w-10 h-10 shrink-0 !rounded-full"></skeleton-box><skeleton-box class="hidden md:block w-20 h-4"></skeleton-box></div></td>
             <td><skeleton-box class="w-28 h-4 mx-auto"></skeleton-box></td>
           </tr>
         </tbody>
@@ -40,8 +45,10 @@
               <a class="group/bt inline-flex items-center" :href="profileUrl(item)" @click.prevent.stop="pick(index)"><span class="group-hover/bt:underline">{{ item.battletagShort }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
             </td>
             <td v-if="showRegion">{{ item.regionName }}</td>
+            <td v-if="showTogether" class="font-semibold text-lteal">{{ Number(item.gamesTogether || 0).toLocaleString('en-US') }}</td>
             <td>{{ Number(item.totalGamesPlayed).toLocaleString('en-US') }}</td>
-            <td><div v-if="item.latestHero" class="flex items-center justify-center"><hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper><span class="hidden md:block font-bold ml-2">{{ item.latestHero.name }}</span></div></td>
+            <!-- As in the Global Hero Stats table: portrait and name, left-aligned -->
+            <td class="py-2 px-3"><div v-if="item.latestHero" class="flex items-center justify-start"><hero-image-wrapper class="mr-3" :hero="item.latestHero"></hero-image-wrapper><span class="hidden md:block font-medium">{{ $heroName(item.latestHero) }}</span></div></td>
             <td>
               <a v-if="item.latestReplayID" class="group/bt inline-flex items-center" :href="matchUrl(item)" target="_blank" rel="noopener" @click.stop><span class="group-hover/bt:underline">{{ item.latest_game }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
               <template v-else>{{ item.latest_game }}</template>
@@ -53,9 +60,10 @@
       <!-- Sweeps the rows while searching -->
       <div v-if="phase === 'searching'" class="table-scan absolute inset-x-0 h-12 pointer-events-none bg-gradient-to-b from-transparent via-teal/40 to-transparent"></div>
     </div>
+    </div>
 
     <!-- Covers the page and stays while the profile loads -->
-    <div :class="['fixed inset-0 z-[100] bg-page pointer-events-none transition-opacity duration-500 flex items-center', fadeOut ? 'opacity-100' : 'opacity-0']">
+    <div v-if="!picker" :class="['fixed inset-0 z-[100] bg-page pointer-events-none transition-opacity duration-500 flex items-center', fadeOut ? 'opacity-100' : 'opacity-0']">
       <loading-component v-if="fadeOut" :overrideimage="loaderImage"></loading-component>
     </div>
   </div>
@@ -79,6 +87,10 @@ export default {
       default: true,
     },
     // The loaders' spinning logo, e.g. the NGS one on NGS pages; the site's own when left out
+    // Choosing a player in a popup rather than opening their profile
+    picker: Boolean,
+    // A Games Together column (friend or foe search), from each result's gamesTogether
+    showTogether: Boolean,
     loaderImage: {
       type: String,
       default: null,
@@ -140,7 +152,9 @@ export default {
       this.picked = index;
       this.phase = 'picked';
       this.$emit('select', this.results[index]);
-      this.timer = setTimeout(() => (this.fadeOut = true), 400);
+      if (!this.picker) {
+        this.timer = setTimeout(() => (this.fadeOut = true), 400);
+      }
     },
   },
 };

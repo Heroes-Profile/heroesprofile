@@ -355,40 +355,6 @@
 
 
 
-          <!-- Friend/Foe Battletag Search -->
-          <div v-if="matchhistorybattletagsearch" id="filter-label" class="filter-fill relative max-md:w-full md:w-[12.5rem]">
-            <div class="flex flex-col gap-1.5 text-sm font-medium text-subtext p-2">
-              <span>{{ $t('Friend or Foe Player') }}</span>
-              <div class="relative">
-                <basil-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-subtext pointer-events-none"></basil-icon>
-                <input
-                  type="text"
-                  v-model="ffBattletag"
-                  :placeholder="$t('Enter BattleTag')"
-                  class="w-full h-[2.5rem] rounded-control !bg-surface-3 pl-9 pr-2 text-white placeholder:text-subtext focus:outline-none"
-                  @input="ffBlizzid = null; ffRegion = null; ffSearchResults = []; ffSearchError = null"
-                />
-                <div v-if="ffSearchResults.length > 1" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="min-width:17.5rem; max-height:21.25rem; overflow-y:auto;">
-                  <div
-                    v-for="result in ffSearchResults"
-                    :key="result.blizz_id + '-' + result.region"
-                    class="bg-blue hover:bg-lblue p-3 mb-1 rounded flex flex-col items-center cursor-pointer text-sm"
-                    @click="selectFfResult(result)"
-                  >
-                    <div>{{ result.battletagShort }} ({{ result.regionName }})</div>
-                    <div class="text-xs text-gray-400">{{ result.latest_game }}</div>
-                    <div>{{ $t('Games Played: :totalgamesplayed', { totalgamesplayed: result.totalGamesPlayed }) }}</div>
-                    <div v-if="result.latestMap">{{ result.latestMap.name }}</div>
-                    <div v-if="result.latestHero">
-                      <hero-image-wrapper :hero="result.latestHero"></hero-image-wrapper>
-                    </div>
-                  </div>
-                </div>
-                <p v-if="ffSearchError" class="text-red text-xs mt-1">{{ ffSearchError }}</p>
-              </div>
-            </div>
-          </div>
-
           <!-- Game Date -->
           <div v-if="includegamedate" id="filter-label" class="relative">
             <div v-if="includegamedate" class="flex items-end  text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors">
@@ -492,6 +458,30 @@
             @input-changed="handleInputChange"
             :defaultValue="modifiedGroupSizeDefaultValue"
           ></multi-select-filter>
+          <!-- Friend/Foe Battletag Search -->
+          <div v-if="matchhistorybattletagsearch && toggleExtraFilters" id="filter-label" class="filter-fill relative max-md:w-full md:w-[12.5rem]">
+            <div class="flex flex-col gap-1.5 text-sm font-medium text-subtext p-2">
+              <span>{{ $t('Friend or Foe Player') }}</span>
+              <!-- Find Player looks the name up (in this profile's region) before Filter can use it -->
+              <div class="flex">
+                <div class="relative flex-1 min-w-0">
+                  <basil-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-subtext pointer-events-none"></basil-icon>
+                  <input
+                    type="text"
+                    v-model="ffBattletag"
+                    :placeholder="$t('Enter BattleTag')"
+                    class="w-full h-[2.5rem] rounded-l-control !bg-surface-3 pl-9 pr-8 text-white placeholder:text-subtext focus:outline-none"
+                    @input="ffBlizzid = null; ffSearchError = null"
+                    @keydown.enter.prevent="findFfPlayer"
+                  />
+                  <basil-icon v-if="ffBlizzid" name="check" class="absolute right-3 top-1/2 -translate-y-1/2 text-lteal" :title="$t('Player chosen')"></basil-icon>
+                </div>
+                <button type="button" class="h-[2.5rem] shrink-0 rounded-r-control bg-blue hover:bg-lblue text-white font-semibold px-3 whitespace-nowrap" @click="findFfPlayer">{{ $t('Find Player') }}</button>
+              </div>
+              <!-- Under the box without adding to its height, so the row's boxes stay level -->
+              <p v-if="ffSearchError" class="absolute left-2 top-full -mt-1 text-red text-xs whitespace-nowrap">{{ $t(ffSearchError) }}</p>
+            </div>
+          </div>
           <button v-if="!hideadvancedfilteringbutton" type="button" :class="['underline text-sm text-subtext hover:text-white', compact ? 'h-10' : 'h-10 m-2 md:w-[7.5rem] max-md:flex-[1_1_8rem]']" :aria-expanded="true" @click="toggleExtraFilters = false">{{ $t(toggleButtonText) }}</button>
         </div>
       </div>
@@ -503,6 +493,12 @@
         </round-image>
       </div>
     </div>
+
+    <!-- Friend or foe matches: one is picked for you, several to choose from -->
+    <modal-box v-if="ffSearchOpen" :title="$t('Find a friend or foe')" width="max-w-[56rem]" @close="ffSearchOpen = false">
+      <p v-if="ffNoMatch" class="text-center text-subtext">{{ ffprofileblizzid ? $t('You have never played with or against anyone named :query.', { query: ffSearchQuery }) : $t('No player found for :query in this region.', { query: ffSearchQuery }) }}</p>
+      <table-search v-else :key="ffSearchQuery + ffSearchRun" :query="ffSearchQuery" :results="ffSearchResults" :show-region="false" :picker="true" :show-together="!!ffprofileblizzid" @select="selectFfResult" @none="ffNoMatch = true"></table-search>
+    </modal-box>
   </div>
 </template>
 
@@ -622,6 +618,8 @@
       ffbattletaginput: String,
       ffblizzidinput: [String, Number],
       ffregioninput: [String, Number],
+      // The profile being filtered: Find Player only finds people who played with or against it
+      ffprofileblizzid: [String, Number],
       // Apply each change as its dropdown closes instead of with the Filter button
       autoapply: Boolean,
     },
@@ -682,9 +680,14 @@
         ffBattletag: null,
         ffBlizzid: null,
         ffRegion: null,
-        ffSearchResults: [],
+        // null while a search runs
+        ffSearchResults: null,
         ffSearchError: null,
         ffSearchLoading: false,
+        ffSearchOpen: false,
+        ffSearchQuery: '',
+        ffSearchRun: 0,
+        ffNoMatch: false,
       }
     },
     created(){
@@ -772,6 +775,10 @@
       this.ffBattletag = this.ffbattletaginput || null;
       this.ffBlizzid = this.ffblizzidinput || null;
       this.ffRegion = this.ffregioninput || null;
+      // A friend or foe from the URL lives in the advanced row, so it opens
+      if(this.matchhistorybattletagsearch && this.ffBattletag){
+        this.toggleExtraFilters = true;
+      }
 
       // Hidden on mobile, shown on desktop. Media query, not innerWidth, so a page wider than the phone can't open it
       this.desktopView = !this.isMobileView();
@@ -880,7 +887,8 @@
       // Whether this page has any filter that lives in the advanced row
       hasAdvancedFilters(){
         return !!(this.includeherolevel || this.includemmrranges || this.includeherorank || this.includerolerank
-          || this.includetalentbuildtype || this.includemirror || (this.modifiedincludegroupsize && this.groupsizeadvanced));
+          || this.includetalentbuildtype || this.includemirror || (this.modifiedincludegroupsize && this.groupsizeadvanced)
+          || this.matchhistorybattletagsearch);
       },
       toggleButtonText(){
         if(this.toggleExtraFilters){
@@ -927,6 +935,13 @@
           if(this.groupsizeadvanced){
             delete this.selectedSingleFilters['Group Size'];
             delete this.selectedMultiFilters['Group Size'];
+          }
+          if(this.matchhistorybattletagsearch){
+            this.ffBattletag = null;
+            this.ffBlizzid = null;
+            this.ffRegion = null;
+            this.ffSearchResults = null;
+            this.ffSearchError = null;
           }
 
           if(this.includemmrranges){
@@ -1347,8 +1362,8 @@
       async applyFilter() {
         if ((this.excludetimeframes || this.selectedMultiFilters.hasOwnProperty('Timeframes')) && (this.excludegametype || this.selectedMultiFilters.hasOwnProperty('Game Type'))) {
           if (this.matchhistorybattletagsearch && this.ffBattletag && !this.ffBlizzid) {
-            await this.resolveFfPlayer();
-            if (!this.ffBlizzid) return;
+            this.ffSearchError = 'Press Find Player to choose the player first.';
+            return;
           }
 
           // Auto-apply keeps the mobile panel open so several filters can be changed in a row
@@ -1374,37 +1389,36 @@
           this.applyFilter();
         }
       },
-      async resolveFfPlayer() {
-        this.ffSearchResults = [];
+      // Looks the typed name up in this profile's region, in a popup
+      async findFfPlayer() {
+        const query = (this.ffBattletag || '').trim();
+        if (!query) {
+          this.ffSearchError = 'Enter a BattleTag first.';
+          return;
+        }
         this.ffSearchError = null;
-        this.ffSearchLoading = true;
-        if (this.onFfSearching) this.onFfSearching(true);
+        this.ffSearchQuery = query;
+        this.ffSearchRun += 1;
+        this.ffNoMatch = false;
+        this.ffSearchResults = null;
+        this.ffSearchOpen = true;
         try {
           const response = await this.$axios.post('/api/v1/player/friendfoe/search', {
-            userinput: this.ffBattletag,
+            userinput: query,
             region: this.ffregioninput,
+            blizz_id: this.ffprofileblizzid || null,
           });
-          const results = Object.values(response.data);
-          if (results.length === 0) {
-            this.ffSearchError = 'No player found.';
-          } else if (results.length === 1) {
-            this.selectFfResult(results[0]);
-          } else {
-            this.ffSearchResults = results;
-          }
+          this.ffSearchResults = Array.isArray(response.data) ? response.data : Object.values(response.data || {}).filter(item => item && item.blizz_id);
         } catch {
-          this.ffSearchError = 'Search failed. Please try again.';
-        } finally {
-          this.ffSearchLoading = false;
-          if (this.onFfSearching) this.onFfSearching(false);
+          this.ffSearchResults = [];
         }
       },
       selectFfResult(result) {
         this.ffBattletag = result.battletagShort;
         this.ffBlizzid = result.blizz_id;
         this.ffRegion = result.region;
-        this.ffSearchResults = [];
-        this.applyFilter();
+        this.ffSearchError = null;
+        setTimeout(() => { this.ffSearchOpen = false; }, 400);
       },
       showMobile(){
         this.showNav = !this.showNav;
