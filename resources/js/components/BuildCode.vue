@@ -8,10 +8,10 @@
         <span v-if="levels" class="text-[0.625rem] text-subtext">{{ LEVEL_NUMBERS[index] }}</span>
       </span>
     </div>
-    <div v-if="show !== 'talents' && code" :class="['flex items-center gap-1 text-sm', alignClass]">
-      <span>{{ code }}</span>
-      <button type="button" class="p-1.5 hover:text-lteal" :title="$t(copied ? $t('Copied') : $t('Copy build to paste into the in-game chat'))" :aria-label="$t(copied ? $t('Copied') : $t('Copy build'))" @click.stop.prevent="copy">
-        <basil-icon :name="copied ? 'check' : 'share'"></basil-icon>
+    <div v-if="show !== 'talents' && code" :class="['flex', alignClass]">
+      <button type="button" class="group/copy inline-flex items-center gap-2 rounded-control bg-black/20 hover:bg-black/30 transition-colors px-3 py-1.5 text-sm text-white" :title="$t(copied ? $t('Copied') : $t('Copy build to paste into the in-game chat'))" :aria-label="$t(copied ? $t('Copied') : $t('Copy build'))" @click.stop.prevent="copy">
+        <span>{{ code }}</span>
+        <i :class="[copied ? 'fas fa-check text-lteal' : 'fas fa-copy group-hover/copy:text-lteal', 'text-xs transition-colors']"></i>
       </button>
     </div>
   </div>

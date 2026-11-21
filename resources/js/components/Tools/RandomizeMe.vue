@@ -2,7 +2,7 @@
   <div>
     <page-heading :heading="'Randomize Me'" :subheading="'Can\'t decide? Let the Nexus pick'"></page-heading>
 
-    <div class="max-w-[120rem] mx-auto px-4 md:px-8 grid xl:grid-cols-[380fr_1056fr] gap-6 items-start">
+    <div class="max-w-[120rem] mx-auto px-4 md:px-8 grid xl:grid-cols-[380fr_1056fr] gap-6 xl:min-h-[40rem]">
       <panel-box title="What to randomize" subtitle="Pick what the randomizer chooses for you." :divider="false">
         <div class="flex flex-col gap-2">
           <check-row v-for="option in optionList" :key="option.key" v-model="options[option.key]" :text="option.text"></check-row>
@@ -24,15 +24,16 @@
         </div>
       </panel-box>
 
-      <panel-box :divider="false">
+      <panel-box :divider="false" :class="['xl:h-full relative', { 'md:!rounded-tl-none': loading }]">
+        <loading-component v-if="loading" :compact="true" :tab="true"></loading-component>
         <!-- Before the first roll -->
-        <div v-if="!rolled" class="flex flex-col items-center justify-center gap-4 text-center py-16">
+        <div v-if="!rolled" class="flex-1 flex flex-col items-center justify-center gap-4 text-center py-16">
           <i class="fa-solid fa-shuffle text-4xl text-lteal"></i>
           <p class="text-subtext max-w-[28rem]">{{ $t('Get a random hero, map, mode and a real talent build pulled from recent games. Use it as a fun challenge or to try something new.') }}</p>
           <custom-button color="teal" class="font-semibold" :ignoreclick="true" :alt="'Randomize'" @click="roll(['hero', 'map', 'region', 'mode', 'build'])">{{ $t('Randomize!') }}</custom-button>
         </div>
 
-        <div v-else :class="['grid gap-6', showHero ? 'md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]' : '']">
+        <div v-else :class="['flex-1 grid gap-6', showHero ? 'md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]' : '']">
           <div v-if="showHero" class="rounded border-2 border-teal overflow-hidden bg-surface-1 max-md:h-[20rem]">
             <img :key="pick.hero.id" class="w-full h-full object-cover" :src="`/images/heroes_rectangle_large/${pick.hero.short_name}.jpg`" :alt="$heroName(pick.hero)">
           </div>
@@ -54,14 +55,16 @@
             <div v-if="showHero && options.build" class="rounded-control bg-surface-1 p-4 flex flex-col gap-3">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <span class="text-sm font-semibold">{{ $t('Talent build') }}</span>
-                <build-code v-if="pick.build" :build="pick.build" :hero="pick.hero" show="code" align="end" class="text-lteal"></build-code>
+                <build-code v-if="pick.build" :build="pick.build" :hero="pick.hero" show="code" align="end"></build-code>
               </div>
+              <div class="min-h-[3.75rem]">
               <div v-if="buildLoading" class="flex gap-1.5">
-                <skeleton-box v-for="talent in 7" :key="talent" class="w-10 h-10"></skeleton-box>
+                <skeleton-box v-for="talent in 7" :key="talent" class="w-[2.625rem] h-[2.625rem]"></skeleton-box>
               </div>
               <p v-else-if="buildError" class="text-sm text-red">{{ $t(buildError) }}</p>
               <build-code v-else-if="pick.build" :build="pick.build" :hero="pick.hero" show="talents" align="start" :levels="true" :popup-hoverable="false"></build-code>
               <p v-else class="text-sm text-subtext">{{ $t('No complete build found for this hero.') }}</p>
+              </div>
             </div>
 
             <!-- Hero stats on the map and mode, this patch -->
@@ -77,7 +80,7 @@
 
             <div class="flex flex-wrap gap-3">
               <custom-button color="teal" class="font-semibold" :ignoreclick="true" :alt="'Randomize again'" @click="roll(['hero', 'map', 'region', 'mode', 'build'])">{{ $t('Randomize again') }}</custom-button>
-              <custom-button v-if="showHero" :href="`/Global/Talents/${pick.hero.name}`" class="font-semibold" :alt="'Open builds'">{{ $t('Open :hero builds', { hero: $heroName(pick.hero) }) }}</custom-button>
+              <custom-button v-if="showHero" :href="`/Global/Talents/${pick.hero.name}`" :targetblank="true" class="font-semibold" :alt="'Open builds'">{{ $t('Open :hero builds', { hero: $heroName(pick.hero) }) }}</custom-button>
             </div>
 
             <div class="flex flex-wrap items-center gap-2 text-xs">
@@ -138,6 +141,9 @@ export default {
     };
   },
   computed: {
+    loading() {
+      return this.buildLoading || this.statsLoading;
+    },
     showHero() {
       return this.options.hero && this.pick.hero;
     },
