@@ -46,7 +46,9 @@
     <div v-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8">
       <panel-box title="All Maps" :subtitle="$t(':count maps · averages are per game', { count: data.length })">
         <template #right>
-          <column-chooser :stats="stats" note="Map, Win Rate and Games are always visible" @apply="applyColumns"></column-chooser>
+          <!-- A phone fits two columns after Win Rate, Games one of the choices; turning on a third swaps out the last one turned on -->
+          <column-chooser v-if="phone" key="phone" :stats="phoneChooserStats" :max="2" :replace-at-cap="true" :selected-order="phoneColumns" note="Map and Win Rate are always visible" @apply="phoneColumns = $event"></column-chooser>
+          <column-chooser v-else key="wide" :stats="stats" note="Map, Win Rate and Games are always visible" @apply="applyColumns"></column-chooser>
         </template>
         <div id="table-container" ref="tablecontainer" class="overflow-clip">
           <table id="responsive-table" class="min-w-0 w-full responsive-table rounded-table relative" ref="responsivetable">
@@ -61,10 +63,10 @@
                 <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
                   {{ $t('Win Rate') }}<sort-indicator column="win_rate" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
-                <th @click="sortTable('games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
+                <th v-if="showGames" @click="sortTable('games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
                   {{ $t('Games') }}<sort-indicator column="games_played" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
-                <th v-for="stat in selectedStats" :key="stat.value" @click="sortTable(stat.value)" :title="$t(stat.name)" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === stat.value }">
+                <th v-for="stat in shownStats" :key="stat.value" @click="sortTable(stat.value)" :title="$t(stat.name)" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === stat.value }">
                   {{ $t(columnLabel(stat)) }}<sort-indicator :column="stat.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
               </tr>
@@ -73,8 +75,8 @@
               <tr v-for="row in shownData" :key="row.id">
                 <td class="py-2 px-3"><a class="group/bt inline-flex items-center font-medium" :href="getPlayerMapPageUrl(row.name)"><span class="group-hover/bt:underline">{{ $mapName(row.name) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></td>
                 <td class="py-2 px-3"><div class="min-w-[8em]"><div class="text-sm font-semibold text-header tabular-nums mb-1.5">{{ row.win_rate }}<span class="text-xs">%</span></div><stat-bar :value="row.win_rate" display-text="" :color="$winRateColor(row.win_rate)"></stat-bar></div></td>
-                <td class="py-2 px-3 text-center">{{ (row.wins + row.losses) }}</td>
-                <td v-for="stat in selectedStats" :key="stat.value" :class="{ flash: stat.flash }" class="py-2 px-3 text-center">
+                <td v-if="showGames" class="py-2 px-3 text-center">{{ (row.wins + row.losses) }}</td>
+                <td v-for="stat in shownStats" :key="stat.value" :class="{ flash: stat.flash }" class="py-2 px-3 text-center">
                   <a v-if="statContainsMax(stat) && !esport" class="group/bt inline-flex items-center text-header cursor-pointer" role="button" @click="navigateToMaxStatMatch(row.name, stat.value, row[stat.value])" :title="$t('Navigate to this match')"><span class="group-hover/bt:underline">{{ showStatValue(row[stat.value]) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
                   <template v-else>{{ showStatValue(row[stat.value]) }}</template>
                 </td>
@@ -106,16 +108,16 @@
                   </div>
                 </th>
                 <th class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Win Rate') }}</span></th>
-                <th class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Games') }}</span></th>
-                <th v-for="stat in selectedStats" :key="stat.value" class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t(columnLabel(stat)) }}</span></th>
+                <th v-if="showGames" class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Games') }}</span></th>
+                <th v-for="stat in shownStats" :key="stat.value" class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t(columnLabel(stat)) }}</span></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="row in 19" :key="row">
                 <td class="py-2 px-3"><span class="inline-flex items-center font-medium"><span class="skeleton-text">Tomb of the Spider Queen</span><basil-icon name="arrow-small" class="text-xs ml-2 invisible"></basil-icon></span></td>
                 <td class="py-2 px-3"><div class="min-w-[8em]"><div class="text-sm font-semibold tabular-nums mb-1.5"><span class="skeleton-text">00.0<span class="text-xs">%</span></span></div><stat-bar value="0" display-text="" :hide-value="true"></stat-bar></div></td>
-                <td class="py-2 px-3 text-center"><span class="skeleton-text">000</span></td>
-                <td v-for="stat in selectedStats" :key="stat.value" class="py-2 px-3 text-center"><span class="skeleton-text">{{ skeletonValue(stat) }}</span></td>
+                <td v-if="showGames" class="py-2 px-3 text-center"><span class="skeleton-text">000</span></td>
+                <td v-for="stat in shownStats" :key="stat.value" class="py-2 px-3 text-center"><span class="skeleton-text">{{ skeletonValue(stat) }}</span></td>
               </tr>
             </tbody>
           </table>
@@ -124,7 +126,7 @@
     </div>
 
     <match-lookup v-if="matchIsLoading" :text="matchLookupText"></match-lookup>
-    <div v-if="matchNotFound" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red text-white px-4 py-2 rounded z-50">
+    <div v-if="matchNotFound" class="fixed bottom-4 max-md:bottom-24 left-1/2 -translate-x-1/2 bg-red text-white px-4 py-2 rounded z-50">
       {{ $t("Couldn't find the match for that value.") }}
     </div>
   </div>
@@ -161,6 +163,8 @@ export default {
   data(){
     return {
       windowWidth: window.innerWidth,
+      // A phone's two columns after Win Rate, in the order they were turned on
+      phoneColumns: ['games_played', 'kda'],
       cancelTokenSource: null,
       ngsSeason: this.esportfilters?.season ?? null,
       ngsDivision: this.esportfilters?.division ?? null,
@@ -284,7 +288,13 @@ showOptions: false,
     }
     this.gametype = this.gametypedefault;
   },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.onResize);
+  },
   mounted() {
+    // Phones and wider screens show different columns, so it follows the window
+    this.onResize = () => { this.windowWidth = window.innerWidth; };
+    window.addEventListener('resize', this.onResize);
     if(this.esport){
       this.getNgsData();
       return;
@@ -317,6 +327,22 @@ if(this.playerloadsetting == null || this.playerloadsetting == true || this.play
     shownData() {
       const search = this.mapSearch.trim().toLowerCase();
       return search ? this.sortedData.filter(row => row.name.toLowerCase().includes(search) || this.$mapName(row.name).toLowerCase().includes(search)) : this.sortedData;
+    },
+    // Below the md breakpoint
+    phone() {
+      return this.windowWidth < 1024;
+    },
+    showGames() {
+      return !this.phone || this.phoneColumns.includes('games_played');
+    },
+    // The stat columns the table shows: the chosen ones, or a phone's picks in the order they were turned on
+    shownStats() {
+      if (!this.phone) return this.selectedStats;
+      return this.phoneColumns.map(value => this.stats.find(stat => stat.value === value)).filter(Boolean);
+    },
+    // The phone chooser's list: Games, then every stat, ticked when it's one of the two
+    phoneChooserStats() {
+      return [{ name: 'Games', value: 'games_played' }, ...this.stats].map(stat => ({ name: stat.name, value: stat.value, selected: this.phoneColumns.includes(stat.value) }));
     },
     selectedStatsCount() {
       return this.stats.filter(stat => stat.selected).length;

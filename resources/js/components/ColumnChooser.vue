@@ -19,13 +19,14 @@
 
       <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-x-2 gap-y-1">
         <label v-for="stat in shownStats" :key="stat.value"
-          :class="['flex items-center gap-3 px-2.5 h-[2.1875rem] rounded-control cursor-pointer transition-colors', draft[stat.value] ? 'bg-surface-3 font-medium text-white' : 'text-subtext hover:bg-surface-2', { 'opacity-40 cursor-not-allowed': atCap && !draft[stat.value] }]">
-          <input type="checkbox" class="form-checkbox shrink-0" :checked="draft[stat.value]" :disabled="atCap && !draft[stat.value]" @change="draft[stat.value] = $event.target.checked">
+          :class="['flex items-center gap-3 px-2.5 h-[2.1875rem] rounded-control cursor-pointer transition-colors', draft[stat.value] ? 'bg-surface-3 font-medium text-white' : 'text-subtext hover:bg-surface-2', { 'opacity-40 cursor-not-allowed': locked(stat) }]">
+          <input type="checkbox" class="form-checkbox shrink-0" :checked="draft[stat.value]" :disabled="locked(stat)" @change="pick(stat, $event.target.checked)">
           <span class="truncate">{{ $t(label(stat)) }}</span>
         </label>
         <p v-if="!shownStats.length" class="text-subtext col-span-full">{{ $t('No columns match ":search".', { search: search }) }}</p>
       </div>
-      <p v-if="atCap" class="text-xs text-subtext">{{ $t('Up to :max columns can be shown at once.', { max: max }) }}</p>
+      <p v-if="replaceAtCap" class="text-xs text-subtext">{{ $t('Up to :max columns fit on a phone. Turning on another turns off the one you turned on last.', { max: max }) }}</p>
+      <p v-else-if="atCap" class="text-xs text-subtext">{{ $t('Up to :max columns can be shown at once.', { max: max }) }}</p>
 
       <div class="h-px bg-gray-dark"></div>
       <div class="flex flex-wrap items-center justify-between gap-4">
@@ -55,6 +56,10 @@ export default {
     max: { type: Number, default: 15 },
     // Which columns can't be turned off
     note: { type: String, default: 'Map and Win Rate are always visible' },
+    // At the limit, turning a column on turns off the one turned on last, instead of locking the rest (phones)
+    replaceAtCap: { type: Boolean, default: false },
+    // The shown columns in the order they were turned on, for replaceAtCap; otherwise the stats' own order
+    selectedOrder: { type: Array, default: null },
   },
   emits: ['apply'],
   data() {
@@ -63,6 +68,8 @@ export default {
       search: '',
       group: 'avg',
       draft: {},
+      // Ticked columns, oldest first
+      order: [],
       // The columns the page started with, for Reset to default
       defaults: this.stats.filter(stat => stat.selected).map(stat => stat.value),
     };
@@ -87,6 +94,20 @@ export default {
     },
   },
   methods: {
+    locked(stat) {
+      return this.atCap && !this.draft[stat.value] && !this.replaceAtCap;
+    },
+    pick(stat, checked) {
+      if (checked) {
+        if (this.replaceAtCap && this.draftCount >= this.max) {
+          this.draft[this.order.pop()] = false;
+        }
+        this.order.push(stat.value);
+      } else {
+        this.order = this.order.filter(value => value !== stat.value);
+      }
+      this.draft[stat.value] = checked;
+    },
     groupOf(stat) {
       return stat.name.startsWith('Avg ') ? 'avg' : stat.name.startsWith('Max ') ? 'max' : 'total';
     },
@@ -102,17 +123,25 @@ export default {
       this.open = !this.open;
       if (this.open) {
         this.draft = Object.fromEntries(this.stats.map(stat => [stat.value, stat.selected]));
+        this.order = this.selectedOrder ? [...this.selectedOrder] : this.stats.filter(stat => stat.selected).map(stat => stat.value);
         this.search = '';
+        // Opens on the group holding the newest pick, so a phone's two columns (e.g. Games, KDA) are in view
+        const newest = this.stats.find(stat => stat.value === this.order[this.order.length - 1]);
+        if (this.replaceAtCap && newest) {
+          this.group = this.groupOf(newest);
+        }
       }
     },
     reset() {
       this.draft = Object.fromEntries(this.stats.map(stat => [stat.value, this.defaults.includes(stat.value)]));
+      this.order = [...this.defaults];
     },
     clear() {
       this.draft = Object.fromEntries(this.stats.map(stat => [stat.value, false]));
+      this.order = [];
     },
     apply() {
-      this.$emit('apply', this.stats.filter(stat => this.draft[stat.value]).map(stat => stat.value));
+      this.$emit('apply', this.replaceAtCap ? [...this.order] : this.stats.filter(stat => this.draft[stat.value]).map(stat => stat.value));
       this.open = false;
     },
   },
