@@ -1966,6 +1966,7 @@
     "Unranked": "등급 없음",
     "Unranked Draft": "일반 선택",
     "Up to :max columns can be shown at once.": "한 번에 최대 :max개 열을 표시할 수 있습니다.",
+    "Up to :max columns fit on a phone. Turning on another turns off the one you turned on last.": "휴대폰에서는 최대 :max개 열까지 표시됩니다. 다른 열을 켜면 마지막으로 켠 열이 꺼집니다.",
     "Update this game": "이 경기 업데이트",
     "Update vote": "투표 수정",
     "Updated :updatedat. Refreshes every few minutes.": ":updatedat 업데이트됨. 몇 분마다 새로고침됩니다.",

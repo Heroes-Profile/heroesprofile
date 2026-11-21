@@ -1967,6 +1967,7 @@
     "Unranked": "Без ранга",
     "Unranked Draft": "Драфт без рейтинга",
     "Up to :max columns can be shown at once.": "Максимум столбцов одновременно: :max.",
+    "Up to :max columns fit on a phone. Turning on another turns off the one you turned on last.": "На телефоне помещается не больше :max столбцов. Если включить ещё один, отключится последний включённый.",
     "Update this game": "Обновить матч",
     "Update vote": "Изменить голос",
     "Updated :updatedat. Refreshes every few minutes.": "Обновлено :updatedat. Обновляется каждые несколько минут.",

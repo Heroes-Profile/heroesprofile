@@ -1967,6 +1967,7 @@
     "Unranked": "未定级",
     "Unranked Draft": "非排位模式",
     "Up to :max columns can be shown at once.": "最多可同时显示 :max 列。",
+    "Up to :max columns fit on a phone. Turning on another turns off the one you turned on last.": "手机上最多可显示 :max 列。再开启一列会关闭你最后开启的那一列。",
     "Update this game": "更新此比赛",
     "Update vote": "更新投票",
     "Updated :updatedat. Refreshes every few minutes.": "更新于 :updatedat，每隔几分钟刷新一次。",

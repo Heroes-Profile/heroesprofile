@@ -1968,6 +1968,7 @@
     "Unranked": "Sem ranque",
     "Unranked Draft": "Draft sem ranque",
     "Up to :max columns can be shown at once.": "É possível exibir até :max colunas de uma vez.",
+    "Up to :max columns fit on a phone. Turning on another turns off the one you turned on last.": "Cabem até :max colunas no celular. Ao ativar outra, a última que você ativou é desativada.",
     "Update this game": "Atualizar esta partida",
     "Update vote": "Atualizar voto",
     "Updated :updatedat. Refreshes every few minutes.": "Atualizado :updatedat. Atualiza a cada poucos minutos.",

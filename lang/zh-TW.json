@@ -1967,6 +1967,7 @@
     "Unranked": "未定級",
     "Unranked Draft": "非排名選角",
     "Up to :max columns can be shown at once.": "一次最多可顯示 :max 個欄位。",
+    "Up to :max columns fit on a phone. Turning on another turns off the one you turned on last.": "手機上最多可顯示 :max 個欄位。開啟其他欄位時，會關閉你最後開啟的欄位。",
     "Update this game": "更新此比賽",
     "Update vote": "更新投票",
     "Updated :updatedat. Refreshes every few minutes.": "更新於 :updatedat，每隔幾分鐘重新整理。",
