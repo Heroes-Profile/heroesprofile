@@ -2,8 +2,9 @@
   <!-- One line above a page's skeleton, rather than covering the page. With tab, on desktop it sits on a tab of the skeleton
        panel's background, just above the panel, so the panel can start where the loaded one does (the panel squares its
        top-left corner with md:!rounded-tl-none); below md it is the plain line again. -->
-  <!-- The tab is 2rem tall and overlaps the panel by 1rem, so it sticks up 1rem and clears the 1.5rem gap under the filters -->
-  <div v-if="compact" :class="['flex flex-wrap items-center gap-3 text-sm text-soft', { 'md:absolute md:left-0 md:bottom-[calc(100%-1rem)] md:bg-surface md:rounded-t md:px-6 md:py-1': tab }]">
+  <!-- The tab is 2.25rem tall (extra room above the spinning logo) and overlaps the panel by 1rem, so it sticks up 1.25rem
+       and still clears the 1.5rem gap under the filters -->
+  <div v-if="compact" :class="['flex flex-wrap items-center gap-3 text-sm text-soft', { 'md:absolute md:left-0 md:bottom-[calc(100%-1rem)] md:bg-surface md:rounded-t md:px-6 md:pt-2 md:pb-1': tab }]">
     <img :class="['logo-spin w-auto shrink-0', tab ? 'h-7 md:h-6' : 'h-7']" :src="overrideimage || '/images/logo/heroesprofilelogo.png'" alt="Loading" />
     <span v-if="textoverride"><slot></slot></span>
     <span v-else>{{ $t('Loading data...') }}</span>
