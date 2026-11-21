@@ -1,5 +1,5 @@
 <template>
-  <panel-box :inner="true" :title="$t('Party Size Win Rates')" :link-text="linkText" :link-href="linkHref" :skeleton="skeleton">
+  <panel-box :inner="true" :title="$t(title)" :link-text="linkText" :link-href="linkHref" :skeleton="skeleton">
     <!-- Spread over the card, so it lines up with a taller card beside it -->
     <div class="flex-1 flex flex-col justify-between gap-3">
       <div v-for="stack in partySizes" :key="stack.label" class="flex flex-col gap-1.5">
@@ -23,6 +23,11 @@ export default {
     prefix: {
       type: String,
       default: 'stack_',
+    },
+    // Profile, hero, map and role pages count the player's own party; the Party pages pass their own wording
+    title: {
+      type: String,
+      default: 'Win Rate by Own Party Size',
     },
     linkText: String,
     linkHref: String,

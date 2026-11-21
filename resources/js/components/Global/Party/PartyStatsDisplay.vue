@@ -5,7 +5,8 @@
     <panel-box :class="{ 'relative md:!rounded-tl-none': $slots.default }">
       <slot></slot>
       <div class="grid xl:grid-cols-[3fr_2fr] gap-6">
-        <player-party-size-panel :data="partySizeData" :skeleton="skeleton"></player-party-size-panel>
+        <!-- Built from team setups, so a size is the largest party on the team, not necessarily the player's own -->
+        <player-party-size-panel :data="partySizeData" :skeleton="skeleton" :title="mode === 'global' ? 'Win Rate by Largest Party on the Team' : 'Win Rate by Largest Party on Your Team'"></player-party-size-panel>
 
         <panel-box :inner="true" :title="$t('Summary')">
           <div class="grid sm:grid-cols-2 gap-4">
