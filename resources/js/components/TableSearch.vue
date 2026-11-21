@@ -1,25 +1,26 @@
 <template>
   <!-- A player table is scanned while the search runs, then the matches drop in -->
   <div :class="picker ? 'w-full' : 'max-w-[93.75rem] mx-auto w-full px-4 mt-10 pb-10'">
-    <!-- While searching the message sits on a tab of the table, as on the profile's skeleton. The table's header starts
-         at its top edge, so the tab sits fully above it rather than overlapping like it does on padded panels -->
     <p v-if="phase !== 'searching'" class="text-center text-subtext text-sm mb-4">
       <template v-if="phase === 'choose'">{{ $t(':results players named :query. Pick one.', { results: results.length, query: query }) }}</template>
       <template v-else-if="phase === 'picked'">{{ picker ? $t('Player chosen') : $t('Opening profile...') }}</template>
     </p>
 
-    <div :class="['relative', { 'md:mt-9': phase === 'searching' }]">
-    <loading-component v-if="phase === 'searching'" :compact="true" :tab="true" :textoverride="true" :overrideimage="loaderImage" class="max-md:mb-4 md:!bottom-full">{{ $t('Searching for :query...', { query: query }) }}</loading-component>
+    <!-- In a card like the site's other tables. While searching the message sits on a tab of the card, as on the
+         profile's skeleton, and the space the results line will take is kept above it so nothing moves -->
+    <panel-box :class="['relative', { 'md:mt-9 md:!rounded-tl-none': phase === 'searching' }]">
+    <loading-component v-if="phase === 'searching'" :compact="true" :tab="true" :textoverride="true" :overrideimage="loaderImage">{{ $t('Searching for :query...', { query: query }) }}</loading-component>
     <div class="relative overflow-clip">
-      <table class="min-w-0 w-full responsive-table relative">
+      <table class="min-w-0 w-full responsive-table rounded-table relative">
         <thead>
           <tr>
             <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Player') }}</th>
             <th v-if="showRegion" class="py-2 px-3 text-center text-sm leading-4">{{ $t('Region') }}</th>
             <th v-if="showTogether" class="py-2 px-3 text-center text-sm leading-4">{{ $t('Games Together') }}</th>
             <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Games Played') }}</th>
-            <th class="py-2 px-3 text-left text-sm leading-4">{{ $t('Latest Hero') }}</th>
-            <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Latest Game') }}</th>
+            <!-- The popup picker is too narrow on phones for these; there it shows the player and the game counts -->
+            <th :class="['py-2 px-3 text-left text-sm leading-4', { 'max-md:hidden': picker }]">{{ $t('Latest Hero') }}</th>
+            <th :class="['py-2 px-3 text-center text-sm leading-4', { 'max-md:hidden': picker }]">{{ $t('Latest Game') }}</th>
           </tr>
         </thead>
 
@@ -29,8 +30,8 @@
             <td v-if="showRegion"><skeleton-box class="w-12 h-4 mx-auto"></skeleton-box></td>
             <td v-if="showTogether"><skeleton-box class="w-12 h-4 mx-auto"></skeleton-box></td>
             <td><skeleton-box class="w-16 h-4 mx-auto"></skeleton-box></td>
-            <td class="py-2 px-3"><div class="flex items-center gap-3"><skeleton-box class="w-10 h-10 shrink-0 !rounded-full"></skeleton-box><skeleton-box class="hidden md:block w-20 h-4"></skeleton-box></div></td>
-            <td><skeleton-box class="w-28 h-4 mx-auto"></skeleton-box></td>
+            <td :class="['py-2 px-3', { 'max-md:hidden': picker }]"><div class="flex items-center gap-3"><skeleton-box class="w-10 h-10 shrink-0 !rounded-full"></skeleton-box><skeleton-box class="hidden md:block w-20 h-4"></skeleton-box></div></td>
+            <td :class="{ 'max-md:hidden': picker }"><skeleton-box class="w-28 h-4 mx-auto"></skeleton-box></td>
           </tr>
         </tbody>
 
@@ -48,8 +49,8 @@
             <td v-if="showTogether" class="font-semibold text-lteal">{{ Number(item.gamesTogether || 0).toLocaleString('en-US') }}</td>
             <td>{{ Number(item.totalGamesPlayed).toLocaleString('en-US') }}</td>
             <!-- As in the Global Hero Stats table: portrait and name, left-aligned -->
-            <td class="py-2 px-3"><div v-if="item.latestHero" class="flex items-center justify-start"><hero-image-wrapper class="mr-3" :hero="item.latestHero"></hero-image-wrapper><span class="hidden md:block font-medium">{{ $heroName(item.latestHero) }}</span></div></td>
-            <td>
+            <td :class="['py-2 px-3', { 'max-md:hidden': picker }]"><div v-if="item.latestHero" class="flex items-center justify-start"><hero-image-wrapper class="mr-3" :hero="item.latestHero"></hero-image-wrapper><span class="hidden md:block font-medium">{{ $heroName(item.latestHero) }}</span></div></td>
+            <td :class="{ 'max-md:hidden': picker }">
               <a v-if="item.latestReplayID" class="group/bt inline-flex items-center" :href="matchUrl(item)" target="_blank" rel="noopener" @click.stop><span class="group-hover/bt:underline">{{ item.latest_game }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
               <template v-else>{{ item.latest_game }}</template>
             </td>
@@ -60,7 +61,7 @@
       <!-- Sweeps the rows while searching -->
       <div v-if="phase === 'searching'" class="table-scan absolute inset-x-0 h-12 pointer-events-none bg-gradient-to-b from-transparent via-teal/40 to-transparent"></div>
     </div>
-    </div>
+    </panel-box>
 
     <!-- Covers the page and stays while the profile loads -->
     <div v-if="!picker" :class="['fixed inset-0 z-[100] bg-page pointer-events-none transition-opacity duration-500 flex items-center', fadeOut ? 'opacity-100' : 'opacity-0']">

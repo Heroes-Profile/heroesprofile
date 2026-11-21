@@ -459,7 +459,8 @@
             :defaultValue="modifiedGroupSizeDefaultValue"
           ></multi-select-filter>
           <!-- Friend/Foe Battletag Search -->
-          <div v-if="matchhistorybattletagsearch && toggleExtraFilters" id="filter-label" class="filter-fill relative max-md:w-full md:w-[12.5rem]">
+          <!-- Wide enough for the box and Find Player side by side; on a narrow row it takes a row of its own -->
+          <div v-if="matchhistorybattletagsearch && toggleExtraFilters" id="filter-label" class="filter-fill relative max-md:w-full !min-w-[min(100%,18rem)]">
             <div class="flex flex-col gap-1.5 text-sm font-medium text-subtext p-2">
               <span>{{ $t('Friend or Foe Player') }}</span>
               <!-- Find Player looks the name up (in this profile's region) before Filter can use it -->
@@ -470,7 +471,7 @@
                     type="text"
                     v-model="ffBattletag"
                     :placeholder="$t('Enter BattleTag')"
-                    class="w-full h-[2.5rem] rounded-l-control !bg-surface-3 pl-9 pr-8 text-white placeholder:text-subtext focus:outline-none"
+                    :class="['w-full h-[2.5rem] rounded-l-control !bg-surface-3 pl-9 text-white placeholder:text-subtext focus:outline-none', ffBlizzid ? 'pr-8' : 'pr-2']"
                     @input="ffBlizzid = null; ffSearchError = null"
                     @keydown.enter.prevent="findFfPlayer"
                   />
