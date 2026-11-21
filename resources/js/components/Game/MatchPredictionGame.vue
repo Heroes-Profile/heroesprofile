@@ -16,7 +16,11 @@
             <button type="button" class="text-xs text-subtext hover:text-white hover:underline" @click="skipPracticeOpen = true">{{ $t('Skip practice') }}</button>
           </span>
           <p class="text-sm text-subtext">{{ $t('How good are you at predicting the winner from the picks? Every match is a real game, so results are based on actual data.') }}</p>
-          <a :href="leaderboardUrl" target="_blank" class="group/bt self-start inline-flex items-center text-xs text-lteal"><span class="group-hover/bt:underline">{{ $t('See the leaderboard') }}</span><basil-icon name="arrow-small" class="text-xs ml-1"></basil-icon></a>
+          <span class="flex flex-wrap gap-x-4 gap-y-1">
+            <a :href="leaderboardUrl" target="_blank" class="group/bt inline-flex items-center text-xs text-lteal"><span class="group-hover/bt:underline">{{ $t('See the leaderboard') }}</span><basil-icon name="arrow-small" class="text-xs ml-1"></basil-icon></a>
+            <!-- Back to How it works and Your record -->
+            <a v-if="user && (data || isLoading)" href="#" class="group/bt inline-flex items-center text-xs text-lteal" @click.prevent="showStats"><span class="group-hover/bt:underline">{{ $t('See your stats') }}</span><basil-icon name="arrow-small" class="text-xs ml-1"></basil-icon></a>
+          </span>
         </div>
         <div class="flex flex-wrap items-end gap-3 max-sm:w-full">
           <div class="w-full sm:w-[10rem]">
@@ -76,10 +80,12 @@
                 </span>
                 <span v-if="bans(team).length" class="flex items-center gap-2">
                   <span class="text-[0.625rem] font-bold uppercase tracking-wider text-subtext">{{ $t('Bans') }}</span>
-                  <template v-for="(ban, index) in bans(team)" :key="index">
-                    <hero-image-wrapper v-if="ban.hero" :hero="ban.hero" class="grayscale opacity-70"></hero-image-wrapper>
-                    <round-image v-else image="/images/talents/no-image.png">{{ $t('No Ban') }}</round-image>
-                  </template>
+                  <!-- Struck through in the banning team's colour, as on the Drafter -->
+                  <span v-for="(ban, index) in bans(team)" :key="index" class="relative w-8 h-8 shrink-0" :title="ban.hero ? $heroName(ban.hero) : $t('No Ban')">
+                    <span v-if="ban.hero" class="absolute inset-0 rounded-full bg-cover bg-center opacity-60" :style="{ backgroundImage: 'url(/images/heroes/' + ban.hero.short_name + '.png)' }"></span>
+                    <span :class="['absolute inset-0 rounded-full border-2', team === 0 ? 'border-[rgba(0,153,148,0.8)]' : 'border-[rgba(228,74,35,0.8)]']"></span>
+                    <span :class="['absolute inset-0 rounded-full', team === 0 ? 'ban-strike-teal' : 'ban-strike-red']"></span>
+                  </span>
                 </span>
               </div>
 
@@ -98,7 +104,10 @@
                 </div>
               </div>
 
-              <custom-button v-if="!userchoiceresult" :color="team === 0 ? 'teal' : 'blue'" class="font-semibold text-center" :ignoreclick="true" :disabled="choosing" :alt="'Team won'" @click="chooseWinner(team)">{{ $t('Team :team won', { team: team + 1 }) }}</custom-button>
+              <custom-button v-if="!userchoiceresult" :color="team === 0 ? 'teal' : 'blue'" class="font-semibold text-center" :ignoreclick="true" :disabled="choosing && userchoiceteam !== team" :alt="'Team won'" @click="chooseWinner(team)">
+                <span v-if="choosing && userchoiceteam === team" class="inline-flex items-center gap-2"><img class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="">{{ $t('Checking who won...') }}</span>
+                <template v-else>{{ $t('Team :team won', { team: team + 1 }) }}</template>
+              </custom-button>
             </div>
           </template>
         </div>
@@ -184,6 +193,7 @@ export default {
         { key: '1', text: 'Quick Match' },
         { key: '6', text: 'ARAM' },
       ],
+      loadRequest: 0,
       skipPracticeOpen: false,
       skippingPractice: false,
       streak: 0,
@@ -212,7 +222,7 @@ export default {
       return '/Global/Leaderboard?type=Match%20Prediction&season=' + this.currentSeason;
     },
     statsSeasons() {
-      return [{ code: 'All', name: 'All Seasons' }, ...(this.filters.match_prediction_seasons ?? [])];
+      return [{ code: 'All', name: 'All Seasons' }, ...(this.filters.match_prediction_seasons ?? []).filter(season => season.name !== 'Preseason')];
     },
     // 1 when the picked team won
     guessedRight() {
@@ -250,6 +260,8 @@ export default {
       return picks.filter(pick => pick.hero).map(pick => players.find(player => player.hero?.id === pick.hero.id) || { hero: pick.hero, talent: null });
     },
     async getData() {
+      // A match that arrives after See your stats is dropped
+      const request = ++this.loadRequest;
       this.isLoading = true;
       this.data = null;
       try {
@@ -257,12 +269,19 @@ export default {
         if (response.data.status == 'failure to validate inputs') {
           throw new Error('Failure to validate inputs');
         }
-        this.data = response.data;
+        if (request === this.loadRequest) this.data = response.data;
       } catch (error) {
         // Nothing loaded; Next match tries again
       } finally {
-        this.isLoading = false;
+        if (request === this.loadRequest) this.isLoading = false;
       }
+    },
+    showStats() {
+      this.loadRequest += 1;
+      this.isLoading = false;
+      this.data = null;
+      this.userchoiceresult = null;
+      this.userchoiceteam = null;
     },
     applyFilter() {
       // The button's click still arrives while it's disabled

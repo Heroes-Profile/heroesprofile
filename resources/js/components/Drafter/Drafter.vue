@@ -645,13 +645,3 @@ export default {
   },
 };
 </script>
-
-<style>
-/* A ban's portrait struck through in the banning team's colour */
-.ban-strike-teal {
-  background: linear-gradient(45deg, transparent 46%, rgba(0, 153, 148, 0.9) 46%, rgba(0, 153, 148, 0.9) 54%, transparent 54%);
-}
-.ban-strike-red {
-  background: linear-gradient(45deg, transparent 46%, rgba(228, 74, 35, 0.9) 46%, rgba(228, 74, 35, 0.9) 54%, transparent 54%);
-}
-</style>
