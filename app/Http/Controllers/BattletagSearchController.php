@@ -58,9 +58,11 @@ class BattletagSearchController extends Controller
 
     public function friendFoeSearch(Request $request)
     {
-        $validator = Validator::make($request->only(['userinput', 'region']), [
+        $validator = Validator::make($request->only(['userinput', 'region', 'blizz_id']), [
             'userinput' => ['required', 'string', new BattletagInputProhibitCharacters],
             'region' => ['required', 'integer'],
+            // The profile being filtered: only players who shared a game with it come back
+            'blizz_id' => ['nullable', 'integer'],
         ]);
 
         if ($validator->fails()) {
@@ -71,13 +73,50 @@ class BattletagSearchController extends Controller
             ];
         }
 
-        $data = $this->searchForBattletag($request['userinput'], (int) $request['region']);
+        $region = (int) $request['region'];
+        $data = $this->searchForBattletag($request['userinput'], $region);
+
+        if ($request['blizz_id'] && $data !== []) {
+            $data = $this->playedWith($data, (int) $request['blizz_id'], $region);
+        }
 
         foreach ($data as $item) {
             unset($item->battletag);
         }
 
         return $data;
+    }
+
+    /**
+     * Keeps the accounts that were in a game with the profile player (same team or not), each with how many,
+     * most games together first. The profile player itself is left out.
+     */
+    private function playedWith(array $accounts, int $blizzId, int $region): array
+    {
+        $candidateIds = array_values(array_unique(array_map(fn ($account) => $account->blizz_id, $accounts)));
+
+        $together = DB::connection('heroesprofile')->table('player as me')
+            ->join('player as ff', 'ff.replayID', '=', 'me.replayID')
+            ->join('replay', 'replay.replayID', '=', 'me.replayID')
+            ->where('me.blizz_id', $blizzId)
+            ->where('replay.region', $region)
+            ->whereIn('ff.blizz_id', $candidateIds)
+            ->where('ff.blizz_id', '<>', $blizzId)
+            ->groupBy('ff.blizz_id')
+            ->select('ff.blizz_id', DB::raw('COUNT(*) AS games'))
+            ->pluck('games', 'ff.blizz_id');
+
+        $kept = [];
+        foreach ($accounts as $account) {
+            if ((int) $account->region === $region && isset($together[$account->blizz_id])) {
+                $account->gamesTogether = (int) $together[$account->blizz_id];
+                $kept[] = $account;
+            }
+        }
+
+        usort($kept, fn ($a, $b) => $b->gamesTogether - $a->gamesTogether);
+
+        return $kept;
     }
 
     private function searchForBattletag($input, ?int $region = null)
