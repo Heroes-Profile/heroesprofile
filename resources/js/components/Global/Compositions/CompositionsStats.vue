@@ -69,8 +69,9 @@
         <div id="table-container" ref="tablecontainer" class="overflow-clip">
           <table id="responsive-table" class="min-w-0 w-full responsive-table rounded-table table-fixed relative" ref="responsivetable">
             <colgroup>
-              <col class="w-[4.3%]">
-              <col class="w-[37.5%]">
+              <!-- Wide enough for the "#" box beside the rank once sorted by another column -->
+              <col class="w-[calc(7.75rem+1.5px)]">
+              <col class="w-[34%]">
               <col class="w-[26.9%]">
               <col class="w-[10.8%]">
               <col class="w-[12.9%]">
@@ -78,7 +79,12 @@
             </colgroup>
             <thead>
               <tr>
-                <th class="py-2 px-4 text-center text-sm leading-4">#</th>
+                <!-- As on Global Hero Stats: sorted by anything but win rate, "#" is the place in that sort and Rank the win rate rank.
+                     Wide enough for both, so sorting doesn't widen it -->
+                <th @click="sortTable('rank')" class="py-2 px-4 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'rank' }">
+                  <span v-if="rankChanged" class="inline-grid grid-cols-[2.75rem_2.5rem] gap-2 items-center"><span class="text-center">#</span><span class="text-left whitespace-nowrap">{{ $t('Rank') }}<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span></span>
+                  <template v-else>#<sort-indicator :column="'rank'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></template>
+                </th>
                 <th class="py-2 px-4 text-center text-sm leading-4">{{ $t('Composition') }}</th>
                 <th @click="sortTable('win_rate')" class="py-2 px-4 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
                   {{ $t('Win Rate') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
@@ -95,7 +101,7 @@
             <tbody>
               <template v-for="(row, index) in pagedData" :key="row.composition_id">
                 <tr>
-                  <td class="py-3.5 px-4 text-center text-lg font-semibold text-subtext">{{ pageStart + index + 1 }}</td>
+                  <td class="py-3.5 px-4 text-center text-lg font-semibold text-subtext"><div v-if="rankChanged" class="inline-grid grid-cols-[2.75rem_2.5rem] gap-2 items-center"><div class="bg-blue text-white text-base py-1 rounded-control text-center tabular-nums">{{ sortDir == 'desc' ? pageStart + index + 1 : sortedData.length - pageStart - index }}</div><span class="text-left tabular-nums">{{ row.rank }}</span></div><span v-else>{{ row.rank }}</span></td>
                   <td class="py-3.5 px-4">
                     <div class="grid grid-cols-5 gap-2 max-w-[33.5rem] mx-auto">
                       <div v-for="(role, slot) in rowRoles(row)" :key="slot" class="flex flex-col items-center gap-1.5 min-w-0">
@@ -180,8 +186,9 @@
         <div class="overflow-clip">
           <table class="min-w-0 w-full responsive-table rounded-table table-fixed">
             <colgroup>
-              <col class="w-[4.3%]">
-              <col class="w-[37.5%]">
+              <!-- Wide enough for the "#" box beside the rank once sorted by another column -->
+              <col class="w-[calc(7.75rem+1.5px)]">
+              <col class="w-[34%]">
               <col class="w-[26.9%]">
               <col class="w-[10.8%]">
               <col class="w-[12.9%]">
@@ -304,9 +311,19 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
       const match = this.filters.timeframes.find(t => t.code === selectedVersion);
       return match && match.patch_notes_url ? match.patch_notes_url : null;
     },
+    // Sorted by something other than win rate (or its rank), the # column shows the place in that sort beside the rank
+    rankChanged() {
+      return !!this.sortKey && this.sortKey !== 'rank' && this.sortKey !== 'win_rate';
+    },
+    // Each composition's rank by win rate, fixed whatever the table is sorted by
+    rankedData() {
+      const byWinRate = this.compositiondata.slice().sort((a, b) => b.win_rate - a.win_rate);
+      const ranks = new Map(byWinRate.map((row, index) => [row, index + 1]));
+      return this.compositiondata.map(row => ({ ...row, rank: ranks.get(row) }));
+    },
     sortedData() {
-      if (!this.sortKey) return this.compositiondata;
-      return this.compositiondata.slice().sort((a, b) => {
+      if (!this.sortKey) return this.rankedData;
+      return this.rankedData.slice().sort((a, b) => {
         const valA = a[this.sortKey];
         const valB = b[this.sortKey];
         if (this.sortDir === 'asc') {
@@ -529,7 +546,8 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
       if (key === this.sortKey) {
         this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
       } else {
-        this.sortDir = 'desc';
+        // Rank 1 is the best, so rank starts low to high; everything else starts highest first
+        this.sortDir = key === 'rank' ? 'asc' : 'desc';
       }
       this.sortKey = key;
       this.page = 1;
