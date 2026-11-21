@@ -1,5 +1,6 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', __('Match History'))
+@section('title', __('NGS :division Match History', ['division' => $division]))
+@section('meta_description', 'Every Heroes of the Storm game played in the NGS (Nexus Gaming Series) ' . $division . ' division, with heroes, maps and results.')
 @section('meta_keywords', 'Match History, Player Matches, Game Results, Match Stats')
 @section('content')
   <ngs-single-division-match-history

@@ -71,7 +71,17 @@ Allow: /Player/Zemill/67280/1/
 # Match pages
 Disallow: /Match/
 
-# Esports
+# Esports: the esports home and each league's main page only. Exact matches ($), so teams, organizations,
+# divisions, players, matches and filtered (?) versions stay blocked by the Disallow below
+Allow: /Esports$
+Allow: /Esports/NGS$
+Allow: /Esports/CCL$
+Allow: /Esports/MastersClash$
+Allow: /Esports/NutCup$
+Allow: /Esports/HeroesInternational$
+Allow: /Esports/HeroesInternational?tournament=main$
+Allow: /Esports/HeroesInternational?tournament=nationscup$
+Allow: /Esports/Other$
 Disallow: /Esports/
 
 # Pre-match & misc

@@ -1,8 +1,9 @@
 @extends('layouts.app', $bladeGlobals)    
+@php($league = (empty($esport) || $esport === 'Other') ? (is_string($series ?? null) && $series !== '' ? $series : (optional($series ?? null)->name ?? 'Esports')) : (['MastersClash' => 'Masters Clash', 'HeroesInternational' => 'Heroes International', 'NutCup' => 'Nut Cup'][$esport] ?? $esport))
 
-@section('title', __('Player Stats Esports'))
+@section('title', __(':battletag – :league Player Stats', ['battletag' => $battletag, 'league' => $league]))
 @section('meta_keywords', 'Heroes Profile, esports player stats, esports leagues, player performance, Heroes of the Storm')
-@section('meta_description', 'Explore player statistics and performance in various esports leagues on Heroes Profile. Analyze player data, track their performance, and compare stats across different esports leagues.')
+@section('meta_description', $battletag . "'s Heroes of the Storm esports stats in " . $league . ': heroes, maps, teams and match history.')
 
 @section('content')
   <esports-player-stats 

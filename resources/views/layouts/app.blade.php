@@ -58,7 +58,7 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:url" content="@yield('canonical', url()->current())">
     <meta property="og:title" content="@yield('title') | Heroes Profile">
     <meta property="og:description" content="@yield('meta_description')">
     <meta property="og:image" content="@yield('og_image', asset('images/logo/heroesprofilelogo.png'))">
@@ -71,7 +71,8 @@
     <meta name="twitter:image" content="@yield('og_image', asset('images/logo/heroesprofilelogo.png'))">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="{{ url()->current() }}">
+    {{-- The path without its query, unless the page names its own (one that is a query, like a Heroes International tournament) --}}
+    <link rel="canonical" href="@yield('canonical', url()->current())">
 
     <!-- Korean and Chinese pages: their own Noto Sans, which the font stack in app.css puts after Roboto.
          Google splits it into small pieces by character, so a page only downloads the characters it uses. -->
@@ -116,7 +117,7 @@
           '@type' => 'WebPage',
           'name' => $seoText('title'),
           'description' => $seoText('meta_description'),
-          'url' => url()->current(),
+          'url' => trim($__env->yieldContent('canonical', url()->current())),
           'inLanguage' => str_replace('_', '-', app()->getLocale()),
           'isPartOf' => ['@type' => 'WebSite', 'name' => 'Heroes Profile', 'url' => 'https://www.heroesprofile.com'],
       ]);

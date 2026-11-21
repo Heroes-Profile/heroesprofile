@@ -1,8 +1,8 @@
 @extends('layouts.app', $bladeGlobals)    
 
-@section('title', __('NGS Esports'))
+@section('title', __('NGS (Nexus Gaming Series) Stats – Heroes of the Storm'))
 @section('meta_keywords', 'NGS league, Nexus Gaming Series, Heroes of the Storm, NGS esports, competitive gaming, Heroes of the Storm league')
-@section('meta_description', 'Stay up to date with the latest news and updates from the NGS (Nexus Gaming Series) league. Review competitive Heroes of the Storm matches and follow your favorite teams.')
+@section('meta_description', 'Heroes of the Storm statistics and comparison for the Nexus Gaming Series: hero stats, divisions, standings, teams, players and match history.')
 
 @section('content')
   <ngs-main 

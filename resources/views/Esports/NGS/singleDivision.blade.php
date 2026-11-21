@@ -1,8 +1,8 @@
 @extends('layouts.app', $bladeGlobals)    
 
-@section('title', __('NGS Divisions Esport'))
+@section('title', __('NGS :division Division Stats', ['division' => $division]))
 @section('meta_keywords', 'Heroes Profile, NGS, Divisions, Heroes of the Storm, NGS divisions, competitive gaming, esports, division performance')
-@section('meta_description', 'Explore data for divisions in NGS (Nexus Gaming Series) on Heroes Profile. Analyze division performance, view division statistics, and track their achievements in Heroes of the Storm competitive gaming.')
+@section('meta_description', 'The NGS (Nexus Gaming Series) ' . $division . ' division in Heroes of the Storm: its teams, hero stats and matches.')
 
 @section('content')
   <ngs-single-division
