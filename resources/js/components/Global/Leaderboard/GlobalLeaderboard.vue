@@ -242,13 +242,16 @@
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <!-- On the group heading's line, with the rating button where it loads, so nothing moves when the data arrives -->
-      <div class="flex flex-wrap items-center gap-4 min-h-8">
-        <loading-component :compact="true" :textoverride="true">{{ $t('Loading leaderboard...') }}</loading-component>
+      <!-- The first group's heading, with the rating button where it loads, so nothing moves when the data arrives -->
+      <div class="flex flex-wrap items-center gap-4">
+        <h2 class="text-2xl font-bold skeleton-text">{{ leaderboardtype == 'SL Rank' ? 'Grand Master' : 'Group A - At least 35 games played' }}</h2>
         <skeleton-box v-if="showRating" class="h-10 w-56 ml-auto"></skeleton-box>
       </div>
-      <!-- Shaped like the table for this leaderboard type -->
-      <table-skeleton :rows="12" :columns="skeletonColumns"></table-skeleton>
+      <!-- Shaped like the table for this leaderboard type; the message sits on a tab of its panel, as on the profile -->
+      <div class="relative">
+        <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading leaderboard...') }}</loading-component>
+        <table-skeleton class="md:!rounded-tl-none" :rows="12" :columns="skeletonColumns"></table-skeleton>
+      </div>
     </div>
   </div>
 </template>
