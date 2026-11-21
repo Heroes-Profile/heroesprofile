@@ -154,8 +154,9 @@
               </tr>
             </thead>
             <tbody class="text-center">
-              <!-- Every hero's average for the filters -->
-              <tr class="font-medium">
+              <!-- Every hero's average for the filters, set apart from the heroes by a heavier line (on the cells: the
+                   rounded table's separate borders ignore a border on the row) -->
+              <tr class="font-medium [&>td]:border-b-2 [&>td]:border-b-teal/60">
                 <td class="py-3 px-3 text-subtext">—</td>
                 <td class="py-3 px-3 text-left">{{ $t('Average (all heroes)') }}</td>
                 <td class="py-3 px-3 whitespace-nowrap">{{ getValueFixed(data.average_win_rate) }}%<span class="text-xs text-subtext ml-2">&#177;{{ getValueFixed(data.average_confidence_interval) }}</span></td>
