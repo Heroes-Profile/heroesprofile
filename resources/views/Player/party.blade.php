@@ -1,7 +1,9 @@
 @extends('layouts.app', $bladeGlobals)
-@section('title', __(':battletag Party Data', ['battletag' => $battletag]))
+@php($regionName = $bladeGlobals['regions'][$region] ?? $region)
+@include('Player.structuredData', ['page' => 'Party Win Rates'])
+@section('title', __(':battletag (:region) Party Win Rates', ['battletag' => $battletag, 'region' => $regionName]))
 @section('meta_keywords', 'Party Data, Party Size, Stack Win Rates, Player Statistics')
-@section('meta_description', 'Explore ' . $battletag . '\'s win rates by party setup, comparing the groups on their team against the groups they faced.')
+@section('meta_description', 'Heroes of the Storm win rates for ' . $battletag . ' (' . $regionName . ') by party setup, comparing the groups on their team against the groups they played against.')
 @section('content')
   <player-party
     :filters="{{ json_encode($filters) }}"

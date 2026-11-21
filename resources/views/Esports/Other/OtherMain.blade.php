@@ -2,7 +2,7 @@
 
 @section('title', __('HGC and More Esports'))
 @section('meta_keywords', 'HGC and More esports, Heroes of the Storm, HGC and More league, competitive gaming, Heroes of the Storm league')
-@section('meta_description', 'Stay up to date with the latest news and updates from the HGC and More Esports league. Review competitive Heroes of the Storm matches and follow your favorite teams.')
+@section('meta_description', 'HGC and other Heroes of the Storm esports tournaments, with a filterable list of replays for each tournament.')
 
 @section('content')
   <other-main 

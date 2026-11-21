@@ -1,5 +1,6 @@
 @extends('layouts.app', $bladeGlobals)    
 @section('title', __('Profile Settings'))
+@section('robots', 'noindex, nofollow')
 @section('meta_keywords', 'profile settings, Patreon, site settings, user preferences')
 @section('meta_description', 'Customize your profile settings, including Patreon authentication, site preferences, and user options.')
 @section('content')

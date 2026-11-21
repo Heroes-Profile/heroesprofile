@@ -1,7 +1,9 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', __(':battletag :role Stats', ['battletag' => $battletag, 'role' => $role]))
+@php($regionName = $bladeGlobals['regions'][$region] ?? $region)
+@include('Player.structuredData', ['page' => $role])
+@section('title', __(':battletag (:region) :role Stats', ['battletag' => $battletag, 'region' => $regionName, 'role' => $role]))
 @section('meta_keywords', 'Player Role Stats, Role Statistics, Player Stats')
-@section('meta_description', 'Explore the statistics and data for ' . $battletag . "'s performance in the " . $role . " role. Analyze player performance and stats for the specified role.")
+@section('meta_description', 'Role stats for ' . $battletag . ' (' . $regionName . ') as ' . $role . ' in Heroes of the Storm: win rate, games played and the heroes they play in the role.')
 @section('content')
   <player-role-single-stats 
     :filters="{{ json_encode($filters) }}" 

@@ -1,7 +1,9 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', __(':battletag :map Stats', ['battletag' => $battletag, 'map' => $map]))
+@php($regionName = $bladeGlobals['regions'][$region] ?? $region)
+@include('Player.structuredData', ['page' => $map])
+@section('title', __(':battletag (:region) :map Stats', ['battletag' => $battletag, 'region' => $regionName, 'map' => $map]))
 @section('meta_keywords', 'Player Single Map Stats, Map Statistics, Player Stats')
-@section('meta_description', 'Explore the statistics and data for a single map played by a player. Analyze player performance and stats for the selected map.')
+@section('meta_description', 'Map stats for ' . $battletag . ' (' . $regionName . ') on ' . $map . ' in Heroes of the Storm: win rate, games played and the heroes they play there.')
 @section('content')
   <player-map-single-stats 
     :filters="{{ json_encode($filters) }}" 

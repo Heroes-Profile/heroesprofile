@@ -1,7 +1,7 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', __('Team & Organization Esports Match History Data'))
+@section('title', __(':team Esports Match History', ['team' => $team]))
 @section('meta_keywords', 'Team & Organization Match History')
-@section('meta_description', 'Team & Organization Match History')
+@section('meta_description', 'Heroes of the Storm esports match history for ' . $team . ': every game with heroes, maps and results.')
 
 @section('content')
   <esports-match-history 

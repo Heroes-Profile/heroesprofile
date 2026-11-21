@@ -1,7 +1,9 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', __(':battletag :hero Stats', ['battletag' => $battletag, 'hero' => $hero]))
+@php($regionName = $bladeGlobals['regions'][$region] ?? $region)
+@include('Player.structuredData', ['page' => $hero])
+@section('title', __(':battletag (:region) :hero Stats', ['battletag' => $battletag, 'region' => $regionName, 'hero' => $hero]))
 @section('meta_keywords', 'Player Hero Stats, Hero Statistics, Player Stats')
-@section('meta_description', 'Explore the statistics and data for a specific hero played by a player. Analyze player performance and stats for a particular hero.')
+@section('meta_description', $hero . ' stats for ' . $battletag . ' (' . $regionName . ') in Heroes of the Storm: win rate, games played, MMR, talents, matchups and maps on ' . $hero . '.')
 @section('content')
   <player-hero-single-stats 
     :filters="{{ json_encode($filters) }}" 

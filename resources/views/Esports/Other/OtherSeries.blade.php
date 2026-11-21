@@ -1,8 +1,8 @@
 @extends('layouts.app', $bladeGlobals)    
 
-@section('title', __('HGC and More Esports'))
+@section('title', __(':series Esports', ['series' => optional($series)->name ?? 'HGC and More']))
 @section('meta_keywords', 'HGC and More esports, Heroes of the Storm, HGC and More league, competitive gaming, Heroes of the Storm league')
-@section('meta_description', 'Stay up to date with the latest news and updates from the HGC and More Esports league. Review competitive Heroes of the Storm matches and follow your favorite teams.')
+@section('meta_description', 'Heroes of the Storm statistics and comparison for ' . (optional($series)->name ?? 'HGC and more') . ': hero stats, teams, players and replays.')
 
 @section('content')
   <other-series

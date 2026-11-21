@@ -1,7 +1,9 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', __(":battletag's Main Player Stats", ['battletag' => $battletag]))
+@php($regionName = $bladeGlobals['regions'][$region] ?? $region)
+@include('Player.structuredData')
+@section('title', __(':battletag (:region) Heroes of the Storm Player Stats', ['battletag' => $battletag, 'region' => $regionName]))
 @section('meta_keywords', 'Player Stats, Hero Statistics, Player Profile, Player Performance')
-@section('meta_description', 'Explore the main player stats of ' . $battletag . ', including hero statistics, player profile, and performance metrics.')
+@section('meta_description', $battletag . "'s Heroes of the Storm profile (" . $regionName . "): win rate, MMR, most played heroes, maps and roles, and recent games.")
 @section('content')
   <player-stats 
     :playerloadsetting="{{ json_encode($playerloadsetting) }}" 

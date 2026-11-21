@@ -1,7 +1,9 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', __(":battletag's HP MMR Data", ['battletag' => $battletag]))
+@php($regionName = $bladeGlobals['regions'][$region] ?? $region)
+@include('Player.structuredData', ['page' => 'MMR History'])
+@section('title', __(':battletag (:region) MMR History', ['battletag' => $battletag, 'region' => $regionName]))
 @section('meta_keywords', 'HP MMR Data, Matchmaking Rating, Player Skill, Skill Rating, Player Statistics')
-@section('meta_description', 'Explore the HP MMR data of ' . $battletag . ', including match making rating, player skill, and player statistics.')
+@section('meta_description', 'Heroes of the Storm HP MMR for ' . $battletag . ' (' . $regionName . '): matchmaking rating over time for each game mode and role.')
 @section('content')
   <mmr-data 
     :battletag="{{ json_encode($battletag) }}" 

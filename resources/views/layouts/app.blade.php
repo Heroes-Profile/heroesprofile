@@ -51,6 +51,10 @@
     <title>@yield('title') | Heroes Profile</title>
     <meta name = "keywords" content = "@yield('meta_keywords')" />
     <meta name = "description" content = "@yield('meta_description')" />
+    {{-- Pages that shouldn't be in search results (signed-in pages) set this --}}
+    @hasSection('robots')
+    <meta name="robots" content="@yield('robots')">
+    @endif
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -102,6 +106,24 @@
       ]
     }
     </script>
+
+    {{-- What this page is, from its own title and description, so search engines get the page's summary without it
+         being on screen. Section content comes back HTML-escaped, so it's decoded before going into JSON. --}}
+    @php
+      $seoText = fn ($section) => trim(html_entity_decode($__env->yieldContent($section), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+      $webPage = array_filter([
+          '@context' => 'https://schema.org',
+          '@type' => 'WebPage',
+          'name' => $seoText('title'),
+          'description' => $seoText('meta_description'),
+          'url' => url()->current(),
+          'inLanguage' => str_replace('_', '-', app()->getLocale()),
+          'isPartOf' => ['@type' => 'WebSite', 'name' => 'Heroes Profile', 'url' => 'https://www.heroesprofile.com'],
+      ]);
+    @endphp
+    <script type="application/ld+json">{!! json_encode($webPage, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
+    {{-- A page's own structured data, e.g. a player's profile and breadcrumbs --}}
+    @stack('structured_data')
 
     {{-- The nav flyouts' lists, once per page rather than inline in every flyout. --}}
     @php
