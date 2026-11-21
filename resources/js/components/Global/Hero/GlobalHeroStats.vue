@@ -210,15 +210,13 @@
     </div>
     <!-- The same layout in grey while the stats load, the message on a tab of the first panel -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <!-- The collapsed Patch Notes card (patch-notes-panel); the loading message sits on its tab -->
-      <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="relative md:!rounded-tl-none md:!py-4">
-        <loading-component :compact="true" :tab="true" :textoverride="true">{{ loadingMessage }}</loading-component>
+      <!-- The collapsed Patch Notes card (patch-notes-panel) -->
+      <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="md:!py-4">
         <template #right>
           <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
         </template>
       </panel-box>
-      <panel-box title="Tier List" :subtitle="tierListCollapsed ? null : 'Heroes grouped by win rate'" :skeleton="true" :divider="!tierListCollapsed" :class="['relative md:!pt-4', { 'md:!rounded-tl-none': !patchNotesUrl, 'md:!pb-4': tierListCollapsed }]">
-        <loading-component v-if="!patchNotesUrl" :compact="true" :tab="true" :textoverride="true">{{ loadingMessage }}</loading-component>
+      <panel-box title="Tier List" :subtitle="tierListCollapsed ? null : 'Heroes grouped by win rate'" :skeleton="true" :divider="!tierListCollapsed" :class="['md:!pt-4', { 'md:!pb-4': tierListCollapsed }]">
         <template #right>
           <div class="flex flex-wrap items-center gap-4">
             <div v-show="!tierListCollapsed" class="relative">
@@ -246,14 +244,16 @@
         </div>
       </panel-box>
 
-      <panel-box title="Hero Win Rates" subtitle="Popularity = pick rate + ban rate. Change is compared to the previous patch." :skeleton="true">
+      <!-- The table is what's loading, so the message sits on its tab -->
+      <panel-box title="Hero Win Rates" subtitle="Popularity = pick rate + ban rate. Change is compared to the previous patch." :skeleton="true" class="relative md:!rounded-tl-none">
+        <loading-component :compact="true" :tab="true" :textoverride="true">{{ loadingMessage }}</loading-component>
         <template #right>
           <div class="relative">
             <tab-button class="invisible" :small="true" tab1text="Table" tab2text="Chart" aria-hidden="true"></tab-button>
             <skeleton-box class="absolute inset-0"></skeleton-box>
           </div>
         </template>
-        <table-skeleton :bare="true" :rows="15" :columns="['rank', 'hero', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'rank']"></table-skeleton>
+        <table-skeleton :bare="true" :rows="15" :columns="skeletonColumns"></table-skeleton>
       </panel-box>
     </div>
     <div v-else-if="dataError" class="flex flex-col items-center justify-center">
@@ -457,6 +457,17 @@ export default {
       });
     },
     // Sorting by anything but the default order gives each row a new position
+    // The loading table's columns, matching what the loaded table will show for these filters
+    skeletonColumns() {
+      return [
+        'rank', 'hero', 'stat',
+        ...(this.showWinRateChange ? ['stat'] : []),
+        'stat', 'stat',
+        ...(this.gametype.includes('sl') && !this.groupSizeActive ? ['stat'] : []),
+        'stat', 'stat',
+        ...(!this.groupSizeActive ? ['rank'] : []),
+      ];
+    },
     rankChanged() {
       return !!this.sortKey && this.sortKey !== 'rank' && this.sortKey !== (this.statfilter === 'win_rate' ? 'win_rate' : 'total_filter_type');
     },

@@ -108,6 +108,12 @@
       </div>
       <!-- The same layout in grey while the draft stats load, the message on the order card's tab -->
       <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <!-- The collapsed Patch Notes card, so the page doesn't move when it loads -->
+        <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="md:!py-4">
+          <template #right>
+            <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+          </template>
+        </panel-box>
         <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
           <div v-for="tile in 4" :key="tile" class="bg-surface rounded p-6 flex flex-col gap-1 min-w-0 border-l-4 border-surface-3">
             <span class="text-sm skeleton-text w-fit">Banned most at</span>

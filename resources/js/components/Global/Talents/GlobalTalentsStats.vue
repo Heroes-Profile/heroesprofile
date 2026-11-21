@@ -22,7 +22,13 @@
             <panel-box title="Most Popular Builds" subtitle="Latest patch, per hero and game type. Copy a build code and paste it in game chat.">
               <div v-if="!talentbuilddataall" class="flex flex-col gap-4">
                 <loading-component :compact="true" :textoverride="true">{{ $t('Loading all talent builds...') }}</loading-component>
-                <table-skeleton :bare="true" :rows="10" :columns="['avatar', 'talents', 'talents', 'talents']"></table-skeleton>
+                <!-- Laid out at the loaded table's full width and shrunk to fit like it (scaleTableToFit), so on a phone
+                     the grey rows look like the shrunk table instead of three game types squeezed together -->
+                <div ref="buildsskeletonbox" class="w-full overflow-clip">
+                  <div ref="buildsskeleton" class="min-w-[72rem]">
+                    <table-skeleton :bare="true" :rows="10" :columns="['avatar', 'talents', 'talents', 'talents']" :mobile-columns="['avatar', 'talents', 'talents', 'talents']"></table-skeleton>
+                  </div>
+                </div>
               </div>
               <global-talent-builds-all v-else :heroes="filteredHeroesForTable" :talentbuilddataall="talentbuilddataall"></global-talent-builds-all>
             </panel-box>
@@ -98,6 +104,12 @@
           </panel-box>
         </div>
         <div v-else-if="isTalentsLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+          <!-- The collapsed Patch Notes card, so the page doesn't move when it loads -->
+          <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="md:!py-4">
+            <template #right>
+              <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+            </template>
+          </panel-box>
           <panel-box title="Talent stats" subtitle="Win rate, popularity and games for every talent. The best win rate on each tier is highlighted." :skeleton="true" class="relative md:!rounded-tl-none">
             <loading-component v-if="determineIfVeryLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
             <loading-component v-else-if="determineIfLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
@@ -141,6 +153,7 @@
 
 <script>
   import CompactTalentGrid from './CompactTalentGrid.vue';
+  import { scaleTableToFit } from '../../../utils/scaleTable';
 
   export default {
     name: 'GlobalTalentsStats',
@@ -237,6 +250,9 @@
     }
    },
     mounted() {
+      if (this.$refs.buildsskeleton) {
+        scaleTableToFit(this.$refs.buildsskeleton, this.$refs.buildsskeletonbox);
+      }
       window.addEventListener('popstate', this.restoreHistoryState);
       history.replaceState(this.historyState(), '');
       if(!this.inputhero){

@@ -47,6 +47,12 @@
 
     </div>
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <!-- The collapsed Patch Notes card, so the page doesn't move when it loads -->
+      <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="w-full max-w-[93.75rem] mx-auto mb-4 md:!py-4">
+        <template #right>
+          <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+        </template>
+      </panel-box>
       <!-- The same layout in grey, the message on a tab of the first panel, as on a player's Party page -->
       <party-stats-skeleton>
         <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading party stats...') }}</loading-component>

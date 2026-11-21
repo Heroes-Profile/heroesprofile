@@ -108,10 +108,19 @@
       </panel-box>
     </div>
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
-      <loading-component v-else-if="determineIfLargeData()" :compact="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
-      <loading-component v-else :compact="true" :textoverride="true">{{ $t('Loading map stats...') }}</loading-component>
-      <table-skeleton :rows="13" :columns="['stat', 'stat', 'stat', 'stat']"></table-skeleton>
+      <!-- The collapsed Patch Notes card, so the page doesn't move when it loads -->
+      <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="w-full max-w-[93.75rem] mx-auto mb-4 md:!py-4">
+        <template #right>
+          <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+        </template>
+      </panel-box>
+      <!-- The table is what's loading, so the message sits on its tab -->
+      <div class="relative">
+        <loading-component v-if="determineIfVeryLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
+        <loading-component v-else-if="determineIfLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+        <loading-component v-else :compact="true" :tab="true" :textoverride="true">{{ $t('Loading map stats...') }}</loading-component>
+        <table-skeleton class="md:!rounded-tl-none" :rows="13" :columns="['stat', 'stat', 'stat', 'stat']"></table-skeleton>
+      </div>
     </div>
     <div v-else-if="dataError" class="flex items-center justify-center">
       {{ $t('Error: Reload page/filter') }}

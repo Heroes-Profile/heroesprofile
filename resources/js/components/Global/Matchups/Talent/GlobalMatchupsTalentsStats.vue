@@ -27,9 +27,16 @@
   <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
   <div v-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-    <loading-component v-if="determineIfVeryLargeData()" :compact="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
-    <loading-component v-else :compact="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
-    <panel-box>
+    <!-- The collapsed Patch Notes card, so the page doesn't move when it loads -->
+    <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="w-full max-w-[93.75rem] mx-auto mb-4 md:!py-4">
+      <template #right>
+        <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+      </template>
+    </panel-box>
+    <!-- The talents are what's loading, so the message sits on their panel's tab -->
+    <panel-box class="relative md:!rounded-tl-none">
+      <loading-component v-if="determineIfVeryLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
+      <loading-component v-else :compact="true" :tab="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
       <div class="w-full max-w-[86rem] mx-auto flex flex-col gap-4">
         <div v-for="level in 3" :key="level" class="flex flex-col gap-3">
           <skeleton-box class="h-4 w-16 mx-auto"></skeleton-box>

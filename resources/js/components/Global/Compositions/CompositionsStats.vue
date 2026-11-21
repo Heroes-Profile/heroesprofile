@@ -150,9 +150,8 @@
     </div>
     <!-- The same layout in grey while the compositions load, the message on a tab of the table's panel -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <!-- The collapsed Patch Notes card (patch-notes-panel); the loading message sits on its tab -->
-      <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="relative md:!rounded-tl-none md:!py-4">
-        <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading compositions...') }}</loading-component>
+      <!-- The collapsed Patch Notes card (patch-notes-panel) -->
+      <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="md:!py-4">
         <template #right>
           <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
         </template>
@@ -168,8 +167,8 @@
         </div>
       </div>
 
-      <panel-box title="Team Compositions" subtitle="Win rate and popularity of every 5-role team composition. Roles are listed Tank → Support; win rate bars span 40–60%." :skeleton="true" :class="['relative', { 'md:!rounded-tl-none': !patchNotesUrl }]">
-        <loading-component v-if="!patchNotesUrl" :compact="true" :tab="true" :textoverride="true">{{ $t('Loading compositions...') }}</loading-component>
+      <panel-box title="Team Compositions" subtitle="Win rate and popularity of every 5-role team composition. Roles are listed Tank → Support; win rate bars span 40–60%." :skeleton="true" class="relative md:!rounded-tl-none">
+        <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading compositions...') }}</loading-component>
         <template #right>
           <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
             <div class="relative">
