@@ -1,45 +1,30 @@
 <template>
-  <div :class="horizontal ? 'border-b text-black flex flex-col justify-stretch min-h-[15.625rem]' : 'text-black flex flex-col justify-stretch min-w-[13.125rem] max-md:min-w-[8.75rem]'">
-    <div
-      :class="['cursor-pointer p-4 transition duration-300 hover:bg-gray-md hover:text-black h-full m-2', horizontal ? 'min-h-[15.625rem]' : '', { 'bg-teal text-white': isClicked }]"
-    >
-      <div class="flex flex-col items-center justify-center text-center">
-        <h3 :class="horizontal ? 'min-h-[5rem]' : 'pb-4'"> {{ $talentName(talent) }}</h3>
-        <talent-image-wrapper :talent="talent" :size="'medium'" :class="horizontal ? 'mb-10' : ''"></talent-image-wrapper>
-        <span v-if="talent.games_played">{{ (talent.win_rate ?? 0).toFixed(2) }}%</span>
-        <span v-if="talent.games_played" class="text-xs">{{ $t(':played games', { played: talent.games_played.toLocaleString('en-US') }) }}</span>
-      </div>
-    </div>
-  </div>
+  <!-- A talent to pick: the icon and name, with its win rate when the page has one. Picked: a teal border and tick.
+       Horizontal stacks the icon over the name, for the builder's columns -->
+  <button type="button"
+    :class="['relative rounded-control border-2 transition-colors text-left min-w-0', isClicked ? 'border-teal bg-teal/10' : 'border-surface-1 bg-surface-1 hover:bg-surface-3',
+      horizontal ? 'flex flex-col items-center gap-1.5 px-2 py-3 text-center' : 'flex items-center gap-2 px-2 py-1.5']">
+    <talent-image-wrapper :talent="talent" size="talent" :popup-hoverable="false" :class="['shrink-0', { 'opacity-50': dimmed }]"></talent-image-wrapper>
+    <span :class="['flex flex-col min-w-0', horizontal ? 'items-center' : 'flex-1']">
+      <!-- Horizontal: two lines kept for the name, so a long name doesn't make its card taller than the rest -->
+      <span :class="['text-xs leading-tight', { 'min-h-[2.5em] line-clamp-2': horizontal }, isClicked ? 'font-semibold text-white' : dimmed ? 'text-subtext' : 'text-white']">{{ $talentName(talent) }}</span>
+      <span v-if="talent.games_played" class="text-[0.625rem] text-subtext tabular-nums">{{ (talent.win_rate ?? 0).toFixed(2) }}% · {{ $t(':played games', { played: talent.games_played.toLocaleString('en-US') }) }}</span>
+    </span>
+    <span v-if="isClicked" :class="['w-4 h-4 shrink-0 rounded-[0.25rem] bg-teal flex items-center justify-center text-[0.625rem]', horizontal ? 'absolute top-1.5 right-1.5' : '']">
+      <basil-icon name="check"></basil-icon>
+    </span>
+  </button>
 </template>
-
-
 
 <script>
 export default {
   name: 'TalentBuilderClickBox',
-  components: {
-  },
   props: {
     talent: Object,
-    winRate: Number,
-    totalGames: Number,
     isClicked: Boolean,
+    // Another talent on this level is picked
+    dimmed: Boolean,
     horizontal: { type: Boolean, default: false },
   },
-  data(){
-    return {
-    }
-  },
-  created(){
-  },
-  mounted() {
-  },
-  computed: {
-  },
-  watch: {
-  },
-  methods: {
-  }
-}
+};
 </script>

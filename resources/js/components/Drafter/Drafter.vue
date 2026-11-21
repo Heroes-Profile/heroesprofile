@@ -111,62 +111,45 @@
           <div class="flex flex-col gap-3 flex-1">
             <span class="text-xs font-semibold uppercase tracking-wider text-subtext">{{ $t('Picks') }}</span>
             <div class="flex flex-col gap-2 flex-1">
-              <div v-for="pick in [1, 2, 3, 4, 5]" :key="pick"
-                :class="['flex-1 min-h-[4rem] rounded-control bg-surface-1 px-3 py-2 flex items-center gap-3 border-2', isActive(team + '-pick' + pick) ? (team === 'team1' ? 'border-teal' : 'border-red') : 'border-surface-1']">
-                <span :class="['w-12 h-12 shrink-0 rounded-full bg-cover bg-center', slotHero(team + '-pick' + pick) ? (team === 'team1' ? 'border-2 border-teal' : 'border-2 border-red')
-                  : isActive(team + '-pick' + pick) ? (team === 'team1' ? 'border-2 border-dashed border-teal bg-teal/20' : 'border-2 border-dashed border-red bg-red/20') : 'bg-surface-3']" :style="slotStyle(team + '-pick' + pick)"></span>
-                <span class="flex flex-col min-w-0">
-                  <span class="font-semibold truncate">{{ slotHero(team + '-pick' + pick) ? $heroName(slotHero(team + '-pick' + pick)) : $t('Pick :number', { number: pick }) }}</span>
-                  <span v-if="slotHero(team + '-pick' + pick)" class="text-sm text-subtext truncate">{{ $t('Pick :number', { number: pick }) }} · {{ $t(slotHero(team + '-pick' + pick).new_role) }}</span>
-                  <span v-else-if="isActive(team + '-pick' + pick)" :class="['text-sm truncate', team === 'team1' ? 'text-lteal' : 'text-lred']">{{ $t('Picking now...') }}</span>
-                  <span v-else class="text-sm text-subtext truncate">{{ $t('Waiting') }}</span>
-                </span>
-              </div>
+              <team-slot v-for="pick in [1, 2, 3, 4, 5]" :key="pick" class="flex-1"
+                :color="team === 'team1' ? 'teal' : 'red'"
+                :hero="slotHero(team + '-pick' + pick)"
+                :active="isActive(team + '-pick' + pick)"
+                :title="slotHero(team + '-pick' + pick) ? $heroName(slotHero(team + '-pick' + pick)) : $t('Pick :number', { number: pick })"
+                :status="slotHero(team + '-pick' + pick) ? $t('Pick :number', { number: pick }) + ' · ' + $t(slotHero(team + '-pick' + pick).new_role) : isActive(team + '-pick' + pick) ? $t('Picking now...') : $t('Waiting')"
+                :status-highlight="!slotHero(team + '-pick' + pick) && isActive(team + '-pick' + pick)"></team-slot>
             </div>
           </div>
         </div>
 
-        <div class="bg-surface rounded p-4 md:p-6 flex flex-col gap-5 min-w-0 xl:order-2">
-          <div class="flex flex-wrap items-center justify-between gap-4">
-            <search-input v-model="searchQuery" :placeholder="$t('Search heroes')" class="w-full sm:w-[19.75rem]"></search-input>
-            <div class="flex flex-wrap items-center gap-3">
-              <tab-button :small="true" :tabs="roleTabs" :ignoreclick="true" :overridedefaultside="selectedRole" @tab-click="selectedRole = $event"></tab-button>
-              <tab-button v-if="!mockDraft" :small="true" :tabs="sortTabs" :ignoreclick="true" :overridedefaultside="sortMode" @tab-click="sortMode = $event"></tab-button>
-              <tab-button v-if="!mockDraft" :small="true" :tabs="suggestTabs" :ignoreclick="true" :overridedefaultside="suggestBy" @tab-click="suggestBy = $event"></tab-button>
+        <hero-board class="xl:order-2" :heroes="visibleSuggestions" :loading="waiting" :glow-ids="glowIds"
+          :error="dataError || (needsCompositions && compositionsError) ? $t('Failed to load draft data. Please try again.') : null" @pick="pickHero">
+          <template #controls>
+            <tab-button v-if="!mockDraft" :small="true" :tabs="sortTabs" :ignoreclick="true" :overridedefaultside="sortMode" @tab-click="sortMode = $event"></tab-button>
+            <tab-button v-if="!mockDraft" :small="true" :tabs="suggestTabs" :ignoreclick="true" :overridedefaultside="suggestBy" @tab-click="suggestBy = $event"></tab-button>
+          </template>
+          <template #above>
+            <!-- The three best HP Draft Values for this step. It always keeps its place, so the board doesn't move as the draft goes on -->
+            <div v-if="!mockDraft" :class="['rounded-control bg-[rgba(245,197,66,0.08)] px-5 py-4 min-h-[4.75rem] flex flex-wrap items-center gap-x-6 gap-y-3', { invisible: !waiting && !topSuggestions.length }]">
+              <loading-component v-if="waiting" :compact="true" :textoverride="true">{{ $t('Loading draft options...') }}</loading-component>
+              <template v-else>
+              <div class="flex flex-col">
+                <span class="font-semibold text-[#f5c542]">{{ isBanStep ? $t('Suggested bans') : $t('Suggested picks') }}</span>
+                <span class="text-sm text-subtext">{{ $t(suggestMetric.caption) }}</span>
+              </div>
+              <button v-for="hero in topSuggestions" :key="hero.id" type="button" class="flex items-center gap-2.5 rounded-full bg-surface-1 hover:bg-surface-3 transition-colors pl-1 pr-4 py-1" @click="pickHero(hero)">
+                <img :src="'/images/heroes/' + hero.short_name + '.png'" :alt="$heroName(hero)" class="w-9 h-9 rounded-full object-cover">
+                <span class="flex flex-col items-start leading-tight">
+                  <span class="text-sm font-semibold">{{ $heroName(hero) }}</span>
+                  <span class="text-xs text-header">{{ suggestMetric.format(hero) }}</span>
+                </span>
+              </button>
+              </template>
             </div>
-          </div>
-
-          <!-- The three best HP Draft Values for this step. It always keeps its place, so the board doesn't move as the draft goes on -->
-          <div v-if="!mockDraft" :class="['rounded-control bg-[rgba(245,197,66,0.08)] px-5 py-4 min-h-[4.75rem] flex flex-wrap items-center gap-x-6 gap-y-3', { invisible: !waiting && !topSuggestions.length }]">
-            <loading-component v-if="waiting" :compact="true" :textoverride="true">{{ $t('Loading draft options...') }}</loading-component>
-            <template v-else>
-            <div class="flex flex-col">
-              <span class="font-semibold text-[#f5c542]">{{ isBanStep ? $t('Suggested bans') : $t('Suggested picks') }}</span>
-              <span class="text-sm text-subtext">{{ $t(suggestMetric.caption) }}</span>
-            </div>
-            <button v-for="hero in topSuggestions" :key="hero.id" type="button" class="flex items-center gap-2.5 rounded-full bg-surface-1 hover:bg-surface-3 transition-colors pl-1 pr-4 py-1" @click="pickHero(hero)">
-              <img :src="'/images/heroes/' + hero.short_name + '.png'" :alt="$heroName(hero)" class="w-9 h-9 rounded-full object-cover">
-              <span class="flex flex-col items-start leading-tight">
-                <span class="text-sm font-semibold">{{ $heroName(hero) }}</span>
-                <span class="text-xs text-header">{{ suggestMetric.format(hero) }}</span>
-              </span>
-            </button>
-            </template>
-          </div>
-
-          <div v-if="dataError || (needsCompositions && compositionsError)" class="text-center text-red py-10">{{ $t('Failed to load draft data. Please try again.') }}</div>
-          <div v-else-if="waiting" class="grid grid-cols-[repeat(auto-fill,minmax(4.75rem,1fr))] gap-y-3">
-            <div v-for="hero in visibleSuggestions.length" :key="hero" class="flex flex-col items-center gap-1.5">
-              <skeleton-box class="w-16 h-16 !rounded-full"></skeleton-box>
-              <span class="text-xs skeleton-text">Abathur</span>
-            </div>
-          </div>
-          <div v-else class="grid grid-cols-[repeat(auto-fill,minmax(4.75rem,1fr))] gap-y-3">
-            <div v-for="hero in visibleSuggestions" :key="hero.id" :class="['relative flex flex-col items-center gap-1.5 min-w-0', hero.unavailable ? 'opacity-30 grayscale' : 'cursor-pointer']" @click="!hero.unavailable && pickHero(hero)">
-              <!-- Suggested heroes glow in the suggestions strip's gold -->
-              <hero-image-wrapper :hero="hero" size="medium" :popup-hoverable="false" :class="['rounded-full', { 'ring-[3px] ring-[#f5c542] shadow-[0_0_1.25rem_0.25rem_rgba(245,197,66,0.8)]': glowIds.has(hero.id) }]">
-                <h2>{{ $heroName(hero) }}</h2>
-                <div v-if="!mockDraft && !hero.unavailable" class="text-left">
+          </template>
+          <template #popup="{ hero }">
+            <h2>{{ $heroName(hero) }}</h2>
+            <div v-if="!mockDraft && !hero.unavailable" class="text-left">
                   <p>{{ $t('HP Draft Value: :value', { value: hero.value.toFixed(2) }) }}</p>
                   <p>{{ isBanStep ? $t('Games Banned') : $t('Games Played') }}: {{ hero.games.toLocaleString('en-US') }}</p>
                   <p>{{ $t('Influence: :influence', { influence: hero.influence }) }}</p>
@@ -174,13 +157,12 @@
                   <p>{{ $t('Win Rate: :rate%', { rate: hero.win_rate }) }}</p>
                   <p>Win Rate Confidence: &plusmn; {{ hero.confidence }}%</p>
                   <p>{{ $t('Draft Pick Order Rate: :percent%', { percent: hero.pick_order_percent.toFixed(2) }) }}</p>
-                </div>
-              </hero-image-wrapper>
-              <span v-if="takenHeroes[hero.id]" :class="['absolute top-6 left-1/2 -translate-x-1/2 z-10 px-1.5 py-0.5 rounded-[0.25rem] text-[0.625rem] font-bold uppercase tracking-wide text-white', takenHeroes[hero.id].ban ? 'bg-surface-4' : takenHeroes[hero.id].ours ? 'bg-teal' : 'bg-red']">{{ takenHeroes[hero.id].ban ? $t('Banned') : $t('Picked') }}</span>
-              <span class="text-xs text-subtext text-center truncate max-w-full">{{ $heroName(hero) }}</span>
             </div>
-          </div>
-        </div>
+          </template>
+          <template #badge="{ hero }">
+            <span v-if="takenHeroes[hero.id]" :class="['absolute top-6 left-1/2 -translate-x-1/2 z-10 px-1.5 py-0.5 rounded-[0.25rem] text-[0.625rem] font-bold uppercase tracking-wide text-white', takenHeroes[hero.id].ban ? 'bg-surface-4' : takenHeroes[hero.id].ours ? 'bg-teal' : 'bg-red']">{{ takenHeroes[hero.id].ban ? $t('Banned') : $t('Picked') }}</span>
+          </template>
+        </hero-board>
       </div>
     </div>
   </div>
@@ -238,13 +220,10 @@ export default {
   data() {
     return {
       infoText: 'Get ban and pick suggestions at every step of a Storm League draft. HP Draft Value combines how often a hero is taken at that point in the draft with their win rate, bans, and the team compositions they fit into.',
-      roles: ['Tank', 'Bruiser', 'Healer', 'Support', 'Melee Assassin', 'Ranged Assassin'],
       mockDraft: false,
       // team1 is your team, team2 the enemy; this is whichever bans and picks first
       firstPickTeam: 'team1',
       picks: [],
-      searchQuery: '',
-      selectedRole: 'All',
       // The hero board: best HP Draft Value first, or A-Z
       sortMode: 'value',
       // What the suggestions rank by: one of suggestTabs' keys
@@ -305,9 +284,6 @@ export default {
         const slotId = this.pickOrder[index] || '';
         return [pick.heroId, { ours: slotId.startsWith('team1'), ban: slotId.includes('ban') }];
       }));
-    },
-    roleTabs() {
-      return [{ key: 'All', text: 'All' }, ...this.roles.map(role => ({ key: role, text: role.replace(' Assassin', '') }))];
     },
     sortTabs() {
       return [{ key: 'value', text: 'Suggested' }, { key: 'alpha', text: 'A–Z' }];
@@ -407,28 +383,20 @@ export default {
         }));
     },
     visibleSuggestions() {
-      // Unicode letters, so translated names (Cyrillic, Hangul, CJK) survive; matches English or translated name
-      const strip = (text) => this.normalizeString(text).replace(/[^\p{L}\p{N}\s]/gu, '');
-      const query = strip(this.searchQuery);
-      const matches = hero => (this.selectedRole === 'All' || hero.new_role === this.selectedRole)
-        && (!query || strip(hero.name).includes(query) || strip(this.$heroName(hero)).includes(query));
       const byName = (a, b) => this.$heroName(a).localeCompare(this.$heroName(b));
       // Every hero, so the board keeps its size; ones that can't be taken now are marked and go last
       const available = new Set(this.suggestions.map(hero => hero.id));
       const unavailable = this.heroes
-        .filter(hero => !available.has(hero.id) && matches(hero))
+        .filter(hero => !available.has(hero.id))
         .map(hero => ({ ...hero, unavailable: true }))
         .sort(byName);
-      const heroes = this.rankedSuggestions.filter(matches);
+      const heroes = this.rankedSuggestions;
       return this.sortMode === 'alpha' || this.mockDraft
         ? [...heroes, ...unavailable].sort(byName)
         : [...heroes, ...unavailable];
     },
   },
   methods: {
-    normalizeString(input) {
-      return (input || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-    },
     slotLabel(slotId) {
       const [, team, kind, number] = slotId.match(/^(team\d)-(ban|pick)(\d)$/);
       return (team === 'team1' ? this.$t('Your team') : this.$t('Enemy team')) + ' · ' + (kind === 'ban' ? this.$t('Ban :number', { number }) : this.$t('Pick :number', { number }));

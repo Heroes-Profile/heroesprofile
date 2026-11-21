@@ -96,10 +96,11 @@
     <patch-notes-panel v-if="patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
 
     <!-- The chart takes the talent columns' width -->
-    <div :class="effectiveStyle === 'horizontal' ? 'w-fit mx-auto' : 'max-w-[93.75rem] mx-auto'">
+    <div class="max-w-[93.75rem] mx-auto">
     <talent-build-paths v-if="paths && paths.length" :data="data" :paths="paths" v-model:open="pathsOpen"></talent-build-paths>
 
-    <div :class="effectiveStyle === 'horizontal' ? 'flex px-3 gap-5 mx-auto justify-center' : 'flex px-3 gap-5 mx-auto justify-center flex-wrap flex-col max-w-[93.75rem]'">
+    <div :class="effectiveStyle === 'horizontal' ? 'px-3 overflow-x-auto' : 'px-3'">
+    <div :class="effectiveStyle === 'horizontal' ? 'grid grid-cols-[repeat(7,minmax(7rem,1fr))] gap-2 items-start' : 'flex flex-col gap-2'">
       <talent-builder-column :data="data['1']" :level="1" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
       <talent-builder-column :data="data['4']" :level="4" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
       <talent-builder-column :data="data['7']" :level="7" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
@@ -107,6 +108,7 @@
       <talent-builder-column :data="data['13']" :level="13" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
       <talent-builder-column :data="data['16']" :level="16" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
       <talent-builder-column :data="data['20']" :level="20" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
+    </div>
     </div>
     </div>
     <div class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
