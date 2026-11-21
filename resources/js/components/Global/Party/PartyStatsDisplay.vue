@@ -50,26 +50,31 @@
 
           <!-- The enemy parties across the top -->
           <div></div>
-          <div v-for="column in compositions" :key="column.code" class="flex flex-col items-center gap-2 pb-1 text-sm text-subtext text-center">
+          <!-- Clicking an enemy party (or one of yours, down the side) fades every other column (row); click it again to clear -->
+          <component :is="skeleton ? 'div' : 'button'" v-for="column in compositions" :key="column.code" :type="skeleton ? null : 'button'" :title="skeleton ? null : $t('Focus this column')"
+            :class="['flex flex-col items-center gap-2 py-1.5 rounded-control text-sm text-center transition-[colors,opacity]', skeleton ? 'text-subtext' : focusColumn === column.code ? 'bg-teal/20 ring-2 ring-teal text-white' : ['text-subtext hover:bg-surface-1 hover:text-white', { 'opacity-40': focusColumn }]]"
+            @click="!skeleton && toggleFocus('column', column.code)">
             <span :class="['inline-flex items-center gap-1', { 'skeleton-text': skeleton }]">
               <span v-for="(size, index) in column.groups" :key="index" :class="['inline-flex gap-0.5 p-[0.1875rem] rounded-full', { 'bg-teal': size > 1 }, { invisible: skeleton }]">
                 <span v-for="dot in size" :key="dot" :class="['w-2 h-2 rounded-full', size > 1 ? 'bg-white' : 'bg-subtext']"></span>
               </span>
             </span>
             <span :class="{ 'skeleton-text': skeleton }">{{ $t(column.label) }}</span>
-          </div>
+          </component>
 
           <!-- Your party down the side, then a tile per enemy party -->
           <template v-for="row in compositions" :key="row.code">
-            <div class="bg-surface-1 rounded-control px-4 py-3 flex items-center gap-4 min-w-0">
+            <component :is="skeleton ? 'div' : 'button'" :type="skeleton ? null : 'button'" :title="skeleton ? null : $t('Focus this row')"
+              :class="['bg-surface-1 rounded-control px-4 py-3 flex items-center gap-4 min-w-0 text-left transition-[box-shadow,opacity]', { 'hover:bg-surface-3': !skeleton }, focusRow === row.code ? 'ring-2 ring-teal' : { 'opacity-40': focusRow }]"
+              @click="!skeleton && toggleFocus('row', row.code)">
               <span :class="['inline-flex items-center gap-1 shrink-0', { 'skeleton-text': skeleton }]">
                 <span v-for="(size, index) in row.groups" :key="index" :class="['inline-flex gap-0.5 p-[0.1875rem] rounded-full', { 'bg-teal': size > 1 }, { invisible: skeleton }]">
                   <span v-for="dot in size" :key="dot" :class="['w-2 h-2 rounded-full', size > 1 ? 'bg-white' : 'bg-subtext']"></span>
                 </span>
               </span>
               <span :class="['font-medium truncate', { 'skeleton-text': skeleton }]">{{ $t(row.label) }}</span>
-            </div>
-            <div v-for="column in compositions" :key="column.code" :class="['rounded-control px-2 py-3 flex flex-col items-center justify-center text-center', skeleton ? 'bg-surface-3 animate-pulse' : cellClass(cell(row, column))]">
+            </component>
+            <div v-for="column in compositions" :key="column.code" :class="['rounded-control px-2 py-3 flex flex-col items-center justify-center text-center transition-[opacity,transform]', skeleton ? 'bg-surface-3 animate-pulse' : cellClass(cell(row, column)), { 'opacity-25': isFaded(row, column), 'ring-2 ring-teal scale-105 relative z-[1]': isCombo(row, column) }]">
               <template v-if="skeleton">
                 <span class="invisible text-lg font-semibold leading-tight">00.00%</span>
                 <span class="invisible text-xs">000 W – 000 L</span>
@@ -130,6 +135,9 @@ export default {
     return {
       compositions: COMPOSITIONS,
       summaryMinGames: 30,
+      // The party picked down the side and across the top; each fades the other rows / columns
+      focusRow: null,
+      focusColumn: null,
     };
   },
   computed: {
@@ -235,6 +243,17 @@ export default {
     },
   },
   methods: {
+    toggleFocus(axis, code) {
+      const key = axis === 'row' ? 'focusRow' : 'focusColumn';
+      this[key] = this[key] === code ? null : code;
+    },
+    // A row and a column both picked: their crossing tile is ringed
+    isCombo(row, column) {
+      return this.focusRow === row.code && this.focusColumn === column.code;
+    },
+    isFaded(row, column) {
+      return (this.focusRow && this.focusRow !== row.code) || (this.focusColumn && this.focusColumn !== column.code);
+    },
     cell(row, column) {
       return this.matchups[row.code]?.[column.code] || null;
     },
