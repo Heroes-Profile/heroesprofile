@@ -315,6 +315,41 @@ class MatchPredictionGameController extends Controller
         ];
     }
 
+    /**
+     * Ends practice early. Practice is the account's first PRACTICE_GAMES predictions, saved as season 0, which
+     * nothing shows; the missing ones are filled in as losses so the count reaches PRACTICE_GAMES.
+     */
+    public function skipPractice()
+    {
+        $user = Auth::user();
+
+        if ($user === null) {
+            return response()->json(['status' => 'unauthenticated'], 401);
+        }
+
+        $missing = self::PRACTICE_GAMES - $this->practiceGamesPlayed($user->battlenet_accounts_id);
+
+        if ($missing > 0) {
+            $existingRecord = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
+                ->where('season', 0)
+                ->first();
+
+            if ($existingRecord) {
+                $existingRecord->increment('loss', $missing);
+            } else {
+                MatchPredictionPlayerStat::insert([
+                    'battlenet_accounts_id' => $user->battlenet_accounts_id,
+                    'season' => 0,
+                    'game_type' => 5,
+                    'win' => 0,
+                    'loss' => $missing,
+                ]);
+            }
+        }
+
+        return ['practicemode' => false];
+    }
+
     /** Newest patches first, as many as it takes to reach REPLAY_POOL_SIZE replays of this type. */
     private function replayPoolVersions(int $gameType): array
     {
