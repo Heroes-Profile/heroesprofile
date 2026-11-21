@@ -83,7 +83,7 @@ export default {
       // By branch and commit sha: whether its full message is showing, so a commit on both branches opens in one card only
       open: {},
       // The branch a phone shows
-      mobileBranch: 'develop',
+      mobileBranch: 'master',
     };
   },
   computed: {
