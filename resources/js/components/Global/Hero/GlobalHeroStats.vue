@@ -90,7 +90,7 @@
             </div>
             <div class="flex flex-wrap items-center gap-2 px-4 md:px-5 py-4 min-w-0">
               <a v-for="row in tier.heroes" :key="row.name" :href="getGlobalTalentsURL(row)">
-                <hero-image-wrapper :hero="row"></hero-image-wrapper>
+                <hero-image-wrapper :hero="row" size="tier"></hero-image-wrapper>
               </a>
             </div>
           </div>
@@ -238,7 +238,7 @@
               <span class="text-xs skeleton-text">00 heroes</span>
             </div>
             <div class="flex flex-wrap items-center gap-2 px-4 md:px-5 py-4 min-w-0">
-              <skeleton-box v-for="hero in count" :key="hero" class="w-10 h-10 !rounded-full"></skeleton-box>
+              <skeleton-box v-for="hero in count" :key="hero" class="w-10 h-10 md:w-[3.25rem] md:h-[3.25rem] !rounded-full"></skeleton-box>
             </div>
           </div>
         </div>

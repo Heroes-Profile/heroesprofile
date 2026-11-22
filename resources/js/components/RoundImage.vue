@@ -3,7 +3,7 @@
   ref="container"
   :class="[
     'relative group items-center',
-    { 'md:w-10 md:h-10': !icon && !['match', 'row', 'talent', 'medium'].includes(size) },
+    { 'md:w-10 md:h-10': !icon && !['match', 'row', 'talent', 'medium', 'tier', 'heading'].includes(size) },
     { 
       block: size === 'big', 
       'md:w-20': size === 'big', 
@@ -15,6 +15,10 @@
       // Fixed at every width: match rows (82px), compact rows (42px), talent icons (42px)
       'block w-[5.125rem] h-[5.125rem] md:w-[5.125rem] md:h-[5.125rem]': size === 'match',
       'block w-[2.625rem] h-[2.625rem] md:w-[2.625rem] md:h-[2.625rem]': size === 'row' || size === 'talent',
+      // Tier List portraits: 52px, 40px on phones
+      'block w-10 h-10 md:w-[3.25rem] md:h-[3.25rem]': size === 'tier',
+      // A hero beside a page title: 110px, 80px on phones
+      'block w-20 h-20 md:w-[6.875rem] md:h-[6.875rem]': size === 'heading',
       // 224 x 322, as in the redesign
       'md:w-[14rem]': size === 'large',
       'md:h-[20.125rem]': size === 'large',
@@ -81,6 +85,10 @@
         ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-[2.625rem] h-[2.625rem] max-w-none'
         : size === 'medium'
         ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-16 h-16 max-w-none'
+        : size === 'tier'
+        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-10 h-10 md:w-[3.25rem] md:h-[3.25rem] max-w-none'
+        : size === 'heading'
+        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-20 h-20 md:w-[6.875rem] md:h-[6.875rem] max-w-none'
         : size === 'talent'
         ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-[2.625rem] h-[2.625rem] max-w-none rounded'
         : size === 'large'
@@ -103,7 +111,7 @@
       @load="imageLoaded = true"
       @error="imageFailed = true">
     <!-- Phones collapse an unloaded image to its alt text, so a grey circle the image's size holds its place -->
-    <span v-if="!icon && !imageLoaded && !imageFailed && !rectangle && !['match', 'row', 'talent', 'tile', 'large', 'medium'].includes(size)" :class="['md:hidden block mx-auto rounded-full bg-surface-3', size === 'big' ? 'w-20 h-20 max-sm:w-[2.5em] max-sm:h-[2.5em]' : size === 'xl' ? 'w-[6em] h-[6em]' : 'w-10 h-10 max-sm:w-[2.5em] max-sm:h-[2.5em]']"></span>
+    <span v-if="!icon && !imageLoaded && !imageFailed && !rectangle && !['match', 'row', 'talent', 'tile', 'large', 'medium', 'tier', 'heading'].includes(size)" :class="['md:hidden block mx-auto rounded-full bg-surface-3', size === 'big' ? 'w-20 h-20 max-sm:w-[2.5em] max-sm:h-[2.5em]' : size === 'xl' ? 'w-[6em] h-[6em]' : 'w-10 h-10 max-sm:w-[2.5em] max-sm:h-[2.5em]']"></span>
     <!-- The name centred on the grey box meanwhile (or for good, if the image failed), on sizes big enough to hold it -->
     <span v-if="!icon && (!imageLoaded || imageFailed) && namedPlaceholder" class="max-md:hidden absolute inset-0 flex items-center justify-center text-center text-xs leading-tight px-2 text-subtext pointer-events-none">{{ title }}</span>
     

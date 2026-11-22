@@ -1,7 +1,7 @@
 <template>
   <div>
     <page-heading :heading="$heroName(hero)">
-      <hero-image-wrapper :hero="hero" size="big" :excludehover="true"></hero-image-wrapper>
+      <hero-image-wrapper :hero="hero" size="heading" :excludehover="true"></hero-image-wrapper>
       <template v-if="metadata" #aboveHeading>
         <div class="flex items-center gap-2 text-base text-gray-medium max-md:justify-center">
           <round-image v-if="universeIcon" :image="universeIcon" size="small" :title="metadata.franchise">

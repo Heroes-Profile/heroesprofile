@@ -23,10 +23,10 @@
           </span>
         </div>
         <div class="flex flex-wrap items-end gap-3 max-sm:w-full">
-          <div class="w-full sm:w-[10rem]">
+          <div class="w-full sm:w-[18.75rem]">
             <single-select-filter :values="gametypes" :text="'Game type'" :compact="true" :nosearch="true" :placeholder="'Choose game type'" :defaultValue="gametype" @input-changed="handleInputChange"></single-select-filter>
           </div>
-          <custom-button color="teal" class="font-semibold max-sm:flex-1" :ignoreclick="true" :disabled="disableFilterInput" :alt="'Next match'" @click="applyFilter">{{ $t('Next match') }}</custom-button>
+          <custom-button color="teal" class="font-semibold px-8 max-sm:flex-1" :ignoreclick="true" :disabled="disableFilterInput" :alt="'Next match'" @click="applyFilter">{{ $t('Next match') }}</custom-button>
         </div>
       </div>
 

@@ -12,11 +12,11 @@
       <div class="flex flex-wrap gap-3 cursor-pointer max-md:justify-between">
         <template v-for="hero in filteredHeroes" :key="hero.id">
           <a v-if="linkbase" :href="linkbase + '/' + encodeURIComponent(hero.name)" @click="linkClicked($event, hero)">
-            <hero-image-wrapper :hero="hero" size="big"></hero-image-wrapper>
+            <hero-image-wrapper :hero="hero" size="medium"></hero-image-wrapper>
           </a>
           <hero-image-wrapper v-else
             :hero="hero"
-            size="big"
+            size="medium"
             @click="clickedHero(hero)"
           ></hero-image-wrapper>
         </template>

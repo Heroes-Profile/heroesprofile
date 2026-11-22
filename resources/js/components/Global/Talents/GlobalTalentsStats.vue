@@ -4,16 +4,12 @@
 
     <div class="grid gap-5 grid-cols-1">
       <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-      <page-heading v-if="!selectedHero" :heading="'Hero Builds & Talent Stats'" :subheading="'Talent win rates and builds by hero'">
+      <page-heading v-if="!selectedHero" :heading="'Hero Builds & Talent Stats'" :subheading="defaulttimeframe && defaulttimeframe.length ? $t('Most popular builds · Patch :patch', { patch: defaulttimeframe[0] }) : 'Most popular builds'">
       </page-heading>
 
 
     
         <div v-if="!selectedHero" class="flex flex-col gap-6">
-          <div v-if="defaulttimeframe && defaulttimeframe.length" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 -mt-2">
-            <span class="uppercase text-gray-medium">{{ $t('Most popular builds · Patch :patch', { patch: defaulttimeframe[0] }) }}</span>
-          </div>
-
           <hero-selection :heroes="heroes" linkbase="/Global/Talents" subtitle="Open a hero to see talent win rates and all builds." @search="heroSearchQuery = $event" @role="heroRole = $event"></hero-selection>
 
           <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
@@ -39,9 +35,13 @@
           <player-page-top>
           <template #heading>
             <page-heading :heading="$heroName(selectedHero)" :subheading="'Builds & talent stats'">
-              <hero-image-wrapper :hero="selectedHero" size="big" :includehover="false"></hero-image-wrapper>
+              <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
               <template #aboveHeading>
-                <a href="/Global/Talents" class="inline-flex items-center gap-1.5 text-sm font-normal text-lteal hover:underline mb-1"><basil-icon name="arrow-small" class="rotate-180 text-xs"></basil-icon>{{ $t('All heroes') }}</a>
+                <a href="/Global/Talents" class="inline-flex items-center gap-1.5 text-sm font-normal text-lteal hover:underline mb-1"><basil-icon name="arrow-small" class="rotate-180 text-xs text-white"></basil-icon>{{ $t('All heroes') }}</a>
+              </template>
+              <!-- The hero name is the hero picker (no Heroes filter on this page) -->
+              <template #headingText>
+                <hero-heading-select :heroes="heroes" :value="selectedHero.id" textclass="" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
               </template>
               <template v-if="isSLRank" #headingInfo>
                 <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
@@ -56,9 +56,7 @@
           <filters
             :key="filtersKey"
             :onFilter="filterData"
-            :includehero="true"
-            :heroinput="selectedHero.id"
-            :filters="filters" 
+            :filters="filters"
             :isLoading="isTalentsLoading || isBuildsLoading"
 
             :timeframetypeinput="timeframetype"

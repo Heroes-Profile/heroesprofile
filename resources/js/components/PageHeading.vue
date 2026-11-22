@@ -1,7 +1,9 @@
 <template>
   <div :class="['max-w-[120rem] w-full mx-auto px-4 py-6 md:pt-0 flex items-end gap-6 md:gap-20 max-md:flex-wrap max-md:justify-center', hasInfo ? 'md:px-8' : 'md:pl-8 md:pr-0']">
-     <slot>
-    </slot>
+    <!-- A portrait beside the title (Talents, Draft, Matchups, hero pages) sits 24px from it, not the 80px gap kept for the filters -->
+    <div v-if="$slots.default" class="shrink-0 md:-mr-14 md:self-center">
+      <slot></slot>
+    </div>
 
 
     <a v-if="headingImage" :href="headingImageUrl" target="_blank" class="flex items-center gap-4">
@@ -16,7 +18,7 @@
       <!-- BattleTag, then its flair, then the region tag, which sits level with the top of the BattleTag (lined up with
            the filters' top) -->
       <div v-if="battletag" class="flex items-center gap-3 flex-wrap md:flex-nowrap max-md:justify-center">
-        <a :href="`/Player/${battletag}/${blizzid}/${region}`" class="group/bt inline-flex"><span class="text-3xl md:text-4xl font-bold group-hover/bt:underline">{{ battletag }}</span></a>
+        <a :href="`/Player/${battletag}/${blizzid}/${region}`" class="group/bt inline-flex"><span class="text-3xl md:text-6xl font-bold group-hover/bt:underline">{{ battletag }}</span></a>
         <!-- Each flair in a box its own size, centred on the BattleTag (flair-icon, app.css) -->
         <span v-if="(isOwner && !ownerHidden) || isPatreon || (!esport && voidEye)" class="flex items-center gap-2.5 text-[1.25rem]">
           <span v-if="isOwner && !ownerHidden" class="relative inline-flex">
@@ -37,7 +39,7 @@
         <region-tag class="self-start" :region="regionstring" :large="true"></region-tag>
       </div>
       <slot name="aboveHeading"></slot>
-      <div :class="['heading flex items-center gap-3 max-md:justify-center', battletag ? 'text-base uppercase text-gray-medium mt-1' : 'text-4xl md:text-6xl font-bold']">{{ $t(heading) }}<!-- An info icon sits raised at the top of the title, like a superscript --><span v-if="$slots.headingInfo" class="page-title-info self-start flex"><slot name="headingInfo"></slot></span></div>
+      <div :class="['heading flex items-center gap-3 max-md:justify-center', battletag ? 'text-base md:text-2xl uppercase text-gray-medium mt-1' : 'text-4xl md:text-6xl font-bold']"><!-- A page can swap the title for its own (the Talents hero switcher) --><slot name="headingText">{{ $t(heading) }}</slot><!-- An info icon sits raised at the top of the title, like a superscript --><span v-if="$slots.headingInfo" class="page-title-info self-start flex"><slot name="headingInfo"></slot></span></div>
       <!-- A short uppercase line under a page title, as under a BattleTag -->
       <div v-if="subheading && !battletag" class="text-base md:text-2xl uppercase text-gray-medium mt-2 max-md:text-center">{{ $t(subheading) }}</div>
     </h1>

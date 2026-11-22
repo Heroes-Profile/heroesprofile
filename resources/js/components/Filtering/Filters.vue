@@ -7,7 +7,7 @@
         <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] flex-1 basis-[50rem] gap-2 min-w-0' : 'contents'">
           <!-- A page's own pickers (esports seasons, divisions, teams, ...): { text, values, defaultValue, show } -->
           <template v-for="extra in extrafilters" :key="extra.text">
-            <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="extra.show !== false"
+            <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="extra.show !== false"
               :values="extra.values"
               :text="extra.text"
               :defaultValue="extra.defaultValue"
@@ -15,23 +15,15 @@
             ></single-select-filter>
           </template>
           <!--Hero or Role -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeherorole"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeherorole"
             :values="filters.hero_role" 
             :text="'Hero or Role'" 
             @input-changed="handleInputChange"
             :defaultValue="'Hero'"
           ></single-select-filter>
 
-          <!-- Type -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="playerheroroletype"
-            :values="filters.type" 
-            :text="'Type'"
-            @input-changed="handleInputChange" 
-            :defaultValue="playertypeinput || 'Player'"
-          ></single-select-filter>
-
           <!-- Leaderboard -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="leaderboardfiltertype"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="leaderboardfiltertype"
             :values="filters.leaderboard_type" 
             :text="'Leaderboard Type'"
             :class="leaderboardOrder('Leaderboard Type')"
@@ -40,30 +32,12 @@
             :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
 
-          <!-- Heroes Swap -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludeheroes && swapHeroesFilter"
-            :values="filters.heroes" 
-            :text="'Heroes'" 
-            :class="leaderboardOrder('Heroes')"
-            :defaultValue="heroinput"
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-
-          <!-- Role Swap -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincluderole && swapRolesFilter"
-            :values="filters.role" 
-            :text="'Role'" 
-            :class="leaderboardOrder('Role')"
-            :defaultValue="role"
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-
           <!--<single-select-filter v-if="includecharttype" :values="filters.chart_type" :text="'Chart Type'" @input-changed="handleInputChange" :defaultValue="'Account Level'"></single-select-filter>-->
 
           <!-- Timeframes: builds under their major and sub patch. What's ticked decides the timeframe type sent. -->
           <!-- Remounted on a rank source switch so a dropped pre-in-game timeframe isn't left selected -->
           <!-- Wide enough to show a whole build number -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includetimeframe" class="md:!min-w-[17rem]"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includetimeframe" class="md:!min-w-[17rem]"
             :key="rankSourceSL ? 'timeframes-sl' : 'timeframes-hp'"
             :groupby="timeframeGroupOf"
             :headings="timeframeHeadingsOf"
@@ -76,7 +50,7 @@
           ></multi-select-filter>
 
           <!-- Current Game Type Multiselect-->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegametype"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludegametype"
             :values="globalGameTypes" 
             :text="'Game Type'" 
             @input-changed="handleInputChange" 
@@ -84,7 +58,7 @@
           ></multi-select-filter>
 
           <!-- All Game Types Multiselect -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includegametypefull"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includegametypefull"
             :values="filters.game_types_full" 
             :text="'Game Type'" 
             @input-changed="handleInputChange" 
@@ -92,7 +66,7 @@
           ></multi-select-filter>
 
           <!-- All Game Types Multiselect -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includegametypefullcustom"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includegametypefullcustom"
             :values="filters.game_types_full_add_custom" 
             :text="'Game Type'" 
             @input-changed="handleInputChange" 
@@ -102,7 +76,7 @@
           
 
           <!-- Group Size -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && !groupsizeadvanced && !groupsizemulti" :fit="true"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && !groupsizeadvanced && !groupsizemulti" :fit="true"
             :values="filters.group_size"
             :text="'Group Size'"
             :class="leaderboardOrder('Group Size')"
@@ -111,7 +85,7 @@
             :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
 
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && !groupsizeadvanced && groupsizemulti" :fit="true"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && !groupsizeadvanced && groupsizemulti" :fit="true"
             :values="groupSizeOptions"
             :text="'Group Size'"
             :class="leaderboardOrder('Group Size')"
@@ -120,7 +94,7 @@
           ></multi-select-filter>
 
           <!-- Leaderboard Game Type Excluding UD -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includesinglegametypeleaderboard && selectedSingleFilters['Leaderboard Type'] != 'SL Rank'"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includesinglegametypeleaderboard && selectedSingleFilters['Leaderboard Type'] != 'SL Rank'"
             :values="leaderboardGameTypes" 
             :text="'Game Type'" 
             :class="leaderboardOrder('Game Type')"
@@ -130,7 +104,7 @@
           ></single-select-filter>
 
           <!-- Current Game Type Single -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includesinglegametype"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includesinglegametype"
             :values="filters.game_types" 
             :text="'Game Type'" 
             @input-changed="handleInputChange" 
@@ -139,15 +113,41 @@
 
 
           <!-- All Game Type Single -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includesinglegametypefull"
-            :values="filters.game_types_full" 
-            :text="'Game Type'" 
-            @input-changed="handleInputChange" 
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includesinglegametypefull"
+            :values="filters.game_types_full"
+            :text="'Game Type'"
+            @input-changed="handleInputChange"
             :defaultValue="gametype[0]"
+          ></single-select-filter>
+
+          <!-- Type (Player / Hero / Role), after Game Type -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="playerheroroletype"
+            :values="filters.type"
+            :text="'Type'"
+            @input-changed="handleInputChange"
+            :defaultValue="playertypeinput || 'Player'"
+          ></single-select-filter>
+
+          <!-- Heroes Swap: the hero or role picked by Type (MMR) or Leaderboard Type; the leaderboard places it with order classes -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludeheroes && swapHeroesFilter"
+            :values="filters.heroes"
+            :text="'Heroes'"
+            :class="leaderboardOrder('Heroes')"
+            :defaultValue="heroinput"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+
+          <!-- Role Swap -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincluderole && swapRolesFilter"
+            :values="filters.role"
+            :text="'Role'"
+            :class="leaderboardOrder('Role')"
+            :defaultValue="role"
+            @input-changed="handleInputChange"
           ></single-select-filter>
           
           <!-- Regions Multiselect-->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeregion"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeregion"
             :values="filters.regions" 
             :text="'Regions'" 
             :defaultValue="region"
@@ -155,7 +155,7 @@
           ></multi-select-filter>
 
           <!-- Regions Single-->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includesingleregion"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includesingleregion"
             :values="filters.regions" 
             :text="'Region'"
             :class="leaderboardOrder('Region')"
@@ -164,7 +164,7 @@
           ></single-select-filter>
 
           <!-- SL Rank League -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="leaderboardfiltertype && selectedSingleFilters['Leaderboard Type'] == 'SL Rank' && filters.sl_leagues"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="leaderboardfiltertype && selectedSingleFilters['Leaderboard Type'] == 'SL Rank' && filters.sl_leagues"
             :values="filters.sl_leagues"
             :text="'League'"
             :class="leaderboardOrder('League')"
@@ -174,7 +174,7 @@
 
 
           <!-- Stat Type Filter -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="showStatTypeFilter"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="showStatTypeFilter"
             :values="filters.stat_filter"
             :text="'Stat Filter'"
             :defaultValue="statfilter"
@@ -184,26 +184,26 @@
           ></single-select-filter>
 
 
-          <!-- Heroes -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludeheroes && !swapHeroesFilter"
-            :values="filters.heroes" 
-            :text="'Heroes'" 
-            :defaultValue="heroinput"
+          <!-- Role, then Heroes -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincluderole && !swapRolesFilter"
+            :values="filters.role"
+            :text="'Role'"
+            :defaultValue="role"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
-          <!-- Role -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincluderole && !swapRolesFilter"
-            :values="filters.role" 
-            :text="'Role'" 
-            :defaultValue="role"
+          <!-- Heroes -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludeheroes && !swapHeroesFilter"
+            :values="filters.heroes"
+            :text="'Heroes'"
+            :defaultValue="heroinput"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
           <!-- Season, then the dates: one group, so they wrap onto a new row together -->
           <div :class="!compact && includegamedaterange ? 'filter-group' : 'contents'">
           <!-- Season -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludeseason" :fit="true"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludeseason" :fit="true"
             :values="seasons" 
             :text="'Season'" 
             :class="leaderboardOrder('Season')"
@@ -213,7 +213,7 @@
           ></single-select-filter>
 
           <!-- Match Prediction Seasons -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludematchpredictionseason" :fit="true"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludematchpredictionseason" :fit="true"
             :values="this.filters.match_prediction_seasons" 
             :text="'Match Prediction Season'" 
             :class="leaderboardOrder('Match Prediction Season')"
@@ -223,7 +223,7 @@
 
 
           <!-- All Seasons -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeseasonwithall" :fit="true"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeseasonwithall" :fit="true"
             :values="seasonsWithAll" 
             :text="'Season'" 
             @input-changed="handleInputChange" 
@@ -231,7 +231,7 @@
           ></single-select-filter>
 
           <!-- Seasons Multiselect -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includemultiseason"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includemultiseason"
             :values="seasons"
             :groupbyyear="true"
             :fit="true"
@@ -249,7 +249,7 @@
           </div>
 
           <!-- Heroes Multiselect -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includemultihero"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includemultihero"
             :values="filters.heroes"
             :text="'Heroes'"
             @input-changed="handleInputChange"
@@ -271,14 +271,14 @@
           ></player-picker-filter>
 
           <!-- Game Version Multiselect -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includegameversion"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includegameversion"
             :values="filters.timeframes"
             :text="'Game Version'"
             @input-changed="handleInputChange"
           ></multi-select-filter>
 
           <!-- Game Map Multiselect -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includegamemap"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includegamemap"
             :values="filters.game_maps" 
             :text="'Map'" 
             :defaultValue="gamemap"
@@ -286,7 +286,7 @@
           ></multi-select-filter>
 
           <!-- Game Map Single -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includesinglegamemap"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includesinglegamemap"
             :values="filters.game_maps" 
             :text="'Map'" 
             :defaultValue="gamemap ? gamemap[0] : null"
@@ -295,7 +295,7 @@
 
 
           <!-- Tier Single -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludetier"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludetier"
             :values="filters.rank_tiers" 
             :text="'HP Rank'" 
             :class="leaderboardOrder('HP Rank')"
@@ -305,7 +305,7 @@
           ></single-select-filter>
 
           <!-- Player Rank; with includeranksource, an HP | In-Game switch picks HP tiers or in-game SL ranks -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeplayerrank"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeplayerrank"
             :values="rankSourceSL ? filters.sl_leagues : filters.rank_tiers"
             :text="includeranksource ? $t('Player Rank') : $t('HP Player Rank')"
             :field="rankSourceSL ? 'SL Rank' : 'HP Player Rank'"
@@ -326,7 +326,7 @@
 
 
           <!-- Minimum Games -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeminimumgames"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeminimumgames"
             :values="filters.minimum_games" 
             :text="'Minimum Games'" 
             @input-changed="handleInputChange" 
@@ -334,7 +334,7 @@
           ></single-select-filter>
 
           <!-- Team One Party -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeteamoneparty"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeteamoneparty"
             :values="filters.party_combinations" 
             :text="'Team One Party'" 
             :defaultValue="teamonepartyinput"
@@ -342,7 +342,7 @@
           ></single-select-filter>
 
           <!-- Team Two Party -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeteamtwoparty"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeteamtwoparty"
             :values="filters.party_combinations" 
             :text="'Team Two Party'" 
             :defaultValue="teamtwopartyinput"
@@ -381,7 +381,7 @@
       <div v-if="toggleExtraFilters && hasAdvancedFilters" :class="compact ? 'mt-3' : 'border-t border-surface-3 mt-4 pt-4'">
         <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] gap-2 items-end' : 'filter-row'">
           <!-- Hero Level -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeherolevel && toggleExtraFilters && !rankSourceSL"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeherolevel && toggleExtraFilters && !rankSourceSL"
             :values="filters.hero_level" 
             :text="'Hero Level'" 
             :defaultValue="herolevel"
@@ -393,20 +393,20 @@
               :text="mmrType"
               @input-changed="handleInputChange"
             ></number-range-filter>
-            <multi-select-filter :compact="compact" v-bind="autoApplyBindings"
+            <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings"
               :values="rankTiersByMmr"
               :text="'HP Player Rank'"
               :showrankinfo="true"
               @input-changed="handleInputChange"
             ></multi-select-filter>
             <!-- Hero tiers are per hero, so this needs heroes to look up -->
-            <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="selectedMultiFilters['Heroes'] && selectedMultiFilters['Heroes'].length"
+            <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="selectedMultiFilters['Heroes'] && selectedMultiFilters['Heroes'].length"
               :values="rankTiersByMmr"
               :text="'HP Hero Rank'"
               :showrankinfo="true"
               @input-changed="handleInputChange"
             ></multi-select-filter>
-            <multi-select-filter :compact="compact" v-bind="autoApplyBindings"
+            <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings"
               :values="rankTiersByMmr"
               :text="'HP Role Rank'"
               :showrankinfo="true"
@@ -414,7 +414,7 @@
             ></multi-select-filter>
           </template>
           <!-- Hero Rank -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeherorank && toggleExtraFilters && !rankSourceSL"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeherorank && toggleExtraFilters && !rankSourceSL"
             :values="filters.rank_tiers" 
             :text="'HP Hero Rank'" 
             :showrankinfo="true"
@@ -422,7 +422,7 @@
             @input-changed="handleInputChange"
           ></multi-select-filter>
           <!-- Role Rank -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includerolerank && toggleExtraFilters && !rankSourceSL"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includerolerank && toggleExtraFilters && !rankSourceSL"
             :values="filters.rank_tiers" 
             :text="'HP Role Rank'" 
             :showrankinfo="true"
@@ -430,21 +430,21 @@
             @input-changed="handleInputChange"
           ></multi-select-filter>
           <!-- Talent built Type -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includetalentbuildtype && toggleExtraFilters"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includetalentbuildtype && toggleExtraFilters"
             :values="filters.talent_build_types" 
             :text="'Talent Build Type'" 
             @input-changed="handleInputChange" 
             :defaultValue="talentbuildtype"
           ></single-select-filter>
           <!-- Mirror -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includemirror && toggleExtraFilters"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includemirror && toggleExtraFilters"
             :values="filters.mirror" 
             :text="'Mirror Matches'" 
             @input-changed="handleInputChange" 
             :defaultValue="mirrormatch"
           ></single-select-filter>
           <!-- Group Size (advanced, global pages) -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters && !groupsizemulti"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters && !groupsizemulti"
             :values="filters.group_size"
             :text="'Group Size'"
             @input-changed="handleInputChange"
@@ -452,7 +452,7 @@
             :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
 
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters && groupsizemulti"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters && groupsizemulti"
             :values="groupSizeOptions"
             :text="'Group Size'"
             @input-changed="handleInputChange"

@@ -1,12 +1,26 @@
 <template>
   <!-- Collapsed until opened; the notes load the first time it opens -->
-  <panel-box title="Patch Notes" :subtitle="open ? version : null" :divider="open" :class="['w-full max-w-[93.75rem] mx-auto mb-4 md:!pt-4', { 'md:!pb-4 cursor-pointer': !open }]" @click="!open && toggle()">
-    <template #right>
-      <button type="button" class="flex items-center gap-2 text-sm text-subtext hover:text-white transition-colors" :aria-expanded="open" @click.stop="toggle">
+  <panel-box :class="['w-full max-w-[93.75rem] mx-auto mb-4 md:!pt-4', { 'md:!pb-4 cursor-pointer': !open }]" @click="!open && toggle()">
+    <!-- The bar, as in the redesign: title and patch chip, the patch date under them, the legend, then Show/Hide -->
+    <div class="flex flex-wrap items-center gap-4">
+      <div class="flex-1 min-w-0 flex flex-col gap-1">
+        <div class="flex flex-wrap items-center gap-3">
+          <h3 class="text-2xl font-bold">{{ $t('Patch Notes') }}</h3>
+          <span class="px-2.5 py-[0.1875rem] rounded-[0.375rem] bg-teal/[0.18] text-teal text-[0.8125rem] font-bold whitespace-nowrap">{{ version }}<template v-if="notes && notes.version === version && notes.title"> · {{ notes.title }}</template></span>
+        </div>
+        <span v-if="notes && notes.version === version && notes.date" class="text-subtext">{{ notes.date }}</span>
+      </div>
+      <div class="max-md:hidden flex items-center gap-4 whitespace-nowrap">
+        <span v-for="(badge, type) in usedBadges" :key="type" class="flex items-center gap-1">
+          <span :class="['text-xs font-bold', badge.color]">{{ badge.glyph }}</span><span class="text-sm text-subtext">{{ $t(badge.label) }}</span>
+        </span>
+      </div>
+      <button type="button" class="flex items-center gap-1.5 md:pl-4 text-[0.9375rem] font-medium text-subtext hover:text-white transition-colors" :aria-expanded="open" @click.stop="toggle">
         {{ open ? $t('Hide') : $t('Show') }}
         <basil-icon name="arrow-small" :class="['text-xs transition-transform', open ? '-rotate-90' : 'rotate-90']"></basil-icon>
       </button>
-    </template>
+    </div>
+    <div v-if="open" class="h-px bg-gray-dark"></div>
 
     <div v-if="open" class="text-gray-light">
     <div v-if="loading" class="text-center py-4">{{ $t('Loading patch notes...') }}</div>
@@ -182,6 +196,18 @@ export default {
     }
   },
   computed: {
+    // The bar's legend: only the change types this patch has, in the usual order
+    usedBadges() {
+      if (!this.notes || this.notes.version !== this.version) {
+        return {};
+      }
+      const types = new Set([
+        ...(this.notes.general || []).map(entry => entry.type),
+        ...(this.notes.maps || []).map(map => map.type),
+        ...(this.notes.heroes || []).map(hero => hero.type),
+      ].filter(Boolean));
+      return Object.fromEntries(Object.entries(this.badges).filter(([type]) => types.has(type)));
+    },
     bugFixCount() {
       const bugFixes = this.notes && this.notes.bug_fixes;
       if (!bugFixes) {
@@ -204,11 +230,13 @@ export default {
       return this.notes.bug_fixes.heroes.find(hero => hero.name === this.selectedBugFixHero) || null;
     },
   },
+  // The bar shows the patch's date and title, so the notes (a static file) load straight away
+  mounted() {
+    this.loadNotes();
+  },
   watch: {
     version() {
-      if (this.open) {
-        this.loadNotes();
-      }
+      this.loadNotes();
     },
   },
   methods: {

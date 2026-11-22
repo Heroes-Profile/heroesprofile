@@ -27,10 +27,16 @@
       <panel-box :divider="false" :class="['xl:h-full relative', { 'md:!rounded-tl-none': loading }]">
         <loading-component v-if="loading" :compact="true" :tab="true"></loading-component>
         <!-- Before the first roll -->
-        <div v-if="!rolled" class="flex-1 flex flex-col items-center justify-center gap-4 text-center py-16">
-          <i class="fa-solid fa-shuffle text-4xl text-lteal"></i>
-          <p class="text-subtext max-w-[28rem]">{{ $t('Get a random hero, map, mode and a real talent build pulled from recent games. Use it as a fun challenge or to try something new.') }}</p>
-          <custom-button color="teal" class="font-semibold" :ignoreclick="true" :alt="'Randomize'" @click="roll(['hero', 'map', 'region', 'mode', 'build'])">{{ $t('Randomize!') }}</custom-button>
+        <div v-if="!rolled" class="flex-1 flex flex-col items-center justify-center gap-7 text-center py-16">
+          <span class="w-[11.25rem] h-[11.25rem] rounded-full border-2 border-dashed border-teal/50 bg-teal/[0.12] flex items-center justify-center">
+            <i class="fa-solid fa-shuffle text-[4.5rem] text-teal"></i>
+          </span>
+          <div class="flex flex-col items-center gap-2">
+            <h2 class="text-3xl md:text-4xl font-bold">{{ $t('Ready when you are') }}</h2>
+            <p class="text-lg text-subtext">{{ $t('Press Randomize to get a hero, a talent build, a map and a game mode.') }}</p>
+          </div>
+          <custom-button color="teal" class="font-semibold w-full max-w-[20rem] h-14 py-0 text-xl" :ignoreclick="true" :alt="'Randomize'" @click="roll(['hero', 'map', 'region', 'mode', 'build'])">{{ $t('Randomize!') }}</custom-button>
+          <p class="text-sm text-subtext">{{ $t('Tip: choose what to randomize on the left first.') }}</p>
         </div>
 
         <div v-else :class="['flex-1 grid gap-6', showHero ? 'md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]' : '']">

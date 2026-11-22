@@ -2,7 +2,7 @@
   <div>
     <global-async-debug-banner page-label="Global Draft" />
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" :infoText2="infoText2" -->
-    <page-heading v-if="!selectedHero" :heading="'Hero Draft Stats & Pick Order'" :subheading="'Pick & ban order by hero'"></page-heading>
+    <page-heading v-if="!selectedHero" :heading="'Hero Draft Stats & Pick Order'" :subheading="defaulttimeframe && defaulttimeframe.length ? $t('Pick & ban order by hero · Patch :patch', { patch: defaulttimeframe[0] }) : 'Pick & ban order by hero'"></page-heading>
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes" subtitle="Pick a hero to see when it is usually picked and banned in the draft, and how its win rate changes with pick order."></hero-selection>
     </div>
@@ -12,9 +12,9 @@
       <player-page-top>
         <template #heading>
           <page-heading :heading="$heroName(selectedHero)" :subheading="'Draft stats & pick order'">
-            <hero-image-wrapper :hero="selectedHero" size="big" :includehover="false"></hero-image-wrapper>
+            <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
             <template #aboveHeading>
-              <a href="/Global/Draft" class="inline-flex items-center gap-1.5 text-sm font-normal text-lteal hover:underline mb-1"><basil-icon name="arrow-small" class="rotate-180 text-xs"></basil-icon>{{ $t('All heroes') }}</a>
+              <a href="/Global/Draft" class="inline-flex items-center gap-1.5 text-sm font-normal text-lteal hover:underline mb-1"><basil-icon name="arrow-small" class="rotate-180 text-xs text-white"></basil-icon>{{ $t('All heroes') }}</a>
             </template>
           </page-heading>
         </template>

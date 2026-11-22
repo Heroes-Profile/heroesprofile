@@ -1,6 +1,7 @@
 <template>
   <!-- A player page's heading with its filters: side by side on desktop, stacked on mobile -->
-  <div class="flex max-md:flex-col md:gap-12 md:pt-[2.75rem] max-w-[120rem] mx-auto">
+  <!-- The heading is centred on the filter card, as in the redesign -->
+  <div class="flex max-md:flex-col md:items-center md:gap-12 md:pt-[2.75rem] max-w-[120rem] mx-auto">
     <div class="shrink-0">
       <slot name="heading"></slot>
     </div>

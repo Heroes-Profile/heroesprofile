@@ -378,6 +378,7 @@ import { siteLocale } from '../../utils/translate';
             end_date: this.enddate,
             award_id: this.selectedAward ? this.selectedAward.award_id : null,
             pagination_page: page,
+            per_page: 8,
           },
           {
             cancelToken: this.cancelTokenSource.token,
