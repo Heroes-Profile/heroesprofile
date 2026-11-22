@@ -15,7 +15,7 @@
         class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-lighten text-sm"
         @click="selectHero(h)"
       >
-        <hero-image-wrapper v-if="type === 'hero'" :hero="h" :includehover="false" class="flex-shrink-0"></hero-image-wrapper>
+        <hero-image-wrapper v-if="type === 'hero'" :hero="h" :includehover="false" class="shrink-0"></hero-image-wrapper>
         <!-- The whole shield, scaled to fit: a round crop cut its edges into a jagged fringe -->
         <img v-else-if="type === 'role'" :src="`/images/roles/${h.name.toLowerCase()}.PNG`" alt="" class="w-8 h-10 object-contain shrink-0">
 

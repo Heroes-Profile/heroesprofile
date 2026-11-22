@@ -378,7 +378,7 @@
           {{ $t('This is the only time it will be shown. We store a hash of it, so it cannot be retrieved again. If you lose it, revoke the key and create another.') }}
         </p>
         <div class="flex flex-wrap gap-2 items-center">
-          <code class="bg-darken p-2 break-all flex-grow">{{ newKey.plain_text }}</code>
+          <code class="bg-darken p-2 break-all grow">{{ newKey.plain_text }}</code>
           <custom-button @click="copyKey" :text="copied ? $t('Copied') : $t('Copy')" :alt="'Copy key'" :size="'small'" :ignoreclick="true"></custom-button>
         </div>
       </div>
@@ -387,7 +387,7 @@
         <h2 class="text-lg mb-4">{{ $t('API Keys') }}</h2>
 
         <form @submit.prevent="createKey" class="flex flex-wrap gap-2 items-end mb-6">
-          <div class="flex flex-col flex-grow">
+          <div class="flex flex-col grow">
             <label for="keyname" class="text-sm mb-1">{{ $t('Name this key') }}</label>
             <input
               class="search-input text-black"

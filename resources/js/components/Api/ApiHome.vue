@@ -27,7 +27,7 @@
           </div>
           <div class="h-px bg-gray-dark"></div>
 
-          <ul class="flex flex-col gap-3.5 flex-grow">
+          <ul class="flex flex-col gap-3.5 grow">
             <li v-for="(feature, index) in features[plan.key]" :key="index" :class="['flex items-center gap-3', { 'text-subtext': !feature.included }]">
               <span v-if="feature.included" class="w-5 h-5 rounded-[0.25rem] bg-teal flex items-center justify-center shrink-0"><basil-icon name="check" class="text-base text-white"></basil-icon></span>
               <span v-else class="w-5 h-5 rounded-[0.25rem] bg-surface-3 flex items-center justify-center shrink-0"><basil-icon name="cross" class="text-base"></basil-icon></span>

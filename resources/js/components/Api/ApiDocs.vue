@@ -43,7 +43,7 @@
         </div>
       </nav>
 
-      <div class="flex-grow min-w-0">
+      <div class="grow min-w-0">
 
         <!--
           Admins only. Both switches exist on the account page too; they are

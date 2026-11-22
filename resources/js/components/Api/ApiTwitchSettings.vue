@@ -92,7 +92,7 @@
             <strong>{{ $t('Twitch Extension') }}</strong> {{ $t('on the uploader\'s main window. This is the only time the key will be shown.') }}
           </p>
           <div class="flex flex-wrap gap-2 items-center">
-            <code class="bg-darken p-2 break-all flex-grow">{{ newKey }}</code>
+            <code class="bg-darken p-2 break-all grow">{{ newKey }}</code>
             <custom-button @click="copyKey" :text="copied ? $t('Copied') : $t('Copy')" :alt="'Copy key'" :size="'small'" :ignoreclick="true"></custom-button>
           </div>
         </div>
