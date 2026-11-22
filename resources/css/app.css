@@ -671,26 +671,6 @@ h1{
 
 
 
-.compare-selection-box:nth-child(1n) .compare-selection-title{
-
-    @apply bg-blue;
-
-}
-.compare-selection-box:nth-child(2n) .compare-selection-title{
-
-    @apply bg-teal;
-
-}
-.compare-selection-box:nth-child(3n) .compare-selection-title{
-
-    @apply bg-red;
-
-}
-.compare-selection-box:nth-child(4n) .compare-selection-title{
-
-    @apply bg-yellow;
-
-}
 
 
 
