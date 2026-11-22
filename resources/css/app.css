@@ -392,7 +392,6 @@ table{
 
 
 }
-table td{flex:1;}
 .dark-mode table{
   @apply bg-surface-1 text-white;
 }
@@ -565,9 +564,6 @@ thead{
 thead input{
   user-select: text;
 }
-thead tr{
-  @apply py-3;
-}
 
 /* Info icons sit raised just after what they explain, like a superscript. Only the glyph moves, so the label beside it
    stays put; page titles already raise theirs (PageHeading's .page-title-info) */
@@ -699,8 +695,6 @@ a[href*="javascript:void(0)"] {
 div.phpdebugbar * {
     background: unset;
 }
-
-thead{border-color:transparent;}
 
 /* Xal'atath Void Corruption event: recap masthead, whispers and eye flair */
 .xalatath-scoreboard{
