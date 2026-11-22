@@ -2,7 +2,7 @@
   <div>
     <global-async-debug-banner page-label="Global Compositions" />
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-    <page-heading :heading="'Composition Statistics'"></page-heading>
+    <page-heading :heading="'Team Compositions & Win Rates'"></page-heading>
     <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 -mt-2 mb-4 flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
       <span class="uppercase text-gray-medium">{{ selectedPatch ? $t('All players · Patch :patch', { patch: selectedPatch }) : $t('All players') }}</span>
     </div>
