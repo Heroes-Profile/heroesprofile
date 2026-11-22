@@ -23,6 +23,7 @@ module.exports = {
       'lteal' : '#00c0c0',
       /*'yellow' : '#ffc93e',*/
       'lyellow' : '#ffd465',
+      'gold' : '#ffd700', // Patreon
       /*'yellow' : '#118e6d',*/
       'yellow' : '#d98c40',
 

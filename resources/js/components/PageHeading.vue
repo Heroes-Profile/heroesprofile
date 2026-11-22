@@ -31,7 +31,7 @@
           </icon-with-hover>
           <owner-sparks class="owner-sparks-small"></owner-sparks>
           </span>
-          <icon-with-hover v-if="isPatreon" class="flair-icon" size="small" icon="fas fa-star" title="info" popupsize="small" style="color:gold">
+          <icon-with-hover v-if="isPatreon" class="flair-icon text-gold" size="small" icon="fas fa-star" title="info" popupsize="small">
             <div>
               <p class="max-sm:text-xs">{{ $t('Patreon Subscriber') }}</p>
             </div>

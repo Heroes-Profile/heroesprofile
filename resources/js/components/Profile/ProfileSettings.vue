@@ -237,7 +237,7 @@
             </div>
             <div v-for="flair in flairOptions" :key="flair.key" class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
               <div class="min-w-0 flex items-center gap-4">
-                <i v-if="flair.icon" :class="['shrink-0', flair.icon]" :style="flair.iconStyle"></i>
+                <i v-if="flair.icon" :class="['shrink-0', flair.icon, flair.iconClass]"></i>
                 <div class="min-w-0">
                   <h4 class="font-medium">{{ flair.label }}</h4>
                   <p class="text-sm text-subtext">{{ flair.description }}</p>
@@ -382,7 +382,7 @@ export default {
     },
     // The same classes the nav gives the picture (nav.blade.php)
     borderPreviewClass() {
-      return { owner: 'border-2 owner-glow', patreon: 'border-2 border-[#ffd700] patreon-glow', void_eye: 'border-2 border-[#a77bf3] void-glow', none: '' };
+      return { owner: 'border-2 owner-glow', patreon: 'border-2 border-gold patreon-glow', void_eye: 'border-2 border-[#a77bf3] void-glow', none: '' };
     },
     // The earned borders, then None, in the tab button's order
     borderOptions() {
@@ -392,7 +392,7 @@ export default {
     flairOptions() {
       const all = [
         { key: 'owner', label: 'Site Owner', description: 'The crown shown for the Heroes Profile owner.', icon: 'fas fa-crown owner-crown' },
-        { key: 'patreon', label: 'Patreon', description: 'The star shown for Patreon supporters.', icon: 'fas fa-star', iconStyle: 'color:gold' },
+        { key: 'patreon', label: 'Patreon', description: 'The star shown for Patreon supporters.', icon: 'fas fa-star', iconClass: 'text-gold' },
         { key: 'void_eye', label: 'Mark of the Void', description: "Earned by finding Xal'atath's eye. Hiding it does not affect your ad-free time.", icon: 'void-eye-img' },
       ];
       return all.filter(flair => this.availableFlair.includes(flair.key));

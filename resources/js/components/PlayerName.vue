@@ -14,7 +14,7 @@
         </icon-with-hover>
         <owner-sparks class="owner-sparks-small"></owner-sparks>
       </span>
-      <icon-with-hover v-else-if="patreon" class="[&>span]:h-full" size="small" icon="fas fa-star" title="info" popupsize="small" style="color:gold">
+      <icon-with-hover v-else-if="patreon" class="[&>span]:h-full text-gold" size="small" icon="fas fa-star" title="info" popupsize="small">
         <p class="max-sm:text-xs">{{ $t('Patreon Subscriber') }}</p>
       </icon-with-hover>
       <void-eye-flair v-if="voidEye" class="[&>span]:h-full" :blizz-id="blizzId" :region="region"></void-eye-flair>

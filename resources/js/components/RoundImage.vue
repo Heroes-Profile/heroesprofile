@@ -49,7 +49,7 @@
     <!-- Every flair the player has shows; beside the crown, the star moves over so they don't overlap -->
     <div :class="['absolute z-10 -top-2', hpowner ? 'left-4' : 'left-0']" v-if="ispatreon">
       <!-- {{ "Patreon Subscriber" }} -->
-      <i class="fas fa-star" style="color:gold"></i>
+      <i class="fas fa-star text-gold"></i>
     </div>
     <div :class="['absolute z-10 bottom-0 -left-2 text-xl leading-none']" v-if="voideye">
       <void-eye-flair :force="true" :tooltip="false"></void-eye-flair>
