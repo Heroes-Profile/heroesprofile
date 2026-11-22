@@ -96,7 +96,7 @@
             <div class="grid grid-cols-3 gap-2">
               <div v-for="ban in [1, 2, 3]" :key="ban"
                 :class="['h-[4.75rem] rounded-control flex flex-col items-center justify-center gap-1 px-1 min-w-0 border-2', slotHero(team + '-ban' + ban) ? 'bg-surface-1 border-surface-1'
-                  : ['!border-[1.5px] border-dashed', team === 'team1' ? 'border-[#009994]' : 'border-lred', isActive(team + '-ban' + ban) ? (team === 'team1' ? 'bg-teal/15' : 'bg-red/15') : 'bg-surface-1']]">
+                  : ['!border-[1.5px] border-dashed', team === 'team1' ? 'border-teal' : 'border-lred', isActive(team + '-ban' + ban) ? (team === 'team1' ? 'bg-teal/15' : 'bg-red/15') : 'bg-surface-1']]">
                 <template v-if="slotHero(team + '-ban' + ban)">
                   <span class="relative w-10 h-10 shrink-0">
                     <span class="absolute inset-0 rounded-full bg-cover bg-center opacity-60" :style="slotStyle(team + '-ban' + ban)"></span>
@@ -427,7 +427,7 @@ export default {
       const current = index === this.currentPick && !this.draftComplete;
       const ring = current ? (ours ? 'ring-2 ring-lteal shadow-[0_0_0.75rem_rgba(0,192,192,0.6)]' : 'ring-2 ring-lred shadow-[0_0_0.75rem_rgba(228,74,35,0.6)]') : '';
       if (slotId.includes('ban')) {
-        return ['rounded-control border-[1.5px] border-dashed bg-surface-1', ours ? 'border-[#009994] text-[#009994]' : 'border-lred text-lred', ring];
+        return ['rounded-control border-[1.5px] border-dashed bg-surface-1', ours ? 'border-teal text-teal' : 'border-lred text-lred', ring];
       }
       return ['rounded-control text-white', ours ? 'bg-teal' : 'bg-red', ring];
     },
