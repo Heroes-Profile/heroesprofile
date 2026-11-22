@@ -53,7 +53,7 @@
     </div>
 
     <div v-else-if="data.games.length">
-      <div id="table-container" ref="tablecontainer" class="w-auto   w-[100vw]   2xl:mx-auto  " style=" ">
+      <div id="table-container" ref="tablecontainer" class="w-[100vw] 2xl:mx-auto">
         <table id="responsive-table" class="relative 2xl:w-auto 2xl:min-w-[93.75rem]" ref="responsivetable">
           <thead>
             <tr>
