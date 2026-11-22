@@ -39,6 +39,10 @@ export default defineConfig({
     server: {
         hmr: {
             host: 'localhost',
-        }
+        },
+        // Nothing the frontend imports; the tests rewrite storage's compiled views on every run
+        watch: {
+            ignored: ['**/vendor/**', '**/storage/**', '**/tests/**', '**/docker-compose/**', '**/public/build/**'],
+        },
     }
 });
