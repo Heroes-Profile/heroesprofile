@@ -64,40 +64,47 @@
     <div v-else>
       <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-      <div  v-if="talentdetaildata" class="container mx-auto md:px-4">
-        <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
-        <global-talent-details-section :talentdetaildata="talentdetaildata" :esport="esport ? 'true' : undefined" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
+      <!-- Same panels as the hero view on /Global/Talents -->
+      <div v-if="talentdetaildata" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <panel-box title="Talent stats" subtitle="Win rate, popularity and games for every talent. The best win rate on each tier is highlighted.">
+          <template #right>
+            <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
+          </template>
+          <compact-talent-grid :talent-data="talentdetaildata"></compact-talent-grid>
+        </panel-box>
       </div>
-      <!-- The talent tables' layout with grey blocks while they load, like Overall Talent Stats on the NGS page -->
-      <!-- In the loaded page's box: the message on the "Talent Stats" line, the levels where the tables load -->
-      <div v-else-if="isLoading" class="container mx-auto md:px-4">
-        <span class="flex gap-4 mb-2"><loading-component :compact="true" :overrideimage="league?.loaderImage"></loading-component></span>
-        <div class="flex flex-col items-center">
-          <div v-for="level in 7" :key="level" class="w-full max-w-[93.75rem] bg-surface overflow-hidden">
-            <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-20"></skeleton-box></div>
-            <table-skeleton :bare="true" :rows="4" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
-          </div>
-          <div class="w-full max-w-[50rem] bg-surface overflow-hidden mt-6">
-            <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-16"></skeleton-box></div>
-            <table-skeleton :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
-          </div>
-        </div>
+      <div v-else-if="isLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <panel-box title="Talent stats" subtitle="Win rate, popularity and games for every talent. The best win rate on each tier is highlighted." :skeleton="true" class="relative md:!rounded-tl-none">
+          <loading-component :compact="true" :tab="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('Loading talent stats...') }}</loading-component>
+          <compact-talent-grid :skeleton="true"></compact-talent-grid>
+        </panel-box>
       </div>
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
-      <div  v-if="talentbuilddata" class="cmx-auto md:px-4 w-auto flex flex-col items-center">
-        {{ this.selectedHero.name }} {{ "Talent Builds"}}
-        <global-talent-builds-section :talentbuilddata="talentbuilddata" :esport="esport ? 'true' : undefined" :buildtype="'Popular'" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
+      <div v-if="talentbuilddata" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6">
+        <panel-box id="builds" title="Talent builds" subtitle="Copy a build code and paste it in game chat." class="scroll-mt-4">
+          <global-talent-builds-section :talentbuilddata="talentbuilddata" :esport="esport ? 'true' : undefined" :buildtype="'Popular'" :statfilter="'win_rate'"></global-talent-builds-section>
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <span class="text-sm text-subtext">{{ $t('Want something else? Make your own build in the Talent Builder.') }}</span>
+            <custom-button :href="'/Global/Talents/Builder/' + selectedHero.name" :text="'Open Talent Builder'" :alt="'Open Talent Builder'" color="teal"></custom-button>
+          </div>
+        </panel-box>
+      </div>
+      <div v-else-if="isLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
+        <table-skeleton :rows="7" :heading="true" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import CompactTalentGrid from '../Global/Talents/CompactTalentGrid.vue';
+
 export default {
   name: 'PlayerTalents',
   components: {
+    CompactTalentGrid,
   },
   props: {
     filters: {

@@ -21,6 +21,7 @@
         :includemultiseason="true"
         :includegamedaterange="true"
         :includegamemap="true"
+        :gamemapinput="gamemap"
         :includegroupsize="true"
         :groupsizeadvanced="true"
         :groupSizeDefaultValue="'All'"
@@ -156,6 +157,9 @@ export default {
       }
       if (this.urlparameters['role']) {
         this.role = this.urlparameters['role'];
+      }
+      if (this.urlparameters['game_map']) {
+        this.gamemap = this.urlparameters['game_map'].split(',');
       }
       if (this.urlparameters['ff_battletag']) {
         this.ffBattletag = this.urlparameters['ff_battletag'];
