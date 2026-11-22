@@ -35,7 +35,7 @@
       </div>
 
 
-      <div class=" mdp-10 text-center ">
+      <div class="text-center">
         <!-- Mobile: one row per player pair so both teams' cards line up -->
         <div class="md:hidden grid grid-cols-2 max-sm:text-xs">
           <group-box class="!block !mb-0" :headeronly="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(0, data.winner)" :esportteamname="getEsportTeamName(0)" :color="data.winner == 0 ? 'teal' : 'red'"></group-box>
