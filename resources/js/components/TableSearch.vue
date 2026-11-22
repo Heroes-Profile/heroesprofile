@@ -63,9 +63,6 @@
           </tr>
         </tbody>
       </table>
-
-      <!-- Sweeps the rows while searching -->
-      <div v-if="phase === 'searching'" class="table-scan absolute inset-x-0 h-12 pointer-events-none bg-gradient-to-b from-transparent via-teal/40 to-transparent"></div>
     </div>
     </panel-box>
 

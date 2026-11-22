@@ -7,6 +7,8 @@ module.exports = {
   ],
   theme: {
     colors: {
+      'transparent' : 'transparent',
+      'current' : 'currentColor',
       'gray-dark': '#303340', // was #333 (warm); now the select-box grey, same as surface-3
       'gray-light' : '#ddd',
       'gray-xlight' : '#eee',
