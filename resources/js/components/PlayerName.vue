@@ -5,8 +5,9 @@
       <span class="group-hover/bt:underline">{{ battletag }}</span>
       <basil-icon name="arrow-small" class="text-xs absolute left-full ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon>
     </a>
-    <!-- flairOutside: the flairs hang past the name, so a centred name is centred on its own -->
-    <span :class="['inline-flex items-center ml-1 transition-transform peer-hover/name:translate-x-4', { 'absolute left-full top-1/2 -translate-y-1/2': flairOutside }]">
+    <!-- flairOutside: on desktop the flairs hang past the name, so a centred name is centred on its own. Phones keep them
+         inline: there the table is shrunk with zoom, which misplaces a left:100% -->
+    <span :class="['inline-flex items-center ml-1 transition-transform peer-hover/name:translate-x-4', { 'md:absolute md:left-full md:top-1/2 md:-translate-y-1/2': flairOutside }]">
       <span v-if="hpOwner" class="relative inline-flex">
         <icon-with-hover class="owner-crown [&>span]:h-full" size="small" icon="fas fa-crown" title="info" popupsize="small">
           <p class="max-sm:text-xs">{{ $t('Site Owner') }}</p>
