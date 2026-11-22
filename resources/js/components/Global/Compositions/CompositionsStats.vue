@@ -67,7 +67,8 @@
         </template>
 
         <div id="table-container" ref="tablecontainer" class="overflow-clip">
-          <table id="responsive-table" class="min-w-0 w-full responsive-table rounded-table table-fixed relative" ref="responsivetable">
+          <!-- Fixed columns never overflow, so on phones it's laid out wide and scaleTableToFit shrinks it -->
+          <table id="responsive-table" class="min-w-0 max-md:min-w-[60rem] w-full responsive-table rounded-table table-fixed relative" ref="responsivetable">
             <colgroup>
               <!-- Wide enough for the "#" box beside the rank once sorted by another column -->
               <col class="w-[calc(7.75rem+1.5px)]">
@@ -265,7 +266,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
       dataError: false,
       windowWidth: window.innerWidth,
       infoText: "Composition stats based on differing increments, stat types, game type, or Rank. Click on a Composition to see detailed composition information.",
-      sortKey: 'win_rate',
+      sortKey: '',
       sortDir: 'desc',
       compositiondata: null,
       cancelTokenSource: null,
@@ -314,11 +315,9 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
     rankChanged() {
       return !!this.sortKey && this.sortKey !== 'rank' && this.sortKey !== 'win_rate';
     },
-    // Each composition's rank by win rate, fixed whatever the table is sorted by
+    // Each composition's rank by win rate, fixed whatever the table is sorted by; unsorted, the table is in rank order
     rankedData() {
-      const byWinRate = this.compositiondata.slice().sort((a, b) => b.win_rate - a.win_rate);
-      const ranks = new Map(byWinRate.map((row, index) => [row, index + 1]));
-      return this.compositiondata.map(row => ({ ...row, rank: ranks.get(row) }));
+      return this.compositiondata.slice().sort((a, b) => b.win_rate - a.win_rate).map((row, index) => ({ ...row, rank: index + 1 }));
     },
     sortedData() {
       if (!this.sortKey) return this.rankedData;
