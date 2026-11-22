@@ -52,7 +52,7 @@
                 </template>
                 <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
                   <span class="flex flex-wrap items-center gap-3">
-                    <span class="bg-surface-3 rounded-control px-3 py-1 font-mono text-xs">{{ commit.short_sha }}</span>
+                    <span class="bg-surface-3 rounded-control px-3 py-1 text-xs">{{ commit.short_sha }}</span>
                     <span v-if="commit.additions != null" class="flex items-center gap-2 tabular-nums">
                       <span class="text-win">+{{ commit.additions.toLocaleString('en-US') }}</span>
                       <span class="text-loss">−{{ commit.deletions.toLocaleString('en-US') }}</span>

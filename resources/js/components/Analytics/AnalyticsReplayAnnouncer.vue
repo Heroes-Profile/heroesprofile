@@ -14,7 +14,7 @@
     <analytics-speech-bubble class="mt-3" :talking="talking" :two-lines="true" :title="said.length ? fullText(said[0]) : ''" @done="talking = false">
       <div class="line-clamp-2">
         <template v-if="said.length">
-          <span class="font-mono bubble-time mr-2">{{ clock(said[0].t) }}</span>
+          <span class="bubble-time mr-2">{{ clock(said[0].t) }}</span>
           <span class="font-bold">{{ said[0].text }}</span>
           <span v-if="said[0].why" class="bubble-why ml-1">{{ $t('Why: :why.', { why: said[0].why }) }}</span>
         </template>
@@ -25,7 +25,7 @@
     <!-- The two lines before it: one line each, and the space is kept even before there are two -->
     <div class="mt-2 ml-[4.5rem] h-8 text-xs opacity-60">
       <div v-for="(line, index) in said.slice(1)" :key="line.t + ':' + index" class="truncate" :title="fullText(line)">
-        <span class="font-mono text-gray-light mr-2">{{ clock(line.t) }}</span>
+        <span class="text-gray-light mr-2">{{ clock(line.t) }}</span>
         <span>{{ line.text }}</span>
       </div>
     </div>

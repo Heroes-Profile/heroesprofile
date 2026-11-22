@@ -111,7 +111,7 @@
                   <hero-image-wrapper v-if="p.short_name" :hero="{ name: p.hero, short_name: p.short_name }" :size="'small'"></hero-image-wrapper>
                 </div>
                 <span class="flex-1 truncate">{{ p.battletag || $heroName(p.hero) }}<span v-if="p.you" class="text-yellow"> (you)</span></span>
-                <span class="font-mono">{{ takedownsAt(p.idx) }} / {{ deathsAt(p.idx) }}</span>
+                <span>{{ takedownsAt(p.idx) }} / {{ deathsAt(p.idx) }}</span>
               </div>
             </div>
             <div class="text-gray-light text-right">takedowns / deaths</div>
@@ -150,7 +150,7 @@
                 class="flex gap-3 cursor-pointer hover:bg-lighten rounded px-1"
                 @click="seek(Math.max(0, e.t - 5))"
               >
-                <span class="font-mono text-gray-light">{{ clock(e.t) }}</span>
+                <span class="text-gray-light">{{ clock(e.t) }}</span>
                 <span :style="{ color: e.color }">{{ e.label }}</span>
               </div>
               <div v-if="feed.length === 0" class="text-gray-light">{{ $t('Nothing yet') }}</div>

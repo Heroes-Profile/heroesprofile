@@ -25,7 +25,7 @@
         <h3 class="text-lg font-bold mb-2">{{ index + 1 }}. {{ section.heading }}</h3>
         <template v-for="(block, b) in section.body" :key="b">
           <p v-if="typeof block === 'string'" class="text-sm leading-relaxed mb-2">{{ block }}</p>
-          <p v-else-if="block.formula" class="text-sm font-mono bg-darken rounded px-3 py-2 mb-2 overflow-x-auto">{{ block.formula }}</p>
+          <p v-else-if="block.formula" class="text-sm bg-darken rounded px-3 py-2 mb-2 overflow-x-auto">{{ block.formula }}</p>
           <p v-else-if="block.parts" class="text-sm leading-relaxed mb-2">
             <template v-for="(part, i) in block.parts" :key="i">
               <a v-if="part.href" :href="part.href" target="_blank" class="underline">{{ part.label }}</a>
