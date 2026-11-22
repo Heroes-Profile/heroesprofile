@@ -54,7 +54,7 @@
 
     <div v-else-if="data.games.length">
       <div id="table-container" ref="tablecontainer" class="w-auto   w-[100vw]   2xl:mx-auto  " style=" ">
-        <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
+        <table id="responsive-table" class="responsive-table relative 2xl:w-auto 2xl:min-w-[93.75rem]" ref="responsivetable">
           <thead>
             <tr>
               <th>{{ $t('Match ID') }}</th>

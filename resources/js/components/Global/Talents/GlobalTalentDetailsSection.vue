@@ -3,7 +3,7 @@
     <div id="table-container" ref="tablecontainer" class="max-md:overflow-clip w-full max-sm:text-xs">
     <div id="resizeTable" ref="scaledtables" class="max-md:inline-grid">
     <div v-for="level in talentlevels" ref="resizeTable">
-      <table :id="'responsivetable'+level" class="responsive-table  relative max-md:w-full" :ref="'responsivetable'+level">
+      <table :id="'responsivetable'+level" class="responsive-table relative max-md:w-full 2xl:w-auto 2xl:min-w-[93.75rem]" :ref="'responsivetable'+level">
         <thead>
           <tr>
             <th :colspan="statfilter ? 5 : 4" class="text-center py-2 px-3 ">

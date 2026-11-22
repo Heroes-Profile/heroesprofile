@@ -459,13 +459,6 @@ table td{flex:1;}
 .dark-mode tr.bg-hred {
   background-color: rgba(214, 142, 124, 0.5);
 }
-@media (min-width:1500px){
-  table{
-  width:auto ;
-
-min-width:93.75rem;
-  }
-}
 
 
 
