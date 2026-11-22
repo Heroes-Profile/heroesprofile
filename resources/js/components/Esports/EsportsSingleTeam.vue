@@ -381,7 +381,7 @@ export default {
       }else if(this.esport == "MastersClash"){
         return "/Esports/MastersClash"
       }else if(this.esport == "HeroesInternational"){
-        return "/Esports/HeroesInternational"
+        return "/Esports/HeroesInternational" + (this.tournament ? "?tournament=" + this.tournament : "")
       }else if(this.esport == "Other"){
         return "/Esports/Other/" + this.series; 
       }

@@ -321,7 +321,8 @@ export default {
   created(){   
     this.gametype = this.gametypedefault[0];
     this.season = this.defaultseason;
-    this.matchpredictionseason = this.defaultpredictionseason;
+    // A number, like the season dropdown's codes and ?season=
+    this.matchpredictionseason = this.defaultpredictionseason ? Number(this.defaultpredictionseason) : null;
 
     if(this.region != null || this.tierrank != null){
       this.rankchange = true;

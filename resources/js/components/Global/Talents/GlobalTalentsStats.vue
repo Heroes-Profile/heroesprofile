@@ -132,7 +132,7 @@
             <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :hero-win-rate="heroWinRate"></global-talent-builds-section>
             <div class="flex flex-wrap items-center justify-between gap-4">
               <span class="text-sm text-subtext">{{ $t('Want something else? Make your own build in the Talent Builder.') }}</span>
-              <custom-button :href="'/Global/Talents/Builder/' + selectedHero.name" :text="'Open Talent Builder'" :alt="'Open Talent Builder'" color="teal"></custom-button>
+              <custom-button :href="talentBuilderUrl()" :text="'Open Talent Builder'" :alt="'Open Talent Builder'" color="teal"></custom-button>
             </div>
           </panel-box>
         </div>
@@ -470,6 +470,10 @@
 
         this.updateQueryString();
         this.getTalentBuildData();
+      },
+      // The Builder takes the same filters, so they come along
+      talentBuilderUrl(){
+        return `/Global/Talents/Builder/${this.selectedHero.name}${window.location.search}`;
       },
       updateQueryString(path = window.location.pathname){
         let queryString = `?timeframe_type=${this.timeframetype}`;

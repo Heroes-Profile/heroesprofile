@@ -232,7 +232,8 @@ export default {
       return row.teams ? row.teams[team] : [];
     },
     playerUrl(row, player) {
-      return `/Esports/${this.getUrlValue(this.esport, row)}/Player/${player.battletag}/${player.blizz_id}`;
+      const base = `/Esports/${this.getUrlValue(this.esport, row)}/Player/${player.battletag}/${player.blizz_id}`;
+      return this.tournament ? `${base}?tournament=${this.tournament}` : base;
     },
     // A list mixing Other's series says which one each game is from
     rowContext(row) {
