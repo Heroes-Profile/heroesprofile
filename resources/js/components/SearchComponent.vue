@@ -8,7 +8,7 @@
       </div>
       <button
         v-if="buttonText"
-        class="btn btn-outline-secondary bg-blue hover:bg-lblue rounded-none rounded-r font-semibold"
+        class="btn bg-blue hover:bg-lblue rounded-none rounded-r font-semibold"
         type="button"
         @click="clickedButton"
       >

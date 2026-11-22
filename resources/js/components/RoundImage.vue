@@ -78,22 +78,22 @@
     <img v-else loading="eager" :class="[
       { 'bg-surface-3 text-[0rem]': !imageLoaded || imageFailed },
       size === 'tile'
-        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-16 h-16 max-w-none rounded border-2 border-header'
+        ? 'object-cover relative hover:brightness-125 hover:drop-shadow w-16 h-16 max-w-none rounded border-2 border-header'
         : size === 'match'
-        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-[5.125rem] h-[5.125rem] max-w-none'
+        ? 'object-cover relative hover:brightness-125 hover:drop-shadow w-[5.125rem] h-[5.125rem] max-w-none'
         : size === 'row'
-        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-[2.625rem] h-[2.625rem] max-w-none'
+        ? 'object-cover relative hover:brightness-125 hover:drop-shadow w-[2.625rem] h-[2.625rem] max-w-none'
         : size === 'medium'
-        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-16 h-16 max-w-none'
+        ? 'object-cover relative hover:brightness-125 hover:drop-shadow w-16 h-16 max-w-none'
         : size === 'tier'
-        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-10 h-10 md:w-[3.25rem] md:h-[3.25rem] max-w-none'
+        ? 'object-cover relative hover:brightness-125 hover:drop-shadow w-10 h-10 md:w-[3.25rem] md:h-[3.25rem] max-w-none'
         : size === 'heading'
-        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-20 h-20 md:w-[6.875rem] md:h-[6.875rem] max-w-none'
+        ? 'object-cover relative hover:brightness-125 hover:drop-shadow w-20 h-20 md:w-[6.875rem] md:h-[6.875rem] max-w-none'
         : size === 'talent'
-        ? 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow w-[2.625rem] h-[2.625rem] max-w-none rounded'
+        ? 'object-cover relative hover:brightness-125 hover:drop-shadow w-[2.625rem] h-[2.625rem] max-w-none rounded'
         : size === 'large'
-        ? 'card-img-top object-cover object-center relative hover:brightness-125 hover:drop-shadow max-w-none rounded md:w-full md:h-full max-md:w-40 max-md:h-auto'
-        : 'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow max-sm:w-[2.5em] max-sm:h-[2.5em] max-sm:min-w-[2.5em] w-full h-10 min-w-10 max-md:h-10 max-md:w-10 max-w-none md:mr-auto',
+        ? 'object-cover object-center relative hover:brightness-125 hover:drop-shadow max-w-none rounded md:w-full md:h-full max-md:w-40 max-md:h-auto'
+        : 'object-cover relative hover:brightness-125 hover:drop-shadow max-sm:w-[2.5em] max-sm:h-[2.5em] max-sm:min-w-[2.5em] w-full h-10 min-w-10 max-md:h-10 max-md:w-10 max-w-none md:mr-auto',
       { 
         
         'rounded-full' : rectangle != true && size !== 'tile' && size !== 'talent',

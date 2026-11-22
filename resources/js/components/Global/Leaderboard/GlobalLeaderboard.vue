@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="showPopup" class="modal">
+    <div v-if="showPopup">
       <leaderboard-popup @popupclosed="showPopup = false"></leaderboard-popup>
     </div>
 

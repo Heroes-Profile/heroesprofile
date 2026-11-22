@@ -256,7 +256,7 @@
                             <div data-battletag="nav-user-menu" class="mobile-secondary-nav-open relative flex items-center cursor-pointer">
                                 <span class="group/avatar relative block w-11 h-11 rounded overflow-hidden transition-shadow {{ ['owner' => 'border-2 owner-glow', 'patreon' => 'border-2 border-[#ffd700] patreon-glow', 'void_eye' => 'border-2 border-[#a77bf3] void-glow'][$navBorder] ?? '' }}">
                                     <img
-                                    class="card-img-top w-full h-full object-cover"
+                                    class="w-full h-full object-cover"
                                     src="/images/heroes/auto_select.jpg"
                                     alt="{{ __('Settings') }}">
                                     <span class="absolute inset-0 opacity-0 group-hover/avatar:opacity-100 transition-opacity {{ ['owner' => 'bg-[rgba(79,195,255,0.12)]', 'patreon' => 'bg-[rgba(255,215,0,0.1)]', 'void_eye' => 'bg-[rgba(167,123,243,0.12)]'][$navBorder] ?? 'bg-[rgba(18,7,38,0.2)]' }}" aria-hidden="true"></span>

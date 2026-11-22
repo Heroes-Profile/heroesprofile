@@ -1,7 +1,7 @@
 <template>
   <div class="flex-1 flex flex-col">
 
-    <div v-if="showPopup" class="modal">
+    <div v-if="showPopup">
       <new-user-popup @popupclosed="showPopup = false"></new-user-popup>
     </div>
 
