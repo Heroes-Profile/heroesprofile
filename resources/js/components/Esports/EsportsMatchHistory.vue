@@ -5,18 +5,18 @@
 
     <!-- The league pages' match rows, a page at a time, like the other match histories -->
     <div v-if="data" class="mt-4">
-      <div v-if="data.pagination.last_page > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 flex justify-end">
-        <pagination-bar :current="data.pagination.current_page" :last="data.pagination.last_page" @page="getData"></pagination-bar>
-      </div>
-      <esports-recent-matches v-if="data.data.length" :data="data.data" :esport="recentMatchesEsport" :series="series" :tournament="tournament"></esports-recent-matches>
+      <esports-recent-matches :current="data.pagination.current_page" :last="data.pagination.last_page" @page="getData" v-if="data.data.length" :data="data.data" :esport="recentMatchesEsport" :series="series" :tournament="tournament"></esports-recent-matches>
       <p v-else class="text-center text-subtext mt-10">{{ $t('No games for :teamname', { teamname: teamName(team) }) }}<template v-if="subtitle"> {{ $t('in :subtitle', { subtitle: subtitle }) }}</template>.</p>
-      <div v-if="data.pagination.last_page > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 pb-4 flex justify-end">
-        <pagination-bar :current="data.pagination.current_page" :last="data.pagination.last_page" @page="getData"></pagination-bar>
-      </div>
     </div>
-    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 py-4 flex flex-col gap-6">
-      <loading-component :compact="true" :overrideimage="getLoadingImage()"></loading-component>
-      <panel-box>
+    <div v-else-if="isLoading" class="relative max-w-[120rem] mx-auto px-4 md:px-8 py-4 flex flex-col gap-6 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
+      <!-- The Compact / Expanded toggle and the page numbers, as on the loaded list -->
+      <div class="flex flex-wrap justify-end items-center gap-4">
+        <skeleton-box class="w-[13.25rem] h-[2.75rem]"></skeleton-box>
+        <skeleton-box class="w-[17.75rem] h-[2.75rem]"></skeleton-box>
+      </div>
+      <panel-box class="relative md:!rounded-tl-none">
+        <!-- The message sits on a tab of the card, as on the match histories -->
+        <loading-component :compact="true" :tab="true" :overrideimage="getLoadingImage()"></loading-component>
         <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
           <div class="flex flex-col gap-2 w-[18.75rem] shrink-0">
             <skeleton-box class="h-4 w-40"></skeleton-box>

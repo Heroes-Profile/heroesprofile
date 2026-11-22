@@ -1,7 +1,7 @@
 <template>
   <!-- Win rate and the stats beside a player, hero, map or role picture; grey blocks in the same shape while loading -->
   <div v-if="loading" class="flex flex-col gap-6">
-    <div class="flex flex-col gap-1.5">
+    <div v-if="!noWinRate" class="flex flex-col gap-1.5">
       <skeleton-box class="w-20 h-[1.35rem]"></skeleton-box>
       <div class="flex flex-col gap-2">
         <skeleton-box class="w-32 h-9"></skeleton-box>
@@ -18,7 +18,7 @@
 
   <div v-else class="flex flex-col gap-6">
     <!-- The rate large above its bar -->
-    <div class="flex flex-col gap-1.5">
+    <div v-if="!noWinRate" class="flex flex-col gap-1.5">
       <span class="text-lg leading-[1.2] text-header">{{ $t('Win Rate') }}</span>
       <div class="flex flex-col gap-2">
         <span class="text-3xl leading-[1.2] font-semibold text-[#a7e9e9]">{{ winRate.toFixed(2) }}%</span>
@@ -41,6 +41,8 @@ export default {
     // { label, value }, two to a row
     stats: { type: Array, default: () => [] },
     loading: { type: Boolean, default: false },
+    // Just the stats, for a group with no win rate of its own (an esports division)
+    noWinRate: { type: Boolean, default: false },
     // How many stat blocks the loading version shows
     count: { type: Number, default: 8 },
   },

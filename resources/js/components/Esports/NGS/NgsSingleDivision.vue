@@ -1,91 +1,103 @@
 <template>
   <div>
-    <page-heading :heading="'Division ' + division" esport="NGS" heading-image="/images/NGS/ngs_large.png" heading-image-url="/Esports/NGS"></page-heading>
+    <player-page-top>
+      <template #heading>
+        <page-heading :battletag="$t('Division :division', { division: division })" esport="NGS" heading="" heading-image="/images/NGS/ngs_large.png" heading-image-url="/Esports/NGS"></page-heading>
+      </template>
+      <div class="w-full">
+        <!-- Shown while loading too, so the heading row holds still; the seasons fill in once they load -->
+        <filters
+          :filters="filters"
+          :isLoading="isLoading"
+          :onFilter="() => handleDropdownClosed()"
+          :onChange="handleInputChange"
+          :extrafilters="[
+            { text: 'Seasons', values: seasons || [], defaultValue: modifiedseason },
+          ]"
+          :excludetimeframes="true"
+          :excludegametype="true"
+          :hideadvancedfilteringbutton="true"
+        >
+        </filters>
+      </div>
+    </player-page-top>
 
-    <filters v-if="seasons"
-      :filters="filters"
-      :isLoading="isLoading"
-      :onFilter="() => handleDropdownClosed()"
-      :onChange="handleInputChange"
-      :extrafilters="[
-        { text: 'Seasons', values: seasons, defaultValue: modifiedseason },
-      ]"
-      :excludetimeframes="true"
-      :excludegametype="true"
-      :hideadvancedfilteringbutton="true"
-    >
-    </filters>
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <!-- Laid out like the player profile -->
-    <div v-if="data" class="mt-8 space-y-8">
-      <div class="max-w-[120rem] mx-auto px-4 md:px-8 space-y-8">
+    <!-- Laid out like the esports team page -->
+    <div v-if="data" class="space-y-8">
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 space-y-8">
         <panel-box>
-          <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
-
-            <!-- Division overview -->
+          <!-- The division card, maps included, beside its teams; the heroes take the full row below -->
+          <div class="grid xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
+            <!-- Division overview; a division has no win rate of its own, so just its stats -->
             <panel-box :inner="true" class="!gap-8">
               <div class="flex flex-col">
                 <h2 class="text-3xl font-bold">{{ $t('Division :division', { division: division }) }}</h2>
                 <span class="text-subtext">{{ $t('Season :modifiedseason', { modifiedseason: modifiedseason }) }}</span>
               </div>
               <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
-                <div class="shrink-0 w-40 md:w-60 aspect-square flex items-center justify-center">
-                  <img class="max-w-full max-h-full object-contain text-[0rem]" :src="divisionImage" :alt="'Division ' + division" @error="divisionImageFailed = true"/>
+                <div class="flex flex-col items-center justify-between gap-1 shrink-0">
+                  <div class="w-40 md:w-[14rem] aspect-square flex items-center justify-center">
+                    <img class="max-w-full max-h-full object-contain text-[0rem]" :src="divisionImage" :alt="'Division ' + division" @error="divisionImageFailed = true"/>
+                  </div>
+                  <div class="text-xl font-semibold leading-[1.2] text-subtext">{{ $t('Games:') }} <span class="text-header">{{ data.total_games.toLocaleString('en-US') }}</span></div>
                 </div>
-                <div class="flex-1 min-w-0 w-full grid grid-cols-2 gap-x-6 gap-y-1 content-start">
-                  <stat-box v-for="stat in overviewStats" :key="stat.label" class="!m-0 !px-0 !min-w-0" :title="stat.label" :value="stat.value"></stat-box>
-                </div>
+                <overview-stats class="flex-1 min-w-0 w-full" :no-win-rate="true" :stats="overviewStats"></overview-stats>
               </div>
-              <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
-                <h3 class="text-2xl font-bold">{{ $t(section.title) }} <span class="text-sm font-normal text-subtext">5+ games</span></h3>
+              <!-- Maps sit under the stats in the division card -->
+              <div class="flex flex-col gap-4">
+                <h3 class="text-2xl font-bold">{{ $t('Maps') }}</h3>
                 <div class="flex flex-wrap gap-6 max-md:justify-center">
-                  <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :text="group.label" :data="group.data"></group-box>
+                  <group-box v-for="group in topSections.find(section => section.title == 'Maps').groups" :key="group.label" class="!m-0" :text="group.label" :data="group.data" :min-tiles="3"></group-box>
+                </div>
+                <div class="flex flex-col gap-4">
+                  <h3 class="text-2xl font-bold">{{ $t('Maps Played') }}</h3>
+                  <div class="w-0 min-w-full flex flex-wrap gap-3 max-md:gap-2 max-md:justify-center">
+                    <map-image-wrapper v-for="item in data.maps" :key="item.map_id" size="tile" :map="item.map">
+                      <image-hover-box :title="item.name" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + (item.wins + item.losses)"></image-hover-box>
+                    </map-image-wrapper>
+                  </div>
                 </div>
               </div>
-              <p class="flex flex-wrap gap-2"><span class="text-subtext">{{ $t('Total Time Spent Dead:') }}</span><span class="text-header">{{ data.time_spent_dead }}</span></p>
             </panel-box>
 
             <!-- The division's teams, best record first -->
-            <div class="flex flex-col gap-6 min-w-0">
-              <panel-box :inner="true" :title="'Teams in Division ' + division">
-                <div class="flex flex-col gap-2">
-                  <a v-for="team in sortedTeams" :key="team.team_name" :href="teamUrl(team)" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
-                    <img class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image || '/images/NGS/no-image-clipped.png'" :alt="$ngsTeam(team.team_name).name" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = '/images/NGS/no-image-clipped.png'; } }"/>
-                    <div class="flex flex-col min-w-0 flex-1">
-                      <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
-                      <span v-if="$ngsTeam(team.team_name).withdrawnSeason" class="text-sm text-subtext">{{ $t('Withdrew Season :withdrawnseason', { withdrawnseason: $ngsTeam(team.team_name).withdrawnSeason }) }}</span>
-                    </div>
-                    <div class="flex flex-col items-end shrink-0 text-sm">
-                      <span class="font-semibold">{{ team.win_rate.toFixed(2) }}%</span>
-                      <span class="text-subtext">{{ $t(':losses games', { losses: team.wins + team.losses }) }}</span>
-                    </div>
-                  </a>
+            <panel-box :inner="true" class="min-w-0" :title="$t('Teams')">
+              <div class="flex flex-col gap-2">
+                <a v-for="team in sortedTeams" :key="team.team_name" :href="teamUrl(team)" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
+                  <img class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image || '/images/NGS/no-image-clipped.png'" :alt="$ngsTeam(team.team_name).name" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = '/images/NGS/no-image-clipped.png'; } }"/>
+                  <div class="flex flex-col min-w-0 flex-1">
+                    <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
+                    <span v-if="$ngsTeam(team.team_name).withdrawnSeason" class="text-sm text-subtext">{{ $t('Withdrew Season :withdrawnseason', { withdrawnseason: $ngsTeam(team.team_name).withdrawnSeason }) }}</span>
+                  </div>
+                  <div class="flex flex-col items-end shrink-0 text-sm">
+                    <span class="font-semibold">{{ team.win_rate.toFixed(2) }}%</span>
+                    <span class="text-subtext">{{ $t(':losses games', { losses: team.wins + team.losses }) }}</span>
+                  </div>
+                </a>
+              </div>
+              <p class="flex flex-wrap gap-2 mt-auto"><span class="text-subtext">{{ $t('Total Time Spent Dead:') }}</span><span class="text-header">{{ formatDurationText(shortDuration(data.time_spent_dead)) }}</span></p>
+            </panel-box>
+
+            <!-- The division's heroes: the groups, then every hero played -->
+            <panel-box :inner="true" class="min-w-0 xl:col-span-2" :title="$t('Heroes')">
+              <div class="flex flex-wrap gap-6 justify-evenly">
+                <group-box v-for="group in topSections.find(section => section.title == 'Heroes').groups" :key="group.label" class="!m-0" :text="group.label" :data="group.data" :min-tiles="3" empty-note="Only heroes with 5+ games count here."></group-box>
+              </div>
+              <div class="flex flex-col gap-4">
+                <h3 class="text-2xl font-bold">{{ $t('Heroes Played') }}</h3>
+                <div class="flex flex-wrap gap-3 max-md:gap-2 max-md:justify-center">
+                  <hero-image-wrapper v-for="item in data.heroes" :key="item.hero_id" size="tile" :hero="item.hero">
+                    <image-hover-box :title="item.name" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + (item.wins + item.losses)"></image-hover-box>
+                  </hero-image-wrapper>
                 </div>
-              </panel-box>
-            </div>
+              </div>
+            </panel-box>
           </div>
         </panel-box>
 
         <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
-
-        <div class="grid xl:grid-cols-2 gap-6 items-start">
-          <panel-box :title="$t('Heroes Played')">
-            <div class="flex flex-wrap gap-2">
-              <hero-image-wrapper v-for="item in data.heroes" :key="item.hero_id" size="big" :hero="item.hero">
-                <image-hover-box :title="item.name" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + (item.wins + item.losses)"></image-hover-box>
-              </hero-image-wrapper>
-            </div>
-          </panel-box>
-          <panel-box :title="$t('Maps Played')">
-            <div class="flex flex-wrap gap-2">
-              <map-image-wrapper v-for="item in data.maps" :key="item.map_id" size="big" :map="item.map">
-                <image-hover-box :title="item.name" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + (item.wins + item.losses)"></image-hover-box>
-              </map-image-wrapper>
-            </div>
-          </panel-box>
-        </div>
-
-        <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
         <div class="flex justify-between items-baseline gap-6">
           <h2 class="text-2xl font-bold">{{ $t('Recent Matches') }}</h2>
@@ -101,44 +113,60 @@
     </div>
 
     <!-- The page's layout with grey blocks while it loads, like the profile -->
-    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 space-y-8">
-      <loading-component :compact="true" :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component>
+    <div v-else-if="isLoading" class="relative max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 flex flex-col gap-8 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
+      <!-- The message sits on a tab of the first card, as on the global pages: lined up with the card past the side padding, the card's top-left corner squared to meet it -->
+      <loading-component :compact="true" :tab="true" :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component>
       <panel-box>
-        <div class="grid 2xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
-          <panel-box :inner="true" class="!gap-8 2xl:w-[48.75rem]">
-            <div class="flex flex-col gap-2">
+        <div class="grid xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
+          <panel-box :inner="true" class="!gap-8">
+            <div class="flex flex-col">
               <h2 class="text-3xl font-bold">{{ $t('Division :division', { division: division }) }}</h2>
-              <skeleton-box class="h-4 w-24"></skeleton-box>
+              <span class="text-subtext">{{ $t('Season :modifiedseason', { modifiedseason: modifiedseason }) }}</span>
             </div>
-            <div class="flex gap-8 max-sm:flex-col">
-              <skeleton-box class="w-40 md:w-60 aspect-square shrink-0 rounded"></skeleton-box>
-              <div class="flex-1 grid grid-cols-2 gap-x-6 gap-y-4 content-start">
-                <skeleton-box v-for="index in 10" :key="index" class="h-11"></skeleton-box>
+            <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
+              <div class="flex flex-col items-center justify-between gap-1 shrink-0">
+                <skeleton-box class="w-40 md:w-[14rem] aspect-square rounded"></skeleton-box>
+                <skeleton-box class="h-[1.5rem] w-28"></skeleton-box>
               </div>
+              <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :no-win-rate="true" :count="9"></overview-stats>
             </div>
-            <div v-for="title in ['Heroes', 'Maps']" :key="title" class="flex flex-col gap-4">
-              <h3 class="text-2xl font-bold">{{ $t(title) }}</h3>
-              <div class="flex flex-wrap gap-6">
-                <div v-for="group in 3" :key="group" class="flex gap-3">
-                  <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
+            <!-- Maps sit under the stats in the division card -->
+            <div class="flex flex-col gap-4">
+              <h3 class="text-2xl font-bold">{{ $t('Maps') }}</h3>
+              <div class="flex flex-wrap gap-6 max-md:justify-center">
+                <div v-for="label in ['Most Played', 'Highest Win Rate', 'Lowest Win Rate']" :key="label" class="w-auto inline-block">
+                  <h4 class="text-sm mb-2"><span class="skeleton-text">{{ $t(label) }}</span></h4>
+                  <div class="flex flex-wrap gap-3 max-md:gap-2"><skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box></div>
                 </div>
+              </div>
+              <div class="flex flex-col gap-4">
+                <h3 class="text-2xl font-bold">{{ $t('Maps Played') }}</h3>
+                <div class="w-0 min-w-full flex flex-wrap gap-3 max-md:gap-2"><skeleton-box v-for="tile in 14" :key="tile" class="w-16 h-16 rounded"></skeleton-box></div>
               </div>
             </div>
           </panel-box>
-          <div class="flex flex-col gap-6 min-w-0">
-            <panel-box :inner="true" :title="'Teams in Division ' + division">
+
+          <panel-box :inner="true" class="min-w-0" :title="$t('Teams')">
+            <div class="flex flex-col gap-2">
               <skeleton-box v-for="index in 8" :key="index" class="h-14"></skeleton-box>
-            </panel-box>
-          </div>
+            </div>
+            <p class="flex flex-wrap items-center gap-2 mt-auto"><span class="skeleton-text">{{ $t('Total Time Spent Dead:') }}</span><skeleton-box class="h-4 w-36"></skeleton-box></p>
+          </panel-box>
+
+          <panel-box :inner="true" class="min-w-0 xl:col-span-2" :title="$t('Heroes')">
+            <div class="flex flex-wrap gap-6 justify-evenly">
+              <div v-for="label in ['Most Played', 'Highest Win Rate', 'Lowest Win Rate']" :key="label" class="w-auto inline-block">
+                <h4 class="text-sm mb-2"><span class="skeleton-text">{{ $t(label) }}</span></h4>
+                <div class="flex flex-wrap gap-3 max-md:gap-2"><skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box></div>
+              </div>
+            </div>
+            <div class="flex flex-col gap-4">
+              <h3 class="text-2xl font-bold">{{ $t('Heroes Played') }}</h3>
+              <div class="flex flex-wrap gap-3 max-md:gap-2"><skeleton-box v-for="tile in 30" :key="tile" class="w-16 h-16 rounded"></skeleton-box></div>
+            </div>
+          </panel-box>
         </div>
       </panel-box>
-      <div class="grid xl:grid-cols-2 gap-6">
-        <panel-box v-for="title in ['Heroes Played', 'Maps Played']" :key="title" :title="title">
-          <div class="flex flex-wrap gap-2">
-            <skeleton-box v-for="tile in 24" :key="tile" class="w-16 h-16 !rounded-full"></skeleton-box>
-          </div>
-        </panel-box>
-      </div>
       <h2 class="text-2xl font-bold">{{ $t('Recent Matches') }}</h2>
       <!-- The NGS page's recent match rows, in grey -->
         <panel-box>
@@ -179,6 +207,7 @@
 
 <script>
   import moment from 'moment-timezone';
+  import { formatDurationText } from '../../../utils/formatDuration';
 
 export default {
   name: 'NgsSingleDivision',
@@ -226,7 +255,6 @@ export default {
       const minutes = Math.floor(this.data.avg_game_length / 60);
       const seconds = String(this.data.avg_game_length % 60).padStart(2, '0');
       return [
-        { label: 'Games', value: this.data.total_games.toLocaleString('en-US') },
         { label: 'Avg. Game Length', value: `${minutes}:${seconds}` },
         { label: 'Kills', value: this.data.kills.toLocaleString('en-US') },
         { label: 'Assists', value: Number(this.data.assists).toLocaleString('en-US') },
@@ -259,6 +287,11 @@ export default {
   watch: {
   },
   methods: {    
+    formatDurationText,
+    // The server's "1 hours, 26 minutes, 40 seconds" as "1h, 26m, 40s", which formatDurationText reads
+    shortDuration(text) {
+      return String(text ?? '').replace(/ (day|hour|minute|second)s/g, (_, unit) => unit[0]);
+    },
     async getData(){
       this.isLoading = true;
 

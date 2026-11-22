@@ -2,8 +2,10 @@
   <!-- Laid out like the match history's rows, with the two teams where a player's stats go.
        Compact and Expanded share the match history's saved choice. -->
   <div class="max-w-[120rem] mx-auto px-4 md:px-8 py-4 flex flex-col gap-4">
-    <div v-if="!alwaysExpanded" class="flex justify-end">
-      <tab-button :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="expanded ? 'right' : 'left'"></tab-button>
+    <!-- The toggle and the page numbers in one row, as on the match histories -->
+    <div v-if="!alwaysExpanded || last > 1" class="flex flex-wrap justify-end items-center gap-4">
+      <tab-button v-if="!alwaysExpanded" :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="expanded ? 'right' : 'left'"></tab-button>
+      <pagination-bar v-if="last > 1" :current="current" :last="last" @page="$emit('page', $event)"></pagination-bar>
     </div>
 
     <panel-box v-if="expanded">
@@ -37,7 +39,7 @@
           <!-- Head to head: each team either side of the series score after this game; this game's winner marked -->
           <div class="relative flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-6 px-4 py-4 min-w-0">
             <div v-for="(team, position) in sidesOf(row)" :key="team" :class="['flex items-center gap-3 min-w-0 row-start-1', position === 0 ? 'flex-row-reverse text-right col-start-1' : 'col-start-3']">
-              <img v-if="teamImage(row, team)" class="w-12 h-12 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="teamImage(row, team)" :alt="teamName(row, team)"/>
+              <img class="w-12 h-12 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="teamImage(row, team) || fallbackImage" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = fallbackImage; } }" :alt="teamName(row, team)"/>
               <div :class="['flex flex-col gap-1 min-w-0', position === 0 ? 'items-end' : 'items-start']">
                 <span :class="['text-xl font-semibold leading-tight break-words', row.winner === team ? 'text-white' : 'text-subtext']">{{ teamName(row, team) }}</span>
                 <span v-if="row.winner === team" class="bg-win text-white rounded px-1.5 text-xs font-semibold">{{ $t('Won') }}</span>
@@ -104,7 +106,7 @@
               <template v-for="(team, position) in sidesOf(row)" :key="team">
                 <span v-if="position === 1" class="text-subtext text-sm">{{ $t('vs') }}</span>
                 <span class="flex items-center gap-2 min-w-0">
-                  <img v-if="teamImage(row, team)" class="w-6 h-6 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="teamImage(row, team)" :alt="teamName(row, team)"/>
+                  <img class="w-6 h-6 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="teamImage(row, team) || fallbackImage" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = fallbackImage; } }" :alt="teamName(row, team)"/>
                   <span :class="['truncate font-medium', row.winner === team ? 'text-white' : 'text-subtext']">{{ teamName(row, team) }}</span>
                   <span v-if="row.winner === team" class="bg-win text-white rounded px-1 text-xs font-semibold">{{ $t('Won') }}</span>
                 </span>
@@ -116,6 +118,10 @@
         </div>
       </div>
     </panel-box>
+
+    <div v-if="last > 1" class="flex justify-end">
+      <pagination-bar :current="current" :last="last" @page="$emit('page', $event)"></pagination-bar>
+    </div>
   </div>
 </template>
 
@@ -125,6 +131,8 @@ import moment from 'moment-timezone';
 import Cookies from 'js-cookie';
 
 const LEAGUE_NAMES = { NGS: 'NGS', CCL: 'CCL', MastersClash: 'Masters Clash', HeroesInternational: 'Heroes International', hi: 'Heroes International', hi_nc: 'Heroes International' };
+// Each league's own logo, for a team without one
+const LEAGUE_LOGOS = { NGS: '/images/NGS/no-image-clipped.png', CCL: '/images/CCL/600-600-HHE_CCL_Logo_rectangle.png', MastersClash: '/images/MCL/no-image.png', HeroesInternational: '/images/HI/heroes_international.png', hi: '/images/HI/heroes_international.png', hi_nc: '/images/HI/heroes_international.png' };
 // Each team is one party: the first party colour on each side, as the match history uses
 const TEAM_PARTY = ['blue', 'red'];
 const PARTY_COLORS = { blue: '#2060ae', red: '#ae2023' };
@@ -139,7 +147,12 @@ export default {
     tournament: String,
     // A short list on another page: always Expanded, without the toggle
     alwaysExpanded: Boolean,
+
+    // The page shown and the number of pages; a page number click emits page
+    current: Number,
+    last: Number,
   },
+  emits: ['page'],
   data() {
     return {
       TEAM_PARTY,
@@ -177,6 +190,9 @@ export default {
         }
       }
       return { after, left };
+    },
+    fallbackImage() {
+      return LEAGUE_LOGOS[this.esport] ?? '/images/logo/heroesprofilelogo.png';
     },
     leagueName() {
       return this.esport === 'Other' ? (this.series ?? '') : (LEAGUE_NAMES[this.esport] ?? this.esport);

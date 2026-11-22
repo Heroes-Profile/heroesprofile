@@ -31,15 +31,9 @@
     </filters>
 
     <div v-if="data">
-      <div v-if="data.last_page > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 flex justify-end">
-        <pagination-bar :current="data.current_page" :last="data.last_page" @page="getMatches"></pagination-bar>
-      </div>
-      <esports-recent-matches v-if="data.data.length" :data="data.data" :esport="'Other'"></esports-recent-matches>
+      <esports-recent-matches :current="data.current_page" :last="data.last_page" @page="getMatches" v-if="data.data.length" :data="data.data" :esport="'Other'"></esports-recent-matches>
       <p v-else class="text-center text-subtext mt-10">{{ $t('No games match these filters.') }}</p>
 
-      <div v-if="data.last_page > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 flex justify-end">
-        <pagination-bar :current="data.current_page" :last="data.last_page" @page="getMatches"></pagination-bar>
-      </div>
 
 
     </div>
@@ -47,10 +41,16 @@
 
     
     <div v-if="isLoading">
-      <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-        <loading-component :compact="true"></loading-component>
+      <div class="relative max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
         <!-- The recent match rows, in grey -->
-        <panel-box>
+        <!-- The Compact / Expanded toggle and the page numbers, as on the loaded list -->
+        <div class="flex flex-wrap justify-end items-center gap-4">
+          <skeleton-box class="w-[13.25rem] h-[2.75rem]"></skeleton-box>
+          <skeleton-box class="w-[17.75rem] h-[2.75rem]"></skeleton-box>
+        </div>
+        <panel-box class="relative md:!rounded-tl-none">
+          <!-- The message sits on a tab of the card, as on the match histories -->
+          <loading-component :compact="true" :tab="true"></loading-component>
           <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
             <div class="flex flex-col gap-2 w-[18.75rem] shrink-0">
               <skeleton-box class="h-4 w-40"></skeleton-box>

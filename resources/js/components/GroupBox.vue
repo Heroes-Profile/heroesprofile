@@ -100,6 +100,12 @@
         </map-image-wrapper>
 
       </template>
+      <!-- Empty slots up to minTiles, the tile's size with a dashed edge; the info icon in the corner says why they're empty -->
+      <div v-for="slot in Math.max(0, (minTiles || 0) - (data || []).length)" :key="'empty' + slot" class="relative w-16 h-16 rounded border-2 border-dashed border-gray-dark">
+        <round-image class="!absolute top-0.5 right-0.5" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+          <p class="font-normal">{{ $t(emptyNote) }}</p>
+        </round-image>
+      </div>
     </div>
   </div>
 </template>
@@ -129,6 +135,9 @@
       tournament: String,
       hideheader: Boolean,
       headeronly: Boolean,
+      // Pad the group with empty slots to this many tiles, each with emptyNote behind an info icon
+      minTiles: Number,
+      emptyNote: { type: String, default: 'Not enough games yet.' },
     },
     data(){
       return {

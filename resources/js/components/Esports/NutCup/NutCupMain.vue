@@ -63,23 +63,22 @@
 
     </div>
     <div v-if="isLoading">
-      <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-        <loading-component :compact="true" :overrideimage="'/images/NutCup/logo-circular.png'"></loading-component>
+      <div class="relative max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
+        <!-- The message sits on a tab of the first card, as on the global pages: lined up with the card past the side padding, the card's top-left corner squared to meet it -->
+        <loading-component :compact="true" :tab="true" :overrideimage="'/images/NutCup/logo-circular.png'"></loading-component>
         <!-- Overall Hero Stats: hero with name, then win rate, popularity, ban rate and games -->
-        <div v-if="activeButton === 'overallHeroStats'" class="max-w-[62.5rem] w-full mx-auto">
+        <panel-box v-if="activeButton === 'overallHeroStats'">
           <table-skeleton :bare="true" :rows="12" :columns="['avatar', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
-        </div>
-        <!-- Overall Talent Stats: a block per talent level, then the builds table -->
-        <div v-else-if="activeButton === 'overallTalentStats'" class="flex flex-col items-center">
-          <div v-for="level in 3" :key="level" class="w-full bg-surface overflow-hidden">
-            <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-20"></skeleton-box></div>
-            <table-skeleton :bare="true" :rows="3" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
-          </div>
-          <div class="w-full max-w-[50rem] bg-surface overflow-hidden">
-            <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-16"></skeleton-box></div>
+        </panel-box>
+        <!-- Overall Talent Stats: the global talent page's two cards, in grey -->
+        <template v-else-if="activeButton === 'overallTalentStats'">
+          <panel-box title="Talent stats" subtitle="Win rate, popularity and games for every talent. The best win rate on each tier is highlighted." :skeleton="true">
+            <compact-talent-grid :skeleton="true"></compact-talent-grid>
+          </panel-box>
+          <panel-box title="Talent builds" subtitle="Copy a build code and paste it in game chat." :skeleton="true">
             <table-skeleton :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
-          </div>
-        </div>
+          </panel-box>
+        </template>
         <table-skeleton v-else></table-skeleton>
       </div>
     </div>

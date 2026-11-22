@@ -49,13 +49,7 @@
         </filters>
         
         <div v-if="recentMatchesData">
-          <div v-if="recentMatchesData.pagination.last_page > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 flex justify-end">
-            <pagination-bar :current="recentMatchesData.pagination.current_page" :last="recentMatchesData.pagination.last_page" @page="getRecentMatches"></pagination-bar>
-          </div>
-          <esports-recent-matches :data="recentMatchesData.data" :esport="'hi_nc'" :tournament="tournament"></esports-recent-matches>
-          <div v-if="recentMatchesData.pagination.last_page > 1" class="max-w-[120rem] mx-auto px-4 md:px-8 flex justify-end">
-            <pagination-bar :current="recentMatchesData.pagination.current_page" :last="recentMatchesData.pagination.last_page" @page="getRecentMatches"></pagination-bar>
-          </div>
+          <esports-recent-matches :current="recentMatchesData.pagination.current_page" :last="recentMatchesData.pagination.last_page" @page="getRecentMatches" :data="recentMatchesData.data" :esport="'hi_nc'" :tournament="tournament"></esports-recent-matches>
         </div>
       </div>
 
@@ -110,8 +104,9 @@
 
     </div>
     <div v-if="isLoading">
-      <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-        <loading-component :compact="true" :overrideimage="'/images/HI/heroes_international.png'"></loading-component>
+      <div class="relative max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
+        <!-- The message sits on a tab of the first card, as on the global pages: lined up with the card past the side padding, the card's top-left corner squared to meet it -->
+        <loading-component v-if="activeButton !== 'recentMatches'" :compact="true" :tab="true" :overrideimage="'/images/HI/heroes_international.png'"></loading-component>
         <!-- Teams: a wrapping grid of logos with the name underneath -->
         <div v-if="activeButton === 'teams'" class="flex p-10 md:p-20 bg-surface rounded max-w-[93.75rem] w-full mx-auto flex-wrap justify-center gap-10">
           <div v-for="team in 12" :key="team" class="flex flex-col items-center gap-3 md:w-[15%]">
@@ -120,53 +115,60 @@
           </div>
         </div>
         <!-- Recent Matches: expanded rows with the map, the two teams and each team's heroes -->
-        <panel-box v-else-if="activeButton === 'recentMatches'">
-          <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
-            <div class="flex flex-col gap-2 w-[18.75rem] shrink-0">
-              <skeleton-box class="h-4 w-40"></skeleton-box>
-              <skeleton-box class="h-4 w-32"></skeleton-box>
-              <skeleton-box class="h-3 w-36"></skeleton-box>
-              <skeleton-box class="h-3 w-28"></skeleton-box>
-            </div>
-            <div class="flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-6">
-              <div class="flex flex-row-reverse items-center gap-3">
-                <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
-                <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
-              </div>
-              <div class="flex flex-col items-center gap-2">
-                <skeleton-box class="h-8 w-20"></skeleton-box>
+        <template v-else-if="activeButton === 'recentMatches'">
+          <!-- The Compact / Expanded toggle and the page numbers, as on the loaded list -->
+          <div class="flex flex-wrap justify-end items-center gap-4">
+            <skeleton-box class="w-[13.25rem] h-[2.75rem]"></skeleton-box>
+            <skeleton-box class="w-[17.75rem] h-[2.75rem]"></skeleton-box>
+          </div>
+          <panel-box class="relative md:!rounded-tl-none">
+            <!-- The message sits on a tab of the card, as on the match histories -->
+            <loading-component :compact="true" :tab="true" :overrideimage="'/images/HI/heroes_international.png'"></loading-component>
+            <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
+              <div class="flex flex-col gap-2 w-[18.75rem] shrink-0">
+                <skeleton-box class="h-4 w-40"></skeleton-box>
+                <skeleton-box class="h-4 w-32"></skeleton-box>
+                <skeleton-box class="h-3 w-36"></skeleton-box>
                 <skeleton-box class="h-3 w-28"></skeleton-box>
               </div>
-              <div class="flex items-center gap-3">
-                <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
-                <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
+              <div class="flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-6">
+                <div class="flex flex-row-reverse items-center gap-3">
+                  <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
+                  <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                  <skeleton-box class="h-8 w-20"></skeleton-box>
+                  <skeleton-box class="h-3 w-28"></skeleton-box>
+                </div>
+                <div class="flex items-center gap-3">
+                  <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
+                  <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
+                </div>
               </div>
-            </div>
-            <div class="flex gap-2 w-[21.25rem] max-w-full shrink-0">
-              <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[9.375rem]">
-                <div v-for="player in 5" :key="player" class="flex items-center gap-1">
-                  <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
-                  <skeleton-box class="h-3 w-24"></skeleton-box>
+              <div class="flex gap-2 w-[21.25rem] max-w-full shrink-0">
+                <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[9.375rem]">
+                  <div v-for="player in 5" :key="player" class="flex items-center gap-1">
+                    <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
+                    <skeleton-box class="h-3 w-24"></skeleton-box>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </panel-box>
+          </panel-box>
+        </template>
         <!-- Overall Hero Stats: hero with name, then win rate, popularity, ban rate and games -->
-        <div v-else-if="activeButton === 'overallHeroStats'" class="max-w-[62.5rem] w-full mx-auto">
+        <panel-box v-else-if="activeButton === 'overallHeroStats'">
           <table-skeleton :bare="true" :rows="12" :columns="['avatar', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
-        </div>
-        <!-- Overall Talent Stats: a block per talent level, then the builds table -->
-        <div v-else-if="activeButton === 'overallTalentStats'" class="flex flex-col items-center">
-          <div v-for="level in 3" :key="level" class="w-full bg-surface overflow-hidden">
-            <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-20"></skeleton-box></div>
-            <table-skeleton :bare="true" :rows="3" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
-          </div>
-          <div class="w-full max-w-[50rem] bg-surface overflow-hidden">
-            <div class="flex justify-center py-2.5"><skeleton-box class="h-4 w-16"></skeleton-box></div>
+        </panel-box>
+        <!-- Overall Talent Stats: the global talent page's two cards, in grey -->
+        <template v-else-if="activeButton === 'overallTalentStats'">
+          <panel-box title="Talent stats" subtitle="Win rate, popularity and games for every talent. The best win rate on each tier is highlighted." :skeleton="true">
+            <compact-talent-grid :skeleton="true"></compact-talent-grid>
+          </panel-box>
+          <panel-box title="Talent builds" subtitle="Copy a build code and paste it in game chat." :skeleton="true">
             <table-skeleton :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
-          </div>
-        </div>
+          </panel-box>
+        </template>
         <table-skeleton v-else></table-skeleton>
       </div>
     </div>

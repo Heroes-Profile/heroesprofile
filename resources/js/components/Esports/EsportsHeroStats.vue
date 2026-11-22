@@ -1,9 +1,13 @@
 <template>
-  <div>
-    <table class="max-w-[62.5rem] md:min-w-[62.5rem] max-md:text-xs">
+  <!-- In a card at the page's width, as on the global pages -->
+  <div class="max-w-[120rem] mx-auto px-4 md:px-8">
+   <panel-box>
+    <!-- Shrinks to fit a phone's card instead of running past it -->
+    <div ref="tablecontainer" class="overflow-clip">
+    <table ref="table" class="min-w-0 w-full responsive-table rounded-table max-md:text-xs">
       <thead>
         <tr>
-          <th @click="sortTable('hero_id')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'hero_id' }">
+          <th @click="sortTable('hero_id')" class="py-2 px-3 text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'hero_id' }">
             {{ $t('Hero') }}<sort-indicator :column="'hero_id'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>
           <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
@@ -22,7 +26,8 @@
       </thead>
       <tbody class="text-center">
         <tr v-for="(row, index) in sortedData" :key="index">
-          <td class="py-2 px-3"><div class="flex items-center justify-center"><hero-image-wrapper :hero="row.hero" :includehover="false"></hero-image-wrapper><span class="hidden md:block ml-2">{{ $heroName(row.hero) }}</span></div></td>
+          <!-- Hero names left-aligned, as on the global tier list -->
+          <td class="py-2 px-3"><div class="flex items-center"><hero-image-wrapper :hero="row.hero" :includehover="false"></hero-image-wrapper><span class="hidden md:block ml-2">{{ $heroName(row.hero) }}</span></div></td>
           <td>{{ row.win_rate.toFixed(2) }}</td>
           <td>{{ row.popularity.toFixed(2) }}</td>
           <td>{{ row.ban_rate.toFixed(2) }}</td>
@@ -30,10 +35,13 @@
         </tr>
       </tbody>
     </table>
+    </div>
+   </panel-box>
   </div>
 </template>
 
 <script>
+import { scaleTableToFit } from '../../utils/scaleTable';
 export default {
   name: 'EsportsHeroStats',
   components: {
@@ -50,6 +58,7 @@ export default {
   created(){
   },
   mounted() {
+    scaleTableToFit(this.$refs.table, this.$refs.tablecontainer);
   },
   computed: {
     sortedData() {
