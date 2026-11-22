@@ -1,7 +1,7 @@
 <template>
   <div class=" w-auto inline-block m-1">
     <h2 v-if="text && !hideheader" class="text-sm text-subtext mb-2">{{ $t(text) }}</h2>
-    <h2 v-else-if="!hideheader" :class="['bg-' + color, 'rounded', 'px-3 py-1.5', 'mb-2', 'text-sm', 'text-center', 'font-semibold']">
+    <h2 v-else-if="!hideheader" :class="[colorClass, 'rounded', 'px-3 py-1.5', 'mb-2', 'text-sm', 'text-center', 'font-semibold']">
       <a v-if="esport && esport != 'Other'" class="link" :href="`/Esports/${esport}/Team/${esportteamname}${ tournament ? '?tournament=' + tournament : ''}`">{{  esportteamname  }}</a>
       <a v-if="esport && esport == 'Other'" class="link" :href="`/Esports/${esport}/${series}/Team/${esportteamname}`">{{  esportteamname  }}</a>
       <span v-if="esport"> - </span>
@@ -113,6 +113,16 @@
 <script>
   import { hasVoidEye } from '../voidEye';
 
+  // Whole class names, so Tailwind sees them
+  const colorClasses = {
+    blue: 'bg-blue',
+    teal: 'bg-teal',
+    purple: 'bg-purple',
+    red: 'bg-red',
+    yellow: 'bg-yellow',
+    'gray-dark': 'bg-gray-dark',
+  };
+
   export default {
     name: 'GroupBox',
     components: {
@@ -148,6 +158,9 @@
     mounted() {
     },
     computed: {
+      colorClass() {
+        return colorClasses[this.color];
+      },
     },
     watch: {
     },
