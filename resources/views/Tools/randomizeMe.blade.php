@@ -1,6 +1,6 @@
 @extends('layouts.app', $bladeGlobals)
 
-@section('title', __('Randomize Me'))
+@section('title', __('Heroes of the Storm Random Hero & Build Generator'))
 
 @section('meta_keywords', 'heroes of the storm random hero, hots random build, randomize hero, random talent build, heroes profile')
 @section('meta_description', 'Get a random Heroes of the Storm hero and a random talent build from real recent games. Use it as a fun challenge or to try something new.')

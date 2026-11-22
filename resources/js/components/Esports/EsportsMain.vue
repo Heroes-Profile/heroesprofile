@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
-    <page-heading :heading="'Community Esports'"></page-heading>
+    <page-heading :heading="'Heroes of the Storm Esports Stats'"></page-heading>
     <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 -mt-2 mb-4">
       <span class="uppercase text-gray-medium">{{ $t('Leagues & tournaments on Heroes Profile') }}</span>
     </div>

@@ -1,8 +1,8 @@
 @extends('layouts.app', $bladeGlobals)    
 
-@section('title', __('Match Prediction'))
-@section('meta_keywords', '')
-@section('meta_description', '')
+@section('title', __('Heroes of the Storm Match Prediction Game'))
+@section('meta_keywords', 'heroes of the storm prediction game, hots match prediction, guess the winner, hots draft quiz, match prediction leaderboard')
+@section('meta_description', 'Guess which team won a real Heroes of the Storm game from the draft alone. Build a streak and climb the Match Prediction leaderboard.')
 
 @section('content')
   <match-prediction-game 

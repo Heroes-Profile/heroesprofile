@@ -66,7 +66,8 @@
             </span>
           </template>
           <div id="table-container" ref="tablecontainer" class="overflow-clip">
-            <table id="responsive-table" class="min-w-0 w-full responsive-table rounded-table table-fixed" ref="responsivetable">
+            <!-- Fixed columns never overflow, so on phones it's laid out wide and scaleTableToFit shrinks it -->
+            <table id="responsive-table" class="min-w-0 max-md:min-w-[60rem] w-full responsive-table rounded-table table-fixed" ref="responsivetable">
               <colgroup>
                 <col class="w-[15%]">
                 <col class="w-[40%]">

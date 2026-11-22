@@ -1,4 +1,4 @@
-/PlayerMapsAllStats.vue<template>
+<template>
   <div>
     <player-page-top>
       <template #heading>

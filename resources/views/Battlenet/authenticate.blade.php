@@ -1,4 +1,5 @@
-@extends('layouts.app', $bladeGlobals)    
+@extends('layouts.app', $bladeGlobals)
+@section('no_ads', '1')
 
 @section('title', __('Battlenet Authentication'))
 @section('meta_keywords', 'Battlenet authentication, profile login, profile settings, Battlenet account, user authentication, login settings, game profiles, Battlenet login')

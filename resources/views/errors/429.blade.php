@@ -22,6 +22,7 @@
 @endphp
 
 @extends('layouts.app', $bladeGlobals)
+@section('no_ads', '1')
 
 @section('title', __('Too Many Requests'))
 @section('meta_keywords', '429 error, too many requests, rate limited, throttled request')

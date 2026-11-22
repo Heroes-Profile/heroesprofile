@@ -22,6 +22,7 @@
 @endphp
 
 @extends('layouts.app', $bladeGlobals)
+@section('no_ads', '1')
 
 @section('content')
     <div class="error-page">

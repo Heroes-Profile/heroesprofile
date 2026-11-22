@@ -54,7 +54,8 @@
                   <span class="flex-1 min-w-0">{{ item.q }}</span>
                   <basil-icon name="arrow-small" :class="['text-sm shrink-0 transition-transform', isOpen(category.name, index) ? '-rotate-90' : 'rotate-90']"></basil-icon>
                 </button>
-                <div v-if="isOpen(category.name, index)" class="text-subtext leading-relaxed faq-answer" v-html="item.a"></div>
+                <!-- v-show, so every answer is in the page for search engines while closed -->
+                <div v-show="isOpen(category.name, index)" class="text-subtext leading-relaxed faq-answer" v-html="item.a"></div>
               </div>
             </template>
           </div>

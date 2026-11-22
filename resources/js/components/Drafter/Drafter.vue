@@ -129,6 +129,14 @@
             <tab-button v-if="!mockDraft" :small="true" :tabs="suggestTabs" :ignoreclick="true" :overridedefaultside="suggestBy" @tab-click="suggestBy = $event"></tab-button>
           </template>
           <template #above>
+            <!-- Stacked layouts: the board is below both teams, far from the draft bar, so whose turn it is shows here too -->
+            <div :class="['xl:hidden rounded-control bg-surface-1 border-l-4 px-5 py-3', draftComplete ? 'border-gray-dark' : currentTeam === 'team1' ? 'border-teal' : 'border-red']">
+              <span class="block text-xs font-semibold uppercase tracking-wider text-subtext">{{ $t('Now') }}</span>
+              <span class="flex items-center gap-2.5 text-lg font-semibold">
+                <span v-if="!draftComplete" :class="['w-2.5 h-2.5 rounded-full shrink-0', currentTeam === 'team1' ? 'bg-teal' : 'bg-red']"></span>
+                {{ stepLabel }}
+              </span>
+            </div>
             <!-- The three best HP Draft Values for this step. It always keeps its place, so the board doesn't move as the draft goes on -->
             <div v-if="!mockDraft" :class="['rounded-control bg-[rgba(245,197,66,0.08)] px-5 py-4 min-h-[4.75rem] flex flex-wrap items-center gap-x-6 gap-y-3', { invisible: !waiting && !topSuggestions.length }]">
               <loading-component v-if="waiting" :compact="true" :textoverride="true">{{ $t('Loading draft options...') }}</loading-component>

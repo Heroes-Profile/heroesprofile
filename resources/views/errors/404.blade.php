@@ -29,6 +29,7 @@
 @endphp
 
 @extends('layouts.app', $bladeGlobals)
+@section('no_ads', '1')
 
 @section('title', __('Error'))
 @section('meta_keywords', '404 error, page not found, not found error, website error, error page, site not found')
