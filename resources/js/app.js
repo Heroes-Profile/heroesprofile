@@ -126,7 +126,8 @@ function rememberSearchAccount(data) {
   ];
 
   const accountIndex = existingAccounts.findIndex((account) => {
-    return account && account.battletag === data.battletag && account.blizz_id === data.blizz_id
+    // As text: RememberViewedPlayer stores a number, links often pass a string
+    return account && account.battletag === data.battletag && String(account.blizz_id) === String(data.blizz_id)
       && (account.league || null) === (data.league || null)
       && (account.tournament || null) === (data.tournament || null)
       && (account.series || null) === (data.series || null);
