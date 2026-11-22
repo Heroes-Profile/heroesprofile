@@ -8,7 +8,7 @@
 
     <!-- An esports player or team gets the profile's heading, with the league logo in the region tag's place -->
     <a v-if="headingImage && !(battletag && esport)" :href="headingImageUrl" target="_blank" class="flex items-center gap-4">
-      <img :src="headingImage" :alt="heading || ''" class="w-33 h-20 object-contain"/>
+      <img :src="headingImage" :alt="heading || ''" class="h-20 object-contain"/>
       <span v-if="battletag && !esport" class="text-lg uppercase">{{ battletag }}({{ regionstring }})</span>
       <span v-if="battletag && esport" class="text-lg uppercase">{{ battletag }}</span>
       <!-- The page's h1, beside the logo -->
