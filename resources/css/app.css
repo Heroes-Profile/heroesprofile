@@ -146,12 +146,6 @@ details.group.is-closing[open] .group-open\:-rotate-90 {
   @apply text-white bg-field;
 }
 
-.variable-hover{
-  @apply  hover:bg-gray-light hover:text-black;
-}
-.dark-mode .variable-hover{
-  @apply hover:bg-darken hover:text-white;
-}
 body{
   font-size: calc(1rem * var(--text-scale));
 }
@@ -387,38 +381,6 @@ nav .search-component{
       @apply pt-0;
     }
   }
-
-.variable-background{
-  @apply bg-gray-light;
-}
-.dark-mode .variable-background{
-  @apply bg-gray-dark text-white;
-
-}
-
-.stat-bar-light,
-.dark-mode .stat-bar-light{
-  @apply bg-gray-light;
-}
-.stat-bar-light .variable-text,
-.dark-mode .stat-bar-light .variable-text{
-  @apply text-black;
-}
-
-.talent-card-row-highlight,
-.dark-mode .talent-card-row-highlight{
-  @apply bg-teal text-white;
-}
-.dark-mode .talent-card-row{
-  @apply bg-darken;
-}
-
-.variable-ring{
-  @apply ring-gray-medium;
-}
-.dark-mode variable-ring{
-  @apply ring-black;
-}
 
 /*  end navigation */
 .search-input{
