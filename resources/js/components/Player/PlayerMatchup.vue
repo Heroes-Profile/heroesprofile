@@ -364,7 +364,10 @@
         }
       },
       heroUrl(hero) {
-        return (this.esport ? this.ngsPlayerUrl : '/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region) + '/Hero/' + hero.name + (this.league ? this.league.query : '');
+        if (this.esport) {
+          return `${this.ngsPlayerUrl}/Hero/${hero.name}${window.location.search}`;
+        }
+        return '/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Hero/' + hero.name;
       },
       // Below 45% shows red, as the profile's bars do
       rateClass(rate) {

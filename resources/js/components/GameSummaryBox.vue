@@ -262,7 +262,7 @@ import { siteLocale } from '../utils/translate';
           }
 
           if(this.esportLeague == "HeroesInternational"){
-            return '/Esports/' + this.esportLeague + '/Match/Single/' + this.data.replayID + '/?tournament=' + this.tournament;
+            return '/Esports/' + this.esportLeague + '/Match/Single/' + this.data.replayID + '?tournament=' + this.tournament;
           }
 
           return '/Esports/' + this.esportLeague + '/Match/Single/' + this.data.replayID;

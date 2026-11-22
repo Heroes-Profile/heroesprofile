@@ -453,7 +453,7 @@ export default {
       return `${this.league.root}/Player/${this.battletag}/${this.blizz_id}${path}` + (query ? `?${query}` : '');
     },
     getMatchHistoryUrl(){
-      return `${this.league.root}/Player/${this.battletag}/${this.blizz_id}/Match/History${this.league.query}`;
+      return this.ngsPageUrl('/Match/History');
     },
   }
 }

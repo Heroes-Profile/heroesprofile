@@ -580,13 +580,12 @@ export default {
         newURL += `${this.series}/Team/${this.team}`;
       }
 
-      if (this.modifiedseason && this.modifieddivision) {
-        newURL += `?season=${this.modifiedseason}&division=${this.modifieddivision}`;
-      } else if (this.modifiedseason) {
-        newURL += `?season=${this.modifiedseason}`;
-      } else if (this.modifieddivision) {
-        newURL += `?division=${this.modifieddivision}`;
-      }
+      const params = new URLSearchParams();
+      if (this.modifiedseason) params.set('season', this.modifiedseason);
+      if (this.modifieddivision) params.set('division', this.modifieddivision);
+      if (this.esport === 'HeroesInternational' && this.tournament) params.set('tournament', this.tournament);
+      const query = params.toString();
+      if (query) newURL += `?${query}`;
 
       // Update the browser's URL without reisLoading the page
       history.pushState({}, "", newURL);
