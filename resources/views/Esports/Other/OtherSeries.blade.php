@@ -17,4 +17,5 @@
     :tournaments="{{ json_encode($tournaments) }}"
   >
   </other-series>
+  @include('Esports.contactSection')
 @endsection

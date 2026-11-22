@@ -5,14 +5,14 @@
         <page-heading heading="Match History" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
       </template>
       <div class="w-full">
-        <filters v-if="ngsFilterOptions"
+        <filters
           :filters="filters"
           :isLoading="isLoading"
           :onFilter="() => ngsFilterApply()"
           :onChange="ngsFilterChange"
           :extrafilters="[
-            { text: 'Seasons', values: ngsFilterOptions.seasons, defaultValue: ngsSeason },
-            { text: 'Divisions', values: ngsFilterOptions.divisions, defaultValue: ngsDivision, show: !!(ngsFilterOptions.divisions) },
+            { text: 'Seasons', values: ngsFilterOptions?.seasons || [], defaultValue: ngsSeason },
+            { text: 'Divisions', values: ngsFilterOptions?.divisions || [], defaultValue: ngsDivision, show: esport == 'NGS' },
             { text: 'Teams', values: ngsTeamOptions, defaultValue: ngsTeam },
           ]"
           :excludetimeframes="true"
@@ -53,21 +53,29 @@
         <pagination-bar :current="data.current_page" :last="data.last_page" @page="getNgsData"></pagination-bar>
       </div>
     </div>
-    <!-- The page's layout with grey blocks while it loads, like the profile -->
-    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 py-4 space-y-8">
-      <loading-component :compact="true" :overrideimage="league.loaderImage"></loading-component>
-      <panel-box>
-        <div v-if="compact">
-          <game-summary-header :esport="true"></game-summary-header>
-          <game-summary-skeleton v-for="index in 8" :key="index"></game-summary-skeleton>
-        </div>
-        <div v-else class="overflow-x-auto">
-          <div class="md:min-w-max w-full">
-            <game-summary-header :compact="true" :esport="true"></game-summary-header>
-            <game-summary-skeleton v-for="row in 12" :key="row" :compact="true"></game-summary-skeleton>
+    <!-- Grey blocks while it loads, as on the main match history: in the loaded table's rows so the panel doesn't jump -->
+    <div v-else-if="isLoading">
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-wrap justify-end items-center gap-4">
+        <!-- The Compact / Expanded toggle and the page numbers -->
+        <skeleton-box class="w-[13.25rem] h-[2.75rem]"></skeleton-box>
+        <skeleton-box class="w-[17.75rem] h-[2.75rem]"></skeleton-box>
+      </div>
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 py-4">
+        <!-- The message sits on a tab of the panel, as on the profile -->
+        <panel-box class="relative md:!rounded-tl-none">
+          <loading-component :compact="true" :tab="true" :overrideimage="league.loaderImage"></loading-component>
+          <div v-if="compact">
+            <game-summary-header :esport="true"></game-summary-header>
+            <game-summary-skeleton v-for="index in 8" :key="index"></game-summary-skeleton>
           </div>
-        </div>
-      </panel-box>
+          <div v-else class="overflow-x-auto">
+            <div class="md:min-w-max w-full">
+              <game-summary-header :compact="true" :esport="true"></game-summary-header>
+              <game-summary-skeleton v-for="row in 12" :key="row" :compact="true"></game-summary-skeleton>
+            </div>
+          </div>
+        </panel-box>
+      </div>
     </div>
   </div>
 </template>

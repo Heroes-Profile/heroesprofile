@@ -1,9 +1,12 @@
 <template>
   <!-- The "Choose columns" button and its panel: tick columns by group, then Apply -->
-  <div class="relative">
-    <custom-button class="min-w-[11.75rem]" @click="toggle" :text="open ? 'Hide columns' : 'Choose columns'" :alt="open ? 'Hide columns' : 'Choose columns'" :ignoreclick="true"></custom-button>
+  <!-- Raised over its dimmed backdrop while open -->
+  <div :class="['relative', { 'z-50': open }]">
+    <!-- Dims the page behind the open panel so it stands off the table; a click on it closes the panel -->
+    <div v-if="open" class="fixed inset-0 bg-black/50" @click="open = false"></div>
+    <custom-button class="relative min-w-[11.75rem]" @click="toggle" :text="open ? 'Hide columns' : 'Choose columns'" :alt="open ? 'Hide columns' : 'Choose columns'" :ignoreclick="true"></custom-button>
 
-    <div v-if="open" class="absolute right-0 top-full mt-[1.125rem] z-50 w-[min(77.5rem,calc(100vw-2rem))] bg-surface-1 border border-surface-3 rounded shadow-2xl p-4 md:p-[1.5625rem] flex flex-col gap-5 text-sm">
+    <div v-if="open" class="absolute right-0 top-full mt-[1.125rem] z-50 w-[min(77.5rem,calc(100vw-2rem))] bg-surface-4 border border-surface-3 rounded shadow-2xl p-4 md:p-[1.5625rem] flex flex-col gap-5 text-sm">
       <div class="flex justify-between gap-4">
         <div>
           <h4 class="text-xl font-bold leading-tight">{{ $t('Table columns') }}</h4>

@@ -15,4 +15,5 @@
 
   >
   </ngs-main>
+  @include('Esports.contactSection')
 @endsection

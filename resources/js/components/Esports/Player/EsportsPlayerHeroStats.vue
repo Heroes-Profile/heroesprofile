@@ -97,6 +97,8 @@ export default {
   components: {
   },
   props: {
+    // Ad-free Patreon supporters, from the session; hides the in-page ads
+    patreonUser: Boolean,
   	filters: Object,
   	esport: String,
     series: String,

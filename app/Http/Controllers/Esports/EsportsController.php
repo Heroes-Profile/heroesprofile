@@ -2423,6 +2423,14 @@ class EsportsController extends Controller
             'blizz_id' => $blizz_id,
             'region' => null,
             'esport' => $this->leagueDataInput()['esport'],
+            // Shown where a player page puts the region, e.g. "Zemill (NGS) Map Stats"
+            'leagueName' => match ($this->esport) {
+                'MastersClash' => 'Masters Clash',
+                'hi', 'hi_nc' => 'Heroes International',
+                'NutCup' => 'Nut Cup',
+                'Other' => $this->series,
+                default => $this->esport,
+            },
             'esportfilters' => $esportfilters,
             'filters' => $this->globalDataService->getFilterData(),
             'gametypedefault' => [],

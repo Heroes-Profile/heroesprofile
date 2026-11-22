@@ -3,47 +3,14 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
     <page-heading :heading="''" :heading-image="'/images/EsportOther/' + this.series.icon" :heading-image-url="'/Esports/Other/' + this.series.name"></page-heading>
     
-    <div class="flex flex-wrap justify-center gap-1 bg-teal rounded p-1 w-fit max-w-[calc(100%-2rem)] mx-auto mb-6 max-md:text-xs">
-      <button type="button" :disabled="isLoading && activeButton !== 'teams'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'teams' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('teams')">{{ $t('Teams') }}</button>
-
-      <button type="button" :disabled="isLoading && activeButton !== 'players'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'players' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('players')">{{ $t('Players') }}</button>
-
-      <button type="button" :disabled="isLoading && activeButton !== 'overallHeroStats'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallHeroStats' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('overallHeroStats')">{{ $t('Overall Hero Stats') }}</button>
-
-      <button type="button" :disabled="isLoading && activeButton !== 'overallTalentStats'" :class="['px-4 py-2 rounded-control text-white', activeButton === 'overallTalentStats' ? 'bg-surface-1' : isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']" @click="setButtonActive('overallTalentStats')">{{ $t('Overall Talent Stats') }}</button>
+    <!-- The sections; none is picked on the landing cards, and the others wait while one loads -->
+    <div class="flex justify-center px-4 mb-6">
+      <tab-button :tabs="[{ key: 'teams', text: 'Teams' }, { key: 'players', text: 'Players' }, { key: 'overallHeroStats', text: 'Overall Hero Stats' }, { key: 'overallTalentStats', text: 'Overall Talent Stats' }]" :no-default="true" :disabled="isLoading" :overridedefaultside="activeButton" :ignoreclick="true" @tab-click="setButtonActive"></tab-button>
     </div>
 
 
     
-    <div v-if="!activeButton">
-      <div class="flex p-10 md:p-20 bg-surface rounded max-w-[93.75rem] mx-4 md:mx-auto flex-wrap justify-center">
-        <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fas fa-users" style="font-size: 6.25rem"></i>
-          <h3>{{ $t('Teams') }}</h3>
-          <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="mt-10" :active="teamsClicked" :ignoreclick="true"></custom-button>
-        </div>
-
-
-        <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fas fa-address-card" style="font-size: 6.25rem"></i>
-          <h3>{{ $t('Players') }}</h3>
-          <custom-button @click="setButtonActive('players')" :text="'Players'" :size="'big'" class="mt-10" :active="playersClicked" :ignoreclick="true"></custom-button>
-        </div>
-
-        <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fa-solid fa-chart-bar" style="font-size: 6.25rem"></i>
-          <h3>{{ $t('Overall Hero Stats') }}</h3>
-          <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="mt-10" :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
-        </div>
-
-        <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fas fa-chart-line" style="font-size: 6.25rem"></i>
-          <h3>{{ $t('Overall Talent Stats') }}</h3>
-          <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="mt-10" :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
-        </div>
-      </div>
-
-    </div>
+    <esports-section-cards v-if="!activeButton" :sections="['teams', 'players', 'overallHeroStats', 'overallTalentStats']" @select="setButtonActive"></esports-section-cards>
     <div v-else>
       <div v-if="activeButton === 'teams'">
         <filters

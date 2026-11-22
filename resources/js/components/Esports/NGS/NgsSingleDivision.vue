@@ -50,7 +50,7 @@
               <panel-box :inner="true" :title="'Teams in Division ' + division">
                 <div class="flex flex-col gap-2">
                   <a v-for="team in sortedTeams" :key="team.team_name" :href="teamUrl(team)" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
-                    <img v-if="team.image" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image" :alt="$ngsTeam(team.team_name).name"/>
+                    <img class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image || '/images/NGS/no-image-clipped.png'" :alt="$ngsTeam(team.team_name).name" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = '/images/NGS/no-image-clipped.png'; } }"/>
                     <div class="flex flex-col min-w-0 flex-1">
                       <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
                       <span v-if="$ngsTeam(team.team_name).withdrawnSeason" class="text-sm text-subtext">{{ $t('Withdrew Season :withdrawnseason', { withdrawnseason: $ngsTeam(team.team_name).withdrawnSeason }) }}</span>

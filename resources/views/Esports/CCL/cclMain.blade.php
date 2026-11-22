@@ -15,4 +15,5 @@
     :urlparameters="{{ json_encode($urlparameters) }}"
   >
   </ccl-main>
+  @include('Esports.contactSection')
 @endsection

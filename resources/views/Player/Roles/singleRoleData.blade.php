@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)    
-@php($regionName = $bladeGlobals['regions'][$region] ?? $region)
+@php($regionName = $leagueName ?? ($bladeGlobals['regions'][$region] ?? $region))
 @include('Player.structuredData', ['page' => $role])
 @section('title', __(':battletag (:region) :role Stats', ['battletag' => $battletag, 'region' => $regionName, 'role' => $role]))
 @section('meta_keywords', 'Player Role Stats, Role Statistics, Player Stats')

@@ -17,4 +17,5 @@
     :teams="{{ json_encode($teams) }}"
   >
   </other-main>
+  @include('Esports.contactSection')
 @endsection

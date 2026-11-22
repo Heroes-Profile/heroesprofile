@@ -7,14 +7,14 @@
         <page-heading v-else :heading="$t('Map Stats') + ': ' + $mapName(map)" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
       </template>
     <div class="w-full">
-      <filters v-if="esport && ngsFilterOptions"
+      <filters v-if="esport"
         :filters="filters"
         :isLoading="isLoading"
         :onFilter="() => applyFilter()"
         :onChange="ngsFilterChange"
         :extrafilters="[
-          { text: 'Seasons', values: ngsFilterOptions.seasons, defaultValue: ngsSeason },
-          { text: 'Divisions', values: ngsFilterOptions.divisions, defaultValue: ngsDivision, show: !!(ngsFilterOptions.divisions) },
+          { text: 'Seasons', values: ngsFilterOptions?.seasons || [], defaultValue: ngsSeason },
+          { text: 'Divisions', values: ngsFilterOptions?.divisions || [], defaultValue: ngsDivision, show: esport == 'NGS' },
           { text: 'Teams', values: ngsTeamOptions, defaultValue: ngsTeam },
         ]"
         :excludetimeframes="true"
@@ -80,7 +80,7 @@
           <panel-box v-if="esport && data.teams_played_for && data.teams_played_for.length" :inner="true" :title="$t('Teams Played For')">
             <div class="flex flex-col gap-2">
               <a v-for="team in data.teams_played_for" :key="team.team_name + team.season" :href="team.link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
-                <img v-if="team.image" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image" :alt="$ngsTeam(team.team_name).name"/>
+                <img class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image || league.loaderImage" :alt="$ngsTeam(team.team_name).name" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = league.loaderImage; } }"/>
                 <div class="flex flex-col min-w-0 flex-1">
                   <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
                   <span class="text-sm text-subtext">{{ [team.season ? $t('Season :season', { season: team.season }) : null, team.division ? $t('Division :division', { division: team.division }) : null].filter(Boolean).join(' · ') }}</span>
@@ -89,6 +89,16 @@
                   <span class="font-semibold">{{ team.win_rate.toFixed(2) }}%</span>
                   <span class="text-subtext">{{ $t(':played games', { played: team.games_played }) }}</span>
                 </div>
+              </a>
+            </div>
+          </panel-box>
+          <!-- Esports: the heroes they played on the map sit under their teams -->
+          <panel-box v-if="esport" class="flex-1" :inner="true" :title="'Heroes Played On ' + map">
+            <div class="flex flex-wrap gap-2">
+              <a :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes" :key="index">
+                <hero-image-wrapper :hero="item.hero" size="big" :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" link-text="View Hero">
+                  <image-hover-box :title="$heroName(item.hero)" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + item.games_played"></image-hover-box>
+                </hero-image-wrapper>
               </a>
             </div>
           </panel-box>
@@ -103,7 +113,7 @@
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
-      <panel-box :title="'Heroes Played On ' + map">
+      <panel-box v-if="!esport" :title="'Heroes Played On ' + map">
         <div class="flex flex-wrap gap-2">
           <a :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes" :key="index">
             <hero-image-wrapper :hero="item.hero" size="big" :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" link-text="View Hero">
@@ -170,6 +180,11 @@
             <panel-box v-if="esport" :inner="true" :title="$t('Teams Played For')">
               <skeleton-box v-for="index in 2" :key="index" class="h-14"></skeleton-box>
             </panel-box>
+            <panel-box v-if="esport" class="flex-1" :inner="true" :title="'Heroes Played On ' + map">
+              <div class="flex flex-wrap gap-2">
+                <skeleton-box v-for="tile in 8" :key="tile" class="w-20 h-20 rounded"></skeleton-box>
+              </div>
+            </panel-box>
             <player-party-size-panel v-else :data="emptyPartyData" prefix="stack_size_" :skeleton="true"></player-party-size-panel>
             <player-awards-panel v-if="!esport" class="flex-1" :placeholder="true" :battletag="battletag" :blizzid="blizzid" :region="region"></player-awards-panel>
           </div>
@@ -182,7 +197,7 @@
       </panel-box>
 
       <!-- Every hero played on the map loads here as a 5rem tile; most players have played most of them -->
-      <panel-box :title="'Heroes Played On ' + map">
+      <panel-box v-if="!esport" :title="'Heroes Played On ' + map">
         <div class="flex flex-wrap gap-2">
           <skeleton-box v-for="tile in 80" :key="tile" class="w-20 h-20 rounded"></skeleton-box>
         </div>

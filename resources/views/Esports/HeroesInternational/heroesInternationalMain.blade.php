@@ -15,4 +15,5 @@
     :tournament="{{ json_encode($tournament) }}"
     :urlparameters="{{ json_encode($urlparameters) }}"
   ></heroes-international-main>
+  @include('Esports.contactSection')
 @endsection

@@ -12,4 +12,5 @@
     :heroes="{{ json_encode($heroes) }}" 
   >
   </nut-cup-main>
+  @include('Esports.contactSection')
 @endsection

@@ -1,10 +1,11 @@
 <template>
   <!-- select-none: clicking tabs quickly mustn't highlight their labels -->
-  <div class="inline-flex bg-teal rounded p-1 gap-1 select-none">
+  <!-- Wraps onto more rows when the tabs don't fit (a page's section nav on a phone) -->
+  <div class="inline-flex flex-wrap justify-center bg-teal rounded p-1 gap-1 select-none">
     <a
       v-for="side in sides"
       :key="side"
-      :class="[staticClasses, 'rounded-control text-white', selectedSide === side ? 'bg-surface-1' : 'hover:bg-lteal']"
+      :class="[staticClasses, 'rounded-control text-white', selectedSide === side ? 'bg-surface-1' : disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']"
       :alt="tabs ? labels[side] : { left: tab1alt, right: tab2alt, third: tab3alt }[side]"
       role="button"
       @click="handleClick(side)"
@@ -39,6 +40,10 @@
       loading: false,
       overridedefaultside: String,
       small: Boolean,
+      // No tab highlighted until one is picked (a page's section nav, before a section is open)
+      noDefault: Boolean,
+      // Only the selected tab can be clicked (while its section loads)
+      disabled: Boolean,
     },
     data(){
       return {
@@ -48,6 +53,8 @@
     created(){
       if(this.overridedefaultside){
         this.selectedSide = this.overridedefaultside;
+      } else if (this.noDefault) {
+        this.selectedSide = null;
       } else if (this.tabs && this.tabs.length) {
         this.selectedSide = this.tabs[0].key;
       }
@@ -70,9 +77,18 @@
       },
     },
     watch: {
+      // The page can pick the tab itself too (the esports section cards)
+      overridedefaultside(side) {
+        if (side || this.noDefault) {
+          this.selectedSide = side || null;
+        }
+      },
     },
     methods: {
       handleClick(side) {
+        if (this.disabled && side !== this.selectedSide) {
+          return;
+        }
         this.selectedSide = side;
         this.$emit('tab-click', side);
       }

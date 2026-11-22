@@ -6,7 +6,8 @@
     </div>
 
 
-    <a v-if="headingImage" :href="headingImageUrl" target="_blank" class="flex items-center gap-4">
+    <!-- An esports player or team gets the profile's heading, with the league logo in the region tag's place -->
+    <a v-if="headingImage && !(battletag && esport)" :href="headingImageUrl" target="_blank" class="flex items-center gap-4">
       <img :src="headingImage" :alt="heading || ''" class="w-33 h-20 object-contain"/>
       <span v-if="battletag && !esport" class="text-lg uppercase">{{ battletag }}({{ regionstring }})</span>
       <span v-if="battletag && esport" class="text-lg uppercase">{{ battletag }}</span>
@@ -18,7 +19,8 @@
       <!-- BattleTag, then its flair, then the region tag, which sits level with the top of the BattleTag (lined up with
            the filters' top) -->
       <div v-if="battletag" class="flex items-center gap-3 flex-wrap md:flex-nowrap max-md:justify-center">
-        <a :href="`/Player/${battletag}/${blizzid}/${region}`" class="group/bt inline-flex"><span class="text-3xl md:text-6xl font-bold group-hover/bt:underline">{{ battletag }}</span></a>
+        <span v-if="esport" class="text-3xl md:text-6xl font-bold">{{ battletag }}</span>
+        <a v-else :href="`/Player/${battletag}/${blizzid}/${region}`" class="group/bt inline-flex"><span class="text-3xl md:text-6xl font-bold group-hover/bt:underline">{{ battletag }}</span></a>
         <!-- Each flair in a box its own size, centred on the BattleTag (flair-icon, app.css) -->
         <span v-if="(isOwner && !ownerHidden) || isPatreon || (!esport && voidEye)" class="flex items-center gap-2.5 text-[1.25rem]">
           <span v-if="isOwner && !ownerHidden" class="relative inline-flex">
@@ -36,7 +38,8 @@
           </icon-with-hover>
           <void-eye-flair v-if="!esport && voidEye" class="flair-icon" :force="true"></void-eye-flair>
         </span>
-        <region-tag class="self-start" :region="regionstring" :large="true"></region-tag>
+        <a v-if="esport && headingImage" :href="headingImageUrl" class="self-start shrink-0"><img :src="headingImage" :alt="esport" class="h-9 w-auto max-w-[6rem] object-contain"/></a>
+        <region-tag v-else class="self-start" :region="regionstring" :large="true"></region-tag>
       </div>
       <slot name="aboveHeading"></slot>
       <div :class="['heading flex items-center gap-3 max-md:justify-center', battletag ? 'text-base md:text-2xl uppercase text-gray-medium mt-1' : 'text-4xl md:text-6xl font-bold']"><!-- A page can swap the title for its own (the Talents hero switcher) --><slot name="headingText">{{ $t(heading) }}</slot><!-- An info icon sits raised at the top of the title, like a superscript --><span v-if="$slots.headingInfo" class="page-title-info self-start flex"><slot name="headingInfo"></slot></span></div>

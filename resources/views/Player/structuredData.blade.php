@@ -1,5 +1,7 @@
 {{-- A player page's structured data: the profile it belongs to, and breadcrumbs from the site to this page.
-     $page is this page's name ('Party Win Rates', 'Artanis'...), left out on the profile itself. --}}
+     $page is this page's name ('Party Win Rates', 'Artanis'...), left out on the profile itself.
+     Not on the esports versions of these pages: they have no region or /Player profile to point at. --}}
+@if (empty($esport))
 @php
   $profileUrl = url('/Player/' . rawurlencode($battletag) . '/' . $blizz_id . '/' . $region);
   $playerName = $battletag . ' (' . ($bladeGlobals['regions'][$region] ?? $region) . ')';
@@ -38,3 +40,4 @@
 @push('structured_data')
   <script type="application/ld+json">{!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
 @endpush
+@endif

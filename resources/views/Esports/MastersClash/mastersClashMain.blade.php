@@ -15,4 +15,5 @@
 
   >
   </maters-clash-main>
+  @include('Esports.contactSection')
 @endsection

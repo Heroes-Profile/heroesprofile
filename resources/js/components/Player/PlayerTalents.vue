@@ -11,14 +11,14 @@
         </page-heading>
       </template>
       <div v-if="esport" class="w-full">
-        <filters v-if="ngsFilterOptions"
+        <filters
           :filters="filters"
           :isLoading="isLoading"
           :onFilter="() => ngsFilterApply()"
           :onChange="ngsFilterChange"
           :extrafilters="[
-            { text: 'Seasons', values: ngsFilterOptions.seasons, defaultValue: ngsSeason },
-            { text: 'Divisions', values: ngsFilterOptions.divisions, defaultValue: ngsDivision, show: !!(ngsFilterOptions.divisions) },
+            { text: 'Seasons', values: ngsFilterOptions?.seasons || [], defaultValue: ngsSeason },
+            { text: 'Divisions', values: ngsFilterOptions?.divisions || [], defaultValue: ngsDivision, show: esport == 'NGS' },
             { text: 'Teams', values: ngsTeamOptions, defaultValue: ngsTeam },
           ]"
           :excludetimeframes="true"

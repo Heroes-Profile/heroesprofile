@@ -16,4 +16,5 @@
     :urlparameters="{{ json_encode($urlparameters) }}"
 
   ></heroes-international-nations-cup>
+  @include('Esports.contactSection')
 @endsection

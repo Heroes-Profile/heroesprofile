@@ -23,14 +23,14 @@
         :overrideGroupSizeRemoval="true"
         >
       </filters>
-      <filters v-else-if="esport && ngsFilterOptions"
+      <filters v-else-if="esport"
         :filters="filters"
         :isLoading="(friendIsLoading || enemyIsLoading)"
         :onFilter="() => getNgsData()"
         :onChange="ngsFilterChange"
         :extrafilters="[
-          { text: 'Seasons', values: ngsFilterOptions.seasons, defaultValue: ngsSeason },
-          { text: 'Divisions', values: ngsFilterOptions.divisions, defaultValue: ngsDivision, show: !!(ngsFilterOptions.divisions) },
+          { text: 'Seasons', values: ngsFilterOptions?.seasons || [], defaultValue: ngsSeason },
+          { text: 'Divisions', values: ngsFilterOptions?.divisions || [], defaultValue: ngsDivision, show: esport == 'NGS' },
           { text: 'Teams', values: ngsTeamOptions, defaultValue: ngsTeam },
         ]"
         :excludetimeframes="true"
