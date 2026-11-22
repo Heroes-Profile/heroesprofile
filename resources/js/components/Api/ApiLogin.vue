@@ -4,10 +4,10 @@
       <input type="hidden" name="_token" :value="csrf">
 
       <label for="email">{{ $t('Email:') }}</label>
-      <input class="form-control search-input text-black" type="email" id="email" name="email" v-model="email" required autofocus>
+      <input class="search-input text-black" type="email" id="email" name="email" v-model="email" required autofocus>
 
       <label for="password">{{ $t('Password:') }}</label>
-      <input class="form-control search-input text-black" type="password" id="password" name="password" required>
+      <input class="search-input text-black" type="password" id="password" name="password" required>
 
       <label class="flex items-center gap-2 my-2">
         <input type="checkbox" name="remember" value="1" class="w-5 h-5">

@@ -53,7 +53,7 @@
         <textarea
           id="poll-comment"
           v-model="comment"
-          class="form-control search-input text-black w-full mt-2 mb-4"
+          class="search-input text-black w-full mt-2 mb-4"
           rows="4"
           maxlength="2000"
           :disabled="saving"

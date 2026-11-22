@@ -4,17 +4,17 @@
       <input type="hidden" name="_token" :value="csrf">
 
       <label for="name">{{ $t('Name:') }}</label>
-      <input class="form-control search-input text-black" type="text" id="name" name="name" v-model="name" required autofocus>
+      <input class="search-input text-black" type="text" id="name" name="name" v-model="name" required autofocus>
 
       <label for="email">{{ $t('Email:') }}</label>
-      <input class="form-control search-input text-black" type="email" id="email" name="email" v-model="email" required>
+      <input class="search-input text-black" type="email" id="email" name="email" v-model="email" required>
 
       <label for="password">{{ $t('Password:') }}</label>
-      <input class="form-control search-input text-black" type="password" id="password" name="password" required>
+      <input class="search-input text-black" type="password" id="password" name="password" required>
       <span class="text-xs text-gray-medium">{{ $t('At least 8 characters.') }}</span>
 
       <label for="password_confirmation">{{ $t('Confirm Password:') }}</label>
-      <input class="form-control search-input text-black" type="password" id="password_confirmation" name="password_confirmation" required>
+      <input class="search-input text-black" type="password" id="password_confirmation" name="password_confirmation" required>
 
       <label class="flex items-start gap-2 mt-3 text-sm">
         <input type="checkbox" id="terms" name="terms" value="1" class="mt-1 w-5 h-5 shrink-0" required>

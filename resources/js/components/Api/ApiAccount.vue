@@ -390,7 +390,7 @@
           <div class="flex flex-col flex-grow">
             <label for="keyname" class="text-sm mb-1">{{ $t('Name this key') }}</label>
             <input
-              class="form-control search-input text-black"
+              class="search-input text-black"
               type="text"
               id="keyname"
               v-model="keyName"

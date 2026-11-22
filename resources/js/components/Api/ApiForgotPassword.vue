@@ -4,7 +4,7 @@
       <input type="hidden" name="_token" :value="csrf">
 
       <label for="email">{{ $t('Email:') }}</label>
-      <input class="form-control search-input text-black" type="email" id="email" name="email" v-model="email" required autofocus>
+      <input class="search-input text-black" type="email" id="email" name="email" v-model="email" required autofocus>
 
       <button type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto my-2">{{ $t('Send Reset Link') }}</button>
     </form>

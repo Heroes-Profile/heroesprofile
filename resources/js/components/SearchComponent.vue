@@ -4,7 +4,7 @@
     <div class="flex items-stretch">
       <div class="relative flex-1">
         <basil-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-lteal pointer-events-none"></basil-icon>
-        <input ref="input" type="text" :class="['form-control variable-text rounded-l px-4 py-3 pl-10 w-full', { 'ring-2 ring-inset ring-teal outline-none': showEmptyPrompt }]" :placeholder="$t(labelText)" :aria-label="$t(labelText)" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton" @blur="showEmptyPrompt = false">
+        <input ref="input" type="text" :class="['variable-text rounded-l px-4 py-3 pl-10 w-full', { 'ring-2 ring-inset ring-teal outline-none': showEmptyPrompt }]" :placeholder="$t(labelText)" :aria-label="$t(labelText)" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton" @blur="showEmptyPrompt = false">
       </div>
       <button
         v-if="buttonText"

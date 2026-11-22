@@ -25,7 +25,7 @@
           v-model="search"
           type="text"
           :placeholder="$t('Filter endpoints')"
-          class="form-control w-full text-black rounded p-2 text-sm mb-3"
+          class="w-full text-black rounded p-2 text-sm mb-3"
         />
 
         <ul v-if="!search" class="text-sm mb-4 space-y-1">
@@ -203,7 +203,7 @@
                       <select
                         v-if="p.schema && p.schema.enum"
                         v-model="values[op.id][p.name]"
-                        class="form-control w-full min-w-[12.5rem] text-black rounded p-1 text-sm"
+                        class="w-full min-w-[12.5rem] text-black rounded p-1 text-sm"
                       >
                         <option value=""></option>
                         <option v-for="choice in p.schema.enum" :key="choice" :value="choice">{{ choice }}</option>
@@ -213,7 +213,7 @@
                         v-model="values[op.id][p.name]"
                         type="text"
                         :placeholder="p.example !== undefined ? String(p.example) : ''"
-                        class="form-control w-full min-w-[12.5rem] text-black rounded p-1 text-sm"
+                        class="w-full min-w-[12.5rem] text-black rounded p-1 text-sm"
                       />
                     </td>
                   </tr>
