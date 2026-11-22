@@ -524,7 +524,7 @@ th.bg-teal .search-input-glass,
 
 td{
   @apply py-2 px-3 ;
-  border-right: 1.5px solid rgb(203 203 203 / var(--tw-bg-opacity));
+  border-right: 1.5px solid rgb(203 203 203);
 
 }
 td:last-child{border-right:none;}
