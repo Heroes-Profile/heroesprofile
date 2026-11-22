@@ -14,6 +14,6 @@
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
 
   >
-  </maters-clash-main>
+  </masters-clash-main>
   @include('Esports.contactSection')
 @endsection

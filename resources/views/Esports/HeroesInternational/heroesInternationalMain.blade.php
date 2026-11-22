@@ -1,6 +1,6 @@
 @extends('layouts.app', $bladeGlobals)    
 
-@section('title', __('Heroes International League Stats'))
+@section('title', __('Heroes International Main Tournament Stats – Heroes of the Storm'))
 @section('canonical', url('/Esports/HeroesInternational') . '?tournament=main')
 @section('meta_keywords', 'Heroes International league, Heroes International, Heroes of the Storm, Heroes International esports, competitive gaming, Heroes of the Storm league')
 @section('meta_description', 'Heroes of the Storm statistics and comparison for the Heroes International league: hero stats, teams, players and match history.')

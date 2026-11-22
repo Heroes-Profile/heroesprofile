@@ -2,7 +2,7 @@
   <div>
     
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="'See below the tournaments for filterable list of replays'" -->
-    <page-heading :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <page-heading heading="HGC and Other Esports" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div>
       <esports-organizations :data="hgcSeries" :esport="'Other'" class="hgcSeries-wrapper"></esports-organizations>

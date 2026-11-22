@@ -193,6 +193,18 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Esports/HeroesInternational?tournament=main</loc>
+    <lastmod>2026-11-22T03:03:37+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.heroesprofile.com/Esports/HeroesInternational?tournament=nationscup</loc>
+    <lastmod>2026-11-22T03:03:37+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Esports/NutCup</loc>
     <lastmod>2026-11-22T03:03:37+00:00</lastmod>
     <changefreq>weekly</changefreq>

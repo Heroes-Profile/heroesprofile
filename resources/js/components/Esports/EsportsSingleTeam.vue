@@ -412,7 +412,7 @@ export default {
     },
     heading(){
       if(this.esport == 'HeroesInternational'){
-        return "Heroes International";
+        return this.tournament == 'nationscup' ? 'Heroes International Nations Cup' : 'Heroes International';
       }else if(this.esport == "Other"){
         return;
       }
@@ -421,7 +421,8 @@ export default {
       if(this.esport == 'NGS'){
         return '';
       }
-      return this.esport;
+      // The league's name, not its URL key
+      return { MastersClash: 'Masters Clash', NutCup: 'Nut Cup' }[this.esport] ?? this.esport;
     },
     subtitle() {
       return [

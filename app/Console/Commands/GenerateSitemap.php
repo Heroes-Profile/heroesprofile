@@ -74,6 +74,8 @@ class GenerateSitemap extends Command
             ['loc' => '/Esports/CCL',              'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.6'],
             ['loc' => '/Esports/MastersClash',     'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.6'],
             ['loc' => '/Esports/HeroesInternational', 'lastmod' => $now, 'changefreq' => 'weekly', 'priority' => '0.6'],
+            ['loc' => '/Esports/HeroesInternational?tournament=main', 'lastmod' => $now, 'changefreq' => 'weekly', 'priority' => '0.6'],
+            ['loc' => '/Esports/HeroesInternational?tournament=nationscup', 'lastmod' => $now, 'changefreq' => 'weekly', 'priority' => '0.6'],
             ['loc' => '/Esports/NutCup',           'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.6'],
             ['loc' => '/Esports/Other',            'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.6'],
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
-    <page-heading :heading="'Heroes International'" :heading-image="'/images/HI/heroes_international.png'" :heading-image-url="'/Esports/HeroesInternational/NationsCup'"></page-heading>
+    <page-heading :heading="'Heroes International Nations Cup'" :heading-image="'/images/HI/heroes_international.png'" :heading-image-url="'/Esports/HeroesInternational?tournament=nationscup'"></page-heading>
 
       <!---You are going to have to design this better, I am going to use buttons for now -->
       <!-- The sections; none is picked on the landing cards, and the others wait while one loads -->
@@ -106,14 +106,18 @@
     <div v-if="isLoading">
       <div class="relative max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
         <!-- The message sits on a tab of the first card, as on the global pages: lined up with the card past the side padding, the card's top-left corner squared to meet it -->
-        <loading-component v-if="activeButton !== 'recentMatches'" :compact="true" :tab="true" :overrideimage="'/images/HI/heroes_international.png'"></loading-component>
-        <!-- Teams: a wrapping grid of logos with the name underneath -->
-        <div v-if="activeButton === 'teams'" class="flex p-10 md:p-20 bg-surface rounded max-w-[93.75rem] w-full mx-auto flex-wrap justify-center gap-10">
-          <div v-for="team in 12" :key="team" class="flex flex-col items-center gap-3 md:w-[15%]">
-            <skeleton-box class="w-32 h-32"></skeleton-box>
-            <skeleton-box class="h-5 w-28 max-w-full"></skeleton-box>
+        <loading-component v-if="!['recentMatches', 'teams'].includes(activeButton)" :compact="true" :tab="true" :overrideimage="'/images/HI/heroes_international.png'"></loading-component>
+        <!-- Teams: the name filter over the team cards; the message sits on a tab of the first card -->
+        <template v-if="activeButton === 'teams'">
+          <skeleton-box class="h-10 w-full sm:w-[18.125rem]"></skeleton-box>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8">
+            <div v-for="team in 8" :key="team" :class="['relative bg-surface rounded p-6 flex flex-col gap-5', { 'md:!rounded-tl-none': team === 1 }]">
+              <loading-component v-if="team === 1" :compact="true" :tab="true" :overrideimage="'/images/HI/heroes_international.png'"></loading-component>
+              <skeleton-box class="h-[12.5rem] !rounded-control"></skeleton-box>
+              <div class="flex items-end justify-between gap-4"><skeleton-box class="h-6 w-40"></skeleton-box><skeleton-box class="h-5 w-20"></skeleton-box></div>
+            </div>
           </div>
-        </div>
+        </template>
         <!-- Recent Matches: expanded rows with the map, the two teams and each team's heroes -->
         <template v-else-if="activeButton === 'recentMatches'">
           <!-- The Compact / Expanded toggle and the page numbers, as on the loaded list -->

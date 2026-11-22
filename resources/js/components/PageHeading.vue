@@ -11,8 +11,8 @@
       <img :src="headingImage" :alt="heading || ''" class="w-33 h-20 object-contain"/>
       <span v-if="battletag && !esport" class="text-lg uppercase">{{ battletag }}({{ regionstring }})</span>
       <span v-if="battletag && esport" class="text-lg uppercase">{{ battletag }}</span>
-      <!-- Left out when the logo already says it -->
-      <span v-if="heading" class="text-2xl font-bold">{{ $t(heading) }}</span>
+      <!-- The page's h1, beside the logo -->
+      <h1 v-if="heading" class="text-2xl font-bold">{{ $t(heading) }}</h1>
     </a>
 
     <h1 v-else class="max-md:w-full max-md:text-center">

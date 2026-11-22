@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
-    <page-heading :heading="''" :heading-image="'/images/EsportOther/' + this.series.icon" :heading-image-url="'/Esports/Other/' + this.series.name"></page-heading>
+    <page-heading :heading="series.name" :heading-image="'/images/EsportOther/' + this.series.icon" :heading-image-url="'/Esports/Other/' + this.series.name"></page-heading>
     
     <!-- The sections; none is picked on the landing cards, and the others wait while one loads -->
     <div class="flex justify-center px-4 mb-6">

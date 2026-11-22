@@ -1,8 +1,8 @@
 @extends('layouts.app', $bladeGlobals)    
 
 @section('title', __('Nut Cup Stats – Heroes of the Storm'))
-@section('meta_keywords', 'Nut Cup league, Heroes of the Storm, Nut Cup esports, competitive gaming, Heroes of the Storm league, Nut Cup schedule')
-@section('meta_description', 'Heroes of the Storm statistics and comparison for the Nut Cup: overall hero stats, teams, players and match history.')
+@section('meta_keywords', 'Nut Cup, Nut Cup hero stats, Nut Cup talent builds, Heroes of the Storm esports, Heroes of the Storm tournament')
+@section('meta_description', 'Heroes of the Storm hero and talent stats from the Nut Cup: win rates, popularity, bans and talent builds.')
 
 @section('content')
   <nut-cup-main 

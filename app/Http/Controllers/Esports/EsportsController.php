@@ -2426,7 +2426,8 @@ class EsportsController extends Controller
             // Shown where a player page puts the region, e.g. "Zemill (NGS) Map Stats"
             'leagueName' => match ($this->esport) {
                 'MastersClash' => 'Masters Clash',
-                'hi', 'hi_nc' => 'Heroes International',
+                'hi' => 'Heroes International',
+                'hi_nc' => 'Heroes International Nations Cup',
                 'NutCup' => 'Nut Cup',
                 'Other' => $this->series,
                 default => $this->esport,

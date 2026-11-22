@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)    
-@php($league = (empty($esport) || $esport === 'Other') ? (is_string($series ?? null) && $series !== '' ? $series : (optional($series ?? null)->name ?? 'Esports')) : (['MastersClash' => 'Masters Clash', 'HeroesInternational' => 'Heroes International', 'NutCup' => 'Nut Cup'][$esport] ?? $esport))
+@php($league = (empty($esport) || $esport === 'Other') ? (is_string($series ?? null) && $series !== '' ? $series : (optional($series ?? null)->name ?? 'Esports')) : (['MastersClash' => 'Masters Clash', 'HeroesInternational' => (($tournament ?? null) === 'nationscup' ? 'Heroes International Nations Cup' : 'Heroes International'), 'NutCup' => 'Nut Cup'][$esport] ?? $esport))
 
 @section('title', __(':team – :league Team Stats', ['team' => $team, 'league' => $league]))
 @section('meta_keywords', 'Heroes Profile, team data, organization data, esports data, team performance, organization performance, Heroes of the Storm')

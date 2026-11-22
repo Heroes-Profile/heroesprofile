@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
-    <page-heading :heading="''" :heading-image="'/images/NGS/ngs_large.png'" :heading-image-url="'/Esports/NGS'"></page-heading>
+    <page-heading :heading="'Nexus Gaming Series'" :heading-image="'/images/NGS/ngs_large.png'" :heading-image-url="'/Esports/NGS'"></page-heading>
 
       
       <!-- The sections; none is picked on the landing cards, and the others wait while one loads -->

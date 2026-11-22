@@ -165,7 +165,7 @@
         <div class="grid xl:grid-cols-2 gap-6 items-start">
           <div v-for="(column, columnIndex) in sectionColumns" :key="columnIndex" class="flex flex-col gap-6 min-w-0">
             <!-- Short tables side by side: their headers don't stick -->
-            <table v-for="section in visibleSections(column)" :key="section.title" class="min-w-0 w-full responsive-table rounded-table max-md:text-xs [&_thead]:static">
+            <table v-for="section in visibleSections(column)" :key="section.title" data-fit-table class="min-w-0 w-full responsive-table rounded-table max-md:text-xs [&_thead]:static">
               <thead>
                 <tr>
                   <th class="py-2 px-3 text-left text-sm w-[31%]">{{ $t(section.title) }}</th>
@@ -290,7 +290,7 @@
       <panel-box :title="$t('Advanced Stats')">
         <div class="grid xl:grid-cols-2 gap-6 items-start">
           <div v-for="(column, columnIndex) in sectionColumns" :key="columnIndex" class="flex flex-col gap-6 min-w-0">
-            <table v-for="section in column.filter(section => section.rows.some(row => !row.heroSpecific))" :key="section.title" class="min-w-0 w-full responsive-table rounded-table max-md:text-xs [&_thead]:static">
+            <table v-for="section in column.filter(section => section.rows.some(row => !row.heroSpecific))" :key="section.title" data-fit-table class="min-w-0 w-full responsive-table rounded-table max-md:text-xs [&_thead]:static">
               <thead>
                 <tr>
                   <th class="py-2 px-3 text-left text-sm w-[31%]"><span class="skeleton-text">{{ $t(section.title) }}</span></th>
@@ -318,6 +318,7 @@
 
 <script>
   import { formatDuration } from '../../../utils/formatDuration';
+  import { scaleTableToFit } from '../../../utils/scaleTable';
   export default {
     name: 'PlayerHeroSingleStats',
     components: {
@@ -461,6 +462,10 @@
       if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
         this.getData();
       }
+    },
+    // The stat tables shrink to fit a phone's card instead of running past it (long stat names like Regeneration Globes)
+    updated() {
+      this.$el.querySelectorAll?.('table[data-fit-table]').forEach(table => scaleTableToFit(table, table.parentElement));
     },
     computed: {
       topBuild() {
