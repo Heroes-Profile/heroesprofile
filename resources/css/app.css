@@ -378,6 +378,7 @@ nav .search-component{
 /*  end navigation */
 .search-input{
   @apply rounded p-2;
+  color: black;
 }
 
 table{
@@ -599,9 +600,6 @@ h1{
 
 
 
-.search-input {
-  color: black; /* Replace 'black' with any color you prefer */
-}
 
 
 
