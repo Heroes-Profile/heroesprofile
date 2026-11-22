@@ -38,7 +38,7 @@
               </span>
               <div v-if="channel.suspended" class="text-xs text-red">{{ $t('Suspended: :suspension_reason', { suspension_reason: channel.suspension_reason }) }}</div>
             </td>
-            <td class="py-2 px-3">{{ channel.uploader_last_seen_at || '—' }}</td>
+            <td class="py-2 px-3">{{ channel.uploader_last_seen_at ? $formatDate(channel.uploader_last_seen_at, { dateStyle: 'medium', timeStyle: 'short' }) : '—' }}</td>
             <td class="py-2 px-3">
               <span v-if="channel.listing_hidden" class="text-red">{{ $t('Hidden: :listing_hidden_reason', { listing_hidden_reason: channel.listing_hidden_reason }) }}</span>
               <span v-else-if="channel.listing_opt_in">{{ $t('Listed') }}</span>
@@ -80,10 +80,10 @@ export default {
         return this.$t('Paid (:plan)', { plan: e.plan });
       }
       if(e.source === 'trial'){
-        return this.$t('Trial to :date', { date: channel.trial_ends_at });
+        return this.$t('Trial to :date', { date: this.$formatDate(channel.trial_ends_at) });
       }
       if(e.source === 'comp'){
-        return this.$t('Comp to :date', { date: channel.comped_until });
+        return this.$t('Comp to :date', { date: this.$formatDate(channel.comped_until) });
       }
       return e.source;
     },

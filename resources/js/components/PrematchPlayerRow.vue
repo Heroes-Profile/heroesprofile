@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import moment from 'moment-timezone';
+import { timeAgo as relativeTime } from '../utils/formatGameDate';
 
 export default {
   name: 'PrematchPlayerRow',
@@ -94,7 +94,7 @@ export default {
   },
   methods: {
     timeAgo(dateString) {
-      return moment.tz(dateString, 'Atlantic/Reykjavik').fromNow();
+      return relativeTime(dateString);
     },
   },
 }

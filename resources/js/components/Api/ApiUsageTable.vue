@@ -19,7 +19,7 @@
             <td class="py-2 px-3">{{ row.name }}</td>
             <td class="py-2 px-3">{{ format(row.used) }}</td>
             <td class="py-2 px-3">{{ format(row.remaining) }}</td>
-            <td class="py-2 px-3">{{ row.resets_at }}</td>
+            <td class="py-2 px-3">{{ $formatDate(row.resets_at, { dateStyle: 'medium', timeStyle: 'short' }) }}</td>
           </tr>
         </tbody>
       </table>

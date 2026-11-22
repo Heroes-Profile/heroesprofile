@@ -277,7 +277,7 @@
 </template>
 
 <script>
-  import moment from 'moment-timezone';
+  import { formatGameDate, formatDate as formatLocalDate } from '../utils/formatGameDate';
   import Cookies from 'js-cookie';
 
   export default {
@@ -477,13 +477,10 @@
         }
       },
       formatDate(dateString) {
-        const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik');
-        const localDate = originalDate.clone().tz(moment.tz.guess());
-
-        return localDate.format('MM/DD/YYYY h:mm:ss a');
+        return formatGameDate(dateString);
       },
       formatDay(dateString) {
-        return moment(dateString).format('MM/DD/YYYY');
+        return formatLocalDate(dateString);
       },
       formatLength(seconds) {
         const minutes = Math.floor(seconds / 60);

@@ -30,8 +30,8 @@
               <div class="text-xs text-gray-medium">/Poll/{{ poll.slug }}</div>
             </td>
             <td class="py-2 px-3">
-              <span v-if="!poll.is_open" class="text-gray-medium">{{ $t('Closed :closes_at', { closes_at: poll.closes_at }) }}</span>
-              <span v-else-if="poll.closes_at" class="text-lteal">{{ $t('Open until :closes_at', { closes_at: poll.closes_at }) }}</span>
+              <span v-if="!poll.is_open" class="text-gray-medium">{{ $t('Closed :closes_at', { closes_at: $formatDate(poll.closes_at, { dateStyle: 'medium', timeStyle: 'short' }) }) }}</span>
+              <span v-else-if="poll.closes_at" class="text-lteal">{{ $t('Open until :closes_at', { closes_at: $formatDate(poll.closes_at, { dateStyle: 'medium', timeStyle: 'short' }) }) }}</span>
               <span v-else class="text-lteal">{{ $t('Open') }}</span>
             </td>
             <td class="py-2 px-3">{{ poll.votes }}</td>
@@ -118,7 +118,7 @@
               <td class="py-2 px-3 whitespace-nowrap">{{ row.battletag }}</td>
               <td class="py-2 px-3">{{ row.picks.join(', ') }}</td>
               <td class="py-2 px-3 whitespace-pre-line">{{ row.comment }}</td>
-              <td class="py-2 px-3 whitespace-nowrap">{{ row.updated_at }}</td>
+              <td class="py-2 px-3 whitespace-nowrap">{{ $formatDate(row.updated_at, { dateStyle: 'medium', timeStyle: 'short' }) }}</td>
             </tr>
           </tbody>
         </table>

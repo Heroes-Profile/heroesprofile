@@ -41,7 +41,7 @@ class AccountController extends Controller
                 'email' => $account->email,
                 'header_display' => $account->header_display ?? 'email',
                 'email_verified' => $account->hasVerifiedEmail(),
-                'member_since' => $account->created_at?->toFormattedDateString(),
+                'member_since' => $account->created_at?->toDateString(),
                 'plans' => array_map(fn (int $id) => config("api_plans.plans.{$id}.name"), $usage->planIdsFor($account)),
                 'migrated' => $account->hasMigrated(),
                 'test_mode' => $account->inTestMode(),
@@ -199,7 +199,7 @@ class AccountController extends Controller
             return [
                 'type' => $account->isTerminated() ? 'termination' : 'suspension',
                 'reason' => StandingText::html($account->suspension_reason),
-                'since' => $account->suspended_at?->toFormattedDateString(),
+                'since' => $account->suspended_at?->toDateString(),
                 'dismissible' => false,
             ];
         }
@@ -213,8 +213,8 @@ class AccountController extends Controller
         return [
             'type' => 'warning',
             'reason' => StandingText::html($warning->reason),
-            'since' => $warning->created_at?->toFormattedDateString(),
-            'respond_by' => $warning->respond_by?->toFormattedDateString(),
+            'since' => $warning->created_at?->toDateString(),
+            'respond_by' => $warning->respond_by?->toDateString(),
             'dismissible' => true,
         ];
     }

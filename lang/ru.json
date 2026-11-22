@@ -2154,6 +2154,7 @@
     "No other listed streamers yet.": "Других стримеров в списке пока нет.",
     "No Pick": "Без выбора",
     "No player found for :query in this region.": "Игрок :query в этом регионе не найден.",
+    "No player found for :searchedfor.": "Игрок по запросу «:searchedfor» не найден.",
     "No player found for that battletag and region.": "Игрок с таким BattleTag в этом регионе не найден.",
     "no player linked": "игрок не привязан",
     "No players match \":playersearch\".": "Нет игроков, подходящих под «:playersearch».",

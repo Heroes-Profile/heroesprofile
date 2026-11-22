@@ -914,11 +914,6 @@ a[href*="javascript:void(0)"] {
 
 
 
-.hgcSeries-wrapper > div{
-  margin-bottom:0;
-  padding-bottom:0;
-}
-
 
 div.phpdebugbar * {
     background: unset;

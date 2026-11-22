@@ -70,6 +70,7 @@
 </template>
 
 <script>
+import { formatDate as formatLocalDate } from '../../utils/formatGameDate';
 import { markRaw } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import { toFont } from 'chart.js/helpers';
@@ -154,7 +155,7 @@ export default {
       }
       const first = span.start;
       const last = span.end;
-      return first.format(first.year() == last.year() ? 'MMM D' : 'MMM D, YYYY') + ' – ' + last.format('MMM D, YYYY');
+      return formatLocalDate(first, first.year() == last.year() ? { month: 'short', day: 'numeric' } : { dateStyle: 'medium' }) + ' – ' + formatLocalDate(last);
     },
     // Every rank this season was read on the same day, so there's no history to draw yet
     oneDay(){
@@ -225,7 +226,7 @@ export default {
       return moment.tz(dateString, 'UTC').tz(moment.tz.guess()).startOf('day');
     },
     formatDay(dateString){
-      return moment.tz(dateString, 'UTC').tz(moment.tz.guess()).format('MMM D, YYYY');
+      return formatLocalDate(moment.tz(dateString, 'UTC'));
     },
     drawChart(){
       this.chart?.destroy();
@@ -330,7 +331,7 @@ export default {
         type: 'line',
         plugins: [rankBands, roundedPlot, gmGroup, { id: 'plotCorner', afterLayout: (chart) => { this.plot = { left: 0, top: chart.chartArea.top }; } }],
         data: {
-          labels: days.map(day => (day.day ? day.day.format('DD MMM.') : '')),
+          labels: days.map(day => (day.day ? formatLocalDate(day.day, { day: '2-digit', month: 'short' }) : '')),
           datasets: [{
             data: days.map(day => day.value),
             borderColor: '#008b8b',
@@ -357,7 +358,7 @@ export default {
               padding: 12,
               displayColors: false,
               callbacks: {
-                title: (items) => days[items[0].dataIndex].day.format('MMM D, YYYY'),
+                title: (items) => formatLocalDate(days[items[0].dataIndex].day),
                 label: (item) => localRankName(days[item.dataIndex].rank),
               },
             },

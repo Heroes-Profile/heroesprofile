@@ -4,8 +4,9 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="'See below the tournaments for filterable list of replays'" -->
     <page-heading heading="HGC and Other Esports" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
-    <div>
-      <esports-organizations :data="hgcSeries" :esport="'Other'" class="hgcSeries-wrapper"></esports-organizations>
+    <!-- HGC on its own, larger and centred, then the other series -->
+    <div class="flex flex-col gap-8 mb-8">
+      <esports-organizations :data="hgcSeries" :esport="'Other'" :featured="true"></esports-organizations>
       <esports-organizations :data="withoutHGCSeries" :esport="'Other'"></esports-organizations>
     </div>
 
@@ -27,7 +28,11 @@
       :excludegametype="true"
       :hideadvancedfilteringbutton="true"
     >
-      <input type="text" class="form-control variable-text rounded-l-control p-2" :placeholder="'Search for player'" :aria-label="'filter'" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="filter()">
+      <!-- Labelled and sized like the dropdowns beside it -->
+      <label class="p-2 flex flex-col gap-1.5 text-sm font-medium text-subtext max-md:w-full md:w-[12.5rem]">
+        <span>{{ $t('Player') }}</span>
+        <input type="text" class="h-[2.5rem] rounded-control bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white p-2 w-full min-w-0" :placeholder="$t('Search player')" v-model="userinput" @keyup.enter="filter()">
+      </label>
     </filters>
 
     <div v-if="data">

@@ -112,7 +112,7 @@
 <script>
 import Cookies from 'js-cookie';
 import moment from 'moment-timezone';
-import { formatGameDate } from '../utils/formatGameDate';
+import { formatGameDate, timeAgo } from '../utils/formatGameDate';
 
 
   export default {
@@ -182,15 +182,7 @@ import { formatGameDate } from '../utils/formatGameDate';
       latestGameAgo() {
         // Recomputes with the ticker clock
         this.now;
-        const played = moment.tz(this.latestgamedate, 'Atlantic/Reykjavik');
-        const siteLocale = document.documentElement.lang;
-        if (siteLocale && siteLocale !== 'en') {
-          // moment only has English loaded; Intl words it in the chosen language
-          const seconds = played.diff(moment(), 'seconds');
-          const [unit, size] = [['day', 86400], ['hour', 3600], ['minute', 60], ['second', 1]].find(([, s]) => Math.abs(seconds) >= s) || ['second', 1];
-          return new Intl.RelativeTimeFormat(siteLocale, { numeric: 'auto' }).format(Math.round(seconds / size), unit);
-        }
-        return played.fromNow();
+        return timeAgo(this.latestgamedate, this.now);
       },
       cardClasses() {
         return 'flex flex-col text-center w-[21.0625rem] md:w-auto md:flex-1 md:min-w-0 md:max-w-[21.0625rem]';

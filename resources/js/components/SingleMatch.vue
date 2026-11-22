@@ -523,6 +523,7 @@
 </template>
 
 <script>
+  import { formatGameDate } from '../utils/formatGameDate';
   import moment from 'moment-timezone';
 
   export default {
@@ -858,10 +859,7 @@
       }
     },
     formatDate(dateString) {
-      const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
-      const localDate = originalDate.clone().tz(moment.tz.guess());
-
-      return localDate.format('MM/DD/YYYY h:mm:ss a');
+      return formatGameDate(dateString);
     },
     formatValue(value){
       return value ? value.toLocaleString('en-US') : 0;

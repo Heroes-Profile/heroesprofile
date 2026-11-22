@@ -29,30 +29,18 @@
         >
         </filters>
 
-        <div class="flex flex-wrap gap-2 max-w-[93.75rem] justify-center mx-auto items-center mb-10">
-          <input type="text" class="form-control search-input mr-3" :placeholder="'Search For Team'" :aria-label="'Search For Team'" v-model="userinput">
-        </div>
-
-
-        <div id="table-container" ref="tablecontainer" class="w-auto  overflow-clip w-[25vw]   2xl:mx-auto  " style=" ">
-          <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
-            <thead>
-              <tr>
-                <th class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">
-                  {{ $t('Team') }}
-                </th>               
-              </tr>
-            </thead>
-            <tbody class="text-center">
-              <template v-for="(row, index) in filteredTeams">
-                <tr>
-                  <td>
-                    <a class="group/bt inline-flex items-center" :href="'./' + series.name + '/Team/' + row"><span class="group-hover/bt:underline">{{ row }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
+        <!-- Team names only, so a list of row links in a card rather than logo cards -->
+        <div v-if="filteredTeams" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+          <search-input v-model="userinput" :placeholder="$t('Filter by team name')" class="w-full sm:w-[18.125rem]"></search-input>
+          <p v-if="!filteredTeams.length" class="text-subtext">{{ $t('No teams match ":teamsearch".', { teamsearch: userinput }) }}</p>
+          <panel-box v-else :title="$t('Teams')">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2">
+              <a v-for="row in filteredTeams" :key="row" :href="'/Esports/Other/' + series.name + '/Team/' + row" class="group/bt flex items-center gap-3 rounded bg-surface-1 hover:bg-surface-2 px-3 py-2 min-w-0">
+                <img class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-2 text-[0rem]" :src="'/images/EsportOther/' + series.icon" :alt="series.name"/>
+                <span class="font-semibold truncate min-w-0"><span class="group-hover/bt:underline">{{ row }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
+              </a>
+            </div>
+          </panel-box>
         </div>
       </div>
 
@@ -64,29 +52,11 @@
         </div>
 
 
-        <div v-if="battletagresponse" id="table-container" ref="tablecontainer" class="w-auto  overflow-clip   2xl:mx-auto  " style=" ">
-          <table id="responsive-table" class="responsive-table  relative min-w-[30em]" ref="responsivetable">
-            <thead>
-              <tr>
-                <th class="py-2 px-3 text-center text-sm leading-4 cursor-pointer">
-                  {{ $t('Player') }}
-                </th>               
-              </tr>
-            </thead>
-            <tbody class="text-center">
-              <template v-for="(row, index) in battletagresponse">
-                <tr>
-                  <td>
-                    <a class="group/bt inline-flex items-center" :href="'./' + series.name + '/Player/' + row.battletag + '/' + row.blizz_id"><span class="group-hover/bt:underline">{{ row.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
-       
+        <!-- The NGS search's scanning table; this search returns only names, so just that column -->
+        <table-search v-if="searchRun && !searchFoundNone" :key="searchRun" :query="searchedFor" :results="battletagresponse" :profile-url="otherPlayerUrl" :loader-image="'/images/EsportOther/' + series.icon" :show-region="false" :names-only="true" @select="item => openOtherPlayer(item)" @none="searchFoundNone = true"></table-search>
+        <p v-else-if="searchFoundNone" class="text-center text-subtext mt-10">{{ $t('No player found for :searchedfor.', { searchedfor: searchedFor }) }}</p>
       </div>
-      
+
       <div v-if="activeButton === 'overallHeroStats'">
         <filters
           :filters="filters"
@@ -142,18 +112,17 @@
 
     </div>
 
-    <div v-if="isLoading">
+    <!-- Players shows its own scanning table instead -->
+    <div v-if="isLoading && activeButton !== 'players'">
       <div class="relative max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
         <!-- The message sits on a tab of the first card, as on the global pages: lined up with the card past the side padding, the card's top-left corner squared to meet it -->
-        <loading-component :compact="true" :tab="true" :overrideimage="'/Esports/Other/' + this.series.name"></loading-component>
-        <!-- Teams: a one-column list of names -->
-        <div v-if="activeButton === 'teams'" class="max-w-[31.25rem] w-full mx-auto">
-          <table-skeleton :bare="true" :rows="12" :columns="['name']"></table-skeleton>
-        </div>
-        <!-- Players: a one-column list of names -->
-        <div v-else-if="activeButton === 'players'" class="max-w-[31.25rem] w-full mx-auto">
-          <table-skeleton :bare="true" :rows="12" :columns="['name']"></table-skeleton>
-        </div>
+        <loading-component :compact="true" :tab="true" :overrideimage="'/images/EsportOther/' + series.icon"></loading-component>
+        <!-- Teams: the list card's rows -->
+        <panel-box v-if="activeButton === 'teams'" :title="$t('Teams')">
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2">
+            <skeleton-box v-for="index in 16" :key="index" class="h-14"></skeleton-box>
+          </div>
+        </panel-box>
         <!-- Overall Hero Stats: hero with name, then win rate, popularity, ban rate and games -->
         <panel-box v-else-if="activeButton === 'overallHeroStats'">
           <table-skeleton :bare="true" :rows="12" :columns="['avatar', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
@@ -204,6 +173,9 @@ export default {
       tournament: null,
       userinput: '',
       battletagresponse: null,
+      searchRun: 0,
+      searchedFor: '',
+      searchFoundNone: false,
       heroStatsData: null,
       selectedHero: null,
     }
@@ -272,9 +244,10 @@ export default {
         this.cancelTokenSource.cancel('Request canceled');
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
-      
-
-
+      this.battletagresponse = null;
+      this.searchFoundNone = false;
+      this.searchedFor = this.userinput;
+      this.searchRun++;
       try{
         const response = await this.$axios.post(`/api/v1/esports/other/${this.series}/player/search`, {
           userinput: this.userinput,
@@ -283,9 +256,12 @@ export default {
         {
           cancelToken: this.cancelTokenSource.token,
         });
-        this.battletagresponse = response.data;
+        // table-search opens a single match itself and reports none
+        this.battletagresponse = Array.isArray(response.data) ? response.data.map(row => ({ ...row, battletagShort: row.battletag })) : [];
       }catch(error){
-        //Do something here
+        if (!this.$axios.isCancel(error)) {
+          this.battletagresponse = [];
+        }
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
@@ -405,6 +381,12 @@ export default {
     clickedHero(hero){
       this.selectedHero = hero;
       this.getTalentStats();
+    },
+    otherPlayerUrl(item) {
+      return '/Esports/Other/' + this.series.name + '/Player/' + item.battletag + '/' + item.blizz_id;
+    },
+    openOtherPlayer(item) {
+      window.location.href = this.otherPlayerUrl(item);
     },
   }
 }

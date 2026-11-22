@@ -240,6 +240,7 @@
 </template>
 
 <script>
+import { formatDate as formatLocalDate } from '../../utils/formatGameDate';
 import { siteLocale } from '../../utils/translate';
 import moment from 'moment-timezone';
 import { tierStyle } from '../RankTierPill.vue';
@@ -401,7 +402,7 @@ export default {
       const recentWins = recent.filter(row => row.winner === 'True').length;
       const winRate = (wins / all.length) * 100;
       return [
-        { label: 'Peak MMR', value: peak.mmr.toLocaleString('en-US'), caption: moment.utc(peak.game_date).tz(this.userTimezone).format('D MMM YYYY') },
+        { label: 'Peak MMR', value: peak.mmr.toLocaleString('en-US'), caption: formatLocalDate(peak.game_date, { dateStyle: 'medium', timeZone: this.userTimezone }) },
         { label: 'Change', value: (change >= 0 ? '+' : '') + Math.round(change).toLocaleString('en-US'), class: change >= 0 ? 'text-win' : 'text-loss', caption: this.$t('from :mmr', { mmr: rows[rows.length - 1].mmr.toLocaleString('en-US') }) },
         { label: 'Games', value: all.length.toLocaleString('en-US'), caption: this.$t(':wins W · :losses L', { wins: wins.toLocaleString('en-US'), losses: (all.length - wins).toLocaleString('en-US') }) },
         { label: 'Win rate', value: winRate.toFixed(1) + '%', class: winRate >= 50 ? 'text-win' : 'text-loss', caption: this.$t('last :count: :rate%', { count: recent.length, rate: Math.round((recentWins / recent.length) * 100) }) },
@@ -496,7 +497,7 @@ export default {
     },
     zoomDate(index) {
       const row = this.reversedData[index];
-      return row ? moment.utc(row.game_date).tz(this.userTimezone).format('D MMM YYYY') : '';
+      return row ? formatLocalDate(row.game_date, { dateStyle: 'medium', timeZone: this.userTimezone }) : '';
     },
     isUnexpectedChange(row) {
       return (row.winner === 'True' && row.mmr_change < 0) || (row.winner === 'False' && row.mmr_change > 0);

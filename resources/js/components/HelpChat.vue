@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import moment from 'moment-timezone';
+import { formatGameDate } from '../utils/formatGameDate';
 
 // The conversation lasts for the browser tab, so moving between pages keeps it. The panel itself starts closed on every page, except the first visit.
 const STORAGE_KEY = 'helpChat';
@@ -337,8 +337,7 @@ export default {
     linkify(text) {
       // Site data times come back as {asof:<UTC>}: shown in the reader's own time zone
       const localized = String(text).replace(/\{asof:([0-9T:\-.]+Z)\}/g, (match, utc) => {
-        const local = moment.tz(utc, 'Atlantic/Reykjavik').clone().tz(moment.tz.guess());
-        return local.isValid() ? local.format('MM/DD/YYYY h:mm:ss a') : utc;
+        return formatGameDate(utc);
       });
 
       const escaped = localized

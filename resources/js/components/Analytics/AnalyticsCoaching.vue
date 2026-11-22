@@ -296,6 +296,7 @@
 </template>
 
 <script>
+import { formatDate as formatLocalDate } from '../../utils/formatGameDate';
 import { siteLocale } from '../../utils/translate';
 import moment from 'moment-timezone';
 import analytics from '../../utils/analyticsFormat.js';
@@ -394,7 +395,7 @@ export default {
     },
     computedAt() {
       const any = (this.data.signals || [])[0];
-      return any ? moment.utc(any.computed_at).local().format('MMM D, YYYY') : null;
+      return any ? formatLocalDate(any.computed_at) : null;
     },
     compare() {
       return Object.fromEntries((this.data.compare || []).map(c => [c.signal, c]));
@@ -635,7 +636,7 @@ export default {
         const window = values.slice(Math.max(0, i - 4), i + 1);
         return window.length < 3 ? null : this.round(window.reduce((a, b) => a + b, 0) / window.length, 2);
       });
-      return { labels: games.map(g => moment.tz(g.date, 'Atlantic/Reykjavik').clone().tz(moment.tz.guess()).format('MM/DD')), values, rolling, wins: games.map(g => g.win) };
+      return { labels: games.map(g => formatLocalDate(g.date, { month: 'numeric', day: 'numeric' })), values, rolling, wins: games.map(g => g.win) };
     },
     trendSeries(row) {
       const t = this.trend(row);
@@ -660,10 +661,10 @@ export default {
     },
     // game_date is when the game ended, in UTC
     formatDateTime(value) {
-      return moment.tz(value, 'Atlantic/Reykjavik').clone().tz(moment.tz.guess()).format('MM/DD/YYYY h:mm A');
+      return formatLocalDate(value, { dateStyle: 'short', timeStyle: 'short' });
     },
     formatDate(value) {
-      return moment.tz(value, 'Atlantic/Reykjavik').clone().tz(moment.tz.guess()).format('MM/DD/YYYY');
+      return formatLocalDate(value, { dateStyle: 'short' });
     },
   },
 };

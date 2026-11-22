@@ -2154,6 +2154,7 @@
     "No other listed streamers yet.": "Brak jeszcze innych streamerów na liście.",
     "No Pick": "Brak wyboru",
     "No player found for :query in this region.": "Nie znaleziono gracza :query w tym regionie.",
+    "No player found for :searchedfor.": "Nie znaleziono gracza dla :searchedfor.",
     "No player found for that battletag and region.": "Nie znaleziono gracza dla tego BattleTagu i regionu.",
     "no player linked": "brak powiązanego gracza",
     "No players match \":playersearch\".": "Żaden gracz nie pasuje do „:playersearch”.",

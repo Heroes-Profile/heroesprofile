@@ -17,6 +17,7 @@ import '@fortawesome/fontawesome-free/css/all.css'
 // Every <details> on the site slides open and shut
 import { animateDetails } from './utils/animateDetails';
 import { translate } from './utils/translate';
+import { formatDate } from './utils/formatGameDate';
 animateDetails();
 
 // Automatically register Vue components
@@ -66,6 +67,8 @@ app.config.globalProperties.$ngsTeam = function (teamName) {
 };
 
 app.config.globalProperties.$t = translate;
+// A date in the viewer's own format and time zone; see utils/formatGameDate
+app.config.globalProperties.$formatDate = formatDate;
 
 // A hero or map name (or an object with .name) in the chosen language, from window.gameStrings; English when there's no translation.
 app.config.globalProperties.$heroName = function (hero) {

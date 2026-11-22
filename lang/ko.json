@@ -2154,6 +2154,7 @@
     "No other listed streamers yet.": "아직 등록된 다른 스트리머가 없습니다.",
     "No Pick": "선택 없음",
     "No player found for :query in this region.": "이 지역에서 :query에 해당하는 플레이어를 찾을 수 없습니다.",
+    "No player found for :searchedfor.": ":searchedfor에 해당하는 플레이어를 찾을 수 없습니다.",
     "No player found for that battletag and region.": "해당 BattleTag와 지역의 플레이어를 찾을 수 없습니다.",
     "no player linked": "연결된 플레이어 없음",
     "No players match \":playersearch\".": "\":playersearch\"와(과) 일치하는 플레이어가 없습니다.",

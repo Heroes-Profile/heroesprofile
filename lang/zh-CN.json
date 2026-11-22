@@ -2154,6 +2154,7 @@
     "No other listed streamers yet.": "暂无其他已收录的主播。",
     "No Pick": "未选择",
     "No player found for :query in this region.": "在该区域未找到 :query 对应的玩家。",
+    "No player found for :searchedfor.": "未找到与“:searchedfor”匹配的玩家。",
     "No player found for that battletag and region.": "未找到该战网昵称和区域对应的玩家。",
     "no player linked": "未关联玩家",
     "No players match \":playersearch\".": "没有与“:playersearch”匹配的玩家。",

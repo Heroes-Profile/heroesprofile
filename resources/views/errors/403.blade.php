@@ -79,7 +79,7 @@
                 <p><strong>Reason:</strong> {{ $ban_reason }}</p>
             @endif
             @if(isset($banned_date))
-                <p><strong>Banned on:</strong> {{ $banned_date->format('Y-m-d H:i:s T') }}</p>
+                <p><strong>Banned on:</strong> <time class="local-date" datetime="{{ $banned_date->toIso8601String() }}">{{ $banned_date->format('Y-m-d H:i:s T') }}</time></p>
             @endif
         </div>
         @endif
@@ -88,5 +88,14 @@
             If you believe this is an error, please contact the site administrators.
         </div>
     </div>
+    <!-- The ban date in the viewer's own format and time zone -->
+    <script>
+        document.querySelectorAll('time.local-date').forEach(function (el) {
+            var date = new Date(el.dateTime);
+            if (!isNaN(date)) {
+                el.textContent = date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+            }
+        });
+    </script>
 </body>
 </html>

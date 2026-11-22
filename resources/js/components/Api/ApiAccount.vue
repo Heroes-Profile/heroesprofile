@@ -15,7 +15,7 @@
         <div class="text-sm mb-3 standing-text" v-html="currentStanding.reason"></div>
 
         <p v-if="currentStanding.respond_by" class="text-sm text-yellow mb-3">
-          {{ $t('Please sort this out by :respond_by.', { respond_by: currentStanding.respond_by }) }}
+          {{ $t('Please sort this out by :respond_by.', { respond_by: $formatDate(currentStanding.respond_by) }) }}
         </p>
 
         <p v-if="currentStanding.type === 'warning'" class="text-sm text-gray-medium mb-3">
@@ -155,7 +155,7 @@
             </tr>
             <tr>
               <td class="py-2 px-3 text-sm">{{ $t('Member since') }}</td>
-              <td class="py-2 px-3">{{ account.member_since || $t('Unknown') }}</td>
+              <td class="py-2 px-3">{{ account.member_since ? $formatDate(account.member_since) : $t('Unknown') }}</td>
             </tr>
             <tr>
               <td class="py-2 px-3 text-sm">{{ $t('Plan') }}</td>
@@ -253,7 +253,7 @@
         <p v-if="projectRequired" class="mb-4">
           {{ $t('Tell us about your project to carry on using the API.') }}
           <template v-if="account.project_enforce_from">
-            {{ $t('From :project_enforce_from, calls from accounts without a project description are refused.', { project_enforce_from: account.project_enforce_from }) }}
+            {{ $t('From :project_enforce_from, calls from accounts without a project description are refused.', { project_enforce_from: $formatDate(account.project_enforce_from, { dateStyle: 'long' }) }) }}
           </template>
           <template v-else>{{ $t('Until you do, calls made with your keys are refused.') }}</template>
         </p>
@@ -423,7 +423,7 @@
           <tbody>
             <tr v-for="key in keys" :key="key.id">
               <td class="py-2 px-3">{{ key.name }}</td>
-              <td class="py-2 px-3">{{ key.created_at }}</td>
+              <td class="py-2 px-3">{{ $formatDate(key.created_at) }}</td>
               <td class="py-2 px-3">{{ key.last_used_at || $t('Never') }}</td>
               <td class="py-2 px-3 text-right">
                 <custom-button @click="revokeKey(key)" :text="'Revoke'" :alt="'Revoke key'" :size="'small'" :color="'red'" :ignoreclick="true"></custom-button>

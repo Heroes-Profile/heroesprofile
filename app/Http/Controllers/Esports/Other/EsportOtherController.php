@@ -84,13 +84,27 @@ class EsportOtherController extends Controller
                 ];
             });
 
+        // Games played per series and the dates of the first and last, for the series cards
+        $gamesBySeries = Replay::selectRaw('series, COUNT(*) as games, MIN(game_date) as first_game, MAX(game_date) as last_game')
+            ->groupBy('series')
+            ->get()
+            ->keyBy('series');
+
+        $series = Series::whereNot('name', 'Nut Cup')->whereNot('name', 'Heroes Lounge')->get()
+            ->each(function ($item) use ($gamesBySeries) {
+                $stats = $gamesBySeries[$item->name] ?? null;
+                $item->games = (int) ($stats->games ?? 0);
+                $item->first_game = $stats->first_game ?? null;
+                $item->last_game = $stats->last_game ?? null;
+            });
+
         return view('Esports.Other.OtherMain')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'heroes' => $this->globalDataService->getHeroes(),
                 'filters' => $this->globalDataService->getFilterData(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
-                'series' => Series::whereNot('name', 'Nut Cup')->whereNot('name', 'Heroes Lounge')->get(),
+                'series' => $series,
                 'seasons' => $seasons,
                 'regions' => $regions,
                 'tournaments' => $tournaments,

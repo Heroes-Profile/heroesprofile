@@ -188,6 +188,7 @@
 
 
 <script>
+import { formatGameDate } from '../utils/formatGameDate';
 import { siteLocale } from '../utils/translate';
   import moment from 'moment-timezone';
 
@@ -269,10 +270,7 @@ import { siteLocale } from '../utils/translate';
         return '/Match/Single/' + this.data.replayID;
       },
       formatDate(dateString) {
-        const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
-        const localDate = originalDate.clone().tz(moment.tz.guess());
-
-        return localDate.format('MM/DD/YYYY h:mm:ss a');
+        return formatGameDate(dateString);
       },
       // In the viewer's own date format and timezone, e.g. "October 22, 2026 at 10:57 PM" in the US
       formatRowDate(dateString) {

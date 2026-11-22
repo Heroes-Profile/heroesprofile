@@ -244,6 +244,7 @@
 </template>
 
 <script>
+import { formatDate as formatLocalDate } from '../../utils/formatGameDate';
 export default {
   name: 'ApiTwitchSettings',
   props: {
@@ -337,7 +338,7 @@ export default {
       if(!this.channel.uploader_last_seen_at){
         return this.$t('The uploader has not sent any games yet.');
       }
-      return this.$t('Last game received :time.', { time: new Date(this.channel.uploader_last_seen_at).toLocaleString() });
+      return this.$t('Last game received :time.', { time: formatLocalDate(this.channel.uploader_last_seen_at, { dateStyle: 'medium', timeStyle: 'short' }) });
     },
     delayValid(){
       return Number.isInteger(this.delay) && this.delay >= 0 && this.delay <= this.maxdelay;
@@ -345,7 +346,7 @@ export default {
   },
   methods: {
     formatDate(iso){
-      return iso ? new Date(iso).toLocaleDateString() : '';
+      return iso ? formatLocalDate(iso) : '';
     },
     daysLeft(iso){
       const days = Math.max(0, Math.ceil((new Date(iso) - new Date()) / 86400000));

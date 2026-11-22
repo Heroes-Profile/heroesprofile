@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { formatDate as formatLocalDate } from '../../utils/formatGameDate';
 import { markRaw } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import moment from 'moment-timezone';
@@ -52,7 +53,7 @@ export default {
   },
   methods: {
     hourLabel(hour) {
-      return moment({ hour }).format('h A');
+      return formatLocalDate(new Date(2000, 0, 1, hour), { hour: 'numeric' });
     },
     drawChart() {
       this.chart?.destroy();

@@ -17,10 +17,12 @@
             <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Player') }}</th>
             <th v-if="showRegion" class="py-2 px-3 text-center text-sm leading-4">{{ $t('Region') }}</th>
             <th v-if="showTogether" class="py-2 px-3 text-center text-sm leading-4">{{ $t('Games Together') }}</th>
+            <template v-if="!namesOnly">
             <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Games Played') }}</th>
             <!-- The popup picker is too narrow on phones for these; there it shows the player and the game counts -->
             <th :class="['py-2 px-3 text-left text-sm leading-4', { 'max-md:hidden': picker }]">{{ $t('Latest Hero') }}</th>
             <th :class="['py-2 px-3 text-center text-sm leading-4', { 'max-md:hidden': picker }]">{{ $t('Latest Game') }}</th>
+            </template>
           </tr>
         </thead>
 
@@ -29,9 +31,11 @@
             <td><skeleton-box class="w-32 h-4 mx-auto"></skeleton-box></td>
             <td v-if="showRegion"><skeleton-box class="w-12 h-4 mx-auto"></skeleton-box></td>
             <td v-if="showTogether"><skeleton-box class="w-12 h-4 mx-auto"></skeleton-box></td>
+            <template v-if="!namesOnly">
             <td><skeleton-box class="w-16 h-4 mx-auto"></skeleton-box></td>
             <td :class="['py-2 px-3', { 'max-md:hidden': picker }]"><div class="flex items-center gap-3"><skeleton-box class="w-10 h-10 shrink-0 !rounded-full"></skeleton-box><skeleton-box class="hidden md:block w-20 h-4"></skeleton-box></div></td>
             <td :class="{ 'max-md:hidden': picker }"><skeleton-box class="w-28 h-4 mx-auto"></skeleton-box></td>
+            </template>
           </tr>
         </tbody>
 
@@ -47,13 +51,15 @@
             </td>
             <td v-if="showRegion">{{ item.regionName }}</td>
             <td v-if="showTogether" class="font-semibold text-lteal">{{ Number(item.gamesTogether || 0).toLocaleString('en-US') }}</td>
+            <template v-if="!namesOnly">
             <td>{{ Number(item.totalGamesPlayed).toLocaleString('en-US') }}</td>
             <!-- As in the Global Hero Stats table: portrait and name, left-aligned -->
             <td :class="['py-2 px-3', { 'max-md:hidden': picker }]"><div v-if="item.latestHero" class="flex items-center justify-start"><hero-image-wrapper class="mr-3" :hero="item.latestHero"></hero-image-wrapper><span class="hidden md:block font-medium">{{ $heroName(item.latestHero) }}</span></div></td>
             <td :class="{ 'max-md:hidden': picker }">
-              <a v-if="item.latestReplayID" class="group/bt inline-flex items-center" :href="matchUrl(item)" target="_blank" rel="noopener" @click.stop><span class="group-hover/bt:underline">{{ item.latest_game }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-              <template v-else>{{ item.latest_game }}</template>
+              <a v-if="item.latestReplayID" class="group/bt inline-flex items-center" :href="matchUrl(item)" target="_blank" rel="noopener" @click.stop><span class="group-hover/bt:underline">{{ $formatDate(item.latest_game, { dateStyle: 'short', timeStyle: 'short' }) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+              <template v-else>{{ $formatDate(item.latest_game, { dateStyle: 'short', timeStyle: 'short' }) }}</template>
             </td>
+            </template>
           </tr>
         </tbody>
       </table>
@@ -92,6 +98,8 @@ export default {
     picker: Boolean,
     // A Games Together column (friend or foe search), from each result's gamesTogether
     showTogether: Boolean,
+    // Just the player column, where the search returns no game counts or latest game (Other esports)
+    namesOnly: Boolean,
     loaderImage: {
       type: String,
       default: null,

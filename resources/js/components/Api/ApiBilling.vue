@@ -99,12 +99,12 @@
             {{ $t('Current plan:') }} <strong>{{ planName(current.plan_id) }}</strong>
           </div>
           <div v-if="current.on_grace_period" class="text-yellow mt-1">
-            {{ $t('Cancels on :ends_at. You keep access until then.', { ends_at: current.ends_at }) }}
+            {{ $t('Cancels on :ends_at. You keep access until then.', { ends_at: $formatDate(current.ends_at) }) }}
           </div>
         </div>
         <div v-else-if="current" class="mb-4 text-sm text-gray-medium">
           {{ $t('Your :plan_id subscription', { plan_id: planName(current.plan_id) }) }}
-          <template v-if="current.ends_at">{{ $t('ended on :ends_at.', { ends_at: current.ends_at }) }}</template>
+          <template v-if="current.ends_at">{{ $t('ended on :ends_at.', { ends_at: $formatDate(current.ends_at) }) }}</template>
           <template v-else>{{ $t('is no longer active.') }}</template>
           {{ $t('Choose a plan below to subscribe again.') }}
         </div>
@@ -165,7 +165,7 @@
           </thead>
           <tbody>
             <tr v-for="invoice in invoices" :key="invoice.id">
-              <td class="py-2 px-3">{{ invoice.date }}</td>
+              <td class="py-2 px-3">{{ $formatDate(invoice.date) }}</td>
               <td class="py-2 px-3">{{ invoice.total }}</td>
               <td class="py-2 px-3">
                 <a v-if="invoice.url" :href="invoice.url" target="_blank" rel="noopener" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('View') }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>

@@ -142,8 +142,8 @@
 </template>
 
 <script>
+import { formatGameDate } from '../../utils/formatGameDate';
 import { scaleTableToFit } from '../../utils/scaleTable';
-import moment from 'moment-timezone';
 import Cookies from 'js-cookie';
 import analytics from '../../utils/analyticsFormat.js';
 
@@ -249,10 +249,7 @@ export default {
       }
     },
     formatDate(dateString) {
-      const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
-      const localDate = originalDate.clone().tz(moment.tz.guess());
-
-      return localDate.format('MM/DD/YYYY h:mm:ss a');
+      return formatGameDate(dateString);
     },
   },
 };

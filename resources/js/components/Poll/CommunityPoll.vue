@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import { formatDate as formatLocalDate } from '../../utils/formatGameDate';
 export default {
   name: 'CommunityPoll',
   props: {
@@ -114,7 +115,7 @@ export default {
     statusText() {
       if (!this.poll.is_open) return 'This poll is closed.';
       if (!this.poll.closes_at) return 'Community poll';
-      return `Closes ${new Date(this.poll.closes_at).toLocaleString()}`;
+      return `Closes ${formatLocalDate(this.poll.closes_at, { dateStyle: 'medium', timeStyle: 'short' })}`;
     },
   },
   methods: {

@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import moment from 'moment-timezone';
+import { formatDate as formatLocalDate } from '../utils/formatGameDate';
 
 export default {
   name: 'GithubChanges',
@@ -106,7 +106,7 @@ export default {
     groupByDay(commits) {
       const days = [];
       (commits || []).forEach(commit => {
-        const label = commit.date ? moment.utc(commit.date).tz(moment.tz.guess()).format('D MMM YYYY') : '';
+        const label = commit.date ? formatLocalDate(commit.date) : '';
         const day = days[days.length - 1];
         if (day && day.label === label) {
           day.commits.push(commit);
@@ -149,7 +149,7 @@ export default {
       });
     },
     formatTime(dateString) {
-      return dateString ? moment.utc(dateString).tz(moment.tz.guess()).format('h:mm A') : '';
+      return dateString ? formatLocalDate(dateString, { timeStyle: 'short' }) : '';
     },
   },
 };

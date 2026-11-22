@@ -617,6 +617,7 @@
 </template>
 
 <script>
+import { formatDate as formatLocalDate } from '../../utils/formatGameDate';
 import { markRaw } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import moment from 'moment-timezone';
@@ -1436,7 +1437,7 @@ export default {
       return new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(value || 0);
     },
     formatDate(value) {
-      return value ? moment.utc(value).format('MMM D, YYYY') : '';
+      return value ? formatLocalDate(moment.utc(value), { dateStyle: 'medium', timeZone: 'UTC' }) : '';
     },
     gameLength(seconds) {
       const minutes = Math.floor(seconds / 60);
@@ -1473,10 +1474,10 @@ export default {
         return;
       }
       const stageDays = new Set(this.stages.filter((stage) => stage.reached_at).map((stage) => moment.utc(stage.reached_at).format('YYYY-MM-DD')));
-      const labels = this.daily.map((row) => moment.utc(row.day).format('MMM D'));
+      const labels = this.daily.map((row) => formatLocalDate(moment.utc(row.day), { month: 'short', day: 'numeric', timeZone: 'UTC' }));
       const radius = this.daily.map((row) => (stageDays.has(moment.utc(row.day).format('YYYY-MM-DD')) ? 8 : 2));
 
-      const nerfDay = moment.utc(this.nerf && this.nerf.after.first_game ? this.nerf.after.first_game : NERF_DATE).format('MMM D');
+      const nerfDay = formatLocalDate(moment.utc(this.nerf && this.nerf.after.first_game ? this.nerf.after.first_game : NERF_DATE), { month: 'short', day: 'numeric', timeZone: 'UTC' });
       // Dashed vertical line on the balance update day.
       const nerfMarker = {
         id: 'nerfMarker',

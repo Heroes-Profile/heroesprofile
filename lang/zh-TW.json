@@ -2154,6 +2154,7 @@
     "No other listed streamers yet.": "目前尚無其他列出的實況主。",
     "No Pick": "未選擇",
     "No player found for :query in this region.": "此地區找不到 :query 的玩家。",
+    "No player found for :searchedfor.": "找不到 :searchedfor 的玩家。",
     "No player found for that battletag and region.": "找不到符合該 BattleTag 與地區的玩家。",
     "no player linked": "未連結玩家",
     "No players match \":playersearch\".": "沒有與「:playersearch」相符的玩家。",

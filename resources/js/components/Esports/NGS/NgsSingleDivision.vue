@@ -206,6 +206,7 @@
 </template>
 
 <script>
+  import { formatGameDate } from '../../../utils/formatGameDate';
   import moment from 'moment-timezone';
   import { formatDurationText } from '../../../utils/formatDuration';
 
@@ -330,10 +331,7 @@ export default {
       }
     },
     formatDate(dateString) {
-      const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
-      const localDate = originalDate.clone().tz(moment.tz.guess());
-
-      return localDate.format('MM/DD/YYYY h:mm:ss a');
+      return formatGameDate(dateString);
     },
     handleInputChange(eventPayload){
         if(eventPayload.field == "Seasons"){

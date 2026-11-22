@@ -226,7 +226,7 @@
                 <td class="py-2 px-3">{{ row.project_name || $t('Not described') }}</td>
                 <td class="py-2 px-3">
                   <template v-if="row.approved_at">
-                    {{ $t('Description changed :project_updated_at, last approved :approved_at', { project_updated_at: row.project_updated_at, approved_at: row.approved_at }) }}
+                    {{ $t('Description changed :project_updated_at, last approved :approved_at', { project_updated_at: $formatDate(row.project_updated_at, { dateStyle: 'medium', timeStyle: 'short' }), approved_at: $formatDate(row.approved_at, { dateStyle: 'medium', timeStyle: 'short' }) }) }}
                   </template>
                   <template v-else>{{ $t('Never approved') }}</template>
                 </td>
@@ -261,7 +261,7 @@
                 <td class="py-2 px-3">
                   <template v-if="detail.subscription">
                     {{ $t(':plan_name · :status', { plan_name: detail.subscription.plan_name, status: detail.subscription.status }) }}
-                    <span v-if="detail.subscription.ends_at"> {{ $t('· ends :ends_at', { ends_at: detail.subscription.ends_at }) }}</span>
+                    <span v-if="detail.subscription.ends_at"> {{ $t('· ends :ends_at', { ends_at: $formatDate(detail.subscription.ends_at) }) }}</span>
                   </template>
                   <template v-else>{{ $t('None') }}</template>
                 </td>
@@ -278,7 +278,7 @@
                 <td class="py-2 px-3">
                   <template v-if="detail.account.project_name">
                     <strong>{{ detail.account.project_name }}</strong>
-                    <span class="text-sm text-gray-medium">{{ $t('— updated :project_updated_at', { project_updated_at: detail.account.project_updated_at }) }}</span>
+                    <span class="text-sm text-gray-medium">{{ $t('— updated :project_updated_at', { project_updated_at: $formatDate(detail.account.project_updated_at, { dateStyle: 'medium', timeStyle: 'short' }) }) }}</span>
                     <p class="text-sm whitespace-pre-line mt-1">{{ detail.account.project_description }}</p>
                   </template>
                   <template v-else>{{ $t('Not described') }}</template>
@@ -392,7 +392,7 @@
                   <template v-if="row.project_name || row.project_description">
                     <strong v-if="row.project_name">{{ row.project_name }}</strong>
                     <div class="whitespace-pre-line">{{ row.project_description }}</div>
-                    <div v-if="row.project_updated_at" class="text-sm text-gray-medium">{{ $t('Description last edited :project_updated_at', { project_updated_at: row.project_updated_at }) }}</div>
+                    <div v-if="row.project_updated_at" class="text-sm text-gray-medium">{{ $t('Description last edited :project_updated_at', { project_updated_at: $formatDate(row.project_updated_at, { dateStyle: 'medium', timeStyle: 'short' }) }) }}</div>
                   </template>
                   <span v-else class="text-gray-medium">{{ $t('No description') }}</span>
                 </td>
@@ -446,7 +446,7 @@
               @change="setPoison($event.target.checked)"
             />
             {{ $t('Mark their global stats') }}
-            <span v-if="detail.poison.since" class="text-gray-medium">{{ $t('— since :since', { since: detail.poison.since }) }}</span>
+            <span v-if="detail.poison.since" class="text-gray-medium">{{ $t('— since :since', { since: $formatDate(detail.poison.since, { dateStyle: 'medium', timeStyle: 'short' }) }) }}</span>
           </label>
 
           <p class="text-sm mb-1">{{ $t('Heroes marked for this account:') }}</p>
@@ -512,16 +512,16 @@
           <div v-if="detail.enforcement.suspended" class="border-l-4 border-red p-3 mb-4">
             <p class="text-sm mb-1">
               <strong>{{ detail.enforcement.terminated ? $t('Closed') : $t('Suspended') }}</strong>
-              {{ $t('since :since.', { since: detail.enforcement.since }) }}
+              {{ $t('since :since.', { since: $formatDate(detail.enforcement.since, { dateStyle: 'medium', timeStyle: 'short' }) }) }}
             </p>
             <div class="text-sm text-gray-medium standing-text" v-html="detail.enforcement.reason"></div>
           </div>
 
           <div v-else-if="detail.enforcement.open_warning" class="border-l-4 border-yellow p-3 mb-4">
             <p class="text-sm mb-1">
-              <strong>{{ $t('Warned') }}</strong> {{ $t(':sent_at · not read yet.', { sent_at: detail.enforcement.open_warning.sent_at }) }}
+              <strong>{{ $t('Warned') }}</strong> {{ $t(':sent_at · not read yet.', { sent_at: $formatDate(detail.enforcement.open_warning.sent_at, { dateStyle: 'medium', timeStyle: 'short' }) }) }}
               <span v-if="detail.enforcement.open_warning.respond_by">
-                {{ $t('Asked to fix by :respond_by.', { respond_by: detail.enforcement.open_warning.respond_by }) }}
+                {{ $t('Asked to fix by :respond_by.', { respond_by: $formatDate(detail.enforcement.open_warning.respond_by) }) }}
               </span>
               <span v-if="detail.enforcement.open_warning.overdue" class="text-yellow">{{ $t('Overdue.') }}</span>
             </p>
@@ -623,7 +623,7 @@
                 <td class="py-2 px-3">{{ row.at }}</td>
                 <td class="py-2 px-3">
                   {{ row.action }}
-                  <span v-if="row.acknowledged_at" class="text-gray-medium">{{ $t('— read :acknowledged_at', { acknowledged_at: row.acknowledged_at }) }}</span>
+                  <span v-if="row.acknowledged_at" class="text-gray-medium">{{ $t('— read :acknowledged_at', { acknowledged_at: $formatDate(row.acknowledged_at, { dateStyle: 'medium', timeStyle: 'short' }) }) }}</span>
                 </td>
                 <td class="py-2 px-3">
                   <div v-if="row.reason" class="standing-text" v-html="row.reason"></div>
@@ -664,9 +664,9 @@
               <tr v-for="row in activity" :key="row.id">
                 <td class="py-2 px-3">{{ row.email }}</td>
                 <td class="py-2 px-3">{{ row.status }}</td>
-                <td class="py-2 px-3">{{ row.started_at }}</td>
-                <td class="py-2 px-3">{{ row.changed_at }}</td>
-                <td class="py-2 px-3">{{ row.ends_at || '—' }}</td>
+                <td class="py-2 px-3">{{ $formatDate(row.started_at, { dateStyle: 'medium', timeStyle: 'short' }) }}</td>
+                <td class="py-2 px-3">{{ $formatDate(row.changed_at, { dateStyle: 'medium', timeStyle: 'short' }) }}</td>
+                <td class="py-2 px-3">{{ row.ends_at ? $formatDate(row.ends_at, { dateStyle: 'medium', timeStyle: 'short' }) : '—' }}</td>
               </tr>
             </tbody>
           </table>

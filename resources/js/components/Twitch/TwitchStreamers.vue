@@ -172,6 +172,7 @@
 </template>
 
 <script>
+import { formatDate as formatLocalDate } from '../../utils/formatGameDate';
 export default {
   name: 'TwitchStreamers',
   props: {
@@ -196,7 +197,7 @@ export default {
   },
   computed: {
     updatedAt(){
-      return this.directory.updated_at ? new Date(this.directory.updated_at).toLocaleTimeString() : '';
+      return this.directory.updated_at ? formatLocalDate(this.directory.updated_at, { timeStyle: 'medium' }) : '';
     },
   },
   methods: {
