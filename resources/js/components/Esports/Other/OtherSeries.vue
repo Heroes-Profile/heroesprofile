@@ -34,7 +34,7 @@
           <search-input v-model="userinput" :placeholder="$t('Filter by team name')" class="w-full sm:w-[18.125rem]"></search-input>
           <p v-if="!filteredTeams.length" class="text-subtext">{{ $t('No teams match ":teamsearch".', { teamsearch: userinput }) }}</p>
           <panel-box v-else :title="$t('Teams')">
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2">
+            <div class="grid sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-2">
               <a v-for="row in filteredTeams" :key="row" :href="'/Esports/Other/' + series.name + '/Team/' + row" class="group/bt flex items-center gap-3 rounded bg-surface-1 hover:bg-surface-2 px-3 py-2 min-w-0">
                 <img class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-2 text-[0rem]" :src="'/images/EsportOther/' + series.icon" :alt="series.name"/>
                 <span class="font-semibold truncate min-w-0"><span class="group-hover/bt:underline">{{ row }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
@@ -119,7 +119,7 @@
         <loading-component :compact="true" :tab="true" :overrideimage="'/images/EsportOther/' + series.icon"></loading-component>
         <!-- Teams: the list card's rows -->
         <panel-box v-if="activeButton === 'teams'" :title="$t('Teams')">
-          <div class="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2">
+          <div class="grid sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-2">
             <skeleton-box v-for="index in 16" :key="index" class="h-14"></skeleton-box>
           </div>
         </panel-box>

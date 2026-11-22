@@ -16,7 +16,7 @@
     <p class="text-sm text-subtext">{{ $t('Takes about 5 minutes. You only need steps 1–9 once; after that, start from step 10.') }}</p>
     <p v-if="system !== 'windows'" class="text-xs text-subtext">{{ $t('Heroes of the Storm finds the map the same way on every system; only the game folder and file tools differ. The screenshots are from Windows.') }}</p>
 
-    <div v-for="(section, sectionIndex) in sections" :key="section.title" class="bg-surface rounded p-4 md:p-5 grid lg:grid-cols-[minmax(0,30rem)_minmax(0,1fr)] gap-4">
+    <div v-for="(section, sectionIndex) in sections" :key="section.title" class="bg-surface rounded p-4 md:p-5 grid md:grid-cols-[minmax(0,30rem)_minmax(0,1fr)] gap-4">
       <div class="flex flex-col gap-3 min-w-0">
         <div class="flex items-center gap-3">
           <span class="w-7 h-7 shrink-0 rounded-full bg-teal flex items-center justify-center text-sm font-bold">{{ sectionIndex + 1 }}</span>

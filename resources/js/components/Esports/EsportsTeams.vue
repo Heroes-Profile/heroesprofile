@@ -4,7 +4,7 @@
     <search-input v-model="filterText" :placeholder="$t('Filter by team name')" class="w-full sm:w-[18.125rem]"></search-input>
     <p v-if="!filteredData.length" class="text-subtext">{{ $t('No teams match ":teamsearch".', { teamsearch: filterText }) }}</p>
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8">
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8">
       <a v-for="team in filteredData" :key="team.team_name + team.division" :href="`/Esports/${esport}/Team/${team.team_name}?season=${season}&division=${team.division}`" class="group/bt bg-surface rounded p-6 flex flex-col gap-5 min-w-0 hover:bg-surface-1 transition-colors">
         <div class="h-[12.5rem] rounded-control bg-surface-1 group-hover/bt:bg-surface-2 transition-colors flex items-center justify-center">
           <img :src="team.icon_url || fallbackImage" :alt="teamName(team)" class="max-w-[10rem] max-h-[10rem] object-contain text-[0rem]" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = fallbackImage; } }"/>

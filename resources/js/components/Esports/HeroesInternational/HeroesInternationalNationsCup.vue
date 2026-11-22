@@ -110,7 +110,7 @@
         <!-- Teams: the name filter over the team cards; the message sits on a tab of the first card -->
         <template v-if="activeButton === 'teams'">
           <skeleton-box class="h-10 w-full sm:w-[18.125rem]"></skeleton-box>
-          <div class="grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8">
+          <div class="grid sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8">
             <div v-for="team in 8" :key="team" :class="['relative bg-surface rounded p-6 flex flex-col gap-5', { 'md:!rounded-tl-none': team === 1 }]">
               <loading-component v-if="team === 1" :compact="true" :tab="true" :overrideimage="'/images/HI/heroes_international.png'"></loading-component>
               <skeleton-box class="h-[12.5rem] !rounded-control"></skeleton-box>

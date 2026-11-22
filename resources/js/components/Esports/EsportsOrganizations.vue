@@ -7,7 +7,7 @@
     </template>
 
     <!-- Featured (HGC on the Other hub): one larger card, centred above the rest -->
-    <div :class="featured ? 'flex justify-center' : 'grid sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8'">
+    <div :class="featured ? 'flex justify-center' : 'grid sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8'">
       <a v-for="item in shown" :key="item.href" :href="item.href" :class="['group/bt bg-surface rounded p-6 flex flex-col gap-5 min-w-0 hover:bg-surface-1 transition-colors', { 'w-full sm:w-[36rem]': featured }]">
         <div :class="[featured ? 'h-[18rem]' : 'h-[12.5rem]', 'rounded-control bg-surface-1 group-hover/bt:bg-surface-2 transition-colors flex items-center justify-center']">
           <img :src="item.image" :alt="item.name" :class="[featured ? 'max-w-[15rem] max-h-[15rem]' : 'max-w-[10rem] max-h-[10rem]', 'object-contain text-[0rem]']" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = fallbackImage; } }"/>
