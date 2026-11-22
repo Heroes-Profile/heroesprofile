@@ -25,7 +25,7 @@
     <!-- One card per section, like the home page's sections -->
     <div class="flex flex-wrap justify-center items-stretch">
       <div v-for="section in sections" :key="section.tab" class="text-center md:w-[30%] mb-12 flex flex-col mx-5">
-        <i :class="section.icon" style="font-size: 60px;"></i>
+        <i :class="[section.icon, 'text-[3.75rem]']"></i>
         <h3 class="text-2xl mb-4 mt-2">{{ section.title }}</h3>
         <p class="mb-6">{{ section.text }}</p>
         <custom-button
