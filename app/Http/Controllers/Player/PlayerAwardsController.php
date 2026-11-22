@@ -84,6 +84,8 @@ class PlayerAwardsController extends Controller
             // Without one, every award: the page's Recent Awards
             'award_id' => 'nullable|integer',
             'pagination_page' => 'required|integer|min:1',
+            // The site's Recent Awards asks for 8; the API keeps 100
+            'per_page' => 'nullable|integer|in:8,100',
         ]));
 
         if ($validator->fails()) {
@@ -101,7 +103,7 @@ class PlayerAwardsController extends Controller
                 fn ($query) => $query->whereIn('scores.match_award', $lookups['awards']->keys()->all()))
             ->select('replay.replayID', 'replay.game_date', 'replay.game_type', 'replay.game_map', 'player.hero', 'player.winner', 'scores.match_award')
             ->orderByDesc('replay.replayID')
-            ->paginate(100, ['*'], 'page', $request['pagination_page'])
+            ->paginate((int) ($request['per_page'] ?? 100), ['*'], 'page', $request['pagination_page'])
             ->through(fn ($row) => $this->formatAwardRow($row, $lookups));
     }
 
