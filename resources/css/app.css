@@ -6,7 +6,7 @@
 
 
 
-html{background-color:lightgrey; font-family: 'Roboto', var(--lang-font), sans-serif; box-sizing:border-box; }
+html{background-color:#141725; font-family: 'Roboto', var(--lang-font), sans-serif; box-sizing:border-box; }
 
 /* Per-language type. Roboto covers Latin and Cyrillic; Korean and Chinese characters fall through to their
    own Noto Sans (loaded in layouts/app.blade.php), and their text is set a little larger to stay readable.
