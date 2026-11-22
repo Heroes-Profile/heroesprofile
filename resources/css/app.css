@@ -669,13 +669,6 @@ h1{
 .match-page table.winner thead td:not(.color-cell){
   @apply bg-teal;
 }
-.dark-mode .match-page table.loser thead td:not(.color-cell){
-  @apply bg-red;
-}
-.dark-mode .match-page table.winner thead td:not(.color-cell){
-  @apply bg-teal;
-}
-
 ::-webkit-calendar-picker-indicator {
     filter: invert(1);
 }
