@@ -156,7 +156,7 @@
   } ]">
     <a :href="getHref()">
       <div :class="[
-      'mt-4  m-l-auto w-full text-right min-h-4 py-2 md:pl-[6em] break-words',
+      'mt-4 w-full text-right min-h-4 py-2 md:pl-[6em] break-words',
       {
         'md:pl-[6em]' : esport != true
       }

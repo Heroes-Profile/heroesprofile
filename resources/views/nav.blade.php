@@ -26,7 +26,7 @@
             </a>
             <div id="nav-content" class="ml-auto flex justify-between flex-wrap  text-sm md:flex-1 max-md:flex-col max-md:ml-0 max-md:w-full">
                 {{-- Its own group: equal space to the logo and to the buttons, as in the redesign; the padding is the least of it --}}
-                <div id="nav-links" class=" grow-1 flex items-left md:space-x-5 md:mx-auto md:px-8 flex-wrap md:flex-nowrap max-md:flex-col max-md:w-full ">
+                <div id="nav-links" class="flex md:space-x-5 md:mx-auto md:px-8 flex-wrap md:flex-nowrap max-md:flex-col max-md:w-full ">
                     
                     <div id="nav-global-stats" class="relative group inline-block nav-item">
                         <a class=" cursor-pointer">{{ __('Global Hero Stats') }}<basil-icon name="arrow" class="rotate-90 group-hover:-rotate-90 transition-transform text-xs ml-2" aria-hidden="true"></basil-icon></a>

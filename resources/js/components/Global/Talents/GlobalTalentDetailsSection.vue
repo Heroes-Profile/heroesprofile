@@ -35,7 +35,7 @@
             <td class="py-2 px-3  w-[35%]">
               <div class="flex items-center">
                 <talent-image-wrapper :talent="row.talentInfo"></talent-image-wrapper>
-                <span class="ml-left px-3">{{ $talentName(row.talentInfo) }}</span>
+                <span class="px-3">{{ $talentName(row.talentInfo) }}</span>
               </div>
             </td>
             <td class="py-2 px-3  ">{{ row.win_rate.toFixed(2) }}</td>

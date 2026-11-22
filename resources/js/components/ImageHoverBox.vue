@@ -1,5 +1,5 @@
 <template>
-  <div class="imageHoverBox flex flex-col gap-2 my-2 text-bold">
+  <div class="imageHoverBox flex flex-col gap-2 my-2">
     <h2 v-if="title" class="text-base font-bold text-white">{{ title }}</h2>
     <!-- Plain text only: battletags and team names come from uploaded replays. -->
     <p v-if="playedBy">{{ $t('Played by') }}: <b>{{ playedBy }}</b></p>

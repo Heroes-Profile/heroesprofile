@@ -187,7 +187,7 @@
                 </tr>
                 <template v-for="(row, index) in group.rows">
                   <tr v-if="!patreonUser && group.offset + index != 0 && (group.offset + index) % 50 === 0">
-                    <td colspan="10" class="align-content-center">
+                    <td colspan="10">
                       <dynamic-banner-ad :patreon-user="patreonUser" :index="group.offset + index + 3" :mobile-override="true"></dynamic-banner-ad>
                     </td>
                   </tr>
