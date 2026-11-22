@@ -104,10 +104,6 @@ details.group.is-closing[open] .group-open\:-rotate-90 {
   border-radius: 0.1875rem;
 }
 
-.filter-label{
-  color:black;
-}
-
 /* Shared filter bar: dropdowns fill the free space and wrap onto more rows as it narrows */
 .filter-row{
   @apply -m-2 flex flex-wrap items-end;
@@ -624,21 +620,6 @@ h1{
 }
 
 
-
-/* Menu */
-
-.drop-menu{
-
-}
-
-
-
-
-
-
-.flash-animation {
-  animation: flash 0.5s;
-}
 
 @keyframes logo-spin {
   to { transform: rotate(360deg); }
