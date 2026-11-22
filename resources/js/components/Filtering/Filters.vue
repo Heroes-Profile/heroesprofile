@@ -357,7 +357,7 @@
 
           <!-- Game Date -->
           <div v-if="includegamedate" id="filter-label" class="relative">
-            <div v-if="includegamedate" class="flex items-end  text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors">
+            <div v-if="includegamedate" class="flex items-end  text-sm font-medium cursor-pointer p-2  transition-colors">
               <div class="flex flex-col"><span>{{ $t('From Date') }}</span>
               <input type="date" 
                 v-model="selectedGameDate" 

@@ -90,7 +90,7 @@
       </p>
       <br/>
 
-      <div class="copyright text-sm text-gray-400">{{ $t('Skill Tree Development, LLC | Heroes Profile') }}</div>
+      <div class="copyright text-sm">{{ $t('Skill Tree Development, LLC | Heroes Profile') }}</div>
     </div>
   </div>
 </template>

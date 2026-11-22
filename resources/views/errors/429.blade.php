@@ -36,7 +36,7 @@
             <p>{{ __('If this keeps happening, please submit a report at') }} <a class="link" href="https://github.com/Heroes-Profile/heroesprofile/issues" target="_blank">https://github.com/Heroes-Profile/heroesprofile/issues</a>.</p>
         </div>
 
-        <div class="flex justify-center items-center text-center bg-gray-100">
+        <div class="flex justify-center items-center text-center">
             <a href="/"><img src="/images/miscellaneous/500.png" alt="Rate limited"></a>
         </div>
     </div>

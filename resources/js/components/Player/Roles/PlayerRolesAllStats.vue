@@ -53,27 +53,27 @@
 <table id="responsive-table" class="min-w-0 w-full responsive-table rounded-table relative" ref="responsivetable">
       <thead>
         <tr>
-          <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'name' }">
+          <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'name' }">
             {{ $t('Role') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>    
-          <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
+          <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
             {{ $t('Win Rate') }}<sort-indicator column="win_rate" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>
-          <th v-if="showGames" @click="sortTable('games_played')" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
+          <th v-if="showGames" @click="sortTable('games_played')" class="py-2 px-3  text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
             {{ $t('Total Games') }}<sort-indicator column="games_played" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>
-          <th @click="sortTable('kda')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'kda' }">
+          <th @click="sortTable('kda')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'kda' }">
             <div class="">
               {{ $t('KDA') }}
             </div><sort-indicator :column="'kda'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>  
-          <th @click="sortTable('kdr')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 text-gray-500 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'kdr' }">
+          <th @click="sortTable('kdr')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'kdr' }">
             <div class="">
               {{ $t('KDR') }}
             </div><sort-indicator :column="'kdr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
           </th>
           <template   v-for="stat in shownStats" :key="stat.value">
-            <th @click="sortTable(stat.value)" class="py-2 px-3  text-center text-sm leading-4 text-gray-500 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === stat.value }">
+            <th @click="sortTable(stat.value)" class="py-2 px-3  text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === stat.value }">
               {{ $t(stat.name) }}<sort-indicator :column="stat.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
           </template> 

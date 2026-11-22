@@ -21,7 +21,7 @@
             :href="baseUrl + '/' + encodeURIComponent(item.name) + query"
             class="block px-4 py-2  hover:bg-lighten text-sm whitespace-nowrap"
           >{{ displayName(item) }}</a>
-          <div v-if="filteredItems.length === 0" class="px-4 py-2 text-xs text-gray-400">{{ $t('No results found') }}</div>
+          <div v-if="filteredItems.length === 0" class="px-4 py-2 text-xs">{{ $t('No results found') }}</div>
         </div>
       </div>
     </div>

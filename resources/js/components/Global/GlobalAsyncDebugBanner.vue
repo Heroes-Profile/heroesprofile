@@ -1,13 +1,13 @@
 <template>
   <div
     v-if="showDebugBanner"
-    class="max-w-[93.75rem] mx-auto mb-4 p-3 rounded border border-yellow-600 bg-yellow-900/40 text-yellow-100 text-xs whitespace-pre-wrap"
+    class="max-w-[93.75rem] mx-auto mb-4 p-3 rounded border border-yellow bg-yellow/20 text-lyellow text-xs whitespace-pre-wrap"
   >
-    <div class="font-bold text-yellow-300 mb-1">{{ pageLabel }} async debug (develop only)</div>
+    <div class="font-bold text-lyellow mb-1">{{ pageLabel }} async debug (develop only)</div>
     <div v-if="serverDebugConfig">Server: {{ serverDebugSummary }}</div>
     <div>Load: {{ loadDebugStatus || 'waiting...' }}</div>
     <div v-if="headerDebugSummary">Headers: {{ headerDebugSummary }}</div>
-    <div v-if="loadMeta && loadMeta.error" class="text-red-300 mt-1">{{ loadMeta.error }}</div>
+    <div v-if="loadMeta && loadMeta.error" class="text-lred mt-1">{{ loadMeta.error }}</div>
   </div>
 </template>
 
