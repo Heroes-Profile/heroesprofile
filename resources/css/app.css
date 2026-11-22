@@ -200,10 +200,7 @@ body{
   
 }
 .nav-dropdown a{
-  text-wrap:nowrap;
-  display:flex;
   white-space:nowrap;
- 
 }
 
 /* The nav's links and buttons wrapped onto two rows (MobileNavHack): a right padding as wide as the logo puts both
