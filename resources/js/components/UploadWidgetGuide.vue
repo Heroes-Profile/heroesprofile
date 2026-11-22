@@ -56,7 +56,7 @@
         </p>
         <pre class="bg-darken p-3 text-xs overflow-x-auto">{{ listenerSnippet }}</pre>
 
-        <table class="min-w-0 w-full responsive-table">
+        <table class="min-w-0 w-full">
           <thead>
             <tr>
               <th class="py-2 px-3 text-left text-sm">type</th>

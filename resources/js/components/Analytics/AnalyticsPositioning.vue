@@ -26,7 +26,7 @@
         <multi-series-chart type="bar" format="number" :min="0" :max="1" :reference="0.5" :referenceLabel="'Middle'" :labels="phaseLabels" :title="'How far up the lane (0 your core, 1 theirs)'" :series="phaseSeries('lane_push', 2)"></multi-series-chart>
       </div>
       <analytics-numbers>
-        <table class="min-w-0 w-full responsive-table mb-4">
+        <table class="min-w-0 w-full mb-4">
           <thead>
             <tr><th>{{ $t('Phase') }}</th><th v-for="w in whos()" :key="w">{{ $t(':wholabel: in lane / at camps / elsewhere', { wholabel: whoLabel(w) }) }}</th></tr>
           </thead>
@@ -39,7 +39,7 @@
             </tr>
           </tbody>
         </table>
-        <table class="min-w-0 w-full responsive-table">
+        <table class="min-w-0 w-full">
           <thead>
             <tr><th>{{ $t('Whole game') }}</th><th v-for="w in whos()" :key="w">{{ whoLabel(w) }}</th></tr>
           </thead>

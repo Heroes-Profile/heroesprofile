@@ -70,7 +70,7 @@
             <search-input v-model="sitePagesSearch" :placeholder="$t('Search pages')" class="w-full sm:w-[16rem] ml-auto" @update:model-value="sitePagesPage = 1"></search-input>
           </div>
           <div class="min-w-0 overflow-x-auto">
-            <table class="min-w-0 w-full responsive-table rounded-table">
+            <table class="min-w-0 w-full rounded-table">
               <thead>
                 <tr>
                   <th class="py-2 px-4 text-left text-sm leading-4">{{ $t('Page') }}</th>
@@ -99,7 +99,7 @@
 
         <div class="grid 2xl:grid-cols-2 gap-6 xl:gap-8 items-start">
           <panel-box id="patch-history" title="Patch & Season History" subtitle="Which game version belongs to which season." :divider="false" class="scroll-mt-4 min-w-0" data-faq-topic>
-            <table class="min-w-0 w-full responsive-table rounded-table">
+            <table class="min-w-0 w-full rounded-table">
               <thead>
                 <tr>
                   <th class="py-2 px-4 text-center text-sm leading-4">{{ $t('Season') }}</th>
@@ -127,7 +127,7 @@
           </panel-box>
 
           <panel-box id="season-dates" title="Season Dates" subtitle="Shown in your time zone." :divider="false" class="scroll-mt-4 min-w-0" data-faq-topic>
-            <table class="min-w-0 w-full responsive-table rounded-table">
+            <table class="min-w-0 w-full rounded-table">
               <thead>
                 <tr>
                   <th class="py-2 px-4 text-center text-sm leading-4">{{ $t('Season') }}</th>

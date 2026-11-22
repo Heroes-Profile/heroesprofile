@@ -68,7 +68,7 @@
 
         <div id="table-container" ref="tablecontainer" class="overflow-clip">
           <!-- Fixed columns never overflow, so on phones it's laid out wide and scaleTableToFit shrinks it -->
-          <table id="responsive-table" class="min-w-0 max-md:min-w-[60rem] w-full responsive-table rounded-table table-fixed relative" ref="responsivetable">
+          <table id="responsive-table" class="min-w-0 max-md:min-w-[60rem] w-full rounded-table table-fixed relative" ref="responsivetable">
             <colgroup>
               <!-- Wide enough for the "#" box beside the rank once sorted by another column -->
               <col class="w-[calc(7.75rem+1.5px)]">
@@ -184,7 +184,7 @@
         </template>
 
         <div class="overflow-clip">
-          <table class="min-w-0 w-full responsive-table rounded-table table-fixed">
+          <table class="min-w-0 w-full rounded-table table-fixed">
             <colgroup>
               <!-- Wide enough for the "#" box beside the rank once sorted by another column -->
               <col class="w-[calc(7.75rem+1.5px)]">

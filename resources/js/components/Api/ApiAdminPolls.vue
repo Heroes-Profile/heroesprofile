@@ -14,7 +14,7 @@
     <p v-if="!loading && !polls.length" class="text-sm text-gray-medium">{{ $t('No polls yet.') }}</p>
 
     <div v-else class="overflow-x-auto mb-6">
-      <table class="min-w-0 w-full responsive-table text-sm">
+      <table class="min-w-0 w-full text-sm">
         <thead>
           <tr>
             <th class="py-2 px-3 text-left">{{ $t('Poll') }}</th>
@@ -104,7 +104,7 @@
       <h4 class="text-sm mt-6 mb-2">{{ $t('Comments') }}</h4>
       <p v-if="!detail.comments.length" class="text-sm text-gray-medium">{{ $t('No comments.') }}</p>
       <div v-else class="overflow-x-auto">
-        <table class="min-w-0 w-full responsive-table text-sm">
+        <table class="min-w-0 w-full text-sm">
           <thead>
             <tr>
               <th class="py-2 px-3 text-left">{{ $t('BattleTag') }}</th>

@@ -1,6 +1,6 @@
 <template>
   <div ref="tablecontainer" class="w-full max-md:overflow-clip">
-    <table ref="responsivetable" class="w-full 2xl:min-w-[93.75rem] text-sm responsive-table rounded-table">
+    <table ref="responsivetable" class="w-full 2xl:min-w-[93.75rem] text-sm rounded-table">
       <colgroup>
         <col class="w-[15%]">
         <col v-for="gt in gameTypes" :key="gt.key">

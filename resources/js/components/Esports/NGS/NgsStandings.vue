@@ -5,7 +5,7 @@
     <panel-box v-for="(division, divisionName) in shownData" :key="divisionName" :title="$t('Division :divisionname', { divisionname: divisionName })" link-text="View stats" :link-href="'/Esports/NGS/Division/' + divisionName">
       <!-- Shrinks to fit a phone's card instead of running past it -->
       <div ref="tablecontainers" class="overflow-clip">
-      <table ref="tables" class="min-w-0 w-full responsive-table rounded-table max-md:text-xs">
+      <table ref="tables" class="min-w-0 w-full rounded-table max-md:text-xs">
         <thead>
           <tr>
             <th class="py-2 px-3 text-center max-md:text-xs md:text-sm leading-4">

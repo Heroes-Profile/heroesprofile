@@ -7,7 +7,7 @@
     <!-- Part of Analytics: everyone else gets a greyed-out preview and the way in -->
     <div v-if="!allowed" class="relative">
       <div class="opacity-30 pointer-events-none select-none" aria-hidden="true">
-        <table class="min-w-0 w-full responsive-table">
+        <table class="min-w-0 w-full">
           <thead>
             <tr><th>{{ $t('Player') }}</th><th>{{ $t('Overall') }}</th><th v-for="area in areas" :key="area.key">{{ area.label }}</th></tr>
           </thead>
@@ -36,7 +36,7 @@
 
     <template v-else>
       <!-- Every player at a glance; click one for their breakdown -->
-      <table class="min-w-0 w-full responsive-table mb-6">
+      <table class="min-w-0 w-full mb-6">
         <thead>
           <tr><th>{{ $t('Player') }}</th><th>{{ $t('Overall') }}</th><th v-for="area in areas" :key="area.key">{{ area.label }}</th></tr>
         </thead>
@@ -63,7 +63,7 @@
         <analytics-heading :title="currentName" :takeaway="playerTakeaway"></analytics-heading>
         <multi-tab-button :options="areaOptions" v-model="area" class="mb-3"></multi-tab-button>
         <p v-if="fellBack" class="text-sm mb-2">{{ $t("Some of these compare with :hero's games on every map, because the sample has too few on this one.", { hero: $heroName(current.player.hero) }) }}</p>
-        <table class="min-w-0 w-full responsive-table mb-4">
+        <table class="min-w-0 w-full mb-4">
           <thead>
             <tr>
               <th>{{ area === 'abilities' ? $t('Ability or measure') : $t('Measure') }}</th>

@@ -70,7 +70,7 @@
 
       <panel-box>
       <div id="table-container" ref="tablecontainer" class="overflow-clip max-sm:text-xs">
-       <table id="responsive-table" class="min-w-0 w-full responsive-table relative" ref="responsivetable">
+       <table id="responsive-table" class="min-w-0 w-full relative" ref="responsivetable">
       
           <thead>
             <tr>

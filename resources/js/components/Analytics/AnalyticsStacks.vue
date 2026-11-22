@@ -19,7 +19,7 @@
       </analytics-heading>
       <multi-series-chart class="max-w-[75rem] mx-auto" type="bar" format="percent" :reference="50" :referenceLabel="'50%'" :labels="enemyChart.labels" :yLabel="'Win rate'" :series="enemyChart.series"></multi-series-chart>
       <analytics-numbers>
-        <table class="min-w-0 w-full responsive-table">
+        <table class="min-w-0 w-full">
           <thead>
             <tr>
               <th>{{ $t("Enemy's biggest party") }}</th>
@@ -63,7 +63,7 @@
       </analytics-heading>
       <multi-series-chart class="max-w-[75rem] mx-auto" type="bar" format="percent" :reference="50" :referenceLabel="'50%'" :labels="partyChart.labels" :yLabel="'Win rate'" :series="partyChart.series"></multi-series-chart>
       <analytics-numbers>
-        <table class="min-w-0 w-full responsive-table">
+        <table class="min-w-0 w-full">
           <thead>
             <tr>
               <th>{{ $t('You queued') }}</th>
@@ -89,7 +89,7 @@
       <analytics-heading :title="'How teams beat bigger stacks'" :takeaway="beatTakeaway">
         {{ $t('Global teams that faced a bigger enemy stack of 3+: how the teams that won played compared with the teams that lost. These are differences in what winning teams did, not proof that each one causes the win. Each number is a team average per player (per game, or a share where shown with %). Difference is how much better the winners were, relative to the losers: winners dying 30% less than losers shows as +30%. Only behaviours where the winners did better are listed, biggest gap first. Confidence: High is a gap of 20%+ with at least 300 winning and 300 losing teams, Medium 10%+ with at least 100 each, Low anything less, so treat it as a hint. The last two columns are your own averages in games facing a stack and in all your other games (including ones where your team had the bigger or equal stack), so you can see where your play slips. The winner and loser columns always use every hero, even with a hero filter, because they need a large sample; your own columns follow the filters.') }}
       </analytics-heading>
-      <table class="min-w-0 w-full responsive-table mb-6">
+      <table class="min-w-0 w-full mb-6">
         <thead>
           <tr>
             <th>{{ $t('Suggestion') }}</th>

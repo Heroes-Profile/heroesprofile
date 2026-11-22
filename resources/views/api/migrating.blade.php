@@ -63,7 +63,7 @@
     <p class="text-sm mb-4">
       {{ __('Read the notes, not just the paths. The old API answered almost everything with a flat array of database rows; v1 answers with named objects, and several are sectioned or paginated.') }} <strong>{{ __('Most integrations will need their parsing changed, not only their URLs.') }}</strong> {{ __('The') }} <a href="/Api/Docs" class="link">{{ __('docs') }}</a> {{ __('carry the exact shape of every response, taken from real output.') }}
     </p>
-    <table class="min-w-0 w-full responsive-table mb-4">
+    <table class="min-w-0 w-full mb-4">
       <thead>
         <tr>
           <th class="py-2 px-3 text-left text-sm">{{ __('Old') }}</th>
@@ -149,7 +149,7 @@
     </ul>
 
     <h2 class="text-2xl mb-3">{{ __('Removed') }}</h2>
-    <table class="min-w-0 w-full responsive-table mb-8">
+    <table class="min-w-0 w-full mb-8">
       <thead>
         <tr>
           <th class="py-2 px-3 text-left text-sm">{{ __('Endpoint') }}</th>
@@ -239,7 +239,7 @@ HTTP/1.1 200 OK              done — this is the data
     </p>
 
     <h4 class="text-sm uppercase text-lteal mb-2">{{ __('3. Handle the failure cases') }}</h4>
-    <table class="min-w-0 w-full responsive-table mb-4">
+    <table class="min-w-0 w-full mb-4">
       <thead>
         <tr>
           <th class="py-2 px-3 text-left text-sm">{{ __('Status') }}</th>

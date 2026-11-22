@@ -5,7 +5,7 @@
         {{ $t('No calls have counted against your quota in the current window.') }}
       </p>
 
-      <table v-else class="min-w-0 w-full responsive-table mb-3">
+      <table v-else class="min-w-0 w-full mb-3">
         <thead>
           <tr>
             <th class="py-2 px-3 text-left text-sm">{{ $t('Endpoint') }}</th>
@@ -73,7 +73,7 @@
       <div v-for="group in usage" :key="group.title" class="mb-6">
         <h3 class="text-lteal mb-2">{{ $t(group.title) }}</h3>
 
-        <table class="min-w-0 w-full responsive-table">
+        <table class="min-w-0 w-full">
           <thead>
             <tr>
               <th class="py-2 px-3 text-left text-sm">{{ $t('Name') }}</th>

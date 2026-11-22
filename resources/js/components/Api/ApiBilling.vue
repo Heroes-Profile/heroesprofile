@@ -155,7 +155,7 @@
 
         <p v-if="!invoices.length" class="text-sm text-gray-medium">{{ $t('No invoices yet.') }}</p>
 
-        <table v-else class="min-w-0 w-full responsive-table">
+        <table v-else class="min-w-0 w-full">
           <thead>
             <tr>
               <th class="py-2 px-3 text-left text-sm">{{ $t('Date') }}</th>

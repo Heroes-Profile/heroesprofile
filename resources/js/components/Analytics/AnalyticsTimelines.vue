@@ -39,7 +39,7 @@
       :series="comebackChart.series"
     ></multi-series-chart>
     <analytics-numbers>
-      <table class="min-w-0 w-full responsive-table">
+      <table class="min-w-0 w-full">
         <thead>
           <tr><th>{{ $t('At') }}</th><th>{{ $t('Behind (you)') }}</th><th>{{ $t('Behind (global)') }}</th><th>{{ $t('Even (you)') }}</th><th>{{ $t('Even (global)') }}</th><th>{{ $t('Ahead (you)') }}</th><th>{{ $t('Ahead (global)') }}</th></tr>
         </thead>

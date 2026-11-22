@@ -78,7 +78,7 @@
 
       <panel-box>
       <div id="table-container" ref="tablecontainer" class="max-md:overflow-clip">
-        <table id="responsive-table" class="min-w-0 w-full responsive-table relative" ref="responsivetable">
+        <table id="responsive-table" class="min-w-0 w-full relative" ref="responsivetable">
           <thead class="top-0 w-full sticky z-40">
           <tr>
             <th @click="sortTable('hero_name')" class="py-2 px-3 text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'hero_name' }">

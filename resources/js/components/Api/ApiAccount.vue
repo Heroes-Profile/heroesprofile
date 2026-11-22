@@ -132,7 +132,7 @@
       <div id="details" class="bg-lighten p-6 mb-8">
         <h2 class="text-lg mb-4">{{ $t('Account Details') }}</h2>
 
-        <table class="min-w-0 w-full responsive-table mb-6">
+        <table class="min-w-0 w-full mb-6">
           <tbody>
             <tr>
               <td class="py-2 px-3 text-sm">{{ $t('Email') }}</td>
@@ -411,7 +411,7 @@
         <p v-if="!keys.length" class="text-sm text-gray-medium">
           {{ $t('You have no active keys. Create one above to start using the API.') }}
         </p>
-        <table  v-else class="min-w-0 w-full responsive-table">
+        <table  v-else class="min-w-0 w-full">
           <thead>
             <tr>
               <th class="py-2 px-3 text-left text-sm">{{ $t('Name') }}</th>

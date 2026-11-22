@@ -51,7 +51,7 @@
           <column-chooser v-else key="wide" :stats="stats" note="Map, Win Rate and Games are always visible" @apply="applyColumns"></column-chooser>
         </template>
         <div id="table-container" ref="tablecontainer" class="overflow-clip">
-          <table id="responsive-table" class="min-w-0 w-full responsive-table rounded-table relative" ref="responsivetable">
+          <table id="responsive-table" class="min-w-0 w-full rounded-table relative" ref="responsivetable">
             <thead>
               <tr>
                 <th class="py-2 px-3 text-left text-sm leading-4">
@@ -98,7 +98,7 @@
           </div>
         </template>
         <div class="overflow-clip">
-          <table class="min-w-0 w-full responsive-table rounded-table relative">
+          <table class="min-w-0 w-full rounded-table relative">
             <thead>
               <tr>
                 <th class="py-2 px-3 text-left text-sm leading-4">

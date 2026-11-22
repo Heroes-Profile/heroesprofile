@@ -70,7 +70,7 @@
 
           <p v-if="awardGames && !awardGamesLoading && awardGames.data.length == 0" class="text-subtext">{{ selectedAward ? 'No ' + selectedAward.title + ' games' : $t('No awards') }} for the selected filters.</p>
           <div v-else class="min-w-0 max-md:overflow-clip">
-            <table class="w-full 2xl:min-w-[93.75rem] responsive-table rounded-table table-fixed">
+            <table class="w-full 2xl:min-w-[93.75rem] rounded-table table-fixed">
               <colgroup>
                 <col class="w-[55%] md:w-[28%]">
                 <col class="max-md:hidden w-[21.5%]">
@@ -170,7 +170,7 @@
           </div>
         </template>
         <div class="min-w-0 max-md:overflow-clip">
-          <table class="w-full 2xl:min-w-[93.75rem] responsive-table rounded-table table-fixed">
+          <table class="w-full 2xl:min-w-[93.75rem] rounded-table table-fixed">
             <colgroup>
               <col class="w-[55%] md:w-[28%]">
               <col class="max-md:hidden w-[21.5%]">

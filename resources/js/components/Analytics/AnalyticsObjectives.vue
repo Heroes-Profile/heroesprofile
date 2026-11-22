@@ -22,7 +22,7 @@
         <multi-series-chart type="bar" format="percent" :min="0" :max="100" :labels="statusLabels" :title="'Where you were when the enemy took the boss'" :series="statusSeries(false)"></multi-series-chart>
       </div>
       <analytics-numbers>
-        <table class="min-w-0 w-full responsive-table mb-4">
+        <table class="min-w-0 w-full mb-4">
           <thead>
             <tr><th>{{ $t('Boss take') }}</th><th>{{ $t('Where you were') }}</th><th v-for="w in whos()" :key="w">{{ $t(':wholabel: share / win rate (takes)', { wholabel: whoLabel(w) }) }}</th></tr>
           </thead>
@@ -54,7 +54,7 @@
       <template v-else>
         <multi-series-chart class="mb-4" type="bar" format="percent" :min="0" :max="100" :labels="sideLabels" :title="'Being there'" :series="presenceSeries"></multi-series-chart>
         <analytics-numbers>
-          <table class="min-w-0 w-full responsive-table mb-8">
+          <table class="min-w-0 w-full mb-8">
             <thead>
               <tr><th>{{ $t('Objective') }}</th><th v-for="w in whos()" :key="w">{{ $t(':wholabel: there / win when there / win when not (:n)', { wholabel: whoLabel(w), n: 'n' }) }}</th></tr>
             </thead>

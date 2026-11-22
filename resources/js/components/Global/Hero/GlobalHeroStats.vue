@@ -104,7 +104,7 @@
 
         <bubble-chart v-if="togglechart" :heroData="this.data.data"></bubble-chart>
         <div v-else id="table-container" ref="tablecontainer" class="overflow-clip">
-          <table id="responsive-table" class="min-w-0 w-full responsive-table rounded-table relative" ref="responsivetable">
+          <table id="responsive-table" class="min-w-0 w-full rounded-table relative" ref="responsivetable">
             <thead>
               <tr>
                 <!-- Wide enough for the "#" box beside the rank, so sorting by another column doesn't widen it, as on the leaderboard -->

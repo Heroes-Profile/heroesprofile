@@ -38,7 +38,7 @@
             size="small"
           ></custom-button>
         </div>
-        <table class="min-w-0 w-full responsive-table mb-4">
+        <table class="min-w-0 w-full mb-4">
           <thead>
             <tr>
               <th>{{ $t('Signal') }}</th>
@@ -73,7 +73,7 @@
           </tbody>
         </table>
         <p v-if="!lastEvents.length" class="text-sm text-gray-light mb-8">{{ $t('Nothing flagged in this game.') }}</p>
-        <table v-else class="min-w-0 w-full responsive-table mb-8">
+        <table v-else class="min-w-0 w-full mb-8">
           <thead>
             <tr>
               <th>{{ $t('Time') }}</th>
@@ -112,7 +112,7 @@
       <p v-if="recentGames.length < recentCount + 5" class="text-center text-gray-light mb-8">
         {{ $t('Not enough games yet: this needs at least :recentcount processed games under these filters (you have :recentgames).', { recentcount: recentCount + 5, recentgames: recentGames.length }) }}
       </p>
-      <table v-else class="min-w-0 w-full responsive-table mb-8">
+      <table v-else class="min-w-0 w-full mb-8">
         <thead>
           <tr>
             <th>{{ $t('Signal') }}</th>
@@ -169,7 +169,7 @@
       <analytics-heading :title="'All signals'" :takeaway="allTakeaway">
         {{ $t('Every signal, whatever its rating. Shares are a percentage of chances (fights, objectives, travel time); counts are per game; Camp duty is in percentage points above or below the norm for your hero. The Standing bar runs from worse (left) to better (right), with the global median marked in the middle. Click a signal for the numbers behind its ratings, who you are compared with, and recent examples.') }}
       </analytics-heading>
-      <table class="min-w-0 w-full responsive-table">
+      <table class="min-w-0 w-full">
         <thead>
           <tr>
             <th>{{ $t('Signal') }}</th>
@@ -256,7 +256,7 @@
                 <p v-if="signal.basis" class="text-sm text-gray-light mb-2">{{ $t('Compared with :basis.', { basis: signal.basis }) }}</p>
                 <p class="text-sm text-gray-light mb-2">{{ $t('Your sample: :samplegames games.', { samplegames: signal.sampleGames || 0 }) }}</p>
                 <p v-if="!examples(signal).length" class="text-sm">{{ $t('No recent examples.') }}</p>
-                <table v-if="examples(signal).length" class="min-w-0 w-full responsive-table">
+                <table v-if="examples(signal).length" class="min-w-0 w-full">
                   <thead>
                     <tr>
                       <th>{{ $t('Date') }}</th>

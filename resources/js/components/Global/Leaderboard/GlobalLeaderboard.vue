@@ -104,7 +104,7 @@
           <div class="overflow-clip">
             <!-- Shrinks to fit the screen, wrapping cell text first -->
             <div ref="responsivetable" class="grid min-w-full" style="width: fit-content">
-            <table class="min-w-0 w-full responsive-table rounded-table relative">
+            <table class="min-w-0 w-full rounded-table relative">
               <thead class="w-full">
                 <tr class="">
                   <!-- Wide enough for the "#" box beside the rank, so sorting by another column doesn't widen it; the 1.5px is the cells' right border -->

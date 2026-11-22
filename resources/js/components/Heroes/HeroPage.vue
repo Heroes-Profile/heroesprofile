@@ -42,7 +42,7 @@
 
         <panel-box v-for="unit in units" :key="unit.unit_id" :title="units.length > 1 ? $heroName(unit.name) : $t('Base Stats')">
           <template #title><span class="text-sm font-normal text-gray-medium">{{ $t('at level :level', { level }) }}</span></template>
-          <table class="min-w-0 w-full responsive-table">
+          <table class="min-w-0 w-full">
             <thead>
               <tr>
                 <th>{{ $t('Stat') }}</th>

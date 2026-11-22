@@ -1,7 +1,7 @@
 <template>
   <!-- A hero's talent builds: the talents, how often and how well they're played, and the code to copy -->
   <div id="table-container2" ref="tablecontainer2" class="min-w-0 max-md:overflow-clip">
-    <table class="min-w-0 w-full responsive-table rounded-table max-sm:text-xs" ref="responsivetable2">
+    <table class="min-w-0 w-full rounded-table max-sm:text-xs" ref="responsivetable2">
       <thead>
         <tr>
           <th class="py-2 px-4 text-left text-sm leading-4">{{ $t('Build') }}</th>

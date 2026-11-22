@@ -131,7 +131,7 @@
 
       <div v-if="esport && esport != 'Other'" class="max-w-[93.75rem] mx-auto mb-10 px-4">
         <panel-box :title="$t('Series Games')">
-        <table class="min-w-0 w-full responsive-table">
+        <table class="min-w-0 w-full">
           <thead>
             <tr>
               <th class="py-2 px-3 text-center text-sm leading-4">
@@ -235,7 +235,7 @@
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
       <div v-if="data.draft_order && data.draft_order.length > 0" class="max-w-[93.75rem] mx-auto px-4 my-6 max-sm:text-xs">
         <panel-box :title="$t('Draft Order')">
-        <table class="min-w-0 w-full responsive-table">
+        <table class="min-w-0 w-full">
           <thead>
             <tr>
               <th class="py-2 px-3 text-center text-sm leading-4">
@@ -320,7 +320,7 @@
   <scroll-hint-container class="2xl:mx-auto">
 
 
-  <table :class="['responsive-table', 'relative', 'auto-width-table', { winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }]">
+  <table :class="['relative', 'auto-width-table', { winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }]">
     <thead>
       <tr >
         <td class="color-cell bg-black border-l border-black"></td>
@@ -373,7 +373,7 @@
   <scroll-hint-container class="2xl:mx-auto">
 
 
-  <table :class="['responsive-table', 'relative', 'auto-width-table', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }]">
+  <table :class="['relative', 'auto-width-table', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }]">
     <thead>
       <tr>
        <td class="color-cell bg-black border-l border-black"></td>
@@ -430,7 +430,7 @@
   <scroll-hint-container class="2xl:mx-auto" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
 
 
-  <table :class="['responsive-table', 'relative', '2xl:min-w-[93.75rem]', { winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1, 'fixed-column-table': flipAdvancedStats }]" :style="flipAdvancedStats ? { width: flippedTableWidth(section) } : null" >
+  <table :class="['relative', '2xl:min-w-[93.75rem]', { winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1, 'fixed-column-table': flipAdvancedStats }]" :style="flipAdvancedStats ? { width: flippedTableWidth(section) } : null" >
     <thead v-if="!flipAdvancedStats">
       <tr>
         <td >{{ $t(section.title) }}</td>
@@ -471,7 +471,7 @@
 <div class="max-sm:text-sm max-w-[93.75rem] mx-auto px-4 my-6">
   <panel-box :title="$t('Team 2 Advanced Stats')">
   <scroll-hint-container class="2xl:mx-auto" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
-  <table :id="'responsive-table-' +sectionIndex" :ref="'responsivetable'+sectionIndex" :class="['responsive-table', 'relative', '2xl:min-w-[93.75rem]', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1, 'fixed-column-table': flipAdvancedStats }]" :style="flipAdvancedStats ? { width: flippedTableWidth(section) } : null" >
+  <table :id="'responsive-table-' +sectionIndex" :ref="'responsivetable'+sectionIndex" :class="['relative', '2xl:min-w-[93.75rem]', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1, 'fixed-column-table': flipAdvancedStats }]" :style="flipAdvancedStats ? { width: flippedTableWidth(section) } : null" >
     <thead v-if="!flipAdvancedStats">
       <tr>
         <td class="bg-blue text-white border-white border">{{ $t(section.title) }}</td>

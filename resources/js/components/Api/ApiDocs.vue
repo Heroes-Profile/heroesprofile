@@ -169,7 +169,7 @@
 
             <template v-if="op.parameters.length">
               <h3 class="text-sm uppercase text-lteal mb-2">{{ $t('Parameters') }}</h3>
-              <table class="min-w-0 w-full responsive-table mb-4">
+              <table class="min-w-0 w-full mb-4">
                 <thead>
                   <tr>
                     <th class="py-2 px-3 text-left text-sm">{{ $t('Name') }}</th>

@@ -11,7 +11,7 @@
     <panel-box :class="['relative', { 'md:mt-9 md:!rounded-tl-none': phase === 'searching' }]">
     <loading-component v-if="phase === 'searching'" :compact="true" :tab="true" :textoverride="true" :overrideimage="loaderImage">{{ $t('Searching for :query...', { query: query }) }}</loading-component>
     <div class="relative overflow-clip">
-      <table class="min-w-0 w-full responsive-table rounded-table relative">
+      <table class="min-w-0 w-full rounded-table relative">
         <thead>
           <tr>
             <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Player') }}</th>

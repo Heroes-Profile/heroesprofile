@@ -54,7 +54,7 @@
         </template>
       <div id="table-container" ref="tablecontainer" class="overflow-clip">
 
-        <table id="responsive-table" class="min-w-0 w-full responsive-table rounded-table relative" ref="responsivetable">
+        <table id="responsive-table" class="min-w-0 w-full rounded-table relative" ref="responsivetable">
         <thead>
           <tr>
             <th class="py-2 px-3  text-center text-sm leading-4">

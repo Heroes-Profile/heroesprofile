@@ -58,7 +58,7 @@
       {{ $t('Rate limited by the API — waiting :count seconds, then carrying on.', { count: waitingSeconds }) }}
     </div>
 
-    <table v-if="files.length" class="min-w-0 w-full responsive-table">
+    <table v-if="files.length" class="min-w-0 w-full">
       <thead>
         <tr>
           <th class="py-2 px-3 text-left text-sm">{{ $t('Replay') }}</th>

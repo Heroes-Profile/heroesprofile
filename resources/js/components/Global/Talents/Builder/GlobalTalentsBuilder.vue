@@ -119,7 +119,7 @@
           <p class="font-normal mt-2">{{ $t('Calculated build win chance tries to gauge what the builds win rate will be at any point during the game.') }}</p>
         </round-image>
       </template>
-    <table v-if="builddata" class="min-w-0 w-full responsive-table">
+    <table v-if="builddata" class="min-w-0 w-full">
       <thead>
         <tr>
           <th class="py-2 px-3 text-center text-sm leading-4">
@@ -172,7 +172,7 @@
     <div>
       <custom-button @click="showReplayList = !showReplayList" :text="'Get list of replays matching talent selection'" :alt="'Get list of replays matching talent selection'" size="small" :ignoreclick="true"></custom-button>
     </div>
-    <table class="min-w-0 w-full responsive-table" v-if="showReplayList">
+    <table class="min-w-0 w-full" v-if="showReplayList">
       <thead>
         <tr>
           <th class="py-2 px-3 text-center text-sm leading-4 w-[12.5rem]">

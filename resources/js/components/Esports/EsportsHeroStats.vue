@@ -4,7 +4,7 @@
    <panel-box>
     <!-- Shrinks to fit a phone's card instead of running past it -->
     <div ref="tablecontainer" class="overflow-clip">
-    <table ref="table" class="min-w-0 w-full responsive-table rounded-table max-md:text-xs">
+    <table ref="table" class="min-w-0 w-full rounded-table max-md:text-xs">
       <thead>
         <tr>
           <th @click="sortTable('hero_id')" class="py-2 px-3 text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'hero_id' }">

@@ -40,7 +40,7 @@
       </analytics-heading>
       <multi-series-chart type="bar" format="percent" :reference="50" :labels="byMap.map(row => mapName(row.map))" :title="'Win rate by game length on each map'" :series="lengthSeries"></multi-series-chart>
       <analytics-numbers>
-        <table class="min-w-0 w-full responsive-table">
+        <table class="min-w-0 w-full">
           <thead>
             <tr><th>{{ $t('Map') }}</th><th>{{ $t('Games') }}</th><th><span class="inline-flex items-center gap-1">{{ $t('Average length') }} <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true"><slot><p class="text-sm p-2 text-left">{{ $t('Mean game length on that map, in minutes and seconds.') }}</p></slot></round-image></span></th><th v-for="b in lengthBuckets" :key="b.label">{{ b.label }}</th></tr>
           </thead>

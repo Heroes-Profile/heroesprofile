@@ -70,7 +70,7 @@
             <span class="block text-xs text-subtext mt-1">{{ $t('Your win rate when this hero is your opponent') }}</span>
           </div>
         </div>
-        <table class="min-w-0 w-full responsive-table rounded-table table-fixed max-md:text-xs">
+        <table class="min-w-0 w-full rounded-table table-fixed max-md:text-xs">
           <colgroup>
             <col class="w-[18.1%]">
             <col class="w-[20.475%]">
@@ -153,7 +153,7 @@
             <span class="block text-xs mt-1"><span class="skeleton-text">{{ $t('Your win rate when this hero is your opponent') }}</span></span>
           </div>
         </div>
-        <table class="min-w-0 w-full responsive-table rounded-table table-fixed max-md:text-xs">
+        <table class="min-w-0 w-full rounded-table table-fixed max-md:text-xs">
           <colgroup>
             <col class="w-[18.1%]">
             <col class="w-[20.475%]">

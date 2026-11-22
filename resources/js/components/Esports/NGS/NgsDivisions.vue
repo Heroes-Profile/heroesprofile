@@ -2,7 +2,7 @@
   <!-- In a card at the page's width, as on the global pages -->
   <div class="max-w-[120rem] mx-auto px-4 md:px-8">
    <panel-box>
-    <table class="min-w-0 w-full responsive-table rounded-table max-md:text-sm">
+    <table class="min-w-0 w-full rounded-table max-md:text-sm">
       <thead>
         <tr>
           <th class="py-2 px-3 text-center text-sm leading-4">

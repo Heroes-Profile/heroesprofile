@@ -50,7 +50,7 @@
 
       <panel-box class="md:!p-8 !gap-6" :divider="false" :title="$t('Compare plans')" subtitle="Limits per plan. Calls per week are counted by endpoint category." link-text="Detailed endpoint limits" link-href="/Api/EndpointLimits">
         <div class="overflow-clip">
-          <table class="min-w-0 w-full responsive-table rounded-table table-fixed">
+          <table class="min-w-0 w-full rounded-table table-fixed">
             <colgroup>
               <col class="w-[51.5%]">
               <col v-for="plan in plans" :key="plan.key">

@@ -40,7 +40,7 @@
       <p v-if="hero.takeaway" class="text-base mb-2">{{ hero.takeaway }}</p>
       <multi-series-chart type="bar" :horizontal="true" :labels="hero.chart.labels" :series="hero.chart.series"></multi-series-chart>
       <analytics-numbers :label="'Show every ability; click one for its usage over the game'">
-        <table class="min-w-0 w-full responsive-table">
+        <table class="min-w-0 w-full">
           <thead>
             <tr>
               <th>{{ $t('Ability') }}</th>

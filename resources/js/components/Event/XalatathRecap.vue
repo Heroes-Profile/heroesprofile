@@ -272,7 +272,7 @@
         </p>
         <p class="mb-4 text-lg font-bold xalatath-title">{{ nerf.verdict }}</p>
         <scroll-hint-container :fit="true">
-        <table class="min-w-0 w-full responsive-table mb-6">
+        <table class="min-w-0 w-full mb-6">
           <thead>
             <tr><th class="py-2 px-3 text-left text-sm">{{ $t('Stat') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Launch patch') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('After the balance update') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Change') }}</th></tr>
           </thead>
@@ -289,7 +289,7 @@
         <div v-if="nerfedTalents.length">
           <h3 class="font-bold mb-2">{{ $t('The Talents It Changed') }}</h3>
           <scroll-hint-container :fit="true">
-          <table class="min-w-0 w-full responsive-table">
+          <table class="min-w-0 w-full">
             <thead>
               <tr><th class="py-2 px-3 text-left text-sm">{{ $t('Talent') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Picked before') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Picked after') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Win rate before') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Win rate after') }}</th></tr>
             </thead>
@@ -317,7 +317,7 @@
         <div v-if="mode === 'all'">
           <h2 class="recap-heading">{{ $t('Corruption by Game Mode') }}</h2>
           <scroll-hint-container :fit="true">
-          <table class="min-w-0 w-full responsive-table">
+          <table class="min-w-0 w-full">
             <thead>
               <tr><th class="py-2 px-3 text-left text-sm">{{ $t('Game mode') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Games') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Win rate') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Bans') }}</th></tr>
             </thead>
@@ -431,7 +431,7 @@
       <section id="recap-maps" data-index="Battlegrounds" v-if="maps.length">
         <h2 class="recap-heading">{{ $t('Battlegrounds Conquered') }}</h2>
         <scroll-hint-container :fit="true">
-        <table class="min-w-0 w-full responsive-table">
+        <table class="min-w-0 w-full">
           <thead>
             <tr><th class="py-2 px-3 text-left text-sm">{{ $t('Battleground') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Games') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Win rate') }}</th></tr>
           </thead>
@@ -480,7 +480,7 @@
       <section id="recap-leaderboard" data-index="Most Corrupted" v-if="leaderboard.length">
         <h2 class="recap-heading">{{ $t('Most Corrupted') }}</h2>
         <scroll-hint-container :fit="true">
-        <table class="min-w-0 w-full responsive-table">
+        <table class="min-w-0 w-full">
           <thead>
             <tr><th class="py-2 px-3 text-left text-sm">{{ $t('Rank') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Player') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Region') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Games') }}</th><th class="py-2 px-3 text-left text-sm">{{ $t('Win rate') }}</th></tr>
           </thead>

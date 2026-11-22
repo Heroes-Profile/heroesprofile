@@ -14,7 +14,7 @@
     <p v-if="!loading && !channels.length" class="text-sm text-gray-medium">{{ $t('No channels.') }}</p>
 
     <div v-else class="overflow-x-auto">
-      <table class="min-w-0 w-full responsive-table text-sm">
+      <table class="min-w-0 w-full text-sm">
         <thead>
           <tr>
             <th class="py-2 px-3 text-left">{{ $t('Channel') }}</th>

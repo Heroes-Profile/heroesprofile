@@ -53,7 +53,7 @@
 
         <p v-if="searched && !results.length" class="text-sm text-gray-medium">{{ $t('No accounts matched.') }}</p>
 
-        <table v-if="results.length" class="min-w-0 w-full responsive-table">
+        <table v-if="results.length" class="min-w-0 w-full">
           <thead>
             <tr>
               <th class="py-2 px-3 text-left text-sm">{{ $t('Email') }}</th>
@@ -113,7 +113,7 @@
         <p v-if="traced && !traceRows.length" class="text-sm text-gray-medium">{{ $t('No marked account was sent that.') }}</p>
 
         <div v-if="traceRows.length" class="overflow-x-auto">
-          <table class="min-w-0 w-full responsive-table">
+          <table class="min-w-0 w-full">
             <thead>
               <tr>
                 <th class="py-2 px-3 text-left text-sm">{{ $t('Account') }}</th>
@@ -157,7 +157,7 @@
         <p v-if="!usage.length" class="text-sm text-gray-medium">{{ $t('No usage in the current window.') }}</p>
 
         <div v-else class="overflow-x-auto">
-          <table class="min-w-0 w-full responsive-table">
+          <table class="min-w-0 w-full">
             <thead>
               <tr>
                 <th v-for="column in usageColumns" :key="column.key" @click="sortUsage(column.key)" class="py-2 px-3 text-left text-sm cursor-pointer" :class="{ 'bg-teal text-white': usageSortKey === column.key }">
@@ -206,7 +206,7 @@
         <p v-if="!pending.length" class="text-sm text-gray-medium">{{ $t('Nothing waiting.') }}</p>
 
         <div v-else class="overflow-x-auto">
-          <table class="min-w-0 w-full responsive-table">
+          <table class="min-w-0 w-full">
             <thead>
               <tr>
                 <th class="py-2 px-3 text-left text-sm">{{ $t('Email') }}</th>
@@ -254,7 +254,7 @@
             </p>
           </div>
 
-          <table class="min-w-0 w-full responsive-table">
+          <table class="min-w-0 w-full">
             <tbody>
               <tr>
                 <td class="py-2 px-3 text-sm">{{ $t('Subscription') }}</td>
@@ -368,7 +368,7 @@
 
           <p v-if="!detail.approvals.length" class="text-sm text-gray-medium">{{ $t('Nothing on record.') }}</p>
 
-          <table v-else class="min-w-0 w-full responsive-table">
+          <table v-else class="min-w-0 w-full">
             <thead>
               <tr>
                 <th class="py-2 px-3 text-left text-sm">{{ $t('When') }}</th>
@@ -477,7 +477,7 @@
             />
 
             <div class="overflow-x-auto">
-              <table class="min-w-0 w-full responsive-table">
+              <table class="min-w-0 w-full">
                 <thead>
                   <tr>
                     <th class="py-2 px-3 text-left text-sm">{{ $t('Row') }}</th>
@@ -608,7 +608,7 @@
 
           <p v-if="!detail.history.length" class="text-sm text-gray-medium">{{ $t('Nothing on record.') }}</p>
 
-          <table v-else class="min-w-0 w-full responsive-table">
+          <table v-else class="min-w-0 w-full">
             <thead>
               <tr>
                 <th class="py-2 px-3 text-left text-sm">{{ $t('When') }}</th>
@@ -650,7 +650,7 @@
         <p v-if="!activity.length" class="text-sm text-gray-medium">{{ $t('Nothing yet.') }}</p>
 
         <div v-else class="overflow-x-auto">
-          <table class="min-w-0 w-full responsive-table">
+          <table class="min-w-0 w-full">
             <thead>
               <tr>
                 <th class="py-2 px-3 text-left text-sm">{{ $t('Email') }}</th>

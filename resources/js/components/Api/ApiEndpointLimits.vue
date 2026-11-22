@@ -34,7 +34,7 @@
       <div v-for="group in groups" :key="group.title" class="mb-10">
         <h2 class="text-2xl mb-3">{{ $t(group.title) }}</h2>
 
-        <table class="min-w-0 w-full responsive-table">
+        <table class="min-w-0 w-full">
           <thead>
             <tr>
               <th class="text-left">{{ $t('Endpoint') }}</th>
