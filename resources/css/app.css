@@ -399,7 +399,7 @@ table td{flex:1;}
 .dark-mode tr{
   @apply even:bg-surface-2 text-white;
 }
-.dark-mode tbody tr:not(.bg-hred):not(.bg-yellow):hover{
+.dark-mode tbody tr:not(.bg-yellow):hover{
   @apply bg-surface-3;
 }
 .dark-mode thead{
@@ -414,23 +414,14 @@ table td{flex:1;}
 .dark-mode td{
   border-right-color: rgba(255, 255, 255, 0.06);
 }
-.dark-mode tr.bg-hred {
-  background-color: rgba(214, 142, 124, 0.5);
-}
 
 
 
 tr{
 @apply even:bg-gray-xlight ;
 }
-tr.bg-hred{
-  background-color: rgba(214, 142, 124, 0.5);
-}
 tr.bg-yellow{
   background-color: #d98c40;
-}
-.dark-mode tr.bg-hred{
-  background-color: rgba(214, 142, 124, 0.5);
 }
 .dark-mode tr.bg-yellow{
   background-color: #d98c40;
