@@ -19,12 +19,12 @@ class RequireApiAdmin
         $context = $request->attributes->get(ApiKeyGuard::REQUEST_ATTRIBUTE);
 
         if ($context === null) {
-            return $this->error('unauthenticated', 'A valid API key is required.', 401);
+            return $this->error('unauthenticated', __('A valid API key is required.'), 401);
         }
 
         if (! $context->account->actingAsAdmin()) {
             // Worded as the exception handler words an unknown route.
-            return $this->error('not_found', 'Request could not be completed.', 404);
+            return $this->error('not_found', __('Request could not be completed.'), 404);
         }
 
         // No quota middleware on these routes, so suspension is refused here.

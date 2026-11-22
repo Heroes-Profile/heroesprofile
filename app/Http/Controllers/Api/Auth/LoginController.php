@@ -36,8 +36,7 @@ class LoginController extends Controller
 
         if (RateLimiter::tooManyAttempts($throttleKey, self::MAX_ATTEMPTS)) {
             throw ValidationException::withMessages([
-                'email' => 'Too many login attempts. Try again in '
-                    .RateLimiter::availableIn($throttleKey).' seconds.',
+                'email' => __('Too many login attempts. Try again in :seconds seconds.', ['seconds' => RateLimiter::availableIn($throttleKey)]),
             ]);
         }
 
@@ -45,7 +44,7 @@ class LoginController extends Controller
             RateLimiter::hit($throttleKey, self::DECAY_SECONDS);
 
             throw ValidationException::withMessages([
-                'email' => 'Those credentials do not match our records.',
+                'email' => __('Those credentials do not match our records.'),
             ]);
         }
 

@@ -3,34 +3,34 @@
     <form method="POST" action="/Api/Register" class="flex flex-col gap-2">
       <input type="hidden" name="_token" :value="csrf">
 
-      <label for="name">Name:</label>
+      <label for="name">{{ $t('Name:') }}</label>
       <input class="form-control search-input text-black" type="text" id="name" name="name" v-model="name" required autofocus>
 
-      <label for="email">Email:</label>
+      <label for="email">{{ $t('Email:') }}</label>
       <input class="form-control search-input text-black" type="email" id="email" name="email" v-model="email" required>
 
-      <label for="password">Password:</label>
+      <label for="password">{{ $t('Password:') }}</label>
       <input class="form-control search-input text-black" type="password" id="password" name="password" required>
-      <span class="text-xs text-gray-medium">At least 8 characters.</span>
+      <span class="text-xs text-gray-medium">{{ $t('At least 8 characters.') }}</span>
 
-      <label for="password_confirmation">Confirm Password:</label>
+      <label for="password_confirmation">{{ $t('Confirm Password:') }}</label>
       <input class="form-control search-input text-black" type="password" id="password_confirmation" name="password_confirmation" required>
 
       <label class="flex items-start gap-2 mt-3 text-sm">
         <input type="checkbox" id="terms" name="terms" value="1" class="mt-1 w-5 h-5 shrink-0" required>
         <span>
-          I agree to the
-          <a href="/Api/Terms" target="_blank" class="underline hover:text-lteal">Terms of Service</a>
-          and
-          <a href="/Api/Privacy" target="_blank" class="underline hover:text-lteal">Privacy Policy</a>.
+          {{ $t('I agree to the') }}
+          <a href="/Api/Terms" target="_blank" class="underline hover:text-lteal">{{ $t('Terms of Service') }}</a>
+          {{ $t('and') }}
+          <a href="/Api/Privacy" target="_blank" class="underline hover:text-lteal">{{ $t('Privacy Policy') }}</a>.
         </span>
       </label>
 
-      <button type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto my-2">Create Account</button>
+      <button type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto my-2">{{ $t('Create Account') }}</button>
     </form>
 
     <div class="text-sm">
-      Already have an account? <a href="/Api/Login" class="underline hover:text-lteal">Sign in</a>
+      {{ $t('Already have an account?') }} <a href="/Api/Login" class="underline hover:text-lteal">{{ $t('Sign in') }}</a>
     </div>
   </api-form-card>
 </template>

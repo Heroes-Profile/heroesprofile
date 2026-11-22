@@ -44,6 +44,11 @@ jobs:
     - name: Twitch extension bundle matches the site's images
       run: php artisan twitch:check-extension
 
+    # Text wrapped in $t / __() with no entry in lang/{locale}.json shows in English for
+    # that language. Lists each missing key; needs no database or API key.
+    - name: Every site string is translated
+      run: php artisan translations:strings --check
+
     - name: Every routed endpoint has a fixture
       run: php artisan api:check-fixtures
 

@@ -3,48 +3,39 @@
     <page-heading  :heading="'Privacy Policy'"></page-heading>
    
     <div class="max-w-[93.75rem] mx-auto mt-10 px-4">
+    <legal-translation-notice></legal-translation-notice>
     <p>
-      This site uses cookies to enhance your experience and provide personalized features.
-      By using our site, you consent to the use of cookies in accordance with this policy.
+      {{ $t('This site uses cookies to enhance your experience and provide personalized features. By using our site, you consent to the use of cookies in accordance with this policy.') }}
     </p>
     <br/>
 
-    <h3>1. Cookies Usage</h3>
+    <h3>{{ $t('1. Cookies Usage') }}</h3>
 
     <p>
-      We use cookies to save your most recently viewed pages and to remember your selected
-      "primary" BattleTag. Additionally, cookies help us determine whether you've seen the
-      initial site popup message. These small pieces of data are stored on your local computer
-      to remember your settings. We do not store personal data in cookies, and the information
-      stored is solely for enhancing your site experience.
+      {{ $t('We use cookies to save your most recently viewed pages and to remember your selected "primary" BattleTag. Additionally, cookies help us determine whether you\'ve seen the initial site popup message. These small pieces of data are stored on your local computer to remember your settings. We do not store personal data in cookies, and the information stored is solely for enhancing your site experience.') }}
     </p>
     <br/>
-    <h3>2. Google Analytics</h3>
+    <h3>{{ $t('2. Google Analytics') }}</h3>
 
     <p>
-      We utilize Google Analytics to collect anonymous data about your session, helping us
-      analyze site traffic and improve our services. Google Analytics may use cookies for tracking
-      purposes. For more information on how Google uses data, you can refer to
+      {{ $t('We utilize Google Analytics to collect anonymous data about your session, helping us analyze site traffic and improve our services. Google Analytics may use cookies for tracking purposes. For more information on how Google uses data, you can refer to') }}
       <a class="link" href="https://policies.google.com/technologies/partner-sites?hl=en-US" target="_blank">
-        How Google uses data.
+        {{ $t('How Google uses data.') }}
       </a>
     </p>
     <br/>
 
-    <h3>3. Data Source and Ownership</h3>
+    <h3>{{ $t('3. Data Source and Ownership') }}</h3>
 
     <p>
-      Data for statistics and profiles is obtained from the Heroes Profile API, where users
-      voluntarily upload their replay data from their computers. This data is stored in our site
-      database. We claim ownership over the aggregated data used for the site.
+      {{ $t('Data for statistics and profiles is obtained from the Heroes Profile API, where users voluntarily upload their replay data from their computers. This data is stored in our site database. We claim ownership over the aggregated data used for the site.') }}
     </p>
     <br/>
 
-    <h3>4. User Responsibilities</h3>
+    <h3>{{ $t('4. User Responsibilities') }}</h3>
 
     <p>
-      Users are expected to adhere to the terms of service and refrain from scraping data through
-      the use of bots or scripts. Any misuse or abuse of the site may result in a ban.
+      {{ $t('Users are expected to adhere to the terms of service and refrain from scraping data through the use of bots or scripts. Any misuse or abuse of the site may result in a ban.') }}
     </p>
   </div>
 </div>

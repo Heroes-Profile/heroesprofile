@@ -275,6 +275,9 @@ class BuildApiSpec extends Command
             $declared['mode'] = $config['csv'] ?? [];
         }
 
+        // Every endpoint, file downloads included: their errors are still JSON
+        $declared['lang'] = ($config['lang'] ?? []) + ['enum' => array_keys(config('app.supported_locales'))];
+
         $parameters = [];
 
         foreach ($route->parameterNames() as $pathParameter) {

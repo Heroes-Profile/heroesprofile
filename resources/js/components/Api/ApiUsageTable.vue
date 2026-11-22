@@ -2,16 +2,16 @@
   <div>
     <template v-if="compact">
       <p v-if="!activeRows.length" class="text-sm text-gray-medium mb-3">
-        No calls have counted against your quota in the current window.
+        {{ $t('No calls have counted against your quota in the current window.') }}
       </p>
 
       <table v-else class="min-w-0 w-full responsive-table mb-3">
         <thead>
           <tr>
-            <th class="py-2 px-3 text-left text-sm">Endpoint</th>
-            <th class="py-2 px-3 text-left text-sm">Calls Used</th>
-            <th class="py-2 px-3 text-left text-sm">Calls Left</th>
-            <th class="py-2 px-3 text-left text-sm">Calls Reset</th>
+            <th class="py-2 px-3 text-left text-sm">{{ $t('Endpoint') }}</th>
+            <th class="py-2 px-3 text-left text-sm">{{ $t('Calls Used') }}</th>
+            <th class="py-2 px-3 text-left text-sm">{{ $t('Calls Left') }}</th>
+            <th class="py-2 px-3 text-left text-sm">{{ $t('Calls Reset') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -26,69 +26,62 @@
 
       <div v-if="totals.cost > 0" class="mb-3">
         <p class="text-sm text-gray-medium">
-          Served {{ formatBytes(totals.bytes) }} this window, costing roughly
-          <span class="text-lteal">{{ formatCost(totals.cost) }}</span> to deliver.
+          {{ $t('Served :bytes this window, costing roughly', { bytes: formatBytes(totals.bytes) }) }}
+          <span class="text-lteal">{{ formatCost(totals.cost) }}</span> {{ $t('to deliver.') }}
         </p>
 
         <p class="text-xs text-gray-medium mt-1">
-          <span class="text-lteal">Beta</span> — cost reporting is new and may not be
-          accurate. It is a rough guide to what your usage costs us to serve, not a bill,
-          and nothing is charged against it.
+          <span class="text-lteal">{{ $t('Beta') }}</span> {{ $t('— cost reporting is new and may not be accurate. It is a rough guide to what your usage costs us to serve, not a bill, and nothing is charged against it.') }}
         </p>
       </div>
 
       <a href="/Api/Account/Billing" class="text-sm underline hover:text-lteal">
-        View every endpoint limit
+        {{ $t('View every endpoint limit') }}
       </a>
     </template>
 
     <template v-else>
       <p v-if="!usage.length" class="text-sm text-gray-medium">
-        No endpoints are registered yet.
+        {{ $t('No endpoints are registered yet.') }}
       </p>
 
       <div v-if="totals.cost > 0" class="bg-darken p-4 mb-6">
         <div class="flex flex-wrap gap-x-8 gap-y-2 mb-2">
           <div>
-            <div class="text-xs text-gray-medium">Data Transferred</div>
+            <div class="text-xs text-gray-medium">{{ $t('Data Transferred') }}</div>
             <div class="text-lteal">{{ formatBytes(totals.bytes) }}</div>
           </div>
           <div>
-            <div class="text-xs text-gray-medium">Server Time</div>
+            <div class="text-xs text-gray-medium">{{ $t('Server Time') }}</div>
             <div class="text-lteal">{{ formatDuration(totals.computeMs) }}</div>
           </div>
           <div>
-            <div class="text-xs text-gray-medium">Database Time</div>
+            <div class="text-xs text-gray-medium">{{ $t('Database Time') }}</div>
             <div class="text-lteal">{{ formatDuration(totals.dbMs) }}</div>
           </div>
           <div>
-            <div class="text-xs text-gray-medium">Estimated Cost</div>
+            <div class="text-xs text-gray-medium">{{ $t('Estimated Cost') }}</div>
             <div class="text-lteal">{{ formatCost(totals.cost) }}</div>
           </div>
         </div>
 
         <p class="text-xs text-gray-medium">
-          <span class="text-lteal">Beta</span> — cost reporting is new and may not be
-          accurate. Across the current window, and a generous estimate at that: server
-          time is counted per request, but requests share a container, so the real figure
-          is lower. Database time is what your queries held our database for, including
-          queries that ran in the background after a <code>202</code>. A guide to what the
-          usage costs to serve, not a bill.
+          <span class="text-lteal">{{ $t('Beta') }}</span> {{ $t('— cost reporting is new and may not be accurate. Across the current window, and a generous estimate at that: server time is counted per request, but requests share a container, so the real figure is lower. Database time is what your queries held our database for, including queries that ran in the background after a') }} <code>202</code>{{ $t('. A guide to what the usage costs to serve, not a bill.') }}
         </p>
       </div>
 
       <div v-for="group in usage" :key="group.title" class="mb-6">
-        <h3 class="text-lteal mb-2">{{ group.title }}</h3>
+        <h3 class="text-lteal mb-2">{{ $t(group.title) }}</h3>
 
         <table class="min-w-0 w-full responsive-table">
           <thead>
             <tr>
-              <th class="py-2 px-3 text-left text-sm">Name</th>
-              <th class="py-2 px-3 text-left text-sm">Calls Used</th>
-              <th class="py-2 px-3 text-left text-sm">Calls Left</th>
-              <th class="py-2 px-3 text-left text-sm">Available Calls</th>
-              <th class="py-2 px-3 text-left text-sm">Calls Reset</th>
-              <th class="py-2 px-3 text-left text-sm">Cost</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Name') }}</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Calls Used') }}</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Calls Left') }}</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Available Calls') }}</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Calls Reset') }}</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Cost') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -99,11 +92,11 @@
                 <td class="py-2 px-3">{{ format(row.used) }}</td>
                 <td class="py-2 px-3">{{ format(row.remaining) }}</td>
                 <td class="py-2 px-3">{{ format(row.limit) }}</td>
-                <td class="py-2 px-3">{{ row.resets_at || 'Not started' }}</td>
+                <td class="py-2 px-3">{{ row.resets_at || $t('Not started') }}</td>
                 <td class="py-2 px-3">{{ row.cost_usd > 0 ? formatCost(row.cost_usd) : '—' }}</td>
               </template>
 
-              <td v-else class="py-2 px-3" colspan="5">Not included in your plan</td>
+              <td v-else class="py-2 px-3" colspan="5">{{ $t('Not included in your plan') }}</td>
             </tr>
           </tbody>
         </table>

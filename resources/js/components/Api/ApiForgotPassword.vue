@@ -3,14 +3,14 @@
     <form method="POST" action="/Api/Password/Forgot" class="flex flex-col gap-2">
       <input type="hidden" name="_token" :value="csrf">
 
-      <label for="email">Email:</label>
+      <label for="email">{{ $t('Email:') }}</label>
       <input class="form-control search-input text-black" type="email" id="email" name="email" v-model="email" required autofocus>
 
-      <button type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto my-2">Send Reset Link</button>
+      <button type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto my-2">{{ $t('Send Reset Link') }}</button>
     </form>
 
     <div class="text-sm">
-      <a href="/Api/Login" class="underline hover:text-lteal">Back to sign in</a>
+      <a href="/Api/Login" class="underline hover:text-lteal">{{ $t('Back to sign in') }}</a>
     </div>
   </api-form-card>
 </template>

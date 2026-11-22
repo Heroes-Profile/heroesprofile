@@ -5,6 +5,8 @@
       <span class="uppercase text-gray-medium">{{ $t('Latest commits to Heroes Profile') }}</span>
     </div>
 
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
+
     <!-- Phones show one branch at a time; wider screens show both side by side -->
     <div class="md:hidden max-w-[120rem] w-full mx-auto px-4 mb-4 flex justify-center">
       <tab-button :tabs="branches.map(branch => ({ key: branch.name, text: branch.title }))" :ignoreclick="true" :overridedefaultside="mobileBranch" @tab-click="mobileBranch = $event"></tab-button>
@@ -75,6 +77,7 @@ import moment from 'moment-timezone';
 export default {
   name: 'GithubChanges',
   props: {
+    patreonUser: Boolean,
     masterCommits: { type: Array, default: null },
     developCommits: { type: Array, default: null },
   },

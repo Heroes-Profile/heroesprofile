@@ -44,7 +44,7 @@ trait TranslatesInternalFailures
     {
         $error = [
             'code' => 'invalid_parameters',
-            'message' => 'One or more parameters are invalid.',
+            'message' => __('One or more parameters are invalid.'),
         ];
 
         $messages = array_values(array_filter(

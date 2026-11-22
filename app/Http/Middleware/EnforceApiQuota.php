@@ -56,7 +56,7 @@ class EnforceApiQuota
         $context = $request->attributes->get(ApiKeyGuard::REQUEST_ATTRIBUTE);
 
         if ($context === null) {
-            return $this->error('unauthenticated', 'A valid API key is required.', 401);
+            return $this->error('unauthenticated', __('A valid API key is required.'), 401);
         }
 
         // Ahead of everything else on purpose — ahead of the admin bypass, and ahead
@@ -90,7 +90,7 @@ class EnforceApiQuota
             && ApiTermsDeadline::passed()) {
             return $this->error(
                 'terms_not_accepted',
-                'The API terms of service have changed. Sign in at '.url('/Api/Terms').' and accept them to carry on using the API.',
+                __('The API terms of service have changed. Sign in at :url and accept them to carry on using the API.', ['url' => url('/Api/Terms')]),
                 403,
                 $endpoint
             );
@@ -117,7 +117,7 @@ class EnforceApiQuota
                 'plan_unresolved',
                 // The same wording the portal shows them, so the integration's error
                 // and the page they go on to read do not tell different stories.
-                $context->unresolvedMessage().' This call was not charged against any allowance.',
+                $context->unresolvedMessage().' '.__('This call was not charged against any allowance.'),
                 403,
                 $endpoint
             );
@@ -126,7 +126,7 @@ class EnforceApiQuota
         if (! $context->isEntitled()) {
             return $this->error(
                 'subscription_inactive',
-                'Your subscription is not active.',
+                __('Your subscription is not active.'),
                 403,
                 $endpoint
             );
@@ -136,7 +136,7 @@ class EnforceApiQuota
         if (! $context->account->hasProjectDetails() && ApiTermsDeadline::passed()) {
             return $this->error(
                 'project_details_required',
-                'Describe the project you use the API for at '.url('/Api/Account').' to carry on using the API.',
+                __('Describe the project you use the API for at :url to carry on using the API.', ['url' => url('/Api/Account')]),
                 403,
                 $endpoint
             );
@@ -147,7 +147,7 @@ class EnforceApiQuota
         if ($limit === null || $limit === 0) {
             return $this->error(
                 'endpoint_not_in_plan',
-                'Your plan does not include this endpoint.',
+                __('Your plan does not include this endpoint.'),
                 403,
                 $endpoint
             );
@@ -158,7 +158,7 @@ class EnforceApiQuota
         if ($usage->calls >= $limit) {
             return $this->error(
                 'quota_exceeded',
-                'Weekly limit of '.number_format($limit).' calls reached for this endpoint.',
+                __('Weekly limit of :limit calls reached for this endpoint.', ['limit' => number_format($limit)]),
                 429,
                 $endpoint
             )

@@ -92,7 +92,7 @@ class PollAdminController extends Controller
         if ($hasVotes) {
             $sent = collect($validated['options'])->pluck('id')->map(fn ($id) => (int) $id)->sort()->values();
             if ($sent->all() !== $poll->options->pluck('poll_option_id')->sort()->values()->all()) {
-                throw ValidationException::withMessages(['options' => 'This poll has votes, so options can be reworded but not added or removed.']);
+                throw ValidationException::withMessages(['options' => __('This poll has votes, so options can be reworded but not added or removed.')]);
             }
         }
 
@@ -138,7 +138,7 @@ class PollAdminController extends Controller
             'options.*.label' => ['required', 'string', 'max:100'],
             'options.*.description' => ['nullable', 'string', 'max:1000'],
         ], [
-            'slug.regex' => 'The slug can only use lowercase letters, numbers and dashes.',
+            'slug.regex' => __('The slug can only use lowercase letters, numbers and dashes.'),
         ]);
     }
 

@@ -7,12 +7,12 @@
        customer's, so it must never be possible to forget. --}}
   <div class="w-full bg-yellow text-black px-4 py-2 text-sm flex flex-wrap items-center justify-center gap-3">
     <span>
-      <strong>Viewing as {{ $apiUser->email }}.</strong>
-      Anything you do here happens on their account.
+      <strong>{{ __('Viewing as :email.', ['email' => $apiUser->email]) }}</strong>
+      {{ __('Anything you do here happens on their account.') }}
     </span>
     <form method="POST" action="/Api/Admin/Impersonate/Stop" class="inline">
       @csrf
-      <button type="submit" class="underline">Stop</button>
+      <button type="submit" class="underline">{{ __('Stop') }}</button>
     </form>
   </div>
 @endif
@@ -29,38 +29,38 @@
     </a>
 
     <div class="flex flex-wrap items-center justify-center gap-1 md:mx-auto [&>a]:px-6 [&>a]:py-3.5 [&>a]:rounded-control [&>a:hover]:bg-surface-2">
-      <a href="/Api/Docs" class="hover:text-lteal">Documentation</a>
-      <a href="/Api/Migrating" class="hover:text-lteal">Migrating</a>
+      <a href="/Api/Docs" class="hover:text-lteal">{{ __('Documentation') }}</a>
+      <a href="/Api/Migrating" class="hover:text-lteal">{{ __('Migrating') }}</a>
       <a href="https://github.com/Heroes-Profile/heroesprofile" target="_blank" rel="noopener"
-         class="hover:text-lteal flex items-center gap-1.5" title="Heroes Profile on GitHub">
-        <i class="fab fa-github"></i> GitHub
+         class="hover:text-lteal flex items-center gap-1.5" title="{{ __('Heroes Profile on GitHub') }}">
+        <i class="fab fa-github"></i> {{ __('GitHub') }}
       </a>
 
       {{-- Plans and per-endpoint limits are reached from the landing page, which is
            where someone deciding on a tier already is. --}}
 
       @if($apiUser)
-        <a href="/Api/Account" class="hover:text-lteal">Account</a>
-        <a href="/Api/Account/Billing" class="hover:text-lteal">Billing</a>
+        <a href="/Api/Account" class="hover:text-lteal">{{ __('Account') }}</a>
+        <a href="/Api/Account/Billing" class="hover:text-lteal">{{ __('Billing') }}</a>
 
         {{-- The grant, not admin mode: an admin viewing the site as a customer keeps
              the way back. --}}
         @if($apiUser->isAdmin())
-          <a href="/Api/Admin" class="hover:text-lteal">Admin</a>
+          <a href="/Api/Admin" class="hover:text-lteal">{{ __('Admin') }}</a>
         @endif
       @endif
     </div>
 
     <div class="flex flex-wrap items-center justify-center gap-4">
       {{-- The portal has its own shell, so nothing else here leads back out. --}}
-      <custom-button class="font-semibold min-w-[10.3125rem]" :href="'/'" :alt="'Main Site'" :color="'red'"><basil-icon name="arrow-small" class="text-xs mr-2 rotate-180"></basil-icon>Main Site</custom-button>
+      <custom-button class="font-semibold min-w-[10.3125rem]" :href="'/'" :alt="'Main Site'" :color="'red'"><basil-icon name="arrow-small" class="text-xs mr-2 rotate-180"></basil-icon>{{ __('Main Site') }}</custom-button>
 
       @if($apiUser)
         {{-- Keyed on what the API will actually answer with, not on `migrated`
              alone — an account with no plan is on fixtures too. --}}
         @if($navServesFixtures)
-          <a href="/Api/Account" class="px-2 py-1 rounded-control bg-yellow text-black text-xs" title="Your API calls are returning example data, not live data">
-            Test data
+          <a href="/Api/Account" class="px-2 py-1 rounded-control bg-yellow text-black text-xs" title="{{ __('Your API calls are returning example data, not live data') }}">
+            {{ __('Test data') }}
           </a>
         @endif
 
@@ -70,7 +70,7 @@
 
         <form method="POST" action="/Api/Logout" class="inline">
           @csrf
-          <button type="submit" class="btn bg-blue hover:bg-lblue font-semibold">Logout</button>
+          <button type="submit" class="btn bg-blue hover:bg-lblue font-semibold">{{ __('Logout') }}</button>
         </form>
       @else
         <custom-button class="font-semibold" :href="'/Api/Login'" :text="'Login'" :alt="'Login'" :color="'teal'"></custom-button>
@@ -78,6 +78,8 @@
       @endif
 
       <dark-mode-toggle class="!flex items-center" :darkmode="{{ json_encode($darkmode) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></dark-mode-toggle>
+      {{-- The site's language, the same picker and setting as the main site's nav --}}
+      <language-picker :locale="'{{ app()->getLocale() }}'" :locales="{{ json_encode(config('app.supported_locales')) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></language-picker>
     </div>
   </div>
 </nav>

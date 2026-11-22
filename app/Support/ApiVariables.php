@@ -73,7 +73,7 @@ class ApiVariables
                 'used_by' => 'Global statistics, leaderboards',
                 'summary' => 'A tier id, not a name. All four parameters take the same set.',
                 'pairs' => LeagueTier::orderBy('tier_id')->get()->mapWithKeys(
-                    fn ($tier) => [(string) $tier->tier_id => $tier->tier_name ?? $tier->name ?? (string) $tier->tier_id]
+                    fn ($tier) => [(string) $tier->tier_id => ucfirst($tier->tier_name ?? $tier->name ?? (string) $tier->tier_id)]
                 )->all(),
             ],
             [

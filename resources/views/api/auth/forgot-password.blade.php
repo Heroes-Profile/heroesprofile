@@ -1,6 +1,7 @@
 @extends('layouts.api')
 
-@section('title', 'Forgot Password')
+@section('title', __('Forgot Password'))
+@section('robots', 'noindex, nofollow')
 
 @section('content')
   <api-forgot-password

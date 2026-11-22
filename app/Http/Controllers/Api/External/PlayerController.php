@@ -82,7 +82,7 @@ class PlayerController extends Controller
             [$ids, $unknown] = ApiParameters::regionIds($request->input('region'));
 
             if ($unknown !== []) {
-                return $this->error('unknown_region', 'Not a recognised region: '.implode(', ', $unknown).'. Use NA, EU, KR or CN.', 422);
+                return $this->error('unknown_region', __('Not a recognised region: :values. Use NA, EU, KR or CN.', ['values' => implode(', ', $unknown)]), 422);
             }
 
             $request->merge(['region' => $ids[0] ?? null]);
@@ -101,11 +101,11 @@ class PlayerController extends Controller
         $blizzId = $this->globalDataService->getBlizzIDGivenFullBattletag($validated['battletag'], $validated['region']);
 
         if ($blizzId === null) {
-            return $this->error('player_not_found', 'No player found for that battletag and region.', 404);
+            return $this->error('player_not_found', __('No player found for that battletag and region.'), 404);
         }
 
         if ($this->globalDataService->isRestrictedAccount($blizzId, $validated['region'])) {
-            return $this->error('player_unavailable', 'That player has made their profile private.', 403);
+            return $this->error('player_unavailable', __('That player has made their profile private.'), 403);
         }
 
         $region = (int) $validated['region'];
@@ -159,7 +159,7 @@ class PlayerController extends Controller
     public function awardGames(Request $request): Response
     {
         if (! $request->filled('award_id')) {
-            return $this->error('missing_award_id', 'This endpoint needs an award_id. `players/awards` lists them.', 422);
+            return $this->error('missing_award_id', __('This endpoint needs an award_id. `players/awards` lists them.'), 422);
         }
 
         return $this->delegate($request, PlayerAwardsController::class, 'getAwardGames', [
@@ -226,7 +226,7 @@ class PlayerController extends Controller
         if (! $request->filled('type')) {
             return $this->error(
                 'missing_type',
-                'This endpoint needs a type: `friend` for team-mates, `enemy` for opponents.',
+                __('This endpoint needs a type: `friend` for team-mates, `enemy` for opponents.'),
                 422
             );
         }
@@ -312,7 +312,7 @@ class PlayerController extends Controller
             [$ids, $unknown] = ApiParameters::regionIds($request->input('region'));
 
             if ($unknown !== []) {
-                return $this->error('unknown_region', 'Not a recognised region: '.implode(', ', $unknown).'. Use NA, EU, KR or CN.', 422);
+                return $this->error('unknown_region', __('Not a recognised region: :values. Use NA, EU, KR or CN.', ['values' => implode(', ', $unknown)]), 422);
             }
 
             $request->merge(['region' => $ids[0] ?? null]);
@@ -329,7 +329,7 @@ class PlayerController extends Controller
             [$gameTypes, $unknown] = ApiParameters::gameTypes($request->input('game_type'));
 
             if ($unknown !== []) {
-                return $this->error('unknown_game_type', 'Not a recognised game type: '.implode(', ', $unknown).'.', 422);
+                return $this->error('unknown_game_type', __('Not a recognised game type: :values.', ['values' => implode(', ', $unknown)]), 422);
             }
         }
 
@@ -342,16 +342,16 @@ class PlayerController extends Controller
         );
 
         if (! $validating && $blizzId === null) {
-            return $this->error('player_not_found', 'No player found for that battletag and region.', 404);
+            return $this->error('player_not_found', __('No player found for that battletag and region.'), 404);
         }
 
         if (! $validating && $this->globalDataService->isRestrictedAccount($blizzId, $validated['region'])) {
-            return $this->error('player_unavailable', 'That player has made their profile private.', 403);
+            return $this->error('player_unavailable', __('That player has made their profile private.'), 403);
         }
 
         // An unknown name would otherwise read as a player with no rating.
         if ($subjectParam !== null && $this->globalDataService->getMMRTypeValue($request->input($subjectParam)) === null) {
-            return $this->error('unknown_'.$subjectParam, 'Not a recognised '.$subjectParam.': '.$request->input($subjectParam).'.', 422);
+            return $this->error('unknown_'.$subjectParam, __('Not a recognised :parameter: :values.', ['parameter' => $subjectParam, 'values' => $request->input($subjectParam)]), 422);
         }
 
         if ($validating) {
@@ -389,7 +389,7 @@ class PlayerController extends Controller
             // The site offers a hero filter only on the "all" pages. Here the
             // controller would ignore it for the matches and swap the rating shown.
             if ($page !== 'hero' && $request->has('hero')) {
-                return $this->error('unsupported_parameter', '`hero` is not accepted here. Use the "all" endpoint to filter by hero.', 422);
+                return $this->error('unsupported_parameter', __('`hero` is not accepted here. Use the "all" endpoint to filter by hero.'), 422);
             }
 
             // Without it the internal controller reads a property off a null
@@ -446,7 +446,7 @@ class PlayerController extends Controller
         // History is one game type at a time; the controller would quietly use the
         // first of several.
         if ($request->filled('game_type') && count(ApiParameters::gameTypes($request->input('game_type'))[0]) > 1) {
-            return $this->error('single_game_type_only', 'This endpoint takes one game type.', 422);
+            return $this->error('single_game_type_only', __('This endpoint takes one game type.'), 422);
         }
 
         return $this->delegate($request, PlayerMMRController::class, 'getData', [
@@ -469,7 +469,7 @@ class PlayerController extends Controller
         // Required internally, and a miss there answers 200 with an error body
         // rather than a status a caller can branch on.
         if (! $request->filled('hero')) {
-            return $this->error('missing_hero', 'This endpoint needs a hero to report builds for.', 422);
+            return $this->error('missing_hero', __('This endpoint needs a hero to report builds for.'), 422);
         }
 
         // `fromdate` was this endpoint's only date filter before start_date/end_date.
@@ -507,7 +507,7 @@ class PlayerController extends Controller
             [$ids, $unknown] = ApiParameters::regionIds($request->input('region'));
 
             if ($unknown !== []) {
-                return $this->error('unknown_region', 'Not a recognised region: '.implode(', ', $unknown).'. Use NA, EU, KR or CN.', 422);
+                return $this->error('unknown_region', __('Not a recognised region: :values. Use NA, EU, KR or CN.', ['values' => implode(', ', $unknown)]), 422);
             }
 
             $request->merge(['region' => $ids[0] ?? null]);
@@ -517,7 +517,7 @@ class PlayerController extends Controller
             [$codes, $unknown] = ApiParameters::gameTypes($request->input('game_type'));
 
             if ($unknown !== []) {
-                return $this->error('unknown_game_type', 'Not a recognised game type: '.implode(', ', $unknown).'. Accepted: '.implode(', ', ApiParameters::GAME_TYPES).'.', 422);
+                return $this->error('unknown_game_type', __('Not a recognised game type: :values. Accepted: :accepted.', ['values' => implode(', ', $unknown), 'accepted' => implode(', ', ApiParameters::GAME_TYPES)]), 422);
             }
 
             $input = $request->input('game_type');
@@ -544,7 +544,7 @@ class PlayerController extends Controller
         if (! $validating && $blizzId === null) {
             return $this->error(
                 'player_not_found',
-                'No player found for that battletag and region.',
+                __('No player found for that battletag and region.'),
                 404
             );
         }
@@ -552,7 +552,7 @@ class PlayerController extends Controller
         if (! $validating && $this->globalDataService->isRestrictedAccount($blizzId, $validated['region'])) {
             return $this->error(
                 'player_unavailable',
-                'That player has made their profile private.',
+                __('That player has made their profile private.'),
                 403
             );
         }
@@ -571,7 +571,7 @@ class PlayerController extends Controller
                 ->firstWhere('name', $request->input('hero'))?->id;
 
             if ($heroId === null) {
-                return $this->error('unknown_hero', 'No hero by that name.', 422);
+                return $this->error('unknown_hero', __('No hero by that name.'), 422);
             }
 
             $request->merge(['hero' => $heroId]);

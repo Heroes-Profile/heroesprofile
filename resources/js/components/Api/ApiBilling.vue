@@ -8,35 +8,32 @@
 
       <div v-if="subscriptionissue" class="bg-lighten border-l-4 border-red p-4 mb-8">
         <p class="text-sm">
-          <strong>Your API key is being refused.</strong>
+          <strong>{{ $t('Your API key is being refused.') }}</strong>
           {{ subscriptionissue }}
         </p>
       </div>
 
       <div v-if="servesfixtures" class="bg-lighten border-l-4 border-yellow p-4 mb-8">
         <p class="text-sm">
-          <strong>Your API calls are returning example data.</strong>
-          Subscribing does not change that on its own — live data is switched on from your
-          <a href="/Api/Account" class="underline hover:text-lteal">account page</a>.
-          Responses carry <code class="text-lteal">X-HP-Data-Source: fixture</code> while this is the case.
+          <strong>{{ $t('Your API calls are returning example data.') }}</strong>
+          {{ $t('Subscribing does not change that on its own — live data is switched on from your') }}
+          <a href="/Api/Account" class="underline hover:text-lteal">{{ $t('account page') }}</a>{{ $t('. Responses carry') }} <code class="text-lteal">X-HP-Data-Source: fixture</code> {{ $t('while this is the case.') }}
         </p>
       </div>
 
       <div v-if="!twitchlive" class="bg-lighten border-l-4 border-yellow p-4 mb-8">
         <p class="text-sm">
-          <strong>The Twitch extension is not live yet.</strong>
-          It is waiting on review by Twitch. Please do not subscribe just for the extension
-          until we announce it, or until its settings appear on your
-          <a href="/Api/Account" class="underline hover:text-lteal">account page</a>.
-          Once it is live it comes with a free trial, so you can try it there before paying.
+          <strong>{{ $t('The Twitch extension is not live yet.') }}</strong>
+          {{ $t('It is waiting on review by Twitch. Please do not subscribe just for the extension until we announce it, or until its settings appear on your') }}
+          <a href="/Api/Account" class="underline hover:text-lteal">{{ $t('account page') }}</a>{{ $t('. Once it is live it comes with a free trial, so you can try it there before paying.') }}
         </p>
       </div>
 
       <div class="bg-lighten p-6 mb-8">
-        <h2 class="text-lg mb-4">Payment Method</h2>
+        <h2 class="text-lg mb-4">{{ $t('Payment Method') }}</h2>
 
         <div v-if="card && !showCardForm" class="flex flex-wrap items-center gap-4">
-          <span class="capitalize">{{ card.brand }} ending {{ card.last_four }}</span>
+          <span class="capitalize">{{ $t(':brand ending :last_four', { brand: card.brand, last_four: card.last_four }) }}</span>
           <custom-button @click="startCardUpdate" :text="'Update Card'" :alt="'Update card'" :size="'small'" :ignoreclick="true"></custom-button>
         </div>
 
@@ -50,86 +47,85 @@
               @click="saveCard"
               class="btn bg-blue hover:bg-lblue disabled:bg-gray-medium"
             >
-              {{ savingCard ? 'Saving…' : 'Save Card' }}
+              {{ savingCard ? $t('Saving…') : $t('Save Card') }}
             </button>
             <custom-button v-if="card" @click="showCardForm = false" :text="'Cancel'" :alt="'Cancel'" :size="'small'" :ignoreclick="true"></custom-button>
           </div>
         </div>
 
         <p v-if="!card && !showCardForm" class="text-sm text-gray-medium">
-          No card on file. Add one to subscribe.
+          {{ $t('No card on file. Add one to subscribe.') }}
         </p>
       </div>
 
       <div v-if="granted.length" class="bg-lighten border-l-4 border-teal p-6 mb-8">
-        <h2 class="text-lg mb-2">Special Access</h2>
+        <h2 class="text-lg mb-2">{{ $t('Special Access') }}</h2>
         <p class="text-sm text-gray-medium mb-3">
-          Access you hold without a subscription here. You can still buy a higher plan
-          below if you want more than this.
+          {{ $t('Access you hold without a subscription here. You can still buy a higher plan below if you want more than this.') }}
         </p>
         <ul class="text-sm list-disc list-inside space-y-1">
           <li v-for="plan in granted" :key="plan.id">
             <strong>{{ plan.name }}</strong>
             <span v-if="plan.source === 'patreon'" class="text-gray-medium">
-              — through your Patreon pledge. It lasts as long as the pledge does, and changes with it.
+              {{ $t('— through your Patreon pledge. It lasts as long as the pledge does, and changes with it.') }}
             </span>
             <span v-else class="text-gray-medium">
-              — granted to your account at no charge. Nothing to pay or cancel.
+              {{ $t('— granted to your account at no charge. Nothing to pay or cancel.') }}
             </span>
           </li>
         </ul>
       </div>
 
       <div class="bg-lighten p-6 mb-8">
-        <h2 class="text-lg mb-4">Plan</h2>
+        <h2 class="text-lg mb-4">{{ $t('Plan') }}</h2>
 
         <loading-component v-if="busy" :textoverride="true">
-          {{ busyText }}<br/>Do not close this page.
+          {{ busyText }}<br/>{{ $t('Do not close this page.') }}
         </loading-component>
 
         <template v-else>
         <div v-if="projectmissing" class="bg-darken border-l-4 border-yellow p-4 mb-4">
           <p class="text-sm">
-            <strong>Tell us about your project before subscribing.</strong>
-            A name and a short description of what you are building.
+            <strong>{{ $t('Tell us about your project before subscribing.') }}</strong>
+            {{ $t('A name and a short description of what you are building.') }}
           </p>
           <a href="/Api/Account#project" class="btn inline-block mt-3 bg-blue hover:bg-lblue text-sm">
-            Add project details
+            {{ $t('Add project details') }}
           </a>
         </div>
 
         <div v-if="active" class="mb-4 text-sm">
           <div>
-            Current plan: <strong>{{ planName(current.plan_id) }}</strong>
+            {{ $t('Current plan:') }} <strong>{{ planName(current.plan_id) }}</strong>
           </div>
           <div v-if="current.on_grace_period" class="text-yellow mt-1">
-            Cancels on {{ current.ends_at }}. You keep access until then.
+            {{ $t('Cancels on :ends_at. You keep access until then.', { ends_at: current.ends_at }) }}
           </div>
         </div>
         <div v-else-if="current" class="mb-4 text-sm text-gray-medium">
-          Your {{ planName(current.plan_id) }} subscription
-          <template v-if="current.ends_at">ended on {{ current.ends_at }}.</template>
-          <template v-else>is no longer active.</template>
-          Choose a plan below to subscribe again.
+          {{ $t('Your :plan_id subscription', { plan_id: planName(current.plan_id) }) }}
+          <template v-if="current.ends_at">{{ $t('ended on :ends_at.', { ends_at: current.ends_at }) }}</template>
+          <template v-else>{{ $t('is no longer active.') }}</template>
+          {{ $t('Choose a plan below to subscribe again.') }}
         </div>
 
         <div class="grid gap-4 md:grid-cols-3 mb-4" :class="{ 'opacity-50 pointer-events-none select-none': projectmissing }">
           <div v-for="plan in plans" :key="plan.id" class="bg-darken p-4 text-center flex flex-col">
             <div class="text-lg mb-1">{{ plan.name }}</div>
             <div class="text-2xl mb-4">
-              ${{ plan.price }} <span class="text-sm text-gray-medium">/ mo</span>
+              ${{ plan.price }} <span class="text-sm text-gray-medium">{{ $t('/ mo') }}</span>
             </div>
             <div class="mt-auto">
-              <span v-if="active && current.plan_id === plan.id" class="text-sm text-lteal">Current plan</span>
+              <span v-if="active && current.plan_id === plan.id" class="text-sm text-lteal">{{ $t('Current plan') }}</span>
               <span v-else-if="plan.granted" class="text-sm text-lteal">
-                {{ grantedSource(plan.id) === 'patreon' ? 'Included with your Patreon pledge' : 'Included with your account' }}
+                {{ grantedSource(plan.id) === 'patreon' ? $t('Included with your Patreon pledge') : $t('Included with your account') }}
               </span>
               <a
                 v-else-if="!plan.purchasable"
                 href="/Api/DeveloperTier"
                 class="btn bg-red hover:bg-lred w-full inline-block"
               >
-                Contact Us
+                {{ $t('Contact Us') }}
               </a>
               <button
                 v-else
@@ -137,13 +133,13 @@
                 @click="subscribe(plan)"
                 class="btn bg-blue hover:bg-lblue w-full disabled:bg-gray-medium"
               >
-                {{ active ? 'Switch' : 'Subscribe' }}
+                {{ active ? $t('Switch') : $t('Subscribe') }}
               </button>
             </div>
           </div>
         </div>
 
-        <p v-if="!card" class="text-sm text-gray-medium">Add a card above before choosing a plan.</p>
+        <p v-if="!card" class="text-sm text-gray-medium">{{ $t('Add a card above before choosing a plan.') }}</p>
 
         <div v-if="active && !current.on_grace_period" class="mt-4">
           <custom-button @click="cancel" :text="'Cancel Subscription'" :alt="'Cancel subscription'" :size="'small'" :color="'red'" :ignoreclick="true"></custom-button>
@@ -155,16 +151,16 @@
       </div>
 
       <div class="bg-lighten p-6 mb-8">
-        <h2 class="text-lg mb-4">Invoices</h2>
+        <h2 class="text-lg mb-4">{{ $t('Invoices') }}</h2>
 
-        <p v-if="!invoices.length" class="text-sm text-gray-medium">No invoices yet.</p>
+        <p v-if="!invoices.length" class="text-sm text-gray-medium">{{ $t('No invoices yet.') }}</p>
 
         <table v-else class="min-w-0 w-full responsive-table">
           <thead>
             <tr>
-              <th class="py-2 px-3 text-left text-sm">Date</th>
-              <th class="py-2 px-3 text-left text-sm">Total</th>
-              <th class="py-2 px-3 text-left text-sm">Invoice</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Date') }}</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Total') }}</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Invoice') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -172,7 +168,7 @@
               <td class="py-2 px-3">{{ invoice.date }}</td>
               <td class="py-2 px-3">{{ invoice.total }}</td>
               <td class="py-2 px-3">
-                <a v-if="invoice.url" :href="invoice.url" target="_blank" rel="noopener" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">View</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                <a v-if="invoice.url" :href="invoice.url" target="_blank" rel="noopener" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('View') }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
               </td>
             </tr>
           </tbody>
@@ -180,11 +176,9 @@
       </div>
 
       <div class="bg-lighten p-6">
-        <h2 class="text-lg mb-4">Endpoint Limits</h2>
+        <h2 class="text-lg mb-4">{{ $t('Endpoint Limits') }}</h2>
         <p class="text-sm text-gray-medium mb-4">
-          Every endpoint has its own weekly allowance and its own rolling seven-day
-          window, which starts on your first call to that endpoint. Calls made while
-          you are receiving test data are not counted.
+          {{ $t('Every endpoint has its own weekly allowance and its own rolling seven-day window, which starts on your first call to that endpoint. Calls made while you are receiving test data are not counted.') }}
         </p>
         <api-usage-table :usage="usage"></api-usage-table>
       </div>
@@ -307,7 +301,7 @@ export default {
         this.elements.create('payment').mount(this.$refs.paymentElement);
         this.elements.create('address', { mode: 'billing' }).mount(this.$refs.addressElement);
       } catch (error) {
-        this.error = 'Could not load the payment form. Please refresh and try again.';
+        this.error = this.$t('Could not load the payment form. Please refresh and try again.');
       }
     },
     async saveCard(){
@@ -333,17 +327,17 @@ export default {
 
         this.card = response.data.payment_method;
         this.showCardForm = false;
-        this.notice = 'Card saved.';
+        this.notice = this.$t('Card saved.');
       } catch (e) {
-        this.error = e.response?.data?.error || 'Could not save that card.';
+        this.error = e.response?.data?.error || this.$t('Could not save that card.');
       }
 
       this.savingCard = false;
     },
     async subscribe(plan){
       this.busyText = this.active
-        ? 'Switching to ' + plan.name + '...'
-        : 'Starting your ' + plan.name + ' subscription...';
+        ? this.$t('Switching to :plan...', { plan: plan.name })
+        : this.$t('Starting your :plan subscription...', { plan: plan.name });
       this.busy = true;
       this.error = null;
       this.notice = null;
@@ -357,14 +351,14 @@ export default {
           return;
         }
 
-        this.error = e.response?.data?.error || 'Could not change your plan.';
+        this.error = e.response?.data?.error || this.$t('Could not change your plan.');
         this.busy = false;
       }
     },
     // The bank wants 3D Secure. The subscription already exists but is unpaid, so
     // the customer has to finish here or it is voided in about a day.
     async confirmPayment(clientSecret){
-      this.busyText = 'Waiting for your bank to confirm...';
+      this.busyText = this.$t('Waiting for your bank to confirm...');
 
       try {
         // Stripe.js is only initialised when the card form mounts, and a customer
@@ -380,16 +374,16 @@ export default {
 
         window.location.reload();
       } catch (e) {
-        this.error = 'Could not confirm the payment with your bank. Open your billing page again to retry.';
+        this.error = this.$t('Could not confirm the payment with your bank. Open your billing page again to retry.');
         this.busy = false;
       }
     },
     async cancel(){
-      if(!confirm('Cancel your subscription? You keep access until the end of the current period.')){
+      if(!confirm(this.$t('Cancel your subscription? You keep access until the end of the current period.'))){
         return;
       }
 
-      this.busyText = 'Cancelling your subscription...';
+      this.busyText = this.$t('Cancelling your subscription...');
       this.busy = true;
       this.error = null;
 
@@ -397,12 +391,12 @@ export default {
         await this.$axios.post('/api/v1/account/billing/cancel');
         window.location.reload();
       } catch (e) {
-        this.error = e.response?.data?.error || 'Could not cancel.';
+        this.error = e.response?.data?.error || this.$t('Could not cancel.');
         this.busy = false;
       }
     },
     async resume(){
-      this.busyText = 'Resuming your subscription...';
+      this.busyText = this.$t('Resuming your subscription...');
       this.busy = true;
       this.error = null;
 
@@ -410,7 +404,7 @@ export default {
         await this.$axios.post('/api/v1/account/billing/resume');
         window.location.reload();
       } catch (e) {
-        this.error = e.response?.data?.error || 'Could not resume.';
+        this.error = e.response?.data?.error || this.$t('Could not resume.');
         this.busy = false;
       }
     },

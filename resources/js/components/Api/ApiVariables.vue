@@ -1,10 +1,8 @@
 <template>
   <section id="variables" class="mb-10 scroll-mt-4">
-    <h2 class="text-2xl mb-2">Variables</h2>
+    <h2 class="text-2xl mb-2">{{ $t('Variables') }}</h2>
     <p class="text-sm text-gray-medium mb-4 max-w-[70ch]">
-      What every parameter accepts, read from the same tables the validators check
-      against. Values are case-sensitive and must match exactly; anything else is
-      rejected with a 422 naming the parameter.
+      {{ $t('What every parameter accepts, read from the same tables the validators check against. Values are case-sensitive and must match exactly; anything else is rejected with a 422 naming the parameter.') }}
     </p>
 
     <article
@@ -15,7 +13,7 @@
     >
       <div class="flex flex-wrap items-baseline gap-3 mb-1">
         <code class="text-lg text-lteal">{{ variable.name }}</code>
-        <span v-if="variable.also" class="text-xs text-gray-medium">also {{ variable.also }}</span>
+        <span v-if="variable.also" class="text-xs text-gray-medium">{{ $t('also :also', { also: variable.also }) }}</span>
       </div>
 
       <div v-if="linkedFrom[variable.name]" class="flex flex-wrap gap-x-4 gap-y-1 text-xs mb-2">
@@ -24,25 +22,25 @@
           :key="op.id"
           :href="'#' + op.id"
           class="link"
-        >&larr; Back to {{ op.path }}</a>
+        >{{ $t('← Back to :path', { path: op.path }) }}</a>
       </div>
 
-      <p class="text-xs text-gray-medium mb-2">{{ variable.used_by }}</p>
-      <p class="text-sm mb-4">{{ variable.summary }}</p>
+      <p class="text-xs text-gray-medium mb-2">{{ $t(variable.used_by) }}</p>
+      <p class="text-sm mb-4">{{ $t(variable.summary) }}</p>
 
       <!-- Paired values carry a meaning the value itself does not show: `1` is
            NA, `sl` is Storm League. Bare lists just need to be readable. -->
       <table v-if="variable.pairs" class="min-w-0 w-full responsive-table">
         <thead>
           <tr>
-            <th class="py-2 px-3 text-left text-sm">Pass</th>
-            <th class="py-2 px-3 text-left text-sm">Means</th>
+            <th class="py-2 px-3 text-left text-sm">{{ $t('Pass') }}</th>
+            <th class="py-2 px-3 text-left text-sm">{{ $t('Means') }}</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(label, value) in variable.pairs" :key="value">
             <td class="py-2 px-3">{{ value }}</td>
-            <td class="py-2 px-3">{{ label }}</td>
+            <td class="py-2 px-3">{{ $t(label) }}</td>
           </tr>
         </tbody>
       </table>
@@ -59,7 +57,7 @@
           class="text-xs text-lteal underline"
           @click="toggle(variable.name)"
         >
-          {{ expanded[variable.name] ? 'show fewer' : 'show all ' + variable.values.length }}
+          {{ expanded[variable.name] ? $t('show fewer') : $t('show all :count', { count: variable.values.length }) }}
         </button>
       </div>
     </article>

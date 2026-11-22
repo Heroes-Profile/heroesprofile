@@ -181,14 +181,14 @@ class GlobalStatsController extends Controller
 
         // The SL rank board is site-only for now
         if (is_string($type) && strtolower(trim($type)) === 'sl rank') {
-            return $this->unsupported('type=sl rank', 'The SL rank board is not available through the API.');
+            return $this->unsupported('type=sl rank', __('The SL rank board is not available through the API.'));
         }
 
         // The controller interpolates it into a cache key and a `where`, so a list
         // is a 500 there rather than a refusal.
         if ($request->filled('game_type') && (is_array($request->input('game_type')) || str_contains($request->input('game_type'), ','))) {
             return response()->json([
-                'error' => ['code' => 'single_game_type_only', 'message' => 'This endpoint takes one game type.'],
+                'error' => ['code' => 'single_game_type_only', 'message' => __('This endpoint takes one game type.')],
             ], 422);
         }
 
@@ -196,7 +196,7 @@ class GlobalStatsController extends Controller
         foreach (['hero', 'role'] as $subject) {
             if ($type === $subject && ! $request->filled($subject)) {
                 return response()->json([
-                    'error' => ['code' => 'missing_'.$subject, 'message' => 'A `'.$subject.'` board needs a '.$subject.'.'],
+                    'error' => ['code' => 'missing_'.$subject, 'message' => __('A `:subject` board needs a :subject.', ['subject' => $subject])],
                 ], 422);
             }
         }
@@ -206,14 +206,14 @@ class GlobalStatsController extends Controller
             // narrow it. Refused rather than silently ignored.
             foreach (['groupsize', 'region', 'tierrank', 'hero', 'role'] as $parameter) {
                 if ($request->has($parameter)) {
-                    return $this->unsupported($parameter, 'The match prediction board does not filter by it.');
+                    return $this->unsupported($parameter, __('The match prediction board does not filter by it.'));
                 }
             }
 
             if ($request->filled('season')
                 && ! MatchPredictionSeason::where('match_prediction_season_id', $request->input('season'))->exists()) {
                 return response()->json([
-                    'error' => ['code' => 'unknown_season', 'message' => 'Not a match prediction season.'],
+                    'error' => ['code' => 'unknown_season', 'message' => __('Not a match prediction season.')],
                 ], 422);
             }
 
@@ -233,7 +233,7 @@ class GlobalStatsController extends Controller
 
             if ($heroId === null) {
                 return response()->json([
-                    'error' => ['code' => 'unknown_hero', 'message' => 'No hero by that name.'],
+                    'error' => ['code' => 'unknown_hero', 'message' => __('No hero by that name.')],
                 ], 422);
             }
 
@@ -258,7 +258,7 @@ class GlobalStatsController extends Controller
     {
         // Already one row per map; the controller never reads it.
         if ($request->has('game_map')) {
-            return $this->unsupported('game_map', 'This endpoint already reports every map.');
+            return $this->unsupported('game_map', __('This endpoint already reports every map.'));
         }
 
         return $this->delegate($request, GlobalHeroMapStatsController::class, 'getHeroStatMapData', [], ['hero']);
@@ -355,13 +355,13 @@ class GlobalStatsController extends Controller
         return match ($response->getStatusCode()) {
             202 => $this->describeJob($response, $jobId),
             404 => response()->json([
-                'error' => ['code' => 'job_not_found', 'message' => 'No job with that id. Jobs expire once collected or after they age out.'],
+                'error' => ['code' => 'job_not_found', 'message' => __('No job with that id. Jobs expire once collected or after they age out.')],
             ], 404),
             422 => response()->json([
-                'error' => ['code' => 'query_too_large', 'message' => GlobalQueryService::TOO_LARGE_MESSAGE],
+                'error' => ['code' => 'query_too_large', 'message' => __(GlobalQueryService::TOO_LARGE_MESSAGE)],
             ], 422),
             500 => response()->json([
-                'error' => ['code' => 'job_failed', 'message' => 'The query behind this job failed. Make the original call again to start a new one.'],
+                'error' => ['code' => 'job_failed', 'message' => __('The query behind this job failed. Make the original call again to start a new one.')],
             ], 500),
             default => $response,
         };
@@ -419,7 +419,7 @@ class GlobalStatsController extends Controller
         return response()->json([
             'error' => [
                 'code' => 'unknown_'.$parameter,
-                'message' => 'Not a recognised '.str_replace('_', ' ', $parameter).': '.implode(', ', $values).'.',
+                'message' => __('Not a recognised :parameter: :values.', ['parameter' => str_replace('_', ' ', $parameter), 'values' => implode(', ', $values)]),
                 'accepted' => $parameter === 'game_type'
                     ? ApiParameters::GAME_TYPES
                     : ['NA', 'EU', 'KR', 'CN'],
@@ -461,7 +461,7 @@ class GlobalStatsController extends Controller
             return response()->json([
                 'error' => [
                     'code' => 'group_by_map_unsupported',
-                    'message' => 'This endpoint does not group by map.'
+                    'message' => __('This endpoint does not group by map.')
                         .' `heroes/maps` already reports one hero across every map,'
                         .' and `heroes/talents/builds/all` is a query per hero already —'
                         .' grouping that by map would be one call for every hero on every map.',
@@ -480,7 +480,7 @@ class GlobalStatsController extends Controller
                 return response()->json([
                     'error' => [
                         'code' => 'missing_'.$parameter,
-                        'message' => 'This endpoint needs a '.str_replace('_', ' ', $parameter).'.',
+                        'message' => __('This endpoint needs a :parameter.', ['parameter' => str_replace('_', ' ', $parameter)]),
                     ],
                 ], 422);
             }
@@ -595,8 +595,7 @@ class GlobalStatsController extends Controller
                 return response()->json([
                     'error' => [
                         'code' => 'timeframe_unavailable',
-                        'message' => 'That patch is not available on this endpoint. The oldest it accepts is '
-                            .$minimumPatch.'. `patches` lists every patch, and the oldest for each endpoint.',
+                        'message' => __('That patch is not available on this endpoint. The oldest it accepts is :patch. `patches` lists every patch, and the oldest for each endpoint.', ['patch' => $minimumPatch]),
                     ],
                 ], 422);
             }
@@ -606,9 +605,7 @@ class GlobalStatsController extends Controller
             return response()->json([
                 'error' => [
                     'code' => 'timeframe_too_wide',
-                    'message' => 'One request covers at most one major patch, such as 2.55. Send a single `major` timeframe,'
-                        .' or builds and sub patches that all belong to the same major patch.'
-                        .' For two months after a new major patch, it can be combined with the one before it.',
+                    'message' => __('One request covers at most one major patch, such as 2.55. Send a single `major` timeframe, or builds and sub patches that all belong to the same major patch. For two months after a new major patch, it can be combined with the one before it.'),
                 ],
             ], 422);
         }
@@ -645,9 +642,11 @@ class GlobalStatsController extends Controller
                 return response()->json([
                     'error' => [
                         'code' => 'group_by_map_timeframe_too_old',
-                        'message' => '`group_by_map` only covers the last '.self::GROUP_BY_MAP_MONTHS.' months.'
-                            .' Every build in `timeframe` must have been released since '.$cutoff->toDateString().';'
-                            .' '.$patch->game_version.' was not. Drop `group_by_map` or send newer builds.',
+                        'message' => __('`group_by_map` only covers the last :months months. Every build in `timeframe` must have been released since :date; :version was not. Drop `group_by_map` or send newer builds.', [
+                            'months' => self::GROUP_BY_MAP_MONTHS,
+                            'date' => $cutoff->toDateString(),
+                            'version' => $patch->game_version,
+                        ]),
                     ],
                 ], 422);
             }
@@ -711,7 +710,7 @@ class GlobalStatsController extends Controller
                 return response()->json([
                     'error' => [
                         'code' => 'unknown_'.$parameter,
-                        'message' => 'Not a recognised '.str_replace('_', ' ', $parameter).': '.implode(', ', $unknown).'. The Variables section of the docs lists them.',
+                        'message' => __('Not a recognised :parameter: :values. The Variables section of the docs lists them.', ['parameter' => str_replace('_', ' ', $parameter), 'values' => implode(', ', $unknown)]),
                     ],
                 ], 422);
             }
@@ -723,7 +722,7 @@ class GlobalStatsController extends Controller
     private function unsupported(string $parameter, string $why): Response
     {
         return response()->json([
-            'error' => ['code' => 'unsupported_parameter', 'message' => '`'.$parameter.'` is not accepted here. '.$why],
+            'error' => ['code' => 'unsupported_parameter', 'message' => __('`:parameter` is not accepted here.', ['parameter' => $parameter]).' '.$why],
         ], 422);
     }
 

@@ -65,7 +65,7 @@ class TwitchController extends Controller
     public function handleTwitchCallback(Request $request)
     {
         if ($request->filled('error')) {
-            return redirect(self::SECTION_URL)->withErrors(['twitch' => 'Twitch sign-in was cancelled.']);
+            return redirect(self::SECTION_URL)->withErrors(['twitch' => __('Twitch sign-in was cancelled.')]);
         }
 
         try {
@@ -75,11 +75,11 @@ class TwitchController extends Controller
         } catch (InvalidStateException $e) {
             Log::error('InvalidStateException linking Twitch to an API account: '.$e->getMessage());
 
-            return redirect(self::SECTION_URL)->withErrors(['twitch' => 'That Twitch sign-in did not complete. Please try again.']);
+            return redirect(self::SECTION_URL)->withErrors(['twitch' => __('That Twitch sign-in did not complete. Please try again.')]);
         }
 
         if (empty($twitchUser->id) || empty($twitchUser->nickname)) {
-            return redirect(self::SECTION_URL)->withErrors(['twitch' => 'Twitch did not tell us which channel you signed in with. Please try again.']);
+            return redirect(self::SECTION_URL)->withErrors(['twitch' => __('Twitch did not tell us which channel you signed in with. Please try again.')]);
         }
 
         $account = $this->account();
@@ -91,9 +91,7 @@ class TwitchController extends Controller
         // channel that was unlinked comes back with its trial already used.
         if ($existing && $existing->user_id !== null && $existing->user_id !== $account->id) {
             return redirect(self::SECTION_URL)->withErrors([
-                'twitch' => 'That Twitch channel is already connected to a different Heroes Profile API account. '
-                    .'Sign in to that account and disconnect it there first. '
-                    .'If you no longer have access to it, email zemill@heroesprofile.com.',
+                'twitch' => __('That Twitch channel is already connected to a different Heroes Profile API account. Sign in to that account and disconnect it there first. If you no longer have access to it, email :email.', ['email' => 'zemill@heroesprofile.com']),
             ]);
         }
 
@@ -114,7 +112,7 @@ class TwitchController extends Controller
             $account->forceFill(['twitch_extension' => 1])->save();
         });
 
-        return redirect(self::SECTION_URL)->with('twitch_status', 'Twitch channel connected.');
+        return redirect(self::SECTION_URL)->with('twitch_status', __('Twitch channel connected.'));
     }
 
     public function redirectToBattlenet(Request $request, BattlenetPlayerLink $battlenet)
@@ -124,7 +122,7 @@ class TwitchController extends Controller
         ]);
 
         if (! $this->account()->twitchChannel) {
-            return redirect(self::SECTION_URL)->withErrors(['battlenet' => 'Connect your Twitch channel first.']);
+            return redirect(self::SECTION_URL)->withErrors(['battlenet' => __('Connect your Twitch channel first.')]);
         }
 
         $request->session()->put('twitch_battlenet_region', (int) $validated['region']);
@@ -138,7 +136,7 @@ class TwitchController extends Controller
         $channel = $this->account()->twitchChannel;
 
         if ($region === null || ! $channel) {
-            return redirect(self::SECTION_URL)->withErrors(['battlenet' => 'Battle.net sign-in did not complete. Please try again.']);
+            return redirect(self::SECTION_URL)->withErrors(['battlenet' => __('Battle.net sign-in did not complete. Please try again.')]);
         }
 
         $player = $battlenet->player($request, self::BATTLENET_CALLBACK, $region);
@@ -198,7 +196,7 @@ class TwitchController extends Controller
         $channel = $this->channelOrFail();
 
         if ($validated['listing_opt_in'] && ! ($validated['accept_terms'] ?? false)) {
-            return response()->json(['error' => 'Accept the streamer code of conduct to be listed.'], 422);
+            return response()->json(['error' => __('Accept the streamer code of conduct to be listed.')], 422);
         }
 
         $channel->forceFill($validated['listing_opt_in']
@@ -271,7 +269,7 @@ class TwitchController extends Controller
     {
         $channel = $this->account()->twitchChannel;
 
-        abort_if($channel === null, 404, 'Connect a Twitch channel first.');
+        abort_if($channel === null, 404, __('Connect a Twitch channel first.'));
 
         return $channel;
     }

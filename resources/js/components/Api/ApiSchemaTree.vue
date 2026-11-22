@@ -6,7 +6,7 @@
           v-if="row.children"
           class="text-lteal w-4 text-left"
           @click="toggle(row.name)"
-          :aria-label="open[row.name] ? 'Collapse' : 'Expand'"
+          :aria-label="open[row.name] ? $t('Collapse') : $t('Expand')"
         >{{ open[row.name] ? '−' : '+' }}</button>
         <span v-else class="w-4"></span>
 
@@ -15,8 +15,8 @@
         <!-- `required` in the spec, but it means the opposite of the same word in
              the Parameters table: there it is something you must send, here it is
              something we always return. Labelled for what it means to a reader. -->
-        <span v-if="row.required" class="text-yellow text-xs" title="This field is present in every response">always present</span>
-        <span v-if="row.description" class="text-xs">{{ row.description }}</span>
+        <span v-if="row.required" class="text-yellow text-xs" :title="$t('This field is present in every response')">{{ $t('always present') }}</span>
+        <span v-if="row.description" class="text-xs">{{ $t(row.description) }}</span>
       </div>
 
       <div v-if="row.children && open[row.name]" class="ml-4 border-l border-lighten pl-3">
@@ -98,10 +98,10 @@ export default {
     /* `string`, `string or null`, `array of object` — readable rather than exact. */
     label(node) {
       const types = Array.isArray(node.type) ? node.type : [node.type];
-      const name = types.filter(Boolean).join(' or ') || 'any';
+      const name = types.filter(Boolean).join(' ' + this.$t('or') + ' ') || this.$t('any');
 
       if (this.typeOf(node) === 'array' && node.items) {
-        return 'array of ' + this.label(node.items);
+        return this.$t('array of :type', { type: this.label(node.items) });
       }
 
       return name;

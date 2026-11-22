@@ -26,8 +26,8 @@ class PoisonApiResponse
 
     private const JOB_SECONDS = 86400;
 
-    /** Never logged: the key itself, and the output format. */
-    private const IGNORED_PARAMS = ['api_token', 'mode'];
+    /** Never logged: the key itself, the output format and the language. */
+    private const IGNORED_PARAMS = ['api_token', 'mode', 'lang'];
 
     public function __construct(private readonly PoisonPill $pill) {}
 

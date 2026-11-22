@@ -28,7 +28,7 @@ class MatchController extends Controller
     use TranslatesInternalFailures;
 
     /** Why a replay could not be served, in words a caller can act on. */
-    private const DOWNLOAD_ERRORS = [
+    public const DOWNLOAD_ERRORS = [
         'replay_deleted' => 'That replay is no longer stored.',
         'replay_not_found' => 'No replay found for that id.',
         'replay_unavailable' => 'That replay is not currently available for download.',
@@ -62,7 +62,7 @@ class MatchController extends Controller
         // bodies, which carry only a `status`.
         if ($result instanceof Response) {
             return $result->getStatusCode() === 404
-                ? $this->error('replay_incomplete', 'That replay is not fully stored, so there is no match detail to return.', 404)
+                ? $this->error('replay_incomplete', __('That replay is not fully stored, so there is no match detail to return.'), 404)
                 : $result;
         }
 
@@ -94,7 +94,7 @@ class MatchController extends Controller
             [$validated['game_type'], $unknown] = ApiParameters::gameTypes($validated['game_type']);
 
             if ($unknown !== []) {
-                return $this->error('unknown_game_type', 'Not a recognised game type: '.implode(', ', $unknown).'.', 422);
+                return $this->error('unknown_game_type', __('Not a recognised game type: :values.', ['values' => implode(', ', $unknown)]), 422);
             }
         }
 
@@ -102,7 +102,7 @@ class MatchController extends Controller
             [$validated['game_map'], $unknown] = ApiParameters::mapIds($validated['game_map']);
 
             if ($unknown !== []) {
-                return $this->error('unknown_game_map', 'Not a recognised map: '.implode(', ', $unknown).'.', 422);
+                return $this->error('unknown_game_map', __('Not a recognised map: :values.', ['values' => implode(', ', $unknown)]), 422);
             }
         }
 
@@ -135,7 +135,7 @@ class MatchController extends Controller
         return response()->json([
             'error' => [
                 'code' => $result,
-                'message' => self::DOWNLOAD_ERRORS[$result],
+                'message' => __(self::DOWNLOAD_ERRORS[$result]),
                 'endpoint' => 'replay_download',
             ],
         ], $result === 'replay_not_found' ? 404 : 403);
@@ -190,11 +190,11 @@ class MatchController extends Controller
         $gameType = Replay::where('replayID', $replayID)->value('game_type');
 
         if ($gameType === null) {
-            return $this->error('replay_not_found', self::DOWNLOAD_ERRORS['replay_not_found'], 404);
+            return $this->error('replay_not_found', __(self::DOWNLOAD_ERRORS['replay_not_found']), 404);
         }
 
         if ((int) $gameType === 0) {
-            return $this->error('custom_match_unavailable', 'Custom games are not available through the API.', 403);
+            return $this->error('custom_match_unavailable', __('Custom games are not available through the API.'), 403);
         }
 
         return null;

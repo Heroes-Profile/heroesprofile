@@ -236,7 +236,7 @@ class ApiHomeController extends Controller
     private function formatCallLimit(?int $calls): string
     {
         if ($calls === null || $calls === 0) {
-            return 'Not included';
+            return __('Not included');
         }
 
         return number_format($calls);

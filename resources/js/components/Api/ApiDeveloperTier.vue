@@ -5,28 +5,27 @@
     <div class="mx-auto max-w-[62.5rem] p-4">
       <div class="bg-lighten p-6 mb-8">
         <p class="mb-4">
-          Thanks for your interest in the Developer Tier. Email us at
+          {{ $t('Thanks for your interest in the Developer Tier. Email us at') }}
           <a :href="mailto" class="underline hover:text-lteal">zemill@heroesprofile.com</a>
-          with the details below. We review each request to make sure Developer Tier
-          access fits your use case and our guidelines.
+          {{ $t('with the details below. We review each request to make sure Developer Tier access fits your use case and our guidelines.') }}
         </p>
 
-        <h2 class="text-lg mb-2">What To Include</h2>
+        <h2 class="text-lg mb-2">{{ $t('What To Include') }}</h2>
         <ul class="text-sm list-disc list-inside space-y-1">
-          <li>What data you are pulling and how frequently</li>
-          <li>How your app, bot, overlay or other tool works in real time</li>
-          <li>Expected request volume and scale</li>
-          <li>A quick workflow diagram or step-by-step flow from start to finish</li>
-          <li>How your project differs from Heroes Profile, and what it does that Heroes Profile doesn't</li>
+          <li>{{ $t('What data you are pulling and how frequently') }}</li>
+          <li>{{ $t('How your app, bot, overlay or other tool works in real time') }}</li>
+          <li>{{ $t('Expected request volume and scale') }}</li>
+          <li>{{ $t('A quick workflow diagram or step-by-step flow from start to finish') }}</li>
+          <li>{{ $t('How your project differs from Heroes Profile, and what it does that Heroes Profile doesn\'t') }}</li>
         </ul>
       </div>
 
       <div class="bg-lighten p-6">
         <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-          <h2 class="text-lg">Email Template</h2>
-          <custom-button @click="copyTemplate" :text="copied ? 'Copied' : 'Copy'" :alt="'Copy template'" :size="'small'" :ignoreclick="true"></custom-button>
+          <h2 class="text-lg">{{ $t('Email Template') }}</h2>
+          <custom-button @click="copyTemplate" :text="copied ? $t('Copied') : $t('Copy')" :alt="'Copy template'" :size="'small'" :ignoreclick="true"></custom-button>
         </div>
-        <p class="text-sm text-gray-medium mb-3">Copy this and fill in the details.</p>
+        <p class="text-sm text-gray-medium mb-3">{{ $t('Copy this and fill in the details.') }}</p>
         <pre class="bg-darken p-4 text-sm overflow-x-auto whitespace-pre-wrap">{{ template }}</pre>
       </div>
     </div>

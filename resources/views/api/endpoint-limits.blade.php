@@ -1,8 +1,8 @@
 @extends('layouts.api')
 
-@section('title', 'Endpoint Limits')
+@section('title', __('Endpoint Limits by Tier'))
 
-@section('meta_description', 'Weekly call allowances for every Heroes Profile API endpoint, by subscription tier.')
+@section('meta_description', __('Weekly call allowances for every Heroes Profile API endpoint, by subscription tier.'))
 
 @section('content')
   <api-endpoint-limits

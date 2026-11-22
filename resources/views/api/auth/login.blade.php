@@ -1,7 +1,8 @@
 @extends('layouts.api')
 
-@section('title', 'Sign In')
-@section('meta_description', 'Sign in to your Heroes Profile API account.')
+@section('title', __('Sign In'))
+@section('robots', 'noindex, nofollow')
+@section('meta_description', __('Sign in to your Heroes Profile API account.'))
 
 @section('content')
   <api-login

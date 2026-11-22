@@ -72,10 +72,11 @@ class ApiKeyContext
         $reason = StandingText::plain($this->suspensionReason);
 
         $opening = $this->isTerminated()
-            ? 'This account has been closed for breaching the API terms.'
-            : 'This account is suspended for breaching the API terms.';
+            ? __('This account has been closed for breaching the API terms.')
+            : __('This account is suspended for breaching the API terms.');
 
-        return trim($opening.' '.$reason).' Sign in at heroesprofile.com/Api/Account or write to zemill@heroesprofile.com.';
+        // The reason is the admin's own words and stays as written
+        return trim($opening.' '.$reason).' '.__('Sign in at :url or write to :email.', ['url' => 'heroesprofile.com/Api/Account', 'email' => 'zemill@heroesprofile.com']);
     }
 
     /**
@@ -92,11 +93,11 @@ class ApiKeyContext
         }
 
         return match ($this->unresolvedReason) {
-            'retired_plan' => 'Your subscription is on a plan we no longer offer, so we cannot tell what it includes. Pick a current plan on the billing page, or contact us and we will sort it out.',
-            'not_backfilled' => 'Your subscription has not finished moving to our new billing system. This is our doing, not yours — contact us and we will fix it.',
+            'retired_plan' => __('Your subscription is on a plan we no longer offer, so we cannot tell what it includes. Pick a current plan on the billing page, or contact us and we will sort it out.'),
+            'not_backfilled' => __('Your subscription has not finished moving to our new billing system. This is our doing, not yours — contact us and we will fix it.'),
             // Entries cached before the reason existed say only that something is
             // wrong. Better a vague message than an empty one.
-            default => 'Your subscription could not be matched to a plan. Contact us and we will sort it out.',
+            default => __('Your subscription could not be matched to a plan. Contact us and we will sort it out.'),
         };
     }
 

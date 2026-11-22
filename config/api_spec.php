@@ -52,6 +52,16 @@ return [
     ],
 
     /*
+    | `?lang=` is applied by SetApiLocale and LocalizeApiResponse to every endpoint,
+    | so it is documented once here too. BuildApiSpec fills the enum from
+    | `app.supported_locales`.
+    */
+    'lang' => [
+        'description' => 'Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.',
+        'example' => 'ko',
+    ],
+
+    /*
     | Endpoints `mode` does not apply to: a file download and two that answer plain
     | text on purpose, which deployed clients string-compare.
     */

@@ -54,7 +54,7 @@ class AnalyticsLinkController extends Controller
         $region = $request->session()->pull('analytics_battlenet_region');
 
         if ($region === null) {
-            return redirect(self::SECTION_URL)->withErrors(['analytics' => 'Battle.net sign-in did not complete. Please try again.']);
+            return redirect(self::SECTION_URL)->withErrors(['analytics' => __('Battle.net sign-in did not complete. Please try again.')]);
         }
 
         $player = $battlenet->player($request, self::CALLBACK, $region);
@@ -71,7 +71,7 @@ class AnalyticsLinkController extends Controller
 
         if ($taken) {
             return redirect(self::SECTION_URL)->withErrors([
-                'analytics' => "{$player['battletag']} is already linked to another API account. Unlink it there first.",
+                'analytics' => __(':battletag is already linked to another API account. Unlink it there first.', ['battletag' => $player['battletag']]),
             ]);
         }
 
@@ -81,7 +81,7 @@ class AnalyticsLinkController extends Controller
             'analytics_battletag' => $player['battletag'],
         ])->save();
 
-        return redirect(self::SECTION_URL)->with('analytics_status', 'Battle.net account linked.');
+        return redirect(self::SECTION_URL)->with('analytics_status', __('Battle.net account linked.'));
     }
 
     public function unlink()

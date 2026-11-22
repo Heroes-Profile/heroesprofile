@@ -1,7 +1,8 @@
 @extends('layouts.api')
 
-@section('title', 'Register')
-@section('meta_description', 'Create a Heroes Profile API account.')
+@section('title', __('Register'))
+@section('robots', 'noindex, nofollow')
+@section('meta_description', __('Create a Heroes Profile API account.'))
 
 @section('content')
   <api-register

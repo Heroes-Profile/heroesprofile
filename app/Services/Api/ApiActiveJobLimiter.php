@@ -119,8 +119,7 @@ class ApiActiveJobLimiter
         return response()->json([
             'error' => [
                 'code' => 'too_many_active_jobs',
-                'message' => 'Your account already has '.$limit.' active jobs, the most your plan allows.'
-                    .' Collect one from /v1/jobs before starting another. Cached answers are not affected.',
+                'message' => __('Your account already has :limit active jobs, the most your plan allows. Collect one from /v1/jobs before starting another. Cached answers are not affected.', ['limit' => $limit]),
             ],
         ], 429)
             ->header('Retry-After', (string) config('api.active_jobs.retry_after'))

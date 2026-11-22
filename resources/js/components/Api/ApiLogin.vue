@@ -3,23 +3,23 @@
     <form method="POST" action="/Api/Login" class="flex flex-col gap-2">
       <input type="hidden" name="_token" :value="csrf">
 
-      <label for="email">Email:</label>
+      <label for="email">{{ $t('Email:') }}</label>
       <input class="form-control search-input text-black" type="email" id="email" name="email" v-model="email" required autofocus>
 
-      <label for="password">Password:</label>
+      <label for="password">{{ $t('Password:') }}</label>
       <input class="form-control search-input text-black" type="password" id="password" name="password" required>
 
       <label class="flex items-center gap-2 my-2">
         <input type="checkbox" name="remember" value="1" class="w-5 h-5">
-        Remember me
+        {{ $t('Remember me') }}
       </label>
 
-      <button type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto my-2">Sign In</button>
+      <button type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto my-2">{{ $t('Sign In') }}</button>
     </form>
 
     <div class="text-sm space-y-1">
-      <div><a href="/Api/Password/Forgot" class="underline hover:text-lteal">Forgot your password?</a></div>
-      <div>No account? <a href="/Api/Register" class="underline hover:text-lteal">Register</a></div>
+      <div><a href="/Api/Password/Forgot" class="underline hover:text-lteal">{{ $t('Forgot your password?') }}</a></div>
+      <div>{{ $t('No account?') }} <a href="/Api/Register" class="underline hover:text-lteal">{{ $t('Register') }}</a></div>
     </div>
   </api-form-card>
 </template>

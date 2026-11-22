@@ -91,7 +91,7 @@ class AdminConsoleController extends Controller
         $account = ApiAccount::find($id);
 
         if ($account === null) {
-            return response()->json(['error' => 'No such account.'], 404);
+            return response()->json(['error' => __('No such account.')], 404);
         }
 
         $subscription = $account->subscription(ApiAccount::SUBSCRIPTION);
@@ -154,7 +154,7 @@ class AdminConsoleController extends Controller
         $account = ApiAccount::find($id);
 
         if ($account === null) {
-            return response()->json(['error' => 'No such account.'], 404);
+            return response()->json(['error' => __('No such account.')], 404);
         }
 
         if ($account->isPoisoned() !== $validated['value']) {
@@ -238,7 +238,7 @@ class AdminConsoleController extends Controller
         $account = ApiAccount::find($id);
 
         if ($account === null) {
-            return response()->json(['error' => 'No such account.'], 404);
+            return response()->json(['error' => __('No such account.')], 404);
         }
 
         $account->forceFill([$validated['flag'] => $validated['value']]);
@@ -298,7 +298,7 @@ class AdminConsoleController extends Controller
         $approval = ApiAccountApproval::where('api_account_id', $id)->find($approvalId);
 
         if ($approval === null) {
-            return response()->json(['error' => 'No such approval.'], 404);
+            return response()->json(['error' => __('No such approval.')], 404);
         }
 
         $notes = trim($validated['notes'] ?? '');
@@ -490,7 +490,7 @@ class AdminConsoleController extends Controller
         }
 
         if (! $account->isSuspended()) {
-            return response()->json(['error' => 'That account is not suspended.'], 409);
+            return response()->json(['error' => __('That account is not suspended.')], 409);
         }
 
         $enforcement->reinstate($account, $validated['notes'] ?? null, $this->actorId());
@@ -508,11 +508,11 @@ class AdminConsoleController extends Controller
         $account = ApiAccount::find($id);
 
         if ($account === null) {
-            return response()->json(['error' => 'No such account.'], 404);
+            return response()->json(['error' => __('No such account.')], 404);
         }
 
         if ($account->isAdmin()) {
-            return response()->json(['error' => 'Administrator accounts cannot be actioned here.'], 422);
+            return response()->json(['error' => __('Administrator accounts cannot be actioned here.')], 422);
         }
 
         return $account;
@@ -524,7 +524,7 @@ class AdminConsoleController extends Controller
         $reason = StandingText::clean($html);
 
         if (StandingText::plain($reason) === '') {
-            return response()->json(['error' => 'Say what they are being told.'], 422);
+            return response()->json(['error' => __('Say what they are being told.')], 422);
         }
 
         return $reason;

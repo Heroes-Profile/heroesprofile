@@ -4,17 +4,17 @@
       <input type="hidden" name="_token" :value="csrf">
       <input type="hidden" name="token" :value="token">
 
-      <label for="email">Email:</label>
+      <label for="email">{{ $t('Email:') }}</label>
       <input class="form-control search-input text-black" type="email" id="email" name="email" v-model="emailValue" required>
 
-      <label for="password">New Password:</label>
+      <label for="password">{{ $t('New Password:') }}</label>
       <input class="form-control search-input text-black" type="password" id="password" name="password" required autofocus>
-      <span class="text-xs text-gray-medium">At least 8 characters.</span>
+      <span class="text-xs text-gray-medium">{{ $t('At least 8 characters.') }}</span>
 
-      <label for="password_confirmation">Confirm New Password:</label>
+      <label for="password_confirmation">{{ $t('Confirm New Password:') }}</label>
       <input class="form-control search-input text-black" type="password" id="password_confirmation" name="password_confirmation" required>
 
-      <button type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto my-2">Reset Password</button>
+      <button type="submit" class="btn bg-blue hover:bg-lblue w-auto ml-auto my-2">{{ $t('Reset Password') }}</button>
     </form>
   </api-form-card>
 </template>

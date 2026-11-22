@@ -84,7 +84,7 @@ class ServeApiFixtures
             return response()->json([
                 'error' => [
                     'code' => 'fixture_unavailable',
-                    'message' => 'Example data for this endpoint is unavailable. Please contact support.',
+                    'message' => __('Example data for this endpoint is unavailable. Please contact support.'),
                     'endpoint' => $endpoint,
                 ],
             ], 500)->header(self::HEADER, 'fixture');

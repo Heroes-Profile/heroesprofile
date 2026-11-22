@@ -15,24 +15,22 @@
         <div class="text-sm mb-3 standing-text" v-html="currentStanding.reason"></div>
 
         <p v-if="currentStanding.respond_by" class="text-sm text-yellow mb-3">
-          Please sort this out by {{ currentStanding.respond_by }}.
+          {{ $t('Please sort this out by :respond_by.', { respond_by: currentStanding.respond_by }) }}
         </p>
 
         <p v-if="currentStanding.type === 'warning'" class="text-sm text-gray-medium mb-3">
-          Nothing has been restricted. Your keys are working normally.
+          {{ $t('Nothing has been restricted. Your keys are working normally.') }}
         </p>
         <p v-else-if="currentStanding.type === 'suspension'" class="text-sm text-gray-medium mb-3">
-          Your keys have stopped working. Your subscription is still running and nothing has
-          been deleted — access comes straight back once this is resolved.
+          {{ $t('Your keys have stopped working. Your subscription is still running and nothing has been deleted — access comes straight back once this is resolved.') }}
         </p>
         <p v-else class="text-sm text-gray-medium mb-3">
-          Your keys have stopped working and your subscription has been cancelled. Section 3
-          of the terms asks you to stop using data you have already retrieved.
+          {{ $t('Your keys have stopped working and your subscription has been cancelled. Section 3 of the terms asks you to stop using data you have already retrieved.') }}
         </p>
 
         <p class="text-sm text-gray-medium">
-          Write to <a class="link" href="mailto:zemill@heroesprofile.com">zemill@heroesprofile.com</a>
-          if you think this is wrong, or you are not sure what we are asking for.
+          {{ $t('Write to') }} <a class="link" href="mailto:zemill@heroesprofile.com">zemill@heroesprofile.com</a>
+          {{ $t('if you think this is wrong, or you are not sure what we are asking for.') }}
         </p>
 
         <button
@@ -41,29 +39,24 @@
           :disabled="dismissing"
           class="btn mt-4 bg-teal hover:bg-lteal disabled:bg-gray-medium"
         >
-          {{ dismissing ? 'Saving…' : 'Got it' }}
+          {{ dismissing ? $t('Saving…') : $t('Got it') }}
         </button>
       </div>
 
       <div v-if="receivesTestData" class="bg-lighten border-l-4 border-yellow p-4 mb-8">
-        <h2 class="text-lg mb-2">You Are Receiving Test Data</h2>
+        <h2 class="text-lg mb-2">{{ $t('You Are Receiving Test Data') }}</h2>
         <p class="text-sm mb-2">
-          Calls to the API return fixed example responses with the correct shape but
-          placeholder values. They do not count against your quota, so you can build and
-          test freely. Rate limits still apply.
+          {{ $t('Calls to the API return fixed example responses with the correct shape but placeholder values. They do not count against your quota, so you can build and test freely. Rate limits still apply.') }}
         </p>
         <p v-if="!migrated" class="text-sm text-gray-medium">
-          Activating live data will expire your existing API key on the old site. Do that
-          once your integration is ready.
+          {{ $t('Activating live data will expire your existing API key on the old site. Do that once your integration is ready.') }}
         </p>
       </div>
 
       <div v-if="account.admin" class="bg-lighten border-l-4 border-teal p-6 mb-8">
-        <h2 class="text-lg mb-2">Admin Mode <span class="text-sm text-lteal">{{ adminMode ? 'on' : 'off' }}</span></h2>
+        <h2 class="text-lg mb-2">{{ $t('Admin Mode') }} <span class="text-sm text-lteal">{{ adminMode ? $t('on') : $t('off') }}</span></h2>
         <p class="text-sm text-gray-medium mb-4">
-          While on, calls ignore quota, need no key, and are not held back by migration
-          status. Turn it off to be treated as an ordinary account — the grant stays, so
-          you can switch back.
+          {{ $t('While on, calls ignore quota, need no key, and are not held back by migration status. Turn it off to be treated as an ordinary account — the grant stays, so you can switch back.') }}
         </p>
         <tab-button
           tab1text="On"
@@ -79,12 +72,11 @@
       <!-- Admins see this whether or not they have migrated: admin mode ignores
            the migration gate, so the live/test switch is meaningful either way. -->
       <div v-if="migrated || account.admin" class="bg-lighten p-6 mb-8">
-        <h2 class="text-lg mb-2">Data Mode</h2>
+        <h2 class="text-lg mb-2">{{ $t('Data Mode') }}</h2>
 
         <template v-if="account.can_use_live_data">
           <p class="text-sm text-gray-medium mb-4">
-            Switch to test data whenever you are building or debugging. Responses become
-            fixed examples and stop counting against your weekly quota.
+            {{ $t('Switch to test data whenever you are building or debugging. Responses become fixed examples and stop counting against your weekly quota.') }}
           </p>
           <tab-button
             tab1text="Live Data"
@@ -99,13 +91,11 @@
 
         <template v-else>
           <p class="text-sm text-gray-medium mb-4">
-            You are on test data. Responses are fixed examples and cost no quota, so you can
-            build against the API before paying for it.
-            <strong class="text-white">Live data needs an active subscription</strong> — this
-            switch unlocks once you have one.
+            {{ $t('You are on test data. Responses are fixed examples and cost no quota, so you can build against the API before paying for it.') }}
+            <strong class="text-white">{{ $t('Live data needs an active subscription') }}</strong> {{ $t('— this switch unlocks once you have one.') }}
           </p>
           <a href="/Api/Account/Billing" class="btn inline-block bg-blue hover:bg-lblue">
-            Choose a plan
+            {{ $t('Choose a plan') }}
           </a>
         </template>
       </div>
@@ -113,15 +103,13 @@
       <div v-if="!migrated" class="bg-lighten border-l-4 border-teal p-6 mb-8">
         <h2 class="text-lg mb-2">{{ activateHeading }}</h2>
         <p class="text-sm mb-2">
-          Your calls currently return example data. Activating switches them to real
-          results, and every call starts counting against your weekly quota.
+          {{ $t('Your calls currently return example data. Activating switches them to real results, and every call starts counting against your weekly quota.') }}
         </p>
         <p v-if="account.has_legacy_token" class="text-sm text-yellow mb-3">
-          This immediately expires your existing key on the old API site. It cannot be
-          undone. Do it once your integration is ready to move.
+          {{ $t('This immediately expires your existing key on the old API site. It cannot be undone. Do it once your integration is ready to move.') }}
         </p>
         <p v-else class="text-sm text-gray-medium mb-3">
-          You can switch back to example data at any time using the test data toggle.
+          {{ $t('You can switch back to example data at any time using the test data toggle.') }}
         </p>
 
         <button
@@ -129,11 +117,11 @@
           @click="activate"
           class="btn bg-teal hover:bg-lteal disabled:bg-gray-medium"
         >
-          {{ activating ? 'Activating…' : activateHeading }}
+          {{ activating ? $t('Activating…') : activateHeading }}
         </button>
 
         <p v-if="!keys.length" class="text-sm text-gray-medium mt-2">
-          Create an API key below first — activating expires your old one.
+          {{ $t('Create an API key below first — activating expires your old one.') }}
         </p>
       </div>
 
@@ -142,45 +130,45 @@
       <div v-if="error" class="bg-red p-3 mb-4">{{ error }}</div>
 
       <div id="details" class="bg-lighten p-6 mb-8">
-        <h2 class="text-lg mb-4">Account Details</h2>
+        <h2 class="text-lg mb-4">{{ $t('Account Details') }}</h2>
 
         <table class="min-w-0 w-full responsive-table mb-6">
           <tbody>
             <tr>
-              <td class="py-2 px-3 text-sm">Email</td>
+              <td class="py-2 px-3 text-sm">{{ $t('Email') }}</td>
               <td class="py-2 px-3">
                 {{ account.email }}
-                <span v-if="account.email_verified" class="text-sm text-lteal ml-2">Verified</span>
+                <span v-if="account.email_verified" class="text-sm text-lteal ml-2">{{ $t('Verified') }}</span>
                 <template v-else>
-                  <span class="text-sm text-yellow ml-2">Not verified</span>
+                  <span class="text-sm text-yellow ml-2">{{ $t('Not verified') }}</span>
                   <button
                     v-if="!verificationSent"
                     @click="resendVerification"
                     :disabled="sendingVerification"
                     class="link text-sm ml-2"
                   >
-                    {{ sendingVerification ? 'Sending…' : 'Resend verification email' }}
+                    {{ sendingVerification ? $t('Sending…') : $t('Resend verification email') }}
                   </button>
-                  <span v-else class="text-sm text-lteal ml-2">Sent. Check your inbox.</span>
+                  <span v-else class="text-sm text-lteal ml-2">{{ $t('Sent. Check your inbox.') }}</span>
                 </template>
               </td>
             </tr>
             <tr>
-              <td class="py-2 px-3 text-sm">Member since</td>
-              <td class="py-2 px-3">{{ account.member_since || 'Unknown' }}</td>
+              <td class="py-2 px-3 text-sm">{{ $t('Member since') }}</td>
+              <td class="py-2 px-3">{{ account.member_since || $t('Unknown') }}</td>
             </tr>
             <tr>
-              <td class="py-2 px-3 text-sm">Plan</td>
+              <td class="py-2 px-3 text-sm">{{ $t('Plan') }}</td>
               <td class="py-2 px-3">
-                {{ account.plans.length ? account.plans.join(', ') : 'None' }}
-                <a href="/Api/Account/Billing" class="group/bt inline-flex items-center text-sm ml-2"><span class="group-hover/bt:underline">Billing</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                {{ account.plans.length ? account.plans.join(', ') : $t('None') }}
+                <a href="/Api/Account/Billing" class="group/bt inline-flex items-center text-sm ml-2"><span class="group-hover/bt:underline">{{ $t('Billing') }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
               </td>
             </tr>
           </tbody>
         </table>
         <p v-if="verificationError" class="text-sm text-red mb-4">{{ verificationError }}</p>
 
-        <label class="block text-sm mb-1" for="account-name">Name</label>
+        <label class="block text-sm mb-1" for="account-name">{{ $t('Name') }}</label>
         <input
           id="account-name"
           v-model="name"
@@ -194,13 +182,13 @@
           :disabled="savingName"
           class="btn bg-teal hover:bg-lteal disabled:bg-gray-medium"
         >
-          {{ savingName ? 'Saving…' : 'Save' }}
+          {{ savingName ? $t('Saving…') : $t('Save') }}
         </button>
 
         <p v-if="nameError" class="text-sm text-red mt-2">{{ nameError }}</p>
-        <p v-if="nameSaved" class="text-sm text-lteal mt-2">Saved.</p>
+        <p v-if="nameSaved" class="text-sm text-lteal mt-2">{{ $t('Saved.') }}</p>
 
-        <label class="block text-sm mt-6 mb-1" for="header-display">Show in header</label>
+        <label class="block text-sm mt-6 mb-1" for="header-display">{{ $t('Show in header') }}</label>
         <select
           id="header-display"
           v-model="headerDisplay"
@@ -208,20 +196,20 @@
           :disabled="savingHeaderDisplay"
           class="text-black p-2 rounded"
         >
-          <option value="email">Email</option>
-          <option value="name">Name</option>
-          <option value="none">Nothing</option>
+          <option value="email">{{ $t('Email') }}</option>
+          <option value="name">{{ $t('Name') }}</option>
+          <option value="none">{{ $t('Nothing') }}</option>
         </select>
 
         <p v-if="headerDisplayError" class="text-sm text-red mt-2">{{ headerDisplayError }}</p>
-        <p v-if="headerDisplaySaved" class="text-sm text-lteal mt-2">Saved. The header updates on your next page load.</p>
+        <p v-if="headerDisplaySaved" class="text-sm text-lteal mt-2">{{ $t('Saved. The header updates on your next page load.') }}</p>
 
-        <h3 class="mt-8 mb-2">Change Password</h3>
+        <h3 class="mt-8 mb-2">{{ $t('Change Password') }}</h3>
         <p class="text-sm text-gray-medium mb-4">
-          Forgotten it? <a class="link" href="/Api/Password/Forgot">Reset it by email</a> instead.
+          {{ $t('Forgotten it?') }} <a class="link" href="/Api/Password/Forgot">{{ $t('Reset it by email') }}</a> {{ $t('instead.') }}
         </p>
 
-        <label class="block text-sm mb-1" for="current-password">Current password</label>
+        <label class="block text-sm mb-1" for="current-password">{{ $t('Current password') }}</label>
         <input
           id="current-password"
           v-model="currentPassword"
@@ -230,7 +218,7 @@
           class="w-full p-2 bg-darken mb-4"
         />
 
-        <label class="block text-sm mb-1" for="new-password">New password</label>
+        <label class="block text-sm mb-1" for="new-password">{{ $t('New password') }}</label>
         <input
           id="new-password"
           v-model="newPassword"
@@ -239,7 +227,7 @@
           class="w-full p-2 bg-darken mb-4"
         />
 
-        <label class="block text-sm mb-1" for="new-password-confirmation">Confirm new password</label>
+        <label class="block text-sm mb-1" for="new-password-confirmation">{{ $t('Confirm new password') }}</label>
         <input
           id="new-password-confirmation"
           v-model="newPasswordConfirmation"
@@ -253,31 +241,27 @@
           :disabled="changingPassword"
           class="btn bg-teal hover:bg-lteal disabled:bg-gray-medium"
         >
-          {{ changingPassword ? 'Saving…' : 'Change password' }}
+          {{ changingPassword ? $t('Saving…') : $t('Change password') }}
         </button>
 
         <p v-if="passwordError" class="text-sm text-red mt-2">{{ passwordError }}</p>
-        <p v-if="passwordChanged" class="text-sm text-lteal mt-2">Password changed.</p>
+        <p v-if="passwordChanged" class="text-sm text-lteal mt-2">{{ $t('Password changed.') }}</p>
       </div>
 
       <div id="project" class="bg-lighten p-6 mb-8" :class="{ 'border-l-4 border-yellow': projectRequired }">
-        <h2 class="text-lg mb-2">Your Project</h2>
+        <h2 class="text-lg mb-2">{{ $t('Your Project') }}</h2>
         <p v-if="projectRequired" class="mb-4">
-          Tell us about your project to carry on using the API.
+          {{ $t('Tell us about your project to carry on using the API.') }}
           <template v-if="account.project_enforce_from">
-            From {{ account.project_enforce_from }}, calls from accounts without a project
-            description are refused.
+            {{ $t('From :project_enforce_from, calls from accounts without a project description are refused.', { project_enforce_from: account.project_enforce_from }) }}
           </template>
-          <template v-else>Until you do, calls made with your keys are refused.</template>
+          <template v-else>{{ $t('Until you do, calls made with your keys are refused.') }}</template>
         </p>
         <p class="text-sm text-gray-medium mb-4">
-          What you are building with the API. Required before subscribing, and it is the project
-          the licence in our <a class="link" href="/Api/Terms">terms</a> covers — if it changes
-          significantly, update it here. The website is optional: a site, an overlay, a bot's
-          page — anywhere our data ends up.
+          {{ $t('What you are building with the API. Required before subscribing, and it is the project the licence in our') }} <a class="link" href="/Api/Terms">{{ $t('terms') }}</a> {{ $t('covers — if it changes significantly, update it here. The website is optional: a site, an overlay, a bot\'s page — anywhere our data ends up.') }}
         </p>
 
-        <label class="block text-sm mb-1" for="project-name">Project name</label>
+        <label class="block text-sm mb-1" for="project-name">{{ $t('Project name') }}</label>
         <input
           id="project-name"
           v-model="projectName"
@@ -287,18 +271,18 @@
         />
 
         <label class="block text-sm mb-1" for="project-description">
-          What it does, who uses it, and how it uses our data
+          {{ $t('What it does, who uses it, and how it uses our data') }}
         </label>
         <textarea
           id="project-description"
           v-model="projectDescription"
           rows="5"
           maxlength="2000"
-          placeholder="For example: a Discord bot for our team's server that posts each member's recent Storm League matches after they play. Around 15 users, no ads, no paid features."
+          :placeholder="$t('For example: a Discord bot for our team\'s server that posts each member\'s recent Storm League matches after they play. Around 15 users, no ads, no paid features.')"
           class="w-full p-2 bg-darken mb-4"
         ></textarea>
 
-        <label class="block text-sm mb-1" for="project-website">Website (optional)</label>
+        <label class="block text-sm mb-1" for="project-website">{{ $t('Website (optional)') }}</label>
         <input
           id="project-website"
           v-model="website"
@@ -312,24 +296,22 @@
           :disabled="savingProject"
           class="btn bg-teal hover:bg-lteal disabled:bg-gray-medium"
         >
-          {{ savingProject ? 'Saving…' : 'Save' }}
+          {{ savingProject ? $t('Saving…') : $t('Save') }}
         </button>
 
         <p v-if="projectError" class="text-sm text-red mt-2">{{ projectError }}</p>
-        <p v-if="projectSaved" class="text-sm text-lteal mt-2">Saved.</p>
+        <p v-if="projectSaved" class="text-sm text-lteal mt-2">{{ $t('Saved.') }}</p>
       </div>
 
       <div class="bg-lighten p-6 mb-8">
-        <h2 class="text-lg mb-4">Patreon</h2>
+        <h2 class="text-lg mb-4">{{ $t('Patreon') }}</h2>
 
         <template v-if="patreonLinked">
           <p v-if="account.patreon_plan" class="text-sm mb-4">
-            Linked. Your pledge includes the <strong>{{ account.patreon_plan }}</strong> tier
-            at no extra cost — it stacks with any plan you buy, and each endpoint uses
-            whichever allowance is higher.
+            {{ $t('Linked. Your pledge includes the') }} <strong>{{ account.patreon_plan }}</strong> {{ $t('tier at no extra cost — it stacks with any plan you buy, and each endpoint uses whichever allowance is higher.') }}
           </p>
           <p v-else class="text-sm text-gray-medium mb-4">
-            Linked, but your current pledge does not reach a tier that includes API access.
+            {{ $t('Linked, but your current pledge does not reach a tier that includes API access.') }}
           </p>
 
           <custom-button @click="unlinkPatreon" :text="'Unlink Patreon'" :alt="'Unlink Patreon'" :size="'small'" :ignoreclick="true"></custom-button>
@@ -337,22 +319,20 @@
 
         <template v-else>
           <p class="text-sm text-gray-medium mb-4">
-            Already supporting Heroes Profile on Patreon? Link your account and your
-            pledge includes API access — no need to pay twice.
+            {{ $t('Already supporting Heroes Profile on Patreon? Link your account and your pledge includes API access — no need to pay twice.') }}
           </p>
 
-          <a href="/Api/Patreon/Link" class="link">Link Patreon</a>
+          <a href="/Api/Patreon/Link" class="link">{{ $t('Link Patreon') }}</a>
         </template>
       </div>
 
       <!-- Player Analytics: any paid plan unlocks it for one linked Battle.net account. The
            Battle.net sign-in returns to #analytics. -->
       <div id="analytics" class="bg-lighten p-6 mb-8 scroll-mt-4">
-        <h2 class="text-lg mb-2">Player Analytics</h2>
+        <h2 class="text-lg mb-2">{{ $t('Player Analytics') }}</h2>
         <p class="text-sm text-gray-medium mb-4">
-          Any paid plan, or a Patreon pledge that includes API access, also unlocks
-          <a href="/Analytics" class="link">Player Analytics</a> on heroesprofile.com for one Battle.net account:
-          deep replay analysis of that player's season games. Link the account you play on.
+          {{ $t('Any paid plan, or a Patreon pledge that includes API access, also unlocks') }}
+          <a href="/Analytics" class="link">{{ $t('Player Analytics') }}</a> {{ $t('on heroesprofile.com for one Battle.net account: deep replay analysis of that player\'s season games. Link the account you play on.') }}
         </p>
 
         <div v-if="analyticserror" class="bg-red p-3 mb-4">{{ analyticserror }}</div>
@@ -360,12 +340,12 @@
 
         <template v-if="analyticsLink.battletag">
           <p class="text-sm mb-2">
-            Linked to <strong>{{ analyticsLink.battletag }}</strong> ({{ analyticsLink.region_name }}).
+            {{ $t('Linked to') }} <strong>{{ analyticsLink.battletag }}</strong> ({{ analyticsLink.region_name }}).
           </p>
           <p class="text-sm mb-4" :class="analyticsLink.paid_plan ? '' : 'text-gray-medium'">
             {{ analyticsLink.paid_plan
-              ? 'Player Analytics is unlocked for this account while your plan is active.'
-              : 'Player Analytics unlocks for this account once you hold a paid plan.' }}
+              ? $t('Player Analytics is unlocked for this account while your plan is active.')
+              : $t('Player Analytics unlocks for this account once you hold a paid plan.') }}
           </p>
           <custom-button @click="unlinkAnalytics" :text="'Unlink Battle.net'" :alt="'Unlink Battle.net'" :size="'small'" :ignoreclick="true"></custom-button>
         </template>
@@ -373,50 +353,48 @@
         <template v-else>
           <!-- No link here: the Battle.net account connected for the Twitch extension is used -->
           <p v-if="analyticsLink.twitch_battletag" class="text-sm mb-2">
-            Using <strong>{{ analyticsLink.twitch_battletag }}</strong> ({{ analyticsLink.twitch_region_name }}), the Battle.net account
-            connected for your Twitch extension.
+            {{ $t('Using') }} <strong>{{ analyticsLink.twitch_battletag }}</strong> {{ $t('(:twitch_region_name), the Battle.net account connected for your Twitch extension.', { twitch_region_name: analyticsLink.twitch_region_name }) }}
           </p>
           <p v-if="analyticsLink.twitch_battletag" class="text-sm mb-4" :class="analyticsLink.paid_plan ? '' : 'text-gray-medium'">
             {{ analyticsLink.paid_plan
-              ? 'Player Analytics is unlocked for this account while your plan is active. To use a different account, link it below.'
-              : 'Player Analytics unlocks for this account once you hold a paid plan. To use a different account, link it below.' }}
+              ? $t('Player Analytics is unlocked for this account while your plan is active. To use a different account, link it below.')
+              : $t('Player Analytics unlocks for this account once you hold a paid plan. To use a different account, link it below.') }}
           </p>
         <form action="/Api/Analytics/Battlenet/Link" method="GET" class="flex flex-wrap gap-2 items-end">
           <div class="flex flex-col">
-            <label class="text-sm mb-1" for="analytics-region">Region you play in</label>
+            <label class="text-sm mb-1" for="analytics-region">{{ $t('Region you play in') }}</label>
             <select id="analytics-region" name="region" v-model="analyticsRegion" class="text-black p-2 rounded">
               <option v-for="(name, id) in analyticsLink.regions" :key="id" :value="id">{{ name }}</option>
             </select>
           </div>
-          <button type="submit" class="transition-colors text-white rounded bg-blue hover:bg-lblue py-2 px-4">{{ analyticsLink.twitch_battletag ? 'Link a different Battle.net account' : 'Link Battle.net' }}</button>
+          <button type="submit" class="transition-colors text-white rounded bg-blue hover:bg-lblue py-2 px-4">{{ analyticsLink.twitch_battletag ? $t('Link a different Battle.net account') : $t('Link Battle.net') }}</button>
         </form>
         </template>
       </div>
 
       <div v-if="newKey" class="bg-teal p-4 mb-8">
-        <h2 class="text-lg mb-2">Copy Your New Key Now</h2>
+        <h2 class="text-lg mb-2">{{ $t('Copy Your New Key Now') }}</h2>
         <p class="text-sm mb-3">
-          This is the only time it will be shown. We store a hash of it, so it cannot be
-          retrieved again. If you lose it, revoke the key and create another.
+          {{ $t('This is the only time it will be shown. We store a hash of it, so it cannot be retrieved again. If you lose it, revoke the key and create another.') }}
         </p>
         <div class="flex flex-wrap gap-2 items-center">
           <code class="bg-darken p-2 break-all flex-grow">{{ newKey.plain_text }}</code>
-          <custom-button @click="copyKey" :text="copied ? 'Copied' : 'Copy'" :alt="'Copy key'" :size="'small'" :ignoreclick="true"></custom-button>
+          <custom-button @click="copyKey" :text="copied ? $t('Copied') : $t('Copy')" :alt="'Copy key'" :size="'small'" :ignoreclick="true"></custom-button>
         </div>
       </div>
 
       <div class="bg-lighten p-6 mb-8">
-        <h2 class="text-lg mb-4">API Keys</h2>
+        <h2 class="text-lg mb-4">{{ $t('API Keys') }}</h2>
 
         <form @submit.prevent="createKey" class="flex flex-wrap gap-2 items-end mb-6">
           <div class="flex flex-col flex-grow">
-            <label for="keyname" class="text-sm mb-1">Name this key</label>
+            <label for="keyname" class="text-sm mb-1">{{ $t('Name this key') }}</label>
             <input
               class="form-control search-input text-black"
               type="text"
               id="keyname"
               v-model="keyName"
-              placeholder="e.g. my-dashboard"
+              :placeholder="$t('e.g. my-dashboard')"
               maxlength="255"
               required
             >
@@ -426,19 +404,19 @@
             type="submit"
             class="btn bg-blue hover:bg-lblue my-2 disabled:bg-gray-medium"
           >
-            Create Key
+            {{ $t('Create Key') }}
           </button>
         </form>
 
         <p v-if="!keys.length" class="text-sm text-gray-medium">
-          You have no active keys. Create one above to start using the API.
+          {{ $t('You have no active keys. Create one above to start using the API.') }}
         </p>
         <table  v-else class="min-w-0 w-full responsive-table">
           <thead>
             <tr>
-              <th class="py-2 px-3 text-left text-sm">Name</th>
-              <th class="py-2 px-3 text-left text-sm">Created</th>
-              <th class="py-2 px-3 text-left text-sm">Last Used</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Name') }}</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Created') }}</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Last Used') }}</th>
               <th class="py-2 px-3 text-left text-sm"></th>
             </tr>
           </thead>
@@ -446,7 +424,7 @@
             <tr v-for="key in keys" :key="key.id">
               <td class="py-2 px-3">{{ key.name }}</td>
               <td class="py-2 px-3">{{ key.created_at }}</td>
-              <td class="py-2 px-3">{{ key.last_used_at || 'Never' }}</td>
+              <td class="py-2 px-3">{{ key.last_used_at || $t('Never') }}</td>
               <td class="py-2 px-3 text-right">
                 <custom-button @click="revokeKey(key)" :text="'Revoke'" :alt="'Revoke key'" :size="'small'" :color="'red'" :ignoreclick="true"></custom-button>
               </td>
@@ -456,7 +434,7 @@
       </div>
 
       <div class="bg-lighten p-6 mb-8">
-        <h2 class="text-lg mb-4">This Week's Usage</h2>
+        <h2 class="text-lg mb-4">{{ $t('This Week\'s Usage') }}</h2>
         <api-usage-table :usage="usage" :compact="true"></api-usage-table>
       </div>
 
@@ -471,15 +449,12 @@
       ></api-twitch-settings>
 
       <div v-else class="bg-lighten border-l-4 border-yellow p-6 mb-8">
-        <h2 class="text-lg mb-2">Twitch Extension — Coming Soon</h2>
+        <h2 class="text-lg mb-2">{{ $t('Twitch Extension — Coming Soon') }}</h2>
         <p class="text-sm mb-2">
-          Our Twitch extension is waiting on review by Twitch before it can go live.
-          Please do not subscribe just for the extension until we announce it, or until
-          its settings appear in this section.
+          {{ $t('Our Twitch extension is waiting on review by Twitch before it can go live. Please do not subscribe just for the extension until we announce it, or until its settings appear in this section.') }}
         </p>
         <p class="text-sm text-gray-medium">
-          The extension comes with a free trial, so once it is live you will be able to
-          try it from here before paying.
+          {{ $t('The extension comes with a free trial, so once it is live you will be able to try it from here before paying.') }}
         </p>
       </div>
     </div>
@@ -594,7 +569,7 @@ export default {
   computed: {
     // Accounts registered here have no old key, so there is nothing to migrate.
     activateHeading(){
-      return this.account.has_legacy_token ? 'Migrate Account' : 'Activate Live Data';
+      return this.account.has_legacy_token ? this.$t('Migrate Account') : this.$t('Activate Live Data');
     },
     standingHeading(){
       if(!this.currentStanding){
@@ -602,12 +577,12 @@ export default {
       }
 
       if(this.currentStanding.type === 'warning'){
-        return 'Action Needed';
+        return this.$t('Action Needed');
       }
 
       return this.currentStanding.type === 'termination'
-        ? 'Your API Access Has Been Closed'
-        : 'Your API Access Is Suspended';
+        ? this.$t('Your API Access Has Been Closed')
+        : this.$t('Your API Access Is Suspended');
     },
   },
   methods: {
@@ -677,14 +652,14 @@ export default {
     },
     firstError(error){
       if(error.response?.status === 429){
-        return 'Too many attempts. Wait a minute and try again.';
+        return this.$t('Too many attempts. Wait a minute and try again.');
       }
 
       const errors = error.response?.data?.errors;
 
       return errors
         ? Object.values(errors).flat()[0]
-        : (error.response?.data?.error || 'Could not save that. Please try again.');
+        : (error.response?.data?.error || this.$t('Could not save that. Please try again.'));
     },
     async saveProject(){
       this.savingProject = true;
@@ -707,7 +682,7 @@ export default {
         const errors = error.response?.data?.errors;
         this.projectError = errors
           ? Object.values(errors).flat()[0]
-          : (error.response?.data?.error || 'Could not save that. Please try again.');
+          : (error.response?.data?.error || this.$t('Could not save that. Please try again.'));
       } finally {
         this.savingProject = false;
       }
@@ -721,7 +696,7 @@ export default {
         await this.$axios.post('/api/v1/account/warning/acknowledge');
         this.currentStanding = null;
       } catch (error) {
-        this.error = 'Could not dismiss that. Please try again.';
+        this.error = this.$t('Could not dismiss that. Please try again.');
       } finally {
         this.dismissing = false;
       }
@@ -733,7 +708,7 @@ export default {
         await this.$axios.post('/Api/Analytics/Battlenet/Unlink');
         this.analyticsLink = { ...this.analyticsLink, battletag: null, region: null, region_name: null };
       } catch (error) {
-        this.error = 'Could not unlink Battle.net. Please try again.';
+        this.error = this.$t('Could not unlink Battle.net. Please try again.');
       }
     },
     async unlinkPatreon(){
@@ -745,13 +720,13 @@ export default {
         // The granted tier came from the pledge, so the page's copy is now wrong.
         window.location.reload();
       } catch (error) {
-        this.error = 'Could not unlink Patreon. Please try again.';
+        this.error = this.$t('Could not unlink Patreon. Please try again.');
       }
     },
     async activate(){
       const warning = this.account.has_legacy_token
-        ? 'Activate live data? This expires your existing key on the old API site immediately and cannot be undone.'
-        : 'Activate live data? Calls will return real results and start using your weekly quota.';
+        ? this.$t('Activate live data? This expires your existing key on the old API site immediately and cannot be undone.')
+        : this.$t('Activate live data? Calls will return real results and start using your weekly quota.');
 
       if(!confirm(warning)){
         return;
@@ -766,7 +741,7 @@ export default {
         this.migrated = response.data.migrated;
         this.receivesTestData = response.data.receives_test_data;
       } catch (e) {
-        this.error = e.response?.data?.error || 'Could not activate live data. Please try again.';
+        this.error = e.response?.data?.error || this.$t('Could not activate live data. Please try again.');
       }
 
       this.activating = false;
@@ -808,7 +783,7 @@ export default {
       } catch (error) {
         // The server refuses live data without a plan. Say why rather than
         // offering a retry that cannot succeed.
-        this.error = error.response?.data?.error || 'Could not change data mode. Please try again.';
+        this.error = error.response?.data?.error || this.$t('Could not change data mode. Please try again.');
       }
     },
     async createKey(){
@@ -827,13 +802,13 @@ export default {
       } catch (error) {
         this.error = error.response?.data?.error
           || error.response?.data?.message
-          || 'Could not create the key. Please try again.';
+          || this.$t('Could not create the key. Please try again.');
       }
 
       this.isLoading = false;
     },
     async revokeKey(key){
-      if(!confirm('Revoke "' + key.name + '"? Anything using it will stop working immediately.')){
+      if(!confirm(this.$t('Revoke ":name"? Anything using it will stop working immediately.', { name: key.name }))){
         return;
       }
 
@@ -847,7 +822,7 @@ export default {
           this.newKey = null;
         }
       } catch (error) {
-        this.error = error.response?.data?.error || 'Could not revoke the key. Please try again.';
+        this.error = error.response?.data?.error || this.$t('Could not revoke the key. Please try again.');
       }
     },
     copyKey(){
