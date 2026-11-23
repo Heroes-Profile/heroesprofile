@@ -3,9 +3,7 @@
     <panel-box title="Choose a hero" :subtitle="subtitle">
       <template #right>
         <div class="flex flex-wrap items-center gap-4 max-md:w-full">
-          <div v-if="roleOptions.length > 1" class="w-full sm:w-[13.75rem]">
-            <single-select-filter :compact="true" :hidelabel="true" :values="roleOptions" text="Role" defaultValue="All" @input-changed="roleChanged"></single-select-filter>
-          </div>
+          <tab-button v-if="roleOptions.length > 1" :small="true" :dark="true" :tabs="roleOptions" overridedefaultside="All" :ignoreclick="true" @tab-click="role => roleChanged({ value: role })"></tab-button>
           <search-input v-model="searchQuery" :placeholder="$t('Search for a hero...')" class="w-full sm:w-[20rem]"></search-input>
         </div>
       </template>
@@ -50,10 +48,10 @@ export default {
       return this.heroes.filter(hero => (this.role === 'All' || hero.new_role === this.role)
         && (!normalizedQuery || this.normalizeString(hero.name).includes(normalizedQuery)));
     },
-    // The roles the heroes have, after All roles
+    // Role chips for the roles the heroes have, after All
     roleOptions() {
       const roles = [...new Set(this.heroes.map(hero => hero.new_role).filter(role => role))].sort();
-      return roles.length ? [{ code: 'All', name: this.$t('All roles') }, ...roles.map(role => ({ code: role, name: this.$t(role) }))] : [];
+      return roles.length ? [{ key: 'All', text: this.$t('All') }, ...roles.map(role => ({ key: role, text: this.$t(role) }))] : [];
     },
   },
   watch: {

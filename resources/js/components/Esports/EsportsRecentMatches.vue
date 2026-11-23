@@ -2,13 +2,19 @@
   <!-- Laid out like the match history's rows, with the two teams where a player's stats go.
        Compact and Expanded share the match history's saved choice. -->
   <div class="max-w-[120rem] mx-auto px-4 md:px-8 py-4 flex flex-col gap-4">
-    <!-- The toggle and the page numbers in one row, as on the match histories -->
-    <div v-if="!alwaysExpanded || last > 1" class="flex flex-wrap justify-end items-center gap-4">
+    <!-- The toggle and the page numbers in one row, as on the match histories; in the card's header when it has a title -->
+    <div v-if="!title && (!alwaysExpanded || last > 1)" class="flex flex-wrap justify-end items-center gap-4">
       <tab-button v-if="!alwaysExpanded" :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="expanded ? 'right' : 'left'"></tab-button>
       <pagination-bar v-if="last > 1" :current="current" :last="last" @page="$emit('page', $event)"></pagination-bar>
     </div>
 
-    <panel-box v-if="expanded">
+    <panel-box v-if="expanded" :title="title" :subtitle="subtitle" :divider="false">
+      <template v-if="title" #right>
+        <div class="ml-auto flex flex-wrap items-center gap-4">
+          <tab-button v-if="!alwaysExpanded" :small="true" :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="expanded ? 'right' : 'left'"></tab-button>
+          <pagination-bar v-if="last > 1" :current="current" :last="last" @page="$emit('page', $event)"></pagination-bar>
+        </div>
+      </template>
       <div class="flex justify-between items-center pb-4 mb-4 border-b border-gray-dark font-medium text-subtext max-2xl:hidden">
         <span class="flex-1 max-w-[25.625rem] pl-6">{{ $t('Match') }}</span>
         <span class="flex-1 px-4 text-center">{{ $t('Teams') }}</span>
@@ -51,30 +57,29 @@
             </div>
           </div>
 
-          <!-- Each team as one party, drawn like the match history's players column -->
-          <div class="relative z-[2] flex gap-2 max-md:justify-center pl-4 2xl:pl-1.5 pr-4 py-4 w-full 2xl:w-[22.625rem] shrink-0">
-            <div v-for="(team, position) in sidesOf(row)" :key="team" class="flex flex-col gap-1.5 w-[9.375rem]">
-              <div class="flex items-center">
-                <span class="w-4 shrink-0 flex items-center justify-center">
-                  <img class="w-4 h-4" :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${TEAM_PARTY[position]}.png`" alt=""/>
-                </span>
-                <span class="w-[2px] ml-[0.1875rem] self-stretch shrink-0 rounded-l-full" :style="{ backgroundColor: PARTY_COLORS[TEAM_PARTY[position]] }"></span>
-                <div class="flex flex-col gap-1.5 flex-1 min-w-0 ml-0.5">
-                  <div v-for="(player, playerIndex) in teamPlayers(row, team)" :key="playerIndex" class="flex gap-1 h-4 items-center">
-                    <img v-if="player.hero" class="w-4 h-4 rounded-full object-cover bg-surface-3 text-[0rem]" :src="`/images/heroes/${player.hero.short_name}.png`" :alt="player.hero.name" :title="$heroName(player.hero)"/>
-                    <a v-if="player.battletag" :href="playerUrl(row, player)" class="group/bt min-w-0 inline-flex items-center text-sm font-medium text-subtext hover:text-lteal"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="text-[0.625rem] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-                    <span v-else class="min-w-0 truncate text-sm font-medium text-subtext">{{ player.hero ? player.hero.name : '' }}</span>
-                  </div>
-                </div>
-              </div>
+          <!-- Each team's five names under a short bar in its colour; a team plays together, so no party marks or heroes -->
+          <div class="relative z-[2] flex items-center gap-4 max-md:justify-center 2xl:border-l border-gray-dark pl-4 2xl:pl-6 pr-4 py-4 w-full 2xl:w-[22.625rem] shrink-0">
+            <div v-for="(team, position) in sidesOf(row)" :key="team" class="flex flex-col gap-0.5 w-[8.5rem] min-w-0">
+              <span :class="['w-6 h-[3px] mb-1 rounded-full', position === 0 ? 'bg-teal' : 'bg-loss']"></span>
+              <template v-for="(player, playerIndex) in teamPlayers(row, team)" :key="playerIndex">
+                <a v-if="player.battletag" :href="playerUrl(row, player)" class="group/bt min-w-0 inline-flex items-center text-sm text-subtext hover:text-white"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span></a>
+                <span v-else class="min-w-0 truncate text-sm text-subtext">{{ player.hero ? $heroName(player.hero) : '' }}</span>
+              </template>
             </div>
+            <basil-icon name="arrow-small" class="ml-auto shrink-0 text-xs pointer-events-none max-2xl:hidden"></basil-icon>
           </div>
         </div>
       </div>
     </panel-box>
 
     <!-- One line per game, like the match history's compact rows -->
-    <panel-box v-else>
+    <panel-box v-else :title="title" :subtitle="subtitle" :divider="false">
+      <template v-if="title" #right>
+        <div class="ml-auto flex flex-wrap items-center gap-4">
+          <tab-button v-if="!alwaysExpanded" :small="true" :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="expanded ? 'right' : 'left'"></tab-button>
+          <pagination-bar v-if="last > 1" :current="current" :last="last" @page="$emit('page', $event)"></pagination-bar>
+        </div>
+      </template>
       <div class="overflow-x-auto">
         <div class="md:min-w-max w-full">
           <div class="max-md:hidden flex items-center justify-between pb-4 mb-4 border-b border-gray-dark font-medium text-subtext">
@@ -133,9 +138,6 @@ import Cookies from 'js-cookie';
 const LEAGUE_NAMES = { NGS: 'NGS', CCL: 'CCL', MastersClash: 'Masters Clash', HeroesInternational: 'Heroes International', hi: 'Heroes International', hi_nc: 'Heroes International' };
 // Each league's own logo, for a team without one
 const LEAGUE_LOGOS = { NGS: '/images/NGS/no-image-clipped.png', CCL: '/images/CCL/600-600-HHE_CCL_Logo_rectangle.png', MastersClash: '/images/MCL/no-image.png', HeroesInternational: '/images/HI/heroes_international.png', hi: '/images/HI/heroes_international.png', hi_nc: '/images/HI/heroes_international.png' };
-// Each team is one party: the first party colour on each side, as the match history uses
-const TEAM_PARTY = ['blue', 'red'];
-const PARTY_COLORS = { blue: '#2060ae', red: '#ae2023' };
 
 export default {
   name: 'EsportsRecentMatches',
@@ -148,6 +150,10 @@ export default {
     // A short list on another page: always Expanded, without the toggle
     alwaysExpanded: Boolean,
 
+    // A card title and subtitle (the NGS tab); the toggle and page numbers then sit in its header
+    title: String,
+    subtitle: String,
+
     // The page shown and the number of pages; a page number click emits page
     current: Number,
     last: Number,
@@ -155,8 +161,6 @@ export default {
   emits: ['page'],
   data() {
     return {
-      TEAM_PARTY,
-      PARTY_COLORS,
       // The match history's saved layout ('1' is Expanded there too)
       expanded: this.alwaysExpanded || Cookies.get('playerhistorytable') !== '0',
     };

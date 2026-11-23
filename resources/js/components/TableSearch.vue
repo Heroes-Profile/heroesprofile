@@ -1,14 +1,15 @@
 <template>
   <!-- A player table is scanned while the search runs, then the matches drop in -->
-  <div :class="picker ? 'w-full' : 'max-w-[93.75rem] mx-auto w-full px-4 mt-10 pb-10'">
-    <p v-if="phase !== 'searching'" class="text-center text-subtext text-sm mb-4">
+  <div :class="picker || embedded ? 'w-full' : 'max-w-[93.75rem] mx-auto w-full px-4 mt-10 pb-10'">
+    <p v-if="phase !== 'searching'" :class="['text-subtext text-sm mb-4', embedded ? '' : 'text-center']">
       <template v-if="phase === 'choose'">{{ $t(':results players named :query. Pick one.', { results: results.length, query: query }) }}</template>
       <template v-else-if="phase === 'picked'">{{ picker ? $t('Player chosen') : $t('Opening profile...') }}</template>
     </p>
 
     <!-- In a card like the site's other tables. While searching the message sits on a tab of the card, as on the
          profile's skeleton, and the space the results line will take is kept above it so nothing moves -->
-    <panel-box :class="['relative', { 'md:mt-9 md:!rounded-tl-none': phase === 'searching' }]">
+    <!-- Embedded: inside the page's own card, so a plain block takes the card's place -->
+    <component :is="embedded ? 'div' : 'panel-box'" :class="['relative', { 'md:mt-9 md:!rounded-tl-none': phase === 'searching' && !embedded, 'mt-9': phase === 'searching' && embedded }]">
     <loading-component v-if="phase === 'searching'" :compact="true" :tab="true" :textoverride="true" :overrideimage="loaderImage">{{ $t('Searching for :query...', { query: query }) }}</loading-component>
     <div class="relative overflow-clip">
       <table class="min-w-0 w-full rounded-table relative">
@@ -64,7 +65,7 @@
         </tbody>
       </table>
     </div>
-    </panel-box>
+    </component>
 
     <!-- Covers the page and stays while the profile loads -->
     <div v-if="!picker" :class="['fixed inset-0 z-[100] bg-page pointer-events-none transition-opacity duration-500 flex items-center', fadeOut ? 'opacity-100' : 'opacity-0']">
@@ -97,6 +98,8 @@ export default {
     showTogether: Boolean,
     // Just the player column, where the search returns no game counts or latest game (Other esports)
     namesOnly: Boolean,
+    // Inside the page's own card (the league player searches): no card or page spacing of its own
+    embedded: Boolean,
     loaderImage: {
       type: String,
       default: null,

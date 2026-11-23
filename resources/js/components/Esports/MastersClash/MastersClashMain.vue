@@ -1,58 +1,49 @@
 <template>
   <div>
-    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
-    <page-heading :heading="'Masters Clash'" :heading-image="'/images/MCL/no-image.png'" :heading-image-url="'/Esports/MastersClash'"></page-heading>
-
-    
-      <!-- The sections; none is picked on the landing cards, and the others wait while one loads -->
-      <div class="flex justify-center px-4 mb-6">
-        <tab-button :tabs="[{ key: 'teams', text: 'Teams' }, { key: 'recentMatches', text: 'Recent Matches' }, { key: 'overallHeroStats', text: 'Overall Hero Stats' }, { key: 'overallTalentStats', text: 'Overall Talent Stats' }]" :no-default="true" :disabled="isLoading" :overridedefaultside="activeButton" :ignoreclick="true" @tab-click="setButtonActive"></tab-button>
+    <!-- The league's heading with the tab's filters beside it, as on the NGS page -->
+    <player-page-top>
+      <template #heading>
+        <page-heading heading="Masters Clash" :subheading="$t('Masters Clash · Season :season', { season: season })">
+          <a href="/Esports/MastersClash" class="flex items-center justify-center w-28 h-28"><img src="/images/MCL/no-image.png" alt="Masters Clash" class="w-full h-full object-contain"></a>
+        </page-heading>
+      </template>
+      <div v-if="tabFilters" class="w-full">
+        <filters
+          :key="activeButton"
+          :filters="filters"
+          :isLoading="isLoading"
+          :onFilter="() => filter()"
+          :onChange="handleInputChange"
+          :extrafilters="tabFilters"
+          :excludetimeframes="true"
+          :excludegametype="true"
+          :hideadvancedfilteringbutton="true"
+        >
+        </filters>
       </div>
+    </player-page-top>
 
+    <!-- The sections, across the page; none is picked on the landing cards, and the others wait while one loads -->
+    <div class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 mb-6">
+      <tab-button :tabs="[{ key: 'teams', text: 'Teams' }, { key: 'recentMatches', text: 'Recent Matches' }, { key: 'overallHeroStats', text: 'Overall Hero Stats' }, { key: 'overallTalentStats', text: 'Overall Talent Stats' }]" :stretch="true" :no-default="true" :disabled="isLoading" :overridedefaultside="activeButton" :ignoreclick="true" @tab-click="setButtonActive"></tab-button>
+    </div>
 
     <esports-section-cards v-if="!activeButton" :sections="['teams', 'recentMatches', 'overallHeroStats', 'overallTalentStats']" @select="setButtonActive"></esports-section-cards>
     <div v-else>
 
 
       <div v-if="activeButton === 'teams'">
-        <filters
-          :filters="filters"
-          :isLoading="isLoading"
-          :onFilter="() => filter()"
-          :onChange="handleInputChange"
-          :extrafilters="[
-            { text: 'Seasons', values: filters.mcl_seasons, defaultValue: defaultseason },
-          ]"
-          :excludetimeframes="true"
-          :excludegametype="true"
-          :hideadvancedfilteringbutton="true"
-        >
-        </filters>
-        <esports-organizations v-if="teamsData" :data="teamsData" :esport="'MastersClash'" :season="season"></esports-organizations>
+        <esports-organizations v-if="teamsData" :data="teamsData" :esport="'MastersClash'" :season="season" :subtitle="$t('Season :season', { season: season })"></esports-organizations>
       </div>
 
 
       <div v-if="activeButton === 'recentMatches'">
-        <filters
-          :filters="filters"
-          :isLoading="isLoading"
-          :onFilter="() => filter()"
-          :onChange="handleInputChange"
-          :extrafilters="[
-            { text: 'Seasons', values: filters.mcl_seasons, defaultValue: defaultseason },
-            { text: 'Heroes', values: filters.heroes },
-          ]"
-          :excludetimeframes="true"
-          :excludegametype="true"
-          :hideadvancedfilteringbutton="true"
-        >
-        </filters>
 
 
 
 
         <div v-if="recentMatchesData">
-          <esports-recent-matches :current="recentMatchesData.pagination.current_page" :last="recentMatchesData.pagination.last_page" @page="getRecentMatches" :data="recentMatchesData.data" :esport="'MastersClash'"></esports-recent-matches>
+          <esports-recent-matches :current="recentMatchesData.pagination.current_page" :last="recentMatchesData.pagination.last_page" @page="getRecentMatches" :data="recentMatchesData.data" :esport="'MastersClash'" :title="$t('Recent matches')" :subtitle="$t('Season :season · newest first', { season: season })"></esports-recent-matches>
         </div>
 
 
@@ -61,20 +52,7 @@
 
 
       <div v-if="activeButton === 'overallHeroStats'">
-        <filters
-          :filters="filters"
-          :isLoading="isLoading"
-          :onFilter="() => filter()"
-          :onChange="handleInputChange"
-          :extrafilters="[
-            { text: 'Seasons', values: filters.mcl_seasons, defaultValue: defaultseason },
-          ]"
-          :excludetimeframes="true"
-          :excludegametype="true"
-          :hideadvancedfilteringbutton="true"
-        >
-        </filters>
-        <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
+        <esports-hero-stats v-if="heroStatsData" :data="heroStatsData" :subtitle="$t('Season :season', { season: season })"></esports-hero-stats>
       </div>
 
       <div v-if="activeButton === 'overallTalentStats'">
@@ -85,20 +63,6 @@
 
         <div v-else>
           <div v-if="talentStatsData">
-            <filters
-              :filters="filters"
-              :isLoading="isLoading"
-              :onFilter="() => filter()"
-              :onChange="handleInputChange"
-              :extrafilters="[
-                { text: 'Heroes', values: this.filters.heroes, defaultValue: selectedHero.id },
-                { text: 'Seasons', values: filters.mcl_seasons, defaultValue: defaultseason },
-              ]"
-              :excludetimeframes="true"
-              :excludegametype="true"
-              :hideadvancedfilteringbutton="true"
-            >
-            </filters>
 
             
             <esports-talent-stats :talentdetaildata="talentStatsData.talentData" :talentbuilddata="talentStatsData.buildData" :talentimages="talentimages" :selectedHero="selectedHero"></esports-talent-stats>
@@ -109,78 +73,77 @@
       </div>
 
     </div>
-    <div v-if="isLoading">
-      <div class="relative max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
-        <!-- The message sits on a tab of the first card, as on the global pages: lined up with the card past the side padding, the card's top-left corner squared to meet it -->
-        <loading-component v-if="!['recentMatches', 'teams'].includes(activeButton)" :compact="true" :tab="true" :overrideimage="'/images/MCL/no-image.png'"></loading-component>
-        <!-- Teams: the name filter over the team cards; the message sits on a tab of the first card -->
-        <template v-if="activeButton === 'teams'">
-          <skeleton-box class="h-10 w-full sm:w-[18.125rem]"></skeleton-box>
-          <div class="grid sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8">
-            <div v-for="team in 8" :key="team" :class="['relative bg-surface rounded p-6 flex flex-col gap-5', { 'md:!rounded-tl-none': team === 1 }]">
-              <loading-component v-if="team === 1" :compact="true" :tab="true" :overrideimage="'/images/MCL/no-image.png'"></loading-component>
-              <skeleton-box class="h-[12.5rem] !rounded-control"></skeleton-box>
-              <div class="flex items-end justify-between gap-4"><skeleton-box class="h-6 w-40"></skeleton-box><skeleton-box class="h-5 w-20"></skeleton-box></div>
-            </div>
+    <!-- Each tab's cards in grey; the message sits on a tab of the first card -->
+    <div v-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <!-- Teams: the logo tiles, the search at the top right -->
+      <panel-box v-if="activeButton === 'teams'" :title="$t('Teams')" :subtitle="$t('Season :season', { season: season })" :skeleton="true" :divider="false" class="relative md:!rounded-tl-none">
+        <loading-component :compact="true" :tab="true" :overrideimage="'/images/MCL/no-image.png'"></loading-component>
+        <template #right><skeleton-box class="h-10 w-full sm:w-[18.125rem] sm:ml-auto"></skeleton-box></template>
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4">
+          <div v-for="team in 8" :key="team" class="flex flex-col items-center gap-3 rounded bg-surface-1 px-4 py-5">
+            <skeleton-box class="w-24 h-24"></skeleton-box>
+            <skeleton-box class="h-4 w-32"></skeleton-box>
+            <skeleton-box class="h-3 w-20"></skeleton-box>
           </div>
-        </template>
-        <!-- Recent Matches: expanded rows with the map, the two teams and each team's heroes -->
-        <template v-else-if="activeButton === 'recentMatches'">
-          <!-- The Compact / Expanded toggle and the page numbers, as on the loaded list -->
-          <div class="flex flex-wrap justify-end items-center gap-4">
-            <skeleton-box class="w-[13.25rem] h-[2.75rem]"></skeleton-box>
+        </div>
+      </panel-box>
+      <!-- Recent Matches: the titled card, the toggle and page numbers in its header, the expanded rows -->
+      <panel-box v-else-if="activeButton === 'recentMatches'" title="Recent matches" :subtitle="$t('Season :season · newest first', { season: season })" :skeleton="true" :divider="false" class="relative md:!rounded-tl-none">
+        <loading-component :compact="true" :tab="true" :overrideimage="'/images/MCL/no-image.png'"></loading-component>
+        <template #right>
+          <div class="ml-auto flex flex-wrap items-center gap-4">
+            <skeleton-box class="w-[10rem] h-9"></skeleton-box>
             <skeleton-box class="w-[17.75rem] h-[2.75rem]"></skeleton-box>
           </div>
-          <panel-box class="relative md:!rounded-tl-none">
-            <!-- The message sits on a tab of the card, as on the match histories -->
-            <loading-component :compact="true" :tab="true" :overrideimage="'/images/MCL/no-image.png'"></loading-component>
-            <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
-              <div class="flex flex-col gap-2 w-[18.75rem] shrink-0">
-                <skeleton-box class="h-4 w-40"></skeleton-box>
-                <skeleton-box class="h-4 w-32"></skeleton-box>
-                <skeleton-box class="h-3 w-36"></skeleton-box>
-                <skeleton-box class="h-3 w-28"></skeleton-box>
-              </div>
-              <div class="flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-6">
-                <div class="flex flex-row-reverse items-center gap-3">
-                  <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
-                  <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
-                </div>
-                <div class="flex flex-col items-center gap-2">
-                  <skeleton-box class="h-8 w-20"></skeleton-box>
-                  <skeleton-box class="h-3 w-28"></skeleton-box>
-                </div>
-                <div class="flex items-center gap-3">
-                  <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
-                  <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
-                </div>
-              </div>
-              <div class="flex gap-2 w-[21.25rem] max-w-full shrink-0">
-                <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[9.375rem]">
-                  <div v-for="player in 5" :key="player" class="flex items-center gap-1">
-                    <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
-                    <skeleton-box class="h-3 w-24"></skeleton-box>
-                  </div>
-                </div>
+        </template>
+        <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
+          <div class="flex flex-col gap-2 w-[18.75rem] shrink-0">
+            <skeleton-box class="h-4 w-40"></skeleton-box>
+            <skeleton-box class="h-4 w-32"></skeleton-box>
+            <skeleton-box class="h-3 w-36"></skeleton-box>
+            <skeleton-box class="h-3 w-28"></skeleton-box>
+          </div>
+          <div class="flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-6">
+            <div class="flex flex-row-reverse items-center gap-3">
+              <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
+              <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <skeleton-box class="h-8 w-20"></skeleton-box>
+              <skeleton-box class="h-3 w-28"></skeleton-box>
+            </div>
+            <div class="flex items-center gap-3">
+              <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
+              <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
+            </div>
+          </div>
+          <div class="flex gap-2 w-[21.25rem] max-w-full shrink-0">
+            <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[9.375rem]">
+              <div v-for="player in 5" :key="player" class="flex items-center gap-1">
+                <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
+                <skeleton-box class="h-3 w-24"></skeleton-box>
               </div>
             </div>
-          </panel-box>
-        </template>
-        <!-- Overall Hero Stats: hero with name, then win rate, popularity, ban rate and games -->
-        <panel-box v-else-if="activeButton === 'overallHeroStats'">
-          <table-skeleton :bare="true" :rows="12" :columns="['avatar', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
+          </div>
+        </div>
+      </panel-box>
+      <!-- Overall Hero Stats: the titled card with its search, then hero, win rate, popularity, ban rate and games -->
+      <panel-box v-else-if="activeButton === 'overallHeroStats'" title="Overall hero stats" :subtitle="$t('Season :season', { season: season })" :skeleton="true" :divider="false" class="relative md:!rounded-tl-none">
+        <loading-component :compact="true" :tab="true" :overrideimage="'/images/MCL/no-image.png'"></loading-component>
+        <template #right><skeleton-box class="h-10 w-full sm:w-[18.125rem] sm:ml-auto"></skeleton-box></template>
+        <table-skeleton :bare="true" :rows="12" :columns="['hero', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
+      </panel-box>
+      <!-- Overall Talent Stats: the global talent page's two cards -->
+      <div v-else-if="activeButton === 'overallTalentStats'" class="flex flex-col gap-6">
+        <panel-box title="Talent stats" subtitle="Win rate, popularity and games for every talent. The best win rate on each tier is highlighted." :skeleton="true" class="relative md:!rounded-tl-none">
+          <loading-component :compact="true" :tab="true" :overrideimage="'/images/MCL/no-image.png'"></loading-component>
+          <compact-talent-grid :skeleton="true"></compact-talent-grid>
         </panel-box>
-        <!-- Overall Talent Stats: the global talent page's two cards, in grey -->
-        <template v-else-if="activeButton === 'overallTalentStats'">
-          <panel-box title="Talent stats" subtitle="Win rate, popularity and games for every talent. The best win rate on each tier is highlighted." :skeleton="true">
-            <compact-talent-grid :skeleton="true"></compact-talent-grid>
-          </panel-box>
-          <panel-box title="Talent builds" subtitle="Copy a build code and paste it in game chat." :skeleton="true">
-            <table-skeleton :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
-          </panel-box>
-        </template>
-        <table-skeleton v-else></table-skeleton>
+        <panel-box title="Talent builds" subtitle="Copy a build code and paste it in game chat." :skeleton="true">
+          <table-skeleton :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
+        </panel-box>
       </div>
+      <table-skeleton v-else></table-skeleton>
     </div>
   </div>
 </template>
@@ -228,6 +191,21 @@ export default {
     }
   },
   computed: {
+    // The active tab's dropdowns, shown in the heading; Talent Stats has them only once a hero is open
+    tabFilters() {
+      const season = { text: 'Seasons', values: this.filters.mcl_seasons, defaultValue: this.season };
+      switch (this.activeButton) {
+        case 'teams':
+        case 'overallHeroStats':
+          return [season];
+        case 'recentMatches':
+          return [season, { text: 'Heroes', values: this.filters.heroes }];
+        case 'overallTalentStats':
+          return this.selectedHero ? [{ text: 'Heroes', values: this.filters.heroes, defaultValue: this.selectedHero.id }, season] : null;
+        default:
+          return null;
+      }
+    },
     teamsClicked() {
       return this.activeButton === 'teams';
     },

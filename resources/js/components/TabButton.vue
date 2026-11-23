@@ -1,11 +1,12 @@
 <template>
   <!-- select-none: clicking tabs quickly mustn't highlight their labels -->
   <!-- Wraps onto more rows when the tabs don't fit (a page's section nav on a phone) -->
-  <div class="inline-flex flex-wrap justify-center bg-teal rounded p-1 gap-1 select-none">
+  <!-- dark: a dark bar with the picked tab in teal, as in the redesign (role chips); stretch: that bar across the page as a section nav -->
+  <div :class="['flex-wrap justify-center rounded p-1 gap-1 select-none', stretch ? 'flex w-full' : 'inline-flex', stretch ? 'bg-surface' : dark ? 'bg-surface-1' : 'bg-teal']">
     <a
       v-for="side in sides"
       :key="side"
-      :class="[staticClasses, 'rounded-control text-white', selectedSide === side ? 'bg-surface-1' : disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lteal']"
+      :class="[staticClasses, 'rounded-control', { 'flex-1': stretch }, (stretch || dark) && selectedSide !== side ? 'text-subtext' : 'text-white', selectedSide === side ? (stretch || dark ? 'bg-teal' : 'bg-surface-1') : disabled ? 'opacity-50 cursor-not-allowed' : (stretch || dark ? 'hover:text-white hover:bg-surface-2' : 'hover:bg-lteal')]"
       :alt="tabs ? labels[side] : { left: tab1alt, right: tab2alt, third: tab3alt }[side]"
       role="button"
       @click="handleClick(side)"
@@ -44,6 +45,10 @@
       noDefault: Boolean,
       // Only the selected tab can be clicked (while its section loads)
       disabled: Boolean,
+      // A page's section nav: across the page, tabs equal width, dark bar with the open tab in teal
+      stretch: Boolean,
+      // The same dark bar and teal pick at its own width (role chips)
+      dark: Boolean,
     },
     data(){
       return {

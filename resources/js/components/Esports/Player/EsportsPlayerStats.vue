@@ -1,9 +1,11 @@
 <template>
   <div>
+    <!-- The league's heading with the player's filters beside it, as on the league pages -->
     <player-page-top>
       <template #heading>
-        <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
-        <page-heading :heading="'Profile Data'" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
+        <page-heading :heading="leagueTitle" :subheading="leagueSubheading">
+          <a :href="league.headingImageUrl" class="flex items-center justify-center w-28 h-28"><img :src="league.headingImage" :alt="league.name" class="w-full h-full object-contain"></a>
+        </page-heading>
       </template>
       <div class="w-full">
         <!-- Shown while loading too, so the heading row holds still; the options fill in once the player's seasons load -->
@@ -27,111 +29,106 @@
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 space-y-8">
-
-      <!-- Laid out like the profile page, from this league's games only -->
-      <panel-box>
-        <div class="flex flex-col gap-6 xl:grid xl:grid-cols-[auto_minmax(0,1fr)] xl:grid-rows-[auto_1fr]">
-
-          <!-- Player overview -->
-          <panel-box :inner="true" class="!gap-8 xl:!gap-6 xl:row-span-2 xl:grid xl:[grid-template-rows:subgrid]">
-            <div class="flex flex-col gap-8">
-              <div class="flex items-center gap-3">
-                <div class="flex flex-col">
-                  <h2 class="text-3xl font-bold">{{ battletag }}</h2>
-                  <span class="text-subtext">{{ leagueLabel }}</span>
-                </div>
-              </div>
-
-              <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
-                <div class="flex flex-col items-center justify-between gap-1 shrink-0">
-                  <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name" :excludehover="true" size="large"></hero-image-wrapper>
-                </div>
-
-                <overview-stats class="flex-1 min-w-0 w-full" :win-rate="data.win_rate" :stats="overviewStats"></overview-stats>
-              </div>
-            </div>
-            <!-- On desktop the maps start level with the Heroes card title -->
-            <div class="flex flex-col gap-8 xl:pt-6">
-              <!-- Maps stay on the player card; the heroes have their own card beside it -->
-              <div v-for="section in topSections.filter(section => section.title == 'Maps')" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
-                <div class="flex justify-between items-baseline">
-                  <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
-                  <a class="text-header whitespace-nowrap hover:underline" :href="ngsPageUrl(section.allPath)">{{ $t(section.allText) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
-                </div>
-                <div class="flex flex-wrap gap-6 max-md:justify-center">
-                  <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :esport="esport" :playerlink="true" :text="group.label" :data="group.data"></group-box>
-                </div>
-              </div>
-
-              <div class="flex flex-col gap-1 mt-auto">
-                <p v-if="data.total_time_played" class="flex flex-wrap gap-2"><span class="text-subtext">{{ $t('Total Time Played:') }}</span><span class="text-header">{{ formatDurationText(data.total_time_played) }}</span></p>
-                <p class="flex flex-wrap gap-2"><span class="text-subtext">{{ $t('Total Time Spent Dead:') }}</span><span class="text-header">{{ formatDurationText(shortDuration(data.time_spent_dead)) }}</span></p>
-              </div>
-            </div>
-          </panel-box>
-
-          <div class="flex flex-col gap-6 min-w-0 xl:row-span-2 xl:grid xl:[grid-template-rows:subgrid]">
-            <div class="grid 2xl:grid-cols-2 gap-6">
-              <!-- Win rate by role -->
-              <panel-box :inner="true" :title="$t('Win Rate By Role')" link-text="All Roles" :link-href="ngsPageUrl('/Role')">
-                <!-- Spread over the card, so it and the card beside it line up -->
-                <div class="flex-1 flex flex-col justify-between gap-3">
-                  <div v-for="role in roleWinRates" :key="role.role" class="flex flex-col gap-1.5">
-                    <span class="leading-[1.2]"><a class="text-header hover:underline" :href="ngsPageUrl('/Role/' + role.role)">{{ $t(role.role) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a> <span class="text-sm text-subtext">{{ $t('· :played games', { played: role.games_played }) }}</span></span>
-                    <stat-bar :value="role.win_rate.toFixed(2)" suffix="%" :color="$winRateColor(role.win_rate)"></stat-bar>
-                  </div>
-                </div>
-              </panel-box>
-
-              <!-- The teams they played for -->
-              <panel-box v-if="data.teams_played_for && data.teams_played_for.length" :inner="true" :title="$t('Teams Played For')">
-                <!-- The latest five; the rest open in a popup, where the card's link would sit -->
-                <template v-if="data.teams_played_for.length > 5" #right>
-                  <button type="button" class="text-header whitespace-nowrap hover:underline" @click="teamsOpen = true">{{ $t('View More') }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></button>
-                </template>
-                <!-- Spaced as if there were five; fewer leave empty slots at the bottom -->
-                <div class="flex flex-col gap-2">
-                  <a v-for="team in data.teams_played_for.slice(0, 5)" :key="team.team_name + team.season" :href="team.link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
-                    <img class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image || league.loaderImage" :alt="$ngsTeam(team.team_name).name" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = league.loaderImage; } }"/>
-                    <div class="flex flex-col min-w-0 flex-1">
-                      <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
-                      <span class="text-sm text-subtext">{{ [team.season ? $t('Season :season', { season: team.season }) : null, team.division ? $t('Division :division', { division: team.division }) : null].filter(Boolean).join(' · ') }}</span>
-                    </div>
-                    <div class="flex flex-col items-end shrink-0 text-sm">
-                      <span class="font-semibold">{{ team.win_rate.toFixed(2) }}%</span>
-                      <span class="text-subtext">{{ $t(':played games', { played: team.games_played }) }}</span>
-                    </div>
-                  </a>
-                  <div v-for="slot in Math.max(0, 5 - data.teams_played_for.length)" :key="'empty' + slot" class="h-14" aria-hidden="true"></div>
-                </div>
-              </panel-box>
-            </div>
-
-            <div class="flex flex-col gap-6">
-              <!-- Their heroes, then the heroes on the other side in their wins and losses -->
-              <panel-box :inner="true" :title="$t('Heroes')" link-text="All Heroes" :link-href="ngsPageUrl('/Hero')">
-                <div class="flex flex-col gap-6">
-                  <div class="flex flex-wrap gap-6 justify-evenly">
-                    <group-box v-for="group in topSections.find(section => section.title == 'Heroes').groups" :key="group.label" class="!m-0" :esport="esport" :playerlink="true" :text="group.label" :data="group.data"></group-box>
-                  </div>
-                  <div class="flex flex-wrap gap-6 justify-evenly">
-                    <group-box v-if="mostPlayedAgainst.length" class="!m-0" :useinputforhover="true" :text="'Most Played Against'" :data="mostPlayedAgainst"></group-box>
-                    <group-box v-if="data.heroes_won_against && data.heroes_won_against.length" class="!m-0" :useinputforhover="true" :text="'Most Won Against'" :data="data.heroes_won_against.slice(0, 3)"></group-box>
-                    <group-box v-if="data.heroes_lost_against && data.heroes_lost_against.length" class="!m-0" :useinputforhover="true" :text="'Most Lost Against'" :data="data.heroes_lost_against.slice(0, 3)"></group-box>
-                  </div>
-                </div>
-              </panel-box>
+    <div v-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
+      <div class="grid xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1fr)_minmax(0,1fr)] gap-6">
+        <!-- The player: their most played hero, win rate, six numbers and time played -->
+        <panel-box :divider="false" class="xl:row-span-2 !gap-6">
+          <div class="flex items-center gap-4 min-w-0">
+            <img v-if="mostPlayedHero" class="w-20 h-20 shrink-0 rounded-full object-cover bg-surface-3 text-[0rem]" :src="`/images/heroes/${mostPlayedHero.short_name}.png`" :alt="$heroName(mostPlayedHero)"/>
+            <div class="flex flex-col min-w-0">
+              <h2 class="text-3xl font-bold truncate">{{ battletag }}</h2>
+              <span class="text-sm text-subtext truncate">{{ [leagueLabel, latestTeam].filter(Boolean).join(' · ') }}</span>
             </div>
           </div>
-        </div>
-      </panel-box>
+          <div class="flex flex-col gap-2 rounded bg-surface-1 px-4 py-3">
+            <div class="flex justify-between gap-4 text-sm text-subtext"><span>{{ $t('Win Rate') }}</span><span>{{ $t(':wins W · :losses L', { wins: data.wins, losses: data.losses }) }}</span></div>
+            <span class="text-3xl font-bold">{{ Number(data.win_rate).toFixed(2) }}%</span>
+            <stat-bar :value="Number(data.win_rate).toFixed(2)" display-text="" color="teal"></stat-bar>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <div v-for="stat in overviewStats" :key="stat.label" class="flex flex-col rounded bg-surface-1 px-3 py-2.5 min-w-0">
+              <span class="text-xs text-subtext">{{ $t(stat.label) }}</span>
+              <span class="text-lg font-bold">{{ stat.value }}</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-x-8 gap-y-2 mt-auto">
+            <div v-if="data.total_time_played" class="flex flex-col"><span class="text-xs text-subtext">{{ $t('Time played') }}</span><span class="font-semibold">{{ formatDurationText(data.total_time_played) }}</span></div>
+            <div class="flex flex-col"><span class="text-xs text-subtext">{{ $t('Time spent dead') }}</span><span class="font-semibold">{{ formatDurationText(shortDuration(data.time_spent_dead)) }}</span></div>
+          </div>
+        </panel-box>
+
+        <!-- The teams they played for; the rest open in a popup -->
+        <panel-box :title="$t('Teams played for')" :divider="false">
+          <template v-if="data.teams_played_for && data.teams_played_for.length > 5" #right>
+            <button type="button" class="ml-auto text-sm font-semibold text-teal whitespace-nowrap hover:underline" @click="teamsOpen = true">{{ $t('View More') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></button>
+          </template>
+          <div class="flex flex-col gap-2">
+            <a v-for="team in (data.teams_played_for || []).slice(0, 5)" :key="team.team_name + team.season" :href="team.link" class="group/bt flex items-center gap-3 rounded bg-surface-1 hover:bg-surface-2 px-3 py-2 transition-colors">
+              <img v-if="team.image" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image" :alt="$ngsTeam(team.team_name).name" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = league.loaderImage; } }"/>
+              <span v-else class="w-10 h-10 shrink-0 rounded-full bg-surface-3 flex items-center justify-center text-sm font-bold text-subtext">{{ initials($ngsTeam(team.team_name).name) }}</span>
+              <div class="flex flex-col min-w-0 flex-1">
+                <span class="font-semibold truncate group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span>
+                <span class="text-xs text-subtext">{{ [team.season ? $t('Season :season', { season: team.season }) : null, team.division ? $t('Division :division', { division: team.division }) : null].filter(Boolean).join(' · ') }}</span>
+              </div>
+              <div class="flex flex-col items-end shrink-0 text-sm">
+                <span class="font-semibold">{{ team.win_rate.toFixed(2) }}%</span>
+                <span class="text-xs text-subtext">{{ $t(':played games', { played: team.games_played }) }}</span>
+              </div>
+            </a>
+          </div>
+        </panel-box>
+
+        <!-- The roles they played, most played first -->
+        <panel-box :title="$t('Win Rate By Role')" link-text="All Roles" :link-href="ngsPageUrl('/Role')" :divider="false">
+          <div class="flex flex-col gap-3">
+            <div v-for="role in rolesPlayed" :key="role.role" class="flex flex-col gap-1.5">
+              <div class="flex justify-between gap-4 text-sm">
+                <span><a class="font-semibold hover:underline" :href="ngsPageUrl('/Role/' + role.role)">{{ $t(role.role) }}</a> <span class="text-subtext">{{ $t('· :played games', { played: role.games_played }) }}</span></span>
+                <span :class="['font-semibold', role.win_rate >= 50 ? 'text-teal' : '']">{{ role.win_rate.toFixed(2) }}%</span>
+              </div>
+              <stat-bar :value="role.win_rate.toFixed(2)" display-text="" :color="$winRateColor(role.win_rate)"></stat-bar>
+            </div>
+          </div>
+        </panel-box>
+
+        <!-- Their heroes, most played first -->
+        <panel-box :title="$t('Heroes')" link-text="All Heroes" :link-href="ngsPageUrl('/Hero')" :divider="false">
+          <table class="w-full rounded-table">
+            <thead>
+              <tr>
+                <th class="py-2 px-3 text-left text-sm leading-4">{{ $t('Hero') }}</th>
+                <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Win Rate') }}</th>
+                <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Games') }}</th>
+              </tr>
+            </thead>
+            <tbody class="text-center">
+              <tr v-for="row in heroRows" :key="row.hero_id">
+                <td class="py-2 px-3 text-left">
+                  <a :href="row.link" class="group/bt inline-flex items-center gap-2 min-w-0">
+                    <img class="w-7 h-7 shrink-0 rounded-full object-cover bg-surface-3 text-[0rem]" :src="`/images/heroes/${row.hero.short_name}.png`" :alt="$heroName(row.hero)"/>
+                    <span class="font-semibold truncate group-hover/bt:underline">{{ $heroName(row.hero) }}</span>
+                  </a>
+                </td>
+                <td :class="['font-semibold', row.win_rate >= 50 ? 'text-teal' : '']">{{ Number(row.win_rate).toFixed(2) }}%</td>
+                <td>{{ row.games_played }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </panel-box>
+
+        <!-- The heroes on the other side in their wins and in their losses -->
+        <panel-box :title="$t('Heroes played against')" :divider="false">
+          <div class="flex flex-col gap-4">
+            <group-box v-if="data.heroes_won_against && data.heroes_won_against.length" class="!m-0" :useinputforhover="true" :text="'Most wins against'" :data="data.heroes_won_against.slice(0, 5)"></group-box>
+            <group-box v-if="data.heroes_lost_against && data.heroes_lost_against.length" class="!m-0" :useinputforhover="true" :text="'Most losses against'" :data="data.heroes_lost_against.slice(0, 5)"></group-box>
+          </div>
+        </panel-box>
+      </div>
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
-      <panel-box v-if="data.matches && data.matches.length" :title="$t('Recent Matches')" link-text="Match History" :link-href="getMatchHistoryUrl()" :divider="false">
+      <panel-box v-if="data.matches && data.matches.length" :title="$t('Recent matches')" link-text="Match History" :link-href="getMatchHistoryUrl()" :divider="false">
         <div>
-          <game-summary-header></game-summary-header>
           <game-summary-box
             v-for="(item, index) in data.matches.slice(0, 7)"
             :key="index"
@@ -139,95 +136,55 @@
             :esport-league="esport"
             :esport-series="series"
             :tournament="tournament"
+            :hide-players="true"
             :data="item"
           ></game-summary-box>
         </div>
       </panel-box>
     </div>
 
-    <!-- The page's layout with grey blocks while it loads, like the profile; the nav logo spins meanwhile -->
-    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 space-y-8">
-      <!-- The cards start where the loaded ones do; the message sits on a tab of the panel above them -->
-      <panel-box class="relative md:!rounded-tl-none">
-        <loading-component :compact="true" :tab="true" :overrideimage="league.loaderImage"></loading-component>
-        <!-- Built from the loaded cards' own parts (the same labels, bars and boxes, empty), so nothing moves when the data arrives -->
-        <div class="flex flex-col gap-6 xl:grid xl:grid-cols-[auto_minmax(0,1fr)] xl:grid-rows-[auto_1fr]">
-          <panel-box :inner="true" class="!gap-8 xl:!gap-6 xl:row-span-2 xl:grid xl:[grid-template-rows:subgrid]">
-            <div class="flex flex-col gap-8">
-              <div class="flex items-center gap-3">
-                <div class="flex flex-col">
-                  <h2 class="text-3xl font-bold">{{ battletag }}</h2>
-                  <span class="text-subtext">{{ leagueLabel }}</span>
-                </div>
-              </div>
-              <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
-                <div class="flex flex-col items-center justify-between gap-1 shrink-0">
-                  <skeleton-box class="w-40 md:w-[14rem] h-[20.125rem] rounded"></skeleton-box>
-                </div>
-                <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="8"></overview-stats>
-              </div>
-            </div>
-            <!-- On desktop the maps start level with the Heroes card title -->
-            <div class="flex flex-col gap-8 xl:pt-6">
-              <div v-for="section in [{ title: 'Maps', allText: 'All Maps' }]" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
-                <div class="flex justify-between items-baseline">
-                  <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
-                  <span class="skeleton-text whitespace-nowrap">{{ $t(section.allText) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></span>
-                </div>
-                <div class="flex flex-wrap gap-6 max-md:justify-center">
-                  <div v-for="label in ['Most Played', 'Highest Win Rate', 'Lowest Win Rate']" :key="label" class="w-auto inline-block">
-                    <h4 class="text-sm mb-2"><span class="skeleton-text">{{ $t(label) }}</span></h4>
-                    <div class="flex flex-wrap gap-3 max-md:gap-2">
-                      <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col gap-1 mt-auto">
-                <p class="flex flex-wrap items-center gap-2"><span class="skeleton-text">{{ $t('Total Time Played:') }}</span><skeleton-box class="h-4 w-36"></skeleton-box></p>
-                <p class="flex flex-wrap items-center gap-2"><span class="skeleton-text">{{ $t('Total Time Spent Dead:') }}</span><skeleton-box class="h-4 w-36"></skeleton-box></p>
-              </div>
-            </div>
-          </panel-box>
-
-          <div class="flex flex-col gap-6 min-w-0 xl:row-span-2 xl:grid xl:[grid-template-rows:subgrid]">
-            <div class="grid 2xl:grid-cols-2 gap-6">
-              <panel-box :inner="true" :title="$t('Win Rate By Role')" link-text="All Roles" :skeleton="true">
-                <div class="flex-1 flex flex-col justify-between gap-3">
-                  <div v-for="role in ['Bruiser', 'Healer', 'Melee Assassin', 'Ranged Assassin', 'Support', 'Tank']" :key="role" class="flex flex-col gap-1.5">
-                    <span class="skeleton-text leading-[1.2] w-fit">{{ $t(role) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></span>
-                    <stat-bar value="0.00" suffix="%" :hide-value="true"></stat-bar>
-                  </div>
-                </div>
-              </panel-box>
-              <panel-box :inner="true" :title="$t('Teams Played For')">
-                <div class="flex flex-col gap-2">
-                  <skeleton-box v-for="index in 3" :key="index" class="h-14"></skeleton-box>
-                  <div v-for="slot in 2" :key="'empty' + slot" class="h-14" aria-hidden="true"></div>
-                </div>
-              </panel-box>
-            </div>
-            <div class="flex flex-col gap-6">
-              <panel-box :inner="true" :title="$t('Heroes')" link-text="All Heroes" :skeleton="true">
-                <div class="flex flex-col gap-6">
-                  <div v-for="(row, index) in [['Most Played', 'Highest Win Rate', 'Lowest Win Rate'], ['Most Played Against', 'Most Won Against', 'Most Lost Against']]" :key="index" class="flex flex-wrap gap-6 justify-evenly">
-                    <div v-for="label in row" :key="label" class="w-auto inline-block">
-                      <h4 class="text-sm mb-2"><span class="skeleton-text">{{ $t(label) }}</span></h4>
-                      <div class="flex flex-wrap gap-3 max-md:gap-2">
-                        <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </panel-box>
+    <!-- The page's cards in grey while it loads; the message sits on a tab of the player card -->
+    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
+      <div class="grid xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1fr)_minmax(0,1fr)] gap-6">
+        <panel-box :divider="false" class="xl:row-span-2 !gap-6 relative md:!rounded-tl-none">
+          <loading-component :compact="true" :tab="true" :overrideimage="league.loaderImage"></loading-component>
+          <div class="flex items-center gap-4">
+            <skeleton-box class="w-20 h-20 shrink-0 !rounded-full"></skeleton-box>
+            <div class="flex flex-col gap-2 min-w-0">
+              <h2 class="text-3xl font-bold truncate">{{ battletag }}</h2>
+              <skeleton-box class="h-4 w-48"></skeleton-box>
             </div>
           </div>
-        </div>
-      </panel-box>
+          <skeleton-box class="h-[7.5rem]"></skeleton-box>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <skeleton-box v-for="stat in 6" :key="stat" class="h-[4.25rem]"></skeleton-box>
+          </div>
+          <div class="flex gap-8 mt-auto"><skeleton-box class="h-10 w-24"></skeleton-box><skeleton-box class="h-10 w-24"></skeleton-box></div>
+        </panel-box>
+        <panel-box :title="$t('Teams played for')" :skeleton="true" :divider="false">
+          <skeleton-box v-for="team in 2" :key="team" class="h-14"></skeleton-box>
+        </panel-box>
+        <panel-box :title="$t('Win Rate By Role')" link-text="All Roles" :skeleton="true" :divider="false">
+          <div v-for="role in 3" :key="role" class="flex flex-col gap-1.5">
+            <skeleton-box class="h-4 w-40"></skeleton-box>
+            <stat-bar value="0.00" display-text=""></stat-bar>
+          </div>
+        </panel-box>
+        <panel-box :title="$t('Heroes')" link-text="All Heroes" :skeleton="true" :divider="false">
+          <table-skeleton :bare="true" :rows="4" :columns="['hero', 'stat', 'stat']"></table-skeleton>
+        </panel-box>
+        <panel-box :title="$t('Heroes played against')" :skeleton="true" :divider="false">
+          <div v-for="label in ['Most wins against', 'Most losses against']" :key="label" class="flex flex-col gap-2">
+            <h4 class="text-sm"><span class="skeleton-text">{{ $t(label) }}</span></h4>
+            <div class="flex flex-wrap gap-3">
+              <skeleton-box v-for="tile in 5" :key="tile" class="w-16 h-16 !rounded-full"></skeleton-box>
+            </div>
+          </div>
+        </panel-box>
+      </div>
 
-      <panel-box :title="$t('Recent Matches')" link-text="Match History" :skeleton="true" :divider="false">
+      <panel-box :title="$t('Recent matches')" link-text="Match History" :skeleton="true" :divider="false">
         <div>
-          <game-summary-header :skeleton="true"></game-summary-header>
           <game-summary-skeleton v-for="index in 7" :key="index"></game-summary-skeleton>
         </div>
       </panel-box>
@@ -294,11 +251,6 @@ export default {
       // The player's teams, kept once loaded so picking one doesn't shrink the list to it
       teamOptions: [],
       cancelTokenSource: null,
-      inputHero: {
-          name: "Auto Select",
-          short_name: "autoselect3",
-          icon: "autoselect3.jpg",
-      },
     }
   },
   created(){
@@ -328,10 +280,32 @@ export default {
     leagueLabel() {
       return this.esport == 'NGS' ? 'Nexus Gaming Series' : this.league.name;
     },
+    leagueTitle() {
+      return this.esport == 'NGS' ? 'Nexus Gaming Series' : this.league.name;
+    },
+    leagueSubheading() {
+      if (this.esport == 'NGS') {
+        return this.modifiedseason ? this.$t('NGS · Community league · Season :season', { season: this.modifiedseason }) : this.$t('NGS · Community league');
+      }
+      return this.$t('Player stats');
+    },
+    mostPlayedHero() {
+      return this.data.hero_top_three_most_played?.[0]?.hero ?? null;
+    },
+    latestTeam() {
+      const team = this.data.teams_played_for?.[0];
+      return team ? this.$ngsTeam(team.team_name).name : null;
+    },
+    // The roles they played, most played first
+    rolesPlayed() {
+      return (this.data.role_win_rates || []).filter(role => role.games_played).slice().sort((a, b) => b.games_played - a.games_played);
+    },
+    // Their heroes, most played first
+    heroRows() {
+      return (this.data.heroes || []).slice().sort((a, b) => b.games_played - a.games_played).slice(0, 8);
+    },
     overviewStats() {
       return [
-        { label: 'Wins', value: this.data.wins.toLocaleString('en-US') },
-        { label: 'Losses', value: this.data.losses.toLocaleString('en-US') },
         { label: 'KDR', value: this.data.kdr },
         { label: 'KDA', value: this.data.kda },
         { label: 'Takedowns', value: this.data.takedowns.toLocaleString('en-US') },
@@ -340,44 +314,14 @@ export default {
         { label: 'Deaths', value: Number(this.data.deaths).toLocaleString('en-US') },
       ];
     },
-    topSections() {
-      return [
-        { title: 'Heroes', allText: 'All Heroes', allPath: '/Hero', groups: [
-          { label: 'Most Played', data: this.data.hero_top_three_most_played },
-          { label: 'Highest Win Rate', data: this.data.hero_top_three_highest_win_rate },
-          { label: 'Lowest Win Rate', data: this.data.hero_top_three_lowest_win_rate },
-        ] },
-        { title: 'Maps', allText: 'All Maps', allPath: '/Map', groups: [
-          { label: 'Most Played', data: this.data.map_top_three_most_played },
-          { label: 'Highest Win Rate', data: this.data.map_top_three_highest_win_rate },
-          { label: 'Lowest Win Rate', data: this.data.map_top_three_lowest_win_rate },
-        ] },
-      ];
-    },
-    // Every role, with the ones they haven't played at 0 games
-    roleWinRates() {
-      const played = this.data.role_win_rates || [];
-      return ['Bruiser', 'Healer', 'Melee Assassin', 'Ranged Assassin', 'Support', 'Tank']
-        .map(role => played.find(row => row.role === role) || { role, games_played: 0, win_rate: 0 });
-    },
-    // The heroes they faced most, wins and losses together; both lists hold every hero they faced
-    mostPlayedAgainst() {
-      const counts = {};
-      for (const row of [...(this.data.heroes_won_against || []), ...(this.data.heroes_lost_against || [])]) {
-        counts[row.hero.id] = counts[row.hero.id] || { hero: row.hero, total: 0 };
-        counts[row.hero.id].total += row.total;
-      }
-      const games = this.data.wins + this.data.losses;
-      return Object.values(counts)
-        .sort((a, b) => b.total - a.total)
-        .slice(0, 3)
-        .map(row => ({ ...row, inputhover: this.$t('Played against :hero :count times (:percent% of their games)', { hero: this.$heroName(row.hero), count: row.total, percent: games ? (row.total / games * 100).toFixed(2) : 0 }) }));
-    },
   },
   watch: {
   },
   methods: {
     formatDurationText,
+    initials(name) {
+      return String(name).split(/\s+/).filter(Boolean).slice(0, 2).map(word => word.charAt(0).toUpperCase()).join('');
+    },
     // The server's "1 hours, 26 minutes, 40 seconds" as "1h, 26m, 40s", which formatDurationText reads
     shortDuration(text) {
       return String(text ?? '').replace(/ (day|hour|minute|second)s/g, (_, unit) => unit[0]);

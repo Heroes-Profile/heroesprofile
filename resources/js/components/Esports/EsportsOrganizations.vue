@@ -1,27 +1,25 @@
 <template>
-  <!-- A card per team (or Other's series), styled like the NGS teams and the leagues on /Esports: the logo, then the name and a link -->
-  <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
-    <template v-if="esport !== 'Other'">
-      <search-input v-model="filterText" :placeholder="$t('Filter by team name')" class="w-full sm:w-[18.125rem]"></search-input>
+  <!-- One card of logo tiles: a league's teams or organizations, or Other's tournaments -->
+  <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8">
+    <panel-box :title="title || (esport === 'Other' ? $t('Tournaments') : $t('Teams'))" :subtitle="subtitle" :divider="false">
+      <template v-if="esport !== 'Other'" #right>
+        <search-input v-model="filterText" :placeholder="searchPlaceholder || $t('Filter by team name')" class="w-full sm:w-[18.125rem] sm:ml-auto"></search-input>
+      </template>
       <p v-if="!shown.length" class="text-subtext">{{ $t('No teams match ":teamsearch".', { teamsearch: filterText }) }}</p>
-    </template>
-
-    <!-- Featured (HGC on the Other hub): one larger card, centred above the rest -->
-    <div :class="featured ? 'flex justify-center' : 'grid sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-6 md:gap-8'">
-      <a v-for="item in shown" :key="item.href" :href="item.href" :class="['group/bt bg-surface rounded p-6 flex flex-col gap-5 min-w-0 hover:bg-surface-1 transition-colors', { 'w-full sm:w-[36rem]': featured }]">
-        <div :class="[featured ? 'h-[18rem]' : 'h-[12.5rem]', 'rounded-control bg-surface-1 group-hover/bt:bg-surface-2 transition-colors flex items-center justify-center']">
-          <img :src="item.image" :alt="item.name" :class="[featured ? 'max-w-[15rem] max-h-[15rem]' : 'max-w-[10rem] max-h-[10rem]', 'object-contain text-[0rem]']" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = fallbackImage; } }"/>
-        </div>
-        <div class="flex items-end justify-between gap-4">
-          <div class="min-w-0">
-            <h2 :class="[featured ? 'text-2xl' : 'text-xl', 'font-bold truncate']">{{ item.name }}</h2>
-            <p v-if="item.games != null" class="text-sm text-subtext mt-1">{{ $t(':count games', { count: item.games.toLocaleString('en-US') }) }}</p>
-            <p v-if="item.firstGame" class="text-sm text-subtext">{{ formatMonth(item.firstGame) }} – {{ formatMonth(item.lastGame) }}</p>
-          </div>
-          <span class="inline-flex items-center whitespace-nowrap shrink-0"><span class="group-hover/bt:underline">{{ $t('View stats') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
-        </div>
-      </a>
-    </div>
+      <div v-else :class="['grid gap-4', esport === 'Other' ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7' : 'sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4']">
+        <a v-for="item in shown" :key="item.href" :href="item.href" :class="['group/bt flex flex-col items-center gap-3 rounded bg-surface-1 hover:bg-surface-2 border-2 px-4 py-5 min-w-0 text-center transition-colors', item.name === highlight ? 'border-teal' : 'border-transparent']">
+          <img :src="item.image" :alt="item.name" class="w-24 h-24 object-contain text-[0rem]" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = fallbackImage; } }"/>
+          <span class="max-w-full truncate font-semibold group-hover/bt:underline">{{ item.name }}</span>
+          <template v-if="esport === 'Other'">
+            <span v-if="item.games != null || item.firstGame" class="flex flex-col text-xs text-subtext -mt-2">
+              <span v-if="item.games != null">{{ $t(':count games', { count: item.games.toLocaleString('en-US') }) }}</span>
+              <span v-if="item.firstGame">{{ formatMonth(item.firstGame) }} – {{ formatMonth(item.lastGame) }}</span>
+            </span>
+          </template>
+          <span v-else class="-mt-1 inline-flex items-center text-xs font-semibold text-teal">{{ linkText || $t('View stats') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+        </a>
+      </div>
+    </panel-box>
   </div>
 </template>
 
@@ -43,8 +41,13 @@ export default {
     data: [Object, Array],
     season: Number,
     esport: String,
-    // One standout card, centred and larger (HGC on the Other hub)
-    featured: Boolean,
+    // The card's title and subtitle, the search's placeholder and each tile's link text
+    title: String,
+    subtitle: String,
+    searchPlaceholder: String,
+    linkText: String,
+    // A tile outlined in teal (HGC on the Other hub)
+    highlight: String,
   },
   data() {
     return {

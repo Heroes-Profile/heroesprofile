@@ -27,7 +27,7 @@
           :hideadvancedfilteringbutton="true"
         >
         </filters>
-        <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
+        <esports-hero-stats v-if="heroStatsData" :data="heroStatsData" :low-sample-games="2"></esports-hero-stats>
       </div>
 
       <div v-if="activeButton === 'overallTalentStats'">

@@ -1,26 +1,24 @@
 <template>
-  <!-- In a card at the page's width, as on the global pages -->
+  <!-- A tile per division, its bar showing its games against the busiest division -->
   <div class="max-w-[120rem] mx-auto px-4 md:px-8">
-   <panel-box>
-    <table class="min-w-0 w-full rounded-table max-md:text-sm">
-      <thead>
-        <tr>
-          <th class="py-2 px-3 text-center text-sm leading-4">
-            {{ $t('Division') }}
-          </th>            
-          <th class="py-2 px-3 text-center text-sm leading-4">
-            {{ $t('Games') }}
-          </th>  
-        </tr>
-      </thead>
-      <tbody class="text-center">
-        <tr v-for="division in data" :key="division">
-          <td><a class="group/bt inline-flex items-center" :href="getUrl(division.division_0)"><span class="group-hover/bt:underline">{{ division.division_0 }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></td>
-          <td>{{ division.count }}</td>
-        </tr>
-      </tbody>
-    </table>
-   </panel-box>
+    <panel-box title="Divisions" :subtitle="$t('Season :season · :games games played across :count divisions.', { season: season, games: totalGames.toLocaleString('en-US'), count: data.length })" :divider="false">
+      <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <a v-for="division in data" :key="division.division_0" :href="getUrl(division.division_0)" class="group/bt flex flex-col gap-3 rounded bg-surface-1 hover:bg-surface-2 px-5 py-4 transition-colors">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex flex-col">
+              <span class="text-[0.625rem] font-bold uppercase tracking-wider text-subtext">{{ $t('Division') }}</span>
+              <span class="text-xl font-bold group-hover/bt:underline">{{ division.division_0 }}</span>
+            </div>
+            <basil-icon name="arrow-small" class="text-xs mt-2"></basil-icon>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-xs text-subtext">{{ $t('Games played') }}</span>
+            <span class="text-lg font-bold">{{ Number(division.count).toLocaleString('en-US') }}</span>
+          </div>
+          <stat-bar :value="maxGames ? (division.count / maxGames) * 100 : 0" display-text="" color="teal"></stat-bar>
+        </a>
+      </div>
+    </panel-box>
   </div>
 </template>
 
@@ -44,6 +42,12 @@ export default {
   mounted() {
   },
   computed: {
+    totalGames() {
+      return this.data.reduce((sum, division) => sum + Number(division.count || 0), 0);
+    },
+    maxGames() {
+      return Math.max(0, ...this.data.map(division => Number(division.count) || 0));
+    },
   },
   watch: {
   },

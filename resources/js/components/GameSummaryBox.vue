@@ -102,7 +102,7 @@
       </template>
     </div>
 
-    <div v-if="data.players && data.players.length" class="relative z-[2] flex gap-2 pl-1.5 pr-12 py-4 w-[22.625rem] shrink-0">
+    <div v-if="!hidePlayers && data.players && data.players.length" class="relative z-[2] flex gap-2 pl-1.5 pr-12 py-4 w-[22.625rem] shrink-0">
       <div v-for="(team, teamIndex) in data.players" :key="teamIndex" class="flex flex-col gap-1.5 w-[9.375rem]">
         <!-- A party's icon sits centred beside a line in its colour running down the group -->
         <div v-for="group in partyGroups(team)" :key="group.start" class="flex items-center">
@@ -199,6 +199,8 @@ import { siteLocale } from '../utils/translate';
     props: {
       data: Object,
       esport: Boolean,
+      // Leaves out the two teams' player lists (the esports player page)
+      hidePlayers: Boolean,
       esportLeague: String,
       esportSeries: String,
       tournament: String,
