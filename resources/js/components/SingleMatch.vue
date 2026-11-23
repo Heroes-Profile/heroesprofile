@@ -116,7 +116,7 @@
                 <tr>
                   <th class="py-2 px-3 text-left text-sm leading-4">{{ $t('Player') }}</th>
                   <th v-for="column in scoreColumns" :key="column.key" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer whitespace-nowrap" :class="{ 'bg-teal text-white': scoreSort === column.key }" @click="sortScores(column.key)">
-                    {{ $t(column.label) }}<span v-if="column.key === 'total_rank'" class="inline-flex align-middle ml-1" @click.stop><round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true"><slot><p class="text-sm p-2 text-left font-normal whitespace-normal">{{ $t('HP Rating is the Heroes Profile performance score (0–100).') }}</p></slot></round-image></span><sort-indicator :column="column.key" :sort-key="scoreSort" :sort-dir="scoreSortDir"></sort-indicator>
+                    {{ $t(column.label) }}<span v-if="column.key === 'total_rank'" class="inline-flex align-middle ml-1" @click.stop><round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true"><slot><p class="text-sm p-2 text-left font-normal whitespace-normal">{{ $t('Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match. 100 would be a perfect match with most MVPs hovering between 70-75.') }}</p></slot></round-image></span><sort-indicator :column="column.key" :sort-key="scoreSort" :sort-dir="scoreSortDir"></sort-indicator>
                   </th>
                 </tr>
               </thead>
