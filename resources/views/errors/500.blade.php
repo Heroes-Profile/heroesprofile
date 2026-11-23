@@ -1,39 +1,15 @@
-@php
-    $bladeGlobals = [
-        'regions' => [
-            1 => 'NA',
-            2 => 'EU',
-            3 => 'KR',
-            /* 4 => 'UNK', */
-            5 => 'CN',
-        ],
-        'darkmode' => request()->cookie('darkmode') === '1' ? 1 : 0,
-        'heroes' => [],
-        'maps' => [],
-    ];
-    // The visitor's theme and the footer's patch and replay count, as on other pages. Left at the cookie / out of the footer if the lookup fails
-    try {
-        $globalData = app(\App\Services\GlobalDataService::class);
-        $bladeGlobals['darkmode'] = (int) $globalData->getDarkMode();
-        $bladeGlobals['maxReplayID'] = $globalData->calculateMaxReplayNumber();
-        $bladeGlobals['latestPatch'] = $globalData->getLatestPatch();
-    } catch (\Throwable $e) {
-    }
-@endphp
+@extends('errors.layout')
 
-@extends('layouts.app', $bladeGlobals)
-@section('no_ads', '1')
+@section('title', __('Server Error'))
+@section('meta_keywords', '500 error, server error, website error, error page')
+@section('meta_description', 'Something went wrong loading this page. Please try again.')
 
-@section('content')
-    <div class="error-page">
-        <div class="text-center">
-            <h1>{{ __('Server or Website error') }}</h1>
-            <p>{{ __('Please submit a bug report with the specific page and filters you were accessing:') }} <a class="link" href="https://github.com/Heroes-Profile/heroesprofile/issues" target="_blank">https://github.com/Heroes-Profile/heroesprofile/issues</a></p>
-        </div>
+@section('error_badge', __('Error 500'))
+@section('error_heading', __('Something broke in the Nexus'))
+@section('error_text', __('Our server ran into a problem loading this page. Try again in a moment. If it keeps happening, report the page and filters you were using.'))
 
-        <div class="flex justify-center items-center text-center ">
-          <a href="/"><img class="" src="/images/miscellaneous/500.png" alt="Burning"></a>
-        </div>
-
-    </div>
+@section('error_actions')
+    <a href="" class="btn bg-teal font-semibold">{{ __('Try again') }}</a>
+    <custom-button :href="'/'" :text="'Take me home'" :alt="'Take me home'" class="font-semibold"></custom-button>
+    <a href="https://github.com/Heroes-Profile/heroesprofile/issues" target="_blank" rel="noopener noreferrer" class="group/bt inline-flex items-center text-sm font-semibold text-lteal"><span class="group-hover/bt:underline">{{ __('Report a bug') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
 @endsection

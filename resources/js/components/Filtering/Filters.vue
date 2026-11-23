@@ -483,12 +483,12 @@
               <p v-if="ffSearchError" class="absolute left-2 top-full -mt-1 text-red text-xs whitespace-nowrap">{{ $t(ffSearchError) }}</p>
             </div>
           </div>
-          <button v-if="!hideadvancedfilteringbutton" type="button" :class="['underline text-sm text-subtext hover:text-white', compact ? 'h-10' : 'h-10 m-2 md:w-[7.5rem] max-md:flex-[1_1_8rem]']" :aria-expanded="true" @click="toggleExtraFilters = false">{{ $t(toggleButtonText) }}</button>
+          <button v-if="!hideadvancedfilteringbutton" type="button" :class="['inline-flex items-center justify-center gap-1.5 text-sm font-medium text-teal hover:text-lteal whitespace-nowrap', compact ? 'h-10' : 'h-10 m-2 max-md:flex-[1_1_8rem]']" :aria-expanded="true" @click="toggleExtraFilters = false">{{ toggleButtonText }}<basil-icon name="arrow-small" class="text-xs -rotate-90"></basil-icon></button>
         </div>
       </div>
       <div class="flex max-md:mb-auto" :class="compact && $slots['compact-footer'] ? 'justify-between items-start' : 'justify-end'">
         <div v-if="compact && $slots['compact-footer']" class="mt-2"><slot name="compact-footer"></slot></div>
-        <button class="underline" :class="{ 'text-sm mt-2': compact }" v-if="!hideadvancedfilteringbutton && !(toggleExtraFilters && hasAdvancedFilters)" :aria-expanded="!!toggleExtraFilters" @click="toggleExtraFilters = !toggleExtraFilters" >{{ $t(toggleButtonText) }}</button>
+        <button type="button" :class="['inline-flex items-center gap-1.5 text-sm font-medium text-teal hover:text-lteal', compact ? 'mt-2' : 'mt-4 -mb-2 mr-2']" v-if="!hideadvancedfilteringbutton && !(toggleExtraFilters && hasAdvancedFilters)" :aria-expanded="!!toggleExtraFilters" @click="toggleExtraFilters = !toggleExtraFilters" >{{ toggleButtonText }}<basil-icon name="arrow-small" :class="['text-xs', toggleExtraFilters ? '-rotate-90' : 'rotate-90']"></basil-icon></button>
         <round-image v-if="advancedfiltersinfo && !hideadvancedfilteringbutton" class="ml-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
           <p class="max-sm:text-xs">{{ advancedfiltersinfo }}</p>
         </round-image>
@@ -893,9 +893,9 @@
       },
       toggleButtonText(){
         if(this.toggleExtraFilters){
-          return "Hide Advanced";
+          return this.$t('Hide advanced filters');
         }
-        return "Show Advanced";
+        return this.$t('Show advanced filters');
       },
       // Wood is decided by games played, not MMR
       rankTiersByMmr() {

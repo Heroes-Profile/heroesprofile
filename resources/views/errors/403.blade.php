@@ -1,101 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $errorTitle ?? 'Access Denied' }} - Heroes Profile</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 0.625rem rgba(0,0,0,0.1);
-            text-align: center;
-            max-width: 31.25rem;
-            width: 90%;
-        }
-        .error-code {
-            font-size: 4rem;
-            font-weight: bold;
-            color: #dc3545;
-            margin-bottom: 1rem;
-        }
-        .error-title {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 1rem;
-        }
-        .error-message {
-            color: #666;
-            margin-bottom: 1rem;
-            line-height: 1.5;
-        }
-        .ban-details {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 0.25rem;
-            margin-top: 1rem;
-            text-align: left;
-        }
-        .ban-details h4 {
-            margin-top: 0;
-            color: #333;
-        }
-        .ban-details p {
-            margin: 0.5rem 0;
-            color: #666;
-        }
-        .contact-info {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #dee2e6;
-            color: #666;
-            font-size: 0.9rem;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="error-code">{{ $errorCode ?? 403 }}</div>
-        <div class="error-title">{{ $errorTitle ?? 'Access Denied' }}</div>
-        <div class="error-message">
-            {{ $message ?? 'You do not have permission to view this page.' }}
+{{-- Also shown for banned IPs, admin-only pages and replay downloads (with their own code, title and message) --}}
+@extends('errors.layout')
+
+@section('title', __($errorTitle ?? 'Access Denied'))
+@section('meta_keywords', '403 error, access denied, forbidden')
+@section('meta_description', 'You do not have permission to view this page.')
+
+@section('error_badge', __('Error :code', ['code' => $errorCode ?? 403]))
+@section('error_heading', __($errorTitle ?? 'Access Denied'))
+@section('error_text', __($message ?? 'You do not have permission to view this page.'))
+
+@section('error_actions')
+    <custom-button :href="'/'" :text="'Take me home'" :alt="'Take me home'" :color="'teal'" class="font-semibold"></custom-button>
+    <custom-button :href="'/Contact'" :text="'Contact us'" :alt="'Contact us'" class="font-semibold"></custom-button>
+@endsection
+
+@if (isset($ban_reason) || isset($banned_date))
+    @section('error_extra')
+        <div class="border-t border-surface-3 pt-5 flex flex-col gap-3">
+            <span class="text-[0.625rem] font-bold uppercase tracking-wider text-subtext">{{ __('Ban details') }}</span>
+            <div class="rounded-control bg-surface-1 p-4 flex flex-col gap-2 text-sm">
+                @isset($ban_reason)
+                    <p><span class="text-subtext">{{ __('Reason') }}:</span> {{ $ban_reason }}</p>
+                @endisset
+                @isset($banned_date)
+                    <p><span class="text-subtext">{{ __('Banned on') }}:</span> {{ $banned_date->format('M j, Y H:i') }} UTC</p>
+                @endisset
+            </div>
+            <p class="text-sm text-subtext">{{ __('If you believe this is an error, please contact us.') }}</p>
         </div>
-        
-        @if(isset($ban_reason) || isset($banned_date))
-        <div class="ban-details">
-            <h4>Ban Details</h4>
-            @if(isset($ban_reason))
-                <p><strong>Reason:</strong> {{ $ban_reason }}</p>
-            @endif
-            @if(isset($banned_date))
-                <p><strong>Banned on:</strong> <time class="local-date" datetime="{{ $banned_date->toIso8601String() }}">{{ $banned_date->format('Y-m-d H:i:s T') }}</time></p>
-            @endif
-        </div>
-        @endif
-        
-        <div class="contact-info">
-            If you believe this is an error, please contact the site administrators.
-        </div>
-    </div>
-    <!-- The ban date in the viewer's own format and time zone -->
-    <script>
-        document.querySelectorAll('time.local-date').forEach(function (el) {
-            var date = new Date(el.dateTime);
-            if (!isNaN(date)) {
-                el.textContent = date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
-            }
-        });
-    </script>
-</body>
-</html>
+    @endsection
+@endif
