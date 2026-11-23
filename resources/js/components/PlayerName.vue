@@ -3,7 +3,8 @@
   <span class="relative inline-flex items-center">
     <a :href="href" :target="newTab ? '_blank' : null" :rel="newTab ? 'noopener' : null" class="peer/name group/bt relative inline-flex items-center" @click="redirect && $redirectToProfile(battletag, blizzId, region, false)">
       <span class="group-hover/bt:underline">{{ battletag }}</span>
-      <basil-icon name="arrow-small" class="text-xs absolute left-full ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon>
+      <!-- Padding, not margin, so the gap to the chevron stays part of the link; hoverable only once the name is, so it doesn't cover the flairs -->
+      <span class="absolute left-full inset-y-0 pl-2 inline-flex items-center opacity-0 pointer-events-none group-hover/bt:opacity-100 group-hover/bt:pointer-events-auto transition-opacity"><basil-icon name="arrow-small" class="text-xs"></basil-icon></span>
     </a>
     <!-- flairOutside: on desktop the flairs hang past the name, so a centred name is centred on its own. Phones keep them
          inline: there the table is shrunk with zoom, which misplaces a left:100% -->
