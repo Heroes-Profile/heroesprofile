@@ -4,7 +4,7 @@
       <span v-if="!hidelabel" class="relative">
         <!-- The info icon sits beside the label, so a longer or larger label pushes it along instead of under it -->
         <span class="relative inline-flex items-center gap-1.5">{{ $t(text) }}
-          <round-image v-if="infolink" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+          <round-image :popup-hoverable="true" v-if="infolink" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
             <div>
               <p class="max-sm:text-xs">{{ $t('Timeframes correspond to game patches.') }} <a :href="infolink" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('View the full patch & season history.') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a></p>
             </div>

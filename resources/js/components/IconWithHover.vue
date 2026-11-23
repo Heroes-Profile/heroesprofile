@@ -39,8 +39,8 @@
     <Teleport to="body">
       <div v-if="showTooltip" ref="popup" @mouseover="handleMouseOver" @mouseleave="scheduleHide" :style="tooltipStyle" :class="[
           'fixed text-xs z-[55]',
-          // Closes as soon as the pointer leaves the trigger, even onto the popup
-          { 'pointer-events-none': !popupHoverable },
+          // Closes as soon as the pointer leaves the trigger, even onto the popup, unless it's hoverable or clicked open
+          { 'pointer-events-none': !popupHoverable && !pinned },
         {
           'w-[14em]' : popupsize != 'large' && popupsize != 'fit',
           'w-[25rem] max-w-[90vw]' : popupsize == 'large',
@@ -70,7 +70,8 @@ export default {
   components: {
   },
   props: {
-    popupHoverable: { type: Boolean, default: true },
+    // Stays open while the pointer moves onto it, so its links can be clicked and its text copied
+    popupHoverable: { type: Boolean, default: false },
     title: String,
     image: String,
     size: String,

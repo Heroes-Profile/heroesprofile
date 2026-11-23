@@ -52,7 +52,7 @@ export default {
     href: String,
     linkText: String,
     // false: the popup closes as soon as the pointer leaves the portrait, like the talent icons'
-    popupHoverable: { type: Boolean, default: true },
+    popupHoverable: { type: Boolean, default: false },
   },
   data(){
     return {

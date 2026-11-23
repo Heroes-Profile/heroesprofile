@@ -46,10 +46,10 @@ export default {
     },
     // The talent level under each talent
     levels: Boolean,
-    // false: talent popups close as soon as the pointer leaves the icon
+    // true: talent popups stay open while the pointer moves onto them
     popupHoverable: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   data() {

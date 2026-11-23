@@ -144,7 +144,7 @@
                   <div class="relative z-[2] w-[11.25rem] shrink-0 px-4 flex items-center justify-center gap-2">
                     <span class="font-medium tabular-nums whitespace-nowrap" :class="row.mmr_change >= 0 ? 'text-win' : 'text-red'">{{ row.mmr_change >= 0 ? '▲' : '▼' }} {{ row.mmr_change > 0 ? '+' : '' }}{{ row.mmr_change.toFixed(2) }}</span>
                     <!-- Down after a win or up after a loss: the FAQ explains why -->
-                    <round-image v-if="isUnexpectedChange(row)" class="text-xs" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+                    <round-image :popup-hoverable="true" v-if="isUnexpectedChange(row)" class="text-xs" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                       <p class="font-normal">{{ $t('HP MMR measures your skill against everyone else, so it can :players. The system is finding the bracket you belong in, not only rewarding wins.', { players: row.winner === 'True' ? $t('drop after a win against much lower rated players') : $t('rise after a loss against much higher rated players') }) }}</p>
                       <a href="/FAQ#mmr-change-direction" class="group/bt inline-flex items-center mt-2 font-normal"><span class="group-hover/bt:underline">Read more in the FAQ</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
                     </round-image>

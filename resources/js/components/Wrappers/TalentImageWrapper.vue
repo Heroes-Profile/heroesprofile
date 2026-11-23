@@ -30,7 +30,7 @@ export default {
     talent: Object,
     size: String,
     mobileClick: true,
-    popupHoverable: { type: Boolean, default: true },
+    popupHoverable: { type: Boolean, default: false },
     // Hero level for tooltips that scale; only used when the talent has raw_description
     level: {
       type: Number,

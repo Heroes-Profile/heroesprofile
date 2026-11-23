@@ -120,7 +120,7 @@
       <div v-if="showTooltip" ref="popup" @mouseover="handleMouseOver" @mouseleave="scheduleHide" :style="tooltipStyle" :class="[
           'fixed text-xs z-[55]',
           // Closes as soon as the pointer leaves the image, even onto the popup
-          { 'pointer-events-none': !popupHoverable },
+          { 'pointer-events-none': !popupHoverable && !pinned },
         {
           'w-[14em]' : popupsize != 'large' && popupsize != 'xlarge' && popupsize != 'fit',
           'w-[25rem] max-w-[90vw]' : popupsize == 'large',
@@ -178,11 +178,12 @@ export default {
     mobileClick: false,
     // Name-only hero portraits link elsewhere on tap, so phones show neither the inline text nor a popup
     hidemobiletext: Boolean,
-    // Grace before closing, so a quick or slightly off move between icon and popup doesn't close it
-    popupHoverable: { type: Boolean, default: true },
+    // Stays open while the pointer moves onto it, so its links can be clicked and its text copied
+    popupHoverable: { type: Boolean, default: false },
+    // Grace before closing; defaults to 150ms for a hoverable popup, so a quick move onto it doesn't close it, else none
     hidedelay: {
       type: Number,
-      default: 150,
+      default: null,
     },
     // Phones open the popup on tap instead of following the link, with a button to it
     href: String,
@@ -271,7 +272,7 @@ export default {
     },
     scheduleHide() {
       if (this.pinned) return;
-      const delay = this.hidedelay;
+      const delay = this.hidedelay ?? (this.popupHoverable ? 150 : 0);
       if (delay === 0) {
         this.hideTooltip();
       } else {
