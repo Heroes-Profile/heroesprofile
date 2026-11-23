@@ -291,6 +291,7 @@ class AnalyticsController extends Controller
     public function replayData(int $replayID): JsonResponse
     {
         $user = $this->loggedInUser();
+        abort_unless($this->replays->isSeasonGame($replayID), 404);
         $replay = $this->replays->replay($replayID, (int) $user->blizz_id);
         abort_unless($replay, 404);
         $replay['win_model'] = $this->queries->winModel();
@@ -302,6 +303,7 @@ class AnalyticsController extends Controller
     public function replayPerformance(int $replayID): JsonResponse
     {
         $this->allowedUser();
+        abort_unless($this->replays->isSeasonGame($replayID), 404);
         $performance = $this->performance->forReplay($replayID);
         abort_unless($performance, 404);
 

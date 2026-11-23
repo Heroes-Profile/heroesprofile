@@ -134,24 +134,13 @@ class NGSSingleDivisionController extends Controller
             return [
                 'replayID' => $group[0]['replayID'],
                 'game_date' => $group[0]['game_date'],
-                'game_map' => $maps[$group[0]['game_map']],
+                'game_map' => $maps[$group[0]['game_map']] ?? null,
                 'game' => $group[0]['game'],
                 'round' => $group[0]['round'],
                 'team_0_name' => $group[0]['team_0_name'],
                 'team_1_name' => $group[0]['team_1_name'],
                 'winner' => 1,
-                'heroes' => [
-                    0 => $group[0] && $group[0]['hero'] ? ['hero' => $heroData[$group[0]['hero']]] : null,
-                    1 => $group[1] && $group[1]['hero'] ? ['hero' => $heroData[$group[1]['hero']]] : null,
-                    2 => $group[2] && $group[2]['hero'] ? ['hero' => $heroData[$group[2]['hero']]] : null,
-                    3 => $group[3] && $group[3]['hero'] ? ['hero' => $heroData[$group[3]['hero']]] : null,
-                    4 => $group[4] && $group[4]['hero'] ? ['hero' => $heroData[$group[4]['hero']]] : null,
-                    5 => $group[5] && $group[5]['hero'] ? ['hero' => $heroData[$group[5]['hero']]] : null,
-                    6 => $group[6] && $group[6]['hero'] ? ['hero' => $heroData[$group[6]['hero']]] : null,
-                    7 => $group[7] && $group[7]['hero'] ? ['hero' => $heroData[$group[7]['hero']]] : null,
-                    8 => $group[8] && $group[8]['hero'] ? ['hero' => $heroData[$group[8]['hero']]] : null,
-                    9 => $group[9] && $group[9]['hero'] ? ['hero' => $heroData[$group[9]['hero']]] : null,
-                ],
+                'heroes' => $this->matchHeroes($group, $heroData),
             ];
         })->sortByDesc('game_date')->values()->all();
 
@@ -236,24 +225,13 @@ class NGSSingleDivisionController extends Controller
             return [
                 'replayID' => $group[0]['replayID'],
                 'game_date' => $group[0]['game_date'],
-                'game_map' => $maps[$group[0]['game_map']],
+                'game_map' => $maps[$group[0]['game_map']] ?? null,
                 'game' => $group[0]['game'],
                 'round' => $group[0]['round'],
                 'team_0_name' => $group[0]['team_0_name'],
                 'team_1_name' => $group[0]['team_1_name'],
                 'winner' => 1,
-                'heroes' => [
-                    0 => $group[0] && $group[0]['hero'] ? ['hero' => $heroData[$group[0]['hero']]] : null,
-                    1 => $group[1] && $group[1]['hero'] ? ['hero' => $heroData[$group[1]['hero']]] : null,
-                    2 => $group[2] && $group[2]['hero'] ? ['hero' => $heroData[$group[2]['hero']]] : null,
-                    3 => $group[3] && $group[3]['hero'] ? ['hero' => $heroData[$group[3]['hero']]] : null,
-                    4 => $group[4] && $group[4]['hero'] ? ['hero' => $heroData[$group[4]['hero']]] : null,
-                    5 => $group[5] && $group[5]['hero'] ? ['hero' => $heroData[$group[5]['hero']]] : null,
-                    6 => $group[6] && $group[6]['hero'] ? ['hero' => $heroData[$group[6]['hero']]] : null,
-                    7 => $group[7] && $group[7]['hero'] ? ['hero' => $heroData[$group[7]['hero']]] : null,
-                    8 => $group[8] && $group[8]['hero'] ? ['hero' => $heroData[$group[8]['hero']]] : null,
-                    9 => $group[9] && $group[9]['hero'] ? ['hero' => $heroData[$group[9]['hero']]] : null,
-                ],
+                'heroes' => $this->matchHeroes($group, $heroData),
             ];
         })->sortByDesc('game_date')->take(10)->values()->all();
 
@@ -333,7 +311,7 @@ class NGSSingleDivisionController extends Controller
             return [
                 'map_id' => $group[0]['game_map'],
                 'map' => $maps[$group[0]['game_map']],
-                'game_map' => $maps[$group[0]['game_map']],
+                'game_map' => $maps[$group[0]['game_map']] ?? null,
                 'name' => $maps[$group[0]['game_map']]['name'],
                 'wins' => $wins,
                 'losses' => $losses,
@@ -393,5 +371,18 @@ class NGSSingleDivisionController extends Controller
             'map_top_three_lowest_win_rate' => $mapTopthreeLowestWinRate->values(),
             'seasons' => $seasons,
         ];
+    }
+
+    /** Ten hero slots for a game; slots for players who didn't join the division's teams stay empty. */
+    private function matchHeroes($group, $heroData): array
+    {
+        $heroes = [];
+
+        for ($i = 0; $i < 10; $i++) {
+            $row = $group->get($i);
+            $heroes[$i] = $row && $row['hero'] ? ['hero' => $heroData[$row['hero']] ?? null] : null;
+        }
+
+        return $heroes;
     }
 }

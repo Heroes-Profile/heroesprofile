@@ -84,7 +84,6 @@ class PlayerRolesController extends Controller
             'region' => $region,
             'role' => $role,
             'filters' => $this->globalDataService->getFilterData(),
-            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
             'gametypedefault' => $this->globalDataService->getPlayerGameTypeDefault(),
             'replayViewerAllowed' => Auth::check(),

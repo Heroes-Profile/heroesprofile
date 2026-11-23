@@ -126,6 +126,11 @@ class MatchController extends Controller
             return ServeApiFixtures::validated();
         }
 
+        // Custom games, like the other match endpoints
+        if ($refusal = $this->refuseUnviewable((int) $validated['replayID'])) {
+            return $refusal;
+        }
+
         $result = $replays->download((int) $validated['replayID']);
 
         if ($result instanceof Response) {

@@ -319,7 +319,7 @@ class EsportsController extends Controller
             'blizz_id' => 'nullable|string',
             'division' => 'nullable|string',
             'season' => 'nullable|numeric',
-            'pagination_page' => 'required:integer',
+            'pagination_page' => 'required|integer|min:1',
             'tournament' => [
                 'nullable',
                 Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
@@ -470,7 +470,7 @@ class EsportsController extends Controller
             'team' => 'nullable|string',
             'division' => 'nullable|string',
             'season' => 'nullable|numeric',
-            'pagination_page' => 'required:integer',
+            'pagination_page' => 'required|integer|min:1',
             'tournament' => [
                 'nullable',
                 Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
@@ -570,7 +570,7 @@ class EsportsController extends Controller
             'season' => 'nullable|numeric',
             'hero' => ['sometimes', 'nullable', new HeroInputValidation],
             'game_map' => ['sometimes', 'nullable',  new GameMapInputValidation],
-            'pagination_page' => 'required:integer',
+            'pagination_page' => 'required|integer|min:1',
             'tournament' => [
                 'nullable',
                 Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
@@ -1229,11 +1229,6 @@ class EsportsController extends Controller
             'hero' => ['sometimes', 'nullable', new HeroInputValidation],
             'game_map' => ['sometimes', 'nullable',  new GameMapInputValidation],
             'role' => ['sometimes', 'nullable', new RoleInputValidation],
-            'tournament' => [
-                'nullable',
-                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
-                'in:main,nationscup',
-            ],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -1253,8 +1248,6 @@ class EsportsController extends Controller
         } elseif ($request['tournament'] == 'nationscup') {
             $this->esport = 'hi_nc';
         }
-
-        $this->schema = 'heroesprofile';
 
         $this->blizz_id = $request['blizz_id'];
         $this->battletag = $request['battletag'];
@@ -1284,15 +1277,7 @@ class EsportsController extends Controller
             $this->team_name = $request['team'];
         }
 
-        if ($this->esport == 'MastersClash') {
-            $this->schema .= '_mcl';
-        } elseif ($this->esport == 'HeroesInternational' && $this->tournament == 'main') {
-            $this->schema .= '_hi';
-        } elseif ($this->esport == 'Other') {
-            $this->schema .= '_ml';
-        } elseif ($this->esport) {
-            $this->schema .= '_'.strtolower($this->esport);
-        }
+        $this->schema = $this->league()['schema'];
 
         $results = DB::table($this->schema.'.replay')
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
@@ -1965,14 +1950,17 @@ class EsportsController extends Controller
             ])
             ->whereIn($this->schema.'.replay.replayID', $replayIDs)
             ->when(is_null($playerSides), function ($query) use ($team) {
-                return $query->whereNot($this->schema.'.teams.team_name', $team);
+                // CCL and HI pass the team's ID, the other leagues its name
+                $column = in_array($this->esport, ['CCL', 'hi', 'hi_nc']) ? 'team_id' : 'team_name';
+
+                return $query->whereNot($this->schema.'.teams.'.$column, $team);
             })
             ->get()
             ->when(! is_null($playerSides), function ($rows) use ($playerSides) {
                 return $rows->filter(fn ($row) => isset($playerSides[$row->replayID]) && $row->team != $playerSides[$row->replayID]);
             });
 
-        $asWho = is_null($playerSides) ? $team : $this->battletag;
+        $asWho = is_null($playerSides) ? ($this->team_name ?? $team) : $this->battletag;
         // A team's replay IDs repeat once per player (five per game); a player's appear once per game
         $rowsPerGame = is_null($playerSides) ? 5 : 1;
         $groupedResults = $results->groupBy('hero')->map(function ($group) {

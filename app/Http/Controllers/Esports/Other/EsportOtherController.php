@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Esports\Other;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Esports\EsportsController;
 use App\Models\Esports\Other\Battletag;
-use App\Models\Esports\Other\OtherTeam;
 use App\Models\Esports\Other\Replay;
 use App\Models\Esports\Other\Series;
 use App\Models\HeroesDataTalent;
@@ -444,10 +443,9 @@ class EsportOtherController extends Controller
             'season' => 'nullable|numeric',
             'team' => 'nullable|string',
             'map' => 'nullable|string',
-            'season' => 'nullable|numeric',
             'userinput' => ['nullable', 'string', new BattletagInputProhibitCharacters],
             'hero' => ['sometimes', 'nullable', new HeroInputValidation],
-            'pagination_page' => 'required:integer',
+            'pagination_page' => 'required|integer|min:1',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -458,12 +456,20 @@ class EsportOtherController extends Controller
                 'status' => 'failure to validate inputs',
             ];
         }
-        $this->series = $request['series'] ? Series::select('name')->where('series_id', $request['series'])->first()->name : null;
+        $this->series = $request['series'] ? Series::where('series_id', $request['series'])->value('name') : null;
+        $mapId = $request['map'] ? Map::where('name', $request['map'])->value('map_id') : null;
+
+        if (($request['series'] && $this->series === null) || ($request['map'] && $mapId === null)) {
+            return [
+                'data' => [$request->all()],
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
         $this->region = $request['region'];
         $tournament = $request['tournament'];
         $this->season = $request['season'];
         $this->team_name = $request['team'];
-        $map = $request['map'];
         $userinput = $request['userinput'];
         $this->schema = 'heroesprofile_ml';
 
@@ -505,8 +511,8 @@ class EsportOtherController extends Controller
                         ->orWhere('team_1_name', $this->team_name);
                 });
             })
-            ->when($map, function ($query) use ($map) {
-                return $query->where('game_map', Map::select('map_id')->where('name', $map)->first()->map_id);
+            ->when($mapId, function ($query) use ($mapId) {
+                return $query->where('game_map', $mapId);
             })
             ->when($userinput, function ($query) use ($userinput) {
                 $playerIds = [];
@@ -754,7 +760,6 @@ class EsportOtherController extends Controller
             'series' => 'nullable|string',
             'battletag' => 'nullable|string',
             'blizz_id' => 'nullable|string',
-            'series' => 'nullable|string',
             'season' => 'nullable|numeric',
             'hero' => ['sometimes', 'nullable', new HeroInputValidation],
             'game_map' => ['sometimes', 'nullable',  new GameMapInputValidation],
@@ -783,7 +788,7 @@ class EsportOtherController extends Controller
 
         $this->series = $request['series'];
 
-        $this->team = $request['team'] ? OtherTeam::select('team_id')->where('team_name', $request['team'])->first()->team_id : null;
+        // By name: one team has a row per tournament and season, so any single team_id misses the rest
         $this->team_name = $request['team'];
 
         $this->schema .= '_ml';
@@ -845,11 +850,7 @@ class EsportOtherController extends Controller
                 });
             })
             ->when(! is_null($this->blizz_id), function ($query) {
-                return $query->whereIn($this->schema.'.player.battletag', function ($query) {
-                    $query->select('player_id')
-                        ->from($this->schema.'.battletags')
-                        ->where('battletag', 'like', $this->battletag.'%');
-                });
+                return $query->where($this->schema.'.player.blizz_id', $this->blizz_id);
             })
 
             ->when(! is_null($this->hero), function ($query) {
@@ -903,7 +904,8 @@ class EsportOtherController extends Controller
 
         $topEnemyTeams = $this->getTopEnemyTeams($replaysLost->pluck('replayID')->toArray(), $this->team, $teamImageMap, $this->series);
 
-        $players = $results->groupBy('battletag')->map(function ($playerResults, $battletag) use ($heroData) {
+        // By blizz_id: battletag here is the name without its #tag, which two players can share
+        $players = $results->groupBy('blizz_id')->map(function ($playerResults) use ($heroData) {
             $totalGames = $playerResults->count();
             $mostPlayedHero = $playerResults->groupBy('hero')->sortDesc()->keys()->first();
 
@@ -916,7 +918,7 @@ class EsportOtherController extends Controller
             $totalGames = $playerResults->count();
             $blizzId = $playerResults->first()->blizz_id;
 
-            $battletag = explode('#', $battletag)[0];
+            $battletag = explode('#', $playerResults->first()->battletag)[0];
 
             $playerlink = "/Esports/{$this->esport}/{$this->series}/Player/{$battletag}/{$blizzId}";
 
@@ -940,7 +942,7 @@ class EsportOtherController extends Controller
                 'playerlink' => $playerlink,
                 'herolink' => $herolink,
             ];
-        })->sortByDesc('totalGames');
+        })->sortByDesc('games_played')->values();
 
         $matches = $results->groupBy('replayID')->map(function ($group) use ($heroData, $maps) {
 
@@ -1195,7 +1197,7 @@ class EsportOtherController extends Controller
                 $this->schema.'.teams.image',
             ])
             ->whereIn($this->schema.'.replay.replayID', $replayIDs)
-            ->whereNot($this->schema.'.teams.team_id', $team)
+            ->whereNot($this->schema.'.teams.team_name', $team)
             ->get();
 
         $groupedResults = $results->groupBy('team_name')->map(function ($group) {
@@ -1605,7 +1607,7 @@ class EsportOtherController extends Controller
             'series' => 'required|string',
             'team' => 'nullable|string',
             'season' => 'nullable|numeric',
-            'pagination_page' => 'required:integer',
+            'pagination_page' => 'required|integer|min:1',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);

@@ -357,7 +357,8 @@ class GlobalDataService
      */
     public function isHiddenFrom($blizzId, $region, $viewer = null): bool
     {
-        $state = $this->restrictedAccountKeys()[$blizzId.'|'.$region] ?? null;
+        // Cast: the integer rule passes "+123", which MySQL still matches to 123
+        $state = $this->restrictedAccountKeys()[(int) $blizzId.'|'.(int) $region] ?? null;
 
         if ($state === null) {
             return false;
@@ -569,7 +570,7 @@ class GlobalDataService
      */
     public function isRestrictedAccount($blizz_id, $region): bool
     {
-        return isset($this->restrictedAccountKeys()[$blizz_id.'|'.$region]);
+        return isset($this->restrictedAccountKeys()[(int) $blizz_id.'|'.(int) $region]);
     }
 
     public function calculateMaxReplayNumber()
@@ -1374,7 +1375,8 @@ class GlobalDataService
 
     public function getSeasonFromDate($date)
     {
-        return SeasonDate::select('id')->where('start_date', '<=', $date)->where('end_date', '>=', $date)->first()->id;
+        // Same boundary as the season filters: start inclusive, end exclusive
+        return SeasonDate::where('start_date', '<=', $date)->where('end_date', '>', $date)->value('id');
     }
 
     public function getAdvancedFilterShowDefault()
@@ -1493,7 +1495,8 @@ class GlobalDataService
 
     public function getDefaultSeason()
     {
-        return SeasonDate::select('id')->orderBy('id', 'DESC')->first()->id;
+        // A season added ahead of its start date isn't the default until it begins
+        return SeasonDate::where('start_date', '<=', now())->orderBy('id', 'DESC')->value('id');
     }
 
     /**

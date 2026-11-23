@@ -660,7 +660,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
                     'description' => 'The replay file.',
                     'content' => ['application/octet-stream' => ['schema' => ['type' => 'string', 'format' => 'binary']]],
                 ],
-                '403' => ['description' => 'Outside the retention window, or otherwise unavailable.'],
+                '403' => ['description' => 'A custom game, outside the retention window, or otherwise unavailable.'],
                 '404' => ['description' => 'No replay with that id.'],
             ],
         ],
@@ -913,7 +913,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
         ],
 
         'api.external.jobs' => [
-            'summary' => 'Collect the result of a job returned by a 202. Costs no quota.',
+            'summary' => 'Collect the result of a job returned by a 202, with a key from the account that was given it. Costs no quota.',
             'parameters' => [
                 'jobId' => ['description' => 'The `job_id` from a 202 response.'],
             ],
