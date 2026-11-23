@@ -21,7 +21,7 @@
     <!-- Storm League MMR is being rebuilt; remove once the rebuild is done -->
     <div v-if="gametype === 'sl'" class="max-w-[1500px] mx-auto px-4 mb-4">
       <div class="bg-lighten border-l-4 border-yellow p-4 text-sm">
-        {{ $t("We're rebuilding Storm League MMR. Until it's finished, the graph and table below may look wrong. Your current MMR won't change until the rebuild is complete.") }}
+        {{ $t("We're rebuilding Storm League MMR. Until it's finished, the graph and table below may look wrong. Your MMR still goes up and down with each game you play, but the rebuilt values won't show until the rebuild is complete.") }}
       </div>
     </div>
 
