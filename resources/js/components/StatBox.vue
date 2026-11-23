@@ -10,7 +10,8 @@
     <div class="flex gap-6">
       <div :class="['flex min-w-0', valueFirst ? 'flex-col-reverse' : 'flex-col']">
         <span :class="['text-sm whitespace-nowrap', { 'text-subtext': !tier }]">{{ $t(title) }}</span>
-        <span :class="['text-xl font-semibold', valueClass || { 'text-header': !tier }]">{{ value }}</span>
+        <span v-if="valueTier" class="flex items-center gap-2 min-w-0"><span :class="['text-xl font-semibold truncate', valueClass || 'text-header']">{{ value }}</span><rank-tier-pill :small="true" :tier="valueTier"></rank-tier-pill></span>
+        <span v-else :class="['text-xl font-semibold', valueClass || { 'text-header': !tier }]">{{ value }}</span>
         <span v-if="caption" class="text-xs text-subtext mt-1">{{ caption }}</span>
       </div>
       <div v-if="secondstat" class="flex flex-col min-w-0">
@@ -53,6 +54,8 @@ const ACCENTS = {
       },
       // A rank ("Platinum 3") fills the box with that tier's colour
       tier: String,
+      // A rank shown as a small tag after the value
+      valueTier: String,
       valueFirst: Boolean,
       // A small line under the value, and a colour for the value itself
       caption: String,

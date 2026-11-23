@@ -1,6 +1,7 @@
 <template>
   <!-- A label, not a button: fills its cell up to 200px, with the inputs' corner rather than the buttons' -->
-  <span v-if="tier" :class="['block w-full max-w-[12.5rem] min-w-[10.25rem] px-3 py-2 rounded-control font-medium whitespace-nowrap', align === 'left' ? 'text-left' : 'mx-auto text-center']" :style="style">{{ tierLabel }}</span>
+  <span v-if="tier && small" class="inline-block shrink-0 px-3 py-1.5 rounded-md text-xs font-medium leading-none whitespace-nowrap" :style="style">{{ tierLabel }}</span>
+  <span v-else-if="tier" :class="['block w-full max-w-[12.5rem] min-w-[10.25rem] px-3 py-2 rounded-control font-medium whitespace-nowrap', align === 'left' ? 'text-left' : 'mx-auto text-center']" :style="style">{{ tierLabel }}</span>
 </template>
 
 <script>
@@ -27,6 +28,8 @@ export default {
     tier: [String, Number],
     // 'center' (tables) or 'left' (the MMR card's fixed column)
     align: { type: String, default: 'center' },
+    // A small tag beside a number
+    small: Boolean,
   },
   computed: {
     tierLabel() {
