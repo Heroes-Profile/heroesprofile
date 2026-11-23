@@ -248,20 +248,20 @@
           </div>
         </panel-box>
   
-        <panel-box title="Connections" subtitle="Linked accounts." :divider="false">
+        <panel-box title="Connections" subtitle="Linked accounts." :divider="false" class="self-start">
           <template #right>
             <span v-if="saveState && saveCard === 'connections'" class="ml-auto self-start flex items-center gap-2 text-sm text-subtext" aria-live="polite">
               <img v-if="saveState === 'saving'" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
               {{ $t('Removing Patreon...') }}
             </span>
+            <span v-else-if="user.patreon_account" class="ml-auto self-start bg-teal px-3 py-1 rounded text-sm">{{ $t('Connected') }}</span>
           </template>
           <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2 mt-2">
             <div class="min-w-0">
               <h4 class="font-medium">Patreon</h4>
               <p class="text-sm text-subtext">{{ $t('Link your Patreon account to unlock supporter features.') }}</p>
             </div>
-            <div class="flex items-center gap-4 shrink-0">
-              <span v-if="user.patreon_account" class="bg-teal px-3 py-1 rounded text-sm">{{ $t('Connected') }}</span>
+            <div class="flex items-center gap-4 shrink-0 [&>a]:font-bold">
               <custom-button
                 v-if="!user.patreon_account"
                 :href="'/authenticate/patreon'"
