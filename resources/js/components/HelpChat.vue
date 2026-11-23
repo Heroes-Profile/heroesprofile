@@ -3,7 +3,7 @@
   <!-- Above the nav (z-[52]), so a tall panel's close button isn't under it -->
   <!-- Above the cookie banner while it shows, and above the footer once it scrolls into view (footerLift) -->
   <div class="fixed left-4 z-[53] flex flex-col items-start gap-3" :style="{ bottom: `calc(max(var(--disclaimer-height, 0px), ${footerLift}px) + 1rem)` }">
-    <div v-if="open" :class="expanded ? 'w-[47.5rem]' : 'w-[26.25rem] h-[35rem]'" :style="{ height: expanded ? `calc(100dvh - 8rem - max(var(--disclaimer-height, 0px), ${footerLift}px))` : null, maxHeight: `calc(100dvh - 8rem - max(var(--disclaimer-height, 0px), ${footerLift}px))` }" class="max-w-[calc(100vw-2rem)] bg-surface-4 rounded-2xl border border-white/20 shadow-[0_0.5rem_2rem_rgba(0,0,0,0.7)] flex flex-col overflow-hidden">
+    <div v-if="open" :class="expanded ? 'w-[47.5rem]' : 'w-[26.25rem] h-[35rem] max-md:h-[65dvh]'" :style="{ height: expanded ? `calc(100dvh - 8rem - max(var(--disclaimer-height, 0px), ${footerLift}px))` : null, maxHeight: `calc(100dvh - 8rem - max(var(--disclaimer-height, 0px), ${footerLift}px))` }" class="max-w-[calc(100vw-2rem)] bg-surface-4 rounded-2xl border border-white/20 shadow-[0_0.5rem_2rem_rgba(0,0,0,0.7)] flex flex-col overflow-hidden">
       <!-- Window controls top-right: expand, divider, close -->
       <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
         <div class="flex items-center gap-4">
@@ -11,10 +11,10 @@
           <button v-if="messages.length" class="text-sm underline" :disabled="!!loading" @click="newChat">{{ $t('New chat') }}</button>
         </div>
         <div class="flex items-center gap-2">
-          <button class="w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="$t(expanded ? $t('Make help smaller') : $t('Make help bigger'))" :title="expanded ? $t('Smaller') : $t('Bigger')" @click="toggleExpanded">
+          <button class="max-md:hidden w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="$t(expanded ? $t('Make help smaller') : $t('Make help bigger'))" :title="expanded ? $t('Smaller') : $t('Bigger')" @click="toggleExpanded">
             <i :class="expanded ? 'fas fa-down-left-and-up-right-to-center' : 'fas fa-up-right-and-down-left-from-center'"></i>
           </button>
-          <span class="w-px h-5 bg-white/20" aria-hidden="true"></span>
+          <span class="max-md:hidden w-px h-5 bg-white/20" aria-hidden="true"></span>
           <button class="w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="$t('Close help')" :title="$t('Close')" @click="toggle">
             <basil-icon name="cross" class="text-lg"></basil-icon>
           </button>
@@ -81,7 +81,7 @@
 
     <div class="flex items-center gap-3">
       <button
-        class="w-14 h-14 shrink-0 rounded-full bg-teal hover:bg-lteal text-white text-2xl shadow-[0_0.25rem_1rem_rgba(0,0,0,0.5)] flex items-center justify-center transition-colors"
+        class="w-11 h-11 text-lg md:w-14 md:h-14 md:text-2xl shrink-0 rounded-full bg-teal hover:bg-lteal text-white shadow-[0_0.25rem_1rem_rgba(0,0,0,0.5)] flex items-center justify-center transition-colors"
         :aria-label="$t(open ? $t('Close help') : $t('Open help'))"
         :aria-expanded="open"
         @click="toggle"

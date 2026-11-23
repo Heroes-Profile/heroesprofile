@@ -1,4 +1,5 @@
 <template>
+  <div>
   <!-- Chart.js sizes the canvas from this wrapper; it must be relative, and anything else in it absolutely positioned -->
   <div class="relative">
     <canvas ref="canvas" width="1500" height="750"></canvas>
@@ -12,6 +13,11 @@
       <div v-if="tip.title" class="font-bold mb-1">{{ tip.title }}</div>
       <div v-for="(line, index) in tip.lines" :key="index">{{ line }}</div>
     </div>
+  </div>
+  <!-- Phones number the marker lines and name them here; their labels don't fit across the plot -->
+  <ol v-if="phone && visibleMarkers.length" class="mt-3 flex flex-col gap-1 text-xs text-subtext">
+    <li v-for="(marker, index) in visibleMarkers" :key="marker.label"><span class="font-bold text-[#f87171] mr-2">{{ index + 1 }}</span>{{ marker.text }}</li>
+  </ol>
   </div>
 </template>
 
@@ -56,14 +62,22 @@ export default {
   data() {
     return {
       chart: null,
+      phone: false,
       tip: { visible: false, x: 0, y: 0, transform: '', title: '', lines: [] },
     };
+  },
+  computed: {
+    // Markers whose month is on the chart
+    visibleMarkers() {
+      const labels = (this.data || []).map(item => item.x_label);
+      return this.markers.filter(marker => labels.includes(marker.label));
+    },
   },
   mounted() {
     const markerLines = {
       id: 'markerLines',
       afterDatasetsDraw: (chart) => {
-        const visible = this.markers.filter(marker => chart.data.labels.includes(marker.label));
+        const visible = this.visibleMarkers;
         const { top, bottom, right } = chart.chartArea;
         const ctx = chart.ctx;
         ctx.save();
@@ -79,10 +93,11 @@ export default {
           ctx.lineTo(x, bottom);
           ctx.stroke();
           ctx.setLineDash([]);
-          // Alternate rows so neighbouring labels don't overlap; flip left near the right edge
-          const width = ctx.measureText(marker.text).width;
+          // Alternate rows so neighbouring labels don't overlap; flip left near the right edge. Phones get a number, named under the chart
+          const text = this.phone ? String(i + 1) : marker.text;
+          const width = ctx.measureText(text).width;
           const textX = x + 6 + width > right ? x - 6 - width : x + 6;
-          ctx.fillText(marker.text, textX, top + 16 + (i % 2) * 18);
+          ctx.fillText(text, textX, top + 16 + (this.phone ? 0 : (i % 2) * 18));
         });
         ctx.restore();
       },
@@ -221,6 +236,7 @@ export default {
     };
 
     this.phoneQuery = window.matchMedia('(max-width: 767px)');
+    this.phone = this.phoneQuery.matches;
     this.chart = markRaw(new Chart(this.$refs.canvas.getContext('2d'), {
       type: 'line',
       plugins: [backdrop, roundedPlot, markerLines, topRow],

@@ -57,16 +57,18 @@
     </div>
 
     <panel-box title="All Matchups" subtitle="Your win rate with each hero on your team and against each hero on the enemy team." :divider="false">
+      <!-- Phones have no room in the Hero heading; the search sits above the table there -->
+      <search-input v-model="heroSearch" :placeholder="$t('Search hero')" class="md:hidden w-full"></search-input>
       <div class="overflow-clip">
         <!-- Which columns are about the hero as your ally, which as your opponent; above the table so it reads the same in either table style -->
         <div class="grid grid-cols-[18.1%_40.95%_40.95%] max-md:text-xs">
           <div></div>
-          <div class="py-3 px-3 text-center bg-teal/[0.18] rounded-tl-control">
-            <span class="block text-sm font-bold uppercase tracking-wide text-teal">{{ $t('With them · On your team') }}</span>
+          <div class="py-3 px-1 md:px-3 text-center bg-teal/[0.18] rounded-tl-control">
+            <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide text-teal">{{ $t('With them · On your team') }}</span>
             <span class="block text-xs text-subtext mt-1">{{ $t('Your win rate when this hero is your ally') }}</span>
           </div>
-          <div class="py-3 px-3 text-center bg-red/[0.18] rounded-tr-control">
-            <span class="block text-sm font-bold uppercase tracking-wide text-red">{{ $t('Against them · On enemy team') }}</span>
+          <div class="py-3 px-1 md:px-3 text-center bg-red/[0.18] rounded-tr-control">
+            <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide text-red">{{ $t('Against them · On enemy team') }}</span>
             <span class="block text-xs text-subtext mt-1">{{ $t('Your win rate when this hero is your opponent') }}</span>
           </div>
         </div>
@@ -80,41 +82,41 @@
           </colgroup>
           <thead>
             <tr>
-              <th class="py-2 px-6 text-left text-sm leading-4">
+              <th class="py-2 px-2 md:px-6 text-left text-xs md:text-sm leading-4">
                 <div class="flex items-center gap-[1.125rem]">
                   <span class="cursor-pointer" @click="sortTable('name')">{{ $t('Hero') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                  <search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" class="w-40"></search-input>
+                  <search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" class="w-40 max-md:hidden"></search-input>
                 </div>
               </th>
-              <th @click="sortTable('ally_win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'ally_win_rate' }">{{ $t('Win rate with') }}<sort-indicator :column="'ally_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
-              <th @click="sortTable('ally_games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'ally_games_played' }">{{ $t('Games with') }}<sort-indicator :column="'ally_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
-              <th @click="sortTable('enemy_win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'enemy_win_rate' }">{{ $t('Win rate against') }}<sort-indicator :column="'enemy_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
-              <th @click="sortTable('enemy_games_played')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'enemy_games_played' }">{{ $t('Games against') }}<sort-indicator :column="'enemy_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+              <th @click="sortTable('ally_win_rate')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'ally_win_rate' }">{{ $t('Win rate with') }}<sort-indicator :column="'ally_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+              <th @click="sortTable('ally_games_played')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'ally_games_played' }">{{ $t('Games with') }}<sort-indicator :column="'ally_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+              <th @click="sortTable('enemy_win_rate')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'enemy_win_rate' }">{{ $t('Win rate against') }}<sort-indicator :column="'enemy_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+              <th @click="sortTable('enemy_games_played')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'enemy_games_played' }">{{ $t('Games against') }}<sort-indicator :column="'enemy_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in shownData" :key="row.hero.id">
-              <td class="py-2.5 px-6">
+              <td class="py-2.5 px-2 md:px-6">
                 <a class="group/bt inline-flex items-center" :href="heroUrl(row.hero)">
                   <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="hidden md:block ml-3 font-medium group-hover/bt:underline">{{ $heroName(row.hero) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></basil-icon>
                 </a>
               </td>
-              <td class="py-2.5 px-6">
+              <td class="py-2.5 px-2 md:px-6">
                 <div v-if="row.ally_games_played" class="flex items-center gap-3">
-                  <stat-bar class="flex-1" :value="row.ally_win_rate ?? 0" display-text="" :color="$winRateColor(row.ally_win_rate)"></stat-bar>
-                  <span :class="['w-[3.6rem] text-right font-semibold tabular-nums', rateClass(row.ally_win_rate)]">{{ (row.ally_win_rate ?? 0).toFixed(2) }}%</span>
+                  <stat-bar class="flex-1 max-md:hidden" :value="row.ally_win_rate ?? 0" display-text="" :color="$winRateColor(row.ally_win_rate)"></stat-bar>
+                  <span :class="['max-md:flex-1 max-md:text-center md:w-[3.6rem] md:text-right font-semibold tabular-nums', rateClass(row.ally_win_rate)]">{{ (row.ally_win_rate ?? 0).toFixed(2) }}%</span>
                 </div>
                 <span v-else class="block text-center text-subtext">{{ $t('No data') }}</span>
               </td>
-              <td class="py-2.5 px-3 text-center">{{ row.ally_games_played ? row.ally_games_played.toLocaleString('en-US') : '—' }}</td>
-              <td class="py-2.5 px-6">
+              <td class="py-2.5 px-1 md:px-3 text-center">{{ row.ally_games_played ? row.ally_games_played.toLocaleString('en-US') : '—' }}</td>
+              <td class="py-2.5 px-2 md:px-6">
                 <div v-if="row.enemy_games_played" class="flex items-center gap-3">
-                  <stat-bar class="flex-1" :value="row.enemy_win_rate ?? 0" display-text="" :color="$winRateColor(row.enemy_win_rate)"></stat-bar>
-                  <span :class="['w-[3.6rem] text-right font-semibold tabular-nums', rateClass(row.enemy_win_rate)]">{{ (row.enemy_win_rate ?? 0).toFixed(2) }}%</span>
+                  <stat-bar class="flex-1 max-md:hidden" :value="row.enemy_win_rate ?? 0" display-text="" :color="$winRateColor(row.enemy_win_rate)"></stat-bar>
+                  <span :class="['max-md:flex-1 max-md:text-center md:w-[3.6rem] md:text-right font-semibold tabular-nums', rateClass(row.enemy_win_rate)]">{{ (row.enemy_win_rate ?? 0).toFixed(2) }}%</span>
                 </div>
                 <span v-else class="block text-center text-subtext">{{ $t('No data') }}</span>
               </td>
-              <td class="py-2.5 px-3 text-center">{{ row.enemy_games_played ? row.enemy_games_played.toLocaleString('en-US') : '—' }}</td>
+              <td class="py-2.5 px-1 md:px-3 text-center">{{ row.enemy_games_played ? row.enemy_games_played.toLocaleString('en-US') : '—' }}</td>
             </tr>
           </tbody>
         </table>
@@ -141,15 +143,16 @@
     </div>
 
     <panel-box title="All Matchups" subtitle="Your win rate with each hero on your team and against each hero on the enemy team." :divider="false" :skeleton="true">
+      <span class="md:hidden invisible" aria-hidden="true"><search-input class="w-full"></search-input></span>
       <div class="overflow-clip">
         <div class="grid grid-cols-[18.1%_40.95%_40.95%] max-md:text-xs">
           <div></div>
-          <div class="py-3 px-3 text-center bg-teal/[0.18] rounded-tl-control">
-            <span class="block text-sm font-bold uppercase tracking-wide"><span class="skeleton-text">{{ $t('With them · On your team') }}</span></span>
+          <div class="py-3 px-1 md:px-3 text-center bg-teal/[0.18] rounded-tl-control">
+            <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide"><span class="skeleton-text">{{ $t('With them · On your team') }}</span></span>
             <span class="block text-xs mt-1"><span class="skeleton-text">{{ $t('Your win rate when this hero is your ally') }}</span></span>
           </div>
-          <div class="py-3 px-3 text-center bg-red/[0.18] rounded-tr-control">
-            <span class="block text-sm font-bold uppercase tracking-wide"><span class="skeleton-text">{{ $t('Against them · On enemy team') }}</span></span>
+          <div class="py-3 px-1 md:px-3 text-center bg-red/[0.18] rounded-tr-control">
+            <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide"><span class="skeleton-text">{{ $t('Against them · On enemy team') }}</span></span>
             <span class="block text-xs mt-1"><span class="skeleton-text">{{ $t('Your win rate when this hero is your opponent') }}</span></span>
           </div>
         </div>
@@ -163,25 +166,25 @@
           </colgroup>
           <thead>
             <tr>
-              <th class="py-2 px-6 text-left text-sm leading-4">
+              <th class="py-2 px-2 md:px-6 text-left text-xs md:text-sm leading-4">
                 <div class="flex items-center gap-[1.125rem]">
                   <span class="skeleton-text">{{ $t('Hero') }}</span>
-                  <span class="invisible" aria-hidden="true"><search-input class="w-40" :collapsible="true"></search-input></span>
+                  <span class="invisible max-md:hidden" aria-hidden="true"><search-input class="w-40" :collapsible="true"></search-input></span>
                 </div>
               </th>
-              <th class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Win rate with') }}</span></th>
-              <th class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Games with') }}</span></th>
-              <th class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Win rate against') }}</span></th>
-              <th class="py-2 px-3 text-center text-sm leading-4"><span class="skeleton-text">{{ $t('Games against') }}</span></th>
+              <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4"><span class="skeleton-text">{{ $t('Win rate with') }}</span></th>
+              <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4"><span class="skeleton-text">{{ $t('Games with') }}</span></th>
+              <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4"><span class="skeleton-text">{{ $t('Win rate against') }}</span></th>
+              <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4"><span class="skeleton-text">{{ $t('Games against') }}</span></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in 15" :key="row">
-              <td class="py-2.5 px-6"><span class="inline-flex items-center"><skeleton-box class="w-10 h-10 !rounded-full shrink-0"></skeleton-box><span class="hidden md:block ml-3 font-medium skeleton-text">Alexstrasza</span></span></td>
-              <td class="py-2.5 px-6"><div class="flex items-center gap-3"><stat-bar class="flex-1" value="0" display-text=""></stat-bar><span class="w-[3.6rem] text-right font-semibold"><span class="skeleton-text">00.00%</span></span></div></td>
-              <td class="py-2.5 px-3 text-center"><span class="skeleton-text">000</span></td>
-              <td class="py-2.5 px-6"><div class="flex items-center gap-3"><stat-bar class="flex-1" value="0" display-text=""></stat-bar><span class="w-[3.6rem] text-right font-semibold"><span class="skeleton-text">00.00%</span></span></div></td>
-              <td class="py-2.5 px-3 text-center"><span class="skeleton-text">000</span></td>
+              <td class="py-2.5 px-2 md:px-6"><span class="inline-flex items-center"><skeleton-box class="w-10 h-10 !rounded-full shrink-0"></skeleton-box><span class="hidden md:block ml-3 font-medium skeleton-text">Alexstrasza</span></span></td>
+              <td class="py-2.5 px-2 md:px-6"><div class="flex items-center gap-3"><stat-bar class="flex-1 max-md:hidden" value="0" display-text=""></stat-bar><span class="max-md:flex-1 max-md:text-center md:w-[3.6rem] md:text-right font-semibold"><span class="skeleton-text">00.00%</span></span></div></td>
+              <td class="py-2.5 px-1 md:px-3 text-center"><span class="skeleton-text">000</span></td>
+              <td class="py-2.5 px-2 md:px-6"><div class="flex items-center gap-3"><stat-bar class="flex-1 max-md:hidden" value="0" display-text=""></stat-bar><span class="max-md:flex-1 max-md:text-center md:w-[3.6rem] md:text-right font-semibold"><span class="skeleton-text">00.00%</span></span></div></td>
+              <td class="py-2.5 px-1 md:px-3 text-center"><span class="skeleton-text">000</span></td>
             </tr>
           </tbody>
         </table>

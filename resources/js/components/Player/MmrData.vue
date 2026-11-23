@@ -32,7 +32,7 @@
     <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-8">
 
       <div class="grid xl:grid-cols-[1288fr_600fr] gap-8 items-stretch">
-        <panel-box title="MMR over time" :subtitle="$t('HP :type MMR after every :gametype game.', { type: $t(type), gametype: gameTypeName })" :divider="false">
+        <panel-box :title="$t('MMR over time') + ' · ' + selectionLabel" :subtitle="$t('HP :type MMR after every :gametype game.', { type: $t(type), gametype: gameTypeName })" :divider="false">
           <!-- Dots on the games once few enough are in view to tell apart -->
           <line-chart :data="zoomedData" :dataAttribute="'mmr'" :gridded="true" :aspect-ratio="2.4" :point-radius="zoomedData.length <= 120 ? 2 : 0" :point-hover-radius="5"
             :title="`${battletag} HP MMR Graph for ${gametype}`" :tooltip-label="`HP ${gameTypeName} MMR`"></line-chart>
@@ -47,7 +47,7 @@
           </div>
         </panel-box>
 
-        <panel-box title="Current MMR" :divider="false">
+        <panel-box :title="$t('Current MMR') + ' · ' + selectionLabel" :divider="false">
           <div v-if="currentRow" class="flex items-center gap-3">
             <span class="px-2.5 py-1 rounded-control text-sm font-medium" :style="tierStyle(currentTier)">{{ $t(currentTier) }}</span>
             <span class="text-4xl font-bold tabular-nums leading-none">{{ currentRow.mmr.toLocaleString('en-US') }}</span>
@@ -94,7 +94,7 @@
 
       <!-- Styled like the match history's compact rows -->
       <div ref="tablecontainer" class="scroll-mt-4">
-        <panel-box title="Match History" subtitle="HP MMR after each game. Parsed date is when the replay was processed." :divider="false">
+        <panel-box :title="$t('Match History') + ' · ' + selectionLabel" subtitle="HP MMR after each game. Parsed date is when the replay was processed." :divider="false">
           <template #right>
             <pagination-bar v-if="lastPage > 1" :current="currentPage" :last="lastPage" @page="goToPage"></pagination-bar>
           </template>
@@ -336,6 +336,16 @@ export default {
           return valA > valB ? -1 : 1;
         }
       });
+    },
+    // The applied game type, and the hero or role for those MMRs, for the section titles
+    selectionLabel() {
+      const parts = [this.$t(this.gameTypeName)];
+      if (this.type === 'Hero' && this.hero) {
+        parts.push(this.$heroName(this.filters.heroes.find(item => item.code == this.hero)?.name ?? ''));
+      } else if (this.type === 'Role' && this.role) {
+        parts.push(this.$t(this.filters.role.find(item => item.code == this.role)?.name ?? this.role));
+      }
+      return parts.filter(Boolean).join(' · ');
     },
     gameTypeName() {
       return this.filters.game_types_full.find(type => type.code === this.gametype)?.name ?? this.gametype.toUpperCase();

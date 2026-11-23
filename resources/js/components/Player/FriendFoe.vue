@@ -51,11 +51,11 @@
         <table ref="friendtable" class="w-full min-w-[36rem] table-fixed">
           <!-- The same column widths in both tables, so their columns line up -->
           <colgroup>
-            <col class="w-[30%]">
+            <col class="w-[27%]">
             <col class="w-[22%]">
             <col class="w-[17%]">
             <col class="w-[21%]">
-            <col v-if="!esport" class="w-[10%]">
+            <col v-if="!esport" class="w-[13%]">
           </colgroup>
           <thead >
             <tr>
@@ -109,11 +109,11 @@
         <table ref="enemytable" class="w-full min-w-[36rem] table-fixed">
           <!-- The same column widths in both tables, so their columns line up -->
           <colgroup>
-            <col class="w-[30%]">
+            <col class="w-[27%]">
             <col class="w-[22%]">
             <col class="w-[17%]">
             <col class="w-[21%]">
-            <col v-if="!esport" class="w-[10%]">
+            <col v-if="!esport" class="w-[13%]">
           </colgroup>
           <thead class="bg-red">
             <tr>
@@ -175,14 +175,14 @@
         <loading-component :tab="true" v-else :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
         <!-- The loaded tables themselves: titles as text, the column names as grey blocks their size, and grey rows the same height -->
         <div class="flex gap-6 max-md:flex-col">
-          <div v-for="side in [{ title: 'Friends', games: 'Games With', rate: 'Win Rate With' }, { title: 'Foes', games: 'Games Against', rate: 'Win Rate Against' }]" :key="side.title" class="flex-1 min-w-0 max-md:overflow-clip">
-            <table class="w-full min-w-[36rem] table-fixed">
+          <div v-for="side in [{ title: 'Friends', games: 'Games With', rate: 'Win Rate With' }, { title: 'Foes', games: 'Games Against', rate: 'Win Rate Against' }]" :key="side.title" ref="skeletoncontainer" class="flex-1 min-w-0 max-md:overflow-clip">
+            <table ref="skeletontable" class="w-full min-w-[36rem] table-fixed">
               <colgroup>
-                <col class="w-[30%]">
+                <col class="w-[27%]">
                 <col class="w-[22%]">
                 <col class="w-[17%]">
                 <col class="w-[21%]">
-                <col v-if="!esport" class="w-[10%]">
+                <col v-if="!esport" class="w-[13%]">
               </colgroup>
               <thead :class="{ 'bg-red': side.title === 'Foes' }">
                 <tr>
@@ -311,6 +311,7 @@ export default {
     if (window.matchMedia('(max-width: 767px)').matches) {
       scaleTableToFit(this.$refs.friendtable, this.$refs.friendcontainer);
       scaleTableToFit(this.$refs.enemytable, this.$refs.enemycontainer);
+      (this.$refs.skeletontable || []).forEach((table, index) => scaleTableToFit(table, this.$refs.skeletoncontainer[index]));
     }
   },
   computed: {

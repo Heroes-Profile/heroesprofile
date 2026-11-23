@@ -135,7 +135,7 @@
 
           <player-party-size-panel v-if="!esport" :data="data" prefix="stack_size_" link-text="Party Stats" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Party?hero=' + heroobject.name"></player-party-size-panel>
 
-          <player-mmr-panel v-if="!esport" :data="data" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/MMR'" :link-query="{ hero: heroobject.name }"></player-mmr-panel>
+          <player-mmr-panel v-if="!esport" kind="Hero" :data="data" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/MMR'" :link-query="{ hero: heroobject.name }"></player-mmr-panel>
 
           <player-awards-panel v-if="!esport" class="flex-1" :link-query="{ hero: heroobject.name }" :battletag="battletag" :blizzid="blizzid" :region="region" :params="{ game_type: modifiedgametype, hero: heroobject.id, season: modifiedseason, game_map: modifiedgamemap, start_date: startdate, end_date: enddate }"></player-awards-panel>
         </div>
@@ -268,7 +268,7 @@
           </div>
           <div v-else class="flex-1 flex flex-col gap-6 min-w-0">
             <player-party-size-panel :data="emptyPartyData" prefix="stack_size_" link-text="Party Stats" :skeleton="true"></player-party-size-panel>
-            <player-mmr-panel :data="{}" :skeleton="true"></player-mmr-panel>
+            <player-mmr-panel kind="Hero" :data="{}" :skeleton="true"></player-mmr-panel>
             <player-awards-panel class="flex-1" :placeholder="true" :battletag="battletag" :blizzid="blizzid" :region="region"></player-awards-panel>
           </div>
         </div>

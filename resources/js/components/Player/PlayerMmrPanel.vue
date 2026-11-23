@@ -1,5 +1,5 @@
 <template>
-  <panel-box :inner="true" :title="$t('Heroes Profile MMR')" :link-text="linkHref || skeleton ? 'HP MMR Breakdown' : null" :link-href="linkHref ? breakdownHref() : null" :skeleton="skeleton">
+  <panel-box :inner="true" :title="kind ? mmrLabel : $t('Heroes Profile MMR')" :link-text="linkHref || skeleton ? 'HP MMR Breakdown' : null" :link-href="linkHref ? breakdownHref() : null" :skeleton="skeleton">
     <template #title>
       <round-image size="small" icon="fas fa-info" title="info" popupsize="large">
         <div>
@@ -12,7 +12,7 @@
         <span class="w-[12.5rem] shrink-0"><span :class="{ 'skeleton-text': skeleton }">{{ $t('Game mode') }}</span></span>
         <span class="flex-1"><span :class="{ 'skeleton-text': skeleton }">{{ $t('Win Rate') }}</span></span>
         <span v-if="tiers" class="flex-1 max-w-[12.5rem]"><span :class="{ 'skeleton-text': skeleton }">{{ $t('HP Rank Tier') }}</span></span>
-        <span class="flex-1 max-w-[6.25rem] text-center"><span :class="{ 'skeleton-text': skeleton }">{{ $t('HP MMR') }}</span></span>
+        <span class="flex-1 max-w-[6.25rem] text-center"><span :class="{ 'skeleton-text': skeleton }">{{ mmrLabel }}</span></span>
       </div>
       <template v-for="mode in mmrModes" :key="mode.label">
         <div class="h-px bg-gray-dark"></div>
@@ -25,7 +25,7 @@
           <stat-bar class="max-md:w-full md:flex-1 min-w-0" :value="mode.data ? mode.data.win_rate.toFixed(2) : '0.00'" suffix="%" :color="$winRateColor(mode.data ? mode.data.win_rate : 0)" :hide-value="!mode.data"></stat-bar>
           <!-- An invisible pill holds the row's height when there's no tier, so every row lines up -->
           <span v-if="tiers" class="md:flex-1 md:max-w-[12.5rem]"><rank-tier-pill align="left" :class="{ invisible: !mode.data }" :tier="mode.data ? mode.data.rank_tier : 'Unranked'" :aria-hidden="!mode.data || null"></rank-tier-pill></span>
-          <span class="md:flex-1 md:max-w-[6.25rem] md:text-center font-semibold max-md:ml-auto"><template v-if="mode.data"><span class="md:hidden text-xs text-subtext font-normal mr-2">{{ $t('HP MMR') }}</span>{{ mode.data.mmr.toLocaleString('en-US') }}</template></span>
+          <span class="md:flex-1 md:max-w-[6.25rem] md:text-center font-semibold max-md:ml-auto"><template v-if="mode.data"><span class="md:hidden text-xs text-subtext font-normal mr-2">{{ mmrLabel }}</span>{{ mode.data.mmr.toLocaleString('en-US') }}</template></span>
         </div>
       </template>
     </div>
@@ -38,6 +38,8 @@ export default {
   props: {
     // Holds qm_mmr_data, ud_mmr_data and so on, as the profile and single hero data both do
     data: Object,
+    // 'Hero' or 'Role' on those pages, so the title and column say which MMR it is
+    kind: String,
     linkHref: String,
     // Extra query for the mode links, such as { hero: 'Li-Ming' }
     linkQuery: { type: Object, default: () => ({}) },
@@ -57,6 +59,9 @@ export default {
     },
   },
   computed: {
+    mmrLabel() {
+      return { Hero: this.$t('HP Hero MMR'), Role: this.$t('HP Role MMR') }[this.kind] ?? this.$t('HP MMR');
+    },
     mmrModes(){
       if (this.modes) return this.modes;
       return [

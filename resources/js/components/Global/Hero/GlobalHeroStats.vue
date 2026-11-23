@@ -70,12 +70,13 @@
     <div v-if="this.data.data" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <patch-notes-panel v-if="patchNotesUrl" class="!max-w-none !mb-0" :version="timeframe[0]"></patch-notes-panel>
 
-      <panel-box title="Tier List" :subtitle="tierListCollapsed ? null : $t('Heroes grouped by :stat', { stat: $t(tierStatLabel).toLowerCase() })" :divider="!tierListCollapsed" :class="['md:!pt-4', { 'md:!pb-4 cursor-pointer': tierListCollapsed }]" @click="tierListCollapsed && toggleTierList()">
+      <panel-box title="Tier List" :subtitle="tierListCollapsed ? null : $t('Heroes grouped by :stat', { stat: $t(tierStatLabel).toLowerCase() })" :divider="!tierListCollapsed" :class="['relative md:!pt-4', { 'md:!pb-4 cursor-pointer': tierListCollapsed }]" @click="tierListCollapsed && toggleTierList()">
         <template #right>
-          <div class="flex flex-wrap items-center gap-4">
+          <!-- Show/Hide pinned to the card's top right; the tabs keep clear of it -->
+          <div class="flex flex-wrap items-center gap-4 md:mr-20">
             <tab-button v-show="!tierListCollapsed" :small="true" :tabs="tierRoleTabs" :ignoreclick="true" :overridedefaultside="tierRole" :key="'role' + tierRoleTabs.length" @tab-click="tierRole = $event"></tab-button>
             <tab-button v-show="!tierListCollapsed" :small="true" :tabs="tierStatTabs" :ignoreclick="true" :overridedefaultside="tierStat" :key="tierStatTabs.length" @tab-click="tierStat = $event"></tab-button>
-            <button type="button" class="flex items-center gap-2 text-sm text-subtext hover:text-white transition-colors" :aria-expanded="!tierListCollapsed" @click.stop="toggleTierList">
+            <button type="button" class="absolute top-4 right-4 md:right-6 h-8 flex items-center gap-2 text-sm text-subtext hover:text-white transition-colors" :aria-expanded="!tierListCollapsed" @click.stop="toggleTierList">
               {{ tierListCollapsed ? $t('Show') : $t('Hide') }}
               <basil-icon name="arrow-small" :class="['text-xs transition-transform', tierListCollapsed ? 'rotate-90' : '-rotate-90']"></basil-icon>
             </button>
@@ -216,9 +217,9 @@
           <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
         </template>
       </panel-box>
-      <panel-box title="Tier List" :subtitle="tierListCollapsed ? null : 'Heroes grouped by win rate'" :skeleton="true" :divider="!tierListCollapsed" :class="['md:!pt-4', { 'md:!pb-4': tierListCollapsed }]">
+      <panel-box title="Tier List" :subtitle="tierListCollapsed ? null : 'Heroes grouped by win rate'" :skeleton="true" :divider="!tierListCollapsed" :class="['relative md:!pt-4', { 'md:!pb-4': tierListCollapsed }]">
         <template #right>
-          <div class="flex flex-wrap items-center gap-4">
+          <div class="flex flex-wrap items-center gap-4 md:mr-20">
             <div v-show="!tierListCollapsed" class="relative">
               <tab-button class="invisible" :small="true" :tabs="skeletonRoleTabs" aria-hidden="true"></tab-button>
               <skeleton-box class="absolute inset-0"></skeleton-box>
@@ -227,7 +228,7 @@
               <tab-button class="invisible" :small="true" :tabs="tierStatTabs" aria-hidden="true"></tab-button>
               <skeleton-box class="absolute inset-0"></skeleton-box>
             </div>
-            <span class="text-sm skeleton-text">{{ tierListCollapsed ? $t('Show') : $t('Hide') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+            <span class="absolute top-4 right-4 md:right-6 h-8 flex items-center"><span class="text-sm skeleton-text">{{ tierListCollapsed ? $t('Show') : $t('Hide') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span></span>
           </div>
         </template>
         <div v-if="!tierListCollapsed" class="flex flex-col gap-2">

@@ -142,7 +142,7 @@
 
           <player-party-size-panel v-if="!esport" :data="data" prefix="stack_size_"></player-party-size-panel>
 
-          <player-mmr-panel v-if="!esport" :data="data" :link-href="profileUrl + '/MMR'" :link-query="{ role: role }"></player-mmr-panel>
+          <player-mmr-panel v-if="!esport" kind="Role" :data="data" :link-href="profileUrl + '/MMR'" :link-query="{ role: role }"></player-mmr-panel>
 
           <player-awards-panel v-if="!esport" class="flex-1" :link-query="{ role: role }" :battletag="battletag" :blizzid="blizzid" :region="region" :params="{ game_type: modifiedgametype, role: role, season: modifiedseason, game_map: modifiedgamemap, start_date: startdate, end_date: enddate }"></player-awards-panel>
         </div>
@@ -238,7 +238,7 @@
               </div>
             </panel-box>
             <player-party-size-panel v-if="!esport" :data="emptyPartyData" prefix="stack_size_" :skeleton="true"></player-party-size-panel>
-            <player-mmr-panel v-if="!esport" :data="{}" :skeleton="true"></player-mmr-panel>
+            <player-mmr-panel v-if="!esport" kind="Role" :data="{}" :skeleton="true"></player-mmr-panel>
             <player-awards-panel v-if="!esport" class="flex-1" :placeholder="true" :battletag="battletag" :blizzid="blizzid" :region="region"></player-awards-panel>
           </div>
         </div>
