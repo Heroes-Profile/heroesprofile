@@ -14,8 +14,8 @@
       <div v-for="(line, index) in tip.lines" :key="index">{{ line }}</div>
     </div>
   </div>
-  <!-- Phones number the marker lines and name them here; their labels don't fit across the plot -->
-  <ol v-if="phone && visibleMarkers.length" class="mt-3 flex flex-col gap-1 text-xs text-subtext">
+  <!-- When the event labels don't fit across the plot, the lines are numbered and named here -->
+  <ol v-if="compactMarkers && visibleMarkers.length" class="mt-3 flex flex-col gap-1 text-xs text-subtext">
     <li v-for="(marker, index) in visibleMarkers" :key="marker.label"><span class="font-bold text-[#f87171] mr-2">{{ index + 1 }}</span>{{ marker.text }}</li>
   </ol>
   </div>
@@ -63,6 +63,8 @@ export default {
     return {
       chart: null,
       phone: false,
+      // The event labels don't fit across the plot: numbered lines, named under the chart
+      compactMarkers: false,
       tip: { visible: false, x: 0, y: 0, transform: '', title: '', lines: [] },
     };
   },
@@ -85,6 +87,18 @@ export default {
         ctx.fillStyle = '#f87171';
         ctx.lineWidth = 2;
         ctx.font = 'bold 14px sans-serif';
+        // Full labels while they fit: two rows, none overlapping its row's neighbour or running past the plot;
+        // otherwise numbers, named in a list under the chart
+        const spans = visible.map(marker => {
+          const x = chart.scales.x.getPixelForValue(chart.data.labels.indexOf(marker.label));
+          const width = ctx.measureText(marker.text).width;
+          const start = x + 6 + width > right ? x - 6 - width : x + 6;
+          return [start, start + width];
+        });
+        const fits = spans.every(([start], i) => start >= chart.chartArea.left && (i < 2 || spans[i - 2][1] + 8 <= start));
+        if (this.compactMarkers === fits) {
+          this.compactMarkers = !fits;
+        }
         visible.forEach((marker, i) => {
           const x = chart.scales.x.getPixelForValue(chart.data.labels.indexOf(marker.label));
           ctx.setLineDash([6, 4]);
@@ -93,11 +107,11 @@ export default {
           ctx.lineTo(x, bottom);
           ctx.stroke();
           ctx.setLineDash([]);
-          // Alternate rows so neighbouring labels don't overlap; flip left near the right edge. Phones get a number, named under the chart
-          const text = this.phone ? String(i + 1) : marker.text;
+          // Alternate rows so neighbouring labels don't overlap; flip left near the right edge
+          const text = this.compactMarkers ? String(i + 1) : marker.text;
           const width = ctx.measureText(text).width;
           const textX = x + 6 + width > right ? x - 6 - width : x + 6;
-          ctx.fillText(text, textX, top + 16 + (this.phone ? 0 : (i % 2) * 18));
+          ctx.fillText(text, textX, top + 16 + (this.compactMarkers ? 0 : (i % 2) * 18));
         });
         ctx.restore();
       },

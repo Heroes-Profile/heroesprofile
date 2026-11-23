@@ -38,18 +38,18 @@
     <div :class="['absolute z-10 bottom-0 right-0 w-9']"  v-if="award">
       <img :src="awardicon"/>
     </div>
-    <div :class="['absolute -top-2 left-0 z-10']" v-if="hpowner">
-      <!-- {{ "HP Owner" }} -->
+    <div :class="['absolute -top-3 -left-1 z-10 text-xl leading-none']" v-if="hpowner">
+      <!-- {{ "HP Owner" }}; the same visible size as the void eye -->
       <span class="relative inline-flex">
-        <i class="fas fa-crown text owner-crown"></i>
+        <i class="fas fa-crown text-[1.35em] owner-crown"></i>
         <owner-sparks class="owner-sparks-small"></owner-sparks>
       </span>
     </div>
 
     <!-- Every flair the player has shows; beside the crown, the star moves over so they don't overlap -->
-    <div :class="['absolute z-10 -top-2', hpowner ? 'left-4' : 'left-0']" v-if="ispatreon">
+    <div :class="['absolute z-10 -top-2', hpowner ? 'left-8' : 'left-0']" v-if="ispatreon">
       <!-- {{ "Patreon Subscriber" }} -->
-      <i class="fas fa-star text-gold"></i>
+      <i class="fas fa-star text-gold text-[1.5em]"></i>
     </div>
     <div :class="['absolute z-10 bottom-0 -left-2 text-xl leading-none']" v-if="voideye">
       <void-eye-flair :force="true" :tooltip="false"></void-eye-flair>
@@ -129,7 +129,7 @@
         }
         ]" >
         <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft text-left p-4 rounded drop-shadow-md z-30">
-          <div class="bg-yellow" v-if="hpowner">{{ $t('Heroes Profile Owner') }}</div>
+          <div class="bg-lblue" v-if="hpowner">{{ $t('Heroes Profile Owner') }}</div>
           <div class="bg-red" v-if="ispatreon">{{ $t('Patreon Subscriber') }}</div>
           <div class="bg-[#4c1d95]" v-if="voideye">{{ $t('Marked by the Void') }}</div>
           <div class="bg-teal" v-if="award">{{award.title}}</div>

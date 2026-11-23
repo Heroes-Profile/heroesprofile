@@ -4,7 +4,8 @@
   <div :class="['flex flex-col gap-2', alignClass]">
     <div v-if="show !== 'code'" class="flex flex-nowrap gap-1.5">
       <span v-for="(level, index) in LEVELS" :key="level" class="flex flex-col items-center gap-1">
-        <talent-image-wrapper :talent="build[level]" size="talent" :popup-hoverable="popupHoverable"></talent-image-wrapper>
+        <talent-image-wrapper v-if="build[level] || !emptySlots" :talent="build[level]" size="talent" :popup-hoverable="popupHoverable"></talent-image-wrapper>
+        <span v-else class="block w-[2.625rem] h-[2.625rem] rounded bg-surface-3"></span>
         <span v-if="levels" class="text-[0.625rem] text-subtext">{{ LEVEL_NUMBERS[index] }}</span>
       </span>
     </div>
@@ -46,6 +47,8 @@ export default {
     },
     // The talent level under each talent
     levels: Boolean,
+    // An empty square for each level not reached
+    emptySlots: Boolean,
     // true: talent popups stay open while the pointer moves onto them
     popupHoverable: {
       type: Boolean,

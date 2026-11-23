@@ -475,6 +475,18 @@ input[type="radio"].form-checkbox:checked{
 .dark-mode .rounded-table tbody{
   @apply bg-surface-1;
 }
+/* A wide table whose first column stays put while it scrolls sideways; the cells take their row's colour so
+   the columns sliding under them don't show through. A full-width label row (colspan) keeps its text in place
+   with a sticky span inside instead. */
+.sticky-first-column tr{
+  background-color: inherit;
+}
+.sticky-first-column tr > :first-child:not([colspan]){
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: inherit;
+}
 /* Light mode's tables are light grey under a teal header, so their loading placeholders are too: the table skeleton
    takes the same colours, and grey blocks in a light table are a mid grey rather than the dark one */
 .light-mode .table-skeleton{
@@ -546,6 +558,11 @@ thead{
   thead th {
     background-color: inherit;
   }
+}
+/* Inside a sideways scroller (scroll-hint-container) the header would stick to the scroller, not the page, and its
+   phone offset pushed it down over the first rows */
+.table-container thead{
+  position: static;
 }
 /* A table with a summary header above its column headings (Global Hero Stats' averages): only the headings stick */
 thead:not(:last-of-type){

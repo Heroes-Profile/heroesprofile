@@ -1,529 +1,283 @@
 <template>
   <div class="match-page">
-    <div v-if="data" class=" mx-auto">
-      
-<div class="" :style="`background-size: cover; background-position:center; background-image: url('/images/maps/background/header-${data.game_map.sanitized_map_name}.jpg')`">
-<div class="text-center pt-4">
-       <!-- <div>
-          <span>{{ $t('Match Scores') }}</span>
-          <span>{{ $t('Talents') }}</span>
-          <span>{{ $t('Experience') }}</span>
-          <span>{{ $t('MMR') }}</span>
-          <span>{{ $t('Advanced Stats') }}</span>
-        </div>-->
+    <div v-if="data">
+      <!-- The map's art behind the heading and the team cards, fading into the page -->
+      <div class="relative">
+        <!-- Starts behind the recent-players row above, so the art runs up to the nav -->
+        <div class="absolute inset-x-0 bg-cover bg-center opacity-30 [mask-image:linear-gradient(to_bottom,black_40%,transparent)] pointer-events-none" :style="{ top: -navOffset + 'px', height: `calc(40rem + ${navOffset}px)`, backgroundImage: `url('/images/maps/background/header-${data.game_map.sanitized_map_name}.jpg')` }"></div>
 
-
-        <div class="mb-4">
-          <h1 class="max-md:text-[1.5em]">{{ formatDate(data.game_date) }}</h1>
-        </div>
-        <div class="w-full max-w-[62.5rem] bg-surface/90 rounded flex flex-wrap justify-between gap-2 mx-auto p-4 mb-4">
-          <span>{{ $mapName(data.game_map) }}</span>
-          <span v-if="!esport">
-            {{ data.game_type }}
-          </span>
-          <span v-else>
-            {{ getEsportTitle() }}
-          </span>
-          <span>{{ data.game_length }}</span>
-          <!-- Download requires login for all (esport and non-esport); blocked battletags get no control -->
-          <a v-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && user && !data.replay_download_blocked" class="group/bt inline-flex items-center cursor-pointer max-md:hidden" role="button" @click="downloadReplay(data, replayid)"><span class="group-hover/bt:underline">{{ $t('Download Replay') }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-          <login-required-hover v-else-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && !user" class="max-md:hidden" message="You need to be logged in to download replays."><span class="opacity-60 cursor-pointer">{{ $t('Download Replay') }}</span></login-required-hover>
-          <!-- Replay viewer: season games; needs a Battle.net login, like Download Replay -->
-          <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center" :href="'/Analytics/Match/Single/' + replayid + '/Replay'"><span class="group-hover/bt:underline">{{ $t('Watch Replay') }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-          <login-required-hover v-else-if="isWatchableGame" message="You need to be logged in with Battle.net to watch replays."><span class="opacity-60 cursor-pointer">{{ $t('Watch Replay') }}</span></login-required-hover>
-        </div>
-      </div>
-
-
-      <div class="text-center">
-        <!-- Mobile: one row per player pair so both teams' cards line up -->
-        <div class="md:hidden grid grid-cols-2 max-sm:text-xs">
-          <group-box class="!block !mb-0" :headeronly="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(0, data.winner)" :esportteamname="getEsportTeamName(0)" :color="data.winner == 0 ? 'teal' : 'red'"></group-box>
-          <group-box class="!block !mb-0" :headeronly="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(1, data.winner)" :esportteamname="getEsportTeamName(1)" :color="data.winner == 1 ? 'teal' : 'red'"></group-box>
-          <template v-for="rowIndex in Math.max(data.players[0].length, data.players[1].length)" :key="rowIndex">
-            <template v-for="team in [0, 1]" :key="team">
-              <group-box v-if="data.players[team][rowIndex - 1]" class="!block !my-0 bg-black" :hideheader="true" :playerlink="true" :match="true" :esport="esport" :series="series" :tournament="tournament" :data="[data.players[team][rowIndex - 1]]" :winner="data.winner == team"></group-box>
-              <div v-else class="mx-1 bg-black"></div>
-            </template>
-          </template>
+        <div class="relative max-w-[120rem] mx-auto px-4 md:px-8 pt-10 pb-6 flex flex-wrap items-end justify-between gap-6">
+          <div class="flex flex-col gap-2 min-w-0">
+            <h1 class="text-4xl md:text-6xl font-bold">{{ $mapName(data.game_map) }}</h1>
+            <p class="text-base md:text-2xl uppercase text-subtext">{{ [esport ? getEsportTitle() : $t(data.game_type), gameLength, formatDate(data.game_date), $t('Match :id', { id: replayid })].filter(Boolean).join(' · ') }}</p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <!-- Replay viewer: season games; needs a Battle.net login, like Download Replay -->
+            <custom-button v-if="isWatchableGame && replayViewerAllowed" class="font-semibold" color="teal" :href="'/Analytics/Match/Single/' + replayid + '/Replay'" text="Watch Replay" alt="Watch Replay"></custom-button>
+            <login-required-hover v-else-if="isWatchableGame" message="You need to be logged in with Battle.net to watch replays."><span class="btn bg-teal font-semibold opacity-60 cursor-pointer">{{ $t('Watch Replay') }}</span></login-required-hover>
+            <!-- Download requires login for all (esport and non-esport); blocked battletags get no control -->
+            <custom-button v-if="canDownload && user && !data.replay_download_blocked" class="font-semibold max-md:hidden" color="blue" text="Download Replay" alt="Download Replay" :ignoreclick="true" @click="downloadReplay(data, replayid)"></custom-button>
+            <login-required-hover v-else-if="canDownload && !user" class="max-md:hidden" message="You need to be logged in to download replays."><span class="btn bg-blue font-semibold opacity-60 cursor-pointer">{{ $t('Download Replay') }}</span></login-required-hover>
+          </div>
         </div>
 
-        <div class="flex  justify-center max-w-[93.75rem] mx-auto  md:gap-10">
-          <div class=" max-w-[50%]  md:max-w-[37.5rem]">
-            <group-box class="md:w-full max-sm:text-xs max-md:hidden":playerlink="true" :match="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(0, data.winner)" :esportteamname="getEsportTeamName(0)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
-
-
-            <div v-if="showBans" class="mb-10">
-              {{ $t(':team Bans', { team: esport ? this.data.team_names.team_one.team_name : $t("Team 1") }) }}
-              <div class="flex gap-2 justify-center mt-4">
-                <template v-for="(item, index) in data.replay_bans[0]" :key="index">
-                  <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" :size="'big'"></hero-image-wrapper>
-                  <round-image v-else :size="'big'" :image="'/images/talents/no-image.png'"><h2>{{ $t('No Ban') }}</h2></round-image>
+        <!-- The two teams: result, bans, players and their numbers -->
+        <div class="relative max-w-[120rem] mx-auto px-4 md:px-8 grid xl:grid-cols-2 gap-6">
+          <div v-for="team in [0, 1]" :key="team" :class="['rounded bg-surface border-t-4 p-5 md:p-6 flex flex-col gap-5 min-w-0', data.winner == team ? 'border-win' : 'border-loss']">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-3 min-w-0">
+                <h2 class="text-2xl font-bold truncate">{{ teamTitle(team) }}</h2>
+                <span :class="['shrink-0 rounded-md px-2 py-0.5 text-xs font-bold uppercase', data.winner == team ? 'bg-win/20 text-win' : 'bg-loss/20 text-loss']">{{ data.winner == team ? $t('Victory') : $t('Defeat') }}</span>
+              </div>
+              <div v-if="showBans" class="flex items-center gap-2">
+                <span class="text-xs font-semibold uppercase text-subtext">{{ $t('Bans') }}</span>
+                <template v-for="(item, index) in data.replay_bans[team]" :key="index">
+                  <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" size="small" class="opacity-70"></hero-image-wrapper>
+                  <span v-else class="w-10 h-10 shrink-0 rounded-full border-2 border-dashed border-surface-4" :title="$t('No Ban')"></span>
                 </template>
               </div>
             </div>
 
-            <div class="flex flex-wrap justify-center mb-4">
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. Account Level'" :value="getAverageValue('account_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" :title="'Team Level'" :value="data.players[0][0].score.level" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" v-if="esport" :title="'Avg. Hero Level'" :value="getAverageValue('avg_hero_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" :title="'Takedowns'" :value="getTakedownsValue(data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. HP MMR'" :value="getAverageValue('player_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. HP Hero MMR'" :value="getAverageValue('hero_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. HP Role MMR'" :value="getAverageValue('role_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-            </div>
-
-
-            <div v-if="esport && esport != 'Other'">
-              {{ $t('Map Bans') }}
-              <div class="flex gap-2 justify-center mt-4">
-                <map-image-wrapper v-if="data.map_bans.team_zero_ban_data.map_ban_one" :map="data.map_bans.team_zero_ban_data.map_ban_one" :size="'big'">
-                  <image-hover-box :title="$mapName(data.map_bans.team_zero_ban_data.map_ban_one)"></image-hover-box>
-                </map-image-wrapper>
-                <map-image-wrapper v-if="data.map_bans.team_zero_ban_data.map_ban_two" :map="data.map_bans.team_zero_ban_data.map_ban_two" :size="'big'">
-                  <image-hover-box :title="$mapName(data.map_bans.team_zero_ban_data.map_ban_two)"></image-hover-box>
-                </map-image-wrapper>
+            <div class="grid grid-cols-5 gap-2">
+              <div v-for="(player, index) in partyOrder(team)" :key="index" class="flex flex-col items-center gap-1.5 text-center min-w-0">
+                <a :href="getPlayerProfileLink(player, false)" class="group/bt flex flex-col items-center gap-1.5 max-w-full">
+                <!-- The player's details on hover, as the old team boxes had -->
+                <hero-image-wrapper :hero="player.hero" size="big" :popup-hoverable="true" :award="player.match_award" :winner="data.winner == team" :hpowner="player.hp_owner" :party="player.party" :ispatreon="player.patreon_subscriber" :voideye="!esport && hasVoidEye(player.blizz_id, player.region)">
+                  <image-hover-box v-if="player.check" :title="$heroName(player.hero)"></image-hover-box>
+                  <image-hover-box v-else-if="esport"
+                    :title="$heroName(player.hero)"
+                    :paragraph-one="$t('Played by') + ': ' + player.battletag"
+                    :paragraph-six="$t('Hero Level') + ': ' + player.hero_level"
+                  ></image-hover-box>
+                  <image-hover-box v-else
+                    :title="$heroName(player.hero)"
+                    :played-by="player.battletag"
+                    :paragraph-two="$t('Account Level') + ': ' + player.account_level"
+                    :paragraph-three="$t('HP Player MMR') + ': ' + player.player_mmr"
+                    :paragraph-four="$t('HP Hero MMR') + ': ' + player.hero_mmr"
+                    :paragraph-five="$t('HP Role MMR') + ': ' + player.role_mmr"
+                    :paragraph-six="$t('Hero Level') + ': ' + player.hero_level"
+                  ></image-hover-box>
+                </hero-image-wrapper>
+                <span class="relative max-w-full text-sm font-semibold"><span class="block truncate group-hover/bt:underline">{{ player.check ? $t('Hidden') : player.battletag }}</span><span v-if="!player.check" class="absolute left-full top-1/2 -translate-y-1/2 pl-1.5 opacity-0 group-hover/bt:opacity-100 transition-opacity"><basil-icon name="arrow-small" class="text-xs"></basil-icon></span></span>
+                </a>
+                <a :href="getPlayerProfileLink(player, true)" class="group/bt relative max-w-full text-xs text-subtext"><span class="block truncate group-hover/bt:underline">{{ $heroName(player.hero) }}</span><span v-if="!player.check" class="absolute left-full top-1/2 -translate-y-1/2 pl-1.5 opacity-0 group-hover/bt:opacity-100 transition-opacity"><basil-icon name="arrow-small" class="text-xs"></basil-icon></span></a>
               </div>
             </div>
 
+            <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
+              <stat-box v-for="stat in teamStats(team)" :key="stat.title" class="!m-0 !min-w-0" :title="stat.title" :value="stat.value"></stat-box>
+            </div>
 
+            <div v-if="esport && esport != 'Other' && mapBans(team).length" class="flex items-center gap-3">
+              <span class="text-xs font-semibold uppercase text-subtext">{{ $t('Map Bans') }}</span>
+              <map-image-wrapper v-for="map in mapBans(team)" :key="map.name" :map="map" size="small">
+                <image-hover-box :title="$mapName(map)"></image-hover-box>
+              </map-image-wrapper>
+            </div>
           </div>
+        </div>
+      </div>
 
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 pb-10 flex flex-col gap-6">
+        <panel-box v-if="esport && esport != 'Other'" :title="$t('Series Games')" :divider="false">
+          <table class="min-w-0 w-full rounded-table">
+            <thead>
+              <tr>
+                <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Match ID') }}</th>
+                <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Round') }}</th>
+                <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Game') }}</th>
+                <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Game Map') }}</th>
+              </tr>
+            </thead>
+            <tbody class="text-center">
+              <tr v-for="(row, index) in data.match_games" :key="index">
+                <td width="25%"><a class="group/bt inline-flex items-center" :href="`/Esports/${esport}/Match/Single/${row.replayID}${tournament ? '?tournament=' + tournament : ''}`"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></td>
+                <td width="25%">{{ row.round }}</td>
+                <td width="25%">{{ row.game }}</td>
+                <td width="25%"><map-image-wrapper size="small" :map="row.game_map"><image-hover-box :title="$mapName(row.game_map)"></image-hover-box></map-image-wrapper></td>
+              </tr>
+            </tbody>
+          </table>
+        </panel-box>
 
-          <div class=" max-w-[50%]  md:max-w-[37.5rem]">
-            <group-box class="md:w-full max-sm:text-xs max-md:hidden" :playerlink="true" :match="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(1, data.winner)" :esportteamname="getEsportTeamName(1)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
+        <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-            <div v-if="showBans" class="mb-10">
-              {{ $t(':team Bans', { team: esport ? this.data.team_names.team_two.team_name : $t("Team 2") }) }}
-              <div class="flex gap-2 justify-center mt-4">
-                <template v-for="(item, index) in data.replay_bans[1]" :key="index">
-                  <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" :size="'big'"></hero-image-wrapper>
-                  <round-image v-else :size="'big'" :image="'/images/talents/no-image.png'"><h2>{{ $t('No Ban') }}</h2></round-image>
-                </template>              
+        <!-- Match Scores: every player, grouped by team until a column is sorted; each column's best value highlighted -->
+        <panel-box :title="$t('Match Scores')" :subtitle="$t('Best value in each column is highlighted.')" :divider="false">
+          <template #right>
+            <!-- Same rules as Watch Replay -->
+            <a v-if="isWatchableGame && replayViewerAllowed" class="ml-auto self-center text-sm font-semibold text-teal hover:underline" :href="'/Analytics/Match/Single/' + replayid + '/Replay#analytic-performance'">{{ $t('How each player played') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+            <login-required-hover v-else-if="isWatchableGame" class="ml-auto self-center" message="You need to be logged in with Battle.net to see how each player played."><span class="text-sm opacity-60 cursor-pointer">{{ $t('How each player played') }}</span></login-required-hover>
+          </template>
+          <scroll-hint-container>
+            <table class="w-full min-w-[60rem] rounded-table sticky-first-column">
+              <thead>
+                <tr>
+                  <th class="py-2 px-3 text-left text-sm leading-4">{{ $t('Player') }}</th>
+                  <th v-for="column in scoreColumns" :key="column.key" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer whitespace-nowrap" :class="{ 'bg-teal text-white': scoreSort === column.key }" @click="sortScores(column.key)">
+                    {{ $t(column.label) }}<span v-if="column.key === 'total_rank'" class="inline-flex align-middle ml-1" @click.stop><round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true"><slot><p class="text-sm p-2 text-left font-normal whitespace-normal">{{ $t('HP Rating is the Heroes Profile performance score (0–100).') }}</p></slot></round-image></span><sort-indicator :column="column.key" :sort-key="scoreSort" :sort-dir="scoreSortDir"></sort-indicator>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="text-center">
+                <template v-for="group in scoreGroups" :key="group.key">
+                  <tr v-if="group.label">
+                    <td :colspan="scoreColumns.length + 1" class="py-2 px-3 text-left text-xs font-semibold uppercase text-subtext"><span class="sticky left-3"><span :class="['inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle', group.won ? 'bg-win' : 'bg-loss']"></span>{{ group.label }}</span></td>
+                  </tr>
+                  <tr v-for="(player, index) in group.players" :key="index">
+                    <td class="py-2 px-3 text-left">
+                      <span class="inline-flex items-center gap-2.5 min-w-0">
+                        <a :href="getPlayerProfileLink(player, false)" class="shrink-0"><hero-image-wrapper :hero="player.hero" size="small" :excludehover="true"></hero-image-wrapper></a>
+                        <span class="flex flex-col items-start min-w-0">
+                          <a :href="getPlayerProfileLink(player, false)" class="group/bt inline-flex items-center max-w-full font-semibold"><span class="truncate group-hover/bt:underline">{{ player.check ? $t('Hidden') : player.battletag }}</span><basil-icon v-if="!player.check" name="arrow-small" class="shrink-0 text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                          <a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center max-w-full text-subtext text-xs"><span class="truncate group-hover/bt:underline">{{ $heroName(player.hero) }}</span><basil-icon v-if="!player.check" name="arrow-small" class="shrink-0 text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                        </span>
+                      </span>
+                    </td>
+                    <td v-for="column in scoreColumns" :key="column.key" :class="{ 'font-semibold text-teal': isBestScore(column, player) }">{{ formatValue(column.value(player)) }}</td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </scroll-hint-container>
+        </panel-box>
+
+        <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
+
+        <!-- Draft Order: each pick and ban in turn, its team's colour along the bottom -->
+        <panel-box v-if="data.draft_order && data.draft_order.length > 0" :title="$t('Draft Order')" :subtitle="firstPickTeam !== null ? $t(':team had first pick. Faded heroes were banned.', { team: teamTitle(firstPickTeam) }) : $t('Faded heroes were banned.')" :divider="false">
+          <div class="grid grid-cols-4 sm:grid-cols-8 2xl:grid-cols-[repeat(16,minmax(0,1fr))] gap-2">
+            <div v-for="(row, index) in draftRows" :key="index" :class="['flex flex-col items-center gap-1.5 rounded bg-surface-1 border-b-4 px-1 pt-2 pb-2.5', row.team === null ? 'border-gray-dark' : data.winner == row.team ? 'border-win' : 'border-loss']">
+              <span class="text-xs text-subtext">{{ index + 1 }}</span>
+              <hero-image-wrapper v-if="row.hero !== 'No Pick'" :hero="row.hero" size="medium" :class="{ 'opacity-40 grayscale': row.type == 0 }"></hero-image-wrapper>
+              <round-image v-else size="medium" :image="'/images/talents/no-image.png'"><h2>{{ $t('No Pick') }}</h2></round-image>
+              <span class="text-[0.625rem] font-bold uppercase">{{ row.type == 0 ? $t('Ban') : $t('Pick') }}</span>
+            </div>
+          </div>
+          <p class="flex flex-wrap gap-x-5 gap-y-1 text-sm text-subtext">
+            <span v-for="team in [0, 1]" :key="team" class="flex items-center gap-2"><span :class="['w-4 h-1 rounded-full', data.winner == team ? 'bg-win' : 'bg-loss']"></span>{{ teamTitle(team) }}</span>
+          </p>
+        </panel-box>
+
+        <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
+
+        <!-- Talents: a row per player, both teams side by side; the build code copies from the row -->
+        <panel-box :title="$t('Talents')" :subtitle="$t('Talents picked at levels 1, 4, 7, 10, 13, 16 and 20. Empty slots were not reached.')" :divider="false">
+          <div class="grid xl:grid-cols-2 gap-6">
+            <div v-for="team in [0, 1]" :key="team" class="flex flex-col gap-2 min-w-0">
+              <span class="text-xs font-semibold uppercase text-subtext"><span :class="['inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle', data.winner == team ? 'bg-win' : 'bg-loss']"></span>{{ teamTitle(team) }} · {{ data.winner == team ? $t('Victory') : $t('Defeat') }}</span>
+              <div v-for="(player, index) in data.players[team]" :key="index" :class="['group/row flex flex-wrap md:flex-nowrap items-center gap-4 rounded px-4 py-3 transition-colors hover:bg-white/10', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
+                <span class="flex items-center gap-4 min-w-0 flex-1">
+                  <a :href="getPlayerProfileLink(player, false)" class="shrink-0"><hero-image-wrapper :hero="player.hero" size="small" :excludehover="true"></hero-image-wrapper></a>
+                  <span class="flex flex-col items-start gap-0.5 min-w-0">
+                    <a :href="getPlayerProfileLink(player, false)" :class="['group/bt inline-flex items-center max-w-full font-bold', { 'text-subtext': player.check }]"><span class="truncate group-hover/bt:underline">{{ player.check ? $t('Hidden') : player.battletag }}</span><basil-icon v-if="!player.check" name="arrow-small" class="shrink-0 text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                    <a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center max-w-full text-subtext text-[0.8125rem]"><span class="truncate group-hover/bt:underline">{{ $heroName(player.hero) }}</span><basil-icon v-if="!player.check" name="arrow-small" class="shrink-0 text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                  </span>
+                </span>
+                <build-code class="md:opacity-0 md:group-hover/row:opacity-100 md:focus-within:opacity-100 transition-opacity" :build="player.talents" :hero="player.hero" show="code" align="end"></build-code>
+                <build-code :build="player.talents" :hero="player.hero" show="talents" align="end" :empty-slots="true"></build-code>
               </div>
             </div>
-            <div class="flex flex-wrap justify-center mb-4">
+          </div>
+        </panel-box>
 
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. Account Level'" :value="getAverageValue('account_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" :title="'Team Level'" :value="data.players[1][0].score.level" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" v-if="esport" :title="'Avg. Hero Level'" :value="getAverageValue('avg_hero_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" :title="'Takedowns'" :value="getTakedownsValue(data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. HP MMR'" :value="getAverageValue('player_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. HP Hero MMR'" :value="getAverageValue('hero_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. HP Role MMR'" :value="getAverageValue('role_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-            </div>
-            <div v-if="esport && esport != 'Other'" class="">
-              {{ $t('Map Bans') }}
-              <div class="flex gap-2 justify-center mt-4">
-              <map-image-wrapper v-if="data.map_bans.team_one_ban_data.map_ban_one" :map="data.map_bans.team_one_ban_data.map_ban_one" :size="'big'">
-                <image-hover-box :title="$mapName(data.map_bans.team_one_ban_data.map_ban_one)"></image-hover-box>
-              </map-image-wrapper>
-              <map-image-wrapper v-if="data.map_bans.team_one_ban_data.map_ban_two" :map="data.map_bans.team_one_ban_data.map_ban_two" :size="'big'">
-                <image-hover-box :title="$mapName(data.map_bans.team_one_ban_data.map_ban_two)"></image-hover-box>
-              </map-image-wrapper>
-            </div>
-            </div>
+        <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
 
-          </div >
-        </div>
+        <!-- HP MMR Change: before → after, and the change, for each player -->
+        <panel-box v-if="!esport" :title="$t('HP MMR Change')" :subtitle="$t('Heroes Profile MMR before → after this match.')" :divider="false">
+          <scroll-hint-container>
+            <table class="w-full min-w-[50rem] rounded-table sticky-first-column">
+              <thead>
+                <tr>
+                  <th class="py-2 px-3 text-left text-sm leading-4">{{ $t('Player') }}</th>
+                  <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Player MMR') }}</th>
+                  <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Hero MMR') }}</th>
+                  <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Role MMR') }}</th>
+                </tr>
+              </thead>
+              <tbody class="text-center">
+                <template v-for="team in [0, 1]" :key="team">
+                  <tr>
+                    <td colspan="4" class="py-2 px-3 text-left text-xs font-semibold uppercase text-subtext"><span class="sticky left-3"><span :class="['inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle', data.winner == team ? 'bg-win' : 'bg-loss']"></span>{{ teamTitle(team) }} · {{ data.winner == team ? $t('Victory') : $t('Defeat') }}</span></td>
+                  </tr>
+                  <tr v-for="(player, index) in data.players[team]" :key="index">
+                    <td class="py-2 px-3 text-left">
+                      <span class="inline-flex items-center gap-2.5 min-w-0">
+                        <a :href="getPlayerProfileLink(player, false)" class="shrink-0"><hero-image-wrapper :hero="player.hero" size="small" :excludehover="true"></hero-image-wrapper></a>
+                        <span class="flex flex-col items-start min-w-0">
+                          <a :href="getPlayerProfileLink(player, false)" class="group/bt inline-flex items-center max-w-full font-semibold"><span class="truncate group-hover/bt:underline">{{ player.check ? $t('Hidden') : player.battletag }}</span><basil-icon v-if="!player.check" name="arrow-small" class="shrink-0 text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                          <a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center max-w-full text-subtext text-xs"><span class="truncate group-hover/bt:underline">{{ $heroName(player.hero) }}</span><basil-icon v-if="!player.check" name="arrow-small" class="shrink-0 text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                        </span>
+                      </span>
+                    </td>
+                    <td v-for="kind in ['player', 'hero', 'role']" :key="kind">
+                      <span v-if="player.check" class="text-subtext">{{ $t('Hidden') }}</span>
+                      <span v-else class="inline-flex items-center gap-2 whitespace-nowrap">
+                        <span class="text-subtext">{{ Math.round(player[kind + '_mmr'] - player[kind + '_change']) }}</span>
+                        <span class="text-subtext">→</span>
+                        <span class="font-semibold">{{ player[kind + '_mmr'] }}</span>
+                        <span :class="['text-xs', player[kind + '_change'] >= 0 ? 'text-win' : 'text-loss']">{{ (player[kind + '_change'] > 0 ? '+' : '') + player[kind + '_change'] }}</span>
+                      </span>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </scroll-hint-container>
+        </panel-box>
+
+        <panel-box v-if="data.experience_breakdown" :title="$t('Experience')" :subtitle="$t('Team experience over the course of the match.')" :divider="false" class="overflow-x-clip">
+          <dual-line-chart :data="data.experience_breakdown" :winner="data.winner"></dual-line-chart>
+        </panel-box>
+
+        <dynamic-banner-ad :patreon-user="patreonUser" :index="5" :mobile-override="false"></dynamic-banner-ad>
+
+        <!-- Advanced Stats: one team at a time, a category at a time; the search looks through every category -->
+        <panel-box :title="$t('Advanced Stats')" :subtitle="$t('Detailed stats per player, grouped by category.')" :divider="false">
+          <template #right>
+            <tab-button class="ml-auto self-start" :small="true" :tab1text="teamTitle(0)" :tab2text="teamTitle(1)" :ignoreclick="true" @tab-click="side => advancedTeam = side === 'left' ? 0 : 1"></tab-button>
+          </template>
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <tab-button :small="true" :dark="true" :tabs="advancedSections.map(section => ({ key: section.title, text: section.title }))" :overridedefaultside="advancedCategory" :ignoreclick="true" :class="{ 'opacity-50': statSearch.trim() }" @tab-click="key => { advancedCategory = key; statSearch = ''; }"></tab-button>
+            <search-input v-model="statSearch" :placeholder="$t('Search stats')" class="w-full sm:w-[18.125rem]"></search-input>
+          </div>
+          <scroll-hint-container>
+            <table class="w-full min-w-[50rem] rounded-table sticky-first-column">
+              <thead>
+                <tr>
+                  <th class="py-2 px-3 text-left text-sm leading-4">{{ $t('Stat') }}</th>
+                  <th v-for="(player, index) in data.players[advancedTeam]" :key="index" class="py-2 px-3 text-center text-sm leading-4">
+                    <span class="inline-flex items-center gap-2"><hero-image-wrapper :hero="player.hero" size="small" :excludehover="true"></hero-image-wrapper>{{ player.check ? $t('Hidden') : player.battletag }}</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="text-center">
+                <tr v-for="row in shownAdvancedRows" :key="row.key">
+                  <td class="py-2 px-3 text-left font-semibold">{{ $t(row.label) }}<span v-if="statSearch.trim()" class="ml-2 text-xs font-normal text-subtext">{{ $t(row.category) }}</span></td>
+                  <td v-for="(player, index) in data.players[advancedTeam]" :key="index">{{ row.key === 'time_spent_dead' ? formatSeconds(player.score[row.key]) : formatValue(player.score[row.key]) }}</td>
+                </tr>
+                <tr v-if="!shownAdvancedRows.length">
+                  <td :colspan="data.players[advancedTeam].length + 1" class="py-4 text-subtext">{{ $t('No stats match ":search".', { search: statSearch }) }}</td>
+                </tr>
+                <!-- Blank rows up to the longest category, so the box keeps its height between tabs -->
+                <tr v-for="n in advancedFillerRows" :key="'filler' + n" class="invisible" aria-hidden="true">
+                  <td class="py-2 px-3">&nbsp;</td>
+                </tr>
+              </tbody>
+            </table>
+          </scroll-hint-container>
+        </panel-box>
       </div>
     </div>
-
-      <div v-if="esport && esport != 'Other'" class="max-w-[93.75rem] mx-auto mb-10 px-4">
-        <panel-box :title="$t('Series Games')">
-        <table class="min-w-0 w-full">
-          <thead>
-            <tr>
-              <th class="py-2 px-3 text-center text-sm leading-4">
-                {{ $t('Match ID') }}
-              </th>
-              <th class="py-2 px-3 text-center text-sm leading-4">
-                {{ $t('Round') }}
-              </th>
-              <th class="py-2 px-3 text-center text-sm leading-4">
-                {{ $t('Game') }}
-              </th>
-              <th class="py-2 px-3 text-center text-sm leading-4">
-                {{ $t('Game Map') }}
-              </th>
-            </tr>
-          </thead>
-          <tbody class="text-center">
-            <tr v-for="(row, index) in data.match_games" :key="index">
-              <td width="25%">
-                <a v-if="esport" class="group/bt inline-flex items-center" :href="`/Esports/${esport}/Match/Single/${row.replayID}${tournament ? '?tournament=' + tournament : ''}`"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-              </td>
-              <td width="25%">{{ row.round }}</td>
-              <td width="25%">{{ row.game }}</td>
-              <td width="25%">
-                <map-image-wrapper size="small" :map="row.game_map">
-                  <image-hover-box :title="$mapName(row.game_map)"></image-hover-box>
-                </map-image-wrapper>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        </panel-box>
-      </div>
-
-      <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
-
-      <div class="max-w-[93.75rem] mx-auto px-4 my-6">
-        <panel-box>
-          <div class="flex flex-wrap items-baseline gap-4">
-            <h2 class="text-2xl font-bold">{{ $t('Match Scores') }}</h2>
-            <!-- Same rules as Watch Replay -->
-            <a v-if="isWatchableGame && replayViewerAllowed" class="group/bt inline-flex items-center text-header" :href="'/Analytics/Match/Single/' + replayid + '/Replay#analytic-performance'"><span class="group-hover/bt:underline">{{ $t('How each player played') }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-            <login-required-hover v-else-if="isWatchableGame" message="You need to be logged in with Battle.net to see how each player played."><span class="opacity-60 cursor-pointer">{{ $t('How each player played') }}</span></login-required-hover>
-          </div>
-          <p class="text-subtext">{{ $t('See advanced stats below') }}</p>
-         
-       
-          
-
-
-          <div class="ml-auto flex justify-end">
-            <div class="text-center flex items-center gap-2">
-              {{ $t('Sort By:') }} 
-              <tab-button :tab1text="'Team'" :ignoreclick="true" :tab2text="'HP Score'" @tab-click="sortCombinedPlayers" > </tab-button>
-              <round-image class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large">
-                <slot>
-                  <div>
-                    <p class="max-sm:text-xs">{{ $t('Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match. 100 would be a perfect match with most MVPs hovering between 70-75.') }}</p>
-                  </div>
-                </slot>
-              </round-image>
-            </div>
-          </div>  
-          
-
-
-          <template v-for="(item, index) in combinedPlayers" :key="index">
-            
-            <div>
-              <a class="flex flex-wrap items-end my-5 w-full justify-evenly max-md:block"  :href="matchScorePlayerURL(item)">
-                <hero-image-wrapper :size="'big'" :hero="item.hero" class="mr-2"></hero-image-wrapper>
-                <div>
-                  <div class="flex flex-wrap justify-between flex-1  max-md:w-full">
-                    <span> {{ item.battletag }}</span> 
-                    <span>{{ $t('Heroes Profile Rating: :rank', { rank: item.total_rank }) }}</span>
-                  </div>
-                  <div class="flex flex-wrap md:space-x-9 items-between w-full flex-1 max-md:flex-col">
-                    <div class="flex flex-1 max-md:w-full">
-                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Kills'" :value="item.score.kills" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Takedowns'" :value="item.score.takedowns" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Deaths'" :value="item.score.deaths" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                    </div>
-                    <div class="flex flex-1 max-md:w-full">
-                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Siege Dmg.'" :value="item.score.siege_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Hero Dmg.'" :value="item.score.hero_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Healing'" :value="item.score.total_healing" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                    </div>
-                    <div class="flex flex-1 max-md:w-full">
-                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Dmg. Taken'" :value="item.score.damage_taken ? item.score.damage_taken : 0 " :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Exp. Con.'" :value="item.score.experience_contribution" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                    </div>
-                  </div>
-
-                </div>
-              </a>
-            </div>
-          </template>
-        </panel-box>
-      </div>
-
-      <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
-      <div v-if="data.draft_order && data.draft_order.length > 0" class="max-w-[93.75rem] mx-auto px-4 my-6 max-sm:text-xs">
-        <panel-box :title="$t('Draft Order')">
-        <table class="min-w-0 w-full">
-          <thead>
-            <tr>
-              <th class="py-2 px-3 text-center text-sm leading-4">
-                {{ $t('Hero') }}
-              </th>
-              <th class="py-2 px-3 text-center text-sm leading-4">
-                {{ $t('Draft Order') }}
-              </th>            
-              <th class="py-2 px-3 text-center text-sm leading-4">
-                {{ $t('Type') }}
-              </th>                
-            </tr>
-          </thead>
-          <tbody class="text-center">
-            <tr v-for="(row, index) in data.draft_order" :key="index" class="">      
-              <td width="25%">
-                <div v-if="row.hero != 'No Pick'" class="flex gap-4 items-center justify-center">
-                  <hero-image-wrapper :size="'medium'" :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ $heroName(row.hero) }}</span>
-                </div>
-                <div v-else class="flex gap-4 items-center justify-center">
-                  <round-image :size="'medium'" :image="'/images/talents/no-image.png'"><h2>{{ $t('No Pick') }}</h2></round-image><span class="max-md:hidden">{{ $t('No Pick') }}</span>
-                </div>
-              </td>
-              <td width="25%">{{ row.pick_number + 1 }}</td>
-              <td width="25%">{{ row.type == 0 ? "Ban" : "Pick" }}</td>
-            </tr>
-          </tbody>
-        </table>
-        </panel-box>
-      </div>
-
-
-
-      <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
-      <div class="max-w-[93.75rem] mx-auto px-4 max-md:px-2 my-6">
-       <panel-box :title="$t('Talents')">
-       <div class="flex flex-wrap gap-20 justify-around">
-        <div class="max-md:w-full">
-          <div class="w-full  mb-10" v-for="(item, index) in data.players[0]" :key="index">
-            
-            <a class="flex  w-full"  :href="getPlayerProfileLink(item, true)">
-              <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
-              <div class="min-w-0">
-                {{ item.battletag }} - {{ $heroName(item.hero) }}
-                <build-code class="mb-2" :build="item.talents" :hero="item.hero" show="talents" align="start"></build-code>
-              </div>
-            </a>
-            <build-code :build="item.talents" :hero="item.hero" show="code" align="end"></build-code>
-         </div>
-
-       </div>
-       <div class="max-md:w-full">
-        <div class="w-full  mb-10" v-for="(item, index) in data.players[1]" :key="index">
-          
-          <a class="flex  w-full"  :href="item.check ? 'javascript:void(0)' : esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
-            <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
-            <div class="min-w-0">
-              {{ item.battletag }} - {{ $heroName(item.hero) }}
-              <build-code class="mb-2" :build="item.talents" :hero="item.hero" show="talents" align="start"></build-code>
-            </div>
-          </a>
-          <build-code :build="item.talents" :hero="item.hero" show="code" align="end"></build-code>
-       </div>
-
-       
-     </div>
-   </div>
-       </panel-box>
- </div>
-  <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
-
-<div v-if="data.experience_breakdown" class="max-w-[93.75rem] mx-auto px-4 max-md:px-2 my-6 overflow-x-clip">
-  <panel-box :title="$t('Experience')">
-    <dual-line-chart :data="data.experience_breakdown" :winner="data.winner"></dual-line-chart>
-  </panel-box>
-</div>
-
-
-<div v-if="!esport" class=" max-sm:text-sm max-w-[93.75rem] mx-auto px-4 my-6">
-  <panel-box :title="$t('Team 1 Advanced HP MMR')">
-
-  <scroll-hint-container class="2xl:mx-auto">
-
-
-  <table :class="['relative', 'auto-width-table', { winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }]">
-    <thead>
-      <tr >
-        <td class="color-cell bg-black border-l border-black"></td>
-        <td class="color-cell bg-yellow" colspan="3">{{ $t('Pre-Match') }}</td>
-        <td class="color-cell bg-blue" colspan="3">{{ $t('Post-Match') }}</td>
-      </tr>
-      <tr>
-        <td >{{ $t('Player') }}</td>
-        <td >{{ $t('HP Player MMR') }}</td>
-        <td >{{ $t('HP Hero MMR') }}</td>
-        <td >{{ $t('HP Role MMR') }}</td>
-        <td >{{ $t('HP Player MMR') }}</td>
-        <td >{{ $t('HP Hero MMR') }}</td>
-        <td >{{ $t('HP Role MMR') }}</td>
-      </tr>
-    </thead>
-    <tbody class="text-center">
-      <tr v-for="(item, index) in data.players[0]" :key="index">
-        <td class="bg-blue text-white border-white border">
-          <div class="flex gap-2 items-center">
-            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ item.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a><span v-else>{{ $t('Hidden') }}</span>
-          </div>
-        </td>
-        <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
-        <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
-        <td>{{ Math.round(item.role_mmr - item.role_change)}}</td>
-        <td>{{ item.player_mmr }} ({{ item.player_change }})</td>
-        <td>{{ item.hero_mmr }} ({{ item.hero_change }})</td>
-        <td>{{ item.role_mmr }} ({{ item.role_change }})</td>
-      </tr>
-      <tr>
-        <td class="color-cell bg-blue text-white border-white border">{{ $t('Average') }}</td>
-        <td class="color-cell bg-blue text-white">{{ getAverageValue('prev_player_mmr', data.players[0]) }}</td>
-        <td class="color-cell bg-blue text-white">{{ getAverageValue('prev_hero_mmr', data.players[0]) }}</td>
-        <td class="color-cell bg-blue text-white">{{ getAverageValue('prev_role_mmr', data.players[0]) }}</td>
-        <td class="color-cell bg-blue text-white">{{ getAverageValue('player_mmr', data.players[0]) }}</td>
-        <td class="color-cell bg-blue text-white">{{ getAverageValue('hero_mmr', data.players[0]) }}</td>
-        <td class="color-cell bg-blue text-white">{{ getAverageValue('role_mmr', data.players[0]) }}</td>
-      </tr>
-    </tbody>
-  </table>
-</scroll-hint-container>
-  </panel-box>
-</div>
-
-
-<div  v-if="!esport" class="  max-sm:text-sm max-w-[93.75rem] mx-auto px-4 my-6">
-  <panel-box :title="$t('Team 2 Advanced HP MMR')">
-
-  <scroll-hint-container class="2xl:mx-auto">
-
-
-  <table :class="['relative', 'auto-width-table', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }]">
-    <thead>
-      <tr>
-       <td class="color-cell bg-black border-l border-black"></td>
-        <td class="color-cell bg-yellow" colspan="3">{{ $t('Pre-Match') }}</td>
-        <td class="color-cell bg-blue" colspan="3">{{ $t('Post-Match') }}</td>
-      </tr>
-      <tr>
-        <td>{{ $t('Player') }}</td>
-        <td>{{ $t('HP Player MMR') }}</td>
-        <td>{{ $t('HP Hero MMR') }}</td>
-        <td>{{ $t('HP Role MMR') }}</td>
-        <td>{{ $t('HP Player MMR') }}</td>
-        <td>{{ $t('HP Hero MMR') }}</td>
-        <td>{{ $t('HP Role MMR') }}</td>
-      </tr>
-    </thead>
-    <tbody class="text-center">
-      <tr v-for="(item, index) in data.players[1]" :key="index">
-        <td class="bg-blue text-white border-white border">
-          <div class="flex gap-2 items-center">
-            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ item.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a><span v-else>{{ $t('Hidden') }}</span>
-          </div>
-        </td>
-        <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
-        <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
-        <td>{{ Math.round(item.role_mmr - item.role_change)}}</td>
-        <td>{{ item.player_mmr }} ({{ item.player_change }})</td>
-        <td>{{ item.hero_mmr }} ({{ item.hero_change }})</td>
-        <td>{{ item.role_mmr }} ({{ item.role_change }})</td>
-      </tr>
-      <tr>
-        <td class="color-cell bg-blue text-white border-white border">{{ $t('Average') }}</td>
-        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('prev_player_mmr', data.players[1]) }}</td>
-        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('prev_hero_mmr', data.players[1]) }}</td>
-        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('prev_role_mmr', data.players[1]) }}</td>
-        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('player_mmr', data.players[1]) }}</td>
-        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('hero_mmr', data.players[1]) }}</td>
-        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('role_mmr', data.players[1]) }}</td>
-      </tr>
-    </tbody>
-  </table>
-</scroll-hint-container>
-  </panel-box>
-</div>
-
-<dynamic-banner-ad :patreon-user="patreonUser" :index="5" :mobile-override="false"></dynamic-banner-ad>
-
-<div class="max-sm:text-sm max-w-[93.75rem] mx-auto px-4 my-6">
-  <panel-box :title="$t('Team 1 Advanced Stats')">
-  <template #right>
-    <custom-button class="ml-auto" @click="flipAdvancedStats = !flipAdvancedStats" :text="flipAdvancedStats ? $t('Show Stats as Rows') : $t('Show Players as Rows')" :alt="'Flip Advanced Stats'" size="small" :ignoreclick="true"></custom-button>
-  </template>
-
-  <scroll-hint-container class="2xl:mx-auto" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
-
-
-  <table :class="['relative', '2xl:min-w-[93.75rem]', { winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1, 'fixed-column-table': flipAdvancedStats }]" :style="flipAdvancedStats ? { width: flippedTableWidth(section) } : null" >
-    <thead v-if="!flipAdvancedStats">
-      <tr>
-        <td >{{ $t(section.title) }}</td>
-        <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">
-          <div class="flex gap-2 items-center">
-            <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-          </div>
-        </td>
-    </tr>
-  </thead>
-  <thead v-else>
-    <tr>
-      <td class="bg-blue text-white border-white border">{{ $t(section.title) }}</td>
-      <td class="bg-blue text-white border-white border" v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ $t(row.label) }}</td>
-    </tr>
-  </thead>
-  <tbody v-if="!flipAdvancedStats">
-    <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-      <td class="bg-blue text-white border-white border">{{ $t(row.label) }}</td>
-      <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
-    </tr>
-  </tbody>
-  <tbody v-else>
-    <tr v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">
-      <td>
-        <div class="flex gap-2 items-center">
-          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-        </div>
-      </td>
-      <td v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ formatValue(player.score[row.key]) }}</td>
-    </tr>
-  </tbody>
-</table>
-</scroll-hint-container>
-  </panel-box>
-</div>
-<dynamic-banner-ad :patreon-user="patreonUser" :index="6" :mobile-override="false"></dynamic-banner-ad>
-<div class="max-sm:text-sm max-w-[93.75rem] mx-auto px-4 my-6">
-  <panel-box :title="$t('Team 2 Advanced Stats')">
-  <scroll-hint-container class="2xl:mx-auto" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
-  <table :id="'responsive-table-' +sectionIndex" :ref="'responsivetable'+sectionIndex" :class="['relative', '2xl:min-w-[93.75rem]', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1, 'fixed-column-table': flipAdvancedStats }]" :style="flipAdvancedStats ? { width: flippedTableWidth(section) } : null" >
-    <thead v-if="!flipAdvancedStats">
-      <tr>
-        <td class="bg-blue text-white border-white border">{{ $t(section.title) }}</td>
-        <td
-        v-for="(player, playerIndex) in data.players[1]"
-        :key="playerIndex"
-
-        >
-        <div class="flex gap-2 items-center">
-          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-        </div>
-      </td>
-    </tr>
-  </thead>
-  <thead v-else>
-    <tr>
-      <td class="bg-blue text-white border-white border">{{ $t(section.title) }}</td>
-      <td class="bg-blue text-white border-white border" v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ $t(row.label) }}</td>
-    </tr>
-  </thead>
-  <tbody v-if="!flipAdvancedStats">
-    <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-      <td class="bg-blue text-white border-white border">{{ $t(row.label) }}</td>
-      <td v-for="(player, playerIndex) in data.players[1]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
-    </tr>
-  </tbody>
-  <tbody v-else>
-    <tr v-for="(player, playerIndex) in data.players[1]" :key="playerIndex">
-      <td>
-        <div class="flex gap-2 items-center">
-          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-        </div>
-      </td>
-      <td v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ formatValue(player.score[row.key]) }}</td>
-    </tr>
-  </tbody>
-</table>
-</scroll-hint-container>
-  </panel-box>
-</div>
-
-
-
-</div>
-<!-- The page's layout with grey blocks while it loads -->
-<match-skeleton v-else-if="isLoading" :overrideimage="esport ? getLoadingImage() : undefined"></match-skeleton>
-</div>
-
+    <!-- The page's layout with grey blocks while it loads -->
+    <match-skeleton v-else-if="isLoading" :overrideimage="esport ? getLoadingImage() : undefined"></match-skeleton>
+  </div>
 </template>
 
 <script>
   import { formatGameDate } from '../utils/formatGameDate';
+  import { hasVoidEye } from '../voidEye';
   import moment from 'moment-timezone';
 
   export default {
@@ -544,15 +298,20 @@
     data(){
       return {
         windowWidth: window.innerWidth,
-        flipAdvancedStats: false,
+        // The recent-players row's height, so the map art can start behind it
+        navOffset: 0,
         cancelTokenSource: null,
         isLoading: false,
         userTimezone: moment.tz.guess(),
         data: null,
-        combinedPlayers: null,
-        showTooltip: false,
-        sortDirectionTeam: 'desc',
-        sortDirectionHpScore: 'desc',
+        // Match Scores: grouped by team until a column is clicked
+        scoreSort: null,
+        scoreSortDir: 'desc',
+        // Advanced Stats: the team shown, its category, and a search across every category
+        advancedTeam: 0,
+        advancedCategory: 'Combat',
+        statSearch: '',
+        // The design's six categories; a stat sits in one
         sections: [
         {
           title: 'Combat',
@@ -561,20 +320,11 @@
             { label: 'Assists', key: 'assists' },
             { label: 'Takedowns', key: 'takedowns' },
             { label: 'Deaths', key: 'deaths' },
-            ],
-        },
-        {
-          title: 'Player',
-          rows: [
-            { label: 'Regeneration Globes', key: 'regen_globes' },
             { label: 'Hero Damage', key: 'hero_damage' },
             { label: 'Physical Damage Done', key: 'physical_damage' },
             { label: 'Spell Damage Done', key: 'spell_damage' },
             { label: 'Damage Taken', key: 'damage_taken' },
             { label: 'Time Spent Dead', key: 'time_spent_dead' },
-            { label: 'Enemy Silence Duration', key: 'silencing_enemies' },
-            { label: 'Enemy Rooted Duration', key: 'rooting_enemies' },
-            { label: 'Enemy Stunned Duration', key: 'stunning_enemies' },
             { label: 'Escapes', key: 'escapes' },
             { label: 'Vengeances', key: 'vengeance' },
             { label: 'Outnumbered Deaths', key: 'outnumbered_deaths' },
@@ -616,11 +366,15 @@
             { label: 'Clutch Heals', key: 'clutch_heals' },
             { label: 'Ally Protection', key: 'protection_allies' },
             { label: 'Crowd Control Enemies', key: 'time_cc_enemy_heroes' },
+            { label: 'Enemy Silence Duration', key: 'silencing_enemies' },
+            { label: 'Enemy Rooted Duration', key: 'rooting_enemies' },
+            { label: 'Enemy Stunned Duration', key: 'stunning_enemies' },
             ],
         },
         {
           title: 'Other',
           rows: [
+            { label: 'Regeneration Globes', key: 'regen_globes' },
             { label: 'Town Kills', key: 'town_kills' },
             { label: 'Kill Streak', key: 'highest_kill_streak' },
             { label: 'Multikills', key: 'multikill' },
@@ -633,8 +387,93 @@
       this.getData();
     },
     mounted() {
+      this.measureNav();
+      window.addEventListener('resize', this.measureNav);
+    },
+    beforeUnmount() {
+      window.removeEventListener('resize', this.measureNav);
     },
     computed: {
+      advancedSections() {
+        return this.sections;
+      },
+      // The category's stats; while searching, matching stats from every category, each named with its category
+      shownAdvancedRows() {
+        const search = this.statSearch.trim().toLowerCase();
+        if (search) {
+          return this.sections.flatMap(section => section.rows
+            .filter(row => row.label.toLowerCase().includes(search) || this.$t(row.label).toLowerCase().includes(search))
+            .map(row => ({ ...row, category: section.title })));
+        }
+        return this.sections.find(section => section.title === this.advancedCategory)?.rows ?? [];
+      },
+      advancedFillerRows() {
+        const longest = Math.max(...this.sections.map(section => section.rows.length));
+        return Math.max(0, longest - Math.max(this.shownAdvancedRows.length, 1));
+      },
+      canDownload() {
+        return this.data.downloadable || (this.esport && (this.esport == 'CCL' || this.esport == 'Other'));
+      },
+      // "21 minutes 5 seconds" as "21:05"
+      gameLength() {
+        const text = String(this.data.game_length ?? '');
+        const minutes = text.match(/(\d+)\s*minute/);
+        const seconds = text.match(/(\d+)\s*second/);
+        if (!minutes && !seconds) {
+          return text;
+        }
+        return (minutes ? minutes[1] : '0') + ':' + String(seconds ? seconds[1] : 0).padStart(2, '0');
+      },
+      // Match Scores' columns; deaths are best low
+      scoreColumns() {
+        return [
+          { key: 'total_rank', label: this.$t('HP Rating'), value: player => player.total_rank },
+          { key: 'kills', label: this.$t('Kills'), value: player => player.score.kills },
+          { key: 'takedowns', label: this.$t('Takedowns'), value: player => player.score.takedowns },
+          { key: 'deaths', label: this.$t('Deaths'), value: player => player.score.deaths, lowest: true },
+          { key: 'siege_damage', label: this.$t('Siege Dmg'), value: player => player.score.siege_damage },
+          { key: 'hero_damage', label: this.$t('Hero Dmg'), value: player => player.score.hero_damage },
+          { key: 'total_healing', label: this.$t('Healing'), value: player => player.score.total_healing },
+          { key: 'damage_taken', label: this.$t('Dmg Taken'), value: player => player.score.damage_taken || 0 },
+          { key: 'experience_contribution', label: this.$t('XP Contrib.'), value: player => player.score.experience_contribution },
+        ];
+      },
+      // Each column's best value over all ten players
+      bestScores() {
+        const players = [...this.data.players[0], ...this.data.players[1]];
+        return Object.fromEntries(this.scoreColumns.map(column => {
+          const values = players.map(player => Number(column.value(player)) || 0);
+          return [column.key, column.lowest ? Math.min(...values) : Math.max(...values)];
+        }));
+      },
+      scoreGroups() {
+        if (!this.scoreSort) {
+          return [0, 1].map(team => ({ key: team, label: this.teamTitle(team) + ' · ' + (this.data.winner == team ? this.$t('Victory') : this.$t('Defeat')), won: this.data.winner == team, players: this.data.players[team] }));
+        }
+        const column = this.scoreColumns.find(item => item.key === this.scoreSort);
+        const players = [...this.data.players[0], ...this.data.players[1]]
+          .sort((a, b) => (Number(column.value(b)) || 0) - (Number(column.value(a)) || 0));
+        return [{ key: 'sorted', label: null, players: this.scoreSortDir === 'desc' ? players : players.reverse() }];
+      },
+      // Each pick or ban with its team: a pick's from the team that played the hero, a ban's from that team's bans
+      draftRows() {
+        return (this.data.draft_order || []).map(row => {
+          if (row.hero === 'No Pick') {
+            return { ...row, team: null };
+          }
+          const heroId = row.hero.id;
+          let team = null;
+          if (row.type == 0) {
+            team = [0, 1].find(side => (this.data.replay_bans?.[side] || []).some(ban => ban.hero && ban.hero.id === heroId)) ?? null;
+          } else {
+            team = [0, 1].find(side => this.data.players[side].some(player => player.hero && player.hero.id === heroId)) ?? null;
+          }
+          return { ...row, team };
+        });
+      },
+      firstPickTeam() {
+        return this.draftRows.find(row => row.type != 0 && row.team !== null)?.team ?? null;
+      },
       // A non-esport game from the season start on: the ones the replay viewer can show
       isWatchableGame() {
         return !this.esport && !!this.analyticsCutover && !!this.data
@@ -651,19 +490,69 @@
       },
     },
     watch: {
-      combinedPlayers(){
-      },
-      flipAdvancedStats(){
-        this.$nextTick(() => {
-          if(this.windowWidth < 1500){
-            this.resizeTables();
-          }
-        });
-      }
     },
     methods: {
-      flippedTableWidth(section){
-        return `${18 + (section.rows.length * 10)}em`;
+      hasVoidEye,
+      measureNav() {
+        this.navOffset = document.getElementById('alt-account-nav')?.offsetHeight ?? 0;
+      },
+      // A party's players side by side, in the order the first of them appears
+      partyOrder(team) {
+        const players = this.data.players[team];
+        const order = [];
+        players.forEach(player => {
+          if (order.includes(player)) {
+            return;
+          }
+          order.push(...(player.party ? players.filter(other => other.party === player.party) : [player]));
+        });
+        return order;
+      },
+      teamTitle(team) {
+        return this.esport ? this.getEsportTeamName(team) : this.$t(team == 0 ? 'Team 1' : 'Team 2');
+      },
+      // The numbers under a team's players
+      teamStats(team) {
+        const players = this.data.players[team];
+        if (this.esport) {
+          return [
+            { title: this.$t('Team Level'), value: players[0].score.level },
+            { title: this.$t('Takedowns'), value: this.getTakedownsValue(players) },
+            { title: this.$t('Avg. Hero Level'), value: this.getAverageValue('avg_hero_level', players) },
+          ];
+        }
+        return [
+          { title: this.$t('Team Level'), value: players[0].score.level },
+          { title: this.$t('Takedowns'), value: this.getTakedownsValue(players) },
+          { title: this.$t('Avg. HP MMR'), value: this.getAverageValue('player_mmr', players) },
+          { title: this.$t('Avg. HP Hero MMR'), value: this.getAverageValue('hero_mmr', players) },
+          { title: this.$t('Avg. HP Role MMR'), value: this.getAverageValue('role_mmr', players) },
+          { title: this.$t('Avg. Account Level'), value: this.getAverageValue('account_level', players) },
+        ];
+      },
+      mapBans(team) {
+        const bans = team == 0 ? this.data.map_bans?.team_zero_ban_data : this.data.map_bans?.team_one_ban_data;
+        return bans ? [bans.map_ban_one, bans.map_ban_two].filter(Boolean) : [];
+      },
+      sortScores(key) {
+        if (this.scoreSort === key) {
+          // Second click flips it; a third goes back to the teams
+          if (this.scoreSortDir === 'desc') {
+            this.scoreSortDir = 'asc';
+          } else {
+            this.scoreSort = null;
+            this.scoreSortDir = 'desc';
+          }
+          return;
+        }
+        this.scoreSort = key;
+        this.scoreSortDir = 'desc';
+      },
+      isBestScore(column, player) {
+        return (Number(column.value(player)) || 0) === this.bestScores[column.key];
+      },
+      formatSeconds(value) {
+        return (value ? Number(value).toLocaleString('en-US') : 0) + 's';
       },
       resizeTables(){
         if(this.$el && this.$el.querySelectorAll('table')){
@@ -718,8 +607,7 @@
           return;
         }
 
-        this.data = response.data; 
-        this.combinePlayerArrays();
+        this.data = response.data;
       }catch(error){
         if (error.response?.data?.status === 'incomplete') {
           window.location.href = '/';
@@ -825,39 +713,6 @@
 
 
     },
-    combinePlayerArrays(){
-      this.combinedPlayers = [...this.data.players[0], ...this.data.players[1]];
-    },
-    sortCombinedPlayers(side) {
-      let type = "team";
-      if(side == 'left'){
-        type = "team";
-      }
-      else{
-        type = "total_rank";
-      }
-      this.combinedPlayers.sort((a, b) => {
-        if(type == "total_rank"){
-          if (this.sortDirectionHpScore === 'desc') {
-            return b.total_rank - a.total_rank;
-          }else{
-            return a.total_rank - b.total_rank;
-          }
-        }else{
-          if (this.sortDirectionHpScore === 'desc') {
-            return b.team - a.team;
-          }else{
-            return a.team - b.team;
-          }
-        }
-      });
-
-      if (this.sortDirectionHpScore === 'desc') {
-        this.sortDirectionHpScore = this.sortDirectionHpScore === 'desc' ? 'asc' : 'desc';
-      }else{
-        this.sortDirectionHpScore = this.sortDirectionHpScore === 'desc' ? 'asc' : 'desc';
-      }
-    },
     formatDate(dateString) {
       return formatGameDate(dateString);
     },
@@ -894,22 +749,6 @@
       }
 
       return totalKills;
-    },
-    matchScorePlayerURL(item){
-      if(item.check){
-        return 'javascript:void(0)';
-      }
-      if(this.esport){
-        if(this.series){
-          return'/Esports/' + this.esport + "/" + this.series + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name;
-        }
-
-        if(this.esport == "HeroesInternational"){
-          return '/Esports/' + this.esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name + "?tournament=" + this.tournament;
-        }
-        return '/Esports/' + this.esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name;
-      }
-      return '/Player/' + item.battletag + '/' + item.blizz_id + '/' + this.data.region + '/Hero/' + item.hero.name;
     },
 
     getPlayerProfileLink(item, heroPage){
