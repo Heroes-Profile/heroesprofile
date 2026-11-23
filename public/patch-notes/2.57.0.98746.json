@@ -1,0 +1,223 @@
+{
+  "version": "2.57.0.98746",
+  "date": "November 23, 2026",
+  "title": "Live Patch",
+  "blizzard_url": "https://news.blizzard.com/en-us/article/24315644/heroes-of-the-storm-live-patch-notes-november-23-2026",
+  "general": [
+    { "type": "new", "note": "New Skin: Moophisto." },
+    { "type": "new", "note": "New Bundle: Our Scared Cow Moophisto Bundle (Moophisto and Red Meat Moophisto Skins)." },
+    { "type": "new", "note": "New Variation: Forsaken Xal'atath, available for purchase or from Loot Chests." },
+    { "type": "new", "note": "New Portrait: The Gold Sink." },
+    { "type": "change", "note": "Updated Homescreen and Startup Music." }
+  ],
+  "maps": [],
+  "heroes": [
+    {
+      "name": "Chromie",
+      "short_name": "chromie",
+      "type": "mixed",
+      "notes": [
+        "Once Again the First Time (Level 1): Damage increased from 50% to 55%.",
+        "Deep Breathing (Level 1): Damage bonus per stack increased from 0.5% to 0.6%.",
+        "Timewalker's Pursuit (Level 1): Damage bonus reduced from 15% to 12%."
+      ]
+    },
+    {
+      "name": "Gazlowe",
+      "short_name": "gazlowe",
+      "type": "buff",
+      "notes": [
+        "Basic Attack damage increased from 100 to 105.",
+        "Health increased from 2275 to 2375.",
+        "Deth Lazor [W]: Healing from damage dealt increased from 25% to 30%.",
+        "Bomb Toss (Level 20): No longer grants an additional charge. Now reduces the cooldown by 3 seconds."
+      ]
+    },
+    {
+      "name": "Greymane",
+      "short_name": "greymane",
+      "type": "change",
+      "notes": [
+        "Incendiary Elixir (Level 7): Damage bonus per stack increased from 25 to 30.",
+        "Gilnean Roulette (Level 20): No longer reduces the percentage-based Health damage."
+      ]
+    },
+    {
+      "name": "Lúcio",
+      "short_name": "lucio",
+      "type": "buff",
+      "notes": [
+        "Party Mix (Level 1): Quest completion radius bonus increased from 20% to 30%.",
+        "Sound Barrier (Level 10): Shield increased from 1296 to 1488.",
+        "Slip (Level 13): Lingering duration increased from 1 to 2 seconds.",
+        "Summer Anthem (Level 20): Unkillable duration increased from 1.5 to 2.5 seconds."
+      ]
+    },
+    {
+      "name": "Medivh",
+      "short_name": "medivh",
+      "type": "mixed",
+      "notes": [
+        "Arcane Rift [Q]: Damage increased from 170 to 185.",
+        "Force of Will [W]: Cooldown reduced from 9 to 8 seconds.",
+        "Portal [E]: Cooldown increased from 16 to 20 seconds.",
+        "Winds of Celerity (Level 1): Now also reduces Raven Form cast time by 0.25 seconds.",
+        "Raven's Intellect (Level 1): Bonus increased from 200% to 400%.",
+        "Portal Mastery (Level 1): Now increases the Mana cost of Portal by 100%. No longer allows Portal to be cast in Raven Form without dismounting.",
+        "Raven Familiar (Level 4): Damage reduced from 121 to 98. Slow reduced from 20% to 15%.",
+        "Dust of Appearance (Level 4): Cooldown reduced from 45 to 40 seconds. Now allows Portal to be cast in Raven Form without dismounting."
+      ]
+    },
+    {
+      "name": "Mei",
+      "short_name": "mei",
+      "type": "buff",
+      "notes": [
+        "Blizzard [W]: Detonation delay reduced from 2 to 1.875 seconds. Detonation damage increased from 75 to 80.",
+        "Icing [E]: Cast time reduced from 0.125 to 0.0625 seconds.",
+        "Avalanche (Level 10): Cooldown reduced from 90 to 80 seconds.",
+        "Ice Wall (Level 10): Cast time reduced from 0.75 to 0.6875 seconds."
+      ]
+    },
+    {
+      "name": "Mephisto",
+      "short_name": "mephisto",
+      "type": "buff",
+      "notes": [
+        "Malicious Intent (Level 1): Spell Power bonus increased from 25% to 30%. Duration increased from 2.5 to 3 seconds.",
+        "Hateful Mending (Level 4): Mana restored increased from 10 to 15. Healing increased from 70% to 85%.",
+        "Static Barrier (Level 4): Shield amount increased from 40% to 50%."
+      ]
+    },
+    {
+      "name": "Stukov",
+      "short_name": "stukov",
+      "type": "buff",
+      "notes": [
+        "Fetid Touch (Level 1): Cooldown reduction increased from 5 to 6 seconds.",
+        "Flailing Swipe (Level 10): Damage increased from 48 to 62."
+      ]
+    },
+    {
+      "name": "Thrall",
+      "short_name": "thrall",
+      "type": "nerf",
+      "notes": [
+        "Echo of the Elements (Level 1): Now loses 5 stacks upon death.",
+        "Spirit Shield (Level 13): Spell Armor reduced from 70 to 50."
+      ]
+    },
+    {
+      "name": "Xal'atath",
+      "short_name": "xalatath",
+      "type": "mixed",
+      "notes": [
+        "Shadow Mark [Q]: Range increased from 8 to 9. Inner damage increased from 120 to 130 (outer damage remains 50%).",
+        "Dark Heart Ritual [W]: Detonation damage increased from 245 to 260.",
+        "Void Step [E]: Basic Attack damage bonus per teleport increased from 10% to 15%. Inner damage increased from 120 to 130 (outer damage remains 50%).",
+        "Void Volley [D]: Damage bonus per quest stack reduced from 1% to 0.75%. Mythic Reward damage bonus reduced from 50% to 35%.",
+        "Anchored Core (Level 1): No longer increases Dark Heart Ritual duration.",
+        "Cloak of Shadows (Level 1): Now only grants Spell Armor while actively blinking. The bonus no longer persists for 2 seconds.",
+        "Cold Feet (Level 4): Duration bonus increased from 1 to 2 seconds.",
+        "Toxic Mark (Level 7): No longer increases Shadow Mark duration. Now benefits from Cold Feet's duration bonus.",
+        "Void Eruption (Level 10): Damage per second reduced by 10%. Speed reduced by 10% (travel distance unchanged).",
+        "Marked Resilience (Level 16): Shield increased from 160 to 200.",
+        "Relentless Whispers (Level 16): No longer increases Attack Speed. Now grants an additional 75% Basic Attack damage per teleport.",
+        "Fractured Reality (Level 16): Damage bonus reduced from 25% to 15%.",
+        "Harbinger's Consumption (Level 20): Cooldown reduction per hit reduced from 14 to 10 seconds. The three orbs now orbit more slowly.",
+        "Unstable Core (Level 20): No longer applies damage over time. Impact damage increased from 45 to 75."
+      ]
+    },
+    {
+      "name": "Yrel",
+      "short_name": "yrel",
+      "type": "mixed",
+      "notes": [
+        "Light of Karabor (Level 1): Bonus reduced from 40% to 35% when hitting fewer than 2 targets, and from 80% to 70% when hitting 2 or more.",
+        "Divine Steed (Level 7): Lingering duration increased from 3 to 4 seconds."
+      ]
+    }
+  ],
+  "bug_fixes": {
+    "general": [
+      "Fixed an issue with the death icon at certain resolutions.",
+      "Spell Power no longer increases the Health restored by Hearthstone [B].",
+      "Fixed an issue with allied pings on the Party Frame.",
+      "Fixed an issue that caused Sapper attacks to instantly hit nearby targets.",
+      "Fixed an issue that caused Sapper warning areas to persist indefinitely."
+    ],
+    "maps": [],
+    "heroes": [
+      {
+        "name": "Alexstrasza",
+        "short_name": "alexstrasza",
+        "notes": ["Cleansing Flame (Level 10): Fixed an issue where two Cleansing Flames could be active at once."]
+      },
+      {
+        "name": "Auriel",
+        "short_name": "auriel",
+        "notes": ["Wrath of Heaven (Level 16): Fixed an issue where the full Spell Power bonus did not apply to healing."]
+      },
+      {
+        "name": "Blaze",
+        "short_name": "blaze",
+        "notes": ["Adhesive Petroleum (Level 13): Fixed an issue that granted its Basic Attack damage bonus to other Blaze players without the talent."]
+      },
+      {
+        "name": "Cho",
+        "short_name": "cho",
+        "notes": ["Surging Fist [Q]: Fixed an issue where it did not move toward the cursor when clicked."]
+      },
+      {
+        "name": "Genji",
+        "short_name": "genji",
+        "notes": ["Pathfinder (Level 1): Fixed an issue where Genji no longer auto-acquired nearby targets after Pathfinder expired."]
+      },
+      {
+        "name": "Greymane",
+        "short_name": "greymane",
+        "notes": ["Eyes in the Dark (Level 4): Fixed an issue where Greymane no longer auto-acquired nearby targets after Eyes in the Dark expired."]
+      },
+      {
+        "name": "Junkrat",
+        "short_name": "junkrat",
+        "notes": ["Taste for Explosions (Level 4): No longer increases the damage of the triggering impact."]
+      },
+      {
+        "name": "Li Li",
+        "short_name": "lili",
+        "notes": ["Cloud Serpent [W]: Fixed an issue where Cloud Serpent cast on allied Heroes could become disjointed."]
+      },
+      {
+        "name": "Medivh",
+        "short_name": "medivh",
+        "notes": [
+          "Circle of Protection (Level 13): Added a radius indicator to Force of Will's cast guide after selecting Circle of Protection.",
+          "Dust of Disappearance (Level 20): Fixed an issue where targeted allies did not auto-acquire nearby targets after Stealth expired."
+        ]
+      },
+      {
+        "name": "Tassadar",
+        "short_name": "tassadar",
+        "notes": ["Shadow Walk (Level 13): Fixed an issue where Tassadar no longer auto-acquired nearby targets after Shadow Walk expired."]
+      },
+      {
+        "name": "Xal'atath",
+        "short_name": "xalatath",
+        "notes": [
+          "Fixed an issue with Health Regeneration.",
+          "Shadow Mark [Q]: Fixed an issue where Structures could be marked in unintended situations.",
+          "Dark Heart Ritual [W]: Fixed issues with the self-reveal logic.",
+          "Void Volley [D]: Fixed an issue where charge progress was gained when attacking a target with 1 Evasion charge remaining.",
+          "Void Acolyte (Level 4): Fixed an issue where it did not properly grant Void Volley charges.",
+          "Void Summoner (Level 7): Fixed an issue where the Void Minion did not spawn at Xal'atath's position at cast time."
+        ]
+      },
+      {
+        "name": "Xul",
+        "short_name": "xul",
+        "notes": ["Bone Prison [E]: Xul is no longer revealed to the enemy when in the fog of war as Bone Prison activates."]
+      }
+    ]
+  }
+}
