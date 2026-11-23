@@ -783,7 +783,6 @@ class PlayerHeroesMapsRolesController extends Controller
                 'max_game_length' => $heroStats->max('game_length'),
 
                 'combined_healing' => round($combined_healing, 2),
-                'avg_assists' => round($avg_takedowns - $avg_kills, 2),
                 'avg_kills' => round($avg_kills, 2),
                 'avg_assists' => round($heroStats->avg('assists'), 2),
                 'avg_takedowns' => round($avg_takedowns, 2),

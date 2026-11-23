@@ -174,6 +174,9 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 $key = $item->blizz_id.'|'.$item->region;
 
                 if (array_key_exists($key, $blizzIDRegionMapping)) {
+                    // Dropped like banned and hidden rows, so the ranks below close the gap
+                    $this->rankModifier++;
+
                     return null;
                 }
                 $blizzIDRegionMapping[$key] = 'found';

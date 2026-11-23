@@ -26,7 +26,8 @@ use Spatie\LaravelIgnition\Facades\Flare;
 
 class GlobalQueryService
 {
-    private const STATUS_TTL_SECONDS = 7200;
+    // Public for ApiJobOwner, whose markers must live as long as the job record
+    public const STATUS_TTL_SECONDS = 7200;
 
     /**
      * What the `global-queries` queue is configured to retry. A child that failed
@@ -75,6 +76,9 @@ class GlobalQueryService
     public const TOO_LARGE_MESSAGE = 'This query ran for more than 45 minutes and was stopped. Narrow it'
         .' — a shorter timeframe, or fewer game types, leagues, maps or heroes — and try again.'
         .' The same request is refused for 24 hours.';
+
+    // What callers see for a failed query; the exception itself is only logged
+    private const FAILED_MESSAGE = 'The query failed. Try again in a moment.';
 
     /** Set while an API job runs, so connections opened mid-job get the limit too. */
     private static ?int $queryLimitMs = null;
@@ -428,6 +432,7 @@ class GlobalQueryService
         $handler = app($handlerClass);
         $ttl = max(60, $cacheTtlSeconds);
         $results = [];
+        $failed = false;
 
         foreach ($children as $label => $child) {
             $cached = $bypassCache ? null : $cache->get($child['cache_key']);
@@ -449,12 +454,16 @@ class GlobalQueryService
                     'error' => $exception->getMessage(),
                 ]);
 
-                $results[$label] = ['error' => $exception->getMessage()];
+                $results[$label] = ['error' => self::FAILED_MESSAGE];
+                $failed = true;
             }
         }
 
-        $cache->put($parentCacheKey, $results, $ttl);
-        GlobalCacheFreshness::stamp($parentCacheKey, $ttl);
+        // Not cached with a failed map in it, or the failure is served to everyone until it ages out
+        if (! $failed) {
+            $cache->put($parentCacheKey, $results, $ttl);
+            GlobalCacheFreshness::stamp($parentCacheKey, $ttl);
+        }
 
         return response()->json($results)
             ->header('X-Global-Async-Mode', 'sync');
@@ -593,7 +602,7 @@ class GlobalQueryService
                 'async' => true,
                 'status' => 'failed',
                 'job_id' => $jobId,
-                'error' => $job['error'] ?? 'Query failed.',
+                'error' => self::FAILED_MESSAGE,
             ], 500);
         }
 

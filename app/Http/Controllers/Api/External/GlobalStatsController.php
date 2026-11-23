@@ -23,6 +23,7 @@ use App\Models\MatchPredictionSeason;
 use App\Rules\GlobalTimeframeInputValidation;
 use App\Services\GlobalDataService;
 use App\Services\GlobalQueryService;
+use App\Support\ApiJobOwner;
 use App\Support\ApiParameters;
 use App\Support\ApiSpecConfig;
 use App\Support\HeroLevelBands;
@@ -342,10 +343,23 @@ class GlobalStatsController extends Controller
         // keeps starting queries.
         $context = $request->attributes->get(ApiKeyGuard::REQUEST_ATTRIBUTE);
 
-        if ($context instanceof ApiKeyContext && $context->isSuspended()) {
+        // A key is required: without one, a poisoned account could collect its own
+        // job unmarked, since api.poison marks by the polling key's account.
+        if (! $context instanceof ApiKeyContext) {
+            return response()->json([
+                'error' => ['code' => 'unauthenticated', 'message' => 'A valid API key is required.'],
+            ], 401);
+        }
+
+        if ($context->isSuspended()) {
             return response()->json([
                 'error' => ['code' => $context->suspensionCode(), 'message' => $context->suspensionMessage()],
             ], 403);
+        }
+
+        // Another account's job answers exactly as an unknown one, so ids can't be probed
+        if (! ApiJobOwner::owns($jobId, $context->account->id)) {
+            return $this->jobNotFound();
         }
 
         $response = $queries->poll($jobId);
@@ -354,9 +368,7 @@ class GlobalStatsController extends Controller
         // job carries the exception text. Neither belongs in an API answer.
         return match ($response->getStatusCode()) {
             202 => $this->describeJob($response, $jobId),
-            404 => response()->json([
-                'error' => ['code' => 'job_not_found', 'message' => 'No job with that id. Jobs expire once collected or after they age out.'],
-            ], 404),
+            404 => $this->jobNotFound(),
             422 => response()->json([
                 'error' => ['code' => 'query_too_large', 'message' => GlobalQueryService::TOO_LARGE_MESSAGE],
             ], 422),
@@ -728,6 +740,13 @@ class GlobalStatsController extends Controller
     }
 
     /** Tells the caller where to collect the result and how often to ask. */
+    private function jobNotFound(): JsonResponse
+    {
+        return response()->json([
+            'error' => ['code' => 'job_not_found', 'message' => 'No job with that id. Jobs expire once collected or after they age out.'],
+        ], 404);
+    }
+
     private function describeJob(JsonResponse $response, ?string $jobId): Response
     {
         if ($jobId === null) {
