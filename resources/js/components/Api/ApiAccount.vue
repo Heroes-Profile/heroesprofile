@@ -462,6 +462,8 @@
 </template>
 
 <script>
+import { RETURN_SECTION_KEY } from './ApiLogin.vue';
+
 export default {
   name: 'ApiAccount',
   components: {
@@ -584,6 +586,24 @@ export default {
         ? this.$t('Your API Access Has Been Closed')
         : this.$t('Your API Access Is Suspended');
     },
+  },
+  // Signed in from /Api/Login#twitch (or another section): open that section, as the link meant to
+  mounted() {
+    let section = null;
+    try {
+      section = sessionStorage.getItem(RETURN_SECTION_KEY);
+      sessionStorage.removeItem(RETURN_SECTION_KEY);
+    } catch (error) {
+      return;
+    }
+    if (!section || window.location.hash) {
+      return;
+    }
+    const target = document.getElementById(section);
+    if (target) {
+      history.replaceState(null, '', '#' + section);
+      this.$nextTick(() => target.scrollIntoView());
+    }
   },
   methods: {
     async saveName(){

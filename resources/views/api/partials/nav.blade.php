@@ -29,6 +29,7 @@
     </a>
 
     <div class="flex flex-wrap items-center justify-center gap-1 md:mx-auto [&>a]:px-6 [&>a]:py-3.5 [&>a]:rounded-control [&>a:hover]:bg-surface-2">
+      <a href="/Api" class="hover:text-lteal">{{ __('Overview') }}</a>
       <a href="/Api/Docs" class="hover:text-lteal">{{ __('Documentation') }}</a>
       <a href="/Api/Migrating" class="hover:text-lteal">{{ __('Migrating') }}</a>
       <a href="https://github.com/Heroes-Profile/heroesprofile" target="_blank" rel="noopener"

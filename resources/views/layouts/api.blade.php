@@ -98,6 +98,14 @@
             Skill Tree Development, LLC<span class="mx-2">·</span><a href="https://heroesprofile.com">Heroes Profile</a>
           </div>
         </div>
+        @if (! Auth::guard('api_web')->check())
+        <api-login-popup
+          :csrf="{{ json_encode(csrf_token()) }}"
+          :errors="{{ json_encode(old('login_popup') ? $errors->all() : []) }}"
+          :oldemail="{{ json_encode(old('login_popup') ? old('email') : null) }}"
+          :reopen="{{ json_encode((bool) old('login_popup')) }}"
+        ></api-login-popup>
+        @endif
       </footer>
     </div>
 
