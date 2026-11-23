@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AbilityLink;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -43,13 +44,17 @@ class AnalyticsReplayService
         private AnalyticsService $analytics,
     ) {}
 
-    /** A season game: the only ones archived and processed. */
+    /**
+     * A season game: the only ones archived and processed. Custom games only for whoever the match
+     * page would show them to.
+     */
     public function isSeasonGame(int $replayId): bool
     {
         return DB::connection('heroesprofile')->table('replay')
             ->where('replayID', $replayId)
             ->where('game_date', '>=', config('analytics.cutover'))
-            ->exists();
+            ->exists()
+            && $this->globalDataService->canViewMatchReplay($replayId);
     }
 
     /** Processed at the current extract version and loaded into BigQuery. */
@@ -206,9 +211,17 @@ class AnalyticsReplayService
             return null;
         }
 
+        // Private and banned players keep their slot without a name, as on the match page.
+        // Per viewer, so after the shared cache: a private player still sees their own name.
+        $region = DB::connection('heroesprofile')->table('replay')->where('replayID', $replayId)->value('region');
+        $viewer = Auth::user();
+
         // Mark the viewer's own player; no one's blizz ID leaves the server
-        $replay['players'] = array_map(function ($p) use ($blizzId) {
+        $replay['players'] = array_map(function ($p) use ($blizzId, $region, $viewer) {
             $p['you'] = $p['blizz_id'] === $blizzId;
+            if ($p['blizz_id'] !== null && $this->globalDataService->isHiddenFrom($p['blizz_id'], $region, $viewer)) {
+                $p['battletag'] = null;
+            }
             unset($p['blizz_id']);
 
             return $p;

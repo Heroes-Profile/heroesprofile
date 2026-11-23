@@ -125,6 +125,18 @@ class BillingController extends Controller
             // the request arriving and getting here.
             $account->unsetRelation('subscriptions');
 
+            // subscribed() is false for these, so they'd otherwise get a second Stripe
+            // subscription while the unpaid one stays open and keeps retrying
+            $existing = $account->subscription(self::SUBSCRIPTION);
+
+            if ($existing && ! $existing->ended() && $existing->hasIncompletePayment()) {
+                return response()->json([
+                    'error' => $existing->pastDue()
+                        ? 'Your last payment failed. Update your card below and Stripe will retry it, or cancel before starting a new plan.'
+                        : 'Your bank still needs to confirm the payment for your current subscription. Finish that first.',
+                ], 409);
+            }
+
             try {
                 if ($account->subscribed(self::SUBSCRIPTION)) {
                     $account->subscription(self::SUBSCRIPTION)->swap($price);

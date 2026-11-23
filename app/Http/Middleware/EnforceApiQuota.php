@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Auth\ApiKeyGuard;
 use App\Models\Api\ApiEndpoint;
 use App\Models\Api\ApiUsage;
+use App\Support\ApiJobOwner;
 use App\Support\ApiTermsDeadline;
 use App\Support\DatabaseTimer;
 use App\Support\ResponseBytes;
@@ -78,7 +79,10 @@ class EnforceApiQuota
         // there is no one to bill. Entitlement, plan and quota are all skipped;
         // the route's rate limiter still applies.
         if ($context->account->actingAsAdmin()) {
-            return $next($request);
+            $response = $next($request);
+            ApiJobOwner::remember($response, $context->account->id);
+
+            return $response;
         }
 
         // A key never visits the portal, so the terms page alone would let an
@@ -155,7 +159,17 @@ class EnforceApiQuota
 
         $usage = $this->currentUsage($context->account->id, $endpoint);
 
-        if ($usage->calls >= $limit) {
+        // Reserved in one statement before the call runs, so calls in flight together
+        // can't all pass a check made against the same count. Given back below if the
+        // call doesn't succeed.
+        $reserved = DB::connection('heroesprofile_api')
+            ->table('api_usage')
+            ->where('api_account_id', $context->account->id)
+            ->where('endpoint', $endpoint)
+            ->where('calls', '<', $limit)
+            ->increment('calls');
+
+        if ($reserved === 0) {
             return $this->error(
                 'quota_exceeded',
                 'Weekly limit of '.number_format($limit).' calls reached for this endpoint.',
@@ -189,16 +203,20 @@ class EnforceApiQuota
 
         $dbMs = DatabaseTimer::since($dbMark);
 
+        // Only the accounts handed a job id may collect it (GlobalStatsController::job)
+        ApiJobOwner::remember($response, $context->account->id);
+
         // Charged only for an answer: a 200, or a 202 whose job will deliver one.
-        // A refused or failed call costs nothing.
+        // A refused or failed call costs nothing, so its reservation is given back.
         $charged = $response->isSuccessful();
 
-        if ($charged) {
+        if (! $charged) {
             DB::connection('heroesprofile_api')
                 ->table('api_usage')
                 ->where('api_account_id', $context->account->id)
                 ->where('endpoint', $endpoint)
-                ->increment('calls');
+                ->where('calls', '>', 0)
+                ->decrement('calls');
         }
 
         $this->recordEgress($context->account->id, $endpoint, $response);
@@ -261,7 +279,9 @@ class EnforceApiQuota
             ->first();
 
         if ($usage === null) {
-            return ApiUsage::create([
+            // Ignored rather than created: two first calls arriving together would
+            // otherwise both insert, and the second hits the primary key
+            ApiUsage::query()->insertOrIgnore([
                 'api_account_id' => $accountId,
                 'endpoint' => $endpoint,
                 'calls' => 0,
@@ -270,6 +290,10 @@ class EnforceApiQuota
                 'db_ms' => 0,
                 'window_started_at' => now(),
             ]);
+
+            return ApiUsage::where('api_account_id', $accountId)
+                ->where('endpoint', $endpoint)
+                ->firstOrFail();
         }
 
         if ($usage->windowHasExpired()) {

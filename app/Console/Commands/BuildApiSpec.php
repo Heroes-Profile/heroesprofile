@@ -391,7 +391,7 @@ class BuildApiSpec extends Command
             $forbidden[] = 'player_unavailable';
         }
 
-        if ($isReplay && $name !== 'api.external.replay.download') {
+        if ($isReplay) {
             $forbidden[] = 'custom_match_unavailable';
         }
 
