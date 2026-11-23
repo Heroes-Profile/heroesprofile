@@ -157,7 +157,8 @@
                 "short_description": null,
                 "raw_description": null,
                 "is_quest": null
-            }
+            },
+            "winner": 0
         },
         {
             "replayID": 51539742,
@@ -314,7 +315,8 @@
                 "short_description": null,
                 "raw_description": null,
                 "is_quest": null
-            }
+            },
+            "winner": 1
         },
         {
             "replayID": 51549934,
@@ -450,7 +452,8 @@
                 "raw_description": null,
                 "is_quest": null
             },
-            "level_twenty": null
+            "level_twenty": null,
+            "winner": 0
         },
         {
             "replayID": 51549934,
@@ -607,7 +610,8 @@
                 "short_description": null,
                 "raw_description": null,
                 "is_quest": null
-            }
+            },
+            "winner": 0
         },
         {
             "replayID": 51550225,
@@ -764,7 +768,8 @@
                 "short_description": null,
                 "raw_description": null,
                 "is_quest": null
-            }
+            },
+            "winner": 1
         },
         {
             "replayID": 51558019,
@@ -921,7 +926,8 @@
                 "short_description": null,
                 "raw_description": null,
                 "is_quest": null
-            }
+            },
+            "winner": 1
         },
         {
             "replayID": 51558188,
@@ -1078,7 +1084,8 @@
                 "short_description": null,
                 "raw_description": null,
                 "is_quest": null
-            }
+            },
+            "winner": 1
         },
         {
             "replayID": 51567174,
@@ -1235,7 +1242,8 @@
                 "short_description": null,
                 "raw_description": null,
                 "is_quest": null
-            }
+            },
+            "winner": 0
         },
         {
             "replayID": 51567174,
@@ -1392,7 +1400,8 @@
                 "short_description": null,
                 "raw_description": null,
                 "is_quest": null
-            }
+            },
+            "winner": 0
         },
         {
             "replayID": 51567174,
@@ -1549,7 +1558,8 @@
                 "short_description": null,
                 "raw_description": null,
                 "is_quest": null
-            }
+            },
+            "winner": 0
         },
         {
             "replayID": 51714313,
@@ -1664,7 +1674,8 @@
                 "is_quest": null
             },
             "level_sixteen": null,
-            "level_twenty": null
+            "level_twenty": null,
+            "winner": 0
         },
         {
             "replayID": 51745753,
@@ -1821,7 +1832,8 @@
                 "short_description": null,
                 "raw_description": null,
                 "is_quest": null
-            }
+            },
+            "winner": 0
         },
         {
             "replayID": 51746783,
@@ -1978,7 +1990,8 @@
                 "short_description": null,
                 "raw_description": null,
                 "is_quest": null
-            }
+            },
+            "winner": 0
         },
         {
             "replayID": 51800680,
@@ -2135,7 +2148,8 @@
                 "short_description": null,
                 "raw_description": null,
                 "is_quest": null
-            }
+            },
+            "winner": 1
         },
         {
             "replayID": 51948221,
@@ -2292,7 +2306,8 @@
                 "short_description": null,
                 "raw_description": null,
                 "is_quest": null
-            }
+            },
+            "winner": 1
         },
         {
             "replayID": 51964572,
@@ -2365,7 +2380,8 @@
             "level_ten": null,
             "level_thirteen": null,
             "level_sixteen": null,
-            "level_twenty": null
+            "level_twenty": null,
+            "winner": 0
         }
     ]
 }

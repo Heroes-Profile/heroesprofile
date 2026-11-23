@@ -22,7 +22,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
     // Bump when the cached data changes shape or maths, so old entries are skipped.
     private const BUILDER_CACHE_VERSION = 2;
 
-    private const BUILDER_REPLAYS_CACHE_VERSION = 1;
+    private const BUILDER_REPLAYS_CACHE_VERSION = 2;
 
     private const PATH_COLUMNS = ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'];
 
@@ -496,7 +496,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
 
         $replays = Replay::query()
             ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->select('replay.replayID')
+            ->select('replay.replayID', 'player.winner')
             ->whereIn('game_version', $gameVersion)
             ->whereIn('game_type', $gameType)
             ->where('hero', $hero)
@@ -512,6 +512,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             ->get();
 
         $replayIDs = $replays->pluck('replayID')->toArray();
+        $winners = $replays->pluck('winner', 'replayID');
 
         $replayTalents = Talent::select('replayID', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
             ->whereIn('talents.replayID', $replayIDs)
@@ -539,7 +540,8 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             ->limit(50)
             ->get();
 
-        $replayTalents = $replayTalents->map(function ($replay) use ($talentData) {
+        $replayTalents = $replayTalents->map(function ($replay) use ($talentData, $winners) {
+            $replay['winner'] = (int) ($winners[$replay['replayID']] ?? 0);
             $replay['level_one'] = $replay['level_one'] ? ($talentData[$replay['level_one']] ?? null) : null;
             $replay['level_four'] = $replay['level_four'] ? ($talentData[$replay['level_four']] ?? null) : null;
             $replay['level_seven'] = $replay['level_seven'] ? ($talentData[$replay['level_seven']] ?? null) : null;
