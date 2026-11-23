@@ -20,7 +20,7 @@
     <div :class="layout === 'horizontal' ? 'overflow-x-auto' : ''">
       <div :class="layout === 'horizontal' ? 'grid grid-cols-[repeat(7,minmax(7rem,1fr))] gap-2 items-start' : 'flex flex-col gap-2'">
         <talent-builder-column v-for="level in talentLevels" :key="level"
-          :data="talents[level]" :level="level" :clickedData="clickedData" :horizontal="layout === 'horizontal'"></talent-builder-column>
+          :data="talents[level]" :level="level" :clickedData="clickedData" :horizontal="layout === 'horizontal'" @talent-clicked="talentClicked" @clear="removeLevelSelections"></talent-builder-column>
       </div>
     </div>
 
@@ -70,7 +70,6 @@ export default {
     },
   },
   methods: {
-    // Called by <talent-builder-column> via $parent
     talentClicked(talent, index, level) {
       this.selected[level] = talent;
     },

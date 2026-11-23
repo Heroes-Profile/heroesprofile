@@ -1,12 +1,8 @@
 <template>
   <!-- Every build path through the talent tiers: width is games played, colour is win rate -->
-  <details :open="open" @toggle="$emit('update:open', $event.target.open)" class="bg-lighten rounded-lg w-0 min-w-full my-5 group">
-    <summary class="px-6 py-4 flex justify-between items-center cursor-pointer list-none">
-      <h3 class="text-lg">{{ $t('Alluvial Diagram') }}</h3>
-      <basil-icon name="arrow" class="rotate-90 transition-transform group-open:-rotate-90"></basil-icon>
-    </summary>
-    <div class="px-3 pb-3">
-    <div class="bg-gray-dark text-white rounded-2xl p-3">
+  <!-- Opened from the builder's "Alluvial diagram" button -->
+  <div class="bg-surface rounded p-4 md:p-6 w-0 min-w-full">
+    <div class="text-white">
       <div class="flex flex-wrap justify-between gap-2 text-sm mb-2">
         <span>{{ $t(':count build combinations · line width is games played', { count: paths.length.toLocaleString('en-US') }) }}</span>
         <span class="flex items-center gap-2">
@@ -30,8 +26,7 @@
         </template>
       </div>
     </div>
-    </div>
-  </details>
+  </div>
 </template>
 
 <script>
@@ -40,10 +35,7 @@ export default {
   props: {
     data: Object,
     paths: Array,
-    // Kept by the page, since the section remounts on every builder reload
-    open: Boolean,
   },
-  emits: ['update:open'],
   data() {
     return {
       levels: [1, 4, 7, 10, 13, 16, 20],
