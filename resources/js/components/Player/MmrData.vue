@@ -14,6 +14,7 @@
         :playertypeinput="type"
         :heroinput="hero"
         :roleinput="role"
+        :mapinput="map"
         :includesinglegametypefull="true"
         :playerheroroletype="true"
         :hideadvancedfilteringbutton="true"
@@ -27,6 +28,14 @@
     </player-page-top>
     
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
+
+    <!-- Storm League MMR is being rebuilt; remove once the rebuild is done -->
+    <div v-if="gametype === 'sl'" class="max-w-[120rem] mx-auto px-4 md:px-8 mb-6">
+      <div class="flex items-center gap-3 rounded-control bg-surface-1 border-l-4 border-yellow px-5 py-3 text-sm">
+        <basil-icon name="info" class="text-yellow text-xl shrink-0"></basil-icon>
+        <span class="flex-1 min-w-0">{{ $t("We're rebuilding Storm League MMR. Until it's finished, the graph and table below may look wrong. Your MMR still goes up and down with each game you play, but the rebuilt values won't show until the rebuild is complete.") }}</span>
+      </div>
+    </div>
 
     <p v-if="data === ''" class="text-center text-subtext mt-10">{{ $t('No data for this player and filters') }}</p>
     <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-8">
@@ -290,21 +299,27 @@ export default {
       // Hero id and role name
       hero: null,
       role: null,
+      // Map name
+      map: null,
       infoText: "",
     }
   },
   created(){
     this.gametype = this.startingGameType[0];
 
-    // ?hero= or ?role= by name, from the hero and role pages' MMR panels
+    // ?hero=, ?role= or ?map= by name, from the hero, role and map pages' MMR panels
     const hero = this.filters.heroes.find(item => item.name === this.urlparameters?.hero);
     const role = this.filters.role.find(item => item.code === this.urlparameters?.role);
+    const map = this.filters.game_maps.find(item => item.code === this.urlparameters?.map);
     if (hero) {
       this.type = 'Hero';
       this.hero = hero.code;
     } else if (role) {
       this.type = 'Role';
       this.role = role.code;
+    } else if (map) {
+      this.type = 'Map';
+      this.map = map.code;
     }
   },
   mounted() {
@@ -344,6 +359,8 @@ export default {
         parts.push(this.$heroName(this.filters.heroes.find(item => item.code == this.hero)?.name ?? ''));
       } else if (this.type === 'Role' && this.role) {
         parts.push(this.$t(this.filters.role.find(item => item.code == this.role)?.name ?? this.role));
+      } else if (this.type === 'Map' && this.map) {
+        parts.push(this.$mapName(this.map));
       }
       return parts.filter(Boolean).join(' · ');
     },
@@ -454,6 +471,7 @@ export default {
           type: this.type,
           hero: this.hero,
           role: this.role,
+          map: this.type === 'Map' ? this.map : null,
           season: this.season,
           start_date: this.startdate,
           end_date: this.enddate,
@@ -480,6 +498,7 @@ export default {
     filterData(filteredData){
       this.gametype = filteredData.single["Game Type"] ? filteredData.single["Game Type"] : this.gametype;
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
+      this.map = filteredData.single["Map"] ? filteredData.single["Map"] : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
       this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
       this.type = filteredData.single["Type"] ? filteredData.single["Type"] : "Player";

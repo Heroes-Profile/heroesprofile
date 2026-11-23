@@ -1637,7 +1637,8 @@ class GlobalDataService
             return $this->localizeFilterLabels($this->buildFilterData($filtersMinimumPatch));
         }
 
-        $cacheKey = 'filter_data_'.str_replace('.', '_', $filtersMinimumPatch);
+        // Its own key: Type includes Map here, and the live site shares this cache with its own list
+        $cacheKey = 'filter_data_map_mmr_'.str_replace('.', '_', $filtersMinimumPatch);
 
         return $this->localizeFilterLabels(Cache::memo()->remember($cacheKey, 600, function () use ($filtersMinimumPatch) {
             return $this->buildFilterData($filtersMinimumPatch);
@@ -1989,6 +1990,7 @@ class GlobalDataService
             ['code' => 'Player', 'name' => 'Player'],
             ['code' => 'Hero', 'name' => 'Hero'],
             ['code' => 'Role', 'name' => 'Role'],
+            ['code' => 'Map', 'name' => 'Map'],
         ];
 
         $filterData->real_rank_minimum_patch = self::REAL_RANK_MINIMUM_PATCH;

@@ -3740,6 +3740,7 @@
     "We use a small number of providers to run the service. They process account data on our behalf and only as needed to provide their part of it:": "我們使用少數服務供應商來營運本服務。他們代表我們處理帳號資料，且僅在提供其負責部分所需的範圍內處理：",
     "We use cookies to save your most recently viewed pages and to remember your selected \"primary\" BattleTag. Additionally, cookies help us determine whether you've seen the initial site popup message. These small pieces of data are stored on your local computer to remember your settings. We do not store personal data in cookies, and the information stored is solely for enhancing your site experience.": "我們使用 Cookie 儲存你最近瀏覽的頁面，並記住你選擇的「主要」BattleTag。此外，Cookie 也幫助我們判斷你是否已看過網站初次彈出的訊息。這些小型資料儲存在你的本機電腦上，用以記住你的設定。我們不會在 Cookie 中儲存個人資料，所儲存的資訊僅用於提升你的網站體驗。",
     "We utilize Google Analytics to collect anonymous data about your session, helping us analyze site traffic and improve our services. Google Analytics may use cookies for tracking purposes. For more information on how Google uses data, you can refer to": "我們使用 Google Analytics 收集你瀏覽工作階段的匿名資料，以協助分析網站流量並改善服務。Google Analytics 可能會使用 Cookie 進行追蹤。如需了解 Google 如何使用資料，請參閱",
+    "We're rebuilding Storm League MMR. Until it's finished, the graph and table below may look wrong. Your MMR still goes up and down with each game you play, but the rebuilt values won't show until the rebuild is complete.": "我們正在重新計算風暴聯賽 MMR。完成之前，下方的圖表和表格可能顯示不正確。你的 MMR 仍會隨每場比賽上下變動，但重新計算後的數值要等重算完成後才會顯示。",
     "Web Uploader": "網頁上傳",
     "Website": "網站",
     "Website (optional)": "網站（選填）",
