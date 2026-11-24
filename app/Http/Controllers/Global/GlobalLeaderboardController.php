@@ -316,16 +316,16 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 ->select('player_id', 'blizz_id', 'region', 'league_tier', 'division', 'grandmaster', 'ladder_position', 'unranked', 'read_count')
                 ->selectRaw('ROW_NUMBER() OVER (PARTITION BY blizz_id, region ORDER BY last_game_date DESC) AS row_num');
 
-            // Each player's latest rank this season; unranked reads don't place anyone
+            // Each player's latest rank this season; unranked reads don't place anyone. Battletags come after
+            // the trim below: looking them up for every ranked player was most of the board's build time.
             $latest = DB::connection('heroesprofile')->query()
                 ->fromSub($periods, 'periods')
-                ->join('battletags', 'battletags.player_id', '=', 'periods.player_id')
                 ->where('periods.row_num', 1)
                 ->where('periods.unranked', 0)
                 ->whereNotNull('periods.league_tier')
-                ->get(['battletags.battletag', 'periods.blizz_id', 'periods.region', 'periods.league_tier', 'periods.division', 'periods.grandmaster', 'periods.ladder_position', 'periods.read_count'])
+                ->get(['periods.player_id', 'periods.blizz_id', 'periods.region', 'periods.league_tier', 'periods.division', 'periods.grandmaster', 'periods.ladder_position', 'periods.read_count'])
                 ->map(fn ($period) => [
-                    'battletag' => $period->battletag,
+                    'player_id' => (int) $period->player_id,
                     'blizz_id' => (int) $period->blizz_id,
                     'region' => (int) $period->region,
                     'league_tier' => (int) $period->league_tier,
@@ -352,6 +352,17 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                         })
                         ->collapse();
                 })
+                ->values();
+
+            $battletags = collect();
+            foreach ($latest->pluck('player_id')->unique()->chunk(1000) as $playerIds) {
+                $battletags = $battletags->union(DB::connection('heroesprofile')->table('battletags')
+                    ->whereIn('player_id', $playerIds->values())
+                    ->pluck('battletag', 'player_id'));
+            }
+            // As the old join: no battletag row, no place on the board
+            $latest = $latest->filter(fn ($period) => isset($battletags[$period['player_id']]))
+                ->map(fn ($period) => ['battletag' => $battletags[$period['player_id']]] + $period)
                 ->values();
 
             // This season's Storm League games, every upload counted
