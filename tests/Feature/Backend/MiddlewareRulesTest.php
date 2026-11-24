@@ -4,6 +4,8 @@ namespace Tests\Feature\Backend;
 
 use App\Models\Api\ApiAccount;
 use App\Models\BattlenetAccount;
+use App\Models\BattlenetAccountFlair;
+use App\Models\PatreonAccount;
 use App\Services\WhitelistedIPsService;
 use Illuminate\Support\Facades\DB;
 use Tests\Feature\Characterization\SeedFixtures;
@@ -11,7 +13,7 @@ use Tests\Feature\FeatureTestCase;
 use Tests\Support\SignsInApiAccounts;
 
 /**
- * The rules middleware enforces on its own: private and banned profiles, custom games, IP bans,
+ * The rules middleware enforces on its own: private and banned profiles, custom games, Patreon and event flair, IP bans,
  * POST origins, rate limits, the API portal's gates, and the public API's key, quota and poison layers.
  */
 class MiddlewareRulesTest extends FeatureTestCase
@@ -90,6 +92,75 @@ class MiddlewareRulesTest extends FeatureTestCase
         $this->postJson('/api/v1/player/mmr', [
             'blizz_id' => self::PLAYER_BLIZZ_ID, 'region' => self::PLAYER_REGION, 'battletag' => self::PLAYER_BATTLETAG, 'game_type' => 'sl,cu',
         ])->assertOk()->assertJsonMissing(['errors' => ['Custom games are not available.']]);
+    }
+
+    // Patreon and event flair
+
+    private function flairSession(BattlenetAccount $user): array
+    {
+        $this->actingAs($user)->get('/FAQ')->assertOk();
+
+        return [
+            'adFree' => session('patreonSubscriberAdFree'),
+            'siteFlair' => session('patreonSubscriberSiteFlair'),
+            'voidEye' => session('voidEyeFlair'),
+        ];
+    }
+
+    private function eyeFlair(BattlenetAccount $user, ?string $adFreeUntil): void
+    {
+        BattlenetAccountFlair::create([
+            'battlenet_accounts_id' => $user->battlenet_accounts_id, 'flair' => BattlenetAccountFlair::XALATATH_EYE,
+            'awarded_at' => '2026-10-01 00:00:00', 'ad_free_until' => $adFreeUntil,
+        ]);
+    }
+
+    public function test_a_patreon_subscriber_gets_both_ad_free_and_the_star(): void
+    {
+        $user = $this->account(900050, 1001);
+        PatreonAccount::forceCreate(['battlenet_accounts_id' => $user->battlenet_accounts_id, 'patreon_id' => 'patreon-flair', 'site_flair' => 1, 'ad_free' => 1]);
+
+        $this->assertSame(['adFree' => true, 'siteFlair' => true, 'voidEye' => false], $this->flairSession($user));
+    }
+
+    public function test_the_ad_free_override_and_the_eyes_time_give_ad_free_but_not_the_star(): void
+    {
+        $override = $this->account(900051, 1002);
+        $override->forceFill(['flair_adfree_override' => 1])->save();
+        $this->assertSame(['adFree' => true, 'siteFlair' => false, 'voidEye' => false], $this->flairSession($override));
+
+        $eye = $this->account(900052, 1003);
+        $this->eyeFlair($eye, now()->addMonth()->toDateTimeString());
+        $this->assertSame(['adFree' => true, 'siteFlair' => false, 'voidEye' => true], $this->flairSession($eye));
+    }
+
+    public function test_the_eye_stays_after_its_ad_free_time_runs_out(): void
+    {
+        $user = $this->account(900053, 1004);
+        $this->eyeFlair($user, now()->subDay()->toDateTimeString());
+
+        $this->assertSame(['adFree' => false, 'siteFlair' => false, 'voidEye' => true], $this->flairSession($user));
+    }
+
+    public function test_the_settings_page_offers_only_the_borders_the_account_has(): void
+    {
+        $borders = fn (BattlenetAccount $user) => $this->actingAs($user)->get('/Profile/Settings')->assertOk()->viewData('availableBorders');
+
+        $this->assertSame([], $borders($this->account(900054, 1005)));
+
+        $eye = $this->account(900055, 1006);
+        $this->eyeFlair($eye, null);
+        $this->assertSame(['void_eye'], $borders($eye));
+
+        // The owner's own account, with a Patreon subscription that has the star
+        $owner = $this->account(900056, self::PLAYER_BLIZZ_ID);
+        PatreonAccount::forceCreate(['battlenet_accounts_id' => $owner->battlenet_accounts_id, 'patreon_id' => 'patreon-owner', 'site_flair' => 1, 'ad_free' => 1]);
+        $this->assertSame(['owner', 'patreon'], $borders($owner));
+
+        // Ad-free through the override alone isn't a Patreon border
+        $override = $this->account(900057, 1007);
+        $override->forceFill(['flair_adfree_override' => 1])->save();
+        $this->assertSame([], $borders($override));
     }
 
     // Production-only rules
