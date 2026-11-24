@@ -1,6 +1,7 @@
 {
     "first_win_rate": 0,
     "second_win_rate": 100,
+    "games_played": 0,
     "data": {
         "1": [
             {

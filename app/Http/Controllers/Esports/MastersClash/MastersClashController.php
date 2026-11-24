@@ -44,6 +44,6 @@ class MastersClashController extends Controller
 
         $season = $request['season'];
 
-        return MastersClashTeam::where('season', $request['season'])->get();
+        return MastersClashTeam::where('season', $request['season'])->orderBy('team_name')->get();
     }
 }
