@@ -34,7 +34,11 @@
             </template>
           </span>
         </span>
-        <basil-icon name="arrow" class="rotate-90 ml-auto shrink-0 text-xs transition-transform" :class="{ '-rotate-90': showOptions }"></basil-icon>
+        <!-- Clears the filter without opening it -->
+        <button v-if="clearable" type="button" class="ml-auto shrink-0 w-5 h-5 -my-1 rounded-full flex items-center justify-center text-subtext hover:text-white hover:bg-surface-2 transition-colors" :aria-label="$t('Clear')" :title="$t('Clear')" @click.stop="clearSelection">
+          <basil-icon name="cross" class="text-[0.625rem]"></basil-icon>
+        </button>
+        <basil-icon name="arrow" :class="['rotate-90 shrink-0 text-xs transition-transform', { 'ml-auto': !clearable, '-rotate-90': showOptions }]"></basil-icon>
       </span>
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
@@ -48,7 +52,7 @@
           ></tab-button>
         </div>
         <!-- Heading checkboxes stand in for Select All -->
-        <label v-if="!headings && !groupbyyear" for="select-all" class="whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded-control hover:bg-surface-4 transition-colors cursor-pointer">
+        <label v-if="!headings && !groupbyyear" for="select-all" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded-control hover:bg-surface-4 transition-colors cursor-pointer">
           <input 
           type="checkbox" 
           id="select-all" 
@@ -61,7 +65,7 @@
         <!-- pr-3 keeps the longest option clear of the scrollbar -->
         <div class="max-h-80 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable] pr-1 flex flex-col gap-1">
           <template v-for="row in rows" :key="row.key">
-          <label v-if="row.heading" :for="row.key" class="whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded-control hover:bg-surface-4 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !row.codes.some(code => isSelectable(code)) }]">
+          <label v-if="row.heading" :for="row.key" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded-control hover:bg-surface-4 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !row.codes.some(code => isSelectable(code)) }]">
             <input
             type="checkbox"
             :id="row.key"
@@ -73,7 +77,7 @@
             >
             <span class="text-sm font-bold text-white">{{ $t(row.name) }}</span>
           </label>
-          <label v-else :for="row.value.code" class="whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded-control hover:bg-surface-4 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !isSelectable(row.value.code) }]">
+          <label v-else :for="row.value.code" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded-control hover:bg-surface-4 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !isSelectable(row.value.code) }]">
             <input
             type="checkbox"
             :id="row.value.code"
@@ -150,6 +154,14 @@ const RANK_INFO = "Heroes Profile Rank is based on a custom MMR algorithm develo
       document.removeEventListener("click", this.handleClickOutside);
     },
     computed: {
+      // Something picked (for Game Type, anything short of every type, since clearing it picks them all).
+      // Emptying Timeframes is allowed: the box turns red and Filter waits for a pick
+      clearable() {
+        if (this.text === 'Game Type') {
+          return this.selectedOptions.length < this.selectableValues.length;
+        }
+        return this.selectedOptions.length > 0;
+      },
       rankInfo() {
         return RANK_INFO;
       },
@@ -275,6 +287,10 @@ const RANK_INFO = "Heroes Profile Rank is based on a custom MMR algorithm develo
         // Nothing picked yet, so any heading's options are allowed
         const allowed = this.selectedOptions.length ? row.codes.filter(code => this.isSelectable(code)) : row.codes;
         this.selectedOptions = [...this.selectedOptions, ...allowed.filter(code => !this.selectedOptions.includes(code))];
+      },
+      // Game Type has to keep a pick, so clearing it means every game type; the rest empty out
+      clearSelection() {
+        this.selectedOptions = this.text === 'Game Type' ? this.selectableValues.map(value => value.code) : [];
       },
       toggleAll() {
         let selectable = this.selectableValues;

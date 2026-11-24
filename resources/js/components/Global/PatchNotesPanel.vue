@@ -3,7 +3,7 @@
   <panel-box :class="['w-full max-w-[93.75rem] mx-auto mb-4 md:!pt-4', { 'md:!pb-4 cursor-pointer': !open }]" @click="!open && toggle()">
     <!-- The bar, as in the redesign: title and patch chip, the patch date under them, the legend, then Show/Hide -->
     <!-- Open, a click on the bar's empty space closes it; closed, the whole card opens it -->
-    <div class="flex flex-wrap items-center gap-4" @click="open && !$event.target.closest('h3, span, button, a') && toggle()">
+    <div class="flex flex-wrap items-center gap-4" @click.stop="barClicked">
       <div class="flex-1 min-w-0 flex flex-col gap-1">
         <div class="flex flex-wrap items-center gap-3">
           <h3 class="text-2xl font-bold">{{ $t('Patch Notes') }}</h3>
@@ -241,6 +241,13 @@ export default {
     },
   },
   methods: {
+    // Closed, anywhere on the bar opens it; open, only its empty space closes it. Stopped here so the
+    // card's own open-on-click doesn't reopen it in the same click
+    barClicked(event) {
+      if (!this.open || !event.target.closest('h3, span, button, a')) {
+        this.toggle();
+      }
+    },
     toggle() {
       this.open = !this.open;
       if (this.open && this.loadedVersion !== this.version) {

@@ -153,7 +153,8 @@
             <div v-for="(row, index) in draftRows" :key="index" :class="['flex flex-col items-center gap-1.5 rounded bg-surface-1 border-b-4 px-1 pt-2 pb-2.5', row.team === null ? 'border-gray-dark' : data.winner == row.team ? 'border-win' : 'border-loss']">
               <span class="text-xs text-subtext">{{ index + 1 }}</span>
               <hero-image-wrapper v-if="row.hero !== 'No Pick'" :hero="row.hero" size="medium" :class="{ 'opacity-40 grayscale': row.type == 0 }"></hero-image-wrapper>
-              <round-image v-else size="medium" :image="'/images/talents/no-image.png'"><h2>{{ $t('No Pick') }}</h2></round-image>
+              <!-- A skipped ban or pick: an empty grey slot the portraits' size -->
+              <span v-else class="w-16 h-16 rounded-full bg-surface-3" :title="row.type == 0 ? $t('No Ban') : $t('No Pick')"></span>
               <span class="text-[0.625rem] font-bold uppercase">{{ row.type == 0 ? $t('Ban') : $t('Pick') }}</span>
             </div>
           </div>
