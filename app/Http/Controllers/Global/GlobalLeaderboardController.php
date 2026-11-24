@@ -25,6 +25,9 @@ use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use App\Rules\StackSizeInputValidation;
 use App\Rules\TierInputByIDValidation;
+use App\Services\GlobalQueryService;
+use App\Support\GlobalCacheFreshness;
+use App\Support\GlobalCacheWindow;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -48,6 +51,16 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
     private const REAL_RANK_LEAGUES = [1 => 'bronze', 2 => 'silver', 3 => 'gold', 4 => 'platinum', 5 => 'diamond', 6 => 'master'];
 
     private const REAL_RANK_LEAGUE_SIZE = 500;
+
+    // The rank board's cache: kept a week, refreshed in the background once older than 10 minutes
+    // (a past season's once a day; late uploads still add reads to it). Bump when the rows change shape.
+    private const REAL_RANK_CACHE_VERSION = 2;
+
+    private const REAL_RANK_CACHE_TTL = 604800;
+
+    private const REAL_RANK_FRESH_CURRENT = 600;
+
+    private const REAL_RANK_FRESH_PAST = 86400;
 
     public function show(Request $request)
     {
@@ -303,111 +316,31 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             return [];
         }
 
-        // The Player leaderboard's requirement: 5 games per week of the season so far (a past season's full length)
-        $weeks = $seasonDates->id == SeasonDate::max('id')
-            ? $this->globalDataService->getWeeksSinceSeasonStart()
-            : max(1, (int) round((int) Carbon::parse($seasonDates->start_date)->diffInDays(Carbon::parse($seasonDates->end_date), absolute: true) / 7));
-        $minGames = $weeks * 5;
+        $minGames = $this->realRankMinGames($seasonDates);
 
-        $build = function () use ($seasonDates, $region, $minGames) {
-            $periods = BattletagRealRank::query()->toBase()
-                ->where('season', $seasonDates->id)
-                ->when($region, fn ($query) => $query->where('region', $region))
-                ->select('player_id', 'blizz_id', 'region', 'league_tier', 'division', 'grandmaster', 'ladder_position', 'unranked', 'read_count')
-                ->selectRaw('ROW_NUMBER() OVER (PARTITION BY blizz_id, region ORDER BY last_game_date DESC) AS row_num');
-
-            // Each player's latest rank this season; unranked reads don't place anyone. Battletags come after
-            // the trim below: looking them up for every ranked player was most of the board's build time.
-            $latest = DB::connection('heroesprofile')->query()
-                ->fromSub($periods, 'periods')
-                ->where('periods.row_num', 1)
-                ->where('periods.unranked', 0)
-                ->whereNotNull('periods.league_tier')
-                ->get(['periods.player_id', 'periods.blizz_id', 'periods.region', 'periods.league_tier', 'periods.division', 'periods.grandmaster', 'periods.ladder_position', 'periods.read_count'])
-                ->map(fn ($period) => [
-                    'player_id' => (int) $period->player_id,
-                    'blizz_id' => (int) $period->blizz_id,
-                    'region' => (int) $period->region,
-                    'league_tier' => (int) $period->league_tier,
-                    'grandmaster' => (bool) $period->grandmaster,
-                    'division' => $period->division === null ? null : (int) $period->division,
-                    'ladder_position' => $period->ladder_position === null ? null : (int) $period->ladder_position,
-                    'read_count' => (int) $period->read_count,
-                ]);
-
-            // League and division come before games in board order, so only the divisions that reach each
-            // league's top 500 need games. Restricted accounts don't count toward it; the board drops them per viewer.
-            $restricted = $this->globalDataService->restrictedAccountKeys();
-            $latest = $latest->groupBy('league_tier')
-                ->flatMap(function ($league) use ($restricted) {
-                    $shown = 0;
-
-                    return $league->groupBy(fn ($period) => $period['grandmaster'] ? -1 : ($period['division'] ?? 0))
-                        ->sortKeys()
-                        ->takeWhile(function ($division) use (&$shown, $restricted) {
-                            $reached = $shown >= self::REAL_RANK_LEAGUE_SIZE;
-                            $shown += $division->reject(fn ($period) => isset($restricted[$period['blizz_id'].'|'.$period['region']]))->count();
-
-                            return ! $reached;
-                        })
-                        ->collapse();
-                })
-                ->values();
-
-            $battletags = collect();
-            foreach ($latest->pluck('player_id')->unique()->chunk(1000) as $playerIds) {
-                $battletags = $battletags->union(DB::connection('heroesprofile')->table('battletags')
-                    ->whereIn('player_id', $playerIds->values())
-                    ->pluck('battletag', 'player_id'));
-            }
-            // As the old join: no battletag row, no place on the board
-            $latest = $latest->filter(fn ($period) => isset($battletags[$period['player_id']]))
-                ->map(fn ($period) => ['battletag' => $battletags[$period['player_id']]] + $period)
-                ->values();
-
-            // This season's Storm League games, every upload counted
-            $playerType = $this->globalDataService->getMMRTypeValue('player');
-            $games = collect();
-            foreach ($latest->pluck('blizz_id')->unique()->chunk(1000) as $blizzIds) {
-                $games = $games->concat(MasterGamesPlayedData::query()
-                    ->where('type_value', $playerType)
-                    ->where('stack_size', 0)
-                    ->where('season', $seasonDates->id)
-                    ->where('game_type', self::STORM_LEAGUE)
-                    ->whereIn('blizz_id', $blizzIds->values())
-                    ->get(['blizz_id', 'region', 'win', 'loss']));
-            }
-            $games = $games->keyBy(fn ($row) => $row->blizz_id.'|'.$row->region);
-
-            return $latest->map(function ($period) use ($games, $minGames) {
-                $record = $games->get($period['blizz_id'].'|'.$period['region']);
-                $wins = (int) ($record->win ?? 0);
-                $gamesPlayed = $wins + (int) ($record->loss ?? 0);
-
-                return [
-                    'battletag' => $period['battletag'],
-                    'blizz_id' => $period['blizz_id'],
-                    'region' => $period['region'],
-                    'league' => $period['grandmaster'] ? 'grandmaster' : self::REAL_RANK_LEAGUES[$period['league_tier']],
-                    'league_tier' => $period['league_tier'],
-                    'grandmaster' => $period['grandmaster'],
-                    'division' => $period['division'],
-                    'ladder_position' => $period['ladder_position'],
-                    'read_count' => $period['read_count'],
-                    'games_played' => $gamesPlayed,
-                    'win_rate' => $gamesPlayed > 0 ? round($wins / $gamesPlayed * 100, 2) : null,
-                    'eligible' => $gamesPlayed >= $minGames,
-                ];
-            })
-                ->sort(fn ($a, $b) => $this->compareRealRanks($a, $b))
-                ->values()
-                ->all();
-        };
+        // Built once per season and region, then refreshed in the background (Cloud Tasks) once it's
+        // stale, so visitors get the cached board instead of waiting for a rebuild
+        $cacheKey = 'real_rank_leaderboard|v'.self::REAL_RANK_CACHE_VERSION.'|'.$season.'|'.$region;
+        $parameters = ['season' => (int) $season, 'region' => $region];
+        $window = $seasonDates->id == SeasonDate::max('id')
+            ? new GlobalCacheWindow(self::REAL_RANK_CACHE_TTL, self::REAL_RANK_FRESH_CURRENT)
+            : new GlobalCacheWindow(self::REAL_RANK_CACHE_TTL, self::REAL_RANK_FRESH_PAST);
+        $cache = Cache::store('database');
 
         // Local shares prod's cache table, so only production caches
-        $rows = $this->globalDataService->usesProductionCaching()
-            ? Cache::remember('real_rank_leaderboard|'.$season.'|'.$region, 600, $build)
-            : $build();
+        $rows = $this->globalDataService->usesProductionCaching() ? $cache->get($cacheKey) : null;
+        $stale = $rows !== null && GlobalCacheFreshness::isStale($cacheKey, $window);
+
+        if ($rows === null || ($stale && ! $this->globalDataService->isGlobalAsyncEnabled())) {
+            $rows = $this->executeRealRankBoard(new Request($parameters));
+
+            if ($this->globalDataService->usesProductionCaching()) {
+                $cache->put($cacheKey, $rows, $window->ttl);
+                GlobalCacheFreshness::stamp($cacheKey, $window->ttl);
+            }
+        } elseif ($stale) {
+            app(GlobalQueryService::class)->dispatchIfNotPending($cacheKey, self::class, 'executeRealRankBoard', $parameters, $window->ttl);
+        }
 
         $patreonAccounts = BattlenetAccount::without(['patreonAccount', 'userSettings'])
             ->whereHas('patreonAccount', fn ($query) => $query->where('site_flair', 1))
@@ -444,6 +377,123 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 ? $row['grandmaster']
                 : self::REAL_RANK_LEAGUES[$row['league_tier']] === $league))
             ->values();
+    }
+
+    /**
+     * The SL Rank board's rows for one season and region, before the per-viewer steps (hidden accounts,
+     * flair, league filter). Public: the background refresh calls it.
+     */
+    public function executeRealRankBoard(Request $request)
+    {
+        $seasonDates = SeasonDate::find($request['season']);
+        if (! $seasonDates) {
+            return [];
+        }
+        $region = $request['region'];
+        $minGames = $this->realRankMinGames($seasonDates);
+
+        $periods = BattletagRealRank::query()->toBase()
+            ->where('season', $seasonDates->id)
+            ->when($region, fn ($query) => $query->where('region', $region))
+            ->select('player_id', 'blizz_id', 'region', 'league_tier', 'division', 'grandmaster', 'ladder_position', 'unranked', 'read_count')
+            ->selectRaw('ROW_NUMBER() OVER (PARTITION BY blizz_id, region ORDER BY last_game_date DESC) AS row_num');
+
+        // Each player's latest rank this season; unranked reads don't place anyone. Battletags come after
+        // the trim below: looking them up for every ranked player was most of the board's build time.
+        $latest = DB::connection('heroesprofile')->query()
+            ->fromSub($periods, 'periods')
+            ->where('periods.row_num', 1)
+            ->where('periods.unranked', 0)
+            ->whereNotNull('periods.league_tier')
+            ->get(['periods.player_id', 'periods.blizz_id', 'periods.region', 'periods.league_tier', 'periods.division', 'periods.grandmaster', 'periods.ladder_position', 'periods.read_count'])
+            ->map(fn ($period) => [
+                'player_id' => (int) $period->player_id,
+                'blizz_id' => (int) $period->blizz_id,
+                'region' => (int) $period->region,
+                'league_tier' => (int) $period->league_tier,
+                'grandmaster' => (bool) $period->grandmaster,
+                'division' => $period->division === null ? null : (int) $period->division,
+                'ladder_position' => $period->ladder_position === null ? null : (int) $period->ladder_position,
+                'read_count' => (int) $period->read_count,
+            ]);
+
+        // League and division come before games in board order, so only the divisions that reach each
+        // league's top 500 need games. Restricted accounts don't count toward it; the board drops them per viewer.
+        $restricted = $this->globalDataService->restrictedAccountKeys();
+        $latest = $latest->groupBy('league_tier')
+            ->flatMap(function ($league) use ($restricted) {
+                $shown = 0;
+
+                return $league->groupBy(fn ($period) => $period['grandmaster'] ? -1 : ($period['division'] ?? 0))
+                    ->sortKeys()
+                    ->takeWhile(function ($division) use (&$shown, $restricted) {
+                        $reached = $shown >= self::REAL_RANK_LEAGUE_SIZE;
+                        $shown += $division->reject(fn ($period) => isset($restricted[$period['blizz_id'].'|'.$period['region']]))->count();
+
+                        return ! $reached;
+                    })
+                    ->collapse();
+            })
+            ->values();
+
+        $battletags = collect();
+        foreach ($latest->pluck('player_id')->unique()->chunk(1000) as $playerIds) {
+            $battletags = $battletags->union(DB::connection('heroesprofile')->table('battletags')
+                ->whereIn('player_id', $playerIds->values())
+                ->pluck('battletag', 'player_id'));
+        }
+        // As the old join: no battletag row, no place on the board
+        $latest = $latest->filter(fn ($period) => isset($battletags[$period['player_id']]))
+            ->map(fn ($period) => ['battletag' => $battletags[$period['player_id']]] + $period)
+            ->values();
+
+        // This season's Storm League games, every upload counted
+        $playerType = $this->globalDataService->getMMRTypeValue('player');
+        $games = collect();
+        foreach ($latest->pluck('blizz_id')->unique()->chunk(1000) as $blizzIds) {
+            $games = $games->concat(MasterGamesPlayedData::query()
+                ->where('type_value', $playerType)
+                ->where('stack_size', 0)
+                ->where('season', $seasonDates->id)
+                ->where('game_type', self::STORM_LEAGUE)
+                ->whereIn('blizz_id', $blizzIds->values())
+                ->get(['blizz_id', 'region', 'win', 'loss']));
+        }
+        $games = $games->keyBy(fn ($row) => $row->blizz_id.'|'.$row->region);
+
+        return $latest->map(function ($period) use ($games, $minGames) {
+            $record = $games->get($period['blizz_id'].'|'.$period['region']);
+            $wins = (int) ($record->win ?? 0);
+            $gamesPlayed = $wins + (int) ($record->loss ?? 0);
+
+            return [
+                'battletag' => $period['battletag'],
+                'blizz_id' => $period['blizz_id'],
+                'region' => $period['region'],
+                'league' => $period['grandmaster'] ? 'grandmaster' : self::REAL_RANK_LEAGUES[$period['league_tier']],
+                'league_tier' => $period['league_tier'],
+                'grandmaster' => $period['grandmaster'],
+                'division' => $period['division'],
+                'ladder_position' => $period['ladder_position'],
+                'read_count' => $period['read_count'],
+                'games_played' => $gamesPlayed,
+                'win_rate' => $gamesPlayed > 0 ? round($wins / $gamesPlayed * 100, 2) : null,
+                'eligible' => $gamesPlayed >= $minGames,
+            ];
+        })
+            ->sort(fn ($a, $b) => $this->compareRealRanks($a, $b))
+            ->values()
+            ->all();
+    }
+
+    // The Player leaderboard's requirement: 5 games per week of the season so far (a past season's full length)
+    private function realRankMinGames(SeasonDate $seasonDates): int
+    {
+        $weeks = $seasonDates->id == SeasonDate::max('id')
+            ? $this->globalDataService->getWeeksSinceSeasonStart()
+            : max(1, (int) round((int) Carbon::parse($seasonDates->start_date)->diffInDays(Carbon::parse($seasonDates->end_date), absolute: true) / 7));
+
+        return $weeks * 5;
     }
 
     /**
