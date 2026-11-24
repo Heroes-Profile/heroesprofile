@@ -3207,6 +3207,9 @@
                                         "second_win_rate": {
                                             "type": "integer"
                                         },
+                                        "games_played": {
+                                            "type": "integer"
+                                        },
                                         "data": {
                                             "type": "object",
                                             "properties": {
@@ -4021,6 +4024,7 @@
                                     "required": [
                                         "first_win_rate",
                                         "second_win_rate",
+                                        "games_played",
                                         "data"
                                     ]
                                 }

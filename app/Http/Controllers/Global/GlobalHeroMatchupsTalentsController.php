@@ -20,7 +20,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
     public const MINIMUM_PATCH = '2.55.12.94786';
 
     // Bump when the cached data changes shape or maths, so old entries are skipped.
-    private const MATCHUP_TALENTS_CACHE_VERSION = 1;
+    private const MATCHUP_TALENTS_CACHE_VERSION = 2;
 
     public function show(Request $request, $hero = null, $allyenemy = null)
     {
@@ -157,7 +157,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             $allyEnemy = $temp;
         }
 
-        $firstHeroWinRateData = $this->calculateWinRateData($hero, $allyEnemy, $type, $gameVersionIDs, $gameType, $leagueTier, $gameMap);
+        [$firstHeroWinRateData, $matchupGames] = $this->calculateWinRateData($hero, $allyEnemy, $type, $gameVersionIDs, $gameType, $leagueTier, $gameMap);
         $secondHeroWinRate = $type == 'Ally' ? round($firstHeroWinRateData, 2) : round(100 - $firstHeroWinRateData, 2);
         $firstHeroWinRateData = round($firstHeroWinRateData, 2);
 
@@ -222,9 +222,10 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             })->sortBy('sort')->values()->toArray();
         });
 
-        return ['first_win_rate' => $firstHeroWinRateData, 'second_win_rate' => $secondHeroWinRate, 'data' => $data];
+        return ['first_win_rate' => $firstHeroWinRateData, 'second_win_rate' => $secondHeroWinRate, 'games_played' => $matchupGames, 'data' => $data];
     }
 
+    // [win rate, games] for the hero in this matchup
     private function calculateWinRateData($hero, $allyEnemy, $type, $gameVersionIDs, $gameType, $leagueTier, $gameMap)
     {
         $model = $type === 'Ally' ? GlobalHeromatchupsAlly::class : GlobalHeromatchupsEnemy::class;
@@ -260,6 +261,6 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             $winRate = 0;
         }
 
-        return $winRate;
+        return [$winRate, (int) ($wins + $losses)];
     }
 }
