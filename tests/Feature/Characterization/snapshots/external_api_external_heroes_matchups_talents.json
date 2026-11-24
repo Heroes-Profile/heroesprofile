@@ -4,6 +4,7 @@
     "json": {
         "first_win_rate": 33.73,
         "second_win_rate": 66.27,
+        "games_played": 169,
         "data": {
             "1": [
                 {
