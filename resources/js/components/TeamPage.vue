@@ -30,7 +30,9 @@
       <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
         <div v-for="contributor in contributors" :key="contributor.name" class="rounded bg-surface-1 px-5 py-4 flex flex-col gap-1">
           <h3 class="text-lg font-bold">{{ contributor.name }}</h3>
-          <span class="font-medium text-teal">{{ $t(contributor.contribution) }}</span>
+          <!-- The chevron is held to the last word, so it never wraps onto a line of its own -->
+          <a v-if="contributor.link" :href="contributor.link" target="_blank" rel="noopener" class="group/bt font-medium text-teal"><span class="group-hover/bt:underline">{{ leadWords($t(contributor.contribution)) }}</span><span class="whitespace-nowrap"><span class="group-hover/bt:underline">{{ lastWord($t(contributor.contribution)) }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span></a>
+          <span v-else class="font-medium text-teal">{{ $t(contributor.contribution) }}</span>
           <span class="text-sm text-subtext">{{ period(contributor) }}</span>
           <span v-if="contributor.discord" class="inline-flex items-center gap-2 text-sm mt-2" :title="$t('Discord')"><i class="fab fa-discord w-4 text-center text-teal"></i>{{ contributor.discord }}</span>
         </div>
@@ -47,6 +49,14 @@ export default {
     contributors: { type: Array, default: () => [] },
   },
   methods: {
+    // A line split before its last word ("… Heroes Profile " and "team")
+    leadWords(text) {
+      const index = text.lastIndexOf(' ');
+      return index === -1 ? '' : text.slice(0, index + 1);
+    },
+    lastWord(text) {
+      return text.slice(text.lastIndexOf(' ') + 1);
+    },
     // "June 2018 – Present", "October – December 2026" or "October 2026", the months in the page's language
     period(member) {
       if (member.end === member.start) {

@@ -53,11 +53,13 @@ return [
     //   name, discord - as above
     //   contribution  - what they did, one short line
     //   start, end    - when, 'YYYY-MM' (the same month twice for one month)
+    //   link          - a page about what they did, or null; the contribution line links to it
     // Bluray is in both lists for now, to compare; remove the one they don't prefer.
     'contributors' => [
         [
             'name' => 'Bluray',
             'contribution' => 'Designed the 2026 site redesign in collaboration with the Heroes Profile team',
+            'link' => '/Redesign/2026',
             'start' => '2026-10',
             'end' => '2026-12',
             'discord' => 'blurayy',

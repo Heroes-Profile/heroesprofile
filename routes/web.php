@@ -62,6 +62,7 @@ use App\Http\Controllers\PollController;
 use App\Http\Controllers\PreMatchController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RedesignController;
 use App\Http\Controllers\ReplayDownloadController;
 use App\Http\Controllers\SingleMatchController;
 use App\Http\Controllers\TeamController;
@@ -112,6 +113,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/Privacy/Policy', [PrivacyPolicyController::class, 'show']);
     Route::get('/Terms/Of/Service', [TermsOfServiceController::class, 'show']);
     Route::get('/Team', [TeamController::class, 'show']);
+    Route::get('/Redesign/2026', [RedesignController::class, 'show']);
 
     Route::get('/FAQ', [FaqController::class, 'show']);
     Route::get('/Event/Xalatath', [XalatathRecapController::class, 'show']);
