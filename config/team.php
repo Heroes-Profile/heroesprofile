@@ -41,18 +41,6 @@ return [
             'reddit' => 'heroesprofile',
             'discord' => null,
         ],
-        [
-            'name' => 'Bluray',
-            'company' => 'Heroes Profile',
-            'role' => 'Design',
-            'start' => '2026-10',
-            'end' => null,
-            'bio' => 'Bio for Bluray goes here.',
-            'peak_rank' => ['league' => 'grandmaster', 'ladder_position' => 1],
-            'email' => null,
-            'reddit' => null,
-            'discord' => 'blurayy',
-        ],
     ],
 
     // People who helped with a one-off piece of work, under Contributors below the team.
@@ -60,11 +48,10 @@ return [
     //   contribution  - what they did, one short line
     //   start, end    - when, 'YYYY-MM' (the same month twice for one month)
     //   link          - a page about what they did, or null; the contribution line links to it
-    // Bluray is in both lists for now, to compare; remove the one they don't prefer.
     'contributors' => [
         [
             'name' => 'Bluray',
-            'contribution' => 'Designed the 2026 site redesign in collaboration with the Heroes Profile team',
+            'contribution' => 'Designed the 2026 site redesign',
             'link' => '/Redesign/2026',
             'start' => '2026-10',
             'end' => '2026-12',

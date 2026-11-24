@@ -1009,7 +1009,7 @@
     "Description changed :project_updated_at, last approved :approved_at": "描述於 :project_updated_at 變更，上次核准於 :approved_at",
     "Description last edited :project_updated_at": "描述最後編輯於 :project_updated_at",
     "Design": "設計",
-    "Designed the 2026 site redesign in collaboration with the Heroes Profile team": "與 Heroes Profile 團隊合作設計了 2026 年網站改版",
+    "Designed the 2026 site redesign": "設計了 2026 年網站改版",
     "Detailed endpoint limits": "詳細端點限制",
     "Detailed stats per player, grouped by category.": "每位玩家的詳細統計，依類別分組。",
     "Develop Branch Commits": "develop 分支提交",
