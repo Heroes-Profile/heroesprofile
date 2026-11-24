@@ -1379,17 +1379,21 @@ class GlobalDataService
         return SeasonDate::where('start_date', '<=', $date)->where('end_date', '>', $date)->value('id');
     }
 
+    /**
+     * Whether the filters open with their advanced filters showing: the account setting, else the cookie
+     * the filters' Show/Hide advanced filters toggle sets (like talentbuilderstyle), else hidden.
+     */
     public function getAdvancedFilterShowDefault()
     {
-        if (Auth::check()) {
-            $user = Auth::user();
+        $setting = Auth::check()
+            ? Auth::user()->userSettings->firstWhere('setting', 'advancedfiltering')
+            : null;
 
-            $advancedfiltering = $user->userSettings->firstWhere('setting', 'advancedfiltering');
-
-            return $advancedfiltering && $advancedfiltering->value;
+        if ($setting) {
+            return (bool) $setting->value;
         }
 
-        return false;
+        return request()->cookie('advancedfiltering') === 'true';
     }
 
     public function getGameTypeDefault($type)

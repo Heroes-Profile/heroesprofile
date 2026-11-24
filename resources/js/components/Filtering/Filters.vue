@@ -484,7 +484,7 @@
       </div>
       <div class="flex max-md:mb-auto" :class="compact && $slots['compact-footer'] ? 'justify-between items-start' : 'justify-end'">
         <div v-if="compact && $slots['compact-footer']" class="mt-2"><slot name="compact-footer"></slot></div>
-        <button class="m-l-auto underline" :class="{ 'text-sm mt-2': compact }" v-if="!hideadvancedfilteringbutton" :aria-expanded="!!toggleExtraFilters" @click="toggleExtraFilters = !toggleExtraFilters" >{{toggleButtonText}}</button>
+        <button class="m-l-auto underline" :class="{ 'text-sm mt-2': compact }" v-if="!hideadvancedfilteringbutton" :aria-expanded="!!toggleExtraFilters" @click="setAdvancedFilters(!toggleExtraFilters)" >{{toggleButtonText}}</button>
         <round-image v-if="advancedfiltersinfo && !hideadvancedfilteringbutton" class="ml-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
           <p class="max-sm:text-xs">{{ advancedfiltersinfo }}</p>
         </round-image>
@@ -494,6 +494,7 @@
 </template>
 
 <script>
+  import Cookies from 'js-cookie';
   import { earliestPatchDate } from '../../utils/patchAge';
 
   export default {
@@ -938,6 +939,13 @@
       }
     },
     methods: {
+      // Show/Hide advanced filters, remembered for the next page: a cookie, and the account setting when logged in
+      // (a guest's save is refused by the server, harmlessly)
+      setAdvancedFilters(show) {
+        this.toggleExtraFilters = show;
+        Cookies.set('advancedfiltering', show ? 'true' : 'false', { expires: 365, path: '/' });
+        this.$axios.post('/api/v1/profile/save/settings', { advancedfiltering: show ? 1 : 0 }).catch(() => {});
+      },
       // Patch groups carry no date of their own; they date from their earliest build.
       withPatchDates(groups){
         return (groups || []).map(group => ({
