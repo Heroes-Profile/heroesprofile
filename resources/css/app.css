@@ -487,17 +487,6 @@ input[type="radio"].form-checkbox:checked{
   z-index: 1;
   background-color: inherit;
 }
-/* Light mode's tables are light grey under a teal header, so their loading placeholders are too: the table skeleton
-   takes the same colours, and grey blocks in a light table are a mid grey rather than the dark one */
-.light-mode .table-skeleton{
-  @apply bg-gray-light rounded-control overflow-hidden;
-}
-.light-mode .table-skeleton-head{
-  @apply bg-teal border-b-0;
-}
-.light-mode .table-skeleton-stripe{
-  @apply bg-gray-xlight;
-}
 /* Words in a loading skeleton: the text keeps its exact size but is hidden under a grey block, like skeleton-box */
 .skeleton-text{
   @apply bg-surface-3 rounded animate-pulse;
@@ -511,26 +500,11 @@ input[type="radio"].form-checkbox:checked{
 .skeleton-text img{
   opacity: 0;
 }
-.light-mode .table-skeleton .skeleton-box,
-.light-mode table .skeleton-box,
-.light-mode table .skeleton-text{
-  @apply bg-gray-md;
-}
-.light-mode .table-skeleton-head .skeleton-box,
-.light-mode thead .skeleton-text{
-  @apply bg-white/40;
-}
-/* The teal search glass goes white on a teal header: light mode's headers, and a sorted column's in either mode */
-th.bg-teal .search-input-glass,
-.light-mode thead .search-input-glass{
+/* The teal search glass goes white on a sorted column's teal header */
+th.bg-teal .search-input-glass{
   @apply text-white hover:text-white/75;
 }
-/* Light mode only lightens tables, so the near-white header text meant for dark panels (the clickable values in
-   Advanced Stats and other table links) takes the table's own colour: black on rows, white on the teal header */
-.light-mode table .text-header{
-  color: inherit;
-}
-.dark-mode th, .light-mode th{
+.dark-mode th{
   @apply text-base font-medium;
 }
 
@@ -826,11 +800,6 @@ div.phpdebugbar * {
 .standing-text a { text-decoration: underline; }
 .standing-editor .ProseMirror { min-height: 5rem; outline: none; }
 .standing-editor-expanded .ProseMirror { min-height: 100%; }
-
-/* Role glyphs are white; on light-mode tables they turn dark */
-.light-mode table .role-icon{
-  filter: invert(1);
-}
 
 /* A ban's portrait struck through in the banning team's colour (Drafter, Match Prediction) */
 .ban-strike-teal {

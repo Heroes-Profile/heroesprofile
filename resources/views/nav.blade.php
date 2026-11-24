@@ -238,8 +238,6 @@
                 </div>
 
 
-                <dark-mode-toggle id="nav-dark-mode-toggle" class="!flex items-center md:ml-4 max-md:my-3 max-md:mr-2" :darkmode="{{ json_encode(! empty($bladeGlobals['darkmode'])) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></dark-mode-toggle>
-
                 <language-picker id="nav-language-picker" :locale="'{{ app()->getLocale() }}'" :locales="{{ json_encode(config('app.supported_locales')) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></language-picker>
 
                 @if($isAuthenticated)

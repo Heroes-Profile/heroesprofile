@@ -688,23 +688,8 @@ class GlobalDataService
         });
     }
 
-    public function getDarkMode()
-    {
-        $darkModeCookie = request()->cookie('darkmode') === '1' ? '1' : '0';
-
-        if (Auth::check()) {
-            $darkmode = Auth::user()->userSettings->firstWhere('setting', 'darkmode');
-
-            return $darkmode ? $darkmode->value : $darkModeCookie;
-        }
-
-        return $darkModeCookie;
-    }
-
     public function getBladeGlobals()
     {
-        $darkModeValue = $this->getDarkMode();
-
         $regions = $this->getRegionIDtoString();
         $latestGame = $this->getLatestGameDate();
         $latestGameUtc = Carbon::parse($latestGame, 'UTC');
@@ -714,7 +699,6 @@ class GlobalDataService
 
         return [
             'regions' => $regions,
-            'darkmode' => $darkModeValue,
             'maxReplayID' => $this->calculateMaxReplayNumber(),
             'latestPatch' => $this->getLatestPatch(),
             'latestGameDate' => $latestGame,

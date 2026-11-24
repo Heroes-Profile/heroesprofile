@@ -7,14 +7,12 @@
             /* 4 => 'UNK', */
             5 => 'CN',
         ],
-        'darkmode' => request()->cookie('darkmode') === '1' ? 1 : 0,
         'heroes' => [],
         'maps' => [],
     ];
-    // The visitor's theme and the footer's patch and replay count, as on other pages. Left at the cookie / out of the footer if the lookup fails
+    // The footer's patch and replay count, as on other pages. Left out of the footer if the lookup fails
     try {
         $globalData = app(\App\Services\GlobalDataService::class);
-        $bladeGlobals['darkmode'] = (int) $globalData->getDarkMode();
         $bladeGlobals['maxReplayID'] = $globalData->calculateMaxReplayNumber();
         $bladeGlobals['latestPatch'] = $globalData->getLatestPatch();
     } catch (\Throwable $e) {

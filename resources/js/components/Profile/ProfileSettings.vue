@@ -21,13 +21,6 @@
           <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
             <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
               <div class="min-w-0">
-                <h4 class="font-medium">{{ $t('Table Style') }}</h4>
-                <p class="text-sm text-subtext">{{ $t('Color theme of statistics tables.') }}</p>
-              </div>
-              <tab-button class="shrink-0 self-start sm:self-auto" tab1text="Light" tab2text="Dark" :small="true" :ignoreclick="true" @tab-click="darkmodesetting" :overridedefaultside="darkmode"></tab-button>
-            </div>
-            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
-              <div class="min-w-0">
                 <h4 class="font-medium">{{ $t('Account Visibility') }}</h4>
                 <p class="text-sm text-subtext">{{ $t('Control whether your profile is visible to other users.') }}</p>
               </div>
@@ -254,12 +247,17 @@
               <img v-if="saveState === 'saving'" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
               {{ $t('Removing Patreon...') }}
             </span>
-            <span v-else-if="user.patreon_account" class="ml-auto self-start bg-teal px-3 py-1 rounded text-sm">{{ $t('Connected') }}</span>
           </template>
-          <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2 mt-2">
+          <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
+          <div class="min-w-0">
+            <h4 class="font-medium flex items-center gap-3">Battle.net <span class="bg-teal px-3 py-1 rounded text-sm font-normal">{{ $t('Connected') }}</span></h4>
+            <p class="text-sm text-subtext">{{ user.battletag }}</p>
+          </div>
+          <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
             <div class="min-w-0">
-              <h4 class="font-medium">Patreon</h4>
-              <p class="text-sm text-subtext">{{ $t('Link your Patreon account to unlock supporter features.') }}</p>
+              <h4 class="font-medium flex items-center gap-3">Patreon <span v-if="user.patreon_account" class="bg-teal px-3 py-1 rounded text-sm font-normal">{{ $t('Connected') }}</span></h4>
+              <p v-if="user.patreon_account" class="text-sm text-subtext">{{ patreonEmail }}</p>
+              <p v-else class="text-sm text-subtext">{{ $t('Link your Patreon account to unlock supporter features.') }}</p>
             </div>
             <div class="flex items-center gap-4 shrink-0 [&>a]:font-bold">
               <custom-button
@@ -282,6 +280,7 @@
                 @click="removePatreon()"
               ></custom-button>
             </div>
+          </div>
           </div>
         </panel-box>
     </div>
@@ -316,6 +315,7 @@ export default {
       type: Array,
       default: () => [],
     },
+    patreonEmail: { type: String, default: null },
   },
   data() {
     return {
@@ -339,7 +339,6 @@ export default {
       savemultigametype: null,
       advancedfiltering: null,
       talentBuildType: null,
-      darkmode: 'left',
       talentbuilderstyle: 'left',
       talentbuilderload: 'left',
       userLocale: this.locale,
@@ -363,7 +362,6 @@ export default {
     this.savemultigametype = this.usermultigametype;
     this.advancedfiltering = this.defaultAdvancedFiltering;
     this.talentBuildType = this.defaultBuildType;
-    this.darkmode = this.defaultDarkMode;
     this.talentbuilderstyle = this.defaultTalentBuilderStyle;
     this.talentbuilderload = this.user.user_settings.some(item => item.setting === 'talentbuilderload' && item.value === 'filter') ? 'right' : 'left';
     this.playerhistorytable = this.defaultPlayerhistorytable;
@@ -434,13 +432,6 @@ export default {
       }
       return 'false';
     },
-    defaultDarkMode() {
-      if (this.user.user_settings.length > 0) {
-        let setting = this.user.user_settings.find(item => item.setting === 'darkmode');
-        return (setting && setting.value == 1) ? 'right' : 'left';
-      }
-      return 'left';
-    },
     defaultTalentBuilderStyle() {
       if (this.user.user_settings.length > 0) {
         let setting = this.user.user_settings.find(item => item.setting === 'talentbuilderstyle');
@@ -487,7 +478,6 @@ export default {
       return this.withSaveState(() => this.postSettings());
     },
     async postSettings() {
-      let darkmodeinput = this.darkmode === 'right' ? true : false;
       let playerhistorytableinput = this.playerhistorytable === 'right' ? true : false;
 
       await this.$axios.post('/api/v1/profile/save/settings', {
@@ -498,7 +488,6 @@ export default {
         talentbuildtype: this.talentBuildType,
         talentbuilderstyle: this.talentbuilderstyle === 'right' ? 'horizontal' : 'vertical',
         talentbuilderload: this.talentbuilderload === 'right' ? 'filter' : 'auto',
-        darkmode: darkmodeinput,
         playerload: this.playerload,
         customgames: this.customgames,
         playerhistorytable: playerhistorytableinput,
@@ -556,10 +545,6 @@ export default {
           this.saveplayermultigametype = [...eventPayload.value];
         }
       }
-    },
-    darkmodesetting(side) {
-      this.darkmode = side;
-      this.saveSettings();
     },
     talentbuilderstylesetting(side) {
       this.talentbuilderstyle = side;

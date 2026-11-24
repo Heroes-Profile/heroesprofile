@@ -11,6 +11,7 @@
     :locales="{{ json_encode(config('app.supported_locales')) }}"
     :available-flair="{{ json_encode($availableFlair) }}"
     :available-borders="{{ json_encode($availableBorders) }}"
+    :patreon-email="{{ json_encode($patreonEmail) }}"
   >
   </profile-settings>
 @endsection

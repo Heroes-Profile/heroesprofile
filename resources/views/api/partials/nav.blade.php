@@ -78,7 +78,6 @@
         <custom-button class="font-semibold min-w-[10.3125rem]" :href="'/Api/Register'" :text="'Register'" :alt="'Register'"></custom-button>
       @endif
 
-      <dark-mode-toggle class="!flex items-center" :darkmode="{{ json_encode($darkmode) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></dark-mode-toggle>
       {{-- The site's language, the same picker and setting as the main site's nav --}}
       <language-picker :locale="'{{ app()->getLocale() }}'" :locales="{{ json_encode(config('app.supported_locales')) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></language-picker>
     </div>

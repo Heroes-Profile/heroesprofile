@@ -24,6 +24,8 @@ class ProfileController extends Controller
             'user' => $user,
             'filters' => $this->globalDataService->getFilterData(),
             'availableFlair' => $this->globalDataService->getAvailableFlair($user),
+            // Shown under Connections; hidden from the user JSON, so passed on its own
+            'patreonEmail' => $user->patreonAccount?->email,
             // Avatar borders this account can pick from; the flags come from CheckIfPatreonSupporter on this request
             'availableBorders' => array_keys(array_filter([
                 'owner' => $user->blizz_id == 67280 && $user->region == 1,
@@ -50,7 +52,6 @@ class ProfileController extends Controller
             'talentbuilderload' => 'nullable|in:auto,filter',
             'talentStatsLayout' => 'nullable|in:table,compact',
             'locale' => ['nullable', Rule::in(array_keys(config('app.supported_locales')))],
-            'darkmode' => 'nullable|boolean',
             'playerhistorytable' => 'nullable|boolean',
             'customgames' => 'nullable|boolean',
             'flair_hide_owner' => 'nullable|boolean',
@@ -170,15 +171,6 @@ class ProfileController extends Controller
             $user->userSettings()->updateOrCreate(
                 ['setting' => 'locale'],
                 ['value' => $request['locale']]
-            );
-        }
-
-        if (! is_null($request['darkmode'])) {
-            $darkmode = $request['darkmode'];
-
-            $user->userSettings()->updateOrCreate(
-                ['setting' => 'darkmode'],
-                ['value' => $darkmode]
             );
         }
 
