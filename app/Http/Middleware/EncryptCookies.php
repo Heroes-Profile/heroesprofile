@@ -24,6 +24,7 @@ class EncryptCookies extends Middleware
         'talentbuilderload',
         'playerhistorytable',
         'talentStatsLayout',
+        'advancedfiltering',
         'locale',
     ];
 }
