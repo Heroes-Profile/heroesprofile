@@ -41,7 +41,7 @@ return [
             'company' => 'Heroes Profile',
             'role' => 'Design',
             'start' => '2026-10',
-            'end' => '2026-12',
+            'end' => null,
             'bio' => 'Bio for Bluray goes here.',
             'email' => null,
             'reddit' => null,
