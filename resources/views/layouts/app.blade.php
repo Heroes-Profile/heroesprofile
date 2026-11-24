@@ -10,30 +10,18 @@
 
     gtag('config', 'G-XTN5LVP358');
     </script>
+    {{-- Read by resources/js/utils/adBlocker.js --}}
+    <script>
+      function setAdManagerState(state) {
+        window.adManagerState = state;
+        window.dispatchEvent(new Event('ad-manager-state'));
+      }
+    </script>
+
     {{-- Pages with @section('no_ads') (the error pages) load no ads at all --}}
     @sectionMissing('no_ads')
-    <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript" data-site-id="60f587eddd63d722e7e57bc1" data-mode="scan" async onerror="handleAdBlocker()"></script>
+    <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript" data-site-id="60f587eddd63d722e7e57bc1" data-mode="scan" async onload="setAdManagerState('loaded')" onerror="setAdManagerState('blocked')"></script>
     @endif
-
-    <script>
-      function handleAdBlocker() {
-        setCookie('ad-blocker', 'true', 1); // Set the cookie to expire after 1 day
-      }
-
-      function setCookie(name, value) {
-        var expires = '';
-        var minutes = 5; // Set the desired expiration time in minutes
-
-        if (minutes) {
-          var date = new Date();
-          date.setTime(date.getTime() + (minutes * 60 * 1000)); // Convert minutes to milliseconds
-          expires = '; expires=' + date.toUTCString();
-        }
-
-        document.cookie = name + '=' + value + expires + '; path=/; SameSite=None; Secure';
-      }
-
-    </script>
 
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">

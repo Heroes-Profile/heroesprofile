@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie';
+import { adBlocker, markAdBlocker } from '../../utils/adBlocker';
 
 export default {
   name: 'DynamicBannerAd',
@@ -18,7 +18,6 @@ export default {
   },
   data(){
     return {
-      detectedBlocker: false,
     }
   },
   created(){
@@ -56,8 +55,7 @@ export default {
           if (container) {
             const placement = container.querySelector('.vm-placement');
             if (!placement || !placement.hasChildNodes()) {
-              this.detectedBlocker = true;
-              sessionStorage.setItem('ad-blocker-detected', 'true');
+              markAdBlocker('empty');
             }
           }
         }, 3500);
@@ -66,7 +64,7 @@ export default {
   },
   computed: {
     adBlocker() {
-      return this.detectedBlocker || sessionStorage.getItem('ad-blocker-detected') === 'true' || Cookies.get('ad-blocker') == "true";
+      return adBlocker.value;
     },
   },
   watch: {
