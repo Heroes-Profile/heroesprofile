@@ -66,7 +66,8 @@
               <a v-for="item in card.heroes" :key="item.hero.id" :href="'/Global/Matchups/' + encodeURIComponent(item.hero.name) + currentQuery()" class="group/bt bg-surface-1 hover:bg-surface-2 transition-colors rounded-control px-2 pt-5 pb-5 flex flex-col items-center text-center min-w-0">
                 <hero-image-wrapper size="big" :hero="item.hero" :includehover="false"></hero-image-wrapper>
                 <span class="text-sm font-bold mt-1.5 truncate max-w-full group-hover/bt:underline">{{ $heroName(item.hero) }}</span>
-                <span :class="['text-xl font-bold mt-1.5 tabular-nums', card.valueClass]">{{ card.rate(item).toFixed(2) }}%</span>
+                <span :class="['text-xl font-bold mt-1.5 tabular-nums', card.valueClass]">{{ item.rate.toFixed(2) }}%</span>
+                <span :class="['text-xs mt-0.5 tabular-nums', item.difference >= 0 ? 'text-win' : 'text-loss']">{{ $t(':difference vs expected', { difference: (item.difference > 0 ? '+' : '') + item.difference.toFixed(2) }) }}</span>
                 <span class="text-xs text-subtext mt-1.5">{{ $t(card.games, { count: item.games_played.toLocaleString('en-US') }) }}</span>
               </a>
               <p v-if="!card.heroes.length" class="col-span-full text-sm text-subtext">{{ $t('No heroes with enough games for these filters.') }}</p>
@@ -74,7 +75,7 @@
           </panel-box>
         </div>
 
-        <panel-box :title="$t(':hero matchups', { hero: $heroName(selectedHero) })" :subtitle="$t('Base win rate of each hero vs. its win rate with :hero and against :hero · difference in brackets', { hero: $heroName(selectedHero) })" :divider="false">
+        <panel-box :title="$t(':hero matchups', { hero: $heroName(selectedHero) })" :subtitle="$t(':hero\'s win rate with and against each hero · in brackets, how that compares with what the other hero\'s own win rate would lead you to expect', { hero: $heroName(selectedHero) })" :divider="false">
           <!-- Phones have no room in the Hero heading; the search sits above the table there -->
           <search-input v-model="heroSearch" :placeholder="$t('Search hero')" class="md:hidden w-full"></search-input>
           <div id="table-container" ref="tablecontainer" class="overflow-clip">
@@ -82,12 +83,12 @@
             <div class="grid grid-cols-[30%_35%_35%] max-md:text-xs">
               <div></div>
               <div class="py-3 px-1 md:px-3 text-center bg-teal/[0.18] rounded-tl-control">
-                <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide text-teal">{{ $t('As ally · Same team as :hero', { hero: $heroName(selectedHero) }) }}</span>
-                <span class="block text-xs text-subtext mt-1">{{ $t('Hero win rate when teamed with :hero', { hero: $heroName(selectedHero) }) }}</span>
+                <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide text-teal">{{ $t('With them · Same team as :hero', { hero: $heroName(selectedHero) }) }}</span>
+                <span class="block text-xs text-subtext mt-1">{{ $t(':hero\'s win rate with this hero', { hero: $heroName(selectedHero) }) }}</span>
               </div>
               <div class="py-3 px-1 md:px-3 text-center bg-red/[0.18] rounded-tr-control">
-                <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide text-red">{{ $t('Against :hero · Enemy team', { hero: $heroName(selectedHero) }) }}</span>
-                <span class="block text-xs text-subtext mt-1">{{ $t('Hero win rate when facing :hero', { hero: $heroName(selectedHero) }) }}</span>
+                <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide text-red">{{ $t('Against them · Enemy team', { hero: $heroName(selectedHero) }) }}</span>
+                <span class="block text-xs text-subtext mt-1">{{ $t(':hero\'s win rate against this hero', { hero: $heroName(selectedHero) }) }}</span>
               </div>
             </div>
             <table id="responsive-table" ref="responsivetable" class="min-w-0 w-full rounded-table table-fixed max-md:text-xs">
@@ -102,13 +103,13 @@
               <thead>
                 <tr>
                   <th class="py-2 px-2 md:px-6 text-left text-xs md:text-sm leading-4">
-                    <div class="flex items-center gap-[1.125rem]">
+                    <div class="relative flex items-center gap-[1.125rem]">
                       <span class="cursor-pointer" @click="sortTable('hero_name')">{{ $t('Hero') }}<sort-indicator :column="'hero_name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                      <search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" class="w-40 max-md:hidden"></search-input>
+                      <search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" align="left" class="w-40 max-md:hidden"></search-input>
                     </div>
                   </th>
                   <th @click="sortTable('base_win_rate')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'base_win_rate' }">
-                    {{ $t('Base win rate') }}<span class="inline-flex align-middle ml-1" @click.stop><round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true"><p class="text-sm p-2 text-left font-normal whitespace-normal">{{ $t("This row's hero global win rate. This would be their win rate in all games that match the filter. This is displayed to make comparisons of ally and enemy win rates easier.") }}</p></round-image></span><sort-indicator :column="'base_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                    {{ $t('Their win rate') }}<span class="inline-flex align-middle ml-1" @click.stop><round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true"><p class="text-sm p-2 text-left font-normal whitespace-normal">{{ $t("This hero's own win rate in all games that match the filters. The numbers in brackets compare :hero's win rate with what this would lead you to expect: the same as theirs on the same team, the opposite of theirs against them.", { hero: $heroName(selectedHero) }) }}</p></round-image></span><sort-indicator :column="'base_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
                   <th @click="sortTable('win_rate_as_ally')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate_as_ally' }">{{ $t('Win rate with') }}<sort-indicator :column="'win_rate_as_ally'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
                   <th @click="sortTable('games_played_as_ally')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played_as_ally' }">{{ $t('Games with') }}<sort-indicator :column="'games_played_as_ally'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
@@ -127,8 +128,9 @@
                   <template v-for="side in ['ally', 'enemy']" :key="side">
                   <td class="py-2.5 px-2 md:px-6">
                     <div v-if="row[side] && row[side].games_played" class="flex items-center gap-3">
-                      <stat-bar class="flex-1 max-md:hidden" :value="row[side].win_rate" display-text="" :color="$winRateColor(row[side].win_rate)"></stat-bar>
-                      <span class="max-md:flex-1 max-md:text-center md:text-right font-semibold tabular-nums whitespace-nowrap">{{ row[side].win_rate.toFixed(2) }}%<span v-if="baseRate(row) !== null" :class="['ml-1.5 text-xs font-normal max-md:hidden', difference(row, side) >= 0 ? 'text-win' : 'text-loss']">({{ difference(row, side) > 0 ? '+' : '' }}{{ difference(row, side).toFixed(2) }})</span></span>
+                      <!-- Teal when the hero does better than expected, red when worse -->
+                      <stat-bar class="flex-1 max-md:hidden" :value="heroRate(row, side)" display-text="" :color="baseRate(row) === null || difference(row, side) >= 0 ? 'teal' : 'red'"></stat-bar>
+                      <span class="max-md:flex-1 max-md:text-center md:text-right font-semibold tabular-nums whitespace-nowrap">{{ heroRate(row, side).toFixed(2) }}%<span v-if="baseRate(row) !== null" :class="['ml-1.5 text-xs font-normal max-md:hidden', difference(row, side) >= 0 ? 'text-win' : 'text-loss']">({{ difference(row, side) > 0 ? '+' : '' }}{{ difference(row, side).toFixed(2) }})</span></span>
                     </div>
                     <span v-else class="block text-center text-subtext">{{ $t('No data') }}</span>
                   </td>
@@ -160,7 +162,7 @@
             </div>
           </panel-box>
         </div>
-        <panel-box :title="$t(':hero matchups', { hero: $heroName(selectedHero) })" :subtitle="$t('Base win rate of each hero vs. its win rate with :hero and against :hero · difference in brackets', { hero: $heroName(selectedHero) })" :divider="false" :skeleton="true">
+        <panel-box :title="$t(':hero matchups', { hero: $heroName(selectedHero) })" :subtitle="$t(':hero\'s win rate with and against each hero · in brackets, how that compares with what the other hero\'s own win rate would lead you to expect', { hero: $heroName(selectedHero) })" :divider="false" :skeleton="true">
           <table-skeleton :bare="true" :rows="15" :columns="['hero', 'stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
         </panel-box>
       </div>
@@ -237,13 +239,18 @@ const MIN_TOP_GAMES = 40;
     mounted() {
     },
     computed: {
-      // The five best allies (the hero's win rate with them) and biggest threats (the hero's lowest win rate against them), 40+ games
+      // The five best allies and biggest threats with 40+ games, ranked by how far the hero's win rate is from expected,
+      // so a strong or weak hero doesn't top a list just for being strong or weak
       topCards() {
         const hero = this.$heroName(this.selectedHero);
-        const enough = list => (list || []).filter(item => item.games_played >= MIN_TOP_GAMES).slice(0, 5);
+        const ranked = (side, best) => (this.combineddata || [])
+          .filter(row => row[side] && row[side].games_played >= MIN_TOP_GAMES && this.baseRate(row) !== null)
+          .map(row => ({ hero: this.rowHero(row), rate: this.heroRate(row, side), difference: this.difference(row, side), games_played: row[side].games_played }))
+          .sort((a, b) => best ? b.difference - a.difference : a.difference - b.difference)
+          .slice(0, 5);
         return [
-          { key: 'allies', title: 'Best allies', subtitle: this.$t('Highest :hero win rate on the same team · 40+ games', { hero }), heroes: enough(this.allyenemydata?.ally), rate: item => item.win_rate, games: ':count games together', valueClass: 'text-win' },
-          { key: 'threats', title: 'Biggest threats', subtitle: this.$t('Lowest :hero win rate when facing them · 40+ games', { hero }), heroes: enough(this.allyenemydata?.enemy), rate: item => 100 - item.win_rate, games: ':count games against', valueClass: 'text-loss' },
+          { key: 'allies', title: 'Best allies', subtitle: this.$t('Biggest lift to :hero\'s win rate on the same team · 40+ games', { hero }), heroes: ranked('ally', true), games: ':count games together', valueClass: 'text-win' },
+          { key: 'threats', title: 'Biggest threats', subtitle: this.$t('Biggest drop in :hero\'s win rate when facing them · 40+ games', { hero }), heroes: ranked('enemy', false), games: ':count games against', valueClass: 'text-loss' },
         ];
       },
       shownData() {
@@ -273,8 +280,8 @@ const MIN_TOP_GAMES = 40;
             valA = a.ally && a.ally.win_rate ? a.ally.win_rate : 0;
             valB = b.ally && b.ally.win_rate ? b.ally.win_rate : 0;
           } else if (this.sortKey === 'win_rate_against') {
-            valA = a.enemy && a.enemy.win_rate ? a.enemy.win_rate : 0;
-            valB = b.enemy && b.enemy.win_rate ? b.enemy.win_rate : 0;
+            valA = a.enemy && a.enemy.games_played ? 100 - a.enemy.win_rate : -1;
+            valB = b.enemy && b.enemy.games_played ? 100 - b.enemy.win_rate : -1;
           } else if (this.sortKey === 'games_played_as_ally') {
             valA = a.ally && a.ally.games_played ? a.ally.games_played : 0;
             valB = b.ally && b.ally.games_played ? b.ally.games_played : 0;
@@ -533,8 +540,14 @@ const MIN_TOP_GAMES = 40;
         const rate = row.ally?.stats?.win_rate ?? row.enemy?.stats?.win_rate;
         return rate === undefined || rate === null ? null : Number(rate);
       },
+      // The selected hero's win rate with or against the row's hero: against is the row hero's rate turned round
+      heroRate(row, side) {
+        return side === 'enemy' ? 100 - row.enemy.win_rate : row.ally.win_rate;
+      },
+      // That against what the row hero's own win rate would lead you to expect: the same with them, the opposite against them
       difference(row, side) {
-        return Number((row[side].win_rate - this.baseRate(row)).toFixed(2));
+        const expected = side === 'enemy' ? 100 - this.baseRate(row) : this.baseRate(row);
+        return Number((this.heroRate(row, side) - expected).toFixed(2));
       },
       // The page's filters, kept on links to another hero's matchups
       currentQuery() {
