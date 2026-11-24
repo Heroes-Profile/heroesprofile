@@ -3176,6 +3176,7 @@
     "Suspend this account? Their keys stop working on both sites immediately. Billing keeps running.": "이 계정을 정지할까요? 키는 두 사이트 모두에서 즉시 작동이 중지됩니다. 결제는 계속 진행됩니다.",
     "Suspended": "정지됨",
     "Suspended: :suspension_reason": "정지됨: :suspension_reason",
+    "Swap heroes": "영웅 바꾸기",
     "Swap sides": "진영 바꾸기",
     "Switch": "변경",
     "Switch to test data whenever you are building or debugging. Responses become fixed examples and stop counting against your weekly quota.": "개발하거나 디버깅할 때는 언제든 테스트 데이터로 전환하세요. 응답이 고정 예시로 바뀌고 주간 할당량에 포함되지 않습니다.",

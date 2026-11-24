@@ -3177,6 +3177,7 @@
     "Suspend this account? Their keys stop working on both sites immediately. Billing keeps running.": "Заблокировать эту учётную запись? Ключи пользователя сразу перестанут работать на обоих сайтах. Оплата продолжит списываться.",
     "Suspended": "Приостановлена",
     "Suspended: :suspension_reason": "Приостановлен: :suspension_reason",
+    "Swap heroes": "Поменять героев местами",
     "Swap sides": "Поменять стороны",
     "Switch": "Перейти",
     "Switch to test data whenever you are building or debugging. Responses become fixed examples and stop counting against your weekly quota.": "Переключайтесь на тестовые данные во время разработки или отладки. Ответы станут фиксированными примерами и перестанут расходовать недельную квоту.",

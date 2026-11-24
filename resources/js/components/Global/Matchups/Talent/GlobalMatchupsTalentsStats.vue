@@ -6,6 +6,7 @@
         <page-heading :heading="'Talent Matchups'" :subheading="'Hero vs hero talent stats'"></page-heading>
       </template>
       <filters
+        ref="filters"
         :onFilter="filterData"
         :filters="filters"
         :isLoading="isLoading"
@@ -38,12 +39,13 @@
         <div class="grid xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
           <div class="flex items-center gap-4 md:gap-8">
             <div class="flex flex-col gap-3 w-[10rem] md:w-[13rem]">
-              <single-select-filter :values="firstHeroInputs" :text="'Hero'" :trackclosure="true" @dropdown-closed="dropdownClosed" @input-changed="herochanged" :defaultValue="hero ? hero.id : null"></single-select-filter>
+              <single-select-filter :key="'hero-' + (hero ? hero.id : '')" :values="firstHeroInputs" :text="'Hero'" @input-changed="herochanged" :defaultValue="hero ? hero.id : null"></single-select-filter>
               <hero-image-wrapper v-if="hero && hero.short_name" :rectangle="true" size="large" :hero="hero" :excludehover="true"></hero-image-wrapper>
             </div>
-            <span class="shrink-0 w-12 h-12 rounded-full bg-surface-3 flex items-center justify-center text-sm font-bold text-subtext">{{ vsorwith }}</span>
+            <!-- Swaps the two heroes, so the other one's talents are listed -->
+            <button type="button" @click="swapHeroes" :title="$t('Swap heroes')" class="shrink-0 w-12 h-12 rounded-full bg-surface-3 hover:bg-surface-4 hover:text-white transition-colors flex items-center justify-center text-sm font-bold text-subtext">{{ vsorwith }}</button>
             <div class="flex flex-col gap-3 w-[10rem] md:w-[13rem]">
-              <single-select-filter :values="secondHeroInputs" :text="'Matchup hero'" :trackclosure="true" @dropdown-closed="dropdownClosed" @input-changed="allyenemychanged" :defaultValue="enemyally ? enemyally.id : null"></single-select-filter>
+              <single-select-filter :key="'enemyally-' + (enemyally ? enemyally.id : '')" :values="secondHeroInputs" :text="'Matchup hero'" @input-changed="allyenemychanged" :defaultValue="enemyally ? enemyally.id : null"></single-select-filter>
               <hero-image-wrapper v-if="enemyally && enemyally.short_name" :rectangle="true" size="large" :hero="enemyally" :excludehover="true"></hero-image-wrapper>
             </div>
           </div>
@@ -64,12 +66,12 @@
         <div class="rounded bg-surface px-5 md:px-6 py-4 flex flex-wrap items-center gap-4 md:gap-6">
           <div class="flex items-center gap-3">
             <hero-image-wrapper :hero="hero" size="medium" :excludehover="true"></hero-image-wrapper>
-            <single-select-filter :values="firstHeroInputs" :text="'Hero'" :trackclosure="true" @dropdown-closed="dropdownClosed" @input-changed="herochanged" :defaultValue="hero.id"></single-select-filter>
+            <single-select-filter :key="'hero-' + (hero ? hero.id : '')" :values="firstHeroInputs" :text="'Hero'" @input-changed="herochanged" :defaultValue="hero.id"></single-select-filter>
           </div>
-          <span class="shrink-0 w-10 h-10 rounded-full bg-surface-3 flex items-center justify-center text-sm font-bold text-subtext">{{ vsorwith }}</span>
+          <button type="button" @click="swapHeroes" :title="$t('Swap heroes')" class="shrink-0 w-10 h-10 rounded-full bg-surface-3 hover:bg-surface-4 hover:text-white transition-colors flex items-center justify-center text-sm font-bold text-subtext">{{ vsorwith }}</button>
           <div class="flex items-center gap-3">
             <hero-image-wrapper :hero="enemyally" size="medium" :excludehover="true"></hero-image-wrapper>
-            <single-select-filter :values="secondHeroInputs" :text="'Matchup hero'" :trackclosure="true" @dropdown-closed="dropdownClosed" @input-changed="allyenemychanged" :defaultValue="enemyally.id"></single-select-filter>
+            <single-select-filter :key="'enemyally-' + (enemyally ? enemyally.id : '')" :values="secondHeroInputs" :text="'Matchup hero'" @input-changed="allyenemychanged" :defaultValue="enemyally.id"></single-select-filter>
           </div>
           <div v-if="!isLoading && talentdetaildata" class="ml-auto flex flex-col items-end text-right">
             <span class="text-xs text-subtext">{{ matchupLabel }}</span>
@@ -145,6 +147,8 @@
         firstwinratedata: null,
         secondwinratedata: null,
         matchupgames: null,
+        // The hero pair the talents on screen are for
+        loadedPair: null,
       }
     },
     created(){
@@ -264,6 +268,7 @@
             throw new Error("Failure to validate inputs");
           }
           this.talentdetaildata = response.data.data;
+          this.loadedPair = this.hero.name + '|' + this.enemyally.name;
           this.firstwinratedata = response.data.first_win_rate;
           this.secondwinratedata = response.data.second_win_rate;
           this.matchupgames = response.data.games_played ?? null;
@@ -280,36 +285,25 @@
         }
       },
       herochanged(eventPayload){
-        this.hero = this.heroes.find(hero => hero.id === eventPayload.value);
-
-        let currentPath = window.location.pathname;
-        const basePath = '/Global/Matchups/Talents';
-        
-        if (currentPath.startsWith(basePath + '/')) {
-          currentPath = basePath;
-        }
-
-        //history.pushState(null, null, `${currentPath}/${this.hero.name}/${this.enemyally.name}`);
+        this.hero = this.heroes.find(hero => hero.id === eventPayload.value) ?? this.hero;
+        this.loadMatchup();
       },
-
       allyenemychanged(eventPayload){
-        this.enemyally = this.heroes.find(hero => hero.id === eventPayload.value);
-
-        let currentPath = window.location.pathname;
-        const basePath = '/Global/Matchups/Talents';
-        
-        if (currentPath.startsWith(basePath + '/')) {
-          currentPath = basePath;
-        }
-
-        history.pushState(null, null, `${currentPath}/${this.hero.name}/${this.enemyally.name}`);
+        this.enemyally = this.heroes.find(hero => hero.id === eventPayload.value) ?? this.enemyally;
+        this.loadMatchup();
       },
-
-      dropdownClosed(eventPayload) {
-        if(this.hero.name != "Auto Select" && this.enemyally.name != "Auto Select"){
-          this.talentdetaildata = null;
-          this.getData();
+      swapHeroes(){
+        [this.hero, this.enemyally] = [this.enemyally, this.hero];
+        this.loadMatchup();
+      },
+      // On picking either hero, once both are set and the pair is new: load it as the Filter button does,
+      // with the filters as they stand
+      loadMatchup() {
+        if(!this.shouldFilterData || this.hero.name + '|' + this.enemyally.name === this.loadedPair){
+          return;
         }
+        history.pushState(null, null, `/Global/Matchups/Talents/${this.hero.name}/${this.enemyally.name}${window.location.search}`);
+        this.$refs.filters.applyFilter();
       },
 
       filterData(filteredData){

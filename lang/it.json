@@ -3178,6 +3178,7 @@
     "Suspend this account? Their keys stop working on both sites immediately. Billing keeps running.": "Sospendere questo account? Le sue chiavi smettono subito di funzionare su entrambi i siti. La fatturazione continua.",
     "Suspended": "Sospeso",
     "Suspended: :suspension_reason": "Sospeso: :suspension_reason",
+    "Swap heroes": "Scambia eroi",
     "Swap sides": "Scambia i lati",
     "Switch": "Cambia",
     "Switch to test data whenever you are building or debugging. Responses become fixed examples and stop counting against your weekly quota.": "Passa ai dati di prova quando sviluppi o fai debug. Le risposte diventano esempi fissi e non contano più ai fini della quota settimanale.",

@@ -3177,6 +3177,7 @@
     "Suspend this account? Their keys stop working on both sites immediately. Billing keeps running.": "停用此账号？其密钥将立即在两个网站上失效，计费会继续进行。",
     "Suspended": "已停用",
     "Suspended: :suspension_reason": "已暂停：:suspension_reason",
+    "Swap heroes": "交换英雄",
     "Swap sides": "交换双方",
     "Switch": "切换",
     "Switch to test data whenever you are building or debugging. Responses become fixed examples and stop counting against your weekly quota.": "开发或调试时可随时切换到测试数据。响应将变为固定示例，并不再计入你的每周配额。",
