@@ -18,6 +18,7 @@ use App\Models\MasterMMRDataUD;
 use App\Models\MatchPredictionPlayerStat;
 use App\Models\MatchPredictionSeason;
 use App\Models\SeasonDate;
+use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
 use App\Rules\RegionInputValidation;
@@ -78,9 +79,10 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         $validationRules = [
             'season' => ['required', new SeasonInputValidation],
             'game_type' => ['required', new GameTypeInputValidation],
-            'type' => 'required|in:match prediction,player,hero,role,sl rank',
+            'type' => 'required|in:match prediction,player,hero,role,map,sl rank',
             'groupsize' => ['required', new StackSizeInputValidation],
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
+            'map' => ['required_if:type,map', 'nullable', 'string', new GameMapInputValidation],
             'region' => ['sometimes', 'nullable', new RegionInputValidation],
             'role' => ['sometimes', 'nullable', new RoleInputValidation],
             'tierrank' => ['sometimes', 'nullable', new TierInputByIDValidation],
@@ -119,6 +121,9 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 $typeNumber = $hero;
             } elseif ($type == 'role') {
                 $typeNumber = $role;
+            } elseif ($type == 'map') {
+                // Brawl maps have no mmr_type_ids row, so no board
+                $typeNumber = $this->globalDataService->getMMRTypeValue($request['map']) ?? 0;
             }
 
             $groupsize = -1;
@@ -464,9 +469,10 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         $validationRules = [
             'season' => ['required', new SeasonInputValidation],
             'game_type' => ['required', new GameTypeInputValidation],
-            'type' => 'required|in:player,hero,role',
+            'type' => 'required|in:player,hero,role,map',
             'groupsize' => ['required', new StackSizeInputValidation],
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
+            'map' => ['required_if:type,map', 'nullable', 'string', new GameMapInputValidation],
             'role' => ['sometimes', 'nullable', new RoleInputValidation],
         ];
 
@@ -496,6 +502,8 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             $typeNumber = $hero;
         } elseif ($type == 'role') {
             $typeNumber = $role;
+        } elseif ($type == 'map') {
+            $typeNumber = $this->globalDataService->getMMRTypeValue($request['map']) ?? 0;
         }
 
         // Mirrors CalculateLeaderboards (Calculate.getPlayers), so the estimate is the

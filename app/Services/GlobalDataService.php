@@ -75,6 +75,9 @@ class GlobalDataService
     // Bump when the cached data changes shape or maths, so old entries are skipped.
     private const HERO_WIN_RATES_ALL_CACHE_VERSION = 1;
 
+    // Also bump when a filter list gains an option: the live sites share this cache with their own lists
+    private const FILTER_DATA_CACHE_VERSION = 2;
+
     /**
      * Hour (America/New_York) at/after which the leaderboard "weeks since season start" value
      * rolls over to the new day. The CalculateLeaderboards batch runs ~4am-12pm EST and freezes
@@ -1637,8 +1640,7 @@ class GlobalDataService
             return $this->localizeFilterLabels($this->buildFilterData($filtersMinimumPatch));
         }
 
-        // Its own key: Type includes Map here, and the live site shares this cache with its own list
-        $cacheKey = 'filter_data_map_mmr_'.str_replace('.', '_', $filtersMinimumPatch);
+        $cacheKey = GlobalCacheKey::prefix('filter_data', self::FILTER_DATA_CACHE_VERSION).'|'.$filtersMinimumPatch;
 
         return $this->localizeFilterLabels(Cache::memo()->remember($cacheKey, 600, function () use ($filtersMinimumPatch) {
             return $this->buildFilterData($filtersMinimumPatch);
@@ -1999,6 +2001,7 @@ class GlobalDataService
             ['code' => 'Player', 'name' => 'Player'],
             ['code' => 'Hero', 'name' => 'Hero'],
             ['code' => 'Role', 'name' => 'Role'],
+            ['code' => 'Map', 'name' => 'Map'],
             ['code' => 'Match Prediction', 'name' => 'Match Prediction'],
             ['code' => 'SL Rank', 'name' => 'SL Rank'],
         ];

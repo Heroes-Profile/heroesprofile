@@ -137,10 +137,11 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
 
-          <!-- Map Swap: the map picked by Type = Map (MMR) -->
-          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="playerheroroletype && swapMapFilter"
+          <!-- Map Swap: the map picked by Type = Map (MMR) or Leaderboard Type -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="(playerheroroletype || leaderboardfiltertype) && swapMapFilter"
             :values="filters.game_maps"
             :text="'Map'"
+            :class="leaderboardOrder('Map')"
             :defaultValue="selectedSingleFilters['Map']"
             @input-changed="handleInputChange"
           ></single-select-filter>
@@ -982,6 +983,7 @@
           'Leaderboard Type': 'order-1',
           'Heroes': 'order-1',
           'Role': 'order-1',
+          'Map': 'order-1',
           'Game Type': 'order-2',
           'HP Rank': 'order-3',
           'League': 'order-3',
@@ -1069,6 +1071,13 @@
           this.modifiedincluderole = false;
           this.swapHeroesFilter = false;
           this.swapRolesFilter = false;
+        }else if(type === 'Map'){
+          this.modifiedincludeheroes = false;
+          this.modifiedincluderole = false;
+          this.swapHeroesFilter = false;
+          this.swapRolesFilter = false;
+          this.swapMapFilter = true;
+          this.selectedSingleFilters['Map'] = this.mapinput || this.filters.game_maps[0]?.code;
         }else if(type === 'Hero'){
           this.modifiedincludeheroes = true;
           this.modifiedincluderole = false;
@@ -1198,7 +1207,7 @@
           }
    
 
-          if(eventPayload.field == "Type" && eventPayload.value != "Map"){
+          if(eventPayload.value != "Map"){
             delete this.selectedSingleFilters['Map'];
             this.swapMapFilter = false;
           }
@@ -1208,7 +1217,7 @@
             delete this.selectedSingleFilters['Role'];
             this.swapHeroesFilter = false;
             this.swapRolesFilter = false;
-          }else if(eventPayload.field == "Type" && eventPayload.value == "Map"){
+          }else if(eventPayload.value == "Map"){
             delete this.selectedSingleFilters['Heroes'];
             delete this.selectedSingleFilters['Role'];
             this.selectedSingleFilters["Map"] = this.filters.game_maps[0]?.code;

@@ -62,6 +62,7 @@
         :includehero="false"
         :heroinput="hero"
         :roleinput="role"
+        :mapinput="map"
         :groupSizeDefaultValue="groupsize"
         :includegroupsize="true"
         :includesinglegametypeleaderboard="true"
@@ -164,7 +165,7 @@
                   </th>     
 
 
-                  <th v-if="leaderboardtype == 'Player' || leaderboardtype == 'Role' " class="py-2 px-3  text-left text-sm leading-4">
+                  <th v-if="leaderboardtype == 'Player' || leaderboardtype == 'Role' || leaderboardtype == 'Map'" class="py-2 px-3  text-left text-sm leading-4">
                     {{ $t('Most Played Hero') }}
                   </th>    
 
@@ -204,7 +205,7 @@
                     <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" class="px-6"><rank-tier-pill :tier="row.tier"></rank-tier-pill></td>
                     <td>{{ row.games_played.toLocaleString('en-US') }}</td>
 
-                    <td class="py-2 px-3" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role')">
+                    <td class="py-2 px-3" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role' || leaderboardtype === 'Map')">
                       <!-- Holds a portrait's height when there's no hero, so every row is the same height -->
                       <div class="flex items-center min-h-10">
                         <template v-if="row.most_played_hero">
@@ -302,6 +303,8 @@ export default {
       data: null,
       hero: 1,
       role: "Bruiser",
+      // By name, like the Map dropdown's codes
+      map: null,
       sortKey: '',
       sortDir: 'desc',
       showLeaderboardRequirements: false,
@@ -331,6 +334,11 @@ export default {
 
     if(this.urlparameters){
       this.setURLParameters();
+    }
+
+    // Same first map the Map dropdown opens on
+    if(this.leaderboardtype == 'Map' && !this.map){
+      this.map = this.filters.game_maps[0]?.code ?? null;
     }
 
     if (typeof localStorage !== 'undefined' && localStorage !== null) {
@@ -437,6 +445,9 @@ export default {
       if(this.role){
         queryString += `&role=${this.role}`;
       }
+      if(this.map){
+        queryString += `&map=${encodeURIComponent(this.map)}`;
+      }
 
 
       queryString += `&game_type=${this.gametype}`;
@@ -481,6 +492,7 @@ export default {
           groupsize: this.groupsize,
           hero: this.hero,
           role: this.role,
+          map: this.map,
           region: this.region,
           tierrank: this.tierrank,
           league: this.leaderboardtype == 'SL Rank' ? this.league : null,
@@ -509,6 +521,7 @@ export default {
       this.groupsize = filteredData.single["Group Size"] ? filteredData.single["Group Size"] : this.groupsize;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
+      this.map = this.leaderboardtype == "Map" && filteredData.single["Map"] ? filteredData.single["Map"] : null;
       
       this.gametype = filteredData.single["Game Type"] ? filteredData.single["Game Type"] : this.gametype;
 
@@ -574,6 +587,7 @@ export default {
             groupsize: this.groupsize,
             hero: this.hero,
             role: this.role,
+            map: this.map,
           }, 
           {
           });
@@ -624,6 +638,10 @@ export default {
       
       if(this.urlparameters["hero"]){
         this.hero = Number(this.urlparameters["hero"]);
+      }
+
+      if(this.urlparameters["map"]){
+        this.map = this.urlparameters["map"];
       }
 
 
