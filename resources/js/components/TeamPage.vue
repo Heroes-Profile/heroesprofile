@@ -11,6 +11,11 @@
           <span class="font-medium text-teal">{{ $t(member.role) }}</span>
           <span class="text-sm text-subtext">{{ period(member) }}</span>
         </div>
+        <!-- Their best Storm League rank, in words, named as the profile names ranks -->
+        <div v-if="member.peak_rank" class="flex items-center gap-3 text-sm">
+          <span class="text-subtext">{{ $t('Peak rank') }}</span>
+          <span class="font-semibold">{{ localRankName(member.peak_rank) }}</span>
+        </div>
         <p class="text-sm">{{ $t(member.bio) }}</p>
         <!-- How to reach them: email and Reddit link out; a Discord username can only be shown -->
         <div v-if="member.email || member.reddit || member.discord" class="flex flex-col gap-1.5 text-sm">
@@ -42,6 +47,8 @@
 </template>
 
 <script>
+import { localRankName } from './RealRankBadge.vue';
+
 export default {
   name: 'TeamPage',
   props: {
@@ -49,6 +56,7 @@ export default {
     contributors: { type: Array, default: () => [] },
   },
   methods: {
+    localRankName,
     // A line split before its last word ("… Heroes Profile " and "team")
     leadWords(text) {
       const index = text.lastIndexOf(' ');

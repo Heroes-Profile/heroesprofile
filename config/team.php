@@ -9,6 +9,9 @@
 //   start - when they joined, 'YYYY-MM' (shown as "June 2018")
 //   end   - when they left, 'YYYY-MM', or null while they're still on the team ("Present")
 //   bio   - one or two sentences about them; plain text
+//   peak_rank - their best Storm League rank, shown in words, or null:
+//               ['league' => 'master'], ['league' => 'diamond', 'division' => 2],
+//               ['league' => 'grandmaster', 'ladder_position' => 1] or ['league' => 'unranked']
 //   email, reddit, discord - how to reach them; leave any out (or null) that they don't have.
 //                            reddit is the username without u/; discord is the username
 
@@ -21,6 +24,7 @@ return [
             'start' => '2018-06',
             'end' => null,
             'bio' => 'Bio for Zemill goes here.',
+            'peak_rank' => ['league' => 'master'],
             'email' => 'zemill@heroesprofile.com',
             'reddit' => 'heroesprofile',
             'discord' => 'zemill',
@@ -32,6 +36,7 @@ return [
             'start' => '2018-06',
             'end' => null,
             'bio' => 'Bio for Avadriel goes here.',
+            'peak_rank' => ['league' => 'unranked'],
             'email' => 'avadriel@heroesprofile.com',
             'reddit' => 'heroesprofile',
             'discord' => null,
@@ -43,6 +48,7 @@ return [
             'start' => '2026-10',
             'end' => null,
             'bio' => 'Bio for Bluray goes here.',
+            'peak_rank' => ['league' => 'grandmaster', 'ladder_position' => 1],
             'email' => null,
             'reddit' => null,
             'discord' => 'blurayy',
