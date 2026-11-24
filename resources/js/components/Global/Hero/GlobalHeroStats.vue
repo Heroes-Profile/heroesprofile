@@ -98,6 +98,8 @@
         </div>
       </panel-box>
 
+      <dynamic-banner-ad v-if="!tierListCollapsed" :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
+
       <panel-box title="Hero Win Rates" subtitle="Popularity = pick rate + ban rate. Change is compared to the previous patch.">
         <template #right>
           <tab-button :small="true" tab1text="Table" tab2text="Chart" :ignoreclick="true" :overridedefaultside="togglechart ? 'right' : 'left'" @tab-click="togglechart = $event === 'right'"></tab-button>

@@ -1,109 +1,105 @@
 <template>
   <div>
     <global-async-debug-banner page-label="Global Matchups Talents" />
-    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" :infoText2="infoText2" -->
-    <page-heading :heading="'Hero Matchup Talents Statistics'"></page-heading>
-    <filters 
-    :onFilter="filterData" 
-    :filters="filters" 
-    :isLoading="isLoading"
-
-    :timeframetypeinput="timeframetype"
-    :timeframeinput="timeframe"
-    :gametypeinput="gametype"
-    :gamemapinput="gamemap"
-    :playerrankinput="playerrank"
-
-    :gametypedefault="gametypedefault"
-    :includetimeframe="true"
-    :includegametype="true"
-    :includegamemap="true"
-    :includeplayerrank="true"
-    :advancedfiltering="advancedfiltering"
-    :hideadvancedfilteringbutton="true"
-    :disablefilter="!this.shouldFilterData"
-    >
-  </filters>
-  <takeover-ad :patreon-user="patreonUser"></takeover-ad>
-
-  <div v-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-    <!-- The collapsed Patch Notes card, so the page doesn't move when it loads -->
-    <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="w-full max-w-[93.75rem] mx-auto mb-4 md:!py-4">
-      <template #right>
-        <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+    <player-page-top>
+      <template #heading>
+        <page-heading :heading="'Talent Matchups'" :subheading="'Hero vs hero talent stats'"></page-heading>
       </template>
-    </panel-box>
-    <!-- The talents are what's loading, so the message sits on their panel's tab -->
-    <panel-box class="relative md:!rounded-tl-none">
-      <loading-component v-if="determineIfVeryLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
-      <loading-component v-else :compact="true" :tab="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
-      <div class="w-full max-w-[86rem] mx-auto flex flex-col gap-4">
-        <div v-for="level in 3" :key="level" class="flex flex-col gap-3">
-          <skeleton-box class="h-4 w-16 mx-auto"></skeleton-box>
-          <table-skeleton :bare="true" :rows="4" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
-        </div>
-      </div>
-    </panel-box>
-  </div>
-  <div v-else-if="dataError" class="flex items-center justify-center">
-      {{ $t('Error: Reload page/filter') }}
-  </div>
-  <div v-else>
-    <div class="flex justify-center items-center md:gap-10">
-      <div v-if="hero" class="">
-        <single-select-filter :values="firstHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="herochanged" :defaultValue="hero.id"></single-select-filter>
-      </div>
-      <div class="">
-        {{ vsorwith }}
-      </div>
-      <div v-if="enemyally" class="">
-        <single-select-filter :values="secondHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="allyenemychanged" :defaultValue="enemyally.id"></single-select-filter>
-      </div>
-    </div>
-    <div class="flex justify-center relative gap-10">
-      <div 
-      :class="[
-        'absolute z-20 font-logo text-[1.5em] md:text-[5em] text-red drop-shadow-lg rotate-12 md:mt-[1em]', 
-        fightoralliance == 'FIGHT' ? 'text-red' : 'text-teal', 
-        
-        ]"
-        style="-webkit-text-stroke-width: 1px; -webkit-text-stroke-color: white;">
-        {{ $t(fightoralliance === 'FIGHT' ? 'FIGHT!!' : 'ALLIANCE!!') }}
-      </div>
-      <div>  
-        <hero-image-wrapper class="" :rectangle="true" :size="'large'" :hero="hero"></hero-image-wrapper>
-        <div v-if="this.firstwinratedata">
-          {{ this.firstwinratedata }}{{"%"}}
-        </div>
-      </div>
-      <div>
-        <hero-image-wrapper class="" :rectangle="true" :size="'large'" :hero="enemyally"></hero-image-wrapper>
-        <div v-if="this.secondwinratedata">
-          {{ this.secondwinratedata }}{{"%"}}
-        </div>
-      </div>
-    </div>
+      <filters
+        :onFilter="filterData"
+        :filters="filters"
+        :isLoading="isLoading"
 
-    <div class="flex justify-between max-w-[120rem] mx-auto px-4 md:px-8 mb-2 max-md:flex-wrap max-md:gap-2">
-      <div class="flex">
-        <div v-if="showTalentHeroToggle" class="text-center flex items-center justify-stretch gap-2 mx-2">
-          {{ $t('Talents:') }}    
-          <tab-button  :tab1text="this.hero.name" :ignoreclick="true" :tab2text="this.enemyally.name" @tab-click="talentHeroOrEnemySideSelected" > </tab-button>
-        </div>
-        <div class="text-center mt-auto">
-          <tab-button :tab1text="'Enemy'" :ignoreclick="true" :tab2text="'Ally'" @tab-click="heroOrEnemySideSelected" > </tab-button>
-        </div>
-      </div>
-    </div>
+        :timeframetypeinput="timeframetype"
+        :timeframeinput="timeframe"
+        :gametypeinput="gametype"
+        :gamemapinput="gamemap"
+        :playerrankinput="playerrank"
 
-    <patch-notes-panel v-if="patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
-    <div class="max-w-[120rem] mx-auto px-4 md:px-8">
-      <panel-box v-if="talentdetaildata">
-        <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="null"></global-talent-details-section>
+        :gametypedefault="gametypedefault"
+        :includetimeframe="true"
+        :includegametype="true"
+        :includegamemap="true"
+        :includeplayerrank="true"
+        :advancedfiltering="advancedfiltering"
+        :hideadvancedfilteringbutton="true"
+        :disablefilter="!this.shouldFilterData"
+        >
+      </filters>
+    </player-page-top>
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+
+    <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <!-- No matchup yet: pick both heroes, with how the page works beside them -->
+      <panel-box v-if="!shouldFilterData" title="Choose a matchup" subtitle="Pick your hero and the hero you face or play with" :divider="false">
+        <template #right>
+          <tab-button :small="true" tab1text="Enemy" tab2text="Ally" :ignoreclick="true" :overridedefaultside="enemyorallyselected" @tab-click="heroOrEnemySideSelected"></tab-button>
+        </template>
+        <div class="grid xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
+          <div class="flex items-center gap-4 md:gap-8">
+            <div class="flex flex-col gap-3 w-[10rem] md:w-[13rem]">
+              <single-select-filter :values="firstHeroInputs" :text="'Hero'" :trackclosure="true" @dropdown-closed="dropdownClosed" @input-changed="herochanged" :defaultValue="hero ? hero.id : null"></single-select-filter>
+              <hero-image-wrapper v-if="hero && hero.short_name" :rectangle="true" size="large" :hero="hero" :excludehover="true"></hero-image-wrapper>
+            </div>
+            <span class="shrink-0 w-12 h-12 rounded-full bg-surface-3 flex items-center justify-center text-sm font-bold text-subtext">{{ vsorwith }}</span>
+            <div class="flex flex-col gap-3 w-[10rem] md:w-[13rem]">
+              <single-select-filter :values="secondHeroInputs" :text="'Matchup hero'" :trackclosure="true" @dropdown-closed="dropdownClosed" @input-changed="allyenemychanged" :defaultValue="enemyally ? enemyally.id : null"></single-select-filter>
+              <hero-image-wrapper v-if="enemyally && enemyally.short_name" :rectangle="true" size="large" :hero="enemyally" :excludehover="true"></hero-image-wrapper>
+            </div>
+          </div>
+          <ol class="flex flex-col gap-3">
+            <li v-for="(step, index) in steps" :key="step.title" class="flex items-center gap-4 rounded-control bg-surface-1 px-5 py-4">
+              <span class="shrink-0 w-9 h-9 rounded-full bg-surface-3 flex items-center justify-center text-sm font-semibold text-teal">{{ index + 1 }}</span>
+              <span class="flex flex-col gap-0.5 min-w-0">
+                <span class="font-semibold">{{ step.title }}</span>
+                <span class="text-xs text-subtext">{{ step.text }}</span>
+              </span>
+            </li>
+          </ol>
+        </div>
       </panel-box>
+
+      <template v-else>
+        <!-- The matchup: both heroes, changeable here, and the listed hero's win rate in it -->
+        <div class="rounded bg-surface px-5 md:px-6 py-4 flex flex-wrap items-center gap-4 md:gap-6">
+          <div class="flex items-center gap-3">
+            <hero-image-wrapper :hero="hero" size="medium" :excludehover="true"></hero-image-wrapper>
+            <single-select-filter :values="firstHeroInputs" :text="'Hero'" :trackclosure="true" @dropdown-closed="dropdownClosed" @input-changed="herochanged" :defaultValue="hero.id"></single-select-filter>
+          </div>
+          <span class="shrink-0 w-10 h-10 rounded-full bg-surface-3 flex items-center justify-center text-sm font-bold text-subtext">{{ vsorwith }}</span>
+          <div class="flex items-center gap-3">
+            <hero-image-wrapper :hero="enemyally" size="medium" :excludehover="true"></hero-image-wrapper>
+            <single-select-filter :values="secondHeroInputs" :text="'Matchup hero'" :trackclosure="true" @dropdown-closed="dropdownClosed" @input-changed="allyenemychanged" :defaultValue="enemyally.id"></single-select-filter>
+          </div>
+          <div v-if="!isLoading && talentdetaildata" class="ml-auto flex flex-col items-end text-right">
+            <span class="text-xs text-subtext">{{ matchupLabel }}</span>
+            <span class="text-lg font-bold">{{ $t(':rate% win rate', { rate: Number(firstwinratedata).toFixed(2) }) }}<template v-if="matchupgames != null"> · {{ $t(':games games', { games: matchupgames.toLocaleString('en-US') }) }}</template></span>
+          </div>
+        </div>
+
+        <patch-notes-panel v-if="patchNotesUrl" class="!max-w-none !mb-0" :version="timeframe[0]"></patch-notes-panel>
+
+        <panel-box v-if="isLoading" :title="talentsTitle" :subtitle="talentsSubtitle" class="relative md:!rounded-tl-none">
+          <loading-component v-if="determineIfVeryLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
+          <loading-component v-else :compact="true" :tab="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+          <compact-talent-grid :skeleton="true"></compact-talent-grid>
+        </panel-box>
+        <div v-else-if="dataError" class="flex items-center justify-center">
+          {{ $t('Error: Reload page/filter') }}
+        </div>
+        <panel-box v-else-if="talentdetaildata" :title="talentsTitle" :subtitle="talentsSubtitle">
+          <template #right>
+            <div class="flex flex-wrap items-center gap-4">
+              <!-- Whose talents are listed; stays until it's decided where this goes -->
+              <tab-button :small="true" :tab1text="$heroName(hero)" :tab2text="$heroName(enemyally)" :ignoreclick="true" :overridedefaultside="talentheroselected" @tab-click="talentHeroOrEnemySideSelected"></tab-button>
+              <tab-button :small="true" tab1text="Enemy" tab2text="Ally" :ignoreclick="true" :overridedefaultside="enemyorallyselected" @tab-click="heroOrEnemySideSelected"></tab-button>
+            </div>
+          </template>
+          <compact-talent-grid :talent-data="talentdetaildata"></compact-talent-grid>
+        </panel-box>
+      </template>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -141,14 +137,14 @@
         gametype: null,
         gamemap: null,
         playerrank: null,
-        vsorwith: "vs",
-        fightoralliance: "FIGHT",
+        vsorwith: "VS",
         talentheroselected: "left",
         talentview: "hero",
         enemyorallyselected: "left",
         type: "Enemy",
         firstwinratedata: null,
         secondwinratedata: null,
+        matchupgames: null,
       }
     },
     created(){
@@ -195,6 +191,33 @@
           return this.filters.heroes.filter(hero => hero.name !== this.hero.name);
         }
         return this.filters.heroes;
+      },
+      // How the page works, beside the hero pickers
+      steps(){
+        return [
+          { title: this.$t('Choose your hero'), text: this.$t('The hero whose talents you want to check.') },
+          { title: this.$t('Choose the matchup hero'), text: this.$t('Any hero from the roster. The talents load once both are picked.') },
+          { title: this.$t('Enemy or Ally'), text: this.$t('Enemy: talents that win against this hero. Ally: talents that win with this hero on your team.') },
+          { title: this.$t('Read the tiers'), text: this.$t('Win rate, popularity and games for every talent. The best talent on each tier is highlighted.') },
+        ];
+      },
+      // The listed hero first: the talents toggle can put the matchup hero there
+      listedHeroes(){
+        return this.talentview === 'hero' ? [this.hero, this.enemyally] : [this.enemyally, this.hero];
+      },
+      matchupLabel(){
+        const [hero, other] = this.listedHeroes.map(item => this.$heroName(item));
+        return this.type === 'Ally' ? this.$t(':hero with :other', { hero, other }) : this.$t(':hero vs :other', { hero, other });
+      },
+      talentsTitle(){
+        const [hero, other] = this.listedHeroes.map(item => this.$heroName(item));
+        return this.type === 'Ally' ? this.$t(':hero talents with :other', { hero, other }) : this.$t(':hero talents against :other', { hero, other });
+      },
+      talentsSubtitle(){
+        const [hero, other] = this.listedHeroes.map(item => this.$heroName(item));
+        return this.type === 'Ally'
+          ? this.$t('Win rate, popularity and games for every :hero talent in games with :other on the same team. The best win rate on each tier is highlighted.', { hero, other })
+          : this.$t('Win rate, popularity and games for every :hero talent in games against :other. The best win rate on each tier is highlighted.', { hero, other });
       },
       shouldFilterData(){
         if((this.hero && this.hero.name != "Auto Select") && (this.enemyally && this.enemyally.name != "Auto Select")){
@@ -243,6 +266,7 @@
           this.talentdetaildata = response.data.data;
           this.firstwinratedata = response.data.first_win_rate;
           this.secondwinratedata = response.data.second_win_rate;
+          this.matchupgames = response.data.games_played ?? null;
         }catch(error){
           this.dataError = true;
         }finally {
@@ -318,6 +342,7 @@
       },
 
       talentHeroOrEnemySideSelected(side){
+        this.talentheroselected = side;
         if(side == "left"){
           this.talentview = "hero";
         }else{
@@ -332,12 +357,10 @@
       heroOrEnemySideSelected(side){
         if(side == "left"){
           this.type = "Enemy";
-          this.vsorwith = "vs";
-          this.fightoralliance = "FIGHT";
+          this.vsorwith = "VS";
         }else if(side == "right"){
           this.type = "Ally";
-          this.vsorwith = "with";
-          this.fightoralliance = "ALLIANCE";
+          this.vsorwith = "+";
         }
         this.enemyorallyselected = side;
         this.firstwinratedata = "";
