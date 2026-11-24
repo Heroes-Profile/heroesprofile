@@ -17,7 +17,7 @@ return [
         [
             'name' => 'Zemill',
             'company' => 'Heroes Profile | Skill Tree Development LLC',
-            'role' => 'Backend, cloud and site infrastructure · Social media presence',
+            'role' => 'Backend',
             'start' => '2018-06',
             'end' => null,
             'bio' => 'Bio for Zemill goes here.',
@@ -28,7 +28,7 @@ return [
         [
             'name' => 'Avadriel',
             'company' => 'Heroes Profile | Skill Tree Development LLC',
-            'role' => 'Frontend and site consistency',
+            'role' => 'Frontend',
             'start' => '2018-06',
             'end' => null,
             'bio' => 'Bio for Avadriel goes here.',
