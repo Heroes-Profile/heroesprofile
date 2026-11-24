@@ -56,7 +56,8 @@
                     :paragraph-three="$t('HP Player MMR') + ': ' + player.player_mmr"
                     :paragraph-four="$t('HP Hero MMR') + ': ' + player.hero_mmr"
                     :paragraph-five="$t('HP Role MMR') + ': ' + player.role_mmr"
-                    :paragraph-six="$t('Hero Level') + ': ' + player.hero_level"
+                    :paragraph-six="player.map_mmr != null ? $t('HP Map MMR') + ': ' + player.map_mmr : null"
+                    :paragraph-seven="$t('Hero Level') + ': ' + player.hero_level"
                   ></image-hover-box>
                 </hero-image-wrapper>
                 <span class="relative max-w-full text-sm font-semibold"><span class="block truncate group-hover/bt:underline">{{ player.check ? $t('Hidden') : player.battletag }}</span><span v-if="!player.check" class="absolute left-full top-1/2 -translate-y-1/2 pl-1.5 opacity-0 group-hover/bt:opacity-100 transition-opacity"><basil-icon name="arrow-small" class="text-xs"></basil-icon></span></span>
@@ -79,7 +80,8 @@
         </div>
       </div>
 
-      <div class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 pb-10 flex flex-col gap-6">
+      <!-- relative: paints over the map art, which runs past the team cards -->
+      <div class="relative max-w-[120rem] mx-auto px-4 md:px-8 mt-6 pb-10 flex flex-col gap-6">
         <panel-box v-if="esport && esport != 'Other'" :title="$t('Series Games')" :divider="false">
           <table class="min-w-0 w-full rounded-table">
             <thead>
@@ -108,7 +110,7 @@
           <template #right>
             <!-- Same rules as Watch Replay -->
             <a v-if="isWatchableGame && replayViewerAllowed" class="ml-auto self-center text-sm font-semibold text-teal hover:underline" :href="'/Analytics/Match/Single/' + replayid + '/Replay#analytic-performance'">{{ $t('How each player played') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
-            <login-required-hover v-else-if="isWatchableGame" class="ml-auto self-center" message="You need to be logged in with Battle.net to see how each player played."><span class="text-sm opacity-60 cursor-pointer">{{ $t('How each player played') }}</span></login-required-hover>
+            <login-required-hover v-else-if="isWatchableGame" class="ml-auto self-center" message="You need to be logged in with Battle.net to see how each player played."><span class="text-sm opacity-60 cursor-pointer">{{ $t('How each player played') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span></login-required-hover>
           </template>
           <scroll-hint-container>
             <table class="w-full min-w-[60rem] rounded-table sticky-first-column">
@@ -191,15 +193,17 @@
               <thead>
                 <tr>
                   <th class="py-2 px-3 text-left text-sm leading-4">{{ $t('Player') }}</th>
-                  <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Player MMR') }}</th>
-                  <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Hero MMR') }}</th>
-                  <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Role MMR') }}</th>
+                  <!-- Each MMR, then its chevron column like Global Hero Stats' Builds -->
+                  <template v-for="label in ['Player MMR', 'Hero MMR', 'Role MMR', 'Map MMR']" :key="label">
+                    <th class="py-2 px-3 text-center text-sm leading-4">{{ $t(label) }}</th>
+                    <th class="py-2 px-3 w-12"></th>
+                  </template>
                 </tr>
               </thead>
               <tbody class="text-center">
                 <template v-for="team in [0, 1]" :key="team">
                   <tr>
-                    <td colspan="4" class="py-2 px-3 text-left text-xs font-semibold uppercase text-subtext"><span class="sticky left-3"><span :class="['inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle', data.winner == team ? 'bg-win' : 'bg-loss']"></span>{{ teamTitle(team) }} · {{ data.winner == team ? $t('Victory') : $t('Defeat') }}</span></td>
+                    <td colspan="9" class="py-2 px-3 text-left text-xs font-semibold uppercase text-subtext"><span class="sticky left-3"><span :class="['inline-block w-1.5 h-1.5 rounded-full mr-2 align-middle', data.winner == team ? 'bg-win' : 'bg-loss']"></span>{{ teamTitle(team) }} · {{ data.winner == team ? $t('Victory') : $t('Defeat') }}</span></td>
                   </tr>
                   <tr v-for="(player, index) in data.players[team]" :key="index">
                     <td class="py-2 px-3 text-left">
@@ -211,8 +215,12 @@
                         </span>
                       </span>
                     </td>
-                    <td v-for="kind in ['player', 'hero', 'role']" :key="kind">
+                    <template v-for="kind in ['player', 'hero', 'role', 'map']" :key="kind">
+                    <!-- No divider between the value and its chevron -->
+                    <td class="!border-r-0">
                       <span v-if="player.check" class="text-subtext">{{ $t('Hidden') }}</span>
+                      <!-- No map MMR for brawls or games it hasn't reached -->
+                      <span v-else-if="player[kind + '_mmr'] == null" class="text-subtext">—</span>
                       <span v-else class="inline-flex items-center gap-2 whitespace-nowrap">
                         <span class="text-subtext">{{ Math.round(player[kind + '_mmr'] - player[kind + '_change']) }}</span>
                         <span class="text-subtext">→</span>
@@ -220,6 +228,11 @@
                         <span :class="['text-xs', player[kind + '_change'] >= 0 ? 'text-win' : 'text-loss']">{{ (player[kind + '_change'] > 0 ? '+' : '') + player[kind + '_change'] }}</span>
                       </span>
                     </td>
+                    <!-- To this player's MMR page on this MMR -->
+                    <td class="py-2 px-3">
+                      <a v-if="!player.check && player[kind + '_mmr'] != null" :href="mmrPageLink(player, kind)" :title="$t('HP MMR Breakdown')" class="w-full flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors"><basil-icon name="arrow-small"></basil-icon></a>
+                    </td>
+                    </template>
                   </tr>
                 </template>
               </tbody>
@@ -752,6 +765,14 @@
       return totalKills;
     },
 
+    // The player's MMR page for this game's type, on the Hero, Role or Map MMR
+    mmrPageLink(player, kind) {
+      const query = { game_type: this.data.game_type_short };
+      if (kind === 'hero') query.hero = player.hero.name;
+      if (kind === 'role') query.role = player.hero.new_role;
+      if (kind === 'map') query.map = this.data.game_map.name;
+      return '/Player/' + player.battletag + '/' + player.blizz_id + '/' + this.data.region + '/MMR?' + new URLSearchParams(query).toString();
+    },
     getPlayerProfileLink(item, heroPage){
       if(item.check){
         return 'javascript:void(0)';

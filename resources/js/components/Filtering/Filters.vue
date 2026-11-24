@@ -497,7 +497,7 @@
       </div>
       <div class="flex max-md:mb-auto" :class="compact && $slots['compact-footer'] ? 'justify-between items-start' : 'justify-end'">
         <div v-if="compact && $slots['compact-footer']" class="mt-2"><slot name="compact-footer"></slot></div>
-        <button type="button" :class="['inline-flex items-center gap-1.5 text-sm font-medium text-teal hover:text-lteal', compact ? 'mt-2' : 'mt-4 -mb-2 mr-2']" v-if="!hideadvancedfilteringbutton && !(toggleExtraFilters && hasAdvancedFilters)" :aria-expanded="!!toggleExtraFilters" @click="toggleExtraFilters = !toggleExtraFilters" >{{ toggleButtonText }}<basil-icon name="arrow-small" :class="['text-xs', toggleExtraFilters ? '-rotate-90' : 'rotate-90']"></basil-icon></button>
+        <button type="button" :class="['inline-flex items-center gap-1.5 text-sm font-medium text-teal hover:text-lteal', compact ? 'mt-2' : 'mt-4 -mb-2']" v-if="!hideadvancedfilteringbutton && !(toggleExtraFilters && hasAdvancedFilters)" :aria-expanded="!!toggleExtraFilters" @click="toggleExtraFilters = !toggleExtraFilters" >{{ toggleButtonText }}<basil-icon name="arrow-small" :class="['text-xs', toggleExtraFilters ? '-rotate-90' : 'rotate-90']"></basil-icon></button>
         <round-image v-if="advancedfiltersinfo && !hideadvancedfilteringbutton" class="ml-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
           <p class="max-sm:text-xs">{{ advancedfiltersinfo }}</p>
         </round-image>

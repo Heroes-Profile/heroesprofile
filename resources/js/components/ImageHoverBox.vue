@@ -10,6 +10,7 @@
     <p v-if="paragraphFour">{{ paragraphFour }}</p>
     <p v-if="paragraphFive">{{ paragraphFive }}</p>
     <p v-if="paragraphSix">{{ paragraphSix }}</p>
+    <p v-if="paragraphSeven">{{ paragraphSeven }}</p>
   </div>
 </template>
 
@@ -27,6 +28,7 @@ export default {
     paragraphFour: String,
     paragraphFive: String,
     paragraphSix: String,
+    paragraphSeven: String,
     hpOwner: String,
   },
   data(){
