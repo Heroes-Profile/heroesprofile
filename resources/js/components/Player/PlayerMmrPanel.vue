@@ -38,7 +38,7 @@ export default {
   props: {
     // Holds qm_mmr_data, ud_mmr_data and so on, as the profile and single hero data both do
     data: Object,
-    // 'Hero' or 'Role' on those pages, so the title and column say which MMR it is
+    // 'Hero', 'Role' or 'Map' on those pages, so the title and column say which MMR it is
     kind: String,
     linkHref: String,
     // Extra query for the mode links, such as { hero: 'Li-Ming' }
@@ -60,7 +60,7 @@ export default {
   },
   computed: {
     mmrLabel() {
-      return { Hero: this.$t('HP Hero MMR'), Role: this.$t('HP Role MMR') }[this.kind] ?? this.$t('HP MMR');
+      return { Hero: this.$t('HP Hero MMR'), Role: this.$t('HP Role MMR'), Map: this.$t('HP Map MMR') }[this.kind] ?? this.$t('HP MMR');
     },
     mmrModes(){
       if (this.modes) return this.modes;

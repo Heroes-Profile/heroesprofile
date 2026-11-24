@@ -96,6 +96,8 @@ class PlayerHeroesMapsRolesController extends Controller
             // All pages only filter on role since fc230a85; a new key for those so results cached before, unfiltered, aren't
             // served. Null otherwise, which normalize drops, so every other key is unchanged
             'all_role_filtered' => $request['type'] === 'all' && $request['role'] ? 1 : null,
+            // Single map pages gained map MMR; same idea, so results cached without it aren't served
+            'map_mmr' => $request['type'] === 'single' && $request['page'] === 'map' ? 1 : null,
         ])));
 
         $dbCache = PlayerStatsCache::where('params_hash', $paramsHash)->first();
@@ -293,6 +295,9 @@ class PlayerHeroesMapsRolesController extends Controller
             $filterByType = $hero;
             if ($page == 'role') {
                 $filterByType = MMRTypeID::select('mmr_type_id')->filterByName($role)->first()->mmr_type_id;
+            } elseif ($page == 'map') {
+                // Brawl maps have no map rating, so no rows
+                $filterByType = $this->globalDataService->getMMRTypeValue($request['game_map']);
             }
 
             $qm_mmr_data = MasterMMRDataQM::select('conservative_rating', 'win', 'loss')->filterByType($filterByType)->filterByGametype(1)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();

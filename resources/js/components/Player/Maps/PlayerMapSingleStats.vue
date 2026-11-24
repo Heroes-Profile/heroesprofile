@@ -73,6 +73,18 @@
               <group-box v-for="group in heroGroups" :key="group.label" class="!m-0" :esport="esport" :playerlink="true" :text="group.label" :data="group.data"></group-box>
             </div>
           </div>
+
+          <div v-if="!esport" class="flex flex-col gap-4">
+            <h3 class="text-2xl font-bold">{{ $t('Heroes played on :map', { map: $mapName(map) }) }}</h3>
+            <!-- Zero width so the list wraps to the card instead of widening it; tiles as in Heroes above -->
+            <div class="w-0 min-w-full flex flex-wrap gap-3 max-md:gap-2 max-md:justify-center">
+              <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes" :key="index">
+                <hero-image-wrapper :hero="item.hero" size="tile" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" link-text="View Hero">
+                  <image-hover-box :title="$heroName(item.hero)" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + item.games_played"></image-hover-box>
+                </hero-image-wrapper>
+              </a>
+            </div>
+          </div>
         </panel-box>
 
         <div class="flex-1 flex flex-col gap-6 min-w-0">
@@ -104,6 +116,8 @@
           </panel-box>
           <player-party-size-panel v-if="!esport" :data="data" prefix="stack_size_"></player-party-size-panel>
 
+          <player-mmr-panel v-if="!esport" kind="Map" :data="data" :link-href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/MMR'" :link-query="{ map: map }"></player-mmr-panel>
+
           <player-awards-panel v-if="!esport" class="flex-1" :link-query="{ map: map }" :battletag="battletag" :blizzid="blizzid" :region="region" :params="{ game_type: modifiedgametype, game_map: map, season: modifiedseason, start_date: startdate, end_date: enddate }"></player-awards-panel>
         </div>
       </div>
@@ -112,16 +126,6 @@
       <player-season-win-rate-panel :data="data" :title="`${battletag} Win Rate Data Per Season on ${map}`"></player-season-win-rate-panel>
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
-
-      <panel-box v-if="!esport" :title="'Heroes Played On ' + map">
-        <div class="flex flex-wrap gap-2">
-          <a :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes" :key="index">
-            <hero-image-wrapper :hero="item.hero" size="big" :href="esport ? item.link : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" link-text="View Hero">
-              <image-hover-box :title="$heroName(item.hero)" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + item.games_played"></image-hover-box>
-            </hero-image-wrapper>
-          </a>
-        </div>
-      </panel-box>
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
@@ -174,6 +178,12 @@
                 </div>
               </div>
             </div>
+            <div v-if="!esport" class="flex flex-col gap-4">
+              <h3 class="text-2xl font-bold">{{ $t('Heroes played on :map', { map: $mapName(map) }) }}</h3>
+              <div class="w-0 min-w-full flex flex-wrap gap-3 max-md:gap-2 max-md:justify-center">
+                <skeleton-box v-for="tile in 40" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
+              </div>
+            </div>
           </panel-box>
 
           <div class="flex-1 flex flex-col gap-6 min-w-0">
@@ -186,6 +196,7 @@
               </div>
             </panel-box>
             <player-party-size-panel v-else :data="emptyPartyData" prefix="stack_size_" :skeleton="true"></player-party-size-panel>
+            <player-mmr-panel v-if="!esport" kind="Map" :data="{}" :skeleton="true"></player-mmr-panel>
             <player-awards-panel v-if="!esport" class="flex-1" :placeholder="true" :battletag="battletag" :blizzid="blizzid" :region="region"></player-awards-panel>
           </div>
         </div>
@@ -194,13 +205,6 @@
       <panel-box :title="$t('Win Rate Per Season')">
         <!-- The season chart's shape: as wide as the panel, 3.1 times wider than tall -->
         <skeleton-box class="w-full aspect-[3.1]"></skeleton-box>
-      </panel-box>
-
-      <!-- Every hero played on the map loads here as a 5rem tile; most players have played most of them -->
-      <panel-box v-if="!esport" :title="'Heroes Played On ' + map">
-        <div class="flex flex-wrap gap-2">
-          <skeleton-box v-for="tile in 80" :key="tile" class="w-20 h-20 rounded"></skeleton-box>
-        </div>
       </panel-box>
 
       <panel-box :title="$t('Recent Matches')" link-text="Match History" :skeleton="true" :divider="false">
