@@ -43,8 +43,8 @@
 </template>
 
 <script>
-// The game's role order
-export const ROLE_ORDER = ['Tank', 'Bruiser', 'Healer', 'Support', 'Melee Assassin', 'Ranged Assassin'];
+// Roles in the filters' order (alphabetical), so they read the same everywhere
+export const ROLE_ORDER = ['Bruiser', 'Healer', 'Melee Assassin', 'Ranged Assassin', 'Support', 'Tank'];
 
 export default {
   name: 'HeroSelection',
@@ -75,7 +75,7 @@ export default {
       return this.heroes.filter(hero => (role === 'All' || hero.new_role === role)
         && (!normalizedQuery || this.normalizeString(hero.name).includes(normalizedQuery)));
     },
-    // The rows for grouped, in the game's role order; roles with no hero left out
+    // The rows for grouped, in the filters' role order; roles with no hero left out
     roleGroups() {
       return ROLE_ORDER
         .map(role => ({ role, heroes: this.filteredHeroes.filter(hero => hero.new_role === role) }))

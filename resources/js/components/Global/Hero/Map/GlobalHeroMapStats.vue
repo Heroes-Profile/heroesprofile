@@ -63,10 +63,11 @@
                   <th
                     v-for="column in dynamicColumns"
                     :key="column.value"
-                    :class="['py-2 px-3 text-sm leading-4', column.value === 'name' ? 'text-left' : 'text-center', column.sortable ? 'cursor-pointer' : '', { 'bg-teal text-white': column.sortable && sortKey === column.value }]"
+                    :class="['py-2 px-3 text-sm leading-4 whitespace-nowrap', column.value === 'name' ? 'text-left' : 'text-center', column.sortable ? 'cursor-pointer' : '', { 'bg-teal text-white': column.sortable && sortKey === column.value }]"
                     @click="column.sortable ? sortTable(column.value) : null"
                     >
-                      {{ $t(column.text) }}<sort-indicator v-if="column.sortable" :column="column.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                      <!-- Phones get the short label where there is one -->
+                      <template v-if="column.short"><span class="md:hidden">{{ $t(column.short) }}</span><span class="max-md:hidden">{{ $t(column.text) }}</span></template><template v-else>{{ $t(column.text) }}</template><sort-indicator v-if="column.sortable" :column="column.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
                 </tr>
               </thead>
@@ -74,7 +75,7 @@
                 <tr v-for="row in sortedData" :key="row.name">
                   <td v-for="column in dynamicColumns" :key="column.value" :class="column.value === 'name' ? 'text-left' : ''">
                     <span v-if="column.value === 'name'" class="font-semibold">{{ $mapName(row.name) }}</span>
-                    <template v-else>{{ row[column.value] }}</template>
+                    <template v-else>{{ row[column.value] }}{{ column.percent ? '%' : '' }}</template>
                   </td>
                 </tr>
               </tbody>
@@ -176,15 +177,15 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
         if (this.gametype.includes("sl")) {
           return [
             { text: 'Map', value: 'name', sortable: true },
-            { text: 'Win Rate %', value: 'win_rate', sortable: true },
-            { text: 'Ban Rate %', value: 'ban_rate', sortable: true },
-            { text: 'Games Played', value: 'games_played', sortable: true },
+            { text: 'Win Rate', value: 'win_rate', sortable: true, percent: true },
+            { text: 'Ban Rate', value: 'ban_rate', sortable: true, percent: true },
+            { text: 'Games Played', short: 'Games', value: 'games_played', sortable: true },
           ];
         } else {
           return [
             { text: 'Map', value: 'name', sortable: true },
-            { text: 'Win Rate %', value: 'win_rate', sortable: true },
-            { text: 'Games Played', value: 'games_played', sortable: true },
+            { text: 'Win Rate', value: 'win_rate', sortable: true, percent: true },
+            { text: 'Games Played', short: 'Games', value: 'games_played', sortable: true },
           ];
         }
       },

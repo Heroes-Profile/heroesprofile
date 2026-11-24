@@ -103,7 +103,7 @@
 </template>
 
 <script>
-const ROLES = ['Tank', 'Bruiser', 'Healer', 'Support', 'Melee Assassin', 'Ranged Assassin'];
+const ROLES = ['Bruiser', 'Healer', 'Melee Assassin', 'Ranged Assassin', 'Support', 'Tank'];
 const MODES = [
   { code: 'sl', name: 'Storm League' },
   { code: 'qm', name: 'Quick Match' },

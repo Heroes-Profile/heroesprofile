@@ -1,7 +1,22 @@
 <template>
   <!-- A hero's talent builds: the talents, how often and how well they're played, and the code to copy -->
-  <div id="table-container2" ref="tablecontainer2" class="min-w-0 max-md:overflow-clip">
-    <table class="min-w-0 w-full rounded-table max-sm:text-xs" ref="responsivetable2">
+  <div class="min-w-0">
+  <!-- Phones: a card per build, its talents, numbers and copy button stacked, so nothing has to shrink to fit -->
+  <div class="md:hidden flex flex-col gap-2">
+    <div v-for="(row, index) in talentbuilddata" :key="index" class="rounded-control bg-surface-1 p-3 flex flex-col gap-3 min-w-0">
+      <div ref="mobiletalents" class="min-w-0 overflow-clip"><build-code :build="row" :hero="row.hero" show="talents" align="start" :popup-hoverable="false"></build-code></div>
+      <div class="grid grid-cols-3 gap-2 text-sm">
+        <span class="flex flex-col"><span class="text-xs text-subtext">{{ $t('Games') }}</span><span class="font-semibold tabular-nums">{{ getValueLocal(row.games_played) }}</span></span>
+        <span class="flex flex-col"><span class="text-xs text-subtext">{{ $t('Win chance') }}</span><span class="font-semibold tabular-nums">{{ (Number(row.win_rate) || 0).toFixed(2) }}%</span></span>
+        <span v-if="heroWinRate != null" class="flex flex-col"><span class="text-xs text-subtext">{{ $t('vs hero avg') }}</span><span :class="['font-semibold tabular-nums', vsHero(row) >= 0 ? 'text-win' : 'text-loss']">{{ vsHeroText(row) }}</span></span>
+        <span v-else class="flex flex-col"><span class="text-xs text-subtext">{{ $t('Confidence') }}</span><span class="tabular-nums text-subtext">{{ confidenceText(row) }}</span></span>
+      </div>
+      <span v-if="statfilter && statfilter != 'win_rate'" class="text-xs text-subtext">{{ statFilterLabel(statfilter) }}: {{ getValueLocal(row.total_filter_type) }}</span>
+      <build-code :build="row" :hero="row.hero" show="code" align="start"></build-code>
+    </div>
+  </div>
+  <div id="table-container2" ref="tablecontainer2" class="min-w-0 max-md:hidden">
+    <table class="min-w-0 w-full rounded-table" ref="responsivetable2">
       <thead>
         <tr>
           <th class="py-2 px-4 text-left text-sm leading-4">{{ $t('Build') }}</th>
@@ -34,6 +49,7 @@
       </tbody>
     </table>
   </div>
+  </div>
 </template>
 
 <script>
@@ -61,11 +77,10 @@ export default {
   },
 
   mounted() {
-    this.$nextTick(() => {
-      if (window.matchMedia('(max-width: 767px)').matches) {
-        scaleTableToFit(this.$refs.responsivetable2, this.$refs.tablecontainer2);
-      }
-    });
+    this.fitMobileTalents();
+  },
+  updated() {
+    this.fitMobileTalents();
   },
   computed: {
   },
@@ -73,6 +88,13 @@ export default {
   },
   methods: {
     statFilterLabel,
+    // On the narrowest phones a build's seven talents are wider than its card; shrink that row to fit
+    fitMobileTalents() {
+      this.$nextTick(() => {
+        if (!window.matchMedia('(max-width: 767px)').matches) return;
+        (this.$refs.mobiletalents || []).forEach(box => scaleTableToFit(box.firstElementChild, box));
+      });
+    },
     vsHero(row) {
       return (Number(row.win_rate) || 0) - this.heroWinRate;
     },

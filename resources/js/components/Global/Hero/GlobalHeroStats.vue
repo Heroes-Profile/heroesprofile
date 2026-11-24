@@ -546,6 +546,17 @@ export default {
     },
   },
   watch: {
+    // Back from the chart, the table is drawn afresh, so it's shrunk to fit the screen again
+    togglechart(showChart) {
+      if (!showChart) {
+        this.$nextTick(() => {
+          const responsivetable = this.$refs.responsivetable;
+          if (responsivetable) {
+            this.tablewidth = scaleTableToFit(responsivetable, this.$refs.tablecontainer);
+          }
+        });
+      }
+    },
   },
   methods: {
   	async getData(){

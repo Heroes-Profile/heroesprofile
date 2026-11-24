@@ -85,7 +85,8 @@
               <th class="py-2 px-2 md:px-6 text-left text-xs md:text-sm leading-4">
                 <div class="relative flex items-center gap-[1.125rem]">
                   <span class="cursor-pointer" @click="sortTable('name')">{{ $t('Hero') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                  <search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" align="left" class="w-40 max-md:hidden"></search-input>
+                  <!-- Phones use the search above the table instead -->
+                      <span class="max-md:hidden"><search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" align="left" class="w-40"></search-input></span>
                 </div>
               </th>
               <th @click="sortTable('ally_win_rate')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'ally_win_rate' }">{{ $t('Win rate with') }}<sort-indicator :column="'ally_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>

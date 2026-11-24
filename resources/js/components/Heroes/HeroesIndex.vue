@@ -45,7 +45,7 @@ export default {
     };
   },
   computed: {
-    // All, then the roles in the game's order
+    // All, then the roles in the filters' order
     roleTabs() {
       return [{ key: 'All', text: 'All' }, ...ROLE_ORDER.map(role => ({ key: role, text: role }))];
     },

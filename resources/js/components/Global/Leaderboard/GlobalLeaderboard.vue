@@ -139,10 +139,10 @@
                     </span>
                   </th>
                   <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'win_rate'}]">
-                    {{ $t('Win Rate %') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                    {{ $t('Win Rate') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
                   <th v-if="leaderboardtype == 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'win_rate'}]">
-                    {{ $t('Prediction Rate %') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                    {{ $t('Prediction Rate') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                   </th>
                   <th v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" @click="sortTable('rating')" :class="['py-2 px-3  text-center text-sm leading-4 cursor-pointer',{ 'bg-teal text-white': sortKey === 'rating'}]">
                     <span class="inline-flex items-center gap-2">{{ $t('HP Rating') }}<sort-indicator :column="'rating'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
@@ -199,7 +199,7 @@
                     </td>
                     <td>{{ row.region }}</td>
                     <td v-if="leaderboardtype == 'SL Rank'"><real-rank-badge :rank="row" :width="36" label="right"></real-rank-badge></td>
-                    <td>{{ row.win_rate === null ? '-' : row.win_rate.toFixed(2) }}</td>
+                    <td>{{ row.win_rate === null ? '-' : row.win_rate.toFixed(2) + '%' }}</td>
                     <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'">{{ row.rating.toFixed(2) }}</td>
                     <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'">{{ row.mmr.toLocaleString('en-US') }}</td>
                     <td v-if="leaderboardtype != 'Match Prediction' && leaderboardtype != 'SL Rank'" class="px-6"><rank-tier-pill :tier="row.tier"></rank-tier-pill></td>
@@ -287,7 +287,7 @@ export default {
         { text: 'Rank', value: 'rank', sortable: true },
         { text: 'Battletag', value: 'battletag', sortable: true },
         { text: 'Region', value: 'region', sortable: true },
-        { text: 'Win Rate %', value: 'win_rate', sortable: true },
+        { text: 'Win Rate', value: 'win_rate', sortable: true },
         { text: 'Heroes Profile Rating', value: 'rating', sortable: true },
         { text: 'Player MMR', value: 'conservative_rating', sortable: true }, 
         { text: 'Tier', value: 'tier', sortable: true }, 

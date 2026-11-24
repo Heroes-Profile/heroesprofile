@@ -132,7 +132,7 @@
             <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :hero-win-rate="heroWinRate"></global-talent-builds-section>
             <div class="flex flex-wrap items-center justify-between gap-4">
               <span class="text-sm text-subtext">{{ $t('Want something else? Make your own build in the Talent Builder.') }}</span>
-              <custom-button :href="talentBuilderUrl()" :text="'Open Talent Builder'" :alt="'Open Talent Builder'" color="teal"></custom-button>
+              <custom-button :href="talentBuilderUrl()" :text="'Open Talent Builder'" :alt="'Open Talent Builder'" color="teal" :targetblank="true"></custom-button>
             </div>
           </panel-box>
         </div>
@@ -140,9 +140,21 @@
           {{ $t('Error: Reload page/filter') }}
         </div>
 
-        <div v-else-if="isBuildsLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
-          <loading-component :compact="true" :textoverride="true">{{ $t('Loading talent builds...') }}</loading-component>
-          <table-skeleton :rows="7" :heading="true" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
+        <!-- The loaded card in grey: the table from md up, a card per build on phones; the message on its tab -->
+        <div v-else-if="isBuildsLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6">
+          <panel-box title="Talent builds" subtitle="Copy a build code and paste it in game chat." :skeleton="true" class="relative md:!rounded-tl-none">
+            <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading talent builds...') }}</loading-component>
+            <table-skeleton class="max-md:hidden" :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
+            <div class="md:hidden flex flex-col gap-2">
+              <div v-for="row in 5" :key="row" class="rounded-control bg-surface-1 p-3 flex flex-col gap-3">
+                <div class="flex gap-1.5 overflow-clip"><skeleton-box v-for="talent in 7" :key="talent" class="w-[2.625rem] h-[2.625rem] shrink-0"></skeleton-box></div>
+                <div class="grid grid-cols-3 gap-2">
+                  <span v-for="stat in 3" :key="stat" class="flex flex-col gap-1"><skeleton-box class="h-3 w-12"></skeleton-box><skeleton-box class="h-4 w-16"></skeleton-box></span>
+                </div>
+                <skeleton-box class="h-8 w-40"></skeleton-box>
+              </div>
+            </div>
+          </panel-box>
         </div>
       </div>
   </div>

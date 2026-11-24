@@ -31,7 +31,7 @@
     data() {
       return {
         chartRef: null,
-        roles: ['Tank', 'Bruiser', 'Healer', 'Support', 'Melee Assassin', 'Ranged Assassin'],
+        roles: ['Bruiser', 'Healer', 'Melee Assassin', 'Ranged Assassin', 'Support', 'Tank'],
         // Empty means All
         selectedRoles: [],
       };

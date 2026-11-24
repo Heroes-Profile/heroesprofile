@@ -34,7 +34,7 @@
 </template>
 
 <script>
-const ROLES = ['Tank', 'Bruiser', 'Healer', 'Support', 'Melee Assassin', 'Ranged Assassin'];
+const ROLES = ['Bruiser', 'Healer', 'Melee Assassin', 'Ranged Assassin', 'Support', 'Tank'];
 
 export default {
   name: 'HeroBoard',

@@ -17,10 +17,10 @@
               {{ $t('Talent') }}<sort-indicator :column="'sort'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['sort']"></sort-indicator>
             </th>
             <th @click="sortTable('win_rate', level)" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortedColumns[level] === 'win_rate' }">
-              {{ $t('Win Rate %') }}<sort-indicator :column="'win_rate'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['win_rate']"></sort-indicator>
+              {{ $t('Win Rate') }}<sort-indicator :column="'win_rate'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['win_rate']"></sort-indicator>
             </th>
             <th @click="sortTable('popularity', level)" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortedColumns[level] === 'popularity' }">
-              {{ $t('Popularity %') }}<sort-indicator :column="'popularity'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['popularity']"></sort-indicator>
+              {{ $t('Popularity') }}<sort-indicator :column="'popularity'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['popularity']"></sort-indicator>
             </th>                
             <th @click="sortTable('games_played', level)" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortedColumns[level] === 'games_played' }">
               {{ $t('Games Played') }}<sort-indicator :column="'games_played'" :sort-key="sortedColumns[level]" :sort-dir="sortOrders[level] && sortOrders[level]['games_played']"></sort-indicator>
@@ -38,8 +38,8 @@
                 <span class="px-3">{{ $talentName(row.talentInfo) }}</span>
               </div>
             </td>
-            <td class="py-2 px-3  ">{{ row.win_rate.toFixed(2) }}</td>
-            <td class="py-2 px-3  ">{{ row.popularity.toFixed(2) }}</td>
+            <td class="py-2 px-3  ">{{ row.win_rate.toFixed(2) }}%</td>
+            <td class="py-2 px-3  ">{{ row.popularity.toFixed(2) }}%</td>
             <td class="py-2 px-3  ">{{ row.games_played.toLocaleString('en-US') }}</td>
             <td v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 ">{{ row.total_filter_type }}</td>
           </tr>
