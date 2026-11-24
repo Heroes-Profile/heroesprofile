@@ -48,4 +48,18 @@ return [
             'discord' => 'blurayy',
         ],
     ],
+
+    // People who helped with a one-off piece of work, under Contributors below the team.
+    //   name, discord - as above
+    //   contribution  - what they did, one short line
+    //   date          - when, 'YYYY-MM'
+    // Bluray is in both lists for now, to compare; remove the one they don't prefer.
+    'contributors' => [
+        [
+            'name' => 'Bluray',
+            'contribution' => 'Designed the 2026 site redesign in collaboration with the Heroes Profile team',
+            'date' => '2026-10',
+            'discord' => 'blurayy',
+        ],
+    ],
 ];

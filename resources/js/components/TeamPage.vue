@@ -20,6 +20,22 @@
         </div>
       </panel-box>
     </div>
+
+    <!-- People who helped with a one-off piece of work: lighter cards, what they did and when -->
+    <div v-if="contributors.length" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-10 flex flex-col gap-4">
+      <div>
+        <h2 class="text-2xl font-bold">{{ $t('Contributors') }}</h2>
+        <p class="text-sm text-subtext mt-1">{{ $t('People who helped with a part of Heroes Profile.') }}</p>
+      </div>
+      <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div v-for="contributor in contributors" :key="contributor.name" class="rounded bg-surface-1 px-5 py-4 flex flex-col gap-1">
+          <h3 class="text-lg font-bold">{{ contributor.name }}</h3>
+          <span class="font-medium text-teal">{{ $t(contributor.contribution) }}</span>
+          <span class="text-sm text-subtext">{{ month(contributor.date) }}</span>
+          <span v-if="contributor.discord" class="inline-flex items-center gap-2 text-sm mt-2" :title="$t('Discord')"><i class="fab fa-discord w-4 text-center text-teal"></i>{{ contributor.discord }}</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -28,6 +44,7 @@ export default {
   name: 'TeamPage',
   props: {
     members: { type: Array, required: true },
+    contributors: { type: Array, default: () => [] },
   },
   methods: {
     // "June 2018 – Present", the months in the page's language

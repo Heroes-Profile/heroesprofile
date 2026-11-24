@@ -11,6 +11,7 @@ class TeamController extends Controller
         return view('team')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'members' => config('team.members'),
+            'contributors' => config('team.contributors', []),
         ]);
     }
 }
