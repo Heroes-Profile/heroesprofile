@@ -2,6 +2,8 @@
 
 namespace App\Services\Api;
 
+use App\Models\GameType;
+use App\Models\Map;
 use App\Models\Replay;
 use App\Models\ReplayFingerprint;
 use App\Models\UploadAttempt;
@@ -107,6 +109,9 @@ class ReplayUploadService
         'tracker_events_bytes' => 5000,
     ];
 
+    /** Seconds apart two copies of one game can end, each player's clock being its own. */
+    private const SAME_GAME_DATE_WINDOW = 5;
+
     public function __construct(private readonly ReplayParserClient $parser) {}
 
     /**
@@ -198,6 +203,19 @@ class ReplayUploadService
             return $this->body($fingerprint, $existing->replayID, 'Duplicate');
         }
 
+        // Another copy of the same game, stored under a different fingerprint
+        $sameGame = $this->sameGameReplayID($parsed);
+
+        if ($sameGame !== null) {
+            if (in_array($source, self::PRIMARY_SOURCES, true)) {
+                $this->recordSourceChange($sameGame, $source);
+            }
+
+            $this->record($ip, $hash, $name, $size, $source, 'Duplicate', $fingerprint, $sameGame);
+
+            return $this->body($fingerprint, $sameGame, 'Duplicate');
+        }
+
         $this->store(Storage::disk(self::DISK), $file, $fingerprint.self::EXTENSION);
 
         $replay = new ReplayFingerprint;
@@ -225,6 +243,63 @@ class ReplayUploadService
         $this->record($ip, $hash, $name, $size, $source, 'Success', $fingerprint, (int) $replay->replayID);
 
         return $this->body($fingerprint, $replay->replayID, 'Success');
+    }
+
+    /**
+     * A stored replay of the same game: same type, region, map and length, the same 10 players, ended within
+     * SAME_GAME_DATE_WINDOW seconds. Null when there is none or the parse lacks what's needed to tell; the
+     * backend runs the same check before it saves, so a skipped or failed check here never lets one through.
+     *
+     * @param  array<string, mixed>  $parsed
+     */
+    private function sameGameReplayID(array $parsed): ?int
+    {
+        $players = is_array($parsed['players'] ?? null) ? $parsed['players'] : [];
+        $blizzIds = array_values(array_unique(array_filter(
+            array_map(fn ($player) => $player['blizz_id'] ?? null, $players),
+            fn ($id) => is_int($id) && $id > 0,
+        )));
+        $gameDate = $this->gameDate($parsed);
+        $length = $parsed['length'] ?? null;
+        $region = $players[0]['region'] ?? null;
+        $mode = $parsed['game_mode'] ?? null;
+
+        if (count($blizzIds) !== 10 || $gameDate === null || ! is_int($length) || ! is_int($region) || ! is_string($mode)) {
+            return null;
+        }
+
+        try {
+            $gameType = GameType::where('name', $mode)->value('type_id');
+            $mapId = Map::idFromParser($parsed, Map::parserLookups());
+
+            if ($gameType === null || $mapId === null) {
+                return null;
+            }
+
+            $date = strtotime($gameDate);
+
+            $replayID = DB::connection('heroesprofile')->table('replay as r')
+                ->where('r.region', $region)
+                ->where('r.game_type', $gameType)
+                ->where('r.game_map', $mapId)
+                ->where('r.game_length', $length)
+                ->whereBetween('r.game_date', [
+                    date('Y-m-d H:i:s', $date - self::SAME_GAME_DATE_WINDOW),
+                    date('Y-m-d H:i:s', $date + self::SAME_GAME_DATE_WINDOW),
+                ])
+                ->whereRaw(
+                    '(SELECT COUNT(DISTINCT p.blizz_id) FROM player p WHERE p.replayID = r.replayID AND p.blizz_id IN ('.implode(',', array_fill(0, 10, '?')).')) = 10',
+                    $blizzIds,
+                )
+                ->orderBy('r.replayID')
+                ->value('r.replayID');
+        } catch (Throwable $e) {
+            report($e);
+
+            return null;
+        }
+
+        return $replayID === null ? null : (int) $replayID;
     }
 
     /**
