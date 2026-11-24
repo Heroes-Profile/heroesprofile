@@ -115,8 +115,8 @@
               <thead>
                 <tr>
                   <th class="py-2 px-3 text-left text-sm leading-4">{{ $t('Player') }}</th>
-                  <th v-for="column in scoreColumns" :key="column.key" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer whitespace-nowrap" :class="{ 'bg-teal text-white': scoreSort === column.key }" @click="sortScores(column.key)">
-                    {{ $t(column.label) }}<span v-if="column.key === 'total_rank'" class="inline-flex align-middle ml-1" @click.stop><round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true"><slot><p class="text-sm p-2 text-left font-normal whitespace-normal">{{ $t('Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match. 100 would be a perfect match with most MVPs hovering between 70-75.') }}</p></slot></round-image></span><sort-indicator :column="column.key" :sort-key="scoreSort" :sort-dir="scoreSortDir"></sort-indicator>
+                  <th v-for="column in scoreColumns" :key="column.key" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer whitespace-nowrap" :class="[column.width, { 'bg-teal text-white': scoreSort === column.key }]" @click="sortScores(column.key)">
+                    {{ $t(column.label) }}<span v-if="column.key === 'total_rank'" class="inline-flex align-middle ml-1" @click.stop><round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true"><slot><p class="text-sm p-2 text-left font-normal whitespace-normal">{{ $t('Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match. 100 would be a perfect match with most MVPs hovering between 70-75.') }}</p></slot></round-image></span><sort-indicator :column="column.key" :sort-key="scoreSort || 'total_rank'" :sort-dir="scoreSortDir"></sort-indicator>
                   </th>
                 </tr>
               </thead>
@@ -427,15 +427,15 @@
       // Match Scores' columns; deaths are best low
       scoreColumns() {
         return [
-          { key: 'total_rank', label: this.$t('HP Rating'), value: player => player.total_rank },
-          { key: 'kills', label: this.$t('Kills'), value: player => player.score.kills },
-          { key: 'takedowns', label: this.$t('Takedowns'), value: player => player.score.takedowns },
-          { key: 'deaths', label: this.$t('Deaths'), value: player => player.score.deaths, lowest: true },
-          { key: 'siege_damage', label: this.$t('Siege Dmg'), value: player => player.score.siege_damage },
-          { key: 'hero_damage', label: this.$t('Hero Dmg'), value: player => player.score.hero_damage },
-          { key: 'total_healing', label: this.$t('Healing'), value: player => player.score.total_healing },
-          { key: 'damage_taken', label: this.$t('Dmg Taken'), value: player => player.score.damage_taken || 0 },
-          { key: 'experience_contribution', label: this.$t('XP Contrib.'), value: player => player.score.experience_contribution },
+          { key: 'total_rank', label: this.$t('HP Rating'), value: player => player.total_rank, width: 'w-[150px]' },
+          { key: 'kills', label: this.$t('Kills'), value: player => player.score.kills, width: 'w-[110px]' },
+          { key: 'takedowns', label: this.$t('Takedowns'), value: player => player.score.takedowns, width: 'w-[130px]' },
+          { key: 'deaths', label: this.$t('Deaths'), value: player => player.score.deaths, lowest: true, width: 'w-[110px]' },
+          { key: 'siege_damage', label: this.$t('Siege Dmg'), value: player => player.score.siege_damage, width: 'w-[160px]' },
+          { key: 'hero_damage', label: this.$t('Hero Dmg'), value: player => player.score.hero_damage, width: 'w-[160px]' },
+          { key: 'total_healing', label: this.$t('Healing'), value: player => player.score.total_healing, width: 'w-[160px]' },
+          { key: 'damage_taken', label: this.$t('Dmg Taken'), value: player => player.score.damage_taken || 0, width: 'w-[160px]' },
+          { key: 'experience_contribution', label: this.$t('XP Contrib.'), value: player => player.score.experience_contribution, width: 'w-[160px]' },
         ];
       },
       // Each column's best value over all ten players
@@ -447,8 +447,9 @@
         }));
       },
       scoreGroups() {
+        // Unsorted: by team, each team by HP Rating
         if (!this.scoreSort) {
-          return [0, 1].map(team => ({ key: team, label: this.teamTitle(team) + ' · ' + (this.data.winner == team ? this.$t('Victory') : this.$t('Defeat')), won: this.data.winner == team, players: this.data.players[team] }));
+          return [0, 1].map(team => ({ key: team, label: this.teamTitle(team) + ' · ' + (this.data.winner == team ? this.$t('Victory') : this.$t('Defeat')), won: this.data.winner == team, players: [...this.data.players[team]].sort((a, b) => (Number(b.total_rank) || 0) - (Number(a.total_rank) || 0)) }));
         }
         const column = this.scoreColumns.find(item => item.key === this.scoreSort);
         const players = [...this.data.players[0], ...this.data.players[1]]
