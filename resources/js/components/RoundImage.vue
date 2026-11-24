@@ -122,18 +122,27 @@
           // Closes as soon as the pointer leaves the image, even onto the popup
           { 'pointer-events-none': !popupHoverable && !pinned },
         {
-          'w-[14em]' : popupsize != 'large' && popupsize != 'xlarge' && popupsize != 'fit',
+          'w-[14em]' : popupsize != 'large' && popupsize != 'xlarge' && popupsize != 'fit' && !hoverBox,
           'w-[25rem] max-w-[90vw]' : popupsize == 'large',
           'w-[32em] max-w-[90vw]' : popupsize == 'xlarge',
-          'w-max max-w-[24em]' : popupsize == 'fit'
+          'w-max max-w-[24em]' : popupsize == 'fit',
+          // An image-hover-box card: as wide as its rows need
+          'w-max min-w-[15rem] max-w-[22rem]' : hoverBox && popupsize != 'large' && popupsize != 'xlarge' && popupsize != 'fit'
         }
         ]" >
         <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft text-left p-4 rounded drop-shadow-md z-30">
-          <div v-if="hpowner || ispatreon || voideye || award" class="flex flex-col gap-1 text-center">
-            <div class="bg-lblue rounded-[0.25rem]" v-if="hpowner">{{ $t('Heroes Profile Owner') }}</div>
-            <div class="bg-red rounded-[0.25rem]" v-if="ispatreon">{{ $t('Patreon Subscriber') }}</div>
-            <div class="bg-[#4c1d95] rounded-[0.25rem]" v-if="voideye">{{ $t('Marked by the Void') }}</div>
-            <div class="bg-teal rounded-[0.25rem]" v-if="award">{{award.title}}</div>
+          <!-- An image-hover-box inside shows these under its header instead -->
+          <div v-if="flairBadges.length && !hoverBox" class="flex flex-col gap-1.5">
+            <div v-for="badge in flairBadges" :key="badge.key" :class="['flex items-center gap-2.5 rounded-[0.375rem] px-3 py-2 font-medium text-white', badge.class]">
+              <!-- The same flair as on the portrait -->
+              <span class="w-6 h-6 shrink-0 flex items-center justify-center text-lg leading-none">
+                <i v-if="badge.key === 'owner'" class="fas fa-crown owner-crown"></i>
+                <i v-else-if="badge.key === 'patreon'" class="fas fa-star text-gold"></i>
+                <void-eye-flair v-else-if="badge.key === 'void'" :force="true" :tooltip="false"></void-eye-flair>
+                <img v-else-if="badge.key === 'award' && badge.icon" :src="badge.icon" class="w-5 h-5 object-contain" alt="" />
+              </span>
+              {{ badge.label }}
+            </div>
           </div>
           <div ref="hoverContent" class="contents"><slot></slot></div>
           <custom-button v-if="tapped" class="mt-2" :href="href" :text="linkText" size="small"></custom-button>
@@ -159,9 +168,23 @@ export function popupClosed(close) {
   }
 }
 
+import { computed } from 'vue';
+
 export default {
   name: 'RoundImage',
   components: {
+  },
+  // For an image-hover-box in the popup: the player's flair and the portrait, to lay out in its card
+  provide() {
+    return {
+      popupCard: computed(() => ({ badges: this.flairBadges, image: this.image })),
+      claimPopupCard: () => { this.hoverBox = true; },
+      // An info icon inside this popup opens over it instead of replacing it
+      insidePopup: true,
+    };
+  },
+  inject: {
+    insidePopup: { default: false },
   },
   props: {
     title: String,
@@ -202,6 +225,8 @@ export default {
       pinned: false,
       imageLoaded: false,
       imageFailed: false,
+      // An image-hover-box is in the popup and lays out the flair
+      hoverBox: false,
     }
   },
   created(){
@@ -212,6 +237,15 @@ export default {
     this.hideTooltip();
   },
   computed: {
+    // The popup's flair bars, in this order
+    flairBadges() {
+      return [
+        this.hpowner && { key: 'owner', label: this.$t('Heroes Profile Owner'), class: 'bg-lblue' },
+        this.ispatreon && { key: 'patreon', label: this.$t('Patreon Subscriber'), class: 'bg-red' },
+        this.voideye && { key: 'void', label: this.$t('Marked by the Void'), class: 'bg-[#4c1d95]' },
+        this.award && { key: 'award', label: this.award.title, class: 'bg-teal', icon: this.awardicon, description: this.award.description },
+      ].filter(Boolean);
+    },
     isInfoIcon() {
       return (this.icon || '').split(' ').includes('fa-info');
     },
@@ -286,7 +320,7 @@ export default {
       this.showTooltip = false;
       this.tapped = false;
       this.pinned = false;
-      popupClosed(this.hideTooltip);
+      if (!this.insidePopup) popupClosed(this.hideTooltip);
       window.removeEventListener('scroll', this.hideTooltip, true);
       document.removeEventListener('click', this.handleOutsideClick, true);
       document.removeEventListener('keydown', this.handleEscape);
@@ -297,7 +331,7 @@ export default {
 
       clearTimeout(this.hideTimer);
       if (this.showTooltip) return;
-      popupOpened(this.hideTooltip);
+      if (!this.insidePopup) popupOpened(this.hideTooltip);
       // Fixed position goes stale once anything scrolls
       window.addEventListener('scroll', this.hideTooltip, true);
       // Hidden for the first frame while calculateTooltipPosition measures it
