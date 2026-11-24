@@ -25,10 +25,10 @@
 
     <!-- The sections, across the page; none is picked on the landing cards, and the others wait while one loads -->
     <div class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 mb-6">
-      <tab-button :tabs="[{ key: 'teams', text: 'Teams' }, { key: 'players', text: 'Players' }, { key: 'overallHeroStats', text: 'Overall Hero Stats' }, { key: 'overallTalentStats', text: 'Overall Talent Stats' }]" :stretch="true" :no-default="true" :disabled="isLoading" :overridedefaultside="activeButton" :ignoreclick="true" @tab-click="setButtonActive"></tab-button>
+      <tab-button :tabs="[{ key: 'teams', text: 'Teams' }, { key: 'recentMatches', text: 'Recent Matches' }, { key: 'players', text: 'Players' }, { key: 'overallHeroStats', text: 'Overall Hero Stats' }, { key: 'overallTalentStats', text: 'Overall Talent Stats' }]" :stretch="true" :no-default="true" :disabled="isLoading" :overridedefaultside="activeButton" :ignoreclick="true" @tab-click="setButtonActive"></tab-button>
     </div>
 
-    <esports-section-cards v-if="!activeButton" :sections="['teams', 'players', 'overallHeroStats', 'overallTalentStats']" @select="setButtonActive"></esports-section-cards>
+    <esports-section-cards v-if="!activeButton" :sections="['teams', 'recentMatches', 'players', 'overallHeroStats', 'overallTalentStats']" @select="setButtonActive"></esports-section-cards>
     <div v-else>
       <div v-if="activeButton === 'teams'">
 
@@ -47,6 +47,11 @@
             </div>
           </panel-box>
         </div>
+      </div>
+
+      <!-- The series' latest games, as on the league pages -->
+      <div v-if="activeButton === 'recentMatches'">
+        <esports-recent-matches v-if="recentMatchesData" :current="recentMatchesData.pagination.current_page" :last="recentMatchesData.pagination.last_page" @page="getRecentMatches" :data="recentMatchesData.data" :esport="'Other'" :series="series.name" :title="$t('Recent matches')" :subtitle="recentMatchesSubtitle"></esports-recent-matches>
       </div>
 
       <div v-if="activeButton === 'players'">
@@ -99,6 +104,46 @@
           <skeleton-box v-for="index in 16" :key="index" class="h-14"></skeleton-box>
         </div>
       </panel-box>
+      <!-- Recent Matches: the titled card, the toggle and page numbers in its header, the expanded rows -->
+      <panel-box v-else-if="activeButton === 'recentMatches'" title="Recent matches" :subtitle="recentMatchesSubtitle" :skeleton="true" :divider="false" class="relative md:!rounded-tl-none">
+        <loading-component :compact="true" :tab="true" :overrideimage="'/images/EsportOther/' + series.icon"></loading-component>
+        <template #right>
+          <div class="ml-auto flex flex-wrap items-center gap-4">
+            <skeleton-box class="w-[10rem] h-9"></skeleton-box>
+            <skeleton-box class="w-[17.75rem] h-[2.75rem]"></skeleton-box>
+          </div>
+        </template>
+        <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
+          <div class="flex flex-col gap-2 w-[18.75rem] shrink-0">
+            <skeleton-box class="h-4 w-40"></skeleton-box>
+            <skeleton-box class="h-4 w-32"></skeleton-box>
+            <skeleton-box class="h-3 w-36"></skeleton-box>
+            <skeleton-box class="h-3 w-28"></skeleton-box>
+          </div>
+          <div class="flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-6">
+            <div class="flex flex-row-reverse items-center gap-3">
+              <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
+              <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <skeleton-box class="h-8 w-20"></skeleton-box>
+              <skeleton-box class="h-3 w-28"></skeleton-box>
+            </div>
+            <div class="flex items-center gap-3">
+              <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
+              <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
+            </div>
+          </div>
+          <div class="flex gap-2 w-[21.25rem] max-w-full shrink-0">
+            <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[9.375rem]">
+              <div v-for="player in 5" :key="player" class="flex items-center gap-1">
+                <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
+                <skeleton-box class="h-3 w-24"></skeleton-box>
+              </div>
+            </div>
+          </div>
+        </div>
+      </panel-box>
       <!-- Overall Hero Stats: the titled card with its search, then hero, win rate, popularity, ban rate and games -->
       <panel-box v-else-if="activeButton === 'overallHeroStats'" title="Overall hero stats" :skeleton="true" :divider="false" class="relative md:!rounded-tl-none">
         <loading-component :compact="true" :tab="true" :overrideimage="'/images/EsportOther/' + series.icon"></loading-component>
@@ -121,7 +166,7 @@
 </template>
 
 <script>
-const OTHER_TABS = ['teams', 'players', 'overallHeroStats', 'overallTalentStats'];
+const OTHER_TABS = ['teams', 'recentMatches', 'players', 'overallHeroStats', 'overallTalentStats'];
 
 export default {
   name: 'OtherSeries',
@@ -155,6 +200,7 @@ export default {
       searchedFor: '',
       searchFoundNone: false,
       heroStatsData: null,
+      recentMatchesData: null,
       selectedHero: null,
     }
   },
@@ -176,8 +222,13 @@ export default {
         { text: 'Tournaments', values: this.tournaments, defaultValue: this.tournament },
       ];
       if (this.activeButton === 'teams' || this.activeButton === 'overallHeroStats') return all;
+      // The match list filters by season only
+      if (this.activeButton === 'recentMatches') return all.slice(0, 1);
       if (this.activeButton === 'overallTalentStats' && this.selectedHero) return all;
       return null;
+    },
+    recentMatchesSubtitle() {
+      return this.season ? this.$t('Season :season · newest first', { season: this.season }) : this.$t('Newest first');
     },
     filteredTeams() {
       if(this.teamsData){
@@ -222,6 +273,38 @@ export default {
       }catch(error){
         //Do something here
       }finally {
+        this.isLoading = false;
+      }
+    },
+
+    // The series' games, newest first, a page at a time (the team pages' match history, for every team)
+    async getRecentMatches(page){
+      if (this.isLoading || page < 1 || (this.recentMatchesData && page > this.recentMatchesData.pagination.last_page)) {
+        return;
+      }
+
+      this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
+      try{
+        const response = await this.$axios.post("/api/v1/esports/other/team/match/history", {
+          esport: "Other",
+          series: this.series.name,
+          season: this.season,
+          pagination_page: page,
+        },
+        {
+          cancelToken: this.cancelTokenSource.token,
+        });
+        this.recentMatchesData = response.data;
+      }catch(error){
+        //Do something here
+      }finally {
+        this.cancelTokenSource = null;
         this.isLoading = false;
       }
     },
