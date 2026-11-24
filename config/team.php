@@ -41,7 +41,7 @@ return [
             'company' => 'Heroes Profile',
             'role' => 'Design',
             'start' => '2026-10',
-            'end' => null,
+            'end' => '2026-12',
             'bio' => 'Bio for Bluray goes here.',
             'email' => null,
             'reddit' => null,
@@ -52,13 +52,14 @@ return [
     // People who helped with a one-off piece of work, under Contributors below the team.
     //   name, discord - as above
     //   contribution  - what they did, one short line
-    //   date          - when, 'YYYY-MM'
+    //   start, end    - when, 'YYYY-MM' (the same month twice for one month)
     // Bluray is in both lists for now, to compare; remove the one they don't prefer.
     'contributors' => [
         [
             'name' => 'Bluray',
             'contribution' => 'Designed the 2026 site redesign in collaboration with the Heroes Profile team',
-            'date' => '2026-10',
+            'start' => '2026-10',
+            'end' => '2026-12',
             'discord' => 'blurayy',
         ],
     ],

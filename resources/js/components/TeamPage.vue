@@ -31,7 +31,7 @@
         <div v-for="contributor in contributors" :key="contributor.name" class="rounded bg-surface-1 px-5 py-4 flex flex-col gap-1">
           <h3 class="text-lg font-bold">{{ contributor.name }}</h3>
           <span class="font-medium text-teal">{{ $t(contributor.contribution) }}</span>
-          <span class="text-sm text-subtext">{{ month(contributor.date) }}</span>
+          <span class="text-sm text-subtext">{{ period(contributor) }}</span>
           <span v-if="contributor.discord" class="inline-flex items-center gap-2 text-sm mt-2" :title="$t('Discord')"><i class="fab fa-discord w-4 text-center text-teal"></i>{{ contributor.discord }}</span>
         </div>
       </div>
@@ -47,8 +47,16 @@ export default {
     contributors: { type: Array, default: () => [] },
   },
   methods: {
-    // "June 2018 – Present", the months in the page's language
+    // "June 2018 – Present", "October – December 2026" or "October 2026", the months in the page's language
     period(member) {
+      if (member.end === member.start) {
+        return this.month(member.start);
+      }
+      if (member.end && member.end.slice(0, 4) === member.start.slice(0, 4)) {
+        const [year, month] = member.start.split('-').map(Number);
+        const startMonth = new Intl.DateTimeFormat(document.documentElement.lang || 'en', { month: 'long', timeZone: 'UTC' }).format(new Date(Date.UTC(year, month - 1, 1)));
+        return startMonth + ' – ' + this.month(member.end);
+      }
       return this.month(member.start) + ' – ' + (member.end ? this.month(member.end) : this.$t('Present'));
     },
     month(value) {
