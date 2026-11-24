@@ -11,10 +11,10 @@
       <!-- The hero on the left, the filters (with the hero among them) in their card beside it, as on the draft page -->
       <player-page-top>
         <template #heading>
-          <page-heading :heading="$heroName(selectedHero)" :subheading="'Talent calculator & builder'">
+          <page-heading :heading="$heroName(selectedHero)" :subheading="'Talent calculator & builder'" :portrait-desktop-only="true">
             <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
             <template #aboveHeading>
-              <a href="/Global/Talents/Builder" class="inline-flex items-center gap-1.5 text-sm font-normal text-lteal hover:underline mb-1"><basil-icon name="arrow-small" class="rotate-180 text-xs text-white"></basil-icon>{{ $t('All heroes') }}</a>
+              <a href="/Global/Talents/Builder" class="inline-flex max-md:flex max-md:w-fit items-center gap-1.5 text-sm font-normal text-lteal hover:underline mb-1"><basil-icon name="arrow-small" class="rotate-180 text-xs text-white"></basil-icon>{{ $t('All heroes') }}</a>
             </template>
           </page-heading>
         </template>
