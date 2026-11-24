@@ -34,10 +34,11 @@
       </template>
 
       <!-- Wide enough for every column; on small screens it scrolls sideways, with the site's fade and arrow showing there's more -->
-      <scroll-hint-container>
+      <!-- snap: on phones a swipe or arrow moves one column at a time -->
+      <scroll-hint-container :snap="true">
         <div class="grid grid-cols-[minmax(13rem,1.4fr)_repeat(7,minmax(7.5rem,1fr))] gap-2 min-w-[70rem]">
           <!-- Which side is which -->
-          <div class="flex items-center gap-2 py-2 text-sm font-bold uppercase tracking-wide">
+          <div class="snap-start flex items-center gap-2 py-2 text-sm font-bold uppercase tracking-wide">
             <span class="w-2.5 h-2.5 rounded-full bg-teal shrink-0"></span>
             <span :class="{ 'skeleton-text': skeleton }">{{ $t('Your Team') }}</span>
             <span class="flex-1 h-px bg-gray-dark"></span>
@@ -53,7 +54,7 @@
           <div></div>
           <!-- Clicking an enemy party (or one of yours, down the side) fades every other column (row); click it again to clear -->
           <component :is="skeleton ? 'div' : 'button'" v-for="column in compositions" :key="column.code" :type="skeleton ? null : 'button'" :title="skeleton ? null : $t('Focus this column')"
-            :class="['flex flex-col items-center gap-2 py-1.5 rounded-control text-sm text-center transition-[colors,opacity]', skeleton ? 'text-subtext' : focusColumn === column.code ? 'bg-teal/20 ring-2 ring-teal text-white' : ['text-subtext hover:bg-surface-1 hover:text-white', { 'opacity-40': focusColumn }]]"
+            :class="['snap-start flex flex-col items-center gap-2 py-1.5 rounded-control text-sm text-center transition-[colors,opacity]', skeleton ? 'text-subtext' : focusColumn === column.code ? 'bg-teal/20 ring-2 ring-teal text-white' : ['text-subtext hover:bg-surface-1 hover:text-white', { 'opacity-40': focusColumn }]]"
             @click="!skeleton && toggleFocus('column', column.code)">
             <span :class="['inline-flex items-center gap-1', { 'skeleton-text': skeleton }]">
               <span v-for="(size, index) in column.groups" :key="index" :class="['inline-flex gap-0.5 p-[0.1875rem] rounded-full', { 'bg-teal': size > 1 }, { invisible: skeleton }]">

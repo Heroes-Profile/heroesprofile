@@ -88,14 +88,41 @@
             <h2 v-if="showGroupHeadings" class="text-2xl font-bold">
               {{ group.name ?? groupName(group.group) }}<span v-if="group.minGamesRequired !== null"> - {{ $t('At least :count games played', { count: group.minGamesRequired.toLocaleString('en-US') }) }}</span>
             </h2>
-            <div v-if="groupIndex == 0 && showRating" class="flex flex-wrap items-center justify-end gap-4 ml-auto">
-              <span v-if="playerRating" class="text-sm">
-                {{ ratingText(playerRating, playerRatingGamesPlayed) }}
-              </span>
-              <span v-else-if="playerRating == 0" class="text-sm">
-                {{ $t('No data for the selected filters') }}
-              </span>
-              <custom-button class="h-10" @click="calculateHPRating(user)" text="Calculate My HP Rating" alt="Calculate My HP Rating" :ignoreclick="true" :disabled="!user" :title="user ? null : $t('Log in with Battle.net to use')" :loading="ratingLoading"></custom-button>
+            <!-- Your HP Rating: a small card with the rating, games and how far from Group A; before that, the button.
+                 Starts collapsed to its title; Show/Hide opens it, as on Patch Notes -->
+            <div v-if="groupIndex == 0 && showRating" :class="['ml-auto w-full sm:w-[22rem] rounded bg-surface px-5 flex flex-col gap-3', ratingCardOpen ? 'py-4' : 'py-3']">
+              <div class="flex items-center justify-between gap-3">
+                <span class="font-bold">{{ $t('Your HP Rating') }}</span>
+                <span class="flex items-center gap-4">
+                  <button v-if="ratingCardOpen && user && playerRating !== null" type="button" class="inline-flex items-center gap-1.5 text-sm font-medium text-teal hover:text-lteal" @click="calculateHPRating(user)">{{ $t('Recalculate') }}<basil-icon name="arrow-small" class="text-xs"></basil-icon></button>
+                  <button type="button" class="flex items-center gap-1.5 text-sm font-medium text-subtext hover:text-white transition-colors" :aria-expanded="ratingCardOpen" @click="ratingCardOpen = !ratingCardOpen">
+                    {{ ratingCardOpen ? $t('Hide') : $t('Show') }}
+                    <basil-icon name="arrow-small" :class="['text-xs transition-transform', ratingCardOpen ? '-rotate-90' : 'rotate-90']"></basil-icon>
+                  </button>
+                </span>
+              </div>
+              <template v-if="ratingCardOpen">
+              <template v-if="playerRating">
+                <div class="flex items-baseline gap-3">
+                  <span class="text-3xl font-bold tabular-nums">{{ playerRating }}</span>
+                  <span class="text-sm text-subtext">{{ $t(':count games', { count: Number(playerRatingGamesPlayed).toLocaleString('en-US') }) }}</span>
+                </div>
+                <template v-if="playerRatingGamesPlayed < groupARequirement">
+                  <div class="flex items-center gap-3">
+                    <stat-bar class="flex-1" :value="Math.min(100, playerRatingGamesPlayed / groupARequirement * 100)" :hide-value="true" color="teal"></stat-bar>
+                    <span class="text-xs text-subtext tabular-nums whitespace-nowrap">{{ playerRatingGamesPlayed }} / {{ groupARequirement }}</span>
+                  </div>
+                  <span class="text-xs text-subtext">{{ $t(':count more games to reach Group A', { count: groupARequirement - playerRatingGamesPlayed }) }}</span>
+                </template>
+                <span v-else class="text-sm font-semibold text-win">{{ $t('In Group A') }}</span>
+              </template>
+              <p v-else-if="playerRating === 0" class="text-sm text-subtext">{{ $t('No data for the selected filters') }}</p>
+              <template v-else>
+                <p class="text-sm text-subtext">{{ $t("See where you'd place on this leaderboard.") }}</p>
+                <custom-button v-if="user" class="h-10 font-semibold" color="teal" @click="calculateHPRating(user)" text="Calculate" alt="Calculate My HP Rating" :ignoreclick="true" :loading="ratingLoading"></custom-button>
+                <login-required-hover v-else message="You need to be logged in with Battle.net to calculate your rating."><span class="btn bg-teal font-semibold opacity-60 cursor-pointer w-full">{{ $t('Calculate') }}</span></login-required-hover>
+              </template>
+              </template>
             </div>
           </div>
 
@@ -246,7 +273,7 @@
       <!-- The first group's heading, with the rating button where it loads, so nothing moves when the data arrives -->
       <div class="flex flex-wrap items-center gap-4">
         <h2 class="text-2xl font-bold skeleton-text">{{ leaderboardtype == 'SL Rank' ? 'Grand Master' : 'Group A - At least 35 games played' }}</h2>
-        <skeleton-box v-if="showRating" class="h-10 w-56 ml-auto"></skeleton-box>
+        <skeleton-box v-if="showRating" class="h-12 w-full sm:w-[22rem] ml-auto"></skeleton-box>
       </div>
       <!-- Shaped like the table for this leaderboard type; the message sits on a tab of its panel, as on the profile -->
       <div class="relative">
@@ -313,6 +340,8 @@ export default {
       searchTerm: '',
       playerRating: null,
       ratingLoading: false,
+      // The HP Rating card starts collapsed
+      ratingCardOpen: false,
       playerRatingGamesPlayed: null,
       tierrank: null,
       league: null,
@@ -420,6 +449,10 @@ export default {
         offset += group.rows.length;
       });
       return sorted;
+    },
+    // Games needed for Group A: the same weekly requirement the leaderboard's groups use
+    groupARequirement() {
+      return this.weekssincestart * this.weeksSinceStartScalar;
     },
     showRating() {
       return this.season == this.defaultseason && this.leaderboardtype != 'SL Rank';
@@ -564,15 +597,6 @@ export default {
     },
     groupName(group){
       return this.$t('Group :letter', { letter: String.fromCharCode(65 + group) });
-    },
-    ratingText(playerRating, playerRatingGamesPlayed){
-      let scalar = this.weekssincestart * this.weeksSinceStartScalar;
-      if(playerRatingGamesPlayed < scalar){
-        let gameDifference = scalar - playerRatingGamesPlayed;
-
-        return `Rating of ${playerRating} over ${playerRatingGamesPlayed} games.  ${gameDifference} more games to reach Group A.`;
-      }
-      return `Rating of ${playerRating} over ${playerRatingGamesPlayed} games`;
     },
     async calculateHPRating(user){
       if(user){

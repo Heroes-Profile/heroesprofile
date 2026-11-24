@@ -198,7 +198,7 @@
             <a href="/Privacy/Policy" class="underline">{{ __('Privacy Policy') }}</a>
             <a href="/Terms/Of/Service" class="underline">{{ __('Terms of Service') }}</a>
           </div>
-          <div>Skill Tree Development, LLC<span class="mx-3">|</span><a href="https://heroesprofile.com">Heroes Profile</a></div>
+          <div>Skill Tree Development, LLC<span class="mx-3">|</span><a href="https://heroesprofile.com">Heroes Profile</a><span class="mx-3">|</span><a href="/Team" class="underline">{{ __('Team') }}</a></div>
         </div>
       </div>
       <footer-popup-disclaimer></footer-popup-disclaimer>

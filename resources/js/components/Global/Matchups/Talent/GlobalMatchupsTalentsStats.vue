@@ -64,17 +64,19 @@
 
       <template v-else>
         <!-- The matchup: both heroes, changeable here, and the listed hero's win rate in it -->
-        <div class="rounded bg-surface px-5 md:px-6 py-4 flex flex-wrap items-center gap-4 md:gap-6">
-          <div class="flex items-center gap-3">
+        <!-- Phones: the heroes and VS stacked on the left, the win rate beside them on the right -->
+        <div class="rounded bg-surface px-5 md:px-6 py-4 md:flex md:flex-wrap md:items-center md:gap-6 max-md:grid max-md:grid-cols-[auto_minmax(0,1fr)] max-md:items-center max-md:gap-x-4 max-md:gap-y-2">
+          <div class="flex items-center gap-3 max-md:col-start-1">
             <hero-image-wrapper :hero="hero" size="medium" :excludehover="true"></hero-image-wrapper>
             <single-select-filter :key="'hero-' + (hero ? hero.id : '')" :values="firstHeroInputs" :text="'Hero'" @input-changed="herochanged" :defaultValue="hero.id"></single-select-filter>
           </div>
-          <button type="button" @click="swapHeroes" :title="$t('Swap heroes')" class="shrink-0 w-10 h-10 rounded-full bg-surface-3 hover:bg-surface-4 hover:text-white transition-colors flex items-center justify-center text-sm font-bold text-subtext">{{ vsorwith }}</button>
-          <div class="flex items-center gap-3">
+          <!-- Phones: between the two heroes, centred under them -->
+          <span class="max-md:col-start-1 max-md:flex max-md:justify-center"><button type="button" @click="swapHeroes" :title="$t('Swap heroes')" class="shrink-0 w-10 h-10 rounded-full bg-surface-3 hover:bg-surface-4 hover:text-white transition-colors flex items-center justify-center text-sm font-bold text-subtext">{{ vsorwith }}</button></span>
+          <div class="flex items-center gap-3 max-md:col-start-1">
             <hero-image-wrapper :hero="enemyally" size="medium" :excludehover="true"></hero-image-wrapper>
             <single-select-filter :key="'enemyally-' + (enemyally ? enemyally.id : '')" :values="secondHeroInputs" :text="'Matchup hero'" @input-changed="allyenemychanged" :defaultValue="enemyally.id"></single-select-filter>
           </div>
-          <div v-if="!isLoading && talentdetaildata" class="ml-auto flex flex-col items-end text-right">
+          <div v-if="!isLoading && talentdetaildata" class="ml-auto flex flex-col items-end text-right max-md:col-start-2 max-md:row-start-1 max-md:row-span-3">
             <span class="text-xs text-subtext">{{ matchupLabel }}</span>
             <span class="text-lg font-bold">{{ $t(':rate% win rate', { rate: Number(firstwinratedata).toFixed(2) }) }}<template v-if="matchupgames != null"> · {{ $t(':games games', { games: matchupgames.toLocaleString('en-US') }) }}</template></span>
           </div>
@@ -203,6 +205,7 @@
           { title: this.$t('Choose your hero'), text: this.$t('The hero whose talents you want to check.') },
           { title: this.$t('Choose the matchup hero'), text: this.$t('Any hero from the roster. The talents load once both are picked.') },
           { title: this.$t('Enemy or Ally'), text: this.$t('Enemy: talents that win against this hero. Ally: talents that win with this hero on your team.') },
+          { title: this.$t('Swap the heroes'), text: this.$t('Click VS between the two heroes to swap them and see the talents of the other hero in the same matchup.') },
           { title: this.$t('Read the tiers'), text: this.$t('Win rate, popularity and games for every talent. The best talent on each tier is highlighted.') },
         ];
       },

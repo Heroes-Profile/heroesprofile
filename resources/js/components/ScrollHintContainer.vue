@@ -1,7 +1,7 @@
 <template>
   <div class="relative">
     <!-- The fades and arrows sit above a table's sticky first column -->
-    <div ref="scroller" :class="['table-container w-full', fitting ? 'overflow-hidden' : 'overflow-x-auto']" @scroll="updateHints">
+    <div ref="scroller" :class="['table-container w-full', fitting ? 'overflow-hidden' : 'overflow-x-auto', { 'max-md:snap-x max-md:snap-mandatory': snap }]" @scroll="updateHints">
       <div v-if="fit" ref="content"><slot></slot></div>
       <slot v-else></slot>
     </div>
@@ -28,6 +28,8 @@ export default {
   props: {
     // Phones shrink the content to fit instead of scrolling
     fit: Boolean,
+    // Content that isn't a table: phones snap to its .snap-start columns, and the arrows step from one to the next
+    snap: Boolean,
   },
   data(){
     return {
@@ -77,6 +79,11 @@ export default {
     },
     // A table's column edges, and how much of the left its sticky first column covers
     columns() {
+      if (this.snap) {
+        const scrollerLeft = this.$refs.scroller.getBoundingClientRect().left - this.$refs.scroller.scrollLeft;
+        const edges = Array.from(this.$refs.scroller.querySelectorAll('.snap-start')).map(item => item.getBoundingClientRect().left - scrollerLeft);
+        return edges.length ? { covered: 0, edges: edges.sort((a, b) => a - b) } : null;
+      }
       const row = this.$refs.scroller.querySelector('thead tr, tr');
       if (!row) {
         return null;

@@ -11,9 +11,10 @@
           <div v-for="talent in tier.count" :key="talent" class="rounded-control bg-surface-1 border-2 border-surface-1 p-3 flex flex-col gap-2.5 min-w-0">
             <div class="flex items-center gap-2"><skeleton-box class="w-[2.625rem] h-[2.625rem] !rounded-full shrink-0"></skeleton-box><span class="text-sm font-semibold skeleton-text">Pressurized Glands</span></div>
             <div class="grid grid-cols-[auto_minmax(0,1fr)_auto] gap-3 items-end">
-              <span class="flex flex-col"><span class="text-[0.625rem] skeleton-text">Win rate</span><span class="font-semibold skeleton-text">00.00%</span></span>
+              <!-- Spaced, so the grey label and value read as two blocks rather than one -->
+              <span class="flex flex-col gap-1"><span class="text-[0.625rem] skeleton-text">Win rate</span><span class="font-semibold skeleton-text">00.00%</span></span>
               <stat-bar value="0" display-text="" :hide-value="true"></stat-bar>
-              <span class="flex flex-col items-end"><span class="text-[0.625rem] skeleton-text">Games</span><span class="font-semibold skeleton-text">0,000</span></span>
+              <span class="flex flex-col items-end gap-1"><span class="text-[0.625rem] skeleton-text">Games</span><span class="font-semibold skeleton-text">0,000</span></span>
             </div>
           </div>
         </template>
