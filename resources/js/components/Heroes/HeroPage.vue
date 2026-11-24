@@ -1,121 +1,150 @@
 <template>
   <div>
-    <page-heading :heading="$heroName(hero)">
-      <hero-image-wrapper :hero="hero" size="heading" :excludehover="true"></hero-image-wrapper>
-      <template v-if="metadata" #aboveHeading>
-        <div class="flex items-center gap-2 text-base text-gray-medium max-md:justify-center">
-          <round-image v-if="universeIcon" :image="universeIcon" size="small" :title="metadata.franchise">
-            <image-hover-box :title="metadata.franchise"></image-hover-box>
-          </round-image>
-          {{ [$t(hero.new_role), metadata.difficulty ? $t('Difficulty: :difficulty', { difficulty: $t(metadata.difficulty) }) : null].filter(v => v).join(' | ') }}
-        </div>
-      </template>
-    </page-heading>
-
-    <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <div class="flex flex-wrap items-center gap-x-8 gap-y-4 max-md:justify-center">
-        <multi-tab-button :options="tabs" v-model="activeTab"></multi-tab-button>
-        <level-slider v-if="metadata" class="w-full md:max-w-md" v-model="level"></level-slider>
-      </div>
-      <div class="flex flex-wrap items-center gap-2 max-md:justify-center">
-        <custom-button v-for="link in statLinks" :key="link.href" :href="link.href" :text="link.text" :alt="link.text" size="small" :targetblank="true"></custom-button>
-      </div>
-
-      <panel-box v-if="!metadata">
-        <p class="text-center">{{ $t("Game data for :hero hasn't been loaded yet.", { hero: $heroName(hero) }) }}</p>
-      </panel-box>
-
-      <div v-else class="flex gap-6">
-      <div class="flex-1 min-w-0 flex flex-col gap-6">
-
-      <!-- About -->
-      <template v-if="activeTab === 'about'">
-        <panel-box :title="metadata.title || 'About'">
-          <p v-if="metadata.description">{{ metadata.description }}</p>
-          <div class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 items-center max-w-lg">
-            <template v-for="rating in ratings" :key="rating.label">
-              <span>{{ $t(rating.label) }}</span>
-              <stat-bar :value="rating.value * 10" :display-text="rating.value" color="teal"></stat-bar>
-            </template>
-          </div>
-        </panel-box>
-
-        <panel-box v-for="unit in units" :key="unit.unit_id" :title="units.length > 1 ? $heroName(unit.name) : $t('Base Stats')">
-          <template #title><span class="text-sm font-normal text-gray-medium">{{ $t('at level :level', { level }) }}</span></template>
-          <table class="min-w-0 w-full">
-            <thead>
-              <tr>
-                <th>{{ $t('Stat') }}</th>
-                <th>{{ $t('Value') }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in unitStats(unit)" :key="row.label">
-                <td>{{ $t(row.label) }}</td>
-                <td>{{ row.value }}<span v-if="row.rate" class="text-gray-medium"> ({{ $t('+:rate% per level', { rate: row.rate }) }})</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </panel-box>
-
-        <panel-box v-if="metadata.lore" :title="$t('Lore')">
-          <p class="whitespace-pre-line">{{ metadata.lore }}</p>
-        </panel-box>
-      </template>
-
-      <!-- Abilities -->
-      <template v-if="activeTab === 'abilities'">
-        <panel-box v-for="group in abilityGroups" :key="group.key" :title="group.label || 'Abilities'">
-          <div v-for="ability in group.abilities" :key="ability.link_id" class="flex items-center">
-            <talent-image-wrapper class="shrink-0" :talent="ability" :level="level">
-              <p v-if="abilityCosts(ability).length" class="mt-2.5 text-gray-medium">{{ abilityCosts(ability).join(' · ') }}</p>
-              <div v-for="sub in childAbilities(ability.link_id)" :key="sub.link_id" class="mt-2.5">
-                <h2 class="text-base font-bold text-white">{{ $talentName(sub) }}</h2>
-                <game-tooltip class="mt-2.5" :text="$gameText(sub, 'raw_description')" :level="level"></game-tooltip>
-              </div>
-            </talent-image-wrapper>
-            <div class="min-w-0 px-3">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="font-bold">{{ $talentName(ability) }}</span>
-                <span v-if="hotkeyLabel(ability)" :class="['px-1 text-sm border rounded', isHeroicOrTrait(ability) ? 'text-yellow border-yellow' : 'border-gray-medium']">{{ hotkeyLabel(ability) }}</span>
-              </div>
-              <p v-if="ability.short_description" class="text-sm text-gray-medium">{{ $gameText(ability, 'short_description') }}</p>
-            </div>
-          </div>
-        </panel-box>
-      </template>
-
-      <!-- Talents -->
-      <panel-box v-if="activeTab === 'talents'" :title="$t('Talents')">
-        <div class="flex gap-8 max-md:flex-col">
-        <multi-tab-button class="md:w-20 text-xl" :vertical="true" :options="tierOptions" v-model="selectedTier"></multi-tab-button>
-        <div class="flex-1 min-w-0">
-        <div v-for="tier in talentTiers" v-show="tier.level === selectedTier" :key="tier.level" class="space-y-3">
-          <div v-for="talent in tier.talents" :key="talent.talent_id" class="flex items-center">
-            <talent-image-wrapper class="shrink-0" :talent="talent" :level="level">
-              <p v-if="talent.cooldown && talent.cooldown !== '0'" class="mt-2.5 text-gray-medium">{{ $t('Cooldown: :cooldown', { cooldown: talent.cooldown }) }}</p>
-              <div v-for="sub in childAbilities(talent.link_id)" :key="sub.link_id" class="mt-2.5">
-                <h2 class="text-base font-bold text-white">{{ $talentName(sub) }}</h2>
-                <game-tooltip class="mt-2.5" :text="$gameText(sub, 'raw_description')" :level="level"></game-tooltip>
-              </div>
-            </talent-image-wrapper>
-            <div class="flex-1 min-w-0 px-3">
-              <span class="font-bold">{{ $talentName(talent) }}</span>
-              <game-tooltip v-if="talent.short_description" class="text-sm text-gray-medium" :text="$gameText(talent, 'short_description')" :level="level"></game-tooltip>
-            </div>
-            <span v-if="talentBadge(talent)" :class="['flex items-center gap-1 px-1 text-sm border rounded self-start whitespace-nowrap', talentBadge(talent).class]">
-              <img v-if="talent.is_quest" class="w-4 h-4" src="/images/miscellaneous/quest-icon.png" alt="Quest">
-              {{ talentBadge(talent).label }}
+    <player-page-top>
+      <template #heading>
+        <page-heading :heading="$heroName(hero)" :portrait-desktop-only="true">
+          <hero-image-wrapper :hero="hero" size="heading" :excludehover="true"></hero-image-wrapper>
+          <!-- The hero name is the hero picker, as on the Talents page -->
+          <template #headingText>
+            <hero-heading-select :heroes="allHeroes" :value="hero.id" textclass="" @hero-changed="goToHero"></hero-heading-select>
+          </template>
+          <template #aboveHeading>
+            <a href="/Heroes" class="inline-flex max-md:flex max-md:w-fit items-center gap-1.5 text-sm font-normal text-lteal hover:underline mb-1"><basil-icon name="arrow-small" class="rotate-180 text-xs text-white"></basil-icon>{{ $t('All heroes') }}</a>
+          </template>
+          <template v-if="metadata" #subheading>
+            <span class="inline-flex items-center gap-2">
+              <round-image v-if="universeIcon" :image="universeIcon" size="small" :title="metadata.franchise">
+                <image-hover-box :title="metadata.franchise"></image-hover-box>
+              </round-image>
+              {{ [$t(hero.new_role), metadata.difficulty ? $t(metadata.difficulty) : null].filter(v => v).join(' · ') }}
             </span>
-          </div>
+          </template>
+        </page-heading>
+      </template>
+      <!-- The hero's stat pages -->
+      <div class="flex md:justify-end px-4 md:px-8">
+        <div class="rounded bg-surface p-4 flex flex-wrap gap-2 max-md:justify-center">
+          <custom-button v-for="link in statLinks" :key="link.href" :href="link.href" :text="link.text" :alt="link.text" color="blue" :targetblank="true"></custom-button>
         </div>
-        </div>
-        </div>
-      </panel-box>
       </div>
-      <img :src="`/images/heroes_rectangle_large/${hero.short_name}.jpg`" :alt="hero.name" class="max-md:hidden md:w-[40%] aspect-[800/778] object-cover object-top rounded self-start">
+    </player-page-top>
+    <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
+
+
+    <div :class="['max-w-[120rem] mx-auto px-4 md:px-8 mt-6 grid xl:grid-cols-2 gap-6', activeTab === 'about' ? 'items-stretch' : 'items-start']">
+      <div class="flex flex-col gap-6 min-w-0">
+        <!-- The page's sections, like the esports pages' tabs; the art beside starts level with them -->
+        <tab-button v-if="metadata" :tabs="tabs" :stretch="true" :ignoreclick="true" :overridedefaultside="activeTab" @tab-click="activeTab = $event"></tab-button>
+        <panel-box v-if="!metadata">
+          <p class="text-center">{{ $t("Game data for :hero hasn't been loaded yet.", { hero: $heroName(hero) }) }}</p>
+        </panel-box>
+
+        <!-- About -->
+        <template v-else-if="activeTab === 'about'">
+          <panel-box :title="metadata.title || 'About'" :subtitle="metadata.description" :divider="false">
+            <div class="grid grid-cols-[auto_minmax(0,1fr)_auto] gap-x-6 gap-y-2 items-center">
+              <template v-for="rating in ratings" :key="rating.label">
+                <span class="text-sm font-semibold">{{ $t(rating.label) }}</span>
+                <stat-bar :value="rating.value * 10" :hide-value="true" color="teal"></stat-bar>
+                <span class="text-sm font-semibold tabular-nums">{{ rating.value }} / 10</span>
+              </template>
+            </div>
+          </panel-box>
+
+          <!-- The hero first (with the level slider), then each summoned unit -->
+          <panel-box v-for="(unit, index) in units" :key="unit.unit_id" :title="$heroName(unit.name)"
+            :subtitle="index === 0 ? $t('Base stats at level :level · drag the slider to change the level', { level }) : $t('Summoned unit stats at level :level', { level })" :divider="false">
+            <template v-if="index === 0" #right>
+              <level-slider class="w-full md:w-72" v-model="level"></level-slider>
+            </template>
+            <table class="w-full rounded-table">
+              <thead>
+                <tr>
+                  <!-- Half each, so every unit's table lines up -->
+                  <th class="w-1/2 py-2 px-6 text-left font-medium bg-teal text-white">{{ $t('Stat') }}</th>
+                  <th class="w-1/2 py-2 px-6 text-center font-medium bg-teal text-white">{{ $t('Value') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in unitStats(unit)" :key="row.label">
+                  <td class="py-4 px-6 text-left text-lg font-bold">{{ $t(row.label) }}</td>
+                  <td class="py-4 px-6 text-center">{{ row.value }}<span v-if="row.rate" class="text-subtext text-sm"> ({{ $t('+:rate% per level', { rate: row.rate }) }})</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </panel-box>
+        </template>
+
+        <!-- Abilities -->
+        <template v-else-if="activeTab === 'abilities'">
+          <panel-box v-for="(group, index) in abilityGroups" :key="group.key" :title="group.label || 'Abilities'" :divider="false">
+            <template v-if="index === 0" #right>
+              <level-slider class="w-full md:w-72" v-model="level"></level-slider>
+            </template>
+            <div v-for="ability in group.abilities" :key="ability.link_id" class="flex items-center">
+              <talent-image-wrapper class="shrink-0" :talent="ability" :level="level">
+                <p v-if="abilityCosts(ability).length" class="mt-2.5 text-gray-medium">{{ abilityCosts(ability).join(' · ') }}</p>
+                <div v-for="sub in childAbilities(ability.link_id)" :key="sub.link_id" class="mt-2.5">
+                  <h2 class="text-base font-bold text-white">{{ $talentName(sub) }}</h2>
+                  <game-tooltip class="mt-2.5" :text="$gameText(sub, 'raw_description')" :level="level"></game-tooltip>
+                </div>
+              </talent-image-wrapper>
+              <div class="min-w-0 px-3">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="font-bold">{{ $talentName(ability) }}</span>
+                  <span v-if="hotkeyLabel(ability)" :class="['px-1 text-sm border rounded', isHeroicOrTrait(ability) ? 'text-yellow border-yellow' : 'border-gray-medium']">{{ hotkeyLabel(ability) }}</span>
+                </div>
+                <p v-if="ability.short_description" class="text-sm text-gray-medium">{{ $gameText(ability, 'short_description') }}</p>
+              </div>
+            </div>
+          </panel-box>
+        </template>
+
+        <!-- Talents -->
+        <panel-box v-else-if="activeTab === 'talents'" :title="$t('Talents')" :divider="false">
+          <template #right>
+            <level-slider class="w-full md:w-72" v-model="level"></level-slider>
+          </template>
+          <div class="flex gap-8 max-md:flex-col">
+          <multi-tab-button class="md:w-20 text-xl" :vertical="true" :options="tierOptions" v-model="selectedTier"></multi-tab-button>
+          <div class="flex-1 min-w-0">
+          <div v-for="tier in talentTiers" v-show="tier.level === selectedTier" :key="tier.level" class="space-y-3">
+            <div v-for="talent in tier.talents" :key="talent.talent_id" class="flex items-center">
+              <talent-image-wrapper class="shrink-0" :talent="talent" :level="level">
+                <p v-if="talent.cooldown && talent.cooldown !== '0'" class="mt-2.5 text-gray-medium">{{ $t('Cooldown: :cooldown', { cooldown: talent.cooldown }) }}</p>
+                <div v-for="sub in childAbilities(talent.link_id)" :key="sub.link_id" class="mt-2.5">
+                  <h2 class="text-base font-bold text-white">{{ $talentName(sub) }}</h2>
+                  <game-tooltip class="mt-2.5" :text="$gameText(sub, 'raw_description')" :level="level"></game-tooltip>
+                </div>
+              </talent-image-wrapper>
+              <div class="flex-1 min-w-0 px-3">
+                <span class="font-bold">{{ $talentName(talent) }}</span>
+                <game-tooltip v-if="talent.short_description" class="text-sm text-gray-medium" :text="$gameText(talent, 'short_description')" :level="level"></game-tooltip>
+              </div>
+              <span v-if="talentBadge(talent)" :class="['flex items-center gap-1 px-1 text-sm border rounded self-start whitespace-nowrap', talentBadge(talent).class]">
+                <img v-if="talent.is_quest" class="w-4 h-4" src="/images/miscellaneous/quest-icon.png" alt="Quest">
+                {{ talentBadge(talent).label }}
+              </span>
+            </div>
+          </div>
+          </div>
+          </div>
+        </panel-box>
+      </div>
+
+      <!-- The hero's art, the same size on every tab, then the lore. On About the lore card takes up what's
+           left of the left column's height, so both columns end level -->
+      <div class="flex flex-col gap-6 min-w-0">
+        <div class="relative rounded overflow-hidden bg-surface">
+          <img :src="`/images/heroes_rectangle_large/${hero.short_name}.jpg`" :alt="hero.name" class="w-full aspect-[800/778] object-cover object-top">
+        </div>
+        <panel-box v-if="metadata && metadata.lore && activeTab === 'about'" class="xl:flex-1" :title="$t('Lore')" :divider="false">
+          <p class="text-sm text-subtext whitespace-pre-line">{{ metadata.lore }}</p>
+        </panel-box>
       </div>
     </div>
+
+    <dynamic-banner-ad class="mt-6" :patreon-user="patreonUser" :index="4" :mobile-override="false"></dynamic-banner-ad>
   </div>
 </template>
 
@@ -141,6 +170,7 @@ export default {
       required: true,
     },
     urlparameters: Object,
+    patreonUser: Boolean,
   },
   data() {
     return {
@@ -148,9 +178,9 @@ export default {
       level: 1,
       selectedTier: null,
       tabs: [
-        { key: 'about', label: 'About' },
-        { key: 'abilities', label: 'Abilities' },
-        { key: 'talents', label: 'Talents' },
+        { key: 'about', text: 'About' },
+        { key: 'abilities', text: 'Abilities' },
+        { key: 'talents', text: 'Talents' },
       ],
     };
   },
@@ -173,6 +203,10 @@ export default {
     },
   },
   computed: {
+    // Every hero, from the list the layout puts on each page
+    allHeroes() {
+      return (window.navLists && window.navLists.heroes) || [];
+    },
     hero() {
       return this.herodata.hero;
     },
@@ -242,6 +276,13 @@ export default {
     },
   },
   methods: {
+    // Another hero's page, on the same tab
+    goToHero(id) {
+      const hero = this.allHeroes.find(item => item.id == id);
+      if (hero) {
+        window.location.href = `/Heroes/${encodeURIComponent(hero.name)}${window.location.search}`;
+      }
+    },
     num(value) {
       return value === null || value === undefined ? null : parseFloat(value);
     },

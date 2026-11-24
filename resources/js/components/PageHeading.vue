@@ -1,7 +1,7 @@
 <template>
   <div :class="['max-w-[120rem] w-full mx-auto px-4 py-6 md:pt-0 flex items-end gap-6 md:gap-20 max-md:flex-wrap max-md:justify-center', hasInfo ? 'md:px-8' : 'md:pl-8 md:pr-0']">
     <!-- A portrait beside the title (Talents, Draft, Matchups, hero pages) sits 24px from it, not the 80px gap kept for the filters -->
-    <div v-if="$slots.default" class="shrink-0 md:-mr-14 md:self-center">
+    <div v-if="$slots.default" :class="['shrink-0 md:-mr-14 md:self-center', { 'max-md:hidden': portraitDesktopOnly }]">
       <slot></slot>
     </div>
 
@@ -44,7 +44,7 @@
       <slot name="aboveHeading"></slot>
       <div :class="['heading flex items-center gap-3 max-md:justify-center', battletag ? 'text-base md:text-2xl uppercase text-gray-medium mt-1' : 'text-4xl md:text-6xl font-bold']"><!-- A page can swap the title for its own (the Talents hero switcher) --><slot name="headingText">{{ $t(heading) }}</slot><!-- An info icon sits raised at the top of the title, like a superscript --><span v-if="$slots.headingInfo" class="page-title-info self-start flex"><slot name="headingInfo"></slot></span></div>
       <!-- A short uppercase line under a page title, as under a BattleTag -->
-      <div v-if="subheading && !battletag" class="text-base md:text-2xl uppercase text-gray-medium mt-2 max-md:text-center">{{ $t(subheading) }}</div>
+      <div v-if="(subheading || $slots.subheading) && !battletag" class="text-base md:text-2xl uppercase text-gray-medium mt-2 max-md:text-center"><slot name="subheading">{{ $t(subheading) }}</slot></div>
     </h1>
     <div v-if="hasInfo && !hideText" class="text-gray-medium md:ml-auto md:max-w-[50%]">
       <infobox :input="infoText1"></infobox>
@@ -68,6 +68,8 @@ export default {
   props: {
     heading: String,
     subheading: String,
+    // The portrait only on desktop; on a phone the title stands alone
+    portraitDesktopOnly: Boolean,
     headingImage: String,
     headingImageUrl: String,
     infoText1: String,

@@ -6,6 +6,7 @@
 @section('content')
   <heroes-index
     :heroes="{{ json_encode($heroes) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   >
   </heroes-index>
 @endsection

@@ -10,6 +10,7 @@
   <hero-page
     :herodata="{{ json_encode($herodata) }}"
     :urlparameters="{{ json_encode($urlparameters) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   >
   </hero-page>
 @endsection

@@ -29,6 +29,7 @@
       </filters>
     </player-page-top>
     <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
 
     <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
       <!-- No matchup yet: pick both heroes, with how the page works beside them -->
@@ -303,6 +304,8 @@
           return;
         }
         history.pushState(null, null, `/Global/Matchups/Talents/${this.hero.name}/${this.enemyally.name}${window.location.search}`);
+        // As the page's own title for that URL
+        document.title = this.$t(':hero vs :other Talent Matchups', { hero: this.$heroName(this.hero), other: this.$heroName(this.enemyally) }) + ' | Heroes Profile';
         this.$refs.filters.applyFilter();
       },
 

@@ -120,7 +120,7 @@
     {{-- The nav flyouts' lists, once per page rather than inline in every flyout. --}}
     @php
       $navLists = [
-        'heroes' => collect($bladeGlobals['heroes'] ?? [])->map(fn ($hero) => ['id' => $hero->id, 'name' => $hero->name])->values(),
+        'heroes' => collect($bladeGlobals['heroes'] ?? [])->map(fn ($hero) => ['id' => $hero->id, 'name' => $hero->name, 'short_name' => $hero->short_name])->values(),
         'maps' => collect($bladeGlobals['maps'] ?? [])->map(fn ($map) => ['id' => $map->map_id, 'name' => $map->name])->values(),
       ];
     @endphp
