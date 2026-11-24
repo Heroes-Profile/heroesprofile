@@ -9,7 +9,8 @@
   </div>
   <div v-else :class="[inner ? 'bg-surface-1 rounded-control' : 'bg-surface rounded', 'p-4 md:p-6 flex flex-col gap-4 min-w-0']">
     <template v-if="title">
-      <div class="flex flex-wrap justify-between items-baseline gap-x-4 gap-y-1">
+      <!-- A click on the header's empty space, not its text or controls, is reported (collapsible panels toggle on it) -->
+      <div class="flex flex-wrap justify-between items-baseline gap-x-4 gap-y-1" @click="isHeaderBackground($event) && $emit('header-background-click')">
         <div>
           <h3 class="text-2xl font-bold flex items-center gap-2">{{ $t(title) }}<!-- An info icon sits raised at the top of the title; the wrapper hides itself when nothing is passed --><span class="self-start flex empty:hidden"><slot name="title"></slot></span></h3>
           <p v-if="subtitle" class="text-sm text-subtext mt-1"><span :class="{ 'skeleton-text': skeleton }">{{ $t(subtitle) }}</span></p>
@@ -76,7 +77,11 @@ export default {
       }
     },
   },
+  emits: ['header-background-click'],
   methods: {
+    isHeaderBackground(event) {
+      return !event.target.closest('h3, p, a, button, span, img, input, label');
+    },
     isMobileView() {
       // Same breakpoint as Tailwind's md
       return !window.matchMedia('(min-width: 1024px)').matches;

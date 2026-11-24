@@ -70,7 +70,7 @@
     <div v-if="this.data.data" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <patch-notes-panel v-if="patchNotesUrl" class="!max-w-none !mb-0" :version="timeframe[0]"></patch-notes-panel>
 
-      <panel-box title="Tier List" :subtitle="tierListCollapsed ? null : $t('Heroes grouped by :stat', { stat: $t(tierStatLabel).toLowerCase() })" :divider="!tierListCollapsed" :class="['relative md:!pt-4', { 'md:!pb-4 cursor-pointer': tierListCollapsed }]" @click="tierListCollapsed && toggleTierList()">
+      <panel-box title="Tier List" :subtitle="tierListCollapsed ? null : $t('Heroes grouped by :stat', { stat: $t(tierStatLabel).toLowerCase() })" :divider="!tierListCollapsed" :class="['relative md:!pt-4', { 'md:!pb-4 cursor-pointer': tierListCollapsed }]" @click="tierListCollapsed && toggleTierList()" @header-background-click="!tierListCollapsed && toggleTierList()">
         <template #right>
           <!-- Show/Hide pinned to the card's top right; the tabs keep clear of it -->
           <div class="flex flex-wrap items-center gap-4 md:mr-20">
