@@ -52,7 +52,9 @@
         <h3 class="text-3xl font-semibold mt-6 mb-4">{{ $t('Player Profiles') }}</h3>
         <p class="text-sm text-left mb-8">{{ $t('See all player stats in one place.  See data for individual maps or heroes played, match history, real in-game Storm League rank and comparisons all from within a streamlined profile.') }}</p>
         <div class="flex mt-auto">
-          <custom-button :text="'Find Player'" :alt="'Find Player'" :color="'teal'" :ignoreclick="true" class="flex-1 font-semibold" @click="focusSearch"></custom-button>
+          <!-- Turns into the header's BattleTag search, ready to type in -->
+          <search-component v-if="showPlayerSearch" ref="playerSearch" :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="flex-1 !mt-0 !py-0"></search-component>
+          <custom-button v-else :text="'Find Player'" :alt="'Find Player'" :color="'teal'" :ignoreclick="true" class="flex-1 font-semibold" @click="openPlayerSearch"></custom-button>
         </div>
       </div>
       <div :class="cardClasses">
@@ -137,6 +139,8 @@ import { formatGameDate, timeAgo } from '../utils/formatGameDate';
     },
     data(){
       return {
+        // The Find Player button, swapped for the BattleTag search once clicked
+        showPlayerSearch: false,
         showPopup: true,
         tickerStart: Date.now(),
         now: Date.now(),
@@ -191,10 +195,9 @@ import { formatGameDate, timeAgo } from '../utils/formatGameDate';
     watch: {
     },
     methods: {
-      focusSearch() {
-        const input = this.$refs.heroSearch.querySelector('input');
-        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        input.focus({ preventScroll: true });
+      openPlayerSearch() {
+        this.showPlayerSearch = true;
+        this.$nextTick(() => this.$refs.playerSearch?.$refs.input?.focus());
       },
       formatGameDate,
       getValueLocal(value){

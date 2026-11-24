@@ -249,6 +249,8 @@ export default {
       }
     },
     toggle() {
+      // A click that closes an open filter menu only closes the menu
+      if (document.querySelector('.expandable-dropdown')) return;
       this.open = !this.open;
       if (this.open && this.loadedVersion !== this.version) {
         this.loadNotes();

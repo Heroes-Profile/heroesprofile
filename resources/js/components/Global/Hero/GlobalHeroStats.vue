@@ -707,6 +707,8 @@ export default {
       this.sortKey = key;
     },
     toggleTierList() {
+      // A click that closes an open filter menu only closes the menu
+      if (document.querySelector('.expandable-dropdown')) return;
       this.tierListCollapsed = !this.tierListCollapsed;
       Cookies.set('heroTierListCollapsed', this.tierListCollapsed ? 'true' : 'false', { expires: 365, path: '/' });
     },

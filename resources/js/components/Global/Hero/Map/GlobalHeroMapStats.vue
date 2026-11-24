@@ -2,134 +2,106 @@
   <div>
     <global-async-debug-banner page-label="Global Hero Maps" />
 
-    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-    <page-heading :heading="selectedHero ? $t(':hero Best Maps & Map Win Rates', { hero: $heroName(selectedHero) }) : $t('Hero Map Win Rates')">
-      <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
-        <hero-image-wrapper :hero="selectedHero" :size="'heading'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
-        <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 13.75rem; max-height: 21.25rem; overflow-y: auto;">
-          <input v-model="heroDropdownSearch" type="text" :placeholder="$t('Search hero...')" class="w-full px-2 py-1 text-xs bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
-          <div v-for="h in filteredDropdownHeroes" :key="h.id" class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-lighten text-sm" @click="clickedHero(h); heroDropdownOpen = false">
-            <hero-image-wrapper :hero="h" :includehover="false" class="shrink-0"></hero-image-wrapper>
-            <span>{{ $heroName(h) }}</span>
-          </div>
-        </div>
-      </div>
-      <template v-if="selectedHero" #aboveHeading>
-        <hero-heading-select :heroes="heroes" :value="selectedHero.id" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
-      </template>
-    </page-heading>
     <div v-if="!selectedHero">
+      <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+      <page-heading :heading="'Hero Map Win Rates'"></page-heading>
       <hero-selection :heroes="heroes"></hero-selection>
     </div>
 
-
     <div v-else>
-      <filters 
-      :onFilter="filterData" 
-      :filters="filters"
-      :isLoading="isLoading" 
-
-      :timeframetypeinput="timeframetype"
-      :timeframeinput="timeframe"
-      :gametypeinput="gametype"
-      :regioninput="region"
-      :herolevelinput="herolevel"
-      :playerrankinput="playerrank"
-      :herorankinput="herorank"
-      :rolerankinput="rolerank"
-      :mirrormatchinput="mirrormatch"
-
-
-      :gametypedefault="gametypedefault"
-      :includetimeframe="true"
-      :includeregion="true"
-      :includeherolevel="true"
-      :includegametype="true"
-      :includeplayerrank="true"
-      :includeherorank="true"
-      :includerolerank="true"
-      :includemirror="true"
-      :advancedfiltering="advancedfiltering"
-      >
-    </filters>
-    <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
-
-    <div v-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <div class="flex justify-between">
-        <span class="flex gap-4">
-          <single-select-filter
-            :values="filters.heroes" 
-            :text="'Change Hero'" 
-            :defaultValue="selectedHero.id"
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-        </span>
-      </div>
-
-      <patch-notes-panel v-if="patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
-
-      <panel-box>
-      <div id="table-container" ref="tablecontainer" class="overflow-clip max-sm:text-xs">
-       <table id="responsive-table" class="min-w-0 w-full relative" ref="responsivetable">
-      
-          <thead>
-            <tr>
-              <th 
-                v-for="column in dynamicColumns" 
-                :key="column.value" 
-                :class="['py-2 px-3 text-center text-sm leading-4', column.sortable ? 'cursor-pointer' : '', { 'bg-teal text-white': column.sortable && sortKey === column.value }]"
-                @click="column.sortable ? sortTable(column.value) : null"
-                >
-                  {{ $t(column.text) }}<sort-indicator v-if="column.sortable" :column="column.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
-              </th>        
-            </tr>
-          </thead>
-          <tbody class="text-center">
-            <tr v-for="row in sortedData" :key="row.rank">
-              <td v-for="column in dynamicColumns" :key="column.value" class="">
-                <div v-if="column.value === 'battletag'">
-                  <a class="group/bt inline-flex items-center" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank" rel="noopener"><span class="group-hover/bt:underline">{{ row[column.value] }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-                </div>
-                <div v-else-if="column.value === 'most_played_hero'">
-                  <div  v-if="row.most_played_hero" class="flex gap-x-2 items-center justify-center">
-                    <hero-image-wrapper :hero="row.most_played_hero">
-                      <image-hover-box :title="$heroName(row.most_played_hero)" :paragraph-one="$t('Games Played') + ': ' + row.hero_build_games_played"></image-hover-box>
-                    </hero-image-wrapper><span class="hidden md:block">{{ $heroName(row.most_played_hero) }}</span>
-                  </div>
-                </div>
-                <div v-else>
-                  {{ $mapName(row[column.value]) }}
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      </panel-box>
-    </div>
-    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <!-- The collapsed Patch Notes card, so the page doesn't move when it loads -->
-      <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="w-full max-w-[93.75rem] mx-auto mb-4 md:!py-4">
-        <template #right>
-          <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+      <!-- As the other global hero pages: the hero's heading, its name the hero picker, with the filters beside it -->
+      <player-page-top>
+        <template #heading>
+          <page-heading :heading="$heroName(selectedHero)" :subheading="'Best maps & map win rates'">
+            <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
+            <template #aboveHeading>
+              <a href="/Global/Hero/Maps" class="inline-flex items-center gap-1.5 text-sm font-normal text-lteal hover:underline mb-1"><basil-icon name="arrow-small" class="rotate-180 text-xs text-white"></basil-icon>{{ $t('All heroes') }}</a>
+            </template>
+            <template #headingText>
+              <hero-heading-select :heroes="heroes" :value="selectedHero.id" textclass="" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
+            </template>
+          </page-heading>
         </template>
-      </panel-box>
-      <!-- The table is what's loading, so the message sits on its tab -->
-      <div class="relative">
-        <loading-component v-if="determineIfVeryLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
-        <loading-component v-else-if="determineIfLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
-        <loading-component v-else :compact="true" :tab="true" :textoverride="true">{{ $t('Loading map stats...') }}</loading-component>
-        <table-skeleton class="md:!rounded-tl-none" :rows="13" :columns="['stat', 'stat', 'stat', 'stat']"></table-skeleton>
+        <filters
+          :onFilter="filterData"
+          :filters="filters"
+          :isLoading="isLoading"
+
+          :timeframetypeinput="timeframetype"
+          :timeframeinput="timeframe"
+          :gametypeinput="gametype"
+          :regioninput="region"
+          :herolevelinput="herolevel"
+          :playerrankinput="playerrank"
+          :herorankinput="herorank"
+          :rolerankinput="rolerank"
+          :mirrormatchinput="mirrormatch"
+
+          :gametypedefault="gametypedefault"
+          :includetimeframe="true"
+          :includeregion="true"
+          :includeherolevel="true"
+          :includegametype="true"
+          :includeplayerrank="true"
+          :includeherorank="true"
+          :includerolerank="true"
+          :includemirror="true"
+          :advancedfiltering="advancedfiltering"
+          >
+        </filters>
+      </player-page-top>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
+
+      <div v-if="data" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <patch-notes-panel v-if="patchNotesUrl" class="!max-w-none !mb-0" :version="timeframe[0]"></patch-notes-panel>
+
+        <panel-box title="Map win rates" :subtitle="$t('Win rate for :hero on each map. Click a column to sort.', { hero: $heroName(selectedHero) })">
+          <div id="table-container" ref="tablecontainer" class="overflow-clip max-sm:text-xs">
+            <table id="responsive-table" class="w-full rounded-table relative" ref="responsivetable">
+              <thead>
+                <tr>
+                  <th
+                    v-for="column in dynamicColumns"
+                    :key="column.value"
+                    :class="['py-2 px-3 text-sm leading-4', column.value === 'name' ? 'text-left' : 'text-center', column.sortable ? 'cursor-pointer' : '', { 'bg-teal text-white': column.sortable && sortKey === column.value }]"
+                    @click="column.sortable ? sortTable(column.value) : null"
+                    >
+                      {{ $t(column.text) }}<sort-indicator v-if="column.sortable" :column="column.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="text-center">
+                <tr v-for="row in sortedData" :key="row.name">
+                  <td v-for="column in dynamicColumns" :key="column.value" :class="column.value === 'name' ? 'text-left' : ''">
+                    <span v-if="column.value === 'name'" class="font-semibold">{{ $mapName(row.name) }}</span>
+                    <template v-else>{{ row[column.value] }}</template>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </panel-box>
       </div>
-    </div>
-    <div v-else-if="dataError" class="flex items-center justify-center">
-      {{ $t('Error: Reload page/filter') }}
+      <div v-else-if="isLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <!-- The collapsed Patch Notes card, so the page doesn't move when it loads -->
+        <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="md:!py-4">
+          <template #right>
+            <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+          </template>
+        </panel-box>
+        <!-- The table is what's loading, so the message sits on its card's tab -->
+        <panel-box title="Map win rates" :subtitle="$t('Win rate for :hero on each map. Click a column to sort.', { hero: $heroName(selectedHero) })" :skeleton="true" class="relative md:!rounded-tl-none">
+          <loading-component v-if="determineIfVeryLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
+          <loading-component v-else-if="determineIfLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+          <loading-component v-else :compact="true" :tab="true" :textoverride="true">{{ $t('Loading map stats...') }}</loading-component>
+          <table-skeleton :bare="true" :rows="13" :columns="['stat', 'stat', 'stat', 'stat']"></table-skeleton>
+        </panel-box>
+      </div>
+      <div v-else-if="dataError" class="flex items-center justify-center">
+        {{ $t('Error: Reload page/filter') }}
+      </div>
     </div>
   </div>
-
-
-
-</div>
 </template>
 
 <script>
@@ -158,8 +130,6 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
         dataError: false,
         windowWidth: window.innerWidth,
         isLoading: false,
-        heroDropdownOpen: false,
-        heroDropdownSearch: '',
         infoText: "Hero Maps provide information on which maps are good for each hero",
         selectedHero: null,
         data: null,
@@ -194,11 +164,6 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
     mounted() {
     },
     computed: {
-      filteredDropdownHeroes() {
-        const q = this.heroDropdownSearch.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-        if (!q) return this.heroes;
-        return this.heroes.filter(h => [h.name, this.$heroName(h)].some(name => name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().includes(q)));
-      },
       patchNotesUrl() {
         if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {
           return null;
