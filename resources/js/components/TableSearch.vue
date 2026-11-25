@@ -10,7 +10,8 @@
          profile's skeleton, and the space the results line will take is kept above it so nothing moves -->
     <!-- Embedded: inside the page's own card, so a plain block takes the card's place -->
     <component :is="embedded ? 'div' : 'panel-box'" :class="['relative', { 'md:mt-9 md:!rounded-tl-none': phase === 'searching' && !embedded, 'mt-9': phase === 'searching' && embedded }]">
-    <loading-component v-if="phase === 'searching'" :compact="true" :tab="true" :textoverride="true" :overrideimage="loaderImage">{{ $t('Searching for :query...', { query: query }) }}</loading-component>
+    <!-- Embedded, the table starts right at the top with no padding for the tab to overlap, so the tab sits fully above it -->
+    <loading-component v-if="phase === 'searching'" :class="{ 'md:!bottom-full': embedded }" :compact="true" :tab="true" :textoverride="true" :overrideimage="loaderImage">{{ $t('Searching for :query...', { query: query }) }}</loading-component>
     <div class="relative overflow-clip">
       <table class="min-w-0 w-full rounded-table relative">
         <thead>

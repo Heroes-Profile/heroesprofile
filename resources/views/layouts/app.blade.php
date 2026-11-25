@@ -185,6 +185,11 @@
           {{ __('The backend is currently offline. Some features may not be available. Please contact :email', ['email' => 'zemill@heroesprofile.com']) }}
         </div>
       @endif
+      {{-- The redesign's credit, for everyone until March 2027 --}}
+      @if(now()->lt('2027-03-01'))
+        @php($redesigner = collect(config('team.contributors'))->firstWhere('name', 'Bluray'))
+        <redesign-credit :name="'Bluray'" :discord="{{ json_encode($redesigner['discord'] ?? null) }}"></redesign-credit>
+      @endif
       {{-- data-footer-bar: the help button (help-chat) rises to sit just above this once it scrolls into view --}}
       <div data-footer-bar class="bg-surface text-sm px-4 md:px-8 py-6">
         <div class="max-w-[116rem] mx-auto flex flex-wrap items-center justify-between gap-4 max-md:flex-col max-md:text-center">

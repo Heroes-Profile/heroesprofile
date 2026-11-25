@@ -21,8 +21,15 @@
                 <a href="#" :class="['cursor-pointer', { 'text-teal': menuHas(menu, screenshot) }]" @click.prevent="openMenu = openMenu === menu.label ? null : menu.label">
                   {{ menu.label === 'Zemill' ? menu.label : $t(menu.label) }}<basil-icon name="arrow" class="rotate-90 group-hover:-rotate-90 transition-transform text-xs ml-2" aria-hidden="true"></basil-icon>
                 </a>
-                <div :class="['nav-dropdown', { '!block': openMenu === menu.label }]">
-                  <div class="nav-dropdown-inner-wrapper">
+                <div :class="['nav-dropdown', { '!block': openMenu === menu.label, 'nav-dropdown-flip': menu.wide }]">
+                  <!-- Other: its groups side by side in columns, each a plain list -->
+                  <div v-if="menu.wide" class="nav-dropdown-inner-wrapper md:grid md:grid-cols-4 md:gap-x-2 md:w-max">
+                    <div v-for="group in menu.groups" :key="group.label" class="flex flex-col">
+                      <span class="nav-dropdown-label !mt-0 !pt-2 !border-t-0">{{ $t(group.label) }}</span>
+                      <a v-for="item in group.items" :key="item.key" href="#" :class="['whitespace-nowrap', { 'bg-teal': screenshot === item.key }]" @click.prevent="pickScreenshot(item.key)">{{ item.name || $t(item.label) }}</a>
+                    </div>
+                  </div>
+                  <div v-else class="nav-dropdown-inner-wrapper">
                     <template v-for="group in menu.groups" :key="group.label || 'items'">
                       <span v-if="group.label" class="nav-dropdown-label">{{ $t(group.label) }}</span>
                       <template v-for="item in group.items" :key="item.key || item.label">
@@ -47,6 +54,8 @@
         </nav>
         <div class="relative w-full max-w-[105rem] mx-auto rounded overflow-hidden select-none aspect-video bg-surface" :style="{ '--wipe': wipe + '%' }">
           <img :src="`/images/redesign/2026/${screenshot}-after.jpg`" :alt="$t('After')" class="absolute inset-0 w-full h-full object-cover object-top" draggable="false" />
+          <!-- A page with no old version (new, or unreachable on the old site) shows the new shot alone -->
+          <template v-if="!afterOnly.includes(screenshot)">
           <img :src="`/images/redesign/2026/${screenshot}-before.jpg`" :alt="$t('Before')" class="absolute inset-0 w-full h-full object-cover object-top [clip-path:inset(0_calc(100%-var(--wipe))_0_0)]" draggable="false" />
           <!-- One label in the middle, naming whichever side shows more -->
           <span class="absolute top-3 left-1/2 -translate-x-1/2 rounded-control px-5 py-2 text-xl font-bold pointer-events-none" :class="wipe >= 50 ? 'bg-surface' : 'bg-teal'">{{ wipe >= 50 ? $t('Before') : $t('After') }}</span>
@@ -54,6 +63,8 @@
             <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-teal flex items-center justify-center shadow-lg"><i class="fas fa-arrows-alt-h"></i></span>
           </span>
           <input type="range" min="0" max="100" step="0.1" v-model.number="wipe" :aria-label="$t('Drag the handle to compare.')" class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize" />
+          </template>
+          <span v-else class="absolute top-3 left-1/2 -translate-x-1/2 rounded-control px-5 py-2 text-xl font-bold pointer-events-none bg-teal">{{ $t('New in the redesign') }}</span>
         </div>
       </section>
 
@@ -374,7 +385,57 @@ export default {
           { key: 'history', label: 'Match History' },
           { key: 'latest', label: 'Latest Match' },
         ] }] },
+        // Pages the nav doesn't link to directly
+        { label: 'Other', wide: true, groups: [
+          { label: 'Pages', items: [
+            { key: 'prematch', label: 'Prematch' },
+            { key: 'heropage', name: 'Abathur' },
+            { key: 'settings', label: 'Settings' },
+            { key: 'team', label: 'Team' },
+          ] },
+          { label: 'NGS', items: [
+            { key: 'ngs', label: 'Standings' },
+            { key: 'ngsdivisions', label: 'Divisions' },
+            { key: 'ngsteams', label: 'Teams' },
+            { key: 'ngsplayersearch', label: 'Player Search' },
+            { key: 'ngsrecent', label: 'Recent Matches' },
+            { key: 'ngsherostats', label: 'Overall Hero Stats' },
+            { key: 'ngstalentstats', label: 'Overall Talent Stats' },
+            { key: 'ngsplayer', label: 'Player menu' },
+          ] },
+          { label: 'Esports', items: [
+            { key: 'ccl', name: 'CCL' },
+            { key: 'mastersclash', name: 'Masters Clash' },
+            { key: 'nutcup', name: 'Nut Cup' },
+            { key: 'heroesinternational', name: 'Heroes International' },
+            { key: 'esportsother', label: 'Other Esports' },
+          ] },
+          { label: 'Sign in', items: [
+            { key: 'login', label: 'Login' },
+            { key: 'loginfailed', label: 'Battle.net login failed' },
+            { key: 'patreonfailed', label: 'Patreon login failed' },
+          ] },
+          { label: 'Errors', items: [
+            { key: 'error404', name: '404' },
+            { key: 'error403', name: '403' },
+            { key: 'error429', name: '429' },
+            { key: 'error500', name: '500' },
+          ] },
+          { label: 'Legal & help', items: [
+            { key: 'privacy', label: 'Privacy Policy' },
+            { key: 'terms', label: 'Terms of Service' },
+            { key: 'support', label: 'Community Support' },
+            { key: 'guidelines', label: 'Streamer Code of Conduct' },
+          ] },
+          { label: 'API', items: [
+            { key: 'apilogin', label: 'Sign in' },
+            { key: 'apiregister', label: 'Register' },
+            { key: 'apidocs', label: 'Docs' },
+          ] },
+        ] },
       ],
+      // Pages with no old screenshot: Team is new, and the old site has no way to show its 403, 429 and 500 pages
+      afterOnly: ['team', 'error403', 'error429', 'error500'],
       numbers: [
         { title: 'Commits', value: '260+' },
         { title: 'Files changed', value: '670+' },

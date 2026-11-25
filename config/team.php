@@ -14,6 +14,8 @@
 //               ['league' => 'grandmaster', 'ladder_position' => 1] or ['league' => 'unranked']
 //   email, reddit, discord - how to reach them; leave any out (or null) that they don't have.
 //                            reddit is the username without u/; discord is the username
+//   discord_id - their Discord user ID (Developer Mode, right-click, Copy User ID): the name links to their profile.
+//                Without one, clicking the name copies the username to paste into Add Friend
 
 return [
     'members' => [
@@ -28,6 +30,7 @@ return [
             'email' => 'zemill@heroesprofile.com',
             'reddit' => 'heroesprofile',
             'discord' => 'zemill',
+            'discord_id' => '214839302000082945',
         ],
         [
             'name' => 'Avadriel',

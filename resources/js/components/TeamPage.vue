@@ -21,7 +21,9 @@
         <div v-if="member.email || member.reddit || member.discord" class="flex flex-col gap-1.5 text-sm">
           <a v-if="member.email" :href="'mailto:' + member.email" class="group/bt inline-flex items-center gap-2 w-fit"><i class="fas fa-envelope w-4 text-center text-teal"></i><span class="group-hover/bt:underline">{{ member.email }}</span></a>
           <a v-if="member.reddit" :href="'https://www.reddit.com/user/' + member.reddit" target="_blank" rel="noopener noreferrer" class="group/bt inline-flex items-center gap-2 w-fit"><i class="fab fa-reddit-alien w-4 text-center text-teal"></i><span class="group-hover/bt:underline">u/{{ member.reddit }}</span></a>
-          <span v-if="member.discord" class="inline-flex items-center gap-2" :title="$t('Discord')"><i class="fab fa-discord w-4 text-center text-teal"></i>{{ member.discord }}</span>
+          <!-- Discord: with their user ID the name opens their profile; without one it copies the username for Add Friend -->
+          <a v-if="member.discord && member.discord_id" :href="'https://discord.com/users/' + member.discord_id" target="_blank" rel="noopener noreferrer" class="group/bt inline-flex items-center gap-2 w-fit" :title="$t('Discord')"><i class="fab fa-discord w-4 text-center text-teal"></i><span class="group-hover/bt:underline">{{ member.discord }}</span></a>
+          <button v-else-if="member.discord" type="button" class="group/bt inline-flex items-center gap-2 w-fit" :title="copiedDiscord === member.discord ? $t('Copied') : $t('Copy Discord username')" @click="copyDiscord(member.discord)"><i class="fab fa-discord w-4 text-center text-teal"></i><span class="group-hover/bt:underline">{{ member.discord }}</span><i :class="[copiedDiscord === member.discord ? 'fas fa-check text-lteal' : 'fas fa-copy text-subtext group-hover/bt:text-lteal', 'text-xs transition-colors']"></i></button>
         </div>
       </panel-box>
     </div>
@@ -39,7 +41,9 @@
           <a v-if="contributor.link" :href="contributor.link" target="_blank" rel="noopener" class="group/bt font-medium text-teal"><span class="group-hover/bt:underline">{{ leadWords($t(contributor.contribution)) }}</span><span class="whitespace-nowrap"><span class="group-hover/bt:underline">{{ lastWord($t(contributor.contribution)) }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span></a>
           <span v-else class="font-medium text-teal">{{ $t(contributor.contribution) }}</span>
           <span class="text-sm text-subtext">{{ period(contributor) }}</span>
-          <span v-if="contributor.discord" class="inline-flex items-center gap-2 text-sm mt-2" :title="$t('Discord')"><i class="fab fa-discord w-4 text-center text-teal"></i>{{ contributor.discord }}</span>
+          <!-- Discord: with their user ID the name opens their profile; without one it copies the username for Add Friend -->
+          <a v-if="contributor.discord && contributor.discord_id" :href="'https://discord.com/users/' + contributor.discord_id" target="_blank" rel="noopener noreferrer" class="group/bt inline-flex items-center gap-2 w-fit text-sm mt-2" :title="$t('Discord')"><i class="fab fa-discord w-4 text-center text-teal"></i><span class="group-hover/bt:underline">{{ contributor.discord }}</span></a>
+          <button v-else-if="contributor.discord" type="button" class="group/bt inline-flex items-center gap-2 w-fit text-sm mt-2" :title="copiedDiscord === contributor.discord ? $t('Copied') : $t('Copy Discord username')" @click="copyDiscord(contributor.discord)"><i class="fab fa-discord w-4 text-center text-teal"></i><span class="group-hover/bt:underline">{{ contributor.discord }}</span><i :class="[copiedDiscord === contributor.discord ? 'fas fa-check text-lteal' : 'fas fa-copy text-subtext group-hover/bt:text-lteal', 'text-xs transition-colors']"></i></button>
         </div>
       </div>
     </div>
@@ -55,8 +59,25 @@ export default {
     members: { type: Array, required: true },
     contributors: { type: Array, default: () => [] },
   },
+  data() {
+    return {
+      // The Discord username just copied, for its tick
+      copiedDiscord: null,
+    };
+  },
   methods: {
     localRankName,
+    async copyDiscord(username) {
+      try {
+        await navigator.clipboard.writeText(username);
+      } catch (error) {
+        // The browser refused the clipboard
+        return;
+      }
+      this.copiedDiscord = username;
+      clearTimeout(this.copyTimer);
+      this.copyTimer = setTimeout(() => { this.copiedDiscord = null; }, 2000);
+    },
     // A line split before its last word ("… Heroes Profile " and "team")
     leadWords(text) {
       const index = text.lastIndexOf(' ');
