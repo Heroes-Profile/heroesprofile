@@ -8,13 +8,14 @@
     </div>
 
     <div v-else>
-      <!-- The hero on the left, the filters (with the hero among them) in their card beside it, as on the draft page -->
+      <!-- The hero on the left, its name the hero picker, the filters in their card beside it, as on the draft page -->
       <player-page-top>
         <template #heading>
           <page-heading :heading="$heroName(selectedHero)" :subheading="'Talent calculator & builder'" :portrait-desktop-only="true">
             <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
-            <template #aboveHeading>
-              <a href="/Global/Talents/Builder" class="inline-flex max-md:flex max-md:w-fit items-center gap-1.5 text-sm font-normal text-lteal hover:underline mb-1"><basil-icon name="arrow-small" class="rotate-180 text-xs text-white"></basil-icon>{{ $t('All heroes') }}</a>
+            <!-- The hero name is the hero picker (no Heroes filter on this page) -->
+            <template #headingText>
+              <hero-heading-select :heroes="heroes" :value="selectedHero.id" textclass="" @hero-changed="heroPicked($event)"></hero-heading-select>
             </template>
           </page-heading>
         </template>
@@ -22,7 +23,6 @@
           :onFilter="filterData"
           :filters="filters"
           :isLoading="isLoading"
-          :includehero="true"
           :heroinput="selectedHero.id"
           :timeframetypeinput="timeframetype"
           :timeframeinput="timeframe"
@@ -502,6 +502,21 @@
             img.src = image;
           });
         }
+      },
+      // The hero picked from the heading: a new hero, so the picks and paths start over
+      heroPicked(heroId){
+        const hero = this.heroes.find(item => item.id === heroId);
+        if (!hero || hero.id === this.selectedHero.id) {
+          return;
+        }
+        this.selectedHero = hero;
+        this.preloadTalentImages(hero);
+        document.title = `${hero.name} Talent Builder | Heroes Profile`;
+        history.pushState(null, null, window.location.pathname.replace(/\/[^/]*$/, `/${hero.name}`));
+        this.clearTalentSelections();
+        this.paths = null;
+        this.pathsOpen = false;
+        this.getData();
       },
       filterData(filteredData){
         const heroId = filteredData.single.Heroes;

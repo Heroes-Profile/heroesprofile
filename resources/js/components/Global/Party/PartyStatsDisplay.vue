@@ -28,7 +28,7 @@
         <div class="flex flex-wrap items-center gap-x-6 gap-y-1 text-sm text-subtext">
           <span v-for="item in legend" :key="item.label" class="flex items-center gap-2">
             <span :class="['w-3.5 h-3.5 rounded-[0.25rem]', item.swatch]"></span>
-            <span :class="{ 'skeleton-text': skeleton }">{{ $t(item.label, { value: item.value }) }}</span>
+            <span :class="{ 'skeleton-text': skeleton }">{{ $t(item.label, typeof item.value === 'object' ? item.value : { value: item.value }) }}</span>
           </span>
         </div>
       </template>
@@ -36,7 +36,8 @@
       <!-- Wide enough for every column; on small screens it scrolls sideways, with the site's fade and arrow showing there's more -->
       <!-- snap: on phones a swipe or arrow moves one column at a time -->
       <scroll-hint-container :snap="true">
-        <div class="grid grid-cols-[minmax(13rem,1.4fr)_repeat(7,minmax(7.5rem,1fr))] gap-2 min-w-[70rem]">
+        <!-- Padded so the scroll box doesn't clip a focused row's or column's ring -->
+        <div class="grid grid-cols-[minmax(13rem,1.4fr)_repeat(7,minmax(7.5rem,1fr))] gap-2 min-w-[70rem] p-1">
           <!-- Which side is which -->
           <div class="snap-start flex items-center gap-2 py-2 text-sm font-bold uppercase tracking-wide">
             <span class="w-2.5 h-2.5 rounded-full bg-teal shrink-0"></span>
@@ -52,8 +53,9 @@
 
           <!-- The enemy parties across the top -->
           <div></div>
-          <!-- Clicking an enemy party (or one of yours, down the side) fades every other column (row); click it again to clear -->
-          <component :is="skeleton ? 'div' : 'button'" v-for="column in compositions" :key="column.code" :type="skeleton ? null : 'button'" :title="skeleton ? null : $t('Focus this column')"
+          <!-- Clicking an enemy party (or one of yours, down the side) fades every other column (row); click it again, or
+               anywhere that isn't a row or column, to clear. A row and a column together ring their crossing tile -->
+          <component :is="skeleton ? 'div' : 'button'" v-for="column in compositions" :key="column.code" :type="skeleton ? null : 'button'" :title="skeleton ? null : $t('Focus this column')" data-party-focus
             :class="['snap-start flex flex-col items-center gap-2 py-1.5 rounded-control text-sm text-center transition-[colors,opacity]', skeleton ? 'text-subtext' : focusColumn === column.code ? 'bg-teal/20 ring-2 ring-teal text-white' : ['text-subtext hover:bg-surface-1 hover:text-white', { 'opacity-40': focusColumn }]]"
             @click="!skeleton && toggleFocus('column', column.code)">
             <span :class="['inline-flex items-center gap-1', { 'skeleton-text': skeleton }]">
@@ -66,7 +68,7 @@
 
           <!-- Your party down the side, then a tile per enemy party -->
           <template v-for="row in compositions" :key="row.code">
-            <component :is="skeleton ? 'div' : 'button'" :type="skeleton ? null : 'button'" :title="skeleton ? null : $t('Focus this row')"
+            <component :is="skeleton ? 'div' : 'button'" :type="skeleton ? null : 'button'" :title="skeleton ? null : $t('Focus this row')" data-party-focus
               :class="['bg-surface-1 rounded-control px-4 py-3 flex items-center gap-4 min-w-0 text-left transition-[box-shadow,opacity]', { 'hover:bg-surface-3': !skeleton }, focusRow === row.code ? 'ring-2 ring-teal' : { 'opacity-40': focusRow }]"
               @click="!skeleton && toggleFocus('row', row.code)">
               <span :class="['inline-flex items-center gap-1 shrink-0', { 'skeleton-text': skeleton }]">
@@ -126,7 +128,7 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    // 'player': one player's own parties. 'global': everyone's, with tighter colour bands and no faded tiles.
+    // 'player': one player's own parties. 'global': everyone's. Both fade tiles under 15 games.
     mode: {
       type: String,
       default: 'global',
@@ -143,14 +145,16 @@ export default {
     };
   },
   computed: {
-    // Win rate bands for the tiles, and the game count under which a player's tile fades
+    // Win rate bands for the tiles (teal from high, plain between, yellow down to red, red under it), and the game
+    // count under which a tile fades
     bands() {
-      return this.mode === 'global' ? { high: 52, low: 48, fade: 0 } : { high: 55, low: 45, fade: 15 };
+      return { high: 52, low: 48, red: 42, fade: 15 };
     },
     legend() {
       const items = [
         { label: ':value% and higher', value: this.bands.high, swatch: 'bg-teal/25 border border-teal/50' },
-        { label: ':value% and lower', value: this.bands.low, swatch: 'bg-loss/25 border border-loss/50' },
+        { label: ':low% to :high%', value: { low: this.bands.red, high: this.bands.low }, swatch: 'bg-yellow/25 border border-yellow/50' },
+        { label: 'Under :value%', value: this.bands.red, swatch: 'bg-red/25 border border-red/50' },
       ];
       if (this.bands.fade) {
         items.push({ label: 'Faded — fewer than :value games', value: this.bands.fade, swatch: 'border border-subtext/60' });
@@ -244,6 +248,18 @@ export default {
       return tiles;
     },
   },
+  mounted() {
+    this.onDocumentClick = event => {
+      if ((this.focusRow || this.focusColumn) && !event.target.closest('[data-party-focus]')) {
+        this.focusRow = null;
+        this.focusColumn = null;
+      }
+    };
+    document.addEventListener('click', this.onDocumentClick);
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.onDocumentClick);
+  },
   methods: {
     toggleFocus(axis, code) {
       const key = axis === 'row' ? 'focusRow' : 'focusColumn';
@@ -264,7 +280,8 @@ export default {
       if (!item) return 'bg-surface-1 opacity-50';
       const classes = [];
       if (item.win_rate >= this.bands.high) classes.push('bg-teal/25 text-win');
-      else if (item.win_rate <= this.bands.low) classes.push('bg-loss/25 text-loss');
+      else if (item.win_rate < this.bands.red) classes.push('bg-red/25 text-lred');
+      else if (item.win_rate <= this.bands.low) classes.push('bg-yellow/25 text-lyellow');
       else classes.push('bg-surface-1 text-header');
       if (this.bands.fade && item.wins + item.losses < this.bands.fade) classes.push('opacity-50');
       return classes.join(' ');

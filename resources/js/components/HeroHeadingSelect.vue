@@ -1,5 +1,6 @@
 <template>
-  <div class="relative" :class="textclass" @mouseleave="open = false">
+  <!-- Stays open until a pick, a click outside, Escape or the close button -->
+  <div ref="root" class="relative" :class="textclass" @keydown.esc="close">
     <button type="button" class="inline-flex items-center gap-2 focus:underline focus:outline-none" :aria-label="'Change ' + label" :aria-expanded="open" @click="open = !open">
       <span>{{ displayName(selectedName) }}</span>
       <basil-icon name="arrow" class="rotate-90 text-xs"></basil-icon>
@@ -7,7 +8,12 @@
     <div v-if="open" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg font-normal" style="width: 17.5rem; max-height: 26.25rem;">
       <!-- The search spans the dropdown's full width above the list; only the list scrolls -->
       <div class="flex flex-col overflow-hidden rounded" style="max-height: inherit;">
-      <input v-if="type !== 'role'" v-model="search" type="text" :placeholder="'Search ' + label.toLowerCase() + '...'" class="shrink-0 block w-full px-3 py-2.5 text-sm bg-field text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
+      <!-- Its own header row, so the close button doesn't read as part of the search -->
+      <div class="shrink-0 flex items-center justify-between pl-3 pr-1 py-1">
+        <span class="text-xs font-bold uppercase tracking-wider text-subtext">{{ $t(switcherLabel) }}</span>
+        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-control text-subtext hover:text-white hover:bg-lighten transition-colors" :title="$t('Close')" :aria-label="$t('Close')" @click.stop="close"><basil-icon name="cross" class="text-sm"></basil-icon></button>
+      </div>
+      <input v-if="type !== 'role'" v-model="search" type="text" :placeholder="'Search ' + label.toLowerCase() + '...'" class="shrink-0 block w-full px-3 py-2.5 text-sm bg-field text-white border-y border-white/20 focus:outline-none focus:border-teal" @click.stop />
       <div class="overflow-y-auto">
       <div
         v-for="h in filteredHeroes"
@@ -50,7 +56,21 @@ export default {
       search: '',
     };
   },
+  mounted() {
+    this.onDocumentClick = event => {
+      if (this.open && !this.$refs.root.contains(event.target)) {
+        this.close();
+      }
+    };
+    document.addEventListener('click', this.onDocumentClick);
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.onDocumentClick);
+  },
   computed: {
+    switcherLabel() {
+      return { hero: 'Hero Switcher', role: 'Role Switcher', map: 'Map Switcher' }[this.type];
+    },
     label() {
       return { hero: 'Hero', role: 'Role', map: 'Map' }[this.type];
     },
@@ -72,9 +92,12 @@ export default {
     keyOf(item) {
       return this.type === 'hero' ? item.id : item.name;
     },
-    selectHero(hero) {
+    close() {
       this.open = false;
       this.search = '';
+    },
+    selectHero(hero) {
+      this.close();
       this.$emit('hero-changed', this.keyOf(hero));
     },
   },

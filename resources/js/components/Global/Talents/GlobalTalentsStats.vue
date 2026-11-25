@@ -36,9 +36,6 @@
           <template #heading>
             <page-heading :heading="$heroName(selectedHero)" :subheading="'Builds & talent stats'" :portrait-desktop-only="true">
               <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
-              <template #aboveHeading>
-                <a href="/Global/Talents" class="inline-flex max-md:flex max-md:w-fit items-center gap-1.5 text-sm font-normal text-lteal hover:underline mb-1"><basil-icon name="arrow-small" class="rotate-180 text-xs text-white"></basil-icon>{{ $t('All heroes') }}</a>
-              </template>
               <!-- The hero name is the hero picker (no Heroes filter on this page) -->
               <template #headingText>
                 <hero-heading-select :heroes="heroes" :value="selectedHero.id" textclass="" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>

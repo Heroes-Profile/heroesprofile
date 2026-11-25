@@ -2,41 +2,45 @@
   <div>
     <global-async-debug-banner page-label="Global Party" />
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-    <page-heading :heading="'Global Party Statistics'"></page-heading>
+    <!-- As Hero Stats: the heading with the filters beside it -->
+    <player-page-top>
+      <template #heading>
+        <page-heading heading="Party Statistics"></page-heading>
+      </template>
+      <filters 
+        :onFilter="filterData" 
+        :filters="filters" 
+        :isLoading="isLoading"
 
-    <filters 
-      :onFilter="filterData" 
-      :filters="filters" 
-      :isLoading="isLoading"
+        :timeframetypeinput="timeframetype"
+        :timeframeinput="timeframe"
+        :gametypeinput="gametype"
+        :regioninput="region"
+        :herolevelinput="herolevel"
+        :heroinput="getHeroID()"
+        :gamemapinput="gamemap"
+        :playerrankinput="playerrank"
+        :herorankinput="herorank"
+        :rolerankinput="rolerank"
+        :teamonepartyinput="teamoneparty"      
+        :teamtwopartyinput="teamtwoparty"      
 
-      :timeframetypeinput="timeframetype"
-      :timeframeinput="timeframe"
-      :gametypeinput="gametype"
-      :regioninput="region"
-      :herolevelinput="herolevel"
-      :heroinput="getHeroID()"
-      :gamemapinput="gamemap"
-      :playerrankinput="playerrank"
-      :herorankinput="herorank"
-      :rolerankinput="rolerank"
-      :teamonepartyinput="teamoneparty"      
-      :teamtwopartyinput="teamtwoparty"      
-
-      :gametypedefault="gametypedefault"
-      :includetimeframe="true"
-      :includeregion="true"
-      :includeherolevel="true"
-      :includehero="true"
-      :includegametype="true"
-      :includegamemap="true"
-      :includeplayerrank="true"
-      :includeherorank="true"
-      :includerolerank="true"
-      :includeteamoneparty="true"
-      :includeteamtwoparty="true"
-      :advancedfiltering="advancedfiltering"
-      >
-    </filters>
+        :gametypedefault="gametypedefault"
+        :includetimeframe="true"
+        :includeregion="true"
+        :includeherolevel="true"
+        :includehero="true"
+        :includegametype="true"
+        :includegamemap="true"
+        :includeplayerrank="true"
+        :includeherorank="true"
+        :includerolerank="true"
+        :includeteamoneparty="true"
+        :includeteamtwoparty="true"
+        :advancedfiltering="advancedfiltering"
+        >
+      </filters>
+    </player-page-top>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
     <div v-if="partydata" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">

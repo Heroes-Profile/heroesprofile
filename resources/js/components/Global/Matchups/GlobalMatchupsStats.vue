@@ -14,9 +14,6 @@
         <template #heading>
           <page-heading :heading="$heroName(selectedHero)" :subheading="'Counters & matchups'" :portrait-desktop-only="true">
             <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
-            <template #aboveHeading>
-              <a href="/Global/Matchups" class="inline-flex max-md:flex max-md:w-fit items-center gap-1.5 text-sm font-normal text-lteal hover:underline mb-1"><basil-icon name="arrow-small" class="rotate-180 text-xs text-white"></basil-icon>{{ $t('All heroes') }}</a>
-            </template>
             <template #headingText>
               <hero-heading-select :heroes="heroes" :value="selectedHero.id" textclass="" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
             </template>

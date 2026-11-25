@@ -2,43 +2,47 @@
   <div>
     <global-async-debug-banner page-label="Global Compositions" />
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-    <page-heading :heading="'Team Compositions & Win Rates'"></page-heading>
-    <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 -mt-2 mb-4 flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
-      <span class="uppercase text-gray-medium">{{ selectedPatch ? $t('All players · Patch :patch', { patch: selectedPatch }) : $t('All players') }}</span>
-    </div>
-    <filters
-      :onFilter="filterData"
-      :filters="filters"
-      :isLoading="isLoading"
+    <!-- As Hero Stats: the heading with the filters beside it -->
+    <player-page-top>
+      <template #heading>
+        <page-heading heading="Composition Stats">
+          <template #subheading>{{ selectedPatch ? $t('All players · Patch :patch', { patch: selectedPatch }) : $t('All players') }}</template>
+        </page-heading>
+      </template>
+      <filters
+        :onFilter="filterData"
+        :filters="filters"
+        :isLoading="isLoading"
 
-      :timeframetypeinput="timeframetype"
-      :timeframeinput="timeframe"
-      :gametypeinput="gametype"
-      :regioninput="region"
-      :herolevelinput="herolevel"
-      :heroinput="getHeroID()"
-      :gamemapinput="gamemap"
-      :playerrankinput="playerrank"
-      :herorankinput="herorank"
-      :rolerankinput="rolerank"
-      :mirrormatchinput="mirrormatch"
+        :timeframetypeinput="timeframetype"
+        :timeframeinput="timeframe"
+        :gametypeinput="gametype"
+        :regioninput="region"
+        :herolevelinput="herolevel"
+        :heroinput="getHeroID()"
+        :gamemapinput="gamemap"
+        :playerrankinput="playerrank"
+        :herorankinput="herorank"
+        :rolerankinput="rolerank"
+        :mirrormatchinput="mirrormatch"
 
-      :gametypedefault="gametypedefault"
-      :includetimeframe="true"
-      :includeregion="true"
-      :includeherolevel="true"
-      :includehero="true"
-      :includegametype="true"
-      :includegamemap="true"
-      :includeplayerrank="true"
-      :includeherorank="true"
-      :includerolerank="true"
-      :includemirror="true"
-      :includeminimumgames="true"
-      :minimumgamesdefault="minimumgames"
-      :advancedfiltering="advancedfiltering"
-      >
-    </filters>
+        :gametypedefault="gametypedefault"
+        :includetimeframe="true"
+        :includeregion="true"
+        :includeherolevel="true"
+        :includehero="true"
+        :includegametype="true"
+        :includegamemap="true"
+        :includeplayerrank="true"
+        :includeherorank="true"
+        :includerolerank="true"
+        :includemirror="true"
+        :includeminimumgames="true"
+        :minimumgamesdefault="minimumgames"
+        :advancedfiltering="advancedfiltering"
+        >
+      </filters>
+    </player-page-top>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="compositiondata" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <patch-notes-panel v-if="patchNotesUrl" class="!max-w-none !mb-0" :version="timeframe[0]"></patch-notes-panel>

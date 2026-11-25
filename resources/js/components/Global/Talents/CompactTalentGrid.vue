@@ -29,35 +29,32 @@
             <template v-if="skeleton">
               <div v-for="talent in tier.count" :key="talent" class="rounded-control bg-surface-1 border-2 border-surface-1 p-3 flex flex-col gap-2.5 min-w-0">
                 <div class="flex items-center gap-2"><skeleton-box class="w-[2.625rem] h-[2.625rem] !rounded-full shrink-0"></skeleton-box><span class="text-sm font-semibold skeleton-text">Pressurized Glands</span></div>
-                <div class="grid grid-cols-[auto_minmax(0,1fr)_auto] gap-3 items-end">
-                  <!-- Spaced, so the grey label and value read as two blocks rather than one -->
-                  <span class="flex flex-col gap-1"><span class="text-[0.625rem] skeleton-text">Win rate</span><span class="font-semibold skeleton-text">00.00%</span></span>
-                  <stat-bar value="0" display-text="" :hide-value="true"></stat-bar>
-                  <span class="flex flex-col items-end gap-1"><span class="text-[0.625rem] skeleton-text">Games</span><span class="font-semibold skeleton-text">0,000</span></span>
+                <div class="flex flex-col gap-2">
+                  <span class="flex items-baseline justify-between"><span class="text-[0.625rem] skeleton-text">Win rate</span><span class="text-xl font-bold leading-none skeleton-text">00.00%</span></span>
+                  <span class="flex flex-col gap-1"><span class="flex justify-between text-[0.625rem]"><span class="skeleton-text">Popularity</span><span class="skeleton-text">00.00%</span></span><stat-bar value="0" display-text="" :hide-value="true"></stat-bar></span>
+                  <span class="flex justify-between text-[0.625rem]"><span class="skeleton-text">Games</span><span class="skeleton-text">0,000</span></span>
                 </div>
               </div>
             </template>
             <div v-else v-for="talent in tier.talents" :key="talent.talentInfo.talent_id"
-              :class="['rounded-control bg-surface-1 border-2 p-3 flex flex-col gap-2.5 min-w-0 transition-opacity', isBest(talent, tier) ? 'border-teal' : 'border-surface-1', { 'opacity-25': focusedLevel && focusedLevel !== tier.level }]">
+              :class="['relative rounded-control border-2 p-3 flex flex-col gap-2.5 min-w-0 transition-opacity', isBest(talent, tier) ? 'border-teal bg-surface-1' : 'bg-surface-1 border-surface-1', { 'opacity-25': focusedLevel && focusedLevel !== tier.level }]">
               <div class="flex items-center gap-2 min-w-0">
                 <talent-image-wrapper class="shrink-0" :talent="talent.talentInfo" :popup-hoverable="true"></talent-image-wrapper>
                 <h3 class="text-sm font-semibold truncate min-w-0">{{ $talentName(talent.talentInfo) }}</h3>
-                <span v-if="isBest(talent, tier)" class="ml-auto shrink-0 px-1.5 py-0.5 rounded-[0.25rem] bg-teal/20 text-lteal text-[0.625rem] font-bold uppercase">{{ $t('Best') }}</span>
+                <!-- Sits on the tile's top edge, clear of the name -->
+                <span v-if="isBest(talent, tier)" class="absolute -top-2 right-3 px-1.5 py-0.5 rounded-[0.25rem] bg-teal text-white text-[0.625rem] font-bold uppercase leading-none">{{ $t('Best') }}</span>
               </div>
-              <!-- In a narrow column the popularity bar takes its own line under win rate and games -->
-              <div :class="narrow ? 'grid grid-cols-2 gap-x-3 gap-y-2 items-end' : 'grid grid-cols-[auto_minmax(0,1fr)_auto] gap-3 items-end'">
-                <span class="flex flex-col">
+              <!-- Win rate is the big number; the bar is popularity, grey and labelled so it isn't read as win rate -->
+              <div class="flex flex-col gap-2">
+                <span class="flex items-baseline justify-between gap-2">
                   <span class="text-[0.625rem] text-subtext">{{ $t('Win rate') }}</span>
-                  <span :class="['font-semibold tabular-nums', talent.win_rate > 50 ? 'text-win' : '']">{{ talent.win_rate.toFixed(2) }}%</span>
+                  <span :class="['text-xl font-bold tabular-nums leading-none', { 'text-lteal': isBest(talent, tier) }]">{{ talent.win_rate.toFixed(2) }}%</span>
                 </span>
-                <span :class="['flex flex-col gap-1 min-w-0', { 'col-span-2 order-last': narrow }]">
+                <span class="flex flex-col gap-1 min-w-0">
                   <span class="flex justify-between gap-2 text-[0.625rem] text-subtext"><span>{{ $t('Popularity') }}</span><span class="tabular-nums">{{ talent.popularity.toFixed(2) }}%</span></span>
-                  <stat-bar :value="talent.popularity" display-text="" color="teal"></stat-bar>
+                  <stat-bar :value="talent.popularity" display-text="" color="gray-medium"></stat-bar>
                 </span>
-                <span class="flex flex-col items-end">
-                  <span class="text-[0.625rem] text-subtext">{{ $t('Games') }}</span>
-                  <span class="font-semibold tabular-nums">{{ formatNumber(talent.games_played) }}</span>
-                </span>
+                <span class="flex justify-between gap-2 text-[0.625rem] text-subtext"><span>{{ $t('Games') }}</span><span class="tabular-nums">{{ formatNumber(talent.games_played) }}</span></span>
               </div>
               <span v-if="statFilter && statFilter !== 'win_rate'" class="text-[0.625rem] text-subtext">{{ statFilterLabel(statFilter) }}: {{ formatNumber(talent.total_filter_type) }}</span>
             </div>
@@ -112,10 +109,6 @@ export default {
     },
     horizontal() {
       return this.effectiveStyle === 'horizontal';
-    },
-    // Tiles in a level column, not spread across a row
-    narrow() {
-      return this.horizontal;
     },
     shownTiers() {
       if (this.skeleton) {

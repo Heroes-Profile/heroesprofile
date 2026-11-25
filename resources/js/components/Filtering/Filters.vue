@@ -326,29 +326,14 @@
 
 
 
-          <!-- Minimum Games -->
-          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeminimumgames"
+          <!-- Minimum Games: in the advanced row on pages that have one -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeminimumgames && hideadvancedfilteringbutton"
             :values="filters.minimum_games" 
             :text="'Minimum Games'" 
             @input-changed="handleInputChange" 
             :defaultValue="modifiedminimumgamedefault"
           ></single-select-filter>
 
-          <!-- Team One Party -->
-          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeteamoneparty"
-            :values="filters.party_combinations" 
-            :text="'Team One Party'" 
-            :defaultValue="teamonepartyinput"
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-
-          <!-- Team Two Party -->
-          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeteamtwoparty"
-            :values="filters.party_combinations" 
-            :text="'Team Two Party'" 
-            :defaultValue="teamtwopartyinput"
-            @input-changed="handleInputChange"
-          ></single-select-filter>
 
 
           <!--<single-select-filter v-if="modifiedincludeminimumaccountlevel" :values="filters.minimum_account_level" :text="'Min. Account Level'" @input-changed="handleInputChange" :defaultValue="'100'"></single-select-filter>-->
@@ -397,6 +382,30 @@
         <!-- Its name sits on the divider -->
         <span v-if="!compact" class="absolute -top-2 left-0 bg-surface pr-2 text-xs uppercase text-subtext leading-none">{{ $t('Advanced filters') }}</span>
         <div ref="advancedrow" :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] gap-2 items-end' : 'filter-row'">
+          <!-- Team One Party -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeteamoneparty && toggleExtraFilters"
+            :values="filters.party_combinations" 
+            :text="'Team One Party'" 
+            :defaultValue="teamonepartyinput"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+
+          <!-- Team Two Party -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeteamtwoparty && toggleExtraFilters"
+            :values="filters.party_combinations" 
+            :text="'Team Two Party'" 
+            :defaultValue="teamtwopartyinput"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+
+          <!-- Minimum Games -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeminimumgames && !hideadvancedfilteringbutton && toggleExtraFilters"
+            :values="filters.minimum_games"
+            :text="'Minimum Games'"
+            @input-changed="handleInputChange"
+            :defaultValue="modifiedminimumgamedefault"
+          ></single-select-filter>
+
           <!-- Stat Type Filter -->
           <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="showStatTypeFilter"
             :values="filters.stat_filter"
@@ -621,7 +630,7 @@
       },
       gametypedefault: Array,
       minimumgamesdefault: {
-        tpye: [String, Number]
+        type: [String, Number]
       },
       defaultSeason: [String, Number],
       defaultpredictionseason: [String, Number],
@@ -751,7 +760,8 @@
       this.modifiedincludegametype = this.includegametype;
       this.modifiedincludeheroes = this.includehero;
 
-      this.modifiedminimumgamedefault = this.minimumgamesdefault ? this.minimumgamesdefault : 0;
+      // The options are strings ("100"), so a page passing 100 still shows it
+      this.modifiedminimumgamedefault = String(this.minimumgamesdefault ? this.minimumgamesdefault : 0);
 
       this.selectedSingleFilters["Timeframe Type"] = this.timeframetype;
       this.selectedMultiFilters["Game Type"] = this.gametype;
@@ -927,6 +937,8 @@
         const set = value => Array.isArray(value) ? value.length > 0 : value !== null && value !== undefined && value !== '';
         const groupSize = this.groupSizeDefaultValue;
         return !!((this.includestatfilter && set(this.statfilterinput) && this.statfilterinput !== 'win_rate')
+          || (this.includeteamoneparty && set(this.teamonepartyinput))
+          || (this.includeteamtwoparty && set(this.teamtwopartyinput))
           || (this.includeherolevel && set(this.herolevelinput))
           || (this.includeherorank && set(this.herorankinput))
           || (this.includerolerank && set(this.rolerankinput))
@@ -936,7 +948,7 @@
       },
       // Whether this page has any filter that lives in the advanced row
       hasAdvancedFilters(){
-        return !!(this.includestatfilter || this.includeherolevel || this.includemmrranges || this.includeherorank || this.includerolerank
+        return !!(this.includestatfilter || this.includeteamoneparty || this.includeteamtwoparty || (this.includeminimumgames && !this.hideadvancedfilteringbutton) || this.includeherolevel || this.includemmrranges || this.includeherorank || this.includerolerank
           || this.includetalentbuildtype || this.includemirror || (this.modifiedincludegroupsize && this.groupsizeadvanced)
           || this.matchhistorybattletagsearch);
       },
@@ -982,6 +994,8 @@
           delete this.selectedMultiFilters['HP Hero Rank'];
           delete this.selectedMultiFilters['HP Role Rank'];
           delete this.selectedSingleFilters['Mirror Matches'];
+          delete this.selectedSingleFilters['Team One Party'];
+          delete this.selectedSingleFilters['Team Two Party'];
           if(this.groupsizeadvanced){
             delete this.selectedSingleFilters['Group Size'];
             delete this.selectedMultiFilters['Group Size'];

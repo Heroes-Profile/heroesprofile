@@ -18,6 +18,7 @@ const colorClasses = {
   red: 'bg-red',
   yellow: 'bg-yellow',
   'gray-dark': 'bg-gray-dark',
+  'gray-medium': 'bg-gray-medium',
 };
 
 export default {
