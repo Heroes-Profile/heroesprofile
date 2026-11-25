@@ -2,17 +2,27 @@
   <!-- Talent stats per level. Vertical: a row per level, the level on the left and a tile per talent. Horizontal (desktop):
        a column per level, as in the Talent Builder. The best win rate on each level is marked BEST -->
   <section v-if="skeleton || tiers.some(tier => tier.talents.length)" class="flex flex-col gap-2" :aria-label="$t('Talent statistics')">
-    <!-- Layout switch, saved like the Talent Builder's: a cookie, and the account setting when logged in -->
-    <!-- Loading: the same row in grey, so the grid doesn't move down when it loads -->
-    <div v-if="skeleton && !isMobile" class="flex justify-end items-center gap-2 text-sm">
-      <span class="skeleton-text">{{ $t('Layout') }}</span>
-      <div class="relative">
-        <tab-button class="invisible" :small="true" :tabs="[{ key: 'vertical', text: 'Vertical' }, { key: 'horizontal', text: 'Horizontal' }]" aria-hidden="true"></tab-button>
-        <skeleton-box class="absolute inset-0"></skeleton-box>
-      </div>
+    <!-- Which stat picks each level's Best, then the layout switch (desktop), saved like the Talent Builder's: a cookie,
+         and the account setting when logged in. Loading: the same row in grey, so the grid doesn't move down -->
+    <div v-if="skeleton" class="flex flex-wrap justify-end items-center gap-x-6 gap-y-2 text-sm">
+      <span class="flex items-center gap-2">
+        <span class="skeleton-text">{{ $t('Best by') }}</span>
+        <div class="relative">
+          <tab-button class="invisible" :small="true" :tabs="bestByTabs" aria-hidden="true"></tab-button>
+          <skeleton-box class="absolute inset-0"></skeleton-box>
+        </div>
+      </span>
+      <span v-if="!isMobile" class="flex items-center gap-2">
+        <span class="skeleton-text">{{ $t('Layout') }}</span>
+        <div class="relative">
+          <tab-button class="invisible" :small="true" :tabs="layoutTabs" aria-hidden="true"></tab-button>
+          <skeleton-box class="absolute inset-0"></skeleton-box>
+        </div>
+      </span>
     </div>
-    <div v-else-if="!isMobile" class="flex justify-end items-center gap-2 text-sm">
-      {{ $t('Layout') }}<tab-button :small="true" :dark="true" :tabs="[{ key: 'vertical', text: 'Vertical' }, { key: 'horizontal', text: 'Horizontal' }]" :overridedefaultside="effectiveStyle" :ignoreclick="true" @tab-click="layoutStyleSelected"></tab-button>
+    <div v-else class="flex flex-wrap justify-end items-center gap-x-6 gap-y-2 text-sm">
+      <span class="flex items-center gap-2">{{ $t('Best by') }}<tab-button :small="true" :dark="true" :tabs="bestByTabs" :overridedefaultside="bestBy" :ignoreclick="true" @tab-click="bestBy = $event"></tab-button></span>
+      <span v-if="!isMobile" class="flex items-center gap-2">{{ $t('Layout') }}<tab-button :small="true" :dark="true" :tabs="layoutTabs" :overridedefaultside="effectiveStyle" :ignoreclick="true" @tab-click="layoutStyleSelected"></tab-button></span>
     </div>
 
     <!-- Padded, so the scroll box doesn't clip a selected level's ring -->
@@ -40,7 +50,8 @@
                 <div class="flex items-center gap-2"><skeleton-box class="w-[2.625rem] h-[2.625rem] !rounded-full shrink-0"></skeleton-box><span class="text-sm font-semibold skeleton-text">Pressurized Glands</span></div>
                 <div class="flex flex-col gap-2">
                   <span class="flex items-baseline justify-between"><span class="text-[0.625rem] skeleton-text">Win rate</span><span class="text-xl font-bold leading-none skeleton-text">00.00%</span></span>
-                  <span class="flex flex-col gap-1"><span class="flex justify-between text-[0.625rem]"><span class="skeleton-text">Popularity</span><span class="skeleton-text">00.00%</span></span><stat-bar value="0" display-text="" :hide-value="true"></stat-bar></span>
+                  <stat-bar value="0" display-text="" :hide-value="true"></stat-bar>
+                  <span class="flex justify-between text-[0.625rem]"><span class="skeleton-text">Popularity</span><span class="skeleton-text">00.00%</span></span>
                   <span class="flex justify-between text-[0.625rem]"><span class="skeleton-text">Games</span><span class="skeleton-text">0,000</span></span>
                 </div>
               </div>
@@ -53,12 +64,18 @@
                 <!-- Sits on the tile's top edge, clear of the name -->
                 <span v-if="isBest(talent, tier)" class="absolute -top-2 right-3 px-1.5 py-0.5 rounded-[0.25rem] bg-teal text-white text-[0.625rem] font-bold uppercase leading-none">{{ $t('Best') }}</span>
               </div>
-              <!-- Win rate is the big number; the bar is popularity, grey and labelled so it isn't read as win rate -->
+              <!-- The Best by stat is the big number with its bar, teal on the level's best and grey on the rest; the other
+                   values are small lines. The order stays the same either way -->
               <div class="flex flex-col gap-2">
-                <span class="flex items-baseline justify-between gap-2">
-                  <span class="text-[0.625rem] text-subtext">{{ $t('Win rate') }}</span>
-                  <span :class="['text-xl font-bold tabular-nums leading-none', { 'text-lteal': isBest(talent, tier) }]">{{ talent.win_rate.toFixed(2) }}%</span>
-                </span>
+                <template v-if="bestBy === 'win_rate'">
+                  <span class="flex items-baseline justify-between gap-2">
+                    <span class="text-[0.625rem] text-subtext">{{ $t('Win rate') }}</span>
+                    <span :class="['text-xl font-bold tabular-nums leading-none', { 'text-lteal': isBest(talent, tier) }]">{{ talent.win_rate.toFixed(2) }}%</span>
+                  </span>
+                  <!-- Scaled 25% to 75%, so the usual 45-55% spread shows as a clear difference; 50% fills half -->
+                  <stat-bar :value="(talent.win_rate - 25) * 2" display-text="" :color="isBest(talent, tier) ? 'teal' : 'gray-medium'"></stat-bar>
+                </template>
+                <span v-else class="flex justify-between gap-2 text-[0.625rem] text-subtext"><span>{{ $t('Win rate') }}</span><span class="tabular-nums">{{ talent.win_rate.toFixed(2) }}%</span></span>
                 <span v-if="talent.win_rate_change !== null && talent.win_rate_change !== undefined" class="flex justify-between gap-2 text-[0.625rem] text-subtext">
                   <span>{{ $t('Change') }}</span>
                   <span :class="['tabular-nums', talent.win_rate_change > 0 ? 'text-win' : talent.win_rate_change < 0 ? 'text-loss' : '']">
@@ -67,10 +84,14 @@
                     <template v-else>0.00</template>
                   </span>
                 </span>
-                <span class="flex flex-col gap-1 min-w-0">
-                  <span class="flex justify-between gap-2 text-[0.625rem] text-subtext"><span>{{ $t('Popularity') }}</span><span class="tabular-nums">{{ talent.popularity.toFixed(2) }}%</span></span>
-                  <stat-bar :value="talent.popularity" display-text="" color="gray-medium"></stat-bar>
-                </span>
+                <template v-if="bestBy === 'popularity'">
+                  <span class="flex items-baseline justify-between gap-2">
+                    <span class="text-[0.625rem] text-subtext">{{ $t('Popularity') }}</span>
+                    <span :class="['text-xl font-bold tabular-nums leading-none', { 'text-lteal': isBest(talent, tier) }]">{{ talent.popularity.toFixed(2) }}%</span>
+                  </span>
+                  <stat-bar :value="talent.popularity" display-text="" :color="isBest(talent, tier) ? 'teal' : 'gray-medium'"></stat-bar>
+                </template>
+                <span v-else class="flex justify-between gap-2 text-[0.625rem] text-subtext"><span>{{ $t('Popularity') }}</span><span class="tabular-nums">{{ talent.popularity.toFixed(2) }}%</span></span>
                 <span class="flex justify-between gap-2 text-[0.625rem] text-subtext"><span>{{ $t('Games') }}</span><span class="tabular-nums">{{ formatNumber(talent.games_played) }}</span></span>
               </div>
               <span v-if="statFilter && statFilter !== 'win_rate'" class="text-[0.625rem] text-subtext">{{ statFilterLabel(statFilter) }}: {{ formatNumber(talent.total_filter_type) }}</span>
@@ -101,6 +122,10 @@ export default {
     return {
       skeletonTiers: [1, 4, 7, 10, 13, 16, 20].map(level => ({ level, count: level === 10 ? 2 : 3 })),
       focusedLevel: null,
+      // The stat that picks each level's Best (and its teal bar)
+      bestBy: 'win_rate',
+      bestByTabs: [{ key: 'win_rate', text: 'Win rate' }, { key: 'popularity', text: 'Popularity' }],
+      layoutTabs: [{ key: 'vertical', text: 'Vertical' }, { key: 'horizontal', text: 'Horizontal' }],
       localStyle: this.layoutStyle || Cookies.get('talentstatsstyle') || 'vertical',
       isMobile: window.innerWidth < 1024,
     };
@@ -140,6 +165,7 @@ export default {
           level,
           talents,
           highestWinRate: Math.max(...talents.map(talent => talent.win_rate)),
+          highestPopularity: Math.max(...talents.map(talent => talent.popularity)),
         };
       });
     },
@@ -159,7 +185,8 @@ export default {
       this.$axios.post('/api/v1/profile/save/settings', { talentstatsstyle: this.localStyle }).catch(() => {});
     },
     isBest(talent, tier) {
-      return talent.games_played > 0 && talent.win_rate === tier.highestWinRate && tier.talents.length > 1;
+      const highest = this.bestBy === 'popularity' ? tier.highestPopularity : tier.highestWinRate;
+      return talent.games_played > 0 && talent[this.bestBy] === highest && tier.talents.length > 1;
     },
     formatNumber(value) {
       return value == null ? '—' : Number(value).toLocaleString('en-US');
