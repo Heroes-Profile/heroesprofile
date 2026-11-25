@@ -249,7 +249,8 @@ class XalatathRecapController extends Controller
             ->where('replay.game_type', '<>', 0)
             ->when($gameType !== null, fn ($query) => $query->where('replay.game_type', $gameType))
             ->where('replay.game_date', '>=', $startsAt)
-            ->where('replay.game_date', '<', $endsAt);
+            ->where('replay.game_date', '<', $endsAt)
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query));
 
         $row = $games()
             ->selectRaw('COUNT(*) AS games, COALESCE(SUM(player.winner), 0) AS wins')
@@ -378,6 +379,7 @@ class XalatathRecapController extends Controller
               AND r.game_type <> 0
               AND r.game_date >= ?
               AND r.game_date < ?
+              AND NOT EXISTS (SELECT 1 FROM replay_duplicates d WHERE d.replayID = r.replayID)
             GROUP BY r.game_type
         ', [
             self::HERO_ID, $user->blizz_id, $startsAt, $endsAt,

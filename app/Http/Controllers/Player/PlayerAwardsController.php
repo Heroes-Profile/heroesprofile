@@ -241,6 +241,7 @@ class PlayerAwardsController extends Controller
             ->where('player.blizz_id', $request['blizz_id'])
             ->where('replay.region', $request['region'])
             ->where('replay.replayID', '>', self::AWARD_TRACKING_REPLAY_ID)
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
             ->whereIn('replay.game_type', $gameType)
             ->when(! is_null($hero), function ($query) use ($hero) {
                 return $query->where('player.hero', $hero);

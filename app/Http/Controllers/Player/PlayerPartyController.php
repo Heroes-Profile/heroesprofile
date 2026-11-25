@@ -129,6 +129,7 @@ class PlayerPartyController extends Controller
             ->tap(function ($query) use ($season, $startDate, $endDate) {
                 $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
             })
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
             ->when(! is_null($gameMap), function ($query) use ($gameMap) {
                 return $query->whereIn('game_map', $gameMap);
             })

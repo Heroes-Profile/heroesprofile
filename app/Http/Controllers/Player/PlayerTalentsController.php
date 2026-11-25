@@ -124,6 +124,7 @@ class PlayerTalentsController extends Controller
             ->where('region', $region)
             ->tap(function ($query) use ($season, $startDate, $endDate) {
                 $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
+                $this->globalDataService->excludeDuplicateReplays($query);
             })
             ->when(! is_null($game_map), function ($query) use ($game_map) {
                 return $query->whereIn('game_map', $game_map);
@@ -223,6 +224,7 @@ class PlayerTalentsController extends Controller
             ->whereIn('game_type', $this->buildsGameTypes()->keys())
             ->tap(function ($query) use ($season) {
                 $this->globalDataService->applySeasonsOrDateRange($query, $season);
+                $this->globalDataService->excludeDuplicateReplays($query);
             })
             ->distinct()
             ->pluck('player.hero')
@@ -387,6 +389,7 @@ class PlayerTalentsController extends Controller
             ->where('replay.replayID', '<=', $upToReplayId)
             ->tap(function ($query) use ($season) {
                 $this->globalDataService->applySeasonsOrDateRange($query, $season);
+                $this->globalDataService->excludeDuplicateReplays($query);
             })
             ->get();
     }

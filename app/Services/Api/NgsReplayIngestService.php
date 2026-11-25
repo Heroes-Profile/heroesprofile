@@ -5,7 +5,6 @@ namespace App\Services\Api;
 use App\Models\Hero;
 use App\Models\HeroTranslation;
 use App\Models\Map;
-use App\Models\MapTranslation;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -70,7 +69,7 @@ class NgsReplayIngestService
         }
 
         $heroes = $this->heroLookups();
-        $maps = $this->mapLookups();
+        $maps = Map::parserLookups();
 
         [$t0, $t1] = $this->assignSides($input, $players);
 
@@ -178,16 +177,6 @@ class NgsReplayIngestService
         ];
     }
 
-    /** @return array{idsByName: array<string, int>, translations: array<string, string>, namesByShort: array<string, string>} */
-    private function mapLookups(): array
-    {
-        return [
-            'idsByName' => Map::pluck('map_id', 'name')->all(),
-            'translations' => MapTranslation::englishNamesByLocalized(),
-            'namesByShort' => Map::pluck('name', 'short_name')->all(),
-        ];
-    }
-
     /**
      * @param  array<int, array<string, mixed>>  $players
      */
@@ -276,34 +265,9 @@ class NgsReplayIngestService
         return ($player['battletag_name'] ?? '').'#'.($player['battletag_id'] ?? '');
     }
 
-    /** Map id for the parsed map, by name, then translation, then short name. */
     private function resolveMap(array $parsed, array $maps): int
     {
-        $name = $parsed['map'] ?? '';
-
-        if (array_key_exists($name, $maps['idsByName'])) {
-            return (int) $maps['idsByName'][$name];
-        }
-
-        if (array_key_exists($name, $maps['translations'])) {
-            $translated = $maps['translations'][$name];
-
-            if (array_key_exists($translated, $maps['idsByName'])) {
-                return (int) $maps['idsByName'][$translated];
-            }
-        }
-
-        $short = $parsed['map_short'] ?? '';
-
-        if (array_key_exists($short, $maps['namesByShort'])) {
-            $full = $maps['namesByShort'][$short];
-
-            if (array_key_exists($full, $maps['idsByName'])) {
-                return (int) $maps['idsByName'][$full];
-            }
-        }
-
-        throw new RuntimeException('Invalid Map');
+        return Map::idFromParser($parsed, $maps) ?? throw new RuntimeException('Invalid Map');
     }
 
     private function insertReplay(

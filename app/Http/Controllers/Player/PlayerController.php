@@ -289,6 +289,7 @@ class PlayerController extends Controller
                     return $query->where('replay.game_type', '<>', 0);
                 });
             $this->globalDataService->applySeasonsOrDateRange($query, $seasons, $startDate, $endDate);
+            $this->globalDataService->excludeDuplicateReplays($query);
         };
 
         if ($knownLatest && Replay::max('replayID') - $knownLatest <= self::NEWER_REPLAY_WINDOW) {
@@ -387,6 +388,7 @@ class PlayerController extends Controller
                 ->tap(function ($query) use ($season, $startDate, $endDate) {
                     $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
                 })
+                ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
                 ->when($cachedData, function ($query, $cachedData) {
                     return $query->where('replay.replayID', '>', $cachedData->latest_replayID);
                 });

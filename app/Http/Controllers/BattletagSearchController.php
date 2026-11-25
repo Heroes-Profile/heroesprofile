@@ -102,6 +102,7 @@ class BattletagSearchController extends Controller
             ->where('replay.region', $region)
             ->whereIn('ff.blizz_id', $candidateIds)
             ->where('ff.blizz_id', '<>', $blizzId)
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
             ->groupBy('ff.blizz_id')
             ->select('ff.blizz_id', DB::raw('COUNT(*) AS games'))
             ->pluck('games', 'ff.blizz_id');
@@ -166,6 +167,7 @@ class BattletagSearchController extends Controller
             ->whereIn('player.blizz_id', $blizzIds)
             ->whereIn('replay.region', $regionIds)
             ->where('replay.game_type', '<>', 0) // Exclude custom games
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
             ->groupBy('player.blizz_id', 'replay.region')
             ->select('player.blizz_id', 'replay.region', DB::raw('COUNT(*) AS games'), DB::raw('MAX(replay.game_date) AS latest'))
             ->get()
@@ -178,6 +180,7 @@ class BattletagSearchController extends Controller
             ->whereIn('replay.region', $regionIds)
             ->whereIn('replay.game_date', $stats->pluck('latest')->unique()->values()->all())
             ->where('replay.game_type', '<>', 0)
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
             ->select('player.blizz_id', 'replay.region', 'replay.replayID', 'replay.game_date', 'player.hero', 'replay.game_map')
             ->get()
             ->filter(fn ($row) => isset($stats[$rowKey($row)]) && $row->game_date == $stats[$rowKey($row)]->latest)

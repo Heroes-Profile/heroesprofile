@@ -73,6 +73,11 @@ class SingleMatchController extends Controller
             }
         }
 
+        // A second copy of a game already stored
+        if ($keptReplayID = $this->globalDataService->duplicateOf((int) $replayID)) {
+            return \Redirect::to('/Match/Single/'.$keptReplayID, 301);
+        }
+
         if (! $this->globalDataService->canViewMatchReplay($replayID)) {
             return $this->denyUnauthorizedCustomMatch();
         }
