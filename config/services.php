@@ -66,6 +66,11 @@ return [
         'anthropic_api_key' => env('HEROESPROFILE_CHAT_ANTHROPIC_API_KEY'),
     ],
 
+    // Claude for translations:strings and translations:faq; kept apart from the help chat's spend
+    'translations' => [
+        'anthropic_api_key' => env('HEROESPROFILE_TRANSLATIONS_ANTHROPIC_API_KEY'),
+    ],
+
     'recaptcha' => [
         'site_key' => env('RECAPTCHA_SITE_KEY'),
         'secret_key' => env('RECAPTCHA_SECRET_KEY'),

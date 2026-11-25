@@ -44,9 +44,9 @@ class TranslateStrings extends Command
 
         $client = null;
         if (! $listOnly) {
-            $apiKey = config('services.help_chat.anthropic_api_key');
+            $apiKey = config('services.translations.anthropic_api_key');
             if (! $apiKey) {
-                $this->error('HEROESPROFILE_CHAT_ANTHROPIC_API_KEY is not set.');
+                $this->error('HEROESPROFILE_TRANSLATIONS_ANTHROPIC_API_KEY is not set.');
 
                 return self::FAILURE;
             }
