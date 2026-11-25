@@ -4,50 +4,30 @@
       <leaderboard-popup @popupclosed="showPopup = false"></leaderboard-popup>
     </div>
 
-    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
-    <page-heading :heading="'Leaderboard'">
-      <template #headingInfo>
-        <round-image :popup-hoverable="true" class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-          <p v-if="leaderboardtype == 'Match Prediction'" class="font-normal">
-            <template v-for="(part, index) in $t('Match Prediction leaderboard data is based on users making predictions about match outcomes through :link.').split(':link')" :key="index">{{ part }}<template v-if="index === 0"><a href="/Match/Prediction/Game" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('Match Prediction') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a></template></template>
+    <!-- As the other global pages: the heading and the filters beside it -->
+    <player-page-top>
+      <template #heading>
+        <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
+        <page-heading scope="Global" :heading="'Leaderboard'" :subheading="'Top players by season'">
+          <template #headingInfo>
+            <round-image :popup-hoverable="true" class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+              <!-- SL Rank is read off loading screens, not worked out from uploaded games like the other boards -->
+          <p v-if="leaderboardtype == 'SL Rank'" class="font-normal">
+            {{ $t("The SL Rank leaderboard shows players' real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is placed by their latest rank read this season: by league from Master (Grandmasters by ladder position) down to Bronze, then by division. Within a division, players who meet the games requirement come first, by win rate.") }}
+            <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('How rank reading works') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
           </p>
-          <p v-else class="font-normal">
-            {{ $t('Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards.') }}
-            <template v-for="(part, index) in $t('The :link works on Windows, macOS and Linux.').split(':link')" :key="index">{{ part }}<template v-if="index === 0"><a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases" target="_blank" rel="noopener noreferrer" class="underline">{{ $t('Heroes Profile Uploader') }}</a></template></template>
-            {{ $t('For any questions, please contact :email.', { email: 'zemill@heroesprofile.com' }) }}
-          </p>
-        </round-image>
+          <p v-else-if="leaderboardtype == 'Match Prediction'" class="font-normal">
+                <template v-for="(part, index) in $t('Match Prediction leaderboard data is based on users making predictions about match outcomes through :link.').split(':link')" :key="index">{{ part }}<template v-if="index === 0"><a href="/Match/Prediction/Game" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('Match Prediction') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a></template></template>
+              </p>
+              <p v-else class="font-normal">
+                {{ $t('Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards.') }}
+                <template v-for="(part, index) in $t('The :link works on Windows, macOS and Linux.').split(':link')" :key="index">{{ part }}<template v-if="index === 0"><a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases" target="_blank" rel="noopener noreferrer" class="underline">{{ $t('Heroes Profile Uploader') }}</a></template></template>
+                {{ $t('For any questions, please contact :email.', { email: 'zemill@heroesprofile.com' }) }}
+              </p>
+            </round-image>
+          </template>
+        </page-heading>
       </template>
-    </page-heading>
-    <!-- Opens over the filters and table -->
-    <div v-if="leaderboardtype != 'SL Rank'" class="relative max-w-[120rem] mx-auto px-4 md:px-8 -mt-2 mb-6">
-      <button type="button" class="bg-surface-3 rounded px-4 py-2 text-sm flex items-center gap-3" :aria-expanded="showLeaderboardRequirements" @click="showLeaderboardRequirements = !showLeaderboardRequirements">
-        {{ $t('Leaderboard Requirements') }}<basil-icon name="arrow" :class="['text-xs transition-transform', showLeaderboardRequirements ? '-rotate-90' : 'rotate-90']"></basil-icon>
-      </button>
-      <div v-if="showLeaderboardRequirements" class="absolute z-40 left-4 md:left-8 top-full mt-2 w-[40rem] max-w-[calc(100vw-2rem)] max-h-[75vh] overflow-y-auto bg-surface-3 rounded p-6 shadow-lg flex flex-col gap-4 text-sm">
-        <h3 class="font-bold text-base">{{ leaderboardtype == 'Match Prediction' ? $t('To be eligible for Match Prediction leaderboards, the following conditions must be met:') : $t('To be eligible for leaderboards, the following conditions must be met:') }}</h3>
-        <ol v-if="leaderboardtype != 'Match Prediction'" class="list-disc ml-5 space-y-1">
-          <li>{{ $t('Account level must be greater than or equal to 250.') }}</li>
-          <li>{{ $t('Must have played at least :weekssincestartscalar times the number of weeks since the season started. (Currently that is :weekssincestartscalar2 games).', { weekssincestartscalar: weeksSinceStartScalar, weekssincestartscalar2: weekssincestart * weeksSinceStartScalar }) }}</li>
-          <li>{{ $t('Must have a win rate greater than or equal to 50%.') }}</li>
-        </ol>
-        <ol v-else class="list-disc ml-5">
-          <!--<li> {{ $t('Must have predicted at least :matchpredictionweekssincestartscalar times the number of weeks since the season started. (Currently that is :matchpredictionweekssincestartscalar2 games)', { matchpredictionweekssincestartscalar: matchPredictionWeeksSinceStartScalar, matchpredictionweekssincestartscalar2: weekssincestart * matchPredictionWeeksSinceStartScalar }) }}</li>-->
-          <li>{{ $t('Must have predicted 20 games in the game type and season') }}</li>
-        </ol>
-        <div class="flex flex-col gap-2">
-          <h4 class="font-bold">{{ $t('Leaderboard groups') }}</h4>
-          <p>{{ leaderboardtype == 'Match Prediction' ? $t('If fewer than 50 players meet the predictions requirement, it is lowered by one game per week at a time until at least 50 players qualify, down to a minimum of 5 games. Each step down is a new group: Group A met the full requirement, Group B met the next step down, and so on. Each group shows the games it required.') : $t('If fewer than 50 players meet the games played requirement, it is lowered by one game per week at a time until at least 50 players qualify, down to a minimum of 5 games. Each step down is a new group: Group A met the full requirement, Group B met the next step down, and so on. Each group shows the games it required.') }}</p>
-          <p>{{ leaderboardtype == 'Match Prediction' ? $t('Everyone in Group A ranks above everyone in Group B, even with a lower prediction rate, so players who met the full requirement are never passed by players who have played fewer games. Within a group, players are ranked by prediction rate.') : $t('Everyone in Group A ranks above everyone in Group B, even with a lower Heroes Profile Rating, so players who met the full requirement are never passed by players who have played fewer games. Within a group, players are ranked by Heroes Profile Rating.') }}</p>
-        </div>
-        <template v-if="leaderboardtype != 'Match Prediction'">
-          <h4 class="font-bold">{{ $t('Heroes Profile Rating formula') }}</h4>
-          <!-- Black on white; inverted and screened so only the white text shows on the panel. The page language's own
-               version (leaderboard_rating_calculation.ko.png), or the English one if that language has none yet. -->
-          <img class="w-full invert mix-blend-screen" :src="formulaImage" :alt="$t('Heroes Profile Rating formula')" @error="formulaImageFailed = true"/>
-        </template>
-      </div>
-    </div>
       <filters 
         :onFilter="filterData" 
         :filters="filters" 
@@ -79,18 +59,51 @@
         :disabledeselectfilters="true"
       >
       </filters>
+    </player-page-top>
       <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
       <div v-if="data">
         <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
           <!-- One table per group, each under its own heading; the rating sits beside the first heading -->
           <template v-for="(group, groupIndex) in groupedData" :key="group.group">
-          <div v-if="showGroupHeadings || (groupIndex == 0 && showRating)" class="flex flex-wrap items-center gap-4">
+          <div v-if="showGroupHeadings || (groupIndex == 0 && (showRating || leaderboardtype != 'SL Rank'))" class="relative flex flex-wrap items-center gap-4">
             <h2 v-if="showGroupHeadings" class="text-2xl font-bold">
               {{ group.name ?? groupName(group.group) }}<span v-if="group.minGamesRequired !== null"> - {{ $t('At least :count games played', { count: group.minGamesRequired.toLocaleString('en-US') }) }}</span>
             </h2>
+            <!-- Centred on the table, its panel opening centred under it over the table. On phones it follows the group heading
+                 and opens in place, pushing Your HP Rating down -->
+            <div v-if="groupIndex == 0 && leaderboardtype != 'SL Rank'" class="max-md:w-full md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-40">
+              <button type="button" class="bg-surface rounded px-4 py-3 text-sm font-bold flex items-center gap-3 hover:bg-surface-1 transition-colors" :aria-expanded="showLeaderboardRequirements" @click="showLeaderboardRequirements = !showLeaderboardRequirements">
+                {{ $t('Leaderboard Requirements') }}<basil-icon name="arrow" :class="['text-xs transition-transform', showLeaderboardRequirements ? '-rotate-90' : 'rotate-90']"></basil-icon>
+              </button>
+              <div v-if="showLeaderboardRequirements" class="md:absolute z-40 md:left-1/2 md:-translate-x-1/2 md:top-full mt-2 w-full md:w-[40rem] md:max-w-[calc(100vw-2rem)] md:max-h-[75vh] md:overflow-y-auto bg-surface rounded p-6 shadow-lg flex flex-col gap-4 text-sm">
+                <h3 class="font-bold text-base">{{ leaderboardtype == 'Match Prediction' ? $t('To be eligible for Match Prediction leaderboards, the following conditions must be met:') : $t('To be eligible for leaderboards, the following conditions must be met:') }}</h3>
+                <ol v-if="leaderboardtype != 'Match Prediction'" class="list-disc ml-5 space-y-1">
+                  <li>{{ $t('Account level must be greater than or equal to 250.') }}</li>
+                  <li>{{ $t('Must have played at least :weekssincestartscalar times the number of weeks since the season started. (Currently that is :weekssincestartscalar2 games).', { weekssincestartscalar: weeksSinceStartScalar, weekssincestartscalar2: weekssincestart * weeksSinceStartScalar }) }}</li>
+                  <li>{{ $t('Must have a win rate greater than or equal to 50%.') }}</li>
+                </ol>
+                <ol v-else class="list-disc ml-5">
+                  <!--<li> {{ $t('Must have predicted at least :matchpredictionweekssincestartscalar times the number of weeks since the season started. (Currently that is :matchpredictionweekssincestartscalar2 games)', { matchpredictionweekssincestartscalar: matchPredictionWeeksSinceStartScalar, matchpredictionweekssincestartscalar2: weekssincestart * matchPredictionWeeksSinceStartScalar }) }}</li>-->
+                  <li>{{ $t('Must have predicted 20 games in the game type and season') }}</li>
+                </ol>
+                <div class="flex flex-col gap-2">
+                  <h4 class="font-bold">{{ $t('Leaderboard groups') }}</h4>
+                  <p>{{ leaderboardtype == 'Match Prediction' ? $t('If fewer than 50 players meet the predictions requirement, it is lowered by one game per week at a time until at least 50 players qualify, down to a minimum of 5 games. Each step down is a new group: Group A met the full requirement, Group B met the next step down, and so on. Each group shows the games it required.') : $t('If fewer than 50 players meet the games played requirement, it is lowered by one game per week at a time until at least 50 players qualify, down to a minimum of 5 games. Each step down is a new group: Group A met the full requirement, Group B met the next step down, and so on. Each group shows the games it required.') }}</p>
+                  <p>{{ leaderboardtype == 'Match Prediction' ? $t('Everyone in Group A ranks above everyone in Group B, even with a lower prediction rate, so players who met the full requirement are never passed by players who have played fewer games. Within a group, players are ranked by prediction rate.') : $t('Everyone in Group A ranks above everyone in Group B, even with a lower Heroes Profile Rating, so players who met the full requirement are never passed by players who have played fewer games. Within a group, players are ranked by Heroes Profile Rating.') }}</p>
+                </div>
+                <template v-if="leaderboardtype != 'Match Prediction'">
+                  <h4 class="font-bold">{{ $t('Heroes Profile Rating formula') }}</h4>
+                  <!-- Black on white; inverted and screened so only the white text shows on the panel. The page language's own
+                       version (leaderboard_rating_calculation.ko.png), or the English one if that language has none yet. -->
+                  <img class="w-full invert mix-blend-screen" :src="formulaImage" :alt="$t('Heroes Profile Rating formula')" @error="formulaImageFailed = true"/>
+                </template>
+              </div>
+            </div>
             <!-- Your HP Rating: a small card with the rating, games and how far from Group A; before that, the button.
-                 Starts collapsed to its title; Show/Hide opens it, as on Patch Notes -->
-            <div v-if="groupIndex == 0 && showRating" :class="['ml-auto w-full sm:w-[22rem] rounded bg-surface px-5 flex flex-col gap-3', ratingCardOpen ? 'py-4' : 'py-3']">
+                 Starts collapsed to its title; Show opens the rest over the table, like Leaderboard Requirements, so the
+                 page doesn't move -->
+            <div v-if="groupIndex == 0 && showRating" class="relative ml-auto w-full sm:w-[22rem]">
+              <div :class="['bg-surface px-5 py-3', ratingCardOpen ? 'rounded-t shadow-lg' : 'rounded']">
               <div class="flex items-center justify-between gap-3">
                 <span class="font-bold">{{ $t('Your HP Rating') }}</span>
                 <span class="flex items-center gap-4">
@@ -101,7 +114,8 @@
                   </button>
                 </span>
               </div>
-              <template v-if="ratingCardOpen">
+              </div>
+              <div v-if="ratingCardOpen" class="absolute z-40 left-0 right-0 top-full bg-surface rounded-b px-5 pb-4 pt-1 flex flex-col gap-3 shadow-lg">
               <template v-if="playerRating">
                 <div class="flex items-baseline gap-3">
                   <span class="text-3xl font-bold tabular-nums">{{ playerRating }}</span>
@@ -122,7 +136,7 @@
                 <custom-button v-if="user" class="h-10 font-semibold" color="teal" @click="calculateHPRating(user)" text="Calculate" alt="Calculate My HP Rating" :ignoreclick="true" :loading="ratingLoading"></custom-button>
                 <login-required-hover v-else message="You need to be logged in with Battle.net to calculate your rating."><span class="btn bg-teal font-semibold opacity-60 cursor-pointer w-full">{{ $t('Calculate') }}</span></login-required-hover>
               </template>
-              </template>
+              </div>
             </div>
           </div>
 
@@ -271,8 +285,10 @@
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <!-- The first group's heading, with the rating button where it loads, so nothing moves when the data arrives -->
-      <div class="flex flex-wrap items-center gap-4">
+      <div class="relative flex flex-wrap items-center gap-4">
         <h2 class="text-2xl font-bold skeleton-text">{{ leaderboardtype == 'SL Rank' ? 'Grand Master' : 'Group A - At least 35 games played' }}</h2>
+        <!-- The requirements button's place -->
+        <span v-if="leaderboardtype != 'SL Rank'" class="md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 rounded px-4 py-3 text-sm font-bold flex items-center gap-3 skeleton-text">{{ $t('Leaderboard Requirements') }}<basil-icon name="arrow" class="text-xs rotate-90"></basil-icon></span>
         <skeleton-box v-if="showRating" class="h-12 w-full sm:w-[22rem] ml-auto"></skeleton-box>
       </div>
       <!-- Shaped like the table for this leaderboard type; the message sits on a tab of its panel, as on the profile -->

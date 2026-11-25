@@ -3,7 +3,7 @@
     <global-async-debug-banner page-label="Global Matchups Talents" />
     <player-page-top>
       <template #heading>
-        <page-heading :heading="'Talent Matchups'" :subheading="'Hero vs hero talent stats'"></page-heading>
+        <page-heading scope="Global" :heading="'Talent Matchups'" :subheading="'Hero vs hero talent stats'"></page-heading>
       </template>
       <filters
         ref="filters"

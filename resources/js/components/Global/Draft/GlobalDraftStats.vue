@@ -2,7 +2,7 @@
   <div>
     <global-async-debug-banner page-label="Global Draft" />
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" :infoText2="infoText2" -->
-    <page-heading v-if="!selectedHero" :heading="'Hero Draft Stats & Pick Order'" :subheading="defaulttimeframe && defaulttimeframe.length ? $t('Pick & ban order by hero · Patch :patch', { patch: defaulttimeframe[0] }) : 'Pick & ban order by hero'"></page-heading>
+    <page-heading scope="Global" v-if="!selectedHero" :heading="'Hero Draft Stats & Pick Order'" :subheading="defaulttimeframe && defaulttimeframe.length ? $t('Pick & ban order by hero · Patch :patch', { patch: defaulttimeframe[0] }) : 'Pick & ban order by hero'"></page-heading>
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes" subtitle="Pick a hero to see when it is usually picked and banned in the draft, and how its win rate changes with pick order."></hero-selection>
     </div>
@@ -11,7 +11,7 @@
       <!-- The hero on the left, its name the hero picker, the filters in their card beside it, as on the player pages -->
       <player-page-top>
         <template #heading>
-          <page-heading :heading="$heroName(selectedHero)" :subheading="'Draft stats & pick order'" :portrait-desktop-only="true">
+          <page-heading scope="Global" :heading="$heroName(selectedHero)" :subheading="'Draft stats & pick order'" :portrait-desktop-only="true">
             <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
             <!-- The hero name is the hero picker (no Heroes filter on this page) -->
             <template #headingText>
@@ -68,7 +68,15 @@
           <div id="table-container" ref="tablecontainer" class="overflow-clip">
             <!-- Fixed columns never overflow, so on phones it's laid out wide and scaleTableToFit shrinks it -->
             <table id="responsive-table" class="min-w-0 max-md:min-w-[60rem] w-full rounded-table table-fixed" ref="responsivetable">
-              <colgroup>
+              <colgroup v-if="showWinRateChange">
+                <col class="w-[15%]">
+                <col class="w-[33%]">
+                <col class="w-[13%]">
+                <col class="w-[13%]">
+                <col class="w-[13%]">
+                <col class="w-[13%]">
+              </colgroup>
+              <colgroup v-else>
                 <col class="w-[15%]">
                 <col class="w-[40%]">
                 <col class="w-[15%]">

@@ -5,7 +5,7 @@
     <!-- As Hero Stats: the heading with the filters beside it -->
     <player-page-top>
       <template #heading>
-        <page-heading heading="Party Statistics"></page-heading>
+        <page-heading scope="Global" heading="Party Statistics" subheading="Win rates by party size"></page-heading>
       </template>
       <filters 
         :onFilter="filterData" 

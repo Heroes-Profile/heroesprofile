@@ -9,6 +9,7 @@
                 "wins": 140,
                 "losses": 145,
                 "win_rate": 49.12,
+                "win_rate_change": null,
                 "stack_size_name": "5 Solo"
             }
         }

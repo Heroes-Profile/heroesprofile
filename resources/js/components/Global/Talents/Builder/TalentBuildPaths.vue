@@ -6,9 +6,9 @@
       <div class="flex flex-wrap justify-between gap-2 text-sm mb-2">
         <span>{{ $t(':count build combinations · line width is games played', { count: paths.length.toLocaleString('en-US') }) }}</span>
         <span class="flex items-center gap-2">
-          <span>-{{ colourRange.toFixed(1) }}%</span>
+          <span>-{{ colourRange.toFixed(2) }}%</span>
           <span class="w-24 h-3 rounded" :style="{ background: `linear-gradient(to right, ${colours.low}, ${colours.mid}, ${colours.high})` }"></span>
-          <span>+{{ colourRange.toFixed(1) }}%</span>
+          <span>+{{ colourRange.toFixed(2) }}%</span>
           <span>{{ $t('vs builds that reach the same level') }}</span>
         </span>
       </div>

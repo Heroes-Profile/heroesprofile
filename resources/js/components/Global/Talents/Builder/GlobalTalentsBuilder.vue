@@ -1,7 +1,7 @@
 <template>
   <div>
     <global-async-debug-banner page-label="Global Talent Builder" />
-    <page-heading v-if="!selectedHero" :heading="'Talent Calculator & Builder'"></page-heading>
+    <page-heading scope="Global" v-if="!selectedHero" :heading="'Talent Calculator & Builder'" :subheading="'Talent calculator & builder'"></page-heading>
 
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes"></hero-selection>
@@ -11,7 +11,7 @@
       <!-- The hero on the left, its name the hero picker, the filters in their card beside it, as on the draft page -->
       <player-page-top>
         <template #heading>
-          <page-heading :heading="$heroName(selectedHero)" :subheading="'Talent calculator & builder'" :portrait-desktop-only="true">
+          <page-heading scope="Global" :heading="$heroName(selectedHero)" :subheading="'Talent calculator & builder'" :portrait-desktop-only="true">
             <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
             <!-- The hero name is the hero picker (no Heroes filter on this page) -->
             <template #headingText>

@@ -4,7 +4,7 @@
 
     <div v-if="!selectedHero">
       <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-      <page-heading :heading="'Hero Counters & Matchups'"></page-heading>
+      <page-heading scope="Global" :heading="'Hero Counters & Matchups'" :subheading="'Counters & matchups'"></page-heading>
       <hero-selection :heroes="heroes"></hero-selection>
     </div>
 
@@ -12,7 +12,7 @@
       <!-- As the other global hero pages: the hero's heading, its name the hero picker, with the filters beside it -->
       <player-page-top>
         <template #heading>
-          <page-heading :heading="$heroName(selectedHero)" :subheading="'Counters & matchups'" :portrait-desktop-only="true">
+          <page-heading scope="Global" :heading="$heroName(selectedHero)" :subheading="'Counters & matchups'" :portrait-desktop-only="true">
             <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
             <template #headingText>
               <hero-heading-select :heroes="heroes" :value="selectedHero.id" textclass="" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>

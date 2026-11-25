@@ -3,7 +3,15 @@
        a column per level, as in the Talent Builder. The best win rate on each level is marked BEST -->
   <section v-if="skeleton || tiers.some(tier => tier.talents.length)" class="flex flex-col gap-2" :aria-label="$t('Talent statistics')">
     <!-- Layout switch, saved like the Talent Builder's: a cookie, and the account setting when logged in -->
-    <div v-if="!skeleton && !isMobile" class="flex justify-end items-center gap-2 text-sm">
+    <!-- Loading: the same row in grey, so the grid doesn't move down when it loads -->
+    <div v-if="skeleton && !isMobile" class="flex justify-end items-center gap-2 text-sm">
+      <span class="skeleton-text">{{ $t('Layout') }}</span>
+      <div class="relative">
+        <tab-button class="invisible" :small="true" :tabs="[{ key: 'vertical', text: 'Vertical' }, { key: 'horizontal', text: 'Horizontal' }]" aria-hidden="true"></tab-button>
+        <skeleton-box class="absolute inset-0"></skeleton-box>
+      </div>
+    </div>
+    <div v-else-if="!isMobile" class="flex justify-end items-center gap-2 text-sm">
       {{ $t('Layout') }}<tab-button :small="true" :dark="true" :tabs="[{ key: 'vertical', text: 'Vertical' }, { key: 'horizontal', text: 'Horizontal' }]" :overridedefaultside="effectiveStyle" :ignoreclick="true" @tab-click="layoutStyleSelected"></tab-button>
     </div>
 
@@ -13,7 +21,8 @@
         <!-- A click on a level highlights it and fades the others, as on the Party page; a second click, or a click
              anywhere outside that level, undoes it -->
         <div v-for="tier in shownTiers" :key="tier.level" :data-tier-level="tier.level" :class="horizontal ? 'flex flex-col gap-2 min-w-0' : 'grid grid-cols-[4.5rem_minmax(0,1fr)] gap-2'">
-          <div v-if="skeleton" class="rounded-control bg-surface-1 flex flex-col items-center justify-center py-3">
+          <div v-if="skeleton && horizontal" class="rounded-control bg-surface-1 py-1.5 text-[0.625rem] font-bold uppercase tracking-wider text-center text-subtext">{{ $t('Level :level', { level: tier.level }) }}</div>
+          <div v-else-if="skeleton" class="rounded-control bg-surface-1 flex flex-col items-center justify-center py-3">
             <span class="text-[0.625rem] font-bold uppercase tracking-wider text-subtext">{{ $t('Level') }}</span>
             <span class="text-2xl font-bold leading-none mt-1">{{ tier.level }}</span>
           </div>

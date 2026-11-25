@@ -100,14 +100,14 @@ export default {
     },
     vsHeroText(row) {
       const diff = this.vsHero(row);
-      return (diff >= 0 ? '+' : '−') + Math.abs(diff).toFixed(1) + '%';
+      return (diff >= 0 ? '+' : '−') + Math.abs(diff).toFixed(2) + '%';
     },
     // The 95% margin of error for a win rate from this many games
     confidenceText(row) {
       const games = Number(row.games_played) || 0;
       if (!games) return '—';
       const rate = Math.min(1, Math.max(0, (Number(row.win_rate) || 0) / 100));
-      return '±' + (1.96 * Math.sqrt((rate * (1 - rate)) / games) * 100).toFixed(1) + '%';
+      return '±' + (1.96 * Math.sqrt((rate * (1 - rate)) / games) * 100).toFixed(2) + '%';
     },
     getValueLocal(value){
       return value ? value.toLocaleString('en-US') : "";

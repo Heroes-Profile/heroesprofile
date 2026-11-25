@@ -6,7 +6,7 @@
     <!-- As Global Talents: the heading with the filters beside it -->
     <player-page-top>
       <template #heading>
-        <page-heading heading="Hero Stats" subheading="Tier List and Win Rates">
+        <page-heading scope="Global" heading="Hero Stats" subheading="Tier List and Win Rates">
           <template v-if="isSLRank" #headingInfo>
             <round-image :popup-hoverable="true" class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
               <p class="font-normal">

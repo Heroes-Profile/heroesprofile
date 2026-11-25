@@ -4,7 +4,7 @@
 
     <div class="grid gap-5 grid-cols-1">
       <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-      <page-heading v-if="!selectedHero" :heading="'Hero Builds & Talent Stats'" :subheading="defaulttimeframe && defaulttimeframe.length ? $t('Most popular builds · Patch :patch', { patch: defaulttimeframe[0] }) : 'Most popular builds'">
+      <page-heading scope="Global" v-if="!selectedHero" :heading="'Hero Builds & Talent Stats'" :subheading="defaulttimeframe && defaulttimeframe.length ? $t('Most popular builds · Patch :patch', { patch: defaulttimeframe[0] }) : 'Most popular builds'">
       </page-heading>
 
 
@@ -34,7 +34,7 @@
         <div v-else>
           <player-page-top>
           <template #heading>
-            <page-heading :heading="$heroName(selectedHero)" :subheading="'Builds & talent stats'" :portrait-desktop-only="true">
+            <page-heading scope="Global" :heading="$heroName(selectedHero)" :subheading="'Builds & talent stats'" :portrait-desktop-only="true">
               <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
               <!-- The hero name is the hero picker (no Heroes filter on this page) -->
               <template #headingText>
@@ -109,7 +109,7 @@
             <loading-component v-if="determineIfVeryLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
             <loading-component v-else-if="determineIfLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
             <loading-component v-else :compact="true" :tab="true" :textoverride="true">{{ $t('Loading talent stats...') }}</loading-component>
-            <compact-talent-grid :skeleton="true"></compact-talent-grid>
+            <compact-talent-grid :skeleton="true" :layout-style="talentstatsstyle"></compact-talent-grid>
           </panel-box>
         </div>
         <div v-else-if="dataError" class="flex items-center justify-center">

@@ -4,7 +4,7 @@
 
     <div v-if="!selectedHero">
       <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-      <page-heading :heading="'Hero Map Win Rates'"></page-heading>
+      <page-heading scope="Global" :heading="'Hero Map Win Rates'" :subheading="'Win rates by map'"></page-heading>
       <hero-selection :heroes="heroes"></hero-selection>
     </div>
 
@@ -12,7 +12,7 @@
       <!-- As the other global hero pages: the hero's heading, its name the hero picker, with the filters beside it -->
       <player-page-top>
         <template #heading>
-          <page-heading :heading="$heroName(selectedHero)" :subheading="'Best maps & map win rates'" :portrait-desktop-only="true">
+          <page-heading scope="Global" :heading="$heroName(selectedHero)" :subheading="'Best maps & map win rates'" :portrait-desktop-only="true">
             <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
             <template #headingText>
               <hero-heading-select :heroes="heroes" :value="selectedHero.id" textclass="" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
@@ -78,7 +78,8 @@
                       <template v-else-if="row.win_rate_change < 0">&#9660; {{ row.win_rate_change.toFixed(2) }}</template>
                       <template v-else>0.00</template>
                     </span>
-                    <template v-else>{{ row[column.value] }}{{ column.percent ? '%' : '' }}</template>
+                    <!-- Rates always with two decimals, as on the other global tables -->
+                    <template v-else>{{ column.percent && row[column.value] !== null && row[column.value] !== '' && !isNaN(row[column.value]) ? Number(row[column.value]).toFixed(2) + '%' : row[column.value] }}</template>
                   </td>
                 </tr>
               </tbody>

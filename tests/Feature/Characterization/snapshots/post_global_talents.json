@@ -11,6 +11,7 @@
                 "games_played": 4,
                 "popularity": 57.14,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "level": 1,
                 "sort": "1",
                 "talentInfo": {
@@ -45,6 +46,7 @@
                 "games_played": 1,
                 "popularity": 14.29,
                 "win_rate": 100,
+                "win_rate_change": null,
                 "level": 1,
                 "sort": "2",
                 "talentInfo": {
@@ -79,6 +81,7 @@
                 "games_played": 1,
                 "popularity": 14.29,
                 "win_rate": 100,
+                "win_rate_change": null,
                 "level": 1,
                 "sort": "3",
                 "talentInfo": {
@@ -113,6 +116,7 @@
                 "games_played": 1,
                 "popularity": 14.29,
                 "win_rate": 100,
+                "win_rate_change": null,
                 "level": 1,
                 "sort": "4",
                 "talentInfo": {
@@ -149,6 +153,7 @@
                 "games_played": 5,
                 "popularity": 71.43,
                 "win_rate": 60,
+                "win_rate_change": null,
                 "level": 4,
                 "sort": "1",
                 "talentInfo": {
@@ -183,6 +188,7 @@
                 "games_played": 2,
                 "popularity": 28.57,
                 "win_rate": 100,
+                "win_rate_change": null,
                 "level": 4,
                 "sort": "3",
                 "talentInfo": {
@@ -219,6 +225,7 @@
                 "games_played": 2,
                 "popularity": 28.57,
                 "win_rate": 100,
+                "win_rate_change": null,
                 "level": 7,
                 "sort": "1",
                 "talentInfo": {
@@ -253,6 +260,7 @@
                 "games_played": 1,
                 "popularity": 14.29,
                 "win_rate": 100,
+                "win_rate_change": null,
                 "level": 7,
                 "sort": "2",
                 "talentInfo": {
@@ -287,6 +295,7 @@
                 "games_played": 4,
                 "popularity": 57.14,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "level": 7,
                 "sort": "3",
                 "talentInfo": {
@@ -323,6 +332,7 @@
                 "games_played": 6,
                 "popularity": 85.71,
                 "win_rate": 66.67,
+                "win_rate_change": null,
                 "level": 10,
                 "sort": "1",
                 "talentInfo": {
@@ -357,6 +367,7 @@
                 "games_played": 1,
                 "popularity": 14.29,
                 "win_rate": 100,
+                "win_rate_change": null,
                 "level": 10,
                 "sort": "2",
                 "talentInfo": {
@@ -393,6 +404,7 @@
                 "games_played": 6,
                 "popularity": 85.71,
                 "win_rate": 66.67,
+                "win_rate_change": null,
                 "level": 13,
                 "sort": "2",
                 "talentInfo": {
@@ -427,6 +439,7 @@
                 "games_played": 1,
                 "popularity": 14.29,
                 "win_rate": 100,
+                "win_rate_change": null,
                 "level": 13,
                 "sort": "3",
                 "talentInfo": {
@@ -463,6 +476,7 @@
                 "games_played": 3,
                 "popularity": 50,
                 "win_rate": 100,
+                "win_rate_change": null,
                 "level": 16,
                 "sort": "1",
                 "talentInfo": {
@@ -497,6 +511,7 @@
                 "games_played": 2,
                 "popularity": 33.33,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "level": 16,
                 "sort": "2",
                 "talentInfo": {
@@ -531,6 +546,7 @@
                 "games_played": 1,
                 "popularity": 16.67,
                 "win_rate": 100,
+                "win_rate_change": null,
                 "level": 16,
                 "sort": "4",
                 "talentInfo": {
@@ -567,6 +583,7 @@
                 "games_played": 1,
                 "popularity": 50,
                 "win_rate": 100,
+                "win_rate_change": null,
                 "level": 20,
                 "sort": "3",
                 "talentInfo": {
@@ -601,6 +618,7 @@
                 "games_played": 1,
                 "popularity": 50,
                 "win_rate": 100,
+                "win_rate_change": null,
                 "level": 20,
                 "sort": "4",
                 "talentInfo": {

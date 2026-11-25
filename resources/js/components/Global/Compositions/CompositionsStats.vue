@@ -5,9 +5,7 @@
     <!-- As Hero Stats: the heading with the filters beside it -->
     <player-page-top>
       <template #heading>
-        <page-heading heading="Composition Stats">
-          <template #subheading>{{ selectedPatch ? $t('All players · Patch :patch', { patch: selectedPatch }) : $t('All players') }}</template>
-        </page-heading>
+        <page-heading scope="Global" heading="Composition Stats" subheading="All players"></page-heading>
       </template>
       <filters
         :onFilter="filterData"
@@ -76,8 +74,9 @@
             <colgroup>
               <!-- Wide enough for the "#" box beside the rank once sorted by another column -->
               <col class="w-[calc(7.75rem+1.5px)]">
-              <col class="w-[34%]">
-              <col class="w-[26.9%]">
+              <col :class="showWinRateChange ? 'w-[30%]' : 'w-[34%]'">
+              <col :class="showWinRateChange ? 'w-[22.9%]' : 'w-[26.9%]'">
+              <col v-if="showWinRateChange" class="w-[8%]">
               <col class="w-[10.8%]">
               <col class="w-[12.9%]">
               <col class="w-[7.6%]">
@@ -359,9 +358,6 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
     },
     pagedData() {
       return this.sortedData.slice(this.pageStart, this.pageStart + this.perPage);
-    },
-    selectedPatch() {
-      return this.timeframetype === 'minor' && this.timeframe && this.timeframe.length === 1 ? this.timeframe[0] : null;
     },
     // Popularity is a composition's share of every team in the filters, so any row gives the total back
     gamesAnalysed() {

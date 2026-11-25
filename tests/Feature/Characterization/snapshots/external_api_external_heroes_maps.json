@@ -14,6 +14,7 @@
                 "sanitized_map_name": "dragon_shire"
             },
             "win_rate": 100,
+            "win_rate_change": null,
             "games_played": 2,
             "ban_rate": 1.11,
             "total_games_played": 26
@@ -30,6 +31,7 @@
                 "sanitized_map_name": "haunted_mines"
             },
             "win_rate": 100,
+            "win_rate_change": null,
             "games_played": 1,
             "ban_rate": 5.56,
             "total_games_played": 26
@@ -46,6 +48,7 @@
                 "sanitized_map_name": "warhead_junction"
             },
             "win_rate": 100,
+            "win_rate_change": null,
             "games_played": 3,
             "ban_rate": 20,
             "total_games_played": 26
@@ -62,6 +65,7 @@
                 "sanitized_map_name": "alterac_pass"
             },
             "win_rate": 100,
+            "win_rate_change": null,
             "games_played": 1,
             "ban_rate": 4,
             "total_games_played": 26
@@ -78,6 +82,7 @@
                 "sanitized_map_name": "tomb_of_the_spider_queen"
             },
             "win_rate": 100,
+            "win_rate_change": null,
             "games_played": 1,
             "ban_rate": 0,
             "total_games_played": 26
@@ -94,6 +99,7 @@
                 "sanitized_map_name": "garden_of_terror"
             },
             "win_rate": 50,
+            "win_rate_change": null,
             "games_played": 6,
             "ban_rate": 0,
             "total_games_played": 26
@@ -110,6 +116,7 @@
                 "sanitized_map_name": "sky_temple"
             },
             "win_rate": 40,
+            "win_rate_change": null,
             "games_played": 5,
             "ban_rate": 0,
             "total_games_played": 26
@@ -126,6 +133,7 @@
                 "sanitized_map_name": "cursed_hollow"
             },
             "win_rate": 40,
+            "win_rate_change": null,
             "games_played": 5,
             "ban_rate": 1.89,
             "total_games_played": 26
@@ -142,6 +150,7 @@
                 "sanitized_map_name": "towers_of_doom"
             },
             "win_rate": 0,
+            "win_rate_change": null,
             "games_played": 1,
             "ban_rate": 0,
             "total_games_played": 26
@@ -158,6 +167,7 @@
                 "sanitized_map_name": "infernal_shrines"
             },
             "win_rate": 0,
+            "win_rate_change": null,
             "games_played": 1,
             "ban_rate": 0.7,
             "total_games_played": 26
