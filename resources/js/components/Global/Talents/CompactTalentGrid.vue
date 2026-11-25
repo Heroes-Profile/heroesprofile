@@ -50,6 +50,14 @@
                   <span class="text-[0.625rem] text-subtext">{{ $t('Win rate') }}</span>
                   <span :class="['text-xl font-bold tabular-nums leading-none', { 'text-lteal': isBest(talent, tier) }]">{{ talent.win_rate.toFixed(2) }}%</span>
                 </span>
+                <span v-if="talent.win_rate_change !== null && talent.win_rate_change !== undefined" class="flex justify-between gap-2 text-[0.625rem] text-subtext">
+                  <span>{{ $t('Change') }}</span>
+                  <span :class="['tabular-nums', talent.win_rate_change > 0 ? 'text-win' : talent.win_rate_change < 0 ? 'text-loss' : '']">
+                    <template v-if="talent.win_rate_change > 0">&#9650; +{{ talent.win_rate_change.toFixed(2) }}</template>
+                    <template v-else-if="talent.win_rate_change < 0">&#9660; {{ talent.win_rate_change.toFixed(2) }}</template>
+                    <template v-else>0.00</template>
+                  </span>
+                </span>
                 <span class="flex flex-col gap-1 min-w-0">
                   <span class="flex justify-between gap-2 text-[0.625rem] text-subtext"><span>{{ $t('Popularity') }}</span><span class="tabular-nums">{{ talent.popularity.toFixed(2) }}%</span></span>
                   <stat-bar :value="talent.popularity" display-text="" color="gray-medium"></stat-bar>

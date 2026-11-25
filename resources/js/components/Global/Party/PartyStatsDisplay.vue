@@ -86,6 +86,11 @@
               <template v-else-if="cell(row, column)">
                 <span class="text-lg font-semibold leading-tight">{{ cell(row, column).win_rate.toFixed(2) }}%</span>
                 <span class="text-xs text-subtext">{{ cell(row, column).wins.toLocaleString('en-US') }} W – {{ cell(row, column).losses.toLocaleString('en-US') }} L</span>
+                <span v-if="cell(row, column).win_rate_change !== null && cell(row, column).win_rate_change !== undefined" :class="['text-xs tabular-nums', cell(row, column).win_rate_change > 0 ? 'text-win' : cell(row, column).win_rate_change < 0 ? 'text-loss' : 'text-subtext']">
+                  <template v-if="cell(row, column).win_rate_change > 0">&#9650; +{{ cell(row, column).win_rate_change.toFixed(2) }}</template>
+                  <template v-else-if="cell(row, column).win_rate_change < 0">&#9660; {{ cell(row, column).win_rate_change.toFixed(2) }}</template>
+                  <template v-else>0.00</template>
+                </span>
               </template>
               <template v-else>
                 <span class="text-lg font-semibold leading-tight text-subtext">–</span>

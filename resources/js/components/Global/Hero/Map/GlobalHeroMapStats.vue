@@ -72,6 +72,12 @@
                 <tr v-for="row in sortedData" :key="row.name">
                   <td v-for="column in dynamicColumns" :key="column.value" :class="column.value === 'name' ? 'text-left' : ''">
                     <span v-if="column.value === 'name'" class="font-semibold">{{ $mapName(row.name) }}</span>
+                    <span v-else-if="column.value === 'win_rate_change'" :class="['whitespace-nowrap', row.win_rate_change > 0 ? 'text-win' : row.win_rate_change < 0 ? 'text-loss' : 'text-subtext']">
+                      <template v-if="row.win_rate_change === null">-</template>
+                      <template v-else-if="row.win_rate_change > 0">&#9650; +{{ row.win_rate_change.toFixed(2) }}</template>
+                      <template v-else-if="row.win_rate_change < 0">&#9660; {{ row.win_rate_change.toFixed(2) }}</template>
+                      <template v-else>0.00</template>
+                    </span>
                     <template v-else>{{ row[column.value] }}{{ column.percent ? '%' : '' }}</template>
                   </td>
                 </tr>
@@ -171,20 +177,17 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
         return match && match.patch_notes_url ? match.patch_notes_url : null;
       },
        dynamicColumns() {
-        if (this.gametype.includes("sl")) {
-          return [
-            { text: 'Map', value: 'name', sortable: true },
-            { text: 'Win Rate', value: 'win_rate', sortable: true, percent: true },
-            { text: 'Ban Rate', value: 'ban_rate', sortable: true, percent: true },
-            { text: 'Games Played', short: 'Games', value: 'games_played', sortable: true },
-          ];
-        } else {
-          return [
-            { text: 'Map', value: 'name', sortable: true },
-            { text: 'Win Rate', value: 'win_rate', sortable: true, percent: true },
-            { text: 'Games Played', short: 'Games', value: 'games_played', sortable: true },
-          ];
-        }
+        return [
+          { text: 'Map', value: 'name', sortable: true },
+          { text: 'Win Rate', value: 'win_rate', sortable: true, percent: true },
+          ...(this.showWinRateChange ? [{ text: 'Change', value: 'win_rate_change', sortable: true }] : []),
+          ...(this.gametype.includes("sl") ? [{ text: 'Ban Rate', value: 'ban_rate', sortable: true, percent: true }] : []),
+          { text: 'Games Played', short: 'Games', value: 'games_played', sortable: true },
+        ];
+      },
+      // The server only sends change for one unfiltered patch and game type
+      showWinRateChange() {
+        return Array.isArray(this.data) && this.data.some(row => row.win_rate_change !== null && row.win_rate_change !== undefined);
       },
       sortedData() {
         if (!this.sortKey) return this.data;

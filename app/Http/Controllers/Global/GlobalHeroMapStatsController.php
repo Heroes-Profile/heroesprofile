@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Global;
 
 use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
+use App\Http\Controllers\Global\Concerns\ResolvesStatChange;
+use App\Models\GlobalHeroMapChange;
 use App\Models\GlobalHeroStats;
 use App\Models\GlobalHeroStatsBans;
 use App\Models\Map;
@@ -14,11 +16,12 @@ use Illuminate\Support\Facades\Validator;
 class GlobalHeroMapStatsController extends GlobalsInputValidationController
 {
     use HandlesAsyncGlobalQueries;
+    use ResolvesStatChange;
 
     public const MINIMUM_PATCH = '2.47.0.75589';
 
     // Bump when the cached data changes shape or maths, so old entries are skipped.
-    private const MAP_STATS_CACHE_VERSION = 1;
+    private const MAP_STATS_CACHE_VERSION = 2;
 
     public function show(Request $request, $hero = null)
     {
@@ -164,10 +167,21 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
             // ->toSql();
             ->get();
 
-        return $this->combineData($gameType, $hero, $data, $gamesPlayedPerMap, $banData);
+        $changeData = null;
+
+        if (empty($mirror) && $this->checkIfChange($gameVersion, $region, $gameType, null, $leagueTier, $heroLeagueTier, $roleLeagueTier, $heroLevel)) {
+            $changeData = GlobalHeroMapChange::query()
+                ->filterByGameVersion($this->calculateGameVersionsForHeroChange($gameVersion))
+                ->filterByGameType($gameType)
+                ->filterByHero($hero)
+                ->get()
+                ->keyBy('game_map');
+        }
+
+        return $this->combineData($gameType, $hero, $data, $gamesPlayedPerMap, $banData, $changeData);
     }
 
-    private function combineData($gameType, $hero, $data, $gamesPlayedPerMap, $banData)
+    private function combineData($gameType, $hero, $data, $gamesPlayedPerMap, $banData, $changeData)
     {
 
         $filteredData = $data->filter(function ($item) use ($hero) {
@@ -194,7 +208,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                 // Keep all other maps
                 return true;
             })
-            ->map(function ($group) use ($banData, $gamesPlayedPerMap, $mapData, $totalGamesPlayed) {
+            ->map(function ($group) use ($banData, $gamesPlayedPerMap, $mapData, $totalGamesPlayed, $changeData) {
                 $firstItem = $group->first();
 
                 $wins = $group->where('win_loss', 1)->sum('games_played');
@@ -209,10 +223,14 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                 $gameMapData = $gamesPlayedPerMap->where('game_map', $firstItem['map_id'])->first();
                 $totalGamesForThisMap = $gameMapData ? $gameMapData->games_played / 10 : 0;
 
+                $winRate = $gamesPlayed != 0 ? round(($wins / $gamesPlayed) * 100, 2) : 0;
+                $change = $changeData ? $changeData->get($firstItem['map_id']) : null;
+
                 return [
                     'name' => $mapData[$firstItem['map_id']]['name'],
                     'map' => $mapData[$firstItem['map_id']],
-                    'win_rate' => $gamesPlayed != 0 ? round(($wins / $gamesPlayed) * 100, 2) : 0,
+                    'win_rate' => $winRate,
+                    'win_rate_change' => $change ? round($winRate - $change->win_rate, 2) : null,
                     'games_played' => $gamesPlayed,
                     'ban_rate' => $totalGamesForThisMap != 0 ? round(($bans / $totalGamesForThisMap) * 100, 2) : 0,
                     'total_games_played' => $totalGamesPlayed,

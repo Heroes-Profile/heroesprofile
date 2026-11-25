@@ -94,6 +94,9 @@
                 <th @click="sortTable('win_rate')" class="py-2 px-4 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
                   {{ $t('Win Rate') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
+                <th v-if="showWinRateChange" @click="sortTable('win_rate_change')" class="py-2 px-4 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate_change' }">
+                  {{ $t('Change') }}<sort-indicator :column="'win_rate_change'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                </th>
                 <th @click="sortTable('popularity')" class="py-2 px-4 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'popularity' }">
                   {{ $t('Popularity') }}<sort-indicator :column="'popularity'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
@@ -117,6 +120,12 @@
                   </td>
                   <!-- Win rate bars run from 40% to 60% -->
                   <td class="py-3.5 px-8 text-lg"><stat-bar :value="Math.min(100, Math.max(0, (row.win_rate - 40) * 5))" :display-text="row.win_rate.toFixed(2)" suffix="%" color="teal"></stat-bar></td>
+                  <td v-if="showWinRateChange" :class="['py-3.5 px-4 text-center text-lg whitespace-nowrap tabular-nums', row.win_rate_change > 0 ? 'text-win' : row.win_rate_change < 0 ? 'text-loss' : 'text-subtext']">
+                    <template v-if="row.win_rate_change === null || row.win_rate_change === undefined">-</template>
+                    <template v-else-if="row.win_rate_change > 0">&#9650; +{{ row.win_rate_change.toFixed(2) }}</template>
+                    <template v-else-if="row.win_rate_change < 0">&#9660; {{ row.win_rate_change.toFixed(2) }}</template>
+                    <template v-else>0.00</template>
+                  </td>
                   <td class="py-3.5 px-4 text-center text-lg font-semibold text-header tabular-nums">{{ row.popularity.toFixed(2) }}%</td>
                   <td class="py-3.5 px-4 text-center text-lg">{{ row.games_played.toLocaleString('en-US') }}</td>
                   <td class="py-3.5 px-4 text-center">
@@ -128,7 +137,7 @@
                 </tr>
                 <!-- The five most played heroes in each of the composition's roles -->
                 <tr v-if="expanded[row.composition_id] && row.compositionheroes">
-                  <td colspan="6" class="p-4">
+                  <td :colspan="showWinRateChange ? 7 : 6" class="p-4">
                     <div class="grid grid-cols-5 gap-4">
                       <div v-for="(role, slot) in rowRoles(row)" :key="slot" class="flex flex-col gap-2 min-w-0">
                         <span class="text-sm text-subtext">{{ $t('Top :role', { role: $t(role) }) }}</span>
@@ -314,6 +323,10 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
       const selectedVersion = this.timeframe[0];
       const match = this.filters.timeframes.find(t => t.code === selectedVersion);
       return match && match.patch_notes_url ? match.patch_notes_url : null;
+    },
+    // The server only sends change for one unfiltered patch and game type
+    showWinRateChange() {
+      return Array.isArray(this.compositiondata) && this.compositiondata.some(row => row.win_rate_change !== null && row.win_rate_change !== undefined);
     },
     // Sorted by something other than win rate (or its rank), the # column shows the place in that sort beside the rank
     rankChanged() {

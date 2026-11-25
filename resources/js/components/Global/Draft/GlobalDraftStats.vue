@@ -82,12 +82,13 @@
                   <th class="py-2 px-4 text-center text-sm leading-4">{{ $t('Team wins') }}</th>
                   <th class="py-2 px-4 text-center text-sm leading-4">{{ $t('Team losses') }}</th>
                   <th class="py-2 px-4 text-center text-sm leading-4">{{ $t('Team win rate') }}</th>
+                  <th v-if="showWinRateChange" class="py-2 px-4 text-center text-sm leading-4">{{ $t('Change') }}</th>
                 </tr>
               </thead>
               <tbody>
                 <template v-for="phase in phases" :key="phase.label">
                   <tr>
-                    <td colspan="5" class="px-4 pt-4 pb-2 text-xs font-bold uppercase tracking-wider text-subtext">{{ $t(phase.label) }}</td>
+                    <td :colspan="showWinRateChange ? 6 : 5" class="px-4 pt-4 pb-2 text-xs font-bold uppercase tracking-wider text-subtext">{{ $t(phase.label) }}</td>
                   </tr>
                   <tr v-for="row in phase.rows" :key="row.pick_number">
                     <td class="py-2.5 px-4">
@@ -100,6 +101,12 @@
                     <td class="py-2.5 px-4 text-center tabular-nums">{{ row.wins.toLocaleString('en-US') }}</td>
                     <td class="py-2.5 px-4 text-center tabular-nums">{{ row.losses.toLocaleString('en-US') }}</td>
                     <td :class="['py-2.5 px-4 text-center font-semibold tabular-nums', row.win_rate > 50 ? 'text-win' : '']">{{ row.win_rate.toFixed(2) }}%</td>
+                    <td v-if="showWinRateChange" :class="['py-2.5 px-4 text-center whitespace-nowrap tabular-nums', row.win_rate_change > 0 ? 'text-win' : row.win_rate_change < 0 ? 'text-loss' : 'text-subtext']">
+                      <template v-if="row.win_rate_change === null || row.win_rate_change === undefined">-</template>
+                      <template v-else-if="row.win_rate_change > 0">&#9650; +{{ row.win_rate_change.toFixed(2) }}</template>
+                      <template v-else-if="row.win_rate_change < 0">&#9660; {{ row.win_rate_change.toFixed(2) }}</template>
+                      <template v-else>0.00</template>
+                    </td>
                   </tr>
                 </template>
               </tbody>
@@ -211,6 +218,10 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
           { label: 'Second pick phase', numbers: [11, 12, 13, 14, 15] },
         ].map(phase => ({ label: phase.label, rows: this.rows.filter(row => phase.numbers.includes(row.pick_number)) }))
           .filter(phase => phase.rows.length);
+      },
+      // The server only sends change for one unfiltered patch and game type
+      showWinRateChange() {
+        return this.rows.some(row => row.win_rate_change !== null && row.win_rate_change !== undefined);
       },
       maxPopularity() {
         return Math.max(0, ...this.rows.map(row => row.popularity));

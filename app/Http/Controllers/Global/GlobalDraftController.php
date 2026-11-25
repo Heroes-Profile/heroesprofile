@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Global;
 
 use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
+use App\Http\Controllers\Global\Concerns\ResolvesStatChange;
+use App\Models\GlobalHeroDraftChange;
 use App\Models\GlobalHeroDraftOrder;
 use App\Models\SeasonGameVersion;
 use App\Rules\HeroInputValidation;
@@ -12,11 +14,12 @@ use Illuminate\Support\Facades\Validator;
 class GlobalDraftController extends GlobalsInputValidationController
 {
     use HandlesAsyncGlobalQueries;
+    use ResolvesStatChange;
 
     public const MINIMUM_PATCH = '2.52.0.81700';
 
     // Bump when the cached data changes shape or maths, so old entries are skipped.
-    private const DRAFT_STATS_CACHE_VERSION = 1;
+    private const DRAFT_STATS_CACHE_VERSION = 2;
 
     public function show(Request $request, $hero = null)
     {
@@ -132,7 +135,18 @@ class GlobalDraftController extends GlobalsInputValidationController
 
         $totalGamesPlayed = $data->sum('games_played');
 
-        $data = $data->groupBy('pick_number')->map(function ($group) use ($totalGamesPlayed) {
+        $changeData = null;
+
+        if ($this->checkIfChange($gameVersion, $region, $gameType, $gameMap, $leagueTier, $heroLeagueTier, $roleLeagueTier, $heroLevel)) {
+            $changeData = GlobalHeroDraftChange::query()
+                ->filterByGameVersion($this->calculateGameVersionsForHeroChange($gameVersion))
+                ->filterByGameType($gameType)
+                ->filterByHero($hero)
+                ->get()
+                ->keyBy('pick_number');
+        }
+
+        $data = $data->groupBy('pick_number')->map(function ($group) use ($totalGamesPlayed, $changeData) {
             $firstItem = $group->first();
 
             $wins = round($group->where('win_loss', 1)->sum('games_played'));
@@ -143,6 +157,8 @@ class GlobalDraftController extends GlobalsInputValidationController
 
             $popularity = $totalGamesPlayed > 0 ? round(($gamesPlayed / $totalGamesPlayed) * 100, 2) : 0;
 
+            $change = $changeData ? $changeData->get($firstItem['pick_number']) : null;
+
             return [
                 'pick_number' => $firstItem['pick_number'],
                 'wins' => $wins,
@@ -150,6 +166,7 @@ class GlobalDraftController extends GlobalsInputValidationController
                 'games_played' => $gamesPlayed,
                 'popularity' => $popularity,
                 'win_rate' => $winRate,
+                'win_rate_change' => $change ? round($winRate - $change->win_rate, 2) : null,
             ];
         })->values()->toArray();
 

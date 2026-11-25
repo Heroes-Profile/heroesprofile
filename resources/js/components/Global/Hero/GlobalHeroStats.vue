@@ -402,6 +402,7 @@ export default {
         this.gametype.length === 1 &&
         this.gametype[0] !== 'br' &&
         this.gametype[0] !== 'cu' &&
+        this.gametype[0] !== 'ud' &&
         !this.gamemap &&
         !this.playerrank &&
         !this.herorank &&

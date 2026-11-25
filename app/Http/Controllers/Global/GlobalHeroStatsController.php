@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Global;
 
 use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
+use App\Http\Controllers\Global\Concerns\ResolvesStatChange;
 use App\Models\GlobalHeroChange;
 use App\Models\GlobalHeroStackSize;
 use App\Models\GlobalHeroStats;
@@ -26,6 +27,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
     ];
 
     use HandlesAsyncGlobalQueries;
+    use ResolvesStatChange;
 
     public const MINIMUM_PATCH = '2.47.0.75589';
 
@@ -272,46 +274,6 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         return $values === [] ? null : array_values(array_unique($values));
     }
 
-    private function calculateGameVersionsForHeroChange($version)
-    {
-        try {
-            [$major, $minor, $patch, $build] = explode('.', $version[0]);
-            $major = (int) $major;
-            $minor = (int) $minor;
-            $patch = (int) $patch;
-            $build = (int) $build;
-
-            $previousVersion = SeasonGameVersion::where('valid_globals', 1)
-                ->where(function ($query) use ($major, $minor, $patch, $build) {
-                    $query->where('major', '<', $major)
-                        ->orWhere(function ($q) use ($major, $minor) {
-                            $q->where('major', '=', $major)
-                                ->where('minor', '<', $minor);
-                        })
-                        ->orWhere(function ($q) use ($major, $minor, $patch) {
-                            $q->where('major', '=', $major)
-                                ->where('minor', '=', $minor)
-                                ->where('patch', '<', $patch);
-                        })
-                        ->orWhere(function ($q) use ($major, $minor, $patch, $build) {
-                            $q->where('major', '=', $major)
-                                ->where('minor', '=', $minor)
-                                ->where('patch', '=', $patch)
-                                ->where('build', '<', $build);
-                        });
-                })
-                ->orderByDesc('major')
-                ->orderByDesc('minor')
-                ->orderByDesc('patch')
-                ->orderByDesc('build')
-                ->first();
-
-            return $previousVersion ? [$previousVersion->game_version] : ['2.55.3.90670'];
-        } catch (\Exception $e) {
-            return ['2.55.3.90670'];
-        }
-    }
-
     private function combineData($data, $statFilter, $banData, $changeData, $hero, $role)
     {
         $totalGamesPlayed = collect($data)->sum('games_played') / 10;
@@ -434,23 +396,5 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
             'average_total_filter_type' => round($averageTotalFilterType, 0),
             'data' => $combinedData,
         ];
-    }
-
-    private function checkIfChange($timeframe, $region, $game_type, $map, $league_tier, $hero_league_tier, $role_league_tier, $hero_level)
-    {
-        if (
-            count($timeframe) == 1 &&
-            count($game_type) == 1 &&
-            empty($region) &&
-            empty($map) &&
-            empty($league_tier) &&
-            empty($hero_league_tier) &&
-            empty($role_league_tier) &&
-            empty($hero_level)
-        ) {
-            return true;
-        }
-
-        return false;
     }
 }
