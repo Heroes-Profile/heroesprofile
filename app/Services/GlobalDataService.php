@@ -1341,6 +1341,29 @@ class GlobalDataService
     }
 
     /**
+     * Leaves out replays recorded in replay_duplicates (a second copy of a game
+     * already stored). `$column` is the query's replayID column.
+     */
+    public function excludeDuplicateReplays($query, $column = 'replay.replayID')
+    {
+        return $query->whereNotExists(fn ($sub) => $sub->select(DB::raw(1))
+            ->from('replay_duplicates')
+            ->whereColumn('replay_duplicates.replayID', $column));
+    }
+
+    /**
+     * The kept copy of a hidden duplicate replay, or null if the replay isn't hidden.
+     */
+    public function duplicateOf(int $replayID): ?int
+    {
+        $keptReplayID = DB::connection('heroesprofile')->table('replay_duplicates')
+            ->where('replayID', $replayID)
+            ->value('duplicate_of');
+
+        return $keptReplayID === null ? null : (int) $keptReplayID;
+    }
+
+    /**
      * Newest replay the player has for these filters, used to tell whether a cached
      * profile page is stale. Held for a minute so paging and moving between profile
      * pages don't rescan the player's history each time.
@@ -1369,6 +1392,7 @@ class GlobalDataService
                 ->tap(function ($q) use ($season, $startDate, $endDate) {
                     $this->applySeasonsOrDateRange($q, $season, $startDate, $endDate);
                 })
+                ->tap(fn ($q) => $this->excludeDuplicateReplays($q))
                 ->max('replay.replayID');
         });
     }

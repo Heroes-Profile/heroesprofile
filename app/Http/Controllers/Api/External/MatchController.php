@@ -192,6 +192,15 @@ class MatchController extends Controller
             return ServeApiFixtures::validated();
         }
 
+        // A second copy of a game already stored: point the caller at the kept copy
+        if ($keptReplayID = $this->globalDataService->duplicateOf($replayID)) {
+            $request = request();
+
+            return redirect()->to($request->has('replayID')
+                ? $request->fullUrlWithQuery(['replayID' => $keptReplayID])
+                : preg_replace('#/replay/'.$replayID.'(?=/|\?|$)#', '/replay/'.$keptReplayID, $request->fullUrl()), 301);
+        }
+
         $gameType = Replay::where('replayID', $replayID)->value('game_type');
 
         if ($gameType === null) {

@@ -125,6 +125,7 @@ class PlayerMmrService
             ->where('blizz_id', $blizzId)
             ->where('region', $region)
             ->whereDate('game_date', '>', now()->subDays(self::RECENT_DAYS))
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
             ->count();
     }
 

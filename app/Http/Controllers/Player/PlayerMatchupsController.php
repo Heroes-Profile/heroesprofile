@@ -159,6 +159,7 @@ class PlayerMatchupsController extends Controller
                 ->tap(function ($query) use ($season, $startDate, $endDate) {
                     $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
                 })
+                ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
                 ->select('player.replayID');
 
             $result = DB::table('player')

@@ -177,6 +177,7 @@ class PlayerHeroesMapsRolesController extends Controller
                         ? $query->whereIn('game_map', $game_map)
                         : $query->where('game_map', $game_map);
                 });
+            $this->globalDataService->excludeDuplicateReplays($query);
         };
 
         $result = Replay::join('player', 'player.replayID', '=', 'replay.replayID')
@@ -1095,6 +1096,7 @@ class PlayerHeroesMapsRolesController extends Controller
             })
             ->tap(function ($query) use ($season, $startDate, $endDate) {
                 $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
+                $this->globalDataService->excludeDuplicateReplays($query);
             })
             ->when(! is_null($hero), function ($query) use ($hero) {
                 return $query->where('hero', $hero);

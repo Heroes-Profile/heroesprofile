@@ -134,6 +134,7 @@ class PlayerMatchHistory extends Controller
             ->where('region', $region)
             // Custom game pages are for opted-in participants only.
             ->where('game_type', '<>', 0)
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
             ->orderByDesc('game_date')
             ->first();
         if ($latest_replay) {
@@ -258,6 +259,7 @@ class PlayerMatchHistory extends Controller
             ->tap(function ($query) use ($season, $startDate, $endDate) {
                 $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate, 'replay.game_date');
             })
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
             ->when(! is_null($game_map), function ($query) use ($game_map) {
                 return $query->whereIn('replay.game_map', $game_map);
             })

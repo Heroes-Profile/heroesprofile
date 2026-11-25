@@ -168,7 +168,8 @@ class PlayerLobbyStatsService
             ->whereIn('replay.region', $regions)
             ->whereIn('replay.game_type', [1, 5, 6])
             ->where('replay.replayID', '>=', $startReplayID)
-            ->where('player.replayID', '>=', $startReplayID);
+            ->where('player.replayID', '>=', $startReplayID)
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query));
 
         $rows = DB::query()
             ->fromSub($ranked, 'ranked')

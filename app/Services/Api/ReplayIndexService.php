@@ -61,6 +61,7 @@ class ReplayIndexService
             ->where('replay_fingerprints.valid', 1)
             // Custom games are never listed, and the download refuses them.
             ->where('replay.game_type', '<>', 0)
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
             ->when($gameTypes !== null, fn ($query) => $query->whereIn('replay.game_type', $gameTypes))
             ->when($gameMaps !== null, fn ($query) => $query->whereIn('replay.game_map', $gameMaps))
             ->when(

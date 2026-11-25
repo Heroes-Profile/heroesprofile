@@ -165,6 +165,7 @@ class MatchSearchController extends Controller
             // drops old games uploaded late, which carry high replayIDs
             ->whereBetween('replay.replayID', [$lowerReplayID, $upperReplayID])
             ->where('replay.game_date', '>=', $this->searchWindowStart())
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
             ->whereIn('replay.game_type', $gameTypes)
             ->when($gameMaps, fn ($query) => $query->whereIn('replay.game_map', $gameMaps))
             ->when($regions, fn ($query) => $query->whereIn('replay.region', $regions))
