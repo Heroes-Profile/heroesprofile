@@ -192,7 +192,8 @@
       @endif
       {{-- data-footer-bar: the help button (help-chat) rises to sit just above this once it scrolls into view --}}
       <div data-footer-bar class="bg-surface text-sm px-4 md:px-8 py-6">
-        <div class="max-w-[116rem] mx-auto flex flex-wrap items-center justify-between gap-4 max-md:flex-col max-md:text-center">
+        {{-- Desktop: three columns, the outer two sharing what's left, so the links sit at the true centre whatever the sides' widths --}}
+        <div class="max-w-[116rem] mx-auto flex flex-col items-center gap-4 text-center md:grid md:grid-cols-[1fr_auto_1fr] md:text-left">
           <div>
             @if(isset($maxReplayID) && ! (isset($isBackendOff) && $isBackendOff))
               {{ __('Patch :patch', ['patch' => $latestPatch]) }}<span class="mx-3">|</span>{{ __(':count replays', ['count' => is_numeric($maxReplayID) ? number_format($maxReplayID) : $maxReplayID]) }}
@@ -203,7 +204,7 @@
             <a href="/Privacy/Policy" class="underline">{{ __('Privacy Policy') }}</a>
             <a href="/Terms/Of/Service" class="underline">{{ __('Terms of Service') }}</a>
           </div>
-          <div>Skill Tree Development, LLC<span class="mx-3">|</span><a href="https://heroesprofile.com">Heroes Profile</a><span class="mx-3">|</span><a href="/Team" class="underline">{{ __('Team') }}</a></div>
+          <div class="md:justify-self-end">Skill Tree Development, LLC<span class="mx-3">|</span><a href="https://heroesprofile.com">Heroes Profile</a><span class="mx-3">|</span><a href="/Team" class="underline">{{ __('Team') }}</a></div>
         </div>
       </div>
       <footer-popup-disclaimer></footer-popup-disclaimer>
