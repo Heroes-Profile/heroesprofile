@@ -58,7 +58,7 @@
           <template v-if="!afterOnly.includes(screenshot)">
           <img :src="`/images/redesign/2026/${screenshot}-before.jpg`" :alt="$t('Before')" class="absolute inset-0 w-full h-full object-cover object-top [clip-path:inset(0_calc(100%-var(--wipe))_0_0)]" draggable="false" />
           <!-- One label in the middle, naming whichever side shows more -->
-          <span class="absolute top-3 left-1/2 -translate-x-1/2 rounded-control px-5 py-2 text-xl font-bold pointer-events-none" :class="wipe >= 50 ? 'bg-surface' : 'bg-teal'">{{ wipe >= 50 ? $t('Before') : $t('After') }}</span>
+          <span class="absolute z-10 top-3 left-1/2 -translate-x-1/2 rounded-control px-5 py-2 text-xl font-bold pointer-events-none" :class="wipe >= 50 ? 'bg-surface' : 'bg-teal'">{{ wipe >= 50 ? $t('Before') : $t('After') }}</span>
           <span class="absolute inset-y-0 w-0.5 bg-white pointer-events-none left-[var(--wipe)]">
             <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-teal flex items-center justify-center shadow-lg"><i class="fas fa-arrows-alt-h"></i></span>
           </span>
