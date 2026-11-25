@@ -49,11 +49,11 @@
               <div v-for="talent in tier.count" :key="talent" class="rounded-control bg-surface-1 border-2 border-surface-1 p-3 flex flex-col gap-2.5 min-w-0">
                 <div class="flex items-center gap-2"><skeleton-box class="w-[2.625rem] h-[2.625rem] !rounded-full shrink-0"></skeleton-box><span class="text-sm font-semibold skeleton-text">Pressurized Glands</span></div>
                 <div :class="horizontal ? 'grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-2 items-end' : 'grid grid-cols-[auto_minmax(0,1fr)_auto] gap-4 items-end'">
-                  <span class="flex flex-col gap-1"><span class="text-[0.625rem] skeleton-text">Win rate</span><span class="text-xl font-bold leading-tight skeleton-text">00.00%</span></span>
+                  <span class="flex flex-col gap-1"><span class="text-xs skeleton-text">Win rate</span><span class="text-xl font-bold leading-tight skeleton-text">00.00%</span></span>
                   <stat-bar :class="['mb-1.5', { 'col-span-2 order-last': horizontal }]" value="0" display-text="" :hide-value="true"></stat-bar>
                   <span class="flex justify-end gap-4">
-                    <span class="flex flex-col items-end gap-1"><span class="text-[0.625rem] skeleton-text">Popularity</span><span class="font-semibold skeleton-text">00.00%</span></span>
-                    <span class="flex flex-col items-end gap-1"><span class="text-[0.625rem] skeleton-text">Games</span><span class="font-semibold skeleton-text">0,000</span></span>
+                    <span class="flex flex-col items-center gap-1"><span class="text-xs skeleton-text">Popularity</span><span class="font-semibold skeleton-text">00.00%</span></span>
+                    <span class="flex flex-col items-end gap-1"><span class="text-xs skeleton-text">Games</span><span class="font-semibold skeleton-text">0,000</span></span>
                   </span>
                 </div>
               </div>
@@ -67,22 +67,22 @@
                 <span v-if="isBest(talent, tier)" class="absolute -top-2 right-3 px-1.5 py-0.5 rounded-[0.25rem] bg-teal text-white text-[0.625rem] font-bold uppercase leading-none">{{ $t('Best') }}</span>
               </div>
               <!-- One line, as the Figma card: the Best by stat first and larger, its bar (teal on the level's best, grey on the
-                   rest), then the other stat and games at the same small size. A narrow column puts the bar on its own line -->
+                   rest), then the other stat (centred on its label) and games (right-aligned) at the same small size. A narrow column puts the bar on its own line -->
               <div :class="horizontal ? 'grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-2 items-end' : 'grid grid-cols-[auto_minmax(0,1fr)_auto] gap-4 items-end'">
                 <span class="flex flex-col">
-                  <span class="text-[0.625rem] text-subtext">{{ $t(bestBy === 'popularity' ? 'Popularity' : 'Win rate') }}</span>
+                  <span class="text-xs text-subtext">{{ $t(bestBy === 'popularity' ? 'Popularity' : 'Win rate') }}</span>
                   <span class="whitespace-nowrap"><span :class="['text-xl font-bold tabular-nums leading-tight', { 'text-lteal': isBest(talent, tier) }]">{{ (bestBy === 'popularity' ? talent.popularity : talent.win_rate).toFixed(2) }}%</span><template v-if="bestBy !== 'popularity'"><span v-if="hasChange(talent)" :class="['ml-1.5 text-[0.625rem] font-normal tabular-nums', changeClass(talent)]">{{ changeText(talent) }}</span></template></span>
                 </span>
                 <!-- Win rate scaled 25% to 75%, so the usual 45-55% spread shows as a clear difference; 50% fills half -->
                 <stat-bar :class="['mb-1.5', { 'col-span-2 order-last': horizontal }]" :value="bestBy === 'popularity' ? talent.popularity : (talent.win_rate - 25) * 2" display-text="" :color="isBest(talent, tier) ? 'teal' : 'gray-medium'"></stat-bar>
                 <span class="flex justify-end gap-4">
-                  <span class="flex flex-col items-end">
-                    <span class="text-[0.625rem] text-subtext">{{ $t(bestBy === 'popularity' ? 'Win rate' : 'Popularity') }}</span>
+                  <span class="flex flex-col items-center">
+                    <span class="text-xs text-subtext">{{ $t(bestBy === 'popularity' ? 'Win rate' : 'Popularity') }}</span>
                     <span v-if="bestBy === 'popularity'" class="whitespace-nowrap"><span :class="['font-semibold tabular-nums', talent.win_rate > 50 ? 'text-win' : '']">{{ talent.win_rate.toFixed(2) }}%</span><span v-if="hasChange(talent)" :class="['ml-1.5 text-[0.625rem] font-normal tabular-nums', changeClass(talent)]">{{ changeText(talent) }}</span></span>
                     <span v-else class="font-semibold tabular-nums">{{ talent.popularity.toFixed(2) }}%</span>
                   </span>
                   <span class="flex flex-col items-end">
-                    <span class="text-[0.625rem] text-subtext">{{ $t('Games') }}</span>
+                    <span class="text-xs text-subtext">{{ $t('Games') }}</span>
                     <span class="font-semibold tabular-nums">{{ formatNumber(talent.games_played) }}</span>
                   </span>
                 </span>
