@@ -135,6 +135,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 'defaulttimeframe' => [$defaultTimeframe],
                 'defaultbuildtype' => $defaultBuildType,
                 'talentStatsLayout' => $this->globalDataService->getTalentStatsLayout(),
+                'talentstatsstyle' => $this->globalDataService->getTalentStatsStyle(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
                 'urlparameters' => $request->all(),
                 'initialtalentdata' => $initialTalentData,

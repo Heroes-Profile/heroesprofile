@@ -19,6 +19,7 @@ class EncryptCookies extends Middleware
         'battlenet_region',
         'header_alert_dismissed',
         'talentbuilderstyle',
+        'talentstatsstyle',
         'talentbuilderload',
         'playerhistorytable',
         'talentStatsLayout',

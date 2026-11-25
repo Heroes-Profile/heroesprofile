@@ -24,6 +24,7 @@
     :defaulttimeframetype="{{ json_encode($defaulttimeframetype) }}"
     :talentimages="{{ json_encode($talentimages) }}"
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
+    :talentstatsstyle="{{ json_encode($talentstatsstyle) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :urlparameters="{{ json_encode($urlparameters) }}"
     :initialtalentdata="{{ json_encode($initialtalentdata) }}"

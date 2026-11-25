@@ -3,7 +3,8 @@
     <button v-if="!compact" class="md:hidden p-2 bg-blue w-full" @click="showMobile">{{ $t('Show Filters') }}</button>
     <div v-show="compact || showNav" :class="compact ? 'bg-lighten rounded p-3' : 'bg-surface md:rounded p-4 md:p-6 max-md:fixed max-md:inset-0 max-md:z-[54] max-md:h-[100dvh] max-md:overflow-y-auto max-md:flex max-md:flex-col'">
       <button v-if="!compact" class="md:hidden ml-auto text-2xl min-w-[2.75rem] min-h-[2.75rem]" :aria-label="$t('Close filters')" @click="showMobile">x</button>
-      <div :class="compact ? 'flex flex-wrap items-end gap-3' : 'filter-row'">
+      <!-- Laid out by layoutFilterRow: one line when everything fits, otherwise the fewest rows with the boxes spread evenly, Filter last -->
+      <div ref="mainrow" :class="compact ? 'flex flex-wrap items-end gap-3' : 'filter-row'">
         <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] flex-1 basis-[50rem] gap-2 min-w-0' : 'contents'">
           <!-- A page's own pickers (esports seasons, divisions, teams, ...): { text, values, defaultValue, show } -->
           <template v-for="extra in extrafilters" :key="extra.text">
@@ -182,15 +183,6 @@
           ></single-select-filter>
 
 
-          <!-- Stat Type Filter -->
-          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="showStatTypeFilter"
-            :values="filters.stat_filter"
-            :text="'Stat Filter'"
-            :defaultValue="statfilter"
-            :disabled="statfilterdisabled"
-            :key="'statfilter-' + statfilterdisabled"
-            @input-changed="handleInputChange"
-          ></single-select-filter>
 
 
           <!-- Role, then Heroes -->
@@ -380,15 +372,41 @@
 
           <slot></slot>
         </div>
-        <button v-if="!autoapply" :disabled="disabledFilter" @click="applyFilter" class="btn bg-blue enabled:hover:bg-[#425a8e] disabled:bg-[#223562] disabled:text-[#b7b7bb]" :class="[compact ? 'px-5 h-10' : 'font-semibold h-10 m-2 md:w-[7.5rem] max-md:flex-[1_1_8rem]', leaderboardOrder('Filter')]">
+        <!-- The advanced filters toggle and Filter, one item of the row. The toggle is lit while they're open; the dot means
+             an advanced filter is set while they're hidden -->
+        <div v-if="!compact" :class="['filter-actions flex items-end gap-2 p-2', leaderboardOrder('Filter')]">
+          <round-image v-if="advancedfiltersinfo && !hideadvancedfilteringbutton" class="self-center" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+            <p class="max-sm:text-xs">{{ advancedfiltersinfo }}</p>
+          </round-image>
+          <button v-if="!hideadvancedfilteringbutton" type="button" :class="['relative h-10 w-10 shrink-0 rounded-control transition-colors', toggleExtraFilters ? 'bg-teal text-white hover:bg-lteal' : 'bg-surface-3 text-subtext hover:text-white']" :title="toggleButtonText" :aria-label="toggleButtonText" :aria-expanded="!!toggleExtraFilters" @click="setAdvancedFilters(!toggleExtraFilters)">
+            <i class="fas fa-sliders"></i>
+            <span v-if="advancedFiltersApplied" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-teal"></span>
+          </button>
+          <button v-if="!autoapply" :disabled="disabledFilter" @click="applyFilter" class="btn bg-blue enabled:hover:bg-[#425a8e] disabled:bg-[#223562] disabled:text-[#b7b7bb] font-semibold h-10 flex-1 min-w-[7.5rem]">
+            {{ $t('Filter') }}
+          </button>
+        </div>
+        <button v-else-if="!autoapply" :disabled="disabledFilter" @click="applyFilter" class="btn bg-blue enabled:hover:bg-[#425a8e] disabled:bg-[#223562] disabled:text-[#b7b7bb] px-5 h-10">
           {{ $t('Filter') }}
         </button>
 
         
       </div>
-      <!-- Advanced filters: their own row under a divider, with Hide at the end where the Filter button sits above -->
-      <div v-if="toggleExtraFilters && hasAdvancedFilters" :class="compact ? 'mt-3' : 'border-t border-surface-3 mt-4 pt-4'">
-        <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] gap-2 items-end' : 'filter-row'">
+      <!-- Advanced filters: their own row under a divider, laid out like the row above (the toggle beside Filter hides them) -->
+      <div v-if="toggleExtraFilters && hasAdvancedFilters" :class="compact ? 'mt-3' : 'relative border-t border-surface-3 mt-4 pt-4'">
+        <!-- Its name sits on the divider -->
+        <span v-if="!compact" class="absolute -top-2 left-0 bg-surface pr-2 text-xs uppercase text-subtext leading-none">{{ $t('Advanced filters') }}</span>
+        <div ref="advancedrow" :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] gap-2 items-end' : 'filter-row'">
+          <!-- Stat Type Filter -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="showStatTypeFilter"
+            :values="filters.stat_filter"
+            :text="'Stat Filter'"
+            :defaultValue="statfilter"
+            :disabled="statfilterdisabled"
+            :key="'statfilter-' + statfilterdisabled"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+
           <!-- Hero Level -->
           <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeherolevel && toggleExtraFilters && !rankSourceSL"
             :values="filters.hero_level" 
@@ -492,12 +510,12 @@
               <p v-if="ffSearchError" class="absolute left-2 top-full -mt-1 text-red text-xs whitespace-nowrap">{{ $t(ffSearchError) }}</p>
             </div>
           </div>
-          <button v-if="!hideadvancedfilteringbutton" type="button" :class="['inline-flex items-center justify-center gap-1.5 text-sm font-medium text-teal hover:text-lteal whitespace-nowrap', compact ? 'h-10' : 'h-10 m-2 max-md:flex-[1_1_8rem]']" :aria-expanded="true" @click="setAdvancedFilters(false)">{{ toggleButtonText }}<basil-icon name="arrow-small" class="text-xs -rotate-90"></basil-icon></button>
+          <button v-if="compact && !hideadvancedfilteringbutton" type="button" class="inline-flex items-center justify-center gap-1.5 text-sm font-medium text-teal hover:text-lteal whitespace-nowrap h-10" :aria-expanded="true" @click="setAdvancedFilters(false)">{{ toggleButtonText }}<basil-icon name="arrow-small" class="text-xs -rotate-90"></basil-icon></button>
         </div>
       </div>
-      <div class="flex max-md:mb-auto" :class="compact && $slots['compact-footer'] ? 'justify-between items-start' : 'justify-end'">
-        <div v-if="compact && $slots['compact-footer']" class="mt-2"><slot name="compact-footer"></slot></div>
-        <button type="button" :class="['inline-flex items-center gap-1.5 text-sm font-medium text-teal hover:text-lteal', compact ? 'mt-2' : 'mt-4 -mb-2']" v-if="!hideadvancedfilteringbutton && !(toggleExtraFilters && hasAdvancedFilters)" :aria-expanded="!!toggleExtraFilters" @click="setAdvancedFilters(!toggleExtraFilters)" >{{ toggleButtonText }}<basil-icon name="arrow-small" :class="['text-xs', toggleExtraFilters ? '-rotate-90' : 'rotate-90']"></basil-icon></button>
+      <div v-if="compact" class="flex max-md:mb-auto" :class="$slots['compact-footer'] ? 'justify-between items-start' : 'justify-end'">
+        <div v-if="$slots['compact-footer']" class="mt-2"><slot name="compact-footer"></slot></div>
+        <button type="button" :class="['inline-flex items-center gap-1.5 text-sm font-medium text-teal hover:text-lteal mt-2']" v-if="!hideadvancedfilteringbutton && !(toggleExtraFilters && hasAdvancedFilters)" :aria-expanded="!!toggleExtraFilters" @click="setAdvancedFilters(!toggleExtraFilters)" >{{ toggleButtonText }}<basil-icon name="arrow-small" :class="['text-xs', toggleExtraFilters ? '-rotate-90' : 'rotate-90']"></basil-icon></button>
         <round-image v-if="advancedfiltersinfo && !hideadvancedfilteringbutton" class="ml-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
           <p class="max-sm:text-xs">{{ advancedfiltersinfo }}</p>
         </round-image>
@@ -803,6 +821,9 @@
     mounted() {
       // After the initial selections are in, so opening and closing a dropdown untouched doesn't reload
       this.$nextTick(() => { this.lastAppliedFilters = this.filterSnapshot(); });
+      if(!this.compact){
+        this.watchFilterRows();
+      }
 
       if(this.playerrankinput && !this.rankSourceSL){
         this.selectedMultiFilters["HP Player Rank"] = this.playerrankinput;
@@ -898,9 +919,24 @@
       autoApplyBindings(){
         return this.autoapply ? { trackclosure: true, onDropdownClosed: this.autoApply } : {};
       },
+      // An advanced filter the page was opened with (from the URL) while the advanced row is hidden
+      advancedFiltersApplied(){
+        if(this.toggleExtraFilters){
+          return false;
+        }
+        const set = value => Array.isArray(value) ? value.length > 0 : value !== null && value !== undefined && value !== '';
+        const groupSize = this.groupSizeDefaultValue;
+        return !!((this.includestatfilter && set(this.statfilterinput) && this.statfilterinput !== 'win_rate')
+          || (this.includeherolevel && set(this.herolevelinput))
+          || (this.includeherorank && set(this.herorankinput))
+          || (this.includerolerank && set(this.rolerankinput))
+          || (this.includemirror && set(this.mirrormatchinput) && this.filters.mirror && String(this.mirrormatchinput) !== String(this.filters.mirror[0].code))
+          || (this.includetalentbuildtype && set(this.talentbuildtypeinput) && this.talentbuildtypeinput !== 'Popular')
+          || (this.modifiedincludegroupsize && this.groupsizeadvanced && set(groupSize) && ![].concat(groupSize).every(value => value === 'All')));
+      },
       // Whether this page has any filter that lives in the advanced row
       hasAdvancedFilters(){
-        return !!(this.includeherolevel || this.includemmrranges || this.includeherorank || this.includerolerank
+        return !!(this.includestatfilter || this.includeherolevel || this.includemmrranges || this.includeherorank || this.includerolerank
           || this.includetalentbuildtype || this.includemirror || (this.modifiedincludegroupsize && this.groupsizeadvanced)
           || this.matchhistorybattletagsearch);
       },
@@ -972,11 +1008,83 @@
     },
     unmounted(){
       window.removeEventListener('resize', this.checkScreenWidth);
+      if(this.rowObservers){
+        this.rowObservers.forEach(observer => observer.disconnect());
+      }
       if(!this.compact && this.showNav && this.isMobileView()){
         document.body.style.overflow = '';
       }
     },
     methods: {
+      // Lays the main and advanced rows out again whenever their size or their boxes change
+      watchFilterRows() {
+        const rows = () => ['mainrow', 'advancedrow'].map(name => this.$refs[name]).filter(Boolean);
+        const relayout = () => rows().forEach(row => this.layoutFilterRow(row));
+        const resize = new ResizeObserver(relayout);
+        // Boxes come and go (the advanced row, SL rank, Heroes swapped for Type), and the advanced row itself
+        const changes = new MutationObserver(() => {
+          resize.disconnect();
+          rows().forEach(row => resize.observe(row));
+          relayout();
+        });
+        changes.observe(this.$el, { childList: true, subtree: true });
+        rows().forEach(row => resize.observe(row));
+        this.rowObservers = [resize, changes];
+      },
+      // Every filter bar follows the same rule: one line when all the boxes fit at their smallest, otherwise the
+      // fewest rows that fit, the same number of boxes in each, and the boxes in a row the same width
+      layoutFilterRow(row) {
+        const items = [];
+        const collect = parent => {
+          Array.from(parent.children).forEach(child => {
+            // Wrappers (dates, Season with the dates) give their boxes to the row
+            if(child.classList.contains('filter-group')){
+              child.style.display = 'contents';
+            }
+            const display = getComputedStyle(child).display;
+            if(display === 'contents'){
+              collect(child);
+            }else if(display !== 'none'){
+              items.push(child);
+            }
+          });
+        };
+        collect(row);
+        if(!items.length){
+          return;
+        }
+        const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+        const minBox = 10 * rem;
+        const width = row.clientWidth;
+        const actions = items.find(item => item.classList.contains('filter-actions'));
+        const boxes = items.filter(item => item !== actions);
+
+        // One line: the boxes share the space, Filter keeps its own width
+        // Important, so it beats a box's own !min-w class (Timeframes)
+        const size = (item, flex, minWidth = '', maxWidth = '') => {
+          item.style.setProperty('flex', flex, flex ? 'important' : '');
+          item.style.setProperty('min-width', minWidth, minWidth ? 'important' : '');
+          item.style.setProperty('max-width', maxWidth, maxWidth ? 'important' : '');
+        };
+        items.forEach(item => size(item, ''));
+        const actionsWidth = actions ? actions.offsetWidth : 0;
+        if(boxes.length * minBox + actionsWidth <= width){
+          boxes.forEach(item => size(item, '1 1 0', '0'));
+          if(actions){
+            size(actions, '0 0 auto');
+          }
+          // A box wider than its share (a long Season) can still push the line over
+          const top = items[0].offsetTop;
+          if(items.every(item => item.offsetTop === top)){
+            return;
+          }
+        }
+
+        // Rows: Filter counts as a box, and stays last
+        const perRowMax = Math.max(1, Math.floor(width / minBox));
+        const perRow = Math.ceil(items.length / Math.ceil(items.length / perRowMax));
+        items.forEach(item => size(item, `1 1 calc(${100 / perRow}% - 0.1px)`, '0', '100%'));
+      },
       // Show/Hide advanced filters, remembered for the next page: a cookie, and the account setting when logged in
       // (a guest's save is refused by the server, harmlessly)
       setAdvancedFilters(show) {

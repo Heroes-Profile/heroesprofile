@@ -49,6 +49,7 @@ class ProfileController extends Controller
             'playermultigametype' => 'sometimes|nullable|array',
             'talentbuildtype' => ['sometimes', 'nullable', new TalentBuildTypeInputValidation],
             'talentbuilderstyle' => 'nullable|in:vertical,horizontal',
+            'talentstatsstyle' => 'nullable|in:vertical,horizontal',
             'talentbuilderload' => 'nullable|in:auto,filter',
             'talentStatsLayout' => 'nullable|in:table,compact',
             'locale' => ['nullable', Rule::in(array_keys(config('app.supported_locales')))],
@@ -150,6 +151,13 @@ class ProfileController extends Controller
             $user->userSettings()->updateOrCreate(
                 ['setting' => 'talentbuilderstyle'],
                 ['value' => $request['talentbuilderstyle']]
+            );
+        }
+
+        if (! is_null($request['talentstatsstyle'])) {
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'talentstatsstyle'],
+                ['value' => $request['talentstatsstyle']]
             );
         }
 

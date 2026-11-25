@@ -1442,6 +1442,18 @@ class GlobalDataService
         return $value === 'horizontal' ? 'horizontal' : 'vertical';
     }
 
+    // The talent stats grid's Vertical/Horizontal layout, saved like talentbuilderstyle
+    public function getTalentStatsStyle(): string
+    {
+        $value = Auth::check()
+            ? Auth::user()->userSettings->firstWhere('setting', 'talentstatsstyle')?->value
+            : null;
+
+        $value ??= request()->cookie('talentstatsstyle');
+
+        return $value === 'horizontal' ? 'horizontal' : 'vertical';
+    }
+
     public function getTalentBuilderLoad(): string
     {
         $value = Auth::check()

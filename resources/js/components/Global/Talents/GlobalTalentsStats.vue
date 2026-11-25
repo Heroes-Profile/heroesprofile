@@ -98,7 +98,7 @@
         <div v-if="talentdetaildata" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
           <patch-notes-panel v-if="patchNotesUrl" class="!max-w-none !mb-0" :version="timeframe[0]"></patch-notes-panel>
           <panel-box title="Talent stats" subtitle="Win rate, popularity and games for every talent. The best win rate on each tier is highlighted.">
-            <compact-talent-grid :talent-data="talentdetaildata" :stat-filter="statfilter"></compact-talent-grid>
+            <compact-talent-grid :talent-data="talentdetaildata" :stat-filter="statfilter" :layout-style="talentstatsstyle"></compact-talent-grid>
           </panel-box>
         </div>
         <div v-else-if="isTalentsLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
@@ -180,6 +180,7 @@
       defaultbuildtype: String,
       talentimages: Object,
       advancedfiltering: Boolean,
+      talentstatsstyle: { type: String, default: null },
       patreonUser: Boolean,
       urlparameters: Object,
       initialtalentdata: { type: [Object, Array], default: null },
