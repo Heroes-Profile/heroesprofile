@@ -506,6 +506,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             ->when(! is_null($region), function ($query) use ($region) {
                 return $query->whereIn('region', $region);
             })
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
             ->orderByDesc('replay.game_date')
         // ->toSql();
             ->limit(10000)

@@ -164,6 +164,7 @@ class AnalyticsReplayService
             ->where('player.blizz_id', $blizzId)
             ->where('replay.region', $region)
             ->where('replay.game_date', '>=', config('analytics.cutover'))
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
             ->when($filters['game_types'] !== [], fn ($q) => $q->whereIn('replay.game_type', $filters['game_types']))
             ->when($filters['maps'] !== [], fn ($q) => $q->whereIn('replay.game_map', $filters['maps']))
             ->when($filters['hero'] > 0, fn ($q) => $q->where('player.hero', $filters['hero']))

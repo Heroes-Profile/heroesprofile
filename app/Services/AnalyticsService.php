@@ -324,7 +324,8 @@ class AnalyticsService
             ->join('replay', 'replay.replayID', '=', 'player.replayID')
             ->where('player.blizz_id', $blizzId)
             ->where('replay.region', $region)
-            ->where('replay.game_date', '>=', config('analytics.cutover'));
+            ->where('replay.game_date', '>=', config('analytics.cutover'))
+            ->tap(fn ($query) => app(GlobalDataService::class)->excludeDuplicateReplays($query));
     }
 
     // Same host the global query tasks already reach this app on, so the callback takes the

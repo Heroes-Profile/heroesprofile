@@ -101,6 +101,7 @@ class RandomizeMeController extends GlobalsInputValidationController
             // player.hero has no index, so without a floor a rarely played hero walks
             // replay by date through the entire history.
             ->where('replay.game_date', '>=', now()->subDays(30))
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
             ->orderByDesc('replay.game_date')
             ->limit(1000)
             ->get();

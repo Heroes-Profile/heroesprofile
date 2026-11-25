@@ -280,6 +280,7 @@ class PlayerMMRController extends Controller
             ->where('blizz_id', $request['blizz_id'])
             ->where('game_type', $game_type)
             ->where('region', $request['region'])
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
             ->when(! is_null($hero), function ($query) use ($hero) {
                 return $query->where('hero', $hero->id);
             })

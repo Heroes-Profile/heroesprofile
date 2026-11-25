@@ -105,6 +105,7 @@ class MatchPredictionGameController extends Controller
             ->whereIn('replayID', $randomNumbers)
             ->where('game_type', $gameType)
             ->whereIn('game_version', $gameVersions)
+            ->tap(fn ($query) => $this->globalDataService->excludeDuplicateReplays($query))
             ->inRandomOrder()
             ->first();
 
