@@ -119,7 +119,17 @@
                   {{ $t('Hero') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
                 <th @click="sortTable('win_rate')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
-                  {{ $t('Win Rate') }}<sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                  <!-- The ± beside each win rate is its 95% confidence interval, named and explained here -->
+                  <div class="inline-flex items-center">
+                    {{ $t('Win Rate') }}<span class="text-xs text-subtext ml-1.5">{{ $t('± conf.') }}</span>
+                    <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
+                      <slot>
+                        <div>
+                          <p>{{ $t('The ± figure is the 95% confidence range of the win rate: the hero’s true win rate is very likely within that many points of the one shown. Fewer games mean a wider range.') }}</p>
+                        </div>
+                      </slot>
+                    </round-image>
+                  </div><sort-indicator :column="'win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
                 </th>
                 <th v-if="showWinRateChange" @click="sortTable('win_rate_change')" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate_change' }">
                   {{ $t('Change') }}<sort-indicator :column="'win_rate_change'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>

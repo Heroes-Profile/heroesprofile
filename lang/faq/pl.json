@@ -127,6 +127,10 @@
             "q": "Co oznacza statystyka „Wpływ”?",
             "a": "Wpływ to wartość od -5000 do 5000, która mierzy, jak bardzo bohater faktycznie wpływa na wynik meczów. Bierze ona to, o ile odsetek zwycięstw bohatera jest wyższy lub niższy od 50%, i mnoży to przez to, jak często bohater jest wybierany w meczach, w których nie został zbanowany. Bohater z wysokim odsetkiem zwycięstw, który jest rzadko wybierany, będzie miał niższy wpływ niż bohater z nieco niższym odsetkiem zwycięstw, wybierany w większości meczów, bo to ten drugi faktycznie kształtuje więcej meczów. Traktuj to jako odsetek zwycięstw ważony znaczeniem."
         },
+        "75272c1b5272fed6": {
+            "q": "Co oznacza liczba ± obok odsetka zwycięstw?",
+            "a": "<p>To 95-procentowy przedział ufności odsetka zwycięstw, w punktach procentowych. Bohater z wynikiem 55% ±3 najpewniej ma rzeczywisty odsetek zwycięstw między 52% a 58%. Przedział zawęża się wraz z liczbą rozegranych gier, więc bohater z niewielką liczbą gier może mieć wysoki odsetek z szerokim ±, co znaczy, że wynik jest daleki od pewnego.</p>"
+        },
         "baef60d089cdea87": {
             "q": "Gdzie mogę zobaczyć umiejętności, talenty i statystyki bazowe bohatera?",
             "a": "Strona <a href=\"/Heroes\" class=\"link\">Bohaterowie</a>, dostępna też w menu Narzędzia na górze, ma osobną stronę dla każdego bohatera, np. <a href=\"/Heroes/Abathur\" class=\"link\">Abathur</a>. Powstaje ona na podstawie plików gry z bieżącej łatki i ma trzy karty: <strong>O bohaterze</strong> (rola, trudność, opis, oceny, statystyki bazowe i historia), <strong>Umiejętności</strong> oraz <strong>Talenty</strong>. Najedź kursorem lub stuknij ikonę umiejętności albo talentu, aby zobaczyć pełny opis. Suwak poziomu przelicza zdrowie, obrażenia od ataku i wartości umiejętności dla dowolnego poziomu od 1 do 30, a skalujące się wartości pokazują przyrost na poziom, np. 62 (+4% na poziom). Linki pod kartami otwierają danego bohatera na stronach statystyk, takich jak Statystyki talentów i Kreator talentów, gdzie znajdziesz odsetek zwycięstw i buildy."

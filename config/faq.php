@@ -143,6 +143,10 @@ return [
                     'a' => 'Influence is a value between -5000 and 5000 that measures how much a hero actually influences the outcome of games. It takes how far the hero\'s win rate is above or below 50% and multiplies it by how often the hero is picked in the games where it isn\'t banned. A hero with a high win rate that is rarely picked will have a lower influence score than a hero with a slightly lower win rate that is picked in most games — because the second hero is actually shaping more matches. Think of it as win rate weighted by relevance.',
                 ],
                 [
+                    'q' => 'What does the ± number next to a win rate mean?',
+                    'a' => '<p>It is the 95% confidence range of the win rate, in percentage points. A hero shown at 55% ±3 very likely has a true win rate between 52% and 58%. The range narrows as more games are played, so a hero with few games can show a high win rate with a wide ± that means the number is far from certain.</p>',
+                ],
+                [
                     'id' => 'hero-pages',
                     'q' => 'Where can I see a hero\'s abilities, talents and base stats?',
                     'a' => 'The <a href="/Heroes" class="link">Heroes</a> page, also under Tools in the top menu, has a page for every hero, such as <a href="/Heroes/Abathur" class="link">Abathur</a>. It is built from the game files for the current patch and has three tabs: <strong>About</strong> (role, difficulty, description, ratings, base stats and lore), <strong>Abilities</strong> and <strong>Talents</strong>. Hover or tap an ability or talent icon for its full tooltip. The level slider scales health, attack damage and ability numbers to any level from 1 to 30, and the scaling numbers show their per-level rate, e.g. 62 (+4% per level). The links under the tabs open that hero on the stats pages, such as Talent Stats and the Talent Builder, for win rates and builds.',
