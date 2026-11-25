@@ -297,7 +297,14 @@
       <!-- Credits -->
       <panel-box :divider="false">
         <h2 class="text-2xl font-bold">{{ $t('Thanks') }}</h2>
-        <p class="max-w-[60rem]">{{ $t('Thanks to Bluray for the design.') }}</p>
+        <!-- The name copies the designer's Discord username, as in the footer credit; the sentence is split around it so
+             the name can sit anywhere in a translation -->
+        <p class="max-w-[60rem]">
+          <template v-for="(part, index) in thanksParts" :key="index">
+            <button v-if="part === null" type="button" class="inline-flex items-center gap-1.5 font-semibold text-white hover:underline" :title="copiedDiscord ? $t('Copied') : $t('Copy Discord username')" @click="copyDiscord">Bluray<i :class="copiedDiscord ? 'fas fa-check' : 'fab fa-discord'"></i></button>
+            <template v-else>{{ part }}</template>
+          </template>
+        </p>
         <a href="/Team" class="group/bt inline-flex items-center w-fit text-teal"><span class="group-hover/bt:underline">{{ $t('Meet the team') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
       </panel-box>
     </div>
@@ -314,9 +321,12 @@ export default {
     // Every site language with a few strings in it, from RedesignController
     languages: { type: Array, default: () => [] },
     locale: { type: String, default: 'en' },
+    // Bluray's Discord username, from config/team.php
+    discord: { type: String, default: null },
   },
   data() {
     return {
+      copiedDiscord: false,
       after: true,
       language: this.locale,
       // Side by side: the page showing, and how far across the old screenshot reaches
@@ -495,6 +505,12 @@ export default {
     };
   },
   computed: {
+    // The thanks sentence around the name; null is where the name goes
+    thanksParts() {
+      const marker = '\u0000';
+      const [before, after = ''] = this.$t('Thanks to :name for the updated design.', { name: marker }).split(marker);
+      return [before, null, after];
+    },
     languageTabs() {
       return this.languages.map((language) => ({ key: language.code, text: language.name }));
     },
@@ -503,6 +519,20 @@ export default {
     },
   },
   methods: {
+    async copyDiscord() {
+      if (!this.discord) {
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(this.discord);
+      } catch (error) {
+        // The browser refused the clipboard
+        return;
+      }
+      this.copiedDiscord = true;
+      clearTimeout(this.copiedTimer);
+      this.copiedTimer = setTimeout(() => { this.copiedDiscord = false; }, 2000);
+    },
     pickScreenshot(key) {
       this.screenshot = key;
       this.openMenu = null;
