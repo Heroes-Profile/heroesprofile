@@ -3648,6 +3648,7 @@
     "Tie-breaker for `since`. Pass the `next_after_id` from the previous response.": "Critère de départage pour `since`. Transmettez le `next_after_id` de la réponse précédente.",
     "tier at no extra cost — it stacks with any plan you buy, and each endpoint uses whichever allowance is higher.": "sans frais supplémentaires — il se cumule avec toute offre achetée, et chaque endpoint utilise le quota le plus élevé.",
     "Tier List": "Classement des héros",
+    "Tier List and Win Rates": "Classement et taux de victoire",
     "Time": "Moment",
     "Time CC Enemy Heroes": "Temps de contrôle sur les héros ennemis",
     "Time in your main lane": "Temps dans votre voie principale",

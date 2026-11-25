@@ -1,6 +1,7 @@
 <template>
   <!-- Collapsed until opened; the notes load the first time it opens -->
-  <panel-box :class="['w-full max-w-[93.75rem] mx-auto mb-4 md:!pt-4', { 'md:!pb-4 cursor-pointer': !open }]" @click="!open && toggle()">
+  <!-- With bodyTarget the notes open in their own card there, below a row of bars (Global Hero Stats) -->
+  <panel-box :class="['w-full max-w-[93.75rem] mx-auto mb-4 md:!pt-4', { 'md:!pb-4 cursor-pointer': !open || bodyTarget }]" @click="!open && toggle()">
     <!-- The bar, as in the redesign: title and patch chip, the patch date under them, the legend, then Show/Hide -->
     <!-- Open, a click on the bar's empty space closes it; closed, the whole card opens it -->
     <div class="flex flex-wrap items-center gap-4" @click.stop="barClicked">
@@ -9,7 +10,7 @@
           <h3 class="text-2xl font-bold">{{ $t('Patch Notes') }}</h3>
           <span class="px-2.5 py-[0.1875rem] rounded-[0.375rem] bg-teal/[0.18] text-teal text-[0.8125rem] font-bold whitespace-nowrap">{{ version }}<template v-if="notes && notes.version === version && notes.title"> · {{ notes.title }}</template></span>
         </div>
-        <span v-if="notes && notes.version === version && notes.date" class="text-subtext">{{ notes.date }}</span>
+        <span v-if="open && notes && notes.version === version && notes.date" class="text-subtext">{{ notes.date }}</span>
       </div>
       <div class="max-md:hidden flex items-center gap-4 whitespace-nowrap">
         <span v-for="(badge, type) in usedBadges" :key="type" class="flex items-center gap-1">
@@ -21,9 +22,10 @@
         <basil-icon name="arrow-small" :class="['text-xs transition-transform', open ? '-rotate-90' : 'rotate-90']"></basil-icon>
       </button>
     </div>
-    <div v-if="open" class="h-px bg-gray-dark"></div>
+    <div v-if="open && !bodyTarget" class="h-px bg-gray-dark"></div>
 
-    <div v-if="open" class="text-gray-light">
+    <Teleport defer :to="bodyTarget" :disabled="!bodyTarget">
+    <component :is="bodyTarget ? 'panel-box' : 'div'" v-if="open" class="text-gray-light">
     <div v-if="loading" class="text-center py-4">{{ $t('Loading patch notes...') }}</div>
 
     <div v-else-if="notes">
@@ -164,7 +166,8 @@
     </div>
 
     <div v-else class="text-center py-4 text-gray-medium">{{ $t('No summary available for this patch.') }}</div>
-    </div>
+    </component>
+    </Teleport>
   </panel-box>
 </template>
 
@@ -176,7 +179,18 @@ export default {
       type: String,
       required: true
     },
+    // A selector to open the notes into, instead of under the bar
+    bodyTarget: {
+      type: String,
+      default: null
+    },
+    // Lets the page close it (another card opened)
+    expanded: {
+      type: Boolean,
+      default: null
+    },
   },
+  emits: ['toggle'],
   data() {
     return {
       open: false,
@@ -236,6 +250,11 @@ export default {
     this.loadNotes();
   },
   watch: {
+    expanded(value) {
+      if (value !== null && value !== this.open) {
+        this.open = value;
+      }
+    },
     version() {
       this.loadNotes();
     },
@@ -252,6 +271,7 @@ export default {
       // A click that closes an open filter menu only closes the menu
       if (document.querySelector('.expandable-dropdown')) return;
       this.open = !this.open;
+      this.$emit('toggle', this.open);
       if (this.open && this.loadedVersion !== this.version) {
         this.loadNotes();
       }

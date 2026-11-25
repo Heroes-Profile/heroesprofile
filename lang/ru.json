@@ -3647,6 +3647,7 @@
     "Tie-breaker for `since`. Pass the `next_after_id` from the previous response.": "Уточнение для `since` при совпадении времени. Передайте `next_after_id` из предыдущего ответа.",
     "tier at no extra cost — it stacks with any plan you buy, and each endpoint uses whichever allowance is higher.": "без доплаты — он суммируется с любым купленным тарифом, а для каждой конечной точки действует больший из лимитов.",
     "Tier List": "Рейтинг героев",
+    "Tier List and Win Rates": "Тир-лист и процент побед",
     "Time": "Время",
     "Time CC Enemy Heroes": "Время контроля вражеских героев",
     "Time in your main lane": "Время на основной линии",

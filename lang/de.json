@@ -3648,6 +3648,7 @@
     "Tie-breaker for `since`. Pass the `next_after_id` from the previous response.": "Entscheidet bei Gleichstand für `since`. Gib die `next_after_id` aus der vorherigen Antwort mit.",
     "tier at no extra cost — it stacks with any plan you buy, and each endpoint uses whichever allowance is higher.": "ohne Aufpreis – sie gilt zusätzlich zu jedem gekauften Plan, und jeder Endpunkt nutzt das jeweils höhere Kontingent.",
     "Tier List": "Tierliste",
+    "Tier List and Win Rates": "Tierliste und Siegesraten",
     "Time": "Zeit",
     "Time CC Enemy Heroes": "Zeit mit Kontrolleffekten auf Gegnern",
     "Time in your main lane": "Zeit in deiner Haupt-Lane",

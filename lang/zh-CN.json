@@ -3647,6 +3647,7 @@
     "Tie-breaker for `since`. Pass the `next_after_id` from the previous response.": "`since` 的并列判定参数。传入上一次响应中的 `next_after_id`。",
     "tier at no extra cost — it stacks with any plan you buy, and each endpoint uses whichever allowance is higher.": "档位，无需额外付费——可与你购买的任何方案叠加，每个端点按较高的额度计算。",
     "Tier List": "强度榜",
+    "Tier List and Win Rates": "梯队排名与胜率",
     "Time": "时间",
     "Time CC Enemy Heroes": "控制敌方英雄时间",
     "Time in your main lane": "在主线路的时间",

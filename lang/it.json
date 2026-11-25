@@ -3648,6 +3648,7 @@
     "Tie-breaker for `since`. Pass the `next_after_id` from the previous response.": "Criterio di spareggio per `since`. Passa il `next_after_id` della risposta precedente.",
     "tier at no extra cost — it stacks with any plan you buy, and each endpoint uses whichever allowance is higher.": "senza costi aggiuntivi: si somma a qualsiasi piano acquistato e ogni endpoint usa il limite più alto tra i due.",
     "Tier List": "Classifica degli eroi",
+    "Tier List and Win Rates": "Tier list e percentuali di vittoria",
     "Time": "Tempo",
     "Time CC Enemy Heroes": "Tempo di controllo sugli eroi nemici",
     "Time in your main lane": "Tempo nella tua corsia principale",

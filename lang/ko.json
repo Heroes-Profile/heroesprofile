@@ -3646,6 +3646,7 @@
     "Tie-breaker for `since`. Pass the `next_after_id` from the previous response.": "`since`의 동점 처리용. 이전 응답의 `next_after_id`를 전달하세요.",
     "tier at no extra cost — it stacks with any plan you buy, and each endpoint uses whichever allowance is higher.": "등급이 추가 비용 없이 포함됩니다. 구매한 요금제와 중첩되며, 각 엔드포인트는 둘 중 더 높은 한도를 사용합니다.",
     "Tier List": "티어 목록",
+    "Tier List and Win Rates": "티어 목록 및 승률",
     "Time": "시간",
     "Time CC Enemy Heroes": "적 영웅 군중 제어 시간",
     "Time in your main lane": "주 라인에 있던 시간",

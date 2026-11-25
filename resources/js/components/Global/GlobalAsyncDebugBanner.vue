@@ -34,6 +34,10 @@ export default {
   },
   computed: {
     showDebugBanner() {
+      // GLOBAL_DEBUG_BANNER=false in .env turns it off
+      if (document.querySelector('meta[name="global-debug-banner"]')?.content === '0') {
+        return false;
+      }
       const host = window.location.hostname;
       return host.includes('develop') || host === 'localhost' || host === '127.0.0.1';
     },

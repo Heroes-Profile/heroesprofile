@@ -3,86 +3,93 @@
     <global-async-debug-banner page-label="Global Hero" />
 
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-    <page-heading heading="Hero Tier List & Win Rates">
-      <template v-if="isSLRank" #headingInfo>
-        <round-image :popup-hoverable="true" class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-          <p class="font-normal">
-            {{ $t("In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.") }}
-            <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">How rank reading works</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
-          </p>
-        </round-image>
+    <!-- As Global Talents: the heading with the filters beside it -->
+    <player-page-top>
+      <template #heading>
+        <page-heading heading="Hero Stats" subheading="Tier List and Win Rates">
+          <template v-if="isSLRank" #headingInfo>
+            <round-image :popup-hoverable="true" class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+              <p class="font-normal">
+                {{ $t("In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.") }}
+                <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">How rank reading works</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+              </p>
+            </round-image>
+          </template>
+        </page-heading>
       </template>
-    </page-heading>
-    <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 -mt-2 mb-4 flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
-      <span class="uppercase text-gray-medium">{{ selectedPatch ? $t('All players · Patch :patch', { patch: selectedPatch }) : $t('All players') }}</span>
-    </div>
+      <filters 
+        :isLoading="isLoading"
+        :onFilter="filterData" 
+        :filters="filters" 
+        :timeframetypeinput="timeframetype"
+        :timeframeinput="timeframe"
+        :gametypeinput="gametype"
+        :regioninput="region"
+        :statfilterinput="statfilter"
+        :herolevelinput="herolevel"
+        :heroinput="getHeroID()"
+        :roleinput="role"
+        :gamemapinput="gamemap"
+        :playerrankinput="playerrank"
+        :herorankinput="herorank"
+        :rolerankinput="rolerank"
+        :talentbuildtypeinput="talentbuildtype"
+        :mirrormatchinput="mirrormatch"
+        :ranksourceinput="ranksource"
+        :slrankinput="slrank"
 
-    
-    
-
-    <filters 
-      :isLoading="isLoading"
-      :onFilter="filterData" 
-      :filters="filters" 
-      :timeframetypeinput="timeframetype"
-      :timeframeinput="timeframe"
-      :gametypeinput="gametype"
-      :regioninput="region"
-      :statfilterinput="statfilter"
-      :herolevelinput="herolevel"
-      :heroinput="getHeroID()"
-      :roleinput="role"
-      :gamemapinput="gamemap"
-      :playerrankinput="playerrank"
-      :herorankinput="herorank"
-      :rolerankinput="rolerank"
-      :talentbuildtypeinput="talentbuildtype"
-      :mirrormatchinput="mirrormatch"
-      :ranksourceinput="ranksource"
-      :slrankinput="slrank"
-
-      :gametypedefault="gametypedefault"
-      :includetimeframe="true"
-      :includeregion="true"
-      :includestatfilter="true"
-      :includeherolevel="true"
-      :includerole="true"
-      :includehero="true"
-      :includegametype="true"
-      :includegamemap="true"
-      :includeplayerrank="true"
-      :includeherorank="true"
-      :includerolerank="true"
-      :includemirror="true"
-      :includegroupsize="true"
-      :groupsizeadvanced="true"
-      :groupsizemulti="true"
-      :groupSizeDefaultValue="groupsize"
-      :includetalentbuildtype="true"
-      :includeranksource="true"
-      :advancedfiltering="advancedfiltering"
-      :buildtypedefault="defaultbuildtype"
+        :gametypedefault="gametypedefault"
+        :includetimeframe="true"
+        :includeregion="true"
+        :includestatfilter="true"
+        :includeherolevel="true"
+        :includerole="true"
+        :includehero="true"
+        :includegametype="true"
+        :includegamemap="true"
+        :includeplayerrank="true"
+        :includeherorank="true"
+        :includerolerank="true"
+        :includemirror="true"
+        :includegroupsize="true"
+        :groupsizeadvanced="true"
+        :groupsizemulti="true"
+        :groupSizeDefaultValue="groupsize"
+        :includetalentbuildtype="true"
+        :includeranksource="true"
+        :advancedfiltering="advancedfiltering"
+        :buildtypedefault="defaultbuildtype"
   
-      >
-    </filters>
+        >
+      </filters>
+    </player-page-top>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
     <div v-if="this.data.data" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <patch-notes-panel v-if="patchNotesUrl" class="!max-w-none !mb-0" :version="timeframe[0]"></patch-notes-panel>
-
-      <panel-box title="Tier List" :subtitle="tierListCollapsed ? null : $t('Heroes grouped by :stat', { stat: $t(tierStatLabel).toLowerCase() })" :divider="!tierListCollapsed" :class="['relative md:!pt-4', { 'md:!pb-4 cursor-pointer': tierListCollapsed }]" @click="tierListCollapsed && toggleTierList()" @header-background-click="toggleTierList">
-        <template #right>
-          <!-- Show/Hide pinned to the card's top right; the tabs keep clear of it -->
-          <div class="flex flex-wrap items-center gap-4 md:mr-20">
-            <tab-button v-show="!tierListCollapsed" :small="true" :tabs="tierRoleTabs" :ignoreclick="true" :overridedefaultside="tierRole" :key="'role' + tierRoleTabs.length" @tab-click="tierRole = $event"></tab-button>
-            <tab-button v-show="!tierListCollapsed" :small="true" :tabs="tierStatTabs" :ignoreclick="true" :overridedefaultside="tierStat" :key="tierStatTabs.length" @tab-click="tierStat = $event"></tab-button>
+      <!-- Tier List and Patch Notes bars side by side; the open one's card shows full width below, and opening one closes the other -->
+      <div :class="['grid gap-6', { 'md:grid-cols-2': patchNotesUrl }]">
+        <panel-box title="Tier List" :divider="false" class="relative md:!py-4 cursor-pointer" @click="toggleTierList">
+          <template #right>
             <button type="button" class="absolute top-4 right-4 md:right-6 h-8 flex items-center gap-2 text-sm text-subtext hover:text-white transition-colors" :aria-expanded="!tierListCollapsed" @click.stop="toggleTierList">
               {{ tierListCollapsed ? $t('Show') : $t('Hide') }}
               <basil-icon name="arrow-small" :class="['text-xs transition-transform', tierListCollapsed ? 'rotate-90' : '-rotate-90']"></basil-icon>
             </button>
+          </template>
+        </panel-box>
+        <patch-notes-panel v-if="patchNotesUrl" class="!max-w-none !mb-0" :version="timeframe[0]" body-target="#hero-stats-open-card" :expanded="patchNotesOpen" @toggle="patchNotesToggled"></patch-notes-panel>
+      </div>
+      <!-- display: contents, so it adds no gap while empty -->
+      <div id="hero-stats-open-card" class="contents"></div>
+
+      <panel-box v-if="!tierListCollapsed">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <p class="text-sm text-subtext">{{ $t('Heroes grouped by :stat', { stat: $t(tierStatLabel).toLowerCase() }) }}</p>
+          <div class="flex flex-wrap items-center gap-4">
+            <tab-button :small="true" :tabs="tierRoleTabs" :ignoreclick="true" :overridedefaultside="tierRole" :key="'role' + tierRoleTabs.length" @tab-click="tierRole = $event"></tab-button>
+            <tab-button :small="true" :tabs="tierStatTabs" :ignoreclick="true" :overridedefaultside="tierStat" :key="tierStatTabs.length" @tab-click="tierStat = $event"></tab-button>
           </div>
-        </template>
-        <div v-if="!tierListCollapsed" class="flex flex-col gap-2">
+        </div>
+        <div class="flex flex-col gap-2">
           <div v-for="tier in tiers" :key="tier.letter" class="flex rounded-control bg-surface-1 overflow-hidden min-w-0">
             <div class="w-[8.5rem] md:w-[10.625rem] shrink-0 bg-surface-2 px-4 md:px-5 py-3 flex flex-col justify-center">
               <span :class="['text-4xl font-bold leading-none', tier.class]">{{ tier.letter }}</span>
@@ -223,27 +230,34 @@
     </div>
     <!-- The same layout in grey while the stats load, the message on a tab of the first panel -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <!-- The collapsed Patch Notes card (patch-notes-panel) -->
-      <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="md:!py-4">
-        <template #right>
-          <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
-        </template>
-      </panel-box>
-      <panel-box title="Tier List" :subtitle="tierListCollapsed ? null : 'Heroes grouped by win rate'" :skeleton="true" :divider="!tierListCollapsed" :class="['relative md:!pt-4', { 'md:!pb-4': tierListCollapsed }]">
-        <template #right>
-          <div class="flex flex-wrap items-center gap-4 md:mr-20">
-            <div v-show="!tierListCollapsed" class="relative">
+      <!-- The two bars, as loaded -->
+      <div :class="['grid gap-6', { 'md:grid-cols-2': patchNotesUrl }]">
+        <panel-box title="Tier List" :skeleton="true" :divider="false" class="relative md:!py-4">
+          <template #right>
+            <span class="absolute top-4 right-4 md:right-6 h-8 flex items-center"><span class="text-sm skeleton-text">{{ tierListCollapsed ? $t('Show') : $t('Hide') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span></span>
+          </template>
+        </panel-box>
+        <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="md:!py-4">
+          <template #right>
+            <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+          </template>
+        </panel-box>
+      </div>
+      <panel-box v-if="!tierListCollapsed" :skeleton="true">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <p class="text-sm"><span class="skeleton-text">Heroes grouped by win rate</span></p>
+          <div class="flex flex-wrap items-center gap-4">
+            <div class="relative">
               <tab-button class="invisible" :small="true" :tabs="skeletonRoleTabs" aria-hidden="true"></tab-button>
               <skeleton-box class="absolute inset-0"></skeleton-box>
             </div>
-            <div v-show="!tierListCollapsed" class="relative">
+            <div class="relative">
               <tab-button class="invisible" :small="true" :tabs="tierStatTabs" aria-hidden="true"></tab-button>
               <skeleton-box class="absolute inset-0"></skeleton-box>
             </div>
-            <span class="absolute top-4 right-4 md:right-6 h-8 flex items-center"><span class="text-sm skeleton-text">{{ tierListCollapsed ? $t('Show') : $t('Hide') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span></span>
           </div>
-        </template>
-        <div v-if="!tierListCollapsed" class="flex flex-col gap-2">
+        </div>
+        <div class="flex flex-col gap-2">
           <div v-for="(count, tier) in [8, 22, 26, 22, 9]" :key="tier" class="flex rounded-control bg-surface-1 overflow-hidden min-w-0">
             <div class="w-[8.5rem] md:w-[10.625rem] shrink-0 bg-surface-2 px-4 md:px-5 py-3 flex flex-col justify-center items-start">
               <span class="text-4xl font-bold leading-none skeleton-text">S</span>
@@ -311,7 +325,9 @@ export default {
       // The tier list's role: 'All' or one role, picked separately from the filters' Role
       tierRole: 'All',
       skeletonRoleTabs: ['All', 'Bruiser', 'Healer', 'Melee Assassin', 'Ranged Assassin', 'Support', 'Tank'].map(role => ({ key: role, text: role })),
-      tierListCollapsed: Cookies.get('heroTierListCollapsed') === 'true',
+      // Collapsed unless it was opened before
+      tierListCollapsed: Cookies.get('heroTierListCollapsed') !== 'false',
+      patchNotesOpen: false,
       toggletalentbuilds: {},
       talentbuilddata: {},
       selectedbuildtype: null,
@@ -397,9 +413,6 @@ export default {
         !this.isSLRank
       );
 
-    },
-    selectedPatch() {
-      return this.timeframetype === 'minor' && this.timeframe && this.timeframe.length === 1 ? this.timeframe[0] : null;
     },
     loadingMessage() {
       if (this.determineIfVeryLargeData()) {
@@ -731,7 +744,17 @@ export default {
       // A click that closes an open filter menu only closes the menu
       if (document.querySelector('.expandable-dropdown')) return;
       this.tierListCollapsed = !this.tierListCollapsed;
+      if (!this.tierListCollapsed) {
+        this.patchNotesOpen = false;
+      }
       Cookies.set('heroTierListCollapsed', this.tierListCollapsed ? 'true' : 'false', { expires: 365, path: '/' });
+    },
+    // Opening the notes closes the tier list for now; the saved choice stays as it was
+    patchNotesToggled(open) {
+      this.patchNotesOpen = open;
+      if (open) {
+        this.tierListCollapsed = true;
+      }
     },
     toggleChartValue() {
       this.togglechart = !this.togglechart;

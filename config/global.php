@@ -28,6 +28,9 @@ return [
 
     'bypass_cache' => env('GLOBAL_BYPASS_CACHE', false),
 
+    // The yellow async debug box on the global pages (develop and local hosts only); false hides it
+    'debug_banner' => env('GLOBAL_DEBUG_BANNER', true),
+
     /*
     |--------------------------------------------------------------------------
     | Freeze the live patch's cached results
