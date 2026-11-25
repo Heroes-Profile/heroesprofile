@@ -1691,6 +1691,7 @@
     "HP Hero MMR": "HP 영웅 MMR",
     "HP Hero Rank": "HP 영웅 등급",
     "HP Map MMR": "HP 전장 MMR",
+    "HP Map Rank": "HP 전장 등급",
     "HP MMR": "HP MMR",
     "HP MMR after each game. Parsed date is when the replay was processed.": "각 경기 후의 HP MMR입니다. 분석일은 리플레이가 처리된 날짜입니다.",
     "HP MMR and rank filters (under Advanced Filters) must all hold for the same player: with heroes on OR, one player on any chosen hero; on AND, the player on every chosen hero.": "HP MMR 및 등급 필터(고급 필터)는 모두 같은 플레이어에게 적용되어야 합니다. 영웅이 '또는'이면 선택한 영웅 중 하나를 플레이한 플레이어, '그리고'이면 선택한 모든 영웅을 플레이한 플레이어입니다.",

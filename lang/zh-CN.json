@@ -1691,6 +1691,7 @@
     "HP Hero MMR": "HP 英雄 MMR",
     "HP Hero Rank": "HP 英雄段位",
     "HP Map MMR": "HP 地图 MMR",
+    "HP Map Rank": "HP 地图段位",
     "HP MMR": "HP MMR",
     "HP MMR after each game. Parsed date is when the replay was processed.": "每场比赛后的 HP MMR。解析日期为录像被处理的时间。",
     "HP MMR and rank filters (under Advanced Filters) must all hold for the same player: with heroes on OR, one player on any chosen hero; on AND, the player on every chosen hero.": "HP MMR 和段位筛选（位于高级筛选中）必须对同一名玩家同时成立：英雄设为“或”时，指使用任一所选英雄的玩家；设为“且”时，指使用每个所选英雄的玩家。",

@@ -425,7 +425,7 @@
           ></multi-select-filter>
           <!-- HP MMR ranges and rank tiers (advanced) -->
           <template v-if="includemmrranges && toggleExtraFilters">
-            <number-range-filter v-for="mmrType in ['HP Player MMR', 'HP Hero MMR', 'HP Role MMR']" :key="mmrType"
+            <number-range-filter v-for="mmrType in ['HP Player MMR', 'HP Hero MMR', 'HP Role MMR', 'HP Map MMR']" :key="mmrType"
               :text="mmrType"
               @input-changed="handleInputChange"
             ></number-range-filter>
@@ -445,6 +445,13 @@
             <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings"
               :values="rankTiersByMmr"
               :text="'HP Role Rank'"
+              :showrankinfo="true"
+              @input-changed="handleInputChange"
+            ></multi-select-filter>
+            <!-- Map tiers are per map: the chosen maps, or every map -->
+            <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings"
+              :values="rankTiersByMmr"
+              :text="'HP Map Rank'"
               :showrankinfo="true"
               @input-changed="handleInputChange"
             ></multi-select-filter>
@@ -1009,13 +1016,14 @@
           }
 
           if(this.includemmrranges){
-            ['HP Player MMR', 'HP Hero MMR', 'HP Role MMR'].forEach(mmrType => {
+            ['HP Player MMR', 'HP Hero MMR', 'HP Role MMR', 'HP Map MMR'].forEach(mmrType => {
               delete this.selectedSingleFilters[mmrType + ' Min'];
               delete this.selectedSingleFilters[mmrType + ' Max'];
             });
             delete this.selectedMultiFilters['HP Player Rank'];
             delete this.selectedMultiFilters['HP Hero Rank'];
             delete this.selectedMultiFilters['HP Role Rank'];
+            delete this.selectedMultiFilters['HP Map Rank'];
           }
         }
       },

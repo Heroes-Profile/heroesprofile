@@ -1691,6 +1691,7 @@
     "HP Hero MMR": "MMR de herói HP",
     "HP Hero Rank": "Ranque de herói HP",
     "HP Map MMR": "MMR de mapa HP",
+    "HP Map Rank": "Ranque de mapa HP",
     "HP MMR": "MMR HP",
     "HP MMR after each game. Parsed date is when the replay was processed.": "MMR HP após cada partida. A data de processamento é quando o replay foi processado.",
     "HP MMR and rank filters (under Advanced Filters) must all hold for the same player: with heroes on OR, one player on any chosen hero; on AND, the player on every chosen hero.": "Os filtros de MMR HP e ranque (em Filtros avançados) devem valer para o mesmo jogador: com heróis em OU, um jogador em qualquer herói escolhido; em E, o jogador em todos eles.",

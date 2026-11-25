@@ -1,21 +1,25 @@
 <template>
   <div>
-    <page-heading :heading="$t('Division :division Match History', { division })" esport="NGS" heading-image="/images/NGS/ngs_large.png" heading-image-url="/Esports/NGS"></page-heading>
-
-    <filters
-      :filters="filters"
-      :isLoading="isLoading"
-      :onFilter="() => filter()"
-      :onChange="handleInputChange"
-      :extrafilters="[
-        { text: 'Seasons', values: filters.ngs_seasons, defaultValue: modifiedseason },
-        { text: 'Teams', values: teamOptions, defaultValue: modifiedteam },
-      ]"
-      :excludetimeframes="true"
-      :excludegametype="true"
-      :hideadvancedfilteringbutton="true"
-    >
-    </filters>
+    <!-- The division's heading with its filters beside it, as on the other NGS pages -->
+    <player-page-top>
+      <template #heading>
+        <page-heading :heading="$t('Division :division Match History', { division })" esport="NGS" heading-image="/images/NGS/ngs_large.png" heading-image-url="/Esports/NGS"></page-heading>
+      </template>
+      <filters
+        :filters="filters"
+        :isLoading="isLoading"
+        :onFilter="() => filter()"
+        :onChange="handleInputChange"
+        :extrafilters="[
+          { text: 'Seasons', values: filters.ngs_seasons, defaultValue: modifiedseason },
+          { text: 'Teams', values: teamOptions, defaultValue: modifiedteam },
+        ]"
+        :excludetimeframes="true"
+        :excludegametype="true"
+        :hideadvancedfilteringbutton="true"
+      >
+      </filters>
+    </player-page-top>
 
     <!-- The NGS page's recent match rows, a page at a time, like the other match histories -->
     <div v-if="data" class="mt-4">

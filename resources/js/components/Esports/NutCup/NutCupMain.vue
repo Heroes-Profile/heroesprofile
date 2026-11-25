@@ -1,11 +1,30 @@
 <template>
   <div>
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
-    <page-heading :heading="'Nut Cup'" :heading-image="'/images/NutCup/IMG_0265.PNG'" :heading-image-url="''"></page-heading>
+    <!-- The league's heading with the tab's filters beside it, as on the other league pages -->
+    <player-page-top>
+      <template #heading>
+        <page-heading :heading="'Nut Cup'" :heading-image="'/images/NutCup/IMG_0265.PNG'" :heading-image-url="''"></page-heading>
+      </template>
+      <div v-if="tabFilters" class="w-full">
+        <filters
+          :key="activeButton"
+          :filters="filters"
+          :isLoading="isLoading"
+          :onFilter="() => filter()"
+          :onChange="handleInputChange"
+          :extrafilters="tabFilters"
+          :excludetimeframes="true"
+          :excludegametype="true"
+          :hideadvancedfilteringbutton="true"
+        >
+        </filters>
+      </div>
+    </player-page-top>
 
       <!---You are going to have to design this better, I am going to use buttons for now -->
       <!-- The sections; none is picked on the landing cards, and the others wait while one loads -->
-      <div class="flex justify-center px-4 mb-6">
+      <div class="flex justify-center px-4 mt-6 mb-6">
         <tab-button :tabs="[{ key: 'overallHeroStats', text: 'Overall Hero Stats' }, { key: 'overallTalentStats', text: 'Overall Talent Stats' }]" :no-default="true" :disabled="isLoading" :overridedefaultside="activeButton" :ignoreclick="true" @tab-click="setButtonActive"></tab-button>
       </div>
 
@@ -14,19 +33,6 @@
     <div v-else>
 
       <div v-if="activeButton === 'overallHeroStats'">
-        <filters
-          :filters="filters"
-          :isLoading="isLoading"
-          :onFilter="() => filter()"
-          :onChange="handleInputChange"
-          :extrafilters="[
-            { text: 'Seasons', values: filters.ccl_seasons, defaultValue: season },
-          ]"
-          :excludetimeframes="true"
-          :excludegametype="true"
-          :hideadvancedfilteringbutton="true"
-        >
-        </filters>
         <esports-hero-stats v-if="heroStatsData" :data="heroStatsData" :low-sample-games="2"></esports-hero-stats>
       </div>
 
@@ -38,20 +44,6 @@
 
         <div v-else>
           <div v-if="talentStatsData">
-            <filters
-              :filters="filters"
-              :isLoading="isLoading"
-              :onFilter="() => filter()"
-              :onChange="handleInputChange"
-              :extrafilters="[
-                { text: 'Heroes', values: this.filters.heroes, defaultValue: selectedHero.id },
-                { text: 'Seasons', values: filters.ccl_seasons, defaultValue: season },
-              ]"
-              :excludetimeframes="true"
-              :excludegametype="true"
-              :hideadvancedfilteringbutton="true"
-            >
-            </filters>
 
             
             <esports-talent-stats :talentdetaildata="talentStatsData.talentData" :talentbuilddata="talentStatsData.buildData" :talentimages="talentimages" :selectedHero="selectedHero"></esports-talent-stats>
@@ -124,6 +116,18 @@ export default {
     }
   },
   computed: {
+    // The filters beside the heading for the open tab: the season, and the hero on a hero's talent stats
+    tabFilters() {
+      const season = { text: 'Seasons', values: this.filters.ccl_seasons, defaultValue: this.season };
+      switch (this.activeButton) {
+        case 'overallHeroStats':
+          return [season];
+        case 'overallTalentStats':
+          return this.selectedHero ? [{ text: 'Heroes', values: this.filters.heroes, defaultValue: this.selectedHero.id }, season] : null;
+        default:
+          return null;
+      }
+    },
     overallHeroStatsClicked() {
       return this.activeButton === 'overallHeroStats';
     },

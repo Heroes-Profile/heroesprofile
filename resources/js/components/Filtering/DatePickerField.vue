@@ -1,8 +1,8 @@
 <template>
   <div ref="root" class="relative" @keydown.esc="open = false">
-    <!-- The box: same look as the select filters -->
+    <!-- The box: same look as the select filters, filling its slot in the filter row like they do -->
     <div
-      class="relative h-[2.5rem] w-[9.5rem] max-md:w-full rounded-control bg-surface-3 hover:bg-surface-4 text-white px-3 flex items-center gap-2 cursor-pointer"
+      class="relative h-[2.5rem] w-full rounded-control bg-surface-3 hover:bg-surface-4 text-white px-3 flex items-center gap-2 cursor-pointer"
       tabindex="0"
       role="button"
       :aria-label="$t(label)"

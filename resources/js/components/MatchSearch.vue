@@ -1,39 +1,44 @@
 <template>
   <div>
-    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
-    <page-heading :heading="'Replay Search'">
-      <template #headingInfo>
-        <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
-          <ul class="font-normal list-disc pl-5 space-y-1">
-            <li v-for="line in searchInfo" :key="line">{{ line }}</li>
-          </ul>
-        </round-image>
+    <!-- As the global pages: the heading with the filters beside it -->
+    <player-page-top>
+      <template #heading>
+        <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+        <page-heading :heading="'Replay Search'">
+          <template #headingInfo>
+            <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+              <ul class="font-normal list-disc pl-5 space-y-1">
+                <li v-for="line in searchInfo" :key="line">{{ line }}</li>
+              </ul>
+            </round-image>
+          </template>
+        </page-heading>
       </template>
-    </page-heading>
+      <filters
+        :onFilter="filterData"
+        :onFfSearching="setPlayerSearching"
+        :filters="filters"
+        :isLoading="isLoading"
+        :gametypedefault="gametypedefault"
+        :includegametypefull="true"
+        :includegamemap="true"
+        :includeregion="true"
+        :includegameversion="true"
+        :includegamedaterange="true"
+        :includemultihero="true"
+        :includemmrranges="true"
+        :includeplayerpicker="true"
+        :excludetimeframes="true"
+        :advancedfiltering="advancedfiltering"
+        >
+      </filters>
+    </player-page-top>
 
     <!-- Blocks the page while a battletag lookup runs -->
     <div v-if="playerSearching" class="fixed inset-0 z-[60] bg-black/80 flex items-center justify-center">
       <loading-component :textoverride="true">{{ $t('Searching for players...') }}</loading-component>
     </div>
 
-    <filters
-      :onFilter="filterData"
-      :onFfSearching="setPlayerSearching"
-      :filters="filters"
-      :isLoading="isLoading"
-      :gametypedefault="gametypedefault"
-      :includegametypefull="true"
-      :includegamemap="true"
-      :includeregion="true"
-      :includegameversion="true"
-      :includegamedaterange="true"
-      :includemultihero="true"
-      :includemmrranges="true"
-      :includeplayerpicker="true"
-      :excludetimeframes="true"
-      :advancedfiltering="advancedfiltering"
-      >
-    </filters>
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
@@ -406,9 +411,12 @@
           hero_mmr_max: filteredData.single["HP Hero MMR Max"] ?? null,
           role_mmr_min: filteredData.single["HP Role MMR Min"] ?? null,
           role_mmr_max: filteredData.single["HP Role MMR Max"] ?? null,
+          map_mmr_min: filteredData.single["HP Map MMR Min"] ?? null,
+          map_mmr_max: filteredData.single["HP Map MMR Max"] ?? null,
           player_rank: filteredData.multi["HP Player Rank"] ? Array.from(filteredData.multi["HP Player Rank"]) : null,
           hero_rank: filteredData.multi["HP Hero Rank"] && filteredData.multi.Heroes ? Array.from(filteredData.multi["HP Hero Rank"]) : null,
           role_rank: filteredData.multi["HP Role Rank"] ? Array.from(filteredData.multi["HP Role Rank"]) : null,
+          map_rank: filteredData.multi["HP Map Rank"] ? Array.from(filteredData.multi["HP Map Rank"]) : null,
         };
 
         this.rows = null;

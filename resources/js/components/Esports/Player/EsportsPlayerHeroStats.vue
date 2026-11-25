@@ -1,23 +1,30 @@
 <template>
   <div>
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
-    <page-heading :heading="heading" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <!-- The league's heading with the player's filters beside it, as on the player's other esports pages -->
+    <player-page-top>
+      <template #heading>
+        <page-heading :heading="heading" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+      </template>
+      <div v-if="data" class="w-full">
+        <filters
+          :filters="filters"
+          :isLoading="isLoading"
+          :onFilter="() => handleDropdownClosed()"
+          :onChange="handleInputChange"
+          :extrafilters="[
+            { text: 'Seasons', values: data.seasons, defaultValue: modifiedseason },
+            { text: 'Divisions', values: data.divisions, defaultValue: modifieddivision, show: esport == 'NGS' },
+          ]"
+          :excludetimeframes="true"
+          :excludegametype="true"
+          :hideadvancedfilteringbutton="true"
+        >
+        </filters>
+      </div>
+    </player-page-top>
 
     <div v-if="data">
-      <filters
-        :filters="filters"
-        :isLoading="isLoading"
-        :onFilter="() => handleDropdownClosed()"
-        :onChange="handleInputChange"
-        :extrafilters="[
-          { text: 'Seasons', values: data.seasons, defaultValue: modifiedseason },
-          { text: 'Divisions', values: data.divisions, defaultValue: modifieddivision, show: esport == 'NGS' },
-        ]"
-        :excludetimeframes="true"
-        :excludegametype="true"
-        :hideadvancedfilteringbutton="true"
-      >
-      </filters>
 
 
       <div class="flex md:p-20 gap-10 mx-auto justify-center">

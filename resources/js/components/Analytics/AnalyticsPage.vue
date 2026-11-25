@@ -4,25 +4,29 @@
     <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="sample
         ? 'A sample: replay analysis of ' + battletag + '\'s season games as of ' + sample.captured_at + ', compared with a sample of all games.'
         : 'Replay analysis of ' + battletag + '\'s season games (from Oct 2, 2026), compared with a sample of all games.'" :infoText2="'Pre-alpha: this is in very early development. Numbers, views and features will change, and some may be wrong or missing.'" -->
-    <page-heading
-      :heading="'Analytics (Pre-Alpha)'"
-    ></page-heading>
-
-    <!-- Remounted when a tab picks a map, so the filter shows it. One match sets its own hero, map and mode -->
-    <filters
-      v-if="!game && !locked"
-      :key="filtersKey"
-      :onFilter="filterData"
-      :gamemapinput="gamemap.length ? gamemap : null"
-      :filters="filters"
-      :isLoading="isLoading"
-      :gametypedefault="gametype"
-      :includehero="!sample"
-      :heroinput="getHeroID()"
-      :includegametypefull="!sample"
-      :includegamemap="true"
-      :hideadvancedfilteringbutton="true"
-    ></filters>
+    <!-- The heading with the filters beside it, as on the other filter pages -->
+    <player-page-top>
+      <template #heading>
+        <page-heading
+          :heading="'Analytics (Pre-Alpha)'"
+        ></page-heading>
+      </template>
+      <!-- Remounted when a tab picks a map, so the filter shows it. One match sets its own hero, map and mode -->
+      <filters
+        v-if="!game && !locked"
+        :key="filtersKey"
+        :onFilter="filterData"
+        :gamemapinput="gamemap.length ? gamemap : null"
+        :filters="filters"
+        :isLoading="isLoading"
+        :gametypedefault="gametype"
+        :includehero="!sample"
+        :heroinput="getHeroID()"
+        :includegametypefull="!sample"
+        :includegamemap="true"
+        :hideadvancedfilteringbutton="true"
+      ></filters>
+    </player-page-top>
 
     <div class="max-w-[93.75rem] mx-auto px-4 mt-4">
       <!-- Free trial: days left, and the ways to keep Analytics in its last two days -->

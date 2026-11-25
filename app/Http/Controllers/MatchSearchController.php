@@ -70,12 +70,16 @@ class MatchSearchController extends Controller
             'hero_mmr_max' => 'sometimes|nullable|integer',
             'role_mmr_min' => 'sometimes|nullable|integer',
             'role_mmr_max' => 'sometimes|nullable|integer',
+            'map_mmr_min' => 'sometimes|nullable|integer',
+            'map_mmr_max' => 'sometimes|nullable|integer',
             'player_rank' => 'sometimes|nullable|array',
             'player_rank.*' => 'integer',
             'hero_rank' => 'sometimes|nullable|array',
             'hero_rank.*' => 'integer',
             'role_rank' => 'sometimes|nullable|array',
             'role_rank.*' => 'integer',
+            'map_rank' => 'sometimes|nullable|array',
+            'map_rank.*' => 'integer',
             'players' => 'sometimes|nullable|array|max:10',
             'players.*.blizz_id' => 'required|integer',
             'players.*.region' => 'required|integer|in:1,2,3,5',
@@ -150,7 +154,7 @@ class MatchSearchController extends Controller
 
         // HP MMR on the page is 1800 + 40 × the stored rating
         $ratingRanges = [];
-        foreach (['player', 'hero', 'role'] as $type) {
+        foreach (['player', 'hero', 'role', 'map'] as $type) {
             foreach (['min' => '>=', 'max' => '<='] as $bound => $operator) {
                 $value = $request[$type.'_mmr_'.$bound];
                 if (! is_null($value)) {
@@ -181,7 +185,7 @@ class MatchSearchController extends Controller
             })
             // OR: one player, on any chosen hero if there are some, meeting every rating range and rank
             ->when(! ($heroes && count($heroes) > 1 && $request['heroes_match'] === 'all')
-                && ($heroes || $ratingRanges || $request['player_rank'] || $request['hero_rank'] || $request['role_rank']), function ($query) use ($request, $heroes, $ratingRanges, $gameTypes) {
+                && ($heroes || $ratingRanges || $request['player_rank'] || $request['hero_rank'] || $request['role_rank'] || $request['map_rank']), function ($query) use ($request, $heroes, $ratingRanges, $gameTypes) {
                     $query->whereExists(function ($subQuery) use ($request, $heroes, $ratingRanges, $gameTypes) {
                         $this->playerConditions($subQuery, $request, $heroes, $ratingRanges, $gameTypes);
                     });
@@ -263,6 +267,17 @@ class MatchSearchController extends Controller
                     ->mapWithKeys(fn ($role) => [MMRTypeID::filterByName($role)->value('mmr_type_id') => ['heroes.new_role', $role]])
                     ->all();
                 $this->whereRankTier($q, 'player.role_conservative_rating', $request['role_rank'], $gameTypes, $roleTypes);
+            })
+            // Map boundaries are per map: the chosen maps, or every non-brawl map
+            ->when($request['map_rank'], function ($q) use ($request, $gameTypes) {
+                $maps = Map::where('type', '!=', 'brawl')
+                    ->when($request['game_map'], fn ($query) => $query->whereIn('name', (array) $request['game_map']))
+                    ->get(['map_id', 'name']);
+                $mapTypes = MMRTypeID::whereIn('name', $maps->pluck('name'))->pluck('mmr_type_id', 'name');
+                $this->whereRankTier($q, 'player.map_conservative_rating', $request['map_rank'], $gameTypes,
+                    $maps->filter(fn ($map) => isset($mapTypes[$map->name]))
+                        ->mapWithKeys(fn ($map) => [$mapTypes[$map->name] => ['replay.game_map', $map->map_id]])
+                        ->all());
             });
     }
 

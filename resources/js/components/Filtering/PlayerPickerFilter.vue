@@ -7,7 +7,7 @@
           type="text"
           v-model="search"
           :placeholder="$t('Enter BattleTag')"
-          class="md:w-[12.5rem] min-w-[6.25rem] h-[2.5rem] rounded-l-control !bg-surface-3 p-2 text-white focus:outline-none"
+          class="flex-1 min-w-0 w-full h-[2.5rem] rounded-l-control !bg-surface-3 p-2 text-white focus:outline-none"
           @keydown.enter.prevent="lookup"
           @input="results = []; error = null"
         />
