@@ -177,7 +177,7 @@
                   <td class="py-2 px-3"><div v-if="rankChanged" class="inline-grid grid-cols-[2.75rem_2.5rem] gap-2 items-center"><div class="bg-blue text-white py-1 rounded-control text-center tabular-nums">{{ sortDir == 'desc' ? index + 1 : sortedData.length - index }}</div><span class="text-left tabular-nums">{{ row.rank }}</span></div><span v-else class="p-1">{{ row.rank }}</span></td>
                   <td class="py-2 px-3 max-md:w-[9.375rem]">
                     <a class="group/bt flex w-full items-center justify-start" :href="getGlobalTalentsURL(row)">
-                      <hero-image-wrapper class="mr-3" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block font-medium group-hover/bt:underline">{{ $heroName(row.name) }}</span>
+                      <hero-image-wrapper class="mr-3" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block font-medium group-hover/bt:underline">{{ $heroName(row.name) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></basil-icon>
                     </a>
                   </td>
                   <td class="py-2 px-3 whitespace-nowrap">{{ getValueFixed(row.win_rate) }}%<span class="text-xs text-subtext ml-2">&#177;{{ getValueFixed(row.confidence_interval) }}</span></td>
