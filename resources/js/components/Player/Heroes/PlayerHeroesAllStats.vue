@@ -57,10 +57,10 @@
         <table id="responsive-table" class="min-w-0 w-full rounded-table relative" ref="responsivetable">
         <thead>
           <tr>
-            <th class="py-2 px-3  text-center text-sm leading-4">
-              <div class="flex items-center justify-center gap-[1.125rem]">
+            <th class="py-2 px-3 text-left text-sm leading-4">
+              <div class="relative flex items-center gap-[1.125rem]">
                 <span class="cursor-pointer" @click="sortTable('name')">{{ $t('Hero') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
-                <search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" class="w-40"></search-input>
+                <search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" align="left" class="w-40"></search-input>
               </div>
             </th>    
             <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
@@ -89,7 +89,7 @@
         </thead>
         <tbody>
           <tr v-for="row in shownData" :key="row.id">
-            <td class="py-2 px-3"><a class="group/bt flex items-center justify-center" :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper size="big" :hero="row.hero" :href="getPlayerHeroPageUrl(row.name)" link-text="View Hero"></hero-image-wrapper><span class="hidden md:block ml-2 group-hover/bt:underline">{{ $heroName(row.hero) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></basil-icon></a></td>
+            <td class="py-2 px-3"><a class="group/bt flex items-center" :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper :hero="row.hero" :href="getPlayerHeroPageUrl(row.name)" link-text="View Hero"></hero-image-wrapper><span class="hidden md:block ml-2 group-hover/bt:underline">{{ $heroName(row.hero) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></basil-icon></a></td>
             <td class="py-2 px-3"><div class="min-w-[8em]"><div class="text-sm font-semibold text-header tabular-nums mb-1.5">{{ row.win_rate }}<span class="text-xs">%</span></div><stat-bar :value="row.win_rate" display-text="" :color="getWinRateColor(row.win_rate)"></stat-bar></div></td>
             <td v-if="showGames" class="py-2 px-3 text-center">{{ (row.wins + row.losses) }}</td>
             <td class="max-md:hidden py-2 px-3 ">{{ row.kda }}</td>

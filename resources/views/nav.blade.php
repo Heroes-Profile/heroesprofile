@@ -85,6 +85,7 @@
                                 @if (\App\Services\Twitch\TwitchAccess::visible())
                                 <a href="/Twitch" >{{ __('Twitch Streamers (Beta)') }}</a>
                                 @endif
+                                <a href="/Redesign/2026" >{{ __('The 2026 Redesign') }}</a>
 
                                 <span class="nav-dropdown-label">{{ __('Fun') }}</span>
                                 <a href="/Tools/AutoBattler" >{{ __('Auto Battler') }}</a>
