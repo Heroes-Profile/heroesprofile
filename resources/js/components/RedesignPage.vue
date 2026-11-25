@@ -394,7 +394,8 @@ export default {
             { key: 'team', label: 'Team' },
           ] },
           { label: 'NGS', items: [
-            { key: 'ngs', label: 'Standings' },
+            { key: 'ngs', label: 'Overview' },
+            { key: 'ngsstandings', label: 'Standings' },
             { key: 'ngsdivisions', label: 'Divisions' },
             { key: 'ngsteams', label: 'Teams' },
             { key: 'ngsplayersearch', label: 'Player Search' },
@@ -424,7 +425,6 @@ export default {
           { label: 'Legal & help', items: [
             { key: 'privacy', label: 'Privacy Policy' },
             { key: 'terms', label: 'Terms of Service' },
-            { key: 'support', label: 'Community Support' },
             { key: 'guidelines', label: 'Streamer Code of Conduct' },
           ] },
           { label: 'API', items: [
