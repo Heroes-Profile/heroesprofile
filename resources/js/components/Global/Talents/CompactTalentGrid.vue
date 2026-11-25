@@ -48,11 +48,13 @@
             <template v-if="skeleton">
               <div v-for="talent in tier.count" :key="talent" class="rounded-control bg-surface-1 border-2 border-surface-1 p-3 flex flex-col gap-2.5 min-w-0">
                 <div class="flex items-center gap-2"><skeleton-box class="w-[2.625rem] h-[2.625rem] !rounded-full shrink-0"></skeleton-box><span class="text-sm font-semibold skeleton-text">Pressurized Glands</span></div>
-                <div class="flex flex-col gap-2">
-                  <span class="flex items-baseline justify-between"><span class="text-[0.625rem] skeleton-text">Win rate</span><span class="text-xl font-bold leading-none skeleton-text">00.00%</span></span>
-                  <stat-bar value="0" display-text="" :hide-value="true"></stat-bar>
-                  <span class="flex justify-between text-[0.625rem]"><span class="skeleton-text">Popularity</span><span class="skeleton-text">00.00%</span></span>
-                  <span class="flex justify-between text-[0.625rem]"><span class="skeleton-text">Games</span><span class="skeleton-text">0,000</span></span>
+                <div :class="horizontal ? 'grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-2 items-end' : 'grid grid-cols-[auto_minmax(0,1fr)_auto] gap-4 items-end'">
+                  <span class="flex flex-col gap-1"><span class="text-[0.625rem] skeleton-text">Win rate</span><span class="text-xl font-bold leading-tight skeleton-text">00.00%</span></span>
+                  <stat-bar :class="['mb-1.5', { 'col-span-2 order-last': horizontal }]" value="0" display-text="" :hide-value="true"></stat-bar>
+                  <span class="flex justify-end gap-4">
+                    <span class="flex flex-col items-end gap-1"><span class="text-[0.625rem] skeleton-text">Popularity</span><span class="font-semibold skeleton-text">00.00%</span></span>
+                    <span class="flex flex-col items-end gap-1"><span class="text-[0.625rem] skeleton-text">Games</span><span class="font-semibold skeleton-text">0,000</span></span>
+                  </span>
                 </div>
               </div>
             </template>
@@ -64,35 +66,26 @@
                 <!-- Sits on the tile's top edge, clear of the name -->
                 <span v-if="isBest(talent, tier)" class="absolute -top-2 right-3 px-1.5 py-0.5 rounded-[0.25rem] bg-teal text-white text-[0.625rem] font-bold uppercase leading-none">{{ $t('Best') }}</span>
               </div>
-              <!-- The Best by stat is the big number with its bar, teal on the level's best and grey on the rest; the other
-                   values are small lines. The order stays the same either way -->
-              <div class="flex flex-col gap-2">
-                <template v-if="bestBy === 'win_rate'">
-                  <span class="flex items-baseline justify-between gap-2">
-                    <span class="text-[0.625rem] text-subtext">{{ $t('Win rate') }}</span>
-                    <span :class="['text-xl font-bold tabular-nums leading-none', { 'text-lteal': isBest(talent, tier) }]">{{ talent.win_rate.toFixed(2) }}%</span>
+              <!-- One line, as the Figma card: the Best by stat first and larger, its bar (teal on the level's best, grey on the
+                   rest), then the other stat and games at the same small size. A narrow column puts the bar on its own line -->
+              <div :class="horizontal ? 'grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-2 items-end' : 'grid grid-cols-[auto_minmax(0,1fr)_auto] gap-4 items-end'">
+                <span class="flex flex-col">
+                  <span class="text-[0.625rem] text-subtext">{{ $t(bestBy === 'popularity' ? 'Popularity' : 'Win rate') }}</span>
+                  <span class="whitespace-nowrap"><span :class="['text-xl font-bold tabular-nums leading-tight', { 'text-lteal': isBest(talent, tier) }]">{{ (bestBy === 'popularity' ? talent.popularity : talent.win_rate).toFixed(2) }}%</span><template v-if="bestBy !== 'popularity'"><span v-if="hasChange(talent)" :class="['ml-1.5 text-[0.625rem] font-normal tabular-nums', changeClass(talent)]">{{ changeText(talent) }}</span></template></span>
+                </span>
+                <!-- Win rate scaled 25% to 75%, so the usual 45-55% spread shows as a clear difference; 50% fills half -->
+                <stat-bar :class="['mb-1.5', { 'col-span-2 order-last': horizontal }]" :value="bestBy === 'popularity' ? talent.popularity : (talent.win_rate - 25) * 2" display-text="" :color="isBest(talent, tier) ? 'teal' : 'gray-medium'"></stat-bar>
+                <span class="flex justify-end gap-4">
+                  <span class="flex flex-col items-end">
+                    <span class="text-[0.625rem] text-subtext">{{ $t(bestBy === 'popularity' ? 'Win rate' : 'Popularity') }}</span>
+                    <span v-if="bestBy === 'popularity'" class="whitespace-nowrap"><span :class="['font-semibold tabular-nums', talent.win_rate > 50 ? 'text-win' : '']">{{ talent.win_rate.toFixed(2) }}%</span><span v-if="hasChange(talent)" :class="['ml-1.5 text-[0.625rem] font-normal tabular-nums', changeClass(talent)]">{{ changeText(talent) }}</span></span>
+                    <span v-else class="font-semibold tabular-nums">{{ talent.popularity.toFixed(2) }}%</span>
                   </span>
-                  <!-- Scaled 25% to 75%, so the usual 45-55% spread shows as a clear difference; 50% fills half -->
-                  <stat-bar :value="(talent.win_rate - 25) * 2" display-text="" :color="isBest(talent, tier) ? 'teal' : 'gray-medium'"></stat-bar>
-                </template>
-                <span v-else class="flex justify-between gap-2 text-[0.625rem] text-subtext"><span>{{ $t('Win rate') }}</span><span class="tabular-nums">{{ talent.win_rate.toFixed(2) }}%</span></span>
-                <span v-if="talent.win_rate_change !== null && talent.win_rate_change !== undefined" class="flex justify-between gap-2 text-[0.625rem] text-subtext">
-                  <span>{{ $t('Change') }}</span>
-                  <span :class="['tabular-nums', talent.win_rate_change > 0 ? 'text-win' : talent.win_rate_change < 0 ? 'text-loss' : '']">
-                    <template v-if="talent.win_rate_change > 0">&#9650; +{{ talent.win_rate_change.toFixed(2) }}</template>
-                    <template v-else-if="talent.win_rate_change < 0">&#9660; {{ talent.win_rate_change.toFixed(2) }}</template>
-                    <template v-else>0.00</template>
+                  <span class="flex flex-col items-end">
+                    <span class="text-[0.625rem] text-subtext">{{ $t('Games') }}</span>
+                    <span class="font-semibold tabular-nums">{{ formatNumber(talent.games_played) }}</span>
                   </span>
                 </span>
-                <template v-if="bestBy === 'popularity'">
-                  <span class="flex items-baseline justify-between gap-2">
-                    <span class="text-[0.625rem] text-subtext">{{ $t('Popularity') }}</span>
-                    <span :class="['text-xl font-bold tabular-nums leading-none', { 'text-lteal': isBest(talent, tier) }]">{{ talent.popularity.toFixed(2) }}%</span>
-                  </span>
-                  <stat-bar :value="talent.popularity" display-text="" :color="isBest(talent, tier) ? 'teal' : 'gray-medium'"></stat-bar>
-                </template>
-                <span v-else class="flex justify-between gap-2 text-[0.625rem] text-subtext"><span>{{ $t('Popularity') }}</span><span class="tabular-nums">{{ talent.popularity.toFixed(2) }}%</span></span>
-                <span class="flex justify-between gap-2 text-[0.625rem] text-subtext"><span>{{ $t('Games') }}</span><span class="tabular-nums">{{ formatNumber(talent.games_played) }}</span></span>
               </div>
               <span v-if="statFilter && statFilter !== 'win_rate'" class="text-[0.625rem] text-subtext">{{ statFilterLabel(statFilter) }}: {{ formatNumber(talent.total_filter_type) }}</span>
             </div>
@@ -187,6 +180,17 @@ export default {
     isBest(talent, tier) {
       const highest = this.bestBy === 'popularity' ? tier.highestPopularity : tier.highestWinRate;
       return talent.games_played > 0 && talent[this.bestBy] === highest && tier.talents.length > 1;
+    },
+    // The win rate change from the previous patch, shown beside the win rate
+    hasChange(talent) {
+      return talent.win_rate_change !== null && talent.win_rate_change !== undefined;
+    },
+    changeText(talent) {
+      const change = talent.win_rate_change;
+      return change > 0 ? `▲ +${change.toFixed(2)}` : change < 0 ? `▼ ${change.toFixed(2)}` : '0.00';
+    },
+    changeClass(talent) {
+      return talent.win_rate_change > 0 ? 'text-win' : talent.win_rate_change < 0 ? 'text-loss' : 'text-subtext';
     },
     formatNumber(value) {
       return value == null ? '—' : Number(value).toLocaleString('en-US');
