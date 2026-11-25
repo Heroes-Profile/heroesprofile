@@ -2494,6 +2494,7 @@
     "on the main window. The key on its own does nothing — nothing is sent until that box is ticked.": "(기본 창). 키만으로는 아무 작동도 하지 않으며, 이 항목을 체크해야 전송이 시작됩니다.",
     "on the match endpoints and a number of seconds everywhere else. It is now": "형식(경기 엔드포인트)이었고, 그 외에는 초 단위 숫자였습니다. 이제는",
     "on the MMR endpoints now includes the sub-tier —": "은(는) 이제 MMR 엔드포인트에서 세부 티어를 포함합니다 —",
+    "On the team": "팀 활동 기간",
     "On the Twitch mobile app": "Twitch 모바일 앱에서",
     "on the uploader's main window. This is the only time the key will be shown.": "(업로더 기본 창). 키는 지금 한 번만 표시됩니다.",
     "On this page": "이 페이지의 내용",
