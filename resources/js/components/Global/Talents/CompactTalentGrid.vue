@@ -60,11 +60,13 @@
             </template>
             <div v-else v-for="talent in tier.talents" :key="talent.talentInfo.talent_id"
               :class="['relative rounded-control border-2 p-3 flex flex-col gap-2.5 min-w-0 transition-opacity', isBest(talent, tier) ? 'border-teal bg-surface-1' : 'bg-surface-1 border-surface-1', { 'opacity-25': focusedLevel && focusedLevel !== tier.level }]">
-              <div class="flex items-center gap-2 min-w-0">
-                <talent-image-wrapper class="shrink-0" :talent="talent.talentInfo" :popup-hoverable="true"></talent-image-wrapper>
+              <div class="flex items-center gap-3 min-w-0">
+                <!-- The level's best gets a star on the icon's corner, as the Figma card -->
+                <span class="relative shrink-0 flex">
+                  <talent-image-wrapper :talent="talent.talentInfo" :popup-hoverable="true"></talent-image-wrapper>
+                  <span v-if="isBest(talent, tier)" class="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full bg-teal text-white flex items-center justify-center text-[0.5625rem] pointer-events-none" :title="$t('Best')"><i class="fas fa-star"></i></span>
+                </span>
                 <h3 class="text-sm font-semibold truncate min-w-0">{{ $talentName(talent.talentInfo) }}</h3>
-                <!-- Sits on the tile's top edge, clear of the name -->
-                <span v-if="isBest(talent, tier)" class="absolute -top-2 right-3 px-1.5 py-0.5 rounded-[0.25rem] bg-teal text-white text-[0.625rem] font-bold uppercase leading-none">{{ $t('Best') }}</span>
               </div>
               <!-- One line, as the Figma card: the Best by stat first and larger, its bar (teal on the level's best, grey on the
                    rest), then the other stat (centred on its label) and games (right-aligned) at the same small size. A narrow column puts the bar on its own line -->
