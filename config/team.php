@@ -25,7 +25,7 @@ return [
             'role' => 'Backend',
             'start' => '2018-06',
             'end' => null,
-            'bio' => 'Bio for Zemill goes here.',
+            'bio' => "Zemill started playing Heroes of the Storm in its early alpha. They began building Heroes Profile as a fun side project after hearing about HotsAPI. Today they do nearly all of the site's work, from the backend, scaffolding and architecture to the frontend and its social media presence; the only parts they leave to others are the visual design and styling.",
             'peak_rank' => ['league' => 'master'],
             'email' => 'zemill@heroesprofile.com',
             'reddit' => 'heroesprofile',

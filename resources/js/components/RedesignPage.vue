@@ -72,7 +72,6 @@
         <div class="flex flex-col gap-3 max-w-[60rem]">
           <p>{{ $t('In late 2026 every page on Heroes Profile was rebuilt to a new design: darker, calmer and the same from page to page, so the stats are easier to read on any screen.') }}</p>
           <p>{{ $t('The new look was designed by Bluray and built by the Heroes Profile team. Below is what changed, with small examples of each part before and after.') }}</p>
-          <a href="/Team" class="group/bt inline-flex items-center w-fit text-teal"><span class="group-hover/bt:underline">{{ $t('Meet the team') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
         </div>
       </panel-box>
 
@@ -230,70 +229,6 @@
         </div>
       </section>
 
-      <!-- New features: things the site couldn't do before, each with a small sketch of it -->
-      <section class="flex flex-col gap-4">
-        <div>
-          <h2 class="text-2xl font-bold">{{ $t('New features') }}</h2>
-          <p class="text-sm text-subtext mt-1">{{ $t('Not just a new look: these are new.') }}</p>
-        </div>
-        <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          <div v-for="feature in featureCards" :key="feature.key" class="rounded bg-surface px-5 py-4 flex flex-col gap-3">
-            <h3 class="text-lg font-bold">{{ $t(feature.title) }}</h3>
-            <div class="h-32 rounded-control overflow-hidden bg-page p-2 text-[0.625rem] leading-tight select-none" aria-hidden="true">
-
-              <div v-if="feature.key === 'mapmmr'" class="h-full flex flex-col gap-1.5">
-                <div v-for="map in sampleMaps" :key="map.name" class="flex items-center gap-2 rounded-control bg-surface px-2 py-1.5">
-                  <span class="flex-1">{{ map.name }}</span><span class="tabular-nums font-bold">{{ map.mmr }}</span>
-                  <span class="rounded-control px-1.5 py-0.5" :style="{ backgroundColor: map.colour }">{{ $t(map.league) }}</span>
-                </div>
-              </div>
-
-              <div v-else-if="feature.key === 'help'" class="h-full flex flex-col justify-end gap-1.5">
-                <span class="self-end max-w-[75%] rounded bg-teal px-2 py-1.5">{{ $t('How is HP Rating worked out?') }}</span>
-                <span class="self-start max-w-[85%] rounded bg-surface px-2 py-1.5 text-soft">{{ $t('It compares your stats with other players on the same hero and map.') }}</span>
-              </div>
-
-              <div v-else-if="feature.key === 'prediction'" class="h-full flex flex-col gap-1.5">
-                <div class="grid grid-cols-2 gap-1.5">
-                  <div class="rounded-control bg-surface px-2 py-1.5"><div class="text-subtext">{{ $t('Best streak this visit') }}</div><div class="text-base font-bold">7</div></div>
-                  <div class="rounded-control bg-surface px-2 py-1.5"><div class="text-subtext">{{ $t('Win Rate') }}</div><div class="text-base font-bold">64%</div></div>
-                </div>
-                <div class="flex gap-1">
-                  <span v-for="(hit, index) in [1, 1, 0, 1, 1, 1, 0, 1]" :key="index" :class="['flex-1 h-3 rounded-sm', hit ? 'bg-win' : 'bg-loss']"></span>
-                </div>
-              </div>
-
-              <div v-else-if="feature.key === 'esports'" class="h-full flex flex-col gap-1">
-                <div v-for="match in 4" :key="match" class="rounded-control bg-surface px-2 py-1 flex items-center gap-2">
-                  <span class="w-3 h-3 rounded-sm bg-surface-3"></span><span class="flex-1 h-1 rounded bg-surface-3"></span>
-                  <span class="tabular-nums">{{ match % 2 ? '2 - 1' : '0 - 2' }}</span>
-                  <span class="flex-1 h-1 rounded bg-surface-3"></span><span class="w-3 h-3 rounded-sm bg-surface-3"></span>
-                </div>
-              </div>
-            </div>
-            <p class="text-sm text-subtext flex-1">{{ $t(feature.text) }}</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Translations: the same few words in every language the site speaks -->
-      <section class="flex flex-col gap-4">
-        <div>
-          <h2 class="text-2xl font-bold">{{ $t('In your language') }}</h2>
-          <p class="text-sm text-subtext mt-1">{{ $t('The whole site, including hero, talent and map names, now comes in :count languages. Pick one from the globe in the nav; logged in, it is saved to your account.', { count: languages.length }) }}</p>
-        </div>
-        <panel-box :divider="false">
-          <tab-button :tabs="languageTabs" :small="true" :dark="true" :overridedefaultside="language" @tab-click="(code) => language = code"></tab-button>
-          <div class="grid sm:grid-cols-3 gap-4">
-            <div v-for="(text, key) in currentLanguage.strings" :key="key" class="rounded bg-surface-1 px-4 py-3 flex flex-col gap-1">
-              <span class="text-xs text-subtext">{{ key }}</span>
-              <span class="text-lg font-medium">{{ text }}</span>
-            </div>
-          </div>
-          <p class="text-sm text-subtext">{{ $t('The API speaks them too: add ?lang= to a request for names in that language.') }}</p>
-        </panel-box>
-      </section>
-
       <!-- Credits -->
       <panel-box :divider="false">
         <h2 class="text-2xl font-bold">{{ $t('Thanks') }}</h2>
@@ -328,7 +263,6 @@ export default {
     return {
       copiedDiscord: false,
       after: true,
-      language: this.locale,
       // Side by side: the page showing, and how far across the old screenshot reaches
       screenshot: 'home',
       wipe: 50,
@@ -473,17 +407,6 @@ export default {
         { key: 'popups', title: 'Popups', text: 'Hover cards for heroes, players and talents, one at a time, closing as soon as you move away.' },
         { key: 'mobile', title: 'Phones', text: 'Every page was reworked for phones: cards in place of wide tables, columns that snap and full-screen menus.' },
       ],
-      sampleMaps: [
-        { name: 'Cursed Hollow', mmr: '2,814', league: 'Diamond', colour: '#2f6fb3' },
-        { name: 'Towers of Doom', mmr: '2,611', league: 'Platinum', colour: '#3c8c86' },
-        { name: 'Braxis Holdout', mmr: '2,398', league: 'Gold', colour: '#a8862f' },
-      ],
-      featureCards: [
-        { key: 'mapmmr', title: 'Map MMR', text: 'A rating for every map you play, on the MMR page, the leaderboards, the map pages and each match.' },
-        { key: 'help', title: 'Help chat', text: 'Ask a question about the site from the help button at the bottom right and get an answer straight away.' },
-        { key: 'prediction', title: 'Match Prediction streaks', text: 'Your record by season, a streak for each visit, and practice rounds you can skip.' },
-        { key: 'esports', title: 'Recent matches for every esports league', text: 'Every esports league and series lists its latest matches, newest first.' },
-      ],
       pageCards: [
         { key: 'profile', title: 'Player profile', text: 'Rank, recent matches, best heroes and maps, awards and week day win rates, each in its own card.',
           layout: layout('"a a a" "b c c" "b d d"', '1fr 1fr 1fr', [{ area: 'a' }, { area: 'b' }, { area: 'c', class: 'bg-surface-1' }, { area: 'd' }]) },
@@ -510,12 +433,6 @@ export default {
       const marker = '\u0000';
       const [before, after = ''] = this.$t('Thanks to :name for the updated design.', { name: marker }).split(marker);
       return [before, null, after];
-    },
-    languageTabs() {
-      return this.languages.map((language) => ({ key: language.code, text: language.name }));
-    },
-    currentLanguage() {
-      return this.languages.find((language) => language.code === this.language) || this.languages[0] || { strings: {} };
     },
   },
   methods: {
