@@ -29,8 +29,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 60,
-                "ally_win_rate": 33.33
+                "ally_win_rate": 33.33,
+                "enemy_win_rate": 60
             },
             {
                 "name": "Alarak",
@@ -58,8 +58,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 53.19,
-                "ally_win_rate": 40.63
+                "ally_win_rate": 40.63,
+                "enemy_win_rate": 53.19
             },
             {
                 "name": "Alexstrasza",
@@ -116,8 +116,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 61.97,
-                "ally_win_rate": 41.82
+                "ally_win_rate": 41.82,
+                "enemy_win_rate": 61.97
             },
             {
                 "name": "Anduin",
@@ -145,8 +145,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 55.74,
-                "ally_win_rate": 58.33
+                "ally_win_rate": 58.33,
+                "enemy_win_rate": 55.74
             },
             {
                 "name": "Anub'arak",
@@ -174,8 +174,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 45.9,
-                "ally_win_rate": 53.62
+                "ally_win_rate": 53.62,
+                "enemy_win_rate": 45.9
             },
             {
                 "name": "Artanis",
@@ -203,8 +203,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 55.41,
-                "ally_win_rate": 59.38
+                "ally_win_rate": 59.38,
+                "enemy_win_rate": 55.41
             },
             {
                 "name": "Arthas",
@@ -232,8 +232,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 57.53,
-                "ally_win_rate": 55
+                "ally_win_rate": 55,
+                "enemy_win_rate": 57.53
             },
             {
                 "name": "Auriel",
@@ -319,8 +319,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 58.97,
-                "ally_win_rate": 53.23
+                "ally_win_rate": 53.23,
+                "enemy_win_rate": 58.97
             },
             {
                 "name": "Brightwing",
@@ -348,8 +348,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 55.1,
-                "ally_win_rate": 59.09
+                "ally_win_rate": 59.09,
+                "enemy_win_rate": 55.1
             },
             {
                 "name": "Cassia",
@@ -377,8 +377,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 54.74,
-                "ally_win_rate": 58.33
+                "ally_win_rate": 58.33,
+                "enemy_win_rate": 54.74
             },
             {
                 "name": "Chen",
@@ -406,8 +406,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 67.39,
-                "ally_win_rate": 51.72
+                "ally_win_rate": 51.72,
+                "enemy_win_rate": 67.39
             },
             {
                 "name": "Cho",
@@ -492,8 +492,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 52.54,
-                "ally_win_rate": 48.78
+                "ally_win_rate": 48.78,
+                "enemy_win_rate": 52.54
             },
             {
                 "name": "Deathwing",
@@ -550,8 +550,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 53.92,
-                "ally_win_rate": 54.65
+                "ally_win_rate": 54.65,
+                "enemy_win_rate": 53.92
             },
             {
                 "name": "Dehaka",
@@ -579,8 +579,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 49.02,
-                "ally_win_rate": 42.55
+                "ally_win_rate": 42.55,
+                "enemy_win_rate": 49.02
             },
             {
                 "name": "Diablo",
@@ -637,8 +637,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 63.64,
-                "ally_win_rate": 57.58
+                "ally_win_rate": 57.58,
+                "enemy_win_rate": 63.64
             },
             {
                 "name": "Falstad",
@@ -666,8 +666,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 53.76,
-                "ally_win_rate": 52.63
+                "ally_win_rate": 52.63,
+                "enemy_win_rate": 53.76
             },
             {
                 "name": "Fenix",
@@ -752,8 +752,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 54.02,
-                "ally_win_rate": 66.18
+                "ally_win_rate": 66.18,
+                "enemy_win_rate": 54.02
             },
             {
                 "name": "Gazlowe",
@@ -781,8 +781,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 52.33,
-                "ally_win_rate": 60
+                "ally_win_rate": 60,
+                "enemy_win_rate": 52.33
             },
             {
                 "name": "Genji",
@@ -810,8 +810,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 48.28,
-                "ally_win_rate": 55.17
+                "ally_win_rate": 55.17,
+                "enemy_win_rate": 48.28
             },
             {
                 "name": "Greymane",
@@ -868,8 +868,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 60.18,
-                "ally_win_rate": 65.15
+                "ally_win_rate": 65.15,
+                "enemy_win_rate": 60.18
             },
             {
                 "name": "Hanzo",
@@ -926,8 +926,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 54.35,
-                "ally_win_rate": 57.58
+                "ally_win_rate": 57.58,
+                "enemy_win_rate": 54.35
             },
             {
                 "name": "Illidan",
@@ -955,8 +955,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 52.17,
-                "ally_win_rate": 53.85
+                "ally_win_rate": 53.85,
+                "enemy_win_rate": 52.17
             },
             {
                 "name": "Imperius",
@@ -1042,8 +1042,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 48.24,
-                "ally_win_rate": 53.75
+                "ally_win_rate": 53.75,
+                "enemy_win_rate": 48.24
             },
             {
                 "name": "Junkrat",
@@ -1071,8 +1071,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 57.89,
-                "ally_win_rate": 53.03
+                "ally_win_rate": 53.03,
+                "enemy_win_rate": 57.89
             },
             {
                 "name": "Kael'thas",
@@ -1129,8 +1129,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 63.86,
-                "ally_win_rate": 45
+                "ally_win_rate": 45,
+                "enemy_win_rate": 63.86
             },
             {
                 "name": "Kerrigan",
@@ -1245,8 +1245,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 56.67,
-                "ally_win_rate": 67.27
+                "ally_win_rate": 67.27,
+                "enemy_win_rate": 56.67
             },
             {
                 "name": "Li-Ming",
@@ -1274,8 +1274,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 55.35,
-                "ally_win_rate": 60.42
+                "ally_win_rate": 60.42,
+                "enemy_win_rate": 55.35
             },
             {
                 "name": "Lt. Morales",
@@ -1303,8 +1303,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 59.62,
-                "ally_win_rate": 53.06
+                "ally_win_rate": 53.06,
+                "enemy_win_rate": 59.62
             },
             {
                 "name": "Lunara",
@@ -1361,8 +1361,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 51.11,
-                "ally_win_rate": 55.56
+                "ally_win_rate": 55.56,
+                "enemy_win_rate": 51.11
             },
             {
                 "name": "Maiev",
@@ -1477,8 +1477,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 57.89,
-                "ally_win_rate": 31.82
+                "ally_win_rate": 31.82,
+                "enemy_win_rate": 57.89
             },
             {
                 "name": "Medivh",
@@ -1506,8 +1506,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 64.58,
-                "ally_win_rate": 47.17
+                "ally_win_rate": 47.17,
+                "enemy_win_rate": 64.58
             },
             {
                 "name": "Mei",
@@ -1593,8 +1593,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 50.67,
-                "ally_win_rate": 62.34
+                "ally_win_rate": 62.34,
+                "enemy_win_rate": 50.67
             },
             {
                 "name": "Murky",
@@ -1622,8 +1622,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 88.89,
-                "ally_win_rate": 70
+                "ally_win_rate": 70,
+                "enemy_win_rate": 88.89
             },
             {
                 "name": "Nazeebo",
@@ -1680,8 +1680,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 42.55,
-                "ally_win_rate": 45.24
+                "ally_win_rate": 45.24,
+                "enemy_win_rate": 42.55
             },
             {
                 "name": "Orphea",
@@ -1709,8 +1709,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 56.63,
-                "ally_win_rate": 60
+                "ally_win_rate": 60,
+                "enemy_win_rate": 56.63
             },
             {
                 "name": "Probius",
@@ -1767,8 +1767,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 58.18,
-                "ally_win_rate": 64.41
+                "ally_win_rate": 64.41,
+                "enemy_win_rate": 58.18
             },
             {
                 "name": "Ragnaros",
@@ -1825,8 +1825,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 64.37,
-                "ally_win_rate": 55
+                "ally_win_rate": 55,
+                "enemy_win_rate": 64.37
             },
             {
                 "name": "Rehgar",
@@ -1854,8 +1854,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 43.24,
-                "ally_win_rate": 58.18
+                "ally_win_rate": 58.18,
+                "enemy_win_rate": 43.24
             },
             {
                 "name": "Rexxar",
@@ -1883,8 +1883,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 56.67,
-                "ally_win_rate": 40
+                "ally_win_rate": 40,
+                "enemy_win_rate": 56.67
             },
             {
                 "name": "Samuro",
@@ -1912,8 +1912,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 66.67,
-                "ally_win_rate": 28.57
+                "ally_win_rate": 28.57,
+                "enemy_win_rate": 66.67
             },
             {
                 "name": "Sgt. Hammer",
@@ -1994,8 +1994,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 50,
-                "ally_win_rate": 53.61
+                "ally_win_rate": 53.61,
+                "enemy_win_rate": 50
             },
             {
                 "name": "Stukov",
@@ -2052,8 +2052,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 43.08,
-                "ally_win_rate": 47.06
+                "ally_win_rate": 47.06,
+                "enemy_win_rate": 43.08
             },
             {
                 "name": "Tassadar",
@@ -2081,8 +2081,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 49.62,
-                "ally_win_rate": 52.81
+                "ally_win_rate": 52.81,
+                "enemy_win_rate": 49.62
             },
             {
                 "name": "The Butcher",
@@ -2110,8 +2110,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 51.11,
-                "ally_win_rate": 63.64
+                "ally_win_rate": 63.64,
+                "enemy_win_rate": 51.11
             },
             {
                 "name": "The Lost Vikings",
@@ -2139,8 +2139,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 100,
-                "ally_win_rate": 50
+                "ally_win_rate": 50,
+                "enemy_win_rate": 100
             },
             {
                 "name": "Thrall",
@@ -2197,8 +2197,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 40.91,
-                "ally_win_rate": 60
+                "ally_win_rate": 60,
+                "enemy_win_rate": 40.91
             },
             {
                 "name": "Tychus",
@@ -2226,8 +2226,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 50,
-                "ally_win_rate": 54.24
+                "ally_win_rate": 54.24,
+                "enemy_win_rate": 50
             },
             {
                 "name": "Tyrael",
@@ -2255,8 +2255,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 61.22,
-                "ally_win_rate": 58.18
+                "ally_win_rate": 58.18,
+                "enemy_win_rate": 61.22
             },
             {
                 "name": "Tyrande",
@@ -2284,8 +2284,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 60.81,
-                "ally_win_rate": 50.94
+                "ally_win_rate": 50.94,
+                "enemy_win_rate": 60.81
             },
             {
                 "name": "Uther",
@@ -2342,8 +2342,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 52.94,
-                "ally_win_rate": 54.55
+                "ally_win_rate": 54.55,
+                "enemy_win_rate": 52.94
             },
             {
                 "name": "Valla",
@@ -2371,8 +2371,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 39.25,
-                "ally_win_rate": 53.85
+                "ally_win_rate": 53.85,
+                "enemy_win_rate": 39.25
             },
             {
                 "name": "Varian",
@@ -2400,8 +2400,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 57.5,
-                "ally_win_rate": 60.38
+                "ally_win_rate": 60.38,
+                "enemy_win_rate": 57.5
             },
             {
                 "name": "Whitemane",
@@ -2458,8 +2458,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 57.5,
-                "ally_win_rate": 50
+                "ally_win_rate": 50,
+                "enemy_win_rate": 57.5
             },
             {
                 "name": "Yrel",
@@ -2574,8 +2574,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 68.75,
-                "ally_win_rate": 43.75
+                "ally_win_rate": 43.75,
+                "enemy_win_rate": 68.75
             },
             {
                 "name": "Zul'jin",
@@ -2603,8 +2603,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 47.01,
-                "ally_win_rate": 59.41
+                "ally_win_rate": 59.41,
+                "enemy_win_rate": 47.01
             }
         ],
         "top_five_heroes": [
@@ -2665,8 +2665,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 88.89,
                 "ally_win_rate": 70,
+                "enemy_win_rate": 88.89,
                 "win_rate": 70,
                 "games_played": 20
             },
@@ -2727,8 +2727,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 56.67,
                 "ally_win_rate": 67.27,
+                "enemy_win_rate": 56.67,
                 "win_rate": 67.27,
                 "games_played": 55
             },
@@ -2791,8 +2791,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 39.25,
                 "ally_win_rate": 53.85,
+                "enemy_win_rate": 39.25,
                 "win_rate": 60.75,
                 "games_played": 107
             },
@@ -2853,8 +2853,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 40.91,
                 "ally_win_rate": 60,
+                "enemy_win_rate": 40.91,
                 "win_rate": 59.09,
                 "games_played": 22
             },
@@ -2884,8 +2884,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 42.55,
                 "ally_win_rate": 45.24,
+                "enemy_win_rate": 42.55,
                 "win_rate": 57.45,
                 "games_played": 47
             },
@@ -2915,8 +2915,8 @@
                 "battletag": "Zemill",
                 "blizz_id": 67280,
                 "region": 1,
-                "enemy_win_rate": 43.08,
                 "ally_win_rate": 47.06,
+                "enemy_win_rate": 43.08,
                 "win_rate": 56.92,
                 "games_played": 65
             }
