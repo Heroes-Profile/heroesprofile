@@ -58,17 +58,17 @@
             </div>
 
             <!-- Talent build -->
-            <div v-if="showHero && options.build" class="rounded-control bg-surface-1 p-4 flex flex-col gap-3">
+            <div v-if="showHero && options.build" class="rounded-control bg-surface-1 p-5 flex flex-col gap-4">
               <div class="flex flex-wrap items-center justify-between gap-2">
-                <span class="text-sm font-semibold">{{ $t('Talent build') }}</span>
+                <h3 class="text-2xl font-bold">{{ $t('Talent build') }}</h3>
                 <build-code v-if="pick.build" :build="pick.build" :hero="pick.hero" show="code" align="end"></build-code>
               </div>
-              <div class="min-h-[3.75rem]">
-              <div v-if="buildLoading" class="flex gap-1.5">
-                <skeleton-box v-for="talent in 7" :key="talent" class="w-[2.625rem] h-[2.625rem] rounded-lg"></skeleton-box>
+              <div class="min-h-[5.75rem]">
+              <div v-if="buildLoading" class="flex flex-wrap gap-3 max-md:gap-2">
+                <skeleton-box v-for="talent in 7" :key="talent" class="w-16 h-16 rounded-lg"></skeleton-box>
               </div>
               <p v-else-if="buildError" class="text-sm text-red">{{ $t(buildError) }}</p>
-              <build-code v-else-if="pick.build" :build="pick.build" :hero="pick.hero" show="talents" align="start" :levels="true" :popup-hoverable="false"></build-code>
+              <build-code v-else-if="pick.build" :build="pick.build" :hero="pick.hero" show="talents" size="tile" align="start" :levels="true" :popup-hoverable="false"></build-code>
               <p v-else class="text-sm text-subtext">{{ $t('No complete build found for this hero.') }}</p>
               </div>
             </div>

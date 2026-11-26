@@ -12,6 +12,7 @@
 //   peak_rank - their best Storm League rank, shown in words, or null:
 //               ['league' => 'master'], ['league' => 'diamond', 'division' => 2],
 //               ['league' => 'grandmaster', 'ladder_position' => 1] or ['league' => 'unranked']
+//   profile - their Heroes Profile player page, a path like '/Player/Name/12345/1', or null
 //   email, reddit, discord - how to reach them; leave any out (or null) that they don't have.
 //                            reddit is the username without u/; discord is the username
 //   discord_id - their Discord user ID (Developer Mode, right-click, Copy User ID): the name links to their profile.
@@ -22,11 +23,12 @@ return [
         [
             'name' => 'Zemill',
             'company' => 'Heroes Profile | Skill Tree Development LLC',
-            'role' => 'Backend',
+            'role' => 'Full Stack',
             'start' => '2018-06',
             'end' => null,
             'bio' => "Zemill started playing Heroes of the Storm in its early alpha. They began building Heroes Profile as a fun side project after hearing about HotsAPI. Today they do nearly all of the site's work, from the backend, scaffolding and architecture to the frontend and its social media presence; the only parts they leave to others are the visual design and styling.",
             'peak_rank' => ['league' => 'master'],
+            'profile' => '/Player/Zemill/67280/1',
             'email' => 'zemill@heroesprofile.com',
             'reddit' => 'heroesprofile',
             'discord' => 'zemill',
@@ -38,7 +40,7 @@ return [
             'role' => 'Frontend',
             'start' => '2018-06',
             'end' => null,
-            'bio' => 'Bio for Avadriel goes here.',
+            'bio' => "A World of Warcraft veteran, Avadriel joined Zemill at the very start of Heroes Profile as its frontend developer, shaping the site's style, and today they consult on the frontend.",
             'peak_rank' => ['league' => 'unranked'],
             'email' => 'avadriel@heroesprofile.com',
             'reddit' => 'heroesprofile',

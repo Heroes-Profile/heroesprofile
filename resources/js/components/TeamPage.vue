@@ -26,8 +26,10 @@
           </div>
         </div>
         <p class="text-sm leading-relaxed">{{ $t(member.bio) }}</p>
-        <!-- How to reach them: email and Reddit link out; Discord opens their profile with an ID, otherwise copies the username -->
-        <div v-if="member.email || member.reddit || member.discord" class="flex flex-wrap gap-2 text-sm mt-auto">
+        <!-- Their player page, then how to reach them: email and Reddit link out; Discord opens their profile with an ID,
+             otherwise copies the username -->
+        <div v-if="member.profile || member.email || member.reddit || member.discord" class="flex flex-wrap gap-2 text-sm mt-auto">
+          <a v-if="member.profile" :href="member.profile" :class="chipClass"><img src="/images/logo/heroesprofilelogo.png" alt="" class="h-4 w-auto" /><span class="group-hover/bt:underline">{{ member.name }}</span></a>
           <a v-if="member.email" :href="'mailto:' + member.email" :class="chipClass"><i class="fas fa-envelope text-teal"></i><span class="group-hover/bt:underline">{{ member.email }}</span></a>
           <a v-if="member.reddit" :href="'https://www.reddit.com/user/' + member.reddit" target="_blank" rel="noopener noreferrer" :class="chipClass"><i class="fab fa-reddit-alien text-teal"></i><span class="group-hover/bt:underline">u/{{ member.reddit }}</span></a>
           <a v-if="member.discord && member.discord_id" :href="'https://discord.com/users/' + member.discord_id" target="_blank" rel="noopener noreferrer" :class="chipClass" :title="$t('Discord')"><i class="fab fa-discord text-teal"></i><span class="group-hover/bt:underline">{{ member.discord }}</span></a>

@@ -2,11 +2,11 @@
   <!-- A talent build the way the site shows it: seven talent squares, then its in-game copy code with a copy icon.
        show="talents" or show="code" draws one part, for tables that split them into columns. -->
   <div :class="['flex flex-col gap-2', alignClass]">
-    <div v-if="show !== 'code'" class="flex flex-nowrap gap-1.5">
+    <div v-if="show !== 'code'" :class="['flex', size === 'tile' ? 'flex-wrap gap-3 max-md:gap-2' : 'flex-nowrap gap-1.5']">
       <span v-for="(level, index) in LEVELS" :key="level" class="flex flex-col items-center gap-1">
-        <talent-image-wrapper v-if="build[level] || !emptySlots" :talent="build[level]" size="talent" :popup-hoverable="popupHoverable"></talent-image-wrapper>
-        <span v-else class="block w-[2.625rem] h-[2.625rem] rounded bg-surface-3"></span>
-        <span v-if="levels" class="text-[0.625rem] text-subtext">{{ LEVEL_NUMBERS[index] }}</span>
+        <talent-image-wrapper v-if="build[level] || !emptySlots" :talent="build[level]" :size="size" :popup-hoverable="popupHoverable"></talent-image-wrapper>
+        <span v-else :class="['block rounded bg-surface-3', size === 'tile' ? 'w-16 h-16' : 'w-[2.625rem] h-[2.625rem]']"></span>
+        <span v-if="levels" class="text-sm font-semibold text-subtext">{{ LEVEL_NUMBERS[index] }}</span>
       </span>
     </div>
     <div v-if="show !== 'talents' && code" :class="['flex', alignClass]">
@@ -44,6 +44,11 @@ export default {
     align: {
       type: String,
       default: 'center',
+    },
+    // talent (42px) or tile (64px, for a single featured build)
+    size: {
+      type: String,
+      default: 'talent',
     },
     // The talent level under each talent
     levels: Boolean,

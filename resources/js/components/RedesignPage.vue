@@ -68,32 +68,27 @@
         </div>
       </section>
 
-      <panel-box :divider="false">
-        <div class="flex flex-col gap-3 max-w-[60rem]">
+      <panel-box title="About the redesign" :divider="false">
+        <div class="flex flex-col gap-3 max-w-[60rem] text-sm text-subtext">
           <p>{{ $t('In late 2026 every page on Heroes Profile was rebuilt to a new design: darker, calmer and the same from page to page, so the stats are easier to read on any screen.') }}</p>
           <p>{{ $t('The new look was designed by Bluray and built by the Heroes Profile team. Below is what changed, with small examples of each part before and after.') }}</p>
         </div>
       </panel-box>
 
       <!-- By the numbers -->
-      <section class="flex flex-col gap-4">
-        <h2 class="text-2xl font-bold">{{ $t('By the numbers') }}</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <stat-box v-for="stat in numbers" :key="stat.title" :title="stat.title" :value="stat.value"></stat-box>
+      <panel-box title="By the numbers" subtitle="How much work went into the new design." :divider="false">
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
+          <stat-box v-for="stat in numbers" :key="stat.title" class="!m-0 !min-w-0" :title="stat.title" :value="stat.value"></stat-box>
         </div>
-      </section>
+      </panel-box>
 
       <!-- The look and the site shell; one toggle flips every example -->
-      <section class="flex flex-col gap-4">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h2 class="text-2xl font-bold">{{ $t('The look') }}</h2>
-            <p class="text-sm text-subtext mt-1">{{ $t('The parts every page shares.') }}</p>
-          </div>
+      <panel-box title="The look" subtitle="The parts every page shares." :divider="false">
+        <template #right>
           <tab-button tab1text="Before" tab2text="After" :overridedefaultside="after ? 'right' : 'left'" @tab-click="(side) => after = side === 'right'"></tab-button>
-        </div>
-        <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          <div v-for="card in lookCards" :key="card.key" class="rounded-panel bg-surface px-5 py-4 flex flex-col gap-3">
+        </template>
+        <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div v-for="card in lookCards" :key="card.key" class="rounded-control bg-surface-1 p-4 flex flex-col gap-3">
             <h3 class="text-lg font-bold">{{ $t(card.title) }}</h3>
             <!-- A small slice of the site; Before is drawn in the old colours, After in the site's own -->
             <div class="h-40 rounded-lg overflow-hidden text-[0.625rem] leading-tight select-none" aria-hidden="true">
@@ -113,22 +108,41 @@
                   <span class="ml-auto px-2 py-1 rounded bg-blue">API</span>
                 </div>
                 <div v-else class="flex items-center gap-2 px-2 py-2 rounded-lg bg-surface">
-                  <img src="/images/logo/heroesprofilelogo.png" alt="" class="h-4 w-auto" /><span>{{ $t('Global Stats') }}</span><span>{{ $t('Tools') }}</span>
+                  <img src="/images/logo/heroesprofilelogo.png" alt="" class="h-4 w-auto" />
+                  <span class="-my-1 px-1.5 py-1 rounded bg-teal flex items-center gap-1">{{ $t('Global Stats') }}<basil-icon name="arrow" class="-rotate-90 text-[0.5rem]"></basil-icon></span><span>{{ $t('Tools') }}</span>
                   <span class="ml-auto flex-1 max-w-[6rem] rounded-lg bg-field px-2 py-1 text-subtext">{{ $t('Search') }}</span>
                   <span class="px-2 py-1 rounded-lg bg-teal">API</span>
                 </div>
-                <div :class="['flex-1 rounded-lg', after ? 'bg-surface' : '']"></div>
+                <div v-if="!after" class="flex-1"></div>
+                <!-- The open Global Stats menu, with the Talent Stats flyout beside it: teal marks the open path -->
+                <div v-else class="flex-1 flex items-start gap-0.5 pl-5">
+                  <div class="w-24 rounded bg-surface-1 py-1 flex flex-col shadow-[0_0_0.5rem_rgba(0,0,0,0.4)]">
+                    <span v-for="item in navMenu" :key="item.label" :class="['mx-1 px-1.5 py-1 rounded flex justify-between', { 'bg-teal': item.open }]">{{ $t(item.label) }}<span v-if="item.flyout">›</span></span>
+                  </div>
+                  <div class="w-20 rounded bg-surface-4 p-1 flex flex-col shadow-[0_0_0.5rem_rgba(0,0,0,0.4)]">
+                    <span class="rounded bg-field px-1.5 py-1 text-subtext">{{ $t('Search') }}</span>
+                    <span v-for="hero in [$t('All Heroes'), 'Abathur', 'Alarak']" :key="hero" class="px-1.5 py-1">{{ hero }}</span>
+                  </div>
+                </div>
               </div>
 
               <div v-else-if="card.key === 'headings'" :class="['h-full flex flex-col gap-2', after ? 'bg-page p-2' : 'bg-black']">
                 <div v-if="!after" class="bg-teal px-4 py-3 text-base uppercase tracking-[0.14em]">Hero Statistics</div>
-                <template v-else>
-                  <div class="text-base font-bold">{{ $t('Hero Stats') }}</div>
-                  <div class="flex gap-1">
-                    <span v-for="filter in ['Storm League', 'Rank', 'Map']" :key="filter" class="rounded-lg bg-surface-3 px-2 py-1">{{ $t(filter) }}</span>
-                    <span class="rounded-lg bg-teal px-2 py-1">{{ $t('Filter') }}</span>
+                <!-- The page title and its grey subtext, with the filter bar beside it -->
+                <div v-else class="h-full flex items-center gap-2">
+                  <div class="shrink-0 max-w-[50%]">
+                    <div class="text-lg font-bold leading-tight">{{ $t('Hero Stats') }}</div>
+                    <div class="mt-0.5 uppercase text-gray-medium">{{ $t('Global') }} · {{ $t('Tier List and Win Rates') }}</div>
                   </div>
-                </template>
+                  <div class="flex-1 min-w-0 rounded-lg bg-surface p-1.5 flex items-end gap-1">
+                    <div class="flex-1 min-w-0 flex flex-col gap-0.5">
+                      <span class="text-subtext">{{ $t('Game Type') }}</span>
+                      <span class="h-5 rounded bg-surface-3 px-1.5 flex items-center font-bold"><span class="truncate">{{ $t('Storm League') }}</span></span>
+                    </div>
+                    <span class="w-5 h-5 shrink-0 rounded bg-surface-3 text-subtext flex items-center justify-center"><i class="fas fa-sliders"></i></span>
+                    <span class="h-5 shrink-0 rounded bg-blue px-1.5 flex items-center font-semibold">{{ $t('Filter') }}</span>
+                  </div>
+                </div>
               </div>
 
               <div v-else-if="card.key === 'tables'" :class="['h-full', after ? 'bg-surface p-2' : 'bg-black']">
@@ -144,27 +158,44 @@
               </div>
 
               <div v-else-if="card.key === 'filters'" :class="['h-full p-2 flex flex-col gap-2', after ? 'bg-surface' : 'bg-black']">
-                <div class="flex flex-wrap gap-1">
-                  <span v-for="filter in ['Game Type', 'Rank', 'Map']" :key="filter" :class="['px-2 py-1', after ? 'rounded-lg bg-surface-3' : 'rounded bg-teal uppercase tracking-[0.14em]']">{{ $t(filter) }}</span>
-                </div>
-                <div v-if="after" class="rounded-lg bg-surface-1 p-2 flex flex-col gap-1">
-                  <span class="flex items-center justify-between">{{ $t('Storm League') }} · {{ $t('Quick Match') }}<i class="fas fa-times text-subtext"></i></span>
-                  <span class="text-teal">{{ $t('Show advanced filters') }} ›</span>
-                </div>
-                <div v-else class="rounded bg-white text-black p-2 flex flex-col gap-1">
-                  <span>Storm League</span><span>Quick Match</span>
-                </div>
+                <!-- Labelled grey fields with the multi-select's clear button, then the advanced filters toggle (lit while open) and Filter -->
+                <template v-if="after">
+                  <div class="grid grid-cols-2 gap-1.5">
+                    <div v-for="field in filterFields" :key="field.label" :class="['flex flex-col gap-0.5 min-w-0', { 'col-span-2': field.clear }]">
+                      <span class="text-subtext">{{ $t(field.label) }}</span>
+                      <span class="h-6 rounded bg-surface-3 px-2 flex items-center gap-1 font-bold"><span class="truncate">{{ field.value }}</span><i v-if="field.clear" class="fas fa-times text-subtext ml-auto"></i></span>
+                    </div>
+                  </div>
+                  <div class="mt-auto flex justify-end gap-1.5">
+                    <span class="w-6 h-6 rounded bg-teal flex items-center justify-center"><i class="fas fa-sliders"></i></span>
+                    <span class="h-6 rounded bg-blue px-3 flex items-center font-semibold">{{ $t('Filter') }}</span>
+                  </div>
+                </template>
+                <template v-else>
+                  <div class="flex flex-wrap gap-1">
+                    <span v-for="filter in ['Game Type', 'Rank', 'Map']" :key="filter" class="px-2 py-1 rounded bg-teal uppercase tracking-[0.14em]">{{ $t(filter) }}</span>
+                  </div>
+                  <div class="rounded bg-white text-black p-2 flex flex-col gap-1">
+                    <span>Storm League</span><span>Quick Match</span>
+                  </div>
+                </template>
               </div>
 
               <div v-else-if="card.key === 'loading'" :class="['h-full p-2', after ? 'bg-surface' : 'bg-black flex items-center justify-center']">
                 <img v-if="!after" src="/images/logo/heroesprofilelogo.png" alt="" class="logo-spin h-14 w-auto" />
-                <div v-else class="flex flex-col gap-2">
-                  <span class="h-4 w-1/2 rounded bg-surface-3 animate-pulse"></span>
-                  <span v-for="bar in 4" :key="bar" class="h-5 rounded bg-surface-3 animate-pulse"></span>
+                <!-- A heading, a row of cards, then text lines, as the site's skeletons -->
+                <div v-else class="h-full flex flex-col gap-2">
+                  <skeleton-box class="h-2.5 w-2/5"></skeleton-box>
+                  <div class="grid grid-cols-3 gap-1.5">
+                    <skeleton-box v-for="box in 3" :key="box" class="h-10 rounded-lg"></skeleton-box>
+                  </div>
+                  <skeleton-box class="h-2 w-full mt-1"></skeleton-box>
+                  <skeleton-box class="h-2 w-4/5"></skeleton-box>
+                  <skeleton-box class="h-2 w-3/5"></skeleton-box>
                 </div>
               </div>
 
-              <div v-else-if="card.key === 'popups'" :class="['h-full p-2 relative', after ? 'bg-page' : 'bg-black']">
+              <div v-else-if="card.key === 'popups'" :class="['h-full p-2 relative', after ? 'bg-page flex items-center justify-center' : 'bg-black']">
                 <div v-if="!after" class="w-32 rounded bg-white text-black p-2">
                   <div class="font-bold uppercase">Abathur</div>
                   <div>Win Rate: 51.2</div><div>Games: 10432</div>
@@ -196,19 +227,15 @@
             <p class="text-sm text-subtext">{{ $t(card.text) }}</p>
           </div>
         </div>
-      </section>
+      </panel-box>
 
       <!-- Page by page; Before is the old site's one layout (a teal banner over a light table) -->
-      <section class="flex flex-col gap-4">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h2 class="text-2xl font-bold">{{ $t('Page by page') }}</h2>
-            <p class="text-sm text-subtext mt-1">{{ $t('Most pages used to share one layout: a banner over a table. Now each has a layout of its own.') }}</p>
-          </div>
+      <panel-box title="Page by page" subtitle="Most pages used to share one layout: a banner over a table. Now each has a layout of its own." :divider="false">
+        <template #right>
           <tab-button tab1text="Before" tab2text="After" :overridedefaultside="after ? 'right' : 'left'" @tab-click="(side) => after = side === 'right'"></tab-button>
-        </div>
-        <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          <div v-for="page in pageCards" :key="page.key" class="rounded-panel bg-surface px-5 py-4 flex flex-col gap-3">
+        </template>
+        <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div v-for="page in pageCards" :key="page.key" class="rounded-control bg-surface-1 p-4 flex flex-col gap-3">
             <h3 class="text-lg font-bold">{{ $t(page.title) }}</h3>
             <div class="h-32 rounded-lg overflow-hidden select-none" aria-hidden="true">
               <div v-if="!after" class="h-full bg-black flex flex-col">
@@ -219,15 +246,15 @@
                 </div>
               </div>
               <!-- Each page's own shape, in blocks -->
-              <div v-else class="h-full bg-page p-2 grid gap-1.5" :style="{ gridTemplateAreas: page.layout.areas, gridTemplateColumns: page.layout.columns }">
-                <span v-for="block in page.layout.blocks" :key="block.area" :class="['rounded-sm', block.class || 'bg-surface']" :style="{ gridArea: block.area }"></span>
+              <div v-else class="h-full bg-surface p-3 grid gap-1.5" :style="{ gridTemplateAreas: page.layout.areas, gridTemplateColumns: page.layout.columns }">
+                <span v-for="block in page.layout.blocks" :key="block.area" :class="['rounded-[0.25rem]', block.class || 'bg-surface-3']" :style="{ gridArea: block.area }"></span>
               </div>
             </div>
             <p class="text-sm text-subtext flex-1">{{ $t(page.text) }}</p>
             <a v-if="page.href" :href="page.href" target="_blank" rel="noopener" class="group/bt inline-flex items-center w-fit text-teal text-sm"><span class="group-hover/bt:underline">{{ $t('Open the page') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
           </div>
         </div>
-      </section>
+      </panel-box>
 
       <!-- Credits -->
       <panel-box :divider="false">
@@ -254,7 +281,6 @@ export default {
   name: 'RedesignPage',
   props: {
     // Every site language with a few strings in it, from RedesignController
-    languages: { type: Array, default: () => [] },
     locale: { type: String, default: 'en' },
     // Bluray's Discord username, from config/team.php
     discord: { type: String, default: null },
@@ -385,13 +411,23 @@ export default {
         { title: 'Files changed', value: '670+' },
         { title: 'Pages redesigned', value: '98' },
         { title: 'Lines of code added or modified', value: '27,000+' },
-        { title: 'Languages', value: this.languages.length },
         { title: 'Started', value: new Date(2026, 9, 1).toLocaleDateString(this.locale, { month: 'long', year: 'numeric' }) },
       ],
       palette: {
         before: ['#0F121D', '#333333', '#DDDDDD', '#008B8B', '#213D7A'],
         after: ['#141725', '#23252F', '#303340', '#008B8B', '#8CD9B8', '#E5461D'],
       },
+      navMenu: [
+        { label: 'Hero Stats' },
+        { label: 'Talent Stats', flyout: true, open: true },
+        { label: 'Map Stats', flyout: true },
+        { label: 'Matchup Stats', flyout: true },
+      ],
+      filterFields: [
+        { label: 'Game Type', value: this.$t('Storm League') + ' · ' + this.$t('Quick Match'), clear: true },
+        { label: 'Rank', value: this.$t('All') },
+        { label: 'Map', value: this.$t('All') },
+      ],
       sampleRows: [
         { hero: 'Abathur', winRate: '51.2%', games: '10,432' },
         { hero: 'Alarak', winRate: '49.8%', games: '8,915' },
@@ -408,22 +444,22 @@ export default {
         { key: 'mobile', title: 'Phones', text: 'Every page was reworked for phones: cards in place of wide tables, columns that snap and full-screen menus.' },
       ],
       pageCards: [
-        { key: 'profile', title: 'Player profile', text: 'Rank, recent matches, best heroes and maps, awards and week day win rates, each in its own card.',
-          layout: layout('"a a a" "b c c" "b d d"', '1fr 1fr 1fr', [{ area: 'a' }, { area: 'b' }, { area: 'c', class: 'bg-surface-1' }, { area: 'd' }]) },
-        { key: 'match', title: 'Single match', text: 'Team cards, Match Scores sorted by HP Rating, Draft Order, talents and each player\'s MMR change, map MMR included.',
-          layout: layout('"a b" "c c" "d d"', '1fr 1fr', [{ area: 'a', class: 'bg-teal/60' }, { area: 'b', class: 'bg-loss/60' }, { area: 'c' }, { area: 'd' }]) },
+        { key: 'profile', title: 'Player profile', text: 'Rank, recent matches, best heroes and maps, awards and week day win rates, each in its own card.', href: '/Player/Zemill/67280/1',
+          layout: layout('"a a a" "b c c" "b d d"', '1fr 1fr 1fr', [{ area: 'a' }, { area: 'b' }, { area: 'c' }, { area: 'd' }]) },
+        { key: 'match', title: 'Single match', text: 'Team cards, Match Scores sorted by HP Rating, Draft Order, talents and each player\'s MMR change, map MMR included.', href: '/Match/Single/66811216',
+          layout: layout('"a b" "c c" "d d"', '1fr 1fr', [{ area: 'a', class: 'bg-win' }, { area: 'b', class: 'bg-loss' }, { area: 'c' }, { area: 'd' }]) },
         { key: 'tierlist', title: 'Hero Stats', text: 'The tier list, a chart view, and the patch notes for the patch you picked.', href: '/Global/Hero',
-          layout: layout('"a a" "b c" "b c"', '1fr 2fr', [{ area: 'a', class: 'bg-surface-1' }, { area: 'b' }, { area: 'c' }]) },
+          layout: layout('"a a" "b c" "b c"', '1fr 2fr', [{ area: 'a' }, { area: 'b' }, { area: 'c' }]) },
         { key: 'builder', title: 'Talent Builder', text: 'Pick talents tier by tier with their win rates, then find replays that used the build.', href: '/Global/Talents/Builder',
-          layout: layout('"a a a a" "b b c c" "b b c c"', 'repeat(4, 1fr)', [{ area: 'a', class: 'bg-surface-1' }, { area: 'b' }, { area: 'c', class: 'bg-teal/40' }]) },
+          layout: layout('"a a a a" "b b c c" "b b c c"', 'repeat(4, 1fr)', [{ area: 'a' }, { area: 'b' }, { area: 'c', class: 'bg-surface-3 border-t-2 border-teal' }]) },
         { key: 'heroes', title: 'Hero pages', text: 'Every hero\'s abilities and talents with a level slider, stats and lore.', href: '/Heroes',
-          layout: layout('"a a b" "c c b" "c c b"', '1fr 1fr 1fr', [{ area: 'a', class: 'bg-surface-1' }, { area: 'b', class: 'bg-surface-3' }, { area: 'c' }]) },
+          layout: layout('"a a b" "c c b" "c c b"', '1fr 1fr 1fr', [{ area: 'a' }, { area: 'b' }, { area: 'c' }]) },
         { key: 'leaderboards', title: 'Leaderboards', text: 'Leaderboards by map as well as by hero and role, and a card with your own HP Rating.', href: '/Global/Leaderboard',
-          layout: layout('"a" "b" "b"', '1fr', [{ area: 'a', class: 'bg-surface-1' }, { area: 'b' }]) },
+          layout: layout('"a" "b" "b"', '1fr', [{ area: 'a' }, { area: 'b' }]) },
         { key: 'esports', title: 'Esports', text: 'Every league now has the player, team and match pages NGS has, with standings and recent matches.', href: '/Esports',
-          layout: layout('"a a a" "b c d" "b c d"', '1fr 1fr 1fr', [{ area: 'a', class: 'bg-surface-1' }, { area: 'b' }, { area: 'c' }, { area: 'd' }]) },
+          layout: layout('"a a a" "b c d" "b c d"', '1fr 1fr 1fr', [{ area: 'a' }, { area: 'b' }, { area: 'c' }, { area: 'd' }]) },
         { key: 'tools', title: 'Tools', text: 'The Drafter, Randomize Me, the Match Prediction Game and the Auto Battler, all redesigned.', href: '/Drafter',
-          layout: layout('"a b c" "d d d" "d d d"', '1fr 1fr 1fr', [{ area: 'a', class: 'bg-teal/40' }, { area: 'b', class: 'bg-surface-1' }, { area: 'c', class: 'bg-loss/40' }, { area: 'd' }]) },
+          layout: layout('"a b c" "d d d" "d d d"', '1fr 1fr 1fr', [{ area: 'a', class: 'bg-teal' }, { area: 'b' }, { area: 'c', class: 'bg-red' }, { area: 'd' }]) },
       ],
     };
   },
