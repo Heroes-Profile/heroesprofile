@@ -1,5 +1,6 @@
 <template>
-  <div id="filter-label" class="relative" :class="compact ? 'min-w-0 w-full' : fit ? 'filter-fit max-md:w-full' : 'filter-fill max-md:w-full md:w-[12.5rem]'">
+  <div id="filter-label" class="relative" :class="compact ? 'min-w-0 w-full' : fit ? 'filter-fit max-md:w-full' : 'filter-fill max-md:w-full md:w-[12.5rem]'" data-filter-kind="single" :data-filter="text" :data-value="selectedOptions ?? ''">
+    <!-- data-filter / data-value: the browser tests find each filter and read what it holds -->
     <div @click="showOptions = !showOptions" class="flex flex-col gap-1.5 text-sm font-medium text-subtext cursor-pointer transition-colors" :class="compact ? 'p-0' : 'p-2'" @keydown="handleKeyPress" tabindex="0">
       <span v-if="!hidelabel" class="relative">
         <!-- The info icon sits beside the label, so a longer or larger label pushes it along instead of under it -->

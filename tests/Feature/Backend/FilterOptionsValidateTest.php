@@ -2,12 +2,14 @@
 
 namespace Tests\Feature\Backend;
 
+use App\Http\Middleware\ThrottleNonApiRequests;
 use App\Models\CCL\CCLTeam;
 use App\Models\HeroesInternational\HeroesInternationalMainTeam;
 use App\Models\HeroesInternational\HeroesInternationalNationsCupTeam;
 use App\Models\MastersClash\MastersClashTeam;
 use App\Models\NGS\NGSTeam;
 use App\Services\GlobalDataService;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Feature\Characterization\SeedFixtures;
@@ -20,6 +22,14 @@ use Tests\Feature\FeatureTestCase;
 class FilterOptionsValidateTest extends FeatureTestCase
 {
     use SeedFixtures;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Hundreds of requests from one client; the rate limits aren't what's under test
+        $this->withoutMiddleware([ThrottleRequests::class, ThrottleNonApiRequests::class]);
+    }
 
     private const ALL_GAME_TYPES = ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'];
 

@@ -1,0 +1,99 @@
+# The Playwright browser tests (tests/browser): the crawl of every page's filters and the named cases, against
+# the site built and served on the seeded test database. Slow, so only on pull requests labelled
+# browser-tests; adding the label starts a run, and each later push runs it again. See the README's
+# "Browser tests" section.
+
+name: Browser tests
+
+on:
+  pull_request:
+    types: [labeled, opened, reopened, synchronize]
+
+concurrency:
+  group: browser-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser:
+    if: contains(github.event.pull_request.labels.*.name, 'browser-tests')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+    - uses: actions/checkout@v4
+
+    # Started first so MySQL initialises while dependencies install
+    - name: Start the test database
+      run: docker compose -f docker-compose/docker-compose.testing.yaml up -d
+
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+        extensions: bcmath, intl, mbstring, pdo_mysql
+        coverage: none
+
+    - name: Composer cache directory
+      id: composer-cache
+      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+    - uses: actions/cache@v4
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
+
+    - name: Install PHP dependencies
+      run: composer install --no-interaction --no-progress --prefer-dist
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: npm
+
+    - name: Install JS dependencies
+      run: npm ci
+
+    # SKIP_SOURCEMAPS: a test build mustn't upload sourcemaps to Flare
+    - name: Build the assets
+      run: npm run build
+      env:
+        SKIP_SOURCEMAPS: 'true'
+
+    - name: Install Chromium
+      run: npx playwright install --with-deps chromium
+
+    # The site runs on the test environment: every connection on the test container, global queries inline.
+    # SESSION_DRIVER=file: the site's own API checks the CSRF token, which an array session forgets between
+    # requests. Several server workers, so the parallel browser tests aren't queued behind one another.
+    - name: Prepare the application
+      run: |
+        cp .env.testing .env
+        sed -i 's/^SESSION_DRIVER=.*/SESSION_DRIVER=file/' .env
+        echo "PHP_CLI_SERVER_WORKERS=4" >> .env
+
+    # Migrates and seeds the test container (tests/bootstrap.php), checks every page route is crawled or
+    # skipped, and writes tests/browser/pages.json
+    - name: Seed the database and write the page list
+      run: php artisan hp:test user --filter=BrowserPagesTest
+
+    - name: Serve the site
+      run: |
+        php artisan serve --host=127.0.0.1 --port=8000 > storage/logs/serve.log 2>&1 &
+        for attempt in $(seq 1 30); do
+          curl -sf -o /dev/null http://127.0.0.1:8000/ && exit 0
+          sleep 2
+        done
+        echo "::error::The site didn't come up"
+        cat storage/logs/serve.log
+        exit 1
+
+    - name: Browser tests
+      run: npm run test:browser
+      env:
+        BASE_URL: http://127.0.0.1:8000
+
+    - name: Server log on failure
+      if: failure()
+      run: |
+        tail -200 storage/logs/serve.log || true
+        tail -200 storage/logs/laravel.log || true

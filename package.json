@@ -3,18 +3,24 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "test:js": "vitest run",
+        "test:browser": "playwright test"
     },
     "devDependencies": {
+        "@playwright/test": "^1.65.1",
         "@popperjs/core": "^2.11.8",
         "@vitejs/plugin-vue": "^6.0.11",
+        "@vue/test-utils": "^2.6.0",
         "autoprefixer": "^10.4.15",
         "axios": "^1.6.0",
+        "jsdom": "^29.1.1",
         "laravel-vite-plugin": "^2.1.0",
         "postcss": "^8.4.31",
         "sass": "^1.56.1",
         "tailwindcss": "^3.3.3",
         "vite": "^7.3.8",
+        "vitest": "^5.1.2",
         "vue": "^3.3.4"
     },
     "dependencies": {
