@@ -55,7 +55,7 @@
                   <basil-icon name="arrow-small" :class="['text-sm shrink-0 transition-transform', isOpen(category.name, index) ? '-rotate-90' : 'rotate-90']"></basil-icon>
                 </button>
                 <!-- v-show, so every answer is in the page for search engines while closed -->
-                <div v-show="isOpen(category.name, index)" class="text-subtext leading-relaxed faq-answer" v-html="item.a"></div>
+                <transition name="drop"><div v-show="isOpen(category.name, index)" class="text-subtext leading-relaxed faq-answer" v-html="item.a"></div></transition>
               </div>
             </template>
           </div>

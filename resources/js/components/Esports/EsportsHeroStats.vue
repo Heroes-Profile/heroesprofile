@@ -1,7 +1,7 @@
 <template>
   <!-- In a card at the page's width, as on the global pages -->
   <div class="max-w-[120rem] mx-auto px-4 md:px-8">
-   <panel-box title="Overall hero stats" :subtitle="subtitle" :divider="false">
+   <panel-box title="Overall hero stats" :subtitle="headerSubtitle" :divider="false">
     <template #right>
       <search-input v-model="heroSearch" :placeholder="$t('Search hero')" class="w-full sm:w-[18.125rem] sm:ml-auto"></search-input>
     </template>
@@ -32,14 +32,8 @@
           <!-- Hero names left-aligned, as on the global tier list -->
           <td class="py-2 px-3"><div class="flex items-center"><hero-image-wrapper :hero="row.hero" :includehover="false"></hero-image-wrapper><span class="hidden md:block ml-2 font-semibold">{{ $heroName(row.hero) }}</span></div></td>
           <td>
-            <!-- A low sample's win rate is greyed, with an icon that says why -->
-            <span class="inline-flex items-center gap-1.5">
-              <span :class="['font-semibold', row.games_played < lowSampleGames ? 'text-subtext' : row.win_rate >= 50 ? 'text-teal' : '']">{{ row.win_rate.toFixed(2) }}%</span>
-              <icon-with-hover v-if="row.games_played < lowSampleGames" popupsize="fit">
-                <template #trigger><basil-icon name="info" class="text-subtext cursor-default"></basil-icon></template>
-                <p>{{ $t('Low sample: fewer than :count games', { count: lowSampleGames }) }}</p>
-              </icon-with-hover>
-            </span>
+            <!-- A low sample's win rate is greyed; the header says why -->
+            <span :class="['font-semibold', row.games_played < lowSampleGames ? 'text-subtext' : row.win_rate >= 50 ? 'text-teal' : '']">{{ row.win_rate.toFixed(2) }}%</span>
           </td>
           <td>{{ row.popularity.toFixed(2) }}%</td>
           <td>{{ row.ban_rate.toFixed(2) }}%</td>
@@ -77,6 +71,11 @@ export default {
     scaleTableToFit(this.$refs.table, this.$refs.tablecontainer);
   },
   computed: {
+    // The caller's subtitle, then what a grey win rate means
+    headerSubtitle() {
+      const note = this.$t('Grey win rates are from fewer than :count games', { count: this.lowSampleGames });
+      return this.subtitle ? this.subtitle + ' · ' + note : note;
+    },
     sortedData() {
       const search = this.heroSearch.trim().toLowerCase();
       const rows = search ? this.data.filter(row => this.$heroName(row.hero).toLowerCase().includes(search)) : this.data;

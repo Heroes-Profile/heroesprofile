@@ -2,9 +2,10 @@
   <div>
     <page-heading heading="Contact" subheading="Get in touch with Heroes Profile"></page-heading>
 
-    <div class="max-w-[120rem] mx-auto px-4 md:px-8 grid xl:grid-cols-[1188fr_700fr] gap-6 xl:gap-8 items-start">
+    <div class="max-w-[120rem] mx-auto px-4 md:px-8 grid xl:grid-cols-[1188fr_700fr] gap-6 xl:gap-8">
       <panel-box title="Send us a message" subtitle="Questions, feedback or a problem with your profile. We reply by email." :divider="false">
-        <form @submit.prevent="submitForm" class="flex flex-col gap-6">
+        <!-- The two cards share a height; the message box takes up any extra, as in Figma -->
+        <form @submit.prevent="submitForm" class="flex-1 flex flex-col gap-6">
           <div class="grid sm:grid-cols-2 gap-4">
             <label class="flex flex-col gap-2">
               <span class="text-subtext">{{ $t('BattleTag') }}*</span>
@@ -15,9 +16,9 @@
               <input class="w-full bg-field text-white rounded px-4 h-12" type="email" id="email" v-model="formData.email" placeholder="you@example.com" required>
             </label>
           </div>
-          <label class="flex flex-col gap-2">
+          <label class="flex-1 flex flex-col gap-2">
             <span class="text-subtext">{{ $t('Message') }}*</span>
-            <textarea class="w-full bg-field text-white rounded px-4 py-3 min-h-[9.875rem]" id="message" v-model="formData.message" :placeholder="$t('Tell us what happened, which page it was on and your region if it\'s about a profile.')" required></textarea>
+            <textarea class="flex-1 w-full bg-field text-white rounded px-4 py-3 min-h-[9.875rem]" id="message" v-model="formData.message" :placeholder="$t('Tell us what happened, which page it was on and your region if it\'s about a profile.')" required></textarea>
           </label>
 
           <!-- Honeypot field - hidden from users but visible to bots -->

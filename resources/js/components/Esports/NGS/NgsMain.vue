@@ -47,10 +47,8 @@
       <div v-if="activeButton === 'playerSearch'">
         <div class="max-w-[120rem] mx-auto px-4 md:px-8">
           <panel-box title="Find a player" subtitle="Search NGS players by BattleTag or name." :divider="false">
-            <div class="flex flex-wrap items-center gap-3">
-              <search-input v-model="userinput" :placeholder="$t('Search for NGS player')" class="w-full sm:w-[20rem]" @keyup.enter="filter()"></search-input>
-              <custom-button @click="filter()" text="Search" color="teal" class="font-semibold" :ignoreclick="true"></custom-button>
-            </div>
+            <!-- The sub-header's Find Player box, searching NGS players instead -->
+            <search-component :emit-search="true" button-text="Find Player" label-text="Search for NGS player" class="!mt-0 !py-0 w-full sm:w-[30rem]" @search="userinput = $event; filter()"></search-component>
             <!-- The main site's search: the table scans while it runs, then lists the matches; a single match opens straight away -->
             <table-search :embedded="true" v-if="searchRun && !searchFoundNone" :key="searchRun" :query="searchedFor" :results="battletagresponse" :profile-url="ngsPlayerUrl" :match-url="item => '/Esports/NGS/Match/Single/' + item.latestReplayID" loader-image="/images/NGS/no-image-clipped.png" :show-region="false" @select="item => openNgsPlayer(item)" @none="searchFoundNone = true"></table-search>
             <p v-else-if="searchFoundNone" class="text-subtext">{{ $t('No NGS player found for :searchedfor.', { searchedfor: searchedFor }) }}</p>

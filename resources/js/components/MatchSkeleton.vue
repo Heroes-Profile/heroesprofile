@@ -16,9 +16,15 @@
       <div class="grid xl:grid-cols-2 gap-6">
         <div v-for="team in 2" :key="team" :class="['relative rounded-panel bg-surface border-t-4 border-gray-dark p-5 md:p-6 flex flex-col gap-5', { 'md:!rounded-tl-none': team === 1 }]">
           <loading-component v-if="team === 1" :compact="true" :tab="true" :overrideimage="overrideimage"></loading-component>
+          <!-- Name, result, then Team Level and Takedowns; Bans on the right -->
           <div class="flex items-center justify-between gap-3">
-            <skeleton-box class="h-7 w-40 rounded"></skeleton-box>
-            <skeleton-box class="h-6 w-32"></skeleton-box>
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 min-w-0">
+              <skeleton-box class="h-7 w-24"></skeleton-box>
+              <skeleton-box class="h-5 w-16 rounded-md"></skeleton-box>
+              <skeleton-box class="h-4 w-24"></skeleton-box>
+              <skeleton-box class="h-4 w-24"></skeleton-box>
+            </div>
+            <skeleton-box class="h-6 w-32 shrink-0"></skeleton-box>
           </div>
           <div class="grid grid-cols-5 gap-2">
             <div v-for="player in 5" :key="player" class="flex flex-col items-center gap-1.5">
@@ -27,8 +33,12 @@
               <skeleton-box class="h-3 w-12 max-w-full"></skeleton-box>
             </div>
           </div>
-          <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
-            <skeleton-box v-for="stat in 6" :key="stat" class="h-[3.75rem] rounded-control"></skeleton-box>
+          <!-- Team averages -->
+          <div class="flex flex-col gap-1.5">
+            <skeleton-box class="h-3 w-28"></skeleton-box>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <skeleton-box v-for="stat in 4" :key="stat" class="h-[3.75rem] rounded"></skeleton-box>
+            </div>
           </div>
         </div>
       </div>

@@ -9,13 +9,14 @@
   ]" :style="tier ? tierStyle(tier) : null">
     <div class="flex gap-6">
       <div :class="['flex min-w-0', valueFirst ? 'flex-col-reverse' : 'flex-col']">
-        <span :class="['text-sm whitespace-nowrap', { 'text-subtext': !tier }]">{{ $t(title) }}</span>
+        <!-- A label too long for its box (some translations) ends in dots; hovering shows it whole -->
+        <span :class="['text-sm truncate', { 'text-subtext': !tier }]" :title="$t(title)">{{ $t(title) }}</span>
         <span v-if="valueTier" class="flex items-center gap-2 min-w-0"><span :class="['text-xl font-semibold truncate', valueClass || 'text-header']">{{ value }}</span><rank-tier-pill :small="true" :tier="valueTier"></rank-tier-pill></span>
         <span v-else :class="['text-xl font-semibold', valueClass || { 'text-header': !tier }]">{{ value }}</span>
         <span v-if="caption" class="text-xs text-subtext mt-1">{{ caption }}</span>
       </div>
       <div v-if="secondstat" class="flex flex-col min-w-0">
-        <span class="text-sm text-subtext whitespace-nowrap">{{ secondcaption }}</span>
+        <span class="text-sm text-subtext truncate" :title="secondcaption">{{ secondcaption }}</span>
         <span :class="['text-xl font-semibold', changeClass]">{{ formattedChange }}</span>
       </div>
     </div>

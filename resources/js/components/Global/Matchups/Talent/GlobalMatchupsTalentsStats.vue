@@ -37,18 +37,18 @@
         <template #right>
           <tab-button :small="true" tab1text="Enemy" tab2text="Ally" :ignoreclick="true" :overridedefaultside="enemyorallyselected" @tab-click="heroOrEnemySideSelected"></tab-button>
         </template>
-        <div class="grid xl:grid-cols-[auto_minmax(0,1fr)] gap-6">
-          <div class="flex items-center gap-4 md:gap-8">
-            <div class="flex flex-col gap-3 w-[10rem] md:w-[13rem]">
-              <single-select-filter :key="'hero-' + (hero ? hero.id : '')" :values="firstHeroInputs" :text="'Hero'" @input-changed="herochanged" :defaultValue="hero ? hero.id : null"></single-select-filter>
-              <hero-image-wrapper v-if="hero && hero.short_name" :rectangle="true" size="large" :hero="hero" :excludehover="true"></hero-image-wrapper>
-            </div>
+        <div class="grid xl:grid-cols-[auto_minmax(0,1fr)] gap-6 xl:gap-8">
+          <!-- As the Figma picker: the dropdowns as wide as the art, 12px above it, and VS centred between the two pictures -->
+          <div class="grid grid-cols-[minmax(0,10rem)_auto_minmax(0,10rem)] md:grid-cols-[14rem_auto_14rem] gap-x-4 md:gap-x-8 gap-y-3 items-center">
+            <single-select-filter :compact="true" :key="'hero-' + (hero ? hero.id : '')" :values="firstHeroInputs" :text="'Hero'" @input-changed="herochanged" :defaultValue="hero ? hero.id : null"></single-select-filter>
+            <span></span>
+            <single-select-filter :compact="true" :key="'enemyally-' + (enemyally ? enemyally.id : '')" :values="secondHeroInputs" :text="'Matchup hero'" @input-changed="allyenemychanged" :defaultValue="enemyally ? enemyally.id : null"></single-select-filter>
+            <hero-image-wrapper v-if="hero && hero.short_name" :rectangle="true" size="large" :hero="hero" :excludehover="true"></hero-image-wrapper>
+            <span v-else></span>
             <!-- Swaps the two heroes, so the other one's talents are listed -->
             <button type="button" @click="swapHeroes" :title="$t('Swap heroes')" class="shrink-0 w-12 h-12 rounded-full bg-surface-3 hover:bg-surface-4 hover:text-white transition-colors flex items-center justify-center text-sm font-bold text-subtext">{{ vsorwith }}</button>
-            <div class="flex flex-col gap-3 w-[10rem] md:w-[13rem]">
-              <single-select-filter :key="'enemyally-' + (enemyally ? enemyally.id : '')" :values="secondHeroInputs" :text="'Matchup hero'" @input-changed="allyenemychanged" :defaultValue="enemyally ? enemyally.id : null"></single-select-filter>
-              <hero-image-wrapper v-if="enemyally && enemyally.short_name" :rectangle="true" size="large" :hero="enemyally" :excludehover="true"></hero-image-wrapper>
-            </div>
+            <hero-image-wrapper v-if="enemyally && enemyally.short_name" :rectangle="true" size="large" :hero="enemyally" :excludehover="true"></hero-image-wrapper>
+            <span v-else></span>
           </div>
           <ol class="flex flex-col gap-3">
             <li v-for="(step, index) in steps" :key="step.title" class="flex items-center gap-4 rounded-control bg-surface-1 px-5 py-4">

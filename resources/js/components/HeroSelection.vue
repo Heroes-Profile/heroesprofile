@@ -4,7 +4,7 @@
       <!-- A page can put the filters elsewhere (the Heroes page, beside its heading) and pass them in -->
       <template v-if="roleFilter === null && searchFilter === null" #right>
         <div class="flex flex-wrap items-center gap-4 max-md:w-full">
-          <tab-button v-if="roleOptions.length > 1" :small="true" :dark="true" :tabs="roleOptions" overridedefaultside="All" :ignoreclick="true" @tab-click="role => roleChanged({ value: role })"></tab-button>
+          <tab-button v-if="roleOptions.length > 1" :small="true" :tabs="roleOptions" overridedefaultside="All" :ignoreclick="true" @tab-click="role => roleChanged({ value: role })"></tab-button>
           <search-input v-model="searchQuery" :placeholder="$t('Search for a hero...')" class="w-full sm:w-[20rem]"></search-input>
         </div>
       </template>
@@ -25,7 +25,7 @@
           </div>
         </div>
       </div>
-      <div v-else class="flex flex-wrap gap-3 cursor-pointer max-md:justify-between">
+      <div v-else-if="!grouped" class="flex flex-wrap gap-3 cursor-pointer max-md:justify-between">
         <template v-for="hero in filteredHeroes" :key="hero.id">
           <a v-if="linkbase" :href="linkbase + '/' + encodeURIComponent(hero.name)" @click="linkClicked($event, hero)">
             <hero-image-wrapper :hero="hero" size="medium"></hero-image-wrapper>
@@ -36,8 +36,8 @@
             @click="clickedHero(hero)"
           ></hero-image-wrapper>
         </template>
-        <p v-if="filteredHeroes.length == 0" class="text-subtext">{{ $t('No heroes match your search.') }}</p>
       </div>
+      <p v-if="filteredHeroes.length == 0" class="text-subtext">{{ $t('No heroes match your search.') }}</p>
     </panel-box>
   </div>
 </template>
@@ -56,8 +56,8 @@ export default {
     // When set, each hero is a real link to linkbase/{hero} so crawlers can follow it.
     linkbase: { type: String, default: '' },
     subtitle: { type: String, default: 'Open a hero to see their stats.' },
-    // Rows by role instead of one grid
-    grouped: Boolean,
+    // Rows by role, as on the Heroes page; false for one grid
+    grouped: { type: Boolean, default: true },
     // Set by a page that shows the role and search filters itself
     roleFilter: { type: String, default: null },
     searchFilter: { type: String, default: null },

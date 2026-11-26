@@ -27,12 +27,15 @@
     },
     props: {
       type: String,
+      buttonText: { type: String, default: 'Find Player' },
+      labelText: { type: String, default: 'Enter a BattleTag' },
+      // Hands the query to the page (@search) instead of opening the player search, e.g. NGS's own player search
+      emitSearch: { type: Boolean, default: false },
     },
+    emits: ['search'],
     data(){
       return {
         userinput: "",
-        buttonText: "Find Player",
-        labelText: "Enter a BattleTag",
         prohibitedCharacters: ['*', '?', '%', '\'', '"', '(', ')', ';', '<', '>', '=', '|', '\\'],
         showEmptyPrompt: false,
       }
@@ -76,6 +79,10 @@
           return;
         }
         if (!this.isInputValid) {
+          return;
+        }
+        if (this.emitSearch) {
+          this.$emit('search', this.userinput.trim());
           return;
         }
         window.location.href = '/battletag/searched/' + encodeURIComponent(this.userinput.trim()) + "/" + this.type;

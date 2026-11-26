@@ -33,7 +33,7 @@
         <div v-for="day in groupByDay(branch.commits)" :key="day.label" class="flex flex-col gap-3">
           <span class="text-xs font-bold uppercase text-subtext">{{ day.label }}</span>
           <div class="flex flex-col gap-px rounded-lg overflow-hidden">
-            <div v-for="commit in day.commits" :key="commit.sha" :class="['bg-surface-1 transition-colors', open[branch.name + commit.sha] ? 'bg-surface-2 border-l-4 border-teal' : 'hover:bg-surface-2']">
+            <div v-for="commit in day.commits" :key="commit.sha" :class="['bg-surface-1 transition-[background-color]', open[branch.name + commit.sha] ? 'bg-surface-2 border-l-4 border-teal' : 'hover:bg-surface-2']">
               <button type="button" class="w-full flex items-center gap-4 px-5 py-4 text-left" :aria-expanded="!!open[branch.name + commit.sha]" @click="open[branch.name + commit.sha] = !open[branch.name + commit.sha]">
                 <span class="w-9 h-9 rounded-full bg-teal text-white font-bold flex items-center justify-center shrink-0">{{ initial(commit) }}</span>
                 <span class="flex-1 min-w-0">
@@ -43,6 +43,7 @@
                 <basil-icon name="arrow-small" :class="['text-sm shrink-0 transition-transform', open[branch.name + commit.sha] ? '-rotate-90' : 'rotate-90']"></basil-icon>
               </button>
 
+              <transition name="drop">
               <div v-if="open[branch.name + commit.sha]" class="pl-[4.75rem] pr-5 pb-5 flex flex-col gap-3 text-sm">
                 <template v-for="(block, index) in body(commit)" :key="index">
                   <ul v-if="block.list" class="flex flex-col gap-2">
@@ -62,6 +63,7 @@
                   <a class="group/bt inline-flex items-center text-lteal" :href="commit.url" target="_blank" rel="noopener"><span class="group-hover/bt:underline">{{ $t('Open commit on GitHub') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
                 </div>
               </div>
+              </transition>
             </div>
           </div>
         </div>

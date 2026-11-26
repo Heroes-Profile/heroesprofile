@@ -67,7 +67,7 @@
           <div class="flex flex-col gap-1.5">
             <span class="text-xs font-bold uppercase text-subtext">{{ $t('League tier breakdown') }}</span>
             <template v-for="league in leagues" :key="league.tier">
-              <button type="button" :disabled="!league.divisions.length" :aria-expanded="!!openLeagues[league.tier]" @click="openLeagues[league.tier] = !openLeagues[league.tier]"
+              <button type="button" :disabled="!league.divisions.length" :aria-expanded="!!openLeagues[league.tier]" @click="openLeagues = openLeagues[league.tier] ? {} : { [league.tier]: true }"
                 :class="['flex items-center justify-between gap-3 rounded-lg px-2.5 py-1.5 text-left transition-colors', league.current ? 'bg-surface-2 font-bold' : 'bg-surface-1', league.divisions.length ? 'hover:bg-surface-3 cursor-pointer' : 'cursor-default']">
                 <span class="px-2.5 py-0.5 rounded-lg text-xs font-medium" :style="tierStyle(league.label)">{{ $t(league.label) }}</span>
                 <span class="flex items-center gap-2 text-sm tabular-nums">

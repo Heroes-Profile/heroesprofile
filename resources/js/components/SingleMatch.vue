@@ -25,9 +25,11 @@
         <div class="relative max-w-[120rem] mx-auto px-4 md:px-8 grid xl:grid-cols-2 gap-6">
           <div v-for="team in [0, 1]" :key="team" :class="['rounded-panel bg-surface border-t-4 p-5 md:p-6 flex flex-col gap-5 min-w-0', data.winner == team ? 'border-win' : 'border-loss']">
             <div class="flex flex-wrap items-center justify-between gap-3">
-              <div class="flex items-center gap-3 min-w-0">
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1 min-w-0">
                 <h2 class="text-2xl font-bold truncate">{{ teamTitle(team) }}</h2>
                 <span :class="['shrink-0 rounded-md px-2 py-0.5 text-xs font-bold uppercase', data.winner == team ? 'bg-win/20 text-win' : 'bg-loss/20 text-loss']">{{ data.winner == team ? $t('Victory') : $t('Defeat') }}</span>
+                <!-- The team's own numbers sit by its name; the players' averages are under the portraits -->
+                <span v-for="stat in teamStats(team).totals" :key="stat.title" class="shrink-0 text-sm text-subtext whitespace-nowrap">{{ stat.title }} <span class="font-semibold text-white">{{ stat.value }}</span></span>
               </div>
               <div v-if="showBans" class="flex items-center gap-2">
                 <span class="text-xs font-semibold uppercase text-subtext">{{ $t('Bans') }}</span>
@@ -66,8 +68,12 @@
               </div>
             </div>
 
-            <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
-              <stat-box v-for="stat in teamStats(team)" :key="stat.title" class="!m-0 !min-w-0" :title="stat.title" :value="stat.value"></stat-box>
+            <!-- The players' averages under one heading, so their labels can be short -->
+            <div class="flex flex-col gap-1.5">
+              <span class="text-xs font-semibold uppercase text-subtext">{{ $t('Team averages') }}</span>
+              <div :class="['grid gap-2', teamStats(team).averages.length > 1 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-1']">
+                <stat-box v-for="stat in teamStats(team).averages" :key="stat.title" class="!m-0 !min-w-0" :title="stat.title" :value="stat.value"></stat-box>
+              </div>
             </div>
 
             <div v-if="esport && esport != 'Other' && mapBans(team).length" class="flex items-center gap-3">
@@ -117,7 +123,7 @@
               <thead>
                 <tr>
                   <th class="py-2 px-3 text-left text-sm leading-4">{{ $t('Player') }}</th>
-                  <th v-for="column in scoreColumns" :key="column.key" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer whitespace-nowrap" :class="[column.width, { 'bg-teal text-white': scoreSort === column.key }]" @click="sortScores(column.key)">
+                  <th v-for="column in scoreColumns" :key="column.key" class="py-2 px-3 text-center text-sm leading-4 cursor-pointer" :class="[column.width, { 'bg-teal text-white': scoreSort === column.key }]" @click="sortScores(column.key)">
                     {{ $t(column.label) }}<span v-if="column.key === 'total_rank'" class="inline-flex align-middle ml-1" @click.stop><round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true"><slot><p class="text-sm p-2 text-left font-normal whitespace-normal">{{ $t('Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match. 100 would be a perfect match with most MVPs hovering between 70-75.') }}</p></slot></round-image></span><sort-indicator :column="column.key" :sort-key="scoreSort || 'total_rank'" :sort-dir="scoreSortDir"></sort-indicator>
                   </th>
                 </tr>
@@ -441,7 +447,7 @@
       // Match Scores' columns; deaths are best low
       scoreColumns() {
         return [
-          { key: 'total_rank', label: this.$t('HP Rating'), value: player => player.total_rank, width: 'w-[150px]' },
+          { key: 'total_rank', label: this.$t('HP Rating'), value: player => player.total_rank, width: 'w-[180px]' },
           { key: 'kills', label: this.$t('Kills'), value: player => player.score.kills, width: 'w-[110px]' },
           { key: 'takedowns', label: this.$t('Takedowns'), value: player => player.score.takedowns, width: 'w-[130px]' },
           { key: 'deaths', label: this.$t('Deaths'), value: player => player.score.deaths, lowest: true, width: 'w-[110px]' },
@@ -529,21 +535,19 @@
       // The numbers under a team's players
       teamStats(team) {
         const players = this.data.players[team];
-        if (this.esport) {
-          return [
-            { title: this.$t('Team Level'), value: players[0].score.level },
-            { title: this.$t('Takedowns'), value: this.getTakedownsValue(players) },
-            { title: this.$t('Avg. Hero Level'), value: this.getAverageValue('avg_hero_level', players) },
-          ];
-        }
-        return [
+        const totals = [
           { title: this.$t('Team Level'), value: players[0].score.level },
           { title: this.$t('Takedowns'), value: this.getTakedownsValue(players) },
-          { title: this.$t('Avg. HP MMR'), value: this.getAverageValue('player_mmr', players) },
-          { title: this.$t('Avg. HP Hero MMR'), value: this.getAverageValue('hero_mmr', players) },
-          { title: this.$t('Avg. HP Role MMR'), value: this.getAverageValue('role_mmr', players) },
-          { title: this.$t('Avg. Account Level'), value: this.getAverageValue('account_level', players) },
         ];
+        const averages = this.esport
+          ? [{ title: this.$t('Hero Level'), value: this.getAverageValue('avg_hero_level', players) }]
+          : [
+            { title: this.$t('HP MMR'), value: this.getAverageValue('player_mmr', players) },
+            { title: this.$t('Hero MMR'), value: this.getAverageValue('hero_mmr', players) },
+            { title: this.$t('Role MMR'), value: this.getAverageValue('role_mmr', players) },
+            { title: this.$t('Account Level'), value: this.getAverageValue('account_level', players) },
+          ];
+        return { totals, averages };
       },
       mapBans(team) {
         const bans = team == 0 ? this.data.map_bans?.team_zero_ban_data : this.data.map_bans?.team_one_ban_data;

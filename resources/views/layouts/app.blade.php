@@ -180,7 +180,7 @@
     @endif
 
     {{-- Phones: room above the footer for the help button, which sits there once the page reaches the bottom, so it doesn't cover the last of the content --}}
-    <footer class="mt-auto @yield('footer_gap', 'pt-[2em]') max-md:!pt-24">
+    <footer class="mt-auto @yield('footer_gap', 'pt-[10rem]') max-md:!pt-24">
       @if(isset($isBackendOff) && $isBackendOff)
         <div class="bg-red text-sm text-center p-1">
           {{ __('The backend is currently offline. Some features may not be available. Please contact :email', ['email' => 'zemill@heroesprofile.com']) }}

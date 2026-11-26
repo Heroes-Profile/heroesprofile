@@ -360,13 +360,17 @@
         <!-- The advanced filters toggle and Filter, one item of the row. The toggle is lit while they're open; the dot means
              an advanced filter is set while they're hidden -->
         <div v-if="!compact" :class="['filter-actions flex items-end gap-2 p-2', leaderboardOrder('Filter')]">
-          <round-image v-if="advancedfiltersinfo && !hideadvancedfilteringbutton" class="self-center" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
-            <p class="max-sm:text-xs">{{ advancedfiltersinfo }}</p>
-          </round-image>
-          <button v-if="!hideadvancedfilteringbutton" type="button" :class="['relative h-10 w-10 shrink-0 rounded transition-colors', toggleExtraFilters ? 'bg-teal text-white hover:bg-lteal' : 'bg-surface-3 text-subtext hover:text-white']" :title="toggleButtonText" :aria-label="toggleButtonText" :aria-expanded="!!toggleExtraFilters" @click="setAdvancedFilters(!toggleExtraFilters)">
-            <i class="fas fa-sliders"></i>
-            <span v-if="advancedFiltersApplied" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-teal"></span>
-          </button>
+          <!-- Hovering the toggle says what it does and that advanced filters can be slow -->
+          <icon-with-hover v-if="!hideadvancedfilteringbutton" class="shrink-0" popupsize="fit">
+            <template #trigger>
+              <button type="button" :class="['relative h-10 w-10 shrink-0 rounded transition-colors', toggleExtraFilters ? 'bg-teal text-white hover:bg-lteal' : 'bg-surface-3 text-subtext hover:text-white']" :aria-label="toggleButtonText" :aria-expanded="!!toggleExtraFilters" @click.stop="setAdvancedFilters(!toggleExtraFilters)">
+                <i class="fas fa-sliders"></i>
+                <span v-if="advancedFiltersApplied" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-teal"></span>
+              </button>
+            </template>
+            <p class="font-semibold text-white">{{ toggleButtonText }}</p>
+            <p>{{ $t(advancedfiltersinfo || 'Advanced filters may take longer to run.') }}</p>
+          </icon-with-hover>
           <button v-if="!autoapply" :disabled="disabledFilter" @click="applyFilter" class="btn bg-blue enabled:hover:bg-[#425a8e] disabled:bg-[#223562] disabled:text-[#b7b7bb] font-semibold h-10 flex-1 min-w-[7.5rem]">
             {{ $t('Filter') }}
           </button>
@@ -532,9 +536,6 @@
       <div v-if="compact" class="flex max-md:mb-auto" :class="$slots['compact-footer'] ? 'justify-between items-start' : 'justify-end'">
         <div v-if="$slots['compact-footer']" class="mt-2"><slot name="compact-footer"></slot></div>
         <button type="button" :class="['inline-flex items-center gap-1.5 text-sm font-medium text-teal hover:text-lteal mt-2']" v-if="!hideadvancedfilteringbutton && !(toggleExtraFilters && hasAdvancedFilters)" :aria-expanded="!!toggleExtraFilters" @click="setAdvancedFilters(!toggleExtraFilters)" >{{ toggleButtonText }}<basil-icon name="arrow-small" :class="['text-xs', toggleExtraFilters ? '-rotate-90' : 'rotate-90']"></basil-icon></button>
-        <round-image v-if="advancedfiltersinfo && !hideadvancedfilteringbutton" class="ml-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
-          <p class="max-sm:text-xs">{{ advancedfiltersinfo }}</p>
-        </round-image>
       </div>
     </div>
 
@@ -1106,6 +1107,10 @@
         const perRowMax = Math.max(1, Math.floor(width / minBox));
         const perRow = Math.ceil(items.length / Math.ceil(items.length / perRowMax));
         items.forEach(item => size(item, `1 1 calc(${100 / perRow}% - 0.1px)`, '0', '100%'));
+        // With no Filter button (filters that apply themselves) the toggle takes only its own width; the boxes grow into the rest
+        if(actions && this.autoapply){
+          size(actions, '0 0 auto');
+        }
       },
       // Show/Hide advanced filters, remembered for the next page: a cookie, and the account setting when logged in
       // (a guest's save is refused by the server, harmlessly)

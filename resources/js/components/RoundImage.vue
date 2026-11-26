@@ -22,7 +22,8 @@
       // 224 x 322, as in the redesign
       'md:w-[14rem]': size === 'large',
       'md:h-[20.125rem]': size === 'large',
-      'overflow-hidden rounded': size === 'large',
+      // Art is a level-2 card: 16px corners
+      'overflow-hidden rounded-control': size === 'large',
       'flex flex-col': !icon,
       // A hook for app.css: in a table header the icon hangs past its label
       'info-icon': isInfoIcon,
@@ -92,7 +93,7 @@
         : size === 'talent'
         ? 'object-cover relative hover:brightness-125 hover:drop-shadow w-[2.625rem] h-[2.625rem] max-w-none rounded'
         : size === 'large'
-        ? 'object-cover object-center relative hover:brightness-125 hover:drop-shadow max-w-none rounded md:w-full md:h-full max-md:w-40 max-md:h-auto'
+        ? 'object-cover object-center relative hover:brightness-125 hover:drop-shadow max-w-none rounded-control md:w-full md:h-full max-md:w-40 max-md:h-auto'
         : 'object-cover relative hover:brightness-125 hover:drop-shadow max-sm:w-[2.5em] max-sm:h-[2.5em] max-sm:min-w-[2.5em] w-full h-10 min-w-10 max-md:h-10 max-md:w-10 max-w-none md:mr-auto',
       { 
         

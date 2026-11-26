@@ -15,6 +15,7 @@
           <basil-icon name="arrow" :class="['transition-transform', showHowTo ? '-rotate-90' : 'rotate-90']"></basil-icon>
         </button>
 
+        <transition name="drop">
         <div v-if="showHowTo" class="bg-surface-4 rounded-b px-4 md:px-6 pb-6 pt-2 flex max-xl:flex-col gap-4 md:gap-6">
           <div class="flex-1 min-w-0 bg-surface rounded-panel p-4 md:p-6 flex flex-col gap-5">
             <h3 class="text-xl font-bold">{{ $t('On a computer') }}</h3>
@@ -53,6 +54,7 @@
             </button>
           </div>
         </div>
+        </transition>
       </div>
 
       <div class="grid xl:grid-cols-[1fr_32rem] gap-6">

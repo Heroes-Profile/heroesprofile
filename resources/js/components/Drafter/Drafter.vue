@@ -5,11 +5,16 @@
       <template #heading>
         <page-heading :heading="'Drafter'" :subheading="'Draft helper'"></page-heading>
       </template>
+      <!-- Locked once the draft starts, so the suggestions don't shift under it; Reset draft unlocks them. Over the locked
+           filters a note follows the cursor (a tap shows it on phones) -->
+      <div @mousemove="showLockTip" @click="showLockTip" @mouseleave="lockTip = null">
       <filters
+        :class="{ 'opacity-50 pointer-events-none select-none': draftStarted }"
+        :inert="draftStarted || null"
         :isLoading="isLoading"
         :onFilter="filterData"
         :filters="drafterFilters"
-        :timeframetypeinput="'minor'"
+        :timeframetypeinput="timeframetype"
         :timeframeinput="timeframe"
         :gametypeinput="gametype"
         :regioninput="region"
@@ -26,9 +31,12 @@
         :includeplayerrank="true"
         :includeherorank="true"
         :includerolerank="true"
-        :advancedfiltersinfo="'Advanced filters may take a lot longer to run.'"
         :autoapply="true"
       ></filters>
+      </div>
+      <Teleport to="body">
+        <div v-if="draftStarted && lockTip" class="fixed z-[55] -translate-y-full pointer-events-none max-w-[16rem] bg-surface-4 text-sm text-soft rounded px-3 py-2 drop-shadow-md" :style="{ left: lockTip.x + 'px', top: lockTip.y + 'px' }">{{ $t('Filters cannot be changed until the draft is reset') }}</div>
+      </Teleport>
     </player-page-top>
 
     <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
@@ -246,8 +254,12 @@ export default {
       compositionsLoading: false,
       compositionsError: false,
       loadId: 0,
+      // Where the locked-filters note sits, while the cursor is over them
+      lockTip: null,
 
       timeframe: null,
+      // Builds, or 'major_grouped' when the bar sends a whole sub patch (2.57.1)
+      timeframetype: 'minor',
       gametype: null,
       region: null,
       herolevel: null,
@@ -318,6 +330,9 @@ export default {
     },
     currentPick() {
       return this.picks.length;
+    },
+    draftStarted() {
+      return this.picks.length > 0;
     },
     draftComplete() {
       return this.currentPick >= this.pickOrder.length;
@@ -469,11 +484,23 @@ export default {
       if (this.currentPick - index > 1 && !confirm(this.$t('Go back to :step? This undoes the last :count bans and picks.', { step: this.slotLabel(this.pickOrder[keep]), count: undone }))) return;
       this.picks = this.picks.slice(0, keep);
     },
+    // Just above and right of the cursor, kept inside the window
+    showLockTip(event) {
+      if (!this.draftStarted) {
+        this.lockTip = null;
+        return;
+      }
+      this.lockTip = {
+        x: Math.min(event.clientX + 14, window.innerWidth - 272),
+        y: event.clientY - 12,
+      };
+    },
     restartDraft() {
       this.picks = [];
     },
     filterData(filteredData) {
       this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes) : this.defaulttimeframe;
+      this.timeframetype = filteredData.multi.Timeframes ? (filteredData.single['Timeframe Type'] || 'minor') : 'minor';
       this.region = filteredData.multi.Regions ? Array.from(filteredData.multi.Regions) : null;
       this.herolevel = filteredData.multi['Hero Level'] ? Array.from(filteredData.multi['Hero Level']) : null;
       this.gamemap = filteredData.single.Map ? [filteredData.single.Map] : null;
@@ -487,7 +514,7 @@ export default {
     },
     filterParameters() {
       return {
-        timeframe_type: 'minor',
+        timeframe_type: this.timeframetype,
         timeframe: this.timeframe,
         region: this.region,
         hero_level: this.herolevel,
