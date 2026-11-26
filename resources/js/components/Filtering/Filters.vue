@@ -1490,8 +1490,8 @@
       timeframeHeadingsOf(timeframe) {
         const parts = String(timeframe).split('.');
         return [
-          { key: parts.slice(0, 2).join('.'), name: parts.slice(0, 2).join('.') + ' (Major)' },
-          { key: parts.slice(0, 3).join('.'), name: parts.slice(0, 3).join('.') + ' (Sub Patch)' },
+          { key: parts.slice(0, 2).join('.'), name: this.$t(':patch (Major)', { patch: parts.slice(0, 2).join('.') }) },
+          { key: parts.slice(0, 3).join('.'), name: this.$t(':patch (Sub Patch)', { patch: parts.slice(0, 3).join('.') }) },
         ];
       },
       // A major or sub patch's builds; builds are themselves

@@ -3,7 +3,7 @@
   <div class="min-w-0">
   <!-- Phones: a card per build, its talents, numbers and copy button stacked, so nothing has to shrink to fit -->
   <div class="md:hidden flex flex-col gap-2">
-    <div v-for="(row, index) in talentbuilddata" :key="index" class="rounded-control bg-surface-1 p-3 flex flex-col gap-3 min-w-0">
+    <div v-for="(row, index) in talentbuilddata" :key="index" class="rounded-control bg-surface-3 p-3 flex flex-col gap-3 min-w-0">
       <div ref="mobiletalents" class="min-w-0 overflow-clip"><build-code :build="row" :hero="row.hero" show="talents" align="start" :popup-hoverable="false"></build-code></div>
       <div class="grid grid-cols-3 gap-2 text-sm">
         <span class="flex flex-col"><span class="text-xs text-subtext">{{ $t('Games') }}</span><span class="font-semibold tabular-nums">{{ getValueLocal(row.games_played) }}</span></span>

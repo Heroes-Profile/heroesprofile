@@ -102,7 +102,7 @@
                     <td class="py-2.5 px-4">
                       <span :class="['flex items-center gap-2 border-l-2 pl-2', row.ban ? 'border-red' : 'border-teal']">
                         <span :class="['px-1.5 py-0.5 rounded-[0.25rem] text-[0.625rem] font-bold uppercase', row.ban ? 'bg-red/20 text-lred' : 'bg-teal/20 text-lteal']">{{ row.ban ? $t('Ban') : $t('Pick') }}</span>
-                        <span class="font-semibold">{{ $t(row.label) }}</span>
+                        <span class="font-semibold">{{ slotLabel(row.label) }}</span>
                       </span>
                     </td>
                     <td class="py-2.5 px-4"><stat-bar :value="maxPopularity ? (row.popularity / maxPopularity) * 100 : 0" :display-text="row.popularity.toFixed(2)" suffix="%" :color="row.ban ? 'red' : 'teal'"></stat-bar></td>
@@ -242,13 +242,13 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         const percent = value => value.toFixed(2);
         const tiles = [];
         const banned = best(bans, 'popularity');
-        if (banned) tiles.push({ label: 'Banned most at', value: this.$t(banned.label), caption: this.$t(':rate% of drafts', { rate: percent(banned.popularity) }), border: 'border-red' });
+        if (banned) tiles.push({ label: 'Banned most at', value: this.slotLabel(banned.label), caption: this.$t(':rate% of drafts', { rate: percent(banned.popularity) }), border: 'border-red' });
         const picked = best(picks, 'popularity');
-        if (picked) tiles.push({ label: 'Picked most at', value: this.$t(picked.label), caption: this.$t(':rate% of drafts', { rate: percent(picked.popularity) }), border: 'border-teal' });
+        if (picked) tiles.push({ label: 'Picked most at', value: this.slotLabel(picked.label), caption: this.$t(':rate% of drafts', { rate: percent(picked.popularity) }), border: 'border-teal' });
         const bestTeam = best(this.rows, 'win_rate');
-        if (bestTeam) tiles.push({ label: 'Best team win rate', value: this.$t(bestTeam.label), caption: this.$t(bestTeam.ban ? ':rate% when banned there' : ':rate% when picked there', { rate: percent(bestTeam.win_rate) }), border: 'border-win' });
+        if (bestTeam) tiles.push({ label: 'Best team win rate', value: this.slotLabel(bestTeam.label), caption: this.$t(bestTeam.ban ? ':rate% when banned there' : ':rate% when picked there', { rate: percent(bestTeam.win_rate) }), border: 'border-win' });
         const bestPick = best(picks, 'win_rate');
-        if (bestPick) tiles.push({ label: 'Best pick slot', value: this.$t(bestPick.label), caption: this.$t(':rate% team win rate', { rate: percent(bestPick.win_rate) }), border: 'border-yellow' });
+        if (bestPick) tiles.push({ label: 'Best pick slot', value: this.slotLabel(bestPick.label), caption: this.$t(':rate% team win rate', { rate: percent(bestPick.win_rate) }), border: 'border-yellow' });
         return tiles;
       },
       patchNotesUrl() {
@@ -375,6 +375,11 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         const currentUrl = window.location.href;
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}${queryString}`);
+      },
+      // "Ban 4" in the page's language
+      slotLabel(label) {
+        const [kind, number] = String(label).split(' ');
+        return this.$t(kind == 'Ban' ? 'Ban :number' : 'Pick :number', { number });
       },
       determinePickOrBan(pick_number) {
         const mapping = {
