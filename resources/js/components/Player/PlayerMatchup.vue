@@ -75,6 +75,9 @@
       </tbody>
     </table>
   </div>
+  <div v-else-if="asyncLoading">
+    <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
+  </div>
   <div v-else-if="isLoading">
     <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
   </div>
@@ -109,6 +112,7 @@
       return {
         cancelTokenSource: null,
         isLoading: false,
+        asyncLoading: false,
         infotext: "Hero Matchups provide information on which heroes " + this.battletag + " is good with and against",
         gametype: null,
         data: null,
@@ -224,7 +228,7 @@
         this.cancelTokenSource = this.$axios.CancelToken.source();
       
         try{
-          const response = await this.$axios.post("/api/v1/player/matchups", {
+          const response = await this.$globalAsyncPost("/api/v1/player/matchups", {
             blizz_id: this.blizzid,
             region: this.region,
             battletag: this.battletag,
@@ -237,6 +241,11 @@
           },
           {
             cancelToken: this.cancelTokenSource.token,
+            onLoadStatus: (status, meta) => {
+              if (meta.phase === 'polling') {
+                this.asyncLoading = true;
+              }
+            },
           });
           this.data = response.data.tabledata;
           this.topfiveheroes = response.data.top_five_heroes;
@@ -246,6 +255,7 @@
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
+          this.asyncLoading = false;
         }
       },
       cancelAxiosRequest() {
