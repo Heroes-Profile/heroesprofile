@@ -74,10 +74,7 @@ details.group.is-closing[open] .group-open\:-rotate-90 {
   min-width: 100%;
   @apply bg-surface-2 text-white rounded p-2 shadow-[0_0.75rem_2rem_rgba(0,0,0,0.45)];
 }
-/* Empty boxes a shade lighter than the panel; the radio's dark ring matches the panel */
-.expandable-dropdown .form-checkbox:not(:checked){
-  @apply bg-surface-3;
-}
+/* Empty boxes stay level 4, as everywhere; the radio's dark ring matches the panel */
 .expandable-dropdown input[type="radio"].form-checkbox:checked{
   box-shadow: inset 0 0 0 1px #008b8b, inset 0 0 0 0.25rem #2c2f3b;
 }
@@ -440,8 +437,8 @@ th{
    Under the mode class so it beats the text-sm each table puts on its headers */
 /* The filters' checkboxes and radios, drawn as in the redesign's UI kit (size S): an 18px box with 4px corners, teal
    with a white tick when checked; the radio an 18px circle with a teal dot. Empty, they're a shade lighter than what
-   they sit on, as in the UI kit: surface-4, since the filter dropdowns are surface-3 */
-.form-checkbox{
+   they sit on, as in the UI kit: surface-4 (level 4) everywhere. input.form-checkbox, so it beats .dark-mode input */
+input.form-checkbox{
   @apply bg-surface-4 shrink-0 cursor-pointer rounded;
   appearance: none;
   -webkit-appearance: none;

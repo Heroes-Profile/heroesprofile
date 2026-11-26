@@ -32,7 +32,7 @@
       <div class="max-h-80 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable]">
         <div class="flex flex-col gap-1" :class="{ 'pr-4 whitespace-nowrap': text === 'Stat Filter' }">
           <!-- The whole row picks its option: the label is tied to the radio -->
-          <label v-for="value in filteredValues" :key="value.code" :for="value.code" class="select-none group flex items-center gap-3 px-3 py-2 rounded hover:bg-surface-4 transition-colors cursor-pointer" :class="{ 'whitespace-nowrap': hasPatchDates }">
+          <label v-for="value in filteredValues" :key="value.code" :for="value.code" class="select-none group flex items-center gap-3 px-3 py-2 rounded hover:bg-surface-3 transition-colors cursor-pointer" :class="{ 'whitespace-nowrap': hasPatchDates }">
             <input
               type="radio"
               :id="value.code"

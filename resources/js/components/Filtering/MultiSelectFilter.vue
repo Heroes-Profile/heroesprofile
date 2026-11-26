@@ -52,7 +52,7 @@
           ></tab-button>
         </div>
         <!-- Heading checkboxes stand in for Select All -->
-        <label v-if="!headings && !groupbyyear" for="select-all" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded hover:bg-surface-4 transition-colors cursor-pointer">
+        <label v-if="!headings && !groupbyyear" for="select-all" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded hover:bg-surface-3 transition-colors cursor-pointer">
           <input 
           type="checkbox" 
           id="select-all" 
@@ -65,7 +65,7 @@
         <!-- pr-3 keeps the longest option clear of the scrollbar -->
         <div class="max-h-80 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable] pr-1 flex flex-col gap-1">
           <template v-for="row in rows" :key="row.key">
-          <label v-if="row.heading" :for="row.key" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded hover:bg-surface-4 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !row.codes.some(code => isSelectable(code)) }]">
+          <label v-if="row.heading" :for="row.key" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded hover:bg-surface-3 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !row.codes.some(code => isSelectable(code)) }]">
             <input
             type="checkbox"
             :id="row.key"
@@ -77,7 +77,7 @@
             >
             <span class="text-sm font-bold text-white">{{ $t(row.name) }}</span>
           </label>
-          <label v-else :for="row.value.code" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded hover:bg-surface-4 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !isSelectable(row.value.code) }]">
+          <label v-else :for="row.value.code" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded hover:bg-surface-3 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !isSelectable(row.value.code) }]">
             <input
             type="checkbox"
             :id="row.value.code"
