@@ -1,7 +1,7 @@
 <template>
   <div id="filter-label" class="relative">
     <div class="flex flex-col gap-1.5 text-sm font-medium text-subtext p-2">
-      <span>{{ text }}</span>
+      <span>{{ $t(text) }}</span>
       <div class="relative flex">
         <input
           type="text"
@@ -28,7 +28,7 @@
           </div>
         </div>
       </div>
-      <p v-if="error" class="text-red text-xs mt-1">{{ error }}</p>
+      <p v-if="error" class="text-red text-xs mt-1">{{ $t(error) }}</p>
       <div v-if="selected.length > 1" class="flex items-center gap-2 mt-1">
         <tab-button tab1text="OR" tab2text="AND" :ignoreclick="true" @tab-click="setMatch" :overridedefaultside="match === 'all' ? 'right' : 'left'"></tab-button>
         <span class="text-xs">{{ match === 'all' ? $t('Games with every player') : $t('Games with any player') }}</span>

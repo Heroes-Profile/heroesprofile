@@ -77,7 +77,7 @@
 
         <!-- Abilities -->
         <template v-else-if="activeTab === 'abilities'">
-          <panel-box v-for="(group, index) in abilityGroups" :key="group.key" :title="group.label || 'Abilities'" :divider="false">
+          <panel-box v-for="(group, index) in abilityGroups" :key="group.key" :title="group.label ? $heroName(group.label) : 'Abilities'" :divider="false">
             <template v-if="index === 0" #right>
               <level-slider class="w-full md:w-72" v-model="level"></level-slider>
             </template>
@@ -92,7 +92,7 @@
               <div class="min-w-0 px-3">
                 <div class="flex flex-wrap items-center gap-2">
                   <span class="font-bold">{{ $talentName(ability) }}</span>
-                  <span v-if="hotkeyLabel(ability)" :class="['px-1 text-sm border rounded', isHeroicOrTrait(ability) ? 'text-yellow border-yellow' : 'border-gray-medium']">{{ hotkeyLabel(ability) }}</span>
+                  <span v-if="hotkeyLabel(ability)" :class="['px-1 text-sm border rounded', isHeroicOrTrait(ability) ? 'text-yellow border-yellow' : 'border-gray-medium']">{{ $t(hotkeyLabel(ability)) }}</span>
                 </div>
                 <p v-if="ability.short_description" class="text-sm text-gray-medium">{{ $gameText(ability, 'short_description') }}</p>
               </div>
@@ -123,7 +123,7 @@
               </div>
               <span v-if="talentBadge(talent)" :class="['flex items-center gap-1 px-1 text-sm border rounded self-start whitespace-nowrap', talentBadge(talent).class]">
                 <img v-if="talent.is_quest" class="w-4 h-4" src="/images/miscellaneous/quest-icon.png" alt="Quest">
-                {{ talentBadge(talent).label }}
+                {{ $t(talentBadge(talent).label) }}
               </span>
             </div>
           </div>
@@ -348,13 +348,13 @@ export default {
     abilityCosts(ability) {
       const costs = [];
       if (ability.mana_cost && ability.mana_cost !== '0') {
-        costs.push(`${(this.units.find(u => u.is_main) || {}).energy_type || 'Mana'}: ${ability.mana_cost}`);
+        costs.push(`${this.$t((this.units.find(u => u.is_main) || {}).energy_type || 'Mana')}: ${ability.mana_cost}`);
       }
       if (ability.cooldown && ability.cooldown !== '0') {
-        costs.push(`Cooldown: ${ability.cooldown}`);
+        costs.push(this.$t('Cooldown: :seconds', { seconds: ability.cooldown }));
       }
       if (ability.charges && ability.charges > 1 && ability.charges < 65535) {
-        costs.push(`Charges: ${ability.charges}`);
+        costs.push(this.$t('Charges: :count', { count: ability.charges }));
       }
       return costs;
     },

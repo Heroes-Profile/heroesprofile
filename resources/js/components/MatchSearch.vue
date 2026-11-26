@@ -43,7 +43,7 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
     <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
-      <p v-if="errors.length" class="text-red">{{ errors.join(' ') }}</p>
+      <p v-if="errors.length" class="text-red">{{ errors.map(error => $t(error)).join(' ') }}</p>
 
       <!-- Before the first search, the heading's info sits where the matches will load -->
       <panel-box v-if="!rows && !isLoading">
@@ -208,7 +208,7 @@
 
         <!-- A search that ran out of time before filling a page says how far it got -->
         <p v-if="nextBeforeReplayID && !pageFull && searchedBackTo && !isLoading" class="text-sm text-center">
-          {{ rows.length ? 'Found ' + rows.length.toLocaleString('en-US') + ' so far.' : $t('No matches yet.') }} Searched back to {{ formatDay(searchedBackTo) }}.
+          {{ rows.length ? $t('Found :count so far.', { count: rows.length.toLocaleString('en-US') }) : $t('No matches yet.') }} {{ $t('Searched back to :date.', { date: formatDay(searchedBackTo) }) }}
           <button type="button" class="underline" @click="loadMore">{{ $t('Keep Searching') }}</button>
         </p>
       </template>

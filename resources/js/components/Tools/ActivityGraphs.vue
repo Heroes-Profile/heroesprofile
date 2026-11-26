@@ -34,7 +34,7 @@
     </div>
 
     <div v-else class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 pb-10 flex flex-col gap-6">
-      <div v-if="error" class="text-center text-red py-20">{{ error }}</div>
+      <div v-if="error" class="text-center text-red py-20">{{ $t(error) }}</div>
       <template v-else-if="data.length">
         <!-- This year at a glance -->
         <div v-if="summary" class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -55,12 +55,12 @@
           <line-chart
             :data="filteredData"
             :dataAttribute="'unique_players'"
-            :title="'Unique Players per Month'"
+            :title="$t('Unique Players per Month')"
             :pointRadius="4"
             :pointHoverRadius="8"
             :projected="projectedCurrentMonth"
-            :projectedLabel="'Expected (current month)'"
-            :markers="events"
+            :projectedLabel="$t('Expected (current month)')"
+            :markers="events.map(event => ({ ...event, text: $t(event.text) }))"
           ></line-chart>
           <p v-if="projectedCurrentMonth" class="flex items-center gap-2.5 text-sm text-subtext"><basil-icon name="info" class="text-lg shrink-0"></basil-icon>{{ $t('The current month is still filling in: the dashed line shows the expected total.') }}</p>
         </panel-box>
@@ -70,6 +70,7 @@
 </template>
 
 <script>
+import { siteLocale } from '../../utils/translate';
 export default {
   name: 'ActivityGraphs',
   props: {
@@ -188,7 +189,7 @@ export default {
     // "October" from "2026-10"
     monthName(label) {
       const [year, month] = label.split('-');
-      return new Date(Date.UTC(year, month - 1, 1)).toLocaleDateString(undefined, { month: 'long', timeZone: 'UTC' });
+      return new Date(Date.UTC(year, month - 1, 1)).toLocaleDateString(siteLocale(), { month: 'long', timeZone: 'UTC' });
     },
     toggleYear(year) {
       // From All, a click picks just that year
