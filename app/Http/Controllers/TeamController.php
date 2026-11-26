@@ -12,6 +12,7 @@ class TeamController extends Controller
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'members' => config('team.members'),
             'contributors' => config('team.contributors', []),
+            'bugReporters' => config('team.bug_reporters', []),
         ]);
     }
 }

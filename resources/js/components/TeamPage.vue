@@ -41,23 +41,52 @@
     <!-- People who helped with a one-off piece of work: a row each in one card, what they did, when, and their Discord -->
     <div v-if="contributors.length" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6">
       <panel-box title="Contributors" subtitle="People who helped with a part of Heroes Profile." :divider="false">
-        <div class="flex flex-col gap-3">
-          <div v-for="contributor in contributors" :key="contributor.name" class="rounded-control bg-surface-1 px-4 py-3 flex flex-wrap items-center gap-x-4 gap-y-3">
-            <span class="w-10 h-10 shrink-0 rounded-full bg-teal flex items-center justify-center text-lg font-bold">{{ contributor.name.charAt(0) }}</span>
-            <div class="flex-1 min-w-0 flex flex-col">
-              <h3 class="font-bold">{{ contributor.name }}</h3>
-              <!-- The chevron is held to the last word, so it never wraps onto a line of its own -->
-              <a v-if="contributor.link" :href="contributor.link" target="_blank" rel="noopener" class="group/bt text-sm text-teal"><span class="group-hover/bt:underline">{{ leadWords($t(contributor.contribution)) }}</span><span class="whitespace-nowrap"><span class="group-hover/bt:underline">{{ lastWord($t(contributor.contribution)) }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span></a>
-              <span v-else class="text-sm text-teal">{{ $t(contributor.contribution) }}</span>
+        <!-- As many cards across as fit, six on a wide screen -->
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-3">
+          <div v-for="contributor in contributors" :key="contributor.name" :class="['rounded-control bg-surface-1 px-4 py-3 flex flex-col gap-3', { 'border-2 border-teal': contributor.featured }]">
+            <div class="flex items-center gap-3">
+              <span :class="['shrink-0 rounded-full bg-teal flex items-center justify-center font-bold', contributor.featured ? 'w-12 h-12 text-xl' : 'w-10 h-10 text-lg']">{{ contributor.name.charAt(0) }}</span>
+              <div class="flex-1 min-w-0 flex flex-col">
+                <h3 :class="['font-bold flex items-center gap-2', { 'text-lg': contributor.featured }]">{{ contributor.name }}
+                  <icon-with-hover v-if="contributor.featured" class="text-teal text-base" size="small" icon="fas fa-award" title="info" popupsize="fit">
+                    <p class="max-sm:text-xs whitespace-nowrap">{{ $t('Significant contributor') }}</p>
+                  </icon-with-hover>
+                </h3>
+                <!-- The chevron is held to the last word, so it never wraps onto a line of its own -->
+                <a v-if="contributor.link" :href="contributor.link" target="_blank" rel="noopener" class="group/bt text-sm text-teal"><span class="group-hover/bt:underline">{{ leadWords($t(contributor.contribution)) }}</span><span class="whitespace-nowrap"><span class="group-hover/bt:underline">{{ lastWord($t(contributor.contribution)) }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span></a>
+                <span v-else class="text-sm text-teal">{{ $t(contributor.contribution) }}</span>
+              </div>
             </div>
-            <div class="flex flex-col items-end text-right">
-              <span class="text-xs text-subtext">{{ $t('On the team') }}</span>
-              <span class="text-sm font-semibold">{{ period(contributor) }}</span>
+            <div class="mt-auto flex flex-wrap items-center gap-2">
+              <span class="mr-auto text-sm text-subtext">{{ period(contributor) }}</span>
+              <a v-if="contributor.github" :href="'https://github.com/' + contributor.github" target="_blank" rel="noopener noreferrer" :class="[chipClass, 'bg-surface-3 text-sm']" title="GitHub"><i class="fab fa-github text-teal"></i><span class="group-hover/bt:underline">{{ contributor.github }}</span></a>
+              <a v-if="contributor.discord && contributor.discord_id" :href="'https://discord.com/users/' + contributor.discord_id" target="_blank" rel="noopener noreferrer" :class="[chipClass, 'bg-surface-3 text-sm']" :title="$t('Discord')"><i class="fab fa-discord text-teal"></i><span class="group-hover/bt:underline">{{ contributor.discord }}</span></a>
+              <button v-else-if="contributor.discord" type="button" :class="[chipClass, 'bg-surface-3 text-sm']" :title="copiedDiscord === contributor.discord ? $t('Copied') : $t('Copy Discord username')" @click="copyDiscord(contributor.discord)"><i class="fab fa-discord text-teal"></i><span class="group-hover/bt:underline">{{ contributor.discord }}</span><i :class="[copiedDiscord === contributor.discord ? 'fas fa-check text-lteal' : 'fas fa-copy text-subtext group-hover/bt:text-lteal', 'text-xs transition-colors']"></i></button>
             </div>
-            <a v-if="contributor.discord && contributor.discord_id" :href="'https://discord.com/users/' + contributor.discord_id" target="_blank" rel="noopener noreferrer" :class="[chipClass, 'bg-surface-3 text-sm']" :title="$t('Discord')"><i class="fab fa-discord text-teal"></i><span class="group-hover/bt:underline">{{ contributor.discord }}</span></a>
-            <button v-else-if="contributor.discord" type="button" :class="[chipClass, 'bg-surface-3 text-sm']" :title="copiedDiscord === contributor.discord ? $t('Copied') : $t('Copy Discord username')" @click="copyDiscord(contributor.discord)"><i class="fab fa-discord text-teal"></i><span class="group-hover/bt:underline">{{ contributor.discord }}</span><i :class="[copiedDiscord === contributor.discord ? 'fas fa-check text-lteal' : 'fas fa-copy text-subtext group-hover/bt:text-lteal', 'text-xs transition-colors']"></i></button>
           </div>
         </div>
+      </panel-box>
+    </div>
+
+    <!-- People whose GitHub issues reported real bugs or ideas: a chip each with their count, linking to their issues -->
+    <div v-if="bugReporters.length" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6">
+      <panel-box title="Bug reports & ideas" subtitle="People who reported bugs and suggested features on GitHub." :divider="false">
+        <template #right>
+          <search-input v-model="reporterSearch" class="w-full sm:w-[20rem]" :placeholder="$t('Search')"></search-input>
+        </template>
+        <!-- Chips all one size, as many across as fit; the border is always there so the highlighted one isn't taller -->
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(13rem,1fr))] gap-2 text-sm">
+          <span v-for="reporter in shownReporters" :key="reporter.github" :class="['flex items-center gap-2 rounded-lg bg-surface-1 border-2 px-3 py-1.5 min-w-0', reporter.featured ? 'border-teal' : 'border-transparent']">
+            <a :href="'https://github.com/Heroes-Profile/heroesprofile/issues?q=is%3Aissue+author%3A' + reporter.github" target="_blank" rel="noopener noreferrer" class="group/bt min-w-0 flex items-center gap-2">
+              <i class="fab fa-github text-teal"></i><span class="truncate group-hover/bt:underline" :title="reporter.github">{{ reporter.github }}</span>
+            </a>
+            <icon-with-hover v-if="reporter.featured" class="text-teal shrink-0" size="small" icon="fas fa-award" title="info" popupsize="fit">
+              <p class="max-sm:text-xs whitespace-nowrap">{{ $t('Significant contributor') }}</p>
+            </icon-with-hover>
+            <span class="ml-auto shrink-0 text-subtext tabular-nums">{{ reporter.count }}</span>
+          </span>
+        </div>
+        <p v-if="!shownReporters.length" class="text-sm text-subtext">{{ $t('No results found') }}</p>
       </panel-box>
     </div>
   </div>
@@ -71,14 +100,20 @@ export default {
   props: {
     members: { type: Array, required: true },
     contributors: { type: Array, default: () => [] },
+    bugReporters: { type: Array, default: () => [] },
   },
   data() {
     return {
       // The Discord username just copied, for its tick
       copiedDiscord: null,
+      reporterSearch: '',
     };
   },
   computed: {
+    shownReporters() {
+      const search = this.reporterSearch.trim().toLowerCase();
+      return search ? this.bugReporters.filter(reporter => reporter.github.toLowerCase().includes(search)) : this.bugReporters;
+    },
     // A contact chip: email, Reddit or Discord
     chipClass() {
       return 'group/bt inline-flex items-center gap-2 rounded-lg bg-surface-1 px-3 py-1.5 w-fit';
