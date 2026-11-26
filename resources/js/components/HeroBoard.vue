@@ -22,8 +22,8 @@
       </div>
     </div>
     <div v-else class="grid grid-cols-[repeat(auto-fill,minmax(4.75rem,1fr))] gap-y-3">
-      <div v-for="hero in visibleHeroes" :key="hero.id" :class="['relative flex flex-col items-center gap-1.5 min-w-0', hero.unavailable ? 'opacity-30 grayscale' : 'cursor-pointer']" @click="!hero.unavailable && $emit('pick', hero)">
-        <hero-image-wrapper :hero="hero" size="medium" :popup-hoverable="false" :class="['rounded-full', { 'ring-[3px] ring-[#f5c542] shadow-[0_0_1.25rem_0.25rem_rgba(245,197,66,0.8)]': glowIds.has(hero.id) }]">
+      <div v-for="hero in visibleHeroes" :key="hero.id" :class="['relative flex flex-col items-center gap-1.5 min-w-0', hero.unavailable ? 'opacity-30 grayscale' : 'cursor-pointer']" @click="!hero.unavailable && !tapToConfirm() && $emit('pick', hero)">
+        <hero-image-wrapper :hero="hero" size="medium" :popup-hoverable="false" :action-text="hero.unavailable ? null : pickText" @action="$emit('pick', hero)" :class="['rounded-full', { 'ring-[3px] ring-[#f5c542] shadow-[0_0_1.25rem_0.25rem_rgba(245,197,66,0.8)]': glowIds.has(hero.id) }]">
           <slot name="popup" :hero="hero"><h2>{{ $heroName(hero) }}</h2></slot>
         </hero-image-wrapper>
         <slot name="badge" :hero="hero"></slot>
@@ -45,6 +45,8 @@ export default {
     error: { type: String, default: null },
     // Heroes that glow gold, e.g. the Drafter's suggestions
     glowIds: { type: Set, default: () => new Set() },
+    // Set, phones tap a hero to open its popup, and pick it with this button there
+    pickText: { type: String, default: null },
   },
   emits: ['pick'],
   data() {
@@ -64,6 +66,10 @@ export default {
     },
   },
   methods: {
+    // The same width at which the popup turns tap-to-open
+    tapToConfirm() {
+      return !!this.pickText && window.innerWidth < 1024;
+    },
     clearSearch() {
       this.searchQuery = '';
     },

@@ -130,7 +130,7 @@
           </div>
         </div>
 
-        <hero-board class="xl:order-2" :heroes="visibleSuggestions" :loading="waiting" :glow-ids="glowIds"
+        <hero-board class="xl:order-2" :heroes="visibleSuggestions" :loading="waiting" :glow-ids="glowIds" :pick-text="draftComplete ? null : (isBanStep ? 'Ban' : 'Pick')"
           :error="dataError || (needsCompositions && compositionsError) ? $t('Failed to load draft data. Please try again.') : null" @pick="pickHero">
           <template #controls>
             <tab-button v-if="!mockDraft" :small="true" :tabs="sortTabs" :ignoreclick="true" :overridedefaultside="sortMode" @tab-click="sortMode = $event"></tab-button>

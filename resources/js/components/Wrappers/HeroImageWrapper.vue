@@ -19,6 +19,8 @@
       :hidedelay="popupHoverable ? undefined : 0"
       :href="href"
       :link-text="linkText"
+      :action-text="actionText"
+      @action="$emit('action')"
     >
       <slot>
         <div v-if="!hasSlotContent">
@@ -35,6 +37,7 @@ export default {
   name: 'HeroImageWrapper',
   components: {
   },
+  emits: ['action'],
   props: {
     hero: Object,
     size: String,
@@ -51,6 +54,7 @@ export default {
     mobileClick: Boolean,
     href: String,
     linkText: String,
+    actionText: String,
     // false: the popup closes as soon as the pointer leaves the portrait, like the talent icons'
     popupHoverable: { type: Boolean, default: false },
   },

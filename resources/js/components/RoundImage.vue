@@ -146,7 +146,8 @@
             </div>
           </div>
           <div ref="hoverContent" class="contents"><slot></slot></div>
-          <custom-button v-if="tapped" class="mt-2" :href="href" :text="linkText" size="small"></custom-button>
+          <custom-button v-if="tapped && href" class="mt-2" :href="href" :text="linkText" size="small"></custom-button>
+          <custom-button v-else-if="tapped && actionText" class="mt-2" :text="actionText" size="small" :ignoreclick="true" @click="takeAction"></custom-button>
         </div>
       </div>
     </Teleport>
@@ -214,8 +215,11 @@ export default {
     // Phones open the popup on tap instead of following the link, with a button to it
     href: String,
     linkText: String,
+    // Phones open the popup on tap with this button, which emits action (the Drafter's Pick / Ban)
+    actionText: String,
 
   },
+  emits: ['action'],
   data(){
     return {
       showTooltip: false,
@@ -282,6 +286,8 @@ export default {
       if (this.href && this.isSmallScreen()) {
         event.preventDefault();
         this.tapped = true;
+      } else if (this.actionText && this.isSmallScreen()) {
+        this.tapped = true;
       } else if (!this.icon) {
         return;
       } else if (this.pinned) {
@@ -290,6 +296,10 @@ export default {
       }
       this.handleMouseOver();
       this.pin();
+    },
+    takeAction() {
+      this.hideTooltip();
+      this.$emit('action');
     },
     pin() {
       if (this.pinned) return;
