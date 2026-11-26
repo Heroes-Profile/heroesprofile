@@ -64,7 +64,7 @@
                 <!-- The level's best gets a star on the icon's corner, as the Figma card -->
                 <span class="relative shrink-0 flex">
                   <talent-image-wrapper :talent="talent.talentInfo" :popup-hoverable="true"></talent-image-wrapper>
-                  <span v-if="isBest(talent, tier)" class="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full bg-teal text-white flex items-center justify-center text-[0.5625rem] pointer-events-none" :title="$t('Best')"><i class="fas fa-star"></i></span>
+                  <span v-if="isBest(talent, tier)" class="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full bg-teal text-white flex items-center justify-center text-[0.625rem] pointer-events-none" :title="$t('Best')"><i class="fas fa-star leading-none -translate-y-[0.06em]"></i></span>
                 </span>
                 <h3 class="text-sm font-semibold truncate min-w-0">{{ $talentName(talent.talentInfo) }}</h3>
               </div>

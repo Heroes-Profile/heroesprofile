@@ -42,6 +42,14 @@ html{background-color:#141725; font-family: 'Roboto', var(--lang-font), sans-ser
   .nav-dropdown, .nav-flyout, .expandable-dropdown {
     animation: hover-fade-in 150ms ease;
   }
+  /* <transition name="drop">: a card that opens on a click drops in */
+  .drop-enter-active {
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+  }
+  .drop-enter-from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
 }
 /* A <details> sliding shut is still [open] until it finishes (utils/animateDetails.js), so turn its chevron back now */
 details.group.is-closing[open] .group-open\:-rotate-90 {

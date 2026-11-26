@@ -24,6 +24,7 @@
     </div>
 
     <Teleport defer :to="bodyTarget" :disabled="!bodyTarget">
+    <transition name="drop">
     <component :is="bodyTarget ? 'panel-box' : 'div'" v-if="open" class="text-gray-light">
     <div v-if="loading" class="text-center py-4">{{ $t('Loading patch notes...') }}</div>
 
@@ -119,6 +120,7 @@
 
     <div v-else class="text-center py-4 text-gray-medium">{{ $t('No summary available for this patch.') }}</div>
     </component>
+    </transition>
     </Teleport>
   </panel-box>
 </template>

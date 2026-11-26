@@ -69,13 +69,14 @@
             <h2 v-if="showGroupHeadings" class="text-2xl font-bold">
               {{ group.name ?? groupName(group.group) }}<span v-if="group.minGamesRequired !== null"> - {{ $t('At least :count games played', { count: group.minGamesRequired.toLocaleString('en-US') }) }}</span>
             </h2>
-            <!-- Centred on the table, its panel opening centred under it over the table. On phones it follows the group heading
-                 and opens in place, pushing Your HP Rating down -->
-            <div v-if="groupIndex == 0 && leaderboardtype != 'SL Rank'" class="max-md:w-full md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-40">
+            <!-- On the right beside Your HP Rating, its panel opening under it over the table. On phones it follows the group
+                 heading and opens in place, pushing Your HP Rating down -->
+            <div v-if="groupIndex == 0 && leaderboardtype != 'SL Rank'" class="max-md:w-full relative ml-auto z-40">
               <button type="button" class="bg-surface rounded px-4 py-3 text-sm font-bold flex items-center gap-3 hover:bg-surface-1 transition-colors" :aria-expanded="showLeaderboardRequirements" @click="showLeaderboardRequirements = !showLeaderboardRequirements">
                 {{ $t('Leaderboard Requirements') }}<basil-icon name="arrow" :class="['text-xs transition-transform', showLeaderboardRequirements ? '-rotate-90' : 'rotate-90']"></basil-icon>
               </button>
-              <div v-if="showLeaderboardRequirements" class="md:absolute z-40 md:left-1/2 md:-translate-x-1/2 md:top-full mt-2 w-full md:w-[40rem] md:max-w-[calc(100vw-2rem)] md:max-h-[75vh] md:overflow-y-auto bg-surface rounded p-6 shadow-lg flex flex-col gap-4 text-sm">
+              <transition name="drop">
+              <div v-if="showLeaderboardRequirements" class="md:absolute z-40 md:right-0 md:top-full mt-2 w-full md:w-[40rem] md:max-w-[calc(100vw-2rem)] md:max-h-[75vh] md:overflow-y-auto bg-surface rounded p-6 shadow-lg flex flex-col gap-4 text-sm">
                 <h3 class="font-bold text-base">{{ leaderboardtype == 'Match Prediction' ? $t('To be eligible for Match Prediction leaderboards, the following conditions must be met:') : $t('To be eligible for leaderboards, the following conditions must be met:') }}</h3>
                 <ol v-if="leaderboardtype != 'Match Prediction'" class="list-disc ml-5 space-y-1">
                   <li>{{ $t('Account level must be greater than or equal to 250.') }}</li>
@@ -98,11 +99,12 @@
                   <img class="w-full invert mix-blend-screen" :src="formulaImage" :alt="$t('Heroes Profile Rating formula')" @error="formulaImageFailed = true"/>
                 </template>
               </div>
+              </transition>
             </div>
             <!-- Your HP Rating: a small card with the rating, games and how far from Group A; before that, the button.
                  Starts collapsed to its title; Show opens the rest over the table, like Leaderboard Requirements, so the
                  page doesn't move -->
-            <div v-if="groupIndex == 0 && showRating" class="relative ml-auto w-full sm:w-[22rem]">
+            <div v-if="groupIndex == 0 && showRating" :class="['relative w-full sm:w-[22rem]', { 'ml-auto': leaderboardtype == 'SL Rank' }]">
               <div :class="['bg-surface px-5 py-3', ratingCardOpen ? 'rounded-t shadow-lg' : 'rounded']">
               <div class="flex items-center justify-between gap-3">
                 <span class="font-bold">{{ $t('Your HP Rating') }}</span>
@@ -115,6 +117,7 @@
                 </span>
               </div>
               </div>
+              <transition name="drop">
               <div v-if="ratingCardOpen" class="absolute z-40 left-0 right-0 top-full bg-surface rounded-b px-5 pb-4 pt-1 flex flex-col gap-3 shadow-lg">
               <template v-if="playerRating">
                 <div class="flex items-baseline gap-3">
@@ -137,6 +140,7 @@
                 <login-required-hover v-else message="You need to be logged in with Battle.net to calculate your rating."><span class="btn bg-teal font-semibold opacity-60 cursor-pointer w-full">{{ $t('Calculate') }}</span></login-required-hover>
               </template>
               </div>
+              </transition>
             </div>
           </div>
 
@@ -288,8 +292,8 @@
       <div class="relative flex flex-wrap items-center gap-4">
         <h2 class="text-2xl font-bold skeleton-text">{{ leaderboardtype == 'SL Rank' ? 'Grand Master' : 'Group A - At least 35 games played' }}</h2>
         <!-- The requirements button's place -->
-        <span v-if="leaderboardtype != 'SL Rank'" class="md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 rounded px-4 py-3 text-sm font-bold flex items-center gap-3 skeleton-text">{{ $t('Leaderboard Requirements') }}<basil-icon name="arrow" class="text-xs rotate-90"></basil-icon></span>
-        <skeleton-box v-if="showRating" class="h-12 w-full sm:w-[22rem] ml-auto"></skeleton-box>
+        <span v-if="leaderboardtype != 'SL Rank'" class="ml-auto rounded px-4 py-3 text-sm font-bold flex items-center gap-3 skeleton-text">{{ $t('Leaderboard Requirements') }}<basil-icon name="arrow" class="text-xs rotate-90"></basil-icon></span>
+        <skeleton-box v-if="showRating" :class="['h-12 w-full sm:w-[22rem]', { 'ml-auto': leaderboardtype == 'SL Rank' }]"></skeleton-box>
       </div>
       <!-- Shaped like the table for this leaderboard type; the message sits on a tab of its panel, as on the profile -->
       <div class="relative">

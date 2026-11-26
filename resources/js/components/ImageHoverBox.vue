@@ -10,20 +10,30 @@
       </div>
     </div>
     <div v-if="card && card.badges.length" class="flex flex-col gap-1.5">
-      <div v-for="badge in card.badges" :key="badge.key" :class="['flex items-center gap-2.5 rounded-[0.375rem] px-3 py-2 font-medium text-white', badge.class]">
-        <!-- The same flair as on the portrait -->
-        <span class="w-6 h-6 shrink-0 flex items-center justify-center text-lg leading-none">
-          <i v-if="badge.key === 'owner'" class="fas fa-crown owner-crown"></i>
-          <i v-else-if="badge.key === 'patreon'" class="fas fa-star text-gold"></i>
-          <void-eye-flair v-else-if="badge.key === 'void'" :force="true" :tooltip="false"></void-eye-flair>
-          <img v-else-if="badge.key === 'award' && badge.icon" :src="badge.icon" class="w-5 h-5 object-contain" alt="" />
-        </span>
-        {{ badge.label }}
-        <!-- What the award is for, in its own popup -->
-        <round-image v-if="badge.description" class="text-sm -ml-1" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+      <template v-for="badge in card.badges" :key="badge.key">
+        <!-- What the award is for shows on hovering the whole bar -->
+        <icon-with-hover v-if="badge.description" class="w-full" popupsize="large">
+          <template #trigger>
+            <div :class="['w-full flex items-center gap-2.5 rounded-[0.375rem] px-3 py-2 font-medium text-white cursor-default', badge.class]">
+              <span class="w-6 h-6 shrink-0 flex items-center justify-center text-lg leading-none">
+                <img v-if="badge.icon" :src="badge.icon" class="w-5 h-5 object-contain" alt="" />
+              </span>
+              {{ badge.label }}
+            </div>
+          </template>
           <p class="text-sm p-2 font-normal">{{ badge.description }}</p>
-        </round-image>
-      </div>
+        </icon-with-hover>
+        <div v-else :class="['flex items-center gap-2.5 rounded-[0.375rem] px-3 py-2 font-medium text-white', badge.class]">
+          <!-- The same flair as on the portrait -->
+          <span class="w-6 h-6 shrink-0 flex items-center justify-center text-lg leading-none">
+            <i v-if="badge.key === 'owner'" class="fas fa-crown owner-crown"></i>
+            <i v-else-if="badge.key === 'patreon'" class="fas fa-star text-gold"></i>
+            <void-eye-flair v-else-if="badge.key === 'void'" :force="true" :tooltip="false"></void-eye-flair>
+            <img v-else-if="badge.key === 'award' && badge.icon" :src="badge.icon" class="w-5 h-5 object-contain" alt="" />
+          </span>
+          {{ badge.label }}
+        </div>
+      </template>
     </div>
     <div v-if="rows.length" :class="['flex flex-col gap-1', { 'border-t border-gray-dark pt-3': title || playedBy || (card && card.badges.length) }]">
       <p v-for="(row, index) in rows" :key="index" :class="row.value === null ? '' : 'flex justify-between gap-4'">

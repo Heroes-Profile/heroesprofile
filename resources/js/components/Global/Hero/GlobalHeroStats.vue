@@ -81,6 +81,7 @@
       <!-- display: contents, so it adds no gap while empty -->
       <div id="hero-stats-open-card" class="contents"></div>
 
+      <transition name="drop">
       <panel-box v-if="!tierListCollapsed">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <p class="text-sm text-subtext">{{ $t('Heroes grouped by :stat', { stat: $t(tierStatLabel).toLowerCase() }) }}</p>
@@ -104,6 +105,7 @@
           </div>
         </div>
       </panel-box>
+      </transition>
 
       <dynamic-banner-ad v-if="!tierListCollapsed" :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
