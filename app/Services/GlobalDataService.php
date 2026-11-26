@@ -13,6 +13,8 @@ use App\Models\GlobalHeroStats;
 use App\Models\HeaderAlert;
 use App\Models\Hero;
 use App\Models\HeroesDataTalent;
+use App\Models\HeroesInternational\HeroesInternationalMainTeam;
+use App\Models\HeroesInternational\HeroesInternationalNationsCupTeam;
 use App\Models\LeagueTier;
 use App\Models\Map;
 use App\Models\MastersClash\MastersClashTeam;
@@ -76,7 +78,7 @@ class GlobalDataService
     private const HERO_WIN_RATES_ALL_CACHE_VERSION = 1;
 
     // Also bump when a filter list gains an option: the live sites share this cache with their own lists
-    private const FILTER_DATA_CACHE_VERSION = 2;
+    private const FILTER_DATA_CACHE_VERSION = 3;
 
     /**
      * Hour (America/New_York) at/after which the leaderboard "weeks since season start" value
@@ -2068,9 +2070,17 @@ class GlobalDataService
             return ['code' => $season, 'name' => strval($season)];
         });
 
+        $filterData->hi_seasons = HeroesInternationalMainTeam::distinct()->orderBy('season', 'desc')->pluck('season')->map(function ($season) {
+            return ['code' => $season, 'name' => strval($season)];
+        });
+
+        $filterData->hi_nc_seasons = HeroesInternationalNationsCupTeam::distinct()->orderBy('season', 'desc')->pluck('season')->map(function ($season) {
+            return ['code' => $season, 'name' => strval($season)];
+        });
+
         $filterData->nut_cup_seasons = [
-            ['code' => '1', 'name' => '1'],
-            ['code' => '2', 'name' => '2'],
+            ['code' => 2, 'name' => '2'],
+            ['code' => 1, 'name' => '1'],
         ];
 
         return $filterData;

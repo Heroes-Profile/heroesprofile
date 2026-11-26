@@ -197,12 +197,23 @@ export default {
         case 'overallHeroStats':
           return [season];
         case 'recentMatches':
-          return [season, { text: 'Organizations', values: this.organizations }, { text: 'Heroes', values: this.filters.heroes }];
+          return [season, { text: 'Organizations', values: this.seasonOrganizations }, { text: 'Heroes', values: this.filters.heroes }];
         case 'overallTalentStats':
           return this.selectedHero ? [{ text: 'Heroes', values: this.filters.heroes, defaultValue: this.selectedHero.id }, season] : null;
         default:
           return null;
       }
+    },
+    // The chosen season's teams, once each; the picked one stays so the dropdown keeps showing it
+    seasonOrganizations() {
+      const seen = new Set();
+      return (this.organizations || []).filter(row => {
+        if ((this.season && row.season != this.season && row.code !== this.organization) || seen.has(row.code)) {
+          return false;
+        }
+        seen.add(row.code);
+        return true;
+      }).map(({ code, name }) => ({ code, name }));
     },
     isBattletagReponseValid(){
       return this.battletagresponse[0] && this.battletagresponse[0].battletag && this.battletagresponse[0].blizz_id !== undefined && this.battletagresponse[0].region !== undefined;
@@ -341,6 +352,8 @@ export default {
       url.searchParams.set('tab', buttonName);
       history.replaceState(history.state, '', url);
       this.season = this.defaultseason;
+      this.selectedHero = null;
+      this.organization = null;
 
       if(this.activeButton === 'organizations'){
         this.organizationsData = null;

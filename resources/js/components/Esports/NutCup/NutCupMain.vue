@@ -106,7 +106,7 @@ export default {
   created(){
     this.preloadedImage.src = '/images/NutCup/IMG_0265.PNG';
     this.preloadedImage.src = '/images/NutCup/logo-circular.png';
-    this.season = 2;
+    this.season = this.filters.nut_cup_seasons[0].code;
   },
   mounted() {
     // ?tab= opens that tab straight away
@@ -118,7 +118,7 @@ export default {
   computed: {
     // The filters beside the heading for the open tab: the season, and the hero on a hero's talent stats
     tabFilters() {
-      const season = { text: 'Seasons', values: this.filters.ccl_seasons, defaultValue: this.season };
+      const season = { text: 'Seasons', values: this.filters.nut_cup_seasons, defaultValue: this.season };
       switch (this.activeButton) {
         case 'overallHeroStats':
           return [season];
@@ -203,7 +203,7 @@ export default {
       const url = new URL(window.location.href);
       url.searchParams.set('tab', buttonName);
       history.replaceState(history.state, '', url);
-      this.season = 2;
+      this.season = this.filters.nut_cup_seasons[0].code;
       
       if(this.activeButton === 'overallHeroStats'){
         this.heroStatsData = null;

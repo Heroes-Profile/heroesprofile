@@ -248,6 +248,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 ->join('battlenet_accounts', 'battlenet_accounts.battlenet_accounts_id', '=', 'match_prediction_player_stats.battlenet_accounts_id')
                 ->where('season', $season)
                 ->where('game_type', $gameType)
+                ->when(! is_null($region), fn ($query) => $query->where('battlenet_accounts.region', $region))
                 ->get();
 
             $leaderboard->each(function ($item) {

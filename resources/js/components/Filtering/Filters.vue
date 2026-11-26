@@ -134,7 +134,7 @@
             :values="filters.heroes"
             :text="'Heroes'"
             :class="leaderboardOrder('Heroes')"
-            :defaultValue="heroinput"
+            :defaultValue="hero"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
@@ -774,8 +774,6 @@
       this.selectedSingleFilters["Timeframe Type"] = this.timeframetype;
       this.selectedMultiFilters["Game Type"] = this.gametype;
       this.selectedMultiFilters["Timeframes"] = this.timeframe;
-      this.selectedSingleFilters["Stat Filter"] = this.defaultStatType;
-
       this.toggleExtraFilters = this.advancedfiltering;
 
       this.modifiedincluderole = this.includerole
@@ -799,6 +797,8 @@
         this.statfilterdisabled = true;
       }
 
+      this.selectedSingleFilters["Stat Filter"] = this.statfilter;
+
       if(this.tierrankinput != null && this.tierrankinput !== ''){
         this.tierrank = this.tierrankinput;
       }
@@ -809,6 +809,20 @@
 
       if(this.playerheroroletype && this.playertypeinput){
         this.initializePlayerTypeFilters();
+      }
+
+      // URL values the dropdowns show, so the next Filter press sends them too
+      if(this.heroinput && this.modifiedincludeheroes && !this.swapHeroesFilter){
+        this.selectedSingleFilters['Heroes'] = this.heroinput;
+      }
+      if(this.roleinput && this.modifiedincluderole && !this.swapRolesFilter){
+        this.selectedSingleFilters['Role'] = this.roleinput;
+      }
+      if(this.teamonepartyinput && this.includeteamoneparty){
+        this.selectedSingleFilters['Team One Party'] = this.teamonepartyinput;
+      }
+      if(this.teamtwopartyinput && this.includeteamtwoparty){
+        this.selectedSingleFilters['Team Two Party'] = this.teamtwopartyinput;
       }
 
       if(this.includeranksource){

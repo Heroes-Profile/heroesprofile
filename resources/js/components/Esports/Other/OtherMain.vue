@@ -16,10 +16,10 @@
           :onChange="handleInputChange"
           :extrafilters="[
             { text: 'Series', values: seriesvalues },
-            { text: 'Regions', values: regions },
-            { text: 'Tournaments', values: tournaments },
-            { text: 'Seasons', values: seasons },
-            { text: 'Teams', values: teams },
+            { text: 'Regions', values: narrowToSeries(regions, region) },
+            { text: 'Tournaments', values: narrowToSeries(tournaments, tournament) },
+            { text: 'Seasons', values: narrowToSeries(seasons, season) },
+            { text: 'Teams', values: narrowToSeries(teams, team) },
             { text: 'Map', values: filters.game_maps },
             { text: 'Heroes', values: filters.heroes },
           ]"
@@ -147,6 +147,18 @@ export default {
     this.getMatches(1);
   },
   methods: {
+    // The chosen series' options, once each; the picked one stays so the dropdown keeps showing it
+    narrowToSeries(list, selected) {
+      const seriesName = this.series.find(item => item.series_id === this.inputseries)?.name;
+      const seen = new Set();
+      return (list || []).filter(row => {
+        if ((seriesName && row.series !== seriesName && row.code !== selected) || seen.has(row.code)) {
+          return false;
+        }
+        seen.add(row.code);
+        return true;
+      }).map(({ code, name }) => ({ code, name }));
+    },
     async getMatches(page){
       if (this.isLoading || page < 1) {
         return;

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\MastersClash\MastersClashTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class MastersClashController extends Controller
 {
@@ -29,7 +30,7 @@ class MastersClashController extends Controller
         // return response()->json($request->all());
 
         $validationRules = [
-            'season' => 'required|in:1',
+            'season' => ['required', Rule::in(MastersClashTeam::distinct()->pluck('season')->all())],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);

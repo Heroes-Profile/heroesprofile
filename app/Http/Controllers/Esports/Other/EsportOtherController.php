@@ -39,7 +39,8 @@ class EsportOtherController extends Controller
     public function show(Request $request)
     {
 
-        $seasons = Replay::select('season')
+        // Each row carries its series, so the page can narrow the lists to the chosen one
+        $seasons = Replay::select('season', 'series')
             ->distinct()
             ->orderBy('season', 'desc')
             ->whereNot('series', 'Nut Cup')
@@ -49,10 +50,11 @@ class EsportOtherController extends Controller
                 return [
                     'code' => $season->season,
                     'name' => $season->season,
+                    'series' => $season->series,
                 ];
             });
 
-        $regions = Replay::select('heroesprofile_ml.regions.name as name', 'heroesprofile_ml.regions.region_id as code')
+        $regions = Replay::select('heroesprofile_ml.regions.name as name', 'heroesprofile_ml.regions.region_id as code', 'heroesprofile_ml.replay.series as series')
             ->distinct()
             ->join('heroesprofile_ml.regions', 'heroesprofile_ml.regions.region_id', '=', 'heroesprofile_ml.replay.region')
             ->whereNot('series', 'Nut Cup')
@@ -60,17 +62,17 @@ class EsportOtherController extends Controller
             ->orderBy('code', 'asc')
             ->get();
 
-        $tournaments = Replay::select('tournament as name', 'tournament as code')
+        $tournaments = Replay::select('tournament as name', 'tournament as code', 'series')
             ->distinct()
             ->whereNot('series', 'Nut Cup')
             ->whereNot('series', 'Heroes Lounge')
             ->orderBy('name', 'asc')
             ->get();
 
-        $teams = Replay::select('team_0_name as team_name')
+        $teams = Replay::select('team_0_name as team_name', 'series')
             ->whereNotIn('series', ['Nut Cup', 'Heroes Lounge'])
             ->union(
-                Replay::select('team_1_name as team_name')
+                Replay::select('team_1_name as team_name', 'series')
                     ->whereNotIn('series', ['Nut Cup', 'Heroes Lounge'])
             )
             ->distinct()
@@ -80,6 +82,7 @@ class EsportOtherController extends Controller
                 return [
                     'code' => $team->team_name,
                     'name' => $team->team_name,
+                    'series' => $team->series,
                 ];
             });
 

@@ -189,7 +189,7 @@ export default {
   computed: {
     // The active tab's dropdowns, shown in the heading; Talent Stats has them only once a hero is open
     tabFilters() {
-      const season = { text: 'Seasons', values: this.filters.mcl_seasons, defaultValue: this.season };
+      const season = { text: 'Seasons', values: this.filters.hi_nc_seasons, defaultValue: this.season };
       switch (this.activeButton) {
         case 'teams':
         case 'overallHeroStats':
@@ -338,6 +338,7 @@ export default {
       url.searchParams.set('tab', buttonName);
       history.replaceState(history.state, '', url);
       this.season = this.defaultseason;
+      this.selectedHero = null;
 
       if(this.activeButton === 'teams'){
         this.teamsData = null;

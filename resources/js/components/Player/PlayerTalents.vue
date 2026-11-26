@@ -300,10 +300,11 @@ export default {
         if (!Array.isArray(response.data?.heroes)) {
           throw new Error("Failure to validate inputs");
         }
-        // Heroes already up to date in the cache come back with the list; only the rest are asked for one by one
+        // Heroes already up to date in the cache come back with the list; only the rest are asked for one by one.
+        // Esports sends every hero's builds at once, so a hero missing there has none
         const cached = response.data.builds || {};
         const played = this.heroes.filter(hero => response.data.heroes.includes(hero.id));
-        const queue = played.filter(hero => !(hero.name in cached));
+        const queue = this.esport ? [] : played.filter(hero => !(hero.name in cached));
         this.buildsTotal = played.length;
         this.buildsLoaded = played.length - queue.length;
         this.talentbuilddataall = Object.fromEntries(Object.entries(cached).filter(([, builds]) => Object.keys(builds).length));

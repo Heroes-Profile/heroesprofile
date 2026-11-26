@@ -350,7 +350,10 @@ export default {
           cancelToken: this.cancelTokenSource.token,
         });
         this.data = response.data;
-        this.filterOptions = { seasons: this.data.seasons || [], divisions: this.data.divisions || [] };
+        // Kept once loaded like the teams, so picking a team doesn't drop the chosen season from the list
+        if (!this.filterOptions.seasons.length) {
+          this.filterOptions = { seasons: this.data.seasons || [], divisions: this.data.divisions || [] };
+        }
         if (!this.modifiedteam || !this.teamOptions.length) {
           const names = [...new Set((this.data.teams_played_for || []).map(team => team.team_name))];
           this.teamOptions = [{ code: null, name: 'All' }, ...names.map(name => ({ code: name, name: this.$ngsTeam(name).name }))];

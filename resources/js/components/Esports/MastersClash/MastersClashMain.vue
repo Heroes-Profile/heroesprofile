@@ -341,6 +341,7 @@ export default {
       url.searchParams.set('tab', buttonName);
       history.replaceState(history.state, '', url);
       this.season = this.defaultseason;
+      this.selectedHero = null;
 
       if(this.activeButton === 'teams'){
         this.teamsData = null;

@@ -483,6 +483,7 @@ export default {
       history.replaceState(history.state, '', url);
       this.season = this.defaultseason;
       this.division = null;
+      this.selectedHero = null;
 
       if(this.activeButton === 'standings'){
         this.standingData = null;

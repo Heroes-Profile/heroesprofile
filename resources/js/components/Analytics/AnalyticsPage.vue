@@ -260,10 +260,10 @@ export default {
     if (this.urlparameters) {
       if (this.urlparameters['hero']) this.hero = this.urlparameters['hero'];
       if (this.urlparameters['game_type']) this.gametype = this.urlparameters['game_type'].split(',');
-      if (this.urlparameters['game_map']) this.gamemap = this.urlparameters['game_map'].split(',');
+      if (this.urlparameters['game_map'] && this.urlparameters['game_map'] !== 'all') this.gamemap = this.urlparameters['game_map'].split(',');
     }
-    // The public sample only has map-level data for its own map(s): open on them
-    if (this.sample && !this.gamemap.length && (this.sample.maps || []).length) {
+    // The public sample only has map-level data for its own map(s): open on them, unless the URL says all maps
+    if (this.sample && !this.gamemap.length && (this.sample.maps || []).length && this.urlparameters?.['game_map'] !== 'all') {
       this.gamemap = [this.sample.maps[0]];
     }
   },
@@ -349,6 +349,9 @@ export default {
       }
       if (this.gamemap.length) {
         queryString += `&game_map=${this.gamemap}`;
+      } else if (this.sample && (this.sample.maps || []).length) {
+        // The sample opens on its own map, so all maps has to be spelled out
+        queryString += '&game_map=all';
       }
       if (this.hero) {
         queryString += `&hero=${this.hero}`;

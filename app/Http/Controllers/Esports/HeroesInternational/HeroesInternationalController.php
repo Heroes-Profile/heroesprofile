@@ -43,7 +43,7 @@ class HeroesInternationalController extends Controller
                 ->with([
                     'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                     'heroes' => $this->globalDataService->getHeroes(),
-                    'defaultseason' => 1,
+                    'defaultseason' => HeroesInternationalMainTeam::max('season'),
                     'filters' => $this->globalDataService->getFilterData(),
                     'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
                     'tournament' => 'main',
@@ -54,7 +54,7 @@ class HeroesInternationalController extends Controller
                 ->with([
                     'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                     'heroes' => $this->globalDataService->getHeroes(),
-                    'defaultseason' => 1,
+                    'defaultseason' => HeroesInternationalNationsCupTeam::max('season'),
                     'filters' => $this->globalDataService->getFilterData(),
                     'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
                     'tournament' => 'nationscup',
@@ -73,7 +73,9 @@ class HeroesInternationalController extends Controller
         // return response()->json($request->all());
 
         $validationRules = [
-            'season' => 'required|in:1',
+            'season' => ['required', Rule::in($request['esport'] == 'hi_nc'
+                ? HeroesInternationalNationsCupTeam::distinct()->pluck('season')->all()
+                : HeroesInternationalMainTeam::distinct()->pluck('season')->all())],
             'esport' => 'required|in:hi,hi_nc',
         ];
 
