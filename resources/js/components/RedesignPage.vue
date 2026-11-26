@@ -12,7 +12,7 @@
         <!-- A copy of the site's nav, on the nav's own classes; its links pick a screenshot instead of leaving the page.
              Desktop opens menus on hover like the real nav, phones on a tap -->
         <nav class="main-navigation-wrapper w-full max-w-[105rem] mx-auto rounded bg-surface px-4 md:px-6 py-1 flex max-md:flex-col md:items-center gap-x-6 text-sm" :aria-label="$t('Side by side')">
-          <a href="#" :class="['flex shrink-0 items-center whitespace-nowrap font-logo text-xl max-md:self-center max-md:py-2', { 'text-teal': screenshot === 'home' }]" @click.prevent="pickScreenshot('home')">
+          <a href="#" :class="['flex shrink-0 items-center whitespace-nowrap font-logo text-xl max-md:self-center max-md:py-2']" @click.prevent="pickScreenshot('home')">
             Heroes<img class="w-8 shrink-0 mx-2" src="/images/logo/heroesprofilelogo.png" alt="" />Profile
           </a>
           <div class="flex max-md:flex-col md:space-x-5 md:mx-auto">
@@ -22,11 +22,13 @@
                   {{ menu.label === 'Zemill' ? menu.label : $t(menu.label) }}<basil-icon name="arrow" class="rotate-90 group-hover:-rotate-90 transition-transform text-xs ml-2" aria-hidden="true"></basil-icon>
                 </a>
                 <div :class="['nav-dropdown', { '!block': openMenu === menu.label, 'nav-dropdown-flip': menu.wide }]">
-                  <!-- Other: its groups side by side in columns, each a plain list -->
-                  <div v-if="menu.wide" class="nav-dropdown-inner-wrapper md:grid md:grid-cols-4 md:gap-x-2 md:w-max">
-                    <div v-for="group in menu.groups" :key="group.label" class="flex flex-col">
-                      <span class="nav-dropdown-label !mt-0 !pt-2 !border-t-0">{{ $t(group.label) }}</span>
-                      <a v-for="item in group.items" :key="item.key" href="#" :class="['whitespace-nowrap', { 'bg-teal': screenshot === item.key }]" @click.prevent="pickScreenshot(item.key)">{{ item.name || $t(item.label) }}</a>
+                  <!-- Other: its groups stacked into four columns of about the same length, each a plain list -->
+                  <div v-if="menu.wide" class="nav-dropdown-inner-wrapper md:grid md:grid-cols-4 md:gap-x-2 md:items-start md:w-max">
+                    <div v-for="(column, index) in wideColumns(menu.groups)" :key="index" class="flex flex-col gap-4">
+                      <div v-for="group in column" :key="group.label" class="flex flex-col">
+                        <span class="nav-dropdown-label !mt-0 !pt-2 !border-t-0">{{ $t(group.label) }}</span>
+                        <a v-for="item in group.items" :key="item.key" href="#" :class="['whitespace-nowrap', { 'bg-teal': screenshot === item.key }]" @click.prevent="pickScreenshot(item.key)">{{ item.name || $t(item.label) }}</a>
+                      </div>
                     </div>
                   </div>
                   <div v-else class="nav-dropdown-inner-wrapper">
@@ -362,6 +364,7 @@ export default {
             { key: 'heropage', name: 'Abathur' },
             { key: 'settings', label: 'Settings' },
             { key: 'team', label: 'Team' },
+            { key: 'widget', label: 'Embed the Replay Uploader' },
           ] },
           { label: 'NGS', items: [
             { key: 'ngs', label: 'Overview' },
@@ -472,6 +475,17 @@ export default {
     },
   },
   methods: {
+    // Each group, in order, joins the column with the fewest items so far
+    wideColumns(groups) {
+      const columns = [[], [], [], []];
+      const sizes = [0, 0, 0, 0];
+      groups.forEach((group) => {
+        const shortest = sizes.indexOf(Math.min(...sizes));
+        columns[shortest].push(group);
+        sizes[shortest] += group.items.length + 1;
+      });
+      return columns;
+    },
     async copyDiscord() {
       if (!this.discord) {
         return;
