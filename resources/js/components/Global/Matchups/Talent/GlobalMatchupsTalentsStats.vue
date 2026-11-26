@@ -38,24 +38,26 @@
           <tab-button :small="true" tab1text="Enemy" tab2text="Ally" :ignoreclick="true" :overridedefaultside="enemyorallyselected" @tab-click="heroOrEnemySideSelected"></tab-button>
         </template>
         <div class="grid xl:grid-cols-[auto_minmax(0,1fr)] gap-6 xl:gap-8">
-          <!-- As the Figma picker: the dropdowns as wide as the art, 12px above it, and VS centred between the two pictures -->
-          <div class="grid grid-cols-[minmax(0,10rem)_auto_minmax(0,10rem)] md:grid-cols-[14rem_auto_14rem] gap-x-4 md:gap-x-8 gap-y-3 items-center">
+          <!-- As the Figma picker: the dropdowns as wide as the art, 12px above it, and VS centred between the two pictures.
+               Beside the steps, the art grows to their height -->
+          <div class="grid grid-cols-[minmax(0,10rem)_auto_minmax(0,10rem)] md:grid-cols-[14rem_auto_14rem] xl:grid-rows-[auto_minmax(20.125rem,1fr)] gap-x-4 md:gap-x-8 gap-y-3 items-start">
             <single-select-filter :compact="true" :key="'hero-' + (hero ? hero.id : '')" :values="firstHeroInputs" :text="'Hero'" @input-changed="herochanged" :defaultValue="hero ? hero.id : null"></single-select-filter>
             <span></span>
             <single-select-filter :compact="true" :key="'enemyally-' + (enemyally ? enemyally.id : '')" :values="secondHeroInputs" :text="'Matchup hero'" @input-changed="allyenemychanged" :defaultValue="enemyally ? enemyally.id : null"></single-select-filter>
-            <hero-image-wrapper v-if="hero && hero.short_name" :rectangle="true" size="large" :hero="hero" :excludehover="true"></hero-image-wrapper>
+            <hero-image-wrapper v-if="hero && hero.short_name" class="self-stretch xl:[&>div]:!h-full" :rectangle="true" size="large" :hero="hero" :excludehover="true"></hero-image-wrapper>
             <span v-else></span>
             <!-- Swaps the two heroes, so the other one's talents are listed -->
-            <button type="button" @click="swapHeroes" :title="$t('Swap heroes')" class="shrink-0 w-12 h-12 rounded-full bg-surface-3 hover:bg-surface-4 hover:text-white transition-colors flex items-center justify-center text-sm font-bold text-subtext">{{ vsorwith }}</button>
-            <hero-image-wrapper v-if="enemyally && enemyally.short_name" :rectangle="true" size="large" :hero="enemyally" :excludehover="true"></hero-image-wrapper>
+            <button type="button" @click="swapHeroes" :title="$t('Swap heroes')" class="self-center shrink-0 w-14 h-14 rounded-full bg-surface-3 hover:bg-surface-4 hover:text-white transition-colors flex items-center justify-center text-lg font-bold text-subtext">{{ vsorwith }}</button>
+            <hero-image-wrapper v-if="enemyally && enemyally.short_name" class="self-stretch xl:[&>div]:!h-full" :rectangle="true" size="large" :hero="enemyally" :excludehover="true"></hero-image-wrapper>
             <span v-else></span>
           </div>
+          <!-- As Figma's steps: they share the picker's height -->
           <ol class="flex flex-col gap-3">
-            <li v-for="(step, index) in steps" :key="step.title" class="flex items-center gap-4 rounded-control bg-surface-1 px-5 py-4">
-              <span class="shrink-0 w-9 h-9 rounded-full bg-surface-3 flex items-center justify-center text-sm font-semibold text-teal">{{ index + 1 }}</span>
-              <span class="flex flex-col gap-0.5 min-w-0">
-                <span class="font-semibold">{{ step.title }}</span>
-                <span class="text-xs text-subtext">{{ step.text }}</span>
+            <li v-for="(step, index) in steps" :key="step.title" class="flex-1 flex items-center gap-4 rounded-control bg-surface-1 p-5">
+              <span class="shrink-0 w-10 h-10 rounded-full bg-surface-3 flex items-center justify-center text-lg font-bold text-teal">{{ index + 1 }}</span>
+              <span class="flex flex-col gap-1 min-w-0">
+                <span class="text-lg font-semibold">{{ step.title }}</span>
+                <span class="text-sm text-subtext">{{ step.text }}</span>
               </span>
             </li>
           </ol>
