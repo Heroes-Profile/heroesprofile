@@ -18,13 +18,6 @@
     
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <!-- Storm League MMR is being rebuilt; remove once the rebuild is done -->
-    <div v-if="gametype === 'sl'" class="max-w-[1500px] mx-auto px-4 mb-4">
-      <div class="bg-lighten border-l-4 border-yellow p-4 text-sm">
-        We're rebuilding Storm League MMR. Until it's finished, the graph and table below may look wrong. Your MMR still goes up and down with each game you play, but the rebuilt values won't show until the rebuild is complete.
-      </div>
-    </div>
-
     <div v-if="data">
 
       <line-chart class="max-w-[1500px] mx-auto px-4" :data="reversedData" :dataAttribute="'mmr'" :title="`${battletag} HP MMR Graph for ${gametype}`"></line-chart>
