@@ -8,8 +8,16 @@
       <!-- The translation is split around the name, so the name can sit anywhere in the sentence -->
       <template v-for="(part, index) in parts" :key="index">
         <button v-if="part === null" type="button" class="hover:underline" :title="copyLabel" @click="copy">{{ name }}</button>
-        <!-- The words with their chevron, then a dot between them and the name -->
-        <template v-else-if="part.trim()"><span v-if="index" class="mx-2">·</span><a href="/Redesign/2026" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ part.trim() }}</span><basil-icon name="arrow-small" class="text-[0.625rem] ml-1"></basil-icon></a><span v-if="!index" class="mx-2">·</span></template>
+        <!-- The words, with a dot between them and the name that turns into the link's chevron on hover. Both share
+             one slot, so nothing moves -->
+        <a v-else-if="part.trim()" href="/Redesign/2026" class="group/bt inline-flex items-center">
+          <span v-if="!index" class="group-hover/bt:underline">{{ part.trim() }}</span>
+          <span class="mx-2 inline-grid place-items-center">
+            <span class="[grid-area:1/1] group-hover/bt:opacity-0 transition-opacity">·</span>
+            <basil-icon name="arrow-small" class="[grid-area:1/1] text-[0.625rem] opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon>
+          </span>
+          <span v-if="index" class="group-hover/bt:underline">{{ part.trim() }}</span>
+        </a>
       </template>
       <button v-if="discord" type="button" class="absolute left-full top-1/2 -translate-y-1/2 ml-1.5 hover:text-surface transition-colors" :title="copyLabel" :aria-label="copyLabel" @click="copy">
         <i :class="copied ? 'fas fa-check' : 'fab fa-discord'"></i>

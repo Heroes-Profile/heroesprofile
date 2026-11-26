@@ -64,7 +64,7 @@
         </label>
         <!-- pr-3 keeps the longest option clear of the scrollbar -->
         <div class="max-h-80 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable] pr-1 flex flex-col gap-1">
-          <template v-for="row in rows" :key="row.key">
+          <template v-for="row in visibleRows" :key="row.key">
           <label v-if="row.heading" :for="row.key" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded hover:bg-surface-3 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !row.codes.some(code => isSelectable(code)) }]">
             <input
             type="checkbox"
@@ -76,6 +76,10 @@
             class="form-checkbox"
             >
             <span class="text-sm font-bold text-white">{{ $t(row.name) }}</span>
+            <!-- Folds the options under this heading away -->
+            <button type="button" class="ml-auto -my-1 -mr-1 w-7 h-7 shrink-0 rounded flex items-center justify-center text-subtext hover:text-white hover:bg-surface-4 transition-colors" :aria-expanded="!isCollapsed(row.key)" :title="isCollapsed(row.key) ? $t('Expand') : $t('Collapse')" @click.prevent.stop="toggleCollapsed(row.key)">
+              <i :class="['fas text-xs', isCollapsed(row.key) ? 'fa-plus' : 'fa-minus']"></i>
+            </button>
           </label>
           <label v-else :for="row.value.code" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded hover:bg-surface-3 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !isSelectable(row.value.code) }]">
             <input
@@ -139,6 +143,8 @@ const RANK_INFO = "Heroes Profile Rank is based on a custom MMR algorithm develo
     data(){
       return {
         showOptions: false,
+        // Headings folded shut, by key; set the first time the list opens
+        collapsed: null,
         selectedOptions: this.defaultValue || [],
       }
     },
@@ -202,15 +208,22 @@ const RANK_INFO = "Heroes Profile Rank is based on a custom MMR algorithm develo
           const headings = headingsOf(value.code);
           headings.forEach((heading, depth) => {
             if(open[depth]?.key !== 'heading-' + heading.key){
-              const row = { key: 'heading-' + heading.key, heading: true, name: heading.name, depth, codes: [] };
+              const row = { key: 'heading-' + heading.key, heading: true, name: heading.name, depth, codes: [], parents: open.slice(0, depth).map(parent => parent.key) };
               rows.push(row);
               open = [...open.slice(0, depth), row];
             }
           });
           open.slice(0, headings.length).forEach(row => row.codes.push(value.code));
-          rows.push({ key: 'value-' + value.code, value, depth: headings.length });
+          rows.push({ key: 'value-' + value.code, value, depth: headings.length, parents: open.slice(0, headings.length).map(parent => parent.key) });
         });
         return rows;
+      },
+      // The rows not folded away under a collapsed heading
+      visibleRows() {
+        if(!this.collapsed){
+          return this.rows;
+        }
+        return this.rows.filter(row => !(row.parents || []).some(key => this.collapsed[key]));
       },
       hasPatchDates() {
         return (this.values || []).some(value => value.date_added);
@@ -234,6 +247,9 @@ const RANK_INFO = "Heroes Profile Rank is based on a custom MMR algorithm develo
         this.$emit('input-changed', { field: this.field || this.text, value: newVal, type: 'multi' });
       },
       showOptions: function (newVal) {
+      if(newVal && this.collapsed === null){
+        this.collapseUnused();
+      }
       if(this.trackclosure && !newVal){
           this.$emit('dropdown-closed', newVal);
         }
@@ -243,6 +259,19 @@ const RANK_INFO = "Heroes Profile Rank is based on a custom MMR algorithm develo
       },
     },
     methods: {
+      // Only the headings holding a picked option stay open, or the first ones when nothing is picked
+      collapseUnused() {
+        const headings = this.rows.filter(row => row.heading);
+        const picked = headings.filter(row => row.codes.some(code => this.selectedOptions.includes(code)));
+        const open = new Set(picked.length ? picked.map(row => row.key) : headings.filter((row, index) => headings.findIndex(other => other.depth === row.depth) === index).map(row => row.key));
+        this.collapsed = Object.fromEntries(headings.filter(row => !open.has(row.key)).map(row => [row.key, true]));
+      },
+      isCollapsed(key) {
+        return !!this.collapsed?.[key];
+      },
+      toggleCollapsed(key) {
+        this.collapsed = { ...this.collapsed, [key]: !this.isCollapsed(key) };
+      },
       // "2026 Season 3" under its year's heading: "Season 3", in the page's language
       seasonLabel(name) {
         const rest = String(name).split(' ').slice(1).join(' ');
