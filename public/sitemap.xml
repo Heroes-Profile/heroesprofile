@@ -121,6 +121,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.heroesprofile.com/Upload/Widget</loc>
+    <lastmod>2026-11-22T03:03:37+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://www.heroesprofile.com/Drafter</loc>
     <lastmod>2026-11-22T03:03:37+00:00</lastmod>
     <changefreq>weekly</changefreq>

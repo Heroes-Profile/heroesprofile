@@ -60,6 +60,7 @@ class GenerateSitemap extends Command
             ['loc' => '/Heroes',                   'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.8'],
             ['loc' => '/Upload',                   'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.7'],
             ['loc' => '/Upload/Uploader',          'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.6'],
+            ['loc' => '/Upload/Widget',            'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.5'],
             ['loc' => '/Drafter',                  'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.7'],
             ['loc' => '/Tools/RandomizeMe',        'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.5'],
             ['loc' => '/Match/Prediction/Game',    'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.5'],

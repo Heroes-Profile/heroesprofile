@@ -21,7 +21,21 @@
       <div class="flex flex-col gap-6 min-w-0">
         <slot name="notice"></slot>
         <slot name="intro"></slot>
-        <div class="rounded-panel bg-surface p-5 md:p-8 flex flex-col divide-y divide-gray-dark">
+        <!-- cards: each section its own panel, numbered only where it has a step, with an optional pill on the right -->
+        <template v-if="cards">
+          <section v-for="section in sections" :id="section.id" :key="section.id" ref="sections" class="scroll-mt-4 rounded-panel bg-surface p-5 md:p-8 flex flex-col gap-4 text-subtext">
+            <div class="flex items-center gap-4">
+              <span v-if="section.step" class="shrink-0 w-8 h-8 rounded bg-teal/15 text-lteal flex items-center justify-center text-xs font-bold">{{ section.step }}</span>
+              <div class="flex-1 min-w-0">
+                <h2 class="text-2xl font-bold text-white">{{ sectionTitle(section) }}</h2>
+                <p v-if="section.subtitle" class="text-sm mt-1">{{ section.subtitle }}</p>
+              </div>
+              <span v-if="section.badge" class="shrink-0 rounded-lg bg-surface-3 px-2.5 py-1 text-xs">{{ section.badge }}</span>
+            </div>
+            <slot :name="section.id"></slot>
+          </section>
+        </template>
+        <div v-else class="rounded-panel bg-surface p-5 md:p-8 flex flex-col divide-y divide-gray-dark">
           <section v-for="(section, index) in sections" :id="section.id" :key="section.id" ref="sections" class="scroll-mt-4 flex gap-4 py-6 first:pt-0 last:pb-0">
             <span class="shrink-0 w-8 h-8 rounded bg-teal/15 text-lteal flex items-center justify-center text-xs font-bold">{{ index + 1 }}</span>
             <div class="flex-1 min-w-0 flex flex-col gap-3 text-subtext">
@@ -44,6 +58,8 @@ export default {
     subheading: String,
     // [{ id, title }]; a leading "1. " in a title is dropped, the number shows beside it
     sections: { type: Array, required: true },
+    // One panel per section; sections may then add step (its number), subtitle and badge (a pill such as Optional)
+    cards: Boolean,
     // Related pages under the section links: [{ text, href }]
     links: { type: Array, default: () => [] },
     footer: String,

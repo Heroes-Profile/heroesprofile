@@ -1,27 +1,28 @@
 <template>
-  <div ref="card" class="p-4 bg-black">
-    <a class="flex justify-center items-center font-logo text-2xl mb-4" href="/" target="_blank" rel="noopener">
-      {{ $t('Heroes') }}
-      <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
-      {{ $t('Profile') }}
-    </a>
+  <!-- The Upload page's Web Uploader card, with the Heroes Profile logo, linking home, in front of its title -->
+  <div ref="card" class="flex justify-center">
+    <div class="w-full max-w-[36rem] bg-surface rounded-panel p-4 md:p-8 flex flex-col gap-6 min-w-0">
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center gap-4">
+          <a class="shrink-0" href="/" target="_blank" rel="noopener" title="Heroes Profile"><img class="w-14" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" /></a>
+          <h2 class="text-2xl font-bold">{{ $t('Web Uploader') }}</h2>
+        </div>
+        <p class="text-sm text-subtext">{{ $t('Upload replay files to Heroes Profile right from your browser.') }}</p>
+      </div>
 
-    <replay-upload-dropzone
-      :upload-url="uploadUrl"
-      :max-bytes="maxBytes"
-      :new-tab="true"
-      @uploaded="onUploaded"
-      @finished="onFinished"
-    ></replay-upload-dropzone>
+      <replay-upload-dropzone
+        :upload-url="uploadUrl"
+        :max-bytes="maxBytes"
+        :new-tab="true"
+        @uploaded="onUploaded"
+        @finished="onFinished"
+      ></replay-upload-dropzone>
 
-    <p class="text-xs text-gray-medium mt-4">
-      Upload every game automatically with the
-      <a class="link" href="/Upload" target="_blank" rel="noopener">Heroes Profile desktop uploader</a>.
-    </p>
-
-    <p class="text-xs text-gray-medium mt-1">
-      Powered by <a class="link" href="/" target="_blank" rel="noopener">Heroes Profile</a>
-    </p>
+      <p class="text-xs text-subtext">
+        Upload every game automatically with the
+        <a class="link" href="/Upload" target="_blank" rel="noopener">Heroes Profile desktop uploader</a>.
+      </p>
+    </div>
   </div>
 </template>
 

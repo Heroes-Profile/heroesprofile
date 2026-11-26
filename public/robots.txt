@@ -36,6 +36,7 @@ Allow: /Api/Terms$
 Allow: /Api/Privacy$
 Allow: /Upload$
 Allow: /Upload/Uploader$
+Allow: /Upload/Widget$
 Allow: /Drafter$
 Allow: /Tools/RandomizeMe$
 Allow: /Tools/AutoBattler$
