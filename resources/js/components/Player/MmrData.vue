@@ -29,14 +29,6 @@
     
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <!-- Storm League MMR is being rebuilt; remove once the rebuild is done -->
-    <div v-if="gametype === 'sl'" class="max-w-[120rem] mx-auto px-4 md:px-8 mb-6">
-      <div class="flex items-center gap-3 rounded bg-surface-1 border-l-4 border-yellow px-5 py-3 text-sm">
-        <basil-icon name="info" class="text-yellow text-xl shrink-0"></basil-icon>
-        <span class="flex-1 min-w-0">{{ $t("We're rebuilding Storm League MMR. Until it's finished, the graph and table below may look wrong. Your MMR still goes up and down with each game you play, but the rebuilt values won't show until the rebuild is complete.") }}</span>
-      </div>
-    </div>
-
     <p v-if="data === ''" class="text-center text-subtext mt-10">{{ $t('No data for this player and filters') }}</p>
     <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-8">
 
