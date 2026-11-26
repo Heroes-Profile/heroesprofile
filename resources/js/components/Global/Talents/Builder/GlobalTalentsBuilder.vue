@@ -56,7 +56,7 @@
         <!-- The diagram and reset on the left, how the builder loads and lays out on the right -->
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div class="flex flex-wrap items-center gap-4 max-sm:w-full">
-            <button type="button" :disabled="!paths || !paths.length" class="flex items-center justify-between gap-4 h-[3.125rem] w-full sm:w-[26rem] px-4 rounded-control bg-surface-3 text-lg disabled:opacity-50" @click="pathsOpen = !pathsOpen">
+            <button type="button" :disabled="!paths || !paths.length" class="flex items-center justify-between gap-4 h-[3.125rem] w-full sm:w-[26rem] px-4 rounded bg-surface-3 text-lg disabled:opacity-50" @click="pathsOpen = !pathsOpen">
               <span class="truncate">{{ $t('Alluvial diagram') }}<template v-if="paths && paths.length"> · {{ $t(':count builds', { count: paths.length.toLocaleString('en-US') }) }}</template></span>
               <basil-icon name="arrow-small" :class="['shrink-0 transition-transform', pathsOpen ? '-rotate-90' : 'rotate-90']"></basil-icon>
             </button>
@@ -82,18 +82,18 @@
             <loading-component v-else :compact="true" :tab="true" :textoverride="true">{{ $t('Loading talents...') }}</loading-component>
             <div class="flex flex-col gap-2.5">
               <div v-for="level in 7" :key="level" class="grid grid-cols-[4.25rem_minmax(0,1fr)] md:grid-cols-[5rem_minmax(0,1fr)] gap-2.5">
-                <skeleton-box class="h-[4.25rem]"></skeleton-box>
+                <skeleton-box class="h-[4.25rem] rounded-control"></skeleton-box>
                 <div class="grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-2.5">
-                  <skeleton-box v-for="talent in 3" :key="talent" class="h-[4.25rem]"></skeleton-box>
+                  <skeleton-box v-for="talent in 3" :key="talent" class="h-[4.25rem] rounded-control"></skeleton-box>
                 </div>
               </div>
             </div>
           </panel-box>
           <panel-box title="Selected build" :skeleton="true" :divider="false" class="border-t-4 border-teal">
             <div class="grid grid-cols-7 gap-2"><skeleton-box v-for="slot in 7" :key="slot" class="w-[2.625rem] h-[2.625rem] mx-auto !rounded-full"></skeleton-box></div>
-            <div class="grid grid-cols-3 gap-3"><skeleton-box v-for="stat in 3" :key="stat" class="h-[4.5rem]"></skeleton-box></div>
-            <skeleton-box class="h-16"></skeleton-box>
-            <skeleton-box class="h-[3.125rem]"></skeleton-box>
+            <div class="grid grid-cols-3 gap-3"><skeleton-box v-for="stat in 3" :key="stat" class="h-[4.5rem] rounded-control"></skeleton-box></div>
+            <skeleton-box class="h-16 rounded-lg"></skeleton-box>
+            <skeleton-box class="h-[3.125rem] rounded"></skeleton-box>
           </panel-box>
         </div>
 
@@ -145,7 +145,7 @@
             <div v-if="suggestions.length" class="flex flex-col gap-2 pt-4 border-t border-surface-3">
               <h3 class="text-lg font-semibold">{{ $t('Most played from here') }}</h3>
               <p class="text-sm text-subtext mb-1">{{ $t('The talent most games took on each open level.') }}</p>
-              <div v-for="item in suggestions" :key="item.level" class="flex items-center gap-3 rounded-control bg-surface-1 px-3 py-2">
+              <div v-for="item in suggestions" :key="item.level" class="flex items-center gap-3 rounded-lg bg-surface-1 px-3 py-2">
                 <span class="w-8 shrink-0 rounded-md bg-teal/20 py-0.5 text-center text-xs text-lteal">{{ item.level }}</span>
                 <talent-image-wrapper :talent="item.talent" size="small"></talent-image-wrapper>
                 <span class="flex flex-col flex-1 min-w-0">
@@ -153,7 +153,7 @@
                   <span class="text-xs text-subtext">{{ $t(':played games', { played: item.talent.games_played.toLocaleString('en-US') }) }}</span>
                 </span>
                 <span :class="['font-semibold tabular-nums', item.talent.win_rate > 50 ? 'text-win' : '']">{{ Number(item.talent.win_rate).toFixed(2) }}%</span>
-                <button type="button" class="w-8 h-8 shrink-0 flex items-center justify-center rounded-control hover:bg-surface-3 transition-colors text-lg" :title="$t('Pick :talent', { talent: $talentName(item.talent) })" @click="talentClicked(item.talent, 0, item.level)">+</button>
+                <button type="button" class="w-8 h-8 shrink-0 flex items-center justify-center rounded hover:bg-surface-3 transition-colors text-lg" :title="$t('Pick :talent', { talent: $talentName(item.talent) })" @click="talentClicked(item.talent, 0, item.level)">+</button>
               </div>
             </div>
           </panel-box>
@@ -193,7 +193,7 @@
                       </div>
                     </td>
                     <td class="py-2 px-3"><span v-if="row.winner !== undefined" :class="['rounded-md px-2 py-0.5 text-xs font-bold uppercase', row.winner ? 'bg-win/20 text-win' : 'bg-loss/20 text-loss']">{{ row.winner ? $t('Win') : $t('Loss') }}</span></td>
-                    <td class="py-2 px-3"><a :href="`/Match/Single/${row.replayID}`" class="inline-flex w-8 h-8 items-center justify-center rounded-control hover:bg-surface-3" :aria-label="$t('Open match')"><basil-icon name="arrow-small"></basil-icon></a></td>
+                    <td class="py-2 px-3"><a :href="`/Match/Single/${row.replayID}`" class="inline-flex w-8 h-8 items-center justify-center rounded hover:bg-surface-3" :aria-label="$t('Open match')"><basil-icon name="arrow-small"></basil-icon></a></td>
                   </tr>
                 </tbody>
               </table>

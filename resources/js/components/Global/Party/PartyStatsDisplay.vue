@@ -12,7 +12,7 @@
           <div class="grid sm:grid-cols-2 gap-4">
             <div v-for="tile in summaryTiles" :key="tile.label" class="bg-surface-2 rounded-control p-4 flex flex-col gap-1 min-w-0">
               <span :class="['text-sm text-subtext w-fit', { 'skeleton-text': skeleton }]">{{ $t(tile.label) }}</span>
-              <skeleton-box v-if="skeleton" class="h-9 w-28"></skeleton-box>
+              <skeleton-box v-if="skeleton" class="h-9 w-28 rounded"></skeleton-box>
               <span v-else :class="['text-3xl font-semibold leading-[1.2]', tile.class || 'text-header']">{{ tile.value }}</span>
               <skeleton-box v-if="skeleton" class="h-4 w-40 max-w-full mt-1"></skeleton-box>
               <span v-else class="text-sm text-subtext">{{ tile.caption }}</span>
@@ -56,7 +56,7 @@
           <!-- Clicking an enemy party (or one of yours, down the side) fades every other column (row); click it again, or
                anywhere that isn't a row or column, to clear. A row and a column together ring their crossing tile -->
           <component :is="skeleton ? 'div' : 'button'" v-for="column in compositions" :key="column.code" :type="skeleton ? null : 'button'" :title="skeleton ? null : $t('Focus this column')" data-party-focus
-            :class="['snap-start flex flex-col items-center gap-2 py-1.5 rounded-control text-sm text-center transition-[colors,opacity]', skeleton ? 'text-subtext' : focusColumn === column.code ? 'bg-teal/20 ring-2 ring-teal text-white' : ['text-subtext hover:bg-surface-1 hover:text-white', { 'opacity-40': focusColumn }]]"
+            :class="['snap-start flex flex-col items-center gap-2 py-1.5 rounded text-sm text-center transition-[colors,opacity]', skeleton ? 'text-subtext' : focusColumn === column.code ? 'bg-teal/20 ring-2 ring-teal text-white' : ['text-subtext hover:bg-surface-1 hover:text-white', { 'opacity-40': focusColumn }]]"
             @click="!skeleton && toggleFocus('column', column.code)">
             <span :class="['inline-flex items-center gap-1', { 'skeleton-text': skeleton }]">
               <span v-for="(size, index) in column.groups" :key="index" :class="['inline-flex gap-0.5 p-[0.1875rem] rounded-full', { 'bg-teal': size > 1 }, { invisible: skeleton }]">
@@ -78,7 +78,7 @@
               </span>
               <span :class="['font-medium truncate', { 'skeleton-text': skeleton }]">{{ $t(row.label) }}</span>
             </component>
-            <div v-for="column in compositions" :key="column.code" :class="['rounded-control px-2 py-3 flex flex-col items-center justify-center text-center transition-[opacity,transform]', skeleton ? 'bg-surface-3 animate-pulse' : cellClass(cell(row, column)), { 'opacity-25': isFaded(row, column), 'ring-2 ring-teal scale-105 relative z-[1]': isCombo(row, column) }]">
+            <div v-for="column in compositions" :key="column.code" :class="['rounded-lg px-2 py-3 flex flex-col items-center justify-center text-center transition-[opacity,transform]', skeleton ? 'bg-surface-3 animate-pulse' : cellClass(cell(row, column)), { 'opacity-25': isFaded(row, column), 'ring-2 ring-teal scale-105 relative z-[1]': isCombo(row, column) }]">
               <template v-if="skeleton">
                 <span class="invisible text-lg font-semibold leading-tight">00.00%</span>
                 <span class="invisible text-xs">000 W – 000 L</span>

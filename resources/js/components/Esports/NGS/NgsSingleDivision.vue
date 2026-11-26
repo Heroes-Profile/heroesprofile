@@ -148,7 +148,7 @@
 
           <panel-box :inner="true" class="min-w-0" :title="$t('Teams')">
             <div class="flex flex-col gap-2">
-              <skeleton-box v-for="index in 8" :key="index" class="h-14"></skeleton-box>
+              <skeleton-box v-for="index in 8" :key="index" class="h-14 rounded-lg"></skeleton-box>
             </div>
             <p class="flex flex-wrap items-center gap-2 mt-auto"><span class="skeleton-text">{{ $t('Total Time Spent Dead:') }}</span><skeleton-box class="h-4 w-36"></skeleton-box></p>
           </panel-box>
@@ -183,7 +183,7 @@
                 <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
               </div>
               <div class="flex flex-col items-center gap-2">
-                <skeleton-box class="h-8 w-20"></skeleton-box>
+                <skeleton-box class="h-8 w-20 rounded"></skeleton-box>
                 <skeleton-box class="h-3 w-28"></skeleton-box>
               </div>
               <div class="flex items-center gap-3">

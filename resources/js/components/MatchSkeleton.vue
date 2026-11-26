@@ -7,17 +7,17 @@
         <skeleton-box class="h-5 md:h-7 w-64 md:w-[36rem]"></skeleton-box>
       </div>
       <div class="flex gap-3">
-        <skeleton-box class="h-[3.125rem] w-40"></skeleton-box>
-        <skeleton-box class="h-[3.125rem] w-44"></skeleton-box>
+        <skeleton-box class="h-[3.125rem] w-40 rounded"></skeleton-box>
+        <skeleton-box class="h-[3.125rem] w-44 rounded"></skeleton-box>
       </div>
     </div>
 
     <div class="max-w-[120rem] mx-auto px-4 md:px-8 pb-10 flex flex-col gap-6">
       <div class="grid xl:grid-cols-2 gap-6">
-        <div v-for="team in 2" :key="team" :class="['relative rounded bg-surface border-t-4 border-gray-dark p-5 md:p-6 flex flex-col gap-5', { 'md:!rounded-tl-none': team === 1 }]">
+        <div v-for="team in 2" :key="team" :class="['relative rounded-panel bg-surface border-t-4 border-gray-dark p-5 md:p-6 flex flex-col gap-5', { 'md:!rounded-tl-none': team === 1 }]">
           <loading-component v-if="team === 1" :compact="true" :tab="true" :overrideimage="overrideimage"></loading-component>
           <div class="flex items-center justify-between gap-3">
-            <skeleton-box class="h-7 w-40"></skeleton-box>
+            <skeleton-box class="h-7 w-40 rounded"></skeleton-box>
             <skeleton-box class="h-6 w-32"></skeleton-box>
           </div>
           <div class="grid grid-cols-5 gap-2">
@@ -28,7 +28,7 @@
             </div>
           </div>
           <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
-            <skeleton-box v-for="stat in 6" :key="stat" class="h-[3.75rem]"></skeleton-box>
+            <skeleton-box v-for="stat in 6" :key="stat" class="h-[3.75rem] rounded-control"></skeleton-box>
           </div>
         </div>
       </div>
@@ -44,14 +44,14 @@
             <div v-for="player in 5" :key="player" class="flex items-center gap-3 rounded bg-surface-1 px-4 py-2.5">
               <skeleton-box class="w-10 h-10 shrink-0 !rounded-full"></skeleton-box>
               <div class="flex flex-col gap-1.5 flex-1"><skeleton-box class="h-4 w-28"></skeleton-box><skeleton-box class="h-3 w-20"></skeleton-box></div>
-              <skeleton-box v-for="talent in 7" :key="talent" class="w-8 h-8 shrink-0 max-sm:hidden"></skeleton-box>
+              <skeleton-box v-for="talent in 7" :key="talent" class="w-8 h-8 shrink-0 max-sm:hidden rounded-lg"></skeleton-box>
             </div>
           </div>
         </div>
       </panel-box>
 
       <panel-box title="Experience" subtitle="Team experience over the course of the match." :skeleton="true" :divider="false">
-        <skeleton-box class="h-[20rem] w-full"></skeleton-box>
+        <skeleton-box class="h-[20rem] w-full rounded-control"></skeleton-box>
       </panel-box>
     </div>
   </div>

@@ -11,7 +11,7 @@
       <!-- Its own header row, so the close button doesn't read as part of the search -->
       <div class="shrink-0 flex items-center justify-between pl-3 pr-1 py-1">
         <span class="text-xs font-bold uppercase tracking-wider text-subtext">{{ $t(switcherLabel) }}</span>
-        <button type="button" class="w-8 h-8 flex items-center justify-center rounded-control text-subtext hover:text-white hover:bg-lighten transition-colors" :title="$t('Close')" :aria-label="$t('Close')" @click.stop="close"><basil-icon name="cross" class="text-sm"></basil-icon></button>
+        <button type="button" class="w-8 h-8 flex items-center justify-center rounded text-subtext hover:text-white hover:bg-lighten transition-colors" :title="$t('Close')" :aria-label="$t('Close')" @click.stop="close"><basil-icon name="cross" class="text-sm"></basil-icon></button>
       </div>
       <input v-if="type !== 'role'" v-model="search" type="text" :placeholder="'Search ' + label.toLowerCase() + '...'" class="shrink-0 block w-full px-3 py-2.5 text-sm bg-field text-white border-y border-white/20 focus:outline-none focus:border-teal" @click.stop />
       <div class="overflow-y-auto">

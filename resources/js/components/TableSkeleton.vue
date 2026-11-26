@@ -1,7 +1,7 @@
 <template>
   <!-- A table's grey placeholder while it loads. Pass columns to mirror the real table's cells. -->
-  <component :is="bare ? 'div' : 'panel-box'" :class="{ 'bg-surface rounded overflow-hidden': bare }">
-    <skeleton-box v-if="heading" class="h-8 w-80 max-w-full"></skeleton-box>
+  <component :is="bare ? 'div' : 'panel-box'" :class="{ 'bg-surface rounded-panel overflow-hidden': bare }">
+    <skeleton-box v-if="heading" class="h-8 w-80 max-w-full rounded"></skeleton-box>
     <!-- table-skeleton-*: light mode draws these like its light tables (app.css) -->
     <div v-if="columns.length" class="table-skeleton flex flex-col">
       <div class="table-skeleton-head grid gap-3 md:gap-6 px-3 py-5 border-b border-gray-dark" :style="gridStyle">
@@ -15,7 +15,7 @@
           </div>
           <!-- A role icon with its name underneath, centred -->
           <div v-else-if="column === 'role'" class="flex flex-col items-center gap-2">
-            <skeleton-box class="w-12 h-14 max-md:w-8 max-md:h-9"></skeleton-box>
+            <skeleton-box class="w-12 h-14 max-md:w-8 max-md:h-9 rounded-lg"></skeleton-box>
             <skeleton-box class="h-4 w-20 max-w-full"></skeleton-box>
           </div>
           <skeleton-box v-else-if="column === 'icon'" class="w-20 h-20 max-md:w-12 max-md:h-12 mx-auto !rounded-full"></skeleton-box>
@@ -28,7 +28,7 @@
           <!-- A build: seven talent squares with its copy code and button underneath -->
           <div v-else-if="column === 'talents'" class="flex flex-col items-center gap-2">
             <div class="flex gap-1.5">
-              <skeleton-box v-for="level in 7" :key="level" class="w-[2.625rem] h-[2.625rem] shrink-0"></skeleton-box>
+              <skeleton-box v-for="level in 7" :key="level" class="w-[2.625rem] h-[2.625rem] shrink-0 rounded-lg"></skeleton-box>
             </div>
             <div class="flex items-center gap-2">
               <skeleton-box class="h-4 w-40 max-w-full"></skeleton-box>
@@ -36,13 +36,13 @@
             </div>
           </div>
           <!-- Leaderboard cells: a tier pill, a rank badge with its text, a build without its code, a copy code with its button -->
-          <skeleton-box v-else-if="column === 'pill'" class="h-9 w-40 max-w-full mx-auto"></skeleton-box>
+          <skeleton-box v-else-if="column === 'pill'" class="h-9 w-40 max-w-full mx-auto rounded"></skeleton-box>
           <div v-else-if="column === 'badge'" class="flex items-center gap-3">
             <skeleton-box class="w-9 h-9 shrink-0 !rounded-full"></skeleton-box>
             <skeleton-box class="h-4 w-32 max-w-full"></skeleton-box>
           </div>
           <div v-else-if="column === 'talentrow'" class="flex gap-1.5 justify-center">
-            <skeleton-box v-for="level in 7" :key="level" class="w-[2.625rem] h-[2.625rem] shrink-0"></skeleton-box>
+            <skeleton-box v-for="level in 7" :key="level" class="w-[2.625rem] h-[2.625rem] shrink-0 rounded-lg"></skeleton-box>
           </div>
           <!-- A build's copy code with its copy icon -->
           <div v-else-if="column === 'code'" class="flex items-center justify-center gap-2">
@@ -70,8 +70,8 @@
       </div>
     </div>
     <div v-else class="flex flex-col gap-1">
-      <skeleton-box class="h-8"></skeleton-box>
-      <skeleton-box v-for="index in rows" :key="index" class="h-10"></skeleton-box>
+      <skeleton-box class="h-8 rounded"></skeleton-box>
+      <skeleton-box v-for="index in rows" :key="index" class="h-10 rounded"></skeleton-box>
     </div>
   </component>
 </template>

@@ -25,11 +25,11 @@
 
     <div v-if="loading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 pb-10 flex flex-col gap-6">
       <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <skeleton-box v-for="card in 4" :key="card" class="h-[6.5rem]"></skeleton-box>
+        <skeleton-box v-for="card in 4" :key="card" class="h-[6.5rem] rounded-control"></skeleton-box>
       </div>
       <panel-box title="Unique players per month" :subtitle="$t('Players seen in uploaded replays.')" :skeleton="true" :divider="false" class="relative md:!rounded-tl-none">
         <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading activity...') }}</loading-component>
-        <skeleton-box class="h-[25rem] w-full"></skeleton-box>
+        <skeleton-box class="h-[25rem] w-full rounded-control"></skeleton-box>
       </panel-box>
     </div>
 
@@ -48,8 +48,8 @@
           <template #right>
             <!-- Any years together, or All -->
             <div class="ml-auto flex flex-wrap gap-1 rounded bg-surface-1 p-1 text-sm select-none">
-              <button type="button" :class="['rounded-control px-3 py-1.5 transition-colors', allYearsActive ? 'bg-teal text-white' : 'text-subtext hover:text-white hover:bg-surface-2']" @click="activeYears = allYearsActive ? [] : [...availableYears]">{{ $t('All') }}</button>
-              <button v-for="year in availableYears" :key="year" type="button" :class="['rounded-control px-3 py-1.5 transition-colors', !allYearsActive && activeYears.includes(year) ? 'bg-teal text-white' : 'text-subtext hover:text-white hover:bg-surface-2']" @click="toggleYear(year)">{{ year }}</button>
+              <button type="button" :class="['rounded px-3 py-1.5 transition-colors', allYearsActive ? 'bg-teal text-white' : 'text-subtext hover:text-white hover:bg-surface-2']" @click="activeYears = allYearsActive ? [] : [...availableYears]">{{ $t('All') }}</button>
+              <button v-for="year in availableYears" :key="year" type="button" :class="['rounded px-3 py-1.5 transition-colors', !allYearsActive && activeYears.includes(year) ? 'bg-teal text-white' : 'text-subtext hover:text-white hover:bg-surface-2']" @click="toggleYear(year)">{{ year }}</button>
             </div>
           </template>
           <line-chart

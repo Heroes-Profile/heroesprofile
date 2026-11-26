@@ -14,7 +14,7 @@
           <div v-if="legendOpen" class="md:absolute md:right-0 md:top-full md:mt-3 max-md:fixed max-md:inset-x-4 max-md:top-1/2 max-md:-translate-y-1/2 max-md:max-h-[85dvh] max-md:overflow-y-auto z-50 md:w-[34rem] bg-surface-4 border border-surface-3 rounded shadow-2xl p-5 flex flex-col gap-3 text-sm text-subtext">
             <div class="flex justify-between gap-4">
               <h3 class="flex items-center gap-2 text-base font-semibold text-header"><basil-icon name="info" class="text-lg"></basil-icon>{{ $t('How to read this') }}</h3>
-              <button type="button" class="w-9 h-9 -mt-1.5 -mr-1.5 flex items-center justify-center rounded-control hover:bg-surface-3 transition-colors" :aria-label="$t('Close')" @click="legendOpen = false"><basil-icon name="cross" class="text-xl"></basil-icon></button>
+              <button type="button" class="w-9 h-9 -mt-1.5 -mr-1.5 flex items-center justify-center rounded hover:bg-surface-3 transition-colors" :aria-label="$t('Close')" @click="legendOpen = false"><basil-icon name="cross" class="text-xl"></basil-icon></button>
             </div>
             <p class="flex items-center gap-3"><span class="flex gap-1 shrink-0"><span class="w-3.5 h-3.5 rounded-[3px] bg-[#4dcc8c]"></span><span class="w-3.5 h-3.5 rounded-[3px] bg-loss"></span><span class="w-3.5 h-3.5 rounded-[3px] bg-[#4dcc8c]"></span></span>{{ $t('Squares are the last 10 games in this mode, newest first.') }}</p>
             <p class="flex items-center gap-3"><span class="flex gap-1 shrink-0"><span class="rounded-md bg-[#b22122] px-1.5 text-[0.625rem] font-bold uppercase text-white">{{ $t('Party') }}</span><span class="rounded-md bg-[#1f5faf] px-1.5 text-[0.625rem] font-bold uppercase text-white">{{ $t('Party') }}</span></span>{{ $t('Players who partied together in their recent QM, SL or ARAM games. Same colour, same party.') }}</p>
@@ -26,7 +26,7 @@
     </div>
 
     <!-- Which team is ahead on average MMR -->
-    <div v-if="mmrSplit" class="rounded bg-surface px-5 md:px-8 py-5 flex flex-col gap-3">
+    <div v-if="mmrSplit" class="rounded-panel bg-surface px-5 md:px-8 py-5 flex flex-col gap-3">
       <div class="flex flex-wrap items-center gap-4">
         <div class="flex items-center gap-2.5">
           <rank-tier-pill :small="true" :tier="data[0]['average_' + mode + '_rank']"></rank-tier-pill>
@@ -35,7 +35,7 @@
             <span class="text-2xl font-bold">{{ mmrSplit.teamOne }}</span>
           </div>
         </div>
-        <span :class="['mx-auto order-last md:order-none max-md:w-full max-md:text-center rounded-control px-3.5 py-1.5 font-semibold', mmrSplit.leader === 0 ? 'bg-teal/20' : mmrSplit.leader === 1 ? 'bg-loss/20' : 'bg-surface-3']">{{ mmrSplit.lead }}</span>
+        <span :class="['mx-auto order-last md:order-none max-md:w-full max-md:text-center rounded-lg px-3.5 py-1.5 font-semibold', mmrSplit.leader === 0 ? 'bg-teal/20' : mmrSplit.leader === 1 ? 'bg-loss/20' : 'bg-surface-3']">{{ mmrSplit.lead }}</span>
         <div class="flex items-center gap-2.5 ml-auto md:ml-0">
           <div class="flex flex-col items-end leading-snug">
             <span class="text-sm font-medium text-subtext">{{ $t('Team 2') }} · {{ $t('Avg. :modeshort MMR', { modeshort: modeShort }) }}</span>
@@ -52,7 +52,7 @@
 
     <div class="grid xl:grid-cols-2 gap-6 items-start">
       <div v-for="team in [0, 1]" :key="team" class="flex flex-col gap-6 min-w-0">
-        <div class="rounded bg-surface overflow-hidden">
+        <div class="rounded-panel bg-surface overflow-hidden">
           <div :class="['flex items-center gap-3 px-6 py-4', team === 0 ? 'bg-teal/20' : 'bg-loss/20']">
             <span :class="['w-3 h-3 rounded-full', team === 0 ? 'bg-teal' : 'bg-loss']"></span>
             <h2 class="text-2xl font-bold">{{ $t('Team :team', { team: team + 1 }) }}</h2>

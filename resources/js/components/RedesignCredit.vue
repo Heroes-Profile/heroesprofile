@@ -8,8 +8,8 @@
       <!-- The translation is split around the name, so the name can sit anywhere in the sentence -->
       <template v-for="(part, index) in parts" :key="index">
         <button v-if="part === null" type="button" class="hover:underline" :title="copyLabel" @click="copy">{{ name }}</button>
-        <!-- On hover a chevron appears right after the words, pushing the name along -->
-        <template v-else-if="part.trim()">{{ /^\s/.test(part) ? ' ' : '' }}<a href="/Redesign/2026" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ part.trim() }}</span><basil-icon name="arrow-small" class="hidden group-hover/bt:inline-block text-[0.625rem] ml-1"></basil-icon></a>{{ /\s$/.test(part) ? ' ' : '' }}</template>
+        <!-- The words with their chevron, then a dot between them and the name -->
+        <template v-else-if="part.trim()"><span v-if="index" class="mx-2">·</span><a href="/Redesign/2026" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ part.trim() }}</span><basil-icon name="arrow-small" class="text-[0.625rem] ml-1"></basil-icon></a><span v-if="!index" class="mx-2">·</span></template>
       </template>
       <button v-if="discord" type="button" class="absolute left-full top-1/2 -translate-y-1/2 ml-1.5 hover:text-surface transition-colors" :title="copyLabel" :aria-label="copyLabel" @click="copy">
         <i :class="copied ? 'fas fa-check' : 'fab fa-discord'"></i>

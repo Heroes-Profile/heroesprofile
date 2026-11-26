@@ -1,7 +1,7 @@
 <template>
   <!-- The login card: the /Authenticate/Battlenet page shows it on its own, login-popup shows it over the page -->
   <div :class="['relative mx-auto w-full max-w-[45rem] bg-surface border-t-4 border-teal rounded-[1.75rem] p-12 max-md:px-5 max-md:py-8 flex flex-col items-center gap-8', { 'mt-[7.5rem] max-md:mt-10': !closable }]">
-    <button v-if="closable && !redirecting" type="button" class="absolute right-6 top-6 max-md:right-4 max-md:top-4 w-9 h-9 flex items-center justify-center rounded-control hover:bg-surface-3 transition-colors" :aria-label="$t('Close')" @click="$emit('close')"><basil-icon name="cross" class="text-2xl"></basil-icon></button>
+    <button v-if="closable && !redirecting" type="button" class="absolute right-6 top-6 max-md:right-4 max-md:top-4 w-9 h-9 flex items-center justify-center rounded hover:bg-surface-3 transition-colors" :aria-label="$t('Close')" @click="$emit('close')"><basil-icon name="cross" class="text-2xl"></basil-icon></button>
 
     <div class="flex flex-col items-center gap-3 text-center">
       <div class="w-[5.5rem] h-[5.5rem] rounded-full bg-teal/15 flex items-center justify-center">

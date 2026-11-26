@@ -12,7 +12,7 @@
             <h2 class="text-2xl font-bold leading-tight">{{ member.name }}</h2>
             <span v-if="member.company" class="text-sm text-subtext">{{ member.company }}</span>
           </div>
-          <span class="shrink-0 rounded-control bg-teal px-2.5 py-1 text-xs font-bold">{{ $t(member.role) }}</span>
+          <span class="shrink-0 rounded-lg bg-teal px-2.5 py-1 text-xs font-bold">{{ $t(member.role) }}</span>
         </div>
         <div class="grid sm:grid-cols-2 gap-3">
           <div class="rounded-control bg-surface-1 px-4 py-3 flex flex-col gap-1.5">
@@ -79,7 +79,7 @@ export default {
   computed: {
     // A contact chip: email, Reddit or Discord
     chipClass() {
-      return 'group/bt inline-flex items-center gap-2 rounded-control bg-surface-1 px-3 py-1.5 w-fit';
+      return 'group/bt inline-flex items-center gap-2 rounded-lg bg-surface-1 px-3 py-1.5 w-fit';
     },
   },
   methods: {

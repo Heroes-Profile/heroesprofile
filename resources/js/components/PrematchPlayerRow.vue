@@ -36,7 +36,7 @@
       <div v-if="expanded" class="flex flex-col gap-1.5 px-4 md:px-6 pb-5 text-left">
         <template v-if="recentloading">
           <skeleton-box class="h-3 w-48 mb-1"></skeleton-box>
-          <skeleton-box v-for="n in 5" :key="n" class="h-[3.25rem] w-full !rounded-control"></skeleton-box>
+          <skeleton-box v-for="n in 5" :key="n" class="h-[3.25rem] w-full !rounded-lg"></skeleton-box>
         </template>
         <template v-else>
           <div class="flex items-center justify-between gap-3 pb-1">
@@ -45,7 +45,7 @@
           </div>
           <div v-if="!games.length" class="text-subtext">{{ $t('No games') }}</div>
         </template>
-        <div v-for="game in games" :key="game.replayID" class="flex items-center gap-3 rounded-control bg-surface pl-2.5 pr-3.5 py-1.5">
+        <div v-for="game in games" :key="game.replayID" class="flex items-center gap-3 rounded-lg bg-surface pl-2.5 pr-3.5 py-1.5">
           <span :class="['self-stretch w-1 rounded-full shrink-0', game.winner ? 'bg-[#4dcc8c]' : 'bg-loss']"></span>
           <hero-image-wrapper v-if="game.hero" size="small" :hero="game.hero" :excludehover="true"></hero-image-wrapper>
           <span class="flex-1 min-w-0 truncate"><span class="font-semibold">{{ game.hero ? $heroName(game.hero) : '' }}</span> <span class="text-subtext">· {{ game.game_map ? $mapName(game.game_map) : '' }}</span></span>

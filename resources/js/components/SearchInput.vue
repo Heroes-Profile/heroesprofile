@@ -20,7 +20,7 @@
         type="text"
         :placeholder="$t(placeholder)"
         :aria-label="$t(placeholder)"
-        :class="['w-full !bg-surface-3 text-white placeholder:text-subtext rounded-control pl-9 pr-3 py-2 text-sm normal-case font-normal shadow-[0_0_0.5rem_rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-teal', { 'ring-2 ring-inset ring-teal': modelValue }]"
+        :class="['w-full !bg-surface-3 text-white placeholder:text-subtext rounded pl-9 pr-3 py-2 text-sm normal-case font-normal shadow-[0_0_0.5rem_rgba(0,0,0,0.4)] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-teal', { 'ring-2 ring-inset ring-teal': modelValue }]"
       />
     </div>
   </span>
@@ -35,7 +35,7 @@
       type="text"
       :placeholder="$t(placeholder)"
       :aria-label="$t(placeholder)"
-      :class="['w-full !bg-surface-3 text-white placeholder:text-subtext rounded-control pl-9 pr-3 py-2 text-sm normal-case font-normal focus:outline-none focus:ring-2 focus:ring-inset focus:ring-teal', { 'ring-2 ring-inset ring-teal': modelValue }]"
+      :class="['w-full !bg-surface-3 text-white placeholder:text-subtext rounded pl-9 pr-3 py-2 text-sm normal-case font-normal focus:outline-none focus:ring-2 focus:ring-inset focus:ring-teal', { 'ring-2 ring-inset ring-teal': modelValue }]"
     />
   </div>
 </template>

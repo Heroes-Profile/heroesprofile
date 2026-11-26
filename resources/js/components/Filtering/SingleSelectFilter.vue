@@ -13,7 +13,7 @@
           </round-image>
         </span>
       </span> 
-      <span :class="['h-[2.5rem] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 min-w-0 w-full', { 'ring-1 ring-teal': showOptions }]">
+      <span :class="['h-[2.5rem] overflow-hidden rounded bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 min-w-0 w-full', { 'ring-1 ring-teal': showOptions }]">
         <!-- fit: every option sits invisibly in the same cell, so the box is as wide as the longest one -->
         <span class="grid min-w-0">
           <span class="font-bold px-1 text-nowrap truncate min-w-0 [grid-area:1/1]" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span>
@@ -32,7 +32,7 @@
       <div class="max-h-80 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable]">
         <div class="flex flex-col gap-1" :class="{ 'pr-4 whitespace-nowrap': text === 'Stat Filter' }">
           <!-- The whole row picks its option: the label is tied to the radio -->
-          <label v-for="value in filteredValues" :key="value.code" :for="value.code" class="select-none group flex items-center gap-3 px-3 py-2 rounded-control hover:bg-surface-4 transition-colors cursor-pointer" :class="{ 'whitespace-nowrap': hasPatchDates }">
+          <label v-for="value in filteredValues" :key="value.code" :for="value.code" class="select-none group flex items-center gap-3 px-3 py-2 rounded hover:bg-surface-4 transition-colors cursor-pointer" :class="{ 'whitespace-nowrap': hasPatchDates }">
             <input
               type="radio"
               :id="value.code"

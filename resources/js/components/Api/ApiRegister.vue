@@ -4,19 +4,19 @@
       <input type="hidden" name="_token" :value="csrf">
 
       <label class="flex flex-col gap-2 text-subtext">{{ $t('Name') }}
-        <input class="h-[3.125rem] rounded-control bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white px-4 w-full min-w-0 placeholder:text-subtext/70" type="text" id="name" name="name" v-model="name" required autofocus>
+        <input class="h-[3.125rem] rounded bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white px-4 w-full min-w-0 placeholder:text-subtext/70" type="text" id="name" name="name" v-model="name" required autofocus>
       </label>
 
       <label class="flex flex-col gap-2 text-subtext">{{ $t('Email') }}
-        <input class="h-[3.125rem] rounded-control bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white px-4 w-full min-w-0 placeholder:text-subtext/70" type="email" id="email" name="email" v-model="email" placeholder="name@example.com" required>
+        <input class="h-[3.125rem] rounded bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white px-4 w-full min-w-0 placeholder:text-subtext/70" type="email" id="email" name="email" v-model="email" placeholder="name@example.com" required>
       </label>
 
       <div class="grid sm:grid-cols-2 gap-4">
         <label class="flex flex-col gap-2 text-subtext">{{ $t('Password') }}
-          <input class="h-[3.125rem] rounded-control bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white px-4 w-full min-w-0 placeholder:text-subtext/70" type="password" id="password" name="password" required>
+          <input class="h-[3.125rem] rounded bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white px-4 w-full min-w-0 placeholder:text-subtext/70" type="password" id="password" name="password" required>
         </label>
         <label class="flex flex-col gap-2 text-subtext">{{ $t('Confirm password') }}
-          <input class="h-[3.125rem] rounded-control bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white px-4 w-full min-w-0 placeholder:text-subtext/70" type="password" id="password_confirmation" name="password_confirmation" required>
+          <input class="h-[3.125rem] rounded bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white px-4 w-full min-w-0 placeholder:text-subtext/70" type="password" id="password_confirmation" name="password_confirmation" required>
         </label>
       </div>
       <span class="-mt-1 text-sm text-subtext">{{ $t('At least 8 characters.') }}</span>

@@ -92,7 +92,7 @@ details.group.is-closing[open] .group-open\:-rotate-90 {
   cursor: default;
 }
 .expandable-dropdown input[type="text"]{
-  @apply bg-field text-white rounded-control px-3 py-2 text-sm;
+  @apply bg-field text-white rounded px-3 py-2 text-sm;
 }
 
 /* Every scrolling box gets the nav flyout's thin scrollbar; the page's own scrollbar (html/body) is left alone */
@@ -317,7 +317,7 @@ nav .search-component{
 /* Desktop: teal marks the open path - the top-level item, the hovered row, and a row whose flyout is open */
 @media (min-width:1024px){
   .nav-dropdown-inner-wrapper a{
-    @apply mx-1.5 rounded-control;
+    @apply mx-1.5 rounded;
   }
   .nav-dropdown-inner-wrapper a:not([class*="bg-"]):hover,
   .nav-flyout-wrapper:hover > a:not([class*="bg-"]){
@@ -331,7 +331,7 @@ nav .search-component{
   /* Top-level labels: padded into a pill, pulled back by the same amount so the bar doesn't grow */
   .main-navigation-wrapper .nav-item > a,
   .main-navigation-wrapper a.nav-item > span{
-    @apply px-2.5 py-1.5 -mx-2.5 -my-1.5 rounded-control transition-colors;
+    @apply px-2.5 py-1.5 -mx-2.5 -my-1.5 rounded transition-colors;
   }
   .main-navigation-wrapper .nav-item:hover > a,
   .main-navigation-wrapper a.nav-item:hover > span{
@@ -474,7 +474,7 @@ input[type="radio"].form-checkbox:checked{
    rounded too (clip, not hidden, so the header still sticks). The table's own background moves to its body: drawn
    under the header too, it showed as a pale fringe round the header's curved corners. */
 .rounded-table{
-  @apply border-separate border-spacing-0 rounded-control overflow-clip;
+  @apply border-separate border-spacing-0 rounded-lg overflow-clip;
   background-color: transparent !important;
 }
 .rounded-table tbody{
@@ -497,7 +497,7 @@ input[type="radio"].form-checkbox:checked{
 }
 /* Words in a loading skeleton: the text keeps its exact size but is hidden under a grey block, like skeleton-box */
 .skeleton-text{
-  @apply bg-surface-3 rounded animate-pulse;
+  @apply bg-surface-3 rounded-[0.25rem] animate-pulse;
   color: transparent !important;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;

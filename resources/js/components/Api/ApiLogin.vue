@@ -7,11 +7,11 @@
       <input v-if="popup" type="hidden" name="login_popup" value="1">
 
       <label class="flex flex-col gap-2 text-subtext">{{ $t('Email') }}
-        <input class="h-[3.125rem] rounded-control bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white px-4 w-full min-w-0 placeholder:text-subtext/70" type="email" name="email" v-model="email" placeholder="name@example.com" required autofocus>
+        <input class="h-[3.125rem] rounded bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white px-4 w-full min-w-0 placeholder:text-subtext/70" type="email" name="email" v-model="email" placeholder="name@example.com" required autofocus>
       </label>
 
       <label class="flex flex-col gap-2 text-subtext">{{ $t('Password') }}
-        <input class="h-[3.125rem] rounded-control bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white px-4 w-full min-w-0 placeholder:text-subtext/70" type="password" name="password" required>
+        <input class="h-[3.125rem] rounded bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white px-4 w-full min-w-0 placeholder:text-subtext/70" type="password" name="password" required>
       </label>
 
       <label class="flex items-center gap-3 rounded bg-surface-1 px-4 py-3 text-sm cursor-pointer">

@@ -32,7 +32,7 @@
 
 @section('content')
     <div class="max-w-[84rem] w-full mx-auto px-4 md:px-8 py-10 md:py-20">
-        <div class="bg-surface rounded overflow-hidden grid md:grid-cols-[2fr_3fr]">
+        <div class="bg-surface rounded-panel overflow-hidden grid md:grid-cols-[2fr_3fr]">
             <div class="relative max-md:h-[18rem]">
                 <a href="/" aria-label="{{ __('Take me home') }}">
                     <img class="w-full h-full object-cover" src="/images/miscellaneous/404.png" alt="Town Portal">

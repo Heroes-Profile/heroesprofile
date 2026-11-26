@@ -212,7 +212,7 @@
                   </td>
                   <td class="py-2 px-3"><skeleton-box class="h-4 w-12 mx-auto"></skeleton-box></td>
                   <td class="py-2 px-3"><skeleton-box class="h-4 w-14 mx-auto"></skeleton-box></td>
-                  <td v-if="!esport" class="py-2 px-3"><skeleton-box class="h-8 w-14 mx-auto"></skeleton-box></td>
+                  <td v-if="!esport" class="py-2 px-3"><skeleton-box class="h-8 w-14 mx-auto rounded"></skeleton-box></td>
                 </tr>
               </tbody>
             </table>

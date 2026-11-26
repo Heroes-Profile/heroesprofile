@@ -1,8 +1,8 @@
 <template>
   <!-- The API account pages' centred card: an icon, the title and intro, then the form; a line and the footer links under it -->
   <div :class="popup ? 'w-full' : 'max-w-[120rem] mx-auto px-4 md:px-8 py-10 md:py-16 flex justify-center'">
-    <div class="relative w-full max-w-[40rem] mx-auto rounded bg-surface border-t-4 border-teal px-6 md:px-12 pt-10 md:pt-12 pb-10 flex flex-col items-center gap-7">
-      <button v-if="popup" type="button" class="absolute right-4 top-4 w-9 h-9 flex items-center justify-center rounded-control hover:bg-surface-3 transition-colors" :aria-label="$t('Close')" @click="$emit('close')"><basil-icon name="cross" class="text-xl"></basil-icon></button>
+    <div class="relative w-full max-w-[40rem] mx-auto rounded-panel bg-surface border-t-4 border-teal px-6 md:px-12 pt-10 md:pt-12 pb-10 flex flex-col items-center gap-7">
+      <button v-if="popup" type="button" class="absolute right-4 top-4 w-9 h-9 flex items-center justify-center rounded hover:bg-surface-3 transition-colors" :aria-label="$t('Close')" @click="$emit('close')"><basil-icon name="cross" class="text-xl"></basil-icon></button>
       <span class="w-20 h-20 rounded-full bg-teal/15 flex items-center justify-center text-3xl"><i :class="icon"></i></span>
       <div class="flex flex-col items-center gap-2.5 text-center">
         <h1 class="text-3xl font-bold">{{ $t(heading) }}</h1>

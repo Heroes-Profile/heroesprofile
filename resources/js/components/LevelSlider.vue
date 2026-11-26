@@ -2,7 +2,7 @@
   <!-- Level and its value, then the slider in a field between 1 and 30 -->
   <div class="flex flex-col gap-2">
     <span class="flex items-baseline justify-between gap-2"><span class="text-subtext">{{ $t('Level') }}</span><span class="text-xl font-bold text-white">{{ modelValue }}</span></span>
-    <span class="h-[3.125rem] rounded-control bg-surface-3 px-4 flex items-center gap-4 text-sm font-medium text-subtext">
+    <span class="h-[3.125rem] rounded bg-surface-3 px-4 flex items-center gap-4 text-sm font-medium text-subtext">
       {{ min }}
       <span class="relative flex-1 h-[1.375rem]">
         <span class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 rounded-[0.25rem] bg-surface-4"></span>

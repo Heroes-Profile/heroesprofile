@@ -2,7 +2,7 @@
   <!-- A league's sections as cards, styled like the leagues on /Esports: an icon, then the name, what it shows, and a link -->
   <!-- Every league's cards the same width (four across on desktop); a short last row is centred -->
   <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-wrap justify-center gap-6 md:gap-8">
-    <button v-for="section in shown" :key="section.key" type="button" class="group/bt w-full sm:w-[calc((100%-2rem)/2)] md:w-[calc((100%-4rem)/3)] xl:w-[calc((100%-6rem)/4)] bg-surface rounded p-6 flex flex-col gap-5 min-w-0 text-left hover:bg-surface-1 transition-colors" @click="$emit('select', section.key)">
+    <button v-for="section in shown" :key="section.key" type="button" class="group/bt w-full sm:w-[calc((100%-2rem)/2)] md:w-[calc((100%-4rem)/3)] xl:w-[calc((100%-6rem)/4)] bg-surface rounded-panel p-6 flex flex-col gap-5 min-w-0 text-left hover:bg-surface-1 transition-colors" @click="$emit('select', section.key)">
       <div class="h-[12.5rem] rounded-control bg-surface-1 group-hover/bt:bg-surface-2 transition-colors flex items-center justify-center">
         <i :class="[section.icon, 'text-[5rem]']"></i>
       </div>

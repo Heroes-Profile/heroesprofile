@@ -57,8 +57,8 @@
     <div v-else-if="isLoading">
       <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-wrap justify-end items-center gap-4">
         <!-- The Compact / Expanded toggle and the page numbers -->
-        <skeleton-box class="w-[13.25rem] h-[2.75rem]"></skeleton-box>
-        <skeleton-box class="w-[17.75rem] h-[2.75rem]"></skeleton-box>
+        <skeleton-box class="w-[13.25rem] h-[2.75rem] rounded"></skeleton-box>
+        <skeleton-box class="w-[17.75rem] h-[2.75rem] rounded"></skeleton-box>
       </div>
       <div class="max-w-[120rem] mx-auto px-4 md:px-8 py-4">
         <!-- The message sits on a tab of the panel, as on the profile -->

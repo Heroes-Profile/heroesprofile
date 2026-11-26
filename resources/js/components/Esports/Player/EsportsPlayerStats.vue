@@ -155,14 +155,14 @@
               <skeleton-box class="h-4 w-48"></skeleton-box>
             </div>
           </div>
-          <skeleton-box class="h-[7.5rem]"></skeleton-box>
+          <skeleton-box class="h-[7.5rem] rounded-control"></skeleton-box>
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            <skeleton-box v-for="stat in 6" :key="stat" class="h-[4.25rem]"></skeleton-box>
+            <skeleton-box v-for="stat in 6" :key="stat" class="h-[4.25rem] rounded-control"></skeleton-box>
           </div>
-          <div class="flex gap-8 mt-auto"><skeleton-box class="h-10 w-24"></skeleton-box><skeleton-box class="h-10 w-24"></skeleton-box></div>
+          <div class="flex gap-8 mt-auto"><skeleton-box class="h-10 w-24 rounded"></skeleton-box><skeleton-box class="h-10 w-24 rounded"></skeleton-box></div>
         </panel-box>
         <panel-box :title="$t('Teams played for')" :skeleton="true" :divider="false">
-          <skeleton-box v-for="team in 2" :key="team" class="h-14"></skeleton-box>
+          <skeleton-box v-for="team in 2" :key="team" class="h-14 rounded-lg"></skeleton-box>
         </panel-box>
         <panel-box :title="$t('Win Rate By Role')" link-text="All Roles" :skeleton="true" :divider="false">
           <div v-for="role in 3" :key="role" class="flex flex-col gap-1.5">

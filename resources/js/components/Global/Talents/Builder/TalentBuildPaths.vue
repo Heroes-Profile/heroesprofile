@@ -1,7 +1,7 @@
 <template>
   <!-- Every build path through the talent tiers: width is games played, colour is win rate -->
   <!-- Opened from the builder's "Alluvial diagram" button -->
-  <div class="bg-surface rounded p-4 md:p-6 w-0 min-w-full">
+  <div class="bg-surface rounded-panel p-4 md:p-6 w-0 min-w-full">
     <div class="text-white">
       <div class="flex flex-wrap justify-between gap-2 text-sm mb-2">
         <span>{{ $t(':count build combinations · line width is games played', { count: paths.length.toLocaleString('en-US') }) }}</span>

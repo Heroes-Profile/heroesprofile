@@ -6,7 +6,7 @@
 
     <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <!-- Game type and Next match -->
-      <div class="bg-surface rounded p-4 md:px-6 flex flex-wrap items-end justify-between gap-4">
+      <div class="bg-surface rounded-panel p-4 md:px-6 flex flex-wrap items-end justify-between gap-4">
         <div class="flex flex-col gap-2 min-w-0 max-w-[44rem]">
           <span v-if="user && practicemode" class="flex flex-wrap items-center gap-3">
             <span class="px-1.5 py-0.5 rounded-[0.25rem] bg-red/20 text-[0.625rem]">
@@ -47,12 +47,12 @@
       <div v-if="isLoading && !data" class="flex flex-col gap-6">
         <loading-component :compact="true" :textoverride="true">{{ $t('Loading match...') }}</loading-component>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <skeleton-box v-for="tile in 4" :key="tile" class="h-[3.75rem]"></skeleton-box>
+          <skeleton-box v-for="tile in 4" :key="tile" class="h-[3.75rem] rounded-control"></skeleton-box>
         </div>
         <div class="grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-6 items-center">
-          <skeleton-box class="h-[25rem]"></skeleton-box>
+          <skeleton-box class="h-[25rem] rounded-control"></skeleton-box>
           <span class="max-md:hidden w-8"></span>
-          <skeleton-box class="h-[25rem]"></skeleton-box>
+          <skeleton-box class="h-[25rem] rounded-control"></skeleton-box>
         </div>
       </div>
 
@@ -70,7 +70,7 @@
         <div class="grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-6 items-center">
           <template v-for="team in [0, 1]" :key="team">
             <span v-if="team === 1" class="max-md:hidden w-8 h-8 rounded-full bg-surface flex items-center justify-center text-[0.625rem] font-bold text-subtext">VS</span>
-            <div :class="['bg-surface rounded border-2 p-4 md:p-6 flex flex-col gap-4 min-w-0', teamBorder(team)]">
+            <div :class="['bg-surface rounded-panel border-2 p-4 md:p-6 flex flex-col gap-4 min-w-0', teamBorder(team)]">
               <div class="flex flex-wrap items-center justify-between gap-3">
                 <span class="flex items-center gap-2">
                   <span :class="['w-1 h-5 rounded-full', team === 0 ? 'bg-teal' : 'bg-red']"></span>
@@ -95,7 +95,7 @@
               </div>
 
               <div class="flex flex-col gap-2">
-                <div v-for="(player, index) in players(team)" :key="index" class="flex items-center gap-3 rounded-control bg-surface-1 px-3 py-2 min-w-0">
+                <div v-for="(player, index) in players(team)" :key="index" class="flex items-center gap-3 rounded-lg bg-surface-1 px-3 py-2 min-w-0">
                   <hero-image-wrapper :hero="player.hero" class="shrink-0"></hero-image-wrapper>
                   <span class="text-sm font-semibold truncate min-w-0">{{ $heroName(player.hero) }}</span>
                   <span v-if="player.talent" class="ml-auto flex gap-1.5 shrink-0">
@@ -141,7 +141,7 @@
           <stat-box class="!m-0 !min-w-0" :title="'Best streak this visit'" :value="bestStreak"></stat-box>
         </div>
       </panel-box>
-      <div v-else-if="!user && !data && !isLoading" class="bg-surface rounded p-4 md:px-6 flex flex-wrap items-center justify-between gap-4">
+      <div v-else-if="!user && !data && !isLoading" class="bg-surface rounded-panel p-4 md:px-6 flex flex-wrap items-center justify-between gap-4">
         <span class="text-sm text-subtext">{{ $t('Log in to track your predictions and rank on the leaderboard.') }}</span>
         <custom-button :href="'/Authenticate/Battlenet'" class="font-semibold" :alt="'Log in'">{{ $t('Log in') }}</custom-button>
       </div>

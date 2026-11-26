@@ -16,7 +16,7 @@
         </button>
 
         <div v-if="showHowTo" class="bg-surface-4 rounded-b px-4 md:px-6 pb-6 pt-2 flex max-xl:flex-col gap-4 md:gap-6">
-          <div class="flex-1 min-w-0 bg-surface rounded p-4 md:p-6 flex flex-col gap-5">
+          <div class="flex-1 min-w-0 bg-surface rounded-panel p-4 md:p-6 flex flex-col gap-5">
             <h3 class="text-xl font-bold">{{ $t('On a computer') }}</h3>
             <ol class="flex flex-col gap-2.5">
               <li v-for="(step, index) in steps" :key="index" class="flex items-start gap-3">
@@ -34,11 +34,11 @@
           </div>
 
           <div class="xl:w-[26rem] shrink-0 flex flex-col gap-4">
-            <div class="bg-surface rounded px-6 py-5 flex flex-col gap-2.5">
+            <div class="bg-surface rounded-panel px-6 py-5 flex flex-col gap-2.5">
               <h3 class="font-bold text-lg">{{ $t('On the Twitch mobile app') }}</h3>
               <p class="text-sm text-subtext">{{ $t('Open the channel, then swipe from the chat to the extensions panel below the stream. The same lobby is shown in a single column.') }}</p>
             </div>
-            <div class="flex-1 bg-surface rounded px-6 py-5 flex flex-col gap-2.5">
+            <div class="flex-1 bg-surface rounded-panel px-6 py-5 flex flex-col gap-2.5">
               <h3 class="font-bold text-lg">{{ $t("What you'll see") }}</h3>
               <ul class="flex flex-col gap-2.5 text-sm">
                 <li v-for="item in whatYouSee" :key="item" class="flex items-start gap-2.5"><span class="shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-teal"></span>{{ item }}</li>
@@ -59,7 +59,7 @@
         <panel-box :divider="false">
           <div class="flex items-center gap-3">
             <h2 class="text-2xl font-bold">{{ $t('Live now') }}</h2>
-            <span class="flex items-center gap-1.5 rounded-control bg-surface-1 px-2.5 py-1 text-sm font-semibold text-subtext"><span class="w-2 h-2 rounded-full bg-red"></span>{{ $t(':count live', { count: directory.live.length }) }}</span>
+            <span class="flex items-center gap-1.5 rounded-lg bg-surface-1 px-2.5 py-1 text-sm font-semibold text-subtext"><span class="w-2 h-2 rounded-full bg-red"></span>{{ $t(':count live', { count: directory.live.length }) }}</span>
           </div>
 
           <div v-if="!directory.live.length" class="flex-1 flex flex-col items-center justify-center gap-2.5 text-center rounded bg-surface-1 border border-dashed border-gray-dark px-4 py-10">
@@ -104,7 +104,7 @@
 
       <panel-box title="All streamers" subtitle="Channels with the Heroes Profile extension installed." :divider="false">
         <template #right>
-          <span class="ml-auto self-center rounded-control bg-surface-1 px-3 py-1 text-sm font-medium text-subtext">{{ $t(':count offline', { count: directory.offline.length }) }}</span>
+          <span class="ml-auto self-center rounded-lg bg-surface-1 px-3 py-1 text-sm font-medium text-subtext">{{ $t(':count offline', { count: directory.offline.length }) }}</span>
         </template>
         <p v-if="!streamers.length" class="text-sm text-subtext">{{ $t('No streamers listed yet.') }}</p>
         <!-- The row opens the channel; the profile line is its own link, laid over it -->

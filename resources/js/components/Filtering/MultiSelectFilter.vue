@@ -22,7 +22,7 @@
 
 
       
-      <span :class="['h-[2.5rem] overflow-hidden rounded-control bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 relative min-w-0 w-full', { 'ring-1 ring-teal': showOptions }]">
+      <span :class="['h-[2.5rem] overflow-hidden rounded bg-surface-3 hover:bg-surface-4 text-white p-2 flex items-center gap-2 relative min-w-0 w-full', { 'ring-1 ring-teal': showOptions }]">
         <span class="flex min-w-0 gap-1">
           <span v-if="toggletabs" class="whitespace-nowrap font-bold px-1 shrink-0">{{ $t(toggleside === 'right' ? toggletabs[1] : toggletabs[0]) }}</span>
           <!-- fit: the options and the "6 of 6 selected" summary sit invisibly in the same cell, so the box is as wide as the longest -->
@@ -52,7 +52,7 @@
           ></tab-button>
         </div>
         <!-- Heading checkboxes stand in for Select All -->
-        <label v-if="!headings && !groupbyyear" for="select-all" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded-control hover:bg-surface-4 transition-colors cursor-pointer">
+        <label v-if="!headings && !groupbyyear" for="select-all" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded hover:bg-surface-4 transition-colors cursor-pointer">
           <input 
           type="checkbox" 
           id="select-all" 
@@ -65,7 +65,7 @@
         <!-- pr-3 keeps the longest option clear of the scrollbar -->
         <div class="max-h-80 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable] pr-1 flex flex-col gap-1">
           <template v-for="row in rows" :key="row.key">
-          <label v-if="row.heading" :for="row.key" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded-control hover:bg-surface-4 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !row.codes.some(code => isSelectable(code)) }]">
+          <label v-if="row.heading" :for="row.key" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded hover:bg-surface-4 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !row.codes.some(code => isSelectable(code)) }]">
             <input
             type="checkbox"
             :id="row.key"
@@ -77,7 +77,7 @@
             >
             <span class="text-sm font-bold text-white">{{ $t(row.name) }}</span>
           </label>
-          <label v-else :for="row.value.code" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded-control hover:bg-surface-4 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !isSelectable(row.value.code) }]">
+          <label v-else :for="row.value.code" class="select-none whitespace-nowrap group flex items-center gap-3 px-3 py-2 rounded hover:bg-surface-4 transition-colors cursor-pointer" :class="[indentClass(row.depth), { 'opacity-40': !isSelectable(row.value.code) }]">
             <input
             type="checkbox"
             :id="row.value.code"

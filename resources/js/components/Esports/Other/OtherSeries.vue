@@ -99,9 +99,9 @@
       <!-- Teams: the list card's rows, the search at the top right -->
       <panel-box v-if="activeButton === 'teams'" :title="$t('Teams')" :skeleton="true" :divider="false" class="relative md:!rounded-tl-none">
         <loading-component :compact="true" :tab="true" :overrideimage="'/images/EsportOther/' + series.icon"></loading-component>
-        <template #right><skeleton-box class="h-10 w-full sm:w-[18.125rem] sm:ml-auto"></skeleton-box></template>
+        <template #right><skeleton-box class="h-10 w-full sm:w-[18.125rem] sm:ml-auto rounded"></skeleton-box></template>
         <div class="grid sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-2">
-          <skeleton-box v-for="index in 16" :key="index" class="h-14"></skeleton-box>
+          <skeleton-box v-for="index in 16" :key="index" class="h-14 rounded-lg"></skeleton-box>
         </div>
       </panel-box>
       <!-- Recent Matches: the titled card, the toggle and page numbers in its header, the expanded rows -->
@@ -109,8 +109,8 @@
         <loading-component :compact="true" :tab="true" :overrideimage="'/images/EsportOther/' + series.icon"></loading-component>
         <template #right>
           <div class="ml-auto flex flex-wrap items-center gap-4">
-            <skeleton-box class="w-[10rem] h-9"></skeleton-box>
-            <skeleton-box class="w-[17.75rem] h-[2.75rem]"></skeleton-box>
+            <skeleton-box class="w-[10rem] h-9 rounded"></skeleton-box>
+            <skeleton-box class="w-[17.75rem] h-[2.75rem] rounded"></skeleton-box>
           </div>
         </template>
         <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
@@ -126,7 +126,7 @@
               <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
             </div>
             <div class="flex flex-col items-center gap-2">
-              <skeleton-box class="h-8 w-20"></skeleton-box>
+              <skeleton-box class="h-8 w-20 rounded"></skeleton-box>
               <skeleton-box class="h-3 w-28"></skeleton-box>
             </div>
             <div class="flex items-center gap-3">
@@ -147,7 +147,7 @@
       <!-- Overall Hero Stats: the titled card with its search, then hero, win rate, popularity, ban rate and games -->
       <panel-box v-else-if="activeButton === 'overallHeroStats'" title="Overall hero stats" :skeleton="true" :divider="false" class="relative md:!rounded-tl-none">
         <loading-component :compact="true" :tab="true" :overrideimage="'/images/EsportOther/' + series.icon"></loading-component>
-        <template #right><skeleton-box class="h-10 w-full sm:w-[18.125rem] sm:ml-auto"></skeleton-box></template>
+        <template #right><skeleton-box class="h-10 w-full sm:w-[18.125rem] sm:ml-auto rounded"></skeleton-box></template>
         <table-skeleton :bare="true" :rows="12" :columns="['hero', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
       </panel-box>
       <!-- Overall Talent Stats: the global talent page's two cards -->

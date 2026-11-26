@@ -13,7 +13,7 @@
           <h4 class="text-xl font-bold leading-tight">{{ $t('Table columns') }}</h4>
           <p class="text-sm text-subtext mt-1">{{ $t(':shown of :total columns shown', { shown: draftCount, total: stats.length }) }} · {{ $t(note) }}</p>
         </div>
-        <button type="button" class="self-start w-9 h-9 flex items-center justify-center rounded-control hover:bg-surface-3 transition-colors" :aria-label="$t('Close')" @click="open = false"><basil-icon name="cross" class="text-xl"></basil-icon></button>
+        <button type="button" class="self-start w-9 h-9 flex items-center justify-center rounded hover:bg-surface-3 transition-colors" :aria-label="$t('Close')" @click="open = false"><basil-icon name="cross" class="text-xl"></basil-icon></button>
       </div>
 
       <div class="flex flex-wrap items-center gap-4">
@@ -23,7 +23,7 @@
 
       <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-x-2 gap-y-1">
         <label v-for="stat in shownStats" :key="stat.value"
-          :class="['flex items-center gap-3 px-2.5 h-[2.1875rem] rounded-control cursor-pointer transition-colors', draft[stat.value] ? 'bg-surface-3 font-medium text-white' : 'text-subtext hover:bg-surface-2', { 'opacity-40 cursor-not-allowed': locked(stat) }]">
+          :class="['flex items-center gap-3 px-2.5 h-[2.1875rem] rounded cursor-pointer transition-colors', draft[stat.value] ? 'bg-surface-3 font-medium text-white' : 'text-subtext hover:bg-surface-2', { 'opacity-40 cursor-not-allowed': locked(stat) }]">
           <input type="checkbox" class="form-checkbox shrink-0" :checked="draft[stat.value]" :disabled="locked(stat)" @change="pick(stat, $event.target.checked)">
           <span class="truncate">{{ $t(label(stat)) }}</span>
         </label>

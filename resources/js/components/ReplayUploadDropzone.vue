@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex gap-3 rounded-control bg-surface-1 border-l-4 border-yellow px-5 py-3 text-sm mb-6">
+    <div class="flex gap-3 rounded bg-surface-1 border-l-4 border-yellow px-5 py-3 text-sm mb-6">
       <basil-icon name="info" class="text-yellow text-xl shrink-0"></basil-icon>
       <span>{{ $t('Games uploaded here may not count towards the leaderboards. Use the Replay Uploader for that.') }}</span>
     </div>

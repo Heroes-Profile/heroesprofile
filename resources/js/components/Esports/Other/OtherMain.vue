@@ -30,7 +30,7 @@
           <!-- Labelled and sized like the dropdowns beside it -->
           <label class="p-2 flex flex-col gap-1.5 text-sm font-medium text-subtext max-md:w-full md:w-[12.5rem]">
             <span>{{ $t('Player') }}</span>
-            <input type="text" class="h-[2.5rem] rounded-control bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white p-2 w-full min-w-0" :placeholder="$t('Search player')" v-model="userinput" @keyup.enter="filter()">
+            <input type="text" class="h-[2.5rem] rounded bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white p-2 w-full min-w-0" :placeholder="$t('Search player')" v-model="userinput" @keyup.enter="filter()">
           </label>
         </filters>
       </div>
@@ -58,8 +58,8 @@
         <loading-component :compact="true" :tab="true"></loading-component>
         <template #right>
           <div class="ml-auto flex flex-wrap items-center gap-4">
-            <skeleton-box class="w-[10rem] h-9"></skeleton-box>
-            <skeleton-box class="w-[17.75rem] h-[2.75rem]"></skeleton-box>
+            <skeleton-box class="w-[10rem] h-9 rounded"></skeleton-box>
+            <skeleton-box class="w-[17.75rem] h-[2.75rem] rounded"></skeleton-box>
           </div>
         </template>
         <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
@@ -75,7 +75,7 @@
               <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
             </div>
             <div class="flex flex-col items-center gap-2">
-              <skeleton-box class="h-8 w-20"></skeleton-box>
+              <skeleton-box class="h-8 w-20 rounded"></skeleton-box>
               <skeleton-box class="h-3 w-28"></skeleton-box>
             </div>
             <div class="flex items-center gap-3">

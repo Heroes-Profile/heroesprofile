@@ -23,7 +23,7 @@
 
         <!-- The two teams: result, bans, players and their numbers -->
         <div class="relative max-w-[120rem] mx-auto px-4 md:px-8 grid xl:grid-cols-2 gap-6">
-          <div v-for="team in [0, 1]" :key="team" :class="['rounded bg-surface border-t-4 p-5 md:p-6 flex flex-col gap-5 min-w-0', data.winner == team ? 'border-win' : 'border-loss']">
+          <div v-for="team in [0, 1]" :key="team" :class="['rounded-panel bg-surface border-t-4 p-5 md:p-6 flex flex-col gap-5 min-w-0', data.winner == team ? 'border-win' : 'border-loss']">
             <div class="flex flex-wrap items-center justify-between gap-3">
               <div class="flex items-center gap-3 min-w-0">
                 <h2 class="text-2xl font-bold truncate">{{ teamTitle(team) }}</h2>

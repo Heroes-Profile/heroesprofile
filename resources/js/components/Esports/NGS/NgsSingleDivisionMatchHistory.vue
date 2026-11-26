@@ -29,8 +29,8 @@
     <div v-else-if="isLoading" class="relative max-w-[120rem] mx-auto px-4 md:px-8 py-4 flex flex-col gap-6 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
         <!-- The Compact / Expanded toggle and the page numbers, as on the loaded list -->
         <div class="flex flex-wrap justify-end items-center gap-4">
-          <skeleton-box class="w-[13.25rem] h-[2.75rem]"></skeleton-box>
-          <skeleton-box class="w-[17.75rem] h-[2.75rem]"></skeleton-box>
+          <skeleton-box class="w-[13.25rem] h-[2.75rem] rounded"></skeleton-box>
+          <skeleton-box class="w-[17.75rem] h-[2.75rem] rounded"></skeleton-box>
         </div>
         <panel-box class="relative md:!rounded-tl-none">
           <!-- The message sits on a tab of the card, as on the match histories -->
@@ -48,7 +48,7 @@
                 <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
               </div>
               <div class="flex flex-col items-center gap-2">
-                <skeleton-box class="h-8 w-20"></skeleton-box>
+                <skeleton-box class="h-8 w-20 rounded"></skeleton-box>
                 <skeleton-box class="h-3 w-28"></skeleton-box>
               </div>
               <div class="flex items-center gap-3">

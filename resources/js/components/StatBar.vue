@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center gap-4 min-w-0">
-    <div :class="['flex-1 min-w-0 bg-surface-3 overflow-hidden', size === 'big' ? 'h-[1.875rem] rounded-control' : 'h-4 rounded-[0.25rem]']" aria-hidden="true">
+    <div :class="['flex-1 min-w-0 bg-surface-3 overflow-hidden', size === 'big' ? 'h-[1.875rem] rounded-lg' : 'h-4 rounded-[0.25rem]']" aria-hidden="true">
       <div :class="['h-full', colorClasses[color] || colorClasses.blue]" :style="{ width }"></div>
     </div>
     <!-- hideValue keeps the number's space, so the bar lines up with ones that show theirs -->

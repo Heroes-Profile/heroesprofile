@@ -1,7 +1,7 @@
 <template>
   <!-- Every hero as a portrait with its name, with a search box and role tabs (Drafter, Auto Battler).
        The page orders the heroes and may mark some `unavailable`; the board filters them and emits pick -->
-  <div class="bg-surface rounded p-4 md:p-6 flex flex-col gap-5 min-w-0">
+  <div class="bg-surface rounded-panel p-4 md:p-6 flex flex-col gap-5 min-w-0">
     <slot name="header"></slot>
 
     <div class="flex flex-wrap items-center justify-between gap-4">

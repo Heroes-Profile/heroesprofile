@@ -208,13 +208,13 @@
           <div class="grid 2xl:grid-cols-2 gap-6 min-w-0">
             <panel-box :inner="true" :title="$t('Players')">
               <div class="flex flex-col gap-2">
-                <skeleton-box v-for="index in 5" :key="index" class="h-14"></skeleton-box>
+                <skeleton-box v-for="index in 5" :key="index" class="h-14 rounded-lg"></skeleton-box>
               </div>
               <p class="flex flex-wrap items-center gap-2 mt-auto"><span class="skeleton-text">{{ $t('Total Time Spent Dead:') }}</span><skeleton-box class="h-4 w-36"></skeleton-box></p>
             </panel-box>
             <panel-box :inner="true" :title="$t('Teams Lost Against')">
               <div class="flex flex-col gap-2">
-                <skeleton-box v-for="index in 4" :key="index" class="h-14"></skeleton-box>
+                <skeleton-box v-for="index in 4" :key="index" class="h-14 rounded-lg"></skeleton-box>
               </div>
             </panel-box>
           </div>
@@ -280,7 +280,7 @@
       </div>
       <h2 class="text-2xl font-bold">{{ $t('Recent Matches') }}</h2>
       <div class="flex flex-col gap-2 pb-8">
-        <skeleton-box v-for="row in 6" :key="row" class="h-16"></skeleton-box>
+        <skeleton-box v-for="row in 6" :key="row" class="h-16 rounded-lg"></skeleton-box>
       </div>
     </div>
 

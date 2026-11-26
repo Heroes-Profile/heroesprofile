@@ -1,7 +1,7 @@
 <template>
   <div :class="compact ? 'px-4' : 'max-w-[120rem] mx-auto md:px-8 mb-6'">
     <button v-if="!compact" class="md:hidden p-2 bg-blue w-full" @click="showMobile">{{ $t('Show Filters') }}</button>
-    <div v-show="compact || showNav" :class="compact ? 'bg-lighten rounded p-3' : 'bg-surface md:rounded p-4 md:p-6 max-md:fixed max-md:inset-0 max-md:z-[54] max-md:h-[100dvh] max-md:overflow-y-auto max-md:flex max-md:flex-col'">
+    <div v-show="compact || showNav" :class="compact ? 'bg-lighten rounded p-3' : 'bg-surface md:rounded-panel p-4 md:p-6 max-md:fixed max-md:inset-0 max-md:z-[54] max-md:h-[100dvh] max-md:overflow-y-auto max-md:flex max-md:flex-col'">
       <button v-if="!compact" class="md:hidden ml-auto text-2xl min-w-[2.75rem] min-h-[2.75rem]" :aria-label="$t('Close filters')" @click="showMobile">x</button>
       <!-- Laid out by layoutFilterRow: one line when everything fits, otherwise the fewest rows with the boxes spread evenly, Filter last -->
       <div ref="mainrow" :class="compact ? 'flex flex-wrap items-end gap-3' : 'filter-row'">
@@ -363,7 +363,7 @@
           <round-image v-if="advancedfiltersinfo && !hideadvancedfilteringbutton" class="self-center" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
             <p class="max-sm:text-xs">{{ advancedfiltersinfo }}</p>
           </round-image>
-          <button v-if="!hideadvancedfilteringbutton" type="button" :class="['relative h-10 w-10 shrink-0 rounded-control transition-colors', toggleExtraFilters ? 'bg-teal text-white hover:bg-lteal' : 'bg-surface-3 text-subtext hover:text-white']" :title="toggleButtonText" :aria-label="toggleButtonText" :aria-expanded="!!toggleExtraFilters" @click="setAdvancedFilters(!toggleExtraFilters)">
+          <button v-if="!hideadvancedfilteringbutton" type="button" :class="['relative h-10 w-10 shrink-0 rounded transition-colors', toggleExtraFilters ? 'bg-teal text-white hover:bg-lteal' : 'bg-surface-3 text-subtext hover:text-white']" :title="toggleButtonText" :aria-label="toggleButtonText" :aria-expanded="!!toggleExtraFilters" @click="setAdvancedFilters(!toggleExtraFilters)">
             <i class="fas fa-sliders"></i>
             <span v-if="advancedFiltersApplied" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-teal"></span>
           </button>

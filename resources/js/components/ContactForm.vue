@@ -8,16 +8,16 @@
           <div class="grid sm:grid-cols-2 gap-4">
             <label class="flex flex-col gap-2">
               <span class="text-subtext">{{ $t('BattleTag') }}*</span>
-              <input class="w-full bg-field text-white rounded-control px-4 h-12" type="text" id="name" v-model="formData.battletag" placeholder="Name#1234" required>
+              <input class="w-full bg-field text-white rounded px-4 h-12" type="text" id="name" v-model="formData.battletag" placeholder="Name#1234" required>
             </label>
             <label class="flex flex-col gap-2">
               <span class="text-subtext">{{ $t('Email') }}*</span>
-              <input class="w-full bg-field text-white rounded-control px-4 h-12" type="email" id="email" v-model="formData.email" placeholder="you@example.com" required>
+              <input class="w-full bg-field text-white rounded px-4 h-12" type="email" id="email" v-model="formData.email" placeholder="you@example.com" required>
             </label>
           </div>
           <label class="flex flex-col gap-2">
             <span class="text-subtext">{{ $t('Message') }}*</span>
-            <textarea class="w-full bg-field text-white rounded-control px-4 py-3 min-h-[9.875rem]" id="message" v-model="formData.message" :placeholder="$t('Tell us what happened, which page it was on and your region if it\'s about a profile.')" required></textarea>
+            <textarea class="w-full bg-field text-white rounded px-4 py-3 min-h-[9.875rem]" id="message" v-model="formData.message" :placeholder="$t('Tell us what happened, which page it was on and your region if it\'s about a profile.')" required></textarea>
           </label>
 
           <!-- Honeypot field - hidden from users but visible to bots -->
@@ -28,8 +28,8 @@
             <button :disabled="isLoading" type="submit" class="btn bg-teal hover:bg-lteal font-semibold disabled:opacity-60">{{ $t('Send message') }}</button>
           </div>
 
-          <p v-if="emailSent" class="bg-teal/20 text-white rounded-control px-4 py-3">{{ $t('Email Sent Successfully!') }}</p>
-          <p v-if="sendError" class="bg-red/20 text-white rounded-control px-4 py-3">{{ sendError }}</p>
+          <p v-if="emailSent" class="bg-teal/20 text-white rounded px-4 py-3">{{ $t('Email Sent Successfully!') }}</p>
+          <p v-if="sendError" class="bg-red/20 text-white rounded px-4 py-3">{{ sendError }}</p>
         </form>
       </panel-box>
 
@@ -37,7 +37,7 @@
         <div class="flex flex-col gap-3">
           <a v-for="link in otherWays" :key="link.title" :href="link.href" :target="link.external ? '_blank' : null" :rel="link.external ? 'noopener noreferrer' : null"
             class="group/bt flex items-center gap-4 rounded-control bg-surface-1 hover:bg-surface-3 transition-colors p-4">
-            <span :class="['w-12 h-12 shrink-0 rounded-control flex items-center justify-center text-xl', link.iconClass]"><i :class="link.icon"></i></span>
+            <span :class="['w-12 h-12 shrink-0 rounded flex items-center justify-center text-xl', link.iconClass]"><i :class="link.icon"></i></span>
             <span class="flex flex-col min-w-0">
               <span class="font-semibold">{{ $t(link.title) }}</span>
               <span class="text-sm text-subtext truncate">{{ link.external ? $t(link.subtitle) : link.subtitle }}</span>

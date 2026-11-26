@@ -11,11 +11,11 @@
           <button v-if="messages.length" class="text-sm underline" :disabled="!!loading" @click="newChat">{{ $t('New chat') }}</button>
         </div>
         <div class="flex items-center gap-2">
-          <button class="max-md:hidden w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="$t(expanded ? $t('Make help smaller') : $t('Make help bigger'))" :title="expanded ? $t('Smaller') : $t('Bigger')" @click="toggleExpanded">
+          <button class="max-md:hidden w-8 h-8 rounded flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="$t(expanded ? $t('Make help smaller') : $t('Make help bigger'))" :title="expanded ? $t('Smaller') : $t('Bigger')" @click="toggleExpanded">
             <i :class="expanded ? 'fas fa-down-left-and-up-right-to-center' : 'fas fa-up-right-and-down-left-from-center'"></i>
           </button>
           <span class="max-md:hidden w-px h-5 bg-white/20" aria-hidden="true"></span>
-          <button class="w-8 h-8 rounded-control flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="$t('Close help')" :title="$t('Close')" @click="toggle">
+          <button class="w-8 h-8 rounded flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="$t('Close help')" :title="$t('Close')" @click="toggle">
             <basil-icon name="cross" class="text-lg"></basil-icon>
           </button>
         </div>
@@ -72,7 +72,7 @@
 
       <form class="px-5 py-4 border-t border-white/10 flex flex-col gap-2" @submit.prevent="send">
         <div class="flex gap-2">
-          <input v-model="question" type="text" maxlength="500" :placeholder="$t('Ask a question')" :aria-label="$t('Ask a question')" class="flex-1 min-w-0 bg-field text-white rounded-control px-3 py-2 text-sm" :disabled="!!loading" />
+          <input v-model="question" type="text" maxlength="500" :placeholder="$t('Ask a question')" :aria-label="$t('Ask a question')" class="flex-1 min-w-0 bg-field text-white rounded px-3 py-2 text-sm" :disabled="!!loading" />
           <custom-button color="teal" text="Send" size="small" :ignoreclick="true" :disabled="!!loading || !question.trim()" @click="send"></custom-button>
         </div>
         <span v-if="loggedIn && remaining !== null" class="text-xs text-subtext">{{ $t(':remaining assistant :questions left today', { remaining: remaining, questions: remaining === 1 ? $t('question') : $t('questions') }) }}</span>
@@ -91,7 +91,7 @@
       <!-- Phones' first visit, instead of opening the panel over the page -->
       <div v-if="teaser && !open" class="help-teaser animate-bounce flex items-center gap-2 rounded-xl pl-3 pr-1 py-1 text-sm">
         <button class="text-left" @click="toggle"><span class="font-bold">{{ $t('New:') }}</span> {{ $t('questions? Ask here') }}</button>
-        <button class="w-6 h-6 flex items-center justify-center rounded-control hover:bg-black/10" :aria-label="$t('Dismiss')" :title="$t('Dismiss')" @click="teaser = false">
+        <button class="w-6 h-6 flex items-center justify-center rounded hover:bg-black/10" :aria-label="$t('Dismiss')" :title="$t('Dismiss')" @click="teaser = false">
           <basil-icon name="cross"></basil-icon>
         </button>
       </div>

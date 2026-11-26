@@ -13,12 +13,12 @@
     </div>
 
     <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 grid md:grid-cols-2 gap-6 md:gap-8 items-start">
-      <div v-for="branch in branches" :key="branch.name" :class="['bg-surface rounded p-4 md:p-8 flex flex-col gap-5 min-w-0', { 'max-md:hidden': branch.name !== mobileBranch }]">
+      <div v-for="branch in branches" :key="branch.name" :class="['bg-surface rounded-panel p-4 md:p-8 flex flex-col gap-5 min-w-0', { 'max-md:hidden': branch.name !== mobileBranch }]">
         <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
           <div>
             <div class="flex items-center gap-3">
               <h2 class="text-2xl font-bold">{{ $t(branch.title) }}</h2>
-              <span :class="['text-xs font-bold rounded-control px-2.5 py-1 text-white', branch.chip]">{{ branch.name }}</span>
+              <span :class="['text-xs font-bold rounded-lg px-2.5 py-1 text-white', branch.chip]">{{ branch.name }}</span>
             </div>
             <p class="text-sm text-subtext mt-1.5">{{ $t(branch.description) }}</p>
           </div>
@@ -32,7 +32,7 @@
         <template v-else>
         <div v-for="day in groupByDay(branch.commits)" :key="day.label" class="flex flex-col gap-3">
           <span class="text-xs font-bold uppercase text-subtext">{{ day.label }}</span>
-          <div class="flex flex-col gap-px rounded-control overflow-hidden">
+          <div class="flex flex-col gap-px rounded-lg overflow-hidden">
             <div v-for="commit in day.commits" :key="commit.sha" :class="['bg-surface-1 transition-colors', open[branch.name + commit.sha] ? 'bg-surface-2 border-l-4 border-teal' : 'hover:bg-surface-2']">
               <button type="button" class="w-full flex items-center gap-4 px-5 py-4 text-left" :aria-expanded="!!open[branch.name + commit.sha]" @click="open[branch.name + commit.sha] = !open[branch.name + commit.sha]">
                 <span class="w-9 h-9 rounded-full bg-teal text-white font-bold flex items-center justify-center shrink-0">{{ initial(commit) }}</span>
@@ -52,7 +52,7 @@
                 </template>
                 <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
                   <span class="flex flex-wrap items-center gap-3">
-                    <span class="bg-surface-3 rounded-control px-3 py-1 text-xs">{{ commit.short_sha }}</span>
+                    <span class="bg-surface-3 rounded-lg px-3 py-1 text-xs">{{ commit.short_sha }}</span>
                     <span v-if="commit.additions != null" class="flex items-center gap-2 tabular-nums">
                       <span class="text-win">+{{ commit.additions.toLocaleString('en-US') }}</span>
                       <span class="text-loss">−{{ commit.deletions.toLocaleString('en-US') }}</span>

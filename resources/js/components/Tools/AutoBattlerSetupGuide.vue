@@ -1,6 +1,6 @@
 <template>
   <!-- Closed it's a small dropdown; open it's the full guide, one tab per system, in four sections -->
-  <button v-if="!open" type="button" class="self-start w-full sm:w-[13rem] h-10 rounded-control bg-surface-3 hover:bg-surface-4 px-3 flex items-center justify-between gap-2 text-sm" @click="open = true">
+  <button v-if="!open" type="button" class="self-start w-full sm:w-[13rem] h-10 rounded bg-surface-3 hover:bg-surface-4 px-3 flex items-center justify-between gap-2 text-sm" @click="open = true">
     {{ $t('How to set this up') }}
     <basil-icon name="arrow" class="rotate-90 text-xs"></basil-icon>
   </button>
@@ -16,7 +16,7 @@
     <p class="text-sm text-subtext">{{ $t('Takes about 5 minutes. You only need steps 1–9 once; after that, start from step 10.') }}</p>
     <p v-if="system !== 'windows'" class="text-xs text-subtext">{{ $t('Heroes of the Storm finds the map the same way on every system; only the game folder and file tools differ. The screenshots are from Windows.') }}</p>
 
-    <div v-for="(section, sectionIndex) in sections" :key="section.title" class="bg-surface rounded p-4 md:p-5 grid md:grid-cols-[minmax(0,30rem)_minmax(0,1fr)] gap-4">
+    <div v-for="(section, sectionIndex) in sections" :key="section.title" class="bg-surface rounded-panel p-4 md:p-5 grid md:grid-cols-[minmax(0,30rem)_minmax(0,1fr)] gap-4">
       <div class="flex flex-col gap-3 min-w-0">
         <div class="flex items-center gap-3">
           <span class="w-7 h-7 shrink-0 rounded-full bg-teal flex items-center justify-center text-sm font-bold">{{ sectionIndex + 1 }}</span>
@@ -37,10 +37,10 @@
           <span class="font-semibold">{{ $t('Where is my Wine prefix?') }}</span>
           <span v-for="prefix in section.prefixes" :key="prefix.launcher"><span class="text-subtext">{{ prefix.launcher }}:</span> <code class="text-lteal break-all">{{ prefix.path }}</code></span>
         </div>
-        <code v-if="section.path" class="rounded-control bg-surface-1 px-3 py-2 text-xs text-lteal break-all">{{ section.path }}</code>
+        <code v-if="section.path" class="rounded-lg bg-surface-1 px-3 py-2 text-xs text-lteal break-all">{{ section.path }}</code>
       </div>
       <div v-if="system === 'windows' && section.images.length" class="flex flex-wrap gap-3 content-start">
-        <button v-for="image in section.images" :key="image" type="button" class="block w-[10rem] h-[6.5rem] rounded-control overflow-hidden bg-white cursor-zoom-in" @click="zoomed = image">
+        <button v-for="image in section.images" :key="image" type="button" class="block w-[10rem] h-[6.5rem] rounded overflow-hidden bg-white cursor-zoom-in" @click="zoomed = image">
           <img :src="'/images/autobattler/' + image" :alt="$t('Screenshot')" loading="lazy" class="w-full h-full object-cover object-left-top">
         </button>
       </div>
@@ -49,7 +49,7 @@
     <!-- A screenshot full size; click outside or ✕ to close -->
     <modal-box v-if="zoomed" width="max-w-[64rem]" container-class="bg-surface-4 rounded p-4 relative" @close="zoomed = null">
       <button type="button" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-surface-1 hover:bg-surface-3 flex items-center justify-center" :aria-label="$t('Close')" @click="zoomed = null"><basil-icon name="cross"></basil-icon></button>
-      <img :src="'/images/autobattler/' + zoomed" :alt="$t('Screenshot')" class="w-full h-auto max-h-[80vh] object-contain rounded-control bg-white">
+      <img :src="'/images/autobattler/' + zoomed" :alt="$t('Screenshot')" class="w-full h-auto max-h-[80vh] object-contain rounded bg-white">
     </modal-box>
   </div>
 </template>

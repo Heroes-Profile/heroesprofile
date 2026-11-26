@@ -65,7 +65,7 @@
               </div>
               <div class="min-h-[3.75rem]">
               <div v-if="buildLoading" class="flex gap-1.5">
-                <skeleton-box v-for="talent in 7" :key="talent" class="w-[2.625rem] h-[2.625rem]"></skeleton-box>
+                <skeleton-box v-for="talent in 7" :key="talent" class="w-[2.625rem] h-[2.625rem] rounded-lg"></skeleton-box>
               </div>
               <p v-else-if="buildError" class="text-sm text-red">{{ $t(buildError) }}</p>
               <build-code v-else-if="pick.build" :build="pick.build" :hero="pick.hero" show="talents" align="start" :levels="true" :popup-hoverable="false"></build-code>
@@ -91,7 +91,7 @@
 
             <div class="flex flex-wrap items-center gap-2 text-xs">
               <span class="text-subtext">{{ $t('Reroll only:') }}</span>
-              <button v-for="reroll in rerolls" :key="reroll.key" type="button" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-control bg-surface-1 hover:bg-surface-3 transition-colors" @click="roll(reroll.parts)">
+              <button v-for="reroll in rerolls" :key="reroll.key" type="button" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-surface-1 hover:bg-surface-3 transition-colors" @click="roll(reroll.parts)">
                 <i class="fa-solid fa-shuffle text-[0.625rem] text-subtext"></i>{{ $t(reroll.text) }}
               </button>
             </div>

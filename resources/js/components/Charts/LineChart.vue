@@ -7,7 +7,7 @@
          uses the site's fonts (canvas text blurs on standard-resolution screens). Above the point, kept inside the chart. -->
     <div
       v-if="tip.visible"
-      class="pointer-events-none absolute z-10 bg-surface-4 rounded-control px-3 py-2.5 text-sm text-white whitespace-nowrap shadow-[0_0.25rem_1rem_rgba(0,0,0,0.4)]"
+      class="pointer-events-none absolute z-10 bg-surface-4 rounded px-3 py-2.5 text-sm text-white whitespace-nowrap shadow-[0_0.25rem_1rem_rgba(0,0,0,0.4)]"
       :style="{ left: tip.x + 'px', top: tip.y + 'px', transform: tip.transform }"
     >
       <div v-if="tip.title" class="font-bold mb-1">{{ tip.title }}</div>

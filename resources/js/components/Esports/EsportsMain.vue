@@ -8,7 +8,7 @@
 
     <!-- One card per league: its logo, then its name, what's on its page, and a link -->
     <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 grid sm:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
-      <a v-for="league in leagues" :key="league.href" :href="league.href" class="group/bt bg-surface rounded p-6 flex flex-col gap-5 min-w-0 hover:bg-surface-1 transition-colors">
+      <a v-for="league in leagues" :key="league.href" :href="league.href" class="group/bt bg-surface rounded-panel p-6 flex flex-col gap-5 min-w-0 hover:bg-surface-1 transition-colors">
         <div class="h-[16.25rem] rounded-control bg-surface-1 group-hover/bt:bg-surface-2 transition-colors overflow-hidden flex items-center justify-center">
           <img :src="league.image" :alt="league.name" :class="league.cover ? 'w-full h-full object-cover' : 'max-w-[12.5rem] max-h-[12.5rem] object-contain'" />
         </div>

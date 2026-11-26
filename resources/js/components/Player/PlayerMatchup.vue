@@ -45,7 +45,7 @@
     <div class="grid md:grid-cols-2 gap-8">
       <panel-box v-for="card in topCards" :key="card.title" :title="card.title" :subtitle="card.subtitle" :divider="false">
         <div class="grid grid-cols-3 sm:grid-cols-5 gap-3">
-          <a v-for="item in card.heroes" :key="item.hero.id" :href="heroUrl(item.hero)" class="group/bt bg-surface-1 hover:bg-surface-2 transition-colors rounded-control px-2 pt-5 pb-5 flex flex-col items-center text-center min-w-0">
+          <a v-for="item in card.heroes" :key="item.hero.id" :href="heroUrl(item.hero)" class="group/bt bg-surface-1 hover:bg-surface-2 transition-colors rounded-lg px-2 pt-5 pb-5 flex flex-col items-center text-center min-w-0">
             <hero-image-wrapper size="big" :hero="item.hero" :includehover="false"></hero-image-wrapper>
             <span class="text-sm font-bold mt-1.5 truncate max-w-full group-hover/bt:underline">{{ $heroName(item.hero) }}</span>
             <span :class="['text-xl font-bold mt-1.5 tabular-nums', card.valueClass]">{{ item[card.rate].toFixed(2) }}%</span>
@@ -133,7 +133,7 @@
           <loading-component v-else :compact="true" :tab="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
         </template>
         <div class="grid grid-cols-3 sm:grid-cols-5 gap-3">
-          <div v-for="tile in 5" :key="tile" class="bg-surface-1 rounded-control px-2 pt-5 pb-5 flex flex-col items-center text-center min-w-0">
+          <div v-for="tile in 5" :key="tile" class="bg-surface-1 rounded-lg px-2 pt-5 pb-5 flex flex-col items-center text-center min-w-0">
             <skeleton-box class="w-20 h-20 !rounded-full"></skeleton-box>
             <span class="text-sm font-bold mt-1.5 skeleton-text">Samuro</span>
             <span class="text-xl font-bold mt-1.5 skeleton-text">00.00%</span>

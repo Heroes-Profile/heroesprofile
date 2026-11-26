@@ -65,7 +65,7 @@
       <template v-else>
         <!-- The matchup: both heroes, changeable here, and the listed hero's win rate in it -->
         <!-- Phones: the heroes and VS stacked on the left, the win rate beside them on the right -->
-        <div class="rounded bg-surface px-5 md:px-6 py-4 md:flex md:flex-wrap md:items-center md:gap-6 max-md:grid max-md:grid-cols-[auto_minmax(0,1fr)] max-md:items-center max-md:gap-x-4 max-md:gap-y-2">
+        <div class="rounded-panel bg-surface px-5 md:px-6 py-4 md:flex md:flex-wrap md:items-center md:gap-6 max-md:grid max-md:grid-cols-[auto_minmax(0,1fr)] max-md:items-center max-md:gap-x-4 max-md:gap-y-2">
           <div class="flex items-center gap-3 max-md:col-start-1">
             <hero-image-wrapper :hero="hero" size="medium" :excludehover="true"></hero-image-wrapper>
             <single-select-filter :key="'hero-' + (hero ? hero.id : '')" :values="firstHeroInputs" :text="'Hero'" @input-changed="herochanged" :defaultValue="hero.id"></single-select-filter>

@@ -5,14 +5,14 @@
 
     <div class="max-w-[120rem] mx-auto px-4 md:px-8 grid xl:grid-cols-[400fr_1488fr] gap-6 xl:gap-8 items-start">
       <!-- Search and the topics; on wide screens it stays in view, and marks the topic being read -->
-      <aside class="bg-surface rounded px-4 py-6 flex flex-col gap-4 min-w-0 xl:sticky xl:top-4 xl:max-h-[calc(100vh-2rem)] xl:overflow-y-auto">
+      <aside class="bg-surface rounded-panel px-4 py-6 flex flex-col gap-4 min-w-0 xl:sticky xl:top-4 xl:max-h-[calc(100vh-2rem)] xl:overflow-y-auto">
         <search-input v-model="search" :placeholder="$t('Search questions')" class="w-full"></search-input>
 
         <div class="max-xl:hidden flex flex-col gap-4">
           <span class="px-2 text-xs font-bold uppercase tracking-wider text-subtext">{{ $t('Topics') }}</span>
           <nav class="flex flex-col gap-1">
             <a v-for="category in filteredCategories" :key="category.name" :href="'#' + slug(category.name)"
-              :class="['flex items-center gap-3 rounded-control pl-4 pr-3 py-2.5 transition-colors', activeTopic === slug(category.name) ? 'bg-teal font-semibold' : 'hover:bg-surface-2']">
+              :class="['flex items-center gap-3 rounded pl-4 pr-3 py-2.5 transition-colors', activeTopic === slug(category.name) ? 'bg-teal font-semibold' : 'hover:bg-surface-2']">
               <span class="flex-1 min-w-0">{{ $t(category.name) }}</span>
               <span class="px-2 py-0.5 rounded-[0.375rem] bg-surface-2 text-xs font-semibold text-subtext">{{ category.items.length }}</span>
             </a>
@@ -21,7 +21,7 @@
           <span class="px-2 text-xs font-bold uppercase tracking-wider text-subtext">{{ $t('Reference') }}</span>
           <nav class="flex flex-col gap-1">
             <a v-for="ref in references" :key="ref.id" :href="'#' + ref.id"
-              :class="['flex items-center gap-3 rounded-control pl-4 pr-3 py-2.5 transition-colors', activeTopic === ref.id ? 'bg-teal font-semibold' : 'hover:bg-surface-2']">
+              :class="['flex items-center gap-3 rounded pl-4 pr-3 py-2.5 transition-colors', activeTopic === ref.id ? 'bg-teal font-semibold' : 'hover:bg-surface-2']">
               <span class="flex-1 min-w-0">{{ $t(ref.title) }}</span>
               <basil-icon name="arrow-small" class="text-sm"></basil-icon>
             </a>
@@ -36,14 +36,14 @@
       </aside>
 
       <div class="flex flex-col gap-6 xl:gap-8 min-w-0">
-        <div v-if="filteredCategories.length === 0" class="bg-surface rounded p-6 text-center text-subtext">
+        <div v-if="filteredCategories.length === 0" class="bg-surface rounded-panel p-6 text-center text-subtext">
           {{ $t('No results found for ":search". Try a different keyword or ask us below.', { search: search }) }}
         </div>
 
         <!-- One card per topic: closed questions are rows, an open one is a panel with its answer -->
         <panel-box v-for="category in filteredCategories" :key="category.name" :id="slug(category.name)" :title="category.name" :subtitle="topicSubtitles[category.name]" :divider="false" class="scroll-mt-4" data-faq-topic>
           <template #right>
-            <span class="px-3 py-1 rounded-control bg-surface-2 text-sm font-medium text-subtext whitespace-nowrap">{{ $t(':count questions', { count: category.items.length }) }}</span>
+            <span class="px-3 py-1 rounded-lg bg-surface-2 text-sm font-medium text-subtext whitespace-nowrap">{{ $t(':count questions', { count: category.items.length }) }}</span>
           </template>
           <div class="flex flex-col">
             <template v-for="(item, index) in category.items" :key="index">
@@ -172,16 +172,16 @@
             <div class="grid sm:grid-cols-2 gap-4">
               <label class="flex flex-col gap-2">
                 <span class="text-subtext">{{ $t('BattleTag') }}</span>
-                <input v-model="formData.battletag" type="text" class="w-full bg-field text-white rounded-control px-4 h-12" placeholder="Name#1234" required />
+                <input v-model="formData.battletag" type="text" class="w-full bg-field text-white rounded px-4 h-12" placeholder="Name#1234" required />
               </label>
               <label class="flex flex-col gap-2">
                 <span class="text-subtext">{{ $t('Email') }}</span>
-                <input v-model="formData.email" type="email" class="w-full bg-field text-white rounded-control px-4 h-12" placeholder="you@example.com" required />
+                <input v-model="formData.email" type="email" class="w-full bg-field text-white rounded px-4 h-12" placeholder="you@example.com" required />
               </label>
             </div>
             <label class="flex flex-col gap-2">
               <span class="text-subtext">{{ $t('Your Question') }}</span>
-              <textarea v-model="formData.message" class="w-full bg-field text-white rounded-control px-4 py-3 min-h-[9.875rem]" :placeholder="$t('What would you like to know?')" required></textarea>
+              <textarea v-model="formData.message" class="w-full bg-field text-white rounded px-4 py-3 min-h-[9.875rem]" :placeholder="$t('What would you like to know?')" required></textarea>
             </label>
 
             <!-- Honeypot -->
@@ -192,7 +192,7 @@
               <span v-else></span>
               <button :disabled="isLoading" type="submit" class="btn bg-teal hover:bg-lteal font-semibold disabled:opacity-60">{{ isLoading ? $t('Sending...') : $t('Send question') }}</button>
             </div>
-            <p v-if="sendError" class="bg-red/20 text-white rounded-control px-4 py-3">{{ sendError }}</p>
+            <p v-if="sendError" class="bg-red/20 text-white rounded px-4 py-3">{{ sendError }}</p>
           </form>
         </panel-box>
       </div>

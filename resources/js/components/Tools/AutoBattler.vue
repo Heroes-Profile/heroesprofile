@@ -6,7 +6,7 @@
       <auto-battler-setup-guide></auto-battler-setup-guide>
 
       <!-- How many players are ready, a segment each in the team's colour, and the download -->
-      <div id="auto-battler" class="bg-surface rounded p-4 md:px-6 flex flex-wrap items-center gap-4 scroll-mt-4">
+      <div id="auto-battler" class="bg-surface rounded-panel p-4 md:px-6 flex flex-wrap items-center gap-4 scroll-mt-4">
         <div class="flex-1 min-w-[16rem] flex flex-col gap-2">
           <div class="flex flex-wrap justify-between gap-2 text-xs">
             <span class="font-semibold">{{ $t(':completedslotcount / 10 players ready', { completedslotcount: completedSlotCount }) }}</span>
@@ -23,7 +23,7 @@
 
       <div class="grid xl:grid-cols-[320fr_1220fr_320fr] gap-6 items-start">
         <!-- Team 1, then the hero board or talents, then Team 2 -->
-        <div v-for="team in [1, 2]" :key="team" :class="['bg-surface rounded p-4 md:p-6 flex flex-col gap-4 min-w-0', team === 1 ? 'xl:order-1' : 'xl:order-3']">
+        <div v-for="team in [1, 2]" :key="team" :class="['bg-surface rounded-panel p-4 md:p-6 flex flex-col gap-4 min-w-0', team === 1 ? 'xl:order-1' : 'xl:order-3']">
           <h3 class="flex items-center gap-2.5 text-xl font-bold">
             <span :class="['w-1 h-5 rounded-full', team === 1 ? 'bg-teal' : 'bg-red']"></span>{{ $t('Team :team', { team: team }) }}
           </h3>
@@ -50,7 +50,7 @@
           </template>
         </hero-board>
 
-        <div v-else-if="mode === 'talents'" class="bg-surface rounded p-4 md:p-6 min-w-0 xl:order-2">
+        <div v-else-if="mode === 'talents'" class="bg-surface rounded-panel p-4 md:p-6 min-w-0 xl:order-2">
           <loading-component v-if="loadingTalents" :compact="true" :textoverride="true">{{ $t('Loading talents...') }}</loading-component>
           <div v-else-if="talentError" class="text-center text-red py-10">{{ $t(talentError) }}</div>
           <auto-battler-talent-selection v-else
@@ -68,7 +68,7 @@
         </div>
 
         <!-- Everyone locked in -->
-        <div v-else class="bg-surface rounded p-6 min-w-0 xl:order-2 xl:self-stretch flex flex-col items-center justify-center gap-4 text-center py-16">
+        <div v-else class="bg-surface rounded-panel p-6 min-w-0 xl:order-2 xl:self-stretch flex flex-col items-center justify-center gap-4 text-center py-16">
           <span class="w-16 h-16 rounded-full bg-teal/20 flex items-center justify-center text-2xl"><basil-icon name="check"></basil-icon></span>
           <h2 class="text-2xl font-bold">{{ $t('Everyone is locked in') }}</h2>
           <p class="text-sm text-subtext max-w-[28rem]">{{ $t('All 10 players picked a hero and talents. Download the files and follow "How to set this up" to start the battle.') }}</p>

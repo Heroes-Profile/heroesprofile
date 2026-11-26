@@ -18,7 +18,7 @@
     <template #notice><legal-translation-notice></legal-translation-notice></template>
     <template #intro>
       <div class="flex items-center gap-4 rounded bg-surface border-l-4 border-teal px-5 py-4">
-        <span class="shrink-0 w-10 h-10 rounded-control bg-teal/15 text-lteal flex items-center justify-center"><i class="fas fa-shield-halved"></i></span>
+        <span class="shrink-0 w-10 h-10 rounded bg-teal/15 text-lteal flex items-center justify-center"><i class="fas fa-shield-halved"></i></span>
         <p>{{ $t('This site uses cookies to enhance your experience and provide personalized features. By using our site, you consent to the use of cookies in accordance with this policy.') }}</p>
       </div>
     </template>

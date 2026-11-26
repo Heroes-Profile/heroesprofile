@@ -74,7 +74,7 @@
           <form action="/Api/Twitch/Battlenet/Link" method="GET" class="flex flex-wrap gap-2 items-end">
             <div class="flex flex-col">
               <label class="text-sm mb-1" for="twitch-region">{{ $t('Region you play in') }}</label>
-              <select id="twitch-region" name="region" v-model="region" class="text-black p-2 rounded-control">
+              <select id="twitch-region" name="region" v-model="region" class="text-black p-2 rounded">
                 <option v-for="(name, id) in regions" :key="id" :value="id">{{ name }}</option>
               </select>
             </div>

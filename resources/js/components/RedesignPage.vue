@@ -58,13 +58,13 @@
           <template v-if="!afterOnly.includes(screenshot)">
           <img :src="`/images/redesign/2026/${screenshot}-before.jpg`" :alt="$t('Before')" class="absolute inset-0 w-full h-full object-cover object-top [clip-path:inset(0_calc(100%-var(--wipe))_0_0)]" draggable="false" />
           <!-- One label in the middle, naming whichever side shows more -->
-          <span class="absolute z-10 top-3 left-1/2 -translate-x-1/2 rounded-control px-5 py-2 text-xl font-bold pointer-events-none" :class="wipe >= 50 ? 'bg-surface' : 'bg-teal'">{{ wipe >= 50 ? $t('Before') : $t('After') }}</span>
+          <span class="absolute z-10 top-3 left-1/2 -translate-x-1/2 rounded px-5 py-2 text-xl font-bold pointer-events-none" :class="wipe >= 50 ? 'bg-surface' : 'bg-teal'">{{ wipe >= 50 ? $t('Before') : $t('After') }}</span>
           <span class="absolute inset-y-0 w-0.5 bg-white pointer-events-none left-[var(--wipe)]">
             <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-teal flex items-center justify-center shadow-lg"><i class="fas fa-arrows-alt-h"></i></span>
           </span>
           <input type="range" min="0" max="100" step="0.1" v-model.number="wipe" :aria-label="$t('Drag the handle to compare.')" class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize" />
           </template>
-          <span v-else class="absolute top-3 left-1/2 -translate-x-1/2 rounded-control px-5 py-2 text-xl font-bold pointer-events-none bg-teal">{{ $t('New in the redesign') }}</span>
+          <span v-else class="absolute top-3 left-1/2 -translate-x-1/2 rounded px-5 py-2 text-xl font-bold pointer-events-none bg-teal">{{ $t('New in the redesign') }}</span>
         </div>
       </section>
 
@@ -93,14 +93,14 @@
           <tab-button tab1text="Before" tab2text="After" :overridedefaultside="after ? 'right' : 'left'" @tab-click="(side) => after = side === 'right'"></tab-button>
         </div>
         <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          <div v-for="card in lookCards" :key="card.key" class="rounded bg-surface px-5 py-4 flex flex-col gap-3">
+          <div v-for="card in lookCards" :key="card.key" class="rounded-panel bg-surface px-5 py-4 flex flex-col gap-3">
             <h3 class="text-lg font-bold">{{ $t(card.title) }}</h3>
             <!-- A small slice of the site; Before is drawn in the old colours, After in the site's own -->
-            <div class="h-40 rounded-control overflow-hidden text-[0.625rem] leading-tight select-none" aria-hidden="true">
+            <div class="h-40 rounded-lg overflow-hidden text-[0.625rem] leading-tight select-none" aria-hidden="true">
 
               <div v-if="card.key === 'palette'" class="h-full grid grid-rows-2 gap-1">
                 <div class="grid grid-flow-col auto-cols-fr gap-1">
-                  <span v-for="colour in after ? palette.after : palette.before" :key="colour" class="rounded-control" :style="{ backgroundColor: colour }"></span>
+                  <span v-for="colour in after ? palette.after : palette.before" :key="colour" class="rounded-lg" :style="{ backgroundColor: colour }"></span>
                 </div>
                 <div class="grid grid-flow-col auto-cols-fr gap-1">
                   <span v-for="colour in after ? palette.after : palette.before" :key="'t' + colour" class="flex items-center justify-center text-subtext tabular-nums">{{ colour }}</span>
@@ -112,12 +112,12 @@
                   <span class="font-logo">HP</span><span>Players</span><span>Global</span><span>Tools</span>
                   <span class="ml-auto px-2 py-1 rounded bg-blue">API</span>
                 </div>
-                <div v-else class="flex items-center gap-2 px-2 py-2 rounded-control bg-surface">
+                <div v-else class="flex items-center gap-2 px-2 py-2 rounded-lg bg-surface">
                   <img src="/images/logo/heroesprofilelogo.png" alt="" class="h-4 w-auto" /><span>{{ $t('Global Stats') }}</span><span>{{ $t('Tools') }}</span>
-                  <span class="ml-auto flex-1 max-w-[6rem] rounded-control bg-field px-2 py-1 text-subtext">{{ $t('Search') }}</span>
-                  <span class="px-2 py-1 rounded-control bg-teal">API</span>
+                  <span class="ml-auto flex-1 max-w-[6rem] rounded-lg bg-field px-2 py-1 text-subtext">{{ $t('Search') }}</span>
+                  <span class="px-2 py-1 rounded-lg bg-teal">API</span>
                 </div>
-                <div :class="['flex-1 rounded-control', after ? 'bg-surface' : '']"></div>
+                <div :class="['flex-1 rounded-lg', after ? 'bg-surface' : '']"></div>
               </div>
 
               <div v-else-if="card.key === 'headings'" :class="['h-full flex flex-col gap-2', after ? 'bg-page p-2' : 'bg-black']">
@@ -125,14 +125,14 @@
                 <template v-else>
                   <div class="text-base font-bold">{{ $t('Hero Stats') }}</div>
                   <div class="flex gap-1">
-                    <span v-for="filter in ['Storm League', 'Rank', 'Map']" :key="filter" class="rounded-control bg-surface-3 px-2 py-1">{{ $t(filter) }}</span>
-                    <span class="rounded-control bg-teal px-2 py-1">{{ $t('Filter') }}</span>
+                    <span v-for="filter in ['Storm League', 'Rank', 'Map']" :key="filter" class="rounded-lg bg-surface-3 px-2 py-1">{{ $t(filter) }}</span>
+                    <span class="rounded-lg bg-teal px-2 py-1">{{ $t('Filter') }}</span>
                   </div>
                 </template>
               </div>
 
               <div v-else-if="card.key === 'tables'" :class="['h-full', after ? 'bg-surface p-2' : 'bg-black']">
-                <div :class="after ? 'rounded-control overflow-hidden' : ''">
+                <div :class="after ? 'rounded-lg overflow-hidden' : ''">
                   <div :class="['grid grid-cols-[1fr_auto_auto] gap-3 px-2 py-1.5', after ? 'bg-surface-3' : 'bg-teal uppercase tracking-[0.14em]']">
                     <span>{{ $t('Hero') }}</span><span :class="after ? 'text-teal' : ''">{{ $t('Win Rate') }}</span><span>{{ $t('Games') }}</span>
                   </div>
@@ -145,9 +145,9 @@
 
               <div v-else-if="card.key === 'filters'" :class="['h-full p-2 flex flex-col gap-2', after ? 'bg-surface' : 'bg-black']">
                 <div class="flex flex-wrap gap-1">
-                  <span v-for="filter in ['Game Type', 'Rank', 'Map']" :key="filter" :class="['px-2 py-1', after ? 'rounded-control bg-surface-3' : 'rounded bg-teal uppercase tracking-[0.14em]']">{{ $t(filter) }}</span>
+                  <span v-for="filter in ['Game Type', 'Rank', 'Map']" :key="filter" :class="['px-2 py-1', after ? 'rounded-lg bg-surface-3' : 'rounded bg-teal uppercase tracking-[0.14em]']">{{ $t(filter) }}</span>
                 </div>
-                <div v-if="after" class="rounded-control bg-surface-1 p-2 flex flex-col gap-1">
+                <div v-if="after" class="rounded-lg bg-surface-1 p-2 flex flex-col gap-1">
                   <span class="flex items-center justify-between">{{ $t('Storm League') }} · {{ $t('Quick Match') }}<i class="fas fa-times text-subtext"></i></span>
                   <span class="text-teal">{{ $t('Show advanced filters') }} ›</span>
                 </div>
@@ -171,7 +171,7 @@
                 </div>
                 <div v-else class="w-40 rounded bg-surface-3 p-2 flex flex-col gap-1 shadow-lg">
                   <div class="flex items-center gap-2"><img src="/images/heroes/abathur.png" alt="" class="w-6 h-6 rounded" /><span class="font-bold text-xs">Abathur</span></div>
-                  <span class="rounded-control bg-surface-1 py-0.5 text-center text-gold">{{ $t('Patreon Subscriber') }}</span>
+                  <span class="rounded-lg bg-surface-1 py-0.5 text-center text-gold">{{ $t('Patreon Subscriber') }}</span>
                   <div class="h-px bg-surface-4"></div>
                   <div class="flex justify-between"><span class="text-subtext">{{ $t('Win Rate') }}</span><span>51.2%</span></div>
                   <div class="flex justify-between"><span class="text-subtext">{{ $t('Games') }}</span><span>10,432</span></div>
@@ -208,9 +208,9 @@
           <tab-button tab1text="Before" tab2text="After" :overridedefaultside="after ? 'right' : 'left'" @tab-click="(side) => after = side === 'right'"></tab-button>
         </div>
         <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          <div v-for="page in pageCards" :key="page.key" class="rounded bg-surface px-5 py-4 flex flex-col gap-3">
+          <div v-for="page in pageCards" :key="page.key" class="rounded-panel bg-surface px-5 py-4 flex flex-col gap-3">
             <h3 class="text-lg font-bold">{{ $t(page.title) }}</h3>
-            <div class="h-32 rounded-control overflow-hidden select-none" aria-hidden="true">
+            <div class="h-32 rounded-lg overflow-hidden select-none" aria-hidden="true">
               <div v-if="!after" class="h-full bg-black flex flex-col">
                 <div class="bg-teal h-6"></div>
                 <div class="flex-1 m-2 bg-[#ddd] flex flex-col">

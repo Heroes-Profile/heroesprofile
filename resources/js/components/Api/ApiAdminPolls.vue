@@ -51,17 +51,17 @@
       <div class="grid gap-3 md:grid-cols-2 mb-3">
         <label class="text-sm">
           {{ $t('Title') }}
-          <input v-model="form.title" type="text" maxlength="255" class="text-black p-2 rounded-control w-full mt-1" />
+          <input v-model="form.title" type="text" maxlength="255" class="text-black p-2 rounded w-full mt-1" />
         </label>
         <label class="text-sm">
           {{ $t('Slug (the URL: lowercase letters, numbers, dashes)') }}
-          <input v-model="form.slug" type="text" maxlength="100" class="text-black p-2 rounded-control w-full mt-1" />
+          <input v-model="form.slug" type="text" maxlength="100" class="text-black p-2 rounded w-full mt-1" />
         </label>
       </div>
 
       <label class="text-sm block mb-3">
         {{ $t('Description (shown above the options)') }}
-        <textarea v-model="form.description" rows="6" class="text-black p-2 rounded-control w-full mt-1"></textarea>
+        <textarea v-model="form.description" rows="6" class="text-black p-2 rounded w-full mt-1"></textarea>
       </label>
 
       <div class="flex flex-wrap items-center gap-6 mb-4">
@@ -71,14 +71,14 @@
         </label>
         <label class="text-sm">
           {{ $t('Closes (UTC, empty = open until closed by hand)') }}
-          <input v-model="form.closes_at" type="datetime-local" class="text-black p-2 rounded-control ml-2" />
+          <input v-model="form.closes_at" type="datetime-local" class="text-black p-2 rounded ml-2" />
         </label>
       </div>
 
       <h4 class="text-sm mb-2">{{ $t('Options') }}</h4>
       <div v-for="(option, index) in form.options" :key="option.key" class="flex flex-wrap gap-2 mb-2">
-        <input v-model="option.label" type="text" maxlength="100" :placeholder="$t('Label')" class="text-black p-2 rounded-control w-full md:w-1/3" />
-        <input v-model="option.description" type="text" maxlength="1000" :placeholder="$t('Description (optional)')" class="text-black p-2 rounded-control flex-1 min-w-[12.5rem]" />
+        <input v-model="option.label" type="text" maxlength="100" :placeholder="$t('Label')" class="text-black p-2 rounded w-full md:w-1/3" />
+        <input v-model="option.description" type="text" maxlength="1000" :placeholder="$t('Description (optional)')" class="text-black p-2 rounded flex-1 min-w-[12.5rem]" />
         <button v-if="!form.has_votes" type="button" class="link text-sm" @click="form.options.splice(index, 1)">{{ $t('Remove') }}</button>
       </div>
       <button v-if="!form.has_votes" type="button" class="link text-sm mb-4" @click="addOption">{{ $t('Add option') }}</button>

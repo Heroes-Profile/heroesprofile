@@ -3,7 +3,7 @@
   <panel-box :inner="true" :title="$t('Awards')" :link-text="'All Awards'" :link-href="awardsUrl" :skeleton="loading">
     <template v-if="loading">
       <div class="flex-1 grid grid-cols-2 md:grid-cols-3 auto-rows-fr gap-3">
-        <skeleton-box v-for="index in limit" :key="index" class="h-14"></skeleton-box>
+        <skeleton-box v-for="index in limit" :key="index" class="h-14 rounded-lg"></skeleton-box>
       </div>
       <!-- The "Awards across" line's height, so the card is as tall as when it loads -->
       <skeleton-box class="h-[1rem] w-40"></skeleton-box>

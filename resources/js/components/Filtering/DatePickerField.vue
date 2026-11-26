@@ -2,7 +2,7 @@
   <div ref="root" class="relative" @keydown.esc="open = false">
     <!-- The box: same look as the select filters, filling its slot in the filter row like they do -->
     <div
-      class="relative h-[2.5rem] w-full rounded-control bg-surface-3 hover:bg-surface-4 text-white px-3 flex items-center gap-2 cursor-pointer"
+      class="relative h-[2.5rem] w-full rounded bg-surface-3 hover:bg-surface-4 text-white px-3 flex items-center gap-2 cursor-pointer"
       tabindex="0"
       role="button"
       :aria-label="$t(label)"
@@ -19,9 +19,9 @@
     <!-- The calendar: same panel as the filter dropdowns -->
     <div v-if="open" class="expandable-dropdown absolute left-0 mt-2 !w-[17.5rem] max-w-[calc(100vw-2rem)] !min-w-0 rounded p-3 z-50 text-sm font-normal normal-case">
       <div class="flex items-center justify-between mb-2">
-        <button type="button" class="w-8 h-8 rounded-control hover:bg-surface-4 disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!canGoBack" :aria-label="$t('Previous')" @click="step(-1)"><basil-icon name="arrow-small" class="rotate-180 text-xs"></basil-icon></button>
-        <button type="button" class="px-3 h-8 rounded-control hover:bg-surface-4 font-bold" @click="zoomOut">{{ heading }}</button>
-        <button type="button" class="w-8 h-8 rounded-control hover:bg-surface-4 disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!canGoForward" :aria-label="$t('Next')" @click="step(1)"><basil-icon name="arrow-small" class="text-xs"></basil-icon></button>
+        <button type="button" class="w-8 h-8 rounded hover:bg-surface-4 disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!canGoBack" :aria-label="$t('Previous')" @click="step(-1)"><basil-icon name="arrow-small" class="rotate-180 text-xs"></basil-icon></button>
+        <button type="button" class="px-3 h-8 rounded hover:bg-surface-4 font-bold" @click="zoomOut">{{ heading }}</button>
+        <button type="button" class="w-8 h-8 rounded hover:bg-surface-4 disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!canGoForward" :aria-label="$t('Next')" @click="step(1)"><basil-icon name="arrow-small" class="text-xs"></basil-icon></button>
       </div>
 
       <!-- Days -->
@@ -32,7 +32,7 @@
           v-for="day in daysInMonth"
           :key="day"
           type="button"
-          class="h-8 rounded-control disabled:opacity-30 disabled:cursor-default"
+          class="h-8 rounded disabled:opacity-30 disabled:cursor-default"
           :class="dayClass(day)"
           :disabled="!inRange(iso(viewYear, viewMonth, day))"
           @click="pick(iso(viewYear, viewMonth, day))"
@@ -45,7 +45,7 @@
           v-for="(name, index) in monthNames"
           :key="name"
           type="button"
-          class="h-10 rounded-control disabled:opacity-30 disabled:cursor-default"
+          class="h-10 rounded disabled:opacity-30 disabled:cursor-default"
           :class="index === viewMonth ? 'bg-teal hover:bg-lteal' : 'hover:bg-surface-4'"
           :disabled="!monthInRange(viewYear, index)"
           @click="viewMonth = index; view = 'days'"
@@ -58,7 +58,7 @@
           v-for="year in yearPage"
           :key="year"
           type="button"
-          class="h-10 rounded-control disabled:opacity-30 disabled:cursor-default"
+          class="h-10 rounded disabled:opacity-30 disabled:cursor-default"
           :class="year === viewYear ? 'bg-teal hover:bg-lteal' : 'hover:bg-surface-4'"
           :disabled="!yearInRange(year)"
           @click="viewYear = year; view = 'months'"
@@ -66,7 +66,7 @@
       </div>
 
       <div class="flex justify-end mt-2 pt-2 border-t border-white/10">
-        <button type="button" class="px-3 py-1 rounded-control hover:bg-surface-4 text-lteal font-semibold disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!inRange(todayIso)" @click="pick(todayIso)">{{ $t('Today') }}</button>
+        <button type="button" class="px-3 py-1 rounded hover:bg-surface-4 text-lteal font-semibold disabled:opacity-30 disabled:hover:bg-transparent" :disabled="!inRange(todayIso)" @click="pick(todayIso)">{{ $t('Today') }}</button>
       </div>
     </div>
   </div>

@@ -33,7 +33,7 @@
 
     <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <!-- Whose turn it is, the whole ban and pick order, and the draft controls -->
-      <div class="bg-surface rounded px-4 md:px-8 py-3 flex flex-wrap items-center gap-x-6 gap-y-3">
+      <div class="bg-surface rounded-panel px-4 md:px-8 py-3 flex flex-wrap items-center gap-x-6 gap-y-3">
         <div class="shrink-0 w-[15rem]">
           <span class="block text-xs font-semibold uppercase tracking-wider text-subtext">{{ $t('Now') }}</span>
           <span class="flex items-center gap-2.5 text-lg font-semibold">
@@ -87,7 +87,7 @@
 
       <div class="grid xl:grid-cols-[320fr_1220fr_320fr] gap-6 items-stretch">
         <!-- Your team, then the hero board, then the enemy team -->
-        <div v-for="team in ['team1', 'team2']" :key="team" :class="['bg-surface rounded p-4 md:p-6 flex flex-col gap-5 min-w-0', team === 'team1' ? 'xl:order-1' : 'xl:order-3']">
+        <div v-for="team in ['team1', 'team2']" :key="team" :class="['bg-surface rounded-panel p-4 md:p-6 flex flex-col gap-5 min-w-0', team === 'team1' ? 'xl:order-1' : 'xl:order-3']">
           <h3 class="flex items-center gap-2.5 text-xl font-bold">
             <span :class="['w-1 h-5 rounded-full', team === 'team1' ? 'bg-teal' : 'bg-red']"></span>{{ team === 'team1' ? $t('Your team') : $t('Enemy team') }}
           </h3>
@@ -95,7 +95,7 @@
             <span class="text-xs font-semibold uppercase tracking-wider text-subtext">{{ $t('Bans') }}</span>
             <div class="grid grid-cols-3 gap-2">
               <div v-for="ban in [1, 2, 3]" :key="ban"
-                :class="['h-[4.75rem] rounded-control flex flex-col items-center justify-center gap-1 px-1 min-w-0 border-2', slotHero(team + '-ban' + ban) ? 'bg-surface-1 border-surface-1'
+                :class="['h-[4.75rem] rounded-lg flex flex-col items-center justify-center gap-1 px-1 min-w-0 border-2', slotHero(team + '-ban' + ban) ? 'bg-surface-1 border-surface-1'
                   : ['!border-[1.5px] border-dashed', team === 'team1' ? 'border-teal' : 'border-lred', isActive(team + '-ban' + ban) ? (team === 'team1' ? 'bg-teal/15' : 'bg-red/15') : 'bg-surface-1']]">
                 <template v-if="slotHero(team + '-ban' + ban)">
                   <span class="relative w-10 h-10 shrink-0">
@@ -130,7 +130,7 @@
           </template>
           <template #above>
             <!-- Stacked layouts: the board is below both teams, far from the draft bar, so whose turn it is shows here too -->
-            <div :class="['xl:hidden rounded-control bg-surface-1 border-l-4 px-5 py-3', draftComplete ? 'border-gray-dark' : currentTeam === 'team1' ? 'border-teal' : 'border-red']">
+            <div :class="['xl:hidden rounded bg-surface-1 border-l-4 px-5 py-3', draftComplete ? 'border-gray-dark' : currentTeam === 'team1' ? 'border-teal' : 'border-red']">
               <span class="block text-xs font-semibold uppercase tracking-wider text-subtext">{{ $t('Now') }}</span>
               <span class="flex items-center gap-2.5 text-lg font-semibold">
                 <span v-if="!draftComplete" :class="['w-2.5 h-2.5 rounded-full shrink-0', currentTeam === 'team1' ? 'bg-teal' : 'bg-red']"></span>
@@ -138,7 +138,7 @@
               </span>
             </div>
             <!-- The three best HP Draft Values for this step. It always keeps its place, so the board doesn't move as the draft goes on -->
-            <div v-if="!mockDraft" :class="['rounded-control bg-[rgba(245,197,66,0.08)] px-5 py-4 min-h-[4.75rem] flex flex-wrap items-center gap-x-6 gap-y-3', { invisible: !waiting && !topSuggestions.length }]">
+            <div v-if="!mockDraft" :class="['rounded bg-[rgba(245,197,66,0.08)] px-5 py-4 min-h-[4.75rem] flex flex-wrap items-center gap-x-6 gap-y-3', { invisible: !waiting && !topSuggestions.length }]">
               <loading-component v-if="waiting" :compact="true" :textoverride="true">{{ $t('Loading draft options...') }}</loading-component>
               <template v-else>
               <div class="flex flex-col">
@@ -427,9 +427,9 @@ export default {
       const current = index === this.currentPick && !this.draftComplete;
       const ring = current ? (ours ? 'ring-2 ring-lteal shadow-[0_0_0.75rem_rgba(0,192,192,0.6)]' : 'ring-2 ring-lred shadow-[0_0_0.75rem_rgba(228,74,35,0.6)]') : '';
       if (slotId.includes('ban')) {
-        return ['rounded-control border-[1.5px] border-dashed bg-surface-1', ours ? 'border-teal text-teal' : 'border-lred text-lred', ring];
+        return ['rounded-lg border-[1.5px] border-dashed bg-surface-1', ours ? 'border-teal text-teal' : 'border-lred text-lred', ring];
       }
-      return ['rounded-control text-white', ours ? 'bg-teal' : 'bg-red', ring];
+      return ['rounded-lg text-white', ours ? 'bg-teal' : 'bg-red', ring];
     },
     swapSides() {
       this.firstPickTeam = this.firstPickTeam === 'team1' ? 'team2' : 'team1';

@@ -10,8 +10,8 @@
 
     <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 grid gap-6 xl:grid-cols-[1288fr_600fr] items-start">
 
-      <div class="bg-surface rounded p-4 md:p-8 flex flex-col gap-7 min-w-0">
-        <div class="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-control bg-surface-1 border-l-4 border-teal px-5 py-3 text-sm">
+      <div class="bg-surface rounded-panel p-4 md:p-8 flex flex-col gap-7 min-w-0">
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-2 rounded bg-surface-1 border-l-4 border-teal px-5 py-3 text-sm">
           <basil-icon name="info" class="text-teal text-xl shrink-0"></basil-icon>
           <span class="flex-1 min-w-0">{{ $t('The uploader has been rewritten for Windows, macOS and Linux.') }}</span>
           <a class="group/bt inline-flex items-center" href="/Upload/Uploader"><span class="group-hover/bt:underline">{{ $t("See what's new") }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
@@ -21,7 +21,7 @@
           <div class="flex flex-col gap-4 min-w-0">
             <div class="flex flex-wrap items-center gap-3">
               <h2 class="text-2xl font-bold">{{ $t('Replay Uploader') }}</h2>
-              <span class="bg-teal text-white text-xs font-bold uppercase rounded-control px-2.5 py-1">{{ $t('Recommended') }}</span>
+              <span class="bg-teal text-white text-xs font-bold uppercase rounded-lg px-2.5 py-1">{{ $t('Recommended') }}</span>
             </div>
             <p class="text-subtext">{{ $t('Watches your replay folder and uploads each game as you finish it.') }}</p>
             <ul class="flex flex-col gap-4">
@@ -41,7 +41,7 @@
           <img
             src="/images/miscellaneous/uploader.png"
             alt="The Heroes Profile replay uploader"
-            class="w-full md:w-[23.75rem] rounded-control"
+            class="w-full md:w-[23.75rem] rounded"
           />
         </div>
 
@@ -62,7 +62,7 @@
         </div>
       </div>
 
-      <div class="bg-surface rounded p-4 md:p-8 flex flex-col gap-6 min-w-0">
+      <div class="bg-surface rounded-panel p-4 md:p-8 flex flex-col gap-6 min-w-0">
         <div class="flex flex-col gap-3">
           <h2 class="text-2xl font-bold">{{ $t('Web Uploader') }}</h2>
           <p class="text-sm text-subtext">{{ $t('Upload replay files right from your browser.') }}</p>

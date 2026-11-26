@@ -258,7 +258,7 @@
 
           <div v-if="esport" class="flex-1 flex flex-col gap-6 min-w-0">
             <panel-box :inner="true" :title="$t('Teams Played For')">
-              <skeleton-box v-for="index in 2" :key="index" class="h-14"></skeleton-box>
+              <skeleton-box v-for="index in 2" :key="index" class="h-14 rounded-lg"></skeleton-box>
             </panel-box>
             <panel-box :inner="true" :title="$t('Heroes Played Against')">
               <div v-for="group in 2" :key="group" class="flex gap-3">

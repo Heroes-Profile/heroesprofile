@@ -4,7 +4,7 @@
     <page-heading :heading="'Heroes International'"></page-heading>
     <!-- The two tournaments as cards, like the leagues on /Esports and the league section cards -->
     <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-wrap justify-center gap-6 md:gap-8">
-      <a v-for="tournament in tournaments" :key="tournament.href" :href="tournament.href" class="group/bt w-full sm:w-[calc((100%-2rem)/2)] md:w-[calc((100%-4rem)/3)] xl:w-[calc((100%-6rem)/4)] bg-surface rounded p-6 flex flex-col gap-5 min-w-0 hover:bg-surface-1 transition-colors">
+      <a v-for="tournament in tournaments" :key="tournament.href" :href="tournament.href" class="group/bt w-full sm:w-[calc((100%-2rem)/2)] md:w-[calc((100%-4rem)/3)] xl:w-[calc((100%-6rem)/4)] bg-surface rounded-panel p-6 flex flex-col gap-5 min-w-0 hover:bg-surface-1 transition-colors">
         <div class="h-[12.5rem] rounded-control bg-surface-1 group-hover/bt:bg-surface-2 transition-colors flex items-center justify-center">
           <img :src="tournament.image" :alt="$t(tournament.name)" class="max-w-[10rem] max-h-[10rem] object-contain"/>
         </div>

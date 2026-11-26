@@ -47,7 +47,7 @@
 
       <!-- Headline tiles -->
       <div v-if="summaryTiles.length" class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
-        <div v-for="tile in summaryTiles" :key="tile.label" class="bg-surface rounded p-6 flex flex-col gap-2 min-w-0">
+        <div v-for="tile in summaryTiles" :key="tile.label" class="bg-surface rounded-panel p-6 flex flex-col gap-2 min-w-0">
           <span class="text-sm text-subtext">{{ $t(tile.label) }}</span>
           <span :class="['text-3xl font-semibold leading-[1.2]', tile.class || 'text-header']">{{ tile.value }}</span>
           <div v-if="tile.row" class="flex gap-1.5">
@@ -108,7 +108,7 @@
             <tbody>
               <template v-for="(row, index) in pagedData" :key="row.composition_id">
                 <tr>
-                  <td class="py-3.5 px-4 text-center text-lg font-semibold text-subtext"><div v-if="rankChanged" class="inline-grid grid-cols-[2.75rem_2.5rem] gap-2 items-center"><div class="bg-blue text-white text-base py-1 rounded-control text-center tabular-nums">{{ sortDir == 'desc' ? pageStart + index + 1 : sortedData.length - pageStart - index }}</div><span class="text-left tabular-nums">{{ row.rank }}</span></div><span v-else>{{ row.rank }}</span></td>
+                  <td class="py-3.5 px-4 text-center text-lg font-semibold text-subtext"><div v-if="rankChanged" class="inline-grid grid-cols-[2.75rem_2.5rem] gap-2 items-center"><div class="bg-blue text-white text-base py-1 rounded-lg text-center tabular-nums">{{ sortDir == 'desc' ? pageStart + index + 1 : sortedData.length - pageStart - index }}</div><span class="text-left tabular-nums">{{ row.rank }}</span></div><span v-else>{{ row.rank }}</span></td>
                   <td class="py-3.5 px-4">
                     <div class="grid grid-cols-5 gap-2 max-w-[33.5rem] mx-auto">
                       <div v-for="(role, slot) in rowRoles(row)" :key="slot" class="flex flex-col items-center gap-1.5 min-w-0">
@@ -128,7 +128,7 @@
                   <td class="py-3.5 px-4 text-center text-lg font-semibold text-header tabular-nums">{{ row.popularity.toFixed(2) }}%</td>
                   <td class="py-3.5 px-4 text-center text-lg">{{ row.games_played.toLocaleString('en-US') }}</td>
                   <td class="py-3.5 px-4 text-center">
-                    <button type="button" class="w-9 h-9 inline-flex items-center justify-center rounded-control hover:bg-surface-3 transition-colors" :aria-expanded="!!expanded[row.composition_id]" :aria-label="expanded[row.composition_id] ? $t('Hide heroes') : $t('Top heroes')" :title="expanded[row.composition_id] ? $t('Hide heroes') : $t('Top heroes')" @click="viewTopHeroes(row)">
+                    <button type="button" class="w-9 h-9 inline-flex items-center justify-center rounded hover:bg-surface-3 transition-colors" :aria-expanded="!!expanded[row.composition_id]" :aria-label="expanded[row.composition_id] ? $t('Hide heroes') : $t('Top heroes')" :title="expanded[row.composition_id] ? $t('Hide heroes') : $t('Top heroes')" @click="viewTopHeroes(row)">
                       <img v-if="loadingStates[row.composition_id]" class="logo-spin h-4 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
                       <basil-icon v-else name="arrow-small" :class="['text-xs transition-transform', expanded[row.composition_id] ? 'rotate-90' : '']"></basil-icon>
                     </button>
@@ -170,11 +170,11 @@
         </template>
       </panel-box>
       <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
-        <div v-for="tile in 4" :key="tile" class="bg-surface rounded p-6 flex flex-col gap-2 min-w-0">
+        <div v-for="tile in 4" :key="tile" class="bg-surface rounded-panel p-6 flex flex-col gap-2 min-w-0">
           <span class="text-sm skeleton-text w-fit">Highest win rate</span>
           <span class="text-3xl font-semibold leading-[1.2] skeleton-text w-fit">00.00%</span>
           <div v-if="tile > 1" class="flex gap-1.5">
-            <skeleton-box v-for="slot in 5" :key="slot" class="h-7 w-[1.2rem]"></skeleton-box>
+            <skeleton-box v-for="slot in 5" :key="slot" class="h-7 w-[1.2rem] rounded"></skeleton-box>
           </div>
           <span class="text-sm skeleton-text w-fit">0,000 games · 1,000+ games only</span>
         </div>
@@ -222,7 +222,7 @@
                 <td class="py-3.5 px-4">
                   <div class="grid grid-cols-5 gap-2 max-w-[33.5rem] mx-auto">
                     <div v-for="slot in 5" :key="slot" class="flex flex-col items-center gap-1.5 min-w-0">
-                      <skeleton-box class="h-8 w-[1.375rem]"></skeleton-box>
+                      <skeleton-box class="h-8 w-[1.375rem] rounded"></skeleton-box>
                       <span class="text-xs leading-tight skeleton-text max-md:hidden">Bruiser</span>
                     </div>
                   </div>
@@ -230,7 +230,7 @@
                 <td class="py-3.5 px-8 text-lg"><stat-bar value="0" display-text="00.00" suffix="%" :hide-value="true"></stat-bar></td>
                 <td class="py-3.5 px-4 text-center text-lg font-semibold"><span class="skeleton-text">00.00%</span></td>
                 <td class="py-3.5 px-4 text-center text-lg"><span class="skeleton-text">0,000</span></td>
-                <td class="py-3.5 px-4 text-center"><skeleton-box class="inline-block align-middle w-9 h-9"></skeleton-box></td>
+                <td class="py-3.5 px-4 text-center"><skeleton-box class="inline-block align-middle w-9 h-9 rounded-lg"></skeleton-box></td>
               </tr>
             </tbody>
           </table>

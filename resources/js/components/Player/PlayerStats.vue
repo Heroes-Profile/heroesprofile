@@ -214,7 +214,7 @@
         <panel-box v-for="title in ['Storm League Rank', 'Week Day Win Rates']" :key="title">
           <panel-box class="flex-1" :inner="true" :title="title">
             <skeleton-box class="flex-1 min-h-[24.125rem]"></skeleton-box>
-            <skeleton-box v-if="title == 'Storm League Rank'" class="h-[3.25rem] w-[26rem] max-w-full"></skeleton-box>
+            <skeleton-box v-if="title == 'Storm League Rank'" class="h-[3.25rem] w-[26rem] max-w-full rounded"></skeleton-box>
           </panel-box>
         </panel-box>
       </div>

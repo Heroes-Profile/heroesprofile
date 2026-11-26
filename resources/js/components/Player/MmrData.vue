@@ -31,7 +31,7 @@
 
     <!-- Storm League MMR is being rebuilt; remove once the rebuild is done -->
     <div v-if="gametype === 'sl'" class="max-w-[120rem] mx-auto px-4 md:px-8 mb-6">
-      <div class="flex items-center gap-3 rounded-control bg-surface-1 border-l-4 border-yellow px-5 py-3 text-sm">
+      <div class="flex items-center gap-3 rounded bg-surface-1 border-l-4 border-yellow px-5 py-3 text-sm">
         <basil-icon name="info" class="text-yellow text-xl shrink-0"></basil-icon>
         <span class="flex-1 min-w-0">{{ $t("We're rebuilding Storm League MMR. Until it's finished, the graph and table below may look wrong. Your MMR still goes up and down with each game you play, but the rebuilt values won't show until the rebuild is complete.") }}</span>
       </div>
@@ -58,7 +58,7 @@
 
         <panel-box :title="$t('Current MMR') + ' · ' + selectionLabel" :divider="false">
           <div v-if="currentRow" class="flex items-center gap-3">
-            <span class="px-2.5 py-1 rounded-control text-sm font-medium" :style="tierStyle(currentTier)">{{ $t(currentTier) }}</span>
+            <span class="px-2.5 py-1 rounded-lg text-sm font-medium" :style="tierStyle(currentTier)">{{ $t(currentTier) }}</span>
             <span class="text-4xl font-bold tabular-nums leading-none">{{ currentRow.mmr.toLocaleString('en-US') }}</span>
           </div>
           <p v-if="currentRow" class="text-sm text-subtext -mt-2">{{ $t(':tier · :gametype league tier', { tier: $t(currentTier), gametype: gameTypeName }) }}</p>
@@ -68,8 +68,8 @@
             <span class="text-xs font-bold uppercase text-subtext">{{ $t('League tier breakdown') }}</span>
             <template v-for="league in leagues" :key="league.tier">
               <button type="button" :disabled="!league.divisions.length" :aria-expanded="!!openLeagues[league.tier]" @click="openLeagues[league.tier] = !openLeagues[league.tier]"
-                :class="['flex items-center justify-between gap-3 rounded-control px-2.5 py-1.5 text-left transition-colors', league.current ? 'bg-surface-2 font-bold' : 'bg-surface-1', league.divisions.length ? 'hover:bg-surface-3 cursor-pointer' : 'cursor-default']">
-                <span class="px-2.5 py-0.5 rounded-control text-xs font-medium" :style="tierStyle(league.label)">{{ $t(league.label) }}</span>
+                :class="['flex items-center justify-between gap-3 rounded-lg px-2.5 py-1.5 text-left transition-colors', league.current ? 'bg-surface-2 font-bold' : 'bg-surface-1', league.divisions.length ? 'hover:bg-surface-3 cursor-pointer' : 'cursor-default']">
+                <span class="px-2.5 py-0.5 rounded-lg text-xs font-medium" :style="tierStyle(league.label)">{{ $t(league.label) }}</span>
                 <span class="flex items-center gap-2 text-sm tabular-nums">
                   {{ league.range }}
                   <basil-icon v-if="league.divisions.length" name="arrow-small" :class="['text-xs transition-transform', openLeagues[league.tier] ? '-rotate-90' : 'rotate-90']"></basil-icon>
@@ -77,7 +77,7 @@
                 </span>
               </button>
               <div v-if="openLeagues[league.tier]" class="flex flex-col gap-1 pl-4">
-                <div v-for="division in league.divisions" :key="division.label" :class="['flex items-center justify-between gap-3 rounded-control px-2.5 py-1 text-sm', division.current ? 'bg-surface-2 font-bold' : 'text-subtext']">
+                <div v-for="division in league.divisions" :key="division.label" :class="['flex items-center justify-between gap-3 rounded-lg px-2.5 py-1 text-sm', division.current ? 'bg-surface-2 font-bold' : 'text-subtext']">
                   <span>{{ $t(division.label) }}</span>
                   <span class="tabular-nums pr-5">{{ division.range }}</span>
                 </div>
@@ -187,14 +187,14 @@
         </panel-box>
         <panel-box title="Current MMR" :divider="false" :skeleton="true">
           <div class="flex items-center gap-3">
-            <span class="px-2.5 py-1 rounded-control text-sm font-medium skeleton-text">Diamond 3</span>
+            <span class="px-2.5 py-1 rounded-lg text-sm font-medium skeleton-text">Diamond 3</span>
             <span class="text-4xl font-bold leading-none skeleton-text">0,000</span>
           </div>
           <p class="text-sm -mt-2"><span class="skeleton-text">Diamond 3 · Storm League league tier</span></p>
           <div class="flex flex-col gap-1.5">
             <span class="text-xs font-bold uppercase skeleton-text w-fit">{{ $t('League tier breakdown') }}</span>
-            <div v-for="row in 6" :key="row" class="flex items-center justify-between gap-3 rounded-control px-2.5 py-1.5 bg-surface-1">
-              <span class="px-2.5 py-0.5 rounded-control text-xs font-medium skeleton-text">Platinum</span>
+            <div v-for="row in 6" :key="row" class="flex items-center justify-between gap-3 rounded-lg px-2.5 py-1.5 bg-surface-1">
+              <span class="px-2.5 py-0.5 rounded-lg text-xs font-medium skeleton-text">Platinum</span>
               <span class="text-sm skeleton-text">0,000 – 0,000</span>
             </div>
           </div>

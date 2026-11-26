@@ -51,7 +51,7 @@
 
         <!-- Headline tiles -->
         <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          <div v-for="tile in summaryTiles" :key="tile.label" :class="['bg-surface rounded p-6 flex flex-col gap-1 min-w-0 border-l-4', tile.border]">
+          <div v-for="tile in summaryTiles" :key="tile.label" :class="['bg-surface rounded-panel p-6 flex flex-col gap-1 min-w-0 border-l-4', tile.border]">
             <span class="text-sm text-subtext">{{ $t(tile.label) }}</span>
             <span class="text-3xl font-semibold leading-[1.2]">{{ tile.value }}</span>
             <span class="text-sm text-subtext">{{ tile.caption }}</span>
@@ -131,7 +131,7 @@
           </template>
         </panel-box>
         <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          <div v-for="tile in 4" :key="tile" class="bg-surface rounded p-6 flex flex-col gap-1 min-w-0 border-l-4 border-surface-3">
+          <div v-for="tile in 4" :key="tile" class="bg-surface rounded-panel p-6 flex flex-col gap-1 min-w-0 border-l-4 border-surface-3">
             <span class="text-sm skeleton-text w-fit">Banned most at</span>
             <span class="text-3xl font-semibold leading-[1.2] skeleton-text w-fit">Ban 1</span>
             <span class="text-sm skeleton-text w-fit">00.00% of drafts</span>

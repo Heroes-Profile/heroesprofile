@@ -36,10 +36,10 @@
             <span class="text-[0.625rem] font-bold uppercase tracking-wider text-subtext">{{ $t('Level') }}</span>
             <span class="text-2xl font-bold leading-none mt-1">{{ tier.level }}</span>
           </div>
-          <button v-else-if="horizontal" type="button" :class="['relative rounded-control py-1.5 text-[0.625rem] font-bold uppercase tracking-wider text-center transition-[colors,opacity]', focusedLevel === tier.level ? 'bg-teal/20 ring-2 ring-teal text-white' : ['bg-surface-1 text-subtext hover:bg-surface-3', { 'opacity-40': focusedLevel }]]" :aria-pressed="focusedLevel === tier.level" :title="levelTitle(tier)" @click="toggleLevel(tier)">
+          <button v-else-if="horizontal" type="button" :class="['relative rounded py-1.5 text-[0.625rem] font-bold uppercase tracking-wider text-center transition-[colors,opacity]', focusedLevel === tier.level ? 'bg-teal/20 ring-2 ring-teal text-white' : ['bg-surface-1 text-subtext hover:bg-surface-3', { 'opacity-40': focusedLevel }]]" :aria-pressed="focusedLevel === tier.level" :title="levelTitle(tier)" @click="toggleLevel(tier)">
             {{ $t('Level :level', { level: tier.level }) }}
           </button>
-          <button v-else type="button" :class="['relative rounded-control flex flex-col items-center justify-center py-3 transition-[colors,opacity]', focusedLevel === tier.level ? 'bg-teal/20 ring-2 ring-teal' : ['bg-surface-1 hover:bg-surface-3', { 'opacity-40': focusedLevel }]]" :aria-pressed="focusedLevel === tier.level" :title="levelTitle(tier)" @click="toggleLevel(tier)">
+          <button v-else type="button" :class="['relative rounded flex flex-col items-center justify-center py-3 transition-[colors,opacity]', focusedLevel === tier.level ? 'bg-teal/20 ring-2 ring-teal' : ['bg-surface-1 hover:bg-surface-3', { 'opacity-40': focusedLevel }]]" :aria-pressed="focusedLevel === tier.level" :title="levelTitle(tier)" @click="toggleLevel(tier)">
             <span class="text-[0.625rem] font-bold uppercase tracking-wider text-subtext">{{ $t('Level') }}</span>
             <span class="text-2xl font-bold leading-none mt-1">{{ tier.level }}</span>
           </button>

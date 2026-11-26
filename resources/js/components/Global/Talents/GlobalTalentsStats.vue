@@ -144,11 +144,11 @@
             <table-skeleton class="max-md:hidden" :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
             <div class="md:hidden flex flex-col gap-2">
               <div v-for="row in 5" :key="row" class="rounded-control bg-surface-1 p-3 flex flex-col gap-3">
-                <div class="flex gap-1.5 overflow-clip"><skeleton-box v-for="talent in 7" :key="talent" class="w-[2.625rem] h-[2.625rem] shrink-0"></skeleton-box></div>
+                <div class="flex gap-1.5 overflow-clip"><skeleton-box v-for="talent in 7" :key="talent" class="w-[2.625rem] h-[2.625rem] shrink-0 rounded-lg"></skeleton-box></div>
                 <div class="grid grid-cols-3 gap-2">
                   <span v-for="stat in 3" :key="stat" class="flex flex-col gap-1"><skeleton-box class="h-3 w-12"></skeleton-box><skeleton-box class="h-4 w-16"></skeleton-box></span>
                 </div>
-                <skeleton-box class="h-8 w-40"></skeleton-box>
+                <skeleton-box class="h-8 w-40 rounded"></skeleton-box>
               </div>
             </div>
           </panel-box>

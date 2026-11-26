@@ -238,7 +238,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td><div v-if="rankchange" class="inline-grid grid-cols-[2.75rem_2.5rem] gap-2 items-center"><div class="bg-blue text-white py-1 rounded-control text-center tabular-nums"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  group.rows.length - index }}</span></div><span class="text-left tabular-nums">{{ row.rank }}</span></div><span v-else class="p-1">{{ row.rank }}</span></td>
+                    <td><div v-if="rankchange" class="inline-grid grid-cols-[2.75rem_2.5rem] gap-2 items-center"><div class="bg-blue text-white py-1 rounded-lg text-center tabular-nums"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  group.rows.length - index }}</span></div><span class="text-left tabular-nums">{{ row.rank }}</span></div><span v-else class="p-1">{{ row.rank }}</span></td>
                     <td>
                       <player-name :flair-outside="true" :battletag="row.split_battletag" :blizz-id="row.blizz_id" :region="row.region_id" :redirect="true" :hp-owner="!!row.hp_owner" :patreon="!!row.patreon"></player-name>
                     </td>
@@ -293,7 +293,7 @@
         <h2 class="text-2xl font-bold skeleton-text">{{ leaderboardtype == 'SL Rank' ? 'Grand Master' : 'Group A - At least 35 games played' }}</h2>
         <!-- The requirements button's place -->
         <span v-if="leaderboardtype != 'SL Rank'" class="ml-auto rounded px-4 py-3 text-sm font-bold flex items-center gap-3 skeleton-text">{{ $t('Leaderboard Requirements') }}<basil-icon name="arrow" class="text-xs rotate-90"></basil-icon></span>
-        <skeleton-box v-if="showRating" :class="['h-12 w-full sm:w-[22rem]', { 'ml-auto': leaderboardtype == 'SL Rank' }]"></skeleton-box>
+        <skeleton-box v-if="showRating" :class="['h-12 w-full sm:w-[22rem]', { 'ml-auto': leaderboardtype == 'SL Rank' }]" class="rounded"></skeleton-box>
       </div>
       <!-- Shaped like the table for this leaderboard type; the message sits on a tab of its panel, as on the profile -->
       <div class="relative">

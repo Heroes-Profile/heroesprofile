@@ -6,7 +6,7 @@
         <page-heading heading="Heroes" subheading="Abilities, talents & stats"></page-heading>
       </template>
       <div class="flex md:justify-end px-4 md:px-8">
-        <div class="rounded bg-surface p-4 md:p-6 flex flex-wrap items-end gap-6">
+        <div class="rounded-panel bg-surface p-4 md:p-6 flex flex-wrap items-end gap-6">
           <div class="flex flex-col gap-2">
             <span class="text-sm text-subtext">{{ $t('Role') }}</span>
             <tab-button :small="true" :tabs="roleTabs" overridedefaultside="All" :ignoreclick="true" @tab-click="role = $event"></tab-button>

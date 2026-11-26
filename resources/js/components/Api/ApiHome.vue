@@ -7,7 +7,7 @@
     </div>
 
     <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-8">
-      <p class="bg-surface rounded px-4 py-5 md:px-8 md:py-7 text-subtext leading-relaxed">
+      <p class="bg-surface rounded-panel px-4 py-5 md:px-8 md:py-7 text-subtext leading-relaxed">
         {{ $t('Hero statistics, talent builds, match data, player profiles and MMR. We source original replay data from our own') }}
         <a href="/Upload" class="underline hover:text-lteal">{{ $t('Uploader') }}</a>{{ $t(', then parse it to provide up-to-date MMR, win rates and more. Your subscription helps us build new features for') }}
         <a href="https://www.heroesprofile.com/" class="underline hover:text-lteal">Heroes Profile</a>{{ $t('. View the') }} <a href="/Api/Docs" class="underline hover:text-lteal">{{ $t('Documentation') }}</a> {{ $t('or') }}
@@ -16,7 +16,7 @@
 
       <!-- One card per plan, edged in its colour -->
       <div class="grid gap-8 md:grid-cols-3">
-        <div v-for="plan in plans" :key="plan.key" :class="['bg-surface rounded border-t-[0.375rem] px-4 md:px-8 pt-6 pb-8 flex flex-col gap-5', borderClass(plan.key)]">
+        <div v-for="plan in plans" :key="plan.key" :class="['bg-surface rounded-panel border-t-[0.375rem] px-4 md:px-8 pt-6 pb-8 flex flex-col gap-5', borderClass(plan.key)]">
           <div>
             <h2 class="text-2xl font-bold">{{ plan.name }}</h2>
             <p class="text-sm text-subtext mt-1.5">{{ taglines[plan.key] }}</p>

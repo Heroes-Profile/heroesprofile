@@ -18,7 +18,7 @@
     @section('error_extra')
         <div class="border-t border-surface-3 pt-5 flex flex-col gap-3">
             <span class="text-[0.625rem] font-bold uppercase tracking-wider text-subtext">{{ __('Ban details') }}</span>
-            <div class="rounded-control bg-surface-1 p-4 flex flex-col gap-2 text-sm">
+            <div class="rounded bg-surface-1 p-4 flex flex-col gap-2 text-sm">
                 @isset($ban_reason)
                     <p><span class="text-subtext">{{ __('Reason') }}:</span> {{ $ban_reason }}</p>
                 @endisset

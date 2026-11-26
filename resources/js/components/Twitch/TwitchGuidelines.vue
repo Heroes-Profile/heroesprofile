@@ -17,7 +17,7 @@
   >
     <template #intro>
       <div class="flex items-center gap-4 rounded bg-surface border-l-4 border-[#9145ff] px-5 py-4">
-        <span class="shrink-0 w-10 h-10 rounded-control bg-[#9145ff]/20 text-[#9145ff] flex items-center justify-center"><i class="fas fa-play"></i></span>
+        <span class="shrink-0 w-10 h-10 rounded bg-[#9145ff]/20 text-[#9145ff] flex items-center justify-center"><i class="fas fa-play"></i></span>
         <p>{{ $t('Listing your channel on the Heroes Profile streamer page is optional. If you choose to be listed, you agree to the following while your listing is active.') }}</p>
       </div>
     </template>

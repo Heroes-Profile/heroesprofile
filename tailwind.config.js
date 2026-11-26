@@ -95,8 +95,10 @@ module.exports = {
     })),
     extend: {
       borderRadius: {
-        DEFAULT: '.7rem',
-        control: '.5rem',
+        DEFAULT: '.75rem',
+        control: '1rem',
+        // Level 1: the darker grey panel; level 2, anything inside it, is control
+        panel: '1.75rem',
       },
     },
   },

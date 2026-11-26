@@ -28,7 +28,7 @@
       <span class="text-base font-bold tracking-[0.06em] text-teal bg-teal/[0.18] rounded-[0.375rem] px-2.5 py-1 leading-[1.1875rem]">API</span>
     </a>
 
-    <div class="flex flex-wrap items-center justify-center gap-1 md:mx-auto [&>a]:px-6 [&>a]:py-3.5 [&>a]:rounded-control [&>a:hover]:bg-surface-2">
+    <div class="flex flex-wrap items-center justify-center gap-1 md:mx-auto [&>a]:px-6 [&>a]:py-3.5 [&>a]:rounded [&>a:hover]:bg-surface-2">
       <a href="/Api" class="hover:text-lteal">{{ __('Overview') }}</a>
       <a href="/Api/Docs" class="hover:text-lteal">{{ __('Documentation') }}</a>
       <a href="/Api/Migrating" class="hover:text-lteal">{{ __('Migrating') }}</a>
@@ -60,7 +60,7 @@
         {{-- Keyed on what the API will actually answer with, not on `migrated`
              alone — an account with no plan is on fixtures too. --}}
         @if($navServesFixtures)
-          <a href="/Api/Account" class="px-2 py-1 rounded-control bg-yellow text-black text-xs" title="{{ __('Your API calls are returning example data, not live data') }}">
+          <a href="/Api/Account" class="px-2 py-1 rounded-lg bg-yellow text-black text-xs" title="{{ __('Your API calls are returning example data, not live data') }}">
             {{ __('Test data') }}
           </a>
         @endif

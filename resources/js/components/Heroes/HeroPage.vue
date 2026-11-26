@@ -23,7 +23,7 @@
       </template>
       <!-- The hero's stat pages -->
       <div class="flex md:justify-end px-4 md:px-8">
-        <div class="rounded bg-surface p-4 flex flex-wrap gap-2 max-md:justify-center">
+        <div class="rounded-panel bg-surface p-4 flex flex-wrap gap-2 max-md:justify-center">
           <custom-button v-for="link in statLinks" :key="link.href" :href="link.href" :text="link.text" :alt="link.text" color="blue" :targetblank="true"></custom-button>
         </div>
       </div>
@@ -135,7 +135,7 @@
       <!-- The hero's art, the same size on every tab, then the lore. On About the lore card takes up what's
            left of the left column's height, so both columns end level -->
       <div class="flex flex-col gap-6 min-w-0">
-        <div class="relative rounded overflow-hidden bg-surface">
+        <div class="relative rounded-panel overflow-hidden bg-surface">
           <img :src="`/images/heroes_rectangle_large/${hero.short_name}.jpg`" :alt="hero.name" class="w-full aspect-[800/778] object-cover object-top">
         </div>
         <panel-box v-if="metadata && metadata.lore && activeTab === 'about'" class="xl:flex-1" :title="$t('Lore')" :divider="false">

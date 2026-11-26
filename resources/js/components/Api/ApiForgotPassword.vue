@@ -26,7 +26,7 @@
       <input type="hidden" name="_token" :value="csrf">
 
       <label class="flex flex-col gap-2 text-subtext">{{ $t('Email') }}
-        <input class="h-[3.125rem] rounded-control bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white px-4 w-full min-w-0 placeholder:text-subtext/70" type="email" name="email" v-model="email" placeholder="name@example.com" required autofocus>
+        <input class="h-[3.125rem] rounded bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white px-4 w-full min-w-0 placeholder:text-subtext/70" type="email" name="email" v-model="email" placeholder="name@example.com" required autofocus>
       </label>
 
       <button type="submit" class="btn bg-teal hover:bg-lteal w-full text-lg font-semibold disabled:opacity-50 disabled:hover:bg-teal mt-2">{{ $t('Send reset link') }}</button>

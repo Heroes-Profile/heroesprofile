@@ -2,7 +2,7 @@
   <!-- Shaped like the card with no rank read: its box and the "How to get your rank" button -->
   <panel-box v-if="loading" :inner="true" :title="$t('Storm League Rank')" :loading="true">
     <skeleton-box class="flex-1 min-h-[24.125rem]"></skeleton-box>
-    <skeleton-box class="h-[3.25rem] w-[26rem] max-w-full"></skeleton-box>
+    <skeleton-box class="h-[3.25rem] w-[26rem] max-w-full rounded"></skeleton-box>
   </panel-box>
   <panel-box v-else-if="data" :inner="true" :title="$t('Storm League Rank')">
     <template #title>

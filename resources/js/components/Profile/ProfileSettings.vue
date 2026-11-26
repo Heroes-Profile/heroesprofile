@@ -217,7 +217,7 @@
               <!-- Each choice drawn on the top bar's picture; click one to use it. Up to four, so pictures rather than the tab button. -->
               <div class="flex flex-wrap gap-4">
                 <button v-for="option in borderOptions" :key="option.key" type="button" :aria-pressed="option.key === avatarBorder" @click="avatarbordersetting(option.key)"
-                  :class="['flex flex-col items-center gap-3 w-[8.5rem] px-3 pt-4 pb-3 rounded-control border-2 transition-colors', option.key === avatarBorder ? 'bg-surface-1 border-teal text-white' : 'bg-surface-1 border-transparent text-subtext hover:bg-surface-2']">
+                  :class="['flex flex-col items-center gap-3 w-[8.5rem] px-3 pt-4 pb-3 rounded border-2 transition-colors', option.key === avatarBorder ? 'bg-surface-1 border-teal text-white' : 'bg-surface-1 border-transparent text-subtext hover:bg-surface-2']">
                   <span class="relative block">
                     <span :class="['relative block w-14 h-14 rounded overflow-hidden', borderPreviewClass[option.key], option.key === avatarBorder ? '' : 'opacity-60']">
                       <img class="w-full h-full object-cover" src="/images/heroes/auto_select.jpg" alt="">

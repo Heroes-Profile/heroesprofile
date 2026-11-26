@@ -236,7 +236,7 @@
                   <span class="grid grid-cols-[1fr_0.5rem_minmax(0.875rem,auto)_0.5rem_1fr] gap-x-[0.5rem] w-[7.375rem] justify-items-center my-1">
                     <skeleton-box v-for="(icon, index) in 3" :key="icon" class="w-6 h-6" :style="{ gridColumn: index * 2 + 1 }"></skeleton-box>
                   </span>
-                  <skeleton-box class="w-[8.75rem] h-8"></skeleton-box>
+                  <skeleton-box class="w-[8.75rem] h-8 rounded"></skeleton-box>
                   <skeleton-box class="w-16 h-4 mt-1"></skeleton-box>
                 </div>
               </div>

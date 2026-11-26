@@ -3,7 +3,7 @@
        stacked under it. Vertical: a row with the level tile on the left and the talents beside it.
        The level turns teal once a talent is picked; Clear unpicks it -->
   <div v-if="horizontal" class="flex flex-col gap-2 min-w-0">
-    <button type="button" :class="['rounded-control py-1.5 text-[0.625rem] font-bold uppercase tracking-wider text-center', picked ? 'bg-teal text-white hover:bg-lteal' : 'bg-surface-1 text-subtext']"
+    <button type="button" :class="['rounded py-1.5 text-[0.625rem] font-bold uppercase tracking-wider text-center', picked ? 'bg-teal text-white hover:bg-lteal' : 'bg-surface-1 text-subtext']"
       :title="picked ? $t('Clear') : ''" @click="picked && removeAnySelections()">{{ $t('Level :level', { level: level }) }}</button>
     <talent-builder-click-box v-for="(talent, index) in data" :key="talent.title"
       :talent="talent" :isClicked="isSelected(talent)" :dimmed="picked && !isSelected(talent)" :no-games="hasStats && !talent.games_played" :horizontal="true"

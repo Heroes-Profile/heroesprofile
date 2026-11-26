@@ -219,7 +219,7 @@
 
           <div :class="['flex flex-col gap-6 min-w-0', esport ? 'xl:row-span-2 xl:grid xl:[grid-template-rows:subgrid]' : 'flex-1']">
             <panel-box v-if="esport" :inner="true" :title="$t('Teams Played For')">
-              <skeleton-box v-for="index in 2" :key="index" class="h-14"></skeleton-box>
+              <skeleton-box v-for="index in 2" :key="index" class="h-14 rounded-lg"></skeleton-box>
             </panel-box>
             <panel-box v-if="esport" class="flex-1" :inner="true" :title="$t('Heroes')" link-text="All Heroes" :skeleton="true">
               <div class="flex flex-wrap gap-6 justify-evenly">
