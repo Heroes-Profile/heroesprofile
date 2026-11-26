@@ -53,7 +53,7 @@ class ArtisanCommandsTest extends FeatureTestCase
 
         $heroes = Hero::count();
         $maps = Map::where('playable', 1)->count();
-        $this->assertCount(43 + 6 * $heroes + $maps, $locs);
+        $this->assertCount(44 + 6 * $heroes + $maps, $locs);
         $this->assertContains('https://www.heroesprofile.com/Global/Talents/Abathur', $locs);
         $this->assertContains('https://www.heroesprofile.com/Global/Draft/Abathur', $locs);
         $this->assertContains('https://www.heroesprofile.com/Esports/MastersClash', $locs);
