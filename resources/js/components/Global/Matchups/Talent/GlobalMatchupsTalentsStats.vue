@@ -40,7 +40,7 @@
         <div class="grid xl:grid-cols-[auto_minmax(0,1fr)] gap-6 xl:gap-8">
           <!-- As the Figma picker: the dropdowns as wide as the art, 12px above it, and VS centred between the two pictures.
                Beside the steps, the art grows to their height -->
-          <div class="grid grid-cols-[minmax(0,10rem)_auto_minmax(0,10rem)] md:grid-cols-[14rem_auto_14rem] xl:grid-rows-[auto_minmax(20.125rem,1fr)] gap-x-4 md:gap-x-8 gap-y-3 items-start">
+          <div class="grid grid-cols-[minmax(0,10rem)_auto_minmax(0,10rem)] md:grid-cols-[14rem_auto_14rem] xl:grid-rows-[auto_minmax(20.125rem,1fr)] gap-x-4 md:gap-x-8 gap-y-3 items-start justify-start">
             <single-select-filter :compact="true" :key="'hero-' + (hero ? hero.id : '')" :values="firstHeroInputs" :text="'Hero'" @input-changed="herochanged" :defaultValue="hero ? hero.id : null"></single-select-filter>
             <span></span>
             <single-select-filter :compact="true" :key="'enemyally-' + (enemyally ? enemyally.id : '')" :values="secondHeroInputs" :text="'Matchup hero'" @input-changed="allyenemychanged" :defaultValue="enemyally ? enemyally.id : null"></single-select-filter>
