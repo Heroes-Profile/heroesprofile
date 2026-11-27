@@ -66,7 +66,7 @@
                         </div>
                     </div>
 
-                    <a id="nav-leaderboards" class="  nav-item" href="/Global/Leaderboard"><span>{{ __('Leaderboards') }}</span></a>
+                    <a id="nav-leaderboards" class="nav-item max-md:relative" href="/Global/Leaderboard"><span>{{ __('Leaderboards') }}</span><basil-icon name="arrow-small" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 text-xs" aria-hidden="true"></basil-icon></a>
 
                     <div id="nav-tools" class="relative group inline-block nav-item">
                         <a class=" cursor-pointer">{{ __('Tools') }}<basil-icon name="arrow" class="rotate-90 group-hover:-rotate-90 transition-transform text-xs ml-2" aria-hidden="true"></basil-icon></a>
@@ -99,7 +99,7 @@
                         </div>
                     </div>
 
-                    <a id="nav-esports" class=" nav-item" href="/Esports"><span>{{ __('Community Esports') }}</span></a>
+                    <a id="nav-esports" class="nav-item max-md:relative" href="/Esports"><span>{{ __('Community Esports') }}</span><basil-icon name="arrow-small" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 text-xs" aria-hidden="true"></basil-icon></a>
 
                     <div id="nav-help" class="relative group inline-block nav-item">
                         <a class=" cursor-pointer">{{ __('Help') }}<basil-icon name="arrow" class="rotate-90 group-hover:-rotate-90 transition-transform text-xs ml-2" aria-hidden="true"></basil-icon></a>
@@ -230,59 +230,27 @@
               
             </div>
 </div>
-              <div id="right-nav-wrapper" class="flex max-md:flex-wrap max-md:items-center justify-center flex-none mx-auto md:mx-0">
+              <div id="right-nav-wrapper" class="flex max-md:flex-wrap max-md:items-center justify-center flex-none mx-auto md:mx-0 max-md:w-full">
 
-                <div id="nav-buttons" class="flex gap-3 max-md:gap-2 max-md:w-full max-md:px-3 max-md:pt-4 max-md:flex-wrap max-md:justify-center">
-                    <custom-button id="nav-api-button" class="inline-flex items-center min-h-11 font-semibold max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'"></custom-button>
-                    <custom-button id="nav-uploader-button" class="inline-flex items-center min-h-11 font-semibold max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'/Upload'" :text="'Replay Uploader'" :alt="'Replay Uploader'" :color="'teal'"></custom-button>
-                    <custom-button id="nav-patreon-button" class="inline-flex items-center min-h-11 font-semibold max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Remove Ads / Patreon'" :alt="'Patreon'" :color="'red'"></custom-button>
+                {{-- Phones: flat full-width rows under the menu, below the logged-in player's row, with a chevron like a menu link --}}
+                <div id="nav-buttons" class="flex gap-3 max-md:gap-0 max-md:w-full max-md:flex-col">
+                    <custom-button id="nav-api-button" class="inline-flex items-center min-h-11 font-semibold max-md:relative max-md:w-full max-md:justify-center max-md:rounded-none max-md:border-b max-md:border-white/20 max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'">{{ __('API') }}<basil-icon name="arrow-small" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 text-xs" aria-hidden="true"></basil-icon></custom-button>
+                    <custom-button id="nav-uploader-button" class="inline-flex items-center min-h-11 font-semibold max-md:relative max-md:w-full max-md:justify-center max-md:rounded-none max-md:border-b max-md:border-white/20 max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'/Upload'" :text="'Replay Uploader'" :alt="'Replay Uploader'" :color="'teal'">{{ __('Replay Uploader') }}<basil-icon name="arrow-small" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 text-xs" aria-hidden="true"></basil-icon></custom-button>
+                    <custom-button id="nav-patreon-button" class="inline-flex items-center min-h-11 font-semibold max-md:relative max-md:w-full max-md:justify-center max-md:rounded-none max-md:border-b max-md:border-white/20 max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Remove Ads / Patreon'" :alt="'Patreon'" :color="'red'">{{ __('Remove Ads / Patreon') }}<basil-icon name="arrow-small" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 text-xs" aria-hidden="true"></basil-icon></custom-button>
                 </div>
 
 
-                <language-picker id="nav-language-picker" :locale="'{{ app()->getLocale() }}'" :locales="{{ json_encode(config('app.supported_locales')) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></language-picker>
+                {{-- Phones show the language button and avatar beside the saved players instead (alt-account-nav) --}}
+                <language-picker id="nav-language-picker" class="max-md:hidden" :locale="'{{ app()->getLocale() }}'" :locales="{{ json_encode(config('app.supported_locales')) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></language-picker>
 
                 @if($isAuthenticated)
-                    <div id="nav-user-menu" class="relative group inline-block md:ml-4 max-md:my-3 max-md:flex max-md:items-center">
-                            {{-- On mobile a tap opens the panel full screen, like the alt-player buttons (MobileNavHack) --}}
-                            {{-- Patreon subscribers can have a gold border and glow, the Patreon star's gold; Void eye holders a purple one (app.css). Ad-free alone gives neither --}}
-                            @php($navPatreon = session('patreonSubscriberSiteFlair'))
-                            {{-- Listed under the battletag in the menu, owner first; the account's own flair, shown even if hidden in Profile Settings --}}
-                            @php($navOwner = Auth::user()->blizz_id == 67280 && Auth::user()->region == 1)
-                            {{-- The avatar's border: the one chosen in Profile Settings if it's still earned, else Site Owner, Patreon, then the Void eye --}}
-                            @php($navBorders = array_keys(array_filter(['owner' => $navOwner, 'patreon' => $navPatreon, 'void_eye' => (bool) session('voidEyeFlair')])))
-                            @php($navBorderSetting = optional(Auth::user()->userSettings->firstWhere('setting', 'avatar_border'))->value)
-                            @php($navBorder = $navBorderSetting === 'none' || in_array($navBorderSetting, $navBorders, true) ? $navBorderSetting : ($navBorders[0] ?? 'none'))
-                            <div data-battletag="nav-user-menu" class="mobile-secondary-nav-open relative flex items-center cursor-pointer">
-                                <span class="group/avatar relative block w-11 h-11 rounded overflow-hidden transition-shadow {{ ['owner' => 'border-2 owner-glow', 'patreon' => 'border-2 border-gold patreon-glow', 'void_eye' => 'border-2 border-[#a77bf3] void-glow'][$navBorder] ?? '' }}">
-                                    <img
-                                    class="w-full h-full object-cover"
-                                    src="/images/heroes/auto_select.jpg"
-                                    alt="{{ __('Settings') }}">
-                                    <span class="absolute inset-0 opacity-0 group-hover/avatar:opacity-100 transition-opacity {{ ['owner' => 'bg-[rgba(79,195,255,0.12)]', 'patreon' => 'bg-[rgba(255,215,0,0.1)]', 'void_eye' => 'bg-[rgba(167,123,243,0.12)]'][$navBorder] ?? 'bg-[rgba(18,7,38,0.2)]' }}" aria-hidden="true"></span>
-                                </span>
-                                @if($navBorder === 'owner')<owner-sparks></owner-sparks>@endif
-                            </div>
-                            {{-- Same panel as the primary menus, anchored to the right edge --}}
-                            <div data-battletag="nav-user-menu" class="nav-dropdown nav-dropdown-secondary-nav md:!left-auto md:!right-0 max-md:fixed max-md:top-0 max-md:w-full max-md:h-full max-md:bg-gray-dark">
-                                <div class="nav-dropdown-inner-wrapper">
-                                    <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal">{{ $mainSearchAccount['battletag_full'] }} <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg" aria-label="{{ __('Close menu') }}">x</button></div>
-                                    <span class="block px-4 py-2 whitespace-nowrap border-b-2 border-[#333] max-md:hidden">{{ $mainSearchAccount['battletag_full'] }}@if($navOwner)<span class="block text-xs text-[#4fc3ff]">{{ __('Site Owner') }}</span>@endif @if($navPatreon)<span class="block text-xs text-gold">{{ __('Patreon Subscriber') }}</span>@endif @if(session('voidEyeFlair'))<span class="block text-xs text-[#a77bf3]">{{ __('Marked by the Void') }}</span>@endif</span>
-                                    <a href="/Profile/Settings">{{ __('Settings') }}</a>
-                                    <a href="/Battlenet/Logout">{{ __('Logout') }}</a>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-
-
+                    @include('navUserMenu', ['menuId' => 'nav-user-menu', 'menuClass' => 'md:ml-4 max-md:hidden'])
                 @else
-                    <custom-button id="nav-login-button" class="inline-flex items-center min-h-11 md:ml-4 max-md:my-3 font-semibold max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :color="'teal'"></custom-button>
+                    <custom-button id="nav-login-button" class="inline-flex items-center min-h-11 md:ml-4 max-md:hidden font-semibold" :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :color="'teal'"></custom-button>
                 @endif
                 </div>
-                {{-- Mobile only: under the buttons --}}
-                <search-component id="nav-search" :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="!mt-0 mx-4 md:hidden"></search-component>
+                {{-- Phones only: straight under the buttons, edge to edge --}}
+                <search-component id="nav-search" :type="'alt'" :square="true" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="!mt-0 !py-0 md:hidden"></search-component>
         </div>
     </nav>
     
@@ -422,6 +390,13 @@
       </div>
     @endif
   @endforeach
+  {{-- Phones: the language button and avatar follow the saved players --}}
+  <language-picker id="nav-language-picker-phone" menu-key="nav-language-menu-phone" class="md:hidden" :locale="'{{ app()->getLocale() }}'" :locales="{{ json_encode(config('app.supported_locales')) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></language-picker>
+  @if($isAuthenticated)
+    @include('navUserMenu', ['menuId' => 'nav-user-menu-phone', 'menuClass' => 'md:hidden'])
+  @else
+    <custom-button id="nav-login-button-phone" class="inline-flex items-center min-h-11 md:hidden font-semibold text-sm px-4 py-1.5" :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :color="'teal'"></custom-button>
+  @endif
   <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="max-md:hidden"></search-component>
 </nav>
 </div>

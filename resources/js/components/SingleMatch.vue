@@ -203,7 +203,7 @@
                   <!-- Each MMR, then its chevron column like Global Hero Stats' Builds -->
                   <template v-for="label in ['Player MMR', 'Hero MMR', 'Role MMR', 'Map MMR']" :key="label">
                     <th class="py-2 px-3 text-center text-sm leading-4">{{ $t(label) }}</th>
-                    <th class="py-2 px-3 w-12"></th>
+                    <th class="py-2 px-3 w-12" data-scroll-join></th>
                   </template>
                 </tr>
               </thead>
@@ -543,8 +543,8 @@
           ? [{ title: this.$t('Hero Level'), value: this.getAverageValue('avg_hero_level', players) }]
           : [
             { title: this.$t('HP MMR'), value: this.getAverageValue('player_mmr', players) },
-            { title: this.$t('Hero MMR'), value: this.getAverageValue('hero_mmr', players) },
-            { title: this.$t('Role MMR'), value: this.getAverageValue('role_mmr', players) },
+            { title: this.$t('HP Hero MMR'), value: this.getAverageValue('hero_mmr', players) },
+            { title: this.$t('HP Role MMR'), value: this.getAverageValue('role_mmr', players) },
             { title: this.$t('Account Level'), value: this.getAverageValue('account_level', players) },
           ];
         return { totals, averages };

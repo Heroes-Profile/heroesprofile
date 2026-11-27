@@ -6,6 +6,8 @@
     { 'md:w-10 md:h-10': !icon && !['match', 'row', 'talent', 'medium', 'tier', 'heading'].includes(size) },
     { 
       block: size === 'big', 
+      // Phones shrink the big portrait to 40px; hug it so its badges sit on its corners, not the column's
+      'max-md:w-fit max-md:mx-auto': size === 'big',
       'md:w-20': size === 'big', 
       'md:h-20': size === 'big',
       'md:w-[6em]': size === 'xl',
@@ -36,10 +38,12 @@
   
   @mouseover="handleMouseOver" @mouseleave="scheduleHide" @click="handleClick">
 
-    <div :class="['absolute z-10 bottom-0 right-0 w-9']"  v-if="award">
+    <!-- On the big portrait each icon is centred on a corner of a square just inside it (12% in): crown and star top-left, party top-right,
+         eye bottom-left, award bottom-right -->
+    <div :class="['absolute z-10 w-9', size === 'big' ? 'bottom-[12%] right-[12%] translate-x-1/2 translate-y-1/2 max-md:w-5' : 'bottom-0 right-0']"  v-if="award">
       <img :src="awardicon"/>
     </div>
-    <div :class="['absolute -top-3 -left-1 z-10 text-xl leading-none']" v-if="hpowner">
+    <div :class="['absolute z-10 text-xl leading-none', size === 'big' ? 'top-[12%] left-[12%] -translate-x-1/2 -translate-y-1/2 max-md:text-xs' : '-top-3 -left-1']" v-if="hpowner">
       <!-- {{ "HP Owner" }}; the same visible size as the void eye -->
       <span class="relative inline-flex">
         <i class="fas fa-crown text-[1.35em] owner-crown"></i>
@@ -48,14 +52,14 @@
     </div>
 
     <!-- Every flair the player has shows; beside the crown, the star moves over so they don't overlap -->
-    <div :class="['absolute z-10 -top-2', hpowner ? 'left-8' : 'left-0']" v-if="ispatreon">
+    <div :class="['absolute z-10', size === 'big' ? ['top-[12%] -translate-y-1/2 max-md:text-[0.6rem]', hpowner ? 'left-[12%] translate-x-1/2' : 'left-[12%] -translate-x-1/2'] : ['-top-2', hpowner ? 'left-8' : 'left-0']]" v-if="ispatreon">
       <!-- {{ "Patreon Subscriber" }} -->
       <i class="fas fa-star text-gold text-[1.5em]"></i>
     </div>
-    <div :class="['absolute z-10 bottom-0 -left-2 text-xl leading-none']" v-if="voideye">
+    <div :class="['absolute z-10 text-xl leading-none', size === 'big' ? 'bottom-[12%] left-[12%] -translate-x-1/2 translate-y-1/2 max-md:text-xs' : 'bottom-0 -left-2']" v-if="voideye">
       <void-eye-flair :force="true" :tooltip="false"></void-eye-flair>
     </div>
-    <div class="absolute z-10 -top-2 -right-2 w-8" v-if="party">
+    <div :class="['absolute z-10 w-8', size === 'big' ? 'top-[12%] right-[12%] translate-x-1/2 -translate-y-1/2 max-md:w-5' : '-top-2 -right-2']" v-if="party">
       <!--  {{ party }} -->
       <img :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${party}.png`"/>
     </div>

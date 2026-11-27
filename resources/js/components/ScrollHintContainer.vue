@@ -77,7 +77,8 @@ export default {
       this.canScrollLeft = scroller.scrollLeft > 1;
       this.canScrollRight = scroller.scrollLeft + scroller.clientWidth < scroller.scrollWidth - 1;
     },
-    // A table's column edges, and how much of the left its sticky first column covers
+    // A table's column edges, and how much of the left its sticky first column covers.
+    // A header cell with data-scroll-join belongs to the column before it (a chevron beside its value), so it's no stop of its own
     columns() {
       if (this.snap) {
         const scrollerLeft = this.$refs.scroller.getBoundingClientRect().left - this.$refs.scroller.scrollLeft;
@@ -92,7 +93,7 @@ export default {
       const sticky = cells.filter(cell => getComputedStyle(cell).position === 'sticky');
       return {
         covered: sticky.reduce((width, cell) => width + cell.offsetWidth, 0),
-        edges: cells.filter(cell => !sticky.includes(cell)).map(cell => cell.offsetLeft),
+        edges: cells.filter(cell => !sticky.includes(cell) && !cell.hasAttribute('data-scroll-join')).map(cell => cell.offsetLeft),
       };
     },
     // A table moves one column at a time, lining it up beside the sticky column; anything else by most of a screen

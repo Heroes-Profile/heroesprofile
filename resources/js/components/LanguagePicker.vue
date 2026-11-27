@@ -1,7 +1,7 @@
 <template>
-  <!-- Phones: mr-3.5 leaves the same visible gap before Login as the 8px before it, allowing for the EN badge that overhangs the right edge -->
-  <div class="relative group flex md:ml-4 max-md:my-3 max-md:mr-3.5">
-    <div data-battletag="nav-language-menu" class="mobile-secondary-nav-open flex cursor-pointer">
+  <!-- Phones: mr-1.5 makes room for the EN badge that overhangs the right edge -->
+  <div class="relative group flex md:ml-4 max-md:mr-1.5">
+    <div :data-battletag="menuKey" class="mobile-secondary-nav-open flex cursor-pointer">
       <span class="relative flex w-11 h-11 bg-teal rounded" :aria-label="$t('Language') + ': ' + locales[current]">
         <span class="w-full h-full rounded flex items-center justify-center text-surface hover:bg-lteal transition-colors">
           <i class="fa-solid fa-globe text-xl"></i>
@@ -10,7 +10,7 @@
       </span>
     </div>
     <!-- md:top-full: this wrapper is flex, so unlike the user menu's the panel would start level with the button, over it -->
-    <div data-battletag="nav-language-menu" class="nav-dropdown nav-dropdown-secondary-nav md:!left-auto md:!right-0 md:top-full max-md:fixed max-md:top-0 max-md:w-full max-md:h-full max-md:bg-gray-dark">
+    <div :data-battletag="menuKey" class="nav-dropdown nav-dropdown-secondary-nav md:!left-auto md:!right-0 md:top-full max-md:fixed max-md:top-0 max-md:w-full max-md:h-full max-md:bg-gray-dark">
       <div class="nav-dropdown-inner-wrapper">
         <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal">{{ $t('Language') }} <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg" :aria-label="$t('Close menu')">x</button></div>
         <a
@@ -45,6 +45,8 @@ export default {
     locale: { type: String, default: 'en' },
     locales: { type: Object, required: true },
     authenticated: Boolean,
+    // Pairs the button with its panel (MobileNavHack); each copy of the picker needs its own
+    menuKey: { type: String, default: 'nav-language-menu' },
   },
   computed: {
     // Two letters for the badge; the region where two locales share a language (es-MX shows MX, zh-CN CN, zh-TW TW)
