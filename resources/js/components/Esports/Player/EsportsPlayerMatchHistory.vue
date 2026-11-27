@@ -70,7 +70,7 @@
           <loading-component :compact="true" :tab="true" :overrideimage="league.loaderImage"></loading-component>
           <div v-if="compact">
             <game-summary-header :esport="true"></game-summary-header>
-            <game-summary-skeleton v-for="index in 8" :key="index"></game-summary-skeleton>
+            <game-summary-skeleton v-for="index in 8" :key="index" :esport="true"></game-summary-skeleton>
           </div>
           <div v-else class="overflow-x-auto">
             <div class="md:min-w-max w-full">

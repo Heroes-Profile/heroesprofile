@@ -47,13 +47,13 @@
           <div :class="horizontal ? 'flex flex-col gap-2 min-w-0' : 'grid sm:grid-cols-2 xl:grid-cols-4 gap-2 min-w-0'">
             <template v-if="skeleton">
               <div v-for="talent in tier.count" :key="talent" class="rounded-control bg-surface-1 border-2 border-surface-1 p-3 flex flex-col gap-2.5 min-w-0">
-                <div class="flex items-center gap-2"><skeleton-box class="w-[2.625rem] h-[2.625rem] !rounded-full shrink-0"></skeleton-box><span class="text-sm font-semibold skeleton-text">Pressurized Glands</span></div>
+                <div class="flex items-center gap-3"><skeleton-box class="w-10 h-10 !rounded-full shrink-0"></skeleton-box><span class="text-sm font-semibold skeleton-text">Pressurized Glands</span></div>
                 <div :class="horizontal ? 'grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-2 items-end' : 'grid grid-cols-[auto_minmax(0,1fr)_auto] gap-4 items-end'">
-                  <span class="flex flex-col gap-1"><span class="text-xs skeleton-text">Win rate</span><span class="text-xl font-bold leading-tight skeleton-text">00.00%</span></span>
+                  <span class="flex flex-col"><span class="text-xs skeleton-text">Win rate</span><span class="text-xl font-bold leading-tight skeleton-text">00.00%</span></span>
                   <stat-bar :class="['mb-1.5', { 'col-span-2 order-last': horizontal }]" value="0" display-text="" :hide-value="true"></stat-bar>
                   <span class="flex justify-end gap-4">
-                    <span class="flex flex-col items-center gap-1"><span class="text-xs skeleton-text">Popularity</span><span class="font-semibold skeleton-text">00.00%</span></span>
-                    <span class="flex flex-col items-end gap-1"><span class="text-xs skeleton-text">Games</span><span class="font-semibold skeleton-text">0,000</span></span>
+                    <span class="flex flex-col items-center"><span class="text-xs skeleton-text">Popularity</span><span class="font-semibold skeleton-text">00.00%</span></span>
+                    <span class="flex flex-col items-end"><span class="text-xs skeleton-text">Games</span><span class="font-semibold skeleton-text">0,000</span></span>
                   </span>
                 </div>
               </div>
@@ -64,7 +64,7 @@
                 <!-- The level's best gets a star on the icon's corner, as the Figma card -->
                 <span class="relative shrink-0 flex">
                   <talent-image-wrapper :talent="talent.talentInfo" :popup-hoverable="true"></talent-image-wrapper>
-                  <span v-if="isBest(talent, tier)" class="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full bg-teal text-white flex items-center justify-center text-[0.625rem] pointer-events-none" :title="$t('Best')"><i class="fas fa-star leading-none -translate-y-[0.06em]"></i></span>
+                  <span v-if="isBest(talent, tier)" class="absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full bg-teal text-white flex items-center pointer-events-none" :title="$t('Best')"><basil-icon name="star" class="!block !w-full !h-full p-[22%]"></basil-icon></span>
                 </span>
                 <h3 class="text-sm font-semibold truncate min-w-0">{{ $talentName(talent.talentInfo) }}</h3>
               </div>

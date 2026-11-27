@@ -1,4 +1,7 @@
 <template>
+  <page-heading :heading="'Search Players'">
+    <template #subheading>{{ battletagresponse === null ? $t('Searching for :query...', { query: userinput }) : $t(':results players named :query', { results: battletagresponse.length, query: userinput }) }}</template>
+  </page-heading>
   <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
   <div>
     <table-search v-if="!showNone" :query="userinput" :results="battletagresponse" @select="openProfile" @none="showNone = true"></table-search>

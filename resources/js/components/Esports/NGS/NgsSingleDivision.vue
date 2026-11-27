@@ -117,7 +117,8 @@
       <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
     </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
-    <div v-else-if="isLoading" class="relative max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 flex flex-col gap-8 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
+    <div v-else-if="isLoading">
+    <div class="relative max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 flex flex-col gap-8 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
       <!-- The message sits on a tab of the first card, as on the global pages: lined up with the card past the side padding, the card's top-left corner squared to meet it -->
       <loading-component :compact="true" :tab="true" :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component>
       <panel-box>
@@ -171,40 +172,13 @@
           </panel-box>
         </div>
       </panel-box>
-      <h2 class="text-2xl font-bold">{{ $t('Recent Matches') }}</h2>
-      <!-- The NGS page's recent match rows, in grey -->
-        <panel-box>
-          <div v-for="row in 7" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
-            <div class="flex flex-col gap-2 w-[18.75rem] shrink-0">
-              <skeleton-box class="h-4 w-40"></skeleton-box>
-              <skeleton-box class="h-4 w-32"></skeleton-box>
-              <skeleton-box class="h-3 w-36"></skeleton-box>
-              <skeleton-box class="h-3 w-28"></skeleton-box>
-            </div>
-            <div class="flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-6">
-              <div class="flex flex-row-reverse items-center gap-3">
-                <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
-                <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
-              </div>
-              <div class="flex flex-col items-center gap-2">
-                <skeleton-box class="h-8 w-20 rounded"></skeleton-box>
-                <skeleton-box class="h-3 w-28"></skeleton-box>
-              </div>
-              <div class="flex items-center gap-3">
-                <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
-                <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
-              </div>
-            </div>
-            <div class="flex gap-2 w-[21.25rem] max-w-full shrink-0">
-              <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[9.375rem]">
-                <div v-for="player in 5" :key="player" class="flex items-center gap-1">
-                  <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
-                  <skeleton-box class="h-3 w-24"></skeleton-box>
-                </div>
-              </div>
-            </div>
-          </div>
-        </panel-box>
+      <div class="flex justify-between items-baseline gap-6">
+        <h2 class="text-2xl font-bold">{{ $t('Recent Matches') }}</h2>
+        <span class="whitespace-nowrap skeleton-text">{{ $t('Match History') }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></span>
+      </div>
+    </div>
+    <!-- The NGS page's recent match rows, in grey -->
+    <esports-recent-matches :skeleton="true" :data="[]" :esport="'NGS'" :always-expanded="true" :skeleton-rows="7"></esports-recent-matches>
     </div>
   </div>
 </template>

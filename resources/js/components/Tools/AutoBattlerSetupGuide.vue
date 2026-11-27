@@ -1,5 +1,6 @@
 <template>
-  <!-- Closed it's a small dropdown; open it's the full guide, one tab per system, in four sections -->
+  <!-- Closed it's a small dropdown; open it's the full guide, one tab per system, in four sections. Eases in either way -->
+  <transition name="drop" mode="out-in">
   <button v-if="!open" type="button" class="self-start w-full sm:w-[13rem] h-10 rounded bg-surface-3 hover:bg-surface-4 px-3 flex items-center justify-between gap-2 text-sm" @click="open = true">
     {{ $t('How to set this up') }}
     <basil-icon name="arrow" class="rotate-90 text-xs"></basil-icon>
@@ -52,6 +53,7 @@
       <img :src="'/images/autobattler/' + zoomed" :alt="$t('Screenshot')" class="w-full h-auto max-h-[80vh] object-contain rounded bg-white">
     </modal-box>
   </div>
+  </transition>
 </template>
 
 <script>

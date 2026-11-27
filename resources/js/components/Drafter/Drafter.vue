@@ -437,7 +437,7 @@ export default {
       return slotId.slice(-1);
     },
     // Timeline steps: taken ones are their portrait; picks to come are solid team-coloured chips, bans to come dashed
-    // outlines, and the current step stands out with a ring
+    // outlines, and the current step has a solid border that pulses
     stepClass(index) {
       const slotId = this.pickOrder[index];
       const ours = slotId.startsWith('team1');
@@ -445,11 +445,11 @@ export default {
         return 'rounded-full hover:brightness-125 transition-[filter]';
       }
       const current = index === this.currentPick && !this.draftComplete;
-      const ring = current ? (ours ? 'ring-2 ring-lteal shadow-[0_0_0.75rem_rgba(0,192,192,0.6)]' : 'ring-2 ring-lred shadow-[0_0_0.75rem_rgba(228,74,35,0.6)]') : '';
+      const pulse = ours ? 'border-2 border-lteal draft-pulse-teal' : 'border-2 border-lred draft-pulse-red';
       if (slotId.includes('ban')) {
-        return ['rounded-lg border-[1.5px] border-dashed bg-surface-1', ours ? 'border-teal text-teal' : 'border-lred text-lred', ring];
+        return ['rounded-lg bg-surface-1', ours ? 'text-teal' : 'text-lred', current ? pulse : ['border-[1.5px] border-dashed', ours ? 'border-teal' : 'border-lred']];
       }
-      return ['rounded-lg text-white', ours ? 'bg-teal' : 'bg-red', ring];
+      return ['rounded-lg text-white', ours ? 'bg-teal' : 'bg-red', current ? pulse : ''];
     },
     swapSides() {
       this.firstPickTeam = this.firstPickTeam === 'team1' ? 'team2' : 'team1';

@@ -12,6 +12,7 @@ use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputValidation;
 use App\Rules\SeasonInputValidation;
 use App\Support\GlobalCacheKey;
+use App\Support\TalentBuildAllowance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;

@@ -1,28 +1,29 @@
 <template>
   <!-- A player table is scanned while the search runs, then the matches drop in -->
-  <div :class="picker || embedded ? 'w-full' : 'max-w-[93.75rem] mx-auto w-full px-4 mt-10 pb-10'">
-    <p v-if="phase !== 'searching'" :class="['text-subtext text-sm mb-4', embedded ? '' : 'text-center']">
+  <div :class="standalone ? 'max-w-[120rem] mx-auto w-full px-4 md:px-8 pb-10' : 'w-full'">
+    <p v-if="phase !== 'searching' && !standalone" :class="['text-subtext text-sm mb-4', embedded ? '' : 'text-center']">
       <template v-if="phase === 'choose'">{{ $t(':results players named :query. Pick one.', { results: results.length, query: query }) }}</template>
       <template v-else-if="phase === 'picked'">{{ picker ? $t('Player chosen') : $t('Opening profile...') }}</template>
     </p>
 
     <!-- In a card like the site's other tables. While searching the message sits on a tab of the card, as on the
          profile's skeleton, and the space the results line will take is kept above it so nothing moves -->
-    <!-- Embedded: inside the page's own card, so a plain block takes the card's place -->
-    <component :is="embedded ? 'div' : 'panel-box'" :class="['relative', { 'md:mt-9 md:!rounded-tl-none': phase === 'searching' && !embedded, 'mt-9': phase === 'searching' && embedded }]">
+    <!-- Embedded: inside the page's own card, so a plain block takes the card's place. On its own page the card
+         carries the title and the results line, as the Figma Search Players frame -->
+    <component :is="embedded ? 'div' : 'panel-box'" v-bind="standalone ? { title: 'Pick a player', subtitle: statusText, divider: false } : {}" :class="['relative', { 'md:mt-9 md:!rounded-tl-none': phase === 'searching' && !embedded, 'mt-9': phase === 'searching' && embedded }]">
     <!-- Embedded, the table starts right at the top with no padding for the tab to overlap, so the tab sits fully above it -->
     <loading-component v-if="phase === 'searching'" :class="{ 'md:!bottom-full': embedded }" :compact="true" :tab="true" :textoverride="true" :overrideimage="loaderImage">{{ $t('Searching for :query...', { query: query }) }}</loading-component>
     <div class="relative overflow-clip">
       <table class="min-w-0 w-full rounded-table relative">
         <thead>
           <tr>
-            <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Player') }}</th>
-            <th v-if="showRegion" class="py-2 px-3 text-center text-sm leading-4">{{ $t('Region') }}</th>
+            <th :class="['py-2 px-3 text-left text-sm leading-4', { 'w-[41%]': standalone }]">{{ $t('Player') }}</th>
+            <th v-if="showRegion" :class="['py-2 px-3 text-center text-sm leading-4', { 'w-[11%]': standalone }]">{{ $t('Region') }}</th>
             <th v-if="showTogether" class="py-2 px-3 text-center text-sm leading-4">{{ $t('Games Together') }}</th>
             <template v-if="!namesOnly">
-            <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Games Played') }}</th>
+            <th :class="['py-2 px-3 text-center text-sm leading-4', { 'w-[13%]': standalone }]">{{ $t('Games Played') }}</th>
             <!-- Phones have no room for the latest game; the popup picker drops the latest hero too -->
-            <th :class="['py-2 px-3 text-left text-sm leading-4', { 'max-md:hidden': picker }]">{{ $t('Latest Hero') }}</th>
+            <th :class="['py-2 px-3 text-left text-sm leading-4', { 'max-md:hidden': picker, 'w-[19%]': standalone }]">{{ $t('Latest Hero') }}</th>
             <th class="py-2 px-3 text-center text-sm leading-4 max-md:hidden">{{ $t('Latest Game') }}</th>
             </template>
           </tr>
@@ -30,7 +31,7 @@
 
         <tbody v-if="phase === 'searching'" class="text-center">
           <tr v-for="row in SKELETON_ROWS" :key="row">
-            <td><skeleton-box class="w-32 h-4 mx-auto"></skeleton-box></td>
+            <td><skeleton-box class="w-32 h-4"></skeleton-box></td>
             <td v-if="showRegion"><skeleton-box class="w-12 h-4 mx-auto"></skeleton-box></td>
             <td v-if="showTogether"><skeleton-box class="w-12 h-4 mx-auto"></skeleton-box></td>
             <template v-if="!namesOnly">
@@ -48,16 +49,16 @@
             :class="['cursor-pointer transition-opacity duration-300', picked !== null && picked !== index ? 'opacity-0 pointer-events-none' : '']"
             @click="pick(index)"
           >
-            <td>
-              <a class="inline-flex items-center link-row" :href="profileUrl(item)" @click.prevent.stop="pick(index)">{{ item.battletagShort }}</a>
+            <td class="text-left">
+              <a class="inline-flex items-center link-row font-semibold" :href="profileUrl(item)" @click.prevent.stop="pick(index)">{{ item.battletagShort }}</a>
             </td>
-            <td v-if="showRegion">{{ item.regionName }}</td>
+            <td v-if="showRegion" class="text-subtext">{{ item.regionName }}</td>
             <td v-if="showTogether" class="font-semibold text-lteal">{{ Number(item.gamesTogether || 0).toLocaleString('en-US') }}</td>
             <template v-if="!namesOnly">
-            <td>{{ Number(item.totalGamesPlayed).toLocaleString('en-US') }}</td>
+            <td class="text-subtext">{{ Number(item.totalGamesPlayed).toLocaleString('en-US') }}</td>
             <!-- As in the Global Hero Stats table: portrait and name, left-aligned -->
             <td :class="['py-2 px-3', { 'max-md:hidden': picker }]"><div v-if="item.latestHero" class="flex items-center justify-start"><hero-image-wrapper class="mr-3" :hero="item.latestHero"></hero-image-wrapper><span class="hidden md:block font-medium">{{ $heroName(item.latestHero) }}</span></div></td>
-            <td class="max-md:hidden">
+            <td class="max-md:hidden text-subtext">
               <a v-if="item.latestReplayID" class="inline-flex items-center link-row" :href="matchUrl(item)" target="_blank" rel="noopener" @click.stop>{{ $formatDate(item.latest_game, { dateStyle: 'short', timeStyle: 'short' }) }}</a>
               <template v-else>{{ $formatDate(item.latest_game, { dateStyle: 'short', timeStyle: 'short' }) }}</template>
             </td>
@@ -117,6 +118,18 @@ export default {
     },
   },
   emits: ['select', 'none'],
+  computed: {
+    // Its own page (the battletag search), not a popup picker or inside another card
+    standalone() {
+      return !this.picker && !this.embedded;
+    },
+    statusText() {
+      if (this.phase === 'searching') {
+        return this.$t('Searching for :query...', { query: this.query });
+      }
+      return this.phase === 'choose' ? this.$t(':results players named :query. Pick one.', { results: this.results.length, query: this.query }) : this.$t('Opening profile...');
+    },
+  },
   data() {
     return {
       SKELETON_ROWS: 6,

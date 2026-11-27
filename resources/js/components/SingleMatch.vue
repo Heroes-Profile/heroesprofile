@@ -298,7 +298,7 @@
       </div>
     </div>
     <!-- The page's layout with grey blocks while it loads -->
-    <match-skeleton v-else-if="isLoading" :overrideimage="esport ? getLoadingImage() : undefined"></match-skeleton>
+    <match-skeleton v-else-if="isLoading" :overrideimage="esport ? getLoadingImage() : undefined" :esport="!!esport"></match-skeleton>
   </div>
 </template>
 

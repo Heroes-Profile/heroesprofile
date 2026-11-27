@@ -46,8 +46,8 @@
             <single-select-filter :compact="true" :key="'enemyally-' + (enemyally ? enemyally.id : '')" :values="secondHeroInputs" :text="'Matchup hero'" @input-changed="allyenemychanged" :defaultValue="enemyally ? enemyally.id : null"></single-select-filter>
             <hero-image-wrapper v-if="hero && hero.short_name" class="self-stretch xl:[&>div]:!h-full" :rectangle="true" size="large" :hero="hero" :excludehover="true"></hero-image-wrapper>
             <span v-else></span>
-            <!-- Swaps the two heroes, so the other one's talents are listed -->
-            <button type="button" @click="swapHeroes" :title="$t('Swap heroes')" class="self-center shrink-0 w-14 h-14 rounded-full bg-surface-3 hover:bg-surface-4 hover:text-white transition-colors flex items-center justify-center text-lg font-bold text-subtext">{{ vsorwith }}</button>
+            <!-- Swaps the two heroes, so the other one's talents are listed; off until one is picked, and while a matchup loads -->
+            <button type="button" @click="swapHeroes" :disabled="!canSwap" :title="heroPicked ? $t('Swap heroes') : $t('Pick a hero first')" :class="['self-center shrink-0 w-14 h-14 rounded-full bg-surface-3 transition-colors flex items-center justify-center text-lg font-bold text-subtext', canSwap ? 'hover:bg-surface-4 hover:text-white' : 'opacity-50 cursor-not-allowed']">{{ vsorwith }}</button>
             <hero-image-wrapper v-if="enemyally && enemyally.short_name" class="self-stretch xl:[&>div]:!h-full" :rectangle="true" size="large" :hero="enemyally" :excludehover="true"></hero-image-wrapper>
             <span v-else></span>
           </div>
@@ -73,7 +73,7 @@
             <single-select-filter :key="'hero-' + (hero ? hero.id : '')" :values="firstHeroInputs" :text="'Hero'" @input-changed="herochanged" :defaultValue="hero.id"></single-select-filter>
           </div>
           <!-- Phones: between the two heroes, centred under them -->
-          <span class="max-md:col-start-1 max-md:flex max-md:justify-center"><button type="button" @click="swapHeroes" :title="$t('Swap heroes')" class="shrink-0 w-10 h-10 rounded-full bg-surface-3 hover:bg-surface-4 hover:text-white transition-colors flex items-center justify-center text-sm font-bold text-subtext">{{ vsorwith }}</button></span>
+          <span class="max-md:col-start-1 max-md:flex max-md:justify-center"><button type="button" @click="swapHeroes" :disabled="!canSwap" :title="$t('Swap heroes')" :class="['shrink-0 w-10 h-10 rounded-full bg-surface-3 transition-colors flex items-center justify-center text-sm font-bold text-subtext', canSwap ? 'hover:bg-surface-4 hover:text-white' : 'opacity-50 cursor-not-allowed']">{{ vsorwith }}</button></span>
           <div class="flex items-center gap-3 max-md:col-start-1">
             <hero-image-wrapper :hero="enemyally" size="medium" :excludehover="true"></hero-image-wrapper>
             <single-select-filter :key="'enemyally-' + (enemyally ? enemyally.id : '')" :values="secondHeroInputs" :text="'Matchup hero'" @input-changed="allyenemychanged" :defaultValue="enemyally.id"></single-select-filter>
@@ -228,6 +228,14 @@
         return this.type === 'Ally'
           ? this.$t('Win rate, popularity and games for every :hero talent in games with :other on the same team. The best win rate on each tier is highlighted.', { hero, other })
           : this.$t('Win rate, popularity and games for every :hero talent in games against :other. The best win rate on each tier is highlighted.', { hero, other });
+      },
+      // Either slot holds a real hero rather than the Auto Select placeholder
+      heroPicked() {
+        return [this.hero, this.enemyally].some(hero => hero && hero.name != "Auto Select");
+      },
+      // Not while a matchup loads, nor with nothing to swap
+      canSwap() {
+        return this.heroPicked && !this.isLoading;
       },
       shouldFilterData(){
         if((this.hero && this.hero.name != "Auto Select") && (this.enemyally && this.enemyally.name != "Auto Select")){

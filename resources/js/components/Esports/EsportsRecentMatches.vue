@@ -8,9 +8,15 @@
       <pagination-bar v-if="last > 1" :current="current" :last="last" @page="$emit('page', $event)"></pagination-bar>
     </div>
 
-    <panel-box v-if="expanded" :title="title" :subtitle="subtitle" :divider="false">
+    <panel-box v-if="expanded" :title="title" :subtitle="subtitle" :divider="false" :skeleton="skeleton" :class="{ 'relative md:!rounded-tl-none': skeleton && title }">
+      <loading-component v-if="skeleton && title" :compact="true" :tab="true" :overrideimage="loaderImage"></loading-component>
       <template v-if="title" #right>
-        <div class="ml-auto flex flex-wrap items-center gap-4">
+        <!-- Loading: the toggle and page numbers as grey blocks their size -->
+        <div v-if="skeleton" class="ml-auto flex flex-wrap items-center gap-4">
+          <span v-if="!alwaysExpanded" class="relative"><tab-button class="invisible" aria-hidden="true" :small="true" :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true"></tab-button><skeleton-box class="absolute inset-0 rounded"></skeleton-box></span>
+          <span v-if="!alwaysExpanded" class="relative"><pagination-bar class="invisible" aria-hidden="true" :current="1" :last="66"></pagination-bar><skeleton-box class="absolute inset-0 rounded"></skeleton-box></span>
+        </div>
+        <div v-else class="ml-auto flex flex-wrap items-center gap-4">
           <tab-button v-if="!alwaysExpanded" :small="true" :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="expanded ? 'right' : 'left'"></tab-button>
           <pagination-bar v-if="last > 1" :current="current" :last="last" @page="$emit('page', $event)"></pagination-bar>
         </div>
@@ -21,6 +27,39 @@
         <span class="w-[22.625rem] shrink-0 px-4">{{ $t('Players') }}</span>
       </div>
 
+      <!-- Loading: the rows' own layout with grey text -->
+      <template v-if="skeleton">
+        <div v-for="row in skeletonRows" :key="row" class="relative mb-1.5">
+          <div :class="['relative flex flex-wrap items-center justify-between gap-y-4 rounded overflow-hidden 2xl:flex-nowrap', row % 2 ? 'bg-surface-1' : 'bg-surface-2']">
+            <div class="relative flex-1 max-md:basis-full md:max-w-[25.625rem] min-w-[18.75rem] self-stretch flex items-center max-md:justify-center pl-6 py-4">
+              <div class="absolute inset-y-0 left-0 w-1.5 bg-surface-3"></div>
+              <div class="relative flex flex-col items-start gap-1.5 whitespace-nowrap">
+                <span class="font-bold skeleton-text">Cursed Hollow</span>
+                <span class="text-base font-medium skeleton-text">Game 1 · Round 1</span>
+                <span class="text-xs skeleton-text">Season 00 · Division</span>
+                <span class="text-xs skeleton-text">00/00/0000 00:00</span>
+                <span class="text-sm skeleton-text">Match ID 00000</span>
+              </div>
+            </div>
+            <div class="relative flex-1 max-md:basis-full grid grid-cols-[1fr_auto_1fr] items-center gap-3 md:gap-6 px-4 py-4 min-w-0">
+              <div v-for="position in [0, 1]" :key="position" :class="['flex max-md:flex-col items-center gap-3 min-w-0 row-start-1', position === 0 ? 'md:flex-row-reverse col-start-1' : 'col-start-3']">
+                <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
+                <span class="text-base md:text-xl font-semibold leading-tight skeleton-text">Team name</span>
+              </div>
+              <div class="col-start-2 row-start-1 flex flex-col items-center">
+                <span class="text-3xl font-semibold whitespace-nowrap skeleton-text">0 – 0</span>
+                <span class="text-xs whitespace-nowrap skeleton-text">{{ $t('Series after game :game', { game: 1 }) }}</span>
+              </div>
+            </div>
+            <div class="relative flex items-center gap-4 max-md:justify-center 2xl:border-l border-gray-dark pl-4 2xl:pl-6 pr-4 py-4 w-full 2xl:w-[22.625rem] shrink-0">
+              <div v-for="position in [0, 1]" :key="position" class="flex flex-col items-start gap-0.5 w-[8.5rem] min-w-0">
+                <span class="w-6 h-[3px] mb-1 rounded-full bg-surface-3"></span>
+                <span v-for="player in 5" :key="player" class="text-sm skeleton-text">Player name</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
       <div v-for="row in data" :key="row.replayID" class="group/replay relative mb-1.5">
         <div class="group/row relative flex flex-wrap items-center justify-between gap-y-4 rounded overflow-hidden 2xl:flex-nowrap group-odd/replay:bg-surface-1 group-even/replay:bg-surface-2">
           <div class="absolute inset-0 pointer-events-none group-hover/row:bg-white/10"></div>
@@ -73,9 +112,15 @@
     </panel-box>
 
     <!-- One line per game, like the match history's compact rows -->
-    <panel-box v-else :title="title" :subtitle="subtitle" :divider="false">
+    <panel-box v-else :title="title" :subtitle="subtitle" :divider="false" :skeleton="skeleton" :class="{ 'relative md:!rounded-tl-none': skeleton && title }">
+      <loading-component v-if="skeleton && title" :compact="true" :tab="true" :overrideimage="loaderImage"></loading-component>
       <template v-if="title" #right>
-        <div class="ml-auto flex flex-wrap items-center gap-4">
+        <!-- Loading: the toggle and page numbers as grey blocks their size -->
+        <div v-if="skeleton" class="ml-auto flex flex-wrap items-center gap-4">
+          <span v-if="!alwaysExpanded" class="relative"><tab-button class="invisible" aria-hidden="true" :small="true" :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true"></tab-button><skeleton-box class="absolute inset-0 rounded"></skeleton-box></span>
+          <span v-if="!alwaysExpanded" class="relative"><pagination-bar class="invisible" aria-hidden="true" :current="1" :last="66"></pagination-bar><skeleton-box class="absolute inset-0 rounded"></skeleton-box></span>
+        </div>
+        <div v-else class="ml-auto flex flex-wrap items-center gap-4">
           <tab-button v-if="!alwaysExpanded" :small="true" :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="expanded ? 'right' : 'left'"></tab-button>
           <pagination-bar v-if="last > 1" :current="current" :last="last" @page="$emit('page', $event)"></pagination-bar>
         </div>
@@ -89,6 +134,25 @@
             <span class="w-[35rem] shrink-0 px-4">{{ $t('Teams') }}</span>
             <span class="w-[15rem] shrink-0 px-4">{{ $t('Series') }}</span>
           </div>
+          <!-- Loading: the compact rows' own layout with grey text -->
+          <template v-if="skeleton">
+            <div v-for="row in skeletonRows" :key="row" :class="['max-md:hidden flex items-center justify-between rounded overflow-hidden mb-1', row % 2 ? 'bg-surface-1' : 'bg-surface-2']">
+              <div class="relative w-[20rem] shrink-0 self-stretch flex items-center pl-5 py-2.5">
+                <div class="absolute inset-y-0 left-0 w-1.5 bg-surface-3"></div>
+                <div class="relative flex flex-col items-start whitespace-nowrap">
+                  <span class="font-bold skeleton-text">Cursed Hollow</span>
+                  <span class="text-xs skeleton-text">00/00/0000 00:00</span>
+                  <span class="text-xs skeleton-text">Season 00 · Division</span>
+                </div>
+              </div>
+              <span class="w-[11.25rem] shrink-0 px-4 font-medium"><span class="skeleton-text">Game 1 · Round 1</span></span>
+              <span class="w-[10rem] shrink-0 px-4"><span class="skeleton-text">00000</span></span>
+              <div class="w-[35rem] shrink-0 px-4 flex items-center gap-4">
+                <span v-for="position in 2" :key="position" class="flex items-center gap-2 min-w-0"><skeleton-box class="w-6 h-6 shrink-0 !rounded-full"></skeleton-box><span class="font-medium skeleton-text">Team name</span></span>
+              </div>
+              <span class="w-[15rem] shrink-0 px-4 text-sm"><span class="skeleton-text">0 – 0 after game 1</span></span>
+            </div>
+          </template>
           <template v-for="(row, index) in data" :key="row.replayID">
             <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="matchUrl(row)" :title="row.game_map ? $mapName(row.game_map) : ''" :date="formatRowDate(row.game_date)" :map-art="row.game_map ? row.game_map.sanitized_map_name : null">
               {{ teamName(row, sidesOf(row)[0]) }} <span class="text-white font-medium">{{ seriesScore(row, sidesOf(row)[0]) }} – {{ seriesScore(row, sidesOf(row)[1]) }}</span> {{ $t(':teamname · Game :game · Round :round', { teamname: teamName(row, sidesOf(row)[1]), game: row.game, round: row.round }) }}
@@ -149,6 +213,11 @@ export default {
     tournament: String,
     // A short list on another page: always Expanded, without the toggle
     alwaysExpanded: Boolean,
+
+    // Loading: the card with grey rows in the saved layout, the loading message on its tab
+    skeleton: Boolean,
+    skeletonRows: { type: Number, default: 8 },
+    loaderImage: String,
 
     // A card title and subtitle (the NGS tab); the toggle and page numbers then sit in its header
     title: String,

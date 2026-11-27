@@ -168,44 +168,94 @@
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
       <panel-box :divider="false" class="!gap-6 relative md:!rounded-tl-none">
         <loading-component :compact="true" :tab="true" :overrideimage="league.loaderImage"></loading-component>
+        <!-- The player card's own blocks with grey text, so each is its loaded size -->
         <div class="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1fr)] gap-6 items-center">
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-4 min-w-0">
             <skeleton-box class="w-20 h-20 shrink-0 !rounded-full"></skeleton-box>
-            <div class="flex flex-col gap-2 min-w-0">
+            <div class="flex flex-col min-w-0">
               <h2 class="text-3xl font-bold truncate">{{ battletag }}</h2>
-              <skeleton-box class="h-4 w-48"></skeleton-box>
+              <span class="text-sm truncate"><span class="skeleton-text">Nexus Gaming Series · Team name</span></span>
             </div>
           </div>
-          <skeleton-box class="h-[5.25rem] rounded-control"></skeleton-box>
-          <skeleton-box class="h-[5.25rem] rounded-control"></skeleton-box>
+          <div class="flex flex-col gap-2 rounded bg-surface-1 px-4 py-3">
+            <div class="flex justify-between gap-4 text-sm"><span class="skeleton-text">{{ $t('Win Rate') }}</span><span class="skeleton-text">00 W · 00 L</span></div>
+            <div class="flex items-center gap-4">
+              <span class="text-3xl font-bold skeleton-text">00.00%</span>
+              <stat-bar class="flex-1" value="0" display-text="" :hide-value="true"></stat-bar>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2 min-w-0">
+            <div class="text-sm"><span class="skeleton-text">{{ $t('Teams played for') }}</span></div>
+            <div class="flex items-center gap-3 rounded bg-surface-1 px-3 py-2">
+              <skeleton-box class="w-10 h-10 shrink-0 !rounded-full"></skeleton-box>
+              <div class="flex flex-col min-w-0 flex-1">
+                <span class="font-semibold"><span class="skeleton-text">Team name</span></span>
+                <span class="text-xs"><span class="skeleton-text">Season 00 · Division A</span></span>
+              </div>
+              <div class="flex flex-col items-end shrink-0 text-sm">
+                <span class="font-semibold skeleton-text">00.00%</span>
+                <span class="text-xs skeleton-text">00 games</span>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-2">
-          <skeleton-box v-for="stat in 8" :key="stat" class="h-[4.25rem] rounded-control"></skeleton-box>
+          <div v-for="stat in 8" :key="stat" class="flex flex-col rounded bg-surface-1 px-3 py-2.5 min-w-0">
+            <span class="text-xs"><span class="skeleton-text">Takedowns</span></span>
+            <span class="text-lg font-bold"><span class="skeleton-text">0,000</span></span>
+          </div>
         </div>
       </panel-box>
       <div class="grid xl:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-6">
         <panel-box :title="$t('Win rate by role')" link-text="All roles" :skeleton="true" :divider="false">
-          <div v-for="role in 3" :key="role" class="flex flex-col gap-1.5">
-            <skeleton-box class="h-4 w-40"></skeleton-box>
-            <stat-bar value="0.00" display-text=""></stat-bar>
+          <div class="flex flex-col gap-3">
+            <div v-for="role in 3" :key="role" class="flex flex-col gap-1.5">
+              <div class="flex justify-between gap-4 text-sm"><span class="skeleton-text">Ranged Assassin · 00 games</span><span class="font-semibold skeleton-text">00.00%</span></div>
+              <stat-bar value="0" display-text="" :hide-value="true"></stat-bar>
+            </div>
           </div>
         </panel-box>
         <panel-box :title="$t('Heroes played against')" :skeleton="true" :divider="false">
-          <div v-for="label in ['Most wins against', 'Most losses against']" :key="label" class="flex flex-col gap-2">
-            <h4 class="text-sm"><span class="skeleton-text">{{ $t(label) }}</span></h4>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
-              <skeleton-box v-for="tile in 5" :key="tile" class="h-14 rounded"></skeleton-box>
+          <div class="flex flex-col gap-4">
+            <div v-for="label in ['Most wins against', 'Most losses against']" :key="label" class="flex flex-col gap-2">
+              <h4 class="text-sm"><span class="skeleton-text">{{ $t(label) }}</span></h4>
+              <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+                <div v-for="tile in 5" :key="tile" class="flex items-center gap-2 rounded bg-surface-1 px-2 py-2 min-w-0">
+                  <skeleton-box class="w-10 h-10 shrink-0 !rounded-full"></skeleton-box>
+                  <div class="flex flex-col min-w-0">
+                    <span class="text-sm font-semibold"><span class="skeleton-text">Samuro</span></span>
+                    <span class="text-xs"><span class="skeleton-text">0 W</span></span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </panel-box>
       </div>
       <panel-box :title="$t('Heroes')" link-text="All Heroes" :skeleton="true" :divider="false">
-        <table-skeleton :bare="true" :rows="6" :columns="['hero', 'stat', 'stat', 'stat']"></table-skeleton>
+        <table class="w-full rounded-table">
+          <thead>
+            <tr>
+              <th class="py-2 px-3 text-left text-sm leading-4">{{ $t('Hero') }}</th>
+              <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Win Rate') }}</th>
+              <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Games') }}</th>
+              <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Record') }}</th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+            <tr v-for="row in 6" :key="row">
+              <td class="py-2 px-3 text-left"><span class="inline-flex items-center gap-2"><skeleton-box class="w-7 h-7 shrink-0 !rounded-full"></skeleton-box><span class="font-semibold skeleton-text">Samuro</span></span></td>
+              <td class="font-semibold"><span class="skeleton-text">00.00%</span></td>
+              <td><span class="skeleton-text">00</span></td>
+              <td><span class="skeleton-text">0 W · 0 L</span></td>
+            </tr>
+          </tbody>
+        </table>
       </panel-box>
 
       <panel-box :title="$t('Recent matches')" link-text="Match History" :skeleton="true" :divider="false">
         <div>
-          <game-summary-skeleton v-for="index in 7" :key="index"></game-summary-skeleton>
+          <game-summary-skeleton v-for="index in 7" :key="index" :esport="true" :hide-players="true"></game-summary-skeleton>
         </div>
       </panel-box>
     </div>

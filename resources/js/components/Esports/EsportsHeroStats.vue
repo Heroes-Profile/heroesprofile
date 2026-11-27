@@ -30,7 +30,7 @@
       <tbody class="text-center">
         <tr v-for="(row, index) in sortedData" :key="index">
           <!-- Hero names left-aligned, as on the global tier list -->
-          <td class="py-2 px-3"><div class="flex items-center"><hero-image-wrapper :hero="row.hero" :includehover="false"></hero-image-wrapper><span class="hidden md:block ml-2 font-semibold">{{ $heroName(row.hero) }}</span></div></td>
+          <td class="py-2 px-3"><div class="flex items-center"><hero-image-wrapper :hero="row.hero" :includehover="false"></hero-image-wrapper><span class="hidden md:block ml-3 font-medium">{{ $heroName(row.hero) }}</span></div></td>
           <td>
             <!-- A low sample's win rate is greyed; the header says why -->
             <span :class="['font-semibold', row.games_played < lowSampleGames ? 'text-subtext' : row.win_rate >= 50 ? 'text-teal' : '']">{{ row.win_rate.toFixed(2) }}%</span>

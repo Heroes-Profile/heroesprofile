@@ -55,49 +55,8 @@
     <div v-if="loadError && !isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
       <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
     </div>
-    <!-- The recent matches card in grey; the message sits on a tab of the card -->
-    <div v-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
-      <!-- Recent Matches: the titled card, the toggle and page numbers in its header, the expanded rows -->
-      <panel-box title="Recent matches" :subtitle="$t('All tournaments · newest first')" :skeleton="true" :divider="false" class="relative md:!rounded-tl-none">
-        <loading-component :compact="true" :tab="true"></loading-component>
-        <template #right>
-          <div class="ml-auto flex flex-wrap items-center gap-4">
-            <skeleton-box class="w-[10rem] h-9 rounded"></skeleton-box>
-            <skeleton-box class="w-[17.75rem] h-[2.75rem] rounded"></skeleton-box>
-          </div>
-        </template>
-        <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
-          <div class="flex flex-col gap-2 w-[18.75rem] shrink-0">
-            <skeleton-box class="h-4 w-40"></skeleton-box>
-            <skeleton-box class="h-4 w-32"></skeleton-box>
-            <skeleton-box class="h-3 w-36"></skeleton-box>
-            <skeleton-box class="h-3 w-28"></skeleton-box>
-          </div>
-          <div class="flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-6">
-            <div class="flex flex-row-reverse items-center gap-3">
-              <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
-              <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
-            </div>
-            <div class="flex flex-col items-center gap-2">
-              <skeleton-box class="h-8 w-20 rounded"></skeleton-box>
-              <skeleton-box class="h-3 w-28"></skeleton-box>
-            </div>
-            <div class="flex items-center gap-3">
-              <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
-              <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
-            </div>
-          </div>
-          <div class="flex gap-2 w-[21.25rem] max-w-full shrink-0">
-            <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[9.375rem]">
-              <div v-for="player in 5" :key="player" class="flex items-center gap-1">
-                <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
-                <skeleton-box class="h-3 w-24"></skeleton-box>
-              </div>
-            </div>
-          </div>
-        </div>
-      </panel-box>
-    </div>
+    <!-- The recent matches card in grey, in the list's own layout; the message sits on a tab of the card -->
+    <esports-recent-matches v-if="isLoading" :skeleton="true" :data="[]" :esport="'Other'" :title="$t('Recent matches')" :subtitle="$t('All tournaments · newest first')"></esports-recent-matches>
   </div>
 </template>
 

@@ -117,7 +117,29 @@
           <skeleton-box class="absolute inset-0"></skeleton-box>
         </div>
       </template>
-      <table-skeleton :bare="true" :rows="6" :columns="['portrait', 'bar', 'stat', 'text', 'text', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat']" :mobile-columns="['portrait', 'bar', 'stat', 'stat']"></table-skeleton>
+      <!-- The real table with grey cells: always the six roles, at the role icons' size -->
+      <table class="min-w-0 w-full rounded-table relative">
+        <thead>
+          <tr>
+            <th class="py-2 px-3 text-left text-sm leading-4">{{ $t('Role') }}</th>
+            <th class="py-2 px-3 text-left text-sm leading-4">{{ $t('Win Rate') }}</th>
+            <th v-if="showGames" class="py-2 px-3 text-center text-sm leading-4">{{ $t('Total Games') }}</th>
+            <th class="max-md:hidden py-2 px-3 text-left text-sm leading-4">{{ $t('KDA') }}</th>
+            <th class="max-md:hidden py-2 px-3 text-left text-sm leading-4">{{ $t('KDR') }}</th>
+            <th v-for="stat in shownStats" :key="stat.value" class="py-2 px-3 text-center text-sm leading-4">{{ $t(stat.name) }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="role in ['Bruiser', 'Healer', 'Melee Assassin', 'Ranged Assassin', 'Support', 'Tank']" :key="role">
+            <td class="py-2 px-3"><role-box class="skeleton-text" :role="role"></role-box></td>
+            <td class="py-2 px-3"><div class="min-w-[8em]"><div class="text-sm font-semibold mb-1.5"><span class="skeleton-text">00.00%</span></div><stat-bar value="0" display-text="" :hide-value="true"></stat-bar></div></td>
+            <td v-if="showGames" class="py-2 px-3 text-center"><span class="skeleton-text">000</span></td>
+            <td class="max-md:hidden py-2 px-3"><span class="skeleton-text">0.00</span></td>
+            <td class="max-md:hidden py-2 px-3"><span class="skeleton-text">0.00</span></td>
+            <td v-for="stat in shownStats" :key="stat.value" class="py-2 px-3 text-center"><span class="skeleton-text">00,000</span></td>
+          </tr>
+        </tbody>
+      </table>
     </panel-box>
   </div>
   <match-lookup v-if="matchIsLoading" :text="matchLookupText"></match-lookup>

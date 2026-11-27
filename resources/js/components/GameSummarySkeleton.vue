@@ -39,7 +39,12 @@
       <div class="absolute inset-y-0 left-0 w-1.5 bg-surface-3"></div>
       <div class="flex items-center gap-4">
         <skeleton-box class="w-[5.125rem] h-[5.125rem] shrink-0 !rounded-full"></skeleton-box>
-        <div class="flex flex-col gap-2">
+        <!-- Esports rows: the map, then game, round and length on one line -->
+        <div v-if="esport" class="flex flex-col gap-2">
+          <skeleton-box class="w-36 h-4"></skeleton-box>
+          <skeleton-box class="w-44 h-4"></skeleton-box>
+        </div>
+        <div v-else class="flex flex-col gap-2">
           <skeleton-box class="w-36 h-4"></skeleton-box>
           <skeleton-box class="w-20 h-4"></skeleton-box>
           <skeleton-box class="w-24 h-3"></skeleton-box>
@@ -48,7 +53,12 @@
       </div>
     </div>
 
-    <div class="flex gap-5 items-center px-4 w-full 2xl:w-[26.875rem] shrink-0">
+    <!-- Esports: the Win/Loss tag and the team they played -->
+    <div v-if="esport" class="flex flex-col gap-1.5 justify-center items-start px-4 w-full 2xl:w-[26.875rem] shrink-0">
+      <skeleton-box class="w-10 h-4"></skeleton-box>
+      <skeleton-box class="w-40 h-4"></skeleton-box>
+    </div>
+    <div v-else class="flex gap-5 items-center px-4 w-full 2xl:w-[26.875rem] shrink-0">
       <div v-for="stat in 3" :key="stat" class="flex flex-col gap-2 flex-1 min-w-0 2xl:flex-none 2xl:w-[7.375rem]">
         <skeleton-box class="w-20 h-4"></skeleton-box>
         <skeleton-box class="w-16 h-6"></skeleton-box>
@@ -65,7 +75,7 @@
       <skeleton-box v-for="talent in 7" :key="talent" class="w-[2.625rem] h-[2.625rem] shrink-0 !rounded"></skeleton-box>
     </div>
 
-    <div class="flex gap-2 pl-4 2xl:pl-1.5 pr-12 py-4 w-full 2xl:w-[22.625rem] shrink-0">
+    <div v-if="!hidePlayers" class="flex gap-2 pl-4 2xl:pl-1.5 pr-12 py-4 w-full 2xl:w-[22.625rem] shrink-0">
       <div v-for="team in 2" :key="team" class="flex flex-col gap-1.5 w-[9.375rem]">
         <div v-for="player in 5" :key="player" class="flex gap-1 h-4 items-center">
           <!-- Party icon and line slot, then hero icon and name -->
@@ -83,6 +93,9 @@ export default {
   name: 'GameSummarySkeleton',
   props: {
     compact: Boolean,
+    // As game-summary-box's: an esports row, and one without the two teams' players
+    esport: Boolean,
+    hidePlayers: Boolean,
   },
 };
 </script>

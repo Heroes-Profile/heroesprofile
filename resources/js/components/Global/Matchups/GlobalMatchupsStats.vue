@@ -155,13 +155,55 @@
                 <skeleton-box class="w-20 h-20 !rounded-full"></skeleton-box>
                 <span class="text-sm font-bold mt-1.5 skeleton-text">Samuro</span>
                 <span class="text-xl font-bold mt-1.5 skeleton-text">00.00%</span>
+                <span class="text-xs mt-0.5 skeleton-text">+0.00 vs expected</span>
                 <span class="text-xs mt-1.5 skeleton-text">000 games together</span>
               </div>
             </div>
           </panel-box>
         </div>
         <panel-box :title="$t(':hero matchups', { hero: $heroName(selectedHero) })" :subtitle="$t(':hero\'s win rate with and against each hero · in brackets, how that compares with what the other hero\'s own win rate would lead you to expect', { hero: $heroName(selectedHero) })" :divider="false" :skeleton="true">
-          <table-skeleton :bare="true" :rows="15" :columns="['hero', 'stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
+          <!-- The real table's With them / Against them row and columns, with grey cells -->
+          <div class="grid grid-cols-[30%_35%_35%] max-md:text-xs">
+            <div></div>
+            <div class="py-3 px-1 md:px-3 text-center bg-teal/[0.18] rounded-tl-control">
+              <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide text-teal">{{ $t('With them · Same team as :hero', { hero: $heroName(selectedHero) }) }}</span>
+              <span class="block text-xs text-subtext mt-1">{{ $t(':hero\'s win rate with this hero', { hero: $heroName(selectedHero) }) }}</span>
+            </div>
+            <div class="py-3 px-1 md:px-3 text-center bg-red/[0.18] rounded-tr-control">
+              <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide text-red">{{ $t('Against them · Enemy team', { hero: $heroName(selectedHero) }) }}</span>
+              <span class="block text-xs text-subtext mt-1">{{ $t(':hero\'s win rate against this hero', { hero: $heroName(selectedHero) }) }}</span>
+            </div>
+          </div>
+          <table class="min-w-0 w-full rounded-table table-fixed max-md:text-xs">
+            <colgroup>
+              <col class="w-[18%]">
+              <col class="w-[12%]">
+              <col class="w-[22%]">
+              <col class="w-[13%]">
+              <col class="w-[22%]">
+              <col class="w-[13%]">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="py-2 px-2 md:px-6 text-left text-xs md:text-sm leading-4">{{ $t('Hero') }}</th>
+                <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4"><span class="md:hidden">{{ $t('Their WR') }}</span><span class="max-md:hidden">{{ $t('Their win rate') }}</span></th>
+                <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4"><span class="md:hidden">{{ $t('WR with') }}</span><span class="max-md:hidden">{{ $t('Win rate with') }}</span></th>
+                <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4">{{ $t('Games with') }}</th>
+                <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4"><span class="md:hidden">{{ $t('WR against') }}</span><span class="max-md:hidden">{{ $t('Win rate against') }}</span></th>
+                <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4">{{ $t('Games against') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in 15" :key="row">
+                <td class="py-2.5 px-2 md:px-6"><span class="inline-flex items-center"><skeleton-box class="w-10 h-10 shrink-0 !rounded-full"></skeleton-box><span class="hidden md:block ml-3 font-medium skeleton-text">Samuro</span></span></td>
+                <td class="py-2.5 px-1 md:px-3 text-center"><span class="skeleton-text">00.00%</span></td>
+                <template v-for="side in 2" :key="side">
+                  <td class="py-2.5 px-2 md:px-6"><div class="flex items-center gap-3"><stat-bar class="flex-1 max-md:hidden" value="0" display-text="" :hide-value="true"></stat-bar><span class="font-semibold skeleton-text">00.00%</span></div></td>
+                  <td class="py-2.5 px-1 md:px-3 text-center"><span class="skeleton-text">00</span></td>
+                </template>
+              </tr>
+            </tbody>
+          </table>
         </panel-box>
       </div>
       <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">

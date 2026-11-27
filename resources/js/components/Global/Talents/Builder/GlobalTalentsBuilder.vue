@@ -88,10 +88,27 @@
             </div>
           </panel-box>
           <panel-box title="Selected build" :skeleton="true" :divider="false" class="border-t-4 border-teal">
-            <div class="grid grid-cols-7 gap-2"><skeleton-box v-for="slot in 7" :key="slot" class="w-[2.625rem] h-[2.625rem] mx-auto !rounded-full"></skeleton-box></div>
-            <div class="grid grid-cols-3 gap-3"><skeleton-box v-for="stat in 3" :key="stat" class="h-[4.5rem] rounded-control"></skeleton-box></div>
-            <skeleton-box class="h-16 rounded-lg"></skeleton-box>
-            <skeleton-box class="h-[3.125rem] rounded"></skeleton-box>
+            <template #title>
+              <round-image class="text-base" size="small" icon="fas fa-info" title="info"></round-image>
+            </template>
+            <!-- The card's own blocks, grey: the seven slots with their levels, unseen stat boxes under grey ones, the copy row and button -->
+            <div class="grid grid-cols-7 gap-2">
+              <span v-for="level in [1, 4, 7, 10, 13, 16, 20]" :key="level" class="flex flex-col items-center gap-2">
+                <skeleton-box class="w-[2.625rem] h-[2.625rem] !rounded-full"></skeleton-box>
+                <span class="text-xs skeleton-text">{{ level }}</span>
+              </span>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div v-for="stat in 3" :key="stat" class="relative">
+                <stat-box class="!m-0 !min-w-0 invisible" aria-hidden="true" :title="$t('Games played')" value="0,000"></stat-box>
+                <skeleton-box class="absolute inset-0 rounded-control"></skeleton-box>
+              </div>
+            </div>
+            <div class="flex flex-col gap-1 rounded-control bg-surface-1 px-4 py-3">
+              <span class="text-xs w-fit skeleton-text">{{ $t('Copy build to game') }}</span>
+              <span class="text-sm w-fit skeleton-text">{{ $t('Pick all 7 talents to get a build code') }}</span>
+            </div>
+            <span class="btn w-full text-center font-semibold skeleton-text">{{ $t('Find matching replays') }}</span>
           </panel-box>
         </div>
 

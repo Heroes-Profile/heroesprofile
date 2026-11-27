@@ -139,7 +139,53 @@
         </div>
         <panel-box title="Pick & ban order" subtitle="How often this hero is picked or banned at each draft slot, and how the team does afterwards." :skeleton="true" class="relative md:!rounded-tl-none">
           <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading draft stats...') }}</loading-component>
-          <table-skeleton :bare="true" :rows="16" :columns="['text', 'bar', 'stat', 'stat', 'stat']"></table-skeleton>
+          <template #right>
+            <span class="flex items-center gap-4 text-sm text-subtext">
+              <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-[0.125rem] bg-red"></span>{{ $t('Ban') }}</span>
+              <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-[0.125rem] bg-teal"></span>{{ $t('Pick') }}</span>
+            </span>
+          </template>
+          <!-- The real table with grey cells: the same phases and slots, so nothing moves when the numbers arrive -->
+          <table class="min-w-0 w-full rounded-table table-fixed">
+            <colgroup>
+              <col class="w-[15%]">
+              <col class="w-[33%]">
+              <col class="w-[13%]">
+              <col class="w-[13%]">
+              <col class="w-[13%]">
+              <col class="w-[13%]">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="py-2 px-4 text-left text-sm leading-4">{{ $t('Pick order') }}</th>
+                <th class="py-2 px-4 text-left text-sm leading-4">{{ $t('Pick / ban rate at position') }}</th>
+                <th class="py-2 px-4 text-center text-sm leading-4">{{ $t('Team wins') }}</th>
+                <th class="py-2 px-4 text-center text-sm leading-4">{{ $t('Team losses') }}</th>
+                <th class="py-2 px-4 text-center text-sm leading-4">{{ $t('Team win rate') }}</th>
+                <th class="py-2 px-4 text-center text-sm leading-4">{{ $t('Change') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template v-for="phase in skeletonPhases" :key="phase.label">
+                <tr>
+                  <td colspan="6" class="px-4 pt-4 pb-2 text-xs font-bold uppercase tracking-wider text-subtext">{{ $t(phase.label) }}</td>
+                </tr>
+                <tr v-for="slot in phase.slots" :key="slot">
+                  <td class="py-2.5 px-4">
+                    <span :class="['flex items-center gap-2 border-l-2 pl-2', slot.startsWith('Ban') ? 'border-red' : 'border-teal']">
+                      <span class="px-1.5 py-0.5 rounded-[0.25rem] text-[0.625rem] font-bold uppercase skeleton-text">{{ slot.startsWith('Ban') ? $t('Ban') : $t('Pick') }}</span>
+                      <span class="font-semibold skeleton-text">{{ slotLabel(slot) }}</span>
+                    </span>
+                  </td>
+                  <td class="py-2.5 px-4"><stat-bar value="0" display-text="" :hide-value="true"></stat-bar></td>
+                  <td class="py-2.5 px-4 text-center"><span class="skeleton-text">00</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="skeleton-text">00</span></td>
+                  <td class="py-2.5 px-4 text-center font-semibold"><span class="skeleton-text">00.00%</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="skeleton-text">+0.00</span></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
         </panel-box>
       </div>
       <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
@@ -226,6 +272,14 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
           { label: 'Second pick phase', numbers: [11, 12, 13, 14, 15] },
         ].map(phase => ({ label: phase.label, rows: this.rows.filter(row => phase.numbers.includes(row.pick_number)) }))
           .filter(phase => phase.rows.length);
+      },
+      skeletonPhases() {
+        return [
+          { label: 'First ban phase', slots: ['Ban 1', 'Ban 2', 'Ban 3', 'Ban 4'] },
+          { label: 'First pick phase', slots: ['Pick 1', 'Pick 2', 'Pick 3', 'Pick 4', 'Pick 5'] },
+          { label: 'Second ban phase', slots: ['Ban 5', 'Ban 6'] },
+          { label: 'Second pick phase', slots: ['Pick 6', 'Pick 7', 'Pick 8', 'Pick 9', 'Pick 10'] },
+        ];
       },
       // The server only sends change for one unfiltered patch and game type
       showWinRateChange() {

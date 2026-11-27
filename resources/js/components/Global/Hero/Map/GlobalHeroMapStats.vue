@@ -99,7 +99,23 @@
           <loading-component v-if="determineIfVeryLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
           <loading-component v-else-if="determineIfLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
           <loading-component v-else :compact="true" :tab="true" :textoverride="true">{{ $t('Loading map stats...') }}</loading-component>
-          <table-skeleton :bare="true" :rows="13" :columns="['stat', 'stat', 'stat', 'stat']"></table-skeleton>
+          <!-- The real table's columns with grey cells -->
+          <table class="w-full rounded-table relative max-sm:text-xs">
+            <thead>
+              <tr>
+                <th v-for="column in skeletonColumns" :key="column.value" :class="['py-2 px-3 text-sm leading-4 whitespace-nowrap', column.value === 'name' ? 'text-left' : 'text-center']">
+                  <template v-if="column.short"><span class="md:hidden">{{ $t(column.short) }}</span><span class="max-md:hidden">{{ $t(column.text) }}</span></template><template v-else>{{ $t(column.text) }}</template>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="text-center">
+              <tr v-for="row in 13" :key="row">
+                <td v-for="column in skeletonColumns" :key="column.value" :class="column.value === 'name' ? 'text-left' : ''">
+                  <span :class="['skeleton-text', { 'font-semibold': column.value === 'name' }]">{{ column.value === 'name' ? 'Tomb of the Spider Queen' : '00.00%' }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </panel-box>
       </div>
       <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
@@ -184,6 +200,16 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
           ...(this.showWinRateChange ? [{ text: 'Change', value: 'win_rate_change', sortable: true }] : []),
           ...(this.gametype.includes("sl") ? [{ text: 'Ban Rate', value: 'ban_rate', sortable: true, percent: true }] : []),
           { text: 'Games Played', short: 'Games', value: 'games_played', sortable: true },
+        ];
+      },
+      // Before the data: the change column is expected for a single patch
+      skeletonColumns() {
+        return [
+          { text: 'Map', value: 'name' },
+          { text: 'Win Rate', value: 'win_rate' },
+          ...(this.timeframe && this.timeframe.length === 1 ? [{ text: 'Change', value: 'win_rate_change' }] : []),
+          ...(this.gametype.includes("sl") ? [{ text: 'Ban Rate', value: 'ban_rate' }] : []),
+          { text: 'Games Played', short: 'Games', value: 'games_played' },
         ];
       },
       // The server only sends change for one unfiltered patch and game type

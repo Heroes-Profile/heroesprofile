@@ -25,11 +25,24 @@
 
     <div v-if="loading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 pb-10 flex flex-col gap-6">
       <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <skeleton-box v-for="card in 4" :key="card" class="h-[6.5rem] rounded-control"></skeleton-box>
+        <!-- An unseen stat box under each, so they're the real cards' size -->
+        <div v-for="card in 4" :key="card" class="relative">
+          <stat-box class="!m-0 !min-w-0 invisible" aria-hidden="true" title="This month" value="000,000" caption="per month"></stat-box>
+          <skeleton-box class="absolute inset-0 rounded-control"></skeleton-box>
+        </div>
       </div>
       <panel-box title="Unique players per month" :subtitle="$t('Players seen in uploaded replays.')" :skeleton="true" :divider="false" class="relative md:!rounded-tl-none">
         <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading activity...') }}</loading-component>
-        <skeleton-box class="h-[25rem] w-full rounded-control"></skeleton-box>
+        <template #right>
+          <div class="ml-auto relative rounded p-1 text-sm">
+            <span class="invisible flex flex-wrap gap-1" aria-hidden="true"><span class="px-3 py-1.5">{{ $t('All') }}</span><span v-for="year in 13" :key="year" class="px-3 py-1.5">2026</span></span>
+            <skeleton-box class="absolute inset-0 rounded"></skeleton-box>
+          </div>
+        </template>
+        <!-- The chart's own shape: 2:1, and 1.2:1 on phones -->
+        <skeleton-box class="w-full aspect-[2/1] max-md:aspect-[1.2/1] rounded-control"></skeleton-box>
+        <!-- The note under the chart while the current month fills in, as the default view shows -->
+        <p class="flex items-center gap-2.5 text-sm"><basil-icon name="info" class="text-lg shrink-0 text-surface-3"></basil-icon><span class="skeleton-text">{{ $t('The current month is still filling in: the dashed line shows the expected total.') }}</span></p>
       </panel-box>
     </div>
 

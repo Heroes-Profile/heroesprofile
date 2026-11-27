@@ -116,6 +116,10 @@ html{background-color:#141725; font-family: 'Roboto', 'Roboto Fallback', var(--l
     opacity: 0;
     transform: translateY(-0.5rem);
   }
+  /* Closing is instant; without this an element's own transition (a button's hover colour) holds the swap */
+  .drop-leave-active {
+    transition: none;
+  }
 }
 /* A <details> sliding shut is still [open] until it finishes (utils/animateDetails.js), so turn its chevron back now */
 details.group.is-closing[open] .group-open\:-rotate-90 {
@@ -638,6 +642,10 @@ thead{
 thead input{
   user-select: text;
 }
+/* Buttons, and links styled as buttons, don't highlight their text on a quick double click */
+button, .btn, [role="button"]{
+  user-select: none;
+}
 
 /* Info icons sit raised just after what they explain, like a superscript. Only the glyph moves, so the label beside it
    stays put; page titles already raise theirs (PageHeading's .page-title-info) */
@@ -695,6 +703,29 @@ h1{
 
 .flash {
   animation: flash 1s;
+}
+
+/* The drafter's current step glows in and out, as the game marks whose turn it is */
+@keyframes draft-pulse {
+  0%, 100% { box-shadow: 0 0 0.25rem 0 var(--pulse-color); }
+  50% { box-shadow: 0 0 1rem 0.2rem var(--pulse-color); }
+}
+.draft-pulse-teal,
+.draft-pulse-red {
+  animation: draft-pulse 1.6s ease-in-out infinite;
+}
+.draft-pulse-teal {
+  --pulse-color: rgba(0, 192, 192, 0.6);
+}
+.draft-pulse-red {
+  --pulse-color: rgba(228, 74, 35, 0.6);
+}
+@media (prefers-reduced-motion: reduce) {
+  .draft-pulse-teal,
+  .draft-pulse-red {
+    animation: none;
+    box-shadow: 0 0 0.75rem 0 var(--pulse-color);
+  }
 }
 
 .link {
