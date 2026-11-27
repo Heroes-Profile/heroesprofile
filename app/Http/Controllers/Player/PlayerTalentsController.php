@@ -146,20 +146,21 @@ class PlayerTalentsController extends Controller
     private function getHeroTalentData($result, $talentData)
     {
         $returnData = [];
-        $levelKeys = ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'];
+        // Tier from the replay slot, so a talent that moved tiers counts under each
+        $levelKeys = ['level_one' => 1, 'level_four' => 4, 'level_seven' => 7, 'level_ten' => 10, 'level_thirteen' => 13, 'level_sixteen' => 16, 'level_twenty' => 20];
 
         $resultCollection = collect($result);
 
         $resultCollection->each(function ($data) use (&$returnData, $levelKeys, $talentData) {
-            foreach ($levelKeys as $levelKey) {
+            foreach ($levelKeys as $levelKey => $level) {
                 if ($data->$levelKey == 0 || ! $talentData->has($data->$levelKey)) {
                     continue;
                 }
 
-                $key = $data->$levelKey;
+                $key = $level.'|'.$data->$levelKey;
 
                 if (! isset($returnData[$key])) {
-                    $returnData[$key] = ['wins' => 0, 'losses' => 0];
+                    $returnData[$key] = ['wins' => 0, 'losses' => 0, 'level' => $level];
                 }
 
                 $returnData[$key][$data->winner == 1 ? 'wins' : 'losses']++;
@@ -171,28 +172,27 @@ class PlayerTalentsController extends Controller
         $levelTotals = [];
 
         foreach ($returnData as $data) {
-            if (! array_key_exists($data['talent']['level'], $levelTotals)) {
-                $levelTotals[$data['talent']['level']] = 0;
-            }
-            $levelTotals[$data['talent']['level']] += $data['wins'] + $data['losses'];
+            $levelTotals[$data['level']] = ($levelTotals[$data['level']] ?? 0) + $data['wins'] + $data['losses'];
         }
 
         foreach ($returnData as $data) {
-            $level = $data['talent']['level'];
-            $sort = (int) $data['talent']['sort'] - 1;
+            $level = $data['level'];
+            $talent = $data['talent'];
 
-            if (! array_key_exists($level, $formattedData)) {
-                $counter = 0;
-                $formattedData[$level] = [];
+            // Picked at a tier it's no longer on: shown greyed as no longer available
+            if ($talent['level'] != 0 && $talent['level'] != $level) {
+                $talent = array_merge($talent->toArray(), ['status' => 'removed']);
             }
+
             $formattedData[$level][] = [
                 'win_rate' => ($data['wins'] + $data['losses']) > 0 ? round(($data['wins'] / ($data['wins'] + $data['losses'])) * 100, 2) : 0,
                 'wins' => $data['wins'],
                 'losses' => $data['losses'],
                 'sort' => $data['talent']['sort'],
-                'popularity' => round((($data['losses'] + $data['wins']) / $levelTotals[$data['talent']['level']]) * 100, 2),
+                'level' => $level,
+                'popularity' => round((($data['losses'] + $data['wins']) / $levelTotals[$level]) * 100, 2),
                 'games_played' => $data['wins'] + $data['losses'],
-                'talentInfo' => $data['talent'],
+                'talentInfo' => $talent,
             ];
         }
 
