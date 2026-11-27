@@ -18,6 +18,23 @@
 @view-transition {
   navigation: auto;
 }
+/* Following a link: the old page stays up (the browser keeps it until the next one draws), and a thin bar along
+   the top shows the next page is on its way if it takes a moment (app.js) */
+.page-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  height: 3px;
+  width: 0;
+  background-color: theme('colors.lteal');
+  box-shadow: 0 0 6px theme('colors.lteal');
+  pointer-events: none;
+  transition: width 8s cubic-bezier(0.1, 0.7, 0.2, 1);
+}
+.page-progress.page-progress-run {
+  width: 90%;
+}
 
 /* The top ad banner's stand-in before Vue draws it (layouts/app): the ad slot's height, or the ad-blocker notice
    when one was seen recently (html.ad-blocked, set in the head) */

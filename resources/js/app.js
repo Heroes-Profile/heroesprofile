@@ -61,6 +61,69 @@ function reloadForNewBuild() {
 }
 window.addEventListener('vite:preloadError', reloadForNewBuild);
 
+// Plain same-site links the browser follows itself: not ones a handler took over, new tabs, downloads, jumps
+// within the page, or signing in and out
+function followableLink(target) {
+  const link = target?.closest?.('a[href]');
+  if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) {
+    return null;
+  }
+  const url = new URL(link.href, window.location.href);
+  if (url.origin !== window.location.origin || !/^https?:$/.test(url.protocol)) {
+    return null;
+  }
+  if (url.pathname === window.location.pathname && url.search === window.location.search) {
+    return null;
+  }
+  if (/\/(Authenticate|Logout|logout|Download)/.test(url.pathname)) {
+    return null;
+  }
+  return url;
+}
+
+// Following a link: if the next page takes more than a moment, a thin bar along the top creeps across (app.css)
+let pageProgressTimer = null;
+window.addEventListener('click', event => {
+  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || !followableLink(event.target)) {
+    return;
+  }
+  clearTimeout(pageProgressTimer);
+  pageProgressTimer = setTimeout(() => {
+    const bar = document.createElement('div');
+    bar.className = 'page-progress';
+    document.body.appendChild(bar);
+    requestAnimationFrame(() => requestAnimationFrame(() => bar.classList.add('page-progress-run')));
+  }, 300);
+});
+// Back and Forward can bring the page back from the browser's cache, bar and all
+window.addEventListener('pageshow', () => {
+  clearTimeout(pageProgressTimer);
+  document.querySelectorAll('.page-progress').forEach(bar => bar.remove());
+});
+
+// The next page starts loading when a link is hovered for a moment or touched, so it is often there by the time
+// the click lands. Each page at most once
+const prefetched = new Set();
+function prefetchLink(target) {
+  const url = followableLink(target);
+  if (!url || prefetched.has(url.href)) {
+    return;
+  }
+  prefetched.add(url.href);
+  const hint = document.createElement('link');
+  hint.rel = 'prefetch';
+  hint.href = url.href;
+  document.head.appendChild(hint);
+}
+let prefetchTimer = null;
+document.addEventListener('mouseover', event => {
+  clearTimeout(prefetchTimer);
+  const target = event.target;
+  prefetchTimer = setTimeout(() => prefetchLink(target), 65);
+}, { passive: true });
+document.addEventListener('mouseout', () => clearTimeout(prefetchTimer), { passive: true });
+document.addEventListener('touchstart', event => prefetchLink(event.target), { passive: true });
+
 const componentName = path => path.split('/').pop().replace(/\.\w+$/, '');
 Object.entries(eagerComponents).forEach(([path, definition]) => {
     app.component(componentName(path), definition.default);
