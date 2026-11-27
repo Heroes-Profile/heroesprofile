@@ -233,9 +233,9 @@
               <div id="right-nav-wrapper" class="flex max-md:flex-wrap max-md:items-center justify-center flex-none mx-auto md:mx-0">
 
                 <div id="nav-buttons" class="flex gap-3 max-md:gap-2 max-md:w-full max-md:px-3 max-md:pt-4 max-md:flex-wrap max-md:justify-center">
-                    <custom-button id="nav-api-button" class="font-semibold max-md:text-xs max-md:px-3 max-md:py-1.5" :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'"></custom-button>
-                    <custom-button id="nav-uploader-button" class="font-semibold max-md:text-xs max-md:px-3 max-md:py-1.5" :href="'/Upload'" :text="'Replay Uploader'" :alt="'Replay Uploader'" :color="'teal'"></custom-button>
-                    <custom-button id="nav-patreon-button" class="font-semibold max-md:text-xs max-md:px-3 max-md:py-1.5" :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Remove Ads / Patreon'" :alt="'Patreon'" :color="'red'"></custom-button>
+                    <custom-button id="nav-api-button" class="inline-flex items-center min-h-11 font-semibold max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'"></custom-button>
+                    <custom-button id="nav-uploader-button" class="inline-flex items-center min-h-11 font-semibold max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'/Upload'" :text="'Replay Uploader'" :alt="'Replay Uploader'" :color="'teal'"></custom-button>
+                    <custom-button id="nav-patreon-button" class="inline-flex items-center min-h-11 font-semibold max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Remove Ads / Patreon'" :alt="'Patreon'" :color="'red'"></custom-button>
                 </div>
 
 
@@ -278,7 +278,7 @@
 
 
                 @else
-                    <custom-button id="nav-login-button" class="md:ml-4 max-md:my-3 font-semibold max-md:text-xs max-md:px-3 max-md:py-1.5" :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :color="'teal'"></custom-button>
+                    <custom-button id="nav-login-button" class="inline-flex items-center min-h-11 md:ml-4 max-md:my-3 font-semibold max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :color="'teal'"></custom-button>
                 @endif
                 </div>
                 {{-- Mobile only: under the buttons --}}

@@ -2,9 +2,9 @@
   <!-- Phones: mr-3.5 leaves the same visible gap before Login as the 8px before it, allowing for the EN badge that overhangs the right edge -->
   <div class="relative group flex md:ml-4 max-md:my-3 max-md:mr-3.5">
     <div data-battletag="nav-language-menu" class="mobile-secondary-nav-open flex cursor-pointer">
-      <span class="relative flex items-center bg-teal rounded p-1 max-md:p-0.5" :aria-label="$t('Language') + ': ' + locales[current]">
-        <span class="w-8 h-8 max-md:w-6 max-md:h-6 rounded flex items-center justify-center text-surface hover:bg-lteal transition-colors">
-          <i class="fa-solid fa-globe text-xl max-md:text-sm"></i>
+      <span class="relative flex w-11 h-11 bg-teal rounded" :aria-label="$t('Language') + ': ' + locales[current]">
+        <span class="w-full h-full rounded flex items-center justify-center text-surface hover:bg-lteal transition-colors">
+          <i class="fa-solid fa-globe text-xl"></i>
         </span>
         <span class="absolute -top-1.5 -right-1.5 px-1 rounded bg-surface text-white text-[0.625rem] font-bold leading-[0.875rem]" aria-hidden="true">{{ shortCode }}</span>
       </span>
