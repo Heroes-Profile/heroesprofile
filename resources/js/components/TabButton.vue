@@ -77,8 +77,10 @@
         return Object.fromEntries((this.tabs || []).map(tab => [tab.key, tab.text]));
       },
       staticClasses() {
-        // The full size is the pager's height (pagination-bar), so the two line up beside each other; a wrapped label can grow it
-        return 'transition-colors cursor-pointer text-center ' + (this.small ? 'inline-block py-1 px-2 text-sm' : 'inline-flex items-center justify-center min-h-9 px-4');
+        // One size for every toggle, as the Figma: 38px tall with its bar's padding, the same height as the pager
+        // (pagination-bar) so the two line up beside each other; a wrapped label can grow it. `small` is kept for the
+        // call sites but no longer changes the size
+        return 'transition-colors cursor-pointer text-center inline-flex items-center justify-center min-h-[1.875rem] px-3 text-sm';
       },
     },
     watch: {
