@@ -70,7 +70,9 @@ basil-icon[name="search"] { --basil-icon: url("data:image/svg+xml,%3Csvg xmlns='
 
 
 
-html{background-color:#141725; font-family: 'Roboto', 'Roboto Fallback', var(--lang-font), sans-serif; box-sizing:border-box; }
+/* The scrollbar's space is always kept, so the page doesn't narrow and shift sideways when content grows long enough
+   to scroll partway through loading */
+html{background-color:#141725; font-family: 'Roboto', 'Roboto Fallback', var(--lang-font), sans-serif; box-sizing:border-box; scrollbar-gutter: stable; }
 
 /* Per-language type. Roboto covers Latin and Cyrillic; Korean and Chinese characters fall through to their
    own Noto Sans (loaded in layouts/app.blade.php), and their text is set a little larger to stay readable.
