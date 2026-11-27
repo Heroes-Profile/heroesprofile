@@ -12,7 +12,7 @@
           <h1 class="void-gazette-masthead text-5xl md:text-7xl py-3">{{ $t('The Void Gazette') }}</h1>
           <div class="flex justify-between text-[0.6875rem] md:text-xs uppercase border-y-[0.1875rem] border-double border-[#1a1a1a] py-1">
             <span>{{ $t(':formatdate to :formatdate2', { formatdate: formatDate(recap.startsAt), formatdate2: formatDate(recap.endsAt) }) }}</span>
-            <span class="max-md:hidden">"All the news that's fit to consume"</span>
+            <span class="max-md:hidden">"{{ $t("All the news that's fit to consume") }}"</span>
             <span>{{ $t('Stage :stage of 5', { stage: final.stage }) }}</span>
           </div>
         </header>
@@ -40,7 +40,7 @@
           <div class="text-center text-xs italic mb-3">{{ $t('Click a section to jump straight to it.') }}</div>
           <ul class="void-gazette-index text-sm">
             <li v-for="entry in indexEntries" :key="entry.id" class="flex items-baseline gap-2 break-inside-avoid">
-              <a :href="`#${entry.id}`" class="hover:underline" @click.prevent="jumpTo(entry.id)">{{ entry.label }}</a>
+              <a :href="`#${entry.id}`" class="hover:underline" @click.prevent="jumpTo(entry.id)">{{ $t(entry.label) }}</a>
               <span class="flex-1 border-b border-dotted border-[#1a1a1a] opacity-50"></span>
               <span class="tabular-nums">{{ entry.page }}</span>
             </li>
@@ -66,9 +66,9 @@
           <div v-for="stage in timelineStages" :key="stage.stage" :class="['rounded p-4 flex flex-col items-center text-center', { 'opacity-30': !stage.reached_at }]" :style="stageCardStyle(stage.stage)">
             <img class="w-24 mb-2" :src="`/images/event/xalatath/xalatath-logo-stage-${stage.stage}.svg`" alt="" />
             <div class="font-bold">{{ $t('Stage :stage', { stage: stage.stage }) }}</div>
-            <div class="text-xs opacity-75">{{ stage.stage === 0 ? $t('Event start') : `${format(stage.threshold)} games + bans` }}</div>
+            <div class="text-xs opacity-75">{{ stage.stage === 0 ? $t('Event start') : $t(':count games + bans', { count: format(stage.threshold) }) }}</div>
             <div class="text-sm mb-2">{{ stage.reached_at ? formatDate(stage.reached_at) : $t('Never reached') }}</div>
-            <p class="text-sm opacity-90">{{ stageNotes[stage.stage] }}</p>
+            <p class="text-sm opacity-90">{{ $t(stageNotes[stage.stage]) }}</p>
           </div>
         </div>
 
@@ -114,13 +114,13 @@
               <!-- 2: her whispers, a new one each time it flips to After -->
               <div v-else-if="stage.stage === 2" class="h-28 w-full mt-4 flex items-center justify-center">
                 <transition name="void-whisper" mode="out-in">
-                  <p v-if="paletteOn" :key="whisperIndex" class="void-whisper rounded px-3 py-2 text-sm italic">{{ whispers[whisperIndex] }}</p>
+                  <p v-if="paletteOn" :key="whisperIndex" class="void-whisper rounded px-3 py-2 text-sm italic">{{ $t(whispers[whisperIndex]) }}</p>
                 </transition>
               </div>
 
               <!-- 3: the nav scrambled into glyphs -->
               <div v-else-if="stage.stage === 3" class="h-28 w-full mt-4 flex flex-wrap content-center justify-center gap-x-3 gap-y-1 text-sm">
-                <span v-for="word in glyphWords" :key="word" :class="['whitespace-nowrap', { 'void-glyph-text': paletteOn }]">{{ paletteOn ? glyph(word) : word }}</span>
+                <span v-for="word in glyphWords" :key="word" :class="['whitespace-nowrap', { 'void-glyph-text': paletteOn }]">{{ paletteOn ? glyph(word) : $t(word) }}</span>
               </div>
 
               <!-- 4: a tiny slice of the site flipping to the stage 4 palette -->
@@ -142,7 +142,7 @@
                 <div class="grid grid-cols-[auto_1fr_auto] items-center gap-x-2 gap-y-1 mt-2">
                   <template v-for="swatch in paletteSwatches" :key="swatch.label">
                     <span class="inline-block w-3 h-3 rounded void-palette-mock" :style="{ backgroundColor: paletteOn ? swatch.after : swatch.before }"></span>
-                    <span class="opacity-75 truncate">{{ swatch.label }}</span>
+                    <span class="opacity-75 truncate">{{ $t(swatch.label) }}</span>
                     <span class="opacity-75 tabular-nums">{{ paletteOn ? swatch.after : swatch.before }}</span>
                   </template>
                 </div>
@@ -154,7 +154,7 @@
               </div>
             </div>
             <!-- Before/after label pinned to the bottom of every card -->
-            <div class="text-xs opacity-75 text-center pt-2">{{ paletteOn ? (stage.stage === 0 ? $t('Event logo') : `After stage ${stage.stage}`) : $t('Before') }}</div>
+            <div class="text-xs opacity-75 text-center pt-2">{{ paletteOn ? (stage.stage === 0 ? $t('Event logo') : $t('After stage :stage', { stage: stage.stage })) : $t('Before') }}</div>
           </div>
         </div>
       </section>
@@ -192,7 +192,7 @@
             <img src="/images/event/xalatath/void-eye.svg" alt="" class="w-16 h-16" />
             <div>
               <div class="text-3xl font-bold tabular-nums">{{ format(recap.eyeHunt.finders) }}</div>
-              <div>found Xal'atath's eye</div>
+              <div>{{ $t("found Xal'atath's eye") }}</div>
               <div v-if="eyeBusiestDay" class="text-sm opacity-75">{{ $t('Busiest day: :format found on :formatdate', { format: format(eyeBusiestDay.count), formatdate: formatDate(eyeBusiestDay.date) }) }}</div>
             </div>
           </div>
@@ -205,8 +205,7 @@
             {{ $t("While the event ran, Xal'atath hid her eye somewhere on Heroes Profile. It turned up on roughly one page in twelve, in a different spot for every visitor, and moved each day. Clicking it and logging in with Battle.net claimed it.") }}
           </p>
           <p>
-            <span class="font-bold">{{ $t('The reward:') }}</span> the Mark of the Void, an eye shown beside your battletag across the site that stays for good,
-            plus 3 months of ad-free Heroes Profile. Finders can hide the mark in Profile Settings.
+            <span class="font-bold">{{ $t('The reward:') }}</span> {{ $t('the Mark of the Void, an eye shown beside your battletag across the site that stays for good, plus 3 months of ad-free Heroes Profile. Finders can hide the mark in Profile Settings.') }}
           </p>
         </div>
       </section>
@@ -225,8 +224,8 @@
         <p v-if="mode === 'all'" class="mb-4 opacity-80">{{ $t('The Void reached stage :stage of 5 with :format games and bans.', { stage: final.stage, format: format(final.corruption) }) }}</p>
         <p v-else class="mb-4 opacity-80">{{ $t(':modelabel games only.', { modelabel: modeLabel }) }}</p>
         <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-3">
-          <div v-for="tile in allTiles" :key="tile.label" class="xalatath-recap-card p-3 text-center" :title="tile.info">
-            <div class="text-xs uppercase opacity-75">{{ tile.label }}</div>
+          <div v-for="tile in allTiles" :key="tile.label" class="xalatath-recap-card p-3 text-center" :title="$t(tile.info)">
+            <div class="text-xs uppercase opacity-75">{{ $t(tile.label) }}</div>
             <div class="text-xl font-bold tabular-nums">{{ format(tile.value) }}</div>
           </div>
         </div>
@@ -267,8 +266,8 @@
       <section id="recap-nerf" data-index="Did the Nerf Work?" v-if="nerf">
         <h2 class="recap-heading">{{ $t('Did the Nerf Work?') }}</h2>
         <p class="mb-1 text-sm opacity-75">
-          {{ $t('Balance update :patch', { patch: nerf.after.patch }) }}<span v-if="nerf.after.first_game"> ({{ formatDate(nerf.after.first_game) }})</span> cut Void Volley and Void Eruption damage, shortened Void Step and changed five talents.
-          Launch patch compared with the balance update.
+          {{ $t('Balance update :patch', { patch: nerf.after.patch }) }}<span v-if="nerf.after.first_game"> ({{ formatDate(nerf.after.first_game) }})</span> {{ $t('cut Void Volley and Void Eruption damage, shortened Void Step and changed five talents.') }}
+          {{ $t('Launch patch compared with the balance update.') }}
         </p>
         <p class="mb-4 text-lg font-bold xalatath-title">{{ nerf.verdict }}</p>
         <scroll-hint-container :fit="true">
@@ -323,7 +322,7 @@
             </thead>
             <tbody>
               <tr v-for="row in gameModes" :key="row.game_type">
-                <td class="py-2 px-3">{{ recap.gameTypes[row.game_type] || row.game_type }}</td>
+                <td class="py-2 px-3">{{ $t(recap.gameTypes[row.game_type] || String(row.game_type)) }}</td>
                 <td class="py-2 px-3">{{ format(row.games_played) }}</td>
                 <td class="py-2 px-3">{{ winRate(row.wins, row.games_played) }}</td>
                 <td class="py-2 px-3">{{ Number(row.bans) ? format(row.bans) : '' }}</td>
@@ -356,8 +355,8 @@
             <div></div>
             <div v-for="hour in 24" :key="'h' + hour" class="text-center opacity-60">{{ shortHour(hour - 1) }}</div>
             <template v-for="(row, day) in heatmap.rows" :key="'d' + day">
-              <div class="opacity-75 pr-1">{{ weekdayNames[day] }}</div>
-              <div v-for="(games, hour) in row" :key="day + '-' + hour" class="h-5 rounded bg-[#7b3fe4]" :style="{ opacity: heatOpacity(games / heatmap.max) }" :title="`${weekdayNames[day]} ${hour12(hour)} - ${$t(':count games', { count: format(games) })}`"></div>
+              <div class="opacity-75 pr-1">{{ $t(weekdayNames[day]) }}</div>
+              <div v-for="(games, hour) in row" :key="day + '-' + hour" class="h-5 rounded bg-[#7b3fe4]" :style="{ opacity: heatOpacity(games / heatmap.max) }" :title="`${$t(weekdayNames[day])} ${hour12(hour)} - ${$t(':count games', { count: format(games) })}`"></div>
             </template>
           </div>
         </div>
@@ -374,7 +373,7 @@
         <h2 class="recap-heading">{{ $t('Single-Game Records') }}</h2>
         <p class="mb-4 text-sm opacity-75">{{ $t('Her best single games for every stat. Click a record to see the top 10.') }}</p>
         <div v-for="group in recordGroups" :key="group.title" class="mb-5">
-          <h3 class="text-sm uppercase xalatath-title mb-2">{{ group.title }}</h3>
+          <h3 class="text-sm uppercase xalatath-title mb-2">{{ $t(group.title) }}</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 items-start">
             <details v-for="item in group.records" :key="item.record" class="xalatath-recap-card group">
               <summary class="px-3 py-2 flex justify-between items-center gap-3 cursor-pointer list-none">
@@ -413,8 +412,8 @@
       <section id="recap-matchups" data-index="Victims, Enemies & Allies" v-if="victims.length || allies.length">
         <div class="grid md:grid-cols-3 gap-6">
           <div v-for="group in matchupGroups" :key="group.title">
-            <h2 class="recap-heading">{{ group.title }}</h2>
-            <p class="text-sm opacity-75 mb-2">{{ group.info }}</p>
+            <h2 class="recap-heading">{{ $t(group.title) }}</h2>
+            <p class="text-sm opacity-75 mb-2">{{ $t(group.info) }}</p>
             <div v-for="row in group.rows" :key="row.hero" class="flex items-center gap-3 mb-2">
               <hero-image-wrapper v-if="recap.heroes[row.hero]" :hero="recap.heroes[row.hero]" size="small"></hero-image-wrapper>
               <span class="flex-1">{{ heroName(row.hero) }}</span>
@@ -456,7 +455,7 @@
               <img v-if="recap.awards[row.award]" :src="`/images/awards/${recap.awards[row.award].icon}_blue.png`" :alt="awardTitle(row.award)" class="w-10 h-10" />
               <div class="min-w-0 max-w-full">
                 <div class="font-bold">{{ awardTitle(row.award) }}</div>
-                <div class="text-sm tabular-nums">{{ format(row.count) }}<span v-if="awardShareOf(row)" class="opacity-75"> · {{ percent(row.count, awardShareOf(row)) }} {{ isMvp(row) ? 'of her games' : 'of non-MVP games' }}</span></div>
+                <div class="text-sm tabular-nums">{{ format(row.count) }}<span v-if="awardShareOf(row)" class="opacity-75"> · {{ percent(row.count, awardShareOf(row)) }} {{ isMvp(row) ? $t('of her games') : $t('of non-MVP games') }}</span></div>
               </div>
             </div>
           </div>
@@ -508,7 +507,7 @@
           <div v-if="cardEmpty" class="void-contribution-card max-w-[43.75rem] rounded p-4 md:p-5 flex items-center gap-4">
             <img class="w-16 md:w-20 shrink-0" :src="`/images/event/xalatath/xalatath-logo-stage-${final.stage}.svg`" alt="" />
             <div class="min-w-0">
-              <div class="text-xs uppercase xalatath-title">{{ $t("Xal'atath Void Corruption") }}<span v-if="mode !== 'all'"> · {{ modeLabel }}</span></div>
+              <div class="text-xs uppercase xalatath-title">{{ $t("Xal'atath Void Corruption") }}<span v-if="mode !== 'all'"> · {{ $t(modeLabel) }}</span></div>
               <div class="text-2xl md:text-3xl font-bold">{{ contribution.battletag }}</div>
               <div class="text-lg">{{ noGamesLine }}</div>
               <div class="text-xs opacity-60 mt-2">heroesprofile.com/Event/Xalatath</div>
@@ -519,13 +518,10 @@
               <img class="w-40 md:w-52" :src="`/images/event/xalatath/xalatath-logo-stage-${final.stage}.svg`" alt="" />
             </div>
             <div class="min-w-0">
-              <div class="text-xs uppercase xalatath-title">{{ $t("Xal'atath Void Corruption") }}<span v-if="mode !== 'all'"> · {{ modeLabel }}</span></div>
+              <div class="text-xs uppercase xalatath-title">{{ $t("Xal'atath Void Corruption") }}<span v-if="mode !== 'all'"> · {{ $t(modeLabel) }}</span></div>
               <div class="text-3xl md:text-4xl font-bold mb-1">{{ contribution.battletag }}</div>
               <template v-if="card.games > 0">
-                <div class="text-lg mb-4">
-                  Fed the Void <span class="font-bold">{{ format(card.games) }}</span> games,
-                  won <span class="font-bold">{{ format(card.wins) }}</span> ({{ winRate(card.wins, card.games) }})
-                </div>
+                <div class="text-lg mb-4" v-html="$t('Fed the Void :games games, won :wins (:winrate)', { games: bold(format(card.games)), wins: bold(format(card.wins)), winrate: winRate(card.wins, card.games) })"></div>
 
                 <!-- Labels once as column headers, numbers lined up underneath -->
                 <div v-if="card.modes && card.modes.length" class="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-x-6 gap-y-1 text-sm mb-4 max-w-[26.25rem]">
@@ -533,7 +529,7 @@
                   <span class="text-xs uppercase opacity-75 text-right">{{ $t('Games') }}</span>
                   <span class="text-xs uppercase opacity-75 text-right">{{ $t('Win rate') }}</span>
                   <template v-for="mode in card.modes" :key="mode.name">
-                    <span class="truncate">{{ mode.name }}</span>
+                    <span class="truncate">{{ $t(mode.name) }}</span>
                     <span class="text-right tabular-nums">{{ format(mode.games) }}</span>
                     <span class="text-right tabular-nums">{{ winRate(mode.wins, mode.games) }}</span>
                   </template>
@@ -549,13 +545,13 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div v-for="group in contributionMates" :key="group.title" class="grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-x-4 gap-y-1 text-sm">
-                    <span class="text-xs uppercase opacity-75">{{ group.title }}</span>
+                    <span class="text-xs uppercase opacity-75">{{ $t(group.title) }}</span>
                     <span class="text-xs uppercase opacity-75 text-right">{{ $t('Games') }}</span>
                     <span class="text-xs uppercase opacity-75 text-right">{{ $t('Win rate') }}</span>
                     <template v-for="mate in group.rows" :key="mate.hero ? mate.hero.id : mate.games">
                       <span class="flex items-center gap-2 min-w-0">
                         <hero-image-wrapper v-if="mate.hero" :hero="mate.hero" size="small"></hero-image-wrapper>
-                        <span class="truncate">{{ mate.hero ? mate.hero.name : '' }}</span>
+                        <span class="truncate">{{ mate.hero ? $heroName(mate.hero) : '' }}</span>
                       </span>
                       <span class="text-right tabular-nums">{{ format(mate.games) }}</span>
                       <span class="text-right tabular-nums">{{ winRate(mate.wins, mate.games) }}</span>
@@ -568,7 +564,7 @@
                 <!-- Estimated from her share of your team's deaths in each game she was against you -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 max-w-[37.5rem]">
                   <div v-for="tile in facedTiles" :key="tile.label" class="xalatath-recap-card p-3 text-center">
-                    <div class="text-xs uppercase opacity-75">{{ tile.label }}</div>
+                    <div class="text-xs uppercase opacity-75">{{ $t(tile.label) }}</div>
                     <div class="text-xl font-bold tabular-nums">{{ tile.value }}</div>
                   </div>
                 </div>
@@ -577,9 +573,7 @@
               <!-- Estimated from her share of your team's deaths in each game she was against you -->
               <div v-if="card.games > 0 && card.faced && card.faced.games" class="text-sm mt-2">
                 <div class="text-xs uppercase opacity-75 mb-1">{{ $t('Facing her') }}</div>
-                Faced her in <span class="font-bold">{{ format(card.faced.games) }}</span> games:
-                <span class="font-bold">&asymp; {{ format(card.faced.involved) }}</span> deaths involving her,
-                <span class="font-bold">&asymp; {{ format(card.faced.killing_blows) }}</span> to her killing blow.
+                <span v-html="$t('Faced her in :games games: :involved deaths involving her, :kills to her killing blow.', { games: bold(format(card.faced.games)), involved: bold('&asymp; ' + format(card.faced.involved)), kills: bold('&asymp; ' + format(card.faced.killing_blows)) })"></span>
               </div>
               <div class="text-xs opacity-60 mt-4">heroesprofile.com/Event/Xalatath</div>
             </div>
@@ -592,12 +586,12 @@
           </div>
         </div>
         <div v-else class="xalatath-recap-card p-4">
-          <a class="link" href="/Authenticate/Battlenet">{{ $t('Log in with Battle.net') }}</a> to see how much you fed the Void.
+          <a class="link" href="/Authenticate/Battlenet">{{ $t('Log in with Battle.net') }}</a> {{ $t('to see how much you fed the Void.') }}
         </div>
         <div class="flex flex-wrap items-center gap-3 mt-4 text-sm">
           <span class="opacity-75">{{ $t('Spread the word:') }}</span>
           <a v-for="link in shareLinks" :key="link.name" :href="link.build(recapUrl)" target="_blank" rel="noopener" class="bg-darken hover:bg-lighten rounded px-3 py-2" @click="openShare($event, link)">
-            <i :class="[link.icon, 'mr-1']"></i> {{ link.name }}
+            <i :class="[link.icon, 'mr-1']"></i> {{ $t(link.name) }}
           </a>
         </div>
       </section>
@@ -609,7 +603,7 @@
       <section id="recap-whispers" data-index="Her Last Whispers">
         <h2 class="recap-heading">{{ $t('Her Last Whispers') }}</h2>
         <div class="columns-1 md:columns-2 xl:columns-3 gap-4">
-          <p v-for="(line, index) in whispers" :key="index" class="void-whisper rounded px-4 py-2 mb-3 italic break-inside-avoid">{{ line }}</p>
+          <p v-for="(line, index) in whispers" :key="index" class="void-whisper rounded px-4 py-2 mb-3 italic break-inside-avoid">{{ $t(line) }}</p>
         </div>
       </section>
     </div>
@@ -621,6 +615,7 @@ import { formatDate as formatLocalDate } from '../../utils/formatGameDate';
 import { markRaw } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import moment from 'moment-timezone';
+import { siteLocale } from '../../utils/translate';
 import WHISPERS from './voidWhisperLines';
 import { toGlyphs } from './voidGlyphs';
 import { mainTiles, extraTiles, formatNumber } from './xalatathTiles';
@@ -914,7 +909,9 @@ export default {
       return REGION_ZONES[this.heatmapRegion] || moment.tz.guess();
     },
     heatmapZoneLabel() {
-      return REGION_ZONES[this.heatmapRegion] ? `${this.recap.regions[this.heatmapRegion]} local time (${REGION_ZONE_LABELS[this.heatmapRegion]})` : 'your local time';
+      return REGION_ZONES[this.heatmapRegion]
+        ? this.$t(':region local time (:zone)', { region: this.recap.regions[this.heatmapRegion], zone: this.$t(REGION_ZONE_LABELS[this.heatmapRegion]) })
+        : this.$t('your local time');
     },
     heatmap() {
       const rows = Array.from({ length: 7 }, () => Array(24).fill(0));
@@ -933,7 +930,7 @@ export default {
       rows.forEach((row, day) => row.forEach((games, hour) => {
         if (games > max) {
           max = games;
-          peak = `${DAY_NAMES[day]} around ${this.hour12(hour)}`;
+          peak = this.$t(':day around :hour', { day: this.$t(DAY_NAMES[day]), hour: this.hour12(hour) });
         }
       }));
       return { rows, max, peak };
@@ -951,10 +948,10 @@ export default {
     launchVerdict() {
       const index = this.launches.findIndex((row) => row.hero == HERO_ID);
       if (index === 0) {
-        return 'Yes. No recent hero came close.';
+        return this.$t('Yes. No recent hero came close.');
       }
       if (index > 0) {
-        return `Not quite. ${this.heroName(this.launches[0].hero)} still holds the crown. For now.`;
+        return this.$t('Not quite. :hero still holds the crown. For now.', { hero: this.heroName(this.launches[0].hero) });
       }
       return '';
     },
@@ -982,7 +979,7 @@ export default {
       });
       const byTalent = {};
       rows.forEach((row) => {
-        if (!NERFED_TALENTS.includes(this.talentName(row.talent_id))) {
+        if (!NERFED_TALENTS.includes(this.recap.talents[row.talent_id]?.title)) {
           return;
         }
         byTalent[row.talent_id] = byTalent[row.talent_id] || { talent_id: row.talent_id, level: row.level };
@@ -1110,22 +1107,26 @@ export default {
     leadArticle() {
       const fallen = this.final.stage >= 5;
       return {
-        headline: fallen ? 'Xal\'atath Consumes the Nexus' : `Void Reaches Stage ${this.final.stage}, Then Recedes`,
+        headline: fallen ? this.$t("Xal'atath Consumes the Nexus") : this.$t('Void Reaches Stage :stage, Then Recedes', { stage: this.final.stage }),
         // Opens with a word so the drop cap never splits a number.
-        body: `The Void reached stage ${this.final.stage} of 5 across Heroes Profile after ${this.format(this.allGames)} games `
-          + `and ${this.format(this.allStat('bans'))} bans. She won ${this.winRate(this.allStat('wins'), this.allGames)} of those games `
-          + `and racked up ${this.format(this.allStat('takedowns'))} takedowns along the way. `
+        body: this.$t('The Void reached stage :stage of 5 across Heroes Profile after :games games and :bans bans. She won :winrate of those games and racked up :takedowns takedowns along the way.', {
+          stage: this.final.stage,
+          games: this.format(this.allGames),
+          bans: this.format(this.allStat('bans')),
+          winrate: this.winRate(this.allStat('wins'), this.allGames),
+          takedowns: this.format(this.allStat('takedowns')),
+        }) + ' '
           + (fallen
-            ? 'The site\'s logo was consumed, its colours turned violet, and visitors were told the Nexus had fallen. Officials insisted everything was fine.'
-            : 'The site cracked, whispered and glitched, but the Nexus held. For now.'),
+            ? this.$t("The site's logo was consumed, its colours turned violet, and visitors were told the Nexus had fallen. Officials insisted everything was fine.")
+            : this.$t('The site cracked, whispered and glitched, but the Nexus held. For now.')),
       };
     },
     shareText() {
       const c = this.card;
       if (c && c.games > 0) {
-        return `I fed the Void ${this.format(c.games)} Xal'atath games and won ${this.winRate(c.wins, c.games)}. See what she left behind on Heroes Profile:`;
+        return this.$t("I fed the Void :games Xal'atath games and won :winrate. See what she left behind on Heroes Profile:", { games: this.format(c.games), winrate: this.winRate(c.wins, c.games) });
       }
-      return `Xal'atath corrupted Heroes Profile to stage ${this.final.stage} of 5. See what she left behind:`;
+      return this.$t("Xal'atath corrupted Heroes Profile to stage :stage of 5. See what she left behind:", { stage: this.final.stage });
     },
     recapUrl() {
       return `${window.location.origin}/Event/Xalatath`;
@@ -1153,10 +1154,13 @@ export default {
       return !!c && !(c.games > 0) && !(c.faced && c.faced.games);
     },
     noGamesLine() {
-      const where = this.mode !== 'all' ? ` in ${this.modeLabel}` : '';
+      const mode = this.$t(this.modeLabel);
+      if (this.mode === 'all') {
+        return this.cardEmpty ? this.$t('Never played her, never faced her. The Void noticed.') : this.$t('Never played her. She played you instead.');
+      }
       return this.cardEmpty
-        ? `Never played her${where}, never faced her. The Void noticed.`
-        : `Never played her${where}. She played you instead.`;
+        ? this.$t('Never played her in :mode, never faced her. The Void noticed.', { mode })
+        : this.$t('Never played her in :mode. She played you instead.', { mode });
     },
     facedTiles() {
       const faced = (this.card && this.card.faced) || {};
@@ -1175,62 +1179,69 @@ export default {
     },
     reclaimedBody() {
       const days = Math.round(this.eventDays);
-      return `After ${days} days under the Void, the Heroes Profile team has taken the site back. `
-        + 'The logo is whole again, the colours have returned, and the whispers have stopped. '
-        + 'Staff remain on watch. Our sources whisper that more heroes may yet find their way to the Nexus, '
-        + 'and if they do, Heroes Profile will be here tracking every game.';
+      return this.$t('After :days days under the Void, the Heroes Profile team has taken the site back. The logo is whole again, the colours have returned, and the whispers have stopped. Staff remain on watch. Our sources whisper that more heroes may yet find their way to the Nexus, and if they do, Heroes Profile will be here tracking every game.', { days });
     },
     articles() {
       const games = this.allGames || 1;
       const list = [
         {
-          headline: `Nexus Loses ${this.compact(this.allStat('spell_damage'))} Health to the Void, Sources Say`,
-          body: `Investigators confirm ${this.format(this.allStat('spell_damage'))} Void damage, about ${this.format(Math.round(this.allStat('spell_damage') / games))} a game. `
-            + `Her best single outing dealt ${this.recordDisplay('spell_damage')}.`,
+          headline: this.$t('Nexus Loses :amount Health to the Void, Sources Say', { amount: this.compact(this.allStat('spell_damage')) }),
+          body: this.$t('Investigators confirm :total Void damage, about :pergame a game. Her best single outing dealt :best.', {
+            total: this.format(this.allStat('spell_damage')),
+            pergame: this.format(Math.round(this.allStat('spell_damage') / games)),
+            best: this.recordDisplay('spell_damage'),
+          }),
         },
         {
-          headline: `Xal'atath Dies ${this.format(this.allStat('deaths'))} Times, Remains Unrepentant`,
-          body: `That's ${(this.allStat('deaths') / games).toFixed(1)} deaths a game and ${this.format(Math.floor(this.allStat('time_spent_dead') / 86400))} days spent sealed in the dagger. `
-            + `She has declined to comment.`,
+          headline: this.$t("Xal'atath Dies :deaths Times, Remains Unrepentant", { deaths: this.format(this.allStat('deaths')) }),
+          body: this.$t("That's :pergame deaths a game and :days days spent sealed in the dagger. She has declined to comment.", {
+            pergame: (this.allStat('deaths') / games).toFixed(1),
+            days: this.format(Math.floor(this.allStat('time_spent_dead') / 86400)),
+          }),
         },
         {
-          headline: `${this.format(this.allStat('bans'))} Drafts Ban Her. She Spreads Anyway`,
-          body: `Bans counted toward the corruption meter too, so every attempt to seal her away only fed the Void.`,
+          headline: this.$t(':bans Drafts Ban Her. She Spreads Anyway', { bans: this.format(this.allStat('bans')) }),
+          body: this.$t('Bans counted toward the corruption meter too, so every attempt to seal her away only fed the Void.'),
         },
       ];
       if (this.allMaps.length) {
         const map = this.allMaps[0];
         list.push({
-          headline: `${this.mapName(map.game_map)} Declared Her Favorite Battleground`,
-          body: `She won ${this.winRate(map.wins, map.games)} of ${this.format(map.games)} games there, her best of any map.`,
+          headline: this.$t(':map Declared Her Favorite Battleground', { map: this.mapName(map.game_map) }),
+          body: this.$t('She won :winrate of :games games there, her best of any map.', { winrate: this.winRate(map.wins, map.games), games: this.format(map.games) }),
         });
       }
       const tourists = this.allDevotees.rows.find((row) => String(row.bucket) === '1');
       const devoted = this.allDevotees.rows.find((row) => String(row.bucket) === '10+');
       if (tourists && this.allDevotees.total) {
         list.push({
-          headline: `${this.percent(tourists.players, this.allDevotees.total)} of Heroes Tried Her Once and Fled`,
-          body: `${this.format(this.allDevotees.total)} players answered her call. ${devoted ? `${this.format(devoted.players)} of them stayed for 10 games or more.` : ''}`,
+          headline: this.$t(':percent of Heroes Tried Her Once and Fled', { percent: this.percent(tourists.players, this.allDevotees.total) }),
+          body: this.$t(':format players answered her call.', { format: this.format(this.allDevotees.total) })
+            + (devoted ? ' ' + this.$t(':count of them stayed for 10 games or more.', { count: this.format(devoted.players) }) : ''),
         });
       }
       if (this.recap.eyeHunt && this.recap.eyeHunt.finders) {
         list.push({
-          headline: `${this.format(this.recap.eyeHunt.finders)} Mortals Claim to Have Seen "The Eye"`,
-          body: `Witnesses describe a single eye hidden somewhere on the site. Finders now bear the Mark of the Void beside their names.`,
+          headline: this.$t(':count Mortals Claim to Have Seen "The Eye"', { count: this.format(this.recap.eyeHunt.finders) }),
+          body: this.$t('Witnesses describe a single eye hidden somewhere on the site. Finders now bear the Mark of the Void beside their names.'),
         });
       }
       if (this.allVictims.length) {
         const victim = this.allVictims[0];
         list.push({
-          headline: `${this.heroName(victim.hero)} Players Request Therapy`,
-          body: `She won ${this.winRate(victim.wins, victim.games)} of her ${this.format(victim.games)} games against ${this.heroName(victim.hero)}, `
-            + `${this.edge(victim).toFixed(1)} points better than everyone else manages against them.`,
+          headline: this.$t(':hero Players Request Therapy', { hero: this.heroName(victim.hero) }),
+          body: this.$t('She won :winrate of her :games games against :hero, :edge points better than everyone else manages against them.', {
+            winrate: this.winRate(victim.wins, victim.games),
+            games: this.format(victim.games),
+            hero: this.heroName(victim.hero),
+            edge: this.edge(victim).toFixed(1),
+          }),
         });
       }
       if (this.allNerf) {
         list.push({
-          headline: 'Blizzard Responds With Balance Update',
-          body: `${this.allNerf.verdict} Win rate went from ${this.allNerf.rows[0].before} to ${this.allNerf.rows[0].after}.`,
+          headline: this.$t('Blizzard Responds With Balance Update'),
+          body: this.allNerf.verdict + ' ' + this.$t('Win rate went from :before to :after.', { before: this.allNerf.rows[0].before, after: this.allNerf.rows[0].after }),
         });
       }
       return list;
@@ -1290,7 +1301,7 @@ export default {
     },
     edgeLabel(row) {
       const edge = this.edge(row);
-      return `${edge >= 0 ? '+' : ''}${edge.toFixed(1)} pts vs usual`;
+      return this.$t(':edge pts vs usual', { edge: `${edge >= 0 ? '+' : ''}${edge.toFixed(1)}` });
     },
     jumpTo(id) {
       const el = document.getElementById(id);
@@ -1351,7 +1362,7 @@ export default {
       }
       const rate = (value, total) => (total ? (value / total) * 100 : 0);
       const pct = (value) => `${value.toFixed(1)}%`;
-      const points = (from, to) => `${to - from >= 0 ? '+' : ''}${(to - from).toFixed(1)} pts`;
+      const points = (from, to) => this.$t(':points pts', { points: `${to - from >= 0 ? '+' : ''}${(to - from).toFixed(1)}` });
       const relative = (from, to) => (from ? `${to - from >= 0 ? '+' : ''}${(((to - from) / from) * 100).toFixed(1)}%` : '-');
       const number = (from, to, label, digits = 0) => ({
         label,
@@ -1368,13 +1379,13 @@ export default {
       const banAfter = rate(after.bans, after.total_games);
 
       const drop = winBefore - winAfter;
-      let verdict = 'She shrugged it off. Her win rate barely moved.';
+      let verdict = this.$t('She shrugged it off. Her win rate barely moved.');
       if (drop >= 2) {
-        verdict = `It worked. Her win rate fell ${drop.toFixed(1)} points.`;
+        verdict = this.$t('It worked. Her win rate fell :points points.', { points: drop.toFixed(1) });
       } else if (drop >= 0.5) {
-        verdict = `It stung, a little. Her win rate fell ${drop.toFixed(1)} points.`;
+        verdict = this.$t('It stung, a little. Her win rate fell :points points.', { points: drop.toFixed(1) });
       } else if (drop <= -0.5) {
-        verdict = `It backfired. Her win rate went up ${Math.abs(drop).toFixed(1)} points.`;
+        verdict = this.$t('It backfired. Her win rate went up :points points.', { points: Math.abs(drop).toFixed(1) });
       }
 
       return {
@@ -1434,7 +1445,7 @@ export default {
       return `${hour % 12 || 12}${hour < 12 ? 'a' : 'p'}`;
     },
     compact(value) {
-      return new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(value || 0);
+      return new Intl.NumberFormat(siteLocale(), { notation: 'compact', maximumFractionDigits: 1 }).format(value || 0);
     },
     formatDate(value) {
       return value ? formatLocalDate(moment.utc(value), { dateStyle: 'medium', timeZone: 'UTC' }) : '';
@@ -1446,12 +1457,16 @@ export default {
     duration(seconds) {
       const minutes = Math.round(seconds / 60);
       if (minutes < 1) {
-        return `${Math.round(seconds)} seconds`;
+        return this.$t(':count seconds', { count: Math.round(seconds) });
       }
       if (minutes < 120) {
-        return `${minutes} minute${minutes === 1 ? '' : 's'}`;
+        return minutes === 1 ? this.$t('1 minute') : this.$t(':count minutes', { count: minutes });
       }
-      return `${(minutes / 60).toFixed(1)} hours`;
+      return this.$t(':count hours', { count: (minutes / 60).toFixed(1) });
+    },
+    // A number set in bold inside a translated sentence (v-html).
+    bold(value) {
+      return `<span class="font-bold">${value}</span>`;
     },
     heroName(id) {
       const hero = this.recap.heroes[id];
@@ -1463,11 +1478,11 @@ export default {
     },
     talentName(id) {
       const talent = this.recap.talents[id];
-      return talent ? this.$talentName(talent) : 'Unknown talent';
+      return talent ? this.$talentName(talent) : this.$t('Unknown talent');
     },
     awardTitle(id) {
       const award = this.recap.awards[id];
-      return award ? award.title : id;
+      return award ? this.$t(award.title) : id;
     },
     drawDailyChart() {
       if (!this.daily.length || !this.$refs.dailyChart) {
@@ -1477,6 +1492,7 @@ export default {
       const labels = this.daily.map((row) => formatLocalDate(moment.utc(row.day), { month: 'short', day: 'numeric', timeZone: 'UTC' }));
       const radius = this.daily.map((row) => (stageDays.has(moment.utc(row.day).format('YYYY-MM-DD')) ? 8 : 2));
 
+      const nerfLabel = this.$t('Nerfed (balance update)');
       const nerfDay = formatLocalDate(moment.utc(this.nerf && this.nerf.after.first_game ? this.nerf.after.first_game : NERF_DATE), { month: 'short', day: 'numeric', timeZone: 'UTC' });
       // Dashed vertical line on the balance update day.
       const nerfMarker = {
@@ -1500,7 +1516,7 @@ export default {
           ctx.setLineDash([]);
           ctx.fillStyle = '#f87171';
           ctx.font = 'bold 14px sans-serif';
-          ctx.fillText('Nerfed (balance update)', x + 6, top + 16);
+          ctx.fillText(nerfLabel, x + 6, top + 16);
           ctx.restore();
         },
       };
@@ -1512,7 +1528,7 @@ export default {
           labels,
           datasets: [
             {
-              label: 'Games',
+              label: this.$t('Games'),
               data: this.daily.map((row) => row.games),
               borderColor: '#c084fc',
               backgroundColor: 'rgba(192, 132, 252, 0.2)',
@@ -1521,7 +1537,7 @@ export default {
               yAxisID: 'y',
             },
             {
-              label: 'Win rate %',
+              label: this.$t('Win rate %'),
               data: this.daily.map((row) => (row.games ? Number(((row.wins / row.games) * 100).toFixed(1)) : null)),
               borderColor: '#9ca3af',
               borderDash: [6, 4],
@@ -1597,7 +1613,7 @@ export default {
       try {
         await navigator.share({
           files: [file],
-          title: "Xal'atath Void Corruption",
+          title: this.$t("Xal'atath Void Corruption"),
           text: `${this.shareText} ${window.location.origin}/Event/Xalatath`,
         });
       } catch (e) {
@@ -1628,7 +1644,7 @@ export default {
       ]);
 
       const x = 340;
-      const title = `XAL'ATATH VOID CORRUPTION${this.mode !== 'all' ? ` · ${this.modeLabel.toUpperCase()}` : ''}`;
+      const title = `${this.$t("Xal'atath Void Corruption")}${this.mode !== 'all' ? ` · ${this.$t(this.modeLabel)}` : ''}`.toUpperCase();
 
       // Never played or faced her: logo and text centred vertically, like the on-page banner.
       if (this.cardEmpty) {
@@ -1664,25 +1680,25 @@ export default {
       if (c.games > 0 && c.faced && c.faced.games) {
         ctx.font = '20px sans-serif';
         ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-        ctx.fillText(`Faced her in ${this.format(c.faced.games)} games: ≈${this.format(c.faced.involved)} deaths involving her, ≈${this.format(c.faced.killing_blows)} to her killing blow`, x, 252);
+        ctx.fillText(this.$t('Faced her in :games games: :involved deaths involving her, :kills to her killing blow.', { games: this.format(c.faced.games), involved: `≈${this.format(c.faced.involved)}`, kills: `≈${this.format(c.faced.killing_blows)}` }), x, 252);
         ctx.fillStyle = '#ffffff';
       }
 
       if (c.games > 0) {
         ctx.font = '30px sans-serif';
-        ctx.fillText(`Fed the Void ${this.format(c.games)} games, won ${this.format(c.wins)} (${this.winRate(c.wins, c.games)})`, x, 180);
+        ctx.fillText(this.$t('Fed the Void :games games, won :wins (:winrate)', { games: this.format(c.games), wins: this.format(c.wins), winrate: this.winRate(c.wins, c.games) }), x, 180);
 
         ctx.font = '20px sans-serif';
         ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-        const modes = (c.modes || []).slice(0, 3).map((mode) => `${mode.name} ${this.winRate(mode.wins, mode.games)}`).join('   ·   ');
+        const modes = (c.modes || []).slice(0, 3).map((mode) => `${this.$t(mode.name)} ${this.winRate(mode.wins, mode.games)}`).join('   ·   ');
         if (modes) {
-          ctx.fillText(`Win rate by mode:   ${modes}`, x, 216);
+          ctx.fillText(`${this.$t('Win rate by mode:')}   ${modes}`, x, 216);
         }
 
         if (c.build) {
           ctx.fillStyle = '#c9a8ff';
           ctx.font = 'bold 16px sans-serif';
-          ctx.fillText('PLAYED BUILD', x, 292);
+          ctx.fillText(this.$t('Played build').toUpperCase(), x, 292);
           talentImages.forEach((img, i) => {
             if (img) {
               ctx.drawImage(img, x + i * 70, 302, 60, 60);
@@ -1690,18 +1706,18 @@ export default {
           });
           ctx.fillStyle = '#ffffff';
           ctx.font = '20px sans-serif';
-          ctx.fillText(`${this.format(c.build.games)} games`, x + 7 * 70 + 10, 326);
-          ctx.fillText(`${this.winRate(c.build.wins, c.build.games)} won`, x + 7 * 70 + 10, 352);
+          ctx.fillText(this.$t(':count games', { count: this.format(c.build.games) }), x + 7 * 70 + 10, 326);
+          ctx.fillText(this.$t(':winrate won', { winrate: this.winRate(c.build.wins, c.build.games) }), x + 7 * 70 + 10, 352);
         }
 
-        [['PLAYED WITH', c.allies || [], x, 0], ['PLAYED AGAINST', c.enemies || [], x + 420, (c.allies || []).length]].forEach(([title, rows, left, offset]) => {
+        [[this.$t('Played with').toUpperCase(), c.allies || [], x, 0], [this.$t('Played against').toUpperCase(), c.enemies || [], x + 420, (c.allies || []).length]].forEach(([title, rows, left, offset]) => {
           ctx.fillStyle = '#c9a8ff';
           ctx.font = 'bold 16px sans-serif';
           // Column headers once, numbers right-aligned under them.
           ctx.fillText(title, left, 400);
           ctx.textAlign = 'right';
-          ctx.fillText('GAMES', left + 290, 400);
-          ctx.fillText('WIN RATE', left + 390, 400);
+          ctx.fillText(this.$t('Games').toUpperCase(), left + 290, 400);
+          ctx.fillText(this.$t('Win rate').toUpperCase(), left + 390, 400);
           ctx.textAlign = 'left';
           rows.forEach((mate, i) => {
             const top = 415 + i * 62;
@@ -1711,7 +1727,7 @@ export default {
             }
             ctx.fillStyle = '#ffffff';
             ctx.font = '22px sans-serif';
-            ctx.fillText(mate.hero ? mate.hero.name : '', left + 62, top + 33);
+            ctx.fillText(mate.hero ? this.$heroName(mate.hero) : '', left + 62, top + 33);
             ctx.textAlign = 'right';
             ctx.fillText(this.format(mate.games), left + 290, top + 33);
             ctx.fillText(this.winRate(mate.wins, mate.games), left + 390, top + 33);
@@ -1735,7 +1751,7 @@ export default {
           ctx.textAlign = 'center';
           ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
           ctx.font = 'bold 16px sans-serif';
-          ctx.fillText(tile.label.toUpperCase(), left + 130, 265);
+          ctx.fillText(this.$t(tile.label).toUpperCase(), left + 130, 265);
           ctx.fillStyle = '#ffffff';
           ctx.font = 'bold 42px sans-serif';
           ctx.fillText(tile.value, left + 130, 318);

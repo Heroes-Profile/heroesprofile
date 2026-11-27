@@ -6,7 +6,7 @@
     <a
       v-for="side in sides"
       :key="side"
-      :class="[staticClasses, 'rounded', { 'flex-1': stretch }, (stretch || dark) && selectedSide !== side ? 'text-subtext' : 'text-white', selectedSide === side ? (stretch || dark ? 'bg-teal' : 'bg-surface-1') : disabled ? 'opacity-50 cursor-not-allowed' : (stretch || dark ? 'hover:text-white hover:bg-surface-2' : 'hover:bg-lteal')]"
+      :class="[staticClasses, 'rounded', { 'flex-auto whitespace-nowrap': stretch }, (stretch || dark) && selectedSide !== side ? 'text-subtext' : 'text-white', selectedSide === side ? (stretch || dark ? 'bg-teal' : 'bg-surface-1') : disabled ? 'opacity-50 cursor-not-allowed' : (stretch || dark ? 'hover:text-white hover:bg-surface-2' : 'hover:bg-lteal')]"
       :alt="tabs ? labels[side] : { left: tab1alt, right: tab2alt, third: tab3alt }[side]"
       role="button"
       @click="handleClick(side)"

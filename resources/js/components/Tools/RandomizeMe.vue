@@ -86,7 +86,7 @@
 
             <div class="flex flex-wrap gap-3">
               <custom-button color="teal" class="font-semibold" :ignoreclick="true" :alt="'Randomize again'" @click="roll(['hero', 'map', 'region', 'mode', 'build'])">{{ $t('Randomize again') }}</custom-button>
-              <custom-button v-if="showHero" :href="`/Global/Talents/${pick.hero.name}`" :targetblank="true" class="font-semibold" :alt="'Open builds'">{{ $t('Open :hero builds', { hero: $heroName(pick.hero) }) }}</custom-button>
+              <custom-button v-if="showHero" :href="`/Global/Talents/${pick.hero.name}`" :targetblank="true" class="font-semibold" :alt="$t('Open builds')">{{ $t('Open :hero builds', { hero: $heroName(pick.hero) }) }}</custom-button>
             </div>
 
             <div class="flex flex-wrap items-center gap-2 text-xs">

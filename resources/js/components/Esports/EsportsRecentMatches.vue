@@ -27,11 +27,11 @@
           <!-- The whole row opens the match; the match ID and player links sit on top of it -->
           <a :href="matchUrl(row)" class="absolute inset-0 z-[1]" :aria-label="$t('Open match')"></a>
 
-          <div class="relative flex-1 md:max-w-[25.625rem] min-w-[18.75rem] self-stretch flex items-center max-md:justify-center pl-6 py-4">
+          <div class="relative flex-1 max-md:basis-full md:max-w-[25.625rem] min-w-[18.75rem] self-stretch flex items-center max-md:justify-center pl-6 py-4">
             <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="mapArt(row)"></div>
             <div class="absolute inset-y-0 left-0 w-1.5 bg-teal"></div>
             <div class="relative flex flex-col gap-1.5 whitespace-nowrap">
-              <span class="font-bold">{{ row.game_map ? row.game_map.name : '' }}</span>
+              <span class="font-bold">{{ row.game_map ? $mapName(row.game_map) : '' }}</span>
               <span class="text-base font-medium text-header">{{ $t('Game :game · Round :round', { game: row.game, round: row.round }) }}</span>
               <span v-if="rowContext(row)" class="text-xs text-subtext">{{ rowContext(row) }}</span>
               <span class="text-xs">{{ formatRowDate(row.game_date) }}</span>
@@ -43,7 +43,7 @@
           </div>
 
           <!-- Head to head: each team either side of the series score after this game; this game's winner marked -->
-          <div class="relative flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-6 px-4 py-4 min-w-0">
+          <div class="relative flex-1 max-md:basis-full grid grid-cols-[1fr_auto_1fr] items-center gap-6 px-4 py-4 min-w-0">
             <div v-for="(team, position) in sidesOf(row)" :key="team" :class="['flex items-center gap-3 min-w-0 row-start-1', position === 0 ? 'flex-row-reverse text-right col-start-1' : 'col-start-3']">
               <img class="w-12 h-12 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="teamImage(row, team) || fallbackImage" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = fallbackImage; } }" :alt="teamName(row, team)"/>
               <div :class="['flex flex-col gap-1 min-w-0', position === 0 ? 'items-end' : 'items-start']">
@@ -90,7 +90,7 @@
             <span class="w-[15rem] shrink-0 px-4">{{ $t('Series') }}</span>
           </div>
           <template v-for="(row, index) in data" :key="row.replayID">
-            <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="matchUrl(row)" :title="row.game_map ? row.game_map.name : ''" :date="formatRowDate(row.game_date)" :map-art="row.game_map ? row.game_map.sanitized_map_name : null">
+            <match-row-mobile class="md:hidden" :bg="index % 2 ? 'bg-surface-2' : 'bg-surface-1'" :href="matchUrl(row)" :title="row.game_map ? $mapName(row.game_map) : ''" :date="formatRowDate(row.game_date)" :map-art="row.game_map ? row.game_map.sanitized_map_name : null">
               {{ teamName(row, sidesOf(row)[0]) }} <span class="text-white font-medium">{{ seriesScore(row, sidesOf(row)[0]) }} – {{ seriesScore(row, sidesOf(row)[1]) }}</span> {{ $t(':teamname · Game :game · Round :round', { teamname: teamName(row, sidesOf(row)[1]), game: row.game, round: row.round }) }}
             </match-row-mobile>
 <div :class="['max-md:hidden group/row relative flex items-center justify-between rounded overflow-hidden mb-1', index % 2 ? 'bg-surface-2' : 'bg-surface-1']">
@@ -100,7 +100,7 @@
               <div class="absolute inset-0 bg-cover bg-center opacity-40 [mask-image:linear-gradient(to_right,black_70%,transparent)]" :style="mapArt(row)"></div>
               <div class="absolute inset-y-0 left-0 w-1.5 bg-teal"></div>
               <div class="relative flex flex-col whitespace-nowrap">
-                <span class="font-bold">{{ row.game_map ? row.game_map.name : '' }}</span>
+                <span class="font-bold">{{ row.game_map ? $mapName(row.game_map) : '' }}</span>
                 <span class="text-xs">{{ formatRowDate(row.game_date) }}</span>
                 <span v-if="rowContext(row)" class="text-xs text-subtext">{{ rowContext(row) }}</span>
               </div>

@@ -14,7 +14,7 @@
         </div>
         <div class="flex items-end justify-between gap-4">
           <div class="min-w-0">
-            <h2 class="text-xl font-bold">{{ league.name }}</h2>
+            <h2 class="text-xl font-bold">{{ $t(league.name) }}</h2>
             <p class="text-sm text-subtext mt-1">{{ $t(league.description) }}</p>
           </div>
           <span class="inline-flex items-center whitespace-nowrap shrink-0"><span class="group-hover/bt:underline">{{ $t('View stats') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
