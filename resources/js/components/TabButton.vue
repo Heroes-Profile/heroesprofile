@@ -1,12 +1,12 @@
 <template>
   <!-- select-none: clicking tabs quickly mustn't highlight their labels -->
   <!-- Wraps onto more rows when the tabs don't fit (a page's section nav on a phone) -->
-  <!-- dark: a dark bar with the picked tab in teal, as in the redesign (role chips); stretch: that bar across the page as a section nav -->
-  <div :class="['flex-wrap justify-center rounded p-1 gap-1 select-none', stretch ? 'flex w-full' : 'inline-flex', stretch ? 'bg-surface' : dark ? 'bg-surface-1' : 'bg-teal']">
+  <!-- dark: a dark bar with the picked tab in teal, as in the redesign (role chips); stretch: that bar across the page as a section nav, two even columns on phones -->
+  <div :class="['flex-wrap justify-center rounded p-1 gap-1 select-none', stretch ? 'w-full max-md:grid max-md:grid-cols-2 md:flex' : 'inline-flex', stretch ? 'bg-surface' : dark ? 'bg-surface-1' : 'bg-teal']">
     <a
       v-for="side in sides"
       :key="side"
-      :class="[staticClasses, 'rounded', { 'flex-auto whitespace-nowrap': stretch }, (stretch || dark) && selectedSide !== side ? 'text-subtext' : 'text-white', selectedSide === side ? (stretch || dark ? 'bg-teal' : 'bg-surface-1') : disabled ? 'opacity-50 cursor-not-allowed' : (stretch || dark ? 'hover:text-white hover:bg-surface-2' : 'hover:bg-lteal')]"
+      :class="[staticClasses, 'rounded', { 'md:flex-auto md:whitespace-nowrap max-md:[word-break:keep-all] max-md:last:odd:col-span-2': stretch }, (stretch || dark) && selectedSide !== side ? 'text-subtext' : 'text-white', selectedSide === side ? (stretch || dark ? 'bg-teal' : 'bg-surface-1') : disabled ? 'opacity-50 cursor-not-allowed' : (stretch || dark ? 'hover:text-white hover:bg-surface-2' : 'hover:bg-lteal')]"
       :alt="tabs ? labels[side] : { left: tab1alt, right: tab2alt, third: tab3alt }[side]"
       role="button"
       @click="handleClick(side)"
