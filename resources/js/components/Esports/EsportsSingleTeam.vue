@@ -67,7 +67,7 @@
                   </a>
                   <div class="flex flex-col min-w-0 flex-1">
                     <a class="group/bt font-semibold truncate" :href="row.playerlink"><span class="group-hover/bt:underline">{{ row.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-                    <span v-if="row.most_played_role" class="text-sm text-subtext">{{ row.most_played_role }}</span>
+                    <span v-if="row.most_played_role" class="text-sm text-subtext">{{ $t(row.most_played_role) }}</span>
                   </div>
                   <span class="shrink-0 text-sm text-subtext">{{ $t(':played games', { played: row.games_played }) }}</span>
                 </div>
@@ -85,7 +85,7 @@
                   <img class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="enemy.icon_url || isLoadingImageUrl" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = isLoadingImageUrl; } }" :alt="teamName(enemy.team_name || enemy.team)"/>
                   <div class="flex flex-col min-w-0 flex-1">
                     <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ teamName(enemy.team_name || enemy.team) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
-                    <span class="text-sm text-subtext">{{ enemy.inputhover }}</span>
+                    <span class="text-sm text-subtext">{{ localHover(enemy.inputhover) }}</span>
                   </div>
                 </a>
               </div>
@@ -111,7 +111,7 @@
               <h3 class="text-2xl font-bold">{{ $t('Maps Banned by :team', { team: teamName(team) }) }}</h3>
               <div class="w-0 min-w-full flex flex-wrap gap-3 max-md:gap-2 max-md:justify-center">
                 <map-image-wrapper v-for="(item, index) in data.maps_banned" :key="index" size="tile" :map="item.game_map">
-                  <image-hover-box :title="$mapName(item.game_map)" :paragraph-one="item.inputhover"></image-hover-box>
+                  <image-hover-box :title="$mapName(item.game_map)" :paragraph-one="localHover(item.inputhover)"></image-hover-box>
                 </map-image-wrapper>
               </div>
             </div>
@@ -124,14 +124,14 @@
               </div>
               <div class="flex flex-wrap gap-6 justify-evenly">
                 <group-box class="!m-0" :useinputforhover="true" :text="'Most Played Against'" :data="mostPlayedAgainst" :min-tiles="3" empty-note="No games yet."></group-box>
-                <group-box class="!m-0" :useinputforhover="true" :text="'Most Won Against'" :data="(data.heroes_won_against || []).slice(0, 3)" :min-tiles="3" empty-note="No wins yet."></group-box>
-                <group-box class="!m-0" :useinputforhover="true" :text="'Most Lost Against'" :data="(data.heroes_lost_against || []).slice(0, 3)" :min-tiles="3" empty-note="No losses yet."></group-box>
+                <group-box class="!m-0" :useinputforhover="true" :text="'Most Won Against'" :data="localHovers((data.heroes_won_against || []).slice(0, 3))" :min-tiles="3" empty-note="No wins yet."></group-box>
+                <group-box class="!m-0" :useinputforhover="true" :text="'Most Lost Against'" :data="localHovers((data.heroes_lost_against || []).slice(0, 3))" :min-tiles="3" empty-note="No losses yet."></group-box>
               </div>
               <div class="flex flex-col gap-4">
                 <h3 class="text-2xl font-bold">{{ $t('Heroes Played') }}</h3>
                 <div class="flex flex-wrap gap-3 max-md:gap-2 max-md:justify-center">
                   <hero-image-wrapper v-for="(item, index) in data.heroes" :key="index" size="tile" :hero="item.hero">
-                    <image-hover-box :title="item.name" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + (item.wins + item.losses)"></image-hover-box>
+                    <image-hover-box :title="$heroName(item.hero)" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + (item.wins + item.losses)"></image-hover-box>
                   </hero-image-wrapper>
                 </div>
               </div>
@@ -143,24 +143,24 @@
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
       <div class="grid xl:grid-cols-2 gap-6 items-start">
-        <panel-box :title="'Heroes Banned by ' + teamName(team)">
-          <group-box v-if="(data.team_ban_date || []).length" class="!m-0 self-center" :useinputforhover="true" :text="'Most Banned'" :data="data.team_ban_date.slice(0, 3)"></group-box>
+        <panel-box :title="$t('Heroes Banned by :team', { team: teamName(team) })">
+          <group-box v-if="(data.team_ban_date || []).length" class="!m-0 self-center" :useinputforhover="true" :text="'Most Banned'" :data="localHovers(data.team_ban_date.slice(0, 3))"></group-box>
           <div>
             <h3 class="text-sm text-subtext mb-2">{{ $t('All Bans') }}</h3>
             <div class="flex flex-wrap gap-3 max-md:gap-2">
               <hero-image-wrapper v-for="(item, index) in data.team_ban_date" :key="index" size="tile" :hero="item.hero">
-                <image-hover-box :title="item.name" :paragraph-one="item.inputhover"></image-hover-box>
+                <image-hover-box :title="$heroName(item.hero)" :paragraph-one="localHover(item.inputhover)"></image-hover-box>
               </hero-image-wrapper>
             </div>
           </div>
         </panel-box>
-        <panel-box :title="'Heroes Banned Against ' + teamName(team)">
-          <group-box v-if="(data.enemy_ban_date || []).length" class="!m-0 self-center" :useinputforhover="true" :text="'Most Banned'" :data="data.enemy_ban_date.slice(0, 3)"></group-box>
+        <panel-box :title="$t('Heroes Banned Against :team', { team: teamName(team) })">
+          <group-box v-if="(data.enemy_ban_date || []).length" class="!m-0 self-center" :useinputforhover="true" :text="'Most Banned'" :data="localHovers(data.enemy_ban_date.slice(0, 3))"></group-box>
           <div>
             <h3 class="text-sm text-subtext mb-2">{{ $t('All Bans') }}</h3>
             <div class="flex flex-wrap gap-3 max-md:gap-2">
               <hero-image-wrapper v-for="(item, index) in data.enemy_ban_date" :key="index" size="tile" :hero="item.hero">
-                <image-hover-box :title="item.name" :paragraph-one="item.inputhover"></image-hover-box>
+                <image-hover-box :title="$heroName(item.hero)" :paragraph-one="localHover(item.inputhover)"></image-hover-box>
               </hero-image-wrapper>
             </div>
           </div>
@@ -296,7 +296,7 @@
           </a>
           <div class="flex flex-col min-w-0 flex-1">
             <a class="group/bt font-semibold truncate" :href="row.playerlink"><span class="group-hover/bt:underline">{{ row.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-            <span v-if="row.most_played_role" class="text-sm text-subtext">{{ row.most_played_role }}</span>
+            <span v-if="row.most_played_role" class="text-sm text-subtext">{{ $t(row.most_played_role) }}</span>
           </div>
           <span class="shrink-0 text-sm text-subtext">{{ $t(':played games', { played: row.games_played }) }}</span>
         </div>
@@ -306,7 +306,7 @@
           <img class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="enemy.icon_url || isLoadingImageUrl" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = isLoadingImageUrl; } }" :alt="teamName(enemy.team_name || enemy.team)"/>
           <div class="flex flex-col min-w-0 flex-1">
             <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ teamName(enemy.team_name || enemy.team) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
-            <span class="text-sm text-subtext">{{ enemy.inputhover }}</span>
+            <span class="text-sm text-subtext">{{ localHover(enemy.inputhover) }}</span>
           </div>
         </a>
       </div>
@@ -427,7 +427,7 @@ export default {
     subtitle() {
       return [
         this.modifiedseason ? this.$t('Season :season', { season: this.modifiedseason }) : null,
-        this.esport == 'NGS' && this.modifieddivision ? 'Division ' + this.modifieddivision : null,
+        this.esport == 'NGS' && this.modifieddivision ? this.$t('Division :division', { division: this.modifieddivision }) : null,
         this.series,
       ].filter(Boolean).join(' · ');
     },
@@ -499,6 +499,31 @@ export default {
   watch: {
   },
   methods: {
+    // The server writes these hovers in English; rebuild them in the page's language
+    localHover(text) {
+      if (!text) {
+        return text;
+      }
+      let m = text.match(/^Lost against team (.+) (\d+(?:\.\d+)?) times \(([\d.]+)% of all games lost as (.+)\)$/);
+      if (m) {
+        return this.$t('Lost against team :enemy :count times (:percent% of all games lost as :team)', { enemy: m[1], count: m[2], percent: m[3], team: m[4] });
+      }
+      m = text.match(/^(Won while on|Lost against) a team with (.+) (\d+) times \(([\d.]+)% of all games (?:won|lost) as (.+)\)$/);
+      if (m) {
+        const key = m[1] === 'Lost against'
+          ? 'Lost against a team with :hero :count times (:percent% of all games lost as :team)'
+          : 'Won while on a team with :hero :count times (:percent% of all games won as :team)';
+        return this.$t(key, { hero: this.$heroName(m[2]), count: m[3], percent: m[4], team: m[5] });
+      }
+      m = text.match(/^Times Banned: (\d+)$/);
+      if (m) {
+        return this.$t('Times Banned: :count', { count: m[1] });
+      }
+      return text;
+    },
+    localHovers(rows) {
+      return rows.map(row => ({ ...row, inputhover: this.localHover(row.inputhover) }));
+    },
     formatDurationText,
     // The server's "1 hours, 26 minutes, 40 seconds" as "1h, 26m, 40s", which formatDurationText reads
     shortDuration(text) {
