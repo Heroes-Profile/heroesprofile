@@ -61,20 +61,23 @@
         <hero-image-wrapper size="match" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
         <div class="flex flex-col gap-1.5 whitespace-nowrap">
           <span class="font-bold">{{ $mapName(data.game_map) }}</span>
-          <div class="flex flex-col">
-            <span class="text-base font-medium text-header">{{ esport ? $t('Game :game · Round :round', { game: data.game, round: data.round }) : $t(data.game_type.name) }}</span>
-            <span v-if="data.game_length" class="text-sm">{{ $t(':round minutes', { round: Math.round(data.game_length / 60) }) }}</span>
-          </div>
-          <span class="text-xs">{{ formatRowDate(data.game_date) }}</span>
+          <!-- Esports rows, as the esports Figma: game, round and length on one line, no date -->
+          <span v-if="esport" class="text-sm font-medium text-header">{{ [$t('Game :game · Round :round', { game: data.game, round: data.round }), data.game_length ? $t(':minute min', { minute: Math.round(data.game_length / 60) }) : null].filter(Boolean).join(' · ') }}</span>
+          <template v-else>
+            <div class="flex flex-col">
+              <span class="text-base font-medium text-header">{{ $t(data.game_type.name) }}</span>
+              <span v-if="data.game_length" class="text-sm">{{ $t(':round minutes', { round: Math.round(data.game_length / 60) }) }}</span>
+            </div>
+            <span class="text-xs">{{ formatRowDate(data.game_date) }}</span>
+          </template>
         </div>
       </div>
     </div>
 
-    <!-- Esports games: their team against the other, where a ranked game shows MMR -->
-    <div v-if="esport" class="relative flex flex-col gap-0.5 justify-center px-4 w-[26.875rem] shrink-0">
-      <span class="text-base font-medium text-subtext">{{ data.winner === 1 ? $t('Won') : $t('Lost') }} with</span>
-      <span class="text-xl font-semibold truncate">{{ $ngsTeam(data.own_team).name }}</span>
-      <span class="text-sm text-subtext truncate">{{ $t('vs :team', { team: $ngsTeam(data.opponent_team).name }) }}</span>
+    <!-- Esports games: a Win/Loss tag and the team they played, where a ranked game shows MMR -->
+    <div v-if="esport" class="relative flex flex-col gap-1.5 justify-center items-start px-4 w-[26.875rem] shrink-0">
+      <span :class="['px-1.5 py-0.5 rounded-[0.25rem] text-[0.625rem] font-bold uppercase tracking-wider', data.winner === 1 ? 'bg-teal/20 text-lteal' : 'bg-loss/20 text-loss']">{{ data.winner === 1 ? $t('Win') : $t('Loss') }}</span>
+      <span class="text-sm text-subtext truncate max-w-full">{{ $t('vs :team', { team: $ngsTeam(data.opponent_team).name }) }}</span>
     </div>
     <div v-else class="relative flex gap-5 items-center px-4 w-[26.875rem] shrink-0">
       <div v-for="stat in mmrStats" :key="stat.title" class="flex flex-col gap-0.5 flex-none w-[7.375rem] min-w-0">
