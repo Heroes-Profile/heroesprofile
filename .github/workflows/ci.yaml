@@ -68,7 +68,7 @@ jobs:
           exit 1
         fi
 
-  # The filter bar's component tests (tests/js): no database or server, seconds
+  # Component tests (tests/js) and the bundle size: no database or server
   js-tests:
     runs-on: ubuntu-latest
 
@@ -84,3 +84,14 @@ jobs:
 
     - name: Component tests
       run: npm run test:js
+
+    # Vite only warns about a big chunk and Cloud Build deploys it anyway; that's how
+    # app.js reached 3.4 MB. Over 500 kB, split the chunk rather than raise the limit.
+    - name: No chunk over 500 kB
+      run: |
+        set -o pipefail
+        npm run build 2>&1 | tee build.log
+        if grep -q "larger than 500 kB" build.log; then
+          echo "::error::A chunk is over 500 kB; see the build output above."
+          exit 1
+        fi
