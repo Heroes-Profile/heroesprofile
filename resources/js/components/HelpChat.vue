@@ -1,9 +1,9 @@
 <template>
   <!-- Bottom-left help (the video ad takes bottom-right). One box: the FAQ and site pages answer first, the assistant only when asked. Sits above the cookie banner while it shows. -->
   <!-- Above the nav (z-[52]), so a tall panel's close button isn't under it -->
-  <!-- Above the cookie banner while it shows, and above the footer once it scrolls into view (footerLift) -->
-  <div class="fixed left-4 z-[53] flex flex-col items-start gap-3" :style="{ bottom: `calc(max(var(--disclaimer-height, 0px), ${footerLift}px) + 1rem)` }">
-    <div v-if="open" :class="expanded ? 'w-[47.5rem]' : 'w-[26.25rem] h-[35rem] max-md:h-[65dvh]'" :style="{ height: expanded ? `calc(100dvh - 8rem - max(var(--disclaimer-height, 0px), ${footerLift}px))` : null, maxHeight: `calc(100dvh - 8rem - max(var(--disclaimer-height, 0px), ${footerLift}px))` }" class="max-w-[calc(100vw-2rem)] bg-surface-4 rounded-2xl border border-white/20 shadow-[0_0.5rem_2rem_rgba(0,0,0,0.7)] flex flex-col overflow-hidden">
+  <!-- Bottom left, lifted above the footer once it scrolls into view (footerLift); the cookie notice may sit beside or under it -->
+  <div class="fixed left-4 z-[53] flex flex-col items-start gap-3" :style="{ bottom: `calc(${footerLift}px + 1rem)` }">
+    <div v-if="open" :class="expanded ? 'w-[47.5rem]' : 'w-[26.25rem] h-[35rem] max-md:h-[65dvh]'" :style="{ height: expanded ? `calc(100dvh - 8rem - ${footerLift}px)` : null, maxHeight: `calc(100dvh - 8rem - ${footerLift}px)` }" class="max-w-[calc(100vw-2rem)] bg-surface-4 rounded-2xl border border-white/20 shadow-[0_0.5rem_2rem_rgba(0,0,0,0.7)] flex flex-col overflow-hidden">
       <!-- Window controls top-right: expand, divider, close -->
       <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
         <div class="flex items-center gap-4">

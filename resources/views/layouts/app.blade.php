@@ -212,13 +212,14 @@
           {{ __('The backend is currently offline. Some features may not be available. Please contact :email', ['email' => 'zemill@heroesprofile.com']) }}
         </div>
       @endif
+      {{-- data-footer-bar: the help button (help-chat) rises to sit just above this, credit included, once it scrolls into view --}}
+      <div data-footer-bar>
       {{-- The redesign's credit, for everyone until March 2027 --}}
       @if(now()->lt('2027-03-01'))
         @php($redesigner = collect(config('team.contributors'))->firstWhere('name', 'Bluray'))
         <redesign-credit :name="'Bluray'" :discord="{{ json_encode($redesigner['discord'] ?? null) }}"></redesign-credit>
       @endif
-      {{-- data-footer-bar: the help button (help-chat) rises to sit just above this once it scrolls into view --}}
-      <div data-footer-bar class="bg-surface text-sm px-4 md:px-8 py-6">
+      <div class="bg-surface text-sm px-4 md:px-8 py-6">
         {{-- Desktop: three columns, the outer two sharing what's left, so the links sit at the true centre whatever the sides' widths --}}
         <div class="max-w-[116rem] mx-auto flex flex-col items-center gap-4 text-center md:grid md:grid-cols-[1fr_auto_1fr] md:text-left">
           <div>
@@ -233,6 +234,7 @@
           </div>
           <div class="md:justify-self-end">Skill Tree Development, LLC<span class="mx-3">|</span><a href="https://heroesprofile.com">Heroes Profile</a><span class="mx-3">|</span><a href="/Team" class="link">{{ __('Team') }}</a></div>
         </div>
+      </div>
       </div>
       <footer-popup-disclaimer></footer-popup-disclaimer>
       @if (app()->getLocale() !== 'en')

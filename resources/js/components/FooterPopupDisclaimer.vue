@@ -39,29 +39,15 @@ export default {
       
   },
   mounted() {
-    // The help button sits above the banner: share its height as --disclaimer-height
-    if (this.popUpVar && this.$refs.card && typeof ResizeObserver !== 'undefined') {
-      this.resizeObserver = new ResizeObserver(() => this.setHeight());
-      this.resizeObserver.observe(this.$refs.card);
-    }
-  },
-  beforeUnmount() {
-    this.resizeObserver?.disconnect();
   },
   computed: {
   },
   watch: {
   },
   methods: {
-    setHeight() {
-      const height = this.popUpVar && this.$refs.card ? this.$refs.card.offsetHeight + 16 : 0;
-      document.documentElement.style.setProperty('--disclaimer-height', `${height}px`);
-    },
     closePopup(){
       localStorage.setItem('popupDisclaimer', 'true');
       this.popUpVar = false;
-      this.resizeObserver?.disconnect();
-      this.setHeight();
     }
   }
 }
