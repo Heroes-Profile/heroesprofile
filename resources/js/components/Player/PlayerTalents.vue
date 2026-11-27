@@ -69,9 +69,15 @@
       <div v-if="talentdetaildata" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
         <panel-box title="Talent stats" subtitle="Win rate, popularity and games for every talent. The best win rate on each tier is highlighted.">
           <template #right>
-            <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
+            <div class="flex flex-wrap items-center gap-4">
+              <!-- Talents no longer in the game, or picked at a tier they've since left, and builds using them: hidden unless asked for -->
+              <label class="flex items-center gap-2 text-sm text-subtext cursor-pointer">
+                <input v-model="showOldTalents" type="checkbox" class="form-checkbox">{{ $t('Show old talents') }}
+              </label>
+              <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
+            </div>
           </template>
-          <compact-talent-grid :talent-data="talentdetaildata"></compact-talent-grid>
+          <compact-talent-grid :talent-data="shownTalentDetailData"></compact-talent-grid>
         </panel-box>
       </div>
       <!-- The load failed: the error page's card in place of the data -->
@@ -89,7 +95,7 @@
 
       <div v-if="talentbuilddata" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6">
         <panel-box id="builds" title="Talent builds" subtitle="Copy a build code and paste it in game chat." class="scroll-mt-4">
-          <global-talent-builds-section :talentbuilddata="talentbuilddata" :esport="esport ? 'true' : undefined" :buildtype="'Popular'" :statfilter="'win_rate'"></global-talent-builds-section>
+          <global-talent-builds-section :talentbuilddata="shownTalentBuildData" :esport="esport ? 'true' : undefined" :buildtype="'Popular'" :statfilter="'win_rate'"></global-talent-builds-section>
           <div class="flex flex-wrap items-center justify-between gap-4">
             <span class="text-sm text-subtext">{{ $t('Want something else? Make your own build in the Talent Builder.') }}</span>
             <custom-button :href="'/Global/Talents/Builder/' + selectedHero.name" :text="'Open Talent Builder'" :alt="'Open Talent Builder'" color="teal"></custom-button>
@@ -142,6 +148,7 @@ export default {
       selectedHero: null,
       data: null,
       talentdetaildata: null,
+      showOldTalents: false,
       talentbuilddata: null,
       season: null,
       gamemap: null,
@@ -178,6 +185,19 @@ export default {
     }
   },
   computed: {
+    // Old talents and the builds with them, only when asked for
+    shownTalentDetailData() {
+      if (!this.talentdetaildata || this.showOldTalents) {
+        return this.talentdetaildata;
+      }
+      return Object.fromEntries(Object.entries(this.talentdetaildata).map(([level, rows]) => [level, rows.filter(row => row.talentInfo?.status !== 'removed')]));
+    },
+    shownTalentBuildData() {
+      if (!Array.isArray(this.talentbuilddata) || this.showOldTalents) {
+        return this.talentbuilddata;
+      }
+      return this.talentbuilddata.filter(build => !build.outdated);
+    },
     league() {
       return this.esport ? this.$esportLeague(this.esport, this.esportfilters) : null;
     },

@@ -156,11 +156,15 @@ export default {
     tiers() {
       return [1, 4, 7, 10, 13, 16, 20].map(level => {
         const talents = [...(this.talentData?.[level] || [])].sort((a, b) => a.sort - b.sort);
+        // Only current talents compete for the level's best; an old one (no longer in the game, or picked at a tier
+        // it has left) is shown greyed but never marked best
+        const current = talents.filter(talent => talent.talentInfo?.status !== 'removed');
         return {
           level,
           talents,
-          highestWinRate: Math.max(...talents.map(talent => talent.win_rate)),
-          highestPopularity: Math.max(...talents.map(talent => talent.popularity)),
+          contenders: current.length,
+          highestWinRate: Math.max(...current.map(talent => talent.win_rate)),
+          highestPopularity: Math.max(...current.map(talent => talent.popularity)),
         };
       });
     },
@@ -181,7 +185,7 @@ export default {
     },
     isBest(talent, tier) {
       const highest = this.bestBy === 'popularity' ? tier.highestPopularity : tier.highestWinRate;
-      return talent.games_played > 0 && talent[this.bestBy] === highest && tier.talents.length > 1;
+      return talent.talentInfo?.status !== 'removed' && talent.games_played > 0 && talent[this.bestBy] === highest && tier.contenders > 1;
     },
     // The win rate change from the previous patch, shown beside the win rate
     hasChange(talent) {
