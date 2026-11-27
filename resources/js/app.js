@@ -132,10 +132,10 @@ Object.entries(lazyComponents).forEach(([path, loader]) => {
     if (eagerComponents[path]) {
         return;
     }
+    // Nothing shows while a chunk loads: the page's own skeleton is the first thing in its place (the chunk is
+    // preloaded with the page, PageChunkPreload), and the top progress bar covers a slow one
     app.component(componentName(path), defineAsyncComponent({
         loader,
-        loadingComponent: eagerComponents['./components/LoadingComponent.vue'].default,
-        delay: 200,
         onError(error, retry, fail) {
             reloadForNewBuild();
             fail();
