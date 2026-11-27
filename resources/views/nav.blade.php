@@ -1,9 +1,10 @@
 <div id="mobile-header" class="md:hidden max-md:bg-surface max-md:sticky max-md:top-0 max-md:order-first max-md:z-40 max-md:w-full">
     <div class="relative flex items-center py-2 px-4 justify-center">
+{{-- The logo's words sit in boxes as wide as they are in the logo font, and the image has its size, so nothing moves while they load --}}
 <a id="mobile-logo" class="flex shrink-0 items-center whitespace-nowrap font-logo text-xl sm:text-2xl md:hidden" href="/">
-                Heroes
-                <img class="w-11 sm:w-12 shrink-0 mx-2" src="/images/logo/heroesprofilelogo.png" alt="{{ __('Heroes Profile Logo') }}" />
-                Profile
+                <span class="inline-block w-[4.09em] text-center">Heroes</span>
+                <img class="w-11 sm:w-12 shrink-0 mx-2" src="/images/logo/heroesprofilelogo.png" width="486" height="432" alt="{{ __('Heroes Profile Logo') }}" />
+                <span class="inline-block w-[4.32em] text-center">Profile</span>
         </a>
         <button  id="mobile-toggle" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 bg-blue rounded w-11 h-11 flex items-center justify-center text-2xl leading-none" aria-label="{{ __('Open menu') }}">=</button>
          
@@ -20,9 +21,9 @@
         <div class="flex items-start justify-center flex-wrap mx-auto max-md:flex-col max-md:items-stretch max-w-[120rem] md:px-8" >
              <div class="flex justify-start items-start flex-wrap max-md:flex-col max-md:items-stretch grow mr-auto max-md:mr-0 max-md:w-full max-md:justify-center">
             <a id="nav-logo" class="flex shrink-0 items-center whitespace-nowrap font-logo text-2xl md:mt-[0.375rem] max-md:self-center max-md:mb-2 max-md:h-11 max-sm:text-xl" href="/">
-                Heroes
-                <img class="w-10 max-md:w-11 sm:max-md:w-12 shrink-0 mx-2" src="/images/logo/heroesprofilelogo.png" alt="{{ __('Heroes Profile Logo') }}" />
-                Profile
+                <span class="inline-block w-[4.09em] text-center">Heroes</span>
+                <img class="w-10 max-md:w-11 sm:max-md:w-12 shrink-0 mx-2" src="/images/logo/heroesprofilelogo.png" width="486" height="432" alt="{{ __('Heroes Profile Logo') }}" />
+                <span class="inline-block w-[4.32em] text-center">Profile</span>
             </a>
             <div id="nav-content" class="ml-auto flex justify-between flex-wrap  text-sm md:flex-1 max-md:flex-col max-md:ml-0 max-md:w-full">
                 {{-- Its own group: equal space to the logo and to the buttons, as in the redesign; the padding is the least of it --}}
@@ -273,15 +274,17 @@
       @php($esportQuery = $esportNav['query'])
       {{-- The row colour as a plain background, for the menu's hover --}}
       @php($esportRowClass = $esportNav['key'] === 'Other' ? ($esportSeriesColours[$esportNav['name']] ?? $esportRowColours['Other']) : $esportRowColours[$esportNav['key']])
+      {{-- The league logo's own size, so the chip is its full width before the image loads and the row doesn't move --}}
+      @php($esportLogoSize = @getimagesize(public_path(ltrim(rawurldecode(parse_url($esportNav['logo'], PHP_URL_PATH) ?? ''), '/'))) ?: null)
       @php($esportHover = preg_match('/#[0-9a-f]{6}/i', $esportRowClass, $hex) ? $hex[0] : '#315bb6')
       <div id="alt-account-{{ $index }}" class="relative group inline-block text-sm {{ in_array($index, $phoneAltKeys, true) ? '' : 'max-md:hidden' }}">
-        <a data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="mobile-secondary-nav-open btn bg-teal hover:bg-lteal inline-flex items-center">{{ $account['battletag'] }}<span class="ml-2 inline-flex items-center"><img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="h-[1.4em] w-auto {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></span></a>
+        <a data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" class="mobile-secondary-nav-open btn bg-teal hover:bg-lteal inline-flex items-center">{{ $account['battletag'] }}<span class="ml-2 inline-flex items-center"><img src="{{ $esportNav['logo'] }}" @if($esportLogoSize) width="{{ $esportLogoSize[0] }}" height="{{ $esportLogoSize[1] }}" @endif alt="{{ $esportNav['name'] }}" class="h-[1.4em] w-auto {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></span></a>
         <div data-battletag="{{ $account['battletag'] }} {{ $esportNav['name'] }}" style="--esport-hover: {{ $esportHover }};" class="nav-dropdown esport-nav-dropdown absolute hidden z-50 md:pt-3 md:right-0 md:min-w-[12.5rem] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
             <div class="nav-dropdown-inner-wrapper">
-              <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal"><span class="inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></span> <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg" aria-label="{{ __('Close menu') }}">x</button></div>
+              <div class="mobile-secondary-nav-name flex justify-between items-center md:hidden p-3 pl-4 bg-teal"><span class="inline-flex items-center">{{ $account['battletag'] }}<img src="{{ $esportNav['logo'] }}" @if($esportLogoSize) width="{{ $esportLogoSize[0] }}" height="{{ $esportLogoSize[1] }}" @endif alt="{{ $esportNav['name'] }}" class="h-[1.4em] w-auto ml-2 {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}"></span> <button class="close-secondary-nav bg-blue rounded px-3 py-1 min-w-[2.75rem] min-h-[2.5rem] text-lg" aria-label="{{ __('Close menu') }}">x</button></div>
               <!-- The league's own pages, where a player's menu has Analytics -->
               <div class="nav-flyout-wrapper">
-                <a href="{{ $esportNav['main'] }}" class="flex justify-between items-center {{ $esportNav['key'] === 'Other' ? ($esportSeriesColours[$esportNav['name']] ?? $esportRowColours['Other']) : $esportRowColours[$esportNav['key']] }} font-bold"><span class="whitespace-nowrap"><img src="{{ $esportNav['logo'] }}" alt="{{ $esportNav['name'] }}" class="inline-block align-middle h-[1.1em] w-auto {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}">@if($esportNav['label'])<span class="ml-2 inline-block max-w-[9rem] max-md:max-w-none truncate align-middle" title="{{ $esportNav['name'] }}">{{ $esportNav['name'] }}</span>@endif</span> <span class="nav-flyout-arrow ml-2">›</span></a>
+                <a href="{{ $esportNav['main'] }}" class="flex justify-between items-center {{ $esportNav['key'] === 'Other' ? ($esportSeriesColours[$esportNav['name']] ?? $esportRowColours['Other']) : $esportRowColours[$esportNav['key']] }} font-bold"><span class="whitespace-nowrap"><img src="{{ $esportNav['logo'] }}" @if($esportLogoSize) width="{{ $esportLogoSize[0] }}" height="{{ $esportLogoSize[1] }}" @endif alt="{{ $esportNav['name'] }}" class="inline-block align-middle h-[1.1em] w-auto {{ $esportNav['key'] === 'Other' ? 'rounded-sm' : 'brightness-0 invert' }}">@if($esportNav['label'])<span class="ml-2 inline-block max-w-[9rem] max-md:max-w-none truncate align-middle" title="{{ $esportNav['name'] }}">{{ $esportNav['name'] }}</span>@endif</span> <span class="nav-flyout-arrow ml-2">›</span></a>
                 <div class="nav-flyout">
                   <div class="nav-dropdown-inner-wrapper rounded-b rounded-r">
                     {{-- The full name, which the row cuts short --}}
