@@ -4,7 +4,7 @@
     <div :data-battletag="menuKey" class="mobile-secondary-nav-open flex cursor-pointer">
       <span class="relative flex w-11 h-11 bg-teal rounded" :aria-label="$t('Language') + ': ' + locales[current]">
         <span class="w-full h-full rounded flex items-center justify-center text-surface hover:bg-lteal transition-colors">
-          <i class="fa-solid fa-globe text-xl"></i>
+          <basil-icon name="globe" class="text-xl"></basil-icon>
         </span>
         <span class="absolute -top-1.5 -right-1.5 px-1 rounded bg-surface text-white text-[0.625rem] font-bold leading-[0.875rem]" aria-hidden="true">{{ shortCode }}</span>
       </span>

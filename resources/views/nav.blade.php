@@ -240,9 +240,13 @@
                 </div>
 
 
+                @php
+                  [$navLanguage, $navRegion] = array_pad(explode('-', str_replace('_', '-', app()->getLocale())), 2, null);
+                  $navLanguageBadge = strtoupper(in_array($navLanguage, ['es', 'zh']) && $navRegion ? $navRegion : $navLanguage);
+                @endphp
                 {{-- Phones show the language button and avatar beside the saved players instead (alt-account-nav). The nav's
                      component tags hold plain copies of their buttons, picker and search, shown until Vue draws them --}}
-                <language-picker id="nav-language-picker" class="max-md:hidden" :locale="'{{ app()->getLocale() }}'" :locales="{{ json_encode(config('app.supported_locales')) }}" :authenticated="{{ json_encode($isAuthenticated) }}"><span class="flex w-11 h-11 bg-teal rounded md:ml-4 max-md:mr-1.5"></span></language-picker>
+                <language-picker id="nav-language-picker" class="max-md:hidden" :locale="'{{ app()->getLocale() }}'" :locales="{{ json_encode(config('app.supported_locales')) }}" :authenticated="{{ json_encode($isAuthenticated) }}"><span class="relative flex md:ml-4 max-md:mr-1.5"><span class="relative flex w-11 h-11 bg-teal rounded"><span class="w-full h-full rounded flex items-center justify-center text-surface">@include('globeIcon', ['class' => 'text-xl'])</span><span class="absolute -top-1.5 -right-1.5 px-1 rounded bg-surface text-white text-[0.625rem] font-bold leading-[0.875rem]" aria-hidden="true">{{ $navLanguageBadge }}</span></span></span></language-picker>
 
                 @if($isAuthenticated)
                     @include('navUserMenu', ['menuId' => 'nav-user-menu', 'menuClass' => 'md:ml-4 max-md:hidden'])
@@ -394,7 +398,7 @@
     @endif
   @endforeach
   {{-- Phones: the language button and avatar follow the saved players --}}
-  <language-picker id="nav-language-picker-phone" menu-key="nav-language-menu-phone" class="md:hidden" :locale="'{{ app()->getLocale() }}'" :locales="{{ json_encode(config('app.supported_locales')) }}" :authenticated="{{ json_encode($isAuthenticated) }}"><span class="flex w-11 h-11 bg-teal rounded md:ml-4 max-md:mr-1.5"></span></language-picker>
+  <language-picker id="nav-language-picker-phone" menu-key="nav-language-menu-phone" class="md:hidden" :locale="'{{ app()->getLocale() }}'" :locales="{{ json_encode(config('app.supported_locales')) }}" :authenticated="{{ json_encode($isAuthenticated) }}"><span class="relative flex md:ml-4 max-md:mr-1.5"><span class="relative flex w-11 h-11 bg-teal rounded"><span class="w-full h-full rounded flex items-center justify-center text-surface">@include('globeIcon', ['class' => 'text-xl'])</span><span class="absolute -top-1.5 -right-1.5 px-1 rounded bg-surface text-white text-[0.625rem] font-bold leading-[0.875rem]" aria-hidden="true">{{ $navLanguageBadge }}</span></span></span></language-picker>
   @if($isAuthenticated)
     @include('navUserMenu', ['menuId' => 'nav-user-menu-phone', 'menuClass' => 'md:hidden'])
   @else
