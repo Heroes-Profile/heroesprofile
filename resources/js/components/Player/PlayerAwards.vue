@@ -101,14 +101,14 @@
                       <div class="flex items-center gap-3 min-w-0">
                         <hero-image-wrapper size="row" :hero="row.hero" :excludehover="true"></hero-image-wrapper>
                         <div class="flex flex-col min-w-0">
-                          <span class="font-bold truncate md:hidden"><a class="inline-flex items-center" :href="'/Match/Single/' + row.replayID">{{ $mapName(row.game_map) }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a></span>
+                          <span class="font-bold truncate md:hidden"><a class="inline-flex items-center link-more" :href="'/Match/Single/' + row.replayID">{{ $mapName(row.game_map) }}</a></span>
                           <span class="font-bold truncate max-md:hidden">{{ $mapName(row.game_map) }}</span>
                           <span class="text-xs text-subtext">{{ formatRowDate(row.game_date) }}</span>
                         </div>
                       </div>
                     </td>
                     <td class="max-md:hidden py-2 px-3 text-center">{{ $t(row.game_type.name) }}</td>
-                    <td class="max-md:hidden py-2 px-3 text-center"><a class="group/bt inline-flex items-center" :href="'/Match/Single/' + row.replayID"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></td>
+                    <td class="max-md:hidden py-2 px-3 text-center"><a class="inline-flex items-center link-row" :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a></td>
                     <td class="py-2 px-3">
                       <div class="flex items-center gap-3">
                         <img :src="`/images/awards/${row.award.icon}_${row.winner == 1 ? 'blue' : 'red'}.png`" :alt="row.award.title" class="w-9 h-9 shrink-0" />

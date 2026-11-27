@@ -253,7 +253,7 @@
               </div>
             </div>
             <p class="text-sm text-subtext flex-1">{{ $t(page.text) }}</p>
-            <a v-if="page.href" :href="page.href" target="_blank" rel="noopener" class="group/bt inline-flex items-center w-fit text-teal text-sm"><span class="group-hover/bt:underline">{{ $t('Open the page') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+            <a v-if="page.href" :href="page.href" target="_blank" rel="noopener" class="inline-flex items-center w-fit text-teal text-sm link-more">{{ $t('Open the page') }}</a>
           </div>
         </div>
       </panel-box>
@@ -269,7 +269,7 @@
             <template v-else>{{ part }}</template>
           </template>
         </p>
-        <a href="/Team" class="group/bt inline-flex items-center w-fit text-teal"><span class="group-hover/bt:underline">{{ $t('Meet the team') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+        <a href="/Team" class="inline-flex items-center w-fit text-teal link-more">{{ $t('Meet the team') }}</a>
       </panel-box>
     </div>
   </div>

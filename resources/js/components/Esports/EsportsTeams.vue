@@ -7,10 +7,10 @@
       </template>
       <p v-if="!filteredData.length" class="text-subtext">{{ $t('No teams match ":teamsearch".', { teamsearch: filterText }) }}</p>
       <div v-else class="grid sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4">
-        <a v-for="team in filteredData" :key="team.team_name + team.division" :href="`/Esports/${esport}/Team/${encodeURIComponent(teamName(team))}?season=${season}&division=${team.division}`" class="group/bt flex flex-col items-center gap-3 rounded bg-surface-1 hover:bg-surface-2 px-4 py-6 min-w-0 text-center transition-colors">
+        <a v-for="team in filteredData" :key="team.team_name + team.division" :href="`/Esports/${esport}/Team/${encodeURIComponent(teamName(team))}?season=${season}&division=${team.division}`" class="flex flex-col items-center gap-3 bg-surface-1 px-4 py-6 min-w-0 text-center link-tile">
           <img v-if="team.icon_url && !failed[team.team_name]" :src="team.icon_url" :alt="teamName(team)" class="w-20 h-20 object-contain text-[0rem]" @error="failed[team.team_name] = true"/>
           <span v-else class="w-20 h-20 rounded-full bg-surface-3 flex items-center justify-center text-2xl font-bold text-subtext">{{ initials(team) }}</span>
-          <span class="max-w-full truncate font-semibold group-hover/bt:underline">{{ teamName(team) }}</span>
+          <span class="max-w-full truncate font-semibold"><span class="link-tile-title">{{ teamName(team) }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
           <span class="rounded-md bg-surface-3 px-2 py-0.5 text-xs text-subtext">{{ $t('Division :division', { division: team.division }) }}</span>
         </a>
       </div>

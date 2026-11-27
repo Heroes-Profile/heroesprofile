@@ -14,7 +14,7 @@
         <div class="flex flex-wrap items-center gap-x-3 gap-y-2 rounded bg-surface-1 border-l-4 border-teal px-5 py-3 text-sm">
           <basil-icon name="info" class="text-teal text-xl shrink-0"></basil-icon>
           <span class="flex-1 min-w-0">{{ $t('The uploader has been rewritten for Windows, macOS and Linux.') }}</span>
-          <a class="group/bt inline-flex items-center" href="/Upload/Uploader"><span class="group-hover/bt:underline">{{ $t("See what's new") }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+          <a class="inline-flex items-center link-more" href="/Upload/Uploader">{{ $t("See what's new") }}</a>
         </div>
 
         <div class="grid md:grid-cols-[1fr_auto] gap-8 items-center">
@@ -34,7 +34,7 @@
                 <!-- Blue: optional, unlike the teal features every copy has -->
                 <span class="w-5 h-5 rounded-[0.25rem] bg-blue flex items-center justify-center shrink-0"><basil-icon name="check" class="text-xs text-white"></basil-icon></span>
                 <span class="font-medium">{{ $t('Optional rank reading for real Storm League ranks') }}</span>
-                <a class="group/bt inline-flex items-center text-sm text-lteal" href="/Upload/Uploader#rank-reading"><span class="group-hover/bt:underline">{{ $t('How it works') }}</span><basil-icon name="arrow-small" class="text-xs ml-1"></basil-icon></a>
+                <a class="inline-flex items-center text-sm text-lteal link-more" href="/Upload/Uploader#rank-reading">{{ $t('How it works') }}</a>
               </li>
             </ul>
           </div>
@@ -54,10 +54,10 @@
         <div class="flex flex-col gap-2.5 text-sm">
           <p class="text-subtext">{{ $t('"With rank reading" is the same uploader plus an opt-in reader for the Storm League loading screen, which helps us get real in-game ranks onto Heroes Profile.') }}</p>
           <div class="flex flex-wrap gap-x-6 gap-y-2">
-            <a class="group/bt inline-flex items-center" href="/Upload/Uploader#rank-reading"><span class="group-hover/bt:underline">{{ $t('How rank reading works') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
-            <a class="group/bt inline-flex items-center" :href="repository + '/releases/latest'" target="_blank" rel="noopener"><span class="group-hover/bt:underline">{{ $t('Latest release') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
-            <a class="group/bt inline-flex items-center" :href="repository + '/blob/master/packaging/INSTALL.md'" target="_blank" rel="noopener"><span class="group-hover/bt:underline">{{ $t('Install instructions') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
-            <a class="group/bt inline-flex items-center" :href="repository" target="_blank" rel="noopener"><span class="group-hover/bt:underline">{{ $t('Source on GitHub') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+            <a class="inline-flex items-center link-more" href="/Upload/Uploader#rank-reading">{{ $t('How rank reading works') }}</a>
+            <a class="inline-flex items-center link-more" :href="repository + '/releases/latest'" target="_blank" rel="noopener">{{ $t('Latest release') }}</a>
+            <a class="inline-flex items-center link-more" :href="repository + '/blob/master/packaging/INSTALL.md'" target="_blank" rel="noopener">{{ $t('Install instructions') }}</a>
+            <a class="inline-flex items-center link-more" :href="repository" target="_blank" rel="noopener">{{ $t('Source on GitHub') }}</a>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@
 
         <replay-upload-dropzone :upload-url="uploadUrl" :max-bytes="maxBytes"></replay-upload-dropzone>
 
-        <a class="group/bt inline-flex items-center text-sm w-fit" href="/Upload/Widget"><span class="group-hover/bt:underline">{{ $t('Embed this uploader') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+        <a class="inline-flex items-center text-sm w-fit link-more" href="/Upload/Widget">{{ $t('Embed this uploader') }}</a>
       </div>
     </div>
   </div>

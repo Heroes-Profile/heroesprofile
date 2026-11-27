@@ -37,7 +37,7 @@
               <span class="text-xs">{{ formatRowDate(row.game_date) }}</span>
               <span class="relative z-[2] text-sm">
                 {{ $t(':leaguename Match ID', { leaguename: leagueName }) }}
-                <a class="group/bt inline-flex items-center" :href="matchUrl(row)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                <a class="inline-flex items-center link-row" :href="matchUrl(row)">{{ row.replayID }}</a>
               </span>
             </div>
           </div>
@@ -62,7 +62,7 @@
             <div v-for="(team, position) in sidesOf(row)" :key="team" class="flex flex-col gap-0.5 w-[8.5rem] min-w-0">
               <span :class="['w-6 h-[3px] mb-1 rounded-full', position === 0 ? 'bg-teal' : 'bg-loss']"></span>
               <template v-for="(player, playerIndex) in teamPlayers(row, team)" :key="playerIndex">
-                <a v-if="player.battletag" :href="playerUrl(row, player)" class="group/bt min-w-0 inline-flex items-center text-sm text-subtext hover:text-white"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span></a>
+                <a v-if="player.battletag" :href="playerUrl(row, player)" class="min-w-0 inline-flex items-center text-sm text-subtext hover:text-white link-row"><span class="truncate">{{ player.battletag }}</span></a>
                 <span v-else class="min-w-0 truncate text-sm text-subtext">{{ player.hero ? $heroName(player.hero) : '' }}</span>
               </template>
             </div>
@@ -106,7 +106,7 @@
               </div>
             </div>
             <span class="relative w-[11.25rem] shrink-0 px-4 font-medium text-header">{{ $t('Game :game · Round :round', { game: row.game, round: row.round }) }}</span>
-            <span class="relative z-[2] w-[10rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="matchUrl(row)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></span>
+            <span class="relative z-[2] w-[10rem] shrink-0 px-4"><a class="inline-flex items-center link-row" :href="matchUrl(row)">{{ row.replayID }}</a></span>
             <div class="relative w-[35rem] shrink-0 px-4 flex items-center gap-4">
               <template v-for="(team, position) in sidesOf(row)" :key="team">
                 <span v-if="position === 1" class="text-subtext text-sm">{{ $t('vs') }}</span>

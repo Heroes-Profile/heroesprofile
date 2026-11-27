@@ -21,7 +21,7 @@
 
       <span class="text-xs text-subtext">
         {{ $t('Not a supporter yet?') }}
-        <a href="https://www.patreon.com/heroesprofile" target="_blank" rel="noopener noreferrer" class="group/bt inline-flex items-center text-lteal"><span class="group-hover/bt:underline">{{ $t('Subscribe on Patreon') }}</span><basil-icon name="arrow-small" class="text-xs ml-1"></basil-icon></a>
+        <a href="https://www.patreon.com/heroesprofile" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-lteal link-more">{{ $t('Subscribe on Patreon') }}</a>
       </span>
     </div>
   </div>

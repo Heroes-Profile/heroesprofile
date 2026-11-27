@@ -62,6 +62,20 @@ details.group.is-closing[open] .group-open\:-rotate-90 {
 
 /* Shared button look. Colour stays on the element (e.g. bg-teal hover:bg-lteal); utilities on the element override this. */
 @layer components {
+  /* A whole box that is one link. Its resting colour is one step above what it sits on (bg-surface on the page,
+     bg-surface-1 in a card, bg-surface-2 in an inner card); hovering lightens any of them by the same half step and
+     underlines its .link-tile-title. Rounded at the control radius; a tile sitting on the page adds rounded-panel.
+     Tiles that lead to another page carry a chevron in their markup */
+  .link-tile{
+    @apply rounded-control cursor-pointer;
+    transition: box-shadow 150ms;
+  }
+  .link-tile:hover{
+    box-shadow: inset 0 0 0 100vmax rgba(255, 255, 255, 0.02);
+  }
+  .link-tile:hover .link-tile-title{
+    text-decoration: underline;
+  }
   .btn{
     @apply flex items-center justify-center text-white text-center whitespace-nowrap rounded px-4 py-3 transition-colors cursor-pointer disabled:cursor-default;
   }
@@ -620,6 +634,78 @@ h1{
 .link {
   text-decoration: underline;
   cursor: pointer;
+}
+/* Inline links: the site's small chevron fades in on hover, in a space kept for it so the sentence never moves.
+   An inline-block, so the underline stops at the text */
+.link::after {
+  content: '';
+  display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
+  margin-left: 0.125em;
+  vertical-align: middle;
+  align-self: center;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5.97 3.47a.75.75 0 0 1 1.06 0l4 4a.75.75 0 0 1 0 1.06l-4 4a.75.75 0 1 1-1.06-1.06L9.44 8 5.97 4.53a.75.75 0 0 1 0-1.06Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5.97 3.47a.75.75 0 0 1 1.06 0l4 4a.75.75 0 0 1 0 1.06l-4 4a.75.75 0 1 1-1.06-1.06L9.44 8 5.97 4.53a.75.75 0 0 1 0-1.06Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0;
+  transition: opacity 150ms;
+}
+.link:hover::after {
+  opacity: 1;
+}
+/* Action links ("Match History ›"): underlined on hover, the chevron always showing.
+   Row links (names in tables and lists): underlined on hover, the chevron fading in, in a space kept for it.
+   Colour, size and weight are added after the class */
+.link-more,
+.link-row {
+  cursor: pointer;
+}
+.link-more:hover,
+.link-row:hover {
+  text-decoration: underline;
+}
+.link-more::after,
+.link-row::after {
+  content: '';
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.75em;
+  height: 0.75em;
+  margin-left: 0.375em;
+  vertical-align: middle;
+  align-self: center;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5.97 3.47a.75.75 0 0 1 1.06 0l4 4a.75.75 0 0 1 0 1.06l-4 4a.75.75 0 1 1-1.06-1.06L9.44 8 5.97 4.53a.75.75 0 0 1 0-1.06Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5.97 3.47a.75.75 0 0 1 1.06 0l4 4a.75.75 0 0 1 0 1.06l-4 4a.75.75 0 1 1-1.06-1.06L9.44 8 5.97 4.53a.75.75 0 0 1 0-1.06Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.link-row::after {
+  opacity: 0;
+  transition: opacity 150ms;
+}
+.link-row:hover::after {
+  opacity: 1;
+}
+/* Back links ("‹ All heroes"): the chevron points back and leads the text, always showing; underlined on hover */
+.link-back {
+  cursor: pointer;
+}
+.link-back:hover {
+  text-decoration: underline;
+}
+.link-back::before {
+  content: '';
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.75em;
+  height: 0.75em;
+  margin-right: 0.375em;
+  vertical-align: middle;
+  align-self: center;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5.97 3.47a.75.75 0 0 1 1.06 0l4 4a.75.75 0 0 1 0 1.06l-4 4a.75.75 0 1 1-1.06-1.06L9.44 8 5.97 4.53a.75.75 0 0 1 0-1.06Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5.97 3.47a.75.75 0 0 1 1.06 0l4 4a.75.75 0 0 1 0 1.06l-4 4a.75.75 0 1 1-1.06-1.06L9.44 8 5.97 4.53a.75.75 0 0 1 0-1.06Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  transform: scaleX(-1);
 }
 
 

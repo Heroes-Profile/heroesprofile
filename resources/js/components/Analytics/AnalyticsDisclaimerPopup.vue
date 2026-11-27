@@ -7,9 +7,9 @@
       <li>{{ $t('The design is not finished. For now the goal is just getting the information on screen so we can work with it.') }}</li>
       <li>
         {{ $t('Not every metric that can be tracked is tracked yet. For more data, contact us on') }}
-        <a href="https://www.patreon.com/c/heroesprofile" target="_blank" class="underline">Patreon</a>, at
-        <a href="mailto:zemill@heroesprofile.com" class="underline">zemill@heroesprofile.com</a>, or in
-        <a href="https://github.com/Heroes-Profile/heroesprofile/discussions/1348" target="_blank" class="underline">this GitHub discussion</a>.
+        <a href="https://www.patreon.com/c/heroesprofile" target="_blank" class="link">Patreon</a>, at
+        <a href="mailto:zemill@heroesprofile.com" class="link">zemill@heroesprofile.com</a>, or in
+        <a href="https://github.com/Heroes-Profile/heroesprofile/discussions/1348" target="_blank" class="link">this GitHub discussion</a>.
       </li>
       <li>{{ $t('Numbers, views and features will change as we improve it, and some may be wrong or missing along the way.') }}</li>
       <li>{{ $t('All recommendations are experimental. They come from patterns in games, not guarantees, and Heroes Profile takes no responsibility if you lose following them. :)') }}</li>

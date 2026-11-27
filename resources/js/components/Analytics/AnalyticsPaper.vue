@@ -28,7 +28,7 @@
           <p v-else-if="block.formula" class="text-sm bg-darken rounded px-3 py-2 mb-2 overflow-x-auto">{{ block.formula }}</p>
           <p v-else-if="block.parts" class="text-sm leading-relaxed mb-2">
             <template v-for="(part, i) in block.parts" :key="i">
-              <a v-if="part.href" :href="part.href" target="_blank" class="underline">{{ part.label }}</a>
+              <a v-if="part.href" :href="part.href" target="_blank" class="link">{{ part.label }}</a>
               <template v-else>{{ part }}</template>
             </template>
           </p>

@@ -93,7 +93,7 @@
                   <hero-image-wrapper class="mr-2" :hero="row.heroData.hero" :mobile-click="true">
                     <image-hover-box :title="$heroName(row.heroData.hero)" :paragraph-one="$t('Games Played') + ': ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
                   </hero-image-wrapper>
-                  <a :href="heroLink(row)" class="group/bt hidden md:inline-flex items-center"><span class=" group-hover/bt:underline">{{ $heroName(row.heroData.hero) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                  <a :href="heroLink(row)" class="hidden md:inline-flex items-center link-row">{{ $heroName(row.heroData.hero) }}</a>
                 </div>
               </td>
               <td class="py-2 px-3 text-center">{{ row.total_games_played.toLocaleString('en-US') }}</td>
@@ -153,7 +153,7 @@
                   <hero-image-wrapper class="mr-2" :hero="row.heroData.hero" :mobile-click="true">
                     <image-hover-box :title="$heroName(row.heroData.hero)" :paragraph-one="$t('Games Played') + ': ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
                   </hero-image-wrapper>
-                  <a :href="heroLink(row)" class="group/bt hidden md:inline-flex items-center"><span class=" group-hover/bt:underline">{{ $heroName(row.heroData.hero) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                  <a :href="heroLink(row)" class="hidden md:inline-flex items-center link-row">{{ $heroName(row.heroData.hero) }}</a>
                 </div>
               </td>
               <td class="py-2 px-3 text-center">{{ row.total_games_played.toLocaleString('en-US') }}</td>

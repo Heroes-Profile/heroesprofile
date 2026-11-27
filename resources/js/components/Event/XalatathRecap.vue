@@ -40,7 +40,7 @@
           <div class="text-center text-xs italic mb-3">{{ $t('Click a section to jump straight to it.') }}</div>
           <ul class="void-gazette-index text-sm">
             <li v-for="entry in indexEntries" :key="entry.id" class="flex items-baseline gap-2 break-inside-avoid">
-              <a :href="`#${entry.id}`" class="hover:underline" @click.prevent="jumpTo(entry.id)">{{ $t(entry.label) }}</a>
+              <a :href="`#${entry.id}`" class="link" @click.prevent="jumpTo(entry.id)">{{ $t(entry.label) }}</a>
               <span class="flex-1 border-b border-dotted border-[#1a1a1a] opacity-50"></span>
               <span class="tabular-nums">{{ entry.page }}</span>
             </li>

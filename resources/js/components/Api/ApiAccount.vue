@@ -94,9 +94,7 @@
             {{ $t('You are on test data. Responses are fixed examples and cost no quota, so you can build against the API before paying for it.') }}
             <strong class="text-white">{{ $t('Live data needs an active subscription') }}</strong> {{ $t('— this switch unlocks once you have one.') }}
           </p>
-          <a href="/Api/Account/Billing" class="btn inline-block bg-blue hover:bg-lblue">
-            {{ $t('Choose a plan') }}
-          </a>
+          <custom-button href="/Api/Account/Billing" text="Choose a plan" alt="Choose a plan" class="inline-block"></custom-button>
         </template>
       </div>
 
@@ -161,7 +159,7 @@
               <td class="py-2 px-3 text-sm">{{ $t('Plan') }}</td>
               <td class="py-2 px-3">
                 {{ account.plans.length ? account.plans.join(', ') : $t('None') }}
-                <a href="/Api/Account/Billing" class="group/bt inline-flex items-center text-sm ml-2"><span class="group-hover/bt:underline">{{ $t('Billing') }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                <a href="/Api/Account/Billing" class="inline-flex items-center text-sm ml-2 link-row">{{ $t('Billing') }}</a>
               </td>
             </tr>
           </tbody>

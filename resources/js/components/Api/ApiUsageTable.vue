@@ -35,7 +35,7 @@
         </p>
       </div>
 
-      <a href="/Api/Account/Billing" class="text-sm underline hover:text-lteal">
+      <a href="/Api/Account/Billing" class="text-sm link hover:text-lteal">
         {{ $t('View every endpoint limit') }}
       </a>
     </template>

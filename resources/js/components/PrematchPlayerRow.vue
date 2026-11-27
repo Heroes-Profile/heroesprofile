@@ -14,7 +14,7 @@
 
         <div class="flex-1 min-w-0 flex flex-col gap-0.5 text-left">
           <div class="flex items-center gap-2 min-w-0">
-            <a class="group/bt inline-flex items-center min-w-0 text-lg font-semibold" :href="profileLink" @click.stop="$redirectToProfile(player.battletag, player.blizz_id, player.region, false)"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="shrink-0 text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+            <a class="inline-flex items-center min-w-0 text-lg font-semibold link-row" :href="profileLink" @click.stop="$redirectToProfile(player.battletag, player.blizz_id, player.region, false)"><span class="truncate">{{ player.battletag }}</span></a>
             <span v-if="party" :class="['ml-auto shrink-0 rounded-md px-1.5 text-[0.625rem] font-bold uppercase', partyClass]">{{ $t('Party') }}</span>
           </div>
           <div class="flex items-center gap-2 min-w-0">
@@ -55,7 +55,7 @@
 
         <div class="flex items-center justify-between gap-2 pt-1.5 text-sm">
           <span class="text-subtext">{{ player.last_played ? $t('Last played :time', { time: timeAgo(player.last_played) }) : '' }}</span>
-          <a class="group/bt inline-flex items-center gap-1.5 font-semibold text-teal" :href="profileLink" @click="$redirectToProfile(player.battletag, player.blizz_id, player.region, false)"><span class="group-hover/bt:underline">{{ $t('View Profile') }}</span><basil-icon name="arrow-small" class="text-xs"></basil-icon></a>
+          <a class="inline-flex items-center gap-1.5 font-semibold text-teal link-more" :href="profileLink" @click="$redirectToProfile(player.battletag, player.blizz_id, player.region, false)">{{ $t('View Profile') }}</a>
         </div>
       </div>
     </template>

@@ -15,7 +15,7 @@
           <h3 class="text-2xl font-bold flex items-center gap-2">{{ $t(title) }}<!-- An info icon sits raised at the top of the title; the wrapper hides itself when nothing is passed --><span class="self-start flex empty:hidden"><slot name="title"></slot></span></h3>
           <p v-if="subtitle" class="text-sm text-subtext mt-1"><span :class="{ 'skeleton-text': skeleton }">{{ $t(subtitle) }}</span></p>
         </div>
-        <a v-if="linkHref && !skeleton" class="text-header whitespace-nowrap hover:underline" :href="linkHref">{{ $t(linkText) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
+        <a v-if="linkHref && !skeleton" class="text-header whitespace-nowrap link-more" :href="linkHref">{{ $t(linkText) }}</a>
         <span v-else-if="skeleton && linkText" class="skeleton-text whitespace-nowrap">{{ $t(linkText) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></span>
         <slot name="right"></slot>
         <img v-if="loading" class="logo-spin h-7 w-auto shrink-0 ml-auto self-center" src="/images/logo/heroesprofilelogo.png" alt="Loading" />

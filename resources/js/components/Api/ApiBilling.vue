@@ -17,7 +17,7 @@
         <p class="text-sm">
           <strong>{{ $t('Your API calls are returning example data.') }}</strong>
           {{ $t('Subscribing does not change that on its own — live data is switched on from your') }}
-          <a href="/Api/Account" class="underline hover:text-lteal">{{ $t('account page') }}</a>{{ $t('. Responses carry') }} <code class="text-lteal">X-HP-Data-Source: fixture</code> {{ $t('while this is the case.') }}
+          <a href="/Api/Account" class="link hover:text-lteal">{{ $t('account page') }}</a>{{ $t('. Responses carry') }} <code class="text-lteal">X-HP-Data-Source: fixture</code> {{ $t('while this is the case.') }}
         </p>
       </div>
 
@@ -25,7 +25,7 @@
         <p class="text-sm">
           <strong>{{ $t('The Twitch extension is not live yet.') }}</strong>
           {{ $t('It is waiting on review by Twitch. Please do not subscribe just for the extension until we announce it, or until its settings appear on your') }}
-          <a href="/Api/Account" class="underline hover:text-lteal">{{ $t('account page') }}</a>{{ $t('. Once it is live it comes with a free trial, so you can try it there before paying.') }}
+          <a href="/Api/Account" class="link hover:text-lteal">{{ $t('account page') }}</a>{{ $t('. Once it is live it comes with a free trial, so you can try it there before paying.') }}
         </p>
       </div>
 
@@ -89,9 +89,7 @@
             <strong>{{ $t('Tell us about your project before subscribing.') }}</strong>
             {{ $t('A name and a short description of what you are building.') }}
           </p>
-          <a href="/Api/Account#project" class="btn inline-block mt-3 bg-blue hover:bg-lblue text-sm">
-            {{ $t('Add project details') }}
-          </a>
+          <custom-button href="/Api/Account#project" text="Add project details" alt="Add project details" class="inline-block mt-3 text-sm"></custom-button>
         </div>
 
         <div v-if="active" class="mb-4 text-sm">
@@ -120,13 +118,7 @@
               <span v-else-if="plan.granted" class="text-sm text-lteal">
                 {{ grantedSource(plan.id) === 'patreon' ? $t('Included with your Patreon pledge') : $t('Included with your account') }}
               </span>
-              <a
-                v-else-if="!plan.purchasable"
-                href="/Api/DeveloperTier"
-                class="btn bg-red hover:bg-lred w-full inline-block"
-              >
-                {{ $t('Contact Us') }}
-              </a>
+              <custom-button v-else-if="!plan.purchasable" href="/Api/DeveloperTier" text="Contact Us" alt="Contact Us" color="red" class="w-full inline-block"></custom-button>
               <button
                 v-else
                 :disabled="!card || busy || projectmissing"
@@ -168,7 +160,7 @@
               <td class="py-2 px-3">{{ $formatDate(invoice.date) }}</td>
               <td class="py-2 px-3">{{ invoice.total }}</td>
               <td class="py-2 px-3">
-                <a v-if="invoice.url" :href="invoice.url" target="_blank" rel="noopener" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('View') }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                <a v-if="invoice.url" :href="invoice.url" target="_blank" rel="noopener" class="inline-flex items-center link-row">{{ $t('View') }}</a>
               </td>
             </tr>
           </tbody>

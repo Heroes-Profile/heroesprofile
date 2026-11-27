@@ -72,7 +72,7 @@
           <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
             <div class="flex justify-between items-baseline">
               <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
-              <a class="text-header whitespace-nowrap hover:underline" :href="profileUrl + section.allPath">{{ $t(section.allText) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
+              <a class="text-header whitespace-nowrap link-more" :href="profileUrl + section.allPath">{{ $t(section.allText) }}</a>
             </div>
             <div class="flex flex-wrap gap-6 max-md:justify-center">
               <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :playerlink="true" :text="group.label" :data="group.data"></group-box>
@@ -89,7 +89,7 @@
               <!-- Spread over the card, so it and the party card beside it line up -->
               <div class="flex-1 flex flex-col justify-between gap-3">
                 <div v-for="role in roleWinRates" :key="role.label" class="flex flex-col gap-1.5">
-                  <a class="text-header leading-[1.2] w-fit hover:underline" :href="profileUrl + '/Role/' + role.label">{{ $t(role.label) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
+                  <a class="text-header leading-[1.2] w-fit link-more" :href="profileUrl + '/Role/' + role.label">{{ $t(role.label) }}</a>
                   <stat-bar :value="role.value.toFixed(2)" suffix="%" :color="$winRateColor(role.value)"></stat-bar>
                 </div>
               </div>

@@ -72,7 +72,7 @@
             {{ $t('Bug fixes') }}
             <basil-icon name="arrow-small" :class="['text-xs transition-transform', showBugFixes ? '-rotate-90' : 'rotate-90']"></basil-icon>
           </button>
-          <a v-if="notes.blizzard_url" :href="notes.blizzard_url" target="_blank" rel="noopener noreferrer" class="group/bt font-medium text-teal"><span class="group-hover/bt:underline">{{ $t('Blizzard patch notes') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+          <a v-if="notes.blizzard_url" :href="notes.blizzard_url" target="_blank" rel="noopener noreferrer" class="font-medium text-teal link-more">{{ $t('Blizzard patch notes') }}</a>
         </div>
       </div>
       <div v-if="selectedHeroData" :class="detailClass">

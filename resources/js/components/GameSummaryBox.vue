@@ -22,7 +22,7 @@
       </div>
     </div>
     <span class="relative w-[10rem] shrink-0 px-4 font-medium text-header">{{ esport ? $t('Game :game · Round :round', { game: data.game, round: data.round }) : $t(data.game_type.name) }}</span>
-    <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="getHref()"><span class="group-hover/bt:underline">{{ data.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></span>
+    <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="inline-flex items-center link-row" :href="getHref()">{{ data.replayID }}</a></span>
     <!-- Esports games: their team against the other, where a ranked game shows MMR -->
     <div v-if="esport" class="relative w-[16.875rem] shrink-0 px-4 flex flex-col min-w-0">
       <span class="font-semibold truncate">{{ $ngsTeam(data.own_team).name }}</span>
@@ -117,7 +117,7 @@
               <span v-if="player.check" class="flex-1 min-w-0 truncate text-sm font-medium text-subtext">{{ $t('Hidden') }}</span>
               <icon-with-hover v-else class="flex-1" popupsize="fit" :popup-hoverable="false">
                 <template #trigger>
-                  <a :href="player.link || `/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="!player.link && $redirectToProfile(player.battletag, player.blizz_id, player.region, false)" :class="['group/bt min-w-0 inline-flex items-center text-sm font-medium hover:text-lteal', player.own ? 'text-white' : 'text-subtext']"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="text-[0.625rem] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                  <a class="link-row" :href="player.link || `/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="!player.link && $redirectToProfile(player.battletag, player.blizz_id, player.region, false)" :class="['min-w-0 inline-flex items-center text-sm font-medium', player.own ? 'text-white' : 'text-subtext']"><span class="truncate">{{ player.battletag }}</span></a>
                 </template>
                 <!-- As the redesign's popup: 18px name, then grey labels with white values -->
                 <div class="flex flex-col gap-1.5 text-base">

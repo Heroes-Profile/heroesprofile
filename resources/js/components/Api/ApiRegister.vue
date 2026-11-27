@@ -25,9 +25,9 @@
         <input type="checkbox" id="terms" name="terms" value="1" class="form-checkbox shrink-0" v-model="agreed" required>
         <span>
           {{ $t('I agree to the') }}
-          <a href="/Api/Terms" target="_blank" class="font-semibold text-teal hover:underline">{{ $t('Terms of Service') }}</a>
+          <a href="/Api/Terms" target="_blank" class="font-semibold text-teal link">{{ $t('Terms of Service') }}</a>
           {{ $t('and') }}
-          <a href="/Api/Privacy" target="_blank" class="font-semibold text-teal hover:underline">{{ $t('Privacy Policy') }}</a>
+          <a href="/Api/Privacy" target="_blank" class="font-semibold text-teal link">{{ $t('Privacy Policy') }}</a>
         </span>
       </label>
 
@@ -35,7 +35,7 @@
     </form>
 
     <template #footer>
-      <span>{{ $t('Already have an account?') }} <a href="/Api/Login" class="font-semibold text-teal hover:underline">{{ $t('Sign in') }}</a></span>
+      <span>{{ $t('Already have an account?') }} <a href="/Api/Login" class="font-semibold text-teal link">{{ $t('Sign in') }}</a></span>
     </template>
   </api-form-card>
 </template>

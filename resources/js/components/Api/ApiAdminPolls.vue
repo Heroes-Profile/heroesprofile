@@ -26,7 +26,7 @@
         <tbody>
           <tr v-for="poll in polls" :key="poll.id">
             <td class="py-2 px-3">
-              <a :href="'/Poll/' + poll.slug" target="_blank" rel="noopener" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ poll.title }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+              <a :href="'/Poll/' + poll.slug" target="_blank" rel="noopener" class="inline-flex items-center link-row">{{ poll.title }}</a>
               <div class="text-xs text-gray-medium">/Poll/{{ poll.slug }}</div>
             </td>
             <td class="py-2 px-3">

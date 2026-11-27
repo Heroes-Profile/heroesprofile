@@ -81,7 +81,7 @@
                   <span class="text-xs">{{ formatDate(row.game_date) }}</span>
                   <span class="relative z-[2] text-sm">
                     {{ $t('Match ID') }}
-                    <a class="group/bt inline-flex items-center" :href="matchUrl(row)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                    <a class="inline-flex items-center link-row" :href="matchUrl(row)">{{ row.replayID }}</a>
                   </span>
                 </div>
               </div>
@@ -120,7 +120,7 @@
                         <span v-if="player.check" class="flex-1 min-w-0 truncate text-sm font-medium text-subtext">{{ $t('Hidden') }}</span>
                         <icon-with-hover v-else class="flex-1" popupsize="fit" :popup-hoverable="false">
                           <template #trigger>
-                            <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="$redirectToProfile(player.battletag, player.blizz_id, player.region, false)" class="group/bt min-w-0 inline-flex items-center text-sm font-medium text-subtext hover:text-lteal"><span class="truncate group-hover/bt:underline">{{ player.battletag }}</span><basil-icon name="arrow-small" class="text-[0.625rem] ml-1 shrink-0 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                            <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`" @click="$redirectToProfile(player.battletag, player.blizz_id, player.region, false)" class="min-w-0 inline-flex items-center text-sm font-medium text-subtext link-row"><span class="truncate">{{ player.battletag }}</span></a>
                           </template>
                           <!-- As the redesign's popup: 18px name, then grey labels with white values -->
                           <div class="flex flex-col gap-1.5 text-base">
@@ -183,7 +183,7 @@
                     </div>
                   </div>
                   <span class="relative w-[10rem] shrink-0 px-4 font-medium text-header">{{ row.game_type ? $t(row.game_type.name) : '' }}</span>
-                  <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="group/bt inline-flex items-center" :href="matchUrl(row)"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></span>
+                  <span class="relative z-[2] w-[8.75rem] shrink-0 px-4"><a class="inline-flex items-center link-row" :href="matchUrl(row)">{{ row.replayID }}</a></span>
                   <span class="relative w-[5.5rem] shrink-0 px-4">{{ formatLength(row.game_length) }}</span>
                   <span class="relative w-[5.5rem] shrink-0 px-4">{{ row.region }}</span>
                   <span class="relative w-[8rem] shrink-0 px-4 text-sm text-subtext">{{ row.game_version }}</span>

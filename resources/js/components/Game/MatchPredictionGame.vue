@@ -17,9 +17,9 @@
           </span>
           <p class="text-sm text-subtext">{{ $t('How good are you at predicting the winner from the picks? Every match is a real game, so results are based on actual data.') }}</p>
           <span class="flex flex-wrap gap-x-4 gap-y-1">
-            <a :href="leaderboardUrl" target="_blank" class="group/bt inline-flex items-center text-xs text-lteal"><span class="group-hover/bt:underline">{{ $t('See the leaderboard') }}</span><basil-icon name="arrow-small" class="text-xs ml-1"></basil-icon></a>
+            <a :href="leaderboardUrl" target="_blank" class="inline-flex items-center text-xs text-lteal link-more">{{ $t('See the leaderboard') }}</a>
             <!-- Back to How it works and Your record -->
-            <a v-if="user && (data || isLoading)" href="#" class="group/bt inline-flex items-center text-xs text-lteal" @click.prevent="showStats"><span class="group-hover/bt:underline">{{ $t('See your stats') }}</span><basil-icon name="arrow-small" class="text-xs ml-1"></basil-icon></a>
+            <a v-if="user && (data || isLoading)" href="#" class="inline-flex items-center text-xs text-lteal link-more" @click.prevent="showStats">{{ $t('See your stats') }}</a>
           </span>
         </div>
         <div class="flex flex-wrap items-end gap-3 max-sm:w-full">

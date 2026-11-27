@@ -71,7 +71,7 @@
           <tbody>
             <tr v-for="row in data.games" :key="row.replayID">
               <td>
-                <a v-if="replayLink(row.replayID)" :href="replayLink(row.replayID)" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                <a v-if="replayLink(row.replayID)" :href="replayLink(row.replayID)" class="inline-flex items-center link-row">{{ row.replayID }}</a>
                 <template v-else>{{ row.replayID }}</template>
               </td>
               <td>

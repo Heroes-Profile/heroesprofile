@@ -8,7 +8,7 @@
       </a>
       <round-image class="!absolute bottom-3 right-3" size="small" icon="fas fa-info" title="info" popupsize="large">
         <p class="font-normal">{{ $t('Image from the Heroes of the Storm comic Secrets of the Storm.') }}</p>
-        <a href="https://static.heroesofthestorm.com/comics/secrets-of-the-storm/en-us-09ab7fb85c.pdf" target="_blank" rel="noopener noreferrer" class="group/bt inline-flex items-center mt-2 font-normal"><span class="group-hover/bt:underline">{{ $t('View the comic') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+        <a href="https://static.heroesofthestorm.com/comics/secrets-of-the-storm/en-us-09ab7fb85c.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center mt-2 font-normal link-more">{{ $t('View the comic') }}</a>
       </round-image>
     </div>
 
@@ -29,9 +29,9 @@
             <search-component :type="'alt'" class="!mt-0 !py-0 flex-1 min-w-[16rem]"></search-component>
           </template>
           <template v-else>
-            <button type="button" class="btn bg-teal font-semibold" @click="tryAgain">{{ $t('Try again') }}</button>
+            <custom-button text="Try again" alt="Try again" color="teal" :ignoreclick="true" class="font-semibold" @click="tryAgain"></custom-button>
             <custom-button :href="'/'" :text="'Take me home'" :alt="'Take me home'" class="font-semibold"></custom-button>
-            <a href="https://github.com/Heroes-Profile/heroesprofile/issues" target="_blank" rel="noopener noreferrer" class="group/bt inline-flex items-center text-sm font-semibold text-lteal"><span class="group-hover/bt:underline">{{ $t(kind === 429 ? 'Keeps happening? Report it' : 'Report a bug') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+            <a href="https://github.com/Heroes-Profile/heroesprofile/issues" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-sm font-semibold text-lteal link-more">{{ $t(kind === 429 ? 'Keeps happening? Report it' : 'Report a bug') }}</a>
           </template>
         </slot>
       </div>
@@ -41,9 +41,9 @@
         <div class="border-t border-surface-3 pt-5 flex flex-col gap-3">
           <span class="text-[0.625rem] font-bold uppercase tracking-wider text-subtext">{{ $t('Popular pages') }}</span>
           <div class="grid sm:grid-cols-2 gap-3">
-            <a v-for="page in popularPages" :key="page.href" :href="page.href" class="flex items-center gap-4 rounded-control bg-surface-1 hover:bg-surface-3 transition-colors p-3 md:p-4">
+            <a v-for="page in popularPages" :key="page.href" :href="page.href" class="flex items-center gap-4 bg-surface-1 p-3 md:p-4 link-tile">
               <span class="flex flex-col min-w-0">
-                <span class="text-sm md:text-base font-semibold">{{ $t(page.title) }}</span>
+                <span class="text-sm md:text-base font-semibold link-tile-title">{{ $t(page.title) }}</span>
                 <span class="text-xs md:text-sm text-subtext truncate">{{ $t(page.subtitle) }}</span>
               </span>
               <basil-icon name="arrow-small" class="ml-auto text-sm"></basil-icon>

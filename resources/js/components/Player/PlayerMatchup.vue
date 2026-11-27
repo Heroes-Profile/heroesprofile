@@ -45,9 +45,9 @@
     <div class="grid md:grid-cols-2 gap-8">
       <panel-box v-for="card in topCards" :key="card.title" :title="card.title" :subtitle="card.subtitle" :divider="false">
         <div class="grid grid-cols-3 sm:grid-cols-5 gap-3">
-          <a v-for="item in card.heroes" :key="item.hero.id" :href="heroUrl(item.hero)" class="group/bt bg-surface-1 hover:bg-surface-2 transition-colors rounded-lg px-2 pt-5 pb-5 flex flex-col items-center text-center min-w-0">
+          <a v-for="item in card.heroes" :key="item.hero.id" :href="heroUrl(item.hero)" class="bg-surface-1 px-2 pt-5 pb-5 flex flex-col items-center text-center min-w-0 link-tile">
             <hero-image-wrapper size="big" :hero="item.hero" :includehover="false"></hero-image-wrapper>
-            <span class="text-sm font-bold mt-1.5 truncate max-w-full group-hover/bt:underline">{{ $heroName(item.hero) }}</span>
+            <span class="text-sm font-bold mt-1.5 truncate max-w-full link-tile-title">{{ $heroName(item.hero) }}</span>
             <span :class="['text-xl font-bold mt-1.5 tabular-nums', card.valueClass]">{{ item[card.rate].toFixed(2) }}%</span>
             <span class="text-xs text-subtext mt-1.5">{{ $t(card.games, { count: item[card.count].toLocaleString('en-US') }) }}</span>
           </a>
@@ -98,8 +98,8 @@
           <tbody>
             <tr v-for="row in shownData" :key="row.hero.id">
               <td class="py-2.5 px-2 md:px-6">
-                <a class="group/bt inline-flex items-center" :href="heroUrl(row.hero)">
-                  <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="hidden md:block ml-3 font-medium group-hover/bt:underline">{{ $heroName(row.hero) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></basil-icon>
+                <a class="inline-flex items-center link-row" :href="heroUrl(row.hero)">
+                  <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="hidden md:block ml-3 font-medium">{{ $heroName(row.hero) }}</span>
                 </a>
               </td>
               <td class="py-2.5 px-2 md:px-6">

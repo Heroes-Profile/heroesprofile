@@ -22,7 +22,7 @@
             </div>
             <p class="text-sm text-subtext mt-1.5">{{ $t(branch.description) }}</p>
           </div>
-          <a v-if="repoUrl" class="group/bt inline-flex items-center text-sm" :href="`${repoUrl}/commits/${branch.name}`" target="_blank" rel="noopener"><span class="group-hover/bt:underline">{{ $t('View on GitHub') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+          <a v-if="repoUrl" class="inline-flex items-center text-sm link-more" :href="`${repoUrl}/commits/${branch.name}`" target="_blank" rel="noopener">{{ $t('View on GitHub') }}</a>
         </div>
         <div class="h-px bg-gray-dark"></div>
 
@@ -60,7 +60,7 @@
                       <span class="text-subtext">· {{ $t(commit.files === 1 ? '1 file' : ':count files', { count: commit.files }) }}</span>
                     </span>
                   </span>
-                  <a class="group/bt inline-flex items-center text-lteal" :href="commit.url" target="_blank" rel="noopener"><span class="group-hover/bt:underline">{{ $t('Open commit on GitHub') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+                  <a class="inline-flex items-center text-lteal link-more" :href="commit.url" target="_blank" rel="noopener">{{ $t('Open commit on GitHub') }}</a>
                 </div>
               </div>
               </transition>

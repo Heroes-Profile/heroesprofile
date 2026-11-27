@@ -16,8 +16,8 @@
     </div>
 
     <template #footer>
-      <a href="/Api/Login" class="font-semibold text-teal hover:underline"><basil-icon name="arrow-left" class="text-xs mr-2"></basil-icon>{{ $t('Back to sign in') }}</a>
-      <span>{{ $t('No API account yet?') }} <a href="/Api/Register" class="font-semibold text-teal hover:underline">{{ $t('Register') }}</a></span>
+      <a href="/Api/Login" class="font-semibold text-teal link-back">{{ $t('Back to sign in') }}</a>
+      <span>{{ $t('No API account yet?') }} <a href="/Api/Register" class="font-semibold text-teal link">{{ $t('Register') }}</a></span>
     </template>
   </api-form-card>
 
@@ -33,8 +33,8 @@
     </form>
 
     <template #footer>
-      <a href="/Api/Login" class="font-semibold text-teal hover:underline"><basil-icon name="arrow-left" class="text-xs mr-2"></basil-icon>{{ $t('Back to sign in') }}</a>
-      <span>{{ $t('No API account yet?') }} <a href="/Api/Register" class="font-semibold text-teal hover:underline">{{ $t('Register') }}</a></span>
+      <a href="/Api/Login" class="font-semibold text-teal link-back">{{ $t('Back to sign in') }}</a>
+      <span>{{ $t('No API account yet?') }} <a href="/Api/Register" class="font-semibold text-teal link">{{ $t('Register') }}</a></span>
     </template>
   </api-form-card>
 </template>

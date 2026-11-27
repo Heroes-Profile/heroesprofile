@@ -6,7 +6,7 @@
       <div class="bg-lighten p-6 mb-8">
         <p class="mb-4">
           {{ $t('Thanks for your interest in the Developer Tier. Email us at') }}
-          <a :href="mailto" class="underline hover:text-lteal">zemill@heroesprofile.com</a>
+          <a :href="mailto" class="link hover:text-lteal">zemill@heroesprofile.com</a>
           {{ $t('with the details below. We review each request to make sure Developer Tier access fits your use case and our guidelines.') }}
         </p>
 

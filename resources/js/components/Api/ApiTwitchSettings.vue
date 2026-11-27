@@ -42,9 +42,7 @@
           <p class="text-sm text-gray-medium mb-4">
             {{ $t('Sign in with the Twitch account you stream from. We only read your channel name — nothing is posted and no permissions are requested.') }}
           </p>
-          <a href="/Api/Twitch/Link" class="btn bg-blue hover:bg-lblue inline-block">
-            {{ $t('Connect Twitch') }}
-          </a>
+          <custom-button href="/Api/Twitch/Link" text="Connect Twitch" alt="Connect Twitch" class="inline-block"></custom-button>
         </template>
       </div>
 

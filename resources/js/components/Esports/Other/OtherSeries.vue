@@ -40,9 +40,9 @@
             </template>
             <p v-if="!filteredTeams.length" class="text-subtext">{{ $t('No teams match ":teamsearch".', { teamsearch: userinput }) }}</p>
             <div v-else class="grid sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-2">
-              <a v-for="row in filteredTeams" :key="row" :href="'/Esports/Other/' + series.name + '/Team/' + row" class="group/bt flex items-center gap-3 rounded bg-surface-1 hover:bg-surface-2 px-3 py-2 min-w-0">
+              <a v-for="row in filteredTeams" :key="row" :href="'/Esports/Other/' + series.name + '/Team/' + row" class="flex items-center gap-3 bg-surface-1 px-3 py-2 min-w-0 link-tile">
                 <img class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-2 text-[0rem]" :src="'/images/EsportOther/' + series.icon" :alt="series.name"/>
-                <span class="font-semibold truncate min-w-0"><span class="group-hover/bt:underline">{{ row }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
+                <span class="font-semibold truncate min-w-0"><span class="link-tile-title">{{ row }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
               </a>
             </div>
           </panel-box>

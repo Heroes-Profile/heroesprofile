@@ -69,7 +69,7 @@
                 <td class="py-2 px-3">{{ row.name }}</td>
                 <td class="py-2 px-3">{{ row.migrated ? $t('Live') : $t('Fixtures') }}</td>
                 <td class="py-2 px-3">
-                  <a href="#" @click.prevent="load(row.id, 'search')" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('Open') }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                  <a href="#" @click.prevent="load(row.id, 'search')" class="inline-flex items-center link-row">{{ $t('Open') }}</a>
                 </td>
               </tr>
               <tr v-if="detailTarget === '#admin-detail-search' && detail.account.id === row.id">
@@ -127,7 +127,7 @@
             <tbody>
               <tr v-for="row in traceRows" :key="row.id">
                 <td class="py-2 px-3">
-                  <a href="#" @click.prevent="load(row.account_id, 'trace')" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ row.email || 'id ' + row.account_id }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                  <a href="#" @click.prevent="load(row.account_id, 'trace')" class="inline-flex items-center link-row">{{ row.email || 'id ' + row.account_id }}</a>
                 </td>
                 <td class="py-2 px-3">{{ row.label }}</td>
                 <td class="py-2 px-3">
@@ -295,7 +295,7 @@
                    
                     :href="linkableWebsite"
                     target="_blank"
-                    rel="noopener noreferrer" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ detail.account.website }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                    rel="noopener noreferrer" class="inline-flex items-center link-row">{{ detail.account.website }}</a>
                   <template v-else-if="detail.account.website">{{ detail.account.website }}</template>
                   <template v-else>{{ $t('Not given') }}</template>
                 </td>

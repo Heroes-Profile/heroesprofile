@@ -73,7 +73,7 @@
               <div class="flex flex-col gap-4 w-fit max-w-full">
                 <div class="flex justify-between items-baseline gap-6">
                   <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
-                  <a class="text-header whitespace-nowrap hover:underline" :href="esport ? ngsPlayerUrl + section.allPath + ngsQuery : profileUrl + section.allPath + '?role=' + encodeURIComponent(role)">{{ $t(section.allText) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
+                  <a class="text-header whitespace-nowrap link-more" :href="esport ? ngsPlayerUrl + section.allPath + ngsQuery : profileUrl + section.allPath + '?role=' + encodeURIComponent(role)">{{ $t(section.allText) }}</a>
                 </div>
                 <div class="flex flex-wrap gap-6 max-md:justify-center">
                   <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :esport="esport" :playerlink="true" :text="group.label" :data="group.data"></group-box>
@@ -109,10 +109,10 @@
           <!-- Esports: the teams they played the role for -->
           <panel-box v-if="esport && data.teams_played_for && data.teams_played_for.length" :inner="true" :title="$t('Teams Played For')">
             <div class="flex flex-col gap-2">
-              <a v-for="team in data.teams_played_for" :key="team.team_name + team.season" :href="team.link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
+              <a v-for="team in data.teams_played_for" :key="team.team_name + team.season" :href="team.link" class="flex items-center gap-3 bg-surface-2 px-3 py-2 link-tile">
                 <img class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image || league.loaderImage" :alt="$ngsTeam(team.team_name).name" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = league.loaderImage; } }"/>
                 <div class="flex flex-col min-w-0 flex-1">
-                  <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
+                  <span class="font-semibold truncate"><span class="link-tile-title">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
                   <span class="text-sm text-subtext">{{ [team.season ? $t('Season :season', { season: team.season }) : null, team.division ? $t('Division :division', { division: team.division }) : null].filter(Boolean).join(' · ') }}</span>
                 </div>
                 <div class="flex flex-col items-end shrink-0 text-sm">

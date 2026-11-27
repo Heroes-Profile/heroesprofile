@@ -49,7 +49,7 @@
             @click="pick(index)"
           >
             <td>
-              <a class="group/bt inline-flex items-center" :href="profileUrl(item)" @click.prevent.stop="pick(index)"><span class="group-hover/bt:underline">{{ item.battletagShort }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+              <a class="inline-flex items-center link-row" :href="profileUrl(item)" @click.prevent.stop="pick(index)">{{ item.battletagShort }}</a>
             </td>
             <td v-if="showRegion">{{ item.regionName }}</td>
             <td v-if="showTogether" class="font-semibold text-lteal">{{ Number(item.gamesTogether || 0).toLocaleString('en-US') }}</td>
@@ -58,7 +58,7 @@
             <!-- As in the Global Hero Stats table: portrait and name, left-aligned -->
             <td :class="['py-2 px-3', { 'max-md:hidden': picker }]"><div v-if="item.latestHero" class="flex items-center justify-start"><hero-image-wrapper class="mr-3" :hero="item.latestHero"></hero-image-wrapper><span class="hidden md:block font-medium">{{ $heroName(item.latestHero) }}</span></div></td>
             <td class="max-md:hidden">
-              <a v-if="item.latestReplayID" class="group/bt inline-flex items-center" :href="matchUrl(item)" target="_blank" rel="noopener" @click.stop><span class="group-hover/bt:underline">{{ $formatDate(item.latest_game, { dateStyle: 'short', timeStyle: 'short' }) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+              <a v-if="item.latestReplayID" class="inline-flex items-center link-row" :href="matchUrl(item)" target="_blank" rel="noopener" @click.stop>{{ $formatDate(item.latest_game, { dateStyle: 'short', timeStyle: 'short' }) }}</a>
               <template v-else>{{ $formatDate(item.latest_game, { dateStyle: 'short', timeStyle: 'short' }) }}</template>
             </td>
             </template>

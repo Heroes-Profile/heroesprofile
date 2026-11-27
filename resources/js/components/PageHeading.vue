@@ -20,7 +20,7 @@
            the filters' top) -->
       <div v-if="battletag" class="flex items-center gap-3 flex-wrap md:flex-nowrap max-md:justify-center">
         <span v-if="esport" class="text-3xl md:text-6xl font-bold">{{ battletag }}</span>
-        <a v-else :href="`/Player/${battletag}/${blizzid}/${region}`" class="group/bt inline-flex"><span class="text-3xl md:text-6xl font-bold group-hover/bt:underline">{{ battletag }}</span></a>
+        <a v-else :href="`/Player/${battletag}/${blizzid}/${region}`" class="inline-flex hover:underline"><span class="text-3xl md:text-6xl font-bold">{{ battletag }}</span></a>
         <!-- Each flair in a box its own size, centred on the BattleTag (flair-icon, app.css) -->
         <span v-if="(isOwner && !ownerHidden) || isPatreon || (!esport && voidEye)" class="flex items-center gap-2.5 text-[1.25rem]">
           <span v-if="isOwner && !ownerHidden" class="relative inline-flex">

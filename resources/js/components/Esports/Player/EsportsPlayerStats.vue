@@ -63,11 +63,11 @@
             <button type="button" class="ml-auto text-sm font-semibold text-teal whitespace-nowrap hover:underline" @click="teamsOpen = true">{{ $t('View More') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></button>
           </template>
           <div class="flex flex-col gap-2">
-            <a v-for="team in (data.teams_played_for || []).slice(0, 5)" :key="team.team_name + team.season" :href="team.link" class="group/bt flex items-center gap-3 rounded bg-surface-1 hover:bg-surface-2 px-3 py-2 transition-colors">
+            <a v-for="team in (data.teams_played_for || []).slice(0, 5)" :key="team.team_name + team.season" :href="team.link" class="flex items-center gap-3 bg-surface-1 px-3 py-2 link-tile">
               <img v-if="team.image" class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image" :alt="$ngsTeam(team.team_name).name" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = league.loaderImage; } }"/>
               <span v-else class="w-10 h-10 shrink-0 rounded-full bg-surface-3 flex items-center justify-center text-sm font-bold text-subtext">{{ initials($ngsTeam(team.team_name).name) }}</span>
               <div class="flex flex-col min-w-0 flex-1">
-                <span class="font-semibold truncate group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span>
+                <span class="font-semibold truncate"><span class="link-tile-title">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
                 <span class="text-xs text-subtext">{{ [team.season ? $t('Season :season', { season: team.season }) : null, team.division ? $t('Division :division', { division: team.division }) : null].filter(Boolean).join(' · ') }}</span>
               </div>
               <div class="flex flex-col items-end shrink-0 text-sm">
@@ -83,7 +83,7 @@
           <div class="flex flex-col gap-3">
             <div v-for="role in rolesPlayed" :key="role.role" class="flex flex-col gap-1.5">
               <div class="flex justify-between gap-4 text-sm">
-                <span><a class="font-semibold hover:underline" :href="ngsPageUrl('/Role/' + role.role)">{{ $t(role.role) }}</a> <span class="text-subtext">{{ $t('· :played games', { played: role.games_played }) }}</span></span>
+                <span><a class="font-semibold link" :href="ngsPageUrl('/Role/' + role.role)">{{ $t(role.role) }}</a> <span class="text-subtext">{{ $t('· :played games', { played: role.games_played }) }}</span></span>
                 <span :class="['font-semibold', role.win_rate >= 50 ? 'text-teal' : '']">{{ role.win_rate.toFixed(2) }}%</span>
               </div>
               <stat-bar :value="role.win_rate.toFixed(2)" display-text="" :color="$winRateColor(role.win_rate)"></stat-bar>
@@ -104,9 +104,9 @@
             <tbody class="text-center">
               <tr v-for="row in heroRows" :key="row.hero_id">
                 <td class="py-2 px-3 text-left">
-                  <a :href="row.link" class="group/bt inline-flex items-center gap-2 min-w-0">
+                  <a :href="row.link" class="inline-flex items-center gap-2 min-w-0 link-row">
                     <img class="w-7 h-7 shrink-0 rounded-full object-cover bg-surface-3 text-[0rem]" :src="`/images/heroes/${row.hero.short_name}.png`" :alt="$heroName(row.hero)"/>
-                    <span class="font-semibold truncate group-hover/bt:underline">{{ $heroName(row.hero) }}</span>
+                    <span class="font-semibold truncate">{{ $heroName(row.hero) }}</span>
                   </a>
                 </td>
                 <td :class="['font-semibold', row.win_rate >= 50 ? 'text-teal' : '']">{{ Number(row.win_rate).toFixed(2) }}%</td>
@@ -197,10 +197,10 @@
     <!-- Every team they played for, from the card's View More -->
     <modal-box v-if="teamsOpen && data" :title="$t('Teams Played For')" width="max-w-[40rem]" @close="teamsOpen = false">
       <div class="flex flex-col gap-2">
-        <a v-for="team in data.teams_played_for" :key="team.team_name + team.season" :href="team.link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
+        <a v-for="team in data.teams_played_for" :key="team.team_name + team.season" :href="team.link" class="flex items-center gap-3 bg-surface-2 px-3 py-2 link-tile">
           <img class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image || league.loaderImage" :alt="$ngsTeam(team.team_name).name" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = league.loaderImage; } }"/>
           <div class="flex flex-col min-w-0 flex-1">
-            <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
+            <span class="font-semibold truncate"><span class="link-tile-title">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
             <span class="text-sm text-subtext">{{ [team.season ? $t('Season :season', { season: team.season }) : null, team.division ? $t('Division :division', { division: team.division }) : null].filter(Boolean).join(' · ') }}</span>
           </div>
           <div class="flex flex-col items-end shrink-0 text-sm">

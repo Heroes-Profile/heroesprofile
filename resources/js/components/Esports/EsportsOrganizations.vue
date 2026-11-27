@@ -7,9 +7,9 @@
       </template>
       <p v-if="!shown.length" class="text-subtext">{{ $t('No teams match ":teamsearch".', { teamsearch: filterText }) }}</p>
       <div v-else :class="['grid gap-4', esport === 'Other' ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7' : 'sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4']">
-        <a v-for="item in shown" :key="item.href" :href="item.href" :class="['group/bt flex flex-col items-center gap-3 rounded bg-surface-1 hover:bg-surface-2 border-2 px-4 py-5 min-w-0 text-center transition-colors', item.name === highlight ? 'border-teal' : 'border-transparent']">
+        <a v-for="item in shown" :key="item.href" :href="item.href" :class="['flex flex-col items-center gap-3 bg-surface-1 border-2 px-4 py-5 min-w-0 text-center link-tile', item.name === highlight ? 'border-teal' : 'border-transparent']">
           <img :src="item.image" :alt="item.name" class="w-24 h-24 object-contain text-[0rem]" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = fallbackImage; } }"/>
-          <span class="max-w-full truncate font-semibold group-hover/bt:underline">{{ item.name }}</span>
+          <span class="max-w-full truncate font-semibold link-tile-title">{{ item.name }}</span>
           <template v-if="esport === 'Other'">
             <span v-if="item.games != null || item.firstGame" class="flex flex-col text-xs text-subtext -mt-2">
               <span v-if="item.games != null">{{ $t(':count games', { count: item.games.toLocaleString('en-US') }) }}</span>

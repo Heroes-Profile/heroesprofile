@@ -3,11 +3,11 @@
   <div class="max-w-[120rem] mx-auto px-4 md:px-8">
     <panel-box title="Divisions" :subtitle="$t('Season :season · :games games played across :count divisions.', { season: season, games: totalGames.toLocaleString('en-US'), count: data.length })" :divider="false">
       <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <a v-for="division in data" :key="division.division_0" :href="getUrl(division.division_0)" class="group/bt flex flex-col gap-3 rounded bg-surface-1 hover:bg-surface-2 px-5 py-4 transition-colors">
+        <a v-for="division in data" :key="division.division_0" :href="getUrl(division.division_0)" class="flex flex-col gap-3 bg-surface-1 px-5 py-4 link-tile">
           <div class="flex items-start justify-between gap-3">
             <div class="flex flex-col">
               <span class="text-[0.625rem] font-bold uppercase tracking-wider text-subtext">{{ $t('Division') }}</span>
-              <span class="text-xl font-bold group-hover/bt:underline">{{ division.division_0 }}</span>
+              <span class="text-xl font-bold link-tile-title">{{ division.division_0 }}</span>
             </div>
             <basil-icon name="arrow-small" class="text-xs mt-2"></basil-icon>
           </div>

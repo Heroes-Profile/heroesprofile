@@ -73,11 +73,11 @@
             </thead>
             <tbody>
               <tr v-for="row in shownData" :key="row.id">
-                <td class="py-2 px-3"><a class="group/bt inline-flex items-center font-medium" :href="getPlayerMapPageUrl(row.name)"><span class="group-hover/bt:underline">{{ $mapName(row.name) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></td>
+                <td class="py-2 px-3"><a class="inline-flex items-center font-medium link-row" :href="getPlayerMapPageUrl(row.name)">{{ $mapName(row.name) }}</a></td>
                 <td class="py-2 px-3"><div class="min-w-[8em]"><div class="text-sm font-semibold text-header tabular-nums mb-1.5">{{ row.win_rate }}<span class="text-xs">%</span></div><stat-bar :value="row.win_rate" display-text="" :color="$winRateColor(row.win_rate)"></stat-bar></div></td>
                 <td v-if="showGames" class="py-2 px-3 text-center">{{ (row.wins + row.losses) }}</td>
                 <td v-for="stat in shownStats" :key="stat.value" :class="{ flash: stat.flash }" class="py-2 px-3 text-center">
-                  <a v-if="statContainsMax(stat) && !esport" class="group/bt inline-flex items-center text-header cursor-pointer" role="button" @click="navigateToMaxStatMatch(row.name, stat.value, row[stat.value])" :title="$t('Navigate to this match')"><span class="group-hover/bt:underline">{{ showStatValue(row[stat.value]) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                  <a v-if="statContainsMax(stat) && !esport" class="inline-flex items-center text-header cursor-pointer link-row" role="button" @click="navigateToMaxStatMatch(row.name, stat.value, row[stat.value])" :title="$t('Navigate to this match')">{{ showStatValue(row[stat.value]) }}</a>
                   <template v-else>{{ showStatValue(row[stat.value]) }}</template>
                 </td>
               </tr>

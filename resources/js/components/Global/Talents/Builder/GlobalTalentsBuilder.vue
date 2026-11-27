@@ -181,7 +181,7 @@
                 </thead>
                 <tbody class="text-center">
                   <tr v-for="row in pagedReplays" :key="row.replayID">
-                    <td class="py-2 px-6 text-left font-semibold"><a class="group/bt inline-flex items-center" :href="`/Match/Single/${row.replayID}`"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></td>
+                    <td class="py-2 px-6 text-left font-semibold"><a class="inline-flex items-center link-row" :href="`/Match/Single/${row.replayID}`">{{ row.replayID }}</a></td>
                     <td class="py-2 px-3">
                       <div class="flex gap-1.5 items-center justify-center">
                         <template v-for="key in LEVEL_KEYS" :key="key">

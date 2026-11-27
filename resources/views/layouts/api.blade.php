@@ -81,17 +81,17 @@
           {{-- The main site keeps these behind a hover dropdown, which has no
                touch fallback. Flat links here work everywhere. --}}
           <p class="flex flex-wrap justify-center gap-x-6 gap-y-1">
-            <a href="https://github.com/Heroes-Profile/heroesprofile/issues/new?assignees=&labels=&projects=&template=bug_report.md" target="_blank" rel="noopener" class="underline">{{ __('Report a Bug') }}</a>
-            <a href="https://github.com/Heroes-Profile/heroesprofile/discussions/new?category=ideas" target="_blank" rel="noopener" class="underline">{{ __('Request a Feature') }}</a>
-            <a href="https://github.com/Heroes-Profile/heroesprofile/discussions" target="_blank" rel="noopener" class="underline">{{ __('Discussions') }}</a>
-            <a href="/Github/Change/Log" class="underline">{{ __('Change Log') }}</a>
-            <a href="/Contact" class="underline">{{ __('Contact') }}</a>
+            <a href="https://github.com/Heroes-Profile/heroesprofile/issues/new?assignees=&labels=&projects=&template=bug_report.md" target="_blank" rel="noopener" class="link">{{ __('Report a Bug') }}</a>
+            <a href="https://github.com/Heroes-Profile/heroesprofile/discussions/new?category=ideas" target="_blank" rel="noopener" class="link">{{ __('Request a Feature') }}</a>
+            <a href="https://github.com/Heroes-Profile/heroesprofile/discussions" target="_blank" rel="noopener" class="link">{{ __('Discussions') }}</a>
+            <a href="/Github/Change/Log" class="link">{{ __('Change Log') }}</a>
+            <a href="/Contact" class="link">{{ __('Contact') }}</a>
           </p>
 
           <p class="flex flex-wrap justify-center gap-x-6 gap-y-1">
-            <a href="/Api/Privacy" class="underline">{{ __('Privacy Policy') }}</a>
-            <a href="/Api/Terms" class="underline">{{ __('Terms of Service') }}</a>
-            <a href="/" class="underline">{{ __('Main Site') }}</a>
+            <a href="/Api/Privacy" class="link">{{ __('Privacy Policy') }}</a>
+            <a href="/Api/Terms" class="link">{{ __('Terms of Service') }}</a>
+            <a href="/" class="link">{{ __('Main Site') }}</a>
           </p>
 
           <div class="text-xs text-subtext">

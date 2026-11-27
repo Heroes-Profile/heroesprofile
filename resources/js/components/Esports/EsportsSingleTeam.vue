@@ -66,7 +66,7 @@
                     </hero-image-wrapper>
                   </a>
                   <div class="flex flex-col min-w-0 flex-1">
-                    <a class="group/bt font-semibold truncate" :href="row.playerlink"><span class="group-hover/bt:underline">{{ row.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                    <a class="font-semibold truncate link-row" :href="row.playerlink">{{ row.battletag }}</a>
                     <span v-if="row.most_played_role" class="text-sm text-subtext">{{ $t(row.most_played_role) }}</span>
                   </div>
                   <span class="shrink-0 text-sm text-subtext">{{ $t(':played games', { played: row.games_played }) }}</span>
@@ -81,10 +81,10 @@
                 <button type="button" class="text-header whitespace-nowrap hover:underline" @click="popup = 'teams'">{{ $t('View More') }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></button>
               </template>
               <div class="flex flex-col gap-2">
-                <a v-for="(enemy, index) in enemyTeams.slice(0, 4)" :key="index" :href="enemy.enemy_link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
+                <a v-for="(enemy, index) in enemyTeams.slice(0, 4)" :key="index" :href="enemy.enemy_link" class="flex items-center gap-3 bg-surface-2 px-3 py-2 link-tile">
                   <img class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="enemy.icon_url || isLoadingImageUrl" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = isLoadingImageUrl; } }" :alt="teamName(enemy.team_name || enemy.team)"/>
                   <div class="flex flex-col min-w-0 flex-1">
-                    <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ teamName(enemy.team_name || enemy.team) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
+                    <span class="font-semibold truncate"><span class="link-tile-title">{{ teamName(enemy.team_name || enemy.team) }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
                     <span class="text-sm text-subtext">{{ localHover(enemy.inputhover) }}</span>
                   </div>
                 </a>
@@ -171,7 +171,7 @@
 
       <div class="flex justify-between items-baseline gap-6">
         <h2 class="text-2xl font-bold">{{ $t('Recent Matches') }}</h2>
-        <a class="text-header whitespace-nowrap hover:underline" :href="matchHistoryUrl">{{ $t('Match History') }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
+        <a class="text-header whitespace-nowrap link-more" :href="matchHistoryUrl">{{ $t('Match History') }}</a>
       </div>
     </div>
     <!-- The league pages' own recent match rows -->
@@ -299,17 +299,17 @@
             </hero-image-wrapper>
           </a>
           <div class="flex flex-col min-w-0 flex-1">
-            <a class="group/bt font-semibold truncate" :href="row.playerlink"><span class="group-hover/bt:underline">{{ row.battletag }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+            <a class="font-semibold truncate link-row" :href="row.playerlink">{{ row.battletag }}</a>
             <span v-if="row.most_played_role" class="text-sm text-subtext">{{ $t(row.most_played_role) }}</span>
           </div>
           <span class="shrink-0 text-sm text-subtext">{{ $t(':played games', { played: row.games_played }) }}</span>
         </div>
       </div>
       <div v-else class="flex flex-col gap-2">
-        <a v-for="(enemy, index) in enemyTeams" :key="index" :href="enemy.enemy_link" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
+        <a v-for="(enemy, index) in enemyTeams" :key="index" :href="enemy.enemy_link" class="flex items-center gap-3 bg-surface-2 px-3 py-2 link-tile">
           <img class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="enemy.icon_url || isLoadingImageUrl" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = isLoadingImageUrl; } }" :alt="teamName(enemy.team_name || enemy.team)"/>
           <div class="flex flex-col min-w-0 flex-1">
-            <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ teamName(enemy.team_name || enemy.team) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
+            <span class="font-semibold truncate"><span class="link-tile-title">{{ teamName(enemy.team_name || enemy.team) }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
             <span class="text-sm text-subtext">{{ localHover(enemy.inputhover) }}</span>
           </div>
         </a>

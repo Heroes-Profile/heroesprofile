@@ -82,9 +82,9 @@
                 <tr v-for="page in pageOf(sitePagesRows, sitePagesPage)" :key="page.url">
                   <td class="py-3 px-4 whitespace-nowrap">{{ page.name }}</td>
                   <td class="py-3 px-4 whitespace-nowrap">
-                    <a v-if="!page.url.includes('{')" :href="page.url" class="group/bt inline-flex items-center text-header"><span class="group-hover/bt:underline">{{ page.url }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                    <a v-if="!page.url.includes('{')" :href="page.url" class="inline-flex items-center text-header link-row">{{ page.url }}</a>
                     <span v-else>{{ page.url }}</span>
-                    <div v-if="page.hero_url" class="text-xs text-subtext">{{ $t('One hero:') }} <a :href="page.hero_url.replace('{hero}', 'Abathur')" class="underline">{{ page.hero_url.replace('{hero}', 'Abathur') }}</a></div>
+                    <div v-if="page.hero_url" class="text-xs text-subtext">{{ $t('One hero:') }} <a :href="page.hero_url.replace('{hero}', 'Abathur')" class="link">{{ page.hero_url.replace('{hero}', 'Abathur') }}</a></div>
                   </td>
                   <td class="py-3 px-4 text-subtext">{{ page.description }}</td>
                 </tr>
@@ -112,7 +112,7 @@
                 <tr v-for="(row, i) in pageOf(patchHistory, patchPage)" :key="i">
                   <td class="py-3 px-4 text-center">{{ row.season }}</td>
                   <td class="py-3 px-4 text-center">
-                    <a v-if="row.patch_notes_url" :href="row.patch_notes_url" target="_blank" class="group/bt inline-flex items-center text-header"><span class="group-hover/bt:underline">{{ row.game_version }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                    <a v-if="row.patch_notes_url" :href="row.patch_notes_url" target="_blank" class="inline-flex items-center text-header link-row">{{ row.game_version }}</a>
                     <span v-else>{{ row.game_version }}</span>
                   </td>
                   <td class="py-3 px-4 text-center">{{ formatDate(row.start_date) }}</td>

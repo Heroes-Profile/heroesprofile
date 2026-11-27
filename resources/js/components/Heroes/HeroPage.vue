@@ -9,7 +9,7 @@
             <hero-heading-select :heroes="allHeroes" :value="hero.id" textclass="" @hero-changed="goToHero"></hero-heading-select>
           </template>
           <template #aboveHeading>
-            <a href="/Heroes" class="inline-flex max-md:flex max-md:w-fit items-center gap-1.5 text-sm font-normal text-lteal hover:underline mb-1"><basil-icon name="arrow-small" class="rotate-180 text-xs text-white"></basil-icon>{{ $t('All heroes') }}</a>
+            <a href="/Heroes" class="inline-flex max-md:flex max-md:w-fit items-center text-sm font-normal text-lteal mb-1 link-back">{{ $t('All heroes') }}</a>
           </template>
           <template v-if="metadata" #subheading>
             <span class="inline-flex items-center gap-2">

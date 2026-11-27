@@ -23,8 +23,8 @@
     </form>
 
     <template #footer>
-      <a href="/Api/Password/Forgot" class="font-semibold text-teal hover:underline">{{ $t('Forgot your password?') }}</a>
-      <span>{{ $t('No API account yet?') }} <a href="/Api/Register" class="font-semibold text-teal hover:underline">{{ $t('Register') }}</a></span>
+      <a href="/Api/Password/Forgot" class="font-semibold text-teal link">{{ $t('Forgot your password?') }}</a>
+      <span>{{ $t('No API account yet?') }} <a href="/Api/Register" class="font-semibold text-teal link">{{ $t('Register') }}</a></span>
     </template>
   </api-form-card>
 </template>

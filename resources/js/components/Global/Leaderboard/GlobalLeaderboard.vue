@@ -14,14 +14,14 @@
               <!-- SL Rank is read off loading screens, not worked out from uploaded games like the other boards -->
           <p v-if="leaderboardtype == 'SL Rank'" class="font-normal">
             {{ $t("The SL Rank leaderboard shows players' real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is placed by their latest rank read this season: by league from Master (Grandmasters by ladder position) down to Bronze, then by division. Within a division, players who meet the games requirement come first, by win rate.") }}
-            <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('How rank reading works') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+            <a href="/Upload/Uploader#rank-reading" class="inline-flex items-center link-more">{{ $t('How rank reading works') }}</a>
           </p>
           <p v-else-if="leaderboardtype == 'Match Prediction'" class="font-normal">
-                <template v-for="(part, index) in $t('Match Prediction leaderboard data is based on users making predictions about match outcomes through :link.').split(':link')" :key="index">{{ part }}<template v-if="index === 0"><a href="/Match/Prediction/Game" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('Match Prediction') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a></template></template>
+                <template v-for="(part, index) in $t('Match Prediction leaderboard data is based on users making predictions about match outcomes through :link.').split(':link')" :key="index">{{ part }}<template v-if="index === 0"><a href="/Match/Prediction/Game" target="_blank" class="inline-flex items-center link-more">{{ $t('Match Prediction') }}</a></template></template>
               </p>
               <p v-else class="font-normal">
                 {{ $t('Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards.') }}
-                <template v-for="(part, index) in $t('The :link works on Windows, macOS and Linux.').split(':link')" :key="index">{{ part }}<template v-if="index === 0"><a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases" target="_blank" rel="noopener noreferrer" class="underline">{{ $t('Heroes Profile Uploader') }}</a></template></template>
+                <template v-for="(part, index) in $t('The :link works on Windows, macOS and Linux.').split(':link')" :key="index">{{ part }}<template v-if="index === 0"><a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases" target="_blank" rel="noopener noreferrer" class="link">{{ $t('Heroes Profile Uploader') }}</a></template></template>
                 {{ $t('For any questions, please contact :email.', { email: 'zemill@heroesprofile.com' }) }}
               </p>
             </round-image>
@@ -178,7 +178,7 @@
                       <round-image :popup-hoverable="true" class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
                         <p class="font-normal normal-case">
                           {{ $t("Real in-game Storm League ranks, read off loading screens by the uploader's opt-in rank reader. Each player is listed by the latest rank read for them this season, grouped by league: Grand Masters by ladder position, then Master, then each league by division. Within a division, players with at least :games Storm League games this season (the Player leaderboard's games requirement) come first, by Storm League win rate; players under it follow, by games played. Ties go to the rank read in more games. Shows the top 500 in each league.", { games: data.length ? data[0].min_games : 0 }) }}
-                          <a href="/Upload/Uploader#rank-reading" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('How rank reading works') }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+                          <a href="/Upload/Uploader#rank-reading" class="inline-flex items-center link-more">{{ $t('How rank reading works') }}</a>
                         </p>
                       </round-image>
                     </span>
@@ -194,7 +194,7 @@
                       <round-image :popup-hoverable="true" class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" @click.stop>
                         <p class="font-normal normal-case">
                           {{ $t("Heroes Profile Rating ranks players by combining their MMR, win rate and games played this season, each measured against the other players on this leaderboard. Games played is capped relative to the top players, so playing lots of games alone can't carry someone to the top.") }}
-                          <template v-for="(part, index) in $t('The exact formula is under Leaderboard Requirements, and the :link explains why it is used instead of MMR.').split(':link')" :key="index">{{ part }}<template v-if="index === 0"><a href="/FAQ" class="underline">{{ $t('FAQ') }}</a></template></template>
+                          <template v-for="(part, index) in $t('The exact formula is under Leaderboard Requirements, and the :link explains why it is used instead of MMR.').split(':link')" :key="index">{{ part }}<template v-if="index === 0"><a href="/FAQ" class="link">{{ $t('FAQ') }}</a></template></template>
                         </p>
                       </round-image>
                     </span>
@@ -256,7 +256,7 @@
                         <template v-if="row.most_played_hero">
                         <hero-image-wrapper :hero="row.most_played_hero">
                           <image-hover-box :title="$heroName(row.most_played_hero)" :paragraph-one="$t('Games Played') + ': ' + row.hero_build_games_played"></image-hover-box>
-                        </hero-image-wrapper><a :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}/Hero/${encodeURIComponent(row.most_played_hero.name)}`" class="group/bt hidden md:inline-flex items-center ml-2"><span class="group-hover/bt:underline">{{ $heroName(row.most_played_hero) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                        </hero-image-wrapper><a :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}/Hero/${encodeURIComponent(row.most_played_hero.name)}`" class="hidden md:inline-flex items-center ml-2 link-row">{{ $heroName(row.most_played_hero) }}</a>
                         </template>
                       </div>
                     </td>

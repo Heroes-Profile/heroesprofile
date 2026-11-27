@@ -28,8 +28,8 @@
         <ol class="flex flex-col gap-2">
           <li v-for="step in section.steps" :key="step.number" class="flex gap-3 text-sm">
             <span class="w-5 h-5 shrink-0 rounded-[0.25rem] bg-surface-1 flex items-center justify-center text-[0.625rem] text-subtext">{{ step.number }}</span>
-            <a v-if="step.builder" href="#auto-battler" class="text-lteal hover:underline">{{ $t(step.text) }}</a>
-            <a v-else-if="step.href" :href="step.href" target="_blank" rel="noopener" class="text-lteal hover:underline">{{ $t(step.text) }}</a>
+            <a v-if="step.builder" href="#auto-battler" class="text-lteal link">{{ $t(step.text) }}</a>
+            <a v-else-if="step.href" :href="step.href" target="_blank" rel="noopener" class="text-lteal link">{{ $t(step.text) }}</a>
             <span v-else>{{ $t(step.text) }}</span>
           </li>
         </ol>

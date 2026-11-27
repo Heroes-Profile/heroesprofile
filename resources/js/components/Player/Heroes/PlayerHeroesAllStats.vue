@@ -89,7 +89,7 @@
         </thead>
         <tbody>
           <tr v-for="row in shownData" :key="row.id">
-            <td class="py-2 px-3"><a class="group/bt flex items-center" :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper :hero="row.hero" :href="getPlayerHeroPageUrl(row.name)" link-text="View Hero"></hero-image-wrapper><span class="hidden md:block ml-2 group-hover/bt:underline">{{ $heroName(row.hero) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity hidden md:inline"></basil-icon></a></td>
+            <td class="py-2 px-3"><a class="flex items-center link-row" :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper :hero="row.hero" :href="getPlayerHeroPageUrl(row.name)" link-text="View Hero"></hero-image-wrapper><span class="hidden md:block ml-2">{{ $heroName(row.hero) }}</span></a></td>
             <td class="py-2 px-3"><div class="min-w-[8em]"><div class="text-sm font-semibold text-header tabular-nums mb-1.5">{{ row.win_rate }}<span class="text-xs">%</span></div><stat-bar :value="row.win_rate" display-text="" :color="getWinRateColor(row.win_rate)"></stat-bar></div></td>
             <td v-if="showGames" class="py-2 px-3 text-center">{{ (row.wins + row.losses) }}</td>
             <td class="max-md:hidden py-2 px-3 ">{{ row.kda }}</td>
@@ -100,7 +100,7 @@
                 :class="{ flash: stat.flash }"
                 class="py-2 px-3 text-center">
                 <div v-if="statContainsMax(stat) && !esport">
-                  <a class="group/bt inline-flex items-center text-header cursor-pointer" role="button" @click="navigateToMaxStatMatch(row.hero, stat.value, row[stat.value])" :title="$t('Navigate to this match')"><span class="group-hover/bt:underline">{{ showStatValue(stat.value, row[stat.value]) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                  <a class="inline-flex items-center text-header cursor-pointer link-row" role="button" @click="navigateToMaxStatMatch(row.hero, stat.value, row[stat.value])" :title="$t('Navigate to this match')">{{ showStatValue(stat.value, row[stat.value]) }}</a>
                 </div>
                 <div v-else-if="statisranktier(stat)">
                   {{ row[stat.value] }}

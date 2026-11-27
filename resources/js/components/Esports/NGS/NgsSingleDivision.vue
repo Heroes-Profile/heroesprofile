@@ -65,10 +65,10 @@
             <!-- The division's teams, best record first -->
             <panel-box :inner="true" class="min-w-0" :title="$t('Teams')">
               <div class="flex flex-col gap-2">
-                <a v-for="team in sortedTeams" :key="team.team_name" :href="teamUrl(team)" class="group/bt flex items-center gap-3 rounded bg-surface-2 hover:bg-surface-3 px-3 py-2">
+                <a v-for="team in sortedTeams" :key="team.team_name" :href="teamUrl(team)" class="flex items-center gap-3 bg-surface-2 px-3 py-2 link-tile">
                   <img class="w-10 h-10 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="team.image || '/images/NGS/no-image-clipped.png'" :alt="$ngsTeam(team.team_name).name" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = '/images/NGS/no-image-clipped.png'; } }"/>
                   <div class="flex flex-col min-w-0 flex-1">
-                    <span class="font-semibold truncate"><span class="group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
+                    <span class="font-semibold truncate"><span class="link-tile-title">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
                     <span v-if="$ngsTeam(team.team_name).withdrawnSeason" class="text-sm text-subtext">{{ $t('Withdrew Season :withdrawnseason', { withdrawnseason: $ngsTeam(team.team_name).withdrawnSeason }) }}</span>
                   </div>
                   <div class="flex flex-col items-end shrink-0 text-sm">
@@ -101,7 +101,7 @@
 
         <div class="flex justify-between items-baseline gap-6">
           <h2 class="text-2xl font-bold">{{ $t('Recent Matches') }}</h2>
-          <a class="text-header whitespace-nowrap hover:underline" :href="`/Esports/NGS/Division/${division}/Match/History?season=${modifiedseason}`">{{ $t('Match History') }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></a>
+          <a class="text-header whitespace-nowrap link-more" :href="`/Esports/NGS/Division/${division}/Match/History?season=${modifiedseason}`">{{ $t('Match History') }}</a>
         </div>
       </div>
 

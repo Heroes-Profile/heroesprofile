@@ -31,7 +31,7 @@
               </td>
               <td class="text-left">
                 <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <a :class="['group/bt inline-flex items-center min-w-0 max-md:break-words', { 'text-subtext': withdrawn(team) }]" :href="`/Esports/NGS/Team/${encodeURIComponent($ngsTeam(team.team_name).name)}?season=${season}&division=${divisionName}`"><span class="font-semibold group-hover/bt:underline">{{ $ngsTeam(team.team_name).name }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                  <a class="link-row" :class="['inline-flex items-center min-w-0 max-md:break-words', { 'text-subtext': withdrawn(team) }]" :href="`/Esports/NGS/Team/${encodeURIComponent($ngsTeam(team.team_name).name)}?season=${season}&division=${divisionName}`"><span class="font-semibold">{{ $ngsTeam(team.team_name).name }}</span></a>
                   <icon-with-hover v-if="withdrawn(team)" popupsize="fit">
                     <template #trigger><span class="rounded-md bg-red/25 text-lred px-1.5 text-[0.625rem] font-bold leading-4 cursor-default">{{ $t('WD') }}</span></template>
                     <p>{{ $t('Withdrawn') }}</p>

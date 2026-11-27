@@ -100,7 +100,7 @@
             </thead>
             <tbody class="text-center">
               <tr v-for="(row, index) in data.match_games" :key="index">
-                <td width="25%"><a class="group/bt inline-flex items-center" :href="`/Esports/${esport}/Match/Single/${row.replayID}${tournament ? '?tournament=' + tournament : ''}`"><span class="group-hover/bt:underline">{{ row.replayID }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a></td>
+                <td width="25%"><a class="inline-flex items-center link-row" :href="`/Esports/${esport}/Match/Single/${row.replayID}${tournament ? '?tournament=' + tournament : ''}`">{{ row.replayID }}</a></td>
                 <td width="25%">{{ row.round }}</td>
                 <td width="25%">{{ row.game }}</td>
                 <td width="25%"><map-image-wrapper size="small" :map="row.game_map"><image-hover-box :title="$mapName(row.game_map)"></image-hover-box></map-image-wrapper></td>
@@ -115,7 +115,7 @@
         <panel-box :title="$t('Match Scores')" :subtitle="$t('Best value in each column is highlighted.')" :divider="false">
           <template #right>
             <!-- Same rules as Watch Replay -->
-            <a v-if="isWatchableGame && replayViewerAllowed" class="ml-auto self-center text-sm font-semibold text-teal hover:underline" :href="'/Analytics/Match/Single/' + replayid + '/Replay#analytic-performance'">{{ $t('How each player played') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+            <a v-if="isWatchableGame && replayViewerAllowed" class="ml-auto self-center text-sm font-semibold text-teal link" :href="'/Analytics/Match/Single/' + replayid + '/Replay#analytic-performance'">{{ $t('How each player played') }}</a>
             <login-required-hover v-else-if="isWatchableGame" class="ml-auto self-center" message="You need to be logged in with Battle.net to see how each player played."><span class="text-sm opacity-60 cursor-pointer">{{ $t('How each player played') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span></login-required-hover>
           </template>
           <scroll-hint-container>
@@ -138,8 +138,8 @@
                       <span class="inline-flex items-center gap-2.5 min-w-0">
                         <a :href="getPlayerProfileLink(player, false)" class="shrink-0"><hero-image-wrapper :hero="player.hero" size="small" :excludehover="true"></hero-image-wrapper></a>
                         <span class="flex flex-col items-start min-w-0">
-                          <a :href="getPlayerProfileLink(player, false)" class="group/bt inline-flex items-center max-w-full font-semibold"><span class="truncate group-hover/bt:underline">{{ player.check ? $t('Hidden') : player.battletag }}</span><basil-icon v-if="!player.check" name="arrow-small" class="shrink-0 text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-                          <a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center max-w-full text-subtext text-xs"><span class="truncate group-hover/bt:underline">{{ $heroName(player.hero) }}</span><basil-icon v-if="!player.check" name="arrow-small" class="shrink-0 text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                          <a :class="player.check ? 'hover:underline' : 'link-row'" :href="getPlayerProfileLink(player, false)" class="inline-flex items-center max-w-full font-semibold"><span class="truncate">{{ player.check ? $t('Hidden') : player.battletag }}</span></a>
+                          <a :class="player.check ? 'hover:underline' : 'link-row'" :href="getPlayerProfileLink(player, true)" class="inline-flex items-center max-w-full text-subtext text-xs"><span class="truncate">{{ $heroName(player.hero) }}</span></a>
                         </span>
                       </span>
                     </td>
@@ -180,8 +180,8 @@
                 <span class="flex items-center gap-4 min-w-0 flex-1">
                   <a :href="getPlayerProfileLink(player, false)" class="shrink-0"><hero-image-wrapper :hero="player.hero" size="small" :excludehover="true"></hero-image-wrapper></a>
                   <span class="flex flex-col items-start gap-0.5 min-w-0">
-                    <a :href="getPlayerProfileLink(player, false)" :class="['group/bt inline-flex items-center max-w-full font-bold', { 'text-subtext': player.check }]"><span class="truncate group-hover/bt:underline">{{ player.check ? $t('Hidden') : player.battletag }}</span><basil-icon v-if="!player.check" name="arrow-small" class="shrink-0 text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-                    <a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center max-w-full text-subtext text-[0.8125rem]"><span class="truncate group-hover/bt:underline">{{ $heroName(player.hero) }}</span><basil-icon v-if="!player.check" name="arrow-small" class="shrink-0 text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                    <a :href="getPlayerProfileLink(player, false)" :class="['inline-flex items-center max-w-full font-bold', player.check ? 'text-subtext hover:underline' : 'link-row']"><span class="truncate">{{ player.check ? $t('Hidden') : player.battletag }}</span></a>
+                    <a :class="player.check ? 'hover:underline' : 'link-row'" :href="getPlayerProfileLink(player, true)" class="inline-flex items-center max-w-full text-subtext text-[0.8125rem]"><span class="truncate">{{ $heroName(player.hero) }}</span></a>
                   </span>
                 </span>
                 <build-code class="md:opacity-0 md:group-hover/row:opacity-100 md:focus-within:opacity-100 transition-opacity" :build="player.talents" :hero="player.hero" show="code" align="end"></build-code>
@@ -217,8 +217,8 @@
                       <span class="inline-flex items-center gap-2.5 min-w-0">
                         <a :href="getPlayerProfileLink(player, false)" class="shrink-0"><hero-image-wrapper :hero="player.hero" size="small" :excludehover="true"></hero-image-wrapper></a>
                         <span class="flex flex-col items-start min-w-0">
-                          <a :href="getPlayerProfileLink(player, false)" class="group/bt inline-flex items-center max-w-full font-semibold"><span class="truncate group-hover/bt:underline">{{ player.check ? $t('Hidden') : player.battletag }}</span><basil-icon v-if="!player.check" name="arrow-small" class="shrink-0 text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
-                          <a :href="getPlayerProfileLink(player, true)" class="group/bt inline-flex items-center max-w-full text-subtext text-xs"><span class="truncate group-hover/bt:underline">{{ $heroName(player.hero) }}</span><basil-icon v-if="!player.check" name="arrow-small" class="shrink-0 text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+                          <a :class="player.check ? 'hover:underline' : 'link-row'" :href="getPlayerProfileLink(player, false)" class="inline-flex items-center max-w-full font-semibold"><span class="truncate">{{ player.check ? $t('Hidden') : player.battletag }}</span></a>
+                          <a :class="player.check ? 'hover:underline' : 'link-row'" :href="getPlayerProfileLink(player, true)" class="inline-flex items-center max-w-full text-subtext text-xs"><span class="truncate">{{ $heroName(player.hero) }}</span></a>
                         </span>
                       </span>
                     </td>
@@ -268,7 +268,14 @@
                 <tr>
                   <th class="py-2 px-3 text-left text-sm leading-4">{{ $t('Stat') }}</th>
                   <th v-for="(player, index) in data.players[advancedTeam]" :key="index" class="py-2 px-3 text-center text-sm leading-4">
-                    <span class="inline-flex items-center gap-2"><hero-image-wrapper :hero="player.hero" size="small" :excludehover="true"></hero-image-wrapper>{{ player.check ? $t('Hidden') : player.battletag }}</span>
+                    <!-- The portrait and name to the player's profile, the hero to their stats on it, as in the tables above -->
+                    <span class="inline-flex items-center gap-2 max-w-full text-left">
+                      <a :href="getPlayerProfileLink(player, false)" class="shrink-0"><hero-image-wrapper :hero="player.hero" size="small" :excludehover="true"></hero-image-wrapper></a>
+                      <span class="flex flex-col items-start gap-0.5 min-w-0">
+                        <a :href="getPlayerProfileLink(player, false)" :class="['inline-flex items-center max-w-full', player.check ? 'text-subtext hover:underline' : 'link-row']"><span class="truncate">{{ player.check ? $t('Hidden') : player.battletag }}</span></a>
+                        <a :class="player.check ? 'hover:underline' : 'link-row'" :href="getPlayerProfileLink(player, true)" class="inline-flex items-center max-w-full text-subtext text-xs font-normal"><span class="truncate">{{ $heroName(player.hero) }}</span></a>
+                      </span>
+                    </span>
                   </th>
                 </tr>
               </thead>

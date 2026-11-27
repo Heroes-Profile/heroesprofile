@@ -7,7 +7,7 @@
         <span class="relative inline-flex items-center gap-1.5">{{ $t(text) }}
           <round-image :popup-hoverable="true" v-if="infolink" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
             <div>
-              <p class="max-sm:text-xs">{{ $t('Timeframes correspond to game patches.') }} <a :href="infolink" target="_blank" class="group/bt inline-flex items-center"><span class="group-hover/bt:underline">{{ $t('View the full patch & season history') }}</span><basil-icon name="arrow-small" class="text-xs ml-0.5"></basil-icon></a></p>
+              <p class="max-sm:text-xs">{{ $t('Timeframes correspond to game patches.') }} <a :href="infolink" target="_blank" class="inline-flex items-center link-more">{{ $t('View the full patch & season history') }}</a></p>
             </div>
           </round-image>
           <round-image v-if="showrankinfo" size="small"    icon="fas fa-info"   title="info"  popupsize="large" mobileClick="true">

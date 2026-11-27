@@ -92,7 +92,7 @@
             <td
               :class="{ flash: stat.flash }"
               class="py-2 px-3 text-center">
-              <a v-if="statContainsMax(stat) && !esport" class="group/bt inline-flex items-center text-header cursor-pointer" role="button" @click="navigateToMaxStatMatch(row.name, stat.value, row[stat.value])" :title="$t('Navigate to this match')"><span class="group-hover/bt:underline">{{ showStatValue(row[stat.value]) }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></a>
+              <a v-if="statContainsMax(stat) && !esport" class="inline-flex items-center text-header cursor-pointer link-row" role="button" @click="navigateToMaxStatMatch(row.name, stat.value, row[stat.value])" :title="$t('Navigate to this match')">{{ showStatValue(row[stat.value]) }}</a>
                 <template v-else>{{ showStatValue(row[stat.value]) }}</template>
             </td>
           </template>

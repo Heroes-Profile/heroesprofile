@@ -72,7 +72,7 @@
 
           <template v-else>
             <div class="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
-              <a v-for="stream in directory.live" :key="stream.login" :href="stream.url" target="_blank" rel="noopener" class="group/bt rounded bg-surface-1 hover:bg-surface-2 overflow-hidden transition-colors">
+              <a v-for="stream in directory.live" :key="stream.login" :href="stream.url" target="_blank" rel="noopener" class="bg-surface-1 overflow-hidden link-tile">
                 <div class="relative">
                   <img v-if="stream.thumbnail_url" :src="stream.thumbnail_url" :alt="$t(':name stream preview', { name: stream.display_name })" class="w-full aspect-video object-cover" loading="lazy" />
                   <div v-else class="w-full aspect-video bg-surface-3"></div>
@@ -80,7 +80,7 @@
                   <span class="absolute bottom-2 left-2 rounded-md bg-black/70 px-2 py-0.5 text-xs">{{ $t(':count viewers', { count: stream.viewer_count.toLocaleString() }) }}</span>
                 </div>
                 <div class="p-3 flex flex-col gap-0.5 min-w-0">
-                  <span class="font-semibold"><span class="group-hover/bt:underline">{{ stream.display_name }}</span><basil-icon name="arrow-small" class="text-xs ml-2 opacity-0 group-hover/bt:opacity-100 transition-opacity"></basil-icon></span>
+                  <span class="font-semibold"><span class="link-tile-title">{{ stream.display_name }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
                   <span class="text-sm text-subtext truncate" :title="stream.title">{{ stream.title }}</span>
                 </div>
               </a>
@@ -100,7 +100,7 @@
             <custom-button class="flex-1 font-semibold" href="/Api/Account#twitch" text="Set it up" alt="Set it up" color="teal"></custom-button>
             <custom-button class="flex-1 font-bold" href="https://dashboard.twitch.tv/extensions/chu7yxvts476q2ys0pben0ij8iagsk-2.0.0" :targetblank="true" text="Extension on Twitch" alt="Extension on Twitch" color="blue"></custom-button>
           </div>
-          <a href="/Twitch/Guidelines" class="self-start text-sm font-semibold text-teal hover:underline">{{ $t('Streamer code of conduct') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></a>
+          <a href="/Twitch/Guidelines" class="self-start text-sm font-semibold text-teal link">{{ $t('Streamer code of conduct') }}</a>
         </panel-box>
       </div>
 
@@ -121,7 +121,7 @@
                 <a :href="streamer.url" target="_blank" rel="noopener" class="font-semibold truncate hover:underline after:absolute after:inset-0">{{ streamer.display_name }}</a>
                 <span v-if="streamer.live" class="shrink-0 rounded-md bg-red px-1.5 text-xs font-bold">{{ $t('LIVE') }}</span>
               </span>
-              <a v-if="streamer.battletag && streamer.blizz_id" :href="profileUrl(streamer)" class="relative z-10 self-start max-w-full truncate text-sm text-subtext hover:text-white hover:underline">{{ $t('Heroes Profile: :battletag', { battletag: streamer.battletag }) }}</a>
+              <a v-if="streamer.battletag && streamer.blizz_id" :href="profileUrl(streamer)" class="relative z-10 self-start max-w-full truncate text-sm text-subtext hover:text-white link">{{ $t('Heroes Profile: :battletag', { battletag: streamer.battletag }) }}</a>
               <span v-else class="text-sm text-subtext">{{ $t('Profile not linked') }}</span>
             </span>
             <basil-icon name="arrow-small" class="shrink-0 text-xs"></basil-icon>

@@ -53,7 +53,7 @@
                   </icon-with-hover>
                 </h3>
                 <!-- The chevron is held to the last word, so it never wraps onto a line of its own -->
-                <a v-if="contributor.link" :href="contributor.link" target="_blank" rel="noopener" class="group/bt text-sm text-teal"><span class="group-hover/bt:underline">{{ leadWords($t(contributor.contribution)) }}</span><span class="whitespace-nowrap"><span class="group-hover/bt:underline">{{ lastWord($t(contributor.contribution)) }}</span><basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span></a>
+                <a v-if="contributor.link" :href="contributor.link" target="_blank" rel="noopener" class="text-sm text-teal link-more">{{ leadWords($t(contributor.contribution)) }}<span class="whitespace-nowrap">{{ lastWord($t(contributor.contribution)) }}</span></a>
                 <span v-else class="text-sm text-teal">{{ $t(contributor.contribution) }}</span>
               </div>
             </div>
@@ -77,8 +77,8 @@
         <!-- Chips all one size, as many across as fit; the border is always there so the highlighted one isn't taller -->
         <div class="grid grid-cols-[repeat(auto-fill,minmax(13rem,1fr))] gap-2 text-sm">
           <span v-for="reporter in shownReporters" :key="reporter.github" :class="['flex items-center gap-2 rounded-lg bg-surface-1 border-2 px-3 py-1.5 min-w-0', reporter.featured ? 'border-teal' : 'border-transparent']">
-            <a :href="'https://github.com/Heroes-Profile/heroesprofile/issues?q=is%3Aissue+author%3A' + reporter.github" target="_blank" rel="noopener noreferrer" class="group/bt min-w-0 flex items-center gap-2">
-              <i class="fab fa-github text-teal"></i><span class="truncate group-hover/bt:underline" :title="reporter.github">{{ reporter.github }}</span>
+            <a :href="'https://github.com/Heroes-Profile/heroesprofile/issues?q=is%3Aissue+author%3A' + reporter.github" target="_blank" rel="noopener noreferrer" class="min-w-0 flex items-center gap-2 link-row">
+              <i class="fab fa-github text-teal"></i><span class="truncate" :title="reporter.github">{{ reporter.github }}</span>
             </a>
             <icon-with-hover v-if="reporter.featured" class="text-teal shrink-0" size="small" icon="fas fa-award" title="info" popupsize="fit">
               <p class="max-sm:text-xs whitespace-nowrap">{{ $t('Significant contributor') }}</p>

@@ -40,7 +40,7 @@
                 <div v-if="message.pages.length" class="flex flex-col gap-1">
                   <span class="font-bold">{{ $t('Pages') }}</span>
                   <div v-for="page in message.pages" :key="page.url">
-                    <a v-if="!page.url.includes('{')" :href="page.url" class="underline">{{ page.name }}</a>
+                    <a v-if="!page.url.includes('{')" :href="page.url" class="link">{{ page.name }}</a>
                     <span v-else class="font-medium">{{ page.name }}</span>
                     <span>: {{ page.description }}</span>
                     <span v-if="message.examples && page.url.startsWith('/Player/')" class="text-xs opacity-70"> ({{ $t('an example profile; search your own BattleTag') }})</span>
@@ -50,7 +50,7 @@
                 <div v-for="item in message.faq" :key="item.q" class="flex flex-col gap-1">
                   <span class="font-semibold">{{ item.q }}</span>
                   <div v-html="item.a"></div>
-                  <a v-if="item.id" :href="'/FAQ#' + item.id" class="underline text-xs">{{ $t('Open in the FAQ') }}</a>
+                  <a v-if="item.id" :href="'/FAQ#' + item.id" class="link text-xs">{{ $t('Open in the FAQ') }}</a>
                 </div>
               </template>
               <span v-else>{{ $t("I couldn't find that in the FAQ.") }}</span>
@@ -357,7 +357,7 @@ export default {
         } catch (e) {
           // A stray % that isn't an escape: show the path as written
         }
-        return `${lead}<a href="${trimmed}" class="underline"${external ? ' target="_blank" rel="noopener"' : ''}>${shown}</a>${rest}`;
+        return `${lead}<a href="${trimmed}" class="link"${external ? ' target="_blank" rel="noopener"' : ''}>${shown}</a>${rest}`;
       });
 
       // Runs of "- " lines become a list, styled like the FAQ's
