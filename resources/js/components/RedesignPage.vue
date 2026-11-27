@@ -27,7 +27,7 @@
                     <div v-for="(column, index) in wideColumns(menu.groups)" :key="index" class="flex flex-col gap-4">
                       <div v-for="group in column" :key="group.label" class="flex flex-col">
                         <span class="nav-dropdown-label !mt-0 !pt-2 !border-t-0">{{ $t(group.label) }}</span>
-                        <a v-for="item in group.items" :key="item.key" href="#" :class="['whitespace-nowrap', { 'bg-teal': screenshot === item.key }]" @click.prevent="pickScreenshot(item.key)">{{ item.name || $t(item.label) }}</a>
+                        <a v-for="item in group.items" :key="item.key" href="#" :class="['whitespace-nowrap', { 'bg-teal': screenshot === item.key }]" @click.prevent="pickScreenshot(item.key)">{{ item.name ? $heroName(item.name) : $t(item.label) }}</a>
                       </div>
                     </div>
                   </div>
@@ -40,7 +40,7 @@
                           <a href="#" :class="['flex justify-between items-center', { 'bg-teal': item.flyout.some((entry) => entry.key === screenshot) }]" @click.prevent="pickScreenshot(item.flyout[0].key)">{{ $t(item.label) }} <span class="nav-flyout-arrow ml-2">›</span></a>
                           <div class="nav-flyout">
                             <div class="nav-dropdown-inner-wrapper rounded-b rounded-r flex flex-col">
-                              <a v-for="entry in item.flyout" :key="entry.key" href="#" :class="['whitespace-nowrap', { 'bg-teal': screenshot === entry.key }]" @click.prevent="pickScreenshot(entry.key)">{{ entry.name || $t(entry.label) }}</a>
+                              <a v-for="entry in item.flyout" :key="entry.key" href="#" :class="['whitespace-nowrap', { 'bg-teal': screenshot === entry.key }]" @click.prevent="pickScreenshot(entry.key)">{{ entry.name ? $mapName($heroName(entry.name)) : $t(entry.label) }}</a>
                             </div>
                           </div>
                         </div>
@@ -123,7 +123,7 @@
                   </div>
                   <div class="w-20 rounded bg-surface-4 p-1 flex flex-col shadow-[0_0_0.5rem_rgba(0,0,0,0.4)]">
                     <span class="rounded bg-field px-1.5 py-1 text-subtext">{{ $t('Search') }}</span>
-                    <span v-for="hero in [$t('All Heroes'), 'Abathur', 'Alarak']" :key="hero" class="px-1.5 py-1">{{ hero }}</span>
+                    <span v-for="hero in [$t('All Heroes'), $heroName('Abathur'), $heroName('Alarak')]" :key="hero" class="px-1.5 py-1">{{ hero }}</span>
                   </div>
                 </div>
               </div>
@@ -154,7 +154,7 @@
                   </div>
                   <div v-for="(row, index) in sampleRows" :key="row.hero"
                     :class="['grid grid-cols-[1fr_auto_auto] gap-3 px-2 py-1.5', after ? (index % 2 ? 'bg-surface-2' : 'bg-surface-1') : (index % 2 ? 'bg-[#eee] text-black' : 'bg-[#ddd] text-black')]">
-                    <span>{{ row.hero }}</span><span class="tabular-nums">{{ row.winRate }}</span><span class="tabular-nums">{{ row.games }}</span>
+                    <span>{{ $heroName(row.hero) }}</span><span class="tabular-nums">{{ row.winRate }}</span><span class="tabular-nums">{{ row.games }}</span>
                   </div>
                 </div>
               </div>
@@ -199,11 +199,11 @@
 
               <div v-else-if="card.key === 'popups'" :class="['h-full p-2 relative', after ? 'bg-page flex items-center justify-center' : 'bg-black']">
                 <div v-if="!after" class="w-32 rounded bg-white text-black p-2">
-                  <div class="font-bold uppercase">Abathur</div>
+                  <div class="font-bold uppercase">{{ $heroName('Abathur') }}</div>
                   <div>Win Rate: 51.2</div><div>Games: 10432</div>
                 </div>
                 <div v-else class="w-40 rounded bg-surface-3 p-2 flex flex-col gap-1 shadow-lg">
-                  <div class="flex items-center gap-2"><img src="/images/heroes/abathur.png" alt="" class="w-6 h-6 rounded" /><span class="font-bold text-xs">Abathur</span></div>
+                  <div class="flex items-center gap-2"><img src="/images/heroes/abathur.png" alt="" class="w-6 h-6 rounded" /><span class="font-bold text-xs">{{ $heroName('Abathur') }}</span></div>
                   <span class="rounded-lg bg-surface-1 py-0.5 text-center text-gold">{{ $t('Patreon Subscriber') }}</span>
                   <div class="h-px bg-surface-4"></div>
                   <div class="flex justify-between"><span class="text-subtext">{{ $t('Win Rate') }}</span><span>51.2%</span></div>
