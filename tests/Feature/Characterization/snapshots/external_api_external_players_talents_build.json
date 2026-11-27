@@ -9,6 +9,7 @@
                     "wins": 25,
                     "losses": 15,
                     "sort": "2",
+                    "level": 1,
                     "popularity": 93.02,
                     "games_played": 40,
                     "talentInfo": {
@@ -39,6 +40,7 @@
                     "wins": 0,
                     "losses": 3,
                     "sort": "1",
+                    "level": 1,
                     "popularity": 6.98,
                     "games_played": 3,
                     "talentInfo": {
@@ -71,6 +73,7 @@
                     "wins": 24,
                     "losses": 17,
                     "sort": "3",
+                    "level": 4,
                     "popularity": 95.35,
                     "games_played": 41,
                     "talentInfo": {
@@ -101,6 +104,7 @@
                     "wins": 1,
                     "losses": 1,
                     "sort": "2",
+                    "level": 4,
                     "popularity": 4.65,
                     "games_played": 2,
                     "talentInfo": {
@@ -133,6 +137,7 @@
                     "wins": 25,
                     "losses": 16,
                     "sort": "2",
+                    "level": 7,
                     "popularity": 95.35,
                     "games_played": 41,
                     "talentInfo": {
@@ -163,6 +168,7 @@
                     "wins": 0,
                     "losses": 2,
                     "sort": "1",
+                    "level": 7,
                     "popularity": 4.65,
                     "games_played": 2,
                     "talentInfo": {
@@ -195,6 +201,7 @@
                     "wins": 25,
                     "losses": 14,
                     "sort": "1",
+                    "level": 10,
                     "popularity": 90.7,
                     "games_played": 39,
                     "talentInfo": {
@@ -225,6 +232,7 @@
                     "wins": 0,
                     "losses": 4,
                     "sort": "2",
+                    "level": 10,
                     "popularity": 9.3,
                     "games_played": 4,
                     "talentInfo": {
@@ -257,6 +265,7 @@
                     "wins": 24,
                     "losses": 16,
                     "sort": "1",
+                    "level": 13,
                     "popularity": 95.24,
                     "games_played": 40,
                     "talentInfo": {
@@ -287,6 +296,7 @@
                     "wins": 1,
                     "losses": 0,
                     "sort": "2",
+                    "level": 13,
                     "popularity": 2.38,
                     "games_played": 1,
                     "talentInfo": {
@@ -317,6 +327,7 @@
                     "wins": 0,
                     "losses": 1,
                     "sort": "3",
+                    "level": 13,
                     "popularity": 2.38,
                     "games_played": 1,
                     "talentInfo": {
@@ -349,6 +360,7 @@
                     "wins": 2,
                     "losses": 1,
                     "sort": "3",
+                    "level": 16,
                     "popularity": 7.32,
                     "games_played": 3,
                     "talentInfo": {
@@ -379,6 +391,7 @@
                     "wins": 23,
                     "losses": 12,
                     "sort": "2",
+                    "level": 16,
                     "popularity": 85.37,
                     "games_played": 35,
                     "talentInfo": {
@@ -409,6 +422,7 @@
                     "wins": 0,
                     "losses": 3,
                     "sort": "1",
+                    "level": 16,
                     "popularity": 7.32,
                     "games_played": 3,
                     "talentInfo": {
@@ -441,6 +455,7 @@
                     "wins": 3,
                     "losses": 3,
                     "sort": "1",
+                    "level": 20,
                     "popularity": 18.75,
                     "games_played": 6,
                     "talentInfo": {
@@ -471,6 +486,7 @@
                     "wins": 18,
                     "losses": 6,
                     "sort": "3",
+                    "level": 20,
                     "popularity": 75,
                     "games_played": 24,
                     "talentInfo": {
@@ -501,6 +517,7 @@
                     "wins": 0,
                     "losses": 2,
                     "sort": "2",
+                    "level": 20,
                     "popularity": 6.25,
                     "games_played": 2,
                     "talentInfo": {
@@ -533,6 +550,7 @@
                 "wins": 16,
                 "losses": 6,
                 "games_played": 22,
+                "outdated": false,
                 "level_one": {
                     "talent_id": 407,
                     "hero_name": "Deckard",
@@ -708,6 +726,7 @@
                 "wins": 2,
                 "losses": 2,
                 "games_played": 4,
+                "outdated": false,
                 "level_one": {
                     "talent_id": 407,
                     "hero_name": "Deckard",
@@ -883,6 +902,7 @@
                 "wins": 1,
                 "losses": 1,
                 "games_played": 2,
+                "outdated": false,
                 "level_one": {
                     "talent_id": 407,
                     "hero_name": "Deckard",
@@ -1058,6 +1078,7 @@
                 "wins": 1,
                 "losses": 0,
                 "games_played": 1,
+                "outdated": false,
                 "level_one": {
                     "talent_id": 407,
                     "hero_name": "Deckard",
@@ -1233,6 +1254,7 @@
                 "wins": 0,
                 "losses": 1,
                 "games_played": 1,
+                "outdated": false,
                 "level_one": {
                     "talent_id": 420,
                     "hero_name": "Deckard",
@@ -1408,6 +1430,7 @@
                 "wins": 0,
                 "losses": 1,
                 "games_played": 1,
+                "outdated": false,
                 "level_one": {
                     "talent_id": 420,
                     "hero_name": "Deckard",
@@ -1583,6 +1606,7 @@
                 "wins": 1,
                 "losses": 0,
                 "games_played": 1,
+                "outdated": false,
                 "level_one": {
                     "talent_id": 407,
                     "hero_name": "Deckard",

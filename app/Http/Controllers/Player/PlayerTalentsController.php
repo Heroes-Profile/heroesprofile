@@ -139,27 +139,98 @@ class PlayerTalentsController extends Controller
 
         return [
             'talentData' => $this->getHeroTalentData($result, $talentData),
-            'buildData' => $this->globalDataService->talentBuilds($result, $heroData[$hero], $talentData),
+            'buildData' => $this->playerTalentBuilds($result, $heroData[$hero], $talentData),
         ];
+    }
+
+    /** A talent no longer in the game, picked at a tier it's no longer on, or with no game data (no title or description). */
+    private function isOldTalent($talent, int $level): bool
+    {
+        return ($talent['status'] ?? null) === 'removed'
+            || empty($talent['title']) || empty($talent['description'])
+            || ($talent['level'] != 0 && $talent['level'] != $level);
+    }
+
+    /**
+     * The player's most played builds, as talentBuilds() gives them: up to 7 with only current talents, then up to 7
+     * with an old one, flagged outdated, their old talents marked removed. The page hides the outdated ones unless asked,
+     * and lists them after the current ones, so an old build is never the top one.
+     */
+    private function playerTalentBuilds($result, $hero, $talentData): array
+    {
+        $levels = ['level_one' => 1, 'level_four' => 4, 'level_seven' => 7, 'level_ten' => 10, 'level_thirteen' => 13, 'level_sixteen' => 16, 'level_twenty' => 20];
+        $builds = [];
+
+        foreach ($result as $replay) {
+            $talents = [];
+            foreach ($levels as $levelKey => $level) {
+                if ($replay->$levelKey == 0 || ! $talentData->has($replay->$levelKey)) {
+                    continue 2;
+                }
+                $talents[$levelKey] = $replay->$levelKey;
+            }
+
+            $build = &$builds[implode('|', $talents)];
+            $build ??= ['wins' => 0, 'losses' => 0, 'games_played' => 0, 'talents' => $talents];
+            $build[$replay->winner == 1 ? 'wins' : 'losses']++;
+            $build['games_played']++;
+            unset($build);
+        }
+
+        usort($builds, fn ($a, $b) => $b['games_played'] - $a['games_played']);
+
+        $current = [];
+        $outdated = [];
+
+        foreach ($builds as $build) {
+            $data = ['wins' => $build['wins'], 'losses' => $build['losses'], 'games_played' => $build['games_played'], 'outdated' => false];
+
+            foreach ($build['talents'] as $levelKey => $talentId) {
+                $talent = $talentData[$talentId];
+                if ($this->isOldTalent($talent, $levels[$levelKey])) {
+                    $talent = array_merge($talent->toArray(), ['status' => 'removed']);
+                    $data['outdated'] = true;
+                }
+                $data[$levelKey] = $talent;
+            }
+
+            $data['win_rate'] = round(($build['wins'] / $build['games_played']) * 100, 2);
+            $data['hero'] = $hero;
+
+            if ($data['outdated']) {
+                if (count($outdated) < 7) {
+                    $outdated[] = $data;
+                }
+            } elseif (count($current) < 7) {
+                $current[] = $data;
+            }
+
+            if (count($current) >= 7 && count($outdated) >= 7) {
+                break;
+            }
+        }
+
+        return array_merge($current, $outdated);
     }
 
     private function getHeroTalentData($result, $talentData)
     {
         $returnData = [];
-        $levelKeys = ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'];
+        // Tier from the replay slot, so a talent that moved tiers counts under each
+        $levelKeys = ['level_one' => 1, 'level_four' => 4, 'level_seven' => 7, 'level_ten' => 10, 'level_thirteen' => 13, 'level_sixteen' => 16, 'level_twenty' => 20];
 
         $resultCollection = collect($result);
 
         $resultCollection->each(function ($data) use (&$returnData, $levelKeys, $talentData) {
-            foreach ($levelKeys as $levelKey) {
+            foreach ($levelKeys as $levelKey => $level) {
                 if ($data->$levelKey == 0 || ! $talentData->has($data->$levelKey)) {
                     continue;
                 }
 
-                $key = $data->$levelKey;
+                $key = $level.'|'.$data->$levelKey;
 
                 if (! isset($returnData[$key])) {
-                    $returnData[$key] = ['wins' => 0, 'losses' => 0];
+                    $returnData[$key] = ['wins' => 0, 'losses' => 0, 'level' => $level];
                 }
 
                 $returnData[$key][$data->winner == 1 ? 'wins' : 'losses']++;
@@ -171,28 +242,26 @@ class PlayerTalentsController extends Controller
         $levelTotals = [];
 
         foreach ($returnData as $data) {
-            if (! array_key_exists($data['talent']['level'], $levelTotals)) {
-                $levelTotals[$data['talent']['level']] = 0;
-            }
-            $levelTotals[$data['talent']['level']] += $data['wins'] + $data['losses'];
+            $levelTotals[$data['level']] = ($levelTotals[$data['level']] ?? 0) + $data['wins'] + $data['losses'];
         }
 
         foreach ($returnData as $data) {
-            $level = $data['talent']['level'];
-            $sort = (int) $data['talent']['sort'] - 1;
+            $level = $data['level'];
+            $talent = $data['talent'];
 
-            if (! array_key_exists($level, $formattedData)) {
-                $counter = 0;
-                $formattedData[$level] = [];
+            if ($this->isOldTalent($talent, $level)) {
+                $talent = array_merge($talent->toArray(), ['status' => 'removed']);
             }
+
             $formattedData[$level][] = [
                 'win_rate' => ($data['wins'] + $data['losses']) > 0 ? round(($data['wins'] / ($data['wins'] + $data['losses'])) * 100, 2) : 0,
                 'wins' => $data['wins'],
                 'losses' => $data['losses'],
                 'sort' => $data['talent']['sort'],
-                'popularity' => round((($data['losses'] + $data['wins']) / $levelTotals[$data['talent']['level']]) * 100, 2),
+                'level' => $level,
+                'popularity' => round((($data['losses'] + $data['wins']) / $levelTotals[$level]) * 100, 2),
                 'games_played' => $data['wins'] + $data['losses'],
-                'talentInfo' => $data['talent'],
+                'talentInfo' => $talent,
             ];
         }
 
@@ -435,6 +504,10 @@ class PlayerTalentsController extends Controller
                 $talents = explode('|', $key);
 
                 if (collect($talents)->contains(fn ($talent) => ! $talentData->has($talent))) {
+                    continue;
+                }
+                // Never an old build as the hero's top one
+                if (collect($talents)->contains(fn ($talent, $index) => $this->isOldTalent($talentData[$talent], [1, 4, 7, 10, 13, 16, 20][$index]))) {
                     continue;
                 }
                 // Most games, then most wins, then the key, so ties always pick the same build

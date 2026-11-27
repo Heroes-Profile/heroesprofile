@@ -31,8 +31,11 @@
       <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
       <div  v-if="talentdetaildata" class="container mx-auto md:px-4">
-        <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
-        <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
+        <span class="flex gap-4 mb-2 items-center"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
+          <!-- Talents no longer in the game, or picked at a tier they've since left, and builds using them: hidden unless asked for -->
+          <label class="flex items-center gap-2 text-sm cursor-pointer"><input v-model="showOldTalents" type="checkbox"> Show old talents</label>
+        </span>
+        <global-talent-details-section :talentdetaildata="shownTalentDetailData" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
       </div>
       <div v-else-if="isLoading">
         <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
@@ -42,7 +45,7 @@
 
       <div  v-if="talentbuilddata" class="cmx-auto md:px-4 w-auto flex flex-col items-center">
         {{ this.selectedHero.name }} {{ "Talent Builds"}}
-        <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="'Popular'" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
+        <global-talent-builds-section :talentbuilddata="shownTalentBuildData" :buildtype="'Popular'" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
       </div>
       <div v-else-if="isLoading">
         <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
@@ -81,6 +84,7 @@ export default {
   },
   data(){
     return {
+      showOldTalents: false,
       cancelTokenSource: null,
       isLoading: false,
       gametype: null,
@@ -113,6 +117,19 @@ export default {
     }
   },
   computed: {
+    // Old talents and the builds with them, only when asked for
+    shownTalentDetailData() {
+      if (!this.talentdetaildata || this.showOldTalents) {
+        return this.talentdetaildata;
+      }
+      return Object.fromEntries(Object.entries(this.talentdetaildata).map(([level, rows]) => [level, rows.filter(row => row.talentInfo?.status !== 'removed')]));
+    },
+    shownTalentBuildData() {
+      if (!this.talentbuilddata || this.showOldTalents) {
+        return this.talentbuilddata;
+      }
+      return this.talentbuilddata.filter(build => !build.outdated);
+    },
     league() {
       return this.esport ? this.$esportLeague(this.esport, this.esportfilters) : null;
     },
