@@ -260,7 +260,7 @@
           </div>
         </div>
         <div class="flex flex-col gap-2">
-          <div v-for="(count, tier) in [8, 22, 26, 22, 9]" :key="tier" class="flex rounded-control bg-surface-1 overflow-hidden min-w-0">
+          <div v-for="(count, tier) in tierSkeletonCounts" :key="tier" class="flex rounded-control bg-surface-1 overflow-hidden min-w-0">
             <div class="w-[8.5rem] md:w-[10.625rem] shrink-0 bg-surface-2 px-4 md:px-5 py-3 flex flex-col justify-center items-start">
               <span class="text-4xl font-bold leading-none skeleton-text">S</span>
               <span class="text-xs mt-2 skeleton-text">51 – 53%</span>
@@ -314,6 +314,15 @@ export default {
   },
   data(){
     return {
+      // The tier list's grey rows: as many circles per tier as the last list this viewer saw, so the rows don't
+      // change height when the heroes arrive
+      tierSkeletonCounts: (() => {
+        try {
+          const saved = JSON.parse(localStorage.getItem('tierListCounts'));
+          if (Array.isArray(saved) && saved.length === 5) return saved;
+        } catch (e) {}
+        return [27, 10, 18, 11, 25];
+      })(),
       loadError: null,
       windowWidth: window.innerWidth,
       isLoading: false,
@@ -572,6 +581,12 @@ export default {
     },
   },
   watch: {
+    // Watching the data, not the tier list itself: the list reads the filters, which aren't set when watchers start
+    data(data) {
+      if (!data?.data?.length) return;
+      this.tierSkeletonCounts = this.tiers.map(tier => tier.heroes.length);
+      try { localStorage.setItem('tierListCounts', JSON.stringify(this.tierSkeletonCounts)); } catch (e) {}
+    },
     // Back from the chart, the table is drawn afresh, so it's shrunk to fit the screen again
     togglechart(showChart) {
       if (!showChart) {

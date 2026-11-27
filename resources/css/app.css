@@ -2,11 +2,58 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Ruslan+Display&display=swap');
+/* Fonts load from the page head (layouts/fonts). Until Roboto arrives, Arial stands in at Roboto's size and line
+   height, so the text doesn't move when it swaps */
+@font-face {
+  font-family: 'Roboto Fallback';
+  src: local('Arial');
+  ascent-override: 92.77%;
+  descent-override: 24.41%;
+  line-gap-override: 0%;
+  size-adjust: 100.3%;
+}
+
+/* Moving between pages fades from the old page to the new one, instead of cutting to a page that's still building
+   (Chrome and Edge; other browsers load pages as before) */
+@view-transition {
+  navigation: auto;
+}
+
+/* The top ad banner's stand-in before Vue draws it (layouts/app): the ad slot's height, or the ad-blocker notice
+   when one was seen recently (html.ad-blocked, set in the head) */
+.ad-banner-placeholder {
+  min-height: 7.5rem;
+}
+.ad-banner-placeholder-notice {
+  display: none;
+}
+html.ad-blocked .ad-banner-placeholder {
+  min-height: 0;
+}
+html.ad-blocked .ad-banner-placeholder-notice {
+  display: block;
+}
+
+/* Before Vue mounts, a <basil-icon> tag is an empty element; these draw the nav's icons from the same paths
+   (BasilIcon.vue) so the nav doesn't change once Vue replaces them */
+basil-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  vertical-align: -0.125em;
+  background-color: currentColor;
+  -webkit-mask: var(--basil-icon) center / contain no-repeat;
+  mask: var(--basil-icon) center / contain no-repeat;
+}
+basil-icon[name="arrow"] { --basil-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='black' stroke-width='2' stroke-linecap='round' d='M5 2L10.6464 7.64645C10.8417 7.84171 10.8417 8.15829 10.6464 8.35355L5 14'/%3E%3C/svg%3E"); }
+basil-icon[name="arrow-small"] { --basil-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath  d='M5.97 3.47C6.11063 3.32955 6.30125 3.25066 6.5 3.25066C6.69875 3.25066 6.88937 3.32955 7.03 3.47L11.03 7.47C11.1705 7.61063 11.2493 7.80125 11.2493 8C11.2493 8.19875 11.1705 8.38937 11.03 8.53L7.03 12.53C6.96134 12.6037 6.87854 12.6628 6.78654 12.7038C6.69454 12.7448 6.59523 12.7668 6.49452 12.7686C6.39382 12.7704 6.29379 12.7518 6.2004 12.7141C6.10701 12.6764 6.02218 12.6203 5.95096 12.549C5.87974 12.4778 5.8236 12.393 5.78588 12.2996C5.74816 12.2062 5.72963 12.1062 5.73141 12.0055C5.73319 11.9048 5.75523 11.8055 5.79622 11.7135C5.83721 11.6215 5.89631 11.5387 5.97 11.47L9.44 8L5.97 4.53C5.82955 4.38937 5.75066 4.19875 5.75066 4C5.75066 3.80125 5.82955 3.61063 5.97 3.47Z'/%3E%3C/svg%3E"); }
+basil-icon[name="cross"] { --basil-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath  d='M18.4394 3.43951C18.7223 3.16627 19.1012 3.01508 19.4945 3.0185C19.8878 3.02191 20.2641 3.17967 20.5422 3.45778C20.8203 3.73589 20.978 4.11211 20.9814 4.50541C20.9849 4.8987 20.8337 5.2776 20.5604 5.56051L14.1209 12L20.5604 18.4395C20.7037 18.5779 20.818 18.7434 20.8966 18.9264C20.9752 19.1094 21.0166 19.3062 21.0183 19.5054C21.02 19.7046 20.9821 19.9021 20.9067 20.0864C20.8312 20.2708 20.7199 20.4383 20.579 20.5791C20.4382 20.7199 20.2707 20.8313 20.0864 20.9067C19.902 20.9822 19.7045 21.0201 19.5053 21.0184C19.3062 21.0167 19.1093 20.9753 18.9263 20.8967C18.7433 20.818 18.5778 20.7038 18.4394 20.5605L11.9999 14.121L5.56044 20.5605C5.42207 20.7038 5.25655 20.818 5.07355 20.8967C4.89054 20.9753 4.69371 21.0167 4.49454 21.0184C4.29537 21.0201 4.09785 20.9822 3.91351 20.9067C3.72916 20.8313 3.56169 20.7199 3.42085 20.5791C3.28001 20.4383 3.16863 20.2708 3.09321 20.0864C3.01778 19.9021 2.97983 19.7046 2.98156 19.5054C2.98329 19.3062 3.02467 19.1094 3.10329 18.9264C3.1819 18.7434 3.29617 18.5779 3.43944 18.4395L9.87894 12L3.43944 5.56051C3.29617 5.42214 3.1819 5.25662 3.10329 5.07361C3.02467 4.89061 2.98329 4.69378 2.98156 4.49461C2.97983 4.29544 3.01778 4.09792 3.09321 3.91358C3.16863 3.72923 3.28001 3.56175 3.42085 3.42091C3.56169 3.28008 3.72916 3.1687 3.91351 3.09327C4.09785 3.01785 4.29537 2.9799 4.49454 2.98163C4.69371 2.98336 4.89054 3.02474 5.07355 3.10336C5.25655 3.18197 5.42207 3.29624 5.56044 3.43951L11.9999 9.87901L18.4394 3.43951Z'/%3E%3C/svg%3E"); }
+basil-icon[name="search"] { --basil-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='black' stroke-width='2' stroke-linecap='round' d='M21.0002 21.0002L16.6602 16.6602M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z'/%3E%3C/svg%3E"); }
 
 
 
-html{background-color:#141725; font-family: 'Roboto', var(--lang-font), sans-serif; box-sizing:border-box; }
+html{background-color:#141725; font-family: 'Roboto', 'Roboto Fallback', var(--lang-font), sans-serif; box-sizing:border-box; }
 
 /* Per-language type. Roboto covers Latin and Cyrillic; Korean and Chinese characters fall through to their
    own Noto Sans (loaded in layouts/app.blade.php), and their text is set a little larger to stay readable.

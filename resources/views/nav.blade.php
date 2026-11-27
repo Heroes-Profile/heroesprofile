@@ -234,23 +234,24 @@
 
                 {{-- Phones: flat full-width rows under the menu, below the logged-in player's row, with a chevron like a menu link --}}
                 <div id="nav-buttons" class="flex gap-3 max-md:gap-0 max-md:w-full max-md:flex-col">
-                    <custom-button id="nav-api-button" class="inline-flex items-center min-h-11 font-semibold max-md:relative max-md:w-full max-md:justify-center max-md:rounded-none max-md:border-b max-md:border-white/20 max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'">{{ __('API') }}<basil-icon name="arrow-small" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 text-xs" aria-hidden="true"></basil-icon></custom-button>
-                    <custom-button id="nav-uploader-button" class="inline-flex items-center min-h-11 font-semibold max-md:relative max-md:w-full max-md:justify-center max-md:rounded-none max-md:border-b max-md:border-white/20 max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'/Upload'" :text="'Replay Uploader'" :alt="'Replay Uploader'" :color="'teal'">{{ __('Replay Uploader') }}<basil-icon name="arrow-small" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 text-xs" aria-hidden="true"></basil-icon></custom-button>
-                    <custom-button id="nav-patreon-button" class="inline-flex items-center min-h-11 font-semibold max-md:relative max-md:w-full max-md:justify-center max-md:rounded-none max-md:border-b max-md:border-white/20 max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Remove Ads / Patreon'" :alt="'Patreon'" :color="'red'">{{ __('Remove Ads / Patreon') }}<basil-icon name="arrow-small" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 text-xs" aria-hidden="true"></basil-icon></custom-button>
+                    <custom-button id="nav-api-button" class="btn bg-teal hover:bg-lteal inline-flex items-center min-h-11 font-semibold max-md:relative max-md:w-full max-md:justify-center max-md:rounded-none max-md:border-b max-md:border-white/20 max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'/Api'" :text="'API'" :alt="'API'" :color="'teal'">{{ __('API') }}<basil-icon name="arrow-small" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 text-xs" aria-hidden="true"></basil-icon></custom-button>
+                    <custom-button id="nav-uploader-button" class="btn bg-teal hover:bg-lteal inline-flex items-center min-h-11 font-semibold max-md:relative max-md:w-full max-md:justify-center max-md:rounded-none max-md:border-b max-md:border-white/20 max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'/Upload'" :text="'Replay Uploader'" :alt="'Replay Uploader'" :color="'teal'">{{ __('Replay Uploader') }}<basil-icon name="arrow-small" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 text-xs" aria-hidden="true"></basil-icon></custom-button>
+                    <custom-button id="nav-patreon-button" class="btn bg-red hover:bg-lred inline-flex items-center min-h-11 font-semibold max-md:relative max-md:w-full max-md:justify-center max-md:rounded-none max-md:border-b max-md:border-white/20 max-md:text-sm max-md:px-4 max-md:py-1.5" :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Remove Ads / Patreon'" :alt="'Patreon'" :color="'red'">{{ __('Remove Ads / Patreon') }}<basil-icon name="arrow-small" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 text-xs" aria-hidden="true"></basil-icon></custom-button>
                 </div>
 
 
-                {{-- Phones show the language button and avatar beside the saved players instead (alt-account-nav) --}}
-                <language-picker id="nav-language-picker" class="max-md:hidden" :locale="'{{ app()->getLocale() }}'" :locales="{{ json_encode(config('app.supported_locales')) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></language-picker>
+                {{-- Phones show the language button and avatar beside the saved players instead (alt-account-nav). The nav's
+                     component tags hold plain copies of their buttons, picker and search, shown until Vue draws them --}}
+                <language-picker id="nav-language-picker" class="max-md:hidden" :locale="'{{ app()->getLocale() }}'" :locales="{{ json_encode(config('app.supported_locales')) }}" :authenticated="{{ json_encode($isAuthenticated) }}"><span class="flex w-11 h-11 bg-teal rounded md:ml-4 max-md:mr-1.5"></span></language-picker>
 
                 @if($isAuthenticated)
                     @include('navUserMenu', ['menuId' => 'nav-user-menu', 'menuClass' => 'md:ml-4 max-md:hidden'])
                 @else
-                    <custom-button id="nav-login-button" class="inline-flex items-center min-h-11 md:ml-4 max-md:hidden font-semibold" :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :color="'teal'"></custom-button>
+                    <custom-button id="nav-login-button" class="btn bg-teal hover:bg-lteal inline-flex items-center min-h-11 md:ml-4 max-md:hidden font-semibold" :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :color="'teal'">{{ __('Login') }}</custom-button>
                 @endif
                 </div>
                 {{-- Phones only: straight under the buttons, edge to edge --}}
-                <search-component id="nav-search" :type="'alt'" :square="true" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="!mt-0 !py-0 md:hidden"></search-component>
+                <search-component id="nav-search" :type="'alt'" :square="true" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="!mt-0 !py-0 md:hidden"><div class="search-component mt-auto py-4"><div class="flex items-stretch"><div class="relative flex-1"><basil-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-lteal pointer-events-none"></basil-icon><input type="text" class="variable-text px-4 py-3 pl-10 w-full" placeholder="{{ __('Enter a BattleTag') }}" readonly tabindex="-1" aria-hidden="true"></div><button type="button" class="btn bg-blue hover:bg-lblue rounded-none font-semibold" tabindex="-1" aria-hidden="true">{{ __('Find Player') }}</button></div></div></search-component>
         </div>
     </nav>
     
@@ -393,13 +394,13 @@
     @endif
   @endforeach
   {{-- Phones: the language button and avatar follow the saved players --}}
-  <language-picker id="nav-language-picker-phone" menu-key="nav-language-menu-phone" class="md:hidden" :locale="'{{ app()->getLocale() }}'" :locales="{{ json_encode(config('app.supported_locales')) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></language-picker>
+  <language-picker id="nav-language-picker-phone" menu-key="nav-language-menu-phone" class="md:hidden" :locale="'{{ app()->getLocale() }}'" :locales="{{ json_encode(config('app.supported_locales')) }}" :authenticated="{{ json_encode($isAuthenticated) }}"><span class="flex w-11 h-11 bg-teal rounded md:ml-4 max-md:mr-1.5"></span></language-picker>
   @if($isAuthenticated)
     @include('navUserMenu', ['menuId' => 'nav-user-menu-phone', 'menuClass' => 'md:hidden'])
   @else
-    <custom-button id="nav-login-button-phone" class="inline-flex items-center min-h-11 md:hidden font-semibold text-sm px-4 py-1.5" :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :color="'teal'"></custom-button>
+    <custom-button id="nav-login-button-phone" class="btn bg-teal hover:bg-lteal inline-flex items-center min-h-11 md:hidden font-semibold text-sm px-4 py-1.5" :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :color="'teal'">{{ __('Login') }}</custom-button>
   @endif
-  <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="max-md:hidden"></search-component>
+  <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="max-md:hidden"><div class="search-component mt-auto py-4"><div class="flex items-stretch"><div class="relative flex-1"><basil-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-lteal pointer-events-none"></basil-icon><input type="text" class="variable-text px-4 py-3 pl-10 w-full rounded-l" placeholder="{{ __('Enter a BattleTag') }}" readonly tabindex="-1" aria-hidden="true"></div><button type="button" class="btn bg-blue hover:bg-lblue rounded-none font-semibold rounded-r" tabindex="-1" aria-hidden="true">{{ __('Find Player') }}</button></div></div></search-component>
 </nav>
 </div>
 <mobile-nav-hack></mobile-nav-hack>

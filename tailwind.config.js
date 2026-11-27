@@ -66,8 +66,8 @@ module.exports = {
     },
     fontFamily: {
       // --lang-font is the page language's own font (app.css), for the characters Roboto doesn't have
-      'sans' : ['Roboto', 'var(--lang-font)', 'sans-serif'],
-      'logo' : ['Ruslan Display'],
+      'sans' : ['Roboto', 'Roboto Fallback', 'var(--lang-font)', 'sans-serif'],
+      'logo' : ['Ruslan Display', 'sans-serif'],
     },
     // Tailwind's sizes, times a scale from app.css: 1 normally, larger for Korean and Chinese.
     // xs and sm (labels, captions) use --text-scale-small, which grows more, since small characters

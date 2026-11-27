@@ -16,6 +16,14 @@
         window.adManagerState = state;
         window.dispatchEvent(new Event('ad-manager-state'));
       }
+      // An ad blocker seen in the last day (utils/adBlocker.js): marked before the page draws, so the top banner's
+      // space is the notice's, not the ad's, from the first paint
+      try {
+        var adBlockerSeen = JSON.parse(localStorage.getItem('ad-blocker-detected'));
+        if (adBlockerSeen && Date.now() - adBlockerSeen.at < 86400000) {
+          document.documentElement.classList.add('ad-blocked');
+        }
+      } catch (e) {}
     </script>
 
     {{-- Pages with @section('no_ads') (the error pages) load no ads at all --}}
@@ -66,14 +74,14 @@
     {{-- The path without its query, unless the page names its own (one that is a query, like a Heroes International tournament) --}}
     <link rel="canonical" href="@yield('canonical', url()->current())">
 
+    @include('layouts.fonts')
+
     <!-- Korean and Chinese pages: their own Noto Sans, which the font stack in app.css puts after Roboto.
          Google splits it into small pieces by character, so a page only downloads the characters it uses. -->
     @php
       $languageFont = ['ko' => 'Noto+Sans+KR', 'zh-CN' => 'Noto+Sans+SC', 'zh-TW' => 'Noto+Sans+TC'][str_replace('_', '-', app()->getLocale())] ?? null;
     @endphp
     @if($languageFont)
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{ $languageFont }}:wght@400;500;700&display=swap">
     @endif
 
@@ -144,13 +152,25 @@
       @endif
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- The page's own component chunks, fetched alongside app.js rather than after it --}}
+    {!! \App\Support\PageChunkPreload::links($__env->yieldContent('content')) !!}
     <style>.void-eye-img{ background-image: url('{{ asset('images/event/xalatath/void-eye.svg') }}'); }</style>
 
 </head>
 <body class="bg-page bg-[radial-gradient(ellipse_137.5rem_193.75rem_at_50%_9.6875rem,rgba(33,61,122,0.6),rgba(33,61,122,0.57)_12.5%,rgba(33,61,122,0.48)_25%,rgba(33,61,122,0.37)_37.5%,rgba(33,61,122,0.25)_50%,rgba(33,61,122,0.14)_62.5%,rgba(33,61,122,0.07)_75%,rgba(33,61,122,0.03)_87.5%,transparent)] bg-no-repeat text-white dark-mode">
   <div id="app" class="relative flex flex-col" style="min-height:100vh; ">
     @sectionMissing('no_ads')
-    <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" ></horizontal-banner-ad>
+    {{-- Until Vue draws the banner, its tag holds the same space: the ad's height, or with an ad blocker the notice --}}
+    <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" >
+      @unless(session('patreonSubscriberAdFree'))
+      <div class="ad-banner-placeholder">
+        <div class="ad-banner-placeholder-notice">
+          <div class="bg-teal px-20 py-2 text-xs text-center max-md:hidden">{{ __('Heroes Profile uses ads to help fund site running costs.') }} {{ __('Please consider allowing ads or support us through patreon at') }} <span class="link break-all">https://www.patreon.com/heroesprofile</span></div>
+          <div class="bg-teal px-4 py-2 text-sm text-center md:hidden">{{ __('Heroes Profile uses ads to help fund the site.') }} <span class="link">{{ __('Read more') }}</span></div>
+        </div>
+      </div>
+      @endunless
+    </horizontal-banner-ad>
     @endif
 
 

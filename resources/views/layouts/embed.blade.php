@@ -8,6 +8,7 @@
 
     <title>@yield('title') | Heroes Profile</title>
 
+    @include('layouts.fonts')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
   </head>
   {{-- Framed on other sites: no nav, ads, footer or analytics. Transparent, so
