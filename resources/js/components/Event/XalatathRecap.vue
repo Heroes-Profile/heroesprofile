@@ -213,7 +213,7 @@
 
     <!-- Stats by game mode; the toggle sticks while scrolling through them -->
     <div class="max-w-[93.75rem] mx-auto px-4 pt-10">
-      <div class="xalatath-mode-bar sticky top-0 max-md:top-[4.6875rem] z-40 py-3 mb-6 flex flex-wrap items-center gap-3">
+      <div class="xalatath-mode-bar sticky top-0 max-md:top-[3.75rem] z-40 py-3 mb-6 flex flex-wrap items-center gap-3">
         <span class="text-sm opacity-75">{{ $t('Showing stats for') }}</span>
         <multi-tab-button :options="modeOptions" :model-value="mode" @update:model-value="mode = $event"></multi-tab-button>
       </div>

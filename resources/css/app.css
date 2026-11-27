@@ -547,9 +547,9 @@ thead{
 thead:not(:last-of-type){
   position: static;
 }
-/* Phones: just under the sticky mobile header (#mobile-header in nav.blade.php, 2.75rem tall) */
+/* Phones: just under the sticky mobile header (#mobile-header in nav.blade.php, 3.75rem tall) */
 @media (max-width: 1023.98px){
-  thead{ top: calc(2.75rem - 2px); }
+  thead{ top: calc(3.75rem - 2px); }
 }
 /* Clicking a header sorts; without this a quick double click highlights its text. The search field inside still selects. */
 thead{

@@ -1,11 +1,11 @@
 <div id="mobile-header" class="md:hidden max-md:bg-surface max-md:sticky max-md:top-0 max-md:order-first max-md:z-40 max-md:w-full">
-    <div class="relative flex p-2 px-4 justify-center">
-<a id="mobile-logo" class="flex shrink-0 items-center whitespace-nowrap font-logo text-lg sm:text-2xl md:hidden" href="/">
+    <div class="relative flex items-center py-2 px-4 justify-center">
+<a id="mobile-logo" class="flex shrink-0 items-center whitespace-nowrap font-logo text-xl sm:text-2xl md:hidden" href="/">
                 Heroes
-                <img class="w-8 sm:w-10 shrink-0 mx-2" src="/images/logo/heroesprofilelogo.png" alt="{{ __('Heroes Profile Logo') }}" />
+                <img class="w-11 sm:w-12 shrink-0 mx-2" src="/images/logo/heroesprofilelogo.png" alt="{{ __('Heroes Profile Logo') }}" />
                 Profile
         </a>
-        <button  id="mobile-toggle" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 bg-blue rounded px-2 min-w-[2.25rem] min-h-[2rem] text-lg leading-none" aria-label="{{ __('Open menu') }}">=</button>
+        <button  id="mobile-toggle" class="md:hidden absolute right-4 top-1/2 -translate-y-1/2 bg-blue rounded w-11 h-11 flex items-center justify-center text-2xl leading-none" aria-label="{{ __('Open menu') }}">=</button>
          
         
     </div>
@@ -14,14 +14,14 @@
 <div id="main-menu" class="  main-navigation-wrapper"> <!-- max-md:hidden  - This needs to hide/show on click of the button but only on mobile - either detect mobile with vue, or have a class that is added/taken away that only applies to mobile -->
     {{-- Desktop: above the battletag row (z-[51]), which is above page dropdowns like filters (z-50). Mobile keeps z-50 so a battletag menu can open full screen over it. --}}
     <nav id="main-nav" class="bg-surface text-white z-50 md:z-[52] relative md:py-3 text-sm max-md:pt-2">
-      <button  id="mobile-nav-close" class="hidden bg-blue rounded px-2 py-1 min-w-[2.25rem] min-h-[2rem] text-base leading-none ml-auto  mr-2" aria-label="{{ __('Close menu') }}"><basil-icon name="cross" aria-hidden="true"></basil-icon></button>
+      <button  id="mobile-nav-close" class="hidden absolute right-4 top-2 z-10 bg-blue rounded w-11 h-11 items-center justify-center text-lg leading-none" aria-label="{{ __('Close menu') }}"><basil-icon name="cross" aria-hidden="true"></basil-icon></button>
        
         {{-- Padding inside the 120rem box, like the page content, so the logo and the right-hand buttons line up with it --}}
         <div class="flex items-start justify-center flex-wrap mx-auto max-md:flex-col max-md:items-stretch max-w-[120rem] md:px-8" >
              <div class="flex justify-start items-start flex-wrap max-md:flex-col max-md:items-stretch grow mr-auto max-md:mr-0 max-md:w-full max-md:justify-center">
-            <a id="nav-logo" class="flex shrink-0 items-center whitespace-nowrap font-logo text-2xl md:mt-[0.375rem] max-md:self-center max-md:mb-2" href="/">
+            <a id="nav-logo" class="flex shrink-0 items-center whitespace-nowrap font-logo text-2xl md:mt-[0.375rem] max-md:self-center max-md:mb-2 max-md:h-11 max-sm:text-xl" href="/">
                 Heroes
-                <img class="w-10 shrink-0 mx-2" src="/images/logo/heroesprofilelogo.png" alt="{{ __('Heroes Profile Logo') }}" />
+                <img class="w-10 max-md:w-11 sm:max-md:w-12 shrink-0 mx-2" src="/images/logo/heroesprofilelogo.png" alt="{{ __('Heroes Profile Logo') }}" />
                 Profile
             </a>
             <div id="nav-content" class="ml-auto flex justify-between flex-wrap  text-sm md:flex-1 max-md:flex-col max-md:ml-0 max-md:w-full">

@@ -122,7 +122,7 @@ mobileNavButtons.forEach(function(button){
                 // Toggle the display property of the element
                 if (elementToToggle.style.display === 'none' || elementToToggle.style.display === '') {
                     elementToToggle.style.display = 'block';
-                    closeButton.style.display = "block";
+                    closeButton.style.display = "flex";
                 } else {
                     elementToToggle.style.display = 'none';
                 }
