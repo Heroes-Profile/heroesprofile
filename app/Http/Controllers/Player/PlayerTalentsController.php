@@ -143,10 +143,12 @@ class PlayerTalentsController extends Controller
         ];
     }
 
-    /** A talent no longer in the game, or picked at a tier it's no longer on. */
+    /** A talent no longer in the game, picked at a tier it's no longer on, or with no game data (no title or description). */
     private function isOldTalent($talent, int $level): bool
     {
-        return ($talent['status'] ?? null) === 'removed' || ($talent['level'] != 0 && $talent['level'] != $level);
+        return ($talent['status'] ?? null) === 'removed'
+            || empty($talent['title']) || empty($talent['description'])
+            || ($talent['level'] != 0 && $talent['level'] != $level);
     }
 
     /**
@@ -247,8 +249,7 @@ class PlayerTalentsController extends Controller
             $level = $data['level'];
             $talent = $data['talent'];
 
-            // Picked at a tier it's no longer on: shown greyed as no longer available
-            if ($talent['level'] != 0 && $talent['level'] != $level) {
+            if ($this->isOldTalent($talent, $level)) {
                 $talent = array_merge($talent->toArray(), ['status' => 'removed']);
             }
 
