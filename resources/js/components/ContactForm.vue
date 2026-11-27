@@ -30,7 +30,7 @@
           </div>
 
           <p v-if="emailSent" class="bg-teal/20 text-white rounded px-4 py-3">{{ $t('Email Sent Successfully!') }}</p>
-          <p v-if="sendError" class="bg-red/20 text-white rounded px-4 py-3">{{ sendError }}</p>
+          <p v-if="sendError" class="bg-red/20 text-white rounded px-4 py-3">{{ $t(sendError) }}</p>
         </form>
       </panel-box>
 
@@ -41,9 +41,9 @@
             <span :class="['w-12 h-12 shrink-0 rounded flex items-center justify-center text-xl', link.iconClass]"><i :class="link.icon"></i></span>
             <span class="flex flex-col min-w-0">
               <span class="font-semibold">{{ $t(link.title) }}</span>
-              <span class="text-sm text-subtext truncate">{{ link.external ? $t(link.subtitle) : link.subtitle }}</span>
+              <span class="text-sm text-subtext [overflow-wrap:anywhere]">{{ link.external ? $t(link.subtitle) : link.subtitle }}</span>
             </span>
-            <basil-icon name="arrow-small" class="ml-auto text-sm"></basil-icon>
+            <basil-icon name="arrow-small" class="ml-auto shrink-0 text-sm"></basil-icon>
           </a>
         </div>
       </panel-box>
