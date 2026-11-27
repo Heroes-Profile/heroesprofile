@@ -145,6 +145,10 @@
     <div v-else-if="typeof data === 'undefined'"  class="flex items-center justify-center">
       {{ $t('No data') }}
     </div>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 space-y-8">
       <!-- The cards start where the loaded ones do; the message sits on a tab of the panel above them -->
@@ -248,6 +252,7 @@ export default {
   },
   data(){
     return {
+      loadError: null,
       isLoading: false,
       asyncLoading: false,
       cancelTokenSource: null,
@@ -357,6 +362,7 @@ export default {
       history.pushState({}, '', window.location.pathname + this.ngsQuery);
     },
     async getData(){
+      this.loadError = null;
       this.disableFilterInput = true;
       this.isLoading = true;
 
@@ -379,7 +385,7 @@ export default {
           this.ngsFilterOptions = response.data.filters;
           this.data = response.data;
         }catch(error){
-          //Do something here
+          this.loadError = this.$loadError(error, () => this.getData());
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
@@ -414,7 +420,7 @@ export default {
         await this.$loadMatchDetails(response.data[0]?.latestGames, this.blizzid, this.region);
         this.data = response.data[0];
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getData());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

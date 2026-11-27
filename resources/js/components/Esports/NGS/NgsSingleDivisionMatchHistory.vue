@@ -26,6 +26,10 @@
       <esports-recent-matches :current="data.pagination.current_page" :last="data.pagination.last_page" @page="getData" v-if="data.data.length" :data="data.data" :esport="'NGS'"></esports-recent-matches>
       <p v-else class="text-center text-subtext mt-10">{{ $t('No games in Division :division for Season :modifiedseason', { division: division, modifiedseason: modifiedseason }) }}<template v-if="modifiedteam"> {{ $t('for :modifiedteam', { modifiedteam: $ngsTeam(modifiedteam).name }) }}</template>.</p>
     </div>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <div v-else-if="isLoading" class="relative max-w-[120rem] mx-auto px-4 md:px-8 py-4 flex flex-col gap-6 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
         <!-- The Compact / Expanded toggle and the page numbers, as on the loaded list -->
         <div class="flex flex-wrap justify-end items-center gap-4">
@@ -84,6 +88,7 @@ export default {
   },
   data(){
     return {
+      loadError: null,
       cancelTokenSource: null,
       isLoading: false,
       data: null,
@@ -109,6 +114,7 @@ export default {
   },
   methods: {
     async getData(page){
+      this.loadError = null;
       if (this.isLoading || page < 1 || (this.data && page > this.data.pagination.last_page)) {
         return;
       }
@@ -131,7 +137,7 @@ export default {
         this.data = response.data;
         this.teams = response.data.teams || [];
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getData(page));
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

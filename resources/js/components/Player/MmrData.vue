@@ -163,6 +163,10 @@
         </panel-box>
       </div>
     </div>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <!-- The same cards in grey while it loads, the message on a tab of the first -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-8">
       <div class="grid xl:grid-cols-[1288fr_600fr] gap-8 items-stretch">
@@ -270,6 +274,7 @@ export default {
   },
   data(){
     return {
+      loadError: null,
       cancelTokenSource: null,
       userTimezone: moment.tz.guess(),
       isLoading: false,
@@ -445,6 +450,7 @@ export default {
   },
   methods: {
     async getData(){
+      this.loadError = null;
       this.isLoading = true;
       this.currentPage = 1;
 
@@ -476,7 +482,7 @@ export default {
         this.openLeagues = {};
         this.resetZoom();
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getData());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

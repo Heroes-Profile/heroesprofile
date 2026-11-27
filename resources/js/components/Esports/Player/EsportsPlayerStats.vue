@@ -143,6 +143,10 @@
       </panel-box>
     </div>
 
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <!-- The page's cards in grey while it loads; the message sits on a tab of the player card -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 flex flex-col gap-6">
       <div class="grid xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1fr)_minmax(0,1fr)] gap-6">
@@ -239,6 +243,7 @@ export default {
   },
   data(){
     return {
+      loadError: null,
       isLoading: false,
       data: null,
       modifiedseason: null,
@@ -327,6 +332,7 @@ export default {
       return String(text ?? '').replace(/ (day|hour|minute|second)s/g, (_, unit) => unit[0]);
     },
     async getData(){
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -359,7 +365,7 @@ export default {
           this.teamOptions = [{ code: null, name: 'All' }, ...names.map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
         }
       }catch(error){
-      //Do something here
+      this.loadError = this.$loadError(error, () => this.getData());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

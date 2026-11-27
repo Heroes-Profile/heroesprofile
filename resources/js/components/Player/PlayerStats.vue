@@ -150,6 +150,10 @@
       </panel-box>
 
     </div>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <!-- The page's layout with grey blocks while it loads; the nav logo spins meanwhile -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 space-y-8">
       <!-- The cards start where the loaded ones do; the message sits on a tab of the panel above them -->
@@ -286,6 +290,7 @@ function cardFonts() {
     },
     data(){
       return {
+        loadError: null,
         cancelTokenSource: null,
         isLoading: false,
         data: null,
@@ -399,6 +404,7 @@ function cardFonts() {
     methods: {
       formatDurationText,
       async getData(){
+        this.loadError = null;
         this.disableFilterInput = true;
         this.isLoading = true;
 
@@ -422,7 +428,7 @@ function cardFonts() {
           });
           this.data = response.data;
         }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getData());
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;

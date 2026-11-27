@@ -53,6 +53,10 @@
         <pagination-bar :current="data.current_page" :last="data.last_page" @page="getNgsData"></pagination-bar>
       </div>
     </div>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <!-- Grey blocks while it loads, as on the main match history: in the loaded table's rows so the panel doesn't jump -->
     <div v-else-if="isLoading">
       <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-wrap justify-end items-center gap-4">
@@ -102,6 +106,7 @@ export default {
   },
   data(){
     return {
+      loadError: null,
       isLoading: false,
       data: null,
       sortKey: '',
@@ -142,6 +147,7 @@ export default {
       }
     },
     async getNgsData(page){
+      this.loadError = null;
       if (this.isLoading || page < 1 || (this.data && page > this.data.last_page)) {
         return;
       }
@@ -160,7 +166,7 @@ export default {
         this.ngsFilterOptions = response.data.filters;
         this.data = response.data;
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getNgsData(page));
       }finally {
         this.isLoading = false;
       }

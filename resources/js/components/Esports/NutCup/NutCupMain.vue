@@ -54,6 +54,10 @@
       </div>
 
     </div>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-if="loadError && !isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <div v-if="isLoading">
       <div class="relative max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
         <!-- The message sits on a tab of the first card, as on the global pages: lined up with the card past the side padding, the card's top-left corner squared to meet it -->
@@ -92,6 +96,7 @@ export default {
   },
   data() {
     return {
+      loadError: null,
       preloadedImage: new Image(),
       isLoading: false,
       infoText1: "Heroes of the Storm statistics and comparison for the Nut Cup",
@@ -140,6 +145,7 @@ export default {
   },
   methods: {
     async getHeroStats(){
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -157,13 +163,14 @@ export default {
         });
         this.heroStatsData = response.data;
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getHeroStats());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
       }
     },
     async getTalentStats(){
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -182,7 +189,7 @@ export default {
         });
         this.talentStatsData = response.data;
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getTalentStats());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

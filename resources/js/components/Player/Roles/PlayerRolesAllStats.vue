@@ -102,6 +102,10 @@
     </div>
     </panel-box>
   </div>
+  <!-- The load failed: the error page's card in place of the data -->
+  <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+    <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+  </div>
   <!-- The same card in grey while the roles load, the message on its tab -->
   <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
     <panel-box title="All Roles" subtitle="00 roles · averages are per game" :skeleton="true" class="relative md:!rounded-tl-none">
@@ -151,6 +155,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
     },
     data(){
       return {
+        loadError: null,
         windowWidth: window.innerWidth,
         // A phone's two columns after Win Rate, in the order they were turned on
         phoneColumns: ['games_played', 'kda'],
@@ -366,6 +371,7 @@ methods: {
       history.pushState({}, '', window.location.pathname + (query ? `?${query}` : ''));
     },
   async getNgsData(){
+    this.loadError = null;
     this.data = null;
     this.isLoading = true;
     try{
@@ -373,7 +379,7 @@ methods: {
       this.ngsFilterOptions = response.data.filters;
       this.data = response.data.rows;
     }catch(error){
-      //Do something here
+      this.loadError = this.$loadError(error, () => this.getNgsData());
     }finally {
       this.isLoading = false;
       this.$nextTick(() => {
@@ -385,6 +391,7 @@ methods: {
     }
   },
   async getData(type){
+    this.loadError = null;
     this.isLoading = true;
 
     if (this.cancelTokenSource) {
@@ -419,7 +426,7 @@ methods: {
 
       this.data = response.data;
     }catch(error){
-      //Do something here
+      this.loadError = this.$loadError(error, () => this.getData());
     }finally {
       this.cancelTokenSource = null;
       this.isLoading = false;

@@ -286,6 +286,10 @@
           </template>
         </div>
     </div>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <!-- The first group's heading, with the rating button where it loads, so nothing moves when the data arrives -->
@@ -327,6 +331,7 @@ export default {
   },
   data(){
     return {
+      loadError: null,
       windowWidth: window.innerWidth,
       isLoading: false,
       infoText1: "Leaderboards are a reflection of user uploaded data. Due to replay file corruption or other issues, the data is not always reflective of real player stats. Please keep that in mind when reviewing leaderboards.",
@@ -535,6 +540,7 @@ export default {
       [].concat(this.$refs.responsivetable || []).forEach(table => scaleTableToFit(table, table.parentElement));
     },
     async getData(){
+      this.loadError = null;
       this.isLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/global/leaderboard", {
@@ -560,7 +566,7 @@ export default {
         this.data = response.data;
         
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getData());
       }finally {
         this.isLoading = false;
         this.$nextTick(this.fitTables);
@@ -639,7 +645,7 @@ export default {
           this.playerRating = response.data.rating;
           this.playerRatingGamesPlayed = response.data.games_played;
         }catch(error){
-          //Do something here
+          // A failed load leaves it empty
         }finally {
           this.ratingLoading = false;
         }

@@ -70,9 +70,7 @@
 
         <talent-build-paths v-if="pathsOpen && data && paths && paths.length" :data="data" :paths="paths"></talent-build-paths>
 
-        <div v-if="dataError && !isLoading" class="flex items-center justify-center">
-          {{ $t('Error: Reload page/filter') }}
-        </div>
+        <error-card v-if="loadError && !isLoading" :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
 
         <!-- First load: the two cards in grey -->
         <div v-else-if="!data" class="grid xl:grid-cols-[minmax(0,1fr)_35rem] gap-6 xl:gap-8 items-start">
@@ -242,7 +240,7 @@
         REPLAYS_PER_PAGE: 8,
         replaysLoading: false,
         replayPage: 1,
-        dataError: false,
+        loadError: null,
         cancelTokenSource: null,
         isLoading: false,
         selectedHero: null,
@@ -379,7 +377,7 @@
         if(this.showReplayList){
           this.showReplayList = false;
         }
-        this.dataError = false;
+        this.loadError = null;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -417,7 +415,7 @@
           this.builddata = response.data.buildData;
           this.paths = response.data.paths;
         }catch(error){
-          this.dataError = true;
+          this.loadError = this.$loadError(error, () => this.getData());
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;

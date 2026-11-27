@@ -164,9 +164,9 @@
           <table-skeleton :bare="true" :rows="15" :columns="['hero', 'stat', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
         </panel-box>
       </div>
-      <div v-else-if="dataError" class="flex items-center justify-center">
-        {{ $t('Error: Reload page/filter') }}
-      </div>
+      <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     </div>
   </div>
 </template>
@@ -194,7 +194,7 @@ const MIN_TOP_GAMES = 40;
     },
     data(){
       return {
-        dataError: false,
+        loadError: null,
         windowWidth: window.innerWidth,
         isLoading: false,
         heroSearch: '',
@@ -323,7 +323,7 @@ const MIN_TOP_GAMES = 40;
         this.getData();
       },
       async getData(){
-        this.dataError = false;
+        this.loadError = null;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -355,7 +355,7 @@ const MIN_TOP_GAMES = 40;
           this.allyenemydata = response.data;
           this.combineddata = response.data.combined;
         }catch(error){
-          this.dataError = true;
+          this.loadError = this.$loadError(error, () => this.getData());
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;

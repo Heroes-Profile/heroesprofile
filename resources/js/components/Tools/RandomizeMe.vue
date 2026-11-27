@@ -57,8 +57,9 @@
               <stat-box v-for="tile in tiles" :key="tile.title" class="!m-0 !min-w-[9rem] flex-1" :title="tile.title" :value="tile.value"></stat-box>
             </div>
 
-            <!-- Talent build -->
-            <div v-if="showHero && options.build" class="rounded-control bg-surface-1 p-5 flex flex-col gap-4">
+            <!-- Talent build; the error page's card in its place if it failed to load -->
+            <error-card v-if="showHero && options.build && buildLoadError" :status="buildLoadError.status" :message="buildLoadError.message" @retry="buildLoadError.retry"></error-card>
+            <div v-else-if="showHero && options.build" class="rounded-control bg-surface-1 p-5 flex flex-col gap-4">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <h3 class="text-2xl font-bold">{{ $t('Talent build') }}</h3>
                 <build-code v-if="pick.build" :build="pick.build" :hero="pick.hero" show="code" align="end"></build-code>
@@ -67,7 +68,6 @@
               <div v-if="buildLoading" class="flex flex-wrap gap-3 max-md:gap-2">
                 <skeleton-box v-for="talent in 7" :key="talent" class="w-16 h-16 rounded-lg"></skeleton-box>
               </div>
-              <p v-else-if="buildError" class="text-sm text-red">{{ $t(buildError) }}</p>
               <build-code v-else-if="pick.build" :build="pick.build" :hero="pick.hero" show="talents" size="tile" align="start" :levels="true" :popup-hoverable="false"></build-code>
               <p v-else class="text-sm text-subtext">{{ $t('No complete build found for this hero.') }}</p>
               </div>
@@ -139,7 +139,7 @@ export default {
       rolled: false,
       pick: { hero: null, map: null, region: null, mode: null, build: null },
       buildLoading: false,
-      buildError: null,
+      buildLoadError: null,
       buildRequest: 0,
       stats: null,
       statsLoading: false,
@@ -257,7 +257,7 @@ export default {
     async loadBuild() {
       const request = ++this.buildRequest;
       this.buildLoading = true;
-      this.buildError = null;
+      this.buildLoadError = null;
       this.pick.build = null;
       try {
         const response = await this.$axios.post('/api/v1/tools/randomize-me', {
@@ -266,7 +266,7 @@ export default {
         });
         if (request === this.buildRequest) this.pick.build = response.data.build;
       } catch (error) {
-        if (request === this.buildRequest) this.buildError = 'Failed to load a build. Please try again.';
+        if (request === this.buildRequest) this.buildLoadError = this.$loadError(error, () => this.loadBuild());
       } finally {
         if (request === this.buildRequest) this.buildLoading = false;
       }

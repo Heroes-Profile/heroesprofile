@@ -102,9 +102,9 @@
           <table-skeleton :bare="true" :rows="13" :columns="['stat', 'stat', 'stat', 'stat']"></table-skeleton>
         </panel-box>
       </div>
-      <div v-else-if="dataError" class="flex items-center justify-center">
-        {{ $t('Error: Reload page/filter') }}
-      </div>
+      <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     </div>
   </div>
 </template>
@@ -132,7 +132,7 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
     },
     data(){
       return {
-        dataError: false,
+        loadError: null,
         windowWidth: window.innerWidth,
         isLoading: false,
         infoText: "Hero Maps provide information on which maps are good for each hero",
@@ -218,7 +218,7 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
         this.getData();
       },
       async getData(){
-        this.dataError = false;
+        this.loadError = null;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -249,7 +249,7 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
           
           this.data = response.data;
         }catch(error){
-          this.dataError = true;
+          this.loadError = this.$loadError(error, () => this.getData());
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;

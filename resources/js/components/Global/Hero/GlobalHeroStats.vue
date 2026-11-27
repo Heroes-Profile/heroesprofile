@@ -285,8 +285,8 @@
         <table-skeleton :bare="true" :rows="15" :columns="skeletonColumns"></table-skeleton>
       </panel-box>
     </div>
-    <div v-else-if="dataError" class="flex flex-col items-center justify-center">
-      {{ $t('Error: Reload page/filter') }}
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
     </div>
   </div>
 </template>
@@ -314,7 +314,7 @@ export default {
   },
   data(){
     return {
-      dataError: false,
+      loadError: null,
       windowWidth: window.innerWidth,
       isLoading: false,
     	infoText: "Hero win rates based on differing increments, stat types, game type, or rank. Click on a Hero to see detailed information. On the chart, bubble size is a combination of Win Rate, Pick Rate, and Ban Rate",
@@ -586,7 +586,8 @@ export default {
   },
   methods: {
   	async getData(){
-      this.dataError = false;
+  	  this.loadError = null;
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -625,7 +626,7 @@ export default {
         this.data = response.data;
         this.loadingStates = this.sortedData.map(() => false);
       }catch(error){
-        this.dataError = true;
+        this.loadError = this.$loadError(error, () => this.getData());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
@@ -676,7 +677,7 @@ export default {
         this.loadingStates[hero] = false;
 
       }catch(error){
-        //Do something here
+        // A failed load leaves it empty
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

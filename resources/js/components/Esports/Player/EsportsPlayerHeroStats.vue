@@ -92,6 +92,10 @@
 
 
     </div>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <div v-else-if="isLoading">
       <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true" :overrideimage="getLoadingImage()"></loading-component><table-skeleton></table-skeleton></div>
     </div>
@@ -123,6 +127,7 @@ export default {
   },
   data(){
     return {
+      loadError: null,
       isLoading: false,
       data: null,
       sortKey: '',
@@ -202,6 +207,7 @@ export default {
   },
   methods: {
     async getData(){
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -231,7 +237,7 @@ export default {
         });
         this.data = response.data;
       }catch(error){
-      //Do something here
+      this.loadError = this.$loadError(error, () => this.getData());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

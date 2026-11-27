@@ -124,6 +124,10 @@
       </div>
     </panel-box>
   </div>
+  <!-- The load failed: the error page's card in place of the data -->
+  <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+    <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+  </div>
   <!-- The same cards in grey while the matchups load, the message on a tab of the first -->
   <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-8">
     <div class="grid md:grid-cols-2 gap-8">
@@ -222,6 +226,7 @@
     },
     data(){
       return {
+        loadError: null,
         cancelTokenSource: null,
         isLoading: false,
         asyncLoading: false,
@@ -314,6 +319,7 @@
       history.pushState({}, '', window.location.pathname + (query ? `?${query}` : ''));
     },
       async getNgsData(){
+        this.loadError = null;
         this.data = null;
         this.isLoading = true;
         try{
@@ -323,12 +329,13 @@
           this.topfiveheroes = response.data.top_five_heroes;
           this.topfiveenemies = response.data.top_five_enemies;
         }catch(error){
-          //Do something here
+          this.loadError = this.$loadError(error, () => this.getNgsData());
         }finally {
           this.isLoading = false;
         }
       },
       async getData(){
+        this.loadError = null;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -360,7 +367,7 @@
           this.topfiveheroes = response.data.top_five_heroes;
           this.topfiveenemies = response.data.top_five_enemies;
         }catch(error){
-          //Do something here
+          this.loadError = this.$loadError(error, () => this.getData());
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;

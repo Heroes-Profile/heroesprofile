@@ -142,9 +142,9 @@
           <table-skeleton :bare="true" :rows="16" :columns="['text', 'bar', 'stat', 'stat', 'stat']"></table-skeleton>
         </panel-box>
       </div>
-      <div v-else-if="dataError" class="flex items-center justify-center">
-        {{ $t('Error: Reload page/filter') }}
-      </div>
+      <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     </div>
   </div>
 </template>
@@ -170,7 +170,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
     },
     data(){
       return {
-        dataError: false,
+        loadError: null,
         windowWidth: window.innerWidth,
         isLoading: null,
         cancelTokenSource: null,
@@ -264,7 +264,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
     },
     methods: {
       async getData(){
-        this.dataError = false;
+        this.loadError = null;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -293,7 +293,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
           }
           this.draftdata = response.data;
         }catch(error){
-          this.dataError = true;
+          this.loadError = this.$loadError(error, () => this.getData());
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;

@@ -245,8 +245,8 @@
         </div>
       </panel-box>
     </div>
-    <div v-else-if="dataError" class="flex items-center justify-center">
-      {{ $t('Error: Reload page/filter') }}
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
     </div>
 
 
@@ -275,7 +275,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
   },
   data(){
     return {
-      dataError: false,
+      loadError: null,
       windowWidth: window.innerWidth,
       infoText: "Composition stats based on differing increments, stat types, game type, or Rank. Click on a Composition to see detailed composition information.",
       sortKey: '',
@@ -394,7 +394,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
   },
   methods: {
     async getData(){
-      this.dataError = false;
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -429,7 +429,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         this.expanded = {};
         this.page = 1;
       }catch(error){
-        this.dataError = true;
+        this.loadError = this.$loadError(error, () => this.getData());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
@@ -478,7 +478,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         this.expanded[compositionid] = true;
 
       }catch(error){
-        //Do something here
+        // A failed load leaves it empty
       }finally {
         this.loadingStates[compositionid] = false;
         this.cancelTokenSource = null;

@@ -180,6 +180,10 @@
       <p v-else class="max-w-[120rem] mx-auto px-4 md:px-8 text-subtext">{{ $t('No recent games.') }}</p>
     </div>
 
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <!-- The page's layout with grey blocks while it loads, like the profile -->
     <div v-else-if="isLoading" class="relative max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 flex flex-col gap-8 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
       <!-- The message sits on a tab of the first card, as on the global pages: lined up with the card past the side padding, the card's top-left corner squared to meet it -->
@@ -339,6 +343,7 @@ export default {
   },
   data(){
     return {
+      loadError: null,
       isLoading: false,
       data: null,
       modifiedseason: null,
@@ -530,6 +535,7 @@ export default {
       return String(text ?? '').replace(/ (day|hour|minute|second)s/g, (_, unit) => unit[0]);
     },
     async getData(){
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -578,7 +584,7 @@ export default {
         this.filterSeasons = response.data.seasons;
         this.filterDivisions = response.data.divisions;
       }catch(error){
-      //Do something here
+      this.loadError = this.$loadError(error, () => this.getData());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

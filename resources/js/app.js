@@ -44,6 +44,7 @@ const eagerComponents = import.meta.glob([
     './components/Ads/DynamicBannerAd.vue',
     './components/PanelBox.vue',
     './components/LoadingComponent.vue',
+    './components/ErrorCard.vue',
 ], { eager: true });
 // The rest, which the page views mount, load as their own chunks
 const lazyComponents = import.meta.glob('./components/**/*.vue');
@@ -85,6 +86,16 @@ app.config.globalProperties.$globalAsyncPost = (url, data, options = {}) => glob
 app.config.globalProperties.$formatLoadMeta = formatLoadMeta;
 app.config.globalProperties.$formatResponseHeaders = formatResponseHeaders;
 app.config.globalProperties.$createLoadMeta = createLoadMeta;
+// What a page's failed load shows in its error-card: the HTTP status (500 for a timeout or a failed background job),
+// for a query stopped as too large the server's reason, and what Try again runs. Null for a request the page cancelled itself.
+app.config.globalProperties.$loadError = (error, retry) => {
+  if (axios.isCancel(error)) {
+    return null;
+  }
+  const status = error?.response?.status || 500;
+  const reason = error?.response?.data?.error;
+  return { status, message: status === 422 && typeof reason === 'string' ? reason : null, retry };
+};
 
 // Teams, game length and download state for match rows. They depend on the viewer,
 // so they're fetched apart from the cached page data and merged into the rows.

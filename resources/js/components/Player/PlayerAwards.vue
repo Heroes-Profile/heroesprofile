@@ -124,6 +124,10 @@
       </div>
     </div>
 
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <!-- The same layout in grey while the awards load, the message on a tab of the first panel. Placeholder words sit under
          grey blocks (skeleton-text) so every line is exactly as tall as the real text. -->
     <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 space-y-8">
@@ -225,6 +229,7 @@ import { siteLocale } from '../../utils/translate';
     },
     data(){
       return {
+        loadError: null,
         cancelTokenSource: null,
         isLoading: false,
         asyncLoading: false,
@@ -302,6 +307,7 @@ import { siteLocale } from '../../utils/translate';
     },
     methods: {
       async getData(){
+        this.loadError = null;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -333,7 +339,7 @@ import { siteLocale } from '../../utils/translate';
 
           this.data = response.data;
         }catch(error){
-          //Do something here
+          this.loadError = this.$loadError(error, () => this.getData());
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
@@ -387,7 +393,7 @@ import { siteLocale } from '../../utils/translate';
           if (requestId !== this.awardGamesRequestId) return;
           this.awardGames = response.data;
         }catch(error){
-          //Do something here
+          // A failed load leaves it empty
         }finally {
           if (requestId === this.awardGamesRequestId) {
             this.cancelTokenSource = null;

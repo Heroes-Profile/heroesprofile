@@ -130,8 +130,9 @@
           </div>
         </div>
 
-        <hero-board class="xl:order-2" :heroes="visibleSuggestions" :loading="waiting" :glow-ids="glowIds" :pick-text="draftComplete ? null : (isBanStep ? 'Ban' : 'Pick')"
-          :error="dataError || (needsCompositions && compositionsError) ? $t('Failed to load draft data. Please try again.') : null" @pick="pickHero">
+        <!-- The draft data failed to load: the error page's card in place of the board -->
+        <error-card v-if="boardError" class="xl:order-2" :status="boardError.status" :message="boardError.message" @retry="boardError.retry"></error-card>
+        <hero-board v-else class="xl:order-2" :heroes="visibleSuggestions" :loading="waiting" :glow-ids="glowIds" :pick-text="draftComplete ? null : (isBanStep ? 'Ban' : 'Pick')" @pick="pickHero">
           <template #controls>
             <tab-button v-if="!mockDraft" :small="true" :tabs="sortTabs" :ignoreclick="true" :overridedefaultside="sortMode" @tab-click="sortMode = $event"></tab-button>
             <tab-button v-if="!mockDraft" :small="true" :tabs="suggestTabs" :ignoreclick="true" :overridedefaultside="suggestBy" @tab-click="suggestBy = $event"></tab-button>
@@ -246,13 +247,13 @@ export default {
       suggestBy: 'value',
 
       isLoading: false,
-      dataError: false,
+      loadError: null,
       heroStats: {},
       totalGames: 0,
       draftOrder: {},
       compositions: {},
       compositionsLoading: false,
-      compositionsError: false,
+      compositionsLoadError: null,
       loadId: 0,
       // Where the locked-filters note sits, while the cursor is over them
       lockTip: null,
@@ -370,11 +371,15 @@ export default {
     needsCompositions() {
       return !this.mockDraft && this.currentPick >= 6 && !this.draftComplete;
     },
+    // Compositions only matter once the draft reaches them
+    boardError() {
+      return this.loadError || (this.needsCompositions ? this.compositionsLoadError : null);
+    },
     waiting() {
       return this.isLoading || (this.needsCompositions && this.compositionsLoading);
     },
     compositionData() {
-      if (this.mockDraft || this.dataError || this.currentPick < 6 || this.draftComplete) return null;
+      if (this.mockDraft || this.loadError || this.currentPick < 6 || this.draftComplete) return null;
 
       const knownRoles = new Set(Object.values(this.compositions).flatMap(composition => composition.roles));
       const teamRoles = this.compositionTeamPicks()
@@ -529,10 +534,10 @@ export default {
       // Filters apply as they change, so an older load can finish after a newer one
       const loadId = ++this.loadId;
       this.isLoading = true;
-      this.dataError = false;
+      this.loadError = null;
       this.compositions = {};
       this.compositionsLoading = true;
-      this.compositionsError = false;
+      this.compositionsLoadError = null;
 
       // Same parameters the Global Hero Stats page sends, so both share its cache entry
       const baseRequests = Promise.all([
@@ -550,7 +555,7 @@ export default {
       // Slower and not needed until pick 6, so it's sent last and doesn't hold up the first suggestions
       this.$globalAsyncPost('/api/v1/drafter/composition', { ...this.filterParameters(), mirror: 0 })
         .then(response => { if (loadId === this.loadId) this.compositions = response.data || {}; })
-        .catch(() => { if (loadId === this.loadId) this.compositionsError = true; })
+        .catch(error => { if (loadId === this.loadId) this.compositionsLoadError = this.$loadError(error, () => this.loadBaseData()); })
         .finally(() => { if (loadId === this.loadId) this.compositionsLoading = false; });
 
       try {
@@ -562,7 +567,7 @@ export default {
         this.heroStats = Object.fromEntries(stats.map(row => [row.hero_id, row]));
         this.draftOrder = orderResponse.data || {};
       } catch (error) {
-        if (loadId === this.loadId) this.dataError = true;
+        if (loadId === this.loadId) this.loadError = this.$loadError(error, () => this.loadBaseData());
       } finally {
         if (loadId === this.loadId) this.isLoading = false;
       }

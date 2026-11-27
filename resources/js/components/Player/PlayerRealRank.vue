@@ -209,7 +209,7 @@ export default {
         this.data = response.data;
         this.$emit('loaded', this.data);
       }catch(error){
-        //Do something here
+        // A failed load leaves the panel out; the row shows Week Day alone
       }
       this.loading = false;
       this.$nextTick(() => this.drawChart());

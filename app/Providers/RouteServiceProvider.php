@@ -6,6 +6,7 @@ use App\Auth\ApiKeyContext;
 use App\Auth\ApiKeyGuard;
 use App\Services\ClientIpService;
 use App\Support\ApiSpecConfig;
+use App\Support\TalentBuildAllowance;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -46,6 +47,13 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(): void
     {
         RateLimiter::for('api', function (Request $request) {
+            // Calls a page makes on its own after the one that counted: polling a job it
+            // started, and the Talents page's per-hero builds that its hero list granted
+            if ($request->is('api/v1/global/status/*')
+                || ($request->is('api/v1/player/talents/build/hero') && TalentBuildAllowance::consume($request))) {
+                return Limit::none();
+            }
+
             return Limit::perMinute(60)->by($this->rateLimitKey($request));
         });
 

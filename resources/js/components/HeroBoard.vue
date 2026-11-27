@@ -14,8 +14,7 @@
 
     <slot name="above"></slot>
 
-    <div v-if="error" class="text-center text-red py-10">{{ error }}</div>
-    <div v-else-if="loading" class="grid grid-cols-[repeat(auto-fill,minmax(4.75rem,1fr))] gap-y-3">
+    <div v-if="loading" class="grid grid-cols-[repeat(auto-fill,minmax(4.75rem,1fr))] gap-y-3">
       <div v-for="hero in visibleHeroes.length" :key="hero" class="flex flex-col items-center gap-1.5">
         <skeleton-box class="w-16 h-16 !rounded-full"></skeleton-box>
         <span class="text-xs skeleton-text">Abathur</span>
@@ -42,7 +41,6 @@ export default {
     heroes: { type: Array, required: true },
     // Grey portraits in the board's shape while the page loads
     loading: { type: Boolean, default: false },
-    error: { type: String, default: null },
     // Heroes that glow gold, e.g. the Drafter's suggestions
     glowIds: { type: Set, default: () => new Set() },
     // Set, phones tap a hero to open its popup, and pick it with this button there

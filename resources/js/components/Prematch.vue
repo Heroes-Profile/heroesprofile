@@ -88,6 +88,10 @@
       </div>
     </div>
   </div>
+  <!-- The load failed: the error page's card in place of the data -->
+  <div v-else-if="loadError" class="w-full max-w-[120rem] mx-auto px-4 md:px-8 pt-10 pb-10">
+    <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+  </div>
   <prematch-skeleton v-else-if="isLoading"></prematch-skeleton>
 </template>
 
@@ -101,6 +105,7 @@ export default {
   },
   data(){
     return {
+      loadError: null,
       isLoading: false,
       recentLoading: false,
       data: null,
@@ -161,6 +166,7 @@ export default {
   },
   methods: {
     async getData(){
+      this.loadError = null;
       this.isLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/prematch", {
@@ -168,7 +174,7 @@ export default {
         });
         this.data = response.data;
       }catch(error){
-      //Do something here
+      this.loadError = this.$loadError(error, () => this.getData());
       }finally {
         this.isLoading = false;
       }

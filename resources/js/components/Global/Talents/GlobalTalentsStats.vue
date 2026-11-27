@@ -112,8 +112,8 @@
             <compact-talent-grid :skeleton="true" :layout-style="talentstatsstyle"></compact-talent-grid>
           </panel-box>
         </div>
-        <div v-else-if="dataError" class="flex items-center justify-center">
-          {{ $t('Error: Reload page/filter') }}
+        <div v-else-if="loadError" class="max-w-[120rem] w-full mx-auto px-4 md:px-8">
+          <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
         </div>
 
         <dynamic-banner-ad :patreon-user="patreonUser" :index="4" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
@@ -133,8 +133,8 @@
             </div>
           </panel-box>
         </div>
-        <div v-else-if="!isTalentsLoading && dataError" class="flex items-center justify-center">
-          {{ $t('Error: Reload page/filter') }}
+        <div v-else-if="buildsLoadError" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6">
+          <error-card :status="buildsLoadError.status" :message="buildsLoadError.message" @retry="buildsLoadError.retry"></error-card>
         </div>
 
         <!-- The loaded card in grey: the table from md up, a card per build on phones; the message on its tab -->
@@ -185,7 +185,8 @@
     },
     data(){
       return {
-        dataError: false,
+        loadError: null,
+        buildsLoadError: null,
        isTalentsLoading: false,
        isBuildsLoading: false,
        cancelTalentsTokenSource: null,
@@ -318,7 +319,7 @@
    
       },
       async getTalentData(){
-        this.dataError = false;
+        this.loadError = null;
         this.isTalentsLoading = true;
 
         if (this.cancelTalentsTokenSource) {
@@ -352,7 +353,7 @@
           this.talentdetaildata = response.data;
 
         }catch(error){
-          this.dataError = true;
+          this.loadError = this.$loadError(error, () => this.getTalentData());
         }finally {
           this.cancelTalentsTokenSource = null;
           this.isTalentsLoading = false;
@@ -361,7 +362,7 @@
       },
       
       async getTalentBuildData(){
-        this.dataError = false;
+        this.buildsLoadError = null;
         this.isBuildsLoading = true;
 
         if (this.cancelBuildsTokenSource) {
@@ -399,7 +400,7 @@
           this.talentbuilddata = response.data;
 
         }catch(error){
-          this.dataError = true;
+          this.buildsLoadError = this.$loadError(error, () => this.getTalentBuildData());
         }finally {
           this.cancelBuildsTokenSource = null;
           this.isBuildsLoading = false;
@@ -407,7 +408,7 @@
       },
 
       async getTalentBuildDataAll(){
-        this.dataError = false;
+        this.buildsLoadError = null;
         this.isBuildsLoading = true;
 
         if (this.cancelBuildsTokenSource) {
@@ -429,7 +430,7 @@
           this.talentbuilddataall = response.data;
 
         }catch(error){
-          this.dataError = true;
+          this.buildsLoadError = this.$loadError(error, () => this.getTalentBuildDataAll());
         }finally {
           this.cancelBuildsTokenSource = null;
           this.isBuildsLoading = false;

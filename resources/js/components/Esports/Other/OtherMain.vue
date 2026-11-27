@@ -51,6 +51,10 @@
 
 
     
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-if="loadError && !isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <!-- The recent matches card in grey; the message sits on a tab of the card -->
     <div v-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
       <!-- Recent Matches: the titled card, the toggle and page numbers in its header, the expanded rows -->
@@ -116,6 +120,7 @@ export default {
   },
   data(){
     return {
+      loadError: null,
       isLoading: false,
       data: null,
 
@@ -160,6 +165,7 @@ export default {
       }).map(({ code, name }) => ({ code, name }));
     },
     async getMatches(page){
+      this.loadError = null;
       if (this.isLoading || page < 1) {
         return;
       }
@@ -183,7 +189,7 @@ export default {
         this.data = response.data;
 
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getMatches(page));
       }finally {
         this.isLoading = false;
       }

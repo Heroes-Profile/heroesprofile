@@ -62,8 +62,8 @@
         <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading party stats...') }}</loading-component>
       </party-stats-skeleton>
     </div>
-    <div v-else-if="dataError" class="flex items-center justify-center">
-      {{ $t('Error: Reload page/filter') }}
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
     </div>
   </div>
 </template>
@@ -89,7 +89,7 @@
   },
   data(){
     return {
-      dataError: false,
+      loadError: null,
       isLoading: false,
       infoText: "Party win rates based on differing increments, stat types, game type, rank, and more. The hero filter allows you to see party data for games that only contained that hero.",
       partydata: null,
@@ -140,7 +140,7 @@
   },
   methods: {
     async getData(){
-      this.dataError = false;
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -173,7 +173,7 @@
         }
         this.partydata = response.data;
       }catch(error){
-        this.dataError = true;
+        this.loadError = this.$loadError(error, () => this.getData());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

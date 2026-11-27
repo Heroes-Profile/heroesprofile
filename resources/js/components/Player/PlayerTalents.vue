@@ -48,13 +48,14 @@
 
       <!-- The player's most played build per hero, like the list on /Global/Talents -->
       <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6">
-        <panel-box :title="esport ? 'Most Played Builds Per Hero' : 'Most Played Builds Per Hero and Game Type'">
+        <!-- The builds failed to load: the error page's card in place of the panel -->
+        <error-card v-if="buildsLoadError" :status="buildsLoadError.status" :message="buildsLoadError.message" @retry="buildsLoadError.retry"></error-card>
+        <panel-box v-else :title="esport ? 'Most Played Builds Per Hero' : 'Most Played Builds Per Hero and Game Type'">
         <template #right>
           <tab-button :key="esport ? 'ngs-' + ngsRangeSide : 'range'" :tab1text="'All Time'" :tab2text="'Current Season'" :ignoreclick="true" @tab-click="setBuildsRange" :overridedefaultside="esport ? ngsRangeSide : (buildsCurrentSeason ? 'right' : 'left')"></tab-button>
         </template>
         <loading-component v-if="isBuildsLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">Loading talent builds{{ buildsTotal ? ` (${buildsLoaded} of ${buildsTotal} heroes)` : '' }}...</loading-component>
-        <p v-if="buildsError" class="text-sm text-subtext">{{ $t("Couldn't load talent builds. Reload the page to try again.") }}</p>
-        <global-talent-builds-all v-else-if="heroesWithBuilds.length" :key="buildsCurrentSeason ? 'season' : 'all'" :heroes="heroesWithBuilds" :talentbuilddataall="talentbuilddataall" :game-types="esport ? [{ key: 'ngs', label: league.name }] : undefined"></global-talent-builds-all>
+        <global-talent-builds-all v-if="heroesWithBuilds.length" :key="buildsCurrentSeason ? 'season' : 'all'" :heroes="heroesWithBuilds" :talentbuilddataall="talentbuilddataall" :game-types="esport ? [{ key: 'ngs', label: league.name }] : undefined"></global-talent-builds-all>
         <table-skeleton v-else-if="isBuildsLoading" :bare="true" :rows="10" :columns="['avatar', 'talents', 'talents', 'talents']"></table-skeleton>
         <p v-else-if="talentbuilddataall && esport" class="text-sm text-subtext">{{ $t('No :league builds for these filters.', { league: league.name }) }}</p>
         <p v-else-if="talentbuilddataall" class="text-sm text-subtext">{{ $t('No builds :yet for Quick Match, Storm League or ARAM.', { yet: buildsCurrentSeason ? $t('this season') : $t('yet') }) }}</p>
@@ -72,6 +73,10 @@
           </template>
           <compact-talent-grid :talent-data="talentdetaildata"></compact-talent-grid>
         </panel-box>
+      </div>
+      <!-- The load failed: the error page's card in place of the data -->
+      <div v-else-if="loadError" class="max-w-[120rem] w-full mx-auto px-4 md:px-8">
+        <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
       </div>
       <div v-else-if="isLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
         <panel-box title="Talent stats" subtitle="Win rate, popularity and games for every talent. The best win rate on each tier is highlighted." :skeleton="true" class="relative md:!rounded-tl-none">
@@ -130,6 +135,7 @@ export default {
   },
   data(){
     return {
+      loadError: null,
       cancelTokenSource: null,
       isLoading: false,
       gametype: null,
@@ -147,7 +153,7 @@ export default {
       isBuildsLoading: false,
       buildsLoaded: 0,
       buildsTotal: 0,
-      buildsError: false,
+      buildsLoadError: null,
       buildsCurrentSeason: false,
       // Bumped when the toggle sets the season, so the Seasons dropdown shows it
       ngsFilterKey: 0,
@@ -234,6 +240,7 @@ export default {
       }
     },
     async getData(){
+      this.loadError = null;
       try{
         this.isLoading = true;
 
@@ -264,7 +271,7 @@ export default {
         this.talentdetaildata = response.data.talentData
         this.talentbuilddata = response.data.buildData;
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getData());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
@@ -278,7 +285,7 @@ export default {
       this.buildsCancel = source;
       const run = this.buildsRun = (this.buildsRun || 0) + 1;
       this.isBuildsLoading = true;
-      this.buildsError = false;
+      this.buildsLoadError = null;
       this.talentbuilddataall = null;
       this.buildsLoaded = 0;
       this.buildsTotal = 0;
@@ -330,8 +337,8 @@ export default {
         };
         await Promise.all(Array.from({ length: 4 }, worker));
       }catch(error){
-        if (!this.$axios.isCancel(error) && this.buildsRun === run) {
-          this.buildsError = true;
+        if (this.buildsRun === run) {
+          this.buildsLoadError = this.$loadError(error, () => this.getBuildsAll());
         }
       }finally {
         // A newer run (the toggle flipped) owns the loading state now

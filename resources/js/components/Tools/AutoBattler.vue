@@ -50,9 +50,10 @@
           </template>
         </hero-board>
 
+        <!-- The talents failed to load: the error page's card in place of the panel -->
+        <error-card v-else-if="mode === 'talents' && talentLoadError" class="xl:order-2" :status="talentLoadError.status" :message="talentLoadError.message" @retry="talentLoadError.retry"></error-card>
         <div v-else-if="mode === 'talents'" class="bg-surface rounded-panel p-4 md:p-6 min-w-0 xl:order-2">
           <loading-component v-if="loadingTalents" :compact="true" :textoverride="true">{{ $t('Loading talents...') }}</loading-component>
-          <div v-else-if="talentError" class="text-center text-red py-10">{{ $t(talentError) }}</div>
           <auto-battler-talent-selection v-else
             :key="activeSlot.team + '-' + activeSlot.index + '-' + activeHero.name"
             :hero="activeHero"
@@ -115,7 +116,7 @@ export default {
       mode: 'hero',
       talentCache: {},
       loadingTalents: false,
-      talentError: null,
+      talentLoadError: null,
       talentStyle: this.talentbuilderstyle || 'vertical',
       isMobile: window.innerWidth < 1024,
     };
@@ -184,7 +185,7 @@ export default {
       this.loadTalents(hero);
     },
     loadTalents(hero) {
-      this.talentError = null;
+      this.talentLoadError = null;
       if (this.talentCache[hero.name]) return;
 
       this.loadingTalents = true;
@@ -192,8 +193,8 @@ export default {
         .then(response => {
           this.talentCache[hero.name] = response.data.talents;
         })
-        .catch(() => {
-          this.talentError = 'Failed to load talents. Please try again.';
+        .catch(error => {
+          this.talentLoadError = this.$loadError(error, () => this.loadTalents(hero));
         })
         .finally(() => {
           this.loadingTalents = false;

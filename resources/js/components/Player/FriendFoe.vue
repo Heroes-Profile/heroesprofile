@@ -168,6 +168,10 @@
       </div>
       </panel-box>
     </div>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <div v-else-if="friendIsLoading || enemyIsLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
       <!-- The tables start where the loaded ones do; the message sits on a tab of the panel above them -->
       <panel-box class="relative md:!rounded-tl-none">
@@ -251,6 +255,7 @@ export default {
   },
   data(){
     return {
+      loadError: null,
       friendIsLoading: false,
       enemyIsLoading: false,
       infoText: "Friends and Foe data showing who " + this.battletag + " plays the most games with and against",
@@ -389,6 +394,7 @@ export default {
       history.pushState({}, '', window.location.pathname + (query ? `?${query}` : ''));
     },
     async getNgsData(){
+      this.loadError = null;
       this.frienddata = null;
       this.enemydata = null;
       this.friendIsLoading = true;
@@ -399,7 +405,7 @@ export default {
         this.frienddata = response.data.friend;
         this.enemydata = response.data.enemy;
       } catch(error) {
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getNgsData());
       } finally {
         this.friendIsLoading = false;
         this.enemyIsLoading = false;
@@ -410,6 +416,7 @@ export default {
       return term ? rows.filter(row => row.battletag.toLowerCase().includes(term)) : rows;
     },
     async getData(type){
+      this.loadError = null;
       let cancelTokenSource;
 
       if (type === 'friend') {
@@ -449,7 +456,7 @@ export default {
 
         return response.data;
       } catch(error) {
-        //Do something here
+        this.loadError = this.$loadError(error, () => { this.getData('friend'); this.getData('enemy'); });
       } finally {
         if (type === 'friend') {
           this.friendCancelTokenSource = null;

@@ -73,6 +73,10 @@
       </div>
 
     </div>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-if="loadError && !isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <!-- Each tab's cards in grey; the message sits on a tab of the first card -->
     <div v-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
       <!-- Teams: the logo tiles, the search at the top right -->
@@ -164,6 +168,7 @@ export default {
   },
   data() {
     return {
+      loadError: null,
       preloadedImage: new Image(),
 
       isLoading: false,
@@ -224,6 +229,7 @@ export default {
   },
   methods: {
     async getTeamsData(){
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -240,13 +246,14 @@ export default {
         });
         this.teamsData = response.data;
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getTeamsData());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
       }
     },
     async getRecentMatches(page){
+      this.loadError = null;
       if (this.isLoading || page < 1 || (this.recentMatchesData && page > this.recentMatchesData.pagination.last_page)) {
         return;
       }
@@ -270,13 +277,14 @@ export default {
         });
         this.recentMatchesData = response.data;
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getRecentMatches(page));
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
       }
     },
     async getHeroStats(){
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -294,13 +302,14 @@ export default {
         });
         this.heroStatsData = response.data;
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getHeroStats());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
       }
     },
     async getTalentStats(){
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -319,7 +328,7 @@ export default {
         });
         this.talentStatsData = response.data;
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getTalentStats());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

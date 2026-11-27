@@ -34,7 +34,7 @@
     </div>
 
     <div v-else class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 pb-10 flex flex-col gap-6">
-      <div v-if="error" class="text-center text-red py-20">{{ $t(error) }}</div>
+      <error-card v-if="loadError" :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
       <template v-else-if="data.length">
         <!-- This year at a glance -->
         <div v-if="summary" class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -83,7 +83,7 @@ export default {
       infoText: 'Unique player counts per month based on replays uploaded to Heroes Profile. Data goes back to October 2014. The current month is always calculated in real time, and the dotted line shows its expected total, based on how the previous three months typically grew from the same point.',
       data: [],
       loading: false,
-      error: null,
+      loadError: null,
       gametype: null,
       region: null,
       pendingGametype: null,
@@ -206,7 +206,7 @@ export default {
     },
     fetchData() {
       this.loading = true;
-      this.error = null;
+      this.loadError = null;
 
       this.$axios.post('/api/v1/tools/activity/players/unique', {
         game_type: this.gametype,
@@ -217,8 +217,8 @@ export default {
           const currentYear = new Date().getFullYear().toString();
           this.activeYears = this.availableYears.includes(currentYear) ? [currentYear] : [...this.availableYears];
         })
-        .catch(() => {
-          this.error = 'Failed to load activity data.';
+        .catch(error => {
+          this.loadError = this.$loadError(error, () => this.fetchData());
         })
         .finally(() => {
           this.loading = false;

@@ -91,9 +91,9 @@
           <loading-component v-else :compact="true" :tab="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
           <compact-talent-grid :skeleton="true"></compact-talent-grid>
         </panel-box>
-        <div v-else-if="dataError" class="flex items-center justify-center">
-          {{ $t('Error: Reload page/filter') }}
-        </div>
+        <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
         <panel-box v-else-if="talentdetaildata" :title="talentsTitle" :subtitle="talentsSubtitle">
           <template #right>
             <div class="flex flex-wrap items-center gap-4">
@@ -129,7 +129,7 @@
     },
     data(){
       return {
-        dataError: false,
+        loadError: null,
         isLoading: false,
         infoText1: 'This page allows you to look at talent win rates and popularity, for a hero against, or with another hero. If you click on the "enemy" button, you will see talent data for games where those two heroes played against each other. If you click on the "ally" button, you will see talent data for games where those two heroes were on the same team.',
         infoText2: "NOTICE: This page may take longer to load data than our normal pages.",
@@ -246,7 +246,7 @@
         return false;
       },
       async getData(){
-        this.dataError = false;
+        this.loadError = null;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -279,7 +279,7 @@
           this.secondwinratedata = response.data.second_win_rate;
           this.matchupgames = response.data.games_played ?? null;
         }catch(error){
-          this.dataError = true;
+          this.loadError = this.$loadError(error, () => this.getData());
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
