@@ -160,15 +160,21 @@
 <body class="bg-page bg-[radial-gradient(ellipse_137.5rem_193.75rem_at_50%_9.6875rem,rgba(33,61,122,0.6),rgba(33,61,122,0.57)_12.5%,rgba(33,61,122,0.48)_25%,rgba(33,61,122,0.37)_37.5%,rgba(33,61,122,0.25)_50%,rgba(33,61,122,0.14)_62.5%,rgba(33,61,122,0.07)_75%,rgba(33,61,122,0.03)_87.5%,transparent)] bg-no-repeat text-white dark-mode">
   <div id="app" class="relative flex flex-col" style="min-height:100vh; ">
     @sectionMissing('no_ads')
-    {{-- Until Vue draws the banner, its tag holds the same space: the ad's height, or with an ad blocker the notice --}}
+    @unless(session('patreonSubscriberAdFree'))
+    {{-- The ad-blocker notice is plain page markup, shown by html.ad-blocked (set in the head when a blocker was seen
+         in the last day, or by utils/adBlocker.js when one is found), so it is the same from the first paint on --}}
+    <div class="ad-blocker-notice">
+      <div class="bg-teal px-20 py-2 text-xs text-center max-md:hidden">{{ __('Heroes Profile uses ads to help fund site running costs.') }} {{ __('Please consider allowing ads or support us through patreon at') }} <a class="link break-all" href="https://www.patreon.com/heroesprofile" target="_blank">https://www.patreon.com/heroesprofile</a></div>
+      <details class="group bg-teal px-4 py-2 text-sm text-center md:hidden">
+        <summary class="cursor-pointer list-none">{{ __('Heroes Profile uses ads to help fund the site.') }} <span class="link group-open:hidden">{{ __('Read more') }}</span></summary>
+        {{ __('Please consider allowing ads or support us through patreon at') }} <a class="link break-all" href="https://www.patreon.com/heroesprofile" target="_blank">https://www.patreon.com/heroesprofile</a>
+      </details>
+    </div>
+    @endunless
+    {{-- The top ad. Until Vue draws it, its tag holds the ad's space (none with an ad blocker) --}}
     <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" >
       @unless(session('patreonSubscriberAdFree'))
-      <div class="ad-banner-placeholder">
-        <div class="ad-banner-placeholder-notice">
-          <div class="bg-teal px-20 py-2 text-xs text-center max-md:hidden">{{ __('Heroes Profile uses ads to help fund site running costs.') }} {{ __('Please consider allowing ads or support us through patreon at') }} <span class="link break-all">https://www.patreon.com/heroesprofile</span></div>
-          <div class="bg-teal px-4 py-2 text-sm text-center md:hidden">{{ __('Heroes Profile uses ads to help fund the site.') }} <span class="link">{{ __('Read more') }}</span></div>
-        </div>
-      </div>
+      <div class="ad-banner-placeholder"></div>
       @endunless
     </horizontal-banner-ad>
     @endif

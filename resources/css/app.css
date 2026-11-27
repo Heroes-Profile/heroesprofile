@@ -36,19 +36,19 @@
   width: 90%;
 }
 
-/* The top ad banner's stand-in before Vue draws it (layouts/app): the ad slot's height, or the ad-blocker notice
-   when one was seen recently (html.ad-blocked, set in the head) */
+/* The top of the page with ads blocked or not (html.ad-blocked: layouts/app's head, utils/adBlocker.js): the
+   ad-blocker notice, or the top ad's space until Vue draws the ad */
+.ad-blocker-notice {
+  display: none;
+}
+html.ad-blocked .ad-blocker-notice {
+  display: block;
+}
 .ad-banner-placeholder {
   min-height: 7.5rem;
 }
-.ad-banner-placeholder-notice {
-  display: none;
-}
 html.ad-blocked .ad-banner-placeholder {
-  min-height: 0;
-}
-html.ad-blocked .ad-banner-placeholder-notice {
-  display: block;
+  display: none;
 }
 
 /* Before Vue mounts, a <basil-icon> tag is an empty element; these draw the nav's icons from the same paths

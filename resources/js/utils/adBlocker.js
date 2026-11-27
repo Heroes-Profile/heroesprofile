@@ -16,8 +16,17 @@ function stored() {
 
 export const adBlocker = ref(stored() !== null || window.adManagerState === 'blocked');
 
+// The page's own ad-blocker notice shows from html.ad-blocked (layouts/app); a blocker found on this page shows it now
+function showNotice() {
+  document.documentElement.classList.add('ad-blocked');
+}
+if (adBlocker.value) {
+  showNotice();
+}
+
 export function markAdBlocker(by) {
   adBlocker.value = true;
+  showNotice();
   try {
     localStorage.setItem(KEY, JSON.stringify({ by, at: Date.now() }));
   } catch (e) {}
