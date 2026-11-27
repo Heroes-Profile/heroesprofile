@@ -43,12 +43,12 @@
           </div>
 
           <!-- Head to head: each team either side of the series score after this game; this game's winner marked -->
-          <div class="relative flex-1 max-md:basis-full grid grid-cols-[1fr_auto_1fr] items-center gap-6 px-4 py-4 min-w-0">
-            <div v-for="(team, position) in sidesOf(row)" :key="team" :class="['flex items-center gap-3 min-w-0 row-start-1', position === 0 ? 'flex-row-reverse text-right col-start-1' : 'col-start-3']">
+          <div class="relative flex-1 max-md:basis-full grid grid-cols-[1fr_auto_1fr] items-center gap-3 md:gap-6 px-4 py-4 min-w-0">
+            <div v-for="(team, position) in sidesOf(row)" :key="team" :class="['flex max-md:flex-col items-center gap-3 min-w-0 row-start-1 max-md:text-center', position === 0 ? 'md:flex-row-reverse md:text-right col-start-1' : 'col-start-3']">
               <img class="w-12 h-12 shrink-0 rounded-full object-contain bg-surface-3 text-[0rem]" :src="teamImage(row, team) || fallbackImage" @error="e => { if (!e.target.dataset.fallback) { e.target.dataset.fallback = 1; e.target.src = fallbackImage; } }" :alt="teamName(row, team)"/>
-              <div :class="['flex flex-col gap-1 min-w-0', position === 0 ? 'items-end' : 'items-start']">
-                <span :class="['text-xl font-semibold leading-tight break-words', row.winner === team ? 'text-white' : 'text-subtext']">{{ teamName(row, team) }}</span>
-                <span v-if="row.winner === team" class="bg-win text-white rounded px-1.5 text-xs font-semibold">{{ $t('Won') }}</span>
+              <div :class="['flex flex-col gap-1 min-w-0 max-w-full max-md:items-center', position === 0 ? 'md:items-end' : 'md:items-start']">
+                <span :class="['text-base md:text-xl font-semibold leading-tight [overflow-wrap:anywhere]', row.winner === team ? 'text-white' : 'text-subtext']">{{ teamName(row, team) }}</span>
+                <span v-if="row.winner === team" class="bg-win text-white rounded px-1.5 text-xs font-semibold whitespace-nowrap">{{ $t('Won') }}</span>
               </div>
             </div>
             <div class="col-start-2 row-start-1 flex flex-col items-center">

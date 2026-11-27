@@ -22,7 +22,7 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 COPY public/.htaccess /var/www/html/.htaccess
 
 # Install Laravel dependencies
-RUN composer install
+RUN composer install --no-dev
 
 # Install Vite
 RUN npm install --global vite 
