@@ -59,7 +59,6 @@
 </template>
 
 <script>
-import { stringify } from 'postcss';
 import { hasVoidEye, ownerFlairHidden } from '../voidEye';
 
 export default {

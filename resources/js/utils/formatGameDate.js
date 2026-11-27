@@ -1,4 +1,3 @@
-import moment from 'moment-timezone';
 import { siteLocale } from './translate';
 
 // A bare "YYYY-MM-DD" is a calendar day, shown as that day in every time zone
@@ -9,7 +8,8 @@ function toDate(value) {
   if (value instanceof Date) {
     return value;
   }
-  if (moment.isMoment(value)) {
+  // A moment object
+  if (typeof value?.toDate === 'function') {
     return value.toDate();
   }
   const text = String(value);
@@ -36,7 +36,7 @@ export function formatDate(value, options = { dateStyle: 'medium' }) {
     const { timeStyle, hour, minute, second, ...dayOptions } = options;
     return new Intl.DateTimeFormat(siteLocale(), { ...dayOptions, timeZone: 'UTC' }).format(date);
   }
-  return new Intl.DateTimeFormat(siteLocale(), { ...options, timeZone: options.timeZone || moment.tz.guess() }).format(date);
+  return new Intl.DateTimeFormat(siteLocale(), { ...options, timeZone: options.timeZone || undefined }).format(date);
 }
 
 // A game's date and time, short. Plain text, so it can go inside a translated sentence

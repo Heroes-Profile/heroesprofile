@@ -1,4 +1,4 @@
-import { createApp } from 'vue';
+import { createApp, defineAsyncComponent } from 'vue';
 import axios from 'axios';
 import { globalAsyncPost, formatLoadMeta, formatResponseHeaders, createLoadMeta } from './utils/globalAsyncPost';
 import Cookies from 'js-cookie';
@@ -20,10 +20,63 @@ import { translate } from './utils/translate';
 import { formatDate } from './utils/formatGameDate';
 animateDetails();
 
-// Automatically register Vue components
-const components = import.meta.glob('./components/**/*.vue', { eager: true });
-Object.entries(components).forEach(([path, definition]) => {
-    app.component(path.split('/').pop().replace(/\.\w+$/, ''), definition.default);
+// What the layouts mount loads with the page. panel-box is also picked by name in :is, which the build can't see.
+// Inside .vue files, unplugin-vue-components imports each tag's component (vite.config.js).
+const eagerComponents = import.meta.glob([
+    './components/Nav/NavSearchFlyout.vue',
+    './components/SearchComponent.vue',
+    './components/LanguagePicker.vue',
+    './components/RemoveBattletagNav.vue',
+    './components/MobileNavHack.vue',
+    './components/OwnerSparks.vue',
+    './components/BasilIcon.vue',
+    './components/CustomButton.vue',
+    './components/RoundImage.vue',
+    './components/TranslationNotice.vue',
+    './components/HeaderAlert.vue',
+    './components/FooterPopupDisclaimer.vue',
+    './components/LoginPopup.vue',
+    './components/Api/ApiLoginPopup.vue',
+    './components/HelpChat.vue',
+    './components/RedesignCredit.vue',
+    './components/Ads/RichMediaAd.vue',
+    './components/Ads/HorizontalBannerAd.vue',
+    './components/Ads/DynamicBannerAd.vue',
+    './components/PanelBox.vue',
+    './components/LoadingComponent.vue',
+], { eager: true });
+// The rest, which the page views mount, load as their own chunks
+const lazyComponents = import.meta.glob('./components/**/*.vue');
+
+// A chunk from before a deploy is gone: reload once for the new build.
+// The error still reaches Flare through Vue's error handler; the delay lets that report send.
+// Not again within a minute, so a chunk that's really broken can't loop.
+function reloadForNewBuild() {
+  if (Date.now() - Number(sessionStorage.getItem('chunkReload')) < 60000) {
+    return;
+  }
+  sessionStorage.setItem('chunkReload', Date.now());
+  setTimeout(() => window.location.reload(), 500);
+}
+window.addEventListener('vite:preloadError', reloadForNewBuild);
+
+const componentName = path => path.split('/').pop().replace(/\.\w+$/, '');
+Object.entries(eagerComponents).forEach(([path, definition]) => {
+    app.component(componentName(path), definition.default);
+});
+Object.entries(lazyComponents).forEach(([path, loader]) => {
+    if (eagerComponents[path]) {
+        return;
+    }
+    app.component(componentName(path), defineAsyncComponent({
+        loader,
+        loadingComponent: eagerComponents['./components/LoadingComponent.vue'].default,
+        delay: 200,
+        onError(error, retry, fail) {
+            reloadForNewBuild();
+            fail();
+        },
+    }));
 });
 
 // Set up axios on Vue's prototype
@@ -184,7 +237,8 @@ app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, 
 app.use(flareVue);
 flare.beforeEvaluate = error => {
   if (
-    error.message.includes("Failed to fetch") ||
+    // Still reports a chunk missing after a deploy
+    (error.message.includes("Failed to fetch") && !error.message.includes("dynamically imported module")) ||
     error.message.includes("Label 'https' has already been declared") ||
     error.message.includes("NetworkError when attempting to fetch resource.") ||
     error.message.includes("The operation was aborted.") ||
