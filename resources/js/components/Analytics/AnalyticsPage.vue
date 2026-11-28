@@ -44,7 +44,9 @@
           <stat-bar-box class="w-full" size="full" :title="'Progress'" :value="upToDatePercent" :displaytext="upToDate + ' of ' + status.total"></stat-bar-box>
         </div>
         <div v-else class="flex flex-wrap items-center justify-center gap-3 text-sm">
-          <span>{{ $t(':done of :total season games processed (:percent%)', { done: status.done.toLocaleString('en-US'), total: status.total.toLocaleString('en-US'), percent: percent }) }}</span>
+          <!-- Locked with games left: say they're waiting on a subscription, so it doesn't read as stuck -->
+          <span v-if="locked && status.done < status.total">{{ $t(':done of :total season games processed. The other :left are processed once you subscribe.', { done: status.done.toLocaleString('en-US'), total: status.total.toLocaleString('en-US'), left: (status.total - status.done).toLocaleString('en-US') }) }}</span>
+          <span v-else>{{ $t(':done of :total season games processed (:percent%)', { done: status.done.toLocaleString('en-US'), total: status.total.toLocaleString('en-US'), percent: percent }) }}</span>
           <custom-button
             v-if="!locked && ((status.done < status.total && (!status.free || status.free.left > 0)) || status.outdated > 0)"
             @click="request"

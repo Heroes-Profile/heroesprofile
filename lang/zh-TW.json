@@ -222,6 +222,7 @@
     ":days days": ":days 天",
     ":difference vs expected": "較預期 :difference",
     ":done of :total season games processed (:percent%)": "已處理本賽季 :done / :total 場比賽（:percent%）",
+    ":done of :total season games processed. The other :left are processed once you subscribe.": "已處理 :total 場賽季比賽中的 :done 場。訂閱後將處理其餘 :left 場。",
     ":duplicate already had": ":duplicate 個已存在",
     ":edge pts vs usual": "較平常 :edge 個百分點",
     ":failedcount failed": ":failedcount 個失敗",

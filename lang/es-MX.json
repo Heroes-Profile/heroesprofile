@@ -222,6 +222,7 @@
     ":days days": ":days días",
     ":difference vs expected": ":difference frente a lo esperado",
     ":done of :total season games processed (:percent%)": ":done de :total partidas de la temporada procesadas (:percent %)",
+    ":done of :total season games processed. The other :left are processed once you subscribe.": ":done de :total partidas de la temporada procesadas. Las otras :left se procesarán cuando te suscribas.",
     ":duplicate already had": ":duplicate ya existían",
     ":edge pts vs usual": ":edge pts frente a lo habitual",
     ":failedcount failed": ":failedcount fallidas",

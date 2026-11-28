@@ -222,6 +222,7 @@
     ":days days": ":days 天",
     ":difference vs expected": "较预期 :difference",
     ":done of :total season games processed (:percent%)": "已处理本赛季 :done / :total 场比赛（:percent%）",
+    ":done of :total season games processed. The other :left are processed once you subscribe.": "已处理 :total 场赛季比赛中的 :done 场。订阅后将处理其余 :left 场。",
     ":duplicate already had": ":duplicate 个已存在",
     ":edge pts vs usual": "较平常 :edge 个百分点",
     ":failedcount failed": ":failedcount 个失败",

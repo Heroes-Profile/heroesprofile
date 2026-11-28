@@ -222,6 +222,7 @@
     ":days days": "Дней: :days",
     ":difference vs expected": ":difference к ожидаемому",
     ":done of :total season games processed (:percent%)": "Обработано матчей сезона: :done из :total (:percent%)",
+    ":done of :total season games processed. The other :left are processed once you subscribe.": "Обработано :done из :total игр сезона. Остальные :left будут обработаны после оформления подписки.",
     ":duplicate already had": "Уже были: :duplicate",
     ":edge pts vs usual": ":edge п. к обычному",
     ":failedcount failed": "Ошибок: :failedcount",

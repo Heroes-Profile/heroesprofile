@@ -222,6 +222,7 @@
     ":days days": ":days일",
     ":difference vs expected": "예상 대비 :difference",
     ":done of :total season games processed (:percent%)": "시즌 경기 :total개 중 :done개 처리됨 (:percent%)",
+    ":done of :total season games processed. The other :left are processed once you subscribe.": "시즌 게임 :total개 중 :done개 처리됨. 나머지 :left개는 구독하면 처리됩니다.",
     ":duplicate already had": ":duplicate개 이미 있음",
     ":edge pts vs usual": "평소 대비 :edge%p",
     ":failedcount failed": ":failedcount개 실패",
