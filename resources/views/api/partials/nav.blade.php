@@ -17,18 +17,34 @@
   </div>
 @endif
 
+{{-- Phones, as the main site's nav: a bar with the logo and a menu button; the menu opens full screen
+     (the same ids and main-navigation-wrapper class, so MobileNavHack opens and closes it) --}}
+<div id="mobile-header" class="md:hidden max-md:bg-surface max-md:sticky max-md:top-0 max-md:z-40 max-md:w-full border-b-2 border-teal">
+  <div class="relative flex items-center py-2 px-4 justify-center">
+    <a href="/Api" class="flex shrink-0 items-center gap-3 whitespace-nowrap h-11">
+      <img class="w-9 shrink-0" src="/images/logo/heroesprofilelogo.png" width="486" height="432" alt="{{ __('Heroes Profile Logo') }}" />
+      <span class="text-xl font-bold">Heroes Profile</span>
+      <span class="text-sm font-bold tracking-[0.06em] text-teal bg-teal/[0.18] rounded-[0.375rem] px-2 py-0.5">API</span>
+    </a>
+    <button id="mobile-toggle" class="absolute right-4 top-1/2 -translate-y-1/2 bg-blue rounded w-11 h-11 flex items-center justify-center text-2xl leading-none" aria-label="{{ __('Open menu') }}">=</button>
+  </div>
+</div>
+
 {{-- Laid out like the main site's nav (nav.blade.php): logo left, links centred, buttons right --}}
-<nav class="w-full bg-surface border-b-2 border-teal text-sm">
-  <div class="max-w-[120rem] mx-auto px-4 md:px-8 py-3 flex flex-wrap items-center justify-between gap-x-8 gap-y-3">
+<div id="main-menu" class="main-navigation-wrapper">
+<nav class="w-full bg-surface md:border-b-2 border-teal text-sm relative">
+  <button id="mobile-nav-close" class="hidden absolute right-4 top-2 z-10 bg-blue rounded w-11 h-11 items-center justify-center text-lg leading-none" aria-label="{{ __('Close menu') }}"><basil-icon name="cross" aria-hidden="true"></basil-icon></button>
+  <div class="max-w-[120rem] mx-auto md:px-8 md:py-3 flex flex-wrap items-center justify-between gap-x-8 md:gap-y-3 max-md:flex-col max-md:items-stretch max-md:pt-2">
 
     {{-- The logo, "Heroes Profile" and an API tag, as in the design --}}
-    <a href="/Api" class="flex shrink-0 items-center gap-[0.875rem] whitespace-nowrap">
+    <a href="/Api" class="flex shrink-0 items-center gap-[0.875rem] whitespace-nowrap max-md:self-center max-md:h-11 max-md:mb-2">
       <img class="w-10 shrink-0" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
       <span class="text-[1.375rem] font-bold">Heroes Profile</span>
       <span class="text-base font-bold tracking-[0.06em] text-teal bg-teal/[0.18] rounded-[0.375rem] px-2.5 py-1 leading-[1.1875rem]">API</span>
     </a>
 
-    <div class="flex flex-wrap items-center justify-center gap-1 md:mx-auto [&>a]:px-6 [&>a]:py-3.5 [&>a]:rounded [&>a:hover]:bg-surface-2">
+    {{-- Phones: full-width rows with a divider, as the main menu's --}}
+    <div class="flex flex-wrap items-center justify-center gap-1 md:mx-auto md:[&>a]:px-6 md:[&>a]:py-3.5 md:[&>a]:rounded [&>a:hover]:bg-surface-2 max-md:flex-col max-md:items-stretch max-md:gap-0 max-md:[&>a]:justify-center max-md:[&>a]:text-center max-md:[&>a]:py-[0.625rem] max-md:[&>a]:border-b max-md:[&>a]:border-white/20 max-md:border-t max-md:border-white/20">
       <a href="/Api" class="hover:text-lteal">{{ __('Overview') }}</a>
       <a href="/Api/Docs" class="hover:text-lteal">{{ __('Documentation') }}</a>
       <a href="/Api/Migrating" class="hover:text-lteal">{{ __('Migrating') }}</a>
@@ -52,7 +68,8 @@
       @endif
     </div>
 
-    <div class="flex flex-wrap items-center justify-center gap-4">
+    {{-- Phones: the buttons as full-width bars, then the rest centred underneath, as on the main menu --}}
+    <div class="flex flex-wrap items-center justify-center gap-4 max-md:gap-0 max-md:pb-4 max-md:[&>a.btn]:w-full max-md:[&>a.btn]:!rounded-none max-md:[&>form]:w-full max-md:[&>form>button]:w-full max-md:[&>form>button]:!rounded-none max-md:[&>*:last-child]:mt-4 max-md:[&>*:last-child]:mx-auto">
       {{-- The portal has its own shell, so nothing else here leads back out. --}}
       <custom-button class="font-semibold min-w-[10.3125rem]" :href="'/'" :alt="'Main Site'" :color="'red'"><basil-icon name="arrow-small" class="text-xs mr-2 rotate-180"></basil-icon>{{ __('Main Site') }}</custom-button>
 
@@ -83,3 +100,5 @@
     </div>
   </div>
 </nav>
+</div>
+<mobile-nav-hack></mobile-nav-hack>
