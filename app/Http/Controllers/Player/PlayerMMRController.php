@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\GameType;
 use App\Models\Hero;
 use App\Models\LeagueBreakdown;
+use App\Models\Map;
 use App\Models\MMRTypeID;
 use App\Models\PlayerStatsCache;
 use App\Rules\DateInputValidation;
+use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
 use App\Rules\RoleInputValidation;
@@ -65,9 +67,10 @@ class PlayerMMRController extends Controller
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
             'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
-            'type' => 'required|in:Player,Hero,Role',
+            'type' => 'required|in:Player,Hero,Role,Map',
             'hero' => ['required_if:type,Hero', 'nullable', new HeroInputByIDValidation],
             'role' => ['required_if:type,Role', 'nullable', new RoleInputValidation],
+            'map' => ['required_if:type,Map', 'nullable', 'string', new GameMapInputValidation],
             'season' => ['sometimes', 'nullable', new SeasonInputValidation],
             'start_date' => ['sometimes', 'nullable', new DateInputValidation],
             'end_date' => ['sometimes', 'nullable', new DateInputValidation],
@@ -87,6 +90,7 @@ class PlayerMMRController extends Controller
         $hero = $request['hero'] ? $this->globalDataService->getHeroesByID()[$request['hero']] : null;
         $type = $request['type'];
         $role = $request['role'];
+        $map = $type == 'Map' ? Map::where('name', $request['map'])->first() : null;
 
         if ($type == 'Hero' && $hero == null) {
             return [
@@ -104,7 +108,25 @@ class PlayerMMRController extends Controller
             ];
         }
 
-        $rows = $this->ratedRows($request, $game_type, $hero, $role, $type);
+        if ($type == 'Map' && is_null($map)) {
+            return [
+                'data' => $request->all(),
+                'errors' => ['Map is required when type is Map.'],
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        // Brawl maps have no map rating, so no MMR type
+        $mapTypeRecord = $map ? MMRTypeID::where('name', $map->name)->first() : null;
+        if ($map && is_null($mapTypeRecord)) {
+            return [
+                'data' => $request->all(),
+                'errors' => ['Unable to find MMR type for the selected map.'],
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        $rows = $this->ratedRows($request, $game_type, $hero, $role, $map, $type);
 
         // No games, or every match still waiting on its rating: nothing to place.
         if ($rows->isEmpty()) {
@@ -148,6 +170,8 @@ class PlayerMMRController extends Controller
                 ];
             }
             $mmrType = $mmrTypeRecord->mmr_type_id;
+        } elseif ($type == 'Map') {
+            $mmrType = $mapTypeRecord->mmr_type_id;
         }
 
         $leagueBreakdown = LeagueBreakdown::where('type_role_hero', $mmrType)->where('game_type', $game_type)->get();
@@ -213,10 +237,10 @@ class PlayerMMRController extends Controller
     }
 
     // Rated games, newest first. A game's rating never changes once set, so the cache only adds games newer than its watermark.
-    private function ratedRows(Request $request, $game_type, $hero, $role, string $type): Collection
+    private function ratedRows(Request $request, $game_type, $hero, $role, ?Map $map, string $type): Collection
     {
         if (! $this->globalDataService->usesProductionCaching()) {
-            return $this->compactRows($this->rowsAfter($request, $game_type, $hero, $role, null)->where('mmr_ran', '!=', -1), $type);
+            return $this->compactRows($this->rowsAfter($request, $game_type, $hero, $role, $map, null)->where('mmr_ran', '!=', -1), $type);
         }
 
         $paramsHash = $this->paramsHash($request);
@@ -232,7 +256,7 @@ class PlayerMMRController extends Controller
             return $rows;
         }
 
-        $fetched = $this->rowsAfter($request, $game_type, $hero, $role, $after);
+        $fetched = $this->rowsAfter($request, $game_type, $hero, $role, $map, $after);
         $pending = $fetched->where('mmr_ran', -1);
 
         $rows = $this->compactRows($fetched->where('mmr_ran', '!=', -1), $type)->keyBy('replayID')
@@ -258,7 +282,7 @@ class PlayerMMRController extends Controller
         return $rows;
     }
 
-    private function rowsAfter(Request $request, $game_type, $hero, $role, ?int $afterReplayId): Collection
+    private function rowsAfter(Request $request, $game_type, $hero, $role, ?Map $map, ?int $afterReplayId): Collection
     {
         return DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
@@ -275,6 +299,8 @@ class PlayerMMRController extends Controller
                 'player.hero_change AS hero_change',
                 'player.role_conservative_rating AS role_conservative_rating',
                 'player.role_change AS role_change',
+                'player.map_conservative_rating AS map_conservative_rating',
+                'player.map_change AS map_change',
                 'player.mmr_date_parsed as mmr_date_parsed',
             ])
             ->where('blizz_id', $request['blizz_id'])
@@ -287,6 +313,7 @@ class PlayerMMRController extends Controller
             ->when(! is_null($role), function ($query) use ($role) {
                 return $query->whereIn('hero', Hero::select('id')->where('new_role', $role)->get()->toArray());
             })
+            ->when(! is_null($map), fn ($query) => $query->where('replay.game_map', $map->map_id))
             ->when($afterReplayId, fn ($query) => $query->where('replay.replayID', '>', $afterReplayId))
             ->tap(function ($query) use ($request) {
                 $this->globalDataService->applySeasonsOrDateRange($query, $request['season'], $request['start_date'], $request['end_date']);
@@ -298,7 +325,7 @@ class PlayerMMRController extends Controller
     // Only the rating for this page's type is kept
     private function compactRows(Collection $rows, string $type): Collection
     {
-        $column = ['Player' => 'player', 'Hero' => 'hero', 'Role' => 'role'][$type];
+        $column = ['Player' => 'player', 'Hero' => 'hero', 'Role' => 'role', 'Map' => 'map'][$type];
 
         return $rows->map(fn ($row) => (object) [
             'replayID' => $row->replayID,
@@ -322,6 +349,7 @@ class PlayerMMRController extends Controller
             'type' => $request['type'],
             'hero' => $request['hero'],
             'role' => $request['role'],
+            'map' => $request['map'],
             'season' => $request['season'],
             'start_date' => $request['start_date'],
             'end_date' => $request['end_date'],
