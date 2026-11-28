@@ -32,7 +32,7 @@ class ToolsController extends Controller
             return response()->json([
                 'error' => [
                     'code' => 'missing_hero',
-                    'message' => 'This endpoint needs a hero to build for.',
+                    'message' => __('This endpoint needs a hero to build for.'),
                 ],
             ], 422);
         }
@@ -72,11 +72,11 @@ class ToolsController extends Controller
                 : ApiParameters::regionNames($request->input($parameter));
 
             if ($unknown !== []) {
-                return $this->error('unknown_'.$parameter, 'Not a recognised '.str_replace('_', ' ', $parameter).': '.implode(', ', $unknown).'.');
+                return $this->error('unknown_'.$parameter, __('Not a recognised :parameter: :values.', ['parameter' => str_replace('_', ' ', $parameter), 'values' => implode(', ', $unknown)]));
             }
 
             if (count($resolved) !== 1) {
-                return $this->error('single_'.$parameter.'_only', 'This endpoint takes one '.str_replace('_', ' ', $parameter).'.');
+                return $this->error('single_'.$parameter.'_only', __('This endpoint takes one :parameter.', ['parameter' => str_replace('_', ' ', $parameter)]));
             }
 
             $request->merge([$parameter => $resolved[0]]);

@@ -11,11 +11,11 @@
         class="relative aspect-[16/9] rounded overflow-hidden border-2 border-[transparent] bg-darken bg-cover bg-center text-left"
         :class="{ 'hover:border-teal focus:border-teal': canPick(row.name) }"
         :style="{ backgroundImage: `url('/images/maps/match/match-${slug(row.name)}.jpg')` }"
-        :title="canPick(row.name) ? 'Show ' + row.name : null"
+        :title="canPick(row.name) ? 'Show ' + $mapName(row.name) : null"
         @click="canPick(row.name) && $emit('pick', row.name)"
       >
         <span class="absolute inset-x-0 bottom-0 px-2 pb-1 pt-6" style="background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0))">
-          <span class="block font-bold text-white leading-tight">{{ row.name }}</span>
+          <span class="block font-bold text-white leading-tight">{{ $mapName(row.name) }}</span>
           <span class="block text-xs text-white/80">{{ row.n.toLocaleString('en-US') }} {{ unit }}</span>
         </span>
       </component>

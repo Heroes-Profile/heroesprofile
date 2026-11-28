@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\BattlenetAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
@@ -16,7 +15,25 @@ class BattleNetController extends Controller
 {
     public function show(Request $request)
     {
-        // Send the user back to the page they clicked Login from.
+        $this->rememberPreviousPage($request);
+
+        return view('Battlenet.authenticate')
+            ->with([
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            ]);
+    }
+
+    public function redirectToProvider(Request $request)
+    {
+        // The login popup comes straight here, skipping show()
+        $this->rememberPreviousPage($request);
+
+        return Socialite::driver('battlenet')->redirect();
+    }
+
+    // Send the user back to the page they clicked Login from; the login page itself is skipped, so show()'s page stands
+    private function rememberPreviousPage(Request $request): void
+    {
         $previous = $request->headers->get('referer');
         if ($previous && parse_url($previous, PHP_URL_HOST) === $request->getHost()) {
             $path = strtolower(ltrim(parse_url($previous, PHP_URL_PATH) ?? '', '/'));
@@ -24,17 +41,6 @@ class BattleNetController extends Controller
                 $request->session()->put('url.intended', $previous);
             }
         }
-
-        return view('Battlenet.authenticate')
-            ->with([
-                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-                'filters' => $this->globalDataService->getFilterData(),
-            ]);
-    }
-
-    public function redirectToProvider()
-    {
-        return Socialite::driver('battlenet')->redirect();
     }
 
     public function handleProviderCallback(Request $request)
@@ -84,16 +90,6 @@ class BattleNetController extends Controller
         }
 
         Auth::login($battlenetAccount, true);
-
-        // Light/dark toggled while logged out.
-        $darkmode = $request->cookie('darkmode');
-        if ($request->cookie('darkmode_pending') === '1' && in_array($darkmode, ['0', '1'], true)) {
-            $battlenetAccount->userSettings()->updateOrCreate(
-                ['setting' => 'darkmode'],
-                ['value' => $darkmode]
-            );
-            Cookie::queue(Cookie::forget('darkmode_pending'));
-        }
 
         return redirect()->intended('/Profile/Settings');
     }

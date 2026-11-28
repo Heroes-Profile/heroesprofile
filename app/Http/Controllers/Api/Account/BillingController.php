@@ -103,7 +103,7 @@ class BillingController extends Controller
 
         if (! $account->hasProjectDetails()) {
             return response()->json([
-                'error' => 'Tell us about your project on your account page before subscribing.',
+                'error' => __('Tell us about your project on your account page before subscribing.'),
             ], 422);
         }
 
@@ -113,7 +113,7 @@ class BillingController extends Controller
 
         if ($plan === null || ! $plan['purchasable']) {
             return response()->json([
-                'error' => 'That plan is not available on your account.',
+                'error' => __('That plan is not available on your account.'),
             ], 403);
         }
 
@@ -155,7 +155,7 @@ class BillingController extends Controller
                 return response()->json([
                     'requires_action' => true,
                     'client_secret' => $e->payment->clientSecret(),
-                    'error' => 'Your bank needs to confirm this payment.',
+                    'error' => __('Your bank needs to confirm this payment.'),
                 ], 402);
             } catch (Throwable $e) {
                 return $this->stripeError($e);
@@ -172,7 +172,7 @@ class BillingController extends Controller
         $account = $this->account();
 
         if (! $account->subscribed(self::SUBSCRIPTION)) {
-            return response()->json(['error' => 'You have no active subscription.'], 404);
+            return response()->json(['error' => __('You have no active subscription.')], 404);
         }
 
         return $this->withBillingLock($account, function () use ($account, $keys) {
@@ -195,7 +195,7 @@ class BillingController extends Controller
         $subscription = $account->subscription(self::SUBSCRIPTION);
 
         if (! $subscription || ! $subscription->onGracePeriod()) {
-            return response()->json(['error' => 'Nothing to resume.'], 404);
+            return response()->json(['error' => __('Nothing to resume.')], 404);
         }
 
         return $this->withBillingLock($account, function () use ($account, $subscription, $keys) {
@@ -226,7 +226,7 @@ class BillingController extends Controller
 
         if (! $lock->get()) {
             return response()->json([
-                'error' => 'Another billing change is still going through. Give it a moment and try again.',
+                'error' => __('Another billing change is still going through. Give it a moment and try again.'),
             ], 409);
         }
 
@@ -267,7 +267,7 @@ class BillingController extends Controller
 
         return response()->json([
             'error' => config('app.env') === 'production'
-                ? 'Stripe rejected that request. Please try again, or contact support if it persists.'
+                ? __('Stripe rejected that request. Please try again, or contact support if it persists.')
                 : 'Stripe: '.$e->getMessage(),
         ], 422);
     }

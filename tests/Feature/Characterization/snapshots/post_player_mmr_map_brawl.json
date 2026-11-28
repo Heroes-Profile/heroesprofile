@@ -1,0 +1,21 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "data": {
+            "type": "Map",
+            "map": "Escape From Braxis",
+            "game_type": [
+                "sl"
+            ],
+            "battletag": "Zemill",
+            "blizz_id": 67280,
+            "region": 1,
+            "season": null
+        },
+        "errors": [
+            "The selected game maps are invalid."
+        ],
+        "status": "failure to validate inputs"
+    }
+}

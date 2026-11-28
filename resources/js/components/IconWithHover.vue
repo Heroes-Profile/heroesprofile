@@ -1,8 +1,8 @@
 <template>
   <div
   :class="[
-      'relative group items-center md:w-10 md:h-10 ',  
-      { 
+      $slots.trigger ? 'relative inline-flex items-center min-w-0' : 'relative group items-center md:w-10 md:h-10 ',
+      $slots.trigger ? {} : { 
         block: size === 'big', 
         'md:w-20': size === 'big', 
         'md:h-20': size === 'big',
@@ -13,19 +13,23 @@
         'overflow-hidden': size === 'large',
         'inline-block' : icon,
         'flex flex-col': !icon,
-        'md:w-[1.7em]': icon,
-        'md:h-[1.7em]': icon,
+        // The circle badge sizes itself (1.7em of its own text size)
+        'md:w-[1.7em]': icon && !circle,
+        'md:h-[1.7em]': icon && !circle,
         
         
       }
       ]"
      ref="container"
-     @mouseover="handleMouseOver" @mouseleave="hideTooltip">
+     @mouseover="handleMouseOver" @mouseleave="scheduleHide" @click="handleClick">
        
-      <span class="bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em]  flex justify-center pl-[1px] items-center bold " v-if="circle" >
+      <!-- Anything can open the popup in place of the icon -->
+      <slot v-if="$slots.trigger" name="trigger"></slot>
+      <!-- Looks pressed in while pinned open -->
+      <span :class="['bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em] flex justify-center items-center font-bold leading-none transition', { 'bg-surface-1 shadow-[inset_0_2px_0.25rem_rgba(0,0,0,0.6)] translate-y-px': pinned }]" v-else-if="circle" >
         <i :class="icon" ></i>
       </span>
-      <span class=" rounded-full   flex justify-center pl-[1px] items-center bold " v-else >
+      <span class="rounded-full   flex justify-center pl-[1px] items-center bold " v-else >
         <i :class="icon" ></i>
       </span>
     
@@ -33,43 +37,45 @@
      
     <!-- Rendered under body so scrolling table wrappers can't clip it -->
     <Teleport to="body">
-      <div v-if="showTooltip" :style="tooltipStyle" :class="[
-          'fixed text-xs z-50',
+      <div v-if="showTooltip" ref="popup" @mouseover="handleMouseOver" @mouseleave="scheduleHide" :style="tooltipStyle" :class="[
+          'fixed text-xs z-[55]',
+          // Closes as soon as the pointer leaves the trigger, even onto the popup, unless it's hoverable or clicked open
+          { 'pointer-events-none': !popupHoverable && !pinned },
         {
-          'w-[12em]' : popupsize != 'large',
-          'w-[20em]' : popupsize == 'large'
+          'w-[14em]' : popupsize != 'large' && popupsize != 'fit',
+          'w-[25rem] max-w-[90vw]' : popupsize == 'large',
+          'w-max max-w-[24em]' : popupsize == 'fit'
         }
         ]" >
-          <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 max-md:hidden', {
+          <div v-if="!excludehover" class="popup-text block bg-surface-4 text-sm text-soft text-left p-4 rounded drop-shadow-md z-30">
 
-          }]">
-
-            <slot></slot>
+            <div ref="hoverContent" class="contents"><slot></slot></div>
 
 
           </div>
 
 
-        <div class="popup-arrow max-md:hidden"></div>
       </div>
     </Teleport>
-    <div v-if="!excludehover && !mobileClick" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center   md:mb-4', {}]">
-          
-          <slot></slot>
-          
-
-        </div>
 
    
   </div>
 </template>
 
 <script>
+import { popupOpened, popupClosed } from './RoundImage.vue';
+
 export default {
   name: 'IconWithHover',
   components: {
   },
+  // Inside another popup it leaves that one open, as round-image does
+  inject: {
+    insidePopup: { default: false },
+  },
   props: {
+    // Stays open while the pointer moves onto it, so its links can be clicked and its text copied
+    popupHoverable: { type: Boolean, default: false },
     title: String,
     image: String,
     size: String,
@@ -90,6 +96,9 @@ export default {
     return {
       showTooltip: false,
       tooltipStyle: {},
+      hideTimer: null,
+      // Clicked open; stays until a click outside or Esc
+      pinned: false,
     }
   },
   created(){
@@ -97,33 +106,88 @@ export default {
   mounted() {
   },
   beforeUnmount() {
-    window.removeEventListener('scroll', this.hideTooltip, true);
+    this.hideTooltip();
   },
   computed: {
 
   },
   watch: {
+    // Links in a hover open in a new tab
+    async showTooltip(shown) {
+      if (!shown) return;
+      await this.$nextTick();
+      this.$refs.hoverContent?.querySelectorAll('a[href]').forEach(link => {
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+      });
+    },
   },
   methods: {
      isSmallScreen() {
-      return window.innerWidth <= 768; // You can adjust the threshold as needed
+      return window.innerWidth < 1024; // You can adjust the threshold as needed
     },
     handleMouseOver() {
-      if (!this.showTooltip) {
-        // Fixed position goes stale once anything scrolls
-        window.addEventListener('scroll', this.hideTooltip, true);
-      }
-      const rect = this.$refs.container.getBoundingClientRect();
-      this.tooltipStyle = {
-        left: `${rect.left + (rect.width / 2)}px`,
-        bottom: `${window.innerHeight - rect.top + 8}px`,
-        transform: 'translateX(-50%)',
-      };
+      clearTimeout(this.hideTimer);
+      if (this.showTooltip) return;
+      if (!this.insidePopup) popupOpened(this.hideTooltip);
+      // Fixed position goes stale once anything scrolls
+      window.addEventListener('scroll', this.hideTooltip, true);
+      // Hidden for the first frame while keepOnScreen measures it
+      this.tooltipStyle = { left: '0px', top: '0px', visibility: 'hidden' };
       this.showTooltip = true;
+      this.$nextTick(this.keepOnScreen);
+    },
+    // Centred over the icon, but slid back inside the window near either edge, and below the icon near the top
+    keepOnScreen() {
+      const popup = this.$refs.popup;
+      if (!popup || !this.$refs.container) return;
+      const rect = this.$refs.container.getBoundingClientRect();
+      const width = popup.offsetWidth;
+      const margin = 8;
+      const left = Math.min(Math.max(rect.left + (rect.width / 2) - (width / 2), margin), window.innerWidth - width - margin);
+      // The gap is padding on the popup itself, an invisible strip that keeps the pointer inside on its way over
+      const vertical = rect.top - popup.offsetHeight < 0
+        ? { top: `${rect.bottom}px`, paddingTop: `${margin}px` }
+        : { bottom: `${window.innerHeight - rect.top}px`, paddingBottom: `${margin}px` };
+      this.tooltipStyle = { left: `${left}px`, ...vertical };
+    },
+    // Short grace so a quick or slightly off move between icon and popup doesn't close it
+    scheduleHide() {
+      if (this.pinned) return;
+      if (!this.popupHoverable) {
+        this.hideTooltip();
+        return;
+      }
+      this.hideTimer = setTimeout(this.hideTooltip, 150);
+    },
+    handleClick() {
+      if (this.pinned) {
+        this.hideTooltip();
+        return;
+      }
+      this.handleMouseOver();
+      this.pinned = true;
+      // After this click has finished, so it doesn't count as a click outside
+      setTimeout(() => {
+        document.addEventListener('click', this.handleOutsideClick, true);
+        document.addEventListener('keydown', this.handleEscape);
+      });
+    },
+    handleOutsideClick(event) {
+      if (this.$refs.container?.contains(event.target) || this.$refs.popup?.contains(event.target)) return;
+      this.hideTooltip();
+    },
+    handleEscape(event) {
+      if (event.key === 'Escape') this.hideTooltip();
     },
     hideTooltip() {
+      clearTimeout(this.hideTimer);
       this.showTooltip = false;
+      this.pinned = false;
+      if (!this.insidePopup) popupClosed(this.hideTooltip);
       window.removeEventListener('scroll', this.hideTooltip, true);
+      document.removeEventListener('click', this.handleOutsideClick, true);
+      document.removeEventListener('keydown', this.handleEscape);
     }
   }
 }

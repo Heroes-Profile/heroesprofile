@@ -7,6 +7,7 @@
             "wins": 73.2,
             "losses": 84,
             "win_rate": 46.56,
+            "win_rate_change": null,
             "games_played": 157,
             "popularity": 8.11,
             "role_one": {
@@ -40,6 +41,7 @@
             "wins": 344.8,
             "losses": 404.2,
             "win_rate": 46.03,
+            "win_rate_change": null,
             "games_played": 749,
             "popularity": 38.65,
             "role_one": {
@@ -73,6 +75,7 @@
             "wins": 46,
             "losses": 56.2,
             "win_rate": 45.01,
+            "win_rate_change": null,
             "games_played": 102,
             "popularity": 5.27,
             "role_one": {
@@ -106,6 +109,7 @@
             "wins": 47.4,
             "losses": 58,
             "win_rate": 44.97,
+            "win_rate_change": null,
             "games_played": 105,
             "popularity": 5.44,
             "role_one": {
@@ -139,6 +143,7 @@
             "wins": 48.6,
             "losses": 61.2,
             "win_rate": 44.26,
+            "win_rate_change": null,
             "games_played": 110,
             "popularity": 5.67,
             "role_one": {
@@ -172,6 +177,7 @@
             "wins": 50,
             "losses": 65.4,
             "win_rate": 43.33,
+            "win_rate_change": null,
             "games_played": 115,
             "popularity": 5.95,
             "role_one": {

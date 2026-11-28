@@ -1,50 +1,52 @@
 <template>
   <div>
-    <p class="text-sm mb-4 text-yellow">
-      Games uploaded through the web uploader may not be eligible for leaderboard consideration.
-    </p>
+    <div class="flex gap-3 rounded bg-surface-1 border-l-4 border-yellow px-5 py-3 text-sm mb-6">
+      <basil-icon name="info" class="text-yellow text-xl shrink-0"></basil-icon>
+      <span>{{ $t('Games uploaded here may not count towards the leaderboards. Use the Replay Uploader for that.') }}</span>
+    </div>
 
     <div
-      class="border-2 border-dashed p-6 text-center mb-4 transition-colors"
-      :class="dragging ? 'border-lteal bg-darken' : 'border-gray-medium'"
+      class="rounded-control border-2 border-dashed px-6 py-10 flex flex-col items-center text-center mb-4 transition-colors"
+      :class="dragging ? 'border-lteal bg-surface-1' : 'border-surface-4'"
       @dragenter.prevent="dragging = true"
       @dragover.prevent="dragging = true"
       @dragleave.prevent="dragging = false"
       @drop.prevent="onDrop"
     >
-      <p class="mb-4 text-sm">Drop replays here, or choose them below.</p>
+      <span class="w-16 h-16 rounded-full bg-surface-3 flex items-center justify-center mb-4"><basil-icon name="replay" class="text-3xl"></basil-icon></span>
+      <p class="text-lg font-bold">{{ $t('Drop replays here') }}</p>
+      <p class="text-sm text-subtext mt-2 mb-4">{{ $t('StormReplay files, up to :size each', { size: formatSize(maxBytes) }) }}</p>
 
       <div class="flex flex-wrap gap-3 justify-center">
-        <label class="bg-teal hover:bg-lteal transition-colors text-white rounded text-center py-2 px-4 cursor-pointer text-sm">
-          <span>Select replays</span>
+        <label class="btn bg-teal hover:bg-lteal">
+          <span>{{ $t('Select replays') }}</span>
           <input type="file" class="hidden" multiple accept=".StormReplay" @change="onSelect" />
         </label>
 
         <label
           v-if="directorySupported"
-          class="bg-teal hover:bg-lteal transition-colors text-white rounded text-center py-2 px-4 cursor-pointer text-sm"
+          class="btn bg-blue hover:bg-lblue"
         >
-          <span>Select a folder</span>
+          <span>{{ $t('Select a folder') }}</span>
           <input type="file" class="hidden" multiple webkitdirectory directory @change="onSelect" />
         </label>
       </div>
 
-      <p class="text-xs text-gray-medium mt-3">
-        .StormReplay files, up to {{ formatSize(maxBytes) }} each. Uploading more than about 700
-        at once is easier by folder.
+      <p class="text-xs text-subtext mt-4">
+        {{ $t('Uploading more than ~700 replays? Selecting a folder is easier.') }}
       </p>
     </div>
 
     <div v-if="ignoredCount" class="text-xs text-gray-medium mb-3">
-      Ignored {{ ignoredCount }} file{{ ignoredCount === 1 ? '' : 's' }} that {{ ignoredCount === 1 ? 'was' : 'were' }} not a .StormReplay.
+      {{ ignoredCount === 1 ? $t('Ignored 1 file that was not a .StormReplay.') : $t('Ignored :count files that were not a .StormReplay.', { count: ignoredCount }) }}
     </div>
 
     <div v-if="files.length" class="mb-4">
       <div class="flex flex-wrap gap-4 text-sm mb-2">
-        <span>{{ finishedCount }} of {{ files.length }} done</span>
-        <span class="text-lteal">{{ counts.Success || 0 }} uploaded</span>
-        <span class="text-yellow">{{ counts.Duplicate || 0 }} already had</span>
-        <span class="text-lred">{{ failedCount }} failed</span>
+        <span>{{ $t(':finishedcount of :files done', { finishedcount: finishedCount, files: files.length }) }}</span>
+        <span class="text-lteal">{{ $t(':success uploaded', { success: counts.Success || 0 }) }}</span>
+        <span class="text-yellow">{{ $t(':duplicate already had', { duplicate: counts.Duplicate || 0 }) }}</span>
+        <span class="text-lred">{{ $t(':failedcount failed', { failedcount: failedCount }) }}</span>
       </div>
 
       <div class="h-1 bg-darken">
@@ -53,14 +55,14 @@
     </div>
 
     <div v-if="waitingSeconds" class="bg-darken p-3 text-sm mb-4">
-      Rate limited by the API — waiting {{ waitingSeconds }}s, then carrying on.
+      {{ $t('Rate limited by the API — waiting :count seconds, then carrying on.', { count: waitingSeconds }) }}
     </div>
 
-    <table v-if="files.length" class="min-w-0 w-full responsive-table">
+    <table v-if="files.length" class="min-w-0 w-full">
       <thead>
         <tr>
-          <th class="py-2 px-3 text-left text-sm">Replay</th>
-          <th class="py-2 px-3 text-left text-sm">Status</th>
+          <th class="py-2 px-3 text-left text-sm">{{ $t('Replay') }}</th>
+          <th class="py-2 px-3 text-left text-sm">{{ $t('Status') }}</th>
         </tr>
       </thead>
       <tbody>
@@ -75,11 +77,10 @@
           <td class="py-2 px-3 text-right align-top">
             <a
               v-if="file.replayID"
-              class="link"
+             
               :href="'/Match/Single/' + file.replayID"
               :target="newTab ? '_blank' : null"
-              :rel="newTab ? 'noopener' : null"
-            >{{ file.status }}</a>
+              :rel="newTab ? 'noopener' : null" class="inline-flex items-center link-row">{{ file.status }}</a>
             <span v-else>{{ file.status }}</span>
           </td>
         </tr>

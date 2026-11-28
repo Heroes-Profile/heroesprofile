@@ -2,23 +2,224 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-  @import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Ruslan+Display&display=swap');
+/* Fonts load from the page head (layouts/fonts). Until Roboto arrives, Arial stands in at Roboto's size and line
+   height, so the text doesn't move when it swaps */
+@font-face {
+  font-family: 'Roboto Fallback';
+  src: local('Arial');
+  ascent-override: 92.77%;
+  descent-override: 24.41%;
+  line-gap-override: 0%;
+  size-adjust: 100.3%;
+}
+
+/* Moving between pages fades from the old page to the new one, instead of cutting to a page that's still building
+   (Chrome and Edge; other browsers load pages as before) */
+@view-transition {
+  navigation: auto;
+}
+/* Following a link: the old page stays up (the browser keeps it until the next one draws), and a thin bar along
+   the top shows the next page is on its way if it takes a moment (app.js) */
+.page-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  height: 3px;
+  width: 0;
+  background-color: theme('colors.lteal');
+  box-shadow: 0 0 6px theme('colors.lteal');
+  pointer-events: none;
+  transition: width 8s cubic-bezier(0.1, 0.7, 0.2, 1);
+}
+.page-progress.page-progress-run {
+  width: 90%;
+}
+
+/* The top of the page with ads blocked or not (html.ad-blocked: layouts/app's head, utils/adBlocker.js): the
+   ad-blocker notice, or the top ad's space until Vue draws the ad */
+.ad-blocker-notice {
+  display: none;
+}
+html.ad-blocked .ad-blocker-notice {
+  display: block;
+}
+.ad-banner-placeholder {
+  min-height: 7.5rem;
+}
+html.ad-blocked .ad-banner-placeholder {
+  display: none;
+}
+
+/* Before Vue mounts, a <basil-icon> tag is an empty element; these draw the nav's icons from the same paths
+   (BasilIcon.vue) so the nav doesn't change once Vue replaces them */
+basil-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  vertical-align: -0.125em;
+  background-color: currentColor;
+  -webkit-mask: var(--basil-icon) center / contain no-repeat;
+  mask: var(--basil-icon) center / contain no-repeat;
+}
+basil-icon[name="arrow"] { --basil-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='black' stroke-width='2' stroke-linecap='round' d='M5 2L10.6464 7.64645C10.8417 7.84171 10.8417 8.15829 10.6464 8.35355L5 14'/%3E%3C/svg%3E"); }
+basil-icon[name="arrow-small"] { --basil-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath  d='M5.97 3.47C6.11063 3.32955 6.30125 3.25066 6.5 3.25066C6.69875 3.25066 6.88937 3.32955 7.03 3.47L11.03 7.47C11.1705 7.61063 11.2493 7.80125 11.2493 8C11.2493 8.19875 11.1705 8.38937 11.03 8.53L7.03 12.53C6.96134 12.6037 6.87854 12.6628 6.78654 12.7038C6.69454 12.7448 6.59523 12.7668 6.49452 12.7686C6.39382 12.7704 6.29379 12.7518 6.2004 12.7141C6.10701 12.6764 6.02218 12.6203 5.95096 12.549C5.87974 12.4778 5.8236 12.393 5.78588 12.2996C5.74816 12.2062 5.72963 12.1062 5.73141 12.0055C5.73319 11.9048 5.75523 11.8055 5.79622 11.7135C5.83721 11.6215 5.89631 11.5387 5.97 11.47L9.44 8L5.97 4.53C5.82955 4.38937 5.75066 4.19875 5.75066 4C5.75066 3.80125 5.82955 3.61063 5.97 3.47Z'/%3E%3C/svg%3E"); }
+basil-icon[name="cross"] { --basil-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath  d='M18.4394 3.43951C18.7223 3.16627 19.1012 3.01508 19.4945 3.0185C19.8878 3.02191 20.2641 3.17967 20.5422 3.45778C20.8203 3.73589 20.978 4.11211 20.9814 4.50541C20.9849 4.8987 20.8337 5.2776 20.5604 5.56051L14.1209 12L20.5604 18.4395C20.7037 18.5779 20.818 18.7434 20.8966 18.9264C20.9752 19.1094 21.0166 19.3062 21.0183 19.5054C21.02 19.7046 20.9821 19.9021 20.9067 20.0864C20.8312 20.2708 20.7199 20.4383 20.579 20.5791C20.4382 20.7199 20.2707 20.8313 20.0864 20.9067C19.902 20.9822 19.7045 21.0201 19.5053 21.0184C19.3062 21.0167 19.1093 20.9753 18.9263 20.8967C18.7433 20.818 18.5778 20.7038 18.4394 20.5605L11.9999 14.121L5.56044 20.5605C5.42207 20.7038 5.25655 20.818 5.07355 20.8967C4.89054 20.9753 4.69371 21.0167 4.49454 21.0184C4.29537 21.0201 4.09785 20.9822 3.91351 20.9067C3.72916 20.8313 3.56169 20.7199 3.42085 20.5791C3.28001 20.4383 3.16863 20.2708 3.09321 20.0864C3.01778 19.9021 2.97983 19.7046 2.98156 19.5054C2.98329 19.3062 3.02467 19.1094 3.10329 18.9264C3.1819 18.7434 3.29617 18.5779 3.43944 18.4395L9.87894 12L3.43944 5.56051C3.29617 5.42214 3.1819 5.25662 3.10329 5.07361C3.02467 4.89061 2.98329 4.69378 2.98156 4.49461C2.97983 4.29544 3.01778 4.09792 3.09321 3.91358C3.16863 3.72923 3.28001 3.56175 3.42085 3.42091C3.56169 3.28008 3.72916 3.1687 3.91351 3.09327C4.09785 3.01785 4.29537 2.9799 4.49454 2.98163C4.69371 2.98336 4.89054 3.02474 5.07355 3.10336C5.25655 3.18197 5.42207 3.29624 5.56044 3.43951L11.9999 9.87901L18.4394 3.43951Z'/%3E%3C/svg%3E"); }
+basil-icon[name="search"] { --basil-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='black' stroke-width='2' stroke-linecap='round' d='M21.0002 21.0002L16.6602 16.6602M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z'/%3E%3C/svg%3E"); }
 
 
 
-html{background-color:lightgrey; font-family: 'Open Sans', sans-serif; box-sizing:border-box;}
+/* The scrollbar's space is always kept, so the page doesn't narrow and shift sideways when content grows long enough
+   to scroll partway through loading */
+html{background-color:#141725; font-family: 'Roboto', 'Roboto Fallback', var(--lang-font), sans-serif; box-sizing:border-box; scrollbar-gutter: stable; }
 
+/* Per-language type. Roboto covers Latin and Cyrillic; Korean and Chinese characters fall through to their
+   own Noto Sans (loaded in layouts/app.blade.php), and their text is set a little larger to stay readable.
+   --text-scale multiplies the Tailwind text sizes (tailwind.config.js) and the body text; --text-scale-small
+   multiplies text-xs and text-sm, the labels and captions, which need the most help. */
+:root { --lang-font: sans-serif; --text-scale: 1; --text-scale-small: 1; }
+:root:lang(ko) { --lang-font: 'Noto Sans KR'; --text-scale: 1.1; --text-scale-small: 1.25; }
+:root:lang(zh-CN) { --lang-font: 'Noto Sans SC'; --text-scale: 1.1; --text-scale-small: 1.25; }
+:root:lang(zh-TW) { --lang-font: 'Noto Sans TC'; --text-scale: 1.1; --text-scale-small: 1.25; }
+
+/* Site scale. Sizes are in rem, so this one value scales text, spacing and layout together.
+   Between 1500px and 2133px the root size follows the window width, so every width in that
+   range shows the 2133px page shrunk to fit (16px * 1500 / 2133 = 11.25px at 1500). */
+@media (min-width: 1024px){ html{ font-size: 70.31%; } }               /* below 1500: held at the 1500px size */
+@media (min-width: 1500px){ html{ font-size: calc(100vw / 2133 * 16); } } /* 1500-2133: scales with the window */
+@media (min-width: 2133px){ html{ font-size: 100%; } }                 /* 2133-2500: 16px */
+@media (min-width: 2500px){ html{ font-size: calc(100vw / 2500 * 16); } } /* 2500 and up: scales again, so 4K shows the 2500px page enlarged */
+
+/* Hover fade: colours ease in and out instead of snapping. In the base layer, so an element's own
+   transition-* class still wins. Covers links, controls and anything with a hover: or group-hover/name: class. Skipped for
+   visitors who ask for reduced motion. */
+@layer base {
+  @media (prefers-reduced-motion: no-preference) {
+    a, button, [role="button"], label, summary, input, select, textarea, [class*="hover:"], [class*="hover/"] {
+      transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, filter;
+      transition-timing-function: ease;
+      transition-duration: 150ms;
+    }
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* Menus and dropdown panels fade in when they open (they switch on with display, so they can't fade out) */
+  .nav-dropdown, .nav-flyout, .expandable-dropdown {
+    animation: hover-fade-in 150ms ease;
+  }
+  /* <transition name="drop">: a card that opens on a click drops in */
+  .drop-enter-active {
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+  }
+  .drop-enter-from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  /* Closing is instant; without this an element's own transition (a button's hover colour) holds the swap */
+  .drop-leave-active {
+    transition: none;
+  }
+}
+/* A <details> sliding shut is still [open] until it finishes (utils/animateDetails.js), so turn its chevron back now */
+details.group.is-closing[open] .group-open\:-rotate-90 {
+  --tw-rotate: 90deg;
+}
+@keyframes hover-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Shared button look. Colour stays on the element (e.g. bg-teal hover:bg-lteal); utilities on the element override this. */
+@layer components {
+  /* A whole box that is one link. Its resting colour is one step above what it sits on (bg-surface on the page,
+     bg-surface-1 in a card, bg-surface-2 in an inner card); hovering lightens any of them by the same half step and
+     underlines its .link-tile-title. Rounded at the control radius; a tile sitting on the page adds rounded-panel.
+     Tiles that lead to another page carry a chevron in their markup */
+  .link-tile{
+    @apply rounded-control cursor-pointer;
+    transition: box-shadow 150ms;
+  }
+  .link-tile:hover{
+    box-shadow: inset 0 0 0 100vmax rgba(255, 255, 255, 0.02);
+  }
+  .link-tile:hover .link-tile-title{
+    text-decoration: underline;
+  }
+  .btn{
+    @apply flex items-center justify-center text-white text-center whitespace-nowrap rounded px-4 py-3 transition-colors cursor-pointer disabled:cursor-default;
+  }
+}
+
+/* Filter option panels: the select boxes' colour in both modes; width comes from w-max on the element */
+/* Filter dropdowns, as the redesign's Dropdown: a panel one level up from the page, rounded, with a deep soft shadow.
+   Rounded at the site's own radius, a little tighter than the Figma's 16px */
 .expandable-dropdown {
-  min-width: 150px;  /* Adjust based on your needs */
+  min-width: 100%;
+  @apply bg-surface-2 text-white rounded p-2 shadow-[0_0.75rem_2rem_rgba(0,0,0,0.45)];
+}
+/* Empty boxes stay level 4, as everywhere; the radio's dark ring matches the panel */
+.expandable-dropdown input[type="radio"].form-checkbox:checked{
+  box-shadow: inset 0 0 0 1px #008b8b, inset 0 0 0 0.25rem #2c2f3b;
+}
+.expandable-dropdown .variable-text{
+  @apply text-white;
+}
+/* The option text ticks its box too */
+.expandable-dropdown label, .expandable-dropdown input[type="checkbox"], .expandable-dropdown input[type="radio"]{
+  cursor: pointer;
+}
+.expandable-dropdown input:disabled, .expandable-dropdown input:disabled + label{
+  cursor: default;
+}
+.expandable-dropdown input[type="text"]{
+  @apply bg-field text-white rounded px-3 py-2 text-sm;
+}
+
+/* Every scrolling box gets the nav flyout's thin scrollbar; the page's own scrollbar (html/body) is left alone */
+*:not(html):not(body) {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+*:not(html):not(body)::-webkit-scrollbar {
+  width: 0.375rem;
+  height: 0.375rem;
+}
+*:not(html):not(body)::-webkit-scrollbar-track {
+  background: transparent;
+}
+*:not(html):not(body)::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 0.1875rem;
+}
+
+/* Shared filter bar: dropdowns fill the free space and wrap onto more rows as it narrows */
+.filter-row{
+  @apply -m-2 flex flex-wrap items-end;
+}
+.filter-row .filter-fill{
+  flex: 1 1 10rem;
+  min-width: 0;
   width: auto;
 }
-.dark-mode .expandable-dropdown{
-  @apply  bg-gray-dark text-white;
-
+/* Season, Group Size and the dates: as wide as their longest option, never stretched */
+.filter-row .filter-fit{
+  flex: 0 0 auto;
+  width: auto;
 }
-
-.filter-label{
-  color:black;
+/* Season with the dates: kept on one row, wrapping as a block */
+.filter-row .filter-group{
+  display: flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  align-items: flex-end;
+}
+/* Phones stack the filters in their panel, so the group wraps like the rest */
+@media (max-width: 1023px){
+  .filter-row .filter-group{
+    flex-wrap: wrap;
+    width: 100%;
+  }
 }
 .variable-text{
   @apply text-black;
@@ -27,18 +228,11 @@ html{background-color:lightgrey; font-family: 'Open Sans', sans-serif; box-sizin
   @apply text-white;
 }
 .dark-mode input{
-  @apply text-white bg-gray-dark;
+  @apply text-white bg-field;
 }
 
-.variable-hover{
-  @apply  hover:bg-gray-light hover:text-black;
-}
-.dark-mode .variable-hover{
-  @apply hover:bg-darken hover:text-white;
-}
 body{
-  font-size:18px;
-  letter-spacing: .14em;
+  font-size: calc(1rem * var(--text-scale));
 }
 
 
@@ -53,8 +247,9 @@ body{
   left: 100%;
   top: 0;
   z-index: 60;
-  min-width: 200px;
+  min-width: 12.5rem;
   padding-left: 2px;
+  
 }
 .nav-flyout-wrapper:hover .nav-flyout {
   display: block;
@@ -70,7 +265,15 @@ body{
   left: auto;
   right: 0;
 }
-@media (max-width: 768px) {
+/* Flyouts sit one shade lighter than the dropdown they open from */
+.nav-flyout .nav-dropdown-inner-wrapper {
+  @apply bg-surface-4;
+}
+.nav-flyout-arrow {
+  font-size: 1.4em;
+  line-height: 1;
+}
+@media (max-width: 1023.98px) {
   .nav-flyout {
     display: none !important;
   }
@@ -81,25 +284,76 @@ body{
 
 /* Navigation */
 .nav-dropdown{
-  @apply absolute  left-0 hidden  z-50 md:pt-3  min-w-[200px] max-md:relative;
+  
+  @apply absolute  left-0 hidden  z-50 md:pt-3  min-w-[12.5rem] max-md:relative;
+  
 }
 .nav-dropdown a{
-  text-wrap:nowrap;
-  display:flex;
   white-space:nowrap;
-  max-md:flex-col;
+}
+
+/* The nav's links and buttons wrapped onto two rows (MobileNavHack): a right padding as wide as the logo puts both
+   rows' centre on the page's centre instead of the space beside the logo */
+@media (min-width:1024px){
+  #main-nav.nav-wrapped #nav-content{ padding-right: var(--nav-logo-w); }
+  #main-nav.nav-wrapped #right-nav-wrapper{ margin-left: auto; margin-right: auto; }
+}
+/* A Patreon member's nav avatar: a steady gold glow, brighter on hover */
+.patreon-glow{
+  box-shadow: 0 0 0.5rem rgba(255, 215, 0, 0.6);
+}
+.patreon-glow:hover{
+  box-shadow: 0 0 0.875rem rgba(255, 215, 0, 0.9);
+}
+/* A Void eye holder's: the picture is purple already, so a pale violet edge, a dark ring outside it, then a strong glow */
+.void-glow{
+  box-shadow: 0 0 0 0.125rem #0b0614, 0 0 0.625rem 0.125rem rgba(167, 123, 243, 0.85);
+}
+.void-glow:hover{
+  box-shadow: 0 0 0 0.125rem #0b0614, 0 0 1rem 0.25rem rgba(167, 123, 243, 1);
+}
+/* The site owner's: a dark navy edge with a faint blue haze; OwnerSparks flashes little lightning bolts around it */
+.owner-glow{
+  border-color: #0b1530;
+  box-shadow: 0 0 0 0.0625rem rgba(79, 195, 255, 0.35), 0 0 0.4rem rgba(79, 195, 255, 0.35);
+}
+@keyframes owner-spark{
+  0%{ opacity: 0; }
+  15%{ opacity: 1; }
+  35%{ opacity: 0.3; }
+  50%{ opacity: 1; }
+  100%{ opacity: 0; }
+}
+.owner-spark{
+  filter: drop-shadow(0 0 0.15rem #4fc3ff) drop-shadow(0 0 0.3rem rgba(79, 195, 255, 0.8));
+  animation: owner-spark 0.45s linear forwards;
+}
+/* The Site Owner crown beside a name: electric blue with a dark edge and a blue glow, to match the owner avatar border */
+.owner-crown,
+.owner-crown i{
+  color: #4fc3ff !important;
+  -webkit-text-stroke: 0.06em #0b1530;
+  filter: drop-shadow(0 0 0.15em rgba(79, 195, 255, 0.8));
+}
+/* Sparks sized to a crown rather than an avatar */
+.owner-sparks-small svg{
+  width: 0.625rem;
+  height: 0.625rem;
+  margin-top: -0.3125rem;
 }
 
 .nav-item{
-  padding-top:10px;
-  padding-bottom:10px;
+  padding-top:0.625rem;
+  padding-bottom:0.625rem;
   @apply max-md:w-full text-center;
 }
 .nav-dropdown-inner-wrapper{
-  @apply bg-blue   text-sm drop-shadow text-left max-md:flex-wrap;
+  padding-bottom:.5rem;
+  padding-top:.5rem;
+  @apply bg-surface-1 text-sm shadow-[0_0_0.5rem_rgba(0,0,0,0.4)] text-left max-md:flex-wrap;
 }
 
-@media (min-width:768px){
+@media (min-width:1024px){
   /* The bar is centred on the label, so it stays put when a label wraps to two lines */
   .main-navigation-wrapper .nav-item{
     display:flex;
@@ -107,115 +361,113 @@ body{
   }
   /* A flex parent would centre the dropdown over the label. Under it, inside the item's bottom padding. */
   .main-navigation-wrapper .nav-item > .nav-dropdown{
-    top:calc(100% - 10px);
-  }
-  .nav-item:not(:first-child)::before{
-   content: '';
-   flex:none;
-   box-sizing:content-box;
-   width:2px;
-   height:1.75em;
-   padding:0;
-   margin-right:20px;
-   font-size:1em;
-   background:currentColor;
+    top:calc(100% - 0.625rem);
   }
   .nav-dropdown{
-      @apply group-hover:block;
+      @apply group-hover:block rounded;
   }
   .nav-dropdown-inner-wrapper{
-     @apply rounded-b-lg rounded-tr-lg;
+     @apply rounded;
     }
 
 .alt-acct-nav .nav-dropdown-inner-wrapper{
-  @apply  rounded-tl-lg rounded-tr-none ;
+  @apply rounded ;
 }
-.nav-dropdown-inner-wrapper a:last-child{
-  @apply rounded-b-lg;
-}
-.nav-dropdown-inner-wrapper a:first-child{
-  @apply rounded-tr-lg;
-}
-.alt-acct-nav .nav-dropdown-inner-wrapper a:first-child{
-   @apply rounded-tl-lg rounded-tr-none;
-}
+
 
 }
 nav .search-component{
-  @apply text-xs py-2;
-}
-.dark-mode nav .search-component input{
-  border:1px solid gray;
+  @apply text-sm py-0;
 }
 
 .nav-dropdown a{
-  @apply block px-4 py-2 md:border-b md:border-darken hover:bg-lighten;
+  @apply block px-4 py-2 hover:bg-lighten;
+}
+/* Group label inside a dropdown; groups after the first get a divider above */
+.nav-dropdown-label{
+  @apply block px-4 md:px-[1.375rem] pt-2 pb-1 text-xs uppercase text-gray-medium;
+}
+.nav-dropdown-label ~ .nav-dropdown-label{
+  @apply mt-2 pt-3 border-t border-gray-dark;
+}
+/* Rows with a flyout arrow keep their flex, so the arrow sits at the right edge */
+.nav-dropdown a.flex{
+  display: flex;
+}
+
+/* Desktop: teal marks the open path - the top-level item, the hovered row, and a row whose flyout is open */
+@media (min-width:1024px){
+  .nav-dropdown-inner-wrapper a{
+    @apply mx-1.5 rounded;
+  }
+  .nav-dropdown-inner-wrapper a:not([class*="bg-"]):hover,
+  .nav-flyout-wrapper:hover > a:not([class*="bg-"]){
+    @apply bg-teal;
+  }
+  /* An esports player's menu hovers in their league's colour */
+  .esport-nav-dropdown .nav-dropdown-inner-wrapper a:not([class*="bg-"]):hover,
+  .esport-nav-dropdown .nav-flyout-wrapper:hover > a:not([class*="bg-"]){
+    background: var(--esport-hover);
+  }
+  /* Top-level labels: padded into a pill, pulled back by the same amount so the bar doesn't grow */
+  .main-navigation-wrapper .nav-item > a,
+  .main-navigation-wrapper a.nav-item > span{
+    @apply px-2.5 py-1.5 -mx-2.5 -my-1.5 rounded transition-colors;
+  }
+  .main-navigation-wrapper .nav-item:hover > a,
+  .main-navigation-wrapper a.nav-item:hover > span{
+    @apply bg-teal;
+  }
+  /* Dropdown edge lines up with the pill's edge, not the label's */
+  .main-navigation-wrapper .nav-item > .nav-dropdown{
+    left: -0.625rem;
+  }
+  .main-navigation-wrapper .nav-item > .nav-dropdown.nav-dropdown-flip{
+    left: auto;
+    right: -0.625rem;
+  }
 }
 .nav-dropdown a.remove-account {
-  @apply hover:bg-gray-dark/80;
+  @apply hover:bg-surface-4;
 }
 
-@media (max-width:768px){
+@media (max-width: 1023.98px) {
 
 
+    /* Pinned to the screen, so it opens where you are rather than at the top of the page */
     .main-navigation-wrapper{
-      @apply min-h-[100vh] absolute w-full hidden ;
+      @apply fixed inset-0 z-50 overflow-y-auto hidden bg-surface;
     }
-    .main-navigation-wrapper nav{
-      @apply min-h-[100vh]  flex-col ;
+    .main-navigation-wrapper nav:not(.alt-acct-nav){
+      @apply flex-col;
     }
     .nav-item{
-      @apply border-b border-white;
+      @apply border-b border-white/20;
     }
+    /* Flat full-width rows with a divider, spaced like the main menu's items */
     .nav-dropdown a{
-     @apply border-t border-white;
+     @apply m-0 rounded-none border-t border-white/20 px-4 py-[0.625rem] block;
     }
+    /* Main menu dropdowns open in the flyout's lighter grey */
     .nav-dropdown:not(.nav-dropdown-secondary-nav){
-      @apply mt-4;
+      @apply mt-[0.625rem];
+    }
+    .nav-dropdown:not(.nav-dropdown-secondary-nav) .nav-dropdown-inner-wrapper{
+      @apply bg-surface-4 py-0;
     }
     .alt-acct-nav .nav-dropdown-inner-wrapper{
         @apply rounded-none;
     }
-    .alt-acct-nav  a{
-      @apply p-4 block;
+    /* Full-screen battletag menus: the name bar starts at the very top */
+    .nav-dropdown-secondary-nav .nav-dropdown-inner-wrapper{
+      @apply pt-0;
     }
   }
-
-.variable-background{
-  @apply bg-gray-light;
-}
-.dark-mode .variable-background{
-  @apply bg-gray-dark text-white;
-
-}
-
-.stat-bar-light,
-.dark-mode .stat-bar-light{
-  @apply bg-gray-light;
-}
-.stat-bar-light .variable-text,
-.dark-mode .stat-bar-light .variable-text{
-  @apply text-black;
-}
-
-.talent-card-row-highlight,
-.dark-mode .talent-card-row-highlight{
-  @apply bg-teal text-white;
-}
-.dark-mode .talent-card-row{
-  @apply bg-darken;
-}
-
-.variable-ring{
-  @apply ring-gray-medium;
-}
-.dark-mode variable-ring{
-  @apply ring-black;
-}
 
 /*  end navigation */
 .search-input{
   @apply rounded p-2;
+  color: black;
 }
 
 table{
@@ -227,22 +479,26 @@ table{
 
 
 }
-table td{flex:1;}
 .dark-mode table{
-  @apply bg-gray-dark text-white;
+  @apply bg-surface-1 text-white;
 }
 .dark-mode tr{
-  @apply even:bg-darken text-white;
+  @apply even:bg-surface-2 text-white;
 }
-.dark-mode tr.bg-hred {
-  background-color: rgba(214, 142, 124, 0.5);
+.dark-mode tbody tr:not(.bg-yellow):hover{
+  @apply bg-surface-3;
 }
-@media (min-width:1500px){
-  table{
-  width:auto ;
-
-min-width:1500px;
-  }
+.dark-mode thead{
+  @apply bg-surface text-subtext;
+}
+.dark-mode thead tr{
+  @apply text-subtext;
+}
+.dark-mode th{
+  border-bottom-color: rgba(173, 162, 191, 0.25);
+}
+.dark-mode td{
+  border-right-color: rgba(255, 255, 255, 0.06);
 }
 
 
@@ -250,14 +506,8 @@ min-width:1500px;
 tr{
 @apply even:bg-gray-xlight ;
 }
-tr.bg-hred{
-  background-color: rgba(214, 142, 124, 0.5);
-}
 tr.bg-yellow{
   background-color: #d98c40;
-}
-.dark-mode tr.bg-hred{
-  background-color: rgba(214, 142, 124, 0.5);
 }
 .dark-mode tr.bg-yellow{
   background-color: #d98c40;
@@ -265,202 +515,184 @@ tr.bg-yellow{
 
 
 th{
-  @apply text-left text-sm leading-4  tracking-wider cursor-pointer py-1 px-3 border-b;
+  @apply text-left text-sm leading-4 py-1 px-3 border-b;
+}
+/* Figma table header: medium-weight 1rem over a line, the same in both modes so only the colours change.
+   Under the mode class so it beats the text-sm each table puts on its headers */
+/* The filters' checkboxes and radios, drawn as in the redesign's UI kit (size S): an 18px box with 4px corners, teal
+   with a white tick when checked; the radio an 18px circle with a teal dot. Empty, they're a shade lighter than what
+   they sit on, as in the UI kit: surface-4 (level 4) everywhere. input.form-checkbox, so it beats .dark-mode input */
+input.form-checkbox{
+  @apply bg-surface-4 shrink-0 cursor-pointer rounded;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 0.25rem;
+  background-repeat: no-repeat;
+  /* The tick is drawn on a canvas the size of the box, centred within it, so nothing has to be positioned */
+  background-size: 100% 100%;
+}
+.form-checkbox:checked{
+  @apply bg-teal;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18' fill='none' stroke='white' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.5 9.25l2.25 2.25 4.75-5'/%3E%3C/svg%3E");
+}
+input[type="radio"].form-checkbox{
+  border-radius: 9999px;
+}
+/* Selected, as in the UI kit: a thin teal outer ring, a dark gap, and a teal dot. A teal fill with two inset shadows on
+   top, which follow the circle so the dot is always centred (a radial gradient could land half a pixel off) */
+input[type="radio"].form-checkbox:checked{
+  @apply bg-teal;
+  background-image: none;
+  box-shadow: inset 0 0 0 1px #008b8b, inset 0 0 0 0.25rem #393e4d;
+}
+.form-checkbox:focus-visible{
+  outline: 2px solid #008b8b;
+  outline-offset: 2px;
+}
+/* A table with rounded corners. Separate borders (collapsed ones ignore a radius), clipped so a striped last row is
+   rounded too (clip, not hidden, so the header still sticks). The table's own background moves to its body: drawn
+   under the header too, it showed as a pale fringe round the header's curved corners. */
+.rounded-table{
+  @apply border-separate border-spacing-0 rounded-lg overflow-clip;
+  background-color: transparent !important;
+}
+.rounded-table tbody{
+  @apply bg-gray-light;
+}
+.dark-mode .rounded-table tbody{
+  @apply bg-surface-1;
+}
+/* A wide table whose first column stays put while it scrolls sideways; the cells take their row's colour so
+   the columns sliding under them don't show through. A full-width label row (colspan) keeps its text in place
+   with a sticky span inside instead. */
+.sticky-first-column tr{
+  background-color: inherit;
+}
+.sticky-first-column tr > :first-child:not([colspan]){
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: inherit;
+}
+/* Words in a loading skeleton: the text keeps its exact size but is hidden under a grey block, like skeleton-box */
+.skeleton-text{
+  @apply bg-surface-3 rounded-[0.25rem] animate-pulse;
+  color: transparent !important;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.skeleton-text *{
+  color: transparent !important;
+}
+.skeleton-text img{
+  opacity: 0;
+}
+/* The teal search glass goes white on a sorted column's teal header */
+th.bg-teal .search-input-glass{
+  @apply text-white hover:text-white/75;
+}
+.dark-mode th{
+  @apply text-base font-medium;
 }
 
 td{
   @apply py-2 px-3 ;
-  border-right: 1.5px solid rgb(203 203 203 / var(--tw-bg-opacity));
+  border-right: 1.5px solid rgb(203 203 203);
 
 }
 td:last-child{border-right:none;}
 thead{
   @apply bg-teal text-white ;
 }
-thead tr{
-  @apply py-3;
+/* Every table's header stays on screen while its table scrolls past, and the next table's takes over below it.
+   Table wrappers use overflow-clip rather than overflow-hidden, which would stop this from working. */
+thead{
+  position: sticky;
+  top: -2px; /* sits 2px higher while stuck */
+  z-index: 30;
+}
+/* Header cells paint the header's colour themselves. A stuck header's own background isn't drawn where it sticks, so
+   a row without one (a title row like Friends & Foes') let the rows scrolling underneath show through. In the base
+   layer, so a cell's own colour (a sorted column's teal) still wins. */
+@layer base {
+  thead tr,
+  thead th {
+    background-color: inherit;
+  }
+}
+/* Inside a sideways scroller (scroll-hint-container) the header would stick to the scroller, not the page, and its
+   phone offset pushed it down over the first rows */
+.table-container thead{
+  position: static;
+}
+/* A table with a summary header above its column headings (Global Hero Stats' averages): only the headings stick */
+thead:not(:last-of-type){
+  position: static;
+}
+/* Phones: just under the sticky mobile header (#mobile-header in nav.blade.php, 3.75rem tall) */
+@media (max-width: 1023.98px){
+  thead{ top: calc(3.75rem - 2px); }
+}
+/* Clicking a header sorts; without this a quick double click highlights its text. The search field inside still selects. */
+thead{
+  user-select: none;
+}
+thead input{
+  user-select: text;
+}
+/* Buttons, and links styled as buttons, don't highlight their text on a quick double click */
+button, .btn, [role="button"]{
+  user-select: none;
+}
+
+/* Info icons sit raised just after what they explain, like a superscript. Only the glyph moves, so the label beside it
+   stays put; page titles already raise theirs (PageHeading's .page-title-info) */
+.info-icon > span{
+  transform: translateY(-0.4em);
+}
+.page-title-info .info-icon > span{
+  transform: none;
+}
+/* In a table header an info icon takes no width and hangs just past its label, so the label alone is centred.
+   The parent's gap is taken back so it doesn't push the label off centre either. */
+th .info-icon{
+  width: 0;
+  overflow: visible;
+}
+th .info-icon > span{
+  flex-shrink: 0;
+  margin-left: 0.375rem;
+}
+th .gap-1 > .info-icon{ margin-left: -0.25rem; }
+th .gap-2 > .info-icon{ margin-left: -0.5rem; }
+th .gap-3 > .info-icon{ margin-left: -0.75rem; }
+/* The sort chevron hangs the same way (SortIndicator.vue) */
+.gap-1 > .sort-indicator{ margin-left: -0.25rem; }
+.gap-2 > .sort-indicator{ margin-left: -0.5rem; }
+.gap-3 > .sort-indicator{ margin-left: -0.75rem; }
+/* After a label with an info icon, the chevron hangs past the icon instead of on top of it */
+th :has(> .info-icon:not(.hidden)) + .sort-indicator > *{ margin-left: calc(0.375rem + 1.15 * 0.875rem + 0.375rem); }
+@media (min-width: 1024px){
+  th :has(> .info-icon.md\:block) + .sort-indicator > *{ margin-left: calc(0.375rem + 1.15 * 0.875rem + 0.375rem); }
 }
 
 h1{
-  text-transform:uppercase;
   @apply text-5xl;
 }
 
 
 
-.search-input {
-  color: black; /* Replace 'black' with any color you prefer */
+
+
+
+@keyframes logo-spin {
+  to { transform: rotate(360deg); }
 }
 
-
-
-.popup-arrow{
-
-
-
-    width: 0;
-    height: 0;
-    border-left: .5em solid transparent;
-    border-right: .5em solid transparent;
-    border-top: .5em solid #333;
-    text-align: center;
-    margin-left:auto;
-    margin-right:auto;
-
-
-
-}
-
-
-/* Menu */
-
-.drop-menu{
-
-}
-
-
-
-/* Stack */
-
-.stack-wrapper {
-  display: flex;
-  justify-content: space-between;
-  /*flex-wrap: wrap;*/
-}
-
-.stack-single {
-  width:.5em;
-
-
-  display: flex;
-}
-@media (min-width:768px){
-  .stack-single{
-    width: 5em;
-    font-size:.8em;
-  }
-}
-
-.stack-single.stack-solo {
-
-  margin-left: 0.5em;
-}
-
-@media (min-width:768px){
-  .stack-single.stack-solo {
-    width: 2em;
-  }
-}
-
-
-.stack-single.stack-solo:first-child {
-  margin-left: 0;
-}
-
-.stack-single.stack-double {
-  width: 3em;
-  margin-left: 0.5em;
-}
-
-.stack-single.stack-double:first-child {
-  margin-left: 0;
-}
-
-.stack-single.stack-triple,
-.stack-single.stack-quad,
-.stack-single.stack-quint {
-  width: 6em;
-}
-
-.stack-single.stack-triple:first-child {
-  width: 4.5em;
-}
-
-.stack-text {
-  margin-right: auto;
-}
-
-.stack-icons {
-  display: flex;
-  flex-basis: 13.5em;
-}
-
-.stack-header {
-  display: flex;
-  flex-wrap: wrap;
-  font-size:1.5em;
-  align-items:center;
-  @apply max-md:text-[1em] mx-2;
-
-}
-
-.stack-header .stack-wrapper {
-  margin: 0 1em;
-}
-
-.stack-header .stack-wrapper .stack-single {
-  width: auto !important;
-}
-
-.quintuple {
-  color: black;
-  text-shadow: 0px 0px 2px grey;
-}
-
-.solo {
-  /*text-shadow: 0px 0px 2px $lightBlue;*/
-}
-
-
-
-.solo,.double,.triple,.quadruple,.quintuple{
-  margin:0 0;
-
-}
-
-.solo{
-
-   @apply text-blue;
-
-
-}
-.double{
- @apply  text-red;
-
-}
-.triple{
-  @apply text-teal;
-
-}
-.quadruple{
-  @apply text-yellow;
-}
-
-.compare-selection-box:nth-child(1n) .compare-selection-title{
-
-    @apply bg-blue;
-
-}
-.compare-selection-box:nth-child(2n) .compare-selection-title{
-
-    @apply bg-teal;
-
-}
-.compare-selection-box:nth-child(3n) .compare-selection-title{
-
-    @apply bg-red;
-
-}
-.compare-selection-box:nth-child(4n) .compare-selection-title{
-
-    @apply bg-yellow;
-
-}
-
-
-
-.flash-animation {
-  animation: flash 0.5s;
+.logo-spin {
+  animation: logo-spin 2.25s linear infinite;
 }
 
 @keyframes flash {
@@ -473,9 +705,104 @@ h1{
   animation: flash 1s;
 }
 
+/* The drafter's current step glows in and out, as the game marks whose turn it is */
+@keyframes draft-pulse {
+  0%, 100% { box-shadow: 0 0 0.25rem 0 var(--pulse-color); }
+  50% { box-shadow: 0 0 1rem 0.2rem var(--pulse-color); }
+}
+.draft-pulse-teal,
+.draft-pulse-red {
+  animation: draft-pulse 1.6s ease-in-out infinite;
+}
+.draft-pulse-teal {
+  --pulse-color: rgba(0, 192, 192, 0.6);
+}
+.draft-pulse-red {
+  --pulse-color: rgba(228, 74, 35, 0.6);
+}
+@media (prefers-reduced-motion: reduce) {
+  .draft-pulse-teal,
+  .draft-pulse-red {
+    animation: none;
+    box-shadow: 0 0 0.75rem 0 var(--pulse-color);
+  }
+}
+
 .link {
   text-decoration: underline;
   cursor: pointer;
+}
+/* Inline links: the site's small chevron fades in on hover, in a space kept for it so the sentence never moves.
+   An inline-block, so the underline stops at the text */
+.link::after {
+  content: '';
+  display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
+  margin-left: 0.125em;
+  vertical-align: middle;
+  align-self: center;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5.97 3.47a.75.75 0 0 1 1.06 0l4 4a.75.75 0 0 1 0 1.06l-4 4a.75.75 0 1 1-1.06-1.06L9.44 8 5.97 4.53a.75.75 0 0 1 0-1.06Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5.97 3.47a.75.75 0 0 1 1.06 0l4 4a.75.75 0 0 1 0 1.06l-4 4a.75.75 0 1 1-1.06-1.06L9.44 8 5.97 4.53a.75.75 0 0 1 0-1.06Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0;
+  transition: opacity 150ms;
+}
+.link:hover::after {
+  opacity: 1;
+}
+/* Action links ("Match History ›"): underlined on hover, the chevron always showing.
+   Row links (names in tables and lists): underlined on hover, the chevron fading in, in a space kept for it.
+   Colour, size and weight are added after the class */
+.link-more,
+.link-row {
+  cursor: pointer;
+}
+.link-more:hover,
+.link-row:hover {
+  text-decoration: underline;
+}
+.link-more::after,
+.link-row::after {
+  content: '';
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.75em;
+  height: 0.75em;
+  margin-left: 0.375em;
+  vertical-align: middle;
+  align-self: center;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5.97 3.47a.75.75 0 0 1 1.06 0l4 4a.75.75 0 0 1 0 1.06l-4 4a.75.75 0 1 1-1.06-1.06L9.44 8 5.97 4.53a.75.75 0 0 1 0-1.06Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5.97 3.47a.75.75 0 0 1 1.06 0l4 4a.75.75 0 0 1 0 1.06l-4 4a.75.75 0 1 1-1.06-1.06L9.44 8 5.97 4.53a.75.75 0 0 1 0-1.06Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.link-row::after {
+  opacity: 0;
+  transition: opacity 150ms;
+}
+.link-row:hover::after {
+  opacity: 1;
+}
+/* Back links ("‹ All heroes"): the chevron points back and leads the text, always showing; underlined on hover */
+.link-back {
+  cursor: pointer;
+}
+.link-back:hover {
+  text-decoration: underline;
+}
+.link-back::before {
+  content: '';
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.75em;
+  height: 0.75em;
+  margin-right: 0.375em;
+  vertical-align: middle;
+  align-self: center;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5.97 3.47a.75.75 0 0 1 1.06 0l4 4a.75.75 0 0 1 0 1.06l-4 4a.75.75 0 1 1-1.06-1.06L9.44 8 5.97 4.53a.75.75 0 0 1 0-1.06Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5.97 3.47a.75.75 0 0 1 1.06 0l4 4a.75.75 0 0 1 0 1.06l-4 4a.75.75 0 1 1-1.06-1.06L9.44 8 5.97 4.53a.75.75 0 0 1 0-1.06Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  transform: scaleX(-1);
 }
 
 
@@ -519,13 +846,6 @@ h1{
 .match-page table.winner thead td:not(.color-cell){
   @apply bg-teal;
 }
-.dark-mode .match-page table.loser thead td:not(.color-cell){
-  @apply bg-red;
-}
-.dark-mode .match-page table.winner thead td:not(.color-cell){
-  @apply bg-teal;
-}
-
 ::-webkit-calendar-picker-indicator {
     filter: invert(1);
 }
@@ -538,41 +858,39 @@ a[href*="javascript:void(0)"] {
 
 
 
-.responsive-table td:last-child{
-  @apply max-md:pr-[3em];
-}
-
-.hgcSeries-wrapper > div{
-  margin-bottom:0;
-  padding-bottom:0;
-}
-
 
 div.phpdebugbar * {
     background: unset;
 }
-
-thead{border-color:transparent;}
 
 /* Xal'atath Void Corruption event: recap masthead, whispers and eye flair */
 .xalatath-scoreboard{
   background: linear-gradient(90deg, #120726 0%, #3a1470 50%, #120726 100%);
   border-bottom: 2px solid #7b3fe4;
 }
-.xalatath-title{ color: #c9a8ff; text-shadow: 0 0 8px #7b3fe4; }
+.xalatath-title{ color: #c9a8ff; text-shadow: 0 0 0.5rem #7b3fe4; }
 .xalatath-progress{ background: linear-gradient(90deg, #5b21b6, #c084fc); }
 
 .void-whisper{
   background: rgba(18, 7, 38, 0.92);
   border: 1px solid #7b3fe4;
   color: #e3d2ff;
-  box-shadow: 0 0 18px rgba(123, 63, 228, 0.6);
+  box-shadow: 0 0 1.125rem rgba(123, 63, 228, 0.6);
 }
 .void-whisper-enter-active{ transition: opacity 0.3s ease; }
 .void-whisper-leave-active{ transition: opacity 0.8s ease; }
 .void-whisper-enter-from, .void-whisper-leave-to{ opacity: 0; }
 
 .void-eye-flair{ color: #a855f7; }
+/* Flair beside a BattleTag: each hover box shrinks to its icon and centres it, so the crown, star and eye sit on one
+   line at their own sizes */
+.flair-icon{
+  width: auto !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
 /* The logo's eye as an icon, usable anywhere a Font Awesome class goes.
    The image URL is set in layouts/app.blade.php so it resolves against the site, not the Vite dev server. */
 .void-eye-img{
@@ -595,22 +913,18 @@ thead{border-color:transparent;}
   background: #f3eee2;
   color: #1a1a1a;
   font-family: Georgia, 'Times New Roman', serif;
-  letter-spacing: normal;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0.625rem 2.5rem rgba(0, 0, 0, 0.6);
 }
 .void-gazette-masthead{
   font-family: 'Old English Text MT', 'UnifrakturMaguntia', Georgia, serif;
   font-weight: 700;
-  letter-spacing: 0.02em;
 }
 .void-gazette-headline{
   font-family: Georgia, 'Times New Roman', serif;
   font-weight: 700;
-  letter-spacing: normal;
 }
 .void-gazette-body{
   line-height: 1.5;
-  letter-spacing: normal;
   text-align: justify;
 }
 .void-gazette-photo{
@@ -621,7 +935,7 @@ thead{border-color:transparent;}
   column-gap: 2rem;
   column-rule: 1px solid #1a1a1a;
 }
-.xalatath-recap [data-index]{ scroll-margin-top: 90px; }
+.xalatath-recap [data-index]{ scroll-margin-top: 5.625rem; }
 .xalatath-recap summary::-webkit-details-marker{ display: none; }
 .xalatath-mode-bar{
   background: rgba(8, 3, 18, 0.92);
@@ -646,19 +960,17 @@ thead{border-color:transparent;}
 .xalatath-recap .hover\:bg-gray-light:hover{ background-color: #3a1470; }
 .void-gazette-index{ column-gap: 2.5rem; }
 .void-gazette-index li{ padding: 0.15rem 0; }
-@media (min-width: 768px){ .void-gazette-index{ column-count: 2; } }
-@media (min-width: 1024px){ .void-gazette-index{ column-count: 3; } }
-@media (min-width: 768px){ .void-gazette-columns{ column-count: 2; } }
-@media (min-width: 1024px){ .void-gazette-columns{ column-count: 3; } }
+@media (min-width:1024px){ .void-gazette-index{ column-count: 3; } }
+@media (min-width:1024px){ .void-gazette-columns{ column-count: 3; } }
 .void-contribution-card{
   background: radial-gradient(circle at 50% 40%, #3a1470 0%, #08030f 85%);
   border: 1px solid #5b21b6;
-  box-shadow: 0 0 30px rgba(91, 33, 182, 0.45);
+  box-shadow: 0 0 1.875rem rgba(91, 33, 182, 0.45);
 }
 .void-palette-mock, .void-palette-mock *{ transition: background-color 0.8s ease, color 0.8s ease, opacity 0.8s ease, box-shadow 0.8s ease; }
 .void-glyph-text{
   color: #d9c2ff;
-  text-shadow: 0 0 6px #7b3fe4, 0 0 14px rgba(123, 63, 228, 0.7);
+  text-shadow: 0 0 0.375rem #7b3fe4, 0 0 0.875rem rgba(123, 63, 228, 0.7);
 }
 .xalatath-recap .recap-heading{
   font-size: 1.5rem;
@@ -676,3 +988,11 @@ thead{border-color:transparent;}
 .standing-text a { text-decoration: underline; }
 .standing-editor .ProseMirror { min-height: 5rem; outline: none; }
 .standing-editor-expanded .ProseMirror { min-height: 100%; }
+
+/* A ban's portrait struck through in the banning team's colour (Drafter, Match Prediction) */
+.ban-strike-teal {
+  background: linear-gradient(45deg, transparent 46%, rgba(0, 139, 139, 0.9) 46%, rgba(0, 139, 139, 0.9) 54%, transparent 54%);
+}
+.ban-strike-red {
+  background: linear-gradient(45deg, transparent 46%, rgba(228, 74, 35, 0.9) 46%, rgba(228, 74, 35, 0.9) 54%, transparent 54%);
+}

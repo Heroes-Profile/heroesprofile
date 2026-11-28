@@ -1,148 +1,103 @@
 <template>
   <div>
-    <page-heading  :heading="'Match History'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
-
-    <filters
-      :onFilter="filterData"
-      :onFfSearching="setFfSearching"
-      :filters="filters"
-      :isLoading="isLoading"
-      :gametypedefault="gametype"
-      :minimumgamesdefault="'0'"
-      :includehero="true"
-      :includerole="true"
-      :heroinput="getHeroID()"
-      :roleinput="role"
-      :includegametypefull="showcustomgames ? false : true"
-      :includegametypefullcustom="showcustomgames"
-      :includemultiseason="true"
-      :includegamedaterange="true"
-      :includegamemap="true"
-      :includegroupsize="true"
-      :groupSizeDefaultValue="'All'"
-      :hideadvancedfilteringbutton="true"
-      :matchhistorybattletagsearch="true"
-      :ffbattletaginput="ffBattletag"
-      :ffblizzidinput="ffBlizzid"
-      :ffregioninput="ffRegion || region"
-      >
-    </filters>
+    <player-page-top>
+      <template #heading>
+      <page-heading  :heading="'Match History'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+      </template>
+      <div class="w-full">
+      <filters
+        :onFilter="filterData"
+        :onFfSearching="setFfSearching"
+        :filters="filters"
+        :isLoading="isLoading"
+        :gametypedefault="gametype"
+        :minimumgamesdefault="'0'"
+        :includehero="true"
+        :includerole="true"
+        :heroinput="getHeroID()"
+        :roleinput="role"
+        :includegametypefull="showcustomgames ? false : true"
+        :includegametypefullcustom="showcustomgames"
+        :includemultiseason="true"
+        :includegamedaterange="true"
+        :includegamemap="true"
+        :gamemapinput="gamemap"
+        :includegroupsize="true"
+        :groupsizeadvanced="true"
+        :groupSizeDefaultValue="'All'"
+        :matchhistorybattletagsearch="true"
+        :ffbattletaginput="ffBattletag"
+        :ffblizzidinput="ffBlizzid"
+        :ffregioninput="region"
+        :ffprofileblizzid="blizzid"
+        >
+      </filters>
+      </div>
+    </player-page-top>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="data">
-      <div>
-        <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
-          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: data.current_page <= 1 }">
-            <a class="page-link" @click.prevent="getData(data.current_page - 1)" href="#">
-              Previous
-            </a>
-          </li>
-          <!-- Left of Next, as the Talent Builder's layout toggle sits left of its Patch Notes button -->
-          <li class="ml-auto max-md:mx-auto flex items-center gap-4">
-            <tab-button :tab1text="'Table'" :tab2text="'Compact'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="compact ? 'right' : 'left'"></tab-button>
-            <span v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4" :class="{ disabled: data.current_page >= data.last_page }">
-              <a class="page-link" @click.prevent="getData(data.current_page + 1)" href="#">
-                Next
-              </a>
-            </span>
-          </li>
-        </ul>
+      <!-- `compact` means the game rows, labelled Expanded -->
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-wrap justify-end items-center gap-4">
+        <tab-button :tab1text="'Compact'" :tab2text="'Expanded'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="compact ? 'right' : 'left'"></tab-button>
+        <pagination-bar :current="data.current_page" :last="data.last_page" @page="getData"></pagination-bar>
       </div>
       <div v-if="compact">
-        <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
-          <game-summary-box v-for="(item, index) in data.data" :data="item"></game-summary-box>
+        <div class="max-w-[120rem] mx-auto px-4 md:px-8 py-4">
+          <panel-box>
+            <div>
+              <game-summary-header></game-summary-header>
+              <game-summary-box v-for="(item, index) in data.data" :key="item.replayID" :data="item" :replay-viewer-allowed="authenticated" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
+            </div>
+          </panel-box>
         </div>
       </div>
-      <div v-else>
-        <div id="table-container" ref="tablecontainer" class="w-auto   w-[100vw]   2xl:mx-auto  " style=" ">
-      <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
-        <thead>
-          <tr>
-            <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game ID
-            </th>
-            <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game Date
-            </th>            
-            <th @click="sortTable('game_type_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game Type
-            </th>
-            <th @click="sortTable('game_map')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game Map
-            </th>
-            <th @click="sortTable('hero_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Hero
-            </th>    
-            <th @click="sortTable('winner')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Winner
-            </th>    
-            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-              Talents
-            </th>                   
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row, index) in sortedData" :key="index">
-            <td>
-              <a class="link" :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a>
-            </td>
-            <td>
-              {{ formatDate(row.game_date) }}
-            </td>
-            <td>
-              {{ row.game_type.name }}
-            </td>
-            <td>
-              {{ row.game_map.name }}
-            </td>
-            <td class="py-2 px-3  flex items-center gap-1">
-              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
-            </td>
-            <td>
-              {{ row.winner == 1 ? 'True' : 'False' }}
-            </td>
-            <td>
-
-              <div class="flex gap-x-1 mx-2 items-center">
-                <talent-image-wrapper v-if="row.level_one && row.level_one !=0" :talent="row.level_one" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_four && row.level_four !=0" :talent="row.level_four" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_seven && row.level_seven !=0" :talent="row.level_seven" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_ten && row.level_ten !=0" :talent="row.level_ten" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_thirteen && row.level_thirteen !=0" :talent="row.level_thirteen" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_sixteen && row.level_sixteen !=0" :talent="row.level_sixteen" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_twenty && row.level_twenty !=0" :talent="row.level_twenty" :size="'small'"></talent-image-wrapper>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div v-else class="max-w-[120rem] mx-auto px-4 md:px-8 py-4">
+        <panel-box>
+          <!-- Wide rows scroll sideways on narrow screens -->
+          <div class="overflow-x-auto">
+            <div class="md:min-w-max w-full">
+              <game-summary-header :compact="true" :sort-key="sortKey" :sort-dir="sortDir" @sort="sortTable"></game-summary-header>
+              <game-summary-box v-for="item in sortedData" :key="item.replayID" :compact="true" :data="item" :replay-viewer-allowed="authenticated" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
+            </div>
+          </div>
+        </panel-box>
       </div>
-      </div>
-      <div>
-        <ul class="pagination flex max-w-[1500px] mx-auto px-2 pt-2 justify-between mb-2 text-sm">
-          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: data.current_page <= 1 }">
-            <a class="page-link" @click.prevent="getData(data.current_page - 1)" href="#">
-              Previous
-            </a>
-          </li>
-          <li v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: data.current_page >= data.last_page }">
-            <a class="page-link" @click.prevent="getData(data.current_page + 1)" href="#">
-              Next
-            </a>
-          </li>
-        </ul>
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 pb-4 flex justify-end">
+        <pagination-bar :current="data.current_page" :last="data.last_page" @page="getData"></pagination-bar>
       </div>
     </div>
-    <div v-else-if="asyncLoading">
-      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+    <!-- Grey blocks while it loads, in the loaded table's rows so the panel doesn't jump when the data arrives -->
+    <div v-else-if="isLoading || asyncLoading">
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-wrap justify-end items-center gap-4">
+        <!-- The Compact / Expanded toggle and the page numbers -->
+        <skeleton-box class="w-[13.25rem] h-[2.75rem] rounded"></skeleton-box>
+        <skeleton-box class="w-[17.75rem] h-[2.75rem] rounded"></skeleton-box>
+      </div>
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 py-4">
+        <!-- The message sits on a tab of the panel, as on the profile -->
+        <panel-box class="relative md:!rounded-tl-none">
+          <loading-component :compact="true" :tab="true" :textoverride="true">{{ asyncLoading ? $t('This is taking longer than expected. A background task is computing your results. Please be patient.') : $t('Loading data...') }}</loading-component>
+          <div v-if="compact">
+            <game-summary-header></game-summary-header>
+            <game-summary-skeleton v-for="index in 8" :key="index"></game-summary-skeleton>
+          </div>
+          <div v-else class="overflow-x-auto">
+            <div class="md:min-w-max w-full">
+              <game-summary-header :compact="true"></game-summary-header>
+              <game-summary-skeleton v-for="row in 12" :key="row" :compact="true"></game-summary-skeleton>
+            </div>
+          </div>
+        </panel-box>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { scaleTableToFit } from '../../utils/scaleTable';
 import moment from 'moment-timezone';
 import Cookies from 'js-cookie';
 
@@ -167,6 +122,8 @@ export default {
       type: [String, Boolean]
     },
     authenticated: Boolean,
+    analyticsCutover: String,
+    replayDownloadBlocked: Boolean,
     urlparameters: {
       type: Object,
       default: () => ({}),
@@ -174,7 +131,7 @@ export default {
   },
   data(){
     return {
-      windowWidth: window.innerWidth,
+      loadError: null,
       compact: this.playermatchtablestyle == 1,
       cancelTokenSource: null,
       userTimezone: moment.tz.guess(),
@@ -206,6 +163,9 @@ export default {
       if (this.urlparameters['role']) {
         this.role = this.urlparameters['role'];
       }
+      if (this.urlparameters['game_map']) {
+        this.gamemap = this.urlparameters['game_map'].split(',');
+      }
       if (this.urlparameters['ff_battletag']) {
         this.ffBattletag = this.urlparameters['ff_battletag'];
         this.ffBlizzid = this.urlparameters['ff_blizzid'] ?? null;
@@ -221,14 +181,18 @@ export default {
   computed: {
     sortedData() {
       if (!this.sortKey) return this.data.data;
+      // Map, hero and game type sort by the name the column shows, not the object or id behind it
+      const value = (row) => ({
+        game_map: row.game_map?.name,
+        hero_id: row.hero?.name,
+        game_type_id: row.game_type?.name,
+      }[this.sortKey] ?? row[this.sortKey]);
+      const direction = this.sortDir === 'asc' ? 1 : -1;
       return this.data.data.slice().sort((a, b) => {
-        const valA = a[this.sortKey];
-        const valB = b[this.sortKey];
-        if (this.sortDir === 'asc') {
-          return valA < valB ? -1 : 1;
-        } else {
-          return valA > valB ? -1 : 1;
-        }
+        const valA = value(a);
+        const valB = value(b);
+        const order = typeof valA === 'string' ? valA.localeCompare(valB) : valA - valB;
+        return order * direction;
       });
     },
     isOwner(){
@@ -248,16 +212,9 @@ export default {
       if (this.authenticated) {
         this.$axios.post('/api/v1/profile/save/settings', { playerhistorytable: this.compact }).catch(() => {});
       }
-      this.$nextTick(() => this.scaleTable());
-    },
-    // Narrow screens scale the table to fit
-    scaleTable() {
-      const responsivetable = this.$refs.responsivetable;
-      if (responsivetable && this.windowWidth < 1500) {
-        scaleTableToFit(responsivetable, this.$refs.tablecontainer);
-      }
     },
     async getData(page){      
+      this.loadError = null;
      if (this.isLoading || page < 1 || (this.data && page > this.data.last_page)) {
         return;
       }
@@ -294,14 +251,15 @@ export default {
             }
           },
         });
+        // Rows show once their teams are in
+        await this.$loadMatchDetails(response.data.data, this.blizzid, this.region);
         this.data = response.data;
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getData(page));
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
         this.asyncLoading = false;
-        this.$nextTick(() => this.scaleTable());
       }
     },
     getHeroID() {
@@ -344,12 +302,6 @@ export default {
         this.sortDir = 'desc';
       }
       this.sortKey = key;
-    },
-    formatDate(dateString) {
-      const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
-      const localDate = originalDate.clone().tz(moment.tz.guess());
-
-      return localDate.format('MM/DD/YYYY h:mm:ss a');
     },
   }
 }

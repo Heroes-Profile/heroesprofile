@@ -25,7 +25,7 @@
     {
       "name": "Gazlowe",
       "short_name": "gazlowe",
-      "type": "buff",
+      "type": "mixed",
       "notes": [
         "Basic Attack damage increased from 100 to 105.",
         "Health increased from 2275 to 2375.",

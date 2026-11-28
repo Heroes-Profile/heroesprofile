@@ -2,8 +2,8 @@
   <button
     v-show="visible"
     class="fixed bottom-6 right-6 z-40 bg-teal hover:bg-lteal transition-colors text-white rounded-full w-12 h-12 shadow-sm"
-    title="Back to top"
-    aria-label="Back to top"
+    :title="$t('Back to top')"
+    :aria-label="$t('Back to top')"
     @click="toTop"
   >
     <i class="fas fa-arrow-up"></i>

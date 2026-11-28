@@ -10,6 +10,7 @@ use App\Services\FaqMatcher;
 use App\Services\GlobalDataService;
 use App\Services\HeroPageService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -38,7 +39,7 @@ class HelpChatController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'Questions can be up to 500 characters.'], 422);
+            return response()->json(['error' => __('Questions can be up to 500 characters.')], 422);
         }
 
         return response()->json(app(FaqMatcher::class)->search($request['question']) + [
@@ -63,7 +64,7 @@ class HelpChatController extends Controller
             return [
                 'name' => 'xalatath',
                 'logo' => '/images/event/xalatath/xalatath-logo-stage-5.png',
-                'line' => 'Such hostility. The void remembers every word.',
+                'line' => __('Such hostility. The void remembers every word.'),
             ];
         }
 
@@ -71,7 +72,7 @@ class HelpChatController extends Controller
             return [
                 'name' => 'diablo',
                 'logo' => '/images/logo/heroesprofilelogo_dp.png',
-                'line' => 'You asked for the manager. The Lord of Terror is listening.',
+                'line' => __('You asked for the manager. The Lord of Terror is listening.'),
             ];
         }
 
@@ -82,7 +83,7 @@ class HelpChatController extends Controller
     public function ask(Request $request)
     {
         if (! Auth::check()) {
-            return response()->json(['error' => 'Log in with Battle.net to use the help chat.'], 401);
+            return response()->json(['error' => __('Log in with Battle.net to use the help chat.')], 401);
         }
 
         $validator = Validator::make($request->all(), [
@@ -94,7 +95,7 @@ class HelpChatController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => 'Invalid message.'], 422);
+            return response()->json(['error' => __('Invalid message.')], 422);
         }
 
         $messages = collect($request['messages'])
@@ -102,7 +103,7 @@ class HelpChatController extends Controller
             ->values();
 
         if ($messages->last()['role'] !== 'user' || mb_strlen($messages->last()['content']) > 500) {
-            return response()->json(['error' => 'Questions can be up to 500 characters.'], 422);
+            return response()->json(['error' => __('Questions can be up to 500 characters.')], 422);
         }
 
         $user = Auth::user();
@@ -134,7 +135,7 @@ class HelpChatController extends Controller
 
         if (RateLimiter::tooManyAttempts($key, $limit)) {
             return response()->json([
-                'error' => 'You have used today\'s '.$limit.' questions. Try again tomorrow, or search the FAQ.',
+                'error' => __("You have used today's :limit questions. Try again tomorrow, or search the FAQ.", ['limit' => $limit]),
                 'remaining' => 0,
             ], 429);
         }
@@ -144,7 +145,7 @@ class HelpChatController extends Controller
         if (! $apiKey) {
             Log::warning('Help chat has no HEROESPROFILE_CHAT_ANTHROPIC_API_KEY');
 
-            return response()->json(['error' => 'The help chat is unavailable right now. Try the FAQ instead.'], 503);
+            return response()->json(['error' => __('The help chat is unavailable right now. Try the FAQ instead.')], 503);
         }
 
         try {
@@ -160,21 +161,21 @@ class HelpChatController extends Controller
                 outputConfig: ['effort' => 'low'],
             );
         } catch (RateLimitException $e) {
-            return response()->json(['error' => 'The help chat is busy. Try again in a minute.'], 503);
+            return response()->json(['error' => __('The help chat is busy. Try again in a minute.')], 503);
         } catch (APIStatusException $e) {
             Log::warning('Help chat request failed', ['type' => $e->type?->value, 'message' => $e->getMessage()]);
 
-            return response()->json(['error' => 'The help chat is unavailable right now. Try the FAQ instead.'], 503);
+            return response()->json(['error' => __('The help chat is unavailable right now. Try the FAQ instead.')], 503);
         } catch (\Throwable $e) {
             Log::warning('Help chat request failed', ['message' => $e->getMessage()]);
 
-            return response()->json(['error' => 'The help chat is unavailable right now. Try the FAQ instead.'], 503);
+            return response()->json(['error' => __('The help chat is unavailable right now. Try the FAQ instead.')], 503);
         }
 
         RateLimiter::hit($key, 86400);
 
         if ($response->stopReason === 'refusal') {
-            $answer = 'Sorry, I can only help with questions about Heroes Profile. Try the FAQ at /FAQ or contact us at /Contact.';
+            $answer = __('Sorry, I can only help with questions about Heroes Profile. Try the FAQ at /FAQ or contact us at /Contact.');
         } else {
             $answer = trim(collect($response->content)
                 ->filter(fn ($block) => $block->type === 'text')
@@ -225,7 +226,8 @@ class HelpChatController extends Controller
     // Same question once case, punctuation and spacing are ignored. The site data is in the key, so an answer never outlives its numbers.
     private function answerCacheKey(string $question, string $systemPrompt, array $digest): string
     {
-        $normalized = trim(preg_replace('/[^a-z0-9]+/', ' ', mb_strtolower($question)));
+        // Letters and digits in any script, so questions in Chinese or Russian don't all collapse to the same key
+        $normalized = trim(preg_replace('/[^\p{L}\p{N}]+/u', ' ', mb_strtolower($question)));
         $data = collect($digest)->map(fn ($chunk) => $chunk['id'].'@'.$chunk['as_of'])->implode(',');
 
         return 'help_chat_answer|'.self::MODEL.'|'.sha1($systemPrompt).'|'.sha1($normalized).($data !== '' ? '|'.sha1($data) : '');
@@ -280,6 +282,10 @@ class HelpChatController extends Controller
 
 ');
 
+        // English keeps the prompt (and its cached answers) as it was
+        $locale = App::getLocale();
+        $languageRule = $locale === 'en' ? '' : "\n- Reply in ".config('app.supported_locales')[$locale].', the language they picked on the site, unless they write to you in another language; then reply in theirs. Use hero, map and talent names as the game shows them in that language, but keep every path and URL parameter in English.';
+
         $franchises = collect(app(HeroPageService::class)->getIndex())->pluck('franchise')->filter()->unique()->sort()->implode(', ');
 
         // The model never sees a real player's path to copy
@@ -304,7 +310,7 @@ class HelpChatController extends Controller
             - Outside Site data you can't see stats, matches or numbers. Link the page that shows what they want instead.
             - Never mention the site guide, the FAQ text, Site data, snapshots, or what was or wasn't sent with the question. Say "I'm not sure" or "I can't see that", not why.
             - Every Heroes of the Storm hero has a franchise: {$franchises}. A question about heroes from one of those, like "best Warcraft assassins", is a Heroes of the Storm question. Hero Stats site data lists each hero's franchise.
-            - For questions unrelated to Heroes Profile or Heroes of the Storm, politely say you can only help with Heroes Profile.
+            - For questions unrelated to Heroes Profile or Heroes of the Storm, politely say you can only help with Heroes Profile.{$languageRule}
 
             # Site guide
 

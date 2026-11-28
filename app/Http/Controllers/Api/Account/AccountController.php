@@ -41,7 +41,7 @@ class AccountController extends Controller
                 'email' => $account->email,
                 'header_display' => $account->header_display ?? 'email',
                 'email_verified' => $account->hasVerifiedEmail(),
-                'member_since' => $account->created_at?->toFormattedDateString(),
+                'member_since' => $account->created_at?->toDateString(),
                 'plans' => array_map(fn (int $id) => config("api_plans.plans.{$id}.name"), $usage->planIdsFor($account)),
                 'migrated' => $account->hasMigrated(),
                 'test_mode' => $account->inTestMode(),
@@ -92,7 +92,7 @@ class AccountController extends Controller
             'project_description' => ['required', 'string', 'min:50', 'max:2000'],
             'website' => ['nullable', 'string', 'max:255'],
         ], [
-            'project_description.min' => 'Tell us a little more: at least 50 characters on what it does and who uses it.',
+            'project_description.min' => __('Tell us a little more: at least 50 characters on what it does and who uses it.'),
         ]);
 
         $account = Auth::guard('api_web')->user();
@@ -150,7 +150,7 @@ class AccountController extends Controller
 
         if (! Hash::check($validated['current_password'], (string) $account->password)) {
             return response()->json([
-                'errors' => ['current_password' => ['Your current password is not correct.']],
+                'errors' => ['current_password' => [__('Your current password is not correct.')]],
             ], 422);
         }
 
@@ -167,7 +167,7 @@ class AccountController extends Controller
         $account = Auth::guard('api_web')->user();
 
         if ($account->hasVerifiedEmail()) {
-            return response()->json(['error' => 'Your email address is already verified.'], 409);
+            return response()->json(['error' => __('Your email address is already verified.')], 409);
         }
 
         $account->sendEmailVerificationNotification();
@@ -199,7 +199,7 @@ class AccountController extends Controller
             return [
                 'type' => $account->isTerminated() ? 'termination' : 'suspension',
                 'reason' => StandingText::html($account->suspension_reason),
-                'since' => $account->suspended_at?->toFormattedDateString(),
+                'since' => $account->suspended_at?->toDateString(),
                 'dismissible' => false,
             ];
         }
@@ -213,8 +213,8 @@ class AccountController extends Controller
         return [
             'type' => 'warning',
             'reason' => StandingText::html($warning->reason),
-            'since' => $warning->created_at?->toFormattedDateString(),
-            'respond_by' => $warning->respond_by?->toFormattedDateString(),
+            'since' => $warning->created_at?->toDateString(),
+            'respond_by' => $warning->respond_by?->toDateString(),
             'dismissible' => true,
         ];
     }
@@ -230,7 +230,7 @@ class AccountController extends Controller
         $account = Auth::guard('api_web')->user();
 
         if ($account->hasMigrated()) {
-            return response()->json(['error' => 'This account already uses live data.'], 409);
+            return response()->json(['error' => __('This account already uses live data.')], 409);
         }
 
         // Activating expires their old key, so they would otherwise be left with
@@ -239,7 +239,7 @@ class AccountController extends Controller
 
         if (! $hasKey) {
             return response()->json([
-                'error' => 'Create an API key first. Activating live data expires your old key immediately.',
+                'error' => __('Create an API key first. Activating live data expires your old key immediately.'),
             ], 422);
         }
 
@@ -271,7 +271,7 @@ class AccountController extends Controller
         // the real one drift apart, which is the whole problem here.
         if (! $validated['test_mode'] && $usage->planIdsFor($account) === []) {
             return response()->json([
-                'error' => 'Live data needs an active subscription. Until you have one the API returns example data.',
+                'error' => __('Live data needs an active subscription. Until you have one the API returns example data.'),
             ], 422);
         }
 
@@ -299,7 +299,7 @@ class AccountController extends Controller
         $account = Auth::guard('api_web')->user();
 
         if (! $account->isAdmin()) {
-            return response()->json(['error' => 'This account is not an admin.'], 403);
+            return response()->json(['error' => __('This account is not an admin.')], 403);
         }
 
         $account->forceFill(['admin_mode' => $validated['admin_mode']])->save();

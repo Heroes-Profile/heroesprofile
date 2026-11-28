@@ -97,6 +97,94 @@ GitHub Actions runs the full suite on every pull request and every push to `deve
 (`.github/workflows/tests.yaml`), in the same container, built and seeded from scratch each time. There a
 missing snapshot fails the test instead of being recorded, so new snapshots have to be committed.
 
+Two of the `backend` tests guard the filter bars:
+
+-   `FilterOptionsValidateTest` sends every option the filter dropdowns offer (patches of each timeframe type,
+    regions, game types, maps, ranks, heroes, roles, stats, each league's seasons) to every endpoint that takes
+    filters, and fails on any `failure to validate inputs`. It also adds a season past each league's newest and
+    checks the season rules accept it, so no season list can be hard-coded.
+-   `FilterBehaviourTest` checks that a filter narrows the rows: region on the Match Prediction leaderboard,
+    role on hero stats, season on CCL organizations, series on Other esports.
+
+### Component tests
+
+The filter bar (`Filters.vue`) and its dropdowns have Vitest tests in `tests/js`. They need no database or
+server and run in seconds:
+
+```
+npm run test:js
+```
+
+GitHub Actions runs them on every push and pull request (the `js-tests` job in `.github/workflows/ci.yaml`).
+
+### Browser tests
+
+`tests/browser` holds Playwright tests that drive the built site in a real browser:
+
+-   **The crawl** (`crawl.spec.js`) opens every page in `tests/browser/pages.json` and each of its section tabs.
+    On each it changes every filter dropdown in turn, presses Filter, and fails on:
+    -   a console error from the site
+    -   a 4xx/5xx or `failure to validate inputs` from `/api/`
+    -   a loader still showing after 90 seconds
+    -   a dropdown showing something different from what the request sent, such as "All" while the
+        request filters on a hero
+    -   a page that writes its filters to the URL not reloading into the same filters and request
+
+    Dropdowns are found by their `data-filter` / `data-value` attributes (`SingleSelectFilter.vue`,
+    `MultiSelectFilter.vue`). Ads and other third-party scripts are blocked, and the Leaderboard's terms
+    popup counts as accepted.
+-   **The page list** is written by `BrowserPagesTest` (in the `user` suite) from the routes and the seeded
+    values. That test fails when a page route is neither crawled nor skipped with a reason, so a new page
+    joins the crawl the day it's added: give its parameters seeded values in `BrowserPagesTest::pages()`.
+-   **Named cases** (`cases.spec.js`) cover flows the crawl can't express:
+    -   the Drafter locking its filters
+    -   the Leaderboard's Type swapping dropdowns
+    -   lists narrowing to the chosen series or season
+    -   the Analytics sample keeping all maps through a reload
+    -   esports Talents never calling the main site's builds
+
+#### Running them on a pull request
+
+The browser tests take a while (a fresh seed, an asset build and the crawl), so they only run on pull
+requests labelled `browser-tests` (`.github/workflows/browser.yaml`):
+
+1.  Open the pull request on GitHub.
+2.  In the right-hand sidebar, click **Labels** and pick `browser-tests`.
+3.  The **Browser tests** run starts under the pull request's **Checks** tab. Every later push to that pull
+    request runs it again.
+4.  To stop the runs, remove the label.
+
+The label has to exist once in the repository. Create it under **Issues → Labels → New label**, named
+`browser-tests`, or with the GitHub CLI:
+
+```
+gh label create browser-tests --description "Run the Playwright browser tests on this PR"
+```
+
+A failed run lists every problem it found: page, tab, filter and option, plus the request and response.
+
+#### Running them locally
+
+They need the site served against the seeded test database, never the database in `.env`. With the test
+container up and seeded:
+
+1.  Write the page list:
+
+    ```
+    php artisan hp:test user --filter=BrowserPagesTest
+    ```
+
+2.  Build the assets, then serve the site with `.env.testing`'s connections (and `SESSION_DRIVER=file`, so
+    the CSRF token survives between requests), the way `browser.yaml` does.
+3.  Run the tests, pointing `BASE_URL` at that server:
+
+    ```
+    npx playwright install chromium
+    npm run test:browser
+    ```
+
+`CRAWL_ONLY=<regex>` limits the crawl to matching paths, for example `CRAWL_ONLY=Esports/NGS npm run test:browser`.
+
 ## Public API fixtures
 
 Endpoints under `/v1/*` serve a canned response instead of live data whenever an

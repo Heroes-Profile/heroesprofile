@@ -21,7 +21,7 @@ class ApiTermsDeadline
     /** The date to quote while the grace period runs, or null once it has ended. */
     public static function graceEndsOn(): ?string
     {
-        return self::passed() ? null : self::from()->format('F j, Y');
+        return self::passed() ? null : self::from()->toDateString();
     }
 
     private static function from(): ?Carbon

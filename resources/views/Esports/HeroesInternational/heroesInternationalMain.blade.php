@@ -1,8 +1,9 @@
 @extends('layouts.app', $bladeGlobals)    
 
-@section('title', 'Heroes International Esports')
+@section('title', __('Heroes International Main Tournament Stats – Heroes of the Storm'))
+@section('canonical', url('/Esports/HeroesInternational') . '?tournament=main')
 @section('meta_keywords', 'Heroes International league, Heroes International, Heroes of the Storm, Heroes International esports, competitive gaming, Heroes of the Storm league')
-@section('meta_description', 'Stay up to date with the latest news and updates from the Heroes International league. Review competitive Heroes of the Storm matches and follow your favorite teams.')
+@section('meta_description', 'Heroes of the Storm statistics and comparison for the Heroes International league: hero stats, teams, players and match history.')
 
 @section('content')
   <heroes-international-main
@@ -12,5 +13,7 @@
     :talentimages="{{ json_encode($talentimages) }}" 
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :tournament="{{ json_encode($tournament) }}"
+    :urlparameters="{{ json_encode($urlparameters) }}"
   ></heroes-international-main>
+  @include('Esports.contactSection')
 @endsection

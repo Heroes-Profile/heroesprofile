@@ -1,0 +1,20 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "data": {
+            "type": "Map",
+            "game_type": [
+                "sl"
+            ],
+            "battletag": "Zemill",
+            "blizz_id": 67280,
+            "region": 1,
+            "season": null
+        },
+        "errors": [
+            "The map field is required when type is Map."
+        ],
+        "status": "failure to validate inputs"
+    }
+}

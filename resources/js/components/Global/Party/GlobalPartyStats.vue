@@ -1,59 +1,69 @@
 <template>
   <div>
     <global-async-debug-banner page-label="Global Party" />
-    <page-heading :infoText1="infoText" :heading="'Global Party Statistics'"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+    <!-- As Hero Stats: the heading with the filters beside it -->
+    <player-page-top>
+      <template #heading>
+        <page-heading scope="Global" heading="Party Statistics" subheading="Win rates by party size"></page-heading>
+      </template>
+      <filters 
+        :onFilter="filterData" 
+        :filters="filters" 
+        :isLoading="isLoading"
 
-    <filters 
-      :onFilter="filterData" 
-      :filters="filters" 
-      :isLoading="isLoading"
+        :timeframetypeinput="timeframetype"
+        :timeframeinput="timeframe"
+        :gametypeinput="gametype"
+        :regioninput="region"
+        :herolevelinput="herolevel"
+        :heroinput="getHeroID()"
+        :gamemapinput="gamemap"
+        :playerrankinput="playerrank"
+        :herorankinput="herorank"
+        :rolerankinput="rolerank"
+        :teamonepartyinput="teamoneparty"      
+        :teamtwopartyinput="teamtwoparty"      
 
-      :timeframetypeinput="timeframetype"
-      :timeframeinput="timeframe"
-      :gametypeinput="gametype"
-      :regioninput="region"
-      :herolevelinput="herolevel"
-      :heroinput="getHeroID()"
-      :gamemapinput="gamemap"
-      :playerrankinput="playerrank"
-      :herorankinput="herorank"
-      :rolerankinput="rolerank"
-      :teamonepartyinput="teamoneparty"      
-      :teamtwopartyinput="teamtwoparty"      
-
-      :gametypedefault="gametypedefault"
-      :includetimeframetype="true"
-      :includetimeframe="true"
-      :includeregion="true"
-      :includeherolevel="true"
-      :includehero="true"
-      :includegametype="true"
-      :includegamemap="true"
-      :includeplayerrank="true"
-      :includeherorank="true"
-      :includerolerank="true"
-      :includeteamoneparty="true"
-      :includeteamtwoparty="true"
-      :advancedfiltering="advancedfiltering"
-      >
-    </filters>
+        :gametypedefault="gametypedefault"
+        :includetimeframe="true"
+        :includeregion="true"
+        :includeherolevel="true"
+        :includehero="true"
+        :includegametype="true"
+        :includegamemap="true"
+        :includeplayerrank="true"
+        :includeherorank="true"
+        :includerolerank="true"
+        :includeteamoneparty="true"
+        :includeteamtwoparty="true"
+        :advancedfiltering="advancedfiltering"
+        >
+      </filters>
+    </player-page-top>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="partydata" class="max-w-[1500px] mx-auto">
-      <div class="flex justify-end max-w-[1500px] mx-auto mb-2">
-        <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
-      </div>
+    <div v-if="partydata" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
 
-      <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
+      <patch-notes-panel v-if="patchNotesUrl" class="!max-w-none !mb-0" :version="timeframe[0]"></patch-notes-panel>
 
       <party-stats-display :partydata="partydata"></party-stats-display>
 
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <!-- The collapsed Patch Notes card, so the page doesn't move when it loads -->
+      <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="md:!py-4">
+        <template #right>
+          <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+        </template>
+      </panel-box>
+      <!-- The same layout in grey, the message on a tab of the first panel, as on a player's Party page -->
+      <party-stats-skeleton>
+        <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading party stats...') }}</loading-component>
+      </party-stats-skeleton>
     </div>
-    <div v-else-if="dataError" class="flex items-center justify-center">
-      Error: Reload page/filter
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
     </div>
   </div>
 </template>
@@ -79,7 +89,7 @@
   },
   data(){
     return {
-      dataError: false,
+      loadError: null,
       isLoading: false,
       infoText: "Party win rates based on differing increments, stat types, game type, rank, and more. The hero filter allows you to see party data for games that only contained that hero.",
       partydata: null,
@@ -101,7 +111,6 @@
       heropartysize: null,
       teamoneparty: null,
       teamtwoparty: null,
-      showPatchNotes: false,
     }
   },
   created(){
@@ -131,7 +140,7 @@
   },
   methods: {
     async getData(){
-      this.dataError = false;
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -164,7 +173,7 @@
         }
         this.partydata = response.data;
       }catch(error){
-        this.dataError = true;
+        this.loadError = this.$loadError(error, () => this.getData());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
@@ -174,9 +183,6 @@
       if (this.cancelTokenSource) {
         this.cancelTokenSource.cancel('Request canceled by user');
       }
-    },
-    togglePatchNotes() {
-      this.showPatchNotes = !this.showPatchNotes;
     },
     filterData(filteredData){
       this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
@@ -243,7 +249,6 @@
       let currentPath = window.location.pathname;
       history.pushState(null, null, `${currentPath}${queryString}`);
 
-      this.showPatchNotes = false;
 
       this.partydata = null;
       this.getData();

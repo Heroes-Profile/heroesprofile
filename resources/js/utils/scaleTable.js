@@ -1,25 +1,20 @@
-// Shrinks a table that is wider than its container so every column fits.
-// A transform doesn't change layout, so the container height is set to the scaled height,
-// and kept in sync as images load or the screen size changes.
+// Shrinks a table that is wider than its container so every column fits, and keeps it fitted as images load
+// or the screen size changes.
+// CSS zoom rather than a transform: zoom shrinks the real layout, so the container's height follows on its own
+// and sticky table headers stay at the top of the screen. (A transform is applied after layout, so a stuck header
+// drifted down the screen as the page scrolled, leaving rows showing above it.)
 export function scaleTableToFit(table, container) {
   if (!table || !container) {
     return 1;
   }
 
   const fit = () => {
-    // scrollWidth so a wrapper around several tables is measured by its widest one
+    // Measured at full size; scrollWidth so a wrapper around several tables is measured by its widest one
+    table.style.zoom = '';
     const scale = Math.min(1, container.clientWidth / table.scrollWidth);
 
-    if (scale < 1) {
-      table.style.transformOrigin = 'top left';
-      table.style.transform = `scale(${scale})`;
-      container.style.height = (table.clientHeight * scale) + 'px';
-    } else {
-      // Never scale up; that clips the right side
-      table.style.transformOrigin = '';
-      table.style.transform = '';
-      container.style.height = '';
-    }
+    // Never scale up; that clips the right side
+    table.style.zoom = scale < 1 ? String(scale) : '';
 
     return scale;
   };

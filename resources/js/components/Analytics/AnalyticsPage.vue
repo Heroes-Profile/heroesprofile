@@ -1,47 +1,52 @@
 <template>
   <div>
     <analytics-disclaimer-popup v-if="showDisclaimer" @popupclosed="showDisclaimer = false"></analytics-disclaimer-popup>
-    <page-heading
-      :heading="'Analytics (Pre-Alpha)'"
-      :infoText1="sample
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="sample
         ? 'A sample: replay analysis of ' + battletag + '\'s season games as of ' + sample.captured_at + ', compared with a sample of all games.'
-        : 'Replay analysis of ' + battletag + '\'s season games (from Oct 2, 2026), compared with a sample of all games.'"
-      :infoText2="'Pre-alpha: this is in very early development. Numbers, views and features will change, and some may be wrong or missing.'"
-    ></page-heading>
+        : 'Replay analysis of ' + battletag + '\'s season games (from Oct 2, 2026), compared with a sample of all games.'" :infoText2="'Pre-alpha: this is in very early development. Numbers, views and features will change, and some may be wrong or missing.'" -->
+    <!-- The heading with the filters beside it, as on the other filter pages -->
+    <player-page-top>
+      <template #heading>
+        <page-heading
+          :heading="'Analytics (Pre-Alpha)'"
+        ></page-heading>
+      </template>
+      <!-- Remounted when a tab picks a map, so the filter shows it. One match sets its own hero, map and mode -->
+      <filters
+        v-if="!game && !locked"
+        :key="filtersKey"
+        :onFilter="filterData"
+        :gamemapinput="gamemap.length ? gamemap : null"
+        :filters="filters"
+        :isLoading="isLoading"
+        :gametypedefault="gametype"
+        :includehero="!sample"
+        :heroinput="getHeroID()"
+        :includegametypefull="!sample"
+        :includegamemap="true"
+        :hideadvancedfilteringbutton="true"
+      ></filters>
+    </player-page-top>
 
-    <!-- Remounted when a tab picks a map, so the filter shows it. One match sets its own hero, map and mode -->
-    <filters
-      v-if="!game && !locked"
-      :key="filtersKey"
-      :onFilter="filterData"
-      :gamemapinput="gamemap.length ? gamemap : null"
-      :filters="filters"
-      :isLoading="isLoading"
-      :gametypedefault="gametype"
-      :includehero="!sample"
-      :heroinput="getHeroID()"
-      :includegametypefull="!sample"
-      :includegamemap="true"
-      :hideadvancedfilteringbutton="true"
-    ></filters>
-
-    <div class="max-w-[1500px] mx-auto px-4 mt-4">
+    <div class="max-w-[93.75rem] mx-auto px-4 mt-4">
       <!-- Free trial: days left, and the ways to keep Analytics in its last two days -->
       <p v-if="trialDaysLeft !== null" class="text-center text-sm mb-4">
-        {{ trialStage }} free trial: {{ trialDaysLeft }} {{ trialDaysLeft === 1 ? 'day' : 'days' }} left.
+        {{ $t(':trialstage free trial: :trialdaysleft :days left.', { trialstage: trialStage, trialdaysleft: trialDaysLeft, days: trialDaysLeft === 1 ? $t('day') : $t('days') }) }}
         <template v-if="trialDaysLeft <= 2">
-          To keep Analytics after that, <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">subscribe on Patreon</a> and link it to your account.
+          {{ $t('To keep Analytics after that,') }} <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">subscribe on Patreon</a> and link it to your account.
         </template>
       </p>
 
       <!-- Processing status: one line, so the tab's own numbers come first -->
       <div v-if="!sample" class="text-center mb-6">
-        <div v-if="processing" class="max-w-[600px] mx-auto">
-          <p class="text-sm">Processing your games: {{ upToDate }} of {{ status.total }} up to date. You can leave this page; it carries on.</p>
+        <div v-if="processing" class="max-w-[37.5rem] mx-auto">
+          <p class="text-sm">{{ $t('Processing your games: :uptodate of :total up to date. You can leave this page; it carries on.', { uptodate: upToDate, total: status.total }) }}</p>
           <stat-bar-box class="w-full" size="full" :title="'Progress'" :value="upToDatePercent" :displaytext="upToDate + ' of ' + status.total"></stat-bar-box>
         </div>
         <div v-else class="flex flex-wrap items-center justify-center gap-3 text-sm">
-          <span>{{ status.done.toLocaleString('en-US') }} of {{ status.total.toLocaleString('en-US') }} season games processed ({{ percent }}%)</span>
+          <!-- Locked with games left: say they're waiting on a subscription, so it doesn't read as stuck -->
+          <span v-if="locked && status.done < status.total">{{ $t(':done of :total season games processed. The other :left are processed once you subscribe.', { done: status.done.toLocaleString('en-US'), total: status.total.toLocaleString('en-US'), left: (status.total - status.done).toLocaleString('en-US') }) }}</span>
+          <span v-else>{{ $t(':done of :total season games processed (:percent%)', { done: status.done.toLocaleString('en-US'), total: status.total.toLocaleString('en-US'), percent: percent }) }}</span>
           <custom-button
             v-if="!locked && ((status.done < status.total && (!status.free || status.free.left > 0)) || status.outdated > 0)"
             @click="request"
@@ -55,16 +60,14 @@
         </div>
         <!-- Games processed before a newer version: what they're missing; the button above updates them -->
         <p v-if="!processing && status.outdated > 0 && !locked" class="text-sm mt-2">
-          {{ status.outdated.toLocaleString('en-US') }} of your games were processed before Analytics added
-          {{ (status.whats_new || []).join('; ') }}. Rebuilding them is free.
+          {{ $t(':outdated of your games were processed before Analytics added :value. Rebuilding them is free.', { outdated: status.outdated.toLocaleString('en-US'), value: (status.whats_new || []).join('; ') }) }}
         </p>
         <!-- Without a subscription: a set number of games per stage -->
         <p v-if="status.free && !locked" class="text-sm mt-2">
-          Your {{ trialStage }} free processing covers {{ status.free.limit }} games, newest first, including games processed in the replay viewer:
-          {{ status.free.left }} left.
+          {{ $t('Your :trialstage free processing covers :limit games, newest first, including games processed in the replay viewer: :left left.', { trialstage: trialStage, limit: status.free.limit, left: status.free.left }) }}
           <template v-if="status.free.left < status.total - status.done">
-            To process the rest, <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">subscribe on Patreon</a>
-            or link a paid <a class="link" href="/Api">API plan</a>.
+            {{ $t('To process the rest,') }} <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">subscribe on Patreon</a>
+            or link a paid <a class="link" href="/Api">{{ $t('API plan') }}</a>.
           </template>
         </p>
         <p v-if="error" class="mt-4 text-red">{{ error }}</p>
@@ -88,7 +91,7 @@
       <!-- The match picker and tabs use the page's full width, like Match History below them -->
       <div class="px-4">
         <!-- One match at a time: pick one from your latest processed matches, 10 to a page -->
-        <analytics-numbers v-if="!sample && activeTab !== 'summary' && !isLoading && pickerGames.length" class="max-w-[1500px] mx-auto" :label="game ? 'Pick another match' : 'Pick a match to see it on its own'">
+        <analytics-numbers v-if="!sample && activeTab !== 'summary' && !isLoading && pickerGames.length" class="max-w-[1500px] mx-auto" :label="game ? $t('Pick another match') : $t('Pick a match to see it on its own')">
           <analytics-match-picker
             :games="pickerGames"
             :selected="game"
@@ -100,9 +103,9 @@
         <div v-if="game" class="flex flex-wrap items-center justify-center gap-3 mb-4">
           <template v-if="game">
             <span v-if="gameInfo">
-              One match: <span class="font-bold">{{ gameInfo.hero }}</span> on {{ gameInfo.game_map }} &middot; {{ gameInfo.game_type }} &middot;
-              <span :class="gameInfo.winner ? 'text-teal' : 'text-red'">{{ gameInfo.winner ? 'Win' : 'Loss' }}</span> &middot; {{ formatDate(gameInfo.game_date) }}.
-              Compared with {{ gameInfo.hero }} on {{ gameInfo.game_map }} in {{ gameInfo.game_type }}, and your other {{ gameInfo.hero }} matches.
+              One match: <span class="font-bold">{{ $heroName(gameInfo.hero) }}</span> on {{ $mapName(gameInfo.game_map) }} &middot; {{ gameInfo.game_type }} &middot;
+              <span :class="gameInfo.winner ? 'text-teal' : 'text-red'">{{ gameInfo.winner ? $t('Win') : $t('Loss') }}</span> &middot; {{ formatDate(gameInfo.game_date) }}.
+              Compared with {{ $heroName(gameInfo.hero) }} on {{ $mapName(gameInfo.game_map) }} in {{ gameInfo.game_type }}, and your other {{ $heroName(gameInfo.hero) }} matches.
             </span>
             <custom-button :href="replayLink(game)" :text="'Watch Replay'" :alt="'Watch this match in the replay viewer'" size="small"></custom-button>
             <custom-button :text="'Back to all matches'" :alt="'Back to all matches'" size="small" :ignoreclick="true" @click="selectGame(null)"></custom-button>
@@ -120,7 +123,7 @@
             @input-changed="activeTab = $event.value"
           ></single-select-filter>
         </div>
-        <p v-if="activeTab !== 'summary'" class="text-center text-sm mb-6"><a class="link cursor-pointer" @click="toMethodology">How is this calculated?</a></p>
+        <p v-if="activeTab !== 'summary'" class="text-center text-sm mb-6"><a class="link cursor-pointer" @click="toMethodology">{{ $t('How is this calculated?') }}</a></p>
       </div>
 
       <div class="max-w-[1500px] mx-auto px-4">
@@ -170,6 +173,7 @@
 </template>
 
 <script>
+import { siteLocale } from '../../utils/translate';
 import { ANALYTICS_DISCLAIMER_KEY } from './AnalyticsDisclaimerPopup.vue';
 
 // Tabs that need many matches, left out when showing one match
@@ -258,10 +262,10 @@ export default {
     if (this.urlparameters) {
       if (this.urlparameters['hero']) this.hero = this.urlparameters['hero'];
       if (this.urlparameters['game_type']) this.gametype = this.urlparameters['game_type'].split(',');
-      if (this.urlparameters['game_map']) this.gamemap = this.urlparameters['game_map'].split(',');
+      if (this.urlparameters['game_map'] && this.urlparameters['game_map'] !== 'all') this.gamemap = this.urlparameters['game_map'].split(',');
     }
-    // The public sample only has map-level data for its own map(s): open on them
-    if (this.sample && !this.gamemap.length && (this.sample.maps || []).length) {
+    // The public sample only has map-level data for its own map(s): open on them, unless the URL says all maps
+    if (this.sample && !this.gamemap.length && (this.sample.maps || []).length && this.urlparameters?.['game_map'] !== 'all') {
       this.gamemap = [this.sample.maps[0]];
     }
   },
@@ -347,6 +351,9 @@ export default {
       }
       if (this.gamemap.length) {
         queryString += `&game_map=${this.gamemap}`;
+      } else if (this.sample && (this.sample.maps || []).length) {
+        // The sample opens on its own map, so all maps has to be spelled out
+        queryString += '&game_map=all';
       }
       if (this.hero) {
         queryString += `&hero=${this.hero}`;
@@ -429,7 +436,7 @@ export default {
       }
     },
     formatDate(date) {
-      return new Date(String(date).replace(' ', 'T') + 'Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+      return new Date(String(date).replace(' ', 'T') + 'Z').toLocaleDateString(siteLocale(), { month: 'short', day: 'numeric' });
     },
     async loadTab() {
       const key = this.cacheKey();

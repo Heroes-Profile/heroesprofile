@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie';
+import { adBlocker } from '../../utils/adBlocker';
 
 export default {
   name: 'TakeoverAd',
@@ -52,7 +52,7 @@ export default {
   },
   computed: {
     adBlocker() {
-      return sessionStorage.getItem('ad-blocker-detected') === 'true' || Cookies.get('ad-blocker') == "true";
+      return adBlocker.value;
     },
   },
   watch: {

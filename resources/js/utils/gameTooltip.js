@@ -1,10 +1,12 @@
+import { translate } from './translate';
+
 // Game tooltip markup (heroes_data_abilities / heroes_data_talents raw_description) → paragraphs of styled segments.
 // Numbers followed by <c val="#ColorGray">~~rate~~</c> scale with hero level.
 
 const COLOUR_CLASSES = {
   '#TooltipNumbers': 'font-bold text-white',
   '#ColorGray': 'text-gray-medium',
-  '#TooltipQuest': 'text-yellow',
+  '#TooltipQuest': 'text-quest',
   '#TooltipGreen': 'text-green',
   '#AbilityPassive': 'text-green',
   '#ColorViolet': 'text-purple',
@@ -30,7 +32,7 @@ function roundLike(value, baseText){
 }
 
 function formatRate(rate){
-  return `+${parseFloat((rate * 100).toFixed(2))}% per level`;
+  return translate('+:rate% per level', { rate: parseFloat((rate * 100).toFixed(2)) });
 }
 
 function tokenize(raw){

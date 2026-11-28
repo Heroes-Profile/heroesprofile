@@ -1,143 +1,66 @@
 <template>
   <div>
     
-    <page-heading :infoText1="'See below the tournaments for filterable list of replays'" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <!-- The heading with the filters beside it, as on the league pages -->
+    <player-page-top>
+      <template #heading>
+        <page-heading heading="HGC and More Esports" :subheading="$t('Professional and third-party tournaments')">
+          <a href="/Esports/Other" class="flex items-center justify-center w-28 h-28"><img :src="'/images/EsportOther/' + (hgcSeries[0]?.icon || 'logo.png')" alt="HGC" class="w-full h-full object-contain"></a>
+        </page-heading>
+      </template>
+      <div class="w-full">
+        <filters
+          :filters="filters"
+          :isLoading="isLoading"
+          :onFilter="() => filter()"
+          :onChange="handleInputChange"
+          :extrafilters="[
+            { text: 'Series', values: seriesvalues },
+            { text: 'Regions', values: narrowToSeries(regions, region) },
+            { text: 'Tournaments', values: narrowToSeries(tournaments, tournament) },
+            { text: 'Seasons', values: narrowToSeries(seasons, season) },
+            { text: 'Teams', values: narrowToSeries(teams, team) },
+            { text: 'Map', values: filters.game_maps },
+            { text: 'Heroes', values: filters.heroes },
+          ]"
+          :excludetimeframes="true"
+          :excludegametype="true"
+          :hideadvancedfilteringbutton="true"
+        >
+          <!-- Labelled and sized like the dropdowns beside it -->
+          <label class="p-2 flex flex-col gap-1.5 text-sm font-medium text-subtext max-md:w-full md:w-[12.5rem]">
+            <span>{{ $t('Player') }}</span>
+            <input type="text" class="h-[2.5rem] rounded bg-surface-3 hover:bg-surface-4 focus:outline-none focus:ring-1 focus:ring-teal text-white p-2 w-full min-w-0" :placeholder="$t('Search player')" v-model="userinput" @keyup.enter="filter()">
+          </label>
+        </filters>
+      </div>
+    </player-page-top>
 
-    <div>
-      <esports-organizations :data="hgcSeries" :esport="'Other'" class="hgcSeries-wrapper"></esports-organizations>
-      <esports-organizations :data="withoutHGCSeries" :esport="'Other'"></esports-organizations>
-    </div>
-
-    <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
-      <single-select-filter :values="seriesvalues" :text="'Series'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter :values="regions" :text="'Regions'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter :values="tournaments" :text="'Tournaments'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter :values="seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter :values="teams" :text="'Teams'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter :values="filters.game_maps" :text="'Map'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter :values="filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
-
-
-      <input type="text" class="form-control variable-text rounded-l p-2" :placeholder="'Search for player'" :aria-label="'filter'" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="filter()">
-
-      <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
-
+    <!-- HGC first and outlined, then the other series -->
+    <div class="flex flex-col gap-6 mt-6 mb-6">
+      <esports-organizations :data="[...hgcSeries, ...withoutHGCSeries]" :esport="'Other'" highlight="HGC" :subtitle="$t('Pick a league or browse every match below.')"></esports-organizations>
     </div>
 
     <div v-if="data">
-      <div>
-        <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
-          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: data.current_page <= 1 }">
-            <a class="page-link" @click.prevent="getMatches(data.current_page - 1)" href="#">
-              Previous
-            </a>
-          </li>
-          <li v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: data.current_page >= data.last_page }">
-            <a class="page-link" @click.prevent="getMatches(data.current_page + 1)" href="#">
-              Next
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[25vw] max-md:w-full   2xl:mx-auto  " style=" ">
-        <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
-          <thead>
-            <tr>
-              <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Game ID
-              </th>    
-              <th @click="sortTable('series')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Series
-              </th>   
-              <th @click="sortTable('region')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Region
-              </th>  
-              <th @click="sortTable('tournament')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Tournament
-              </th>  
-              <th @click="sortTable('season')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Season
-              </th>  
-              <th @click="sortTable('team_0_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Team 1
-              </th>  
-              <th @click="sortTable('team_1_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Team 2
-              </th> 
-              <th @click="sortTable('game_map')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Map
-              </th> 
-              <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Game Date
-              </th> 
-            </tr>
-          </thead>
-          <tbody>
-            <template v-for="(row, index) in sortedData">
-              <tr>
-                <td>
-                  <a class="link" :href="`./Other/${row.series}/Match/Single/${row.replayID}`" >{{ row.replayID }}</a>
-                </td>
-                <td>
-                  {{ row.series }}
-                </td>
-                <td>
-                  {{ getRegionNameByCode(row.region) }}
-                </td>
-                <td>
-                  {{ row.tournament }}
-                </td>
-                <td>
-                  {{ row.season }}
-                </td>
-                <td>
-                  {{ row.team_1_name }}
-                </td>
-                <td>
-                  {{ row.team_0_name }}
-                </td>
-                <td>
-                  {{ row.game_map }}
-                </td>
-                <td>
-                  <format-date :input="row.game_date"></format-date>
-                </td>
-              </tr>
-              
-            </template>
-          </tbody>
-        </table>
-      </div>
+      <esports-recent-matches :current="data.current_page" :last="data.last_page" @page="getMatches" v-if="data.data.length" :data="data.data" :esport="'Other'" :title="$t('Recent matches')" :subtitle="$t('All tournaments · newest first')"></esports-recent-matches>
+      <p v-else class="text-center text-subtext mt-10">{{ $t('No games match these filters.') }}</p>
 
-      <div>
-        <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
-          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: data.current_page <= 1 }">
-            <a class="page-link" @click.prevent="getMatches(data.current_page - 1)" href="#">
-              Previous
-            </a>
-          </li>
-          <li v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: data.current_page >= data.last_page }">
-            <a class="page-link" @click.prevent="getMatches(data.current_page + 1)" href="#">
-              Next
-            </a>
-          </li>
-        </ul>
-      </div>
 
 
     </div>
 
 
     
-    <div v-if="isLoading">
-      <loading-component></loading-component>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-if="loadError && !isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
     </div>
+    <!-- The recent matches card in grey, in the list's own layout; the message sits on a tab of the card -->
+    <esports-recent-matches v-if="isLoading" :skeleton="true" :data="[]" :esport="'Other'" :title="$t('Recent matches')" :subtitle="$t('All tournaments · newest first')"></esports-recent-matches>
   </div>
 </template>
 
 <script>
-import { scaleTableToFit } from '../../../utils/scaleTable';
-
 export default {
   name: 'OtherMain',
   components: {
@@ -156,10 +79,9 @@ export default {
   },
   data(){
     return {
+      loadError: null,
       isLoading: false,
       data: null,
-      sortKey: '',
-      sortDir: 'desc',
 
       inputseries: null,
       region: null,
@@ -183,25 +105,29 @@ export default {
         code: seriesItem.series_id,
         name: seriesItem.name
       }));
-    },
-    sortedData() {
-      if (!this.sortKey) return this.data.data;
-      return this.data.data.slice().sort((a, b) => {
-        const valA = a[this.sortKey];
-        const valB = b[this.sortKey];
-        if (this.sortDir === 'asc') {
-          return valA < valB ? -1 : 1;
-        } else {
-          return valA > valB ? -1 : 1;
-        }
-      });
     }
   },
   mounted() {
     this.getMatches(1);
   },
   methods: {
+    // The chosen series' options, once each; the picked one stays so the dropdown keeps showing it
+    narrowToSeries(list, selected) {
+      const seriesName = this.series.find(item => item.series_id === this.inputseries)?.name;
+      const seen = new Set();
+      return (list || []).filter(row => {
+        if ((seriesName && row.series !== seriesName && row.code !== selected) || seen.has(row.code)) {
+          return false;
+        }
+        seen.add(row.code);
+        return true;
+      }).map(({ code, name }) => ({ code, name }));
+    },
     async getMatches(page){
+      this.loadError = null;
+      if (this.isLoading || page < 1) {
+        return;
+      }
       this.data = null;
       this.isLoading = true;
       try{
@@ -222,23 +148,10 @@ export default {
         this.data = response.data;
 
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getMatches(page));
       }finally {
         this.isLoading = false;
-        this.$nextTick(() => {
-          if (window.matchMedia('(max-width: 767px)').matches) {
-            scaleTableToFit(this.$refs.responsivetable, this.$refs.tablecontainer);
-          }
-        });
       }
-    },
-    sortTable(key) {
-      if (key === this.sortKey) {
-        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
-      } else {
-        this.sortDir = 'desc';
-      }
-      this.sortKey = key;
     },
     
     handleInputChange(eventPayload) {
@@ -262,11 +175,6 @@ export default {
     filter(){
       this.getMatches(1);
     },
-    getRegionNameByCode(code) {
-      const region = this.regions.find(region => region.code === code);
-      return region ? region.name : null;
-    }
-
   },
   
 }

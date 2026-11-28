@@ -267,6 +267,37 @@ class SiteWritesTest extends FeatureTestCase
         $this->postJson('/api/v1/profile/set/account/visibility', ['accountVisibility' => 'maybe'])->assertJson(['status' => 'failure to validate inputs']);
     }
 
+    public function test_saving_an_avatar_border_and_refusing_an_unknown_one(): void
+    {
+        $user = $this->signIn();
+        $border = fn () => $user->userSettings()->where('setting', 'avatar_border')->value('value');
+
+        $this->postJson('/api/v1/profile/save/settings', ['avatar_border' => 'void_eye'])->assertOk();
+        $this->assertSame('void_eye', $border());
+
+        $this->postJson('/api/v1/profile/save/settings', ['avatar_border' => 'none'])->assertOk();
+        $this->assertSame('none', $border());
+
+        $this->postJson('/api/v1/profile/save/settings', ['avatar_border' => 'golden'])->assertJson(['status' => 'failure to validate inputs']);
+        $this->assertSame('none', $border());
+    }
+
+    // Sign-in
+
+    public function test_the_login_popup_returns_to_the_page_it_was_opened_from(): void
+    {
+        $login = fn (string $referer) => $this->get('/redirect/authenticate/battlenet', ['Referer' => $referer])->assertRedirect();
+        $page = url('/Player/'.self::PLAYER_BATTLETAG.'/'.self::PLAYER_BLIZZ_ID.'/'.self::PLAYER_REGION);
+
+        $login($page);
+        $this->assertSame($page, session('url.intended'));
+
+        // Another site, or the login page itself, leaves the page already remembered alone
+        $login('https://evil.example/Player');
+        $login(url('/Authenticate/Battlenet'));
+        $this->assertSame($page, session('url.intended'));
+    }
+
     public function test_removing_a_patreon_link(): void
     {
         $user = $this->signIn();

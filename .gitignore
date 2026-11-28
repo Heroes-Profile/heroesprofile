@@ -21,3 +21,7 @@ yarn-error.log
 /.vscode
 apache2.conf
 .env copy
+# Browser tests: the page list is written by BrowserPagesTest, the rest by Playwright
+/tests/browser/pages.json
+/test-results
+/playwright-report

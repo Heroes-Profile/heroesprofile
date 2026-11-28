@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p v-if="data.games.length === 0" class="text-center">No season games match these filters.</p>
+    <p v-if="data.games.length === 0" class="text-center">{{ $t('No season games match these filters.') }}</p>
 
     <div v-if="data.games.length" class="max-w-[1500px] mx-auto px-4 flex flex-wrap justify-center gap-4 mb-8">
       <stat-box class="w-[30%] max-md:w-[48%]" :title="'Games'" :value="data.games.length.toLocaleString('en-US')" color="teal"></stat-box>
@@ -9,7 +9,7 @@
     </div>
 
     <!-- Same place and size as the Talent Builder's layout toggle -->
-    <div v-else class="flex justify-end max-w-[1500px] mx-auto mb-2">
+    <div v-else class="flex justify-end max-w-[93.75rem] mx-auto mb-2">
       <span class="flex items-center gap-4">
         <tab-button :tab1text="'Table'" :tab2text="'Compact'" :ignoreclick="true" @tab-click="setStyle" :overridedefaultside="compact ? 'right' : 'left'"></tab-button>
       </span>
@@ -53,41 +53,41 @@
     </div>
 
     <div v-else-if="data.games.length">
-      <div id="table-container" ref="tablecontainer" class="w-auto   w-[100vw]   2xl:mx-auto  " style=" ">
-        <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
+      <div id="table-container" ref="tablecontainer" class="w-[100vw] 2xl:mx-auto">
+        <table id="responsive-table" class="relative 2xl:w-auto 2xl:min-w-[93.75rem]" ref="responsivetable">
           <thead>
             <tr>
-              <th>Game ID</th>
-              <th>Game Date</th>
-              <th>Game Type</th>
-              <th>Game Map</th>
-              <th>Hero</th>
-              <th>Result</th>
-              <th>Player MMR</th>
-              <th>Talents</th>
-              <th>Replay</th>
+              <th>{{ $t('Match ID') }}</th>
+              <th>{{ $t('Game Date') }}</th>
+              <th>{{ $t('Game Type') }}</th>
+              <th>{{ $t('Game Map') }}</th>
+              <th>{{ $t('Hero') }}</th>
+              <th>{{ $t('Result') }}</th>
+              <th>{{ $t('Player MMR') }}</th>
+              <th>{{ $t('Talents') }}</th>
+              <th>{{ $t('Replay') }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in data.games" :key="row.replayID">
               <td>
-                <a v-if="replayLink(row.replayID)" class="link" :href="replayLink(row.replayID)">{{ row.replayID }}</a>
+                <a v-if="replayLink(row.replayID)" :href="replayLink(row.replayID)" class="inline-flex items-center link-row">{{ row.replayID }}</a>
                 <template v-else>{{ row.replayID }}</template>
               </td>
               <td>
                 {{ formatDate(row.game_date) }}
               </td>
               <td>
-                {{ row.game_type ? row.game_type.name : '' }}
+                {{ row.game_type ? $t(row.game_type.name) : '' }}
               </td>
               <td>
                 {{ row.game_map ? row.game_map.name : '' }}
               </td>
               <td class="py-2 px-3  flex items-center gap-1">
-                <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
+                <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ $heroName(row.hero) }}</span>
               </td>
               <td>
-                <span :class="row.winner == 1 ? 'text-teal' : 'text-red'">{{ row.winner == 1 ? 'Win' : 'Loss' }}</span>
+                <span :class="row.winner == 1 ? 'text-teal' : 'text-red'">{{ row.winner == 1 ? $t('Win') : $t('Loss') }}</span>
               </td>
               <td>
                 {{ row.player_mmr.toLocaleString('en-US') }}
@@ -142,8 +142,8 @@
 </template>
 
 <script>
+import { formatGameDate } from '../../utils/formatGameDate';
 import { scaleTableToFit } from '../../utils/scaleTable';
-import moment from 'moment-timezone';
 import Cookies from 'js-cookie';
 import analytics from '../../utils/analyticsFormat.js';
 
@@ -249,10 +249,7 @@ export default {
       }
     },
     formatDate(dateString) {
-      const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
-      const localDate = originalDate.clone().tz(moment.tz.guess());
-
-      return localDate.format('MM/DD/YYYY h:mm:ss a');
+      return formatGameDate(dateString);
     },
   },
 };

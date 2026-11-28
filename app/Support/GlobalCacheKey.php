@@ -22,11 +22,11 @@ namespace App\Support;
 class GlobalCacheKey
 {
     /**
-     * Transport rather than question: who is asking, and in what format. Neither
-     * changes the answer, and `mode=csv` should not recompute minutes of work to
+     * Transport rather than question: who is asking, in what format and language.
+     * None of them changes the answer, and `mode=csv` should not recompute minutes of work to
      * hand back data already cached as JSON.
      */
-    private const IGNORED = ['api_token', 'mode'];
+    private const IGNORED = ['api_token', 'mode', 'lang'];
 
     /**
      * @param  array<int, int|string>  $gameVersionIds

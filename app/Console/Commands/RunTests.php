@@ -16,7 +16,8 @@ class RunTests extends Command
     protected $signature = 'hp:test
         {suite=full : full, user, backend, unit or schema}
         {--filter= : Only tests whose name matches this (PHPUnit --filter)}
-        {--update-snapshots : Re-record the response snapshots instead of comparing them}';
+        {--update-snapshots : Re-record the response snapshots instead of comparing them}
+        {--html : Also compare pages\' full HTML, for an upgrade: re-record on the old version first, then run this on the new one}';
 
     protected $description = 'Run the test suites against the local test database container';
 
@@ -54,6 +55,9 @@ class RunTests extends Command
 
         if ($this->option('update-snapshots')) {
             $env['UPDATE_SNAPSHOTS'] = '1';
+        }
+        if ($this->option('html')) {
+            $env['SNAPSHOT_HTML'] = '1';
         }
 
         $command = [PHP_BINARY, '-d', 'memory_limit=10G', base_path('vendor/bin/phpunit')];

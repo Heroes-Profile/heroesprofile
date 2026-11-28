@@ -7,7 +7,7 @@
     <div class="flex gap-1">
       <div v-for="hero in heroesOn(0)" :key="hero.idx" class="flex flex-col items-center gap-1">
         <div
-          class="relative cursor-pointer rounded overflow-hidden w-[55px] [&_div]:!w-[55px] [&_img]:!w-[55px] [&_img]:!min-w-0 [&_img]:object-contain"
+          class="relative cursor-pointer rounded overflow-hidden w-[3.4375rem] [&_div]:!w-[3.4375rem] [&_img]:!w-[3.4375rem] [&_img]:!min-w-0 [&_img]:object-contain"
           :class="{ 'ring-2 ring-lyellow': hero.idx === selected }"
           @click="$emit('select', hero.idx)"
         >
@@ -25,14 +25,14 @@
     <!-- Clock, team levels and progress to the next level -->
     <div class="flex flex-col items-center justify-center min-w-[9em]">
       <span class="inline-flex items-center gap-1">
-        <span class="font-mono text-lg">{{ clock(t) }}</span>
-        <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
-          <slot><p class="text-sm p-2 text-left">The big numbers are team levels, with progress to the next level below. A number over a portrait is seconds until that hero respawns.</p></slot>
+        <span class="text-lg">{{ clock(t) }}</span>
+        <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+          <slot><p class="text-sm p-2 text-left">{{ $t('The big numbers are team levels, with progress to the next level below. A number over a portrait is seconds until that hero respawns.') }}</p></slot>
         </round-image>
       </span>
       <div class="flex items-center gap-3">
         <span class="text-4xl font-bold" :style="{ color: teamColor(0) }">{{ levels[0].level }}</span>
-        <span class="text-gray-light">vs</span>
+        <span class="text-gray-light">{{ $t('vs') }}</span>
         <span class="text-4xl font-bold" :style="{ color: teamColor(1) }">{{ levels[1].level }}</span>
       </div>
       <div class="flex gap-2 w-full mt-1">
@@ -45,7 +45,7 @@
     <div class="flex gap-1">
       <div v-for="hero in heroesOn(1)" :key="hero.idx" class="flex flex-col items-center gap-1">
         <div
-          class="relative cursor-pointer rounded overflow-hidden w-[55px] [&_div]:!w-[55px] [&_img]:!w-[55px] [&_img]:!min-w-0 [&_img]:object-contain"
+          class="relative cursor-pointer rounded overflow-hidden w-[3.4375rem] [&_div]:!w-[3.4375rem] [&_img]:!w-[3.4375rem] [&_img]:!min-w-0 [&_img]:object-contain"
           :class="{ 'ring-2 ring-lyellow': hero.idx === selected }"
           @click="$emit('select', hero.idx)"
         >

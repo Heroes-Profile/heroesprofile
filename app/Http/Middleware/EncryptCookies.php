@@ -18,12 +18,12 @@ class EncryptCookies extends Middleware
         'alt_search_account3',
         'battlenet_region',
         'header_alert_dismissed',
-        'darkmode',
-        'darkmode_pending',
         'talentbuilderstyle',
+        'talentstatsstyle',
         'talentbuilderload',
         'playerhistorytable',
         'talentStatsLayout',
         'advancedfiltering',
+        'locale',
     ];
 }

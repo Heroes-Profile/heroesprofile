@@ -3,6 +3,7 @@
 namespace App\Services\Api;
 
 use App\Models\Hero;
+use App\Models\HeroTranslation;
 use App\Models\Map;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
@@ -172,10 +173,7 @@ class NgsReplayIngestService
         return [
             'attributeToName' => $attributeToName,
             'lowerToAttribute' => $lowerToAttribute,
-            'translations' => DB::connection('heroesprofile')
-                ->table('heroes_translations')
-                ->pluck('name', 'translation')
-                ->all(),
+            'translations' => HeroTranslation::englishNamesByLocalized(),
         ];
     }
 
@@ -542,11 +540,8 @@ class NgsReplayIngestService
         }
 
         // The parser can hand back a localised hero name.
-        $translated = DB::connection('heroesprofile')
-            ->table('heroes_translations')
-            ->where('translation', $hero)
-            ->orWhere('translation', mb_strtolower($hero))
-            ->value('name');
+        $heroId = HeroTranslation::heroIdFor($hero);
+        $translated = $heroId === null ? null : Hero::where('id', $heroId)->value('name');
 
         if ($translated === null) {
             return 0;
@@ -622,13 +617,7 @@ class NgsReplayIngestService
             return (int) $id;
         }
 
-        $translated = DB::connection('heroesprofile')
-            ->table('heroes_translations')
-            ->where('translation', $name)
-            ->orWhere('translation', mb_strtolower($name))
-            ->value('name');
-
-        return $translated === null ? 0 : (int) Hero::where('name', $translated)->value('id');
+        return HeroTranslation::heroIdFor($name) ?? 0;
     }
 
     /** Hero id for the alt or short name the draft uses. */

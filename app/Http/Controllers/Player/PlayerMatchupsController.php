@@ -196,6 +196,16 @@ class PlayerMatchupsController extends Controller
                 }
             }
         }
+        // Ally then enemy win rate, whichever rows the query returned first
+        foreach ($returnData as $id => $row) {
+            foreach (['ally_win_rate', 'enemy_win_rate'] as $key) {
+                if (array_key_exists($key, $row)) {
+                    unset($row[$key]);
+                    $row[$key] = $returnData[$id][$key];
+                }
+            }
+            $returnData[$id] = $row;
+        }
         $topFiveAllyHeroes = collect($returnData)
             ->filter(function ($value, $key) {
                 return $value['ally_games_played'] >= 5;

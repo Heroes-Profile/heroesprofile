@@ -103,6 +103,22 @@ return [
 
     'fallback_locale' => 'en',
 
+    // Languages the site can be shown in, keyed by Laravel locale, labelled in their own language.
+    'supported_locales' => [
+        'en' => 'English',
+        'de' => 'Deutsch',
+        'es' => 'Español (España)',
+        'es-MX' => 'Español (Latinoamérica)',
+        'fr' => 'Français',
+        'it' => 'Italiano',
+        'ko' => '한국어',
+        'pl' => 'Polski',
+        'pt-BR' => 'Português (Brasil)',
+        'ru' => 'Русский',
+        'zh-CN' => '简体中文',
+        'zh-TW' => '繁體中文',
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Faker Locale

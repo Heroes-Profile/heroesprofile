@@ -56,7 +56,7 @@ class Handler extends ExceptionHandler
         return response()->json([
             'error' => [
                 'code' => 'invalid_parameters',
-                'message' => 'One or more parameters are invalid.',
+                'message' => __('One or more parameters are invalid.'),
                 'errors' => array_values(array_merge(...array_values($exception->errors()))),
             ],
         ], $exception->status);
@@ -79,8 +79,8 @@ class Handler extends ExceptionHandler
         };
 
         $message = $status === 500 || ! $this->isHttpException($e) || $e->getMessage() === ''
-            ? ($status === 500 ? 'Something went wrong on our side.' : 'Request could not be completed.')
-            : $e->getMessage();
+            ? ($status === 500 ? __('Something went wrong on our side.') : __('Request could not be completed.'))
+            : __($e->getMessage());
 
         return new JsonResponse(
             ['error' => ['code' => $code, 'message' => $message]],

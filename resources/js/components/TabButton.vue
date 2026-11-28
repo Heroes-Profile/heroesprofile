@@ -1,39 +1,18 @@
 <template>
-  <div class="flex flex-col md:flex-row">
-    <a 
-    :class="[
-      staticClasses, ' rounded-l ', 
-      {
-      'bg-blue  hover:bg-lblue ring-inset ring-lblue ring-2' : selectedSide === 'left',
-      ' bg-gray-dark hover:bg-gray-light' : selectedSide === 'right'
-      }
-    
-      ]" 
-      
-      :alt="tab1alt"
+  <!-- select-none: clicking tabs quickly mustn't highlight their labels -->
+  <!-- Wraps onto more rows when the tabs don't fit (a page's section nav on a phone) -->
+  <!-- dark: a dark bar with the picked tab in teal, as in the redesign (role chips); stretch: that bar across the page as a section nav, two even columns on phones -->
+  <div :class="['flex-wrap justify-center rounded p-1 gap-1 select-none', stretch ? 'w-full max-md:grid max-md:grid-cols-2 md:flex' : 'inline-flex', stretch ? 'bg-surface' : dark ? 'bg-surface-1' : 'bg-teal']">
+    <a
+      v-for="side in sides"
+      :key="side"
+      :class="[staticClasses, 'rounded', { 'md:flex-auto md:whitespace-nowrap max-md:[word-break:keep-all] max-md:last:odd:col-span-2': stretch }, (stretch || dark) && selectedSide !== side ? 'text-subtext' : 'text-white', selectedSide === side ? (stretch || dark ? 'bg-teal' : 'bg-surface-1') : disabled ? 'opacity-50 cursor-not-allowed' : (stretch || dark ? 'hover:text-white hover:bg-surface-2' : 'hover:bg-lteal')]"
+      :alt="tabs ? labels[side] : { left: tab1alt, right: tab2alt, third: tab3alt }[side]"
       role="button"
-
-      @click="handleClick('left')"
-      >
-     {{tab1text}}
+      @click="handleClick(side)"
+    >
+      {{ $t(tabs ? labels[side] : { left: tab1text, right: tab2text, third: tab3text }[side]) }}
     </a>
-    <a 
-    :class="[
-      staticClasses, 'rounded-r', 
-      {
-       'bg-blue  hover:bg-lblue ring-inset ring-lblue ring-2' : selectedSide === 'right',
-       ' bg-gray-dark hover:bg-gray-light' : selectedSide === 'left'
-      }
-      ]" 
-     
-      :alt="tab2alt"
-      role="button"
-       @click="handleClick('right')"
-     
-      >
-     {{tab2text}}
-    </a>
-
   </div>
 </template>
 
@@ -50,11 +29,26 @@
       
       tab2text: String,
       tab2alt: String,
-      
+
+      // Optional third tab, after the other two; it reports its side as 'third'
+      tab3text: String,
+      tab3alt: String,
+
+      // Any number of tabs instead of tab1-3: [{ key, text }]; a click reports the tab's key
+      tabs: Array,
+
       ignoreclick: Boolean,
       loading: false,
       overridedefaultside: String,
       small: Boolean,
+      // No tab highlighted until one is picked (a page's section nav, before a section is open)
+      noDefault: Boolean,
+      // Only the selected tab can be clicked (while its section loads)
+      disabled: Boolean,
+      // A page's section nav: across the page, tabs equal width, dark bar with the open tab in teal
+      stretch: Boolean,
+      // The same dark bar and teal pick at its own width (role chips)
+      dark: Boolean,
     },
     data(){
       return {
@@ -64,19 +58,44 @@
     created(){
       if(this.overridedefaultside){
         this.selectedSide = this.overridedefaultside;
+      } else if (this.noDefault) {
+        this.selectedSide = null;
+      } else if (this.tabs && this.tabs.length) {
+        this.selectedSide = this.tabs[0].key;
       }
     },
     mounted() {
     },
     computed: {
+      sides() {
+        if (this.tabs) {
+          return this.tabs.map(tab => tab.key);
+        }
+        return this.tab3text ? ['left', 'right', 'third'] : ['left', 'right'];
+      },
+      labels() {
+        return Object.fromEntries((this.tabs || []).map(tab => [tab.key, tab.text]));
+      },
       staticClasses() {
-        return 'transition-colors text-white inline-block ' + (this.small ? 'py-1 px-2 text-sm' : 'py-2 px-4 text-lg');
+        // One size for every toggle, as the Figma: 38px tall with its bar's padding, the same height as the pager
+        // (pagination-bar) so the two line up beside each other; a wrapped label can grow it. `small` is kept for the
+        // call sites but no longer changes the size
+        return 'transition-colors cursor-pointer text-center inline-flex items-center justify-center min-h-[1.875rem] px-3 text-sm';
       },
     },
     watch: {
+      // The page can pick the tab itself too (the esports section cards)
+      overridedefaultside(side) {
+        if (side || this.noDefault) {
+          this.selectedSide = side || null;
+        }
+      },
     },
     methods: {
       handleClick(side) {
+        if (this.disabled && side !== this.selectedSide) {
+          return;
+        }
         this.selectedSide = side;
         this.$emit('tab-click', side);
       }

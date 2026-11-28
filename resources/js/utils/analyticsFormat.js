@@ -67,10 +67,11 @@ export default {
     },
     heroName(id) {
       const hero = (this.heroes || []).find(h => h.code === Number(id));
-      return hero ? hero.name : 'Unknown hero';
+      return hero ? this.$heroName(hero.name) : 'Unknown hero';
     },
     mapName(id) {
-      return (this.maps || {})[id] || 'Map ' + id;
+      const name = (this.maps || {})[id];
+      return name ? this.$mapName(name) : 'Map ' + id;
     },
     // The site's filters name maps; the analytics data uses map ids
     mapId(name) {

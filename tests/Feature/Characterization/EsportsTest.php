@@ -37,6 +37,21 @@ class EsportsTest extends FeatureTestCase
             'Esports/Other/'.rawurlencode(self::OTHER_SERIES),
         ];
 
+        // The other leagues' player pages share NGS's controller; each shows its own league name
+        $battletag = rawurlencode(self::NGS_PLAYER_BATTLETAG).'/'.self::NGS_PLAYER_BLIZZ_ID;
+        foreach ([
+            'Esports/MastersClash/Player/'.$battletag => '?season='.self::MCL_SEASON,
+            'Esports/HeroesInternational/Player/'.$battletag => '?tournament=main&season='.self::HI_SEASON,
+            'Esports/HeroesInternational/Player/'.$battletag.'/Hero' => '?tournament=nationscup&season='.self::HI_SEASON,
+            'Esports/CCL/Player/'.$battletag => '?season='.self::CCL_SEASON,
+            'Esports/Other/'.rawurlencode(self::OTHER_SERIES).'/Player/'.$battletag => '',
+            'Esports/Other/'.rawurlencode(self::OTHER_SERIES).'/Player/'.$battletag.'/Map' => '',
+            'Esports/Other/'.rawurlencode(self::OTHER_SERIES).'/Player/'.$battletag.'/Match/History' => '',
+            'Esports/MastersClash/Player/'.$battletag.'/Match/History' => '?season='.self::MCL_SEASON,
+        ] as $page => $query) {
+            $uris[] = $page.$query;
+        }
+
         return collect($uris)->mapWithKeys(fn ($uri) => [$uri => [$uri]])->all();
     }
 

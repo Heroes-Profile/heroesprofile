@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Global;
 
 use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
+use App\Http\Controllers\Global\Concerns\ResolvesStatChange;
 use App\Models\GameType;
+use App\Models\GlobalCompositionChange;
 use App\Models\GlobalCompositions;
 use App\Models\MMRTypeID;
 use App\Models\SeasonGameVersion;
@@ -14,11 +16,12 @@ use Illuminate\Support\Facades\Validator;
 class GlobalCompositionsController extends GlobalsInputValidationController
 {
     use HandlesAsyncGlobalQueries;
+    use ResolvesStatChange;
 
     public const MINIMUM_PATCH = '2.47.0.75589';
 
     // Bump when the cached data changes shape or maths, so old entries are skipped.
-    private const COMPOSITION_STATS_CACHE_VERSION = 1;
+    private const COMPOSITION_STATS_CACHE_VERSION = 2;
 
     private const TOP_HEROES_CACHE_VERSION = 1;
 
@@ -87,7 +90,8 @@ class GlobalCompositionsController extends GlobalsInputValidationController
     public function executeCompositionsData(Request $request)
     {
         $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
-        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']))->pluck('id')->toArray();
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
         $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
         $heroLeagueTier = $request['hero_league_tier'];
@@ -119,11 +123,22 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $roleData = MMRTypeID::all();
         $roleData = $roleData->keyBy('mmr_type_id');
 
+        $changeData = null;
+
+        if (empty($mirror) && $this->checkIfChange($gameVersion, $region, $gameType, $gameMap, $leagueTier, $heroLeagueTier, $roleLeagueTier, $heroLevel)) {
+            $changeData = GlobalCompositionChange::query()
+                ->filterByGameVersion($this->calculateGameVersionsForHeroChange($gameVersion))
+                ->filterByGameType($gameType)
+                ->filterByHero($hero ?? 0)
+                ->get()
+                ->keyBy('composition_id');
+        }
+
         $totalGamesPlayed = $hero ? (collect($data)->sum('games_played')) : (collect($data)->sum('games_played') / 5);
 
         $filteredData = collect($data)
             ->groupBy('composition_id')
-            ->map(function ($group) use ($totalGamesPlayed, $roleData, $minimumGames, $hero) {
+            ->map(function ($group) use ($totalGamesPlayed, $roleData, $minimumGames, $hero, $changeData) {
                 $wins = $hero ? $group->where('win_loss', 1)->sum('games_played') : $group->where('win_loss', 1)->sum('games_played') / 5;
                 $losses = $hero ? $group->where('win_loss', 0)->sum('games_played') : $group->where('win_loss', 0)->sum('games_played') / 5;
                 $gamesPlayed = ($wins + $losses);
@@ -140,6 +155,8 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
                 $compositionData = $group->first()['composition'];
 
+                $change = $changeData ? $changeData->get($group->first()['composition_id']) : null;
+
                 $role_one = $roleData[$group->first()['composition']['role_one']];
                 $role_two = $roleData[$group->first()['composition']['role_two']];
                 $role_three = $roleData[$group->first()['composition']['role_three']];
@@ -151,6 +168,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                     'wins' => $wins,
                     'losses' => $losses,
                     'win_rate' => round($winRate, 2),
+                    'win_rate_change' => $change ? round(round($winRate, 2) - $change->win_rate, 2) : null,
                     'games_played' => round($gamesPlayed),
                     'popularity' => $popularity,
                     'role_one' => $role_one,

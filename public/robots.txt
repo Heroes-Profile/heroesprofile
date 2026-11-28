@@ -36,6 +36,7 @@ Allow: /Api/Terms$
 Allow: /Api/Privacy$
 Allow: /Upload$
 Allow: /Upload/Uploader$
+Allow: /Upload/Widget$
 Allow: /Drafter$
 Allow: /Tools/RandomizeMe$
 Allow: /Tools/AutoBattler$
@@ -44,6 +45,8 @@ Allow: /Twitch$
 Allow: /Twitch/Guidelines$
 Allow: /Github/Change/Log$
 Allow: /Community/Support$
+# The prediction game, the one page under /Match/ that isn't a single match (Disallow: /Match/ below)
+Allow: /Match/Prediction/Game$
 
 # Xal'atath event recap, and the shared player cards (X/Twitter only unfurls what robots.txt allows)
 Allow: /Event/Xalatath$
@@ -71,7 +74,17 @@ Allow: /Player/Zemill/67280/1/
 # Match pages
 Disallow: /Match/
 
-# Esports
+# Esports: the esports home and each league's main page only. Exact matches ($), so teams, organizations,
+# divisions, players, matches and filtered (?) versions stay blocked by the Disallow below
+Allow: /Esports$
+Allow: /Esports/NGS$
+Allow: /Esports/CCL$
+Allow: /Esports/MastersClash$
+Allow: /Esports/NutCup$
+Allow: /Esports/HeroesInternational$
+Allow: /Esports/HeroesInternational?tournament=main$
+Allow: /Esports/HeroesInternational?tournament=nationscup$
+Allow: /Esports/Other$
 Disallow: /Esports/
 
 # Pre-match & misc

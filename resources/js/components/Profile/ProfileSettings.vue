@@ -3,215 +3,270 @@
   <page-heading :heading="'Settings'"></page-heading>
   <!-- While a dropdown is open, a click anywhere just closes it (which saves) instead of opening another setting -->
   <div v-if="dropdownOpen" class="fixed inset-0 z-40"></div>
-  <div class="relative flex mx-auto w-full max-w-[1200px] mt-[2vh] min-h-[85vh]">
-    <div v-if="isLoading" class="absolute inset-0 z-50 rounded-lg overflow-hidden">
-      <loading-component :textoverride="true">Saving...</loading-component>
+  <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+    <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+      <span class="uppercase text-gray-medium">{{ $t('Profile preferences') }}</span>
+      <span class="flex items-center gap-2 text-sm text-subtext"><basil-icon name="check"></basil-icon>{{ $t('Changes are saved automatically') }}</span>
     </div>
 
-    <!-- Left sidebar -->
-    <div class="w-[180px] shrink-0 bg-lighten rounded-l-lg flex flex-col">
-      <nav class="flex flex-col pt-4">
-        <button
-          v-for="tab in tabs"
-          :key="tab.key"
-          @click="activeTab = tab.key"
-          class="text-left px-6 py-4 text-sm font-medium transition-colors"
-          :class="activeTab === tab.key ? 'bg-teal text-white' : 'text-gray-300 hover:bg-gray-700'"
-        >
-          {{ tab.label }}
-        </button>
-      </nav>
-    </div>
-
-    <!-- Right panel -->
-    <div class="flex-1 bg-lighten rounded-r-lg border-l border-gray-600">
-      <transition name="fade">
-        <div v-if="settingsSaved" class="bg-teal text-white text-center py-2 text-sm rounded-tr-lg">
-          Settings Saved
-        </div>
-      </transition>
-
-      <!-- General -->
-      <div v-if="activeTab === 'general'" class="p-8">
-        <h2 class="text-xl font-bold mb-6 text-teal">General</h2>
-        <div class="space-y-6">
-          <div>
-            <h3 class="mb-2">Table Style</h3>
-            <tab-button tab1text="Light" tab2text="Dark" :ignoreclick="true" @tab-click="darkmodesetting" :overridedefaultside="darkmode"></tab-button>
-          </div>
-          <div>
-            <h3 class="mb-1">Account Visibility</h3>
-            <p class="text-sm text-gray-400 mb-3">Control whether your profile is visible to other users.</p>
-            <single-select-filter class="w-fit"
-              :values="privateOptions"
-              :text="'Account Visibility'"
-              @dropdown-closed="dropdownOpen = false; setAccountVisbility()"
-              @input-changed="handleInputChange"
-              :defaultValue="accountVisibility"
-              :trackclosure="true"
-              @dropdown-opened="dropdownOpen = true"
-            ></single-select-filter>
-          </div>
-        </div>
-      </div>
-
-      <!-- Global Pages -->
-      <div v-if="activeTab === 'global'" class="p-8">
-        <h2 class="text-xl font-bold mb-6 text-teal">Global Pages</h2>
-        <div class="space-y-6">
-          <div>
-            <h3 class="mb-2">Default Multi-Select Game Type</h3>
-            <div class="w-fit">
-              <multi-select-filter
-                :values="filters.game_types_full"
-                :text="'Game Type'"
-                @dropdown-closed="dropdownOpen = false; saveSettings()"
-                @input-changed="handleInputChange"
-                :defaultValue="usermultigametype"
-                :trackclosure="true"
-              @dropdown-opened="dropdownOpen = true"
-              ></multi-select-filter>
+    <div class="grid md:grid-cols-2 gap-6 [&>*]:min-w-0">
+        <panel-box title="General" subtitle="Appearance, privacy and language." :divider="false" @click.capture="saveCard = 'general'">
+          <template #right>
+            <span v-if="saveState && saveCard === 'general'" class="ml-auto self-start flex items-center gap-2 text-sm text-subtext" aria-live="polite">
+              <img v-if="saveState === 'saving'" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
+              <basil-icon v-else name="check" class="text-teal"></basil-icon>
+              {{ saveState === 'saving' ? $t('Saving...') : $t('Saved') }}
+            </span>
+          </template>
+          <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
+            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+              <div class="min-w-0">
+                <h4 class="font-medium">{{ $t('Account Visibility') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('Control whether your profile is visible to other users.') }}</p>
+              </div>
+              <tab-button class="shrink-0 self-start sm:self-auto" tab1text="Public" tab2text="Private" :small="true" :ignoreclick="true" @tab-click="accountvisibilitysetting" :overridedefaultside="accountVisibility === 'true' ? 'right' : 'left'"></tab-button>
             </div>
-          </div>
-          <div>
-            <h3 class="mb-2">Default Single Game Type</h3>
-            <single-select-filter class="w-fit"
-              :values="filters.game_types_full"
-              :text="'Game Type'"
-              @dropdown-closed="dropdownOpen = false; saveSettings()"
-              @input-changed="handleInputChange"
-              :defaultValue="usergametype"
-              :trackclosure="true"
-              @dropdown-opened="dropdownOpen = true"
-            ></single-select-filter>
-          </div>
-          <div>
-            <h3 class="mb-2">Default Build Type</h3>
-            <single-select-filter class="w-fit"
-              :values="filters.talent_build_types"
-              :text="'Talent Build Type'"
-              @dropdown-closed="dropdownOpen = false; saveSettings()"
-              @input-changed="handleInputChange"
-              :defaultValue="talentBuildType"
-              :trackclosure="true"
-              @dropdown-opened="dropdownOpen = true"
-            ></single-select-filter>
-          </div>
-          <div>
-            <h3 class="mb-2">Talent Builder Layout</h3>
-            <tab-button tab1text="Vertical" tab2text="Horizontal" :ignoreclick="true" @tab-click="talentbuilderstylesetting" :overridedefaultside="talentbuilderstyle"></tab-button>
-          </div>
-          <div>
-            <h3 class="mb-2">Talent Builder Load</h3>
-            <tab-button tab1text="Auto Load" tab2text="On Filter" :ignoreclick="true" @tab-click="talentbuilderloadsetting" :overridedefaultside="talentbuilderload"></tab-button>
-          </div>
-          <div>
-            <h3 class="mb-2">Talent Statistics Layout</h3>
-            <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" @tab-click="setTalentStatsLayout" :overridedefaultside="talentStatsLayout"></tab-button>
-          </div>
-          <div>
-            <h3 class="mb-2">Show Advanced Filtering Options</h3>
-            <single-select-filter class="w-fit"
-              :values="advancedfilteringoptions"
-              :text="'Advanced Filtering'"
-              @dropdown-closed="dropdownOpen = false; saveSettings()"
-              @input-changed="handleInputChange"
-              :defaultValue="advancedfiltering"
-              :trackclosure="true"
-              @dropdown-opened="dropdownOpen = true"
-            ></single-select-filter>
-          </div>
-        </div>
-      </div>
-
-      <!-- Player -->
-      <div v-if="activeTab === 'player'" class="p-8">
-        <h2 class="text-xl font-bold mb-6 text-teal">Player</h2>
-        <div class="space-y-6">
-          <div>
-            <h3 class="mb-2">Match History Style</h3>
-            <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" @tab-click="playermatchhistorystylesetting" :overridedefaultside="playerhistorytable"></tab-button>
-            <div class="flex flex-wrap gap-4 mt-4">
-              <div v-for="example in matchHistoryStyleExamples" :key="example.side" class="max-w-[600px] w-full">
-                <p class="text-sm mb-1">{{ example.label }}</p>
-                <img :src="example.image" :alt="example.label + ' match history example'" :class="['w-full rounded border-2', playerhistorytable === example.side ? 'border-teal' : 'border-gray-dark opacity-60']" />
+            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+              <div class="min-w-0">
+                <h4 class="font-medium">{{ $t('Language') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('Interface language of the site.') }}</p>
+              </div>
+              <div class="w-full sm:w-2/5 sm:max-w-[20rem] shrink-0">
+                <single-select-filter :compact="true" :hidelabel="true"
+                  :values="localeOptions"
+                  :text="'Language'"
+                  @dropdown-closed="dropdownOpen = false; saveLocale()"
+                  @input-changed="handleInputChange"
+                  :defaultValue="userLocale"
+                  :trackclosure="true"
+                  @dropdown-opened="dropdownOpen = true"
+                ></single-select-filter>
               </div>
             </div>
           </div>
-          <div>
-            <h3 class="mb-2">Default Player Pages Game Type</h3>
-            <p class="text-sm text-gray-400 mb-2">Nothing ticked shows every game type. HP MMR uses the first one ticked, or Storm League.</p>
-            <div class="w-fit">
-              <multi-select-filter
-                :values="filters.game_types_full"
-                :text="'Player Game Type'"
-                @dropdown-closed="dropdownOpen = false; saveSettings()"
-                @input-changed="handleInputChange"
-                :defaultValue="playermultigametype"
-                :trackclosure="true"
-              @dropdown-opened="dropdownOpen = true"
-              ></multi-select-filter>
+        </panel-box>
+
+        <panel-box title="Global Pages" subtitle="Defaults for hero, talent and global statistics pages." :divider="false" @click.capture="saveCard = 'global'">
+          <template #right>
+            <span v-if="saveState && saveCard === 'global'" class="ml-auto self-start flex items-center gap-2 text-sm text-subtext" aria-live="polite">
+              <img v-if="saveState === 'saving'" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
+              <basil-icon v-else name="check" class="text-teal"></basil-icon>
+              {{ saveState === 'saving' ? $t('Saving...') : $t('Saved') }}
+            </span>
+          </template>
+          <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
+            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+              <div class="min-w-0">
+                <h4 class="font-medium">{{ $t('Multi-Select Game Type') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('Used on pages where several game types can be combined.') }}</p>
+              </div>
+              <div class="w-full sm:w-2/5 sm:max-w-[20rem] shrink-0">
+                <multi-select-filter :compact="true" :hidelabel="true"
+                  :values="filters.game_types_full"
+                  :text="'Game Type'"
+                  @dropdown-closed="dropdownOpen = false; saveSettings()"
+                  @input-changed="handleInputChange"
+                  :defaultValue="usermultigametype"
+                  :trackclosure="true"
+                  @dropdown-opened="dropdownOpen = true"
+                ></multi-select-filter>
+              </div>
+            </div>
+            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+              <div class="min-w-0">
+                <h4 class="font-medium">{{ $t('Single Game Type') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('Used on pages that show one game type at a time.') }}</p>
+              </div>
+              <div class="w-full sm:w-2/5 sm:max-w-[20rem] shrink-0">
+                <single-select-filter :compact="true" :hidelabel="true"
+                  :values="filters.game_types_full"
+                  :text="'Game Type'"
+                  @dropdown-closed="dropdownOpen = false; saveSettings()"
+                  @input-changed="handleInputChange"
+                  :defaultValue="usergametype"
+                  :trackclosure="true"
+                  @dropdown-opened="dropdownOpen = true"
+                ></single-select-filter>
+              </div>
+            </div>
+            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+              <div class="min-w-0">
+                <h4 class="font-medium">{{ $t('Build Type') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('Which talent builds are shown first.') }}</p>
+              </div>
+              <div class="w-full sm:w-2/5 sm:max-w-[20rem] shrink-0">
+                <single-select-filter :compact="true" :hidelabel="true"
+                  :values="filters.talent_build_types"
+                  :text="'Talent Build Type'"
+                  @dropdown-closed="dropdownOpen = false; saveSettings()"
+                  @input-changed="handleInputChange"
+                  :defaultValue="talentBuildType"
+                  :trackclosure="true"
+                  @dropdown-opened="dropdownOpen = true"
+                ></single-select-filter>
+              </div>
+            </div>
+            <label class="flex items-center justify-between gap-x-6 cursor-pointer">
+              <div class="min-w-0">
+                <h4 class="font-medium">{{ $t('Advanced Filtering') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('Show advanced filter options by default.') }}</p>
+              </div>
+              <input type="checkbox" class="form-checkbox" :checked="advancedfiltering === 'true'" @change="advancedfiltering = $event.target.checked ? 'true' : 'false'; saveSettings()">
+            </label>
+          </div>
+        </panel-box>
+
+        <panel-box title="Player Pages" subtitle="Defaults for player profile and match history pages." :divider="false" @click.capture="saveCard = 'player'">
+          <template #right>
+            <span v-if="saveState && saveCard === 'player'" class="ml-auto self-start flex items-center gap-2 text-sm text-subtext" aria-live="polite">
+              <img v-if="saveState === 'saving'" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
+              <basil-icon v-else name="check" class="text-teal"></basil-icon>
+              {{ saveState === 'saving' ? $t('Saving...') : $t('Saved') }}
+            </span>
+          </template>
+          <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
+            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+              <div class="min-w-0">
+                <h4 class="font-medium">{{ $t('Match History Style') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('Compact table or expanded game rows.') }}</p>
+              </div>
+              <!-- Labelled as on the Match History page -->
+              <tab-button class="shrink-0 self-start sm:self-auto" tab1text="Compact" tab2text="Expanded" :small="true" :ignoreclick="true" @tab-click="playermatchhistorystylesetting" :overridedefaultside="playerhistorytable"></tab-button>
+            </div>
+            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+              <div class="min-w-0">
+                <h4 class="font-medium">{{ $t('Default Game Type') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('Nothing selected shows every game type. HP MMR uses the first one selected, or Storm League.') }}</p>
+              </div>
+              <div class="w-full sm:w-2/5 sm:max-w-[20rem] shrink-0">
+                <multi-select-filter :compact="true" :hidelabel="true" placeholder="All game types"
+                  :values="filters.game_types_full"
+                  :text="'Player Game Type'"
+                  @dropdown-closed="dropdownOpen = false; saveSettings()"
+                  @input-changed="handleInputChange"
+                  :defaultValue="playermultigametype"
+                  :trackclosure="true"
+                  @dropdown-opened="dropdownOpen = true"
+                ></multi-select-filter>
+              </div>
+            </div>
+            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+              <div class="min-w-0">
+                <h4 class="font-medium">{{ $t('Initial Load Style') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('How player data is loaded when a profile opens.') }}</p>
+              </div>
+              <div class="w-full sm:w-2/5 sm:max-w-[20rem] shrink-0">
+                <single-select-filter :compact="true" :hidelabel="true"
+                  :values="playerdataloadstyles"
+                  :text="'Player Load'"
+                  @dropdown-closed="dropdownOpen = false; saveSettings()"
+                  @input-changed="handleInputChange"
+                  :defaultValue="playerload"
+                  :trackclosure="true"
+                  @dropdown-opened="dropdownOpen = true"
+                ></single-select-filter>
+              </div>
+            </div>
+            <label class="flex items-center justify-between gap-x-6 cursor-pointer">
+              <div class="min-w-0">
+                <h4 class="font-medium">{{ $t('Show Custom Games') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('Applies to Match History only.') }}</p>
+              </div>
+              <input type="checkbox" class="form-checkbox" :checked="customgames" @change="customgames = $event.target.checked; saveSettings()">
+            </label>
+          </div>
+        </panel-box>
+
+        <panel-box title="Talents" subtitle="Talent builder and talent statistics on global pages." :divider="false" @click.capture="saveCard = 'talents'">
+          <template #right>
+            <span v-if="saveState && saveCard === 'talents'" class="ml-auto self-start flex items-center gap-2 text-sm text-subtext" aria-live="polite">
+              <img v-if="saveState === 'saving'" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
+              <basil-icon v-else name="check" class="text-teal"></basil-icon>
+              {{ saveState === 'saving' ? $t('Saving...') : $t('Saved') }}
+            </span>
+          </template>
+          <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
+            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+              <h4 class="font-medium">{{ $t('Talent Builder Layout') }}</h4>
+              <tab-button class="shrink-0 self-start sm:self-auto" tab1text="Vertical" tab2text="Horizontal" :small="true" :ignoreclick="true" @tab-click="talentbuilderstylesetting" :overridedefaultside="talentbuilderstyle"></tab-button>
+            </div>
+            <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+              <div class="min-w-0">
+                <h4 class="font-medium">{{ $t('Talent Builder Load') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('Load builds right away or only after applying filters.') }}</p>
+              </div>
+              <tab-button class="shrink-0 self-start sm:self-auto" tab1text="Auto Load" tab2text="On Filter" :small="true" :ignoreclick="true" @tab-click="talentbuilderloadsetting" :overridedefaultside="talentbuilderload"></tab-button>
             </div>
           </div>
-          <div>
-            <h3 class="mb-2">Player Data Initial Load Style</h3>
-            <single-select-filter class="w-fit"
-              :values="playerdataloadstyles"
-              :text="'Player Load'"
-              @dropdown-closed="dropdownOpen = false; saveSettings()"
-              @input-changed="handleInputChange"
-              :defaultValue="playerload"
-              :trackclosure="true"
-              @dropdown-opened="dropdownOpen = true"
-            ></single-select-filter>
-          </div>
-          <div>
-            <h3 class="mb-2">Show Custom Games (Match History only)</h3>
-            <single-select-filter class="w-fit"
-              :values="showcustomgamesoptions"
-              :text="'Show Custom Games'"
-              @dropdown-closed="dropdownOpen = false; saveSettings()"
-              @input-changed="handleInputChange"
-              :defaultValue="customgames"
-              :trackclosure="true"
-              @dropdown-opened="dropdownOpen = true"
-            ></single-select-filter>
-          </div>
-        </div>
-      </div>
+        </panel-box>
 
-      <!-- Flair -->
-      <div v-if="activeTab === 'flair'" class="p-8">
-        <h2 class="text-xl font-bold mb-6 text-teal">Flair</h2>
-        <p class="text-sm text-gray-400 mb-6">Choose which flair shows next to your battletag. Hidden flair is hidden for everyone.</p>
-        <div class="space-y-6">
-          <div v-for="flair in flairOptions" :key="flair.key">
-            <h3 class="mb-1 flex items-center gap-2">
-              <i v-if="flair.icon" :class="flair.icon" :style="flair.iconStyle"></i>
-              {{ flair.label }}
-            </h3>
-            <p class="text-sm text-gray-400 mb-3">{{ flair.description }}</p>
-            <tab-button tab1text="Show" tab2text="Hide" :ignoreclick="true" @tab-click="(side) => flairsetting(flair.key, side)" :overridedefaultside="flairSides[flair.key]"></tab-button>
+        <panel-box v-if="flairOptions.length || availableBorders.length" title="Flair" subtitle="Choose which flair shows next to your BattleTag. Hidden flair is hidden for everyone." :divider="false" @click.capture="saveCard = 'flair'">
+          <template #right>
+            <span v-if="saveState && saveCard === 'flair'" class="ml-auto self-start flex items-center gap-2 text-sm text-subtext" aria-live="polite">
+              <img v-if="saveState === 'saving'" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
+              <basil-icon v-else name="check" class="text-teal"></basil-icon>
+              {{ saveState === 'saving' ? $t('Saving...') : $t('Saved') }}
+            </span>
+          </template>
+          <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
+            <div v-if="availableBorders.length" class="flex flex-col gap-3">
+              <div>
+                <h4 class="font-medium">{{ $t('Avatar border') }}</h4>
+                <p class="text-sm text-subtext">{{ $t('The border around your picture in the top bar.') }}</p>
+              </div>
+              <!-- Each choice drawn on the top bar's picture; click one to use it. Up to four, so pictures rather than the tab button. -->
+              <div class="flex flex-wrap gap-4">
+                <button v-for="option in borderOptions" :key="option.key" type="button" :aria-pressed="option.key === avatarBorder" @click="avatarbordersetting(option.key)"
+                  :class="['flex flex-col items-center gap-3 w-[8.5rem] px-3 pt-4 pb-3 rounded border-2 transition-colors', option.key === avatarBorder ? 'bg-surface-1 border-teal text-white' : 'bg-surface-1 border-transparent text-subtext hover:bg-surface-2']">
+                  <span class="relative block">
+                    <span :class="['relative block w-14 h-14 rounded overflow-hidden', borderPreviewClass[option.key], option.key === avatarBorder ? '' : 'opacity-60']">
+                      <img class="w-full h-full object-cover" src="/images/heroes/auto_select.jpg" alt="">
+                    </span>
+                    <owner-sparks v-if="option.key === 'owner'"></owner-sparks>
+                  </span>
+                  <span class="text-sm">{{ $t(option.label) }}</span>
+                </button>
+              </div>
+            </div>
+            <div v-for="flair in flairOptions" :key="flair.key" class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+              <div class="min-w-0 flex items-center gap-4">
+                <i v-if="flair.icon" :class="['shrink-0', flair.icon, flair.iconClass]"></i>
+                <div class="min-w-0">
+                  <h4 class="font-medium">{{ flair.label }}</h4>
+                  <p class="text-sm text-subtext">{{ flair.description }}</p>
+                </div>
+              </div>
+              <tab-button class="shrink-0 self-start sm:self-auto" tab1text="Show" tab2text="Hide" :small="true" :ignoreclick="true" @tab-click="(side) => flairsetting(flair.key, side)" :overridedefaultside="flairSides[flair.key]"></tab-button>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Connections -->
-      <div v-if="activeTab === 'connections'" class="p-8">
-        <h2 class="text-xl font-bold mb-6 text-teal">Connections</h2>
-        <div class="space-y-8">
-          <div class="">
-            <h3 class="mb-1">Patreon</h3>
-            <p class="text-sm text-gray-400 mb-3">Link your Patreon account to unlock supporter features.</p>
-            <div class="flex items-center gap-4">
-              <span v-if="user.patreon_account" class="bg-teal px-3 py-1 rounded text-sm">Connected</span>
+        </panel-box>
+  
+        <panel-box title="Connections" subtitle="Linked accounts." :divider="false" class="self-start">
+          <template #right>
+            <span v-if="saveState && saveCard === 'connections'" class="ml-auto self-start flex items-center gap-2 text-sm text-subtext" aria-live="polite">
+              <img v-if="saveState === 'saving'" class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="" />
+              {{ $t('Removing Patreon...') }}
+            </span>
+          </template>
+          <div class="flex flex-col mt-2 divide-y divide-field [&>*]:py-4 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
+          <div class="min-w-0">
+            <h4 class="font-medium flex items-center gap-3">Battle.net <span class="bg-teal px-3 py-1 rounded text-sm font-normal">{{ $t('Connected') }}</span></h4>
+            <p class="text-sm text-subtext">{{ user.battletag }}</p>
+          </div>
+          <div class="flex max-sm:flex-col sm:items-center justify-between gap-x-6 gap-y-2">
+            <div class="min-w-0">
+              <h4 class="font-medium flex items-center gap-3">Patreon <span v-if="user.patreon_account" class="bg-teal px-3 py-1 rounded text-sm font-normal">{{ $t('Connected') }}</span></h4>
+              <p v-if="user.patreon_account" class="text-sm text-subtext">{{ patreonEmail }}</p>
+              <p v-else class="text-sm text-subtext">{{ $t('Link your Patreon account to unlock supporter features.') }}</p>
+            </div>
+            <div class="flex items-center gap-4 shrink-0 [&>a]:font-bold">
               <custom-button
                 v-if="!user.patreon_account"
                 :href="'/authenticate/patreon'"
                 text="Login with Patreon"
                 alt="Login with Patreon"
                 size="medium"
-                color="blue"
+                color="red"
               ></custom-button>
               <custom-button
                 v-if="user.patreon_account"
@@ -220,50 +275,62 @@
                 alt="Remove Patreon"
                 size="medium"
                 color="red"
+                :loading="saveCard === 'connections' && saveState === 'saving'"
+                :disabled="saveCard === 'connections' && saveState === 'saving'"
                 @click="removePatreon()"
               ></custom-button>
             </div>
           </div>
-        </div>
-      </div>
+          </div>
+        </panel-box>
     </div>
-  </div>
-  <div class="mx-auto w-full max-w-[1200px] mt-4 px-2 text-sm text-gray-400">
-    To request new settings, please contact us directly at
-    <a href="mailto:Zemill@heroesprofile.com" class="link">Zemill@heroesprofile.com</a>,
-    or open a discussion on
-    <a href="https://github.com/Heroes-Profile/heroesprofile/discussions" target="_blank" class="link">GitHub</a>.
+
+    <div class="text-center text-sm text-subtext">
+      To request new settings, please contact us directly at
+      <a href="mailto:Zemill@heroesprofile.com" class="link">Zemill@heroesprofile.com</a>,
+      or open a discussion on
+      <a href="https://github.com/Heroes-Profile/heroesprofile/discussions" target="_blank" class="link">GitHub</a>.
+    </div>
   </div>
   </div>
 
 </template>
 
 <script>
+import Cookies from 'js-cookie';
+
 export default {
   name: 'ProfileSettings',
   props: {
     user: Object,
     filters: Object,
+    locale: { type: String, default: 'en' },
+    locales: { type: Object, default: () => ({}) },
     availableFlair: {
       type: Array,
       default: () => [],
     },
+    // Avatar borders this account has earned: 'owner', 'patreon', 'void_eye'
+    availableBorders: {
+      type: Array,
+      default: () => [],
+    },
+    patreonEmail: { type: String, default: null },
   },
   data() {
     return {
-      isLoading: false,
       dropdownOpen: false,
-      activeTab: 'general',
-      tabs: [
-        { key: 'general',     label: 'General' },
-        { key: 'global',      label: 'Global Pages' },
-        { key: 'player',      label: 'Player' },
-        ...(this.availableFlair.length ? [{ key: 'flair', label: 'Flair' }] : []),
-        { key: 'connections', label: 'Connections' },
-      ],
+      // null, 'saving' or 'saved', shown in the top right of the card the change was made in
+      saveState: null,
+      // The card last clicked in: general, global, player, talents, flair or connections
+      saveCard: null,
+      savedTimer: null,
       // 'left' = show, 'right' = hide
       flairSides: { owner: 'left', patreon: 'left', void_eye: 'left' },
       flairHide: {},
+      // The nav avatar's border: 'owner', 'patreon', 'void_eye' or 'none'
+      avatarBorder: null,
+      borderChange: {},
 
       usergametype: null,
       playermultigametype: null,
@@ -272,36 +339,17 @@ export default {
       savemultigametype: null,
       advancedfiltering: null,
       talentBuildType: null,
-      darkmode: 'left',
       talentbuilderstyle: 'left',
       talentbuilderload: 'left',
-      talentStatsLayout: 'left',
+      userLocale: this.locale,
       playerhistorytable: 'left',
       playerload: 'true',
       customgames: false,
       accountVisibility: 'false',
-      settingsSaved: false,
 
-      advancedfilteringoptions: [
-        { code: 'true',  name: 'Show' },
-        { code: 'false', name: "Don't Show" },
-      ],
-      privateOptions: [
-        { code: 'true',  name: 'Private' },
-        { code: 'false', name: 'Not Private' },
-      ],
       playerdataloadstyles: [
         { code: 'true',  name: 'Standard' },
         { code: 'false', name: 'No Load' },
-      ],
-      // 'left' = table, 'right' = compact, matching the tab button
-      matchHistoryStyleExamples: [
-        { side: 'left',  label: 'Table',   image: '/images/settings/match_history_table.png' },
-        { side: 'right', label: 'Compact', image: '/images/settings/match_history_compact.png' },
-      ],
-      showcustomgamesoptions: [
-        { code: false, name: "Don't Show" },
-        { code: true,  name: 'Show' },
       ],
     };
   },
@@ -314,23 +362,35 @@ export default {
     this.savemultigametype = this.usermultigametype;
     this.advancedfiltering = this.defaultAdvancedFiltering;
     this.talentBuildType = this.defaultBuildType;
-    this.darkmode = this.defaultDarkMode;
     this.talentbuilderstyle = this.defaultTalentBuilderStyle;
     this.talentbuilderload = this.user.user_settings.some(item => item.setting === 'talentbuilderload' && item.value === 'filter') ? 'right' : 'left';
-    this.talentStatsLayout = this.user.user_settings.some(item => item.setting === 'talentStatsLayout' && item.value === 'compact') ? 'right' : 'left';
     this.playerhistorytable = this.defaultPlayerhistorytable;
     this.customgames = this.defaultCustomGames;
     this.playerload = this.defaultPlayerLoad;
+    const border = this.user.user_settings.find(item => item.setting === 'avatar_border');
+    this.avatarBorder = border && (border.value === 'none' || this.availableBorders.includes(border.value)) ? border.value : (this.availableBorders[0] || 'none');
     ['owner', 'patreon', 'void_eye'].forEach((key) => {
       const setting = this.user.user_settings.find(item => item.setting === `flair_hide_${key}`);
       this.flairSides[key] = setting && setting.value == 1 ? 'right' : 'left';
     });
   },
   computed: {
+    localeOptions() {
+      return Object.entries(this.locales).map(([code, name]) => ({ code, name }));
+    },
+    // The same classes the nav gives the picture (nav.blade.php)
+    borderPreviewClass() {
+      return { owner: 'border-2 owner-glow', patreon: 'border-2 border-gold patreon-glow', void_eye: 'border-2 border-[#a77bf3] void-glow', none: '' };
+    },
+    // The earned borders, then None, in the tab button's order
+    borderOptions() {
+      const labels = { owner: 'Site Owner', patreon: 'Patreon', void_eye: 'Mark of the Void' };
+      return [...this.availableBorders.map(key => ({ key, label: labels[key] })), { key: 'none', label: 'None' }];
+    },
     flairOptions() {
       const all = [
-        { key: 'owner', label: 'Site Owner', description: 'The crown shown for the Heroes Profile owner.', icon: 'fas fa-crown', iconStyle: 'color:gold' },
-        { key: 'patreon', label: 'Patreon', description: 'The star shown for Patreon supporters.', icon: 'fas fa-star', iconStyle: 'color:gold' },
+        { key: 'owner', label: 'Site Owner', description: 'The crown shown for the Heroes Profile owner.', icon: 'fas fa-crown owner-crown' },
+        { key: 'patreon', label: 'Patreon', description: 'The star shown for Patreon supporters.', icon: 'fas fa-star', iconClass: 'text-gold' },
         { key: 'void_eye', label: 'Mark of the Void', description: "Earned by finding Xal'atath's eye. Hiding it does not affect your ad-free time.", icon: 'void-eye-img' },
       ];
       return all.filter(flair => this.availableFlair.includes(flair.key));
@@ -372,13 +432,6 @@ export default {
       }
       return 'false';
     },
-    defaultDarkMode() {
-      if (this.user.user_settings.length > 0) {
-        let setting = this.user.user_settings.find(item => item.setting === 'darkmode');
-        return (setting && setting.value == 1) ? 'right' : 'left';
-      }
-      return 'left';
-    },
     defaultTalentBuilderStyle() {
       if (this.user.user_settings.length > 0) {
         let setting = this.user.user_settings.find(item => item.setting === 'talentbuilderstyle');
@@ -409,71 +462,81 @@ export default {
     },
   },
   methods: {
-    async saveSettings() {
-      this.isLoading = true;
-
-      let darkmodeinput = this.darkmode === 'right' ? true : false;
+    // Runs a save with the note showing Saving..., then Saved for a moment
+    async withSaveState(save) {
+      clearTimeout(this.savedTimer);
+      this.saveState = 'saving';
+      try {
+        await save();
+        this.saveState = 'saved';
+        this.savedTimer = setTimeout(() => { this.saveState = null; }, 3000);
+      } catch (error) {
+        this.saveState = null;
+      }
+    },
+    saveSettings() {
+      return this.withSaveState(() => this.postSettings());
+    },
+    async postSettings() {
       let playerhistorytableinput = this.playerhistorytable === 'right' ? true : false;
 
-      try {
-        await this.$axios.post('/api/v1/profile/save/settings', {
-          usergametype: this.usergametype,
-          playermultigametype: this.saveplayermultigametype,
-          usermultigametype: this.savemultigametype,
-          advancedfiltering: this.advancedfiltering,
-          talentbuildtype: this.talentBuildType,
-          talentbuilderstyle: this.talentbuilderstyle === 'right' ? 'horizontal' : 'vertical',
-          talentbuilderload: this.talentbuilderload === 'right' ? 'filter' : 'auto',
-          talentStatsLayout: this.talentStatsLayout === 'right' ? 'compact' : 'table',
-          darkmode: darkmodeinput,
-          playerload: this.playerload,
-          customgames: this.customgames,
-          playerhistorytable: playerhistorytableinput,
-          ...this.flairHide,
-        });
-        this.flairHide = {};
-        this.settingsSaved = true;
-        setTimeout(() => { this.settingsSaved = false; }, 5000);
-        this.usermultigametype = this.savemultigametype;
-        this.playermultigametype = this.saveplayermultigametype;
-      } catch (error) {
-        // handle error
-      }
-      this.isLoading = false;
+      await this.$axios.post('/api/v1/profile/save/settings', {
+        usergametype: this.usergametype,
+        playermultigametype: this.saveplayermultigametype,
+        usermultigametype: this.savemultigametype,
+        advancedfiltering: this.advancedfiltering,
+        talentbuildtype: this.talentBuildType,
+        talentbuilderstyle: this.talentbuilderstyle === 'right' ? 'horizontal' : 'vertical',
+        talentbuilderload: this.talentbuilderload === 'right' ? 'filter' : 'auto',
+        playerload: this.playerload,
+        customgames: this.customgames,
+        playerhistorytable: playerhistorytableinput,
+        ...this.flairHide,
+        ...this.borderChange,
+      });
+      this.flairHide = {};
+      this.borderChange = {};
+      this.usermultigametype = this.savemultigametype;
+      this.playermultigametype = this.saveplayermultigametype;
     },
-    async setAccountVisbility() {
-      try {
-        await this.$axios.post('/api/v1/profile/set/account/visibility', {
-          accountVisibility: this.accountVisibility,
-        });
-      } catch (error) {
-        // handle error
+    async saveLocale() {
+      if (this.userLocale === this.locale) {
+        return;
       }
+
+      Cookies.set('locale', this.userLocale, { expires: 365, path: '/' });
+      await this.$axios.post('/api/v1/profile/save/settings', { locale: this.userLocale }).catch(() => {});
+      window.location.reload();
     },
+    accountvisibilitysetting(side) {
+      this.accountVisibility = side === 'right' ? 'true' : 'false';
+      this.withSaveState(() => this.$axios.post('/api/v1/profile/set/account/visibility', {
+        accountVisibility: this.accountVisibility,
+      }));
+    },
+    // Shows "Removing Patreon..." in the card until the page reloads with the account unlinked
     async removePatreon() {
+      if (this.saveCard === 'connections' && this.saveState === 'saving') return;
+      this.saveCard = 'connections';
+      this.saveState = 'saving';
       try {
-        await this.$axios.post('/api/v1/profile/remove/patreon', {
-        });
+        await this.$axios.post('/api/v1/profile/remove/patreon', {});
         window.location.href = '/Profile/Settings';
       } catch (error) {
-        // handle error
+        this.saveState = null;
       }
     },
     handleInputChange(eventPayload) {
       if (eventPayload.type === 'single') {
         const { field, value } = eventPayload;
-        if (field === 'Advanced Filtering') {
-          this.advancedfiltering = value;
-        } else if (field === 'Account Visibility') {
-          this.accountVisibility = value;
-        } else if (field === 'Talent Build Type') {
+        if (field === 'Talent Build Type') {
           this.talentBuildType = value;
         } else if (field === 'Game Type') {
           this.usergametype = value;
         } else if (field === 'Player Load') {
           this.playerload = value;
-        } else if (field === 'Show Custom Games') {
-          this.customgames = value;
+        } else if (field === 'Language') {
+          this.userLocale = value;
         }
       } else if (eventPayload.type === 'multi') {
         if (eventPayload.field === 'Game Type') {
@@ -483,10 +546,6 @@ export default {
         }
       }
     },
-    darkmodesetting(side) {
-      this.darkmode = side;
-      this.saveSettings();
-    },
     talentbuilderstylesetting(side) {
       this.talentbuilderstyle = side;
       this.saveSettings();
@@ -495,12 +554,13 @@ export default {
       this.talentbuilderload = side;
       this.saveSettings();
     },
-    setTalentStatsLayout(side) {
-      this.talentStatsLayout = side;
-      this.saveSettings();
-    },
     playermatchhistorystylesetting(side) {
       this.playerhistorytable = side;
+      this.saveSettings();
+    },
+    avatarbordersetting(key) {
+      this.avatarBorder = key;
+      this.borderChange = { avatar_border: this.avatarBorder };
       this.saveSettings();
     },
     flairsetting(key, side) {
@@ -512,7 +572,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.fade-enter-active, .fade-leave-active { transition: opacity 0.4s; }
-.fade-enter, .fade-leave-to { opacity: 0; }
-</style>

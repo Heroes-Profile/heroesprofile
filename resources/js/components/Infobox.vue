@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="text-sm max-md:text-sm"><slot>{{ this.input }}</slot></p>
+    <p class="text-sm max-md:text-sm"><slot>{{ input ? $t(input) : input }}</slot></p>
   </div>
 </template>
 

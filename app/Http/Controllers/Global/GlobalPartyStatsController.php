@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Global;
 
 use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
+use App\Http\Controllers\Global\Concerns\ResolvesStatChange;
 use App\Models\GlobalHeroStackSize;
+use App\Models\GlobalPartyChange;
 use App\Models\SeasonGameVersion;
 use App\Rules\HeroInputValidation;
 use App\Rules\PartyCombinationRule;
@@ -14,9 +16,10 @@ use Illuminate\Support\Facades\Validator;
 class GlobalPartyStatsController extends GlobalsInputValidationController
 {
     use HandlesAsyncGlobalQueries;
+    use ResolvesStatChange;
 
     // Bump when the cached data changes shape or maths, so old entries are skipped.
-    private const PARTY_STATS_CACHE_VERSION = 1;
+    private const PARTY_STATS_CACHE_VERSION = 2;
 
     public function show(Request $request)
     {
@@ -83,7 +86,8 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
     public function executePartyStats(Request $request)
     {
         $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
-        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']))->pluck('id')->toArray();
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
         $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
         $heroLeagueTier = $request['hero_league_tier'];
@@ -117,6 +121,17 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
                 // ->toSql();
             ->get();
 
+        $changeData = null;
+
+        if (empty($mirror) && $this->checkIfChange($gameVersion, $region, $gameType, $gameMap, $leagueTier, $heroLeagueTier, $roleLeagueTier, $heroLevel)) {
+            $changeData = GlobalPartyChange::query()
+                ->filterByGameVersion($this->calculateGameVersionsForHeroChange($gameVersion))
+                ->filterByGameType($gameType)
+                ->filterByHero($hero ?? 0)
+                ->get()
+                ->keyBy(fn ($row) => $row->team_ally_stack_value.'|'.$row->team_enemy_stack_value);
+        }
+
         $returnData = [];
         $total = 0;
 
@@ -147,6 +162,9 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
                 $gamesPlayed = $returnData[$comboType][$combo]['wins'] + $returnData[$comboType][$combo]['losses'];
 
                 $returnData[$comboType][$combo]['win_rate'] = $gamesPlayed ? round(($returnData[$comboType][$combo]['wins'] / $gamesPlayed) * 100, 2) : 0;
+
+                $change = $changeData ? $changeData->get($combo) : null;
+                $returnData[$comboType][$combo]['win_rate_change'] = $change ? round($returnData[$comboType][$combo]['win_rate'] - $change->win_rate, 2) : null;
 
                 $returnData[$comboType][$combo]['stack_size_name'] = $party_combinations[$row->team_enemy_stack_value] ?? '5 Solo';
             }

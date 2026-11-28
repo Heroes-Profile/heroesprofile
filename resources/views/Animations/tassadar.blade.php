@@ -1,6 +1,6 @@
 @extends('layouts.app', $bladeGlobals)
 
-@section('title', 'Tassadar Animation')
+@section('title', __('Tassadar Animation'))
 @section('meta_keywords', '')
 @section('meta_description', '')
 @section('content')

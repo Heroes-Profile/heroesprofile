@@ -44,7 +44,7 @@ class TryItController extends Controller
         $route = $this->publicRoute($validated['route']);
 
         if ($route === null) {
-            return response()->json(['error' => 'That is not a public API endpoint.'], 422);
+            return response()->json(['error' => __('That is not a public API endpoint.')], 422);
         }
 
         $account = Auth::guard('api_web')->user();
@@ -65,7 +65,7 @@ class TryItController extends Controller
 
         if ($context === null) {
             return response()->json([
-                'error' => 'Create an API key first — calls made here are charged to it.',
+                'error' => __('Create an API key first — calls made here are charged to it.'),
             ], 422);
         }
 
@@ -129,7 +129,7 @@ class TryItController extends Controller
             return response()->json([
                 'status' => 500,
                 'headers' => [],
-                'body' => 'The call failed before it reached the endpoint.',
+                'body' => __('The call failed before it reached the endpoint.'),
                 'url' => $url,
             ]);
         }

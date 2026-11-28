@@ -1,15 +1,33 @@
-EsportsPlayerHeroStats<template>
+<template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="heading" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
+    <!-- The league's heading with the player's filters beside it, as on the player's other esports pages -->
+    <player-page-top>
+      <template #heading>
+        <page-heading :heading="heading" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+      </template>
+      <div v-if="data" class="w-full">
+        <filters
+          :filters="filters"
+          :isLoading="isLoading"
+          :onFilter="() => handleDropdownClosed()"
+          :onChange="handleInputChange"
+          :extrafilters="[
+            { text: 'Seasons', values: data.seasons, defaultValue: modifiedseason },
+            { text: 'Divisions', values: data.divisions, defaultValue: modifieddivision, show: esport == 'NGS' },
+          ]"
+          :excludetimeframes="true"
+          :excludegametype="true"
+          :hideadvancedfilteringbutton="true"
+        >
+        </filters>
+      </div>
+    </player-page-top>
 
     <div v-if="data">
-      <div class="flex justify-center max-w-[1500px] mx-auto">
-        <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
-        <single-select-filter v-if="esport == 'NGS'" :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifieddivision"></single-select-filter>
-      </div>
 
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
-        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+        <div class="flex-1 flex flex-wrap justify-between max-w-[28.125rem] w-full items-between mt-[1em]">
           <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins.toLocaleString('en-US')"></stat-box>
           <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses.toLocaleString('en-US')"></stat-box>
           <stat-bar-box class="w-full" size="full" :title="'Win Rate'" :value="data.win_rate.toFixed(2)"></stat-bar-box>
@@ -17,9 +35,9 @@ EsportsPlayerHeroStats<template>
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
         </div>
         <div class="my-auto">
-          <map-image-wrapper :rectangle="true" :map="game_map" :title="game_map.name" size="large"></map-image-wrapper>
+          <map-image-wrapper :rectangle="true" :map="game_map" :title="$mapName(game_map)" size="large"></map-image-wrapper>
         </div>
-        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+        <div class="flex-1 flex flex-wrap justify-between max-w-[28.125rem] w-full items-between mt-[1em]">
           <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString('en-US')"></stat-box>
           <stat-box class="w-[48%]" :title="'Kills'" :value="data.kills.toLocaleString('en-US')"></stat-box>
           <stat-box class="w-full" :title="'Total Time spent dead'" :value="data.time_spent_dead"></stat-box>
@@ -28,9 +46,9 @@ EsportsPlayerHeroStats<template>
         </div>
       </div>
 
-      <div class="bg-lighten p-10 ">
+      <div class="bg-surface rounded-panel p-6 md:p-10 mx-4 md:mx-8 mb-6">
         <div class=" max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5 text-center">Hero Enemies and Allies</h2>
+          <h2 class="text-3xl font-bold py-5 text-center">{{ $t('Hero Enemies and Allies') }}</h2>
           <div class="flex flex-wrap justify-center">
             <group-box :useinputforhover="true" :text="'Top Heroes Won Against'" :data="data.heroes_won_against.slice(0,5)" color="blue"></group-box>
             <group-box :useinputforhover="true" :text="'Top Heroes Lost Against'" :data="data.heroes_lost_against.slice(0,5)" color="red"></group-box>
@@ -40,9 +58,9 @@ EsportsPlayerHeroStats<template>
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
-      <div class="bg-lighten p-10 ">
+      <div class="bg-surface rounded-panel p-6 md:p-10 mx-4 md:mx-8 mb-6">
         <div class=" max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5 text-center">Heroes</h2>
+          <h2 class="text-3xl font-bold py-5 text-center">{{ $t('Heroes') }}</h2>
           <div class="flex flex-wrap justify-center">
             <group-box :text="'Most Played (5+ games)'" :data="data.hero_top_three_most_played" color="blue"></group-box>
             <group-box :text="'Highest Win Rate (5+ games)'" :data="data.hero_top_three_highest_win_rate" color="teal"></group-box>
@@ -52,7 +70,7 @@ EsportsPlayerHeroStats<template>
 
         <div class="flex flex-wrap gap-2 justify-center mt-10">
           <hero-image-wrapper v-for="(item, index) in data.heroes" :size="'big'" :hero="item.hero">
-            <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+            <image-hover-box :title="item.name" :paragraph-one="$t('Win Rate') + ': ' + item.win_rate + '%'" :paragraph-two="$t('Games Played') + ': ' + (item.wins + item.losses)"></image-hover-box>
           </hero-image-wrapper>
         </div>
       </div>
@@ -61,7 +79,7 @@ EsportsPlayerHeroStats<template>
       <div class=" p-10">
 
         <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
+          <h2 class="text-3xl font-bold py-5">{{ $t('Most Recent matches') }}</h2>
           <game-summary-box 
             v-for="(item, index) in data.matches" 
             :esport="true" 
@@ -70,7 +88,7 @@ EsportsPlayerHeroStats<template>
             :tournament="tournament"
             :data="item"
           ></game-summary-box>
-          <div class="max-w-[1500px] mx-auto flex justify-end mt-4">
+          <div class="max-w-[93.75rem] mx-auto flex justify-end mt-4">
           <custom-button :href="getMatchHistoryUrl()" class="flex justify-end " text="View Match History"></custom-button>
         </div>
         </div>
@@ -78,8 +96,12 @@ EsportsPlayerHeroStats<template>
 
 
     </div>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="getLoadingImage()"></loading-component>
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6"><loading-component :compact="true" :overrideimage="getLoadingImage()"></loading-component><table-skeleton></table-skeleton></div>
     </div>
   </div>
 </template>
@@ -90,6 +112,9 @@ export default {
   components: {
   },
   props: {
+    // Ad-free Patreon supporters, from the session; hides the in-page ads
+    patreonUser: Boolean,
+  	filters: Object,
   	esport: String,
     series: String,
     division: String, 
@@ -106,6 +131,7 @@ export default {
   },
   data(){
     return {
+      loadError: null,
       isLoading: false,
       data: null,
       sortKey: '',
@@ -125,7 +151,7 @@ export default {
   computed: {
     headingImage(){
       if(this.esport == "NGS"){
-        return "/images/NGS/600-600-ngs_large_header.png"
+        return "/images/NGS/ngs_large.png"
       }else if(this.esport == "CCL"){
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }else if(this.esport == "MastersClash"){
@@ -162,6 +188,10 @@ export default {
       }else if(this.esport == "Other"){
         return;
       }
+      // The NGS logo already says NGS
+      if(this.esport == 'NGS'){
+        return '';
+      }
       return this.esport;
     },
     sortedData() {
@@ -181,6 +211,7 @@ export default {
   },
   methods: {
     async getData(){
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -210,7 +241,7 @@ export default {
         });
         this.data = response.data;
       }catch(error){
-      //Do something here
+      this.loadError = this.$loadError(error, () => this.getData());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

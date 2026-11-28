@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class Map extends Model
 {
@@ -22,10 +21,7 @@ class Map extends Model
     {
         return [
             'idsByName' => static::pluck('map_id', 'name')->all(),
-            'translations' => DB::connection('heroesprofile')
-                ->table('maps_translations')
-                ->pluck('name', 'translation')
-                ->all(),
+            'translations' => MapTranslation::englishNamesByLocalized(),
             'namesByShort' => static::pluck('name', 'short_name')->all(),
         ];
     }

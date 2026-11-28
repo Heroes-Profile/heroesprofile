@@ -1,35 +1,42 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="'Party Statistics'"  :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
-
-    <filters
-      :onFilter="filterData"
-      :filters="filters"
-      :isLoading="isLoading"
-      :gametypedefault="gametype"
-      :includehero="true"
-      :includegamemap="true"
-      :includegametypefull="true"
-      :includemultiseason="true"
-      :includegamedaterange="true"
-      :hideadvancedfilteringbutton="true"
-      >
-    </filters>
+    <player-page-top>
+      <template #heading>
+      <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+      <page-heading :heading="'Party Statistics'"  :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+      </template>
+      <div class="w-full">
+      <filters
+        :onFilter="filterData"
+        :filters="filters"
+        :isLoading="isLoading"
+        :gametypedefault="gametype"
+        :heroinput="hero"
+        :includehero="true"
+        :includegamemap="true"
+        :includegametypefull="true"
+        :includemultiseason="true"
+        :includegamedaterange="true"
+        :hideadvancedfilteringbutton="true"
+        >
+      </filters>
+      </div>
+    </player-page-top>
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="asyncLoading">
-      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
+    <div v-if="partydata" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <party-stats-display :partydata="partydata" mode="player"></party-stats-display>
     </div>
-
-    <div v-if="partydata" class="max-w-[1500px] mx-auto">
-      <party-stats-display :partydata="partydata" teamlabel="Your Team"></party-stats-display>
+    <!-- The same layout in grey, the message on a tab of the first panel -->
+    <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <party-stats-skeleton mode="player">
+        <loading-component v-if="asyncLoading" :compact="true" :tab="true" :textoverride="true">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
+        <loading-component v-else :compact="true" :tab="true" :textoverride="true">{{ $t('Loading party stats...') }}</loading-component>
+      </party-stats-skeleton>
     </div>
-    <div v-else-if="isLoading && !asyncLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
-    </div>
-    <div v-else-if="dataError" class="flex items-center justify-center">
-      Error: Reload page/filter
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
     </div>
   </div>
 </template>
@@ -54,10 +61,11 @@ export default {
     regionsmap: Object,
     isPatreon: Boolean,
     patreonUser: Boolean,
+    urlparameters: [Object, Array],
   },
   data(){
     return {
-      dataError: false,
+      loadError: null,
       isLoading: false,
       asyncLoading: false,
       infoText: "Win rates for " + this.battletag + " by party setup, comparing the groups on their team against the groups they played against",
@@ -74,6 +82,12 @@ export default {
   },
   created(){
     this.gametype = this.gametypedefault;
+
+    // ?hero= by name, from the hero page's party size panel
+    const hero = this.filters.heroes.find(item => item.name === this.urlparameters?.hero);
+    if (hero) {
+      this.hero = hero.code;
+    }
   },
   mounted() {
     if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
@@ -90,7 +104,7 @@ export default {
   },
   methods: {
     async getData(){
-      this.dataError = false;
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -126,7 +140,7 @@ export default {
         }
         this.partydata = response.data;
       } catch(error) {
-        this.dataError = true;
+        this.loadError = this.$loadError(error, () => this.getData());
       } finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

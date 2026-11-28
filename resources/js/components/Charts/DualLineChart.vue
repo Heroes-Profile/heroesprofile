@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full max-w-[1500px] mx-auto">
+  <div class="w-full max-w-[93.75rem] mx-auto">
     <canvas ref="chartCanvas" class="w-full"></canvas>
   </div>
 </template>
@@ -146,7 +146,7 @@ export default {
 
     // Provide predictable chart height while still allowing responsive width.
     this.$refs.chartCanvas.style.height = '400px';
-    if (window.innerWidth < 768) {
+    if (window.innerWidth < 1024) {
       this.$refs.chartCanvas.style.height = '260px';
     }
   },

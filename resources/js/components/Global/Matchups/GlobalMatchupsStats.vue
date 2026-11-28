@@ -1,185 +1,223 @@
 <template>
   <div>
     <global-async-debug-banner page-label="Global Matchups" />
-    <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Counters & Matchups' : 'Hero Counters & Matchups'">
-      <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
-        <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
-        <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 220px; max-height: 340px; overflow-y: auto;">
-          <input v-model="heroDropdownSearch" type="text" placeholder="Search hero..." class="w-full px-2 py-1 text-xs bg-gray-dark text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
-          <div v-for="h in filteredDropdownHeroes" :key="h.id" class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-lighten text-sm" @click="clickedHero(h); heroDropdownOpen = false">
-            <hero-image-wrapper :hero="h" :includehover="false" class="flex-shrink-0"></hero-image-wrapper>
-            <span>{{ h.name }}</span>
-          </div>
-        </div>
-      </div>
-      <template v-if="selectedHero" #aboveHeading>
-        <hero-heading-select :heroes="heroes" :value="selectedHero.id" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
-      </template>
-    </page-heading>
 
     <div v-if="!selectedHero">
+      <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+      <page-heading scope="Global" :heading="'Hero Counters & Matchups'" :subheading="'Counters & matchups'"></page-heading>
       <hero-selection :heroes="heroes"></hero-selection>
     </div>
 
     <div v-else>
-      <filters 
-      :onFilter="filterData" 
-      :filters="filters" 
+      <!-- As the other global hero pages: the hero's heading, its name the hero picker, with the filters beside it -->
+      <player-page-top>
+        <template #heading>
+          <page-heading scope="Global" :heading="$heroName(selectedHero)" :subheading="'Counters & matchups'" :portrait-desktop-only="true">
+            <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
+            <template #headingText>
+              <hero-heading-select :heroes="heroes" :value="selectedHero.id" textclass="" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
+            </template>
+          </page-heading>
+        </template>
+        <filters
+          :onFilter="filterData"
+          :filters="filters"
+          :isLoading="isLoading"
 
-      :timeframetypeinput="timeframetype"
-      :timeframeinput="timeframe"
-      :gametypeinput="gametype"
-      :regioninput="region"
-      :herolevelinput="herolevel"
-      :roleinput="role"
-      :gamemapinput="gamemap"
-      :playerrankinput="playerrank"
-      :herorankinput="herorank"
-      :rolerankinput="rolerank"
-      :mirrormatchinput="mirrormatch"
+          :timeframetypeinput="timeframetype"
+          :timeframeinput="timeframe"
+          :gametypeinput="gametype"
+          :regioninput="region"
+          :herolevelinput="herolevel"
+          :roleinput="role"
+          :gamemapinput="gamemap"
+          :playerrankinput="playerrank"
+          :herorankinput="herorank"
+          :rolerankinput="rolerank"
+          :mirrormatchinput="mirrormatch"
 
+          :gametypedefault="gametypedefault"
+          :includetimeframe="true"
+          :includeregion="true"
+          :includeherolevel="true"
+          :includerole="true"
+          :includegametype="true"
+          :includegamemap="true"
+          :includeplayerrank="true"
+          :includeherorank="true"
+          :includerolerank="true"
+          :includemirror="true"
+          :advancedfiltering="advancedfiltering"
+          >
+        </filters>
+      </player-page-top>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-      :gametypedefault="gametypedefault"
-      :includetimeframetype="true"
-      :includetimeframe="true"
-      :includeregion="true"
-      :includeherolevel="true"
-      :includerole="true"
-      :includegametype="true"
-      :includegamemap="true"
-      :includeplayerrank="true"
-      :includeherorank="true"
-      :includerolerank="true"
-      :includemirror="true"
-      :advancedfiltering="advancedfiltering"
-      >
-    </filters>
-    <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
+      <div v-if="allyenemydata" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <patch-notes-panel v-if="patchNotesUrl" class="!max-w-none !mb-0" :version="timeframe[0]"></patch-notes-panel>
 
-    <div v-if="allyenemydata" class="flex flex-wrap gap-4  ">
+        <!-- The five best allies and biggest threats, as on the player's Matchups page -->
+        <div class="grid md:grid-cols-2 gap-6">
+          <panel-box v-for="card in topCards" :key="card.key" :title="card.title" :subtitle="card.subtitle" :divider="false">
+            <div class="grid grid-cols-3 sm:grid-cols-5 gap-3">
+              <a v-for="item in card.heroes" :key="item.hero.id" :href="'/Global/Matchups/' + encodeURIComponent(item.hero.name) + currentQuery()" class="bg-surface-1 px-2 pt-5 pb-5 flex flex-col items-center text-center min-w-0 link-tile">
+                <hero-image-wrapper size="big" :hero="item.hero" :includehover="false"></hero-image-wrapper>
+                <span class="text-sm font-bold mt-1.5 truncate max-w-full link-tile-title">{{ $heroName(item.hero) }}</span>
+                <span :class="['text-xl font-bold mt-1.5 tabular-nums', card.valueClass]">{{ item.rate.toFixed(2) }}%</span>
+                <span :class="['text-xs mt-0.5 tabular-nums', item.difference >= 0 ? 'text-win' : 'text-loss']">{{ $t(':difference vs expected', { difference: (item.difference > 0 ? '+' : '') + item.difference.toFixed(2) }) }}</span>
+                <span class="text-xs text-subtext mt-1.5">{{ $t(card.games, { count: item.games_played.toLocaleString('en-US') }) }}</span>
+              </a>
+              <p v-if="!card.heroes.length" class="col-span-full text-sm text-subtext">{{ $t('No heroes with enough games for these filters.') }}</p>
+            </div>
+          </panel-box>
+        </div>
 
-
-
-      <div >
-        <div class="flex justify-center">
-        <group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)" :type="'Matchups'" color="blue"></group-box>
-        <group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)" :type="'Matchups'" color="red"></group-box>
-      </div>
-
-      <div class="flex justify-between max-w-[1500px] mx-auto">
-        <span class="flex gap-4 mb-2"> 
-          <single-select-filter
-            :values="filters.heroes" 
-            :text="'Change Hero'" 
-            :defaultValue="selectedHero.id"
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-        </span>
-        <span>
-          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
-        </span>
-      </div>
-
-      <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
-
-      <div id="table-container" ref="tablecontainer" class="w-[100vw] max-md:overflow-hidden 2xl:mx-auto" style=" ">
-        <table id="responsive-table" class="responsive-table  relative" ref="responsivetable">
-          <thead class="top-0 w-full sticky z-40">
-          <tr>
-            <th @click="sortTable('hero_name')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Hero
-            </th>
-            <th @click="sortTable('base_win_rate')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
-              <div class="flex items-center">
-                <div>
-                  Base Win Rate %
-                </div>
-                <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
-                  <slot>
-                    <div>
-                      <p>This row's hero global win rate.  This would be their win rate in all games that match the filter.  This is displayed to make comparisons of ally and enemy win rates easier.</p>
+        <panel-box :title="$t(':hero matchups', { hero: $heroName(selectedHero) })" :subtitle="$t(':hero\'s win rate with and against each hero · in brackets, how that compares with what the other hero\'s own win rate would lead you to expect', { hero: $heroName(selectedHero) })" :divider="false">
+          <!-- Phones have no room in the Hero heading; the search sits above the table there -->
+          <search-input v-model="heroSearch" :placeholder="$t('Search hero')" class="md:hidden w-full"></search-input>
+          <div id="table-container" ref="tablecontainer" class="overflow-clip">
+            <!-- Which columns are about the hero as an ally, which as an opponent; above the table so it reads the same in either table style -->
+            <div class="grid grid-cols-[30%_35%_35%] max-md:text-xs">
+              <div></div>
+              <div class="py-3 px-1 md:px-3 text-center bg-teal/[0.18] rounded-tl-control">
+                <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide text-teal">{{ $t('With them · Same team as :hero', { hero: $heroName(selectedHero) }) }}</span>
+                <span class="block text-xs text-subtext mt-1">{{ $t(':hero\'s win rate with this hero', { hero: $heroName(selectedHero) }) }}</span>
+              </div>
+              <div class="py-3 px-1 md:px-3 text-center bg-red/[0.18] rounded-tr-control">
+                <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide text-red">{{ $t('Against them · Enemy team', { hero: $heroName(selectedHero) }) }}</span>
+                <span class="block text-xs text-subtext mt-1">{{ $t(':hero\'s win rate against this hero', { hero: $heroName(selectedHero) }) }}</span>
+              </div>
+            </div>
+            <table id="responsive-table" ref="responsivetable" class="min-w-0 w-full rounded-table table-fixed max-md:text-xs">
+              <colgroup>
+                <col class="w-[18%]">
+                <col class="w-[12%]">
+                <col class="w-[22%]">
+                <col class="w-[13%]">
+                <col class="w-[22%]">
+                <col class="w-[13%]">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th class="py-2 px-2 md:px-6 text-left text-xs md:text-sm leading-4">
+                    <div class="relative flex items-center gap-[1.125rem]">
+                      <span class="cursor-pointer" @click="sortTable('hero_name')">{{ $t('Hero') }}<sort-indicator :column="'hero_name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                      <!-- Phones use the search above the table instead -->
+                      <span class="max-md:hidden"><search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" align="left" class="w-40"></search-input></span>
                     </div>
-                  </slot>
-                </round-image>
-              </div>
-            </th>
-            <th  class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              <div class="flex items-center">
-                <span @click="sortTable('win_rate_as_ally')">Win Rate as Ally % | </span><span @click="sortTable('ally_difference')">(Difference)</span>
-                <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
-                  <slot>
-                    <div>
-                      <p>Difference is (Win Rate as Ally - Hero Base Win Rate)</p>
+                  </th>
+                  <th @click="sortTable('base_win_rate')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'base_win_rate' }">
+                    <span class="md:hidden">{{ $t('Their WR') }}</span><span class="max-md:hidden">{{ $t('Their win rate') }}</span><sort-indicator :column="'base_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                  </th>
+                  <th @click="sortTable('win_rate_as_ally')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate_as_ally' }"><span class="md:hidden">{{ $t('WR with') }}</span><span class="max-md:hidden">{{ $t('Win rate with') }}</span><sort-indicator :column="'win_rate_as_ally'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+                  <th @click="sortTable('games_played_as_ally')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played_as_ally' }">{{ $t('Games with') }}<sort-indicator :column="'games_played_as_ally'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+                  <th @click="sortTable('win_rate_against')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate_against' }"><span class="md:hidden">{{ $t('WR against') }}</span><span class="max-md:hidden">{{ $t('Win rate against') }}</span><sort-indicator :column="'win_rate_against'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+                  <th @click="sortTable('games_played_against')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played_against' }">{{ $t('Games against') }}<sort-indicator :column="'games_played_against'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in shownData" :key="rowHero(row).id">
+                  <td class="py-2.5 px-2 md:px-6">
+                    <a class="inline-flex items-center link-row" :href="'/Global/Matchups/' + encodeURIComponent(rowHero(row).name) + currentQuery()">
+                      <hero-image-wrapper :hero="rowHero(row)"></hero-image-wrapper><span class="hidden md:block ml-3 font-medium">{{ $heroName(rowHero(row)) }}</span>
+                    </a>
+                  </td>
+                  <td class="py-2.5 px-1 md:px-3 text-center tabular-nums">{{ baseRate(row) === null ? '—' : baseRate(row).toFixed(2) + '%' }}</td>
+                  <template v-for="side in ['ally', 'enemy']" :key="side">
+                  <td class="py-2.5 px-2 md:px-6">
+                    <div v-if="row[side] && row[side].games_played" class="flex items-center gap-3">
+                      <!-- Teal when the hero does better than expected, red when worse -->
+                      <stat-bar class="flex-1 max-md:hidden" :value="heroRate(row, side)" display-text="" :color="baseRate(row) === null || difference(row, side) >= 0 ? 'teal' : 'red'"></stat-bar>
+                      <span class="max-md:flex-1 max-md:text-center md:text-right font-semibold tabular-nums whitespace-nowrap">{{ heroRate(row, side).toFixed(2) }}%<span v-if="baseRate(row) !== null" :class="['ml-1.5 text-xs font-normal max-md:hidden', difference(row, side) >= 0 ? 'text-win' : 'text-loss']">({{ difference(row, side) > 0 ? '+' : '' }}{{ difference(row, side).toFixed(2) }})</span></span>
                     </div>
-                  </slot>
-                </round-image>
-              </div>
-            </th>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              <div class="flex items-center">
-                <span @click="sortTable('win_rate_against')">Win Rate Against {{ this.selectedHero.name }} % | </span><span @click="sortTable('enemy_difference')">(Difference)</span>
-                <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
-                  <slot>
-                    <div>
-                      <p>Difference is (Win Rate Against {{ this.selectedHero.name }} - Hero Base Win Rate)</p>
-                    </div>
-                  </slot>
-                </round-image>
-              </div>
-            </th>
-            <th @click="sortTable('games_played_as_ally')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Games Played As Ally
-            </th>
-            <th @click="sortTable('games_played_against')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Games Played Against {{ this.selectedHero.name }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row, index) in sortedData" :key="index">
-            <td class="py-2 px-3 ">
-              <div class="flex items-center ">
-                <hero-image-wrapper :hero="row.ally ? row.ally.hero : row.enemy.hero " ></hero-image-wrapper>
-                <span class="ml-left px-3 hidden md:block">{{ row.ally && row.ally.hero ? row.ally.hero.name : row.enemy.hero.name }}</span>
-              </div>
-            </td>
-            <td class="py-2 px-3 ">
-              {{ row.ally && row.ally.stats && row.ally.stats.win_rate.toFixed(2) ? row.ally.stats.win_rate.toFixed(2) : 0 }}
-            </td>
-            
-            <td class="py-2 px-3 ">
-              {{ row.ally && row.ally.win_rate.toFixed(2) ? row.ally.win_rate.toFixed(2) : 0 }} ({{ getDifference(row.ally && row.ally.win_rate.toFixed(2) ? row.ally.win_rate.toFixed(2) : 0, row.ally && row.ally.stats && row.ally.stats.win_rate.toFixed(2) ? row.ally.stats.win_rate.toFixed(2) : 0) }})
-            </td>
-            <td class="py-2 px-3 ">
-              {{ row.enemy && row.enemy.win_rate.toFixed(2) ? row.enemy.win_rate.toFixed(2) : 0 }} ({{ getDifference(row.enemy && row.enemy.win_rate.toFixed(2) ? row.enemy.win_rate.toFixed(2) : 0, row.enemy && row.enemy.stats && row.enemy.stats.win_rate.toFixed(2) ? row.enemy.stats.win_rate.toFixed(2) : 0) }})
-            </td>
-            <td class="py-2 px-3 ">
-              {{ row.ally && row.ally.games_played.toLocaleString('en-US') ? row.ally.games_played.toLocaleString('en-US') : 0 }}
-            </td>
-
-            <td class="py-2 px-3 ">
-              {{ row.enemy && row.enemy.games_played.toLocaleString('en-US') ? row.enemy.games_played.toLocaleString('en-US') : 0 }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                    <span v-else class="block text-center text-subtext">{{ $t('No data') }}</span>
+                  </td>
+                  <td class="py-2.5 px-1 md:px-3 text-center tabular-nums">{{ row[side] && row[side].games_played ? row[side].games_played.toLocaleString('en-US') : '—' }}</td>
+                  </template>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </panel-box>
       </div>
+      <!-- The same cards in grey while the matchups load, the message on a tab of the first -->
+      <div v-else-if="isLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="md:!py-4">
+          <template #right>
+            <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+          </template>
+        </panel-box>
+        <div class="grid md:grid-cols-2 gap-6">
+          <panel-box v-for="(card, index) in topCards" :key="card.key" :title="card.title" :subtitle="card.subtitle" :divider="false" :skeleton="true" :class="{ 'relative md:!rounded-tl-none': index === 0 }">
+            <loading-component v-if="index === 0" :compact="true" :tab="true" :textoverride="true">{{ $t('Loading matchups...') }}</loading-component>
+            <div class="grid grid-cols-3 sm:grid-cols-5 gap-3">
+              <div v-for="tile in 5" :key="tile" class="bg-surface-1 rounded-lg px-2 pt-5 pb-5 flex flex-col items-center text-center min-w-0">
+                <skeleton-box class="w-20 h-20 !rounded-full"></skeleton-box>
+                <span class="text-sm font-bold mt-1.5 skeleton-text">Samuro</span>
+                <span class="text-xl font-bold mt-1.5 skeleton-text">00.00%</span>
+                <span class="text-xs mt-0.5 skeleton-text">+0.00 vs expected</span>
+                <span class="text-xs mt-1.5 skeleton-text">000 games together</span>
+              </div>
+            </div>
+          </panel-box>
+        </div>
+        <panel-box :title="$t(':hero matchups', { hero: $heroName(selectedHero) })" :subtitle="$t(':hero\'s win rate with and against each hero · in brackets, how that compares with what the other hero\'s own win rate would lead you to expect', { hero: $heroName(selectedHero) })" :divider="false" :skeleton="true">
+          <!-- The real table's With them / Against them row and columns, with grey cells -->
+          <div class="grid grid-cols-[30%_35%_35%] max-md:text-xs">
+            <div></div>
+            <div class="py-3 px-1 md:px-3 text-center bg-teal/[0.18] rounded-tl-control">
+              <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide text-teal">{{ $t('With them · Same team as :hero', { hero: $heroName(selectedHero) }) }}</span>
+              <span class="block text-xs text-subtext mt-1">{{ $t(':hero\'s win rate with this hero', { hero: $heroName(selectedHero) }) }}</span>
+            </div>
+            <div class="py-3 px-1 md:px-3 text-center bg-red/[0.18] rounded-tr-control">
+              <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide text-red">{{ $t('Against them · Enemy team', { hero: $heroName(selectedHero) }) }}</span>
+              <span class="block text-xs text-subtext mt-1">{{ $t(':hero\'s win rate against this hero', { hero: $heroName(selectedHero) }) }}</span>
+            </div>
+          </div>
+          <table class="min-w-0 w-full rounded-table table-fixed max-md:text-xs">
+            <colgroup>
+              <col class="w-[18%]">
+              <col class="w-[12%]">
+              <col class="w-[22%]">
+              <col class="w-[13%]">
+              <col class="w-[22%]">
+              <col class="w-[13%]">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="py-2 px-2 md:px-6 text-left text-xs md:text-sm leading-4">{{ $t('Hero') }}</th>
+                <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4"><span class="md:hidden">{{ $t('Their WR') }}</span><span class="max-md:hidden">{{ $t('Their win rate') }}</span></th>
+                <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4"><span class="md:hidden">{{ $t('WR with') }}</span><span class="max-md:hidden">{{ $t('Win rate with') }}</span></th>
+                <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4">{{ $t('Games with') }}</th>
+                <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4"><span class="md:hidden">{{ $t('WR against') }}</span><span class="max-md:hidden">{{ $t('Win rate against') }}</span></th>
+                <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4">{{ $t('Games against') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in 15" :key="row">
+                <td class="py-2.5 px-2 md:px-6"><span class="inline-flex items-center"><skeleton-box class="w-10 h-10 shrink-0 !rounded-full"></skeleton-box><span class="hidden md:block ml-3 font-medium skeleton-text">Samuro</span></span></td>
+                <td class="py-2.5 px-1 md:px-3 text-center"><span class="skeleton-text">00.00%</span></td>
+                <template v-for="side in 2" :key="side">
+                  <td class="py-2.5 px-2 md:px-6"><div class="flex items-center gap-3"><stat-bar class="flex-1 max-md:hidden" value="0" display-text="" :hide-value="true"></stat-bar><span class="font-semibold skeleton-text">00.00%</span></div></td>
+                  <td class="py-2.5 px-1 md:px-3 text-center"><span class="skeleton-text">00</span></td>
+                </template>
+              </tr>
+            </tbody>
+          </table>
+        </panel-box>
+      </div>
+      <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
     </div>
-    </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
-    </div>
-    <div v-else-if="dataError" class="flex items-center justify-center">
-      Error: Reload page/filter
     </div>
   </div>
-
-
-</div>
 </template>
 
 <script>
 import { scaleTableToFit } from '../../../utils/scaleTable';
+
+// The top cards' minimum games, as in the redesign
+const MIN_TOP_GAMES = 40;
   export default {
     name: 'GlobalMatchupsStats',
     components: {
@@ -198,11 +236,10 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
     },
     data(){
       return {
-        dataError: false,
+        loadError: null,
         windowWidth: window.innerWidth,
         isLoading: false,
-        heroDropdownOpen: false,
-        heroDropdownSearch: '',
+        heroSearch: '',
         infoText: "Hero Matchups provide information on which heroes are good with and against for a particular hero",
         selectedHero: null,
         cancelTokenSource: null,
@@ -223,7 +260,6 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         herorank: null,
         rolerank: null,
         mirrormatch: 0,
-        showPatchNotes: false,
       }
     },
     created(){
@@ -243,10 +279,24 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
     mounted() {
     },
     computed: {
-      filteredDropdownHeroes() {
-        const q = this.heroDropdownSearch.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-        if (!q) return this.heroes;
-        return this.heroes.filter(h => h.name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().includes(q));
+      // The five best allies and biggest threats with 40+ games, ranked by how far the hero's win rate is from expected,
+      // so a strong or weak hero doesn't top a list just for being strong or weak
+      topCards() {
+        const hero = this.$heroName(this.selectedHero);
+        const ranked = (side, best) => (this.combineddata || [])
+          .filter(row => row[side] && row[side].games_played >= MIN_TOP_GAMES && this.baseRate(row) !== null)
+          .map(row => ({ hero: this.rowHero(row), rate: this.heroRate(row, side), difference: this.difference(row, side), games_played: row[side].games_played }))
+          .sort((a, b) => best ? b.difference - a.difference : a.difference - b.difference)
+          .slice(0, 5);
+        return [
+          { key: 'allies', title: 'Best allies', subtitle: this.$t('Biggest lift to :hero\'s win rate on the same team · 40+ games', { hero }), heroes: ranked('ally', true), games: ':count games together', valueClass: 'text-win' },
+          { key: 'threats', title: 'Biggest threats', subtitle: this.$t('Biggest drop in :hero\'s win rate when facing them · 40+ games', { hero }), heroes: ranked('enemy', false), games: ':count games against', valueClass: 'text-loss' },
+        ];
+      },
+      shownData() {
+        const search = this.heroSearch.trim().toLowerCase();
+        const rows = this.sortedData || [];
+        return search ? rows.filter(row => [this.rowHero(row).name, this.$heroName(this.rowHero(row))].some(name => name.toLowerCase().includes(search))) : rows;
       },
       patchNotesUrl() {
         if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {
@@ -270,8 +320,8 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
             valA = a.ally && a.ally.win_rate ? a.ally.win_rate : 0;
             valB = b.ally && b.ally.win_rate ? b.ally.win_rate : 0;
           } else if (this.sortKey === 'win_rate_against') {
-            valA = a.enemy && a.enemy.win_rate ? a.enemy.win_rate : 0;
-            valB = b.enemy && b.enemy.win_rate ? b.enemy.win_rate : 0;
+            valA = a.enemy && a.enemy.games_played ? 100 - a.enemy.win_rate : -1;
+            valB = b.enemy && b.enemy.games_played ? 100 - b.enemy.win_rate : -1;
           } else if (this.sortKey === 'games_played_as_ally') {
             valA = a.ally && a.ally.games_played ? a.ally.games_played : 0;
             valB = b.ally && b.ally.games_played ? b.ally.games_played : 0;
@@ -315,7 +365,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         this.getData();
       },
       async getData(){
-        this.dataError = false;
+        this.loadError = null;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -347,7 +397,7 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
           this.allyenemydata = response.data;
           this.combineddata = response.data.combined;
         }catch(error){
-          this.dataError = true;
+          this.loadError = this.$loadError(error, () => this.getData());
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
@@ -377,7 +427,6 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
 
 
-        this.showPatchNotes = false;
 
         this.updateQueryString();
         this.allyenemydata = null;
@@ -422,9 +471,6 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         const currentUrl = window.location.href;
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}${queryString}`);
-      },
-      togglePatchNotes() {
-        this.showPatchNotes = !this.showPatchNotes;
       },
       sortTable(key) {
         if (key === this.sortKey) {
@@ -525,6 +571,27 @@ import { scaleTableToFit } from '../../../utils/scaleTable';
         }
 
 
+      },
+      rowHero(row) {
+        return row.ally && row.ally.hero ? row.ally.hero : row.enemy.hero;
+      },
+      // The row hero's own win rate in these filters
+      baseRate(row) {
+        const rate = row.ally?.stats?.win_rate ?? row.enemy?.stats?.win_rate;
+        return rate === undefined || rate === null ? null : Number(rate);
+      },
+      // The selected hero's win rate with or against the row's hero: against is the row hero's rate turned round
+      heroRate(row, side) {
+        return side === 'enemy' ? 100 - row.enemy.win_rate : row.ally.win_rate;
+      },
+      // That against what the row hero's own win rate would lead you to expect: the same with them, the opposite against them
+      difference(row, side) {
+        const expected = side === 'enemy' ? 100 - this.baseRate(row) : this.baseRate(row);
+        return Number((this.heroRate(row, side) - expected).toFixed(2));
+      },
+      // The page's filters, kept on links to another hero's matchups
+      currentQuery() {
+        return window.location.search;
       },
       getDifference(baseWinRate, winrate){
         var difference = (baseWinRate - winrate).toFixed(2);

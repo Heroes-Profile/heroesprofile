@@ -4,7 +4,7 @@
     <img
       :src="logo"
       alt="Heroes Profile"
-      title="Heroes Profile"
+      :title="$t('Heroes Profile')"
       class="w-14 h-auto shrink-0 announcer-logo"
       :class="{ talking }"
       @animationend="$emit('done')"

@@ -14,7 +14,7 @@ export default {
   },
   created(){
     function isSmallScreen() {
-  return window.innerWidth <= 768; // You can adjust the threshold as needed
+  return window.innerWidth < 1024; // You can adjust the threshold as needed
 }
 
       // Dropdowns open to the right, and their flyouts to the right of that. Near the
@@ -122,27 +122,86 @@ mobileNavButtons.forEach(function(button){
                 // Toggle the display property of the element
                 if (elementToToggle.style.display === 'none' || elementToToggle.style.display === '') {
                     elementToToggle.style.display = 'block';
-                    closeButton.style.display = "block";
+                    closeButton.style.display = "flex";
                 } else {
                     elementToToggle.style.display = 'none';
                 }
             });
             closeButton.addEventListener('click', function () {
-               
+
                     elementToToggle.style.display = 'none';
                     closeButton.style.display = 'none';
-                
+
+            });
+
+            // Phones: following a link out of the menu closes it, so the next page isn't left under an open menu
+            function closeMobileMenu() {
+                elementToToggle.style.display = 'none';
+                closeButton.style.display = 'none';
+                document.querySelectorAll('.nav-dropdown').forEach(function(dropdown){
+                    dropdown.style.display = '';
+                });
+            }
+            elementToToggle.addEventListener('click', function (event) {
+                const link = event.target.closest('a[href]');
+                const href = link ? link.getAttribute('href') : '';
+                if(!isSmallScreen() || !link || link.target === '_blank' || !href || href === '#' || href.startsWith('javascript:')){
+                    return;
+                }
+                closeMobileMenu();
+            });
+            // A page restored by the back or forward button comes back as it was left, menu open included
+            window.addEventListener('pageshow', function (event) {
+                if(event.persisted && isSmallScreen()){
+                    closeMobileMenu();
+                }
+            });
+
+            // The mobile menu's inline display would otherwise stick when the window is widened
+            window.addEventListener('resize', function () {
+                if(!isSmallScreen()){
+                    elementToToggle.style.display = '';
+                    closeButton.style.display = '';
+                    document.querySelectorAll('.nav-dropdown').forEach(function(dropdown){
+                        dropdown.style.display = '';
+                    });
+                }
             });
         });
   },
   mounted() {
     const openButtons = document.querySelectorAll('.mobile-secondary-nav-open');
+    this.centreWrappedNav();
   },
   computed: {
   },
   watch: {
   },
   methods: {
+    // When the text links and buttons don't fit beside the logo they wrap onto two rows. Those rows then centre on
+    // the page (app.css .nav-wrapped) rather than on the space right of the logo.
+    centreWrappedNav() {
+      const nav = document.getElementById('main-nav');
+      const content = document.getElementById('nav-content');
+      const links = document.getElementById('nav-links');
+      const right = document.getElementById('right-nav-wrapper');
+      const logo = nav && nav.querySelector('a');
+      if (!nav || !content || !links || !right || !logo || !window.ResizeObserver) {
+        return;
+      }
+      // Measured without the class, so a nav that fits again goes back to one row
+      const check = () => {
+        nav.classList.remove('nav-wrapped');
+        if (window.innerWidth < 1024) {
+          return;
+        }
+        if (right.getBoundingClientRect().top > links.getBoundingClientRect().top + 4) {
+          nav.style.setProperty('--nav-logo-w', (content.getBoundingClientRect().left - logo.getBoundingClientRect().left) + 'px');
+          nav.classList.add('nav-wrapped');
+        }
+      };
+      new ResizeObserver(check).observe(nav);
+    },
   }
 }
 </script>

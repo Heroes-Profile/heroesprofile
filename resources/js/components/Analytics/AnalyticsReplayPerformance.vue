@@ -1,19 +1,19 @@
 <template>
   <div class="bg-darken rounded p-3 mt-4">
     <analytics-heading :title="'How each player played'" :takeaway="allowed ? takeaway : null">
-      Each player's numbers from this game, against the same hero on the same map in our global sample of games with the same result: a loss against losses, a win against wins, so a good game on a losing team still rates well. 50 is a typical game; higher is better. Each area weights its numbers by how much they go with winning on that hero. Winners usually is the middle half of that hero's wins on the map, to show how far a number is from a winning game.
+      {{ $t("Each player's numbers from this game, against the same hero on the same map in our global sample of games with the same result: a loss against losses, a win against wins, so a good game on a losing team still rates well. 50 is a typical game; higher is better. Each area weights its numbers by how much they go with winning on that hero. Winners usually is the middle half of that hero's wins on the map, to show how far a number is from a winning game.") }}
     </analytics-heading>
 
     <!-- Part of Analytics: everyone else gets a greyed-out preview and the way in -->
     <div v-if="!allowed" class="relative">
       <div class="opacity-30 pointer-events-none select-none" aria-hidden="true">
-        <table class="min-w-0 w-full responsive-table">
+        <table class="min-w-0 w-full">
           <thead>
-            <tr><th>Player</th><th>Overall</th><th v-for="area in areas" :key="area.key">{{ area.label }}</th></tr>
+            <tr><th>{{ $t('Player') }}</th><th>{{ $t('Overall') }}</th><th v-for="area in areas" :key="area.key">{{ area.label }}</th></tr>
           </thead>
           <tbody>
             <tr v-for="p in players" :key="p.idx">
-              <td>{{ p.hero }}</td>
+              <td>{{ $heroName(p.hero) }}</td>
               <td>--</td>
               <td v-for="area in areas" :key="area.key">--</td>
             </tr>
@@ -23,7 +23,7 @@
       <div class="absolute inset-0 flex flex-col items-center justify-center px-4">
         <analytics-subscribe
           :title="'Match performance is part of Player Analytics'"
-          :text="'See how every player in this game did in combat, survival, teamfights, objectives, positioning, ability use and more, against the same hero on the same map. ' + (trialAvailable ? 'Try Player Analytics free for ' + trialDays + ' days with the ' + (trialStage || '').toLowerCase() + ' free trial.' : 'Subscribe on Patreon at any tier, then link your Patreon account to your Heroes Profile account.')"
+          :text="'See how every player in this game did in combat, survival, teamfights, objectives, positioning, ability use and more, against the same hero on the same map. ' + (trialAvailable ? 'Try Player Analytics free for ' + trialDays + ' days with the ' + (trialStage || '').toLowerCase() + ' free trial.' : $t('Subscribe on Patreon at any tier, then link your Patreon account to your Heroes Profile account.'))"
           :trial-available="trialAvailable"
           :trial-days="trialDays"
           :patreon-linked="patreonLinked"
@@ -31,14 +31,14 @@
       </div>
     </div>
 
-    <p v-else-if="loading" class="text-center text-gray-light">Working out how everyone played...</p>
+    <p v-else-if="loading" class="text-center text-gray-light">{{ $t('Working out how everyone played...') }}</p>
     <p v-else-if="error" class="text-center">{{ error }}</p>
 
     <template v-else>
       <!-- Every player at a glance; click one for their breakdown -->
-      <table class="min-w-0 w-full responsive-table mb-6">
+      <table class="min-w-0 w-full mb-6">
         <thead>
-          <tr><th>Player</th><th>Overall</th><th v-for="area in areas" :key="area.key">{{ area.label }}</th></tr>
+          <tr><th>{{ $t('Player') }}</th><th>{{ $t('Overall') }}</th><th v-for="area in areas" :key="area.key">{{ area.label }}</th></tr>
         </thead>
         <tbody>
           <tr
@@ -51,7 +51,7 @@
             <td class="text-white border-white border" :class="row.won ? 'bg-teal' : 'bg-red'">
               <span class="inline-flex items-center gap-2">
                 <hero-image-wrapper v-if="row.player.short_name" :hero="{ name: row.player.hero, short_name: row.player.short_name }" :size="'small'"></hero-image-wrapper>
-                <span>{{ row.player.battletag || row.player.hero }}<span v-if="row.player.you"> (you)</span></span>              </span>
+                <span>{{ row.player.battletag || $heroName(row.player.hero) }}<span v-if="row.player.you"> (you)</span></span>              </span>
             </td>
             <td class="min-w-[8em]"><stat-bar :value="row.overall ?? 0" :display-text="orDash(row.overall === null ? null : Math.round(row.overall))" color="teal"></stat-bar></td>
             <td v-for="area in areas" :key="area.key">{{ ratingText(row.areas[area.key]) }}</td>
@@ -62,22 +62,22 @@
       <div v-if="current" ref="breakdown" class="scroll-mt-4">
         <analytics-heading :title="currentName" :takeaway="playerTakeaway"></analytics-heading>
         <multi-tab-button :options="areaOptions" v-model="area" class="mb-3"></multi-tab-button>
-        <p v-if="fellBack" class="text-sm mb-2">Some of these compare with {{ current.player.hero }}'s games on every map, because the sample has too few on this one.</p>
-        <table class="min-w-0 w-full responsive-table mb-4">
+        <p v-if="fellBack" class="text-sm mb-2">{{ $t("Some of these compare with :hero's games on every map, because the sample has too few on this one.", { hero: $heroName(current.player.hero) }) }}</p>
+        <table class="min-w-0 w-full mb-4">
           <thead>
             <tr>
-              <th>{{ area === 'abilities' ? 'Ability or measure' : 'Measure' }}</th>
-              <th>This game</th>
+              <th>{{ area === 'abilities' ? $t('Ability or measure') : $t('Measure') }}</th>
+              <th>{{ $t('This game') }}</th>
               <th>
                 <span class="inline-flex items-center gap-1">
-                  Rating
-                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
-                    <slot><p class="text-sm p-2 text-left">Where this game sits among the hero's games on this map with the same result, turned so higher is better: 50 is typical, 90 is better than 9 in 10. Blank when the number doesn't go with winning on this hero, or the sample has too few games.</p></slot>
+                  {{ $t('Rating') }}
+                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+                    <slot><p class="text-sm p-2 text-left">{{ $t("Where this game sits among the hero's games on this map with the same result, turned so higher is better: 50 is typical, 90 is better than 9 in 10. Blank when the number doesn't go with winning on this hero, or the sample has too few games.") }}</p></slot>
                   </round-image>
                 </span>
               </th>
-              <th>Winners usually</th>
-              <th>Better is</th>
+              <th>{{ $t('Winners usually') }}</th>
+              <th>{{ $t('Better is') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -94,12 +94,12 @@
                 <span v-else class="text-gray-light">-</span>
               </td>
               <td>{{ m.winners ? format(m, m.winners.p25) + ' to ' + format(m, m.winners.p75) : '-' }}</td>
-              <td>{{ m.better === 'higher' ? 'More' : m.better === 'lower' ? 'Less' : '-' }}</td>
+              <td>{{ m.better === 'higher' ? $t('More') : m.better === 'lower' ? $t('Less') : '-' }}</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p v-else class="text-center text-gray-light">Pick a player for their breakdown.</p>
+      <p v-else class="text-center text-gray-light">{{ $t('Pick a player for their breakdown.') }}</p>
     </template>
   </div>
 </template>

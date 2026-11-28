@@ -6,8 +6,10 @@ use App\Models\Award;
 use App\Models\BattlenetAccount;
 use App\Models\BattlenetAccountFlair;
 use App\Models\Battletag;
+use App\Services\LocalizedGameStrings;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -44,6 +46,16 @@ class XalatathRecapController extends Controller
             ->merge(collect($recap['nerf_talents'] ?? [])->pluck('talent_id'))
             ->unique();
 
+        $talents = $this->globalDataService->getAllTalentsKeyed()->only($talentIds->all())->keyBy('talent_id')->toArray();
+        $contribution = $this->contribution($startsAt, $endsAt);
+        $locale = App::getLocale();
+        if ($locale !== 'en') {
+            $localizer = app(LocalizedGameStrings::class);
+            $talents = $localizer->localizeTalents($talents, $locale);
+            // Talents are models until the cache round-trips them
+            $contribution = $contribution ? $localizer->localizeTalents(json_decode(json_encode($contribution), true), $locale) : $contribution;
+        }
+
         return view('event.xalatath-recap')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'recap' => [
@@ -52,7 +64,7 @@ class XalatathRecapController extends Controller
                 'leaderboard' => $this->visibleLeaderboard($recap['leaderboard'] ?? []),
                 'heroes' => $this->globalDataService->getHeroesByID()->only($heroIds->all())->keyBy('id'),
                 'maps' => $this->globalDataService->getAllMapsKeyed(),
-                'talents' => $this->globalDataService->getAllTalentsKeyed()->only($talentIds->all())->keyBy('talent_id'),
+                'talents' => $talents,
                 'awards' => Award::get(['award_id', 'title', 'icon'])->keyBy('award_id'),
                 'gameTypes' => $this->globalDataService->getGameTypes()->pluck('name', 'type_id'),
                 'regions' => $this->globalDataService->getRegionIDtoString(),
@@ -60,7 +72,7 @@ class XalatathRecapController extends Controller
                 'startsAt' => $startsAt->toIso8601String(),
                 'endsAt' => $endsAt->toIso8601String(),
             ],
-            'contribution' => $this->contribution($startsAt, $endsAt),
+            'contribution' => $contribution,
         ]);
     }
 

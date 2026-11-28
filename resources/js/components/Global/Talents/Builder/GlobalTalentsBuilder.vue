@@ -1,187 +1,234 @@
 <template>
   <div>
     <global-async-debug-banner page-label="Global Talent Builder" />
-    <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="selectedHero ? selectedHero.name + ' Talent Calculator & Builder' : 'Talent Calculator & Builder'"></page-heading>
+    <page-heading scope="Global" v-if="!selectedHero" :heading="'Talent Calculator & Builder'" :subheading="'Talent calculator & builder'"></page-heading>
 
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes"></hero-selection>
     </div>
 
     <div v-else>
-      <filters 
-      :onFilter="filterData" 
-      :filters="filters" 
-      :isLoading="isLoading"
+      <!-- The hero on the left, its name the hero picker, the filters in their card beside it, as on the draft page -->
+      <player-page-top>
+        <template #heading>
+          <page-heading scope="Global" :heading="$heroName(selectedHero)" :subheading="'Talent calculator & builder'" :portrait-desktop-only="true">
+            <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
+            <!-- The hero name is the hero picker (no Heroes filter on this page) -->
+            <template #headingText>
+              <hero-heading-select :heroes="heroes" :value="selectedHero.id" textclass="" @hero-changed="heroPicked($event)"></hero-heading-select>
+            </template>
+          </page-heading>
+        </template>
+        <filters
+          :onFilter="filterData"
+          :filters="filters"
+          :isLoading="isLoading"
+          :heroinput="selectedHero.id"
+          :timeframetypeinput="timeframetype"
+          :timeframeinput="timeframe"
+          :gametypeinput="gametype"
+          :regioninput="region"
+          :herolevelinput="herolevel"
+          :gamemapinput="gamemap"
+          :playerrankinput="playerrank"
+          :herorankinput="herorank"
+          :rolerankinput="rolerank"
+          :mirrormatchinput="mirrormatch"
+          :gametypedefault="gametypedefault"
+          :includetimeframe="true"
+          :includeregion="true"
+          :includeherolevel="true"
+          :includegametype="true"
+          :includegamemap="true"
+          :includeplayerrank="true"
+          :includeherorank="true"
+          :includerolerank="true"
+          :includemirror="true"
+          :advancedfiltering="advancedfiltering"
+          >
+        </filters>
+      </player-page-top>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-      :timeframetypeinput="timeframetype"
-      :timeframeinput="timeframe"
-      :gametypeinput="gametype"
-      :regioninput="region"
-      :herolevelinput="herolevel"
-      :gamemapinput="gamemap"
-      :playerrankinput="playerrank"
-      :herorankinput="herorank"
-      :rolerankinput="rolerank"
-      :mirrormatchinput="mirrormatch"
+      <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <patch-notes-panel v-if="patchNotesUrl" class="!max-w-none !mb-0" :version="timeframe[0]"></patch-notes-panel>
 
-      :gametypedefault="gametypedefault"
-      :includetimeframetype="true"
-      :includetimeframe="true"
-      :includeregion="true"
-      :includeherolevel="true"
-      :includegametype="true"
-      :includegamemap="true"
-      :includeplayerrank="true"
-      :includeherorank="true"
-      :includerolerank="true"
-      :includemirror="true"
-      :advancedfiltering="advancedfiltering"
-      >
-    </filters>
-    <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
+        <!-- The diagram and reset on the left, how the builder loads and lays out on the right -->
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-4 max-sm:w-full">
+            <button type="button" :disabled="!paths || !paths.length" class="flex items-center justify-between gap-4 h-[3.125rem] w-full sm:w-[26rem] px-4 rounded bg-surface-3 text-lg disabled:opacity-50" @click="pathsOpen = !pathsOpen">
+              <span class="truncate">{{ $t('Alluvial diagram') }}<template v-if="paths && paths.length"> · {{ $t(':count builds', { count: paths.length.toLocaleString('en-US') }) }}</template></span>
+              <basil-icon name="arrow-small" :class="['shrink-0 transition-transform', pathsOpen ? '-rotate-90' : 'rotate-90']"></basil-icon>
+            </button>
+            <custom-button class="max-sm:w-full" :text="'Reset talent data'" :alt="'Reset talent data'" :ignoreclick="true" @click="resetTalentData"></custom-button>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-subtext">
+            <span class="flex items-center gap-2">{{ $t('Load') }}<tab-button :small="true" :dark="true" :tabs="[{ key: 'auto', text: 'Auto' }, { key: 'filter', text: 'On filter' }]" :overridedefaultside="localLoad" :ignoreclick="true" @tab-click="loadStyleSelected"></tab-button></span>
+            <span v-if="!isMobile" class="flex items-center gap-2">{{ $t('Layout') }}<tab-button :small="true" :dark="true" :tabs="[{ key: 'vertical', text: 'Vertical' }, { key: 'horizontal', text: 'Horizontal' }]" :overridedefaultside="effectiveStyle" :ignoreclick="true" @tab-click="layoutStyleSelected"></tab-button></span>
+          </div>
+        </div>
 
-  </div>
+        <talent-build-paths v-if="pathsOpen && data && paths && paths.length" :data="data" :paths="paths"></talent-build-paths>
 
+        <error-card v-if="loadError && !isLoading" :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
 
-  <div v-if="isLoading">
-    <loading-component @cancel-request="cancelAxiosRequest" v-if="determineIfVeryLargeData()" :textoverride="true">Very large amount of data.<br/>Compiling can take 5-10 minutes.<br/>Please be patient.<br/>Loading Data...</loading-component>
-    <loading-component @cancel-request="cancelAxiosRequest" v-else-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
-    <loading-component @cancel-request="cancelAxiosRequest" v-else></loading-component>
-  </div>
-  <div v-else-if="dataError" class="flex items-center justify-center">
-      Error: Reload page/filter
-  </div>
-  <div v-if="data && !isLoading">
-    <div class="flex justify-between max-w-[1500px] mx-auto max-md:flex-wrap max-md:gap-2 max-md:px-2">
-        <span class="flex gap-4 mb-2"> 
-          <single-select-filter
-            :values="filters.heroes" 
-            :text="'Change Hero'" 
-            :defaultValue="selectedHero.id"
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-          <span @click="resetTalentData" class="mt-auto ml-auto link text-sm">Reset Talent data</span>
-        </span>
-        <span class="flex items-center gap-4">
-          <tab-button :tab1text="'Auto Load'" :tab2text="'On Filter'" :ignoreclick="true" @tab-click="loadStyleSelected" :overridedefaultside="localLoad === 'filter' ? 'right' : 'left'"></tab-button>
-          <tab-button v-if="!isMobile" :tab1text="'Vertical'" :tab2text="'Horizontal'" :ignoreclick="true" @tab-click="layoutStyleSelected" :overridedefaultside="effectiveStyle === 'horizontal' ? 'right' : 'left'"></tab-button>
-          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
-        </span>
-        
+        <!-- First load: the two cards in grey -->
+        <div v-else-if="!data" class="grid xl:grid-cols-[minmax(0,1fr)_35rem] gap-6 xl:gap-8 items-start">
+          <panel-box title="Pick talents" subtitle="Stats update for builds that match your picks. Greyed talents have no games with this build." :skeleton="true" :divider="false" class="relative md:!rounded-tl-none">
+            <loading-component v-if="determineIfVeryLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
+            <loading-component v-else-if="determineIfLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+            <loading-component v-else :compact="true" :tab="true" :textoverride="true">{{ $t('Loading talents...') }}</loading-component>
+            <div class="flex flex-col gap-2.5">
+              <div v-for="level in 7" :key="level" class="grid grid-cols-[4.25rem_minmax(0,1fr)] md:grid-cols-[5rem_minmax(0,1fr)] gap-2.5">
+                <skeleton-box class="h-[4.25rem] rounded-control"></skeleton-box>
+                <div class="grid grid-cols-[repeat(auto-fill,minmax(14rem,1fr))] xl:grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-2.5">
+                  <skeleton-box v-for="talent in 3" :key="talent" class="h-[4.25rem] rounded-control"></skeleton-box>
+                </div>
+              </div>
+            </div>
+          </panel-box>
+          <panel-box title="Selected build" :skeleton="true" :divider="false" class="border-t-4 border-teal">
+            <template #title>
+              <round-image class="text-base" size="small" icon="fas fa-info" title="info"></round-image>
+            </template>
+            <!-- The card's own blocks, grey: the seven slots with their levels, unseen stat boxes under grey ones, the copy row and button -->
+            <div class="grid grid-cols-7 gap-2">
+              <span v-for="level in [1, 4, 7, 10, 13, 16, 20]" :key="level" class="flex flex-col items-center gap-2">
+                <skeleton-box class="w-[2.625rem] h-[2.625rem] !rounded-full"></skeleton-box>
+                <span class="text-xs skeleton-text">{{ level }}</span>
+              </span>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div v-for="stat in 3" :key="stat" class="relative">
+                <stat-box class="!m-0 !min-w-0 invisible" aria-hidden="true" :title="$t('Games played')" value="0,000"></stat-box>
+                <skeleton-box class="absolute inset-0 rounded-control"></skeleton-box>
+              </div>
+            </div>
+            <div class="flex flex-col gap-1 rounded-control bg-surface-1 px-4 py-3">
+              <span class="text-xs w-fit skeleton-text">{{ $t('Copy build to game') }}</span>
+              <span class="text-sm w-fit skeleton-text">{{ $t('Pick all 7 talents to get a build code') }}</span>
+            </div>
+            <span class="btn w-full text-center font-semibold skeleton-text">{{ $t('Find matching replays') }}</span>
+          </panel-box>
+        </div>
 
+        <!-- While a pick reloads the stats, the cards stay and fade -->
+        <div v-else :class="['grid xl:grid-cols-[minmax(0,1fr)_35rem] gap-6 xl:gap-8 items-start transition-opacity', { 'opacity-60 pointer-events-none': isLoading }]">
+          <panel-box title="Pick talents" subtitle="Stats update for builds that match your picks. Greyed talents have no games with this build." :divider="false" :loading="isLoading">
+            <div :class="effectiveStyle === 'horizontal' ? 'overflow-x-auto' : ''">
+              <div :class="effectiveStyle === 'horizontal' ? 'grid grid-cols-[repeat(7,minmax(7rem,1fr))] gap-2 items-start' : 'flex flex-col gap-2.5'">
+                <talent-builder-column v-for="level in LEVEL_NUMBERS" :key="level" :data="data[String(level)]" :level="level" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'" @talent-clicked="talentClicked" @clear="removeLevelSelections"></talent-builder-column>
+              </div>
+            </div>
+          </panel-box>
 
+          <panel-box title="Selected build" :divider="false" class="border-t-4 border-teal">
+            <template #title>
+              <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+                <p class="font-normal">{{ $t('Build win rate and how many players have played that exact build. Win rate for builds to level 20 are inflated because teams that make it to level 20 win more. Therefore it is not an accurate representation of a builds viabllity. See table below for that calculation') }}</p>
+              </round-image>
+            </template>
 
+            <!-- The seven picks, empty where a level is open -->
+            <div class="grid grid-cols-7 gap-2">
+              <span v-for="(level, index) in LEVEL_NUMBERS" :key="level" class="flex flex-col items-center gap-2">
+                <talent-image-wrapper v-if="builddata && builddata[LEVEL_KEYS[index]]" :talent="builddata[LEVEL_KEYS[index]]" size="row"></talent-image-wrapper>
+                <span v-else class="block w-[2.625rem] h-[2.625rem] rounded-full bg-surface-3"></span>
+                <span :class="['text-xs', clickedData[level] ? 'text-lteal' : 'text-subtext']">{{ level }}</span>
+              </span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3">
+              <stat-box class="!m-0 !min-w-0" :title="$t('Games played')" :value="builddata ? Number(builddata.games_played || 0).toLocaleString('en-US') : '—'"></stat-box>
+              <stat-box class="!m-0 !min-w-0" :title="$t('Win rate')" :value="builddata && builddata.games_played ? Number(builddata.win_rate).toFixed(2) + '%' : '—'"></stat-box>
+              <stat-box class="!m-0 !min-w-0" :title="$t('Talents picked')" :value="$t(':count of 7', { count: pickedCount })"></stat-box>
+            </div>
+
+            <div class="flex items-center justify-between gap-4 rounded-control bg-surface-1 px-4 py-3">
+              <div class="flex flex-col gap-1 min-w-0">
+                <span class="text-xs text-subtext">{{ $t('Copy build to game') }}</span>
+                <build-code v-if="pickedCount === 7 && builddata" :build="builddata" :hero="selectedHero" show="code" align="start"></build-code>
+                <span v-else class="text-sm">{{ $t('Pick all 7 talents to get a build code') }}</span>
+              </div>
+              <i v-if="pickedCount !== 7" class="fas fa-copy text-subtext/50 shrink-0"></i>
+            </div>
+
+            <custom-button v-if="pickedCount" class="w-full font-semibold" color="teal" :text="'Find matching replays'" :alt="'Find matching replays'" :ignoreclick="true" @click="findReplays"></custom-button>
+            <span v-else class="btn bg-teal w-full text-center font-semibold opacity-50 cursor-not-allowed" :title="$t('Pick a talent first')">{{ $t('Find matching replays') }}</span>
+
+            <!-- The talent most games took on each open level -->
+            <div v-if="suggestions.length" class="flex flex-col gap-2 pt-4 border-t border-surface-3">
+              <h3 class="text-lg font-semibold">{{ $t('Most played from here') }}</h3>
+              <p class="text-sm text-subtext mb-1">{{ $t('The talent most games took on each open level.') }}</p>
+              <div v-for="item in suggestions" :key="item.level" class="flex items-center gap-3 rounded-lg bg-surface-1 px-3 py-2">
+                <span class="w-8 shrink-0 rounded-md bg-teal/20 py-0.5 text-center text-xs text-lteal">{{ item.level }}</span>
+                <talent-image-wrapper :talent="item.talent" size="small"></talent-image-wrapper>
+                <span class="flex flex-col flex-1 min-w-0">
+                  <span class="font-semibold truncate">{{ $talentName(item.talent) }}</span>
+                  <span class="text-xs text-subtext">{{ $t(':played games', { played: item.talent.games_played.toLocaleString('en-US') }) }}</span>
+                </span>
+                <span :class="['font-semibold tabular-nums', item.talent.win_rate > 50 ? 'text-win' : '']">{{ Number(item.talent.win_rate).toFixed(2) }}%</span>
+                <button type="button" class="w-8 h-8 shrink-0 flex items-center justify-center rounded hover:bg-surface-3 transition-colors text-lg" :title="$t('Pick :talent', { talent: $talentName(item.talent) })" @click="talentClicked(item.talent, 0, item.level)">+</button>
+              </div>
+            </div>
+          </panel-box>
+        </div>
+
+        <panel-box v-if="showReplayList" id="matching-replays" :class="['scroll-mt-4', { 'relative md:!rounded-tl-none': replaysLoading }]" title="Matching replays" :subtitle="replaysSubtitle" :skeleton="replaysLoading" :divider="false">
+          <template #title>
+            <round-image class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+              <p class="font-normal">{{ $t('Possible Replays do not take into account Hero Level, Player Rank, Hero Rank, Role Rank, or Mirror Match Filter options') }}</p>
+            </round-image>
+          </template>
+          <template v-if="replaysLoading">
+            <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading replays...') }}</loading-component>
+            <table-skeleton :bare="true" :rows="8" :columns="['stat', 'talents', 'stat', 'stat']"></table-skeleton>
+          </template>
+          <p v-else-if="!replays || !replays.length" class="text-subtext">{{ $t('No replays match these talents.') }}</p>
+          <template v-else>
+            <scroll-hint-container>
+              <table class="w-full min-w-[44rem] rounded-table">
+                <thead>
+                  <tr>
+                    <th class="py-2 px-6 text-left text-sm leading-4 w-[16%]">{{ $t('Match ID') }}</th>
+                    <th class="py-2 px-3 text-center text-sm leading-4">{{ $t('Talents') }}</th>
+                    <th class="py-2 px-3 text-center text-sm leading-4 w-[9%]">{{ $t('Win') }}</th>
+                    <th class="py-2 px-3 text-center text-sm leading-4 w-[9%]">{{ $t('Replay') }}</th>
+                  </tr>
+                </thead>
+                <tbody class="text-center">
+                  <tr v-for="row in pagedReplays" :key="row.replayID">
+                    <td class="py-2 px-6 text-left font-semibold"><a class="inline-flex items-center link-row" :href="`/Match/Single/${row.replayID}`">{{ row.replayID }}</a></td>
+                    <td class="py-2 px-3">
+                      <div class="flex gap-1.5 items-center justify-center">
+                        <template v-for="key in LEVEL_KEYS" :key="key">
+                          <talent-image-wrapper v-if="row[key]" :talent="row[key]" size="small"></talent-image-wrapper>
+                          <span v-else class="block w-10 h-10 rounded-full bg-surface-3"></span>
+                        </template>
+                      </div>
+                    </td>
+                    <td class="py-2 px-3"><span v-if="row.winner !== undefined" :class="['rounded-md px-2 py-0.5 text-xs font-bold uppercase', row.winner ? 'bg-win/20 text-win' : 'bg-loss/20 text-loss']">{{ row.winner ? $t('Win') : $t('Loss') }}</span></td>
+                    <td class="py-2 px-3"><a :href="`/Match/Single/${row.replayID}`" class="inline-flex w-8 h-8 items-center justify-center rounded hover:bg-surface-3" :aria-label="$t('Open match')"><basil-icon name="arrow-small"></basil-icon></a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </scroll-hint-container>
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <span class="text-sm text-subtext">{{ $t('Showing :from–:to of :total replays', { from: (replayPage - 1) * REPLAYS_PER_PAGE + 1, to: Math.min(replayPage * REPLAYS_PER_PAGE, replays.length), total: replays.length }) }}</span>
+              <pagination-bar v-if="replayPages > 1" :current="replayPage" :last="replayPages" @page="replayPage = $event"></pagination-bar>
+            </div>
+          </template>
+        </panel-box>
       </div>
-
-    <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
-
-    <!-- The chart takes the talent columns' width -->
-    <div :class="effectiveStyle === 'horizontal' ? 'w-fit mx-auto' : 'max-w-[1500px] mx-auto'">
-    <talent-build-paths v-if="paths && paths.length" :data="data" :paths="paths" v-model:open="pathsOpen"></talent-build-paths>
-
-    <div :class="effectiveStyle === 'horizontal' ? 'flex px-3 gap-5 mx-auto justify-center' : 'flex px-3 gap-5 mx-auto justify-center flex-wrap flex-col max-w-[1500px]'">
-      <talent-builder-column :data="data['1']" :level="1" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
-      <talent-builder-column :data="data['4']" :level="4" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
-      <talent-builder-column :data="data['7']" :level="7" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
-      <talent-builder-column :data="data['10']" :level="10" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
-      <talent-builder-column :data="data['13']" :level="13" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
-      <talent-builder-column :data="data['16']" :level="16" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
-      <talent-builder-column :data="data['20']" :level="20" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
     </div>
-    </div>
-    <div class=" my-5 bg-teal py-5 px-2">
-      <infobox class="max-w-[1500px] mx-auto " :input="'Build win rate and how many players have played that exact build. Win rate for builds to level 20 are inflated because teams that make it to level 20 win more. Therefore it is not an accurate representation of a builds viabllity. See table below for that calculation'"></infobox>
-
-
-      <infobox class="max-w-[1500px] mx-auto " :input="'Calculated build win chance tries to gauge what the builds win rate will be at any point during the game.'"></infobox>
-    </div>
-    <table v-if="builddata" class="">
-      <thead>
-        <tr>
-          <th>
-            Talents
-          </th>
-          <th>
-            Copy Build to Game
-          </th>
-          <th>
-            Games Played with Build
-          </th>
-          <th>
-            Win rate
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <div class="flex gap-x-1 mx-2 items-center">
-              <talent-image-wrapper v-if="builddata.level_one" :talent="builddata.level_one" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="builddata.level_four" :talent="builddata.level_four" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="builddata.level_seven" :talent="builddata.level_seven" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="builddata.level_ten" :talent="builddata.level_ten" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="builddata.level_thirteen" :talent="builddata.level_thirteen" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="builddata.level_sixteen" :talent="builddata.level_sixteen" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="builddata.level_twenty" :talent="builddata.level_twenty" :size="'medium'"></talent-image-wrapper>
-            </div>
-          </td>
-          <td class="py-2 px-3 ">
-            {{ this.getCopyBuildToGame(builddata.level_one, builddata.level_four, builddata.level_seven, builddata.level_ten, builddata.level_thirteen, builddata.level_sixteen, builddata.level_twenty, selectedHero) }}
-            <custom-button @click="copyToClipboard(builddata)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
-          </td>
-          <td>
-            {{ builddata.games_played.toLocaleString('en-US') }}
-          </td>
-          <td>
-            {{ builddata.win_rate.toFixed(2) }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class=" my-5 bg-teal py-5 px-2"><infobox class="max-w-[1500px] mx-auto " :input="'Possible Replays do not take into account Hero Level, Player Rank, Hero Rank, Role Rank, or Mirror Match Filter options'"></infobox></div>
-
-    <div class="max-w-[1500px] mx-auto mb-4">
-      <custom-button @click="showReplayList = !showReplayList" :text="'Get list of replays matching talent selection'" :alt="'Get list of replays matching talent selection'" size="small" :ignoreclick="true"></custom-button>
-    </div>
-    <table class="" v-if="showReplayList">
-      <thead>
-        <tr>
-          <th width="200px">
-            Game ID
-          </th>
-          <th>
-            Talents
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(row, index) in replays" :key="index">
-          <td>
-            <a class="link" :href="`/Match/Single/${row.replayID}`">{{ row.replayID}}</a>
-          </td>
-          <td>
-            <div class="flex gap-x-1 mx-2 items-center">
-              <talent-image-wrapper :talent="row.level_one" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper :talent="row.level_four" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper :talent="row.level_seven" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper :talent="row.level_ten" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper :talent="row.level_thirteen" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper :talent="row.level_sixteen" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper :talent="row.level_twenty" :size="'medium'"></talent-image-wrapper>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
   </div>
-
-
-</div>
 </template>
 
 <script>
   import Cookies from 'js-cookie';
+
+  const LEVEL_NUMBERS = [1, 4, 7, 10, 13, 16, 20];
+  const LEVEL_KEYS = ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'];
 
   export default {
     name: 'GlobalTalentsBuilder',
@@ -205,7 +252,12 @@
     },
     data(){
       return {
-        dataError: false,
+        LEVEL_NUMBERS,
+        LEVEL_KEYS,
+        REPLAYS_PER_PAGE: 8,
+        replaysLoading: false,
+        replayPage: 1,
+        loadError: null,
         cancelTokenSource: null,
         isLoading: false,
         selectedHero: null,
@@ -240,10 +292,9 @@
         rolerank: null,
         mirrormatch: 0,
         showReplayList: false,
-        isMobile: window.innerWidth < 768,
+        isMobile: window.innerWidth < 1024,
         localStyle: 'vertical',
         localLoad: 'auto',
-        showPatchNotes: false,
       }
     },
     created(){
@@ -263,7 +314,7 @@
       }
     },
     mounted() {
-      this._onResize = () => { this.isMobile = window.innerWidth < 768; };
+      this._onResize = () => { this.isMobile = window.innerWidth < 1024; };
       window.addEventListener('resize', this._onResize);
     },
     beforeUnmount() {
@@ -272,6 +323,30 @@
     computed: {
       effectiveStyle() {
         return this.isMobile ? 'vertical' : this.localStyle;
+      },
+      pickedCount() {
+        return Object.values(this.clickedData).filter(id => id != null).length;
+      },
+      // On each open level, the talent with the most games
+      suggestions() {
+        if (!this.data) {
+          return [];
+        }
+        return LEVEL_NUMBERS.filter(level => this.clickedData[level] == null).map(level => {
+          const talents = Object.values(this.data[String(level)] || {}).filter(talent => talent.games_played);
+          const talent = talents.sort((a, b) => b.games_played - a.games_played)[0];
+          return talent ? { level, talent } : null;
+        }).filter(Boolean);
+      },
+      replaysSubtitle() {
+        const names = this.builddata ? LEVEL_KEYS.map(key => this.builddata[key]).filter(Boolean).map(talent => this.$talentName(talent)) : [];
+        return names.length ? this.$t('Games where :hero took :talents.', { hero: this.$heroName(this.selectedHero), talents: names.join(', ') }) : '';
+      },
+      replayPages() {
+        return Math.ceil((this.replays?.length || 0) / this.REPLAYS_PER_PAGE);
+      },
+      pagedReplays() {
+        return (this.replays || []).slice((this.replayPage - 1) * this.REPLAYS_PER_PAGE, this.replayPage * this.REPLAYS_PER_PAGE);
       },
       patchNotesUrl() {
         if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {
@@ -290,16 +365,25 @@
       }    
     },
     methods: {
-      layoutStyleSelected(side) {
-        this.localStyle = side === 'right' ? 'horizontal' : 'vertical';
+      // Opens the replay list, or reloads it for the current picks, and scrolls to it
+      findReplays() {
+        if (this.showReplayList) {
+          this.getReplayData();
+        } else {
+          this.showReplayList = true;
+        }
+        this.$nextTick(() => document.getElementById('matching-replays')?.scrollIntoView({ behavior: 'smooth' }));
+      },
+      layoutStyleSelected(key) {
+        this.localStyle = key === 'horizontal' ? 'horizontal' : 'vertical';
         Cookies.set('talentbuilderstyle', this.localStyle, { expires: 365, path: '/' });
 
         if (this.authenticated) {
           this.$axios.post('/api/v1/profile/save/settings', { talentbuilderstyle: this.localStyle }).catch(() => {});
         }
       },
-      loadStyleSelected(side) {
-        this.localLoad = side === 'right' ? 'filter' : 'auto';
+      loadStyleSelected(key) {
+        this.localLoad = key === 'filter' ? 'filter' : 'auto';
         Cookies.set('talentbuilderload', this.localLoad, { expires: 365, path: '/' });
 
         if (this.authenticated) {
@@ -310,7 +394,7 @@
         if(this.showReplayList){
           this.showReplayList = false;
         }
-        this.dataError = false;
+        this.loadError = null;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -348,21 +432,15 @@
           this.builddata = response.data.buildData;
           this.paths = response.data.paths;
         }catch(error){
-          this.dataError = true;
+          this.loadError = this.$loadError(error, () => this.getData());
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
         }
       },
       async getReplayData(){
-        this.dataError = false;
-        this.isLoading = true;
-
-        if (this.cancelTokenSource) {
-          this.cancelTokenSource.cancel('Request canceled');
-        }
-        this.cancelTokenSource = this.$axios.CancelToken.source();
-      
+        this.replaysLoading = true;
+        this.replayPage = 1;
         this.replays = null;
         try{
           const response = await this.$globalAsyncPost("/api/v1/global/talents/builder/replays", {
@@ -378,9 +456,6 @@
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
             mirror: this.mirrormatch,
-          }, 
-          {
-            cancelToken: this.cancelTokenSource.token,
           });
 
           if(response.data.status == "failure to validate inputs"){
@@ -389,10 +464,9 @@
           
           this.replays = response.data;
         }catch(error){
-          this.dataError = true;
+          this.replays = [];
         }finally {
-          this.cancelTokenSource = null;
-          this.isLoading = false;
+          this.replaysLoading = false;
         }
       },
       clearTalentSelections() {
@@ -416,9 +490,6 @@
         if (this.cancelTokenSource) {
           this.cancelTokenSource.cancel('Request canceled by user');
         }
-      },
-      togglePatchNotes() {
-        this.showPatchNotes = !this.showPatchNotes;
       },
       talentClicked(talent, index, level){
         this.clickedData[level] = talent.talent_id;
@@ -447,7 +518,31 @@
           });
         }
       },
+      // The hero picked from the heading: a new hero, so the picks and paths start over
+      heroPicked(heroId){
+        const hero = this.heroes.find(item => item.id === heroId);
+        if (!hero || hero.id === this.selectedHero.id) {
+          return;
+        }
+        this.selectedHero = hero;
+        this.preloadTalentImages(hero);
+        document.title = `${hero.name} Talent Builder | Heroes Profile`;
+        history.pushState(null, null, window.location.pathname.replace(/\/[^/]*$/, `/${hero.name}`));
+        this.clearTalentSelections();
+        this.paths = null;
+        this.pathsOpen = false;
+        this.getData();
+      },
       filterData(filteredData){
+        const heroId = filteredData.single.Heroes;
+        if (heroId && heroId !== this.selectedHero.id) {
+          this.selectedHero = this.heroes.find(hero => hero.id === heroId) || this.selectedHero;
+          document.title = `${this.selectedHero.name} Talent Builder | Heroes Profile`;
+          history.pushState(null, null, window.location.pathname.replace(/\/[^/]*$/, `/${this.selectedHero.name}`));
+          this.clearTalentSelections();
+          this.paths = null;
+          this.pathsOpen = false;
+        }
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
         this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaulttimeframe;
         this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;
@@ -465,29 +560,11 @@
 
 
 
-        this.showPatchNotes = false;
 
         this.data = null;
         this.replays = null;
         this.builddata = null;
         this.getData();
-      },
-      getCopyBuildToGame(level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, hero) {
-        return "[T" + 
-        (level_one ? level_one.sort : '0') + 
-        (level_four ? level_four.sort : '0') + 
-        (level_seven ? level_seven.sort : '0') + 
-        (level_ten ? level_ten.sort : '0') + 
-        (level_thirteen ? level_thirteen.sort : '0') + 
-        (level_sixteen ? level_sixteen.sort : '0') + 
-        (level_twenty ? level_twenty.sort : '0') +
-        "," + hero.build_copy_name + "]"
-      },
-      copyToClipboard(row) {
-        const textToCopy = this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, this.selectedHero);
-        navigator.clipboard.writeText(textToCopy).then(function() {
-        }).catch(function(err) {
-        });
       },
       determineIfLargeData(){
         if(this.timeframetype == "major" || this.timeframetype == "major_grouped"  || this.timeframe.length >= 3){
@@ -507,10 +584,6 @@
         if (this.localLoad === 'filter') {
           return;
         }
-
-        this.data = null;
-        this.replays = null;
-        this.builddata = null;
 
         this.getData();
       },
@@ -591,27 +664,6 @@
 
         if (this.urlparameters["mirror"]) {
           this.mirrormatch = this.urlparameters["mirror"];
-        }
-      },
-      handleInputChange(eventPayload){
-        if(eventPayload.value != ""){
-          this.selectedHero = this.heroes.find(hero => hero.id === eventPayload.value);
-
-          // Update document title dynamically
-          document.title = `${this.selectedHero.name} Talent Builder | Heroes Profile`;
-
-          let currentPath = window.location.pathname;
-          let newPath = currentPath.replace(/\/[^/]*$/, `/${this.selectedHero.name}`);
-          history.pushState(null, null, newPath);
-          this.updateQueryString();
-
-          this.data = null;
-
-          //Have to use setTimeout to make this occur on next tic to allow header info/text to update properly.  
-          setTimeout(() => {
-            this.clearTalentSelections();
-            this.getData();
-          }, .25);
         }
       },
       updateQueryString(){

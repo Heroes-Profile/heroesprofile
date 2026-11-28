@@ -1,4 +1,4 @@
-import { createApp } from 'vue';
+import { createApp, defineAsyncComponent } from 'vue';
 import axios from 'axios';
 import { globalAsyncPost, formatLoadMeta, formatResponseHeaders, createLoadMeta } from './utils/globalAsyncPost';
 import Cookies from 'js-cookie';
@@ -14,10 +14,133 @@ const app = createApp({});
 
 import '@fortawesome/fontawesome-free/css/all.css'
 
-// Automatically register Vue components
-const components = import.meta.glob('./components/**/*.vue', { eager: true });
-Object.entries(components).forEach(([path, definition]) => {
-    app.component(path.split('/').pop().replace(/\.\w+$/, ''), definition.default);
+// Every <details> on the site slides open and shut
+import { animateDetails } from './utils/animateDetails';
+import { translate } from './utils/translate';
+import { formatDate } from './utils/formatGameDate';
+animateDetails();
+
+// What the layouts mount loads with the page. panel-box is also picked by name in :is, which the build can't see.
+// Inside .vue files, unplugin-vue-components imports each tag's component (vite.config.js).
+const eagerComponents = import.meta.glob([
+    './components/Nav/NavSearchFlyout.vue',
+    './components/SearchComponent.vue',
+    './components/LanguagePicker.vue',
+    './components/RemoveBattletagNav.vue',
+    './components/MobileNavHack.vue',
+    './components/OwnerSparks.vue',
+    './components/BasilIcon.vue',
+    './components/CustomButton.vue',
+    './components/RoundImage.vue',
+    './components/TranslationNotice.vue',
+    './components/HeaderAlert.vue',
+    './components/FooterPopupDisclaimer.vue',
+    './components/LoginPopup.vue',
+    './components/Api/ApiLoginPopup.vue',
+    './components/HelpChat.vue',
+    './components/RedesignCredit.vue',
+    './components/Ads/RichMediaAd.vue',
+    './components/Ads/HorizontalBannerAd.vue',
+    './components/Ads/DynamicBannerAd.vue',
+    './components/PanelBox.vue',
+    './components/LoadingComponent.vue',
+    './components/ErrorCard.vue',
+], { eager: true });
+// The rest, which the page views mount, load as their own chunks
+const lazyComponents = import.meta.glob('./components/**/*.vue');
+
+// A chunk from before a deploy is gone: reload once for the new build.
+// The error still reaches Flare through Vue's error handler; the delay lets that report send.
+// Not again within a minute, so a chunk that's really broken can't loop.
+function reloadForNewBuild() {
+  if (Date.now() - Number(sessionStorage.getItem('chunkReload')) < 60000) {
+    return;
+  }
+  sessionStorage.setItem('chunkReload', Date.now());
+  setTimeout(() => window.location.reload(), 500);
+}
+window.addEventListener('vite:preloadError', reloadForNewBuild);
+
+// Plain same-site links the browser follows itself: not ones a handler took over, new tabs, downloads, jumps
+// within the page, or signing in and out
+function followableLink(target) {
+  const link = target?.closest?.('a[href]');
+  if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) {
+    return null;
+  }
+  const url = new URL(link.href, window.location.href);
+  if (url.origin !== window.location.origin || !/^https?:$/.test(url.protocol)) {
+    return null;
+  }
+  if (url.pathname === window.location.pathname && url.search === window.location.search) {
+    return null;
+  }
+  if (/\/(Authenticate|Logout|logout|Download)/.test(url.pathname)) {
+    return null;
+  }
+  return url;
+}
+
+// Following a link: if the next page takes more than a moment, a thin bar along the top creeps across (app.css)
+let pageProgressTimer = null;
+window.addEventListener('click', event => {
+  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || !followableLink(event.target)) {
+    return;
+  }
+  clearTimeout(pageProgressTimer);
+  pageProgressTimer = setTimeout(() => {
+    const bar = document.createElement('div');
+    bar.className = 'page-progress';
+    document.body.appendChild(bar);
+    requestAnimationFrame(() => requestAnimationFrame(() => bar.classList.add('page-progress-run')));
+  }, 300);
+});
+// Back and Forward can bring the page back from the browser's cache, bar and all
+window.addEventListener('pageshow', () => {
+  clearTimeout(pageProgressTimer);
+  document.querySelectorAll('.page-progress').forEach(bar => bar.remove());
+});
+
+// The next page starts loading when a link is hovered for a moment or touched, so it is often there by the time
+// the click lands. Each page at most once
+const prefetched = new Set();
+function prefetchLink(target) {
+  const url = followableLink(target);
+  if (!url || prefetched.has(url.href)) {
+    return;
+  }
+  prefetched.add(url.href);
+  const hint = document.createElement('link');
+  hint.rel = 'prefetch';
+  hint.href = url.href;
+  document.head.appendChild(hint);
+}
+let prefetchTimer = null;
+document.addEventListener('mouseover', event => {
+  clearTimeout(prefetchTimer);
+  const target = event.target;
+  prefetchTimer = setTimeout(() => prefetchLink(target), 65);
+}, { passive: true });
+document.addEventListener('mouseout', () => clearTimeout(prefetchTimer), { passive: true });
+document.addEventListener('touchstart', event => prefetchLink(event.target), { passive: true });
+
+const componentName = path => path.split('/').pop().replace(/\.\w+$/, '');
+Object.entries(eagerComponents).forEach(([path, definition]) => {
+    app.component(componentName(path), definition.default);
+});
+Object.entries(lazyComponents).forEach(([path, loader]) => {
+    if (eagerComponents[path]) {
+        return;
+    }
+    // Nothing shows while a chunk loads: the page's own skeleton is the first thing in its place (the chunk is
+    // preloaded with the page, PageChunkPreload), and the top progress bar covers a slow one
+    app.component(componentName(path), defineAsyncComponent({
+        loader,
+        onError(error, retry, fail) {
+            reloadForNewBuild();
+            fail();
+        },
+    }));
 });
 
 // Set up axios on Vue's prototype
@@ -26,67 +149,70 @@ app.config.globalProperties.$globalAsyncPost = (url, data, options = {}) => glob
 app.config.globalProperties.$formatLoadMeta = formatLoadMeta;
 app.config.globalProperties.$formatResponseHeaders = formatResponseHeaders;
 app.config.globalProperties.$createLoadMeta = createLoadMeta;
-
-app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, region, redirect = true) {
-  let data = {
-    battletag: battletag,
-    blizz_id: blizz_id,
-    region: region,
-    date: new Date().toISOString(),
-  };
-  if(battletag && blizz_id && region){
-   const existingAccounts = [
-      JSON.parse(Cookies.get('alt_search_account1') || 'null'),
-      JSON.parse(Cookies.get('alt_search_account2') || 'null'),
-      JSON.parse(Cookies.get('alt_search_account3') || 'null'),
-    ];
-
-    const accountIndex = existingAccounts.findIndex((account) => {
-      return account && account.battletag === data.battletag && account.blizz_id === data.blizz_id;
-    });
-
-      if (accountIndex >= 0) {
-        existingAccounts[accountIndex].region = region;
-        existingAccounts[accountIndex].date = data.date;
-      } else {
-        // Find the oldest account or use the first available slot
-        const oldestAccountIndex = existingAccounts.findIndex((account) => {
-          return !account;
-        });
-
-        if (oldestAccountIndex >= 0) {
-          // Use the first available slot
-          existingAccounts[oldestAccountIndex] = data;
-        } else {
-          // Find the oldest account and overwrite it
-          const oldestAccount = existingAccounts.reduce((oldest, current) => {
-            if (!oldest || new Date(current.date) < new Date(oldest.date)) {
-              return current;
-            }
-            return oldest;
-          }, null);
-
-          if (oldestAccount) {
-            Object.assign(oldestAccount, data);
-          }
-        }
-      }
-      existingAccounts.forEach((account, index) => {
-        if (account) {
-          Cookies.set('alt_search_account' + (index + 1), JSON.stringify(account), { sameSite: 'Strict', path: '/', expires: 90 });
-        }
-      });
+// What a page's failed load shows in its error-card: the HTTP status (500 for a timeout or a failed background job),
+// for a query stopped as too large the server's reason, and what Try again runs. Null for a request the page cancelled itself.
+app.config.globalProperties.$loadError = (error, retry) => {
+  if (axios.isCancel(error)) {
+    return null;
   }
-    if(redirect){
-      window.location.href = '/Player/' + battletag + "/" + blizz_id + "/" + region;
-    }
+  const status = error?.response?.status || 500;
+  const reason = error?.response?.data?.error;
+  return { status, message: status === 422 && typeof reason === 'string' ? reason : null, retry };
 };
 
+// Teams, game length and download state for match rows. They depend on the viewer,
+// so they're fetched apart from the cached page data and merged into the rows.
+app.config.globalProperties.$loadMatchDetails = async function (games, blizzid, region) {
+  if (!games || !games.length) {
+    return;
+  }
+  try {
+    const response = await axios.post('/api/v1/player/match/history/details', {
+      blizz_id: blizzid,
+      region: region,
+      replayIDs: games.map(game => game.replayID),
+    });
+    games.forEach(game => Object.assign(game, response.data[game.replayID] || {}));
+  } catch (error) {
+    // the rows still show without teams
+  }
+};
+
+// Bar colour for a win rate: red under 45%, yellow under 50%, teal from 50%.
+app.config.globalProperties.$winRateColor = function (winRate) {
+  const value = Number(winRate);
+  if (value < 45) {
+    return 'red';
+  }
+  return value < 50 ? 'yellow' : 'teal';
+};
 
 // NGS names a team that quits "Team (Withdrawn S22)". Returns the real name and the season it withdrew in, if any.
 app.config.globalProperties.$ngsTeam = function (teamName) {
   const match = String(teamName ?? '').match(/^(.*?)\s*\(Withdrawn S(\d+)\)\s*$/i);
   return match ? { name: match[1], withdrawnSeason: match[2] } : { name: teamName, withdrawnSeason: null };
+};
+
+app.config.globalProperties.$t = translate;
+// A date in the viewer's own format and time zone; see utils/formatGameDate
+app.config.globalProperties.$formatDate = formatDate;
+
+// A hero or map name (or an object with .name) in the chosen language, from window.gameStrings; English when there's no translation.
+app.config.globalProperties.$heroName = function (hero) {
+  const name = typeof hero === 'object' && hero !== null ? hero.name : hero;
+  return window.gameStrings?.heroes?.[name] ?? name;
+};
+app.config.globalProperties.$mapName = function (map) {
+  const name = typeof map === 'object' && map !== null ? map.name : map;
+  return window.gameStrings?.maps?.[name] ?? name;
+};
+
+// A talent or ability field in the chosen language (localized_* from the server), else the English one.
+app.config.globalProperties.$gameText = function (row, field) {
+  return row?.['localized_' + field] || row?.[field];
+};
+app.config.globalProperties.$talentName = function (talent) {
+  return talent?.localized_name || talent?.title || talent?.talent_name || '';
 };
 
 // An esports player page's league, from its esport and esportfilters (HI's tournament, Other's series and icon).
@@ -116,10 +242,77 @@ app.config.globalProperties.$esportLeague = function (esport, esportfilters) {
   };
 };
 
+// The header's three recent players. An esports player is stored with its league ('NGS', 'CCL',
+// 'MastersClash', 'HeroesInternational' + tournament, 'Other' + series) and no region,
+// and is a separate entry from the same player's main-site one.
+function rememberSearchAccount(data) {
+  const existingAccounts = [
+    JSON.parse(Cookies.get('alt_search_account1') || 'null'),
+    JSON.parse(Cookies.get('alt_search_account2') || 'null'),
+    JSON.parse(Cookies.get('alt_search_account3') || 'null'),
+  ];
+
+  const accountIndex = existingAccounts.findIndex((account) => {
+    // As text: RememberViewedPlayer stores a number, links often pass a string
+    return account && account.battletag === data.battletag && String(account.blizz_id) === String(data.blizz_id)
+      && (account.league || null) === (data.league || null)
+      && (account.tournament || null) === (data.tournament || null)
+      && (account.series || null) === (data.series || null);
+  });
+
+  if (accountIndex >= 0) {
+    existingAccounts[accountIndex].region = data.region;
+    existingAccounts[accountIndex].date = data.date;
+  } else {
+    // Find the oldest account or use the first available slot
+    const oldestAccountIndex = existingAccounts.findIndex((account) => {
+      return !account;
+    });
+
+    if (oldestAccountIndex >= 0) {
+      // Use the first available slot
+      existingAccounts[oldestAccountIndex] = data;
+    } else {
+      // Find the oldest account and overwrite it
+      const oldestAccount = existingAccounts.reduce((oldest, current) => {
+        if (!oldest || new Date(current.date) < new Date(oldest.date)) {
+          return current;
+        }
+        return oldest;
+      }, null);
+
+      if (oldestAccount) {
+        Object.keys(oldestAccount).forEach((key) => delete oldestAccount[key]);
+        Object.assign(oldestAccount, data);
+      }
+    }
+  }
+  existingAccounts.forEach((account, index) => {
+    if (account) {
+      Cookies.set('alt_search_account' + (index + 1), JSON.stringify(account), { sameSite: 'Strict', path: '/', expires: 90 });
+    }
+  });
+}
+
+app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, region, redirect = true) {
+  if(battletag && blizz_id && region){
+    rememberSearchAccount({
+      battletag: battletag,
+      blizz_id: blizz_id,
+      region: region,
+      date: new Date().toISOString(),
+    });
+  }
+    if(redirect){
+      window.location.href = '/Player/' + battletag + "/" + blizz_id + "/" + region;
+    }
+};
+
 app.use(flareVue);
 flare.beforeEvaluate = error => {
   if (
-    error.message.includes("Failed to fetch") ||
+    // Still reports a chunk missing after a deploy
+    (error.message.includes("Failed to fetch") && !error.message.includes("dynamically imported module")) ||
     error.message.includes("Label 'https' has already been declared") ||
     error.message.includes("NetworkError when attempting to fetch resource.") ||
     error.message.includes("The operation was aborted.") ||

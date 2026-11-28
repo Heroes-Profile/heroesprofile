@@ -2,7 +2,7 @@ FROM php:8.4-apache
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y git zip unzip
-RUN curl -L https://deb.nodesource.com/nsolid_setup_deb.sh | bash -s -- 20 && apt-get install nodejs -y
+RUN curl -L https://deb.nodesource.com/nsolid_setup_deb.sh | bash -s -- 22 && apt-get install nodejs -y
 
 # Install PHP extensions (bcmath required by google/cloud-tasks)
 RUN docker-php-ext-install pdo_mysql bcmath
@@ -22,7 +22,7 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 COPY public/.htaccess /var/www/html/.htaccess
 
 # Install Laravel dependencies
-RUN composer install
+RUN composer install --no-dev
 
 # Install Vite
 RUN npm install --global vite 

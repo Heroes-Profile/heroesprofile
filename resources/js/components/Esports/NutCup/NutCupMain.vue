@@ -1,60 +1,48 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="'Nut Cup'" :heading-image="'/images/NutCup/IMG_0265.PNG'" :heading-image-url="''"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText1" -->
+    <!-- The league's heading with the tab's filters beside it, as on the other league pages -->
+    <player-page-top>
+      <template #heading>
+        <page-heading :heading="'Nut Cup'" :heading-image="'/images/NutCup/IMG_0265.PNG'" :heading-image-url="''"></page-heading>
+      </template>
+      <div v-if="tabFilters" class="w-full">
+        <filters
+          :key="activeButton"
+          :filters="filters"
+          :isLoading="isLoading"
+          :onFilter="() => filter()"
+          :onChange="handleInputChange"
+          :extrafilters="tabFilters"
+          :excludetimeframes="true"
+          :excludegametype="true"
+          :hideadvancedfilteringbutton="true"
+        >
+        </filters>
+      </div>
+    </player-page-top>
 
-      <!---You are going to have to design this better, I am going to use buttons for now -->
-      <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue flex-wrap max-md:text-xs">
-
-        <div class="border-r border-white">
-          <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="rounded-none " :color="activeButton === 'overallHeroStats' ? 'lblue' : ''"  :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
-        </div>
-
-      <div class="">
-          <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="rounded-none " :color="activeButton === 'overallTalentStats' ? 'lblue' : ''"  :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
-        </div>
+      <!-- The sections, across the page as on the other leagues; none is picked on the landing cards, and the others wait while one loads -->
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 mb-6">
+        <tab-button :tabs="[{ key: 'overallHeroStats', text: 'Overall Hero Stats' }, { key: 'overallTalentStats', text: 'Overall Talent Stats' }]" :stretch="true" :no-default="true" :disabled="isLoading" :overridedefaultside="activeButton" :ignoreclick="true" @tab-click="setButtonActive"></tab-button>
       </div>
 
 
-    <div v-if="!activeButton">
-      <div class="flex   p-20 bg-lighten flex-wrap justify-center">
-        
-        <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fa-solid fa-chart-bar" style="font-size: 100px"></i>
-          <h3>Overall Hero Stats</h3>
-          <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="mt-10" :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
-        </div>
-
-        <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fas fa-chart-line" style="font-size: 100px"></i>
-          <h3>Overall Talent Stats</h3>
-          <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="mt-10" :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
-        </div>
-      </div>
-
-    </div>
+    <esports-section-cards v-if="!activeButton" :sections="['overallHeroStats', 'overallTalentStats']" @select="setButtonActive"></esports-section-cards>
     <div v-else>
 
       <div v-if="activeButton === 'overallHeroStats'">
-        <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
-          <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="season"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
-        </div>
-        <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
+        <esports-hero-stats v-if="heroStatsData" :data="heroStatsData" :low-sample-games="2"></esports-hero-stats>
       </div>
 
       <div v-if="activeButton === 'overallTalentStats'">
         <div v-if="!selectedHero">
-          <hero-selection :heroes="heroes"></hero-selection>
+          <hero-selection :heroes="heroes" :subtitle="$t('Open a hero to see their talent win rates and builds in :league games.', { league: 'Nut Cup' })"></hero-selection>
         </div>
 
 
         <div v-else>
           <div v-if="talentStatsData">
-            <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
-              <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="selectedHero.id"></single-select-filter>
-              <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="season"></single-select-filter>
-              <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
-            </div>
 
             
             <esports-talent-stats :talentdetaildata="talentStatsData.talentData" :talentbuilddata="talentStatsData.buildData" :talentimages="talentimages" :selectedHero="selectedHero"></esports-talent-stats>
@@ -65,13 +53,36 @@
       </div>
 
     </div>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-if="loadError && !isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
     <div v-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="'/images/NutCup/logo-circular.png'"></loading-component>
+      <div class="relative max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
+        <!-- The message sits on a tab of the first card, as on the global pages: lined up with the card past the side padding, the card's top-left corner squared to meet it -->
+        <loading-component :compact="true" :tab="true" :overrideimage="'/images/NutCup/logo-circular.png'"></loading-component>
+        <!-- Overall Hero Stats: hero with name, then win rate, popularity, ban rate and games -->
+        <panel-box v-if="activeButton === 'overallHeroStats'">
+          <table-skeleton :bare="true" :rows="12" :columns="['avatar', 'stat', 'stat', 'stat', 'stat']"></table-skeleton>
+        </panel-box>
+        <!-- Overall Talent Stats: the global talent page's two cards, in grey -->
+        <template v-else-if="activeButton === 'overallTalentStats'">
+          <panel-box title="Talent stats" subtitle="Win rate, popularity and games for every talent. The best win rate on each tier is highlighted." :skeleton="true">
+            <compact-talent-grid :skeleton="true"></compact-talent-grid>
+          </panel-box>
+          <panel-box title="Talent builds" subtitle="Copy a build code and paste it in game chat." :skeleton="true">
+            <table-skeleton :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
+          </panel-box>
+        </template>
+        <table-skeleton v-else></table-skeleton>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+const NUTCUP_TABS = ['overallHeroStats', 'overallTalentStats'];
+
 export default {
   name: 'NutCupMain',
   components: {
@@ -80,9 +91,11 @@ export default {
     talentimages: Object,
     filters: Object,
     heroes: Object,
+    urlparameters: [Object, Array],
   },
   data() {
     return {
+      loadError: null,
       preloadedImage: new Image(),
       isLoading: false,
       infoText1: "Heroes of the Storm statistics and comparison for the Nut Cup",
@@ -97,11 +110,28 @@ export default {
   created(){
     this.preloadedImage.src = '/images/NutCup/IMG_0265.PNG';
     this.preloadedImage.src = '/images/NutCup/logo-circular.png';
-    this.season = 2;
+    this.season = this.filters.nut_cup_seasons[0].code;
   },
   mounted() {
+    // ?tab= opens that tab straight away
+    const tab = this.urlparameters?.tab;
+    if (NUTCUP_TABS.includes(tab)) {
+      this.setButtonActive(tab);
+    }
   },
   computed: {
+    // The filters beside the heading for the open tab: the season, and the hero on a hero's talent stats
+    tabFilters() {
+      const season = { text: 'Seasons', values: this.filters.nut_cup_seasons, defaultValue: this.season };
+      switch (this.activeButton) {
+        case 'overallHeroStats':
+          return [season];
+        case 'overallTalentStats':
+          return this.selectedHero ? [{ text: 'Heroes', values: this.filters.heroes, defaultValue: this.selectedHero.id }, season] : null;
+        default:
+          return null;
+      }
+    },
     overallHeroStatsClicked() {
       return this.activeButton === 'overallHeroStats';
     },
@@ -114,6 +144,7 @@ export default {
   },
   methods: {
     async getHeroStats(){
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -131,13 +162,14 @@ export default {
         });
         this.heroStatsData = response.data;
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getHeroStats());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
       }
     },
     async getTalentStats(){
+      this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -156,7 +188,7 @@ export default {
         });
         this.talentStatsData = response.data;
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getTalentStats());
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
@@ -168,8 +200,16 @@ export default {
       }
     },
     setButtonActive(buttonName) {
+      // One tab loads at a time; the others wait until it's done
+      if (this.isLoading) {
+        return;
+      }
       this.activeButton = buttonName;
-      this.season = 2;
+      // The open tab goes in the URL, so it can be linked to or reloaded
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', buttonName);
+      history.replaceState(history.state, '', url);
+      this.season = this.filters.nut_cup_seasons[0].code;
       
       if(this.activeButton === 'overallHeroStats'){
         this.heroStatsData = null;

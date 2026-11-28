@@ -1,11 +1,14 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', "Match History")
+@section('title', __('NGS :division Match History', ['division' => $division]))
+@section('meta_description', 'Every Heroes of the Storm game played in the NGS (Nexus Gaming Series) ' . $division . ' division, with heroes, maps and results.')
 @section('meta_keywords', 'Match History, Player Matches, Game Results, Match Stats')
 @section('content')
   <ngs-single-division-match-history
     :defaultseason="{{ json_encode($defaultseason) }}" 
     :filters="{{ json_encode($filters) }}"
     :division="{{ json_encode($division) }}"
+    :season="{{ json_encode($season) }}"
+    :team="{{ json_encode($team) }}"
     :esport="{{ json_encode($esport) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
 

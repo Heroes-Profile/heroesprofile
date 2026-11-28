@@ -6,6 +6,7 @@
         "downloadable": null,
         "replay_download_blocked": false,
         "game_type": null,
+        "game_type_short": null,
         "game_date": "2020-07-20 01:33:45",
         "game_map": {
             "map_id": 12,
@@ -58,6 +59,8 @@
                     "role_conservative_rating": null,
                     "role_mmr": null,
                     "role_change": null,
+                    "map_mmr": null,
+                    "map_change": null,
                     "score": {
                         "level": 18,
                         "takedowns": 4,
@@ -288,6 +291,8 @@
                     "role_conservative_rating": null,
                     "role_mmr": null,
                     "role_change": null,
+                    "map_mmr": null,
+                    "map_change": null,
                     "score": {
                         "level": 18,
                         "takedowns": 5,
@@ -518,6 +523,8 @@
                     "role_conservative_rating": null,
                     "role_mmr": null,
                     "role_change": null,
+                    "map_mmr": null,
+                    "map_change": null,
                     "score": {
                         "level": 18,
                         "takedowns": 4,
@@ -748,6 +755,8 @@
                     "role_conservative_rating": null,
                     "role_mmr": null,
                     "role_change": null,
+                    "map_mmr": null,
+                    "map_change": null,
                     "score": {
                         "level": 18,
                         "takedowns": 5,
@@ -978,6 +987,8 @@
                     "role_conservative_rating": null,
                     "role_mmr": null,
                     "role_change": null,
+                    "map_mmr": null,
+                    "map_change": null,
                     "score": {
                         "level": 18,
                         "takedowns": 5,
@@ -1210,6 +1221,8 @@
                     "role_conservative_rating": null,
                     "role_mmr": null,
                     "role_change": null,
+                    "map_mmr": null,
+                    "map_change": null,
                     "score": {
                         "level": 20,
                         "takedowns": 11,
@@ -1461,6 +1474,8 @@
                     "role_conservative_rating": null,
                     "role_mmr": null,
                     "role_change": null,
+                    "map_mmr": null,
+                    "map_change": null,
                     "score": {
                         "level": 20,
                         "takedowns": 11,
@@ -1691,6 +1706,8 @@
                     "role_conservative_rating": null,
                     "role_mmr": null,
                     "role_change": null,
+                    "map_mmr": null,
+                    "map_change": null,
                     "score": {
                         "level": 20,
                         "takedowns": 11,
@@ -1921,6 +1938,8 @@
                     "role_conservative_rating": null,
                     "role_mmr": null,
                     "role_change": null,
+                    "map_mmr": null,
+                    "map_change": null,
                     "score": {
                         "level": 20,
                         "takedowns": 12,
@@ -2172,6 +2191,8 @@
                     "role_conservative_rating": null,
                     "role_mmr": null,
                     "role_change": null,
+                    "map_mmr": null,
+                    "map_change": null,
                     "score": {
                         "level": 20,
                         "takedowns": 11,

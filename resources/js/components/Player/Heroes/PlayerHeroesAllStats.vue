@@ -1,100 +1,106 @@
 <template>
   <div>
-    <page-heading :infoText1="'All Heroes data for ' + battletag + '. Click a hero to see individual hero statistics'" :heading="'Hero Stats'" :battletag="battletag" :esport="esport" :heading-image="esport ? league.headingImage : null" :heading-image-url="esport ? league.headingImageUrl : null" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
-
-    <div v-if="esport && ngsFilterOptions" class="flex flex-wrap justify-center max-w-[1500px] mx-auto">
-      <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsSeason"></single-select-filter>
-      <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsDivision"></single-select-filter>
-      <single-select-filter v-if="ngsFilterOptions.teams.length" :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsTeam"></single-select-filter>
-    </div>
-    <filters v-if="!esport"
-      :onFilter="filterData" 
-      :filters="filters" 
-      :isLoading="isLoading"
-      :gametypedefault="gametype"
-      :minimumgamesdefault="'0'"
-      :includegametypefull="true"
-      :includeminimumgames="true"
-      :hideadvancedfilteringbutton="true"
-      :includegamemap="true"
-      :includemultiseason="true"
-      :includegamedaterange="true"
-      :includehero="true"
+    <player-page-top>
+      <template #heading>
+      <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="'All Heroes data for ' + battletag + '. Click a hero to see individual hero statistics'" -->
+      <page-heading v-if="esport" :heading="'Hero Stats'" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
+      <page-heading v-else :heading="'Hero Stats'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+      </template>
+      <div class="w-full">
+      <filters v-if="!esport"
+        :onFilter="filterData"  
+        :filters="filters" 
+        :isLoading="isLoading"
+        :gametypedefault="gametype"
+        :minimumgamesdefault="'0'"
+        :includegametypefull="true"
+        :includeminimumgames="true"
+        :hideadvancedfilteringbutton="true"
+        :includegamemap="true"
+        :includemultiseason="true"
+        :includegamedaterange="true"
+        :includehero="true"
+        :heroinput="heroInputId"
+        :includerole="true"
+        :roleinput="role"
+        :gamemapinput="gamemap"
+        >
+      </filters>
+      <filters v-else-if="esport"
+        :filters="filters"
+        :isLoading="isLoading"
+        :onFilter="() => getNgsData()"
+        :onChange="ngsFilterChange"
+        :extrafilters="[
+          { text: 'Seasons', values: ngsFilterOptions?.seasons || [], defaultValue: ngsSeason },
+          { text: 'Divisions', values: ngsFilterOptions?.divisions || [], defaultValue: ngsDivision, show: esport == 'NGS' },
+          { text: 'Teams', values: ngsTeamOptions, defaultValue: ngsTeam },
+        ]"
+        :excludetimeframes="true"
+        :excludegametype="true"
+        :hideadvancedfilteringbutton="true"
       >
-    </filters>
+      </filters>
+      </div>
+    </player-page-top>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     
-    <div v-if="data">
-      <div  class="relative max-w-[1500px] mx-auto">
-        
-          <custom-button class="ml-auto" @click="showOptions = !showOptions" :text="showOptions ? 'Hide Column Selection' : 'Show Column Selection'" :ignoreclick="true"></custom-button>
-          
-        <div v-if="showOptions">
-          <div class="absolute left-0 mt-2 w-full variable-background border border-gray-300 rounded shadow-lg text-black z-50 flex flex-wrap  p-2 ">
-            <input class="w-full p-2" type="text" v-model="searchQuery" placeholder="Search..." />
-              <div v-for="(stat, index) in filteredStats" :class="[
-              'flex-1 min-w-[24%] border-gray border p-1 cursor-pointer variable-hover',
-              {
-                'bg-teal text-white' : stat.selected
-              } ]
-              ">
-                <label class="cursor-pointer"><input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
-              {{ stat.name }}</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+    <div v-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <panel-box title="All Heroes" :subtitle="$t(':count heroes · averages are per game', { count: data.length })">
+        <template #right>
+          <!-- A phone fits two columns after Win Rate, Games one of the choices; turning on a third swaps out the last one turned on -->
+          <column-chooser v-if="phone" key="phone" :stats="phoneChooserStats" :max="2" :replace-at-cap="true" :selected-order="phoneColumns" note="Hero and Win Rate are always visible" @apply="phoneColumns = $event"></column-chooser>
+          <column-chooser v-else key="wide" :stats="stats" note="Hero, Win Rate, Games, KDA and KDR are always visible" @apply="applyColumns"></column-chooser>
+        </template>
+      <div id="table-container" ref="tablecontainer" class="overflow-clip">
 
-        <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
+        <table id="responsive-table" class="min-w-0 w-full rounded-table relative" ref="responsivetable">
         <thead>
           <tr>
-            <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Hero
+            <th class="py-2 px-3 text-left text-sm leading-4">
+              <div class="relative flex items-center gap-[1.125rem]">
+                <span class="cursor-pointer" @click="sortTable('name')">{{ $t('Hero') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                <search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" align="left" class="w-40"></search-input>
+              </div>
             </th>    
-            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              <span @click="sortTable('win_rate')">
-                Win Rate
-              </span>
-              |
-              <span @click="sortTable('games_played')">
-                Total Games
-              </span>
+            <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'win_rate' }">
+              {{ $t('Win Rate') }}<sort-indicator column="win_rate" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <th @click="sortTable('kda')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="showGames" @click="sortTable('games_played')" class="py-2 px-3  text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'games_played' }">
+              {{ $t('Total Games') }}<sort-indicator column="games_played" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+            </th>
+            <th @click="sortTable('kda')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'kda' }">
               <div class="">
-                KDA <br/>
-                Kills/Deaths/Takedowns
-              </div>
+                {{ $t('KDA') }}
+              </div><sort-indicator :column="'kda'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>  
-            <th @click="sortTable('kdr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('kdr')" class="max-md:hidden py-2 px-3  text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'kdr' }">
               <div class="">
-                KDR <br/>
-                Kills/Deaths
-              </div>
+                {{ $t('KDR') }}
+              </div><sort-indicator :column="'kdr'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
             </th>
-            <template   v-for="stat in stats">
-              <th  v-if="stat.selected" @click="sortTable(stat.value)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                {{ stat.name }}
+            <template   v-for="stat in shownStats" :key="stat.value">
+              <th @click="sortTable(stat.value)" class="py-2 px-3  text-center text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === stat.value }">
+                {{ $t(stat.name) }}<sort-indicator :column="stat.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
               </th>
             </template> 
          
           </tr>
         </thead>
         <tbody>
-          <tr v-for="row in sortedData" :key="row.id">
-            <td class="py-2 px-3 "><a :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.name }}</span></a></td>
-            <td class="py-2 px-3 "><stat-bar-box :title="'Win Rate'" :value="row.win_rate" :color="getWinRateColor(row.win_rate)"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
-            <td class="py-2 px-3 ">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
-            <td class="py-2 px-3 ">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
+          <tr v-for="row in shownData" :key="row.id">
+            <td class="py-2 px-3"><a class="flex items-center link-row" :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper :hero="row.hero" :href="getPlayerHeroPageUrl(row.name)" link-text="View Hero"></hero-image-wrapper><span class="hidden md:block ml-2">{{ $heroName(row.hero) }}</span></a></td>
+            <td class="py-2 px-3"><div class="min-w-[8em]"><div class="text-sm font-semibold text-header tabular-nums mb-1.5">{{ row.win_rate }}<span class="text-xs">%</span></div><stat-bar :value="row.win_rate" display-text="" :color="getWinRateColor(row.win_rate)"></stat-bar></div></td>
+            <td v-if="showGames" class="py-2 px-3 text-center">{{ (row.wins + row.losses) }}</td>
+            <td class="max-md:hidden py-2 px-3 ">{{ row.kda }}</td>
+            <td class="max-md:hidden py-2 px-3 ">{{ row.kdr }}</td>
             
-            <template v-for="stat in stats" >
-              <td 
-                v-if="stat.selected" 
+            <template v-for="stat in shownStats" :key="stat.value">
+              <td
                 :class="{ flash: stat.flash }"
-                class="py-2 px-3 text-right">
+                class="py-2 px-3 text-center">
                 <div v-if="statContainsMax(stat) && !esport">
-                  <span class="link" @click="navigateToMaxStatMatch(row.hero, stat.value, row[stat.value])" title="Navigate to this match">{{ showStatValue(stat.value, row[stat.value]) }}</span>
+                  <a class="inline-flex items-center text-header cursor-pointer link-row" role="button" @click="navigateToMaxStatMatch(row.hero, stat.value, row[stat.value])" :title="$t('Navigate to this match')">{{ showStatValue(stat.value, row[stat.value]) }}</a>
                 </div>
                 <div v-else-if="statisranktier(stat)">
                   {{ row[stat.value] }}
@@ -110,18 +116,29 @@
         </tbody>
       </table>
       </div>
+      </panel-box>
     </div>
-    <div v-if="asyncLoading">
-      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
     </div>
-    <div v-if="isLoading && !asyncLoading">
-        <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
+    <!-- The same card in grey while the heroes load, the message on its tab -->
+    <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <panel-box title="All Heroes" subtitle="00 heroes · averages are per game" :skeleton="true" class="relative md:!rounded-tl-none">
+        <loading-component v-if="asyncLoading" :compact="true" :tab="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
+        <loading-component v-else :compact="true" :tab="true" :textoverride="true" :timer="!esport" :starttime="timertime" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+        <template #right>
+          <div class="relative">
+            <custom-button class="invisible min-w-[11.75rem]" text="Choose columns" alt="" :ignoreclick="true" aria-hidden="true"></custom-button>
+            <skeleton-box class="absolute inset-0"></skeleton-box>
+          </div>
+        </template>
+        <table-skeleton :bare="true" :rows="10" :columns="['icon', 'bar', 'stat', 'text', 'text', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat', 'stat']" :mobile-columns="['icon', 'bar', 'stat', 'stat']"></table-skeleton>
+      </panel-box>
     </div>
-    <div v-if="matchIsLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
-    </div>
-    <div v-if="matchNotFound" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red text-white px-4 py-2 rounded z-50">
-      Couldn't find the match for that value.
+    <match-lookup v-if="matchIsLoading" :text="matchLookupText"></match-lookup>
+    <div v-if="matchNotFound" class="fixed bottom-4 max-md:bottom-24 left-1/2 -translate-x-1/2 bg-red text-white px-4 py-2 rounded z-50">
+      {{ $t("Couldn't find the match for that value.") }}
     </div>
   </div>
 </template>
@@ -144,29 +161,33 @@ export default {
     blizzid: String, 
     region: String,
     regionsmap: Object,
+    urlparameters: [Object, Array],
     accountlevel: Number,
     isPatreon: Boolean,
     patreonUser: Boolean,
+    gametypedefault: Array,
     // The league on its esports player pages (NGS, CCL, MastersClash, HeroesInternational, Other), with its filters from the URL
     esport: String,
     esportfilters: Object,
-    gametypedefault: Array,
-  },
+},
   data(){
     return {
+      loadError: null,
       windowWidth: window.innerWidth,
+      // A phone's two columns after Win Rate, in the order they were turned on
+      phoneColumns: ['games_played', 'kda'],
       showOptions: false,
       isLoading: false,
       asyncLoading: false,
+      matchIsLoading: false,
+      matchLookupText: '',
+      matchNotFound: false,
+      cancelTokenSource: null,
       ngsSeason: this.esportfilters?.season ?? null,
       ngsDivision: this.esportfilters?.division ?? null,
       ngsTeam: this.esportfilters?.team ?? null,
       ngsFilterOptions: null,
-      ngsFiltersChanged: false,
-      matchIsLoading: false,
-      matchNotFound: false,
-      cancelTokenSource: null,
-      infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
+infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
       gametype: null,
       data: null,
       sortKey: '',
@@ -175,18 +196,19 @@ export default {
       hero: null,
       minimumgames: 0,
       searchQuery: '',
+      heroSearch: '',
       gamemap: null,
       season: null,
       startdate: null,
       enddate: null,
       stats: [
-        { name: "Avg Assists", value: 'avg_assists', selected: false, flash: false},
+        { name: "Avg Assists", value: 'avg_assists', selected: true, flash: false},
         { name: "Avg Clutch Heals", value: 'avg_clutch_heals', selected: false, flash: false},
         { name: "Avg Creep Damage", value: 'avg_creep_damage', selected: false, flash: false},
-        { name: "Avg Damage Taken", value: 'avg_damage_taken', selected: false, flash: false},
-        { name: "Avg Deaths", value: 'avg_deaths', selected: false, flash: false},
+        { name: "Avg Damage Taken", value: 'avg_damage_taken', selected: true, flash: false},
+        { name: "Avg Deaths", value: 'avg_deaths', selected: true, flash: false},
         { name: "Avg Escapes", value: 'avg_escapes', selected: false, flash: false},
-        { name: "Avg Experience Contribution", value: 'avg_experience_contribution', selected: false, flash: false},
+        { name: "Avg Experience Contribution", value: 'avg_experience_contribution', selected: true, flash: false},
         { name: "Avg First to Ten", value: 'avg_first_to_ten', selected: false, flash: false},
         { name: "Avg Game Length", value: 'avg_game_length', selected: false, flash: false},
         { name: "Avg Healing", value: 'avg_healing', selected: false, flash: false},
@@ -219,7 +241,7 @@ export default {
         { name: "Avg Town Kills", value: 'avg_town_kills', selected: false, flash: false},
         { name: "Avg Vengeance", value: 'avg_vengeance', selected: false, flash: false},
         { name: "Avg Watch Tower Captures", value: 'avg_watch_tower_captures', selected: false, flash: false},
-        { name: "Avg Total Healing", value: 'combined_healing', selected: true, flash: false},
+        { name: "Avg Total Healing", value: 'combined_healing', selected: false, flash: false},
         { name: "KDA", value: 'kda', selected: false, flash: false},
         { name: "KDR", value: 'kdr', selected: false, flash: false},
         { name: "Losses", value: 'losses', selected: false, flash: false},
@@ -280,18 +302,34 @@ export default {
     }
   },
   created(){
+    // ?hero=, ?role= and ?map= (from the single hero, role and map pages) open the page filtered, as Match History does
+    // Strings only: an empty query string must not read [].map (Array's own function) as a map
+    const query = name => (typeof this.urlparameters?.[name] === 'string' ? this.urlparameters[name] : null);
+    if (query('hero')) this.hero = query('hero');
+    if (query('role')) this.role = query('role');
+    if (query('map')) this.gamemap = [query('map')];
+    // Phones start with fewer columns: kills, deaths, siege and hero damage
+    if (window.matchMedia('(max-width: 1023px)').matches) {
+      this.stats.forEach(stat => {
+        if (['avg_assists', 'avg_damage_taken', 'avg_experience_contribution'].includes(stat.value)) stat.selected = false;
+      });
+    }
     this.gametype = this.gametypedefault;
   },
   mounted() {
+    // Phones and wider screens show different columns, so it follows the window
+    this.onResize = () => { this.windowWidth = window.innerWidth; };
+    window.addEventListener('resize', this.onResize);
     if(this.esport){
       this.getNgsData();
       return;
     }
-    if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
+if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
       this.getData();
     }
   },
   beforeUnmount() {
+    window.removeEventListener('resize', this.onResize);
     this.cancelAxiosRequest();
   },
 
@@ -300,6 +338,11 @@ export default {
     next();
   },
   computed: {
+    // The filter takes the hero's id; the page keeps its name
+    heroInputId() {
+      const match = this.hero ? this.filters.heroes.find(hero => hero.name === this.hero) : null;
+      return match ? match.code : null;
+    },
     league() {
       return this.esport ? this.$esportLeague(this.esport, this.esportfilters) : null;
     },
@@ -307,19 +350,7 @@ export default {
       return [{ code: null, name: 'All' }, ...(this.ngsFilterOptions?.teams || []).map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
     },
     ngsPlayerUrl() {
-      return this.esport ? `${this.league.root}/Player/${this.battletag}/${this.blizzid}` : null;
-    },
-    // The league and the filters picked here, for links to the player's other pages
-    ngsQuery() {
-      if (!this.esport) {
-        return '';
-      }
-      const params = new URLSearchParams(this.league.params);
-      if (this.ngsSeason) params.set('season', this.ngsSeason);
-      if (this.ngsDivision) params.set('division', this.ngsDivision);
-      if (this.ngsTeam) params.set('team', this.ngsTeam);
-      const query = params.toString();
-      return query ? `?${query}` : '';
+      return `${this.league.root}/Player/${this.battletag}/${this.blizzid}`;
     },
     timertime(){
       return parseInt(this.accountlevel * 3 * .003);
@@ -327,8 +358,34 @@ export default {
     filteredStats() {
       return this.stats.filter(stat => stat.name.toLowerCase().includes(this.searchQuery.toLowerCase()));
     },
+    shownData() {
+      const search = this.heroSearch.trim().toLowerCase();
+      return search ? this.sortedData.filter(row => row.name.toLowerCase().includes(search) || this.$heroName(row.name).toLowerCase().includes(search)) : this.sortedData;
+    },
+    // Below the md breakpoint
+    phone() {
+      return this.windowWidth < 1024;
+    },
+    showGames() {
+      return !this.phone || this.phoneColumns.includes('games_played');
+    },
+    // The stat columns the table shows: the chosen ones, or a phone's picks in the order they were turned on
+    shownStats() {
+      if (!this.phone) return this.selectedStats;
+      return this.phoneColumns.map(value => this.stats.find(stat => stat.value === value)).filter(Boolean);
+    },
+    // The phone chooser's list: Games, then every stat, ticked when it's one of the two
+    phoneChooserStats() {
+      return [{ name: 'Games', value: 'games_played' }, ...this.stats].map(stat => ({ name: stat.name, value: stat.value, selected: this.phoneColumns.includes(stat.value) }));
+    },
     selectedStatsCount() {
       return this.stats.filter(stat => stat.selected).length;
+    },
+    // Same order as the in-game scoreboard, then anything else picked
+    selectedStats() {
+      const order = ['avg_kills', 'avg_assists', 'avg_deaths', 'avg_siege_damage', 'avg_hero_damage', 'avg_damage_taken', 'avg_experience_contribution'];
+      const rank = stat => (order.includes(stat.value) ? order.indexOf(stat.value) : order.length);
+      return this.stats.filter(stat => stat.selected).sort((a, b) => rank(a) - rank(b));
     },
     sortedData() {
       if (!this.sortKey) return this.data;
@@ -357,19 +414,18 @@ export default {
     },
     ngsFilterChange(eventPayload) {
       const field = { Seasons: 'ngsSeason', Divisions: 'ngsDivision', Teams: 'ngsTeam' }[eventPayload.field];
-      if (field && this[field] !== eventPayload.value) {
+      if (field) {
         this[field] = eventPayload.value;
-        this.ngsFiltersChanged = true;
       }
-      history.pushState({}, '', window.location.pathname + this.ngsQuery);
-    },
-    ngsDropdownClosed() {
-      if (this.ngsFiltersChanged) {
-        this.ngsFiltersChanged = false;
-        this.getNgsData();
-      }
+      const params = new URLSearchParams(this.league.params);
+      if (this.ngsSeason) params.set('season', this.ngsSeason);
+      if (this.ngsDivision) params.set('division', this.ngsDivision);
+      if (this.ngsTeam) params.set('team', this.ngsTeam);
+      const query = params.toString();
+      history.pushState({}, '', window.location.pathname + (query ? `?${query}` : ''));
     },
     async getNgsData(){
+      this.loadError = null;
       this.data = null;
       this.isLoading = true;
       try{
@@ -377,12 +433,19 @@ export default {
         this.ngsFilterOptions = response.data.filters;
         this.data = response.data.rows;
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getNgsData());
       }finally {
         this.isLoading = false;
+        this.$nextTick(() => {
+          const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            scaleTableToFit(responsivetable, this.$refs.tablecontainer);
+          }
+        });
       }
     },
-    async getData(type){
+async getData(type){
+  this.loadError = null;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -416,7 +479,7 @@ export default {
         });
         this.data = response.data;
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getData());
 
       }finally {
         this.cancelTokenSource = null;
@@ -468,10 +531,20 @@ export default {
       return this.gametype.includes(game_type);
     },
     getPlayerHeroPageUrl(hero){
-      if(this.esport){
-        return this.ngsPlayerUrl + "/Hero/" + encodeURIComponent(hero) + this.ngsQuery;
+      if (this.esport) {
+        return `${this.ngsPlayerUrl}/Hero/${hero}${window.location.search}`;
       }
       return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/Hero/" + hero;
+    },
+    // The column picker's Apply: newly shown columns flash once
+    applyColumns(values) {
+      this.stats.forEach(stat => {
+        const show = values.includes(stat.value);
+        if (show && !stat.selected) {
+          this.onCheckboxChange(stat);
+        }
+        stat.selected = show;
+      });
     },
     isDisabled(stat) {
       return this.selectedStatsCount >= 15 && !stat.selected;
@@ -495,6 +568,7 @@ export default {
       return stat.value.toLowerCase().includes('tier');
     },
     async navigateToMaxStatMatch(hero, stat, value){
+      this.matchLookupText = `Finding replay with ${stat.replace(/_/g, ' ')} for hero ${hero.name}`;
       this.matchIsLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/player/find/max/stat/match", {
@@ -513,6 +587,7 @@ export default {
 
         if (Number.isInteger(replayID) && replayID > 0) {
           window.location.href = `/Match/Single/${replayID}`;
+          return;
         } else {
           this.showMatchNotFound();
         }

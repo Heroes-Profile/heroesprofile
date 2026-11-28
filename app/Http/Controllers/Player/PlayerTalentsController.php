@@ -12,6 +12,7 @@ use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputValidation;
 use App\Rules\SeasonInputValidation;
 use App\Support\GlobalCacheKey;
+use App\Support\TalentBuildAllowance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -299,9 +300,18 @@ class PlayerTalentsController extends Controller
             ->pluck('player.hero')
             ->values();
 
+        $builds = $this->upToDateHeroBuilds($request, $heroIds);
+
+        // The page asks for each of the rest by name; those calls don't count against the rate limit
+        $heroes = $this->globalDataService->getHeroes()->keyBy('id');
+        TalentBuildAllowance::grant($request, $heroIds
+            ->filter(fn ($heroId) => $heroes->has($heroId))
+            ->map(fn ($heroId) => $heroes[$heroId]->name)
+            ->reject(fn ($name) => array_key_exists($name, $builds)));
+
         return [
             'heroes' => $heroIds,
-            'builds' => $this->upToDateHeroBuilds($request, $heroIds) ?: new \stdClass,
+            'builds' => $builds ?: new \stdClass,
         ];
     }
 

@@ -135,11 +135,11 @@ class ReferenceController extends Controller
         [$codes, $unknown] = ApiParameters::gameTypes($validated['game_type']);
 
         if ($unknown !== []) {
-            return $this->error('unknown_game_type', 'Not a recognised game type: '.implode(', ', $unknown).'.', 422);
+            return $this->error('unknown_game_type', __('Not a recognised game type: :values.', ['values' => implode(', ', $unknown)]), 422);
         }
 
         if (count($codes) !== 1) {
-            return $this->error('single_game_type_only', 'This endpoint takes one game type.', 422);
+            return $this->error('single_game_type_only', __('This endpoint takes one game type.'), 422);
         }
 
         $validated['game_type'] = $codes[0];

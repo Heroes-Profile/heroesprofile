@@ -7,7 +7,7 @@
     >
       <h2 class="text-lg">{{ title }}</h2>
       <button type="button" class="text-sm text-gray-medium underline" :aria-expanded="!collapsed" @click.stop="toggle">
-        {{ collapsed ? 'Show' : 'Hide' }}
+        {{ collapsed ? $t('Show') : $t('Hide') }}
       </button>
     </div>
 

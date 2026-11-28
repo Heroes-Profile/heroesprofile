@@ -1,16 +1,10 @@
 <template>
-  <div class="relative grid overflow-hidden variable-background rounded ring-inset ring-[1px] variable-ring">
-    <span class="invisible" aria-hidden="true">&nbsp;</span>
-    <span ref="fill" :class="fillClasses" :style="{ width }" aria-hidden="true"></span>
-    <span ref="textMeasure" class="absolute invisible flex items-center whitespace-nowrap px-2 tabular-nums" aria-hidden="true">
-      {{ mainText }}<span :class="suffixClass">{{ suffix }}</span>
-    </span>
-    <span v-if="textFitsInside"
-      class="absolute inset-y-0 left-0 z-10 flex items-center px-2 text-white whitespace-nowrap tabular-nums">
-      {{ mainText }}<span :class="suffixClass">{{ suffix }}</span>
-    </span>
-    <span v-else class="absolute inset-y-0 z-10 flex items-center pl-1 variable-text whitespace-nowrap tabular-nums"
-      :style="{ left: width }">
+  <div class="flex items-center gap-4 min-w-0">
+    <div :class="['flex-1 min-w-0 bg-surface-3 overflow-hidden', size === 'big' ? 'h-[1.875rem] rounded-lg' : 'h-4 rounded-[0.25rem]']" aria-hidden="true">
+      <div :class="['h-full', colorClasses[color] || colorClasses.blue]" :style="{ width }"></div>
+    </div>
+    <!-- hideValue keeps the number's space, so the bar lines up with ones that show theirs -->
+    <span v-if="mainText !== '' || suffix" :class="['shrink-0 font-semibold text-header whitespace-nowrap tabular-nums leading-none', { 'text-2xl': size === 'big', invisible: hideValue }]" :aria-hidden="hideValue || null">
       {{ mainText }}<span :class="suffixClass">{{ suffix }}</span>
     </span>
   </div>
@@ -24,6 +18,7 @@ const colorClasses = {
   red: 'bg-red',
   yellow: 'bg-yellow',
   'gray-dark': 'bg-gray-dark',
+  'gray-medium': 'bg-gray-medium',
 };
 
 export default {
@@ -31,6 +26,8 @@ export default {
   props: {
     value: { type: [Number, String], required: true },
     displayText: { type: [Number, String], default: null },
+    // No data: the bar shows as usual but its number is hidden
+    hideValue: { type: Boolean, default: false },
     suffix: { type: String, default: '' },
     suffixClass: { type: String, default: '' },
     color: {
@@ -40,12 +37,12 @@ export default {
         return Object.hasOwn(colorClasses, value);
       },
     },
-    divider: { type: Boolean, default: true },
+    // 'big' is the 30px bar, for a headline stat
+    size: { type: String, default: null },
   },
   data() {
     return {
-      textFitsInside: false,
-      resizeObserver: null,
+      colorClasses,
     };
   },
   computed: {
@@ -59,40 +56,12 @@ export default {
       return `${this.numericValue}%`;
     },
     mainText() {
-      return this.displayText !== null && this.displayText !== undefined
-        ? String(this.displayText)
-        : String(this.value);
-    },
-    fillClasses() {
-      return [
-        'absolute inset-y-0 left-0 rounded-l',
-        colorClasses[this.color] || colorClasses.blue,
-        this.numericValue === 100 ? 'rounded-r' : '',
-        this.divider && this.numericValue > 0 && this.numericValue < 100
-          ? 'border-r-2 border-black'
-          : '',
-      ];
-    },
-  },
-  mounted() {
-    this.$nextTick(this.updateTextPlacement);
-
-    this.resizeObserver = new ResizeObserver(() => {
-      this.updateTextPlacement();
-    });
-    this.resizeObserver.observe(this.$refs.fill);
-    this.resizeObserver.observe(this.$refs.textMeasure);
-  },
-  beforeUnmount() {
-    this.resizeObserver?.disconnect();
-  },
-  methods: {
-    updateTextPlacement() {
-      const fill = this.$refs.fill;
-      const text = this.$refs.textMeasure;
-      if (!fill || !text) return;
-
-      this.textFitsInside = fill.clientWidth >= text.offsetWidth;
+      if (this.displayText !== null && this.displayText !== undefined) {
+        return String(this.displayText);
+      }
+      // Two whole digits for a percentage, so 1.00% reads 01.00% and lines up with 58.47%
+      const text = String(this.value);
+      return this.suffix === '%' && /^\d(\.|$)/.test(text) ? '0' + text : text;
     },
   },
 };

@@ -6,6 +6,7 @@
         "downloadable": true,
         "replay_download_blocked": false,
         "game_type": "ARAM",
+        "game_type_short": "ar",
         "game_date": "2024-02-09 16:12:08",
         "game_map": {
             "map_id": 17,
@@ -64,6 +65,8 @@
                     "role_conservative_rating": 26.6308425966997,
                     "role_mmr": 2865,
                     "role_change": -1.87,
+                    "map_mmr": null,
+                    "map_change": null,
                     "score": {
                         "level": 23,
                         "takedowns": 28,
@@ -321,6 +324,8 @@
                     "role_conservative_rating": 19.7544701129732,
                     "role_mmr": 2590,
                     "role_change": -3.02,
+                    "map_mmr": null,
+                    "map_change": null,
                     "score": {
                         "level": 23,
                         "takedowns": 28,
@@ -574,6 +579,8 @@
                     "role_conservative_rating": 24.6884920982239,
                     "role_mmr": 2788,
                     "role_change": 1.67,
+                    "map_mmr": null,
+                    "map_change": null,
                     "score": {
                         "level": 22,
                         "takedowns": 17,

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Esports\Other;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Esports\EsportsController;
 use App\Models\Esports\Other\Battletag;
 use App\Models\Esports\Other\Replay;
 use App\Models\Esports\Other\Series;
@@ -38,7 +39,8 @@ class EsportOtherController extends Controller
     public function show(Request $request)
     {
 
-        $seasons = Replay::select('season')
+        // Each row carries its series, so the page can narrow the lists to the chosen one
+        $seasons = Replay::select('season', 'series')
             ->distinct()
             ->orderBy('season', 'desc')
             ->whereNot('series', 'Nut Cup')
@@ -48,10 +50,11 @@ class EsportOtherController extends Controller
                 return [
                     'code' => $season->season,
                     'name' => $season->season,
+                    'series' => $season->series,
                 ];
             });
 
-        $regions = Replay::select('heroesprofile_ml.regions.name as name', 'heroesprofile_ml.regions.region_id as code')
+        $regions = Replay::select('heroesprofile_ml.regions.name as name', 'heroesprofile_ml.regions.region_id as code', 'heroesprofile_ml.replay.series as series')
             ->distinct()
             ->join('heroesprofile_ml.regions', 'heroesprofile_ml.regions.region_id', '=', 'heroesprofile_ml.replay.region')
             ->whereNot('series', 'Nut Cup')
@@ -59,17 +62,17 @@ class EsportOtherController extends Controller
             ->orderBy('code', 'asc')
             ->get();
 
-        $tournaments = Replay::select('tournament as name', 'tournament as code')
+        $tournaments = Replay::select('tournament as name', 'tournament as code', 'series')
             ->distinct()
             ->whereNot('series', 'Nut Cup')
             ->whereNot('series', 'Heroes Lounge')
             ->orderBy('name', 'asc')
             ->get();
 
-        $teams = Replay::select('team_0_name as team_name')
+        $teams = Replay::select('team_0_name as team_name', 'series')
             ->whereNotIn('series', ['Nut Cup', 'Heroes Lounge'])
             ->union(
-                Replay::select('team_1_name as team_name')
+                Replay::select('team_1_name as team_name', 'series')
                     ->whereNotIn('series', ['Nut Cup', 'Heroes Lounge'])
             )
             ->distinct()
@@ -79,7 +82,22 @@ class EsportOtherController extends Controller
                 return [
                     'code' => $team->team_name,
                     'name' => $team->team_name,
+                    'series' => $team->series,
                 ];
+            });
+
+        // Games played per series and the dates of the first and last, for the series cards
+        $gamesBySeries = Replay::selectRaw('series, COUNT(*) as games, MIN(game_date) as first_game, MAX(game_date) as last_game')
+            ->groupBy('series')
+            ->get()
+            ->keyBy('series');
+
+        $series = Series::whereNot('name', 'Nut Cup')->whereNot('name', 'Heroes Lounge')->get()
+            ->each(function ($item) use ($gamesBySeries) {
+                $stats = $gamesBySeries[$item->name] ?? null;
+                $item->games = (int) ($stats->games ?? 0);
+                $item->first_game = $stats->first_game ?? null;
+                $item->last_game = $stats->last_game ?? null;
             });
 
         return view('Esports.Other.OtherMain')
@@ -88,7 +106,7 @@ class EsportOtherController extends Controller
                 'heroes' => $this->globalDataService->getHeroes(),
                 'filters' => $this->globalDataService->getFilterData(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
-                'series' => Series::whereNot('name', 'Nut Cup')->whereNot('name', 'Heroes Lounge')->get(),
+                'series' => $series,
                 'seasons' => $seasons,
                 'regions' => $regions,
                 'tournaments' => $tournaments,
@@ -412,43 +430,9 @@ class EsportOtherController extends Controller
     }
 
     /** The league player pages' match history, under Other's series. */
-    public function showPlayerMatchHistory(Request $request, $series, $battletag, $blizz_id)
+    public function showPlayerMatchHistory(Request $request)
     {
-        $validationRules = [
-            'series' => 'required|string',
-            'battletag' => 'required|string',
-            'blizz_id' => 'required|integer',
-        ];
-
-        $otherValidationRules = [
-            'season' => 'nullable|numeric',
-        ];
-
-        $validator = Validator::make(compact('series', 'battletag', 'blizz_id'), $validationRules);
-        $otherValidator = Validator::make($request->all(), $otherValidationRules);
-
-        if ($validator->fails()) {
-            if (config('app.env') === 'production') {
-                return \Redirect::to('/');
-            } else {
-                return [
-                    'data' => $request->all(),
-                    'status' => 'failure to validate inputs',
-                ];
-            }
-        }
-
-        return view('Esports.singlePlayerMatchHistory')->with([
-            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-            'battletag' => $battletag,
-            'blizz_id' => $blizz_id,
-            'esport' => 'Other',
-            'series' => $series,
-            'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon ?? 'heroesprofilelogo.png',
-            'filters' => $this->globalDataService->getFilterData(),
-            'season' => $request['season'],
-            'tournament' => null,
-        ]);
+        return app(EsportsController::class)->showPlayerMatchHistory($request);
     }
 
     public function getAllMatches(Request $request)

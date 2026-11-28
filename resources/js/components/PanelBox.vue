@@ -1,0 +1,110 @@
+<template>
+  <!-- A filter panel: on mobile it hides behind Show Filters and opens full screen, like Filters.vue -->
+  <div v-if="filters">
+    <button class="md:hidden p-2 bg-blue w-full" @click="showNav = !showNav">{{ $t('Show Filters') }}</button>
+    <div v-show="showNav" :class="[inner ? 'bg-surface-1 md:rounded-control' : 'bg-surface md:rounded-panel', 'p-4 md:p-6 flex flex-col gap-4 min-w-0 max-md:fixed max-md:inset-0 max-md:z-[54] max-md:h-[100dvh] max-md:overflow-y-auto']" @click="closeOnApply">
+      <button class="md:hidden ml-auto text-2xl min-w-[2.75rem] min-h-[2.75rem]" :aria-label="$t('Close filters')" @click="showNav = false">x</button>
+      <slot></slot>
+    </div>
+  </div>
+  <div v-else :class="[inner ? 'bg-surface-1 rounded-control' : 'bg-surface rounded-panel', 'p-4 md:p-6 flex flex-col gap-4 min-w-0']">
+    <template v-if="title">
+      <!-- A click on the header's empty space, not its text or controls, is reported (collapsible panels toggle on it) -->
+      <div class="flex flex-wrap justify-between items-baseline gap-x-4 gap-y-1" @click="headerClicked">
+        <div>
+          <h3 class="text-2xl font-bold flex items-center gap-2">{{ $t(title) }}<!-- An info icon sits raised at the top of the title; the wrapper hides itself when nothing is passed --><span class="self-start flex empty:hidden"><slot name="title"></slot></span></h3>
+          <p v-if="subtitle" class="text-sm text-subtext mt-1"><span :class="{ 'skeleton-text': skeleton }">{{ $t(subtitle) }}</span></p>
+        </div>
+        <a v-if="linkHref && !skeleton" class="text-header whitespace-nowrap link-more" :href="linkHref">{{ $t(linkText) }}</a>
+        <span v-else-if="skeleton && linkText" class="skeleton-text whitespace-nowrap">{{ $t(linkText) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></span>
+        <slot name="right"></slot>
+        <img v-if="loading" class="logo-spin h-7 w-auto shrink-0 ml-auto self-center" src="/images/logo/heroesprofilelogo.png" alt="Loading" />
+      </div>
+      <div v-if="divider" class="h-px bg-gray-dark"></div>
+    </template>
+    <slot></slot>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'PanelBox',
+  props: {
+    title: String,
+    // A line of grey text under the title
+    subtitle: String,
+    linkText: String,
+    // A loading skeleton's card: the link becomes a grey block its size
+    skeleton: Boolean,
+    linkHref: String,
+    // A card inside another panel, one shade lighter and less rounded than the panel around it
+    inner: Boolean,
+    // A spinning logo in the header while the panel's data loads
+    loading: Boolean,
+    divider: {
+      type: Boolean,
+      default: true,
+    },
+    // A filter row; its apply button carries data-filter-apply so the mobile panel closes on it
+    filters: Boolean,
+  },
+  data() {
+    return {
+      showNav: true,
+      desktopView: true,
+    };
+  },
+  created() {
+    if (this.filters) {
+      this.desktopView = !this.isMobileView();
+      this.showNav = this.desktopView;
+      window.addEventListener('resize', this.checkScreenWidth);
+    }
+  },
+  unmounted() {
+    if (this.filters) {
+      window.removeEventListener('resize', this.checkScreenWidth);
+      if (this.showNav && this.isMobileView()) {
+        document.body.style.overflow = '';
+      }
+    }
+  },
+  watch: {
+    // The mobile panel covers the screen, so the page behind it shouldn't scroll
+    showNav(open) {
+      if (this.filters && this.isMobileView()) {
+        document.body.style.overflow = open ? 'hidden' : '';
+      }
+    },
+  },
+  emits: ['header-background-click'],
+  methods: {
+    // Only when the page listens; stopped then, so the card's own click handler doesn't act on the same click
+    headerClicked(event) {
+      if (!this.$.vnode.props?.onHeaderBackgroundClick || event.target.closest('h3, p, a, button, span, img, input, label')) {
+        return;
+      }
+      event.stopPropagation();
+      this.$emit('header-background-click');
+    },
+    isMobileView() {
+      // Same breakpoint as Tailwind's md
+      return !window.matchMedia('(min-width: 1024px)').matches;
+    },
+    checkScreenWidth() {
+      const desktop = !this.isMobileView();
+      if (desktop) {
+        this.showNav = true;
+      } else if (this.desktopView) {
+        this.showNav = false;
+      }
+      this.desktopView = desktop;
+    },
+    closeOnApply(event) {
+      if (this.isMobileView() && event.target.closest('[data-filter-apply]')) {
+        this.showNav = false;
+      }
+    },
+  },
+};
+</script>

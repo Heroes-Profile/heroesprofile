@@ -1,128 +1,117 @@
 <template>
-  <div>
-    <page-heading :infoText1="infoText" heading="Heroes Profile API"></page-heading>
+  <!-- 60px between the header and the title, as in the design -->
+  <div class="pt-[3.75rem]">
+    <page-heading heading="Heroes Profile API"></page-heading>
+    <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 -mt-2 mb-8">
+      <span class="uppercase text-gray-medium">{{ $t('The same data that powers heroesprofile.com') }}</span>
+    </div>
 
-    <div class="mx-auto max-w-[1500px] p-4">
-      <p class="mb-8">
-        Heroes Profile API is a tool used to get Heroes of the Storm data parsed for
-        <a href="https://www.heroesprofile.com/" class="underline hover:text-lteal">Heroes Profile</a>.
-        We source original replay data from our own
-        <a href="/Upload" class="underline hover:text-lteal">Uploader</a>, then parse the data to
-        provide you with up-to-date calculated MMR, win rates, and more. Your subscription helps us
-        create new features for Heroes Profile. View our
-        <a href="/Api/Docs" class="underline hover:text-lteal">Documentation</a> or
-        <a href="/Api/Register" class="underline hover:text-lteal">Register</a> to get started.
+    <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-8">
+      <p class="bg-surface rounded-panel px-4 py-5 md:px-8 md:py-7 text-subtext leading-relaxed">
+        {{ $t('Hero statistics, talent builds, match data, player profiles and MMR. We source original replay data from our own') }}
+        <a href="/Upload" class="link hover:text-lteal">{{ $t('Uploader') }}</a>{{ $t(', then parse it to provide up-to-date MMR, win rates and more. Your subscription helps us build new features for') }}
+        <a href="https://www.heroesprofile.com/" class="link hover:text-lteal">Heroes Profile</a>{{ $t('. View the') }} <a href="/Api/Docs" class="link hover:text-lteal">{{ $t('Documentation') }}</a> {{ $t('or') }}
+        <a href="/Api/Register" class="link hover:text-lteal">{{ $t('Register') }}</a> {{ $t('to get started.') }}
       </p>
 
-      <div class="grid gap-4 md:grid-cols-3 mb-10">
-        <div v-for="plan in plans" :key="plan.key" class="bg-lighten flex flex-col">
-          <div class="p-3 text-center text-lg" :class="headerClass(plan.key)">
-            {{ plan.name }}
+      <!-- One card per plan, edged in its colour -->
+      <div class="grid gap-8 md:grid-cols-3">
+        <div v-for="plan in plans" :key="plan.key" :class="['bg-surface rounded-panel border-t-[0.375rem] px-4 md:px-8 pt-6 pb-8 flex flex-col gap-5', borderClass(plan.key)]">
+          <div>
+            <h2 class="text-2xl font-bold">{{ plan.name }}</h2>
+            <p class="text-sm text-subtext mt-1.5">{{ taglines[plan.key] }}</p>
           </div>
-
-          <div class="p-4 flex flex-col flex-grow text-center">
-            <div class="text-3xl mb-4">
-              ${{ plan.price }} <span class="text-sm text-gray-medium">/ mo</span>
-            </div>
-
-            <ul class="text-sm text-left space-y-2 mb-6 flex-grow">
-              <li v-for="(feature, index) in features[plan.key]" :key="index">
-                <span v-if="feature.startsWith('Direct endpoint')" class="inline-flex items-center gap-2">
-                  {{ feature }}
-                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
-                    <slot><p class="text-sm p-2 text-left">{{ directIntegrationInfo }}</p></slot>
-                  </round-image>
-                </span>
-                <template v-else>{{ feature }}</template>
-              </li>
-            </ul>
-
-            <custom-button
-              :href="ctaHref(plan.key)"
-              :text="ctaText(plan.key)"
-              :alt="plan.name"
-              :color="colorFor(plan.key)"
-            ></custom-button>
+          <div class="flex items-baseline gap-2">
+            <span class="text-5xl font-bold leading-none">${{ plan.price }}</span>
+            <span class="text-sm text-subtext">{{ $t('/ month') }}</span>
           </div>
+          <div class="h-px bg-gray-dark"></div>
+
+          <ul class="flex flex-col gap-3.5 grow">
+            <li v-for="(feature, index) in features[plan.key]" :key="index" :class="['flex items-center gap-3', { 'text-subtext': !feature.included }]">
+              <span v-if="feature.included" class="w-5 h-5 rounded-[0.25rem] bg-teal flex items-center justify-center shrink-0"><basil-icon name="check" class="text-base text-white"></basil-icon></span>
+              <span v-else class="w-5 h-5 rounded-[0.25rem] bg-surface-3 flex items-center justify-center shrink-0"><basil-icon name="cross" class="text-base"></basil-icon></span>
+              <span>{{ feature.text }}</span>
+              <round-image v-if="feature.text.startsWith('Direct endpoint')" size="small" icon="fas fa-info" :title="$t('info')" popupsize="large" mobileClick="true">
+                <slot><p class="text-sm p-2 text-left">{{ directIntegrationInfo }}</p></slot>
+              </round-image>
+            </li>
+          </ul>
+
+          <custom-button
+            :href="ctaHref(plan.key)"
+            :text="ctaText(plan.key)"
+            :alt="plan.name"
+            :color="colorFor(plan.key)"
+            class="font-semibold"
+          ></custom-button>
         </div>
       </div>
 
-      <table class="responsive-table">
-        <tbody>
-          <tr>
-            <td></td>
-            <td v-for="plan in plans" :key="plan.key" class="text-center text-white" :class="headerClass(plan.key)">
-              {{ plan.name }}
-            </td>
-          </tr>
-
-          <tr>
-            <td>Return data in JSON or CSV format</td>
-            <td class="text-center">&#10004;</td>
-            <td class="text-center">&#10004;</td>
-            <td class="text-center">&#10004;</td>
-          </tr>
-
-          <tr>
-            <td>
-              <span class="inline-flex items-center gap-2">
-                Direct endpoint integration
-                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
-                  <slot><p class="text-sm p-2 text-left">{{ directIntegrationInfo }}</p></slot>
-                </round-image>
-              </span>
-            </td>
-            <td class="text-center">&#10007;</td>
-            <td class="text-center">&#10007;</td>
-            <td class="text-center">&#10004;</td>
-          </tr>
-
-          <tr>
-            <td>Calls per minute</td>
-            <td class="text-center">60</td>
-            <td class="text-center">60</td>
-            <td class="text-center">120</td>
-          </tr>
-
-          <tr>
-            <td>
-              <span class="inline-flex items-center gap-2">
-                Active jobs
-                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
-                  <slot><p class="text-sm p-2 text-left">{{ activeJobsInfo }}</p></slot>
-                </round-image>
-              </span>
-            </td>
-            <td class="text-center">3</td>
-            <td class="text-center">5</td>
-            <td class="text-center">10</td>
-          </tr>
-
-          <tr>
-            <td colspan="4"><strong>Calls per week by endpoint category:</strong></td>
-          </tr>
-
-          <tr v-for="row in pricingData" :key="row.title">
-            <td>{{ row.title }}</td>
-            <td class="text-center">{{ row.basic }}</td>
-            <td class="text-center">{{ row.intermediate }}</td>
-            <td class="text-center">{{ row.developer }}</td>
-          </tr>
-
-          <tr>
-            <td colspan="4" class="text-center">
-              <a href="/Api/EndpointLimits" class="underline">View Detailed Endpoint Limits</a>
-            </td>
-          </tr>
-
-          <tr>
-            <td></td>
-            <td v-for="plan in plans" :key="plan.key" class="text-center text-white" :class="headerClass(plan.key)">
-              {{ plan.name }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <panel-box class="md:!p-8 !gap-6" :divider="false" :title="$t('Compare plans')" subtitle="Limits per plan. Calls per week are counted by endpoint category." link-text="Detailed endpoint limits" link-href="/Api/EndpointLimits">
+        <div class="overflow-clip">
+          <table class="min-w-0 w-full rounded-table table-fixed">
+            <colgroup>
+              <col class="w-[51.5%]">
+              <col v-for="plan in plans" :key="plan.key">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="py-2 px-6 text-left text-sm">{{ $t('Feature') }}</th>
+                <th v-for="plan in plans" :key="plan.key" class="py-2 px-3 text-center text-sm">{{ plan.name }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="h-14 py-2 px-6">{{ $t('Return data in JSON or CSV format') }}</td>
+                <td v-for="plan in plans" :key="plan.key" class="h-14 py-2 px-3 text-center"><basil-icon name="check" class="text-teal text-2xl"></basil-icon></td>
+              </tr>
+              <tr>
+                <td class="h-14 py-2 px-6">
+                  <span class="inline-flex items-center gap-2">
+                    {{ $t('Direct endpoint integration') }}
+                    <round-image size="small" icon="fas fa-info" :title="$t('info')" popupsize="large" mobileClick="true">
+                      <slot><p class="text-sm p-2 text-left">{{ directIntegrationInfo }}</p></slot>
+                    </round-image>
+                  </span>
+                </td>
+                <td v-for="plan in plans" :key="plan.key" class="h-14 py-2 px-3 text-center">
+                  <basil-icon v-if="plan.key === 'developer'" name="check" class="text-teal"></basil-icon>
+                  <basil-icon v-else name="cross" class="text-subtext text-xl"></basil-icon>
+                </td>
+              </tr>
+              <tr>
+                <td class="h-14 py-2 px-6">{{ $t('Calls per minute') }}</td>
+                <td class="h-14 py-2 px-3 text-center">60</td>
+                <td class="h-14 py-2 px-3 text-center">60</td>
+                <td class="h-14 py-2 px-3 text-center">120</td>
+              </tr>
+              <tr>
+                <td class="h-14 py-2 px-6">
+                  <span class="inline-flex items-center gap-2">
+                    {{ $t('Active jobs') }}
+                    <round-image size="small" icon="fas fa-info" :title="$t('info')" popupsize="large" mobileClick="true">
+                      <slot><p class="text-sm p-2 text-left">{{ activeJobsInfo }}</p></slot>
+                    </round-image>
+                  </span>
+                </td>
+                <td class="h-14 py-2 px-3 text-center">3</td>
+                <td class="h-14 py-2 px-3 text-center">5</td>
+                <td class="h-14 py-2 px-3 text-center">10</td>
+              </tr>
+              <tr>
+                <td :colspan="plans.length + 1" class="py-2 px-6 text-xs font-bold uppercase text-subtext">{{ $t('Calls per week by endpoint category') }}</td>
+              </tr>
+              <tr v-for="row in pricingData" :key="row.title">
+                <td class="h-14 py-2 px-6">{{ $t(row.title) }}</td>
+                <td class="h-14 py-2 px-3 text-center">{{ row.basic }}</td>
+                <td class="h-14 py-2 px-3 text-center">{{ row.intermediate }}</td>
+                <td class="h-14 py-2 px-3 text-center">{{ row.developer }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </panel-box>
     </div>
   </div>
 </template>
@@ -145,29 +134,34 @@ export default {
   },
   data(){
     return {
-      infoText: "Hero statistics, talent builds, match data, player profiles and MMR — the same data that powers www.heroesprofile.com.",
       directIntegrationInfo: "Calling the API live each time one of your users loads a page or clicks a button. Without it, your project must store what it retrieves and serve its users from that copy, so their activity never reaches our API.",
       activeJobsInfo: "A call that isn't cached starts a job and answers 202. That job is active until it finishes, and this is how many your account can have active at once. Cached answers come straight back and don't count.",
+      taglines: {
+        basic: this.$t('For one player'),
+        intermediate: this.$t('For small apps'),
+        developer: this.$t('For apps & websites'),
+      },
       features: {
         basic: [
-          'Ideal for an individual player looking to keep track of data in an outside spreadsheet',
-          'Limited amount of Global and individual player stats calls per week',
-          'Return results in JSON or CSV format',
-          'Direct endpoint integration unavailable',
-          'Includes Player Analytics for your Battle.net account',
+          { text: this.$t('Ideal for keeping track of your data in a spreadsheet'), included: true },
+          { text: this.$t('Limited Global and player stats calls per week'), included: true },
+          { text: this.$t('Results in JSON or CSV'), included: true },
+          { text: this.$t('Direct endpoint integration'), included: false },
+          { text: this.$t('Player Analytics for your Battle.net account'), included: true },
         ],
         intermediate: [
-          'Ideal for small use applications',
-          'Limited amount of Global and individual player stats calls per week',
-          'Return results in JSON or CSV format',
-          'Direct endpoint integration unavailable',
-          'Includes Player Analytics for your Battle.net account',
+          { text: this.$t('Ideal for small applications'), included: true },
+          { text: this.$t('More Global and player stats calls per week'), included: true },
+          { text: this.$t('Results in JSON or CSV'), included: true },
+          { text: this.$t('Direct endpoint integration'), included: false },
+          { text: this.$t('Player Analytics for your Battle.net account'), included: true },
         ],
         developer: [
-          'Ideal for developers looking to build an app or website',
-          'More calls per week, allowing consistent data return',
-          'Direct endpoint integration available',
-          'Includes Player Analytics for your Battle.net account',
+          { text: this.$t('Ideal for building an app or website'), included: true },
+          { text: this.$t('Most calls per week for consistent data'), included: true },
+          { text: this.$t('Results in JSON or CSV'), included: true },
+          { text: this.$t('Direct endpoint integration'), included: true },
+          { text: this.$t('Player Analytics for your Battle.net account'), included: true },
         ],
       },
     }
@@ -181,15 +175,15 @@ export default {
     },
     ctaText(key){
       if(key === 'developer'){
-        return 'Contact Us';
+        return this.$t('Contact Us');
       }
-      return this.authenticated ? 'Go To Your Account' : 'Get Started';
+      return this.authenticated ? this.$t('Go To Your Account') : this.$t('Get Started');
     },
     colorFor(key){
       return { basic: 'teal', intermediate: 'blue', developer: 'red' }[key];
     },
-    headerClass(key){
-      return { basic: 'bg-teal', intermediate: 'bg-blue', developer: 'bg-red' }[key];
+    borderClass(key){
+      return { basic: 'border-teal', intermediate: 'border-blue', developer: 'border-red' }[key];
     },
   },
 }

@@ -69,4 +69,8 @@ trait SeedFixtures
     public const OTHER_SERIES = 'HGC';
 
     public const OTHER_SERIES_ID = 9;
+
+    public const OTHER_TEAM = 'Tempest';
+
+    public const OTHER_REPLAY_ID = 6942;
 }

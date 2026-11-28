@@ -1,21 +1,21 @@
 <template>
   <!-- The methodology for the open tab: abstract always shown, the rest on request -->
-  <article class="max-w-[1100px] mx-auto mt-16 mb-10 px-4">
+  <article class="max-w-[68.75rem] mx-auto mt-16 mb-10 px-4">
     <header class="border-t border-gray-light pt-6 mb-4">
-      <p class="text-xs uppercase text-gray-light mb-1">Methodology</p>
+      <p class="text-xs uppercase text-gray-light mb-1">{{ $t('Methodology') }}</p>
       <h2 class="text-2xl font-bold mb-1">{{ paper.title }}</h2>
       <p class="text-sm text-gray-light">Heroes Profile Analytics &middot; {{ paper.version }}</p>
     </header>
 
     <section class="mb-4">
-      <h3 class="text-lg font-bold mb-1">Abstract</h3>
+      <h3 class="text-lg font-bold mb-1">{{ $t('Abstract') }}</h3>
       <p class="text-sm leading-relaxed">{{ paper.abstract }}</p>
     </section>
 
     <custom-button
       @click="open = !open"
-      :text="open ? 'Hide the methodology' : 'Read the full methodology'"
-      :alt="open ? 'Hide the methodology' : 'Read the full methodology'"
+      :text="open ? $t('Hide the methodology') : $t('Read the full methodology')"
+      :alt="open ? $t('Hide the methodology') : $t('Read the full methodology')"
       size="small"
       :ignoreclick="true"
     ></custom-button>
@@ -25,10 +25,10 @@
         <h3 class="text-lg font-bold mb-2">{{ index + 1 }}. {{ section.heading }}</h3>
         <template v-for="(block, b) in section.body" :key="b">
           <p v-if="typeof block === 'string'" class="text-sm leading-relaxed mb-2">{{ block }}</p>
-          <p v-else-if="block.formula" class="text-sm font-mono bg-darken rounded px-3 py-2 mb-2 overflow-x-auto">{{ block.formula }}</p>
+          <p v-else-if="block.formula" class="text-sm bg-darken rounded px-3 py-2 mb-2 overflow-x-auto">{{ block.formula }}</p>
           <p v-else-if="block.parts" class="text-sm leading-relaxed mb-2">
             <template v-for="(part, i) in block.parts" :key="i">
-              <a v-if="part.href" :href="part.href" target="_blank" class="underline">{{ part.label }}</a>
+              <a v-if="part.href" :href="part.href" target="_blank" class="link">{{ part.label }}</a>
               <template v-else>{{ part }}</template>
             </template>
           </p>
@@ -288,7 +288,7 @@ export default {
                 'Signal rating (High, Medium, Low): how strong the global evidence is that the behaviour goes with winning or losing. It is the same for every player and is recomputed nightly.',
                 'Your sample (High, Medium, Low): how many of your own games stand behind your value. It is specific to you and to the filters.',
                 'Improving, Worse, About the same: whether your last 3 or 5 games differ from your earlier games by more than your usual game-to-game swing.',
-                'Your last game: your most recent processed game under the filters, each signal against your usual (the average of your earlier games, up to 200) and the global median. Better or Worse means further from your usual than one game normally varies (the standard deviation of your earlier games, with a floor of 1% of the usual); otherwise Typical. Every moment flagged in that game is listed with a link into the replay viewer. The game shown is identified by its end time and replay number, because coaching is rebuilt overnight and a game just played appears the day after it is processed.',
+                'Your last game: your most recent processed game under the filters, each signal against your usual (the average of your earlier games, up to 200) and the global median. Better or Worse means further from your usual than one game normally varies (the standard deviation of your earlier games, with a floor of 1% of the usual); otherwise Typical. Every moment flagged in that game is listed with a link into the replay viewer. The game shown is identified by its end time and match ID, because coaching is rebuilt overnight and a game just played appears the day after it is processed.',
               ] },
               'The summary at the top lists up to two signals to work on: those rated Medium or High where more than half of players do better than you, most-behind first (fights a talent tier down is excluded because it mostly reflects the team being behind on levels). It also names your best signal where you are ahead of most players, and notes when fewer than 10 games are behind the read.',
             ] },

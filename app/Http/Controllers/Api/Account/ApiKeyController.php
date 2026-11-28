@@ -24,7 +24,7 @@ class ApiKeyController extends Controller
 
         if ($activeKeys >= self::MAX_ACTIVE_KEYS) {
             return response()->json([
-                'error' => 'You already have the maximum of '.self::MAX_ACTIVE_KEYS.' active keys. Revoke one first.',
+                'error' => __('You already have the maximum of :max active keys. Revoke one first.', ['max' => self::MAX_ACTIVE_KEYS]),
             ], 422);
         }
 
@@ -50,7 +50,7 @@ class ApiKeyController extends Controller
             ->first();
 
         if (! $key) {
-            return response()->json(['error' => 'Key not found.'], 404);
+            return response()->json(['error' => __('Key not found.')], 404);
         }
 
         $hash = $key->secret_hash;

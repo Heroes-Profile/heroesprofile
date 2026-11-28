@@ -3,158 +3,155 @@
     <global-async-debug-banner page-label="Global Talents" />
 
     <div class="grid gap-5 grid-cols-1">
-      <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Builds & Talent Stats' : 'Hero Builds & Talent Stats'">
-        <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
-          <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
-          <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 220px; max-height: 340px; overflow-y: auto;">
-            <input v-model="heroDropdownSearch" type="text" placeholder="Search hero..." class="w-full px-2 py-1 text-xs bg-gray-dark text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
-            <div
-              v-for="h in filteredDropdownHeroes"
-              :key="h.id"
-              class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-lighten text-sm"
-              @click="clickedHero(h); heroDropdownOpen = false"
-            >
-              <hero-image-wrapper :hero="h" :includehover="false" class="flex-shrink-0"></hero-image-wrapper>
-              <span>{{ h.name }}</span>
-            </div>
-          </div>
-        </div>
-        <template v-if="selectedHero" #aboveHeading>
-          <hero-heading-select :heroes="heroes" :value="selectedHero.id" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
-        </template>
+      <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+      <page-heading scope="Global" v-if="!selectedHero" :heading="'Hero Builds & Talent Stats'" :subheading="defaulttimeframe && defaulttimeframe.length ? $t('Most popular builds · Patch :patch', { patch: defaulttimeframe[0] }) : 'Most popular builds'">
       </page-heading>
 
 
     
-        <div v-if="!selectedHero">
-          <div class="flex justify-between max-w-[1500px] mx-auto md:px-4">
-            <hero-selection :heroes="heroes" linkbase="/Global/Talents" @search="heroSearchQuery = $event"></hero-selection>
-          </div>
+        <div v-if="!selectedHero" class="flex flex-col gap-6">
+          <hero-selection :heroes="heroes" linkbase="/Global/Talents" subtitle="Open a hero to see talent win rates and all builds." @search="heroSearchQuery = $event" @role="heroRole = $event"></hero-selection>
 
           <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
 
-          <div class="max-w-[1500px] mx-auto md:px-4 mt-8 w-full">
-            <h2 class="heading mb-4">Most Popular Builds for Latest Patch Per Hero and Game Type</h2>
-            <div v-if="!talentbuilddataall" class="text-sm text-gray-400 flex items-center gap-2">
-              <i class="fas fa-spinner fa-spin"></i> Loading all talent builds...
-            </div>
-            <global-talent-builds-all v-else :heroes="filteredHeroesForTable" :talentbuilddataall="talentbuilddataall"></global-talent-builds-all>
+          <div class="max-w-[120rem] w-full mx-auto px-4 md:px-8">
+            <panel-box title="Most Popular Builds" subtitle="Latest patch, per hero and game type. Copy a build code and paste it in game chat.">
+              <div v-if="!talentbuilddataall" class="flex flex-col gap-4">
+                <loading-component :compact="true" :textoverride="true">{{ $t('Loading all talent builds...') }}</loading-component>
+                <!-- Laid out at the loaded table's full width and shrunk to fit like it (scaleTableToFit), so on a phone
+                     the grey rows look like the shrunk table instead of three game types squeezed together -->
+                <div ref="buildsskeletonbox" class="w-full overflow-clip">
+                  <div ref="buildsskeleton" class="min-w-[72rem]">
+                    <table-skeleton :bare="true" :rows="10" :columns="['avatar', 'talents', 'talents', 'talents']" :mobile-columns="['avatar', 'talents', 'talents', 'talents']"></table-skeleton>
+                  </div>
+                </div>
+              </div>
+              <global-talent-builds-all v-else :heroes="filteredHeroesForTable" :talentbuilddataall="talentbuilddataall"></global-talent-builds-all>
+            </panel-box>
           </div>
         </div>
 
         <div v-else>
+          <player-page-top>
+          <template #heading>
+            <page-heading scope="Global" :heading="$heroName(selectedHero)" :subheading="'Builds & talent stats'" :portrait-desktop-only="true">
+              <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
+              <!-- The hero name is the hero picker (no Heroes filter on this page) -->
+              <template #headingText>
+                <hero-heading-select :heroes="heroes" :value="selectedHero.id" textclass="" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
+              </template>
+              <template v-if="isSLRank" #headingInfo>
+                <round-image :popup-hoverable="true" class="text-base" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true">
+                  <p class="font-normal">
+                    {{ $t("In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.") }}
+                    <a href="/Upload/Uploader#rank-reading" class="inline-flex items-center link-more">How rank reading works</a>
+                  </p>
+                </round-image>
+              </template>
+            </page-heading>
+          </template>
           <filters
-          :key="filtersKey"
-          :onFilter="filterData"
-          :filters="filters" 
-          :isLoading="isTalentsLoading || isBuildsLoading"
+            :key="filtersKey"
+            :onFilter="filterData"
+            :filters="filters"
+            :isLoading="isTalentsLoading || isBuildsLoading"
 
-          :timeframetypeinput="timeframetype"
-          :timeframeinput="timeframe"
-          :gametypeinput="gametype"
-          :regioninput="region"
-          :statfilterinput="statfilter"
-          :herolevelinput="herolevel"
-          :gamemapinput="gamemap"
-          :playerrankinput="playerrank"
-          :herorankinput="herorank"
-          :rolerankinput="rolerank"
-          :mirrormatchinput="mirrormatch"
-          :ranksourceinput="ranksource"
-          :slrankinput="slrank"
-
-
+            :timeframetypeinput="timeframetype"
+            :timeframeinput="timeframe"
+            :gametypeinput="gametype"
+            :regioninput="region"
+            :statfilterinput="statfilter"
+            :herolevelinput="herolevel"
+            :gamemapinput="gamemap"
+            :playerrankinput="playerrank"
+            :herorankinput="herorank"
+            :rolerankinput="rolerank"
+            :mirrormatchinput="mirrormatch"
+            :ranksourceinput="ranksource"
+            :slrankinput="slrank"
 
 
-          :gametypedefault="gametypedefault"
-          :includetimeframetypewithlastupdate="true"
-          :includetimeframe="true"
-          :includeregion="true"
-          :includestatfilter="true"
-          :includeherolevel="true"
-          :includegametype="true"
-          :includegamemap="true"
-          :includeplayerrank="true"
-          :includeherorank="true"
-          :includerolerank="true"
-          :includemirror="true"
-          :includeranksource="true"
-          :advancedfiltering="advancedfiltering"
 
-          >
-        </filters>
+
+            :gametypedefault="gametypedefault"
+            :includetimeframe="true"
+            :includeregion="true"
+            :includestatfilter="true"
+            :includeherolevel="true"
+            :includegametype="true"
+            :includegamemap="true"
+            :includeplayerrank="true"
+            :includeherorank="true"
+            :includerolerank="true"
+            :includemirror="true"
+            :includeranksource="true"
+            :advancedfiltering="advancedfiltering"
+
+            >
+          </filters>
+        </player-page-top>
         <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-        <div v-if="isSLRank" class="my-5 bg-teal py-5 px-2">
-          <infobox class="max-w-[1500px] mx-auto">
-            In-game rank uses Storm League ranks read off loading screens by the uploader's opt-in rank reader. Only games with a rank read for a player count, so sample sizes are much smaller than HP rank.
-            <a class="link" href="/Upload/Uploader#rank-reading">How rank reading works</a>
-          </infobox>
+        <div v-if="talentdetaildata" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+          <patch-notes-panel v-if="patchNotesUrl" class="!max-w-none !mb-0" :version="timeframe[0]"></patch-notes-panel>
+          <panel-box title="Talent stats" subtitle="Win rate, popularity and games for every talent. The best win rate on each tier is highlighted.">
+            <compact-talent-grid :talent-data="talentdetaildata" :stat-filter="statfilter" :layout-style="talentstatsstyle"></compact-talent-grid>
+          </panel-box>
         </div>
-
-  
-        <div v-if="talentdetaildata" class="mx-auto  md:px-4">
-          <div class="flex flex-wrap justify-between items-center gap-2 mb-2 max-w-[1500px] mx-auto">
-            <div>
-              <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
-            </div>
-            <div class="flex items-center gap-4">
-              <button type="button" class="underline text-sm" @click="scrollToBuilds">Scroll To Builds</button>
-              <div class="flex items-center gap-2 max-md:hidden">
-                <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" :overridedefaultside="isCompact ? 'right' : 'left'" @tab-click="setLayout"></tab-button>
-                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
-                  <p class="max-sm:text-xs">Your default layout can be set in your <a href="/Profile/Settings" class="link">Profile Settings</a>.</p>
-                </round-image>
-              </div>
-            </div>
-          </div>
-
-          <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :class="{ '!max-w-none': isCompact }" :version="timeframe[0]"></patch-notes-panel>
-          <compact-talent-grid v-if="isCompact" :talent-data="talentdetaildata" :stat-filter="statfilter"></compact-talent-grid>
-          <global-talent-details-section v-else class="mx-auto" :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
+        <div v-else-if="isTalentsLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+          <!-- The collapsed Patch Notes card, so the page doesn't move when it loads -->
+          <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="md:!py-4">
+            <template #right>
+              <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+            </template>
+          </panel-box>
+          <panel-box title="Talent stats" subtitle="Win rate, popularity and games for every talent. The best win rate on each tier is highlighted." :skeleton="true" class="relative md:!rounded-tl-none">
+            <loading-component v-if="determineIfVeryLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
+            <loading-component v-else-if="determineIfLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+            <loading-component v-else :compact="true" :tab="true" :textoverride="true">{{ $t('Loading talent stats...') }}</loading-component>
+            <compact-talent-grid :skeleton="true" :layout-style="talentstatsstyle"></compact-talent-grid>
+          </panel-box>
         </div>
-        <div v-else-if="isTalentsLoading">
-          <loading-component v-if="determineIfVeryLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Very large amount of data.<br/>Compiling can take 5-10 minutes.<br/>Please be patient.<br/>Loading Data...</loading-component>
-          <loading-component v-else-if="determineIfLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
-          <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
-        </div>
-        <div v-else-if="dataError" class="flex items-center justify-center">
-          Error: Reload page/filter
+        <div v-else-if="loadError" class="max-w-[120rem] w-full mx-auto px-4 md:px-8">
+          <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
         </div>
 
         <dynamic-banner-ad :patreon-user="patreonUser" :index="4" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
 
-        <div v-if="talentbuilddata" class="flex justify-between max-w-[1500px] mx-auto mt-6">
-          <div id="builds" class="w-full min-w-0">
-            <h2 v-if="!isCompact" class="heading mb-4 text-center">Talent Builds</h2>
-            <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]">
-              <template #heading>
-                <span class="flex flex-wrap items-center gap-2">
-                  {{ selectedHero.name }}
-                  <select class="bg-blue text-white rounded px-2 py-1" aria-label="Talent Build Type" :value="talentbuildtype" @change="buildtypechange({ value: $event.target.value })">
-                    <option v-for="buildType in buildtypes" :key="buildType.code" :value="buildType.code">{{ buildType.name }}</option>
-                  </select>
-                  Talent Builds
-                </span>
-              </template>
-            </global-talent-builds-section>
-            <div class="mt-4">
-              Create your own builds at
-              <a :href="'/Global/Talents/Builder/' + selectedHero.name" class="link" target="_blank">
-                {{ '/Global/Talents/Builder/' + selectedHero.name }}
-              </a>
+        <div v-if="talentbuilddata" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6">
+          <panel-box id="builds" title="Talent builds" subtitle="Copy a build code and paste it in game chat." class="scroll-mt-4">
+            <template #right>
+              <div class="w-full sm:w-[11rem]">
+                <single-select-filter :values="buildtypes" :text="'Build type'" :compact="true" :nosearch="true" :defaultValue="talentbuildtype" @input-changed="buildtypechange"></single-select-filter>
+              </div>
+            </template>
+            <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :hero-win-rate="heroWinRate"></global-talent-builds-section>
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <span class="text-sm text-subtext">{{ $t('Want something else? Make your own build in the Talent Builder.') }}</span>
+              <custom-button :href="talentBuilderUrl()" :text="'Open Talent Builder'" :alt="'Open Talent Builder'" color="teal" :targetblank="true"></custom-button>
             </div>
-          </div>
+          </panel-box>
         </div>
-        <div v-else-if="!isTalentsLoading && dataError" class="flex items-center justify-center">
-          Error: Reload page/filter
+        <div v-else-if="buildsLoadError" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6">
+          <error-card :status="buildsLoadError.status" :message="buildsLoadError.message" @retry="buildsLoadError.retry"></error-card>
         </div>
 
-        <div v-else-if="isBuildsLoading">
-          <loading-component v-if="determineIfVeryLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Very large amount of data.<br/>Compiling can take 5-10 minutes.<br/>Please be patient.<br/>Loading Data...</loading-component>
-          <loading-component v-else-if="determineIfLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
-          <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
+        <!-- The loaded card in grey: the table from md up, a card per build on phones; the message on its tab -->
+        <div v-else-if="isBuildsLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 mt-6">
+          <panel-box title="Talent builds" subtitle="Copy a build code and paste it in game chat." :skeleton="true" class="relative md:!rounded-tl-none">
+            <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Loading talent builds...') }}</loading-component>
+            <table-skeleton class="max-md:hidden" :bare="true" :rows="7" :columns="['talentrow', 'stat', 'stat', 'code']"></table-skeleton>
+            <div class="md:hidden flex flex-col gap-2">
+              <div v-for="row in 5" :key="row" class="rounded-control bg-surface-1 p-3 flex flex-col gap-3">
+                <div class="flex gap-1.5 overflow-clip"><skeleton-box v-for="talent in 7" :key="talent" class="w-[2.625rem] h-[2.625rem] shrink-0 rounded-lg"></skeleton-box></div>
+                <div class="grid grid-cols-3 gap-2">
+                  <span v-for="stat in 3" :key="stat" class="flex flex-col gap-1"><skeleton-box class="h-3 w-12"></skeleton-box><skeleton-box class="h-4 w-16"></skeleton-box></span>
+                </div>
+                <skeleton-box class="h-8 w-40 rounded"></skeleton-box>
+              </div>
+            </div>
+          </panel-box>
         </div>
       </div>
   </div>
@@ -162,8 +159,8 @@
 </template>
 
 <script>
-  import Cookies from 'js-cookie';
   import CompactTalentGrid from './CompactTalentGrid.vue';
+  import { scaleTableToFit } from '../../../utils/scaleTable';
 
   export default {
     name: 'GlobalTalentsStats',
@@ -180,30 +177,27 @@
       defaultbuildtype: String,
       talentimages: Object,
       advancedfiltering: Boolean,
+      talentstatsstyle: { type: String, default: null },
       patreonUser: Boolean,
       urlparameters: Object,
-      talentStatsLayout: { type: String, default: 'table' },
-      authenticated: Boolean,
       initialtalentdata: { type: [Object, Array], default: null },
       initialbuilddata: { type: [Object, Array], default: null },
     },
     data(){
       return {
-        localLayout: this.talentStatsLayout,
-        dataError: false,
-       windowWidth: window.innerWidth,
+        loadError: null,
+        buildsLoadError: null,
        isTalentsLoading: false,
        isBuildsLoading: false,
        cancelTalentsTokenSource: null,
        cancelBuildsTokenSource: null,
        infoText: "Talent win rates and Talent Builds based on patches, hero, hero level, game type, game map, or Rank.",
-       heroDropdownOpen: false,
-       heroDropdownSearch: '',
        selectedHero: null,
        talentdetaildata: null,
        talentbuilddata: null,
        talentbuilddataall: null,
        heroSearchQuery: "",
+       heroRole: 'All',
        buildtypes: [
         { code: 'Popular', name: 'Popular' },
         { code: 'HP Algorithm', name: 'HP Algorithm' },
@@ -234,7 +228,6 @@
        slrank: null,
        talentbuildtype: "Popular",
        tablewidth: null,
-       showPatchNotes: false,
        filtersKey: 0,
      }
    },
@@ -266,7 +259,9 @@
     }
    },
     mounted() {
-      window.addEventListener('resize', this.updateWindowWidth);
+      if (this.$refs.buildsskeleton) {
+        scaleTableToFit(this.$refs.buildsskeleton, this.$refs.buildsskeletonbox);
+      }
       window.addEventListener('popstate', this.restoreHistoryState);
       history.replaceState(this.historyState(), '');
       if(!this.inputhero){
@@ -274,25 +269,23 @@
       }
     },
     beforeUnmount() {
-      window.removeEventListener('resize', this.updateWindowWidth);
       window.removeEventListener('popstate', this.restoreHistoryState);
     },
     computed: {
       isSLRank() {
         return this.ranksource === 'sl';
       },
-      isCompact() {
-        return this.localLayout === 'compact' && this.windowWidth >= 768;
-      },
-      filteredDropdownHeroes() {
-        const q = this.heroDropdownSearch.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-        if (!q) return this.heroes;
-        return this.heroes.filter(h => h.name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().includes(q));
-      },
       filteredHeroesForTable() {
-        if (!this.heroSearchQuery) return this.heroes;
         const q = this.heroSearchQuery.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-        return this.heroes.filter(h => h.name.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().includes(q));
+        return this.heroes.filter(h => (this.heroRole === 'All' || h.new_role === this.heroRole)
+          && (!q || [h.name, this.$heroName(h)].some(name => name.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().includes(q))));
+      },
+      // The hero's win rate in these filters: every game has one level 1 talent, so level 1's talents cover them all
+      heroWinRate() {
+        const talents = this.talentdetaildata?.[1] || [];
+        const games = talents.reduce((sum, talent) => sum + (Number(talent.games_played) || 0), 0);
+        if (!games) return null;
+        return talents.reduce((sum, talent) => sum + (Number(talent.win_rate) || 0) * (Number(talent.games_played) || 0), 0) / games;
       },
       patchNotesUrl() {
         if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {
@@ -306,17 +299,6 @@
     watch: {
     },
     methods: {
-      setLayout(side) {
-        this.localLayout = side === 'right' ? 'compact' : 'table';
-        Cookies.set('talentStatsLayout', this.localLayout, { expires: 365, path: '/' });
-
-        if (this.authenticated) {
-          this.$axios.post('/api/v1/profile/save/settings', { talentStatsLayout: this.localLayout }).catch(() => {});
-        }
-      },
-      updateWindowWidth() {
-        this.windowWidth = window.innerWidth;
-      },
       clickedHero(hero) {
         this.selectedHero = hero;
         this.talentdetaildata = null;
@@ -337,7 +319,7 @@
    
       },
       async getTalentData(){
-        this.dataError = false;
+        this.loadError = null;
         this.isTalentsLoading = true;
 
         if (this.cancelTalentsTokenSource) {
@@ -371,7 +353,7 @@
           this.talentdetaildata = response.data;
 
         }catch(error){
-          this.dataError = true;
+          this.loadError = this.$loadError(error, () => this.getTalentData());
         }finally {
           this.cancelTalentsTokenSource = null;
           this.isTalentsLoading = false;
@@ -380,7 +362,7 @@
       },
       
       async getTalentBuildData(){
-        this.dataError = false;
+        this.buildsLoadError = null;
         this.isBuildsLoading = true;
 
         if (this.cancelBuildsTokenSource) {
@@ -418,7 +400,7 @@
           this.talentbuilddata = response.data;
 
         }catch(error){
-          this.dataError = true;
+          this.buildsLoadError = this.$loadError(error, () => this.getTalentBuildData());
         }finally {
           this.cancelBuildsTokenSource = null;
           this.isBuildsLoading = false;
@@ -426,7 +408,7 @@
       },
 
       async getTalentBuildDataAll(){
-        this.dataError = false;
+        this.buildsLoadError = null;
         this.isBuildsLoading = true;
 
         if (this.cancelBuildsTokenSource) {
@@ -448,7 +430,7 @@
           this.talentbuilddataall = response.data;
 
         }catch(error){
-          this.dataError = true;
+          this.buildsLoadError = this.$loadError(error, () => this.getTalentBuildDataAll());
         }finally {
           this.cancelBuildsTokenSource = null;
           this.isBuildsLoading = false;
@@ -463,6 +445,13 @@
         }
       },
       filterData(filteredData){
+        const heroId = filteredData.single.Heroes;
+        if (heroId && heroId !== this.selectedHero.id) {
+          this.selectedHero = this.heroes.find(hero => hero.id === heroId) || this.selectedHero;
+          this.preloadTalentImages(this.selectedHero);
+          document.title = `${this.selectedHero.name} Talent Stats & Builds | Heroes Profile`;
+          history.pushState(null, null, `/Global/Talents/${this.selectedHero.name}${window.location.search}`);
+        }
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
         this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaulttimeframe;
         this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;
@@ -481,7 +470,6 @@
         this.talentdetaildata = null;
         this.talentbuilddata  = null;
         this.talentbuilddataall  = null;
-        this.showPatchNotes = false;
 
         this.updateQueryString();
         this.getTalentData();
@@ -493,6 +481,10 @@
 
         this.updateQueryString();
         this.getTalentBuildData();
+      },
+      // The Builder takes the same filters, so they come along
+      talentBuilderUrl(){
+        return `/Global/Talents/Builder/${this.selectedHero.name}${window.location.search}`;
       },
       updateQueryString(path = window.location.pathname){
         let queryString = `?timeframe_type=${this.timeframetype}`;
@@ -585,7 +577,6 @@
 
         this.talentdetaildata = null;
         this.talentbuilddata = null;
-        this.showPatchNotes = false;
         this.filtersKey++;
 
         if(this.selectedHero){
@@ -622,15 +613,6 @@
       },
       redirectChangeHero(){
         window.location.href = "/Global/Talents";
-      },
-      togglePatchNotes() {
-        this.showPatchNotes = !this.showPatchNotes;
-      },
-      scrollToBuilds(){
-        const buildsSection = document.getElementById('builds');
-        if (buildsSection) {
-          buildsSection.scrollIntoView({ behavior: 'smooth' });
-        }
       },
       convertRankIDtoName(rankIDs) {
         return rankIDs.map(rankID => this.filters.rank_tiers.find(tier => tier.code == rankID).name);

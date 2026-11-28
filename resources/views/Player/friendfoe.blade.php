@@ -1,7 +1,9 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', $battletag . " Friend and Foe Data")
+@php($regionName = $leagueName ?? ($bladeGlobals['regions'][$region] ?? $region))
+@include('Player.structuredData', ['page' => 'Friends & Foes'])
+@section('title', __(':battletag (:region) Friends & Foes', ['battletag' => $battletag, 'region' => $regionName]))
 @section('meta_keywords', 'Friend and Foe Data, Player Connections, Player Statistics')
-@section('meta_description', 'Explore the connections and statistics for ' . $battletag . ', including friends and foes. Analyze the players ' . $battletag . ' frequently plays with and against.')
+@section('meta_description', 'Friend and foe data for ' . $battletag . ' (' . $regionName . '): who they play the most Heroes of the Storm games with and against, and how those games go.')
 @section('content')
   <friend-foe  
     :filters="{{ json_encode($filters) }}" 

@@ -1,213 +1,234 @@
 <template>
   <div class="">
-    <page-heading :infoText1="infoText" :heading="'Profile'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
+    <player-page-top>
+      <template #heading>
+      <page-heading :heading="'Profile Data'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
     </page-heading>
-    <div class="flex justify-center max-w-[1500px] mx-auto flex-wrap max-md:flex-col max-md:items-center">
-      <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
-      <multi-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="seasonselection"></multi-select-filter>
-      <date-range-filter :startDate="startdate" :endDate="enddate" @input-changed="handleInputChange"></date-range-filter>
-      <button :disabled="disableFilterInput" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
-          Filter
-      </button>
+</template>
+    <div class="w-full">
+      <filters
+        :onFilter="filterData"
+        :filters="filters"
+        :isLoading="isLoading"
+        :gametypedefault="gametypedefault"
+        :defaultseasons="seasonselection"
+        :includegametypefull="true"
+        :includemultiseason="true"
+        :includegamedaterange="true"
+        :hideadvancedfilteringbutton="true"
+      >
+      </filters>
     </div>
+    </player-page-top>
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
-    
-    <div v-if="data == ''" class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
+
+    <div v-if="data == ''" class="flex md:p-20 gap-10 mx-auto justify-center items-between">
       <div class="flex items-center">
-        <span>No data for this player and filters</span>
+        <span>{{ $t('No data for this player and filters') }}</span>
       </div>
     </div>
-    <div v-else-if="data" class="">
+    <div v-else-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 space-y-8">
 
+      <panel-box>
+      <div class="flex flex-col xl:flex-row gap-6">
 
-      <div class="flex md:p-20 gap-10 mx-auto justify-center items-between  max-md:flex-col max-md:items-center">
-        <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em] max-md:order-1 max-md:px-4">
-          <stat-box class="w-[48%] max-md:min-w-0" :title="'Wins'" :value="data.wins.toLocaleString('en-US')"></stat-box>
-          <stat-box class="w-[48%] max-md:min-w-0" :title="'Losses'" :value="data.losses.toLocaleString('en-US')"></stat-box>
-
-          
-          <div class="w-full mx-auto text-center">
-            <stat-bar-box class="w-full " size="full" :title="'First to Ten Win Rate'" :value="data.first_to_ten_win_rate.toFixed(2)" color="teal"></stat-bar-box>
-          </div>
-         
-           <div class="w-full mx-auto text-center">
-            <stat-bar-box class="w-full" size="full" :title="'Second to Ten Win Rate'" :value="data.second_to_ten_win_rate.toFixed(2)" color="red"></stat-bar-box>         
-           </div>
-          <stat-box class="w-[48%] max-md:min-w-0" :title="'KDR'" :value="data.kdr" color="yellow"></stat-box>          
-          <stat-box class="w-[48%] max-md:min-w-0" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
-
-          <stat-box class="w-full" :title="'Account Level'" :value="data.account_level.toLocaleString('en-US')"></stat-box>          
-        </div>
-        <div class="my-auto">
-          <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name" size="large"></hero-image-wrapper>
-        </div>
-
-        <div class="flex flex-col max-w-[400px] text-left w-full items-between max-md:order-2  max-md:px-4">
-          <stat-bar-box class="w-full" size="full" :title="'Win Rate'" :value="data.win_rate.toFixed(2)"></stat-bar-box>       
-          <stat-bar-box class="w-full" size="full" :title="'Bruiser Win Rate'" :value="data.bruiser_win_rate.toFixed(2)" color="teal"></stat-bar-box>       
-          <stat-bar-box class="w-full" size="full" :title="'Support Win Rate'" :value="data.support_win_rate.toFixed(2)" color="red"></stat-bar-box>       
-          <stat-bar-box class="w-full" size="full" :title="'Ranged Assassin Win Rate'" :value="data.ranged_assassin_win_rate.toFixed(2)" color="yellow"></stat-bar-box>       
-          <stat-bar-box class="w-full" size="full" :title="'Melee Assassin Win Rate'" :value="data.melee_assassin_win_rate.toFixed(2)"></stat-bar-box>       
-          <stat-bar-box class="w-full" size="full" :title="'Healer Win Rate'" :value="data.healer_win_rate.toFixed(2)" color="teal"></stat-bar-box>       
-          <stat-bar-box class="w-full" size="full" :title="'Tank Win Rate'" :value="data.tank_win_rate.toFixed(2)" color="red"></stat-bar-box>       
-        </div>
-      </div>
-
-      <div class="flex mx-auto justify-center max-w-[1500px] max-md:flex-col max-md:p-4">
-        <stat-box :title="'MVP%'" :value="data.mvp_rate.toFixed(2)"></stat-box>  <stat-box :title="'Total Time Played'" :value="data.total_time_played"></stat-box>  <stat-box :title="'AVG. Time on Fire'" :value="data.average_time_on_fire"></stat-box>      
-      </div>
-      <div class="max-w-[1500px] mx-auto text-right mb-2 max-md:text-center">
-        <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Role'" class="flex-1 " text="View all Roles"></custom-button>
-      </div>
-
-      <div class="bg-lighten p-10 ">
-        <div class=" max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5 text-center">Heroes</h2>
-          <div class="flex flex-wrap justify-center">
-            <group-box :playerlink="true" :text="'Most Played'" :data="data.heroes_three_most_played" color="blue"></group-box>
-            <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.heroes_three_highest_win_rate" color="teal"></group-box>
-            <group-box :playerlink="true" :text="'Latest Played'" :data="data.heroes_three_latest_played" color="yellow"></group-box>
+        <!-- Player overview -->
+        <panel-box ref="overviewCard" :inner="true" class="!gap-8 xl:shrink-0">
+          <div class="flex items-center gap-3">
+            <icon-with-hover v-if="realRank && realRank.current && realRank.current.league != 'unranked'" popupsize="fit">
+              <template #trigger>
+                <!-- A league badge's height; Master and Grand Master art is larger and spills over it, so the card keeps one height -->
+                <div class="h-12 flex items-center">
+                  <real-rank-badge :rank="realRank.current" :width="48"></real-rank-badge>
+                </div>
+              </template>
+              <image-hover-box :title="$t('Storm League')"></image-hover-box>
+              <real-rank-badge :rank="realRank.current" :width="96" label="below" label-class="text-subtext mt-1"></real-rank-badge>
+            </icon-with-hover>
+            <div class="flex flex-col">
+              <h2 class="text-3xl font-bold">{{ battletag }}</h2>
+              <region-tag :region="regionsmap[region]" :full="true"></region-tag>
+            </div>
+            <!-- Pinned to the top, so they sit in the corner the same distance from the top and the right, as in the redesign -->
+            <div class="card-actions ml-auto self-start flex gap-2 text-header">
+              <loading-component v-if="cardDownloading" :compact="true" :textoverride="true">{{ $t('Processing image for download...') }}</loading-component>
+              <template v-else>
+                <button v-if="canCopyImage" type="button" class="flex p-1.5 hover:text-lteal" :title="cardCopied ? $t('Copied') : $t('Copy card image')" @click="copyCard"><basil-icon class="text-2xl" :name="cardCopied ? 'check' : 'share'"></basil-icon></button>
+                <button type="button" class="flex p-1.5 hover:text-lteal" :title="$t('Download card image')" @click="downloadCard"><basil-icon class="text-2xl" name="download"></basil-icon></button>
+              </template>
+            </div>
           </div>
 
-        </div>
-        <div class="max-w-[1500px] mx-auto text-right mb-2 max-md:text-center">
-          <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Hero'" class=" " text="View All Heroes"></custom-button>
-        </div>
-      </div>
-      <player-real-rank :blizzid="blizzid" :region="region"></player-real-rank>
-      <div class="flex justify-center max-w-[1500px] mx-auto items-center max-md:flex-col">
-      <div class="max-w-[1500px] mx-auto">
-        <h2 class="text-3xl font-bold py-5 text-center">Heroes Profile MMR
-          <round-image class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large">
-            <slot>
-              <div>
-                <p class="max-sm:text-xs">Heroes Profile MMR is a custom algorithm developed by Heroes Profile for approximating a player's skill. This MMR or rank does not correlate to your in-game rank or MMR.</p>
+          <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
+            <div class="flex flex-col items-center justify-between gap-1 shrink-0">
+              <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name" :excludehover="inputHero.name == 'Auto Select'" size="large"></hero-image-wrapper>
+              <div class="text-xl font-semibold leading-[1.2] text-subtext">{{ $t('Level:') }} <span class="text-header">{{ data.account_level.toLocaleString('en-US') }}</span></div>
+            </div>
+
+            <overview-stats class="flex-1 min-w-0 w-full" :win-rate="data.win_rate" :stats="overviewStats"></overview-stats>
+          </div>
+
+          <div v-for="section in topSections" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
+            <div class="flex justify-between items-baseline">
+              <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
+              <a class="text-header whitespace-nowrap link-more" :href="profileUrl + section.allPath">{{ $t(section.allText) }}</a>
+            </div>
+            <div class="flex flex-wrap gap-6 max-md:justify-center">
+              <group-box v-for="group in section.groups" :key="group.label" class="!m-0" :playerlink="true" :text="group.label" :data="group.data"></group-box>
+            </div>
+          </div>
+
+          <p class="flex flex-wrap gap-2"><span class="text-subtext">{{ $t('Total Time Played:') }}</span><span class="text-header">{{ formatDurationText(data.total_time_played) }}</span></p>
+        </panel-box>
+
+        <div class="flex-1 flex flex-col gap-6 min-w-0">
+          <div class="grid 2xl:grid-cols-2 gap-6">
+            <!-- Win rate by role -->
+            <panel-box :inner="true" :title="$t('Win Rate By Role')" link-text="All Roles" :link-href="profileUrl + '/Role'">
+              <!-- Spread over the card, so it and the party card beside it line up -->
+              <div class="flex-1 flex flex-col justify-between gap-3">
+                <div v-for="role in roleWinRates" :key="role.label" class="flex flex-col gap-1.5">
+                  <a class="text-header leading-[1.2] w-fit link-more" :href="profileUrl + '/Role/' + role.label">{{ $t(role.label) }}</a>
+                  <stat-bar :value="role.value.toFixed(2)" suffix="%" :color="$winRateColor(role.value)"></stat-bar>
+                </div>
               </div>
-            </slot>
-          </round-image>
-        </h2>
-        <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
-          <h4 class="text-right">Quick Match</h4>
-          <stat-bar-box :title="'Win Rate'" :value=" data.qm_mmr_data ? data.qm_mmr_data.win_rate.toFixed(2) : 0 "></stat-bar-box>
-          <stat-box title="HP Rank Tier" :value="data.qm_mmr_data ? data.qm_mmr_data.rank_tier : ''"></stat-box>
-          <stat-box :title="'HP MMR'" :value="data.qm_mmr_data ? data.qm_mmr_data.mmr.toLocaleString('en-US') : 0 "></stat-box>
+            </panel-box>
+
+            <player-party-size-panel :data="data" link-text="Party Stats" :link-href="profileUrl + '/Party'"></player-party-size-panel>
+          </div>
+
+          <player-mmr-panel :data="data" :link-href="profileUrl + '/MMR'"></player-mmr-panel>
         </div>
-
-        <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
-          <h4 class="text-right">Unranked Draft</h4>
-          <stat-bar-box :title="'Win Rate'" :value=" data.ud_mmr_data ? data.ud_mmr_data.win_rate.toFixed(2) : 0 " color="teal"></stat-bar-box>
-          <stat-box title="HP Rank Tier" :value="data.ud_mmr_data ? data.ud_mmr_data.rank_tier : ''" color="teal"></stat-box>
-          <stat-box :title="'HP MMR'" :value="data.ud_mmr_data ? data.ud_mmr_data.mmr.toLocaleString('en-US') : 0 " color="teal"></stat-box>
-        </div>
-
-        <div class=" grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
-          <h4 class="text-right">Hero league</h4>
-          <stat-bar-box :title="'Win Rate'" :value=" data.hl_mmr_data ? data.hl_mmr_data.win_rate.toFixed(2) : 0 " color="red"></stat-bar-box>
-          <stat-box title="HP Rank Tier" :value="data.hl_mmr_data ? data.hl_mmr_data.rank_tier : ''" color="red"></stat-box>
-          <stat-box :title="'HP MMR'" :value="data.hl_mmr_data ? data.hl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="red"></stat-box>
-        </div>
-
-
-        <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
-          <h4 class="text-right">Team league</h4>
-          <stat-bar-box :title="'Win Rate'" :value=" data.tl_mmr_data ? data.tl_mmr_data.win_rate.toFixed(2) : 0 " color="yellow"></stat-bar-box>
-          <stat-box title="HP Rank Tier" :value="data.tl_mmr_data ? data.tl_mmr_data.rank_tier : ''" color="yellow"></stat-box>
-          <stat-box :title="'HP MMR'" :value="data.tl_mmr_data ? data.tl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="yellow"></stat-box>
-        </div>
-
-        <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
-         <h4 class="text-right"> Storm league</h4>
-         <stat-bar-box :title="'Win Rate'" :value=" data.sl_mmr_data ? data.sl_mmr_data.win_rate.toFixed(2) : 0 " color="gray-dark"></stat-bar-box>
-         <stat-box title="HP Rank Tier" :value="data.sl_mmr_data ? data.sl_mmr_data.rank_tier : ''" color="gray-dark"></stat-box>
-         <stat-box :title="'HP MMR'" :value="data.sl_mmr_data ? data.sl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="gray-dark"></stat-box>
-       </div>
-
-       <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 max-md:gap-x-2 max-md:text-sm max-md:px-4 md:px-20 py-5 justify-center" >
-        <h4 class="text-right">ARAM</h4>
-        <stat-bar-box :title="'Win Rate'" :value=" data.ar_mmr_data ? data.ar_mmr_data.win_rate.toFixed(2) : 0 "></stat-bar-box>
-        <stat-box title="HP Rank Tier" :value="data.ar_mmr_data ? data.ar_mmr_data.rank_tier : ''"></stat-box>
-        <stat-box :title="'HP MMR'" :value="data.ar_mmr_data ? data.ar_mmr_data.mmr.toLocaleString('en-US') : 0 "></stat-box>
       </div>
+      </panel-box>
 
-     
-
-     
-      </div>
-    
-      <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
-    </div>  <div class="max-w-[1500px] mx-auto  text-right my-2">
-        <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/MMR'" class=" " text="View HP MMR Breakdown"></custom-button>
-      </div>
-
-
-    <div class="bg-lighten p-10 ">
-      <div class=" max-w-[90em] ml-auto mr-auto">
-        <h2 class="text-3xl font-bold py-5 text-center">Maps</h2>
-        <div class="flex flex-wrap justify-center">
-          <group-box :playerlink="true" :text="'Most Played'" :data="data.maps_three_most_played" color="blue"></group-box>
-          <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.maps_three_highest_win_rate" color="teal"></group-box>
-          <group-box :playerlink="true" :text="'Latest Played'" :data="data.maps_three_latest_played" color="yellow"></group-box>
-        </div>
-        <div class="max-w-[1500px] mx-auto text-right my-2 max-md:text-center">
-        <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Map'" class=" " text="View All Maps"></custom-button>
-      </div>
-      </div>
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
-    </div>
 
-    <div class="flex justify-center max-w-[1500px] mx-auto items-center max-md:flex-col">
-    <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
-      <h2 class="text-3xl font-bold py-5">Party Size Win Rates</h2>
+      <div class="grid xl:grid-cols-2 gap-6">
+        <!-- Each card sits in its own outer panel, like the overview above -->
+        <panel-box>
+          <player-real-rank class="flex-1" :blizzid="blizzid" :region="region" @loaded="realRank = $event"></player-real-rank>
+        </panel-box>
 
-      <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-        <div class="flex gap-10 text-s"><span>Solo</span><span>Total Games: {{ (data.stack_one_wins + data.stack_one_losses).toLocaleString('en-US') }} </span></div>
-        <stat-bar-box size="big" :value="data.stack_one_win_rate.toFixed(2) "></stat-bar-box>     
+        <panel-box>
+          <!-- The same hourly counts, by day of the week or by hour of the day -->
+          <panel-box v-if="data.weekday_data" class="flex-1" :inner="true" :title="weekdayView === 'hour' ? $t('Time of Day Win Rates') : $t('Week Day Win Rates')">
+            <template #right>
+              <tab-button :small="true" tab1text="Week Day" tab2text="Time of Day" :ignoreclick="true" :overridedefaultside="weekdayView === 'hour' ? 'right' : 'left'" @tab-click="weekdayView = $event === 'right' ? 'hour' : 'week'"></tab-button>
+            </template>
+            <player-time-of-day-win-rates v-if="weekdayView === 'hour'" :data="data.weekday_data"></player-time-of-day-win-rates>
+            <!-- The days spread down to the bottom of the card, level with the rank card beside it -->
+            <player-weekday-win-rates v-else class="flex-1 justify-between" :data="data.weekday_data"></player-weekday-win-rates>
+          </panel-box>
+          <!-- Week days are only shown to the profile's owner; everyone else sees the panel's shape and why -->
+          <panel-box v-else class="flex-1" :inner="true" :title="$t('Week Day Win Rates')" :link-text="authenticated ? null : $t('Log in with Battle.net to see your week day win rates')" :link-href="authenticated ? null : '/Authenticate/Battlenet'">
+            <template v-if="authenticated" #right>
+              <span class="text-subtext">{{ $t("Only shown to the profile's owner") }}</span>
+            </template>
+            <!-- Not loading, so the blocks hold still -->
+            <div class="flex flex-col gap-3" aria-hidden="true">
+              <div v-for="day in 7" :key="day" class="flex flex-col gap-1.5">
+                <div class="flex justify-between">
+                  <skeleton-box class="w-24 h-5 !animate-none"></skeleton-box>
+                  <skeleton-box class="w-20 h-5 !animate-none"></skeleton-box>
+                </div>
+                <skeleton-box class="h-4 !animate-none"></skeleton-box>
+              </div>
+            </div>
+          </panel-box>
+        </panel-box>
       </div>
-      <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-        <div class="flex gap-10 text-s"><span>Two Stack</span><span>Total Games: {{ (data.stack_two_wins + data.stack_two_losses).toLocaleString('en-US') }} </span></div>
-        <stat-bar-box size="big" :value="data.stack_two_win_rate.toFixed(2) " color="teal"></stat-bar-box>     
-      </div>
-      <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-        <div class="flex gap-10 text-s"><span>Three Stack</span><span>Total Games: {{ (data.stack_three_wins + data.stack_three_losses).toLocaleString('en-US') }} </span></div>
-        <stat-bar-box size="big" :value="data.stack_three_win_rate.toFixed(2) " color="red"></stat-bar-box>     
-      </div>
-      <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-        <div class="flex gap-10 text-s"><span>Four Stack</span><span>Total Games: {{ (data.stack_four_wins + data.stack_four_losses).toLocaleString('en-US') }} </span></div>
-        <stat-bar-box size="big" :value="data.stack_four_win_rate.toFixed(2) " color="yellow"></stat-bar-box>     
-      </div>
-      <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-        <div class="flex gap-10 text-s"><span>Five Stack</span><span>Total Games: {{ (data.stack_five_wins + data.stack_five_losses).toLocaleString('en-US') }} </span></div>
-        <stat-bar-box size="big" :value="data.stack_five_win_rate.toFixed(2) "></stat-bar-box>     
-      </div>
-     
 
-    </div>
-    <dynamic-square-ad :patreon-user="patreonUser" :index="2"></dynamic-square-ad>
-    </div>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
-    <div class="flex justify-center max-w-[1500px] mx-auto items-center max-md:flex-col" v-if="data && data.weekday_data">
-      <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto">
-        <h2 class="text-3xl font-bold py-5">Week Day Win Rates</h2>
-        <player-weekday-win-rates :data="data.weekday_data"></player-weekday-win-rates>
-      </div>
-    </div>
-
-    <div class="bg-lighten">
-      <div class="p-10 max-md:px-4 max-w-[90em] ml-auto mr-auto" v-if="data && data.matchData">
-        <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
-
-        
-        <game-summary-box v-for="(item, index) in data.matchData" :data="item"></game-summary-box>
-        <div class="max-w-[1500px] mx-auto text-right my-2">
-        <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Match/History'" class="" text="View Match History"></custom-button>
-      </div>
-      </div>
-    </div>
+      <panel-box v-if="data.matchData" :title="$t('Recent Matches')" link-text="Match History" :link-href="profileUrl + '/Match/History'" :divider="false">
+        <div>
+          <game-summary-header></game-summary-header>
+          <game-summary-box v-for="(item, index) in data.matchData" :key="index" :data="item" :replay-viewer-allowed="replayViewerAllowed" :analytics-cutover="analyticsCutover" :replay-download-blocked="replayDownloadBlocked"></game-summary-box>
+        </div>
+      </panel-box>
 
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
+    <!-- The page's layout with grey blocks while it loads; the nav logo spins meanwhile -->
+    <div v-else-if="isLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 mt-8 md:mt-0 space-y-8">
+      <!-- The cards start where the loaded ones do; the message sits on a tab of the panel above them -->
+      <panel-box class="relative md:!rounded-tl-none">
+        <loading-component :compact="true" :tab="true" :textoverride="true">{{ $t('Large amount of data. Please be patient. Loading data...') }}</loading-component>
+        <!-- Built from the loaded cards' own parts (the same labels, bars and boxes, empty), so nothing moves when the data arrives -->
+        <div class="flex flex-col xl:flex-row gap-6">
+          <panel-box :inner="true" class="!gap-8 xl:shrink-0">
+            <div class="flex items-center gap-3">
+              <div class="flex flex-col">
+                <h2 class="text-3xl font-bold">{{ battletag }}</h2>
+                <region-tag class="skeleton-text w-fit" :region="regionsmap[region]" :full="true"></region-tag>
+              </div>
+              <div class="ml-auto self-start flex gap-2 invisible" aria-hidden="true">
+                <span class="flex p-1.5"><basil-icon class="text-2xl" name="share"></basil-icon></span>
+                <span class="flex p-1.5"><basil-icon class="text-2xl" name="download"></basil-icon></span>
+              </div>
+            </div>
+            <div class="flex gap-8 max-sm:flex-col max-sm:items-center">
+              <div class="flex flex-col items-center justify-between gap-1 shrink-0">
+                <skeleton-box class="w-40 md:w-[14rem] h-[20.125rem] rounded"></skeleton-box>
+                <skeleton-box class="h-[1.5rem] w-32"></skeleton-box>
+              </div>
+              <overview-stats class="flex-1 min-w-0 w-full" :loading="true" :count="8"></overview-stats>
+            </div>
+            <div v-for="section in [{ title: 'Heroes', allText: 'All Heroes' }, { title: 'Maps', allText: 'All Maps' }]" :key="section.title" class="flex flex-col gap-4 w-fit max-w-full">
+              <div class="flex justify-between items-baseline">
+                <h3 class="text-2xl font-bold">{{ $t(section.title) }}</h3>
+                <span class="skeleton-text whitespace-nowrap">{{ $t(section.allText) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></span>
+              </div>
+              <div class="flex flex-wrap gap-6 max-md:justify-center">
+                <div v-for="label in ['Most Played', 'Highest Win Rate', 'Latest Played']" :key="label" class="w-auto inline-block">
+                  <h4 class="text-sm mb-2"><span class="skeleton-text">{{ $t(label) }}</span></h4>
+                  <div class="flex flex-wrap gap-3 max-md:gap-2">
+                    <skeleton-box v-for="tile in 3" :key="tile" class="w-16 h-16 rounded"></skeleton-box>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="flex flex-wrap items-center gap-2"><span class="skeleton-text">{{ $t('Total Time Played:') }}</span><skeleton-box class="h-4 w-36"></skeleton-box></p>
+          </panel-box>
+
+          <div class="flex-1 flex flex-col gap-6 min-w-0">
+            <div class="grid 2xl:grid-cols-2 gap-6">
+              <panel-box :inner="true" :title="$t('Win Rate By Role')" link-text="All Roles" :skeleton="true">
+                <div class="flex-1 flex flex-col justify-between gap-3">
+                  <div v-for="role in ['Bruiser', 'Healer', 'Melee Assassin', 'Ranged Assassin', 'Support', 'Tank']" :key="role" class="flex flex-col gap-1.5">
+                    <span class="skeleton-text leading-[1.2] w-fit">{{ $t(role) }}<basil-icon name="arrow-small" class="text-sm ml-3"></basil-icon></span>
+                    <stat-bar value="0.00" suffix="%" :hide-value="true"></stat-bar>
+                  </div>
+                </div>
+              </panel-box>
+              <player-party-size-panel :data="emptyPartyData" link-text="Party Stats" :skeleton="true"></player-party-size-panel>
+            </div>
+            <player-mmr-panel :data="{}" :skeleton="true"></player-mmr-panel>
+          </div>
+        </div>
+      </panel-box>
+
+      <div class="grid xl:grid-cols-2 gap-6">
+        <!-- The rank card's shape with no rank read (its box and the "How to get your rank" button); the week days stretch beside it -->
+        <panel-box v-for="title in ['Storm League Rank', 'Week Day Win Rates']" :key="title">
+          <panel-box class="flex-1" :inner="true" :title="title">
+            <skeleton-box class="flex-1 min-h-[24.125rem]"></skeleton-box>
+            <skeleton-box v-if="title == 'Storm League Rank'" class="h-[3.25rem] w-[26rem] max-w-full rounded"></skeleton-box>
+          </panel-box>
+        </panel-box>
+      </div>
+
+      <panel-box :title="$t('Recent Matches')" link-text="Match History" :skeleton="true" :divider="false">
+        <div>
+          <game-summary-header :skeleton="true"></game-summary-header>
+          <game-summary-skeleton v-for="index in 7" :key="index"></game-summary-skeleton>
+        </div>
+      </panel-box>
     </div>
 
   </div>
@@ -215,6 +236,34 @@
 </template>
 
 <script>
+import { toBlob } from 'html-to-image';
+import { formatDurationText } from '../../utils/formatDuration';
+
+// html-to-image can't pull Roboto through app.css's @import, so the card image
+// gets the latin Roboto faces embedded directly. Fetched once, on first use.
+let cardFontCss = null;
+function cardFonts() {
+  cardFontCss ??= (async () => {
+    const css = await (await fetch('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap')).text();
+    const faces = css.split('/* ').filter(block => block.startsWith('latin */')).map(block => block.slice('latin */'.length));
+    const embedded = await Promise.all(faces.map(async face => {
+      const url = face.match(/url\((.+?)\)/)[1];
+      const blob = await (await fetch(url)).blob();
+      const dataUrl = await new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+      return face.replace(url, dataUrl);
+    }));
+    return embedded.join('\n');
+  })().catch(() => {
+    // Without the font the card still renders, in the fallback font
+    cardFontCss = null;
+    return '';
+  });
+  return cardFontCss;
+}
 
   export default {
     name: 'PlayerStats',
@@ -233,14 +282,18 @@
       isPatreon: Boolean,
       patreonUser: Boolean,
       gametypedefault: Array,
+      replayViewerAllowed: Boolean,
+      analyticsCutover: String,
+      replayDownloadBlocked: Boolean,
+      authenticated: Boolean,
 
     },
     data(){
       return {
+        loadError: null,
         cancelTokenSource: null,
         isLoading: false,
         data: null,
-        infoText: "Profile data",
         modifiedgametype: null,
         modifiedseason: null,
         seasonselection: [],
@@ -248,6 +301,12 @@
         enddate: null,
         inputHero: null,
         disableFilterInput: null,
+        realRank: null,
+        cardCopied: false,
+        cardDownloading: false,
+        // Week Day Win Rates panel: 'week' or 'hour'
+        weekdayView: 'week',
+        canCopyImage: typeof window.ClipboardItem !== 'undefined' && !!(navigator.clipboard && navigator.clipboard.write),
       }
     },
     created(){
@@ -288,6 +347,51 @@
         updatedList.unshift(newValue);
         return updatedList;
       },
+      profileUrl(){
+        return `/Player/${this.battletag}/${this.blizzid}/${this.region}`;
+      },
+      overviewStats(){
+        return [
+          { label: 'First To Ten', value: this.data.first_to_ten_win_rate.toFixed(2) + '%' },
+          { label: 'Second To Ten', value: this.data.second_to_ten_win_rate.toFixed(2) + '%' },
+          { label: 'Wins', value: this.data.wins.toLocaleString('en-US') },
+          { label: 'Losses', value: this.data.losses.toLocaleString('en-US') },
+          { label: 'KDR', value: this.data.kdr },
+          { label: 'KDA', value: this.data.kda },
+          { label: 'MVP', value: this.data.mvp_rate.toFixed(2) + '%' },
+          { label: 'AVG. Time On Fire', value: formatDurationText(this.data.average_time_on_fire) },
+        ];
+      },
+      topSections(){
+        return [
+          { title: 'Heroes', allText: 'All Heroes', allPath: '/Hero', groups: [
+            { label: 'Most Played', data: this.data.heroes_three_most_played },
+            { label: 'Highest Win Rate', data: this.data.heroes_three_highest_win_rate },
+            { label: 'Latest Played', data: this.data.heroes_three_latest_played },
+          ] },
+          { title: 'Maps', allText: 'All Maps', allPath: '/Map', groups: [
+            { label: 'Most Played', data: this.data.maps_three_most_played },
+            { label: 'Highest Win Rate', data: this.data.maps_three_highest_win_rate },
+            { label: 'Latest Played', data: this.data.maps_three_latest_played },
+          ] },
+        ];
+      },
+      // The party card with no games, for the skeleton: its labels and empty bars
+      emptyPartyData(){
+        const data = {};
+        ['one', 'two', 'three', 'four', 'five'].forEach(key => { data[`stack_${key}_wins`] = 0; data[`stack_${key}_losses`] = 0; data[`stack_${key}_win_rate`] = 0; });
+        return data;
+      },
+      roleWinRates(){
+        return [
+          { label: 'Bruiser', value: this.data.bruiser_win_rate },
+          { label: 'Healer', value: this.data.healer_win_rate },
+          { label: 'Melee Assassin', value: this.data.melee_assassin_win_rate },
+          { label: 'Ranged Assassin', value: this.data.ranged_assassin_win_rate },
+          { label: 'Support', value: this.data.support_win_rate },
+          { label: 'Tank', value: this.data.tank_win_rate },
+        ];
+      },
       isOwner(){
         if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
           return true;
@@ -298,7 +402,9 @@
     watch: {
     },
     methods: {
+      formatDurationText,
       async getData(){
+        this.loadError = null;
         this.disableFilterInput = true;
         this.isLoading = true;
 
@@ -322,11 +428,44 @@
           });
           this.data = response.data;
         }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getData());
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
           this.disableFilterInput = false;
+        }
+      },
+      // The overview card as it is on the page, without its own buttons.
+      async cardImage() {
+        return toBlob(this.$refs.overviewCard.$el, {
+          pixelRatio: 2,
+          fontEmbedCSS: await cardFonts(),
+          filter: (node) => !(node.classList && node.classList.contains('card-actions')),
+        });
+      },
+      async downloadCard() {
+        this.cardDownloading = true;
+        // Shown for at least a second, so a fast download doesn't flash it
+        const shown = new Promise(resolve => setTimeout(resolve, 1000));
+        try {
+          const blob = await this.cardImage();
+          const link = document.createElement('a');
+          link.download = `heroesprofile-${this.battletag}.png`;
+          link.href = URL.createObjectURL(blob);
+          link.click();
+          URL.revokeObjectURL(link.href);
+        } finally {
+          await shown;
+          this.cardDownloading = false;
+        }
+      },
+      async copyCard() {
+        try {
+          await navigator.clipboard.write([new ClipboardItem({ 'image/png': this.cardImage() })]);
+          this.cardCopied = true;
+          setTimeout(() => { this.cardCopied = false; }, 2000);
+        } catch (e) {
+          // clipboard refused the image
         }
       },
       cancelAxiosRequest() {
@@ -334,31 +473,12 @@
           this.cancelTokenSource.cancel('Request canceled by user');
         }
       },
-      handleInputChange(eventPayload) {
-        if(eventPayload.field == "Game Type"){
-          this.modifiedgametype = eventPayload.value.length ? [...eventPayload.value] : null;
-        }
-
-        // Seasons and the date range are one or the other
-        if(eventPayload.field == "Season"){
-          this.modifiedseason = eventPayload.value.length ? [...eventPayload.value] : null;
-          if(eventPayload.value.length){
-            this.startdate = null;
-            this.enddate = null;
-          }
-        }
-
-        if(eventPayload.field == "From Date" || eventPayload.field == "To Date"){
-          if(eventPayload.field == "From Date"){
-            this.startdate = eventPayload.value;
-          }else{
-            this.enddate = eventPayload.value;
-          }
-          if(eventPayload.value && this.modifiedseason){
-            this.modifiedseason = null;
-            this.seasonselection = [];
-          }
-        }
+      filterData(filteredData){
+        this.modifiedgametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : null;
+        this.modifiedseason = filteredData.multi.Season ? Array.from(filteredData.multi.Season) : null;
+        this.startdate = filteredData.single["From Date"] || null;
+        this.enddate = filteredData.single["To Date"] || null;
+        this.applyFilter();
       },
       applyFilter(){
         if(!this.isLoading){

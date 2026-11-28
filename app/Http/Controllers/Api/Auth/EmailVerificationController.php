@@ -20,7 +20,7 @@ class EmailVerificationController extends Controller
         // link no way forward.
         if (! $request->hasValidSignature()) {
             return redirect('/Api/Login')->withErrors([
-                'email' => 'That verification link has expired. Log in to send a new one.',
+                'email' => __('That verification link has expired. Log in to send a new one.'),
             ]);
         }
 
@@ -28,7 +28,7 @@ class EmailVerificationController extends Controller
 
         if ($account === null || ! hash_equals($hash, sha1($account->getEmailForVerification()))) {
             return redirect('/Api/Login')->withErrors([
-                'email' => 'That verification link is not valid.',
+                'email' => __('That verification link is not valid.'),
             ]);
         }
 
@@ -38,6 +38,6 @@ class EmailVerificationController extends Controller
             event(new Verified($account));
         }
 
-        return redirect('/Api/Login')->with('status', 'Your email address is verified.');
+        return redirect('/Api/Login')->with('status', __('Your email address is verified.'));
     }
 }

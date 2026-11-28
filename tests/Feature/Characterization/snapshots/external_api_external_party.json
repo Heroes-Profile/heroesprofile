@@ -9,6 +9,7 @@
                 "wins": 1,
                 "losses": 0,
                 "win_rate": 100,
+                "win_rate_change": null,
                 "stack_size_name": "5 Solo"
             },
             "00005|00004": {
@@ -17,6 +18,7 @@
                 "wins": 12,
                 "losses": 11,
                 "win_rate": 52.17,
+                "win_rate_change": null,
                 "stack_size_name": "5 Solo"
             },
             "00005|00005": {
@@ -25,6 +27,7 @@
                 "wins": 140,
                 "losses": 145,
                 "win_rate": 49.12,
+                "win_rate_change": null,
                 "stack_size_name": "5 Solo"
             },
             "00005|00022": {
@@ -33,6 +36,7 @@
                 "wins": 2,
                 "losses": 1,
                 "win_rate": 66.67,
+                "win_rate_change": null,
                 "stack_size_name": "5 Solo"
             },
             "00005|00023": {
@@ -41,6 +45,7 @@
                 "wins": 15,
                 "losses": 7,
                 "win_rate": 68.18,
+                "win_rate_change": null,
                 "stack_size_name": "1 Double, 3 Solo"
             },
             "00005|00041": {
@@ -49,6 +54,7 @@
                 "wins": 1,
                 "losses": 0,
                 "win_rate": 100,
+                "win_rate_change": null,
                 "stack_size_name": "2 Double, 1 Solo"
             },
             "00005|00302": {
@@ -57,6 +63,7 @@
                 "wins": 9,
                 "losses": 9,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "stack_size_name": "1 Triple, 2 Solo"
             },
             "00005|04001": {
@@ -65,6 +72,7 @@
                 "wins": 14,
                 "losses": 10,
                 "win_rate": 58.33,
+                "win_rate_change": null,
                 "stack_size_name": "1 Quad, 1 Solo"
             },
             "00005|50000": {
@@ -73,6 +81,7 @@
                 "wins": 24,
                 "losses": 21,
                 "win_rate": 53.33,
+                "win_rate_change": null,
                 "stack_size_name": "1 team of 5"
             }
         },
@@ -83,6 +92,7 @@
                 "wins": 3,
                 "losses": 3,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "stack_size_name": "5 Solo"
             },
             "00023|00005": {
@@ -91,6 +101,7 @@
                 "wins": 7,
                 "losses": 15,
                 "win_rate": 31.82,
+                "win_rate_change": null,
                 "stack_size_name": "5 Solo"
             },
             "00023|00023": {
@@ -99,6 +110,7 @@
                 "wins": 4,
                 "losses": 4,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "stack_size_name": "1 Double, 3 Solo"
             },
             "00023|00302": {
@@ -107,6 +119,7 @@
                 "wins": 3,
                 "losses": 2,
                 "win_rate": 60,
+                "win_rate_change": null,
                 "stack_size_name": "1 Triple, 2 Solo"
             },
             "00023|00320": {
@@ -115,6 +128,7 @@
                 "wins": 1,
                 "losses": 1,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "stack_size_name": "1 Triple, 1 Double"
             },
             "00023|04001": {
@@ -123,6 +137,7 @@
                 "wins": 7,
                 "losses": 10,
                 "win_rate": 41.18,
+                "win_rate_change": null,
                 "stack_size_name": "1 Quad, 1 Solo"
             },
             "00023|50000": {
@@ -131,6 +146,7 @@
                 "wins": 14,
                 "losses": 15,
                 "win_rate": 48.28,
+                "win_rate_change": null,
                 "stack_size_name": "1 team of 5"
             }
         },
@@ -141,6 +157,7 @@
                 "wins": 1,
                 "losses": 1,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "stack_size_name": "5 Solo"
             },
             "00041|50000": {
@@ -149,6 +166,7 @@
                 "wins": 0,
                 "losses": 1,
                 "win_rate": 0,
+                "win_rate_change": null,
                 "stack_size_name": "1 team of 5"
             }
         },
@@ -159,6 +177,7 @@
                 "wins": 4,
                 "losses": 3,
                 "win_rate": 57.14,
+                "win_rate_change": null,
                 "stack_size_name": "5 Solo"
             },
             "00302|00005": {
@@ -167,6 +186,7 @@
                 "wins": 9,
                 "losses": 10,
                 "win_rate": 47.37,
+                "win_rate_change": null,
                 "stack_size_name": "5 Solo"
             },
             "00302|00023": {
@@ -175,6 +195,7 @@
                 "wins": 2,
                 "losses": 3,
                 "win_rate": 40,
+                "win_rate_change": null,
                 "stack_size_name": "1 Double, 3 Solo"
             },
             "00302|00302": {
@@ -183,6 +204,7 @@
                 "wins": 4,
                 "losses": 4,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "stack_size_name": "1 Triple, 2 Solo"
             },
             "00302|04001": {
@@ -191,6 +213,7 @@
                 "wins": 4,
                 "losses": 4,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "stack_size_name": "1 Quad, 1 Solo"
             },
             "00302|50000": {
@@ -199,6 +222,7 @@
                 "wins": 12,
                 "losses": 13,
                 "win_rate": 48,
+                "win_rate_change": null,
                 "stack_size_name": "1 team of 5"
             }
         },
@@ -209,6 +233,7 @@
                 "wins": 1,
                 "losses": 1,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "stack_size_name": "1 Double, 3 Solo"
             },
             "00320|04001": {
@@ -217,6 +242,7 @@
                 "wins": 0,
                 "losses": 0,
                 "win_rate": 0,
+                "win_rate_change": null,
                 "stack_size_name": "1 Quad, 1 Solo"
             }
         },
@@ -227,6 +253,7 @@
                 "wins": 5,
                 "losses": 4,
                 "win_rate": 55.56,
+                "win_rate_change": null,
                 "stack_size_name": "5 Solo"
             },
             "04001|00005": {
@@ -235,6 +262,7 @@
                 "wins": 9,
                 "losses": 14,
                 "win_rate": 39.13,
+                "win_rate_change": null,
                 "stack_size_name": "5 Solo"
             },
             "04001|00023": {
@@ -243,6 +271,7 @@
                 "wins": 10,
                 "losses": 7,
                 "win_rate": 58.82,
+                "win_rate_change": null,
                 "stack_size_name": "1 Double, 3 Solo"
             },
             "04001|00302": {
@@ -251,6 +280,7 @@
                 "wins": 4,
                 "losses": 4,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "stack_size_name": "1 Triple, 2 Solo"
             },
             "04001|00320": {
@@ -259,6 +289,7 @@
                 "wins": 0,
                 "losses": 0,
                 "win_rate": 0,
+                "win_rate_change": null,
                 "stack_size_name": "1 Triple, 1 Double"
             },
             "04001|04001": {
@@ -267,6 +298,7 @@
                 "wins": 3,
                 "losses": 3,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "stack_size_name": "1 Quad, 1 Solo"
             },
             "04001|50000": {
@@ -275,6 +307,7 @@
                 "wins": 9,
                 "losses": 9,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "stack_size_name": "1 team of 5"
             }
         },
@@ -285,6 +318,7 @@
                 "wins": 16,
                 "losses": 15,
                 "win_rate": 51.61,
+                "win_rate_change": null,
                 "stack_size_name": "5 Solo"
             },
             "50000|00005": {
@@ -293,6 +327,7 @@
                 "wins": 21,
                 "losses": 23,
                 "win_rate": 47.73,
+                "win_rate_change": null,
                 "stack_size_name": "5 Solo"
             },
             "50000|00023": {
@@ -301,6 +336,7 @@
                 "wins": 15,
                 "losses": 14,
                 "win_rate": 51.72,
+                "win_rate_change": null,
                 "stack_size_name": "1 Double, 3 Solo"
             },
             "50000|00041": {
@@ -309,6 +345,7 @@
                 "wins": 1,
                 "losses": 0,
                 "win_rate": 100,
+                "win_rate_change": null,
                 "stack_size_name": "2 Double, 1 Solo"
             },
             "50000|00302": {
@@ -317,6 +354,7 @@
                 "wins": 13,
                 "losses": 13,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "stack_size_name": "1 Triple, 2 Solo"
             },
             "50000|04001": {
@@ -325,6 +363,7 @@
                 "wins": 9,
                 "losses": 9,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "stack_size_name": "1 Quad, 1 Solo"
             },
             "50000|50000": {
@@ -333,6 +372,7 @@
                 "wins": 14,
                 "losses": 14,
                 "win_rate": 50,
+                "win_rate_change": null,
                 "stack_size_name": "1 team of 5"
             }
         }

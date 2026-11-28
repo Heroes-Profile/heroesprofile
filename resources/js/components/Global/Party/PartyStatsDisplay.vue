@@ -1,553 +1,296 @@
 <template>
-  <div>
-    <div class="flex items-start gap-6 mb-8 mt-2">
-      <div v-if="partyWinRates.length" class="flex-1 min-w-0">
-        <h2 class="text-lg font-semibold mb-3">Party Size Win Rates</h2>
-        <div v-for="row in partyWinRates" :key="row.label" class="mb-3">
-          <div class="text-sm mb-1">
-            <span class="font-medium">{{ row.label }}</span>
-            <span class="ml-4 text-gray-400">Total Games: {{ (row.wins + row.losses).toLocaleString('en-US') }}</span>
-          </div>
-          <div class="flex items-center w-full h-7 rounded overflow-hidden bg-gray-700">
-            <div :style="{ width: row.win_rate.toFixed(2) + '%', backgroundColor: row.color }" class="h-full flex items-center pl-2">
-              <span class="text-white text-xs font-semibold whitespace-nowrap">{{ row.win_rate.toFixed(2) }}%</span>
+  <!-- Party stats for a player or for everyone: party size win rates and a summary, then every party against every enemy party.
+       With skeleton, the same layout with grey blocks while it loads; the default slot (e.g. the loading message) goes on the first panel. -->
+  <div class="flex flex-col gap-8">
+    <panel-box :class="{ 'relative md:!rounded-tl-none': $slots.default }">
+      <slot></slot>
+      <div class="grid xl:grid-cols-[3fr_2fr] gap-6">
+        <!-- Built from team setups, so a size is the largest party on the team, not necessarily the player's own -->
+        <player-party-size-panel :data="partySizeData" :skeleton="skeleton" :title="mode === 'global' ? 'Win Rate by Largest Party on the Team' : 'Win Rate by Largest Party on Your Team'"></player-party-size-panel>
+
+        <panel-box :inner="true" :title="$t('Summary')">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div v-for="tile in summaryTiles" :key="tile.label" class="bg-surface-2 rounded-control p-4 flex flex-col gap-1 min-w-0">
+              <span :class="['text-sm text-subtext w-fit', { 'skeleton-text': skeleton }]">{{ $t(tile.label) }}</span>
+              <skeleton-box v-if="skeleton" class="h-9 w-28 rounded"></skeleton-box>
+              <span v-else :class="['text-3xl font-semibold leading-[1.2]', tile.class || 'text-header']">{{ tile.value }}</span>
+              <skeleton-box v-if="skeleton" class="h-4 w-40 max-w-full mt-1"></skeleton-box>
+              <span v-else class="text-sm text-subtext">{{ tile.caption }}</span>
             </div>
           </div>
-        </div>
+          <p :class="['text-xs text-subtext w-fit', { 'skeleton-text': skeleton }]">{{ $t('Best / toughest: matchups with :count+ games.', { count: summaryMinGames }) }}</p>
+        </panel-box>
       </div>
+    </panel-box>
 
-      <div class="w-auto shrink-0 m-1">
-        <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Legend</h2>
-        <div class="bg-gray-light rounded-b p-5 gap-5 justify-center">
-          <span class="text-black block">Group of 1 <i class="fas fa-user solo"></i></span>
-          <span class="text-black block">Group of 2 <i class="fas fa-user double"></i><i class="fas fa-user double"></i></span>
-          <span class="text-black block">Group of 3 <i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></span>
-          <span class="text-black block">Group of 4 <i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></span>
-          <span class="text-black block">Group of 5 <i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></span>
+    <panel-box :title="$t('Party Matchups')" :subtitle="mode === 'global' ? 'Win rate of each party composition against every enemy composition, across all players.' : 'Your win rate for every combination of your party against the enemy party.'">
+      <template #right>
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-1 text-sm text-subtext">
+          <span v-for="item in legend" :key="item.label" class="flex items-center gap-2">
+            <span :class="['w-3.5 h-3.5 rounded-[0.25rem]', item.swatch]"></span>
+            <span :class="{ 'skeleton-text': skeleton }">{{ $t(item.label, typeof item.value === 'object' ? item.value : { value: item.value }) }}</span>
+          </span>
         </div>
-      </div>
-    </div>
+      </template>
 
+      <!-- Wide enough for every column; on small screens it scrolls sideways, with the site's fade and arrow showing there's more -->
+      <!-- snap: on phones a swipe or arrow moves one column at a time -->
+      <scroll-hint-container :snap="true">
+        <!-- Padded so the scroll box doesn't clip a focused row's or column's ring -->
+        <div class="grid grid-cols-[minmax(13rem,1.4fr)_repeat(7,minmax(7.5rem,1fr))] gap-2 min-w-[70rem] p-1">
+          <!-- Which side is which -->
+          <div class="snap-start flex items-center gap-2 py-2 text-sm font-bold uppercase tracking-wide">
+            <span class="w-2.5 h-2.5 rounded-full bg-teal shrink-0"></span>
+            <span :class="{ 'skeleton-text': skeleton }">{{ $t('Your Team') }}</span>
+            <span class="flex-1 h-px bg-gray-dark"></span>
+          </div>
+          <div class="col-span-7 flex items-center gap-3 py-2 text-sm font-bold uppercase tracking-wide">
+            <span class="flex-1 h-px bg-gray-dark"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-loss shrink-0"></span>
+            <span :class="{ 'skeleton-text': skeleton }">{{ $t('Enemy Team') }}</span>
+            <span class="flex-1 h-px bg-gray-dark"></span>
+          </div>
 
-    <div class=" mx-auto mb-10" id="5 Solo players">
-      <h3 class="stack-header">{{ teamlabel }}: 5 Solo Players<div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs.</h3>
-      <table class="max-sm:text-xs">
-        <thead>
-          <tr >
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Enemy Team
-            </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Win Rate %
-            </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Wins
-            </th>                
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Losses
-            </th>                                 
-          </tr>
-        </thead>
-        <tbody>
-          <tr  v-if="partydata.solo" v-for="row in partydata.solo" :key="(row.ally_combo + '|' + row.enemy_combo)">
-            <td class="py-2 md:px-3 md:w-[35%]">
-              <div class="flex flex-wrap max-md:flex-col max-md:items-start py">
-                <div class="flex-1">
-                  {{ row.stack_size_name }}
-                </div>
-                <div class="md:mx-10 flex-1">
-                  <span class="flex max-md:flex-col" v-if="row.stack_size_name == '5 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-                  <span class="flex max-md:flex-col" v-if="row.stack_size_name == '1 Double, 3 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
+          <!-- The enemy parties across the top -->
+          <div></div>
+          <!-- Clicking an enemy party (or one of yours, down the side) fades every other column (row); click it again, or
+               anywhere that isn't a row or column, to clear. A row and a column together ring their crossing tile -->
+          <component :is="skeleton ? 'div' : 'button'" v-for="column in compositions" :key="column.code" :type="skeleton ? null : 'button'" :title="skeleton ? null : $t('Focus this column')" data-party-focus
+            :class="['snap-start flex flex-col items-center gap-2 py-1.5 rounded text-sm text-center transition-[colors,opacity]', skeleton ? 'text-subtext' : focusColumn === column.code ? 'bg-teal/20 ring-2 ring-teal text-white' : ['text-subtext hover:bg-surface-1 hover:text-white', { 'opacity-40': focusColumn }]]"
+            @click="!skeleton && toggleFocus('column', column.code)">
+            <span :class="['inline-flex items-center gap-1', { 'skeleton-text': skeleton }]">
+              <span v-for="(size, index) in column.groups" :key="index" :class="['inline-flex gap-0.5 p-[0.1875rem] rounded-full', { 'bg-teal': size > 1 }, { invisible: skeleton }]">
+                <span v-for="dot in size" :key="dot" :class="['w-2 h-2 rounded-full', size > 1 ? 'bg-white' : 'bg-subtext']"></span>
+              </span>
+            </span>
+            <span :class="{ 'skeleton-text': skeleton }">{{ $t(column.label) }}</span>
+          </component>
 
-                  <span class="flex max-md:flex-col" v-if="row.stack_size_name == '2 Double, 1 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex max-md:flex-col" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex max-md:flex-col" v-if="row.stack_size_name == '1 Triple, 1 Double'">
-                    <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
-                  </span>
-
-                  <span class="flex max-md:flex-col" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex max-md:flex-col" v-if="row.stack_size_name == '1 team of 5'">
-                    <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
-                  </span>
-                </div>
-
-              </div>
-            </td>
-            <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-            <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
-            <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
-          </tr>
-          <tr v-else>
-            <td colspan="4" class="text-center">No Data</td>
-          </tr>
-        </tbody>
-      </table>  
-    </div>
-
-
-    <div class="container mx-auto mb-10" id="1 Double Stack">
-     <h3 class="stack-header">{{ teamlabel }}: 1 Double Stack <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs.</h3>
-      <table class="max-sm:text-xs">
-        <thead>
-          <tr>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Enemy Team
-            </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Win Rate %
-            </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Wins
-            </th>                
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Losses
-            </th>                                 
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="partydata.double" v-for="row in partydata.double" :key="(row.ally_combo + '|' + row.enemy_combo)">
-            <td class="py-2 md:px-3 md:w-[35%]">
-              <div class="flex flex-wrap max-md:flex-col max-md:items-start py">
-                <div class="flex-1">
-                  {{ row.stack_size_name }}
-                </div>
-                <div class="md:mx-10 flex-1">
-                  <span class="flex max-md:flex-col" v-if="row.stack_size_name == '5 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-                  <span class="flex max-md:flex-col" v-if="row.stack_size_name == '1 Double, 3 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex max-md:flex-col" v-if="row.stack_size_name == '2 Double, 1 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex max-md:flex-col" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex max-md:flex-col" v-if="row.stack_size_name == '1 Triple, 1 Double'">
-                    <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
-                  </span>
-
-                  <span class="flex max-md:flex-col" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex max-md:flex-col" v-if="row.stack_size_name == '1 team of 5'">
-                    <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
-                  </span>
-                </div>
-
-              </div>
-            </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-            <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
-            <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
-          </tr>
-          <tr v-else>
-            <td colspan="4" class="text-center">No Data</td>
-          </tr>
-        </tbody>
-      </table>  
-    </div>
-
-
-    <div class="container mx-auto mb-10" id="2 Double Stack">
-      <h3 class="stack-header">{{ teamlabel }}: 2 Double Stack <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs.</h3>
-      <table class="max-sm:text-xs">
-        <thead>
-          <tr>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Enemy Team
-            </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Win Rate %
-            </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Wins
-            </th>                
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Losses
-            </th>                                 
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="partydata.double_double" v-for="row in partydata.double_double" :key="(row.ally_combo + '|' + row.enemy_combo)">
-            <td class="py-2 px-3 w-[35%]">
-              <div class="flex flex-wrap py max-md:flex-col max-md:items-start">
-                <div class="flex-1">
-                  {{ row.stack_size_name }}
-                </div>
-                <div class="md:mx-10 flex-1">
-                  <span class="flex" v-if="row.stack_size_name == '5 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-                  <span class="flex" v-if="row.stack_size_name == '1 Double, 3 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '2 Double, 1 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 Triple, 1 Double'">
-                    <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 team of 5'">
-                    <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
-                  </span>
-                </div>
-
-              </div>
-            </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-            <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
-            <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
-          </tr>
-          <tr v-else>
-            <td colspan="4" class="text-center">No Data</td>
-          </tr>
-        </tbody>
-      </table>  
-    </div>
-
-
-    <div class="container mx-auto mb-10" id="1 Tripe 2 Solo">
-      <h3 class="stack-header">{{ teamlabel }}: 1 Triple Stack and 2 Solos <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs.</h3>
-      <table class="max-sm:text-xs">
-        <thead>
-          <tr>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Enemy Team
-            </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Win Rate %
-            </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Wins
-            </th>                
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Losses
-            </th>                                 
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="partydata.triple" v-for="row in partydata.triple" :key="(row.ally_combo + '|' + row.enemy_combo)">
-            <td class="py-2 px-3 w-[35%]">
-              <div class="flex flex-wrap py max-md:flex-col max-md:items-start">
-                <div class="flex-1">
-                  {{ row.stack_size_name }}
-                </div>
-                <div class="md:mx-10 flex-1">
-                  <span class="flex" v-if="row.stack_size_name == '5 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-                  <span class="flex" v-if="row.stack_size_name == '1 Double, 3 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '2 Double, 1 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 Triple, 1 Double'">
-                    <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 team of 5'">
-                    <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
-                  </span>
-                </div>
-
-              </div>
-            </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-            <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
-            <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
-          </tr>
-          <tr v-else>
-            <td colspan="4" class="text-center">No Data</td>
-          </tr>
-        </tbody>
-      </table>  
-    </div>
-
-
-    <div class="container mx-auto mb-10" id="1 Tripe 1 Double">
-      <h3 class="stack-header">{{ teamlabel }}: 1 Triple Stack and 1 Double Stack <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div> vs.</h3>
-      <table class="max-sm:text-xs">
-        <thead>
-          <tr>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Enemy Team
-            </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Win Rate %
-            </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Wins
-            </th>                
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Losses
-            </th>                                 
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="partydata.triple_double" v-for="row in partydata.triple_double" :key="(row.ally_combo + '|' + row.enemy_combo)">
-            <td class="py-2 px-3 w-[35%]">
-              <div class="flex flex-wrap py max-md:flex-col max-md:items-start">
-                <div class="flex-1">
-                  {{ row.stack_size_name }}
-                </div>
-                <div class="md:mx-10 flex-1">
-                  <span class="flex" v-if="row.stack_size_name == '5 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-                  <span class="flex" v-if="row.stack_size_name == '1 Double, 3 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '2 Double, 1 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 Triple, 1 Double'">
-                    <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 team of 5'">
-                    <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
-                  </span>
-                </div>
-
-              </div>
-            </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-            <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
-            <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
-          </tr>
-          <tr v-else>
-            <td colspan="4" class="text-center">No Data</td>
-          </tr>
-        </tbody>
-      </table>  
-    </div>
-
-
-    <div class="container mx-auto mb-10" id="1 Quad 1 Solo">
-      <h3 class="stack-header">{{ teamlabel }}: 1 Quadruple Stack and 1 Solo <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs.</h3>
-      <table class="max-sm:text-xs">
-        <thead>
-          <tr>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Enemy Team
-            </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Win Rate %
-            </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Wins
-            </th>                
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Losses
-            </th>                                 
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="partydata.quadruple" v-for="row in partydata.quadruple" :key="(row.ally_combo + '|' + row.enemy_combo)">
-            <td class="py-2 px-3 w-[35%]">
-              <div class="flex flex-wrap py max-md:flex-col max-md:items-start">
-                <div class="flex-1">
-                  {{ row.stack_size_name }}
-                </div>
-                <div class="md:mx-10 flex-1">
-                  <span class="flex" v-if="row.stack_size_name == '5 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-                  <span class="flex" v-if="row.stack_size_name == '1 Double, 3 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '2 Double, 1 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 Triple, 1 Double'">
-                    <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 team of 5'">
-                    <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
-                  </span>
-                </div>
-
-              </div>
-            </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-            <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
-            <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
-          </tr>
-          <tr v-else>
-            <td colspan="4" class="text-center">No Data</td>
-          </tr>
-        </tbody>
-      </table>  
-    </div>
-
-
-
-    <div class="container mx-auto " id="5 Player">
-      <h3 class="stack-header">{{ teamlabel }}: 5 player Stack <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div> vs.</h3>
-      <table class="max-sm:text-xs">
-        <thead>
-          <tr>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Enemy Team
-            </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Win Rate %
-            </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Wins
-            </th>                
-            <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
-              Losses
-            </th>                                 
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="partydata.quintuple" v-for="row in partydata.quintuple" :key="(row.ally_combo + '|' + row.enemy_combo)">
-            <td class="py-2 px-3 w-[35%]">
-              <div class="flex flex-wrap py max-md:flex-col max-md:items-start">
-                <div class="flex-1">
-                  {{ row.stack_size_name }}
-                </div>
-                <div class="md:mx-10 flex-1">
-                  <span class="flex" v-if="row.stack_size_name == '5 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-                  <span class="flex" v-if="row.stack_size_name == '1 Double, 3 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '2 Double, 1 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 Triple, 1 Double'">
-                    <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
-                    <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                  </span>
-
-                  <span class="flex" v-if="row.stack_size_name == '1 team of 5'">
-                    <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
-                  </span>
-                </div>
-
-              </div>
-            </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-            <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
-            <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
-          </tr>
-          <tr v-else>
-            <td colspan="4" class="text-center">No Data</td>
-          </tr>
-        </tbody>
-      </table>  
-    </div>
+          <!-- Your party down the side, then a tile per enemy party -->
+          <template v-for="row in compositions" :key="row.code">
+            <component :is="skeleton ? 'div' : 'button'" :type="skeleton ? null : 'button'" :title="skeleton ? null : $t('Focus this row')" data-party-focus
+              :class="['bg-surface-1 rounded-control px-4 py-3 flex items-center gap-4 min-w-0 text-left transition-[box-shadow,opacity]', { 'hover:bg-surface-3': !skeleton }, focusRow === row.code ? 'ring-2 ring-teal' : { 'opacity-40': focusRow }]"
+              @click="!skeleton && toggleFocus('row', row.code)">
+              <span :class="['inline-flex items-center gap-1 shrink-0', { 'skeleton-text': skeleton }]">
+                <span v-for="(size, index) in row.groups" :key="index" :class="['inline-flex gap-0.5 p-[0.1875rem] rounded-full', { 'bg-teal': size > 1 }, { invisible: skeleton }]">
+                  <span v-for="dot in size" :key="dot" :class="['w-2 h-2 rounded-full', size > 1 ? 'bg-white' : 'bg-subtext']"></span>
+                </span>
+              </span>
+              <span :class="['font-medium truncate', { 'skeleton-text': skeleton }]">{{ $t(row.label) }}</span>
+            </component>
+            <div v-for="column in compositions" :key="column.code" :class="['rounded-lg px-2 py-3 flex flex-col items-center justify-center text-center transition-[opacity,transform]', skeleton ? 'bg-surface-3 animate-pulse' : cellClass(cell(row, column)), { 'opacity-25': isFaded(row, column), 'ring-2 ring-teal scale-105 relative z-[1]': isCombo(row, column) }]">
+              <template v-if="skeleton">
+                <span class="invisible text-lg font-semibold leading-tight">00.00%</span>
+                <span class="invisible text-xs">000 W – 000 L</span>
+              </template>
+              <template v-else-if="cell(row, column)">
+                <span class="text-lg font-semibold leading-tight">{{ cell(row, column).win_rate.toFixed(2) }}%</span>
+                <span class="text-xs text-subtext">{{ cell(row, column).wins.toLocaleString('en-US') }} W – {{ cell(row, column).losses.toLocaleString('en-US') }} L</span>
+                <span v-if="cell(row, column).win_rate_change !== null && cell(row, column).win_rate_change !== undefined" :class="['text-xs tabular-nums', cell(row, column).win_rate_change > 0 ? 'text-win' : cell(row, column).win_rate_change < 0 ? 'text-loss' : 'text-subtext']">
+                  <template v-if="cell(row, column).win_rate_change > 0">&#9650; +{{ cell(row, column).win_rate_change.toFixed(2) }}</template>
+                  <template v-else-if="cell(row, column).win_rate_change < 0">&#9660; {{ cell(row, column).win_rate_change.toFixed(2) }}</template>
+                  <template v-else>0.00</template>
+                </span>
+              </template>
+              <template v-else>
+                <span class="text-lg font-semibold leading-tight text-subtext">–</span>
+                <span class="text-xs text-subtext invisible">0 W – 0 L</span>
+              </template>
+            </div>
+          </template>
+        </div>
+      </scroll-hint-container>
+    </panel-box>
   </div>
 </template>
 
 <script>
+// Every party a team of five can be, in the order the grid shows them. code is the API's combo: players in a five-stack,
+// quad, triple, double and solo, one digit each. key is where partydata keeps that party's matchups.
+const COMPOSITIONS = [
+  { key: 'solo', code: '00005', label: '5 Solo', groups: [1, 1, 1, 1, 1] },
+  { key: 'double', code: '00023', label: '1 Duo, 3 Solo', groups: [2, 1, 1, 1] },
+  { key: 'double_double', code: '00041', label: '2 Duo, 1 Solo', groups: [2, 2, 1] },
+  { key: 'triple', code: '00302', label: '1 Trio, 2 Solo', groups: [3, 1, 1] },
+  { key: 'triple_double', code: '00320', label: '1 Trio, 1 Duo', groups: [3, 2] },
+  { key: 'quadruple', code: '04001', label: '1 Quad, 1 Solo', groups: [4, 1] },
+  { key: 'quintuple', code: '50000', label: '5 Stack', groups: [5] },
+];
+
+// The party size bars: the size of the party you're in, whatever the rest of your team is
+const PARTY_SIZES = [
+  { field: 'one', label: 'Solo', keys: ['solo'] },
+  { field: 'two', label: '2 - Stack', keys: ['double', 'double_double'] },
+  { field: 'three', label: '3 - Stack', keys: ['triple', 'triple_double'] },
+  { field: 'four', label: '4 - Stack', keys: ['quadruple'] },
+  { field: 'five', label: '5 - Stack', keys: ['quintuple'] },
+];
+
 export default {
   name: 'PartyStatsDisplay',
   props: {
     partydata: {
       type: Object,
-      required: true
+      default: () => ({}),
     },
-    teamlabel: {
+    // 'player': one player's own parties. 'global': everyone's. Both fade tiles under 15 games.
+    mode: {
       type: String,
-      default: 'Team'
+      default: 'global',
     },
+    skeleton: Boolean,
+  },
+  data() {
+    return {
+      compositions: COMPOSITIONS,
+      summaryMinGames: 30,
+      // The party picked down the side and across the top; each fades the other rows / columns
+      focusRow: null,
+      focusColumn: null,
+    };
   },
   computed: {
-    partyWinRates() {
-      if (!this.partydata) return [];
-      const groups = [
-        { label: 'Solo',        keys: ['solo'],                          color: '#213d7a' },
-        { label: 'Two Stack',   keys: ['double', 'double_double'],       color: '#008b8b' },
-        { label: 'Three Stack', keys: ['triple', 'triple_double'],       color: '#b33616' },
-        { label: 'Four Stack',  keys: ['quadruple'],                     color: '#d98c40' },
-        { label: 'Five Stack',  keys: ['quintuple'],                     color: '#213d7a' },
+    // Win rate bands for the tiles (teal from high, plain between, yellow down to red, red under it), and the game
+    // count under which a tile fades
+    bands() {
+      return { high: 52, low: 48, red: 42, fade: 15 };
+    },
+    legend() {
+      const items = [
+        { label: ':value% and higher', value: this.bands.high, swatch: 'bg-teal/25 border border-teal/50' },
+        { label: ':low% to :high%', value: { low: this.bands.red, high: this.bands.low }, swatch: 'bg-yellow/25 border border-yellow/50' },
+        { label: 'Under :value%', value: this.bands.red, swatch: 'bg-red/25 border border-red/50' },
       ];
-      return groups.map(g => {
-        let wins = 0, losses = 0;
-        g.keys.forEach(key => {
-          if (this.partydata[key]) {
-            const rows = Array.isArray(this.partydata[key])
-              ? this.partydata[key]
-              : Object.values(this.partydata[key]);
-            rows.forEach(row => {
-              wins += row.wins;
-              losses += row.losses;
-            });
+      if (this.bands.fade) {
+        items.push({ label: 'Faded — fewer than :value games', value: this.bands.fade, swatch: 'border border-subtext/60' });
+      }
+      return items;
+    },
+    // Each party's row of matchups, keyed by the enemy party's code
+    matchups() {
+      const byRow = {};
+      COMPOSITIONS.forEach(row => {
+        const rows = this.partydata?.[row.key];
+        byRow[row.code] = {};
+        (Array.isArray(rows) ? rows : Object.values(rows || {})).forEach(item => {
+          byRow[row.code][item.enemy_combo] = item;
+        });
+      });
+      return byRow;
+    },
+    // The party size card's fields, named as the profile's are (stack_one_wins and so on)
+    partySizeData() {
+      const data = {};
+      PARTY_SIZES.forEach(size => {
+        let wins = 0;
+        let losses = 0;
+        size.keys.forEach(key => {
+          const row = COMPOSITIONS.find(composition => composition.key === key);
+          Object.values(this.matchups[row.code] || {}).forEach(item => {
+            wins += item.wins;
+            losses += item.losses;
+          });
+        });
+        data[`stack_${size.field}_wins`] = wins;
+        data[`stack_${size.field}_losses`] = losses;
+        data[`stack_${size.field}_win_rate`] = wins + losses ? (wins / (wins + losses)) * 100 : 0;
+      });
+      return data;
+    },
+    totals() {
+      let wins = 0;
+      let losses = 0;
+      PARTY_SIZES.forEach(size => {
+        wins += this.partySizeData[`stack_${size.field}_wins`];
+        losses += this.partySizeData[`stack_${size.field}_losses`];
+      });
+      return { wins, losses, games: wins + losses };
+    },
+    // The matchups with enough games, best and worst first
+    rankedMatchups() {
+      const list = [];
+      COMPOSITIONS.forEach(row => {
+        COMPOSITIONS.forEach(column => {
+          const item = this.matchups[row.code]?.[column.code];
+          if (item && item.wins + item.losses >= this.summaryMinGames) {
+            list.push({ row, column, item, games: item.wins + item.losses });
           }
         });
-        const total = wins + losses;
-        return { label: g.label, color: g.color, wins, losses, win_rate: total > 0 ? (wins / total) * 100 : 0 };
-      }).filter(r => (r.wins + r.losses) > 0);
+      });
+      return list.sort((a, b) => b.item.win_rate - a.item.win_rate);
+    },
+    summaryTiles() {
+      const number = value => value.toLocaleString('en-US');
+      const matchupTile = (label, entry, colour) => entry
+        ? { label, value: entry.item.win_rate.toFixed(2) + '%', class: colour, caption: `${this.$t(entry.row.label)} vs ${this.$t(entry.column.label)} · ${this.$t(':count games', { count: number(entry.games) })}` }
+        : { label, value: '–', caption: this.$t('No matchup with :count+ games', { count: this.summaryMinGames }) };
+
+      const tiles = [{
+        label: 'Total games',
+        value: number(this.totals.games),
+        caption: this.$t(this.mode === 'global' ? 'All party sizes, all players' : 'All party sizes'),
+      }];
+
+      if (this.mode === 'global') {
+        const sizes = PARTY_SIZES.map(size => ({ label: size.label, games: this.partySizeData[`stack_${size.field}_wins`] + this.partySizeData[`stack_${size.field}_losses`] }));
+        const top = sizes.reduce((best, size) => (size.games > best.games ? size : best), sizes[0]);
+        tiles.push({
+          label: 'Most common party',
+          value: this.$t(top.label),
+          caption: `${this.$t(':count games', { count: number(top.games) })} · ${this.$t(':percent% of all', { percent: this.totals.games ? ((top.games / this.totals.games) * 100).toFixed(1) : '0.0' })}`,
+        });
+      } else {
+        tiles.push({
+          label: 'Overall win rate',
+          value: (this.totals.games ? (this.totals.wins / this.totals.games) * 100 : 0).toFixed(2) + '%',
+          caption: `${number(this.totals.wins)} W – ${number(this.totals.losses)} L`,
+        });
+      }
+
+      const ranked = this.rankedMatchups;
+      tiles.push(matchupTile('Best matchup', ranked[0], 'text-win'));
+      tiles.push(matchupTile('Toughest matchup', ranked.length > 1 ? ranked[ranked.length - 1] : null, 'text-loss'));
+      return tiles;
     },
   },
-}
+  mounted() {
+    this.onDocumentClick = event => {
+      if ((this.focusRow || this.focusColumn) && !event.target.closest('[data-party-focus]')) {
+        this.focusRow = null;
+        this.focusColumn = null;
+      }
+    };
+    document.addEventListener('click', this.onDocumentClick);
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.onDocumentClick);
+  },
+  methods: {
+    toggleFocus(axis, code) {
+      const key = axis === 'row' ? 'focusRow' : 'focusColumn';
+      this[key] = this[key] === code ? null : code;
+    },
+    // A row and a column both picked: their crossing tile is ringed
+    isCombo(row, column) {
+      return this.focusRow === row.code && this.focusColumn === column.code;
+    },
+    isFaded(row, column) {
+      return (this.focusRow && this.focusRow !== row.code) || (this.focusColumn && this.focusColumn !== column.code);
+    },
+    cell(row, column) {
+      return this.matchups[row.code]?.[column.code] || null;
+    },
+    // Teal at the high band and up, red at the low band and down, faded under the player's game count
+    cellClass(item) {
+      if (!item) return 'bg-surface-1 opacity-50';
+      const classes = [];
+      if (item.win_rate >= this.bands.high) classes.push('bg-teal/25 text-win');
+      else if (item.win_rate < this.bands.red) classes.push('bg-red/25 text-lred');
+      else if (item.win_rate <= this.bands.low) classes.push('bg-yellow/25 text-lyellow');
+      else classes.push('bg-surface-1 text-header');
+      if (this.bands.fade && item.wins + item.losses < this.bands.fade) classes.push('opacity-50');
+      return classes.join(' ');
+    },
+  },
+};
 </script>

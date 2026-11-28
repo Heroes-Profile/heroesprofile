@@ -1,7 +1,9 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', $battletag . " Matchup Data")
+@php($regionName = $leagueName ?? ($bladeGlobals['regions'][$region] ?? $region))
+@include('Player.structuredData', ['page' => 'Hero Matchups'])
+@section('title', __(':battletag (:region) Hero Matchups', ['battletag' => $battletag, 'region' => $regionName]))
 @section('meta_keywords', 'Matchup Data, Hero Matchups, Hero Performance, Win Rate, Heroes Played')
-@section('meta_description', 'Explore the matchup data of ' . $battletag . ', including hero performance, win rates, and heroes played well against or with.')
+@section('meta_description', 'Heroes of the Storm matchups for ' . $battletag . ' (' . $regionName . '): win rates with and against every hero.')
 @section('content')
   <player-matchup 
     :filters="{{ json_encode($filters) }}" 

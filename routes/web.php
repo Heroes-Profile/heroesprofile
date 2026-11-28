@@ -31,7 +31,6 @@ use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\Esports\NutCup\NutCupController;
 use App\Http\Controllers\Esports\Other\EsportOtherController;
 use App\Http\Controllers\FaqController;
-use App\Http\Controllers\FlairController;
 use App\Http\Controllers\GithubChangeController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
@@ -63,8 +62,10 @@ use App\Http\Controllers\PollController;
 use App\Http\Controllers\PreMatchController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RedesignController;
 use App\Http\Controllers\ReplayDownloadController;
 use App\Http\Controllers\SingleMatchController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TermsOfServiceController;
 use App\Http\Controllers\Tools\ActivityGraphsController;
 use App\Http\Controllers\Tools\AutoBattlerController;
@@ -99,12 +100,20 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     // Route::get('/test', [MainPageController::class, 'test']);
     // Route::get('/testJS', [MainPageController::class, 'testJS']);
 
+    // Error page previews for design work, local only: /Error/Preview/403, 404, 429 or 500
+    if (app()->isLocal()) {
+        Route::get('/Error/Preview/{code}', fn (string $code) => response()->view("errors.$code", [], (int) $code))
+            ->whereIn('code', ['403', '404', '429', '500']);
+    }
+
     Route::redirect('/Search', '/', 301);
 
     Route::get('/Contact', [ContactController::class, 'show']);
 
     Route::get('/Privacy/Policy', [PrivacyPolicyController::class, 'show']);
     Route::get('/Terms/Of/Service', [TermsOfServiceController::class, 'show']);
+    Route::get('/Team', [TeamController::class, 'show']);
+    Route::get('/Redesign/2026', [RedesignController::class, 'show']);
 
     Route::get('/FAQ', [FaqController::class, 'show']);
     Route::get('/Event/Xalatath', [XalatathRecapController::class, 'show']);
@@ -412,8 +421,6 @@ Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587
 
 Route::get('/Animation/Deathwing', [AnimationsController::class, 'showDeathwing']);
 Route::get('/Animation/Tassadar', [AnimationsController::class, 'showTassadar']);
-
-Route::get('/Flair/State', [FlairController::class, 'state'])->middleware('throttle:flair-state');
 
 // Fresh token for a page left open past its session (app.js retries a 419 with it). Never cached.
 Route::get('/Session/CsrfToken', fn () => response()->json(['token' => csrf_token()])->header('Cache-Control', 'no-store, private'))

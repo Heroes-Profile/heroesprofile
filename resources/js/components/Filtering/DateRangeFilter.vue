@@ -1,28 +1,13 @@
 <template>
-  <div class="flex flex-wrap max-md:justify-center">
-    <div id="filter-label" class="relative">
-      <div class="flex items-end  text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors">
-        <div class="flex flex-col"><span>From Date</span>
-        <input type="date"
-          v-model="start"
-          :max="end"
-          @change="emitChange('From Date', start)"
-          class="w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 text-white"
-        ></div>
-        <button class="h-[40px] bg-blue md:m-t-auto  p-2 border-r-[1px] border-t-[1px] border-b-[1px] hover:bg-teal" @click="start = null; emitChange('From Date', null)">X</button>
-      </div>
+  <!-- contents: each date sits in the parent's filter row as its own item -->
+  <div class="contents">
+    <div id="filter-label" class="relative p-2 flex flex-col gap-1.5 text-sm font-medium text-subtext max-md:flex-[1_1_8rem]">
+      <span>{{ $t('From Date') }}</span>
+      <date-picker-field v-model="start" :max="end" label="From Date" @change="emitChange('From Date', $event)"></date-picker-field>
     </div>
-    <div id="filter-label" class="relative">
-      <div class="flex items-end  text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors">
-        <div class="flex flex-col"><span>To Date</span>
-        <input type="date"
-          v-model="end"
-          :min="start"
-          @change="emitChange('To Date', end)"
-          class="w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 text-white"
-        ></div>
-        <button class="h-[40px] bg-blue md:m-t-auto  p-2 border-r-[1px] border-t-[1px] border-b-[1px] hover:bg-teal" @click="end = null; emitChange('To Date', null)">X</button>
-      </div>
+    <div id="filter-label" class="relative p-2 flex flex-col gap-1.5 text-sm font-medium text-subtext max-md:flex-[1_1_8rem]">
+      <span>{{ $t('To Date') }}</span>
+      <date-picker-field v-model="end" :min="start" label="To Date" @change="emitChange('To Date', $event)"></date-picker-field>
     </div>
   </div>
 </template>
@@ -30,8 +15,6 @@
 <script>
   export default {
     name: 'DateRangeFilter',
-    components: {
-    },
     props: {
       startDate: String,
       endDate: String,
@@ -41,12 +24,6 @@
         start: this.startDate || null,
         end: this.endDate || null,
       }
-    },
-    created(){
-    },
-    mounted() {
-    },
-    computed: {
     },
     watch: {
       // Parent clears these when seasons are picked

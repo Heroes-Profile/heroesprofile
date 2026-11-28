@@ -1,11 +1,12 @@
 <template>
   <div>
-    <page-heading :heading="poll.title" :infoText1="statusText"></page-heading>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="statusText" -->
+    <page-heading :heading="poll.title"></page-heading>
 
-    <div class="max-w-[900px] mx-auto px-4 mt-4 mb-10">
+    <div class="max-w-[56.25rem] mx-auto px-4 mt-4 mb-10">
       <p v-if="poll.description" class="mb-6 whitespace-pre-line">{{ poll.description }}</p>
 
-      <p class="mb-3 text-sm italic">{{ poll.allow_multiple ? 'Pick as many as you like.' : 'Pick one.' }}</p>
+      <p class="mb-3 text-sm italic">{{ poll.allow_multiple ? $t('Pick as many as you like.') : $t('Pick one.') }}</p>
 
       <div class="flex flex-col gap-3 mb-6">
         <label
@@ -48,11 +49,11 @@
       <p v-if="results" class="mb-6 text-sm">{{ results.total }} {{ results.total === 1 ? 'vote' : 'votes' }}</p>
 
       <template v-if="canVote">
-        <label for="poll-comment">Comment (optional, only Heroes Profile sees it):</label>
+        <label for="poll-comment">{{ $t('Comment (optional, only Heroes Profile sees it):') }}</label>
         <textarea
           id="poll-comment"
           v-model="comment"
-          class="form-control search-input text-black w-full mt-2 mb-4"
+          class="search-input text-black w-full mt-2 mb-4"
           rows="4"
           maxlength="2000"
           :disabled="saving"
@@ -60,7 +61,7 @@
 
         <div class="flex justify-end">
           <custom-button
-            :text="vote ? 'Update vote' : 'Vote'"
+            :text="vote ? $t('Update vote') : $t('Vote')"
             :alt="'Submit your vote'"
             :disabled="selectedIds.length === 0"
             :loading="saving"
@@ -68,7 +69,7 @@
             @click="submit"
           ></custom-button>
         </div>
-        <p v-if="saved" class="bg-teal p-4 text-center mt-4">Your vote is saved. You can change it until the poll closes.</p>
+        <p v-if="saved" class="bg-teal p-4 text-center mt-4">{{ $t('Your vote is saved. You can change it until the poll closes.') }}</p>
       </template>
 
       <div v-else-if="poll.is_open" class="flex justify-center">
@@ -81,6 +82,7 @@
 </template>
 
 <script>
+import { formatDate as formatLocalDate } from '../../utils/formatGameDate';
 export default {
   name: 'CommunityPoll',
   props: {
@@ -113,7 +115,7 @@ export default {
     statusText() {
       if (!this.poll.is_open) return 'This poll is closed.';
       if (!this.poll.closes_at) return 'Community poll';
-      return `Closes ${new Date(this.poll.closes_at).toLocaleString()}`;
+      return `Closes ${formatLocalDate(this.poll.closes_at, { dateStyle: 'medium', timeStyle: 'short' })}`;
     },
   },
   methods: {

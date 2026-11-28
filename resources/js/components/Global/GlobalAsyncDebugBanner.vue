@@ -1,13 +1,13 @@
 <template>
   <div
     v-if="showDebugBanner"
-    class="max-w-[1500px] mx-auto mb-4 p-3 rounded border border-yellow-600 bg-yellow-900/40 text-yellow-100 text-xs font-mono whitespace-pre-wrap"
+    class="max-w-[93.75rem] mx-auto mb-4 p-3 rounded border border-yellow bg-yellow/20 text-lyellow text-xs whitespace-pre-wrap"
   >
-    <div class="font-bold text-yellow-300 mb-1">{{ pageLabel }} async debug (develop only)</div>
+    <div class="font-bold text-lyellow mb-1">{{ pageLabel }} async debug (develop only)</div>
     <div v-if="serverDebugConfig">Server: {{ serverDebugSummary }}</div>
     <div>Load: {{ loadDebugStatus || 'waiting...' }}</div>
     <div v-if="headerDebugSummary">Headers: {{ headerDebugSummary }}</div>
-    <div v-if="loadMeta && loadMeta.error" class="text-red-300 mt-1">{{ loadMeta.error }}</div>
+    <div v-if="loadMeta && loadMeta.error" class="text-lred mt-1">{{ loadMeta.error }}</div>
   </div>
 </template>
 
@@ -34,6 +34,10 @@ export default {
   },
   computed: {
     showDebugBanner() {
+      // GLOBAL_DEBUG_BANNER=false in .env turns it off
+      if (document.querySelector('meta[name="global-debug-banner"]')?.content === '0') {
+        return false;
+      }
       const host = window.location.hostname;
       return host.includes('develop') || host === 'localhost' || host === '127.0.0.1';
     },

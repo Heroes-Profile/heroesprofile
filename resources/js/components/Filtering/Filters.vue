@@ -1,115 +1,65 @@
 <template>
-  <div :class="{ 'px-4': compact }">
-    <button v-if="!compact" class="md:hidden p-2 bg-blue w-full" @click="showMobile">Show Filters</button>
-    <div v-show="compact || showNav" :class="compact ? 'bg-lighten rounded p-3' : 'bg-gray-dark py-2 md:px-20 mb-[2em] max-md:fixed max-md:inset-0 max-md:z-50 max-md:h-[100dvh] max-md:overflow-y-auto max-md:flex max-md:px-4 max-md:flex-col'">
-      <button v-if="!compact" class="md:hidden ml-auto text-2xl min-w-[44px] min-h-[44px]" aria-label="Close filters" @click="showMobile">x</button>
-      <div :class="compact ? 'flex flex-wrap items-end gap-3' : 'flex items-center justify-center max-md:flex-wrap max-md:flex-1 max-md:items-start max-md:justify-start max-md:flex-col'">
-        <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,160px),1fr))] flex-1 basis-[800px] gap-2 min-w-0' : 'flex flex-wrap items-center justify-center'">
+  <div :class="compact ? 'px-4' : 'max-w-[120rem] mx-auto md:px-8 mb-6'">
+    <button v-if="!compact" class="md:hidden p-2 bg-blue w-full" @click="showMobile">{{ $t('Show Filters') }}</button>
+    <div v-show="compact || showNav" :class="compact ? 'bg-lighten rounded p-3' : 'bg-surface md:rounded-panel p-4 md:p-6 max-md:fixed max-md:inset-0 max-md:z-[54] max-md:h-[100dvh] max-md:overflow-y-auto max-md:flex max-md:flex-col'">
+      <button v-if="!compact" class="md:hidden ml-auto text-2xl min-w-[2.75rem] min-h-[2.75rem]" :aria-label="$t('Close filters')" @click="showMobile">x</button>
+      <!-- Laid out by layoutFilterRow: one line when everything fits, otherwise the fewest rows with the boxes spread evenly, Filter last -->
+      <div ref="mainrow" :class="compact ? 'flex flex-wrap items-end gap-3' : 'filter-row'">
+        <div :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] flex-1 basis-[50rem] gap-2 min-w-0' : 'contents'">
+          <!-- A page's own pickers (esports seasons, divisions, teams, ...): { text, values, defaultValue, show } -->
+          <template v-for="extra in extrafilters" :key="extra.text">
+            <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="extra.show !== false"
+              :values="extra.values"
+              :text="extra.text"
+              :defaultValue="extra.defaultValue"
+              @input-changed="handleExtraChange"
+            ></single-select-filter>
+          </template>
           <!--Hero or Role -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeherorole"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeherorole"
             :values="filters.hero_role" 
             :text="'Hero or Role'" 
             @input-changed="handleInputChange"
             :defaultValue="'Hero'"
           ></single-select-filter>
 
-          <!-- Type -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="playerheroroletype"
-            :values="filters.type" 
-            :text="'Type'"
-            @input-changed="handleInputChange" 
-            :defaultValue="'Player'"
-          ></single-select-filter>
-
           <!-- Leaderboard -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="leaderboardfiltertype"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="leaderboardfiltertype"
             :values="filters.leaderboard_type" 
             :text="'Leaderboard Type'"
+            :class="leaderboardOrder('Leaderboard Type')"
             @input-changed="handleInputChange" 
             :defaultValue="leaderboardtypeinput || 'Player'"
             :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
 
-          <!-- Heroes Swap -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludeheroes && swapHeroesFilter"
-            :values="filters.heroes" 
-            :text="'Heroes'" 
-            :defaultValue="heroinput"
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-
-          <!-- Role Swap -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincluderole && swapRolesFilter"
-            :values="filters.role" 
-            :text="'Role'" 
-            :defaultValue="role"
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-
-          <!-- Group Size -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && !groupsizeadvanced && !groupsizemulti"
-            :values="filters.group_size"
-            :text="'Group Size'"
-            @input-changed="handleInputChange"
-            :defaultValue="modifiedGroupSizeDefaultValue"
-            :disabledeselectfilters="disabledeselectfilters"
-          ></single-select-filter>
-
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && !groupsizeadvanced && groupsizemulti"
-            :values="groupSizeOptions"
-            :text="'Group Size'"
-            @input-changed="handleInputChange"
-            :defaultValue="modifiedGroupSizeDefaultValue"
-          ></multi-select-filter>
-
           <!--<single-select-filter v-if="includecharttype" :values="filters.chart_type" :text="'Chart Type'" @input-changed="handleInputChange" :defaultValue="'Account Level'"></single-select-filter>-->
 
-          <!-- Timeframe Type -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includetimeframetype"
-            :values="filters.timeframe_type" 
-            :text="'Timeframe Type'" 
-            :defaultValue="timeframetype" 
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-
-          <!-- Timeframe Type -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includetimeframetypewithlastupdate"
-            :values="timeframeTypeWithLastUpdate" 
-            :text="'Timeframe Type'" 
-            :defaultValue="timeframetype" 
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-
-          <!-- Timeframes -->
+          <!-- Timeframes: builds under their major and sub patch. What's ticked decides the timeframe type sent. -->
           <!-- Remounted on a rank source switch so a dropped pre-in-game timeframe isn't left selected -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includetimeframemodified && timeframetype == 'major' && !combinableMajorPatches.length"
-            :key="rankSourceSL ? 'timeframe-sl' : 'timeframe-hp'"
-            :values="timeframes"
-            :text="'Timeframes'"
-            :defaultValue="timeframe[0]"
-            :disabledeselectfilters="true"
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-else-if="includetimeframemodified"
+          <!-- Wide enough to show a whole build number -->
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includetimeframe" class="md:!min-w-[17rem]"
             :key="rankSourceSL ? 'timeframes-sl' : 'timeframes-hp'"
             :groupby="timeframeGroupOf"
+            :headings="timeframeHeadingsOf"
             :values="timeframes"
             :text="'Timeframes'"
-            :defaultValue="timeframe"
+            :defaultValue="timeframeDefault"
+            :selectedlabel="timeframe.join(', ')"
             @input-changed="handleInputChange"
             infolink="/FAQ#patch-history"
           ></multi-select-filter>
 
           <!-- Current Game Type Multiselect-->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegametype"
-            :values="filters.game_types" 
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludegametype"
+            :values="globalGameTypes" 
             :text="'Game Type'" 
             @input-changed="handleInputChange" 
             :defaultValue="gametype"
           ></multi-select-filter>
 
           <!-- All Game Types Multiselect -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includegametypefull"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includegametypefull"
             :values="filters.game_types_full" 
             :text="'Game Type'" 
             @input-changed="handleInputChange" 
@@ -117,7 +67,7 @@
           ></multi-select-filter>
 
           <!-- All Game Types Multiselect -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includegametypefullcustom"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includegametypefullcustom"
             :values="filters.game_types_full_add_custom" 
             :text="'Game Type'" 
             @input-changed="handleInputChange" 
@@ -126,17 +76,36 @@
 
           
 
+          <!-- Group Size -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && !groupsizeadvanced && !groupsizemulti" :fit="true"
+            :values="filters.group_size"
+            :text="'Group Size'"
+            :class="leaderboardOrder('Group Size')"
+            @input-changed="handleInputChange"
+            :defaultValue="modifiedGroupSizeDefaultValue"
+            :disabledeselectfilters="disabledeselectfilters"
+          ></single-select-filter>
+
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && !groupsizeadvanced && groupsizemulti" :fit="true"
+            :values="groupSizeOptions"
+            :text="'Group Size'"
+            :class="leaderboardOrder('Group Size')"
+            @input-changed="handleInputChange"
+            :defaultValue="modifiedGroupSizeDefaultValue"
+          ></multi-select-filter>
+
           <!-- Leaderboard Game Type Excluding UD -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includesinglegametypeleaderboard && selectedSingleFilters['Leaderboard Type'] != 'SL Rank'"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includesinglegametypeleaderboard && selectedSingleFilters['Leaderboard Type'] != 'SL Rank'"
             :values="leaderboardGameTypes" 
             :text="'Game Type'" 
+            :class="leaderboardOrder('Game Type')"
             @input-changed="handleInputChange" 
             :defaultValue="gametype[0]"
             :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
 
           <!-- Current Game Type Single -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includesinglegametype"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includesinglegametype"
             :values="filters.game_types" 
             :text="'Game Type'" 
             @input-changed="handleInputChange" 
@@ -145,15 +114,50 @@
 
 
           <!-- All Game Type Single -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includesinglegametypefull"
-            :values="filters.game_types_full" 
-            :text="'Game Type'" 
-            @input-changed="handleInputChange" 
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includesinglegametypefull"
+            :values="filters.game_types_full"
+            :text="'Game Type'"
+            @input-changed="handleInputChange"
             :defaultValue="gametype[0]"
+          ></single-select-filter>
+
+          <!-- Type (Player / Hero / Role), after Game Type -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="playerheroroletype"
+            :values="filters.type"
+            :text="'Type'"
+            @input-changed="handleInputChange"
+            :defaultValue="playertypeinput || 'Player'"
+          ></single-select-filter>
+
+          <!-- Heroes Swap: the hero or role picked by Type (MMR) or Leaderboard Type; the leaderboard places it with order classes -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludeheroes && swapHeroesFilter"
+            :values="filters.heroes"
+            :text="'Heroes'"
+            :class="leaderboardOrder('Heroes')"
+            :defaultValue="hero"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+
+          <!-- Map Swap: the map picked by Type = Map (MMR) or Leaderboard Type -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="(playerheroroletype || leaderboardfiltertype) && swapMapFilter"
+            :values="filters.game_maps"
+            :text="'Map'"
+            :class="leaderboardOrder('Map')"
+            :defaultValue="selectedSingleFilters['Map']"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+
+          <!-- Role Swap -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincluderole && swapRolesFilter"
+            :values="filters.role"
+            :text="'Role'"
+            :class="leaderboardOrder('Role')"
+            :defaultValue="role"
+            @input-changed="handleInputChange"
           ></single-select-filter>
           
           <!-- Regions Multiselect-->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeregion"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeregion"
             :values="filters.regions" 
             :text="'Regions'" 
             :defaultValue="region"
@@ -161,76 +165,66 @@
           ></multi-select-filter>
 
           <!-- Regions Single-->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includesingleregion"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includesingleregion"
             :values="filters.regions" 
-            :text="'Regions'"
+            :text="'Region'"
+            :class="leaderboardOrder('Region')"
             :defaultValue="region"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
           <!-- SL Rank League -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="leaderboardfiltertype && selectedSingleFilters['Leaderboard Type'] == 'SL Rank' && filters.sl_leagues"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="leaderboardfiltertype && selectedSingleFilters['Leaderboard Type'] == 'SL Rank' && filters.sl_leagues"
             :values="filters.sl_leagues"
             :text="'League'"
+            :class="leaderboardOrder('League')"
             :defaultValue="leagueinput"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
 
-          <!-- Stat Type Filter -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="showStatTypeFilter"
-            :values="filters.stat_filter"
-            :text="'Stat Filter'"
-            :defaultValue="statfilter"
-            :disabled="statfilterdisabled"
-            :key="'statfilter-' + statfilterdisabled"
-            @input-changed="handleInputChange"
-          ></single-select-filter>
 
-          <!-- Hero Level -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeherolevel && toggleExtraFilters && !rankSourceSL"
-            :values="filters.hero_level" 
-            :text="'Hero Level'" 
-            :defaultValue="herolevel"
-            @input-changed="handleInputChange"
-          ></multi-select-filter>
 
-          <!-- Heroes -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludeheroes && !swapHeroesFilter"
-            :values="filters.heroes" 
-            :text="'Heroes'" 
-            :defaultValue="heroinput"
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-
-          <!-- Role -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincluderole && !swapRolesFilter"
-            :values="filters.role" 
-            :text="'Role'" 
+          <!-- Role, then Heroes -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincluderole && !swapRolesFilter"
+            :values="filters.role"
+            :text="'Role'"
             :defaultValue="role"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
+          <!-- Heroes -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludeheroes && !swapHeroesFilter"
+            :values="filters.heroes"
+            :text="'Heroes'"
+            :defaultValue="heroinput"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+
+          <!-- Season, then the dates: one group, so they wrap onto a new row together -->
+          <div :class="!compact && includegamedaterange ? 'filter-group' : 'contents'">
           <!-- Season -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludeseason"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludeseason" :fit="true"
             :values="seasons" 
             :text="'Season'" 
+            :class="leaderboardOrder('Season')"
             @input-changed="handleInputChange" 
             :defaultValue="defaultSeason"
             :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
 
           <!-- Match Prediction Seasons -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludematchpredictionseason"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludematchpredictionseason" :fit="true"
             :values="this.filters.match_prediction_seasons" 
             :text="'Match Prediction Season'" 
+            :class="leaderboardOrder('Match Prediction Season')"
             @input-changed="handleInputChange" 
             :defaultValue="defaultpredictionseason"
           ></single-select-filter>
 
 
           <!-- All Seasons -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeseasonwithall"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeseasonwithall" :fit="true"
             :values="seasonsWithAll" 
             :text="'Season'" 
             @input-changed="handleInputChange" 
@@ -238,53 +232,37 @@
           ></single-select-filter>
 
           <!-- Seasons Multiselect -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includemultiseason"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includemultiseason"
             :values="seasons"
+            :groupbyyear="true"
+            :fit="true"
             :text="'Season'"
             :defaultValue="multiSeasonValue"
             @input-changed="handleInputChange"
           ></multi-select-filter>
 
+          <!-- Game Date Range -->
+          <date-range-filter v-if="includegamedaterange"
+            :startDate="selectedStartDate"
+            :endDate="selectedEndDate"
+            @input-changed="handleDateRangeChange"
+          ></date-range-filter>
+          </div>
+
           <!-- Heroes Multiselect -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includemultihero"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includemultihero"
             :values="filters.heroes"
             :text="'Heroes'"
             @input-changed="handleInputChange"
           ></multi-select-filter>
           <div v-if="includemultihero && selectedMultiFilters['Heroes'] && selectedMultiFilters['Heroes'].length > 1" class="flex flex-col text-sm font-medium p-2">
-            <span>Heroes Match</span>
-            <tab-button tab1text="OR" tab2text="AND" :ignoreclick="true"
+            <span>{{ $t('Heroes Match') }}</span>
+            <tab-button :tab1text="$t('OR')" :tab2text="$t('AND')" :ignoreclick="true"
               @tab-click="(side) => handleInputChange({ field: 'Heroes Match', value: side === 'right' ? 'all' : 'any', type: 'single' })"
               :overridedefaultside="selectedSingleFilters['Heroes Match'] === 'all' ? 'right' : 'left'"
             ></tab-button>
           </div>
 
-          <!-- HP MMR ranges and rank tiers (advanced) -->
-          <template v-if="includemmrranges && toggleExtraFilters">
-            <number-range-filter v-for="mmrType in ['HP Player MMR', 'HP Hero MMR', 'HP Role MMR']" :key="mmrType"
-              :text="mmrType"
-              @input-changed="handleInputChange"
-            ></number-range-filter>
-            <multi-select-filter :compact="compact" v-bind="autoApplyBindings"
-              :values="rankTiersByMmr"
-              :text="'HP Player Rank'"
-              :showrankinfo="true"
-              @input-changed="handleInputChange"
-            ></multi-select-filter>
-            <!-- Hero tiers are per hero, so this needs heroes to look up -->
-            <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="selectedMultiFilters['Heroes'] && selectedMultiFilters['Heroes'].length"
-              :values="rankTiersByMmr"
-              :text="'HP Hero Rank'"
-              :showrankinfo="true"
-              @input-changed="handleInputChange"
-            ></multi-select-filter>
-            <multi-select-filter :compact="compact" v-bind="autoApplyBindings"
-              :values="rankTiersByMmr"
-              :text="'HP Role Rank'"
-              :showrankinfo="true"
-              @input-changed="handleInputChange"
-            ></multi-select-filter>
-          </template>
 
           <!-- Players -->
           <player-picker-filter v-if="includeplayerpicker"
@@ -294,14 +272,14 @@
           ></player-picker-filter>
 
           <!-- Game Version Multiselect -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includegameversion"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includegameversion"
             :values="filters.timeframes"
             :text="'Game Version'"
             @input-changed="handleInputChange"
           ></multi-select-filter>
 
           <!-- Game Map Multiselect -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includegamemap"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includegamemap"
             :values="filters.game_maps" 
             :text="'Map'" 
             :defaultValue="gamemap"
@@ -309,7 +287,7 @@
           ></multi-select-filter>
 
           <!-- Game Map Single -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includesinglegamemap"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includesinglegamemap"
             :values="filters.game_maps" 
             :text="'Map'" 
             :defaultValue="gamemap ? gamemap[0] : null"
@@ -318,18 +296,19 @@
 
 
           <!-- Tier Single -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludetier"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludetier"
             :values="filters.rank_tiers" 
             :text="'HP Rank'" 
+            :class="leaderboardOrder('HP Rank')"
             :showrankinfo="true"
             :defaultValue="tierrank"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
           <!-- Player Rank; with includeranksource, an HP | In-Game switch picks HP tiers or in-game SL ranks -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeplayerrank"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeplayerrank"
             :values="rankSourceSL ? filters.sl_leagues : filters.rank_tiers"
-            :text="includeranksource ? 'Player Rank' : 'HP Player Rank'"
+            :text="includeranksource ? $t('Player Rank') : $t('HP Player Rank')"
             :field="rankSourceSL ? 'SL Rank' : 'HP Player Rank'"
             :showrankinfo="true"
             :toggletabs="includeranksource ? ['HP', 'In-Game'] : null"
@@ -340,46 +319,75 @@
           >
             <!-- Replaces the HP rank explanation while In-Game is on -->
             <div v-if="rankSourceSL">
-              <p class="max-sm:text-xs">In-game rank is the Storm League rank Blizzard shows on the loading screen, read by players using the Heroes Profile uploader's opt-in rank reader. Each player counts in the rank they had going into that game. Only players whose rank was read count, so sample sizes are smaller than HP rank.</p>
+              <p class="max-sm:text-xs">{{ $t(inGameRankInfo) }}</p>
             </div>
           </multi-select-filter>
 
-          <!-- Hero Rank -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeherorank && toggleExtraFilters && !rankSourceSL"
-            :values="filters.rank_tiers" 
-            :text="'HP Hero Rank'" 
-            :showrankinfo="true"
-            :defaultValue="herorank"
-            @input-changed="handleInputChange"
-          ></multi-select-filter>
 
-          <!-- Role Rank -->
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includerolerank && toggleExtraFilters && !rankSourceSL"
-            :values="filters.rank_tiers" 
-            :text="'HP Role Rank'" 
-            :showrankinfo="true"
-            :defaultValue="rolerank"
-            @input-changed="handleInputChange"
-          ></multi-select-filter>
 
-          <!-- Talent built Type -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includetalentbuildtype"
-            :values="filters.talent_build_types" 
-            :text="'Talent Build Type'" 
-            @input-changed="handleInputChange" 
-            :defaultValue="talentbuildtype"
-          ></single-select-filter>
 
-          <!-- Minimum Games -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeminimumgames"
+          <!-- Minimum Games: in the advanced row on pages that have one -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeminimumgames && hideadvancedfilteringbutton"
             :values="filters.minimum_games" 
             :text="'Minimum Games'" 
             @input-changed="handleInputChange" 
             :defaultValue="modifiedminimumgamedefault"
           ></single-select-filter>
 
+
+
+          <!--<single-select-filter v-if="modifiedincludeminimumaccountlevel" :values="filters.minimum_account_level" :text="'Min. Account Level'" @input-changed="handleInputChange" :defaultValue="'100'"></single-select-filter>-->
+          <!--<single-select-filter v-if="modifiedincludexaxisincrements" :values="filters.x_axis_increments" :text="'X Axis Increments'" @input-changed="handleInputChange" :defaultValue="'25'"></single-select-filter>-->
+
+
+
+          <!-- Game Date -->
+          <div v-if="includegamedate" id="filter-label" class="relative">
+            <div v-if="includegamedate" class="flex items-end  text-sm font-medium cursor-pointer p-2  transition-colors">
+              <div class="flex flex-col"><span>{{ $t('From Date') }}</span>
+              <input type="date" 
+                v-model="selectedGameDate" 
+                @input="handleGameDateChange"
+                @blur="handleDateInputBlur"
+                class="w-[12.5rem] h-[2.5rem] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 text-white"
+              ></div>
+              <button class="h-[2.5rem] bg-blue p-2 border-r-[1px] border-t-[1px] border-b-[1px] hover:bg-teal" @click="resetGameDate()">X</button>
+            </div>
+          </div>
+
+          <slot></slot>
+        </div>
+        <!-- The advanced filters toggle and Filter, one item of the row. The toggle is lit while they're open; the dot means
+             an advanced filter is set while they're hidden -->
+        <div v-if="!compact" :class="['filter-actions flex items-end gap-2 p-2', leaderboardOrder('Filter')]">
+          <!-- Hovering the toggle says what it does and that advanced filters can be slow -->
+          <icon-with-hover v-if="!hideadvancedfilteringbutton" class="shrink-0" popupsize="fit">
+            <template #trigger>
+              <button type="button" :class="['relative h-10 w-10 shrink-0 rounded transition-colors', toggleExtraFilters ? 'bg-teal text-white hover:bg-lteal' : 'bg-surface-3 text-subtext hover:text-white']" :aria-label="toggleButtonText" :aria-expanded="!!toggleExtraFilters" @click.stop="setAdvancedFilters(!toggleExtraFilters)">
+                <i class="fas fa-sliders"></i>
+                <span v-if="advancedFiltersApplied" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-teal"></span>
+              </button>
+            </template>
+            <p class="font-semibold text-white">{{ toggleButtonText }}</p>
+            <p>{{ $t(advancedfiltersinfo || 'Advanced filters may take longer to run.') }}</p>
+          </icon-with-hover>
+          <button v-if="!autoapply" :disabled="disabledFilter" @click="applyFilter" class="btn bg-blue enabled:hover:bg-[#425a8e] disabled:bg-[#223562] disabled:text-[#b7b7bb] font-semibold h-10 flex-1 min-w-[7.5rem]">
+            {{ $t('Filter') }}
+          </button>
+        </div>
+        <button v-else-if="!autoapply" :disabled="disabledFilter" @click="applyFilter" class="btn bg-blue enabled:hover:bg-[#425a8e] disabled:bg-[#223562] disabled:text-[#b7b7bb] px-5 h-10">
+          {{ $t('Filter') }}
+        </button>
+
+        
+      </div>
+      <!-- Advanced filters: their own row under a divider, laid out like the row above (the toggle beside Filter hides them) -->
+      <div v-if="toggleExtraFilters && hasAdvancedFilters" :class="compact ? 'mt-3' : 'relative border-t border-surface-3 mt-4 pt-4'">
+        <!-- Its name sits on the divider -->
+        <span v-if="!compact" class="absolute -top-2 left-0 bg-surface pr-2 text-xs uppercase text-subtext leading-none">{{ $t('Advanced filters') }}</span>
+        <div ref="advancedrow" :class="compact ? 'grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] gap-2 items-end' : 'filter-row'">
           <!-- Team One Party -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeteamoneparty"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeteamoneparty && toggleExtraFilters"
             :values="filters.party_combinations" 
             :text="'Team One Party'" 
             :defaultValue="teamonepartyinput"
@@ -387,81 +395,103 @@
           ></single-select-filter>
 
           <!-- Team Two Party -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includeteamtwoparty"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeteamtwoparty && toggleExtraFilters"
             :values="filters.party_combinations" 
             :text="'Team Two Party'" 
             :defaultValue="teamtwopartyinput"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
+          <!-- Minimum Games -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeminimumgames && !hideadvancedfilteringbutton && toggleExtraFilters"
+            :values="filters.minimum_games"
+            :text="'Minimum Games'"
+            @input-changed="handleInputChange"
+            :defaultValue="modifiedminimumgamedefault"
+          ></single-select-filter>
 
-          <!--<single-select-filter v-if="modifiedincludeminimumaccountlevel" :values="filters.minimum_account_level" :text="'Min. Account Level'" @input-changed="handleInputChange" :defaultValue="'100'"></single-select-filter>-->
-          <!--<single-select-filter v-if="modifiedincludexaxisincrements" :values="filters.x_axis_increments" :text="'X Axis Increments'" @input-changed="handleInputChange" :defaultValue="'25'"></single-select-filter>-->
+          <!-- Stat Type Filter -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="showStatTypeFilter"
+            :values="filters.stat_filter"
+            :text="'Stat Filter'"
+            :defaultValue="statfilter"
+            :disabled="statfilterdisabled"
+            :key="'statfilter-' + statfilterdisabled"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
 
+          <!-- Hero Level -->
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeherolevel && toggleExtraFilters && !rankSourceSL"
+            :values="filters.hero_level" 
+            :text="'Hero Level'" 
+            :defaultValue="herolevel"
+            @input-changed="handleInputChange"
+          ></multi-select-filter>
+          <!-- HP MMR ranges and rank tiers (advanced) -->
+          <template v-if="includemmrranges && toggleExtraFilters">
+            <number-range-filter v-for="mmrType in ['HP Player MMR', 'HP Hero MMR', 'HP Role MMR', 'HP Map MMR']" :key="mmrType"
+              :text="mmrType"
+              @input-changed="handleInputChange"
+            ></number-range-filter>
+            <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings"
+              :values="rankTiersByMmr"
+              :text="'HP Player Rank'"
+              :showrankinfo="true"
+              @input-changed="handleInputChange"
+            ></multi-select-filter>
+            <!-- Hero tiers are per hero, so this needs heroes to look up -->
+            <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="selectedMultiFilters['Heroes'] && selectedMultiFilters['Heroes'].length"
+              :values="rankTiersByMmr"
+              :text="'HP Hero Rank'"
+              :showrankinfo="true"
+              @input-changed="handleInputChange"
+            ></multi-select-filter>
+            <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings"
+              :values="rankTiersByMmr"
+              :text="'HP Role Rank'"
+              :showrankinfo="true"
+              @input-changed="handleInputChange"
+            ></multi-select-filter>
+            <!-- Map tiers are per map: the chosen maps, or every map -->
+            <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings"
+              :values="rankTiersByMmr"
+              :text="'HP Map Rank'"
+              :showrankinfo="true"
+              @input-changed="handleInputChange"
+            ></multi-select-filter>
+          </template>
+          <!-- Hero Rank -->
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includeherorank && toggleExtraFilters && !rankSourceSL"
+            :values="filters.rank_tiers" 
+            :text="'HP Hero Rank'" 
+            :showrankinfo="true"
+            :defaultValue="herorank"
+            @input-changed="handleInputChange"
+          ></multi-select-filter>
+          <!-- Role Rank -->
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includerolerank && toggleExtraFilters && !rankSourceSL"
+            :values="filters.rank_tiers" 
+            :text="'HP Role Rank'" 
+            :showrankinfo="true"
+            :defaultValue="rolerank"
+            @input-changed="handleInputChange"
+          ></multi-select-filter>
+          <!-- Talent built Type -->
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includetalentbuildtype && toggleExtraFilters"
+            :values="filters.talent_build_types" 
+            :text="'Talent Build Type'" 
+            @input-changed="handleInputChange" 
+            :defaultValue="talentbuildtype"
+          ></single-select-filter>
           <!-- Mirror -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="includemirror && toggleExtraFilters"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="includemirror && toggleExtraFilters"
             :values="filters.mirror" 
             :text="'Mirror Matches'" 
             @input-changed="handleInputChange" 
             :defaultValue="mirrormatch"
           ></single-select-filter>
-
-          <!-- Friend/Foe Battletag Search -->
-          <div v-if="!compact || matchhistorybattletagsearch" id="filter-label" class="relative">
-            <div v-if="matchhistorybattletagsearch" class="flex flex-col text-sm font-medium text-gray-700 p-2">
-              <span>Friend/Foe Player</span>
-              <div class="relative">
-                <input
-                  type="text"
-                  v-model="ffBattletag"
-                  placeholder="Enter battletag"
-                  class="md:w-[200px] min-w-[100px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 text-white focus:outline-none"
-                  @input="ffBlizzid = null; ffRegion = null; ffSearchResults = []; ffSearchError = null"
-                />
-                <div v-if="ffSearchResults.length > 1" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="min-width:280px; max-height:340px; overflow-y:auto;">
-                  <div
-                    v-for="result in ffSearchResults"
-                    :key="result.blizz_id + '-' + result.region"
-                    class="bg-blue hover:bg-lblue p-3 mb-1 rounded flex flex-col items-center cursor-pointer text-sm"
-                    @click="selectFfResult(result)"
-                  >
-                    <div>{{ result.battletagShort }} ({{ result.regionName }})</div>
-                    <div class="text-xs text-gray-400">{{ result.latest_game }}</div>
-                    <div>Games Played: {{ result.totalGamesPlayed }}</div>
-                    <div v-if="result.latestMap">{{ result.latestMap.name }}</div>
-                    <div v-if="result.latestHero">
-                      <hero-image-wrapper :hero="result.latestHero"></hero-image-wrapper>
-                    </div>
-                  </div>
-                </div>
-                <p v-if="ffSearchError" class="text-red text-xs mt-1">{{ ffSearchError }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Game Date -->
-          <div v-if="!compact || includegamedate" id="filter-label" class="relative">
-            <div v-if="includegamedate" class="flex items-end  text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors">
-              <div class="flex flex-col"><span>From Date  </span>
-              <input type="date" 
-                v-model="selectedGameDate" 
-                @input="handleGameDateChange"
-                @blur="handleDateInputBlur"
-                class="w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 text-white"
-              ></div>
-              <button class="h-[40px] bg-blue md:m-t-auto  p-2 border-r-[1px] border-t-[1px] border-b-[1px] hover:bg-teal" @click="resetGameDate()">X</button>
-            </div>
-          </div>
-
-          <!-- Game Date Range -->
-          <date-range-filter v-if="includegamedaterange"
-            :startDate="selectedStartDate"
-            :endDate="selectedEndDate"
-            @input-changed="handleDateRangeChange"
-          ></date-range-filter>
-
           <!-- Group Size (advanced, global pages) -->
-          <single-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters && !groupsizemulti"
+          <single-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters && !groupsizemulti"
             :values="filters.group_size"
             :text="'Group Size'"
             @input-changed="handleInputChange"
@@ -469,33 +499,56 @@
             :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
 
-          <multi-select-filter :compact="compact" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters && groupsizemulti"
+          <multi-select-filter :compact="compact" placeholder="All" v-bind="autoApplyBindings" v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters && groupsizemulti"
             :values="groupSizeOptions"
             :text="'Group Size'"
             @input-changed="handleInputChange"
             :defaultValue="modifiedGroupSizeDefaultValue"
           ></multi-select-filter>
+          <!-- Friend/Foe Battletag Search -->
+          <!-- Wide enough for the box and Find Player side by side; on a narrow row it takes a row of its own -->
+          <div v-if="matchhistorybattletagsearch && toggleExtraFilters" id="filter-label" class="filter-fill relative max-md:w-full !min-w-[min(100%,18rem)]">
+            <div class="flex flex-col gap-1.5 text-sm font-medium text-subtext p-2">
+              <span>{{ $t('Friend or Foe Player') }}</span>
+              <!-- Find Player looks the name up (in this profile's region) before Filter can use it -->
+              <div class="flex">
+                <div class="relative flex-1 min-w-0">
+                  <basil-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-subtext pointer-events-none"></basil-icon>
+                  <input
+                    type="text"
+                    v-model="ffBattletag"
+                    :placeholder="$t('Enter BattleTag')"
+                    :class="['w-full h-[2.5rem] rounded-l-control !bg-surface-3 pl-9 text-white placeholder:text-subtext focus:outline-none', ffBlizzid ? 'pr-8' : 'pr-2']"
+                    @input="ffBlizzid = null; ffSearchError = null"
+                    @keydown.enter.prevent="findFfPlayer"
+                  />
+                  <basil-icon v-if="ffBlizzid" name="check" class="absolute right-3 top-1/2 -translate-y-1/2 text-lteal" :title="$t('Player chosen')"></basil-icon>
+                </div>
+                <button type="button" class="h-[2.5rem] shrink-0 rounded-r-control bg-blue hover:bg-lblue text-white font-semibold px-3 whitespace-nowrap" @click="findFfPlayer">{{ $t('Find Player') }}</button>
+              </div>
+              <!-- Under the box without adding to its height, so the row's boxes stay level -->
+              <p v-if="ffSearchError" class="absolute left-2 top-full -mt-1 text-red text-xs whitespace-nowrap">{{ $t(ffSearchError) }}</p>
+            </div>
+          </div>
+          <button v-if="compact && !hideadvancedfilteringbutton" type="button" class="inline-flex items-center justify-center gap-1.5 text-sm font-medium text-teal hover:text-lteal whitespace-nowrap h-10" :aria-expanded="true" @click="setAdvancedFilters(false)">{{ toggleButtonText }}<basil-icon name="arrow-small" class="text-xs -rotate-90"></basil-icon></button>
         </div>
-        <button v-if="!autoapply" :disabled="disabledFilter" @click="applyFilter" :class="compact ? 'bg-teal rounded text-white px-5 py-2 h-10 disabled:opacity-50 hover:bg-blue' : {'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10 max-md:sticky max-md:bottom-2': !disabledFilter, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full max-md:sticky max-md:bottom-2': disabledFilter}">
-          Filter
-        </button>
-
-        
       </div>
-      <div class="flex max-md:mb-auto" :class="compact && $slots['compact-footer'] ? 'justify-between items-start' : 'justify-end'">
-        <div v-if="compact && $slots['compact-footer']" class="mt-2"><slot name="compact-footer"></slot></div>
-        <button class="m-l-auto underline" :class="{ 'text-sm mt-2': compact }" v-if="!hideadvancedfilteringbutton" :aria-expanded="!!toggleExtraFilters" @click="setAdvancedFilters(!toggleExtraFilters)" >{{toggleButtonText}}</button>
-        <round-image v-if="advancedfiltersinfo && !hideadvancedfilteringbutton" class="ml-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
-          <p class="max-sm:text-xs">{{ advancedfiltersinfo }}</p>
-        </round-image>
+      <div v-if="compact" class="flex max-md:mb-auto" :class="$slots['compact-footer'] ? 'justify-between items-start' : 'justify-end'">
+        <div v-if="$slots['compact-footer']" class="mt-2"><slot name="compact-footer"></slot></div>
+        <button type="button" :class="['inline-flex items-center gap-1.5 text-sm font-medium text-teal hover:text-lteal mt-2']" v-if="!hideadvancedfilteringbutton && !(toggleExtraFilters && hasAdvancedFilters)" :aria-expanded="!!toggleExtraFilters" @click="setAdvancedFilters(!toggleExtraFilters)" >{{ toggleButtonText }}<basil-icon name="arrow-small" :class="['text-xs', toggleExtraFilters ? '-rotate-90' : 'rotate-90']"></basil-icon></button>
       </div>
     </div>
+
+    <!-- Friend or foe matches: one is picked for you, several to choose from -->
+    <modal-box v-if="ffSearchOpen" :title="$t('Find a friend or foe')" width="max-w-[56rem]" @close="ffSearchOpen = false">
+      <p v-if="ffNoMatch" class="text-center text-subtext">{{ ffprofileblizzid ? $t('You have never played with or against anyone named :query.', { query: ffSearchQuery }) : $t('No player found for :query in this region.', { query: ffSearchQuery }) }}</p>
+      <table-search v-else :key="ffSearchQuery + ffSearchRun" :query="ffSearchQuery" :results="ffSearchResults" :show-region="false" :picker="true" :show-together="!!ffprofileblizzid" @select="selectFfResult" @none="ffNoMatch = true"></table-search>
+    </modal-box>
   </div>
 </template>
 
 <script>
   import Cookies from 'js-cookie';
-  import { earliestPatchDate } from '../../utils/patchAge';
 
   export default {
     name: 'Filters',
@@ -512,6 +565,8 @@
       herolevelinput: Array,
       heroinput: Number,
       roleinput: String,
+      // The map for Type = Map, by name
+      mapinput: String,
       gamemapinput: Array,
       playerrankinput: Array,
       herorankinput: Array,
@@ -529,7 +584,6 @@
       includegroupsize: Boolean,
       groupsizeadvanced: Boolean,
       includecharttype: Boolean,
-      includetimeframetype: Boolean,
       includetimeframe: Boolean,
       includeseason: Boolean,
       includeregion: Boolean,
@@ -568,7 +622,6 @@
       includegameversion: Boolean,
       defaultseasons: Array,
       overrideGroupSizeRemoval: Boolean,
-      includetimeframetypewithlastupdate: Boolean,
       includetier: Boolean,
       includeranksource: Boolean,
       filters: {
@@ -585,7 +638,7 @@
       },
       gametypedefault: Array,
       minimumgamesdefault: {
-        tpye: [String, Number]
+        type: [String, Number]
       },
       defaultSeason: [String, Number],
       defaultpredictionseason: [String, Number],
@@ -594,18 +647,27 @@
       groupSizeDefaultValue: [String, Array],
       groupsizemulti: Boolean,
       leaderboardtypeinput: String,
+      // Player, Hero or Role for the playerheroroletype Type filter
+      playertypeinput: String,
       leagueinput: String,
       ranksourceinput: String,
       slrankinput: Array,
       tierrankinput: [String, Number],
       rolerequired: Boolean,
       excludetimeframes: Boolean,
+      // For pages with no game type picker, like esports
+      excludegametype: Boolean,
+      extrafilters: { type: Array, default: () => [] },
+      // Called with each extrafilters change, for pickers that depend on each other
+      onChange: Function,
       disablefilter: Boolean,
       disabledeselectfilters: Boolean,
       matchhistorybattletagsearch: Boolean,
       ffbattletaginput: String,
       ffblizzidinput: [String, Number],
       ffregioninput: [String, Number],
+      // The profile being filtered: Find Player only finds people who played with or against it
+      ffprofileblizzid: [String, Number],
       // Apply each change as its dropdown closes instead of with the Filter button
       autoapply: Boolean,
     },
@@ -655,7 +717,11 @@
         statfilterdisabled: false,
         swapHeroesFilter: false,
         swapRolesFilter: false,
-        includetimeframemodified: null,
+        swapMapFilter: false,
+        // Ticked builds; timeframetype and timeframe are their shortest form
+        timeframeBuilds: [],
+        // What the dropdown starts on; only set on load and on a rank source switch
+        timeframeDefault: [],
         seasonvalue: null,
         modifiedincludetier: null,
         modifiedincludeseason: null,
@@ -663,21 +729,21 @@
         ffBattletag: null,
         ffBlizzid: null,
         ffRegion: null,
-        ffSearchResults: [],
+        // null while a search runs
+        ffSearchResults: null,
         ffSearchError: null,
         ffSearchLoading: false,
+        ffSearchOpen: false,
+        ffSearchQuery: '',
+        ffSearchRun: 0,
+        ffNoMatch: false,
       }
     },
     created(){
-      this.timeframetype = this.timeframetypeinput ? this.timeframetypeinput : this.defaultTimeFrameType;
-
-      if(this.timeframetype == "last_update"){
-        this.includetimeframemodified = false;
-      }else{
-        this.includetimeframemodified = this.includetimeframe;
-      }
-
-      this.timeframe = this.timeframeinput ? this.timeframeinput : this.getDefaultMinorBasedOnTimeframeType();
+      this.timeframetype = this.timeframetypeinput && this.timeframeinput ? this.timeframetypeinput : 'major_grouped';
+      this.timeframe = this.timeframetypeinput && this.timeframeinput ? this.timeframeinput : this.getDefaultMinorBasedOnTimeframeType();
+      this.timeframeBuilds = this.buildsOf(this.timeframetype, this.timeframe);
+      this.timeframeDefault = this.timeframeBuilds;
       this.gametype = this.gametypeinput ? this.gametypeinput : this.gametypedefault;
       this.region = this.regioninput ? this.regioninput : null;
       this.statfilter = this.statfilterinput ? this.statfilterinput : this.defaultStatType;
@@ -702,17 +768,12 @@
       this.modifiedincludegametype = this.includegametype;
       this.modifiedincludeheroes = this.includehero;
 
-      this.modifiedminimumgamedefault = this.minimumgamesdefault ? this.minimumgamesdefault : 0;
+      // The options are strings ("100"), so a page passing 100 still shows it
+      this.modifiedminimumgamedefault = String(this.minimumgamesdefault ? this.minimumgamesdefault : 0);
 
       this.selectedSingleFilters["Timeframe Type"] = this.timeframetype;
       this.selectedMultiFilters["Game Type"] = this.gametype;
-      this.selectedMultiFilters["Timeframes"] = this.getDefaultMinorBasedOnTimeframeType();
-      // The single select does not emit its starting value
-      if(this.timeframetype == "major"){
-        this.selectedMultiFilters["Timeframes"] = this.timeframe;
-      }
-      this.selectedSingleFilters["Stat Filter"] = this.defaultStatType;
-
+      this.selectedMultiFilters["Timeframes"] = this.timeframe;
       this.toggleExtraFilters = this.advancedfiltering;
 
       this.modifiedincluderole = this.includerole
@@ -736,12 +797,32 @@
         this.statfilterdisabled = true;
       }
 
+      this.selectedSingleFilters["Stat Filter"] = this.statfilter;
+
       if(this.tierrankinput != null && this.tierrankinput !== ''){
         this.tierrank = this.tierrankinput;
       }
 
       if(this.leaderboardfiltertype && this.leaderboardtypeinput){
         this.initializeLeaderboardFilters();
+      }
+
+      if(this.playerheroroletype && this.playertypeinput){
+        this.initializePlayerTypeFilters();
+      }
+
+      // URL values the dropdowns show, so the next Filter press sends them too
+      if(this.heroinput && this.modifiedincludeheroes && !this.swapHeroesFilter){
+        this.selectedSingleFilters['Heroes'] = this.heroinput;
+      }
+      if(this.roleinput && this.modifiedincluderole && !this.swapRolesFilter){
+        this.selectedSingleFilters['Role'] = this.roleinput;
+      }
+      if(this.teamonepartyinput && this.includeteamoneparty){
+        this.selectedSingleFilters['Team One Party'] = this.teamonepartyinput;
+      }
+      if(this.teamtwopartyinput && this.includeteamtwoparty){
+        this.selectedSingleFilters['Team Two Party'] = this.teamtwopartyinput;
       }
 
       if(this.includeranksource){
@@ -758,6 +839,10 @@
       this.ffBattletag = this.ffbattletaginput || null;
       this.ffBlizzid = this.ffblizzidinput || null;
       this.ffRegion = this.ffregioninput || null;
+      // A friend or foe from the URL lives in the advanced row, so it opens
+      if(this.matchhistorybattletagsearch && this.ffBattletag){
+        this.toggleExtraFilters = true;
+      }
 
       // Hidden on mobile, shown on desktop. Media query, not innerWidth, so a page wider than the phone can't open it
       this.desktopView = !this.isMobileView();
@@ -768,6 +853,9 @@
     mounted() {
       // After the initial selections are in, so opening and closing a dropdown untouched doesn't reload
       this.$nextTick(() => { this.lastAppliedFilters = this.filterSnapshot(); });
+      if(!this.compact){
+        this.watchFilterRows();
+      }
 
       if(this.playerrankinput && !this.rankSourceSL){
         this.selectedMultiFilters["HP Player Rank"] = this.playerrankinput;
@@ -796,6 +884,9 @@
       }
     },
     computed: {
+      inGameRankInfo() {
+        return "In-game rank is the Storm League rank Blizzard shows on the loading screen, read by players using the Heroes Profile uploader's opt-in rank reader. Each player counts in the rank they had going into that game. Only players whose rank was read count, so sample sizes are smaller than HP rank.";
+      },
       // Select All would otherwise tick `All` alongside every real size. Nothing
       // selected already means the unfiltered table, so the option is redundant.
       groupSizeOptions() {
@@ -816,30 +907,20 @@
 
         return false;
       },
-      timeframeTypeWithLastUpdate(){
-        const updatedTimeframeTypes = [...this.filters.timeframe_type];
-        //updatedTimeframeTypes.push({ code: 'last_update', name: 'Last Update' });
-        return updatedTimeframeTypes;
-      },
       combinableMajorPatches(){
         return this.filters.combinable_major_patches || [];
-      },
-      defaultTimeFrameType(){
-        return this.filters.timeframe_type[1].code;
       },
       disabledFilter(){
         if(this.isLoading){
           return true;
         }
 
-        if(!this.selectedMultiFilters.hasOwnProperty('Game Type')){
+        if(!this.excludegametype && !this.selectedMultiFilters.hasOwnProperty('Game Type')){
           return true;
         }
 
         if(!this.excludetimeframes){
-          (3);
-
-          if(!this.selectedMultiFilters.hasOwnProperty('Timeframes') && this.selectedSingleFilters["Timeframe Type"] != "last_update"){
+          if(!this.selectedMultiFilters.hasOwnProperty('Timeframes')){
             return true;
           }
         }
@@ -853,14 +934,7 @@
         return this.filters.stat_filter[0].code;
       },
       timeframes(){
-        let timeframes;
-        if(this.timeframetype == "minor" || this.timeframetype == "last_update"){
-          timeframes = this.filters.timeframes;
-        }else if(this.timeframetype == "major"){
-          timeframes = this.withPatchDates(this.filters.timeframes_grouped);
-        }else if(this.timeframetype == "major_grouped"){
-          timeframes = this.withPatchDates(this.filters.timeframes_sub_grouped);
-        }
+        const timeframes = this.filters.timeframes;
 
         // In-game rank data starts at its own patch
         if(timeframes && this.rankSourceSL && this.filters.real_rank_minimum_patch){
@@ -877,11 +951,34 @@
       autoApplyBindings(){
         return this.autoapply ? { trackclosure: true, onDropdownClosed: this.autoApply } : {};
       },
+      // An advanced filter the page was opened with (from the URL) while the advanced row is hidden
+      advancedFiltersApplied(){
+        if(this.toggleExtraFilters){
+          return false;
+        }
+        const set = value => Array.isArray(value) ? value.length > 0 : value !== null && value !== undefined && value !== '';
+        const groupSize = this.groupSizeDefaultValue;
+        return !!((this.includestatfilter && set(this.statfilterinput) && this.statfilterinput !== 'win_rate')
+          || (this.includeteamoneparty && set(this.teamonepartyinput))
+          || (this.includeteamtwoparty && set(this.teamtwopartyinput))
+          || (this.includeherolevel && set(this.herolevelinput))
+          || (this.includeherorank && set(this.herorankinput))
+          || (this.includerolerank && set(this.rolerankinput))
+          || (this.includemirror && set(this.mirrormatchinput) && this.filters.mirror && String(this.mirrormatchinput) !== String(this.filters.mirror[0].code))
+          || (this.includetalentbuildtype && set(this.talentbuildtypeinput) && this.talentbuildtypeinput !== 'Popular')
+          || (this.modifiedincludegroupsize && this.groupsizeadvanced && set(groupSize) && ![].concat(groupSize).every(value => value === 'All')));
+      },
+      // Whether this page has any filter that lives in the advanced row
+      hasAdvancedFilters(){
+        return !!(this.includestatfilter || this.includeteamoneparty || this.includeteamtwoparty || (this.includeminimumgames && !this.hideadvancedfilteringbutton) || this.includeherolevel || this.includemmrranges || this.includeherorank || this.includerolerank
+          || this.includetalentbuildtype || this.includemirror || (this.modifiedincludegroupsize && this.groupsizeadvanced)
+          || this.matchhistorybattletagsearch);
+      },
       toggleButtonText(){
         if(this.toggleExtraFilters){
-          return "Hide Advanced Filters";
+          return this.$t('Hide advanced filters');
         }
-        return "Show Advanced Filters";
+        return this.$t('Show advanced filters');
       },
       // Wood is decided by games played, not MMR
       rankTiersByMmr() {
@@ -892,6 +989,10 @@
         const updatedList = [...this.filters.seasons];
         updatedList.unshift(newValue);
         return updatedList;
+      },
+      // The global stats pages don't offer Unranked Draft
+      globalGameTypes(){
+        return this.filters.game_types.filter(gameType => gameType.code !== 'ud');
       },
       leaderboardGameTypes(){
         if(!this.seasonvalue || this.seasonvalue >= 26){
@@ -915,30 +1016,116 @@
           delete this.selectedMultiFilters['HP Hero Rank'];
           delete this.selectedMultiFilters['HP Role Rank'];
           delete this.selectedSingleFilters['Mirror Matches'];
+          delete this.selectedSingleFilters['Team One Party'];
+          delete this.selectedSingleFilters['Team Two Party'];
           if(this.groupsizeadvanced){
             delete this.selectedSingleFilters['Group Size'];
             delete this.selectedMultiFilters['Group Size'];
           }
+          if(this.matchhistorybattletagsearch){
+            this.ffBattletag = null;
+            this.ffBlizzid = null;
+            this.ffRegion = null;
+            this.ffSearchResults = null;
+            this.ffSearchError = null;
+          }
 
           if(this.includemmrranges){
-            ['HP Player MMR', 'HP Hero MMR', 'HP Role MMR'].forEach(mmrType => {
+            ['HP Player MMR', 'HP Hero MMR', 'HP Role MMR', 'HP Map MMR'].forEach(mmrType => {
               delete this.selectedSingleFilters[mmrType + ' Min'];
               delete this.selectedSingleFilters[mmrType + ' Max'];
             });
             delete this.selectedMultiFilters['HP Player Rank'];
             delete this.selectedMultiFilters['HP Hero Rank'];
             delete this.selectedMultiFilters['HP Role Rank'];
+            delete this.selectedMultiFilters['HP Map Rank'];
           }
         }
       },
     },
     unmounted(){
       window.removeEventListener('resize', this.checkScreenWidth);
+      if(this.rowObservers){
+        this.rowObservers.forEach(observer => observer.disconnect());
+      }
       if(!this.compact && this.showNav && this.isMobileView()){
         document.body.style.overflow = '';
       }
     },
     methods: {
+      // Lays the main and advanced rows out again whenever their size or their boxes change
+      watchFilterRows() {
+        const rows = () => ['mainrow', 'advancedrow'].map(name => this.$refs[name]).filter(Boolean);
+        const relayout = () => rows().forEach(row => this.layoutFilterRow(row));
+        const resize = new ResizeObserver(relayout);
+        // Boxes come and go (the advanced row, SL rank, Heroes swapped for Type), and the advanced row itself
+        const changes = new MutationObserver(() => {
+          resize.disconnect();
+          rows().forEach(row => resize.observe(row));
+          relayout();
+        });
+        changes.observe(this.$el, { childList: true, subtree: true });
+        rows().forEach(row => resize.observe(row));
+        this.rowObservers = [resize, changes];
+      },
+      // Every filter bar follows the same rule: one line when all the boxes fit at their smallest, otherwise the
+      // fewest rows that fit, the same number of boxes in each, and the boxes in a row the same width
+      layoutFilterRow(row) {
+        const items = [];
+        const collect = parent => {
+          Array.from(parent.children).forEach(child => {
+            // Wrappers (dates, Season with the dates) give their boxes to the row
+            if(child.classList.contains('filter-group')){
+              child.style.display = 'contents';
+            }
+            const display = getComputedStyle(child).display;
+            if(display === 'contents'){
+              collect(child);
+            }else if(display !== 'none'){
+              items.push(child);
+            }
+          });
+        };
+        collect(row);
+        if(!items.length){
+          return;
+        }
+        const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+        const minBox = 10 * rem;
+        const width = row.clientWidth;
+        const actions = items.find(item => item.classList.contains('filter-actions'));
+        const boxes = items.filter(item => item !== actions);
+
+        // One line: the boxes share the space, Filter keeps its own width
+        // Important, so it beats a box's own !min-w class (Timeframes)
+        const size = (item, flex, minWidth = '', maxWidth = '') => {
+          item.style.setProperty('flex', flex, flex ? 'important' : '');
+          item.style.setProperty('min-width', minWidth, minWidth ? 'important' : '');
+          item.style.setProperty('max-width', maxWidth, maxWidth ? 'important' : '');
+        };
+        items.forEach(item => size(item, ''));
+        const actionsWidth = actions ? actions.offsetWidth : 0;
+        if(boxes.length * minBox + actionsWidth <= width){
+          boxes.forEach(item => size(item, '1 1 0', '0'));
+          if(actions){
+            size(actions, '0 0 auto');
+          }
+          // A box wider than its share (a long Season) can still push the line over
+          const top = items[0].offsetTop;
+          if(items.every(item => item.offsetTop === top)){
+            return;
+          }
+        }
+
+        // Rows: Filter counts as a box, and stays last
+        const perRowMax = Math.max(1, Math.floor(width / minBox));
+        const perRow = Math.ceil(items.length / Math.ceil(items.length / perRowMax));
+        items.forEach(item => size(item, `1 1 calc(${100 / perRow}% - 0.1px)`, '0', '100%'));
+        // With no Filter button (filters that apply themselves) the toggle takes only its own width; the boxes grow into the rest
+        if(actions && this.autoapply){
+          size(actions, '0 0 auto');
+        }
+      },
       // Show/Hide advanced filters, remembered for the next page: a cookie, and the account setting when logged in
       // (a guest's save is refused by the server, harmlessly)
       setAdvancedFilters(show) {
@@ -946,12 +1133,23 @@
         Cookies.set('advancedfiltering', show ? 'true' : 'false', { expires: 365, path: '/' });
         this.$axios.post('/api/v1/profile/save/settings', { advancedfiltering: show ? 1 : 0 }).catch(() => {});
       },
-      // Patch groups carry no date of their own; they date from their earliest build.
-      withPatchDates(groups){
-        return (groups || []).map(group => ({
-          ...group,
-          date_added: earliestPatchDate(group.code, this.filters.timeframes),
-        }));
+      // The leaderboard lays its filters out in the redesign's order; other pages keep the template order
+      leaderboardOrder(name) {
+        if (!this.leaderboardfiltertype) return '';
+        return {
+          'Leaderboard Type': 'order-1',
+          'Heroes': 'order-1',
+          'Role': 'order-1',
+          'Map': 'order-1',
+          'Game Type': 'order-2',
+          'HP Rank': 'order-3',
+          'League': 'order-3',
+          'Season': 'order-4',
+          'Match Prediction Season': 'order-4',
+          'Group Size': 'order-5',
+          'Region': 'order-6',
+          'Filter': 'order-7',
+        }[name];
       },
       // Whether a Group Size selection actually narrows anything. `All` means the
       // unfiltered table rather than a stack size, so it counts as no filter even
@@ -979,12 +1177,11 @@
 
           // Drop timeframes from before in-game rank data; the newest one if nothing is left
           const minimum = this.filters.real_rank_minimum_patch;
-          const selectedTimeframes = this.selectedMultiFilters['Timeframes'] || this.timeframe || [];
-          if(minimum && Array.isArray(selectedTimeframes)){
-            const kept = selectedTimeframes.filter(timeframe => this.atOrAfterPatch(timeframe, minimum));
-            if(kept.length !== selectedTimeframes.length){
-              this.timeframe = kept.length ? kept : this.getDefaultMinorBasedOnTimeframeType();
-              this.selectedMultiFilters['Timeframes'] = this.timeframe;
+          if(minimum){
+            const kept = this.timeframeBuilds.filter(timeframe => this.atOrAfterPatch(timeframe, minimum));
+            if(kept.length !== this.timeframeBuilds.length){
+              this.setTimeframeBuilds(kept.length ? kept : this.timeframes.slice(0, 1).map(timeframe => timeframe.code));
+              this.timeframeDefault = this.timeframeBuilds;
             }
           }
         }else{
@@ -1002,6 +1199,22 @@
           }
         }
       },
+      // Opens on a hero or role, with its dropdown showing, the way choosing it under Type does
+      initializePlayerTypeFilters() {
+        this.selectedSingleFilters['Type'] = this.playertypeinput;
+        if(this.playertypeinput === 'Hero' && this.heroinput){
+          this.modifiedincludeheroes = true;
+          this.swapHeroesFilter = true;
+          this.selectedSingleFilters['Heroes'] = this.heroinput;
+        }else if(this.playertypeinput === 'Role' && this.roleinput){
+          this.modifiedincluderole = true;
+          this.swapRolesFilter = true;
+          this.selectedSingleFilters['Role'] = this.roleinput;
+        }else if(this.playertypeinput === 'Map' && this.mapinput){
+          this.swapMapFilter = true;
+          this.selectedSingleFilters['Map'] = this.mapinput;
+        }
+      },
       initializeLeaderboardFilters() {
         const type = this.leaderboardtypeinput;
         this.selectedSingleFilters['Leaderboard Type'] = type;
@@ -1015,6 +1228,13 @@
           this.modifiedincluderole = false;
           this.swapHeroesFilter = false;
           this.swapRolesFilter = false;
+        }else if(type === 'Map'){
+          this.modifiedincludeheroes = false;
+          this.modifiedincluderole = false;
+          this.swapHeroesFilter = false;
+          this.swapRolesFilter = false;
+          this.swapMapFilter = true;
+          this.selectedSingleFilters['Map'] = this.mapinput || this.filters.game_maps[0]?.code;
         }else if(type === 'Hero'){
           this.modifiedincludeheroes = true;
           this.modifiedincluderole = false;
@@ -1067,7 +1287,7 @@
         }
 
         if(this.region){
-          this.selectedSingleFilters['Regions'] = this.region;
+          this.selectedSingleFilters['Region'] = this.region;
         }
 
         if(this.tierrank){
@@ -1078,22 +1298,20 @@
           this.selectedSingleFilters['League'] = this.leagueinput;
         }
       },
-      handleInputChange(eventPayload) {
-        if(eventPayload.field == "Timeframe Type"){
-          if(eventPayload.value == 'last_update'){
-            this.includetimeframemodified = false;
-            delete this.selectedMultiFilters["Timeframes"];
-          }else{
-            this.timeframetype = eventPayload.value;
-            this.timeframe = this.getDefaultMinorBasedOnTimeframeType();
-            this.selectedMultiFilters["Timeframes"] = this.timeframe;
-            this.includetimeframemodified = true;
-          }
+      handleExtraChange(eventPayload) {
+        if (eventPayload.value === '' || eventPayload.value === null) {
+          delete this.selectedSingleFilters[eventPayload.field];
+        } else {
+          this.selectedSingleFilters[eventPayload.field] = eventPayload.value;
         }
-
-        // A major patch is picked one at a time, but pages read Timeframes as a list
-        if(eventPayload.field == "Timeframes" && eventPayload.type === 'single'){
-          eventPayload = { field: "Timeframes", value: eventPayload.value === '' ? [] : [eventPayload.value], type: 'multi' };
+        if (this.onChange) {
+          this.onChange(eventPayload);
+        }
+      },
+      handleInputChange(eventPayload) {
+        if(eventPayload.field == "Timeframes"){
+          this.setTimeframeBuilds(eventPayload.value);
+          return;
         }
 
         if(eventPayload.type === 'single') {
@@ -1146,9 +1364,21 @@
           }
    
 
+          if(eventPayload.value != "Map"){
+            delete this.selectedSingleFilters['Map'];
+            this.swapMapFilter = false;
+          }
+
           if(eventPayload.value == "Player"){
             delete this.selectedSingleFilters['Heroes'];
             delete this.selectedSingleFilters['Role'];
+            this.swapHeroesFilter = false;
+            this.swapRolesFilter = false;
+          }else if(eventPayload.value == "Map"){
+            delete this.selectedSingleFilters['Heroes'];
+            delete this.selectedSingleFilters['Role'];
+            this.selectedSingleFilters["Map"] = this.filters.game_maps[0]?.code;
+            this.swapMapFilter = true;
             this.swapHeroesFilter = false;
             this.swapRolesFilter = false;
           }else if(eventPayload.value == "Hero"){
@@ -1256,6 +1486,46 @@
       },
       // Timeframes can only be picked together within one major patch. While a major
       // patch is new, it and the one before it count as one group.
+      // Builds sit under their sub patch, sub patches under their major patch
+      timeframeHeadingsOf(timeframe) {
+        const parts = String(timeframe).split('.');
+        return [
+          { key: parts.slice(0, 2).join('.'), name: this.$t(':patch (Major)', { patch: parts.slice(0, 2).join('.') }) },
+          { key: parts.slice(0, 3).join('.'), name: this.$t(':patch (Sub Patch)', { patch: parts.slice(0, 3).join('.') }) },
+        ];
+      },
+      // A major or sub patch's builds; builds are themselves
+      buildsOf(type, timeframes) {
+        if(type == 'major' || type == 'major_grouped'){
+          return this.filters.timeframes
+            .map(timeframe => timeframe.code)
+            .filter(code => timeframes.some(timeframe => String(code).startsWith(timeframe + '.')));
+        }
+        return [...timeframes];
+      },
+      // Sends whole major patches, else whole sub patches, else builds
+      setTimeframeBuilds(builds) {
+        this.timeframeBuilds = builds;
+
+        const ticked = new Set(builds);
+        const shortest = (depth) => {
+          const groups = [...new Set(builds.map(build => String(build).split('.').slice(0, depth).join('.')))];
+          const whole = groups.every(group => this.buildsOf('major', [group]).every(build => ticked.has(build)));
+          return whole ? groups : null;
+        };
+
+        const majors = builds.length ? shortest(2) : null;
+        const subs = builds.length && !majors ? shortest(3) : null;
+        this.timeframetype = majors ? 'major' : (subs ? 'major_grouped' : 'minor');
+        this.timeframe = majors || subs || [...builds];
+
+        this.selectedSingleFilters['Timeframe Type'] = this.timeframetype;
+        if(this.timeframe.length){
+          this.selectedMultiFilters['Timeframes'] = this.timeframe;
+        }else{
+          delete this.selectedMultiFilters['Timeframes'];
+        }
+      },
       timeframeGroupOf(timeframe) {
         const major = String(timeframe).split('.').slice(0, 2).join('.');
 
@@ -1283,10 +1553,10 @@
         return '';
       },
       async applyFilter() {
-        if ((this.selectedMultiFilters.hasOwnProperty('Timeframes') || this.selectedSingleFilters["Timeframe Type"] == "last_update") && this.selectedMultiFilters.hasOwnProperty('Game Type')) {
+        if ((this.excludetimeframes || this.selectedMultiFilters.hasOwnProperty('Timeframes')) && (this.excludegametype || this.selectedMultiFilters.hasOwnProperty('Game Type'))) {
           if (this.matchhistorybattletagsearch && this.ffBattletag && !this.ffBlizzid) {
-            await this.resolveFfPlayer();
-            if (!this.ffBlizzid) return;
+            this.ffSearchError = 'Press Find Player to choose the player first.';
+            return;
           }
 
           // Auto-apply keeps the mobile panel open so several filters can be changed in a row
@@ -1312,44 +1582,43 @@
           this.applyFilter();
         }
       },
-      async resolveFfPlayer() {
-        this.ffSearchResults = [];
+      // Looks the typed name up in this profile's region, in a popup
+      async findFfPlayer() {
+        const query = (this.ffBattletag || '').trim();
+        if (!query) {
+          this.ffSearchError = 'Enter a BattleTag first.';
+          return;
+        }
         this.ffSearchError = null;
-        this.ffSearchLoading = true;
-        if (this.onFfSearching) this.onFfSearching(true);
+        this.ffSearchQuery = query;
+        this.ffSearchRun += 1;
+        this.ffNoMatch = false;
+        this.ffSearchResults = null;
+        this.ffSearchOpen = true;
         try {
           const response = await this.$axios.post('/api/v1/player/friendfoe/search', {
-            userinput: this.ffBattletag,
+            userinput: query,
             region: this.ffregioninput,
+            blizz_id: this.ffprofileblizzid || null,
           });
-          const results = Object.values(response.data);
-          if (results.length === 0) {
-            this.ffSearchError = 'No player found.';
-          } else if (results.length === 1) {
-            this.selectFfResult(results[0]);
-          } else {
-            this.ffSearchResults = results;
-          }
+          this.ffSearchResults = Array.isArray(response.data) ? response.data : Object.values(response.data || {}).filter(item => item && item.blizz_id);
         } catch {
-          this.ffSearchError = 'Search failed. Please try again.';
-        } finally {
-          this.ffSearchLoading = false;
-          if (this.onFfSearching) this.onFfSearching(false);
+          this.ffSearchResults = [];
         }
       },
       selectFfResult(result) {
         this.ffBattletag = result.battletagShort;
         this.ffBlizzid = result.blizz_id;
         this.ffRegion = result.region;
-        this.ffSearchResults = [];
-        this.applyFilter();
+        this.ffSearchError = null;
+        setTimeout(() => { this.ffSearchOpen = false; }, 400);
       },
       showMobile(){
         this.showNav = !this.showNav;
       },
       isMobileView() {
         // Same breakpoint as Tailwind's md
-        return !window.matchMedia('(min-width: 768px)').matches;
+        return !window.matchMedia('(min-width: 1024px)').matches;
       },
       checkScreenWidth() {
         // Show on desktop; close it when going back to mobile (e.g. rotating a phone) so it doesn't cover the page

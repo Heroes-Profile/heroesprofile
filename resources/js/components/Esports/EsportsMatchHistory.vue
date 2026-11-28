@@ -1,53 +1,62 @@
 <template>
-  <div>    
-    <page-heading :infoText1="`${esport == 'HeroesInternational' ? 'Heroes International' : esport} ${team} Match History`" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+  <div>
+    <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="`${esport == 'HeroesInternational' ? 'Heroes International' : esport} ${team} Match History`" -->
+    <page-heading :heading="$t(':team Match History', { team: teamName(team) })" :esport="esport == 'Other' ? null : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
-    <div v-if="data">
-      <table class="mt-10 max-md:text-xs">
-        <thead>
-          <tr>
-            <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game ID
-            </th>
-            <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game Date
-            </th>     
-            <th @click="sortTable('game_map')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game Map
-            </th>                 
-            <th @click="sortTable('enemy')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Opponent
-            </th> 
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row, index) in sortedData" :key="index">
-            <td>
-              <a class="link" :href="getMatchUrl(row.replayID)">{{ row.replayID }}</a>
-            </td>
-            <td>
-              {{ formatDate(row.game_date) }}
-            </td>
-            <td>
-              {{ row.game_map }}
-            </td>
-            <td>
-              {{ row.enemy }}
-            </td>
-
-          </tr>
-        </tbody>
-      </table>
+    <!-- The league pages' match rows, a page at a time, like the other match histories -->
+    <div v-if="data" class="mt-4">
+      <esports-recent-matches :current="data.pagination.current_page" :last="data.pagination.last_page" @page="getData" v-if="data.data.length" :data="data.data" :esport="recentMatchesEsport" :series="series" :tournament="tournament"></esports-recent-matches>
+      <p v-else class="text-center text-subtext mt-10">{{ $t('No games for :teamname', { teamname: teamName(team) }) }}<template v-if="subtitle"> {{ $t('in :subtitle', { subtitle: subtitle }) }}</template>.</p>
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="getLoadingImage()"></loading-component>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
+    <div v-else-if="isLoading" class="relative max-w-[120rem] mx-auto px-4 md:px-8 py-4 flex flex-col gap-6 md:[&>*:nth-child(2)]:!rounded-tl-none md:[&>*:first-child]:!left-8">
+      <!-- The Compact / Expanded toggle and the page numbers, as on the loaded list -->
+      <div class="flex flex-wrap justify-end items-center gap-4">
+        <skeleton-box class="w-[13.25rem] h-[2.75rem] rounded"></skeleton-box>
+        <skeleton-box class="w-[17.75rem] h-[2.75rem] rounded"></skeleton-box>
+      </div>
+      <panel-box class="relative md:!rounded-tl-none">
+        <!-- The message sits on a tab of the card, as on the match histories -->
+        <loading-component :compact="true" :tab="true" :overrideimage="getLoadingImage()"></loading-component>
+        <div v-for="row in 8" :key="row" class="flex flex-wrap 2xl:flex-nowrap items-center gap-6 rounded bg-surface-1 px-6 py-4">
+          <div class="flex flex-col gap-2 w-[18.75rem] shrink-0">
+            <skeleton-box class="h-4 w-40"></skeleton-box>
+            <skeleton-box class="h-4 w-32"></skeleton-box>
+            <skeleton-box class="h-3 w-36"></skeleton-box>
+            <skeleton-box class="h-3 w-28"></skeleton-box>
+          </div>
+          <div class="flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-6">
+            <div class="flex flex-row-reverse items-center gap-3">
+              <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
+              <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <skeleton-box class="h-8 w-20 rounded"></skeleton-box>
+              <skeleton-box class="h-3 w-28"></skeleton-box>
+            </div>
+            <div class="flex items-center gap-3">
+              <skeleton-box class="w-12 h-12 shrink-0 !rounded-full"></skeleton-box>
+              <skeleton-box class="h-5 w-40 max-w-full"></skeleton-box>
+            </div>
+          </div>
+          <div class="flex gap-2 w-[21.25rem] max-w-full shrink-0">
+            <div v-for="side in 2" :key="side" class="flex flex-col gap-1.5 w-[9.375rem]">
+              <div v-for="player in 5" :key="player" class="flex items-center gap-1">
+                <skeleton-box class="w-4 h-4 shrink-0 !rounded-full"></skeleton-box>
+                <skeleton-box class="h-3 w-24"></skeleton-box>
+              </div>
+            </div>
+          </div>
+        </div>
+      </panel-box>
     </div>
   </div>
 </template>
 
 <script>
-import moment from 'moment-timezone';
-
 export default {
   name: 'EsportsMatchHistory',
   components: {
@@ -64,17 +73,14 @@ export default {
     division: String,
     tournament: String,
     seriesimage: String,
-
+    patreonUser: Boolean,
   },
   data(){
     return {
+      loadError: null,
       cancelTokenSource: null,
-      userTimezone: moment.tz.guess(),
       isLoading: false,
       data: null,
-      gamemap: null,
-      sortKey: '',
-      sortDir: 'desc',
       modifiedSeason: null,
     }
   },
@@ -87,11 +93,13 @@ export default {
   computed: {
     headingImage(){
       if(this.esport == "NGS"){
-        return "/images/NGS/600-600-ngs_large_header.png"
+        return "/images/NGS/ngs_large.png"
       }else if(this.esport == "CCL"){
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }else if(this.esport == "MastersClash"){
         return "/images/MCL/no-image.png"
+      }else if(this.esport == "HeroesInternational"){
+        return "/images/HI/heroes_international.png";
       }else if(this.esport == "Other"){
         return "/images/EsportOther/" + this.seriesimage;
       }
@@ -103,31 +111,34 @@ export default {
         return "/Esports/CCL"
       }else if(this.esport == "MastersClash"){
         return "/Esports/MastersClash"
+      }else if(this.esport == "HeroesInternational"){
+        return "/Esports/HeroesInternational"
       }else if(this.esport == "Other"){
-        return "/Esports/Other/" + this.series; 
+        return "/Esports/Other/" + this.series;
       }
     },
-    sortedData() {
-      if (!this.sortKey) return this.data.data;
-      return this.data.data.slice().sort((a, b) => {
-        const valA = a[this.sortKey];
-        const valB = b[this.sortKey];
-        if (this.sortDir === 'asc') {
-          return valA < valB ? -1 : 1;
-        } else {
-          return valA > valB ? -1 : 1;
-        }
-      });
+    // The recent match rows' league key; HI splits main and Nations Cup
+    recentMatchesEsport() {
+      if (this.esport == 'HeroesInternational') {
+        return this.tournament == 'nationscup' ? 'hi_nc' : 'hi';
+      }
+      return this.esport;
     },
-  },
-  watch: {
+    subtitle() {
+      return [
+        this.modifiedSeason ? this.$t('Season :season', { season: this.modifiedSeason }) : null,
+        this.esport == 'NGS' && this.division ? 'Division ' + this.division : null,
+      ].filter(Boolean).join(', ');
+    },
   },
   methods: {
-    async getData(page){      
-     if (this.isLoading || page < 1 || (this.data && page > this.data.last_page)) {
+    async getData(page){
+      this.loadError = null;
+      const lastPage = this.data && this.data.pagination.last_page;
+      if (this.isLoading || page < 1 || (lastPage && page > lastPage)) {
         return;
       }
-    
+
       this.data = null;
       this.isLoading = true;
 
@@ -136,81 +147,49 @@ export default {
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
 
-      var url = "";
-
-      var url = "/api/v1/esports/team/match/history";
-      
-      if(this.series){
-        url = "/api/v1/esports/other/team/match/history";
-      }
-
-
-      try{
-        const response = await this.$axios.post(url, {
+      // NGS and Masters Clash replays carry team names; CCL and HI only ids, looked up by name.
+      // Other series come from their own controller.
+      const byName = ['NGS', 'MastersClash'].includes(this.esport);
+      const request = this.esport == 'Other'
+        ? this.$axios.post("/api/v1/esports/other/team/match/history", {
           esport: this.esport,
           series: this.series,
           season: this.modifiedSeason,
-          division: this.division,
-          tournament: this.tournament,
-          pagination_page: page,
           team: this.team,
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
-        });
+          pagination_page: page,
+        }, { cancelToken: this.cancelTokenSource.token })
+        : this.$axios.post("/api/v1/esports/single/team/matches", {
+          esport: this.esport,
+          tournament: this.tournament,
+          season: this.modifiedSeason,
+          division: this.esport == 'NGS' ? this.division : null,
+          team: byName ? this.team : null,
+          team_name: byName ? null : this.team,
+          pagination_page: page,
+        }, { cancelToken: this.cancelTokenSource.token });
+
+      try{
+        const response = await request;
         this.data = response.data;
       }catch(error){
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getData(page));
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
       }
     },
-    cancelAxiosRequest() {
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled by user');
-      }
-    },
-    getMatchUrl(replayID){
-      if(this.esport == 'Other'){
-        return`/Esports/${this.esport}/${this.series}/Match/Single/` + replayID;
-      }else if(this.esport == 'HeroesInternational'){
-        return `/Esports/${this.esport}/Match/Single/` + replayID + '?tournament=' + this.tournament;
-      }
-
-
-      return `/Esports/${this.esport}/Match/Single/` + replayID;
-    },
-    filterData(filteredData){
-      this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
-      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
-      this.season = filteredData.single.Season ? filteredData.single.Season : null;
-      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
-      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
-
-
-      this.data = null;
-      this.getData(1);
-    },
-    sortTable(key) {
-      if (key === this.sortKey) {
-        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
-      } else {
-        this.sortDir = 'desc';
-      }
-      this.sortKey = key;
-    },
-    formatDate(dateString) {
-      const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
-      const localDate = originalDate.clone().tz(moment.tz.guess());
-
-      return localDate.format('MM/DD/YYYY h:mm:ss a');
+    teamName(name) {
+      return this.esport == 'NGS' ? this.$ngsTeam(name).name : name;
     },
     getLoadingImage(){
       if(this.esport == "NGS"){
         return "/images/NGS/no-image-clipped.png"
       }else if(this.esport == "CCL"){
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+      }else if(this.esport == "MastersClash"){
+        return "/images/MCL/no-image.png"
+      }else if(this.esport == "HeroesInternational"){
+        return "/images/HI/heroes_international.png";
       }else if(this.esport == "Other"){
         return "/images/EsportOther/" + this.seriesimage;
       }

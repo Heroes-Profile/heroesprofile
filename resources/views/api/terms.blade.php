@@ -1,8 +1,8 @@
 @extends('layouts.api')
 
-@section('title', 'Terms of Service')
+@section('title', __('Terms of Service'))
 
-@section('meta_description', 'Terms of Service for the Heroes Profile API and developer portal.')
+@section('meta_description', __('Terms of Service for the Heroes Profile API and developer portal.'))
 
 @section('content')
   <api-terms-of-service

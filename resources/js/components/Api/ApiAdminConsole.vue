@@ -2,32 +2,32 @@
   <div>
     <page-heading :infoText1="infoText" heading="Admin"></page-heading>
 
-    <div class="mx-auto max-w-[1600px] p-4">
+    <div class="mx-auto max-w-[100rem] p-4">
       <div v-if="error" class="bg-red p-3 mb-4">{{ error }}</div>
       <div v-if="notice" class="bg-teal p-3 mb-4">{{ notice }}</div>
 
-      <api-admin-card title="At a Glance" storage-key="glance">
+      <api-admin-card :title="$t('At a Glance')" storage-key="glance">
 
         <div v-if="metrics" class="flex flex-wrap gap-6 text-sm">
           <div>
             <div class="text-2xl">{{ metrics.accounts }}</div>
-            <div class="text-gray-medium">Accounts</div>
+            <div class="text-gray-medium">{{ $t('Accounts') }}</div>
           </div>
           <div>
             <div class="text-2xl">{{ metrics.migrated }}</div>
-            <div class="text-gray-medium">Migrated</div>
+            <div class="text-gray-medium">{{ $t('Migrated') }}</div>
           </div>
           <div>
             <div class="text-2xl">{{ metrics.active_keys }}</div>
-            <div class="text-gray-medium">Active keys</div>
+            <div class="text-gray-medium">{{ $t('Active keys') }}</div>
           </div>
           <div>
             <div class="text-2xl">{{ metrics.active_subscribers }}</div>
-            <div class="text-gray-medium">Active subscribers</div>
+            <div class="text-gray-medium">{{ $t('Active subscribers') }}</div>
           </div>
           <div>
             <div class="text-2xl">${{ metrics.mrr }}</div>
-            <div class="text-gray-medium">Monthly revenue</div>
+            <div class="text-gray-medium">{{ $t('Monthly revenue') }}</div>
           </div>
           <div v-for="(total, status) in metrics.subscriptions_by_status" :key="status">
             <div class="text-2xl">{{ total }}</div>
@@ -35,30 +35,30 @@
           </div>
         </div>
 
-        <p v-else class="text-sm text-gray-medium">Loading.</p>
+        <p v-else class="text-sm text-gray-medium">{{ $t('Loading.') }}</p>
       </api-admin-card>
 
-      <api-admin-card title="Find an Account" storage-key="search">
+      <api-admin-card :title="$t('Find an Account')" storage-key="search">
 
         <div class="flex flex-wrap gap-2 mb-4">
           <input
             v-model="term"
             @keyup.enter="search"
             type="text"
-            placeholder="Email, name or ID"
-            class="flex-1 min-w-[200px] p-2 bg-darken"
+            :placeholder="$t('Email, name or ID')"
+            class="flex-1 min-w-[12.5rem] p-2 bg-darken"
           />
           <custom-button @click="search" :text="'Search'" :alt="'Search accounts'" :size="'small'" :ignoreclick="true"></custom-button>
         </div>
 
-        <p v-if="searched && !results.length" class="text-sm text-gray-medium">No accounts matched.</p>
+        <p v-if="searched && !results.length" class="text-sm text-gray-medium">{{ $t('No accounts matched.') }}</p>
 
-        <table v-if="results.length" class="min-w-0 w-full responsive-table">
+        <table v-if="results.length" class="min-w-0 w-full">
           <thead>
             <tr>
-              <th class="py-2 px-3 text-left text-sm">Email</th>
-              <th class="py-2 px-3 text-left text-sm">Name</th>
-              <th class="py-2 px-3 text-left text-sm">Data</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Email') }}</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Name') }}</th>
+              <th class="py-2 px-3 text-left text-sm">{{ $t('Data') }}</th>
               <th class="py-2 px-3 text-left text-sm"></th>
             </tr>
           </thead>
@@ -67,9 +67,9 @@
               <tr>
                 <td class="py-2 px-3">{{ row.email }}</td>
                 <td class="py-2 px-3">{{ row.name }}</td>
-                <td class="py-2 px-3">{{ row.migrated ? 'Live' : 'Fixtures' }}</td>
+                <td class="py-2 px-3">{{ row.migrated ? $t('Live') : $t('Fixtures') }}</td>
                 <td class="py-2 px-3">
-                  <a class="link" href="#" @click.prevent="load(row.id, 'search')">Open</a>
+                  <a href="#" @click.prevent="load(row.id, 'search')" class="inline-flex items-center link-row">{{ $t('Open') }}</a>
                 </td>
               </tr>
               <tr v-if="detailTarget === '#admin-detail-search' && detail.account.id === row.id">
@@ -82,14 +82,13 @@
         </table>
 
         <p v-if="truncated" class="text-sm text-gray-medium mt-3">
-          Showing the first {{ results.length }} matches. Narrow the search to see the rest.
+          {{ $t('Showing the first :length matches. Narrow the search to see the rest.', { length: results.length }) }}
         </p>
       </api-admin-card>
 
-      <api-admin-card title="Trace a Marked Value" storage-key="trace" tight>
+      <api-admin-card :title="$t('Trace a Marked Value')" storage-key="trace" tight>
         <p class="text-sm text-gray-medium mb-4">
-          Which marked account was sent a number seen elsewhere. Enter the hero, talent or map, and the
-          value as they show it &mdash; 57.1 also finds 57.11 for a site that rounds. Kept 90 days.
+          {{ $t('Which marked account was sent a number seen elsewhere. Enter the hero, talent or map, and the value as they show it — 57.1 also finds 57.11 for a site that rounds. Kept 90 days.') }}
         </p>
 
         <div class="flex flex-wrap gap-2 mb-4">
@@ -97,7 +96,7 @@
             v-model="traceLabel"
             @keyup.enter="trace"
             type="text"
-            placeholder="Diablo"
+            :placeholder="$t('Diablo')"
             class="flex-1 min-w-[12.5rem] p-2 bg-darken"
           />
           <input
@@ -105,30 +104,30 @@
             @keyup.enter="trace"
             type="text"
             inputmode="decimal"
-            placeholder="Value (optional)"
+            :placeholder="$t('Value (optional)')"
             class="w-40 p-2 bg-darken"
           />
           <custom-button @click="trace" :text="'Trace'" :alt="'Trace a marked value'" :size="'small'" :ignoreclick="true"></custom-button>
         </div>
 
-        <p v-if="traced && !traceRows.length" class="text-sm text-gray-medium">No marked account was sent that.</p>
+        <p v-if="traced && !traceRows.length" class="text-sm text-gray-medium">{{ $t('No marked account was sent that.') }}</p>
 
         <div v-if="traceRows.length" class="overflow-x-auto">
-          <table class="min-w-0 w-full responsive-table">
+          <table class="min-w-0 w-full">
             <thead>
               <tr>
-                <th class="py-2 px-3 text-left text-sm">Account</th>
-                <th class="py-2 px-3 text-left text-sm">Row</th>
-                <th class="py-2 px-3 text-left text-sm">Endpoint</th>
-                <th class="py-2 px-3 text-left text-sm">Ours</th>
-                <th class="py-2 px-3 text-left text-sm">Sent</th>
-                <th class="py-2 px-3 text-left text-sm">Sent between</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Account') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Row') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Endpoint') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Ours') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Sent') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Sent between') }}</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="row in traceRows" :key="row.id">
                 <td class="py-2 px-3">
-                  <a href="#" @click.prevent="load(row.account_id, 'trace')" class="link">{{ row.email || 'id ' + row.account_id }}</a>
+                  <a href="#" @click.prevent="load(row.account_id, 'trace')" class="inline-flex items-center link-row">{{ row.email || 'id ' + row.account_id }}</a>
                 </td>
                 <td class="py-2 px-3">{{ row.label }}</td>
                 <td class="py-2 px-3">
@@ -137,33 +136,33 @@
                 </td>
                 <td class="py-2 px-3">{{ row.real_value }}</td>
                 <td class="py-2 px-3">{{ row.sent_value }}</td>
-                <td class="py-2 px-3">{{ row.first_sent_at }} &ndash; {{ row.last_sent_at }} ({{ formatNumber(row.times_sent) }}&times;)</td>
+                <td class="py-2 px-3">{{ $t(':first_sent_at – :last_sent_at (:times_sent×)', { first_sent_at: row.first_sent_at, last_sent_at: row.last_sent_at, times_sent: formatNumber(row.times_sent) }) }}</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <p v-if="traceTruncated" class="text-sm text-gray-medium mt-3">
-          Showing the newest {{ traceRows.length }}. Add a value to narrow it.
+          {{ $t('Showing the newest :length. Add a value to narrow it.', { length: traceRows.length }) }}
         </p>
       </api-admin-card>
 
       <div id="admin-detail-trace"></div>
 
-      <api-admin-card title="Usage This Window" storage-key="usage" tight>
+      <api-admin-card :title="$t('Usage This Window')" storage-key="usage" tight>
         <p class="text-sm text-gray-medium mb-4">
-          Each account's current 7-day window, summed across endpoints. Cost is an upper-bound estimate.
+          {{ $t('Each account\'s current 7-day window, summed across endpoints. Cost is an upper-bound estimate.') }}
         </p>
 
-        <p v-if="!usage.length" class="text-sm text-gray-medium">No usage in the current window.</p>
+        <p v-if="!usage.length" class="text-sm text-gray-medium">{{ $t('No usage in the current window.') }}</p>
 
         <div v-else class="overflow-x-auto">
-          <table class="min-w-0 w-full responsive-table">
+          <table class="min-w-0 w-full">
             <thead>
               <tr>
-                <th v-for="column in usageColumns" :key="column.key" @click="sortUsage(column.key)" class="py-2 px-3 text-left text-sm">
+                <th v-for="column in usageColumns" :key="column.key" @click="sortUsage(column.key)" class="py-2 px-3 text-left text-sm cursor-pointer" :class="{ 'bg-teal text-white': usageSortKey === column.key }">
                   {{ column.label }}
-                  <span v-if="usageSortKey === column.key">{{ usageSortDir === 'asc' ? '▲' : '▼' }}</span>
+                  <sort-indicator :column="column.key" :sort-key="usageSortKey" :sort-dir="usageSortDir"></sort-indicator>
                 </th>
               </tr>
             </thead>
@@ -180,7 +179,7 @@
                   <img
                     v-if="loadingId === row.id"
                     src="/images/logo/heroesprofilelogo.png"
-                    alt="Loading"
+                    :alt="$t('Loading')"
                     class="inline-block w-5 h-5 ml-2 align-middle animate-spin"
                   />
                 </td>
@@ -190,7 +189,7 @@
                 <td class="py-2 px-3">{{ formatDuration(row.db_ms) }}</td>
                 <td class="py-2 px-3">{{ formatCost(row.db_cost_usd) }}</td>
                 <td class="py-2 px-3">{{ formatCost(row.cost_usd) }}</td>
-                <td class="py-2 px-3" :class="{ 'text-gray-medium': !row.approved_at }">{{ row.approved_at || 'Never' }}</td>
+                <td class="py-2 px-3" :class="{ 'text-gray-medium': !row.approved_at }">{{ row.approved_at || $t('Never') }}</td>
               </tr>
             </tbody>
           </table>
@@ -199,21 +198,20 @@
 
       <div id="admin-detail-usage"></div>
 
-      <api-admin-card title="Awaiting Approval" storage-key="pending" tight>
+      <api-admin-card :title="$t('Awaiting Approval')" storage-key="pending" tight>
         <p class="text-sm text-gray-medium mb-4">
-          Accounts with access that have never been approved, or whose project description changed
-          after their last approval. Click one to open it.
+          {{ $t('Accounts with access that have never been approved, or whose project description changed after their last approval. Click one to open it.') }}
         </p>
 
-        <p v-if="!pending.length" class="text-sm text-gray-medium">Nothing waiting.</p>
+        <p v-if="!pending.length" class="text-sm text-gray-medium">{{ $t('Nothing waiting.') }}</p>
 
         <div v-else class="overflow-x-auto">
-          <table class="min-w-0 w-full responsive-table">
+          <table class="min-w-0 w-full">
             <thead>
               <tr>
-                <th class="py-2 px-3 text-left text-sm">Email</th>
-                <th class="py-2 px-3 text-left text-sm">Project</th>
-                <th class="py-2 px-3 text-left text-sm">Status</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Email') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Project') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Status') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -225,12 +223,12 @@
                 :class="{ '!bg-teal !text-white': selectedUsageId === row.id }"
               >
                 <td class="py-2 px-3">{{ row.email || 'id ' + row.id }}</td>
-                <td class="py-2 px-3">{{ row.project_name || 'Not described' }}</td>
+                <td class="py-2 px-3">{{ row.project_name || $t('Not described') }}</td>
                 <td class="py-2 px-3">
                   <template v-if="row.approved_at">
-                    Description changed {{ row.project_updated_at }}, last approved {{ row.approved_at }}
+                    {{ $t('Description changed :project_updated_at, last approved :approved_at', { project_updated_at: $formatDate(row.project_updated_at, { dateStyle: 'medium', timeStyle: 'short' }), approved_at: $formatDate(row.approved_at, { dateStyle: 'medium', timeStyle: 'short' }) }) }}
                   </template>
-                  <template v-else>Never approved</template>
+                  <template v-else>{{ $t('Never approved') }}</template>
                 </td>
               </tr>
             </tbody>
@@ -243,174 +241,172 @@
       <!-- Opens under the card it was clicked from; falls back here if that row is gone. -->
       <Teleport v-if="detail" :to="detailTarget" :disabled="!detailTarget" defer>
         <api-admin-card ref="detail" :title="detail.account.email" storage-key="account" tight>
-          <p class="text-sm text-gray-medium mb-4">{{ detail.account.name }} &middot; id {{ detail.account.id }}</p>
+          <p class="text-sm text-gray-medium mb-4">{{ $t(':name · id :id', { name: detail.account.name, id: detail.account.id }) }}</p>
 
           <div v-if="detail.subscription_issue" class="border-l-4 border-red p-3 mb-4">
-            <p class="text-sm"><strong>Key is being refused.</strong> {{ detail.subscription_issue }}</p>
+            <p class="text-sm"><strong>{{ $t('Key is being refused.') }}</strong> {{ detail.subscription_issue }}</p>
           </div>
 
           <div v-if="!detail.account.admin" class="mb-4">
             <custom-button @click="impersonate" :text="'View as this user'" :alt="'View as this user'" :size="'small'" :ignoreclick="true"></custom-button>
             <p class="text-xs text-gray-medium mt-2">
-              Signs you in as them. Anything you do then happens on their account.
+              {{ $t('Signs you in as them. Anything you do then happens on their account.') }}
             </p>
           </div>
 
-          <table class="min-w-0 w-full responsive-table">
+          <table class="min-w-0 w-full">
             <tbody>
               <tr>
-                <td class="py-2 px-3 text-sm">Subscription</td>
+                <td class="py-2 px-3 text-sm">{{ $t('Subscription') }}</td>
                 <td class="py-2 px-3">
                   <template v-if="detail.subscription">
-                    {{ detail.subscription.plan_name }} &middot; {{ detail.subscription.status }}
-                    <span v-if="detail.subscription.ends_at"> &middot; ends {{ detail.subscription.ends_at }}</span>
+                    {{ $t(':plan_name · :status', { plan_name: detail.subscription.plan_name, status: detail.subscription.status }) }}
+                    <span v-if="detail.subscription.ends_at"> {{ $t('· ends :ends_at', { ends_at: $formatDate(detail.subscription.ends_at) }) }}</span>
                   </template>
-                  <template v-else>None</template>
+                  <template v-else>{{ $t('None') }}</template>
                 </td>
               </tr>
               <tr>
-                <td class="py-2 px-3 text-sm">Comped tiers</td>
+                <td class="py-2 px-3 text-sm">{{ $t('Comped tiers') }}</td>
                 <td class="py-2 px-3">
                   <template v-if="detail.granted.length">{{ detail.granted.map(p => p.name).join(', ') }}</template>
-                  <template v-else>None</template>
+                  <template v-else>{{ $t('None') }}</template>
                 </td>
               </tr>
               <tr>
-                <td class="py-2 px-3 text-sm">Project</td>
+                <td class="py-2 px-3 text-sm">{{ $t('Project') }}</td>
                 <td class="py-2 px-3">
                   <template v-if="detail.account.project_name">
                     <strong>{{ detail.account.project_name }}</strong>
-                    <span class="text-sm text-gray-medium">— updated {{ detail.account.project_updated_at }}</span>
+                    <span class="text-sm text-gray-medium">{{ $t('— updated :project_updated_at', { project_updated_at: $formatDate(detail.account.project_updated_at, { dateStyle: 'medium', timeStyle: 'short' }) }) }}</span>
                     <p class="text-sm whitespace-pre-line mt-1">{{ detail.account.project_description }}</p>
                   </template>
-                  <template v-else>Not described</template>
+                  <template v-else>{{ $t('Not described') }}</template>
                 </td>
               </tr>
               <tr>
-                <td class="py-2 px-3 text-sm">Website</td>
+                <td class="py-2 px-3 text-sm">{{ $t('Website') }}</td>
                 <td class="py-2 px-3">
                   <!-- Linked only when it already starts with http(s). Whatever else
                        they typed is shown as text: it is stored verbatim, and an
                        href is not the place to find out what a stranger put in it. -->
                   <a
                     v-if="linkableWebsite"
-                    class="link"
+                   
                     :href="linkableWebsite"
                     target="_blank"
-                    rel="noopener noreferrer"
-                  >{{ detail.account.website }}</a>
+                    rel="noopener noreferrer" class="inline-flex items-center link-row">{{ detail.account.website }}</a>
                   <template v-else-if="detail.account.website">{{ detail.account.website }}</template>
-                  <template v-else>Not given</template>
+                  <template v-else>{{ $t('Not given') }}</template>
                 </td>
               </tr>
               <tr>
-                <td class="py-2 px-3 text-sm">Data source</td>
-                <td class="py-2 px-3">{{ detail.account.receives_test_data ? 'Fixtures' : 'Live' }}</td>
+                <td class="py-2 px-3 text-sm">{{ $t('Data source') }}</td>
+                <td class="py-2 px-3">{{ detail.account.receives_test_data ? $t('Fixtures') : $t('Live') }}</td>
               </tr>
               <tr>
-                <td class="py-2 px-3 text-sm">Migrated</td>
-                <td class="py-2 px-3">{{ detail.account.migrated ? 'Yes' : 'No' }}</td>
+                <td class="py-2 px-3 text-sm">{{ $t('Migrated') }}</td>
+                <td class="py-2 px-3">{{ detail.account.migrated ? $t('Yes') : $t('No') }}</td>
               </tr>
               <tr>
-                <td class="py-2 px-3 text-sm">Email verified</td>
-                <td class="py-2 px-3">{{ detail.account.email_verified_at || 'No' }}</td>
+                <td class="py-2 px-3 text-sm">{{ $t('Email verified') }}</td>
+                <td class="py-2 px-3">{{ detail.account.email_verified_at || $t('No') }}</td>
               </tr>
               <tr>
-                <td class="py-2 px-3 text-sm">Terms accepted</td>
+                <td class="py-2 px-3 text-sm">{{ $t('Terms accepted') }}</td>
                 <td class="py-2 px-3">
-                  {{ detail.account.terms_accepted_at || 'No' }}
+                  {{ detail.account.terms_accepted_at || $t('No') }}
                   <span v-if="detail.account.terms_version_accepted"> (v{{ detail.account.terms_version_accepted }})</span>
                 </td>
               </tr>
               <tr>
-                <td class="py-2 px-3 text-sm">Active keys</td>
+                <td class="py-2 px-3 text-sm">{{ $t('Active keys') }}</td>
                 <td class="py-2 px-3">{{ detail.keys.length }}</td>
               </tr>
               <tr>
-                <td class="py-2 px-3 text-sm">Stripe customer</td>
-                <td class="py-2 px-3">{{ detail.account.stripe_id || 'None' }}</td>
+                <td class="py-2 px-3 text-sm">{{ $t('Stripe customer') }}</td>
+                <td class="py-2 px-3">{{ detail.account.stripe_id || $t('None') }}</td>
               </tr>
             </tbody>
           </table>
         </api-admin-card>
 
-        <api-admin-card title="Approval" storage-key="approval" tight>
+        <api-admin-card :title="$t('Approval')" storage-key="approval" tight>
           <p class="text-sm text-gray-medium mb-4">
-            Records your approval of the project as described above, with your notes. Nothing is
-            sent and their access is unchanged — grant access with the Comped Access checkboxes.
+            {{ $t('Records your approval of the project as described above, with your notes. Nothing is sent and their access is unchanged — grant access with the Comped Access checkboxes.') }}
           </p>
 
           <p class="text-sm mb-4">
             <template v-if="detail.last_approval">
-              Last approved {{ detail.last_approval.at }}<template v-if="detail.last_approval.by"> by {{ detail.last_approval.by }}</template>.
+              {{ $t('Last approved :at', { at: detail.last_approval.at }) }}<template v-if="detail.last_approval.by"> {{ $t('by :by', { by: detail.last_approval.by }) }}</template>.
             </template>
-            <span v-else class="text-gray-medium">Never approved.</span>
+            <span v-else class="text-gray-medium">{{ $t('Never approved.') }}</span>
           </p>
 
           <label class="block text-sm mb-1">
-            Approval notes <span class="text-gray-medium">— never shown to them</span>
+            {{ $t('Approval notes') }} <span class="text-gray-medium">{{ $t('— never shown to them') }}</span>
           </label>
           <textarea
             v-model="approveNotes"
             rows="3"
             maxlength="2000"
-            placeholder="What you checked and what you agreed to."
+            :placeholder="$t('What you checked and what you agreed to.')"
             class="w-full p-2 bg-darken mb-2"
           ></textarea>
           <button
             @click="approve"
             :disabled="busy"
-            class="transition-colors text-white rounded bg-blue hover:bg-lblue py-1 px-3 text-sm mb-4 disabled:bg-gray-medium"
+            class="btn bg-blue hover:bg-lblue py-1 px-3 text-sm mb-4 disabled:bg-gray-medium"
           >
-            Approve
+            {{ $t('Approve') }}
           </button>
 
-          <h3 class="text-base mt-2 mb-2">Approval History</h3>
+          <h3 class="text-base mt-2 mb-2">{{ $t('Approval History') }}</h3>
           <p class="text-sm text-gray-medium mb-3">
-            Approvals and Comped Access changes, each with the project description as it read at the time.
+            {{ $t('Approvals and Comped Access changes, each with the project description as it read at the time.') }}
           </p>
 
-          <p v-if="!detail.approvals.length" class="text-sm text-gray-medium">Nothing on record.</p>
+          <p v-if="!detail.approvals.length" class="text-sm text-gray-medium">{{ $t('Nothing on record.') }}</p>
 
-          <table v-else class="min-w-0 w-full responsive-table">
+          <table v-else class="min-w-0 w-full">
             <thead>
               <tr>
-                <th class="py-2 px-3 text-left text-sm">When</th>
-                <th class="py-2 px-3 text-left text-sm">What</th>
-                <th class="py-2 px-3 text-left text-sm">Project at the time</th>
-                <th class="py-2 px-3 text-left text-sm">Notes</th>
-                <th class="py-2 px-3 text-left text-sm">By</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('When') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('What') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Project at the time') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Notes') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('By') }}</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="row in detail.approvals" :key="row.id">
                 <td class="py-2 px-3">{{ row.at }}</td>
                 <td class="py-2 px-3">
-                  <strong v-if="row.type === 'approval'">Approved</strong>
+                  <strong v-if="row.type === 'approval'">{{ $t('Approved') }}</strong>
                   <template v-else>
                     {{ row.flag }}
-                    <span class="text-gray-medium">— {{ row.granted ? 'granted' : 'removed' }}</span>
+                    <span class="text-gray-medium">— {{ row.granted ? $t('granted') : $t('removed') }}</span>
                   </template>
                 </td>
                 <td class="py-2 px-3">
                   <template v-if="row.project_name || row.project_description">
                     <strong v-if="row.project_name">{{ row.project_name }}</strong>
                     <div class="whitespace-pre-line">{{ row.project_description }}</div>
-                    <div v-if="row.project_updated_at" class="text-sm text-gray-medium">Description last edited {{ row.project_updated_at }}</div>
+                    <div v-if="row.project_updated_at" class="text-sm text-gray-medium">{{ $t('Description last edited :project_updated_at', { project_updated_at: $formatDate(row.project_updated_at, { dateStyle: 'medium', timeStyle: 'short' }) }) }}</div>
                   </template>
-                  <span v-else class="text-gray-medium">No description</span>
+                  <span v-else class="text-gray-medium">{{ $t('No description') }}</span>
                 </td>
                 <td class="py-2 px-3">
                   <template v-if="editingApprovalId === row.id">
                     <textarea v-model="approvalNotes" rows="3" maxlength="2000" class="w-full p-2 bg-darken"></textarea>
                     <div class="flex gap-2 mt-1">
-                      <button type="button" class="underline text-sm" :disabled="busy" @click="saveApprovalNotes(row.id)">Save</button>
-                      <button type="button" class="underline text-sm" :disabled="busy" @click="editingApprovalId = null">Cancel</button>
+                      <button type="button" class="underline text-sm" :disabled="busy" @click="saveApprovalNotes(row.id)">{{ $t('Save') }}</button>
+                      <button type="button" class="underline text-sm" :disabled="busy" @click="editingApprovalId = null">{{ $t('Cancel') }}</button>
                     </div>
                   </template>
                   <template v-else>
                     <div class="whitespace-pre-line">{{ row.notes || '—' }}</div>
-                    <button type="button" class="underline text-sm" :disabled="busy" @click="editApprovalNotes(row)">Edit</button>
+                    <button type="button" class="underline text-sm" :disabled="busy" @click="editApprovalNotes(row)">{{ $t('Edit') }}</button>
                   </template>
                 </td>
                 <td class="py-2 px-3">{{ row.by || '—' }}</td>
@@ -419,9 +415,9 @@
           </table>
         </api-admin-card>
 
-        <api-admin-card title="Comped Access" storage-key="comped" tight>
+        <api-admin-card :title="$t('Comped Access')" storage-key="comped" tight>
           <p class="text-sm text-gray-medium mb-4">
-            Granted by hand, per partner or esports org. Takes effect on the next API call.
+            {{ $t('Granted by hand, per partner or esports org. Takes effect on the next API call.') }}
           </p>
 
           <div class="flex flex-wrap gap-x-6 gap-y-3">
@@ -437,10 +433,9 @@
           </div>
         </api-admin-card>
 
-        <api-admin-card title="Data Markers" storage-key="poison" tight>
+        <api-admin-card :title="$t('Data Markers')" storage-key="poison" tight>
           <p class="text-sm text-gray-medium mb-4">
-            Nudges a few win rates in their global stats by 0.05&ndash;0.15, the same way on every call,
-            so numbers republished elsewhere can be traced to this key. Never shown to them.
+            {{ $t('Nudges a few win rates in their global stats by 0.05–0.15, the same way on every call, so numbers republished elsewhere can be traced to this key. Never shown to them.') }}
           </p>
 
           <label class="flex items-center gap-2 text-sm mb-4">
@@ -450,46 +445,46 @@
               :disabled="busy"
               @change="setPoison($event.target.checked)"
             />
-            Mark their global stats
-            <span v-if="detail.poison.since" class="text-gray-medium">&mdash; since {{ detail.poison.since }}</span>
+            {{ $t('Mark their global stats') }}
+            <span v-if="detail.poison.since" class="text-gray-medium">{{ $t('— since :since', { since: $formatDate(detail.poison.since, { dateStyle: 'medium', timeStyle: 'short' }) }) }}</span>
           </label>
 
-          <p class="text-sm mb-1">Heroes marked for this account:</p>
-          <p v-if="!detail.poison.heroes.length" class="text-sm text-gray-medium">None.</p>
+          <p class="text-sm mb-1">{{ $t('Heroes marked for this account:') }}</p>
+          <p v-if="!detail.poison.heroes.length" class="text-sm text-gray-medium">{{ $t('None.') }}</p>
           <p v-else class="text-sm">
             <span v-for="(row, index) in detail.poison.heroes" :key="row.hero">
               {{ row.hero }} ({{ row.delta > 0 ? '+' : '' }}{{ row.delta.toFixed(2) }})<template v-if="index < detail.poison.heroes.length - 1">, </template>
             </span>
           </p>
           <p class="text-xs text-gray-medium mt-3">
-            Talents, builds, maps, compositions, draft picks and party rows get their own markers the same way.
+            {{ $t('Talents, builds, maps, compositions, draft picks and party rows get their own markers the same way.') }}
           </p>
 
-          <h3 class="text-base mt-6 mb-2">Sent</h3>
+          <h3 class="text-base mt-6 mb-2">{{ $t('Sent') }}</h3>
 
           <p class="text-sm text-gray-medium mb-2">
-            Every marked value they were sent, beside what the site had at the time. Newest 200, kept 90 days.
+            {{ $t('Every marked value they were sent, beside what the site had at the time. Newest 200, kept 90 days.') }}
           </p>
 
-          <p v-if="!detail.poison.log.length" class="text-sm text-gray-medium">Nothing sent yet.</p>
+          <p v-if="!detail.poison.log.length" class="text-sm text-gray-medium">{{ $t('Nothing sent yet.') }}</p>
 
           <template v-else>
             <input
               v-model="poisonFilter"
               type="text"
-              placeholder="Filter by hero, talent or map"
+              :placeholder="$t('Filter by hero, talent or map')"
               class="w-full p-2 bg-darken mb-2"
             />
 
             <div class="overflow-x-auto">
-              <table class="min-w-0 w-full responsive-table">
+              <table class="min-w-0 w-full">
                 <thead>
                   <tr>
-                    <th class="py-2 px-3 text-left text-sm">Row</th>
-                    <th class="py-2 px-3 text-left text-sm">Endpoint</th>
-                    <th class="py-2 px-3 text-left text-sm">Ours</th>
-                    <th class="py-2 px-3 text-left text-sm">Sent</th>
-                    <th class="py-2 px-3 text-left text-sm">Sent between</th>
+                    <th class="py-2 px-3 text-left text-sm">{{ $t('Row') }}</th>
+                    <th class="py-2 px-3 text-left text-sm">{{ $t('Endpoint') }}</th>
+                    <th class="py-2 px-3 text-left text-sm">{{ $t('Ours') }}</th>
+                    <th class="py-2 px-3 text-left text-sm">{{ $t('Sent') }}</th>
+                    <th class="py-2 px-3 text-left text-sm">{{ $t('Sent between') }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -501,7 +496,7 @@
                     </td>
                     <td class="py-2 px-3">{{ row.real_value }}</td>
                     <td class="py-2 px-3">{{ row.sent_value }}</td>
-                    <td class="py-2 px-3">{{ row.first_sent_at }} &ndash; {{ row.last_sent_at }} ({{ formatNumber(row.times_sent) }}&times;)</td>
+                    <td class="py-2 px-3">{{ $t(':first_sent_at – :last_sent_at (:times_sent×)', { first_sent_at: row.first_sent_at, last_sent_at: row.last_sent_at, times_sent: formatNumber(row.times_sent) }) }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -509,122 +504,118 @@
           </template>
         </api-admin-card>
 
-        <api-admin-card title="Standing" storage-key="standing" tight>
+        <api-admin-card :title="$t('Standing')" storage-key="standing" tight>
           <p class="text-sm text-gray-medium mb-4">
-            Warn first. A suspension with nothing on record behind it is our word against theirs.
+            {{ $t('Warn first. A suspension with nothing on record behind it is our word against theirs.') }}
           </p>
 
           <div v-if="detail.enforcement.suspended" class="border-l-4 border-red p-3 mb-4">
             <p class="text-sm mb-1">
-              <strong>{{ detail.enforcement.terminated ? 'Closed' : 'Suspended' }}</strong>
-              since {{ detail.enforcement.since }}.
+              <strong>{{ detail.enforcement.terminated ? $t('Closed') : $t('Suspended') }}</strong>
+              {{ $t('since :since.', { since: $formatDate(detail.enforcement.since, { dateStyle: 'medium', timeStyle: 'short' }) }) }}
             </p>
             <div class="text-sm text-gray-medium standing-text" v-html="detail.enforcement.reason"></div>
           </div>
 
           <div v-else-if="detail.enforcement.open_warning" class="border-l-4 border-yellow p-3 mb-4">
             <p class="text-sm mb-1">
-              <strong>Warned</strong> {{ detail.enforcement.open_warning.sent_at }} &middot; not read yet.
+              <strong>{{ $t('Warned') }}</strong> {{ $t(':sent_at · not read yet.', { sent_at: $formatDate(detail.enforcement.open_warning.sent_at, { dateStyle: 'medium', timeStyle: 'short' }) }) }}
               <span v-if="detail.enforcement.open_warning.respond_by">
-                Asked to fix by {{ detail.enforcement.open_warning.respond_by }}.
+                {{ $t('Asked to fix by :respond_by.', { respond_by: $formatDate(detail.enforcement.open_warning.respond_by) }) }}
               </span>
-              <span v-if="detail.enforcement.open_warning.overdue" class="text-yellow">Overdue.</span>
+              <span v-if="detail.enforcement.open_warning.overdue" class="text-yellow">{{ $t('Overdue.') }}</span>
             </p>
             <div class="text-sm text-gray-medium standing-text" v-html="detail.enforcement.open_warning.reason"></div>
           </div>
 
-          <p v-else class="text-sm mb-4">In good standing.</p>
+          <p v-else class="text-sm mb-4">{{ $t('In good standing.') }}</p>
 
-          <label class="block text-sm mb-1">What they are told</label>
+          <label class="block text-sm mb-1">{{ $t('What they are told') }}</label>
           <standing-editor v-model="actionReason"></standing-editor>
 
           <label class="block text-sm mb-1">
-            Internal notes <span class="text-gray-medium">— never shown to them</span>
+            {{ $t('Internal notes') }} <span class="text-gray-medium">{{ $t('— never shown to them') }}</span>
           </label>
           <textarea
             v-model="actionNotes"
             rows="2"
-            placeholder="Where you saw it, call volumes, what was said and when."
+            :placeholder="$t('Where you saw it, call volumes, what was said and when.')"
             class="w-full p-2 bg-darken mb-2"
           ></textarea>
           <button
             @click="saveNote"
             :disabled="busy || !actionNotes.trim()"
-            class="transition-colors text-white rounded bg-blue hover:bg-lblue py-1 px-3 text-sm mb-4 disabled:bg-gray-medium"
+            class="btn bg-blue hover:bg-lblue py-1 px-3 text-sm mb-4 disabled:bg-gray-medium"
           >
-            Save note only
+            {{ $t('Save note only') }}
           </button>
 
           <label class="block text-sm mb-1">
-            Fix or reply by <span class="text-gray-medium">— info requests and warnings, optional</span>
+            {{ $t('Fix or reply by') }} <span class="text-gray-medium">{{ $t('— info requests and warnings, optional') }}</span>
           </label>
           <input v-model="actionRespondBy" type="date" class="p-2 bg-darken mb-4 block" />
 
           <label v-if="!detail.enforcement.suspended" class="flex items-center gap-2 text-sm mb-4">
             <input v-model="actionRefund" type="checkbox" :disabled="busy" />
-            When suspending, also cancel their subscription, refund the unused time and remove d_approved
+            {{ $t('When suspending, also cancel their subscription, refund the unused time and remove d_approved') }}
           </label>
 
           <div class="flex flex-wrap gap-3">
             <button
               @click="act('info')"
               :disabled="busy"
-              class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+              class="btn bg-teal hover:bg-lteal disabled:bg-gray-medium"
             >
-              Request info
+              {{ $t('Request info') }}
             </button>
             <button
               @click="act('warn')"
               :disabled="busy"
-              class="transition-colors text-white rounded bg-yellow hover:bg-lyellow py-2 px-4 disabled:bg-gray-medium"
+              class="btn bg-yellow hover:bg-lyellow disabled:bg-gray-medium"
             >
-              Warn
+              {{ $t('Warn') }}
             </button>
             <button
               v-if="!detail.enforcement.terminated"
               @click="act('suspend')"
               :disabled="busy"
-              class="transition-colors text-white rounded bg-red hover:bg-lred py-2 px-4 disabled:bg-gray-medium"
+              class="btn bg-red hover:bg-lred disabled:bg-gray-medium"
             >
-              Suspend
+              {{ $t('Suspend') }}
             </button>
             <button
               @click="act('terminate')"
               :disabled="busy"
-              class="transition-colors text-white rounded bg-red hover:bg-lred py-2 px-4 disabled:bg-gray-medium"
+              class="btn bg-red hover:bg-lred disabled:bg-gray-medium"
             >
-              Close account
+              {{ $t('Close account') }}
             </button>
             <button
               v-if="detail.enforcement.suspended"
               @click="act('reinstate')"
               :disabled="busy"
-              class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+              class="btn bg-teal hover:bg-lteal disabled:bg-gray-medium"
             >
-              Reinstate
+              {{ $t('Reinstate') }}
             </button>
           </div>
 
           <p class="text-xs text-gray-medium mt-3">
-            An info request only sends them an email asking about their project. A warning
-            changes nothing about their access either. Suspending stops their keys on both
-            sites and leaves billing running, unless you tick the refund box. Closing the account also cancels their
-            subscription, and that cannot be restarted for them — they would have to subscribe
-            again themselves.
+            {{ $t('An info request only sends them an email asking about their project. A warning changes nothing about their access either. Suspending stops their keys on both sites and leaves billing running, unless you tick the refund box. Closing the account also cancels their subscription, and that cannot be restarted for them — they would have to subscribe again themselves.') }}
           </p>
 
-          <h3 class="text-base mt-6 mb-2">History</h3>
+          <h3 class="text-base mt-6 mb-2">{{ $t('History') }}</h3>
 
-          <p v-if="!detail.history.length" class="text-sm text-gray-medium">Nothing on record.</p>
+          <p v-if="!detail.history.length" class="text-sm text-gray-medium">{{ $t('Nothing on record.') }}</p>
 
-          <table v-else class="min-w-0 w-full responsive-table">
+          <table v-else class="min-w-0 w-full">
             <thead>
               <tr>
-                <th class="py-2 px-3 text-left text-sm">When</th>
-                <th class="py-2 px-3 text-left text-sm">Action</th>
-                <th class="py-2 px-3 text-left text-sm">Told them</th>
-                <th class="py-2 px-3 text-left text-sm">Notes</th>
-                <th class="py-2 px-3 text-left text-sm">By</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('When') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Action') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Told them') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Notes') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('By') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -632,7 +623,7 @@
                 <td class="py-2 px-3">{{ row.at }}</td>
                 <td class="py-2 px-3">
                   {{ row.action }}
-                  <span v-if="row.acknowledged_at" class="text-gray-medium">— read {{ row.acknowledged_at }}</span>
+                  <span v-if="row.acknowledged_at" class="text-gray-medium">{{ $t('— read :acknowledged_at', { acknowledged_at: $formatDate(row.acknowledged_at, { dateStyle: 'medium', timeStyle: 'short' }) }) }}</span>
                 </td>
                 <td class="py-2 px-3">
                   <div v-if="row.reason" class="standing-text" v-html="row.reason"></div>
@@ -645,7 +636,7 @@
           </table>
         </api-admin-card>
 
-        <api-admin-card title="Endpoint Limits" storage-key="limits">
+        <api-admin-card :title="$t('Endpoint Limits')" storage-key="limits">
           <api-usage-table :usage="detail.usage"></api-usage-table>
         </api-admin-card>
       </Teleport>
@@ -654,28 +645,28 @@
 
       <api-admin-polls></api-admin-polls>
 
-      <api-admin-card title="Recent Subscription Activity" storage-key="activity">
+      <api-admin-card :title="$t('Recent Subscription Activity')" storage-key="activity">
 
-        <p v-if="!activity.length" class="text-sm text-gray-medium">Nothing yet.</p>
+        <p v-if="!activity.length" class="text-sm text-gray-medium">{{ $t('Nothing yet.') }}</p>
 
         <div v-else class="overflow-x-auto">
-          <table class="min-w-0 w-full responsive-table">
+          <table class="min-w-0 w-full">
             <thead>
               <tr>
-                <th class="py-2 px-3 text-left text-sm">Email</th>
-                <th class="py-2 px-3 text-left text-sm">Status</th>
-                <th class="py-2 px-3 text-left text-sm">Started</th>
-                <th class="py-2 px-3 text-left text-sm">Last change</th>
-                <th class="py-2 px-3 text-left text-sm">Ends</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Email') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Status') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Started') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Last change') }}</th>
+                <th class="py-2 px-3 text-left text-sm">{{ $t('Ends') }}</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="row in activity" :key="row.id">
                 <td class="py-2 px-3">{{ row.email }}</td>
                 <td class="py-2 px-3">{{ row.status }}</td>
-                <td class="py-2 px-3">{{ row.started_at }}</td>
-                <td class="py-2 px-3">{{ row.changed_at }}</td>
-                <td class="py-2 px-3">{{ row.ends_at || '—' }}</td>
+                <td class="py-2 px-3">{{ $formatDate(row.started_at, { dateStyle: 'medium', timeStyle: 'short' }) }}</td>
+                <td class="py-2 px-3">{{ $formatDate(row.changed_at, { dateStyle: 'medium', timeStyle: 'short' }) }}</td>
+                <td class="py-2 px-3">{{ row.ends_at ? $formatDate(row.ends_at, { dateStyle: 'medium', timeStyle: 'short' }) : '—' }}</td>
               </tr>
             </tbody>
           </table>
@@ -711,8 +702,8 @@ export default {
         { key: 'calls', label: 'Calls' },
         { key: 'egress_bytes', label: 'Egress' },
         { key: 'compute_ms', label: 'Compute' },
-        { key: 'db_ms', label: 'DB Time' },
-        { key: 'db_cost_usd', label: 'DB Cost' },
+        { key: 'db_ms', label: this.$t('DB Time') },
+        { key: 'db_cost_usd', label: this.$t('DB Cost') },
         { key: 'cost_usd', label: 'Cost' },
         { key: 'approved_at', label: 'Approved' },
       ],
@@ -841,7 +832,7 @@ export default {
     async search(){
       const term = this.term.trim();
       if(term.length < 2 && !/^\d+$/.test(term)){
-        this.error = 'Enter at least two characters, or an account ID.';
+        this.error = this.$t('Enter at least two characters, or an account ID.');
         return;
       }
 
@@ -856,7 +847,7 @@ export default {
         this.error = this.messageFrom(error);
       }
     },
-    // from is 'search', 'usage' or 'pending'; reloads leave it out and stay where they are.
+    // from is 'search', 'usage', 'pending' or 'trace'; reloads leave it out and stay where they are.
     async load(id, from = null){
       this.error = null;
       this.notice = null;
@@ -886,56 +877,6 @@ export default {
         }
       }
     },
-    async trace(){
-      if(this.traceLabel.trim().length < 2){
-        this.error = 'Enter at least two characters of the hero, talent or map.';
-        return;
-      }
-
-      this.error = null;
-
-      try {
-        const params = { label: this.traceLabel.trim() };
-
-        if(this.traceValue.trim()){
-          params.value = this.traceValue.trim();
-        }
-
-        const response = await this.$axios.get('/api/v1/admin/poison/trace', { params });
-        this.traceRows = response.data.rows;
-        this.traceTruncated = response.data.truncated;
-        this.traced = true;
-      } catch (error) {
-        this.error = this.messageFrom(error);
-      }
-    },
-
-    formatParams(params){
-      return Object.entries(params || {})
-        .map(([key, value]) => key + '=' + (typeof value === 'object' ? JSON.stringify(value) : value))
-        .join(', ');
-    },
-
-    async setPoison(value){
-      this.busy = true;
-      this.error = null;
-      this.notice = null;
-
-      try {
-        const response = await this.$axios.post('/api/v1/admin/accounts/' + this.detail.account.id + '/poison', {
-          value: value,
-        });
-
-        this.detail.poison = response.data.poison;
-        this.detail.history = response.data.history;
-        this.notice = value ? 'Markers on.' : 'Markers off.';
-      } catch (error) {
-        this.error = this.messageFrom(error);
-        await this.load(this.detail.account.id);
-      } finally {
-        this.busy = false;
-      }
-    },
     editApprovalNotes(row){
       this.editingApprovalId = row.id;
       this.approvalNotes = row.notes || '';
@@ -952,7 +893,7 @@ export default {
 
         this.detail.approvals = response.data.approvals;
         this.editingApprovalId = null;
-        this.notice = 'Approval notes saved.';
+        this.notice = this.$t('Approval notes saved.');
       } catch (error) {
         this.error = this.messageFrom(error);
       } finally {
@@ -993,36 +934,84 @@ export default {
         this.busy = false;
       }
     },
+    async trace(){
+      if(this.traceLabel.trim().length < 2){
+        this.error = this.$t('Enter at least two characters of the hero, talent or map.');
+        return;
+      }
+
+      this.error = null;
+
+      try {
+        const params = { label: this.traceLabel.trim() };
+
+        if(this.traceValue.trim()){
+          params.value = this.traceValue.trim();
+        }
+
+        const response = await this.$axios.get('/api/v1/admin/poison/trace', { params });
+        this.traceRows = response.data.rows;
+        this.traceTruncated = response.data.truncated;
+        this.traced = true;
+      } catch (error) {
+        this.error = this.messageFrom(error);
+      }
+    },
+    formatParams(params){
+      return Object.entries(params || {})
+        .map(([key, value]) => key + '=' + (typeof value === 'object' ? JSON.stringify(value) : value))
+        .join(', ');
+    },
+    async setPoison(value){
+      this.busy = true;
+      this.error = null;
+      this.notice = null;
+
+      try {
+        const response = await this.$axios.post('/api/v1/admin/accounts/' + this.detail.account.id + '/poison', {
+          value: value,
+        });
+
+        this.detail.poison = response.data.poison;
+        this.detail.history = response.data.history;
+        this.notice = value ? this.$t('Markers on.') : this.$t('Markers off.');
+      } catch (error) {
+        this.error = this.messageFrom(error);
+        await this.load(this.detail.account.id);
+      } finally {
+        this.busy = false;
+      }
+    },
     // Every rung takes effect the moment it is pressed, and closing an account
     // cancels a subscription nobody here can restart — so each one asks first.
     confirmationFor(action){
       if(action === 'info'){
-        return 'Send this question? They get an email only. No banner, and nothing about their access changes.';
+        return this.$t('Send this question? They get an email only. No banner, and nothing about their access changes.');
       }
 
       if(action === 'warn'){
-        return 'Send this warning? They get an email and a banner. Nothing about their access changes.';
+        return this.$t('Send this warning? They get an email and a banner. Nothing about their access changes.');
       }
 
       if(action === 'suspend' && this.actionRefund){
-        return 'Suspend this account, cancel their subscription now and refund the unused part of their last payment? Their keys stop working on both sites immediately and d_approved is removed. You cannot restart the subscription for them.';
+        return this.$t('Suspend this account, cancel their subscription now and refund the unused part of their last payment? Their keys stop working on both sites immediately and d_approved is removed. You cannot restart the subscription for them.');
       }
 
       if(action === 'suspend'){
-        return 'Suspend this account? Their keys stop working on both sites immediately. Billing keeps running.';
+        return this.$t('Suspend this account? Their keys stop working on both sites immediately. Billing keeps running.');
       }
 
       if(action === 'terminate'){
-        return 'Close this account? Their keys stop working and their subscription is cancelled immediately. You cannot restart it for them.';
+        return this.$t('Close this account? Their keys stop working and their subscription is cancelled immediately. You cannot restart it for them.');
       }
 
-      return 'Reinstate this account? Their existing keys start working again.';
+      return this.$t('Reinstate this account? Their existing keys start working again.');
     },
     async act(action){
       const reason = this.actionReason.trim();
 
       if(action !== 'reinstate' && !reason){
-        this.error = 'Say what they are being told — the same words go in the email and on their account page.';
+        this.error = this.$t('Say what they are being told — the same words go in the email and on their account page.');
         return;
       }
 
@@ -1063,11 +1052,11 @@ export default {
         this.clearAction();
 
         this.notice = {
-          info: 'Question sent.',
-          warn: 'Warning sent.',
-          suspend: 'Account suspended and told why.',
-          terminate: 'Account closed.',
-          reinstate: 'Account reinstated.',
+          info: this.$t('Question sent.'),
+          warn: this.$t('Warning sent.'),
+          suspend: this.$t('Account suspended and told why.'),
+          terminate: this.$t('Account closed.'),
+          reinstate: this.$t('Account reinstated.'),
         }[action];
       } catch (error) {
         this.error = this.messageFrom(error);
@@ -1078,17 +1067,17 @@ export default {
     refundNotice(refund){
       if(!refund.cancelled){
         return refund.failed
-          ? 'Account suspended, but cancelling in Stripe failed. Their subscription is still running — cancel and refund it by hand.'
-          : 'Account suspended. They had no subscription to cancel.';
+          ? this.$t('Account suspended, but cancelling in Stripe failed. Their subscription is still running — cancel and refund it by hand.')
+          : this.$t('Account suspended. They had no subscription to cancel.');
       }
 
       if(refund.failed){
-        return 'Account suspended and subscription cancelled, but the ' + refund.refunded + ' refund failed in Stripe. Refund it by hand.';
+        return this.$t('Account suspended and subscription cancelled, but the :amount refund failed in Stripe. Refund it by hand.', { amount: refund.refunded });
       }
 
       return refund.refunded
-        ?'Account suspended, subscription cancelled and ' + refund.refunded + ' refunded.'
-        : 'Account suspended and subscription cancelled. Nothing was left to refund.';
+        ? this.$t('Account suspended, subscription cancelled and :amount refunded.', { amount: refund.refunded })
+        : this.$t('Account suspended and subscription cancelled. Nothing was left to refund.');
     },
     async saveNote(){
       this.busy = true;
@@ -1103,7 +1092,7 @@ export default {
         this.detail.enforcement = response.data.enforcement;
         this.detail.history = response.data.history;
         this.actionNotes = '';
-        this.notice = 'Note saved. Nothing was sent.';
+        this.notice = this.$t('Note saved. Nothing was sent.');
       } catch (error) {
         this.error = this.messageFrom(error);
       } finally {
@@ -1111,7 +1100,7 @@ export default {
       }
     },
     async approve(){
-      if(!confirm('Record your approval of this project as currently described? Nothing is sent and their access does not change.')){
+      if(!confirm(this.$t('Record your approval of this project as currently described? Nothing is sent and their access does not change.'))){
         return;
       }
 
@@ -1128,7 +1117,7 @@ export default {
         this.detail.approvals = response.data.approvals;
         this.detail.last_approval = response.data.last_approval;
         this.approveNotes = '';
-        this.notice = 'Approval recorded. Nothing was sent.';
+        this.notice = this.$t('Approval recorded. Nothing was sent.');
 
         const row = this.usage.find(u => u.id === id);
 
@@ -1155,7 +1144,7 @@ export default {
     messageFrom(error){
       return (error.response && error.response.data && error.response.data.error)
         ? error.response.data.error
-        : 'Something went wrong.';
+        : this.$t('Something went wrong.');
     },
   },
 }

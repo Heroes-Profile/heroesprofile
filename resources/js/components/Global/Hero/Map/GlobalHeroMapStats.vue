@@ -2,127 +2,127 @@
   <div>
     <global-async-debug-banner page-label="Global Hero Maps" />
 
-    <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Best Maps & Map Win Rates' : 'Hero Map Win Rates'">
-      <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
-        <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
-        <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 220px; max-height: 340px; overflow-y: auto;">
-          <input v-model="heroDropdownSearch" type="text" placeholder="Search hero..." class="w-full px-2 py-1 text-xs bg-gray-dark text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
-          <div v-for="h in filteredDropdownHeroes" :key="h.id" class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-lighten text-sm" @click="clickedHero(h); heroDropdownOpen = false">
-            <hero-image-wrapper :hero="h" :includehover="false" class="flex-shrink-0"></hero-image-wrapper>
-            <span>{{ h.name }}</span>
-          </div>
-        </div>
-      </div>
-      <template v-if="selectedHero" #aboveHeading>
-        <hero-heading-select :heroes="heroes" :value="selectedHero.id" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
-      </template>
-    </page-heading>
     <div v-if="!selectedHero">
+      <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+      <page-heading scope="Global" :heading="'Hero Map Win Rates'" :subheading="'Win rates by map'"></page-heading>
       <hero-selection :heroes="heroes"></hero-selection>
     </div>
 
-
     <div v-else>
-      <filters 
-      :onFilter="filterData" 
-      :filters="filters"
-      :isLoading="isLoading" 
+      <!-- As the other global hero pages: the hero's heading, its name the hero picker, with the filters beside it -->
+      <player-page-top>
+        <template #heading>
+          <page-heading scope="Global" :heading="$heroName(selectedHero)" :subheading="'Best maps & map win rates'" :portrait-desktop-only="true">
+            <hero-image-wrapper :hero="selectedHero" size="heading" :includehover="false"></hero-image-wrapper>
+            <template #headingText>
+              <hero-heading-select :heroes="heroes" :value="selectedHero.id" textclass="" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
+            </template>
+          </page-heading>
+        </template>
+        <filters
+          :onFilter="filterData"
+          :filters="filters"
+          :isLoading="isLoading"
 
-      :timeframetypeinput="timeframetype"
-      :timeframeinput="timeframe"
-      :gametypeinput="gametype"
-      :regioninput="region"
-      :herolevelinput="herolevel"
-      :playerrankinput="playerrank"
-      :herorankinput="herorank"
-      :rolerankinput="rolerank"
-      :mirrormatchinput="mirrormatch"
+          :timeframetypeinput="timeframetype"
+          :timeframeinput="timeframe"
+          :gametypeinput="gametype"
+          :regioninput="region"
+          :herolevelinput="herolevel"
+          :playerrankinput="playerrank"
+          :herorankinput="herorank"
+          :rolerankinput="rolerank"
+          :mirrormatchinput="mirrormatch"
 
+          :gametypedefault="gametypedefault"
+          :includetimeframe="true"
+          :includeregion="true"
+          :includeherolevel="true"
+          :includegametype="true"
+          :includeplayerrank="true"
+          :includeherorank="true"
+          :includerolerank="true"
+          :includemirror="true"
+          :advancedfiltering="advancedfiltering"
+          >
+        </filters>
+      </player-page-top>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-      :gametypedefault="gametypedefault"
-      :includetimeframetype="true"
-      :includetimeframe="true"
-      :includeregion="true"
-      :includeherolevel="true"
-      :includegametype="true"
-      :includeplayerrank="true"
-      :includeherorank="true"
-      :includerolerank="true"
-      :includemirror="true"
-      :advancedfiltering="advancedfiltering"
-      >
-    </filters>
-    <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
+      <div v-if="data" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <patch-notes-panel v-if="patchNotesUrl" class="!max-w-none !mb-0" :version="timeframe[0]"></patch-notes-panel>
 
-    <div v-if="data">
-      <div class="flex justify-between max-w-[1500px] mx-auto">
-        <span class="flex gap-4 mb-2"> 
-          <single-select-filter
-            :values="filters.heroes" 
-            :text="'Change Hero'" 
-            :defaultValue="selectedHero.id"
-            @input-changed="handleInputChange"
-          ></single-select-filter>
-        </span>
-        <span>
-          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
-        </span>
+        <panel-box title="Map win rates" :subtitle="$t('Win rate for :hero on each map. Click a column to sort.', { hero: $heroName(selectedHero) })">
+          <div id="table-container" ref="tablecontainer" class="overflow-clip max-sm:text-xs">
+            <table id="responsive-table" class="w-full rounded-table relative" ref="responsivetable">
+              <thead>
+                <tr>
+                  <th
+                    v-for="column in dynamicColumns"
+                    :key="column.value"
+                    :class="['py-2 px-3 text-sm leading-4 whitespace-nowrap', column.value === 'name' ? 'text-left' : 'text-center', column.sortable ? 'cursor-pointer' : '', { 'bg-teal text-white': column.sortable && sortKey === column.value }]"
+                    @click="column.sortable ? sortTable(column.value) : null"
+                    >
+                      <!-- Phones get the short label where there is one -->
+                      <template v-if="column.short"><span class="md:hidden">{{ $t(column.short) }}</span><span class="max-md:hidden">{{ $t(column.text) }}</span></template><template v-else>{{ $t(column.text) }}</template><sort-indicator v-if="column.sortable" :column="column.value" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="text-center">
+                <tr v-for="row in sortedData" :key="row.name">
+                  <td v-for="column in dynamicColumns" :key="column.value" :class="column.value === 'name' ? 'text-left' : ''">
+                    <span v-if="column.value === 'name'" class="font-semibold">{{ $mapName(row.name) }}</span>
+                    <span v-else-if="column.value === 'win_rate_change'" :class="['whitespace-nowrap', row.win_rate_change > 0 ? 'text-win' : row.win_rate_change < 0 ? 'text-loss' : 'text-subtext']">
+                      <template v-if="row.win_rate_change === null">-</template>
+                      <template v-else-if="row.win_rate_change > 0">&#9650; +{{ row.win_rate_change.toFixed(2) }}</template>
+                      <template v-else-if="row.win_rate_change < 0">&#9660; {{ row.win_rate_change.toFixed(2) }}</template>
+                      <template v-else>0.00</template>
+                    </span>
+                    <!-- Rates always with two decimals, as on the other global tables -->
+                    <template v-else>{{ column.percent && row[column.value] !== null && row[column.value] !== '' && !isNaN(row[column.value]) ? Number(row[column.value]).toFixed(2) + '%' : row[column.value] }}</template>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </panel-box>
       </div>
-
-      <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
-
-      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw] max-sm:text-xs   2xl:mx-auto  " style=" ">
-       <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
-      
-          <thead>
-            <tr>
-              <th 
-                v-for="column in dynamicColumns" 
-                :key="column.value" 
-                :class="['py-2', 'px-3', 'border-b', 'border-gray-200', 'text-left', 'text-sm', 'leading-4', 'text-gray-500', 'tracking-wider', column.sortable ? 'cursor-pointer' : '']"
-                @click="column.sortable ? sortTable(column.value) : null"
-                >
-                  {{ column.text }}
-              </th>        
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="row in sortedData" :key="row.rank">
-              <td v-for="column in dynamicColumns" :key="column.value" class="">
-                <div v-if="column.value === 'battletag'">
-                  <a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row[column.value] }}</a>
-                </div>
-                <div v-else-if="column.value === 'most_played_hero'">
-                  <div  v-if="row.most_played_hero" class="flex gap-x-2 items-center">
-                    <hero-image-wrapper :hero="row.most_played_hero">
-                      <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played:' + row.hero_build_games_played"></image-hover-box>
-                    </hero-image-wrapper>
-                  </div>
-                </div>
-                <div v-else>
-                  {{ row[column.value] }}
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        
+      <div v-else-if="isLoading" class="max-w-[120rem] w-full mx-auto px-4 md:px-8 flex flex-col gap-6">
+        <!-- The collapsed Patch Notes card, so the page doesn't move when it loads -->
+        <panel-box v-if="patchNotesUrl" title="Patch Notes" :skeleton="true" :divider="false" class="md:!py-4">
+          <template #right>
+            <span class="text-sm skeleton-text">{{ $t('Show') }}<basil-icon name="arrow-small" class="text-xs ml-2"></basil-icon></span>
+          </template>
+        </panel-box>
+        <!-- The table is what's loading, so the message sits on its card's tab -->
+        <panel-box title="Map win rates" :subtitle="$t('Win rate for :hero on each map. Click a column to sort.', { hero: $heroName(selectedHero) })" :skeleton="true" class="relative md:!rounded-tl-none">
+          <loading-component v-if="determineIfVeryLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Very large amount of data. Compiling can take 5-10 minutes. Please be patient.') }}</loading-component>
+          <loading-component v-else-if="determineIfLargeData()" :compact="true" :tab="true" :textoverride="true">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+          <loading-component v-else :compact="true" :tab="true" :textoverride="true">{{ $t('Loading map stats...') }}</loading-component>
+          <!-- The real table's columns with grey cells -->
+          <table class="w-full rounded-table relative max-sm:text-xs">
+            <thead>
+              <tr>
+                <th v-for="column in skeletonColumns" :key="column.value" :class="['py-2 px-3 text-sm leading-4 whitespace-nowrap', column.value === 'name' ? 'text-left' : 'text-center']">
+                  <template v-if="column.short"><span class="md:hidden">{{ $t(column.short) }}</span><span class="max-md:hidden">{{ $t(column.text) }}</span></template><template v-else>{{ $t(column.text) }}</template>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="text-center">
+              <tr v-for="row in 13" :key="row">
+                <td v-for="column in skeletonColumns" :key="column.value" :class="column.value === 'name' ? 'text-left' : ''">
+                  <span :class="['skeleton-text', { 'font-semibold': column.value === 'name' }]">{{ column.value === 'name' ? 'Tomb of the Spider Queen' : '00.00%' }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </panel-box>
       </div>
-
+      <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" v-if="determineIfVeryLargeData()" :textoverride="true">Very large amount of data.<br/>Compiling can take 5-10 minutes.<br/>Please be patient.<br/>Loading Data...</loading-component>
-      <loading-component @cancel-request="cancelAxiosRequest" v-else-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
-      <loading-component @cancel-request="cancelAxiosRequest" v-else></loading-component>
-    </div>
-    <div v-else-if="dataError" class="flex items-center justify-center">
-      Error: Reload page/filter
     </div>
   </div>
-
-
-
-</div>
 </template>
 
 <script>
@@ -148,11 +148,9 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
     },
     data(){
       return {
-        dataError: false,
+        loadError: null,
         windowWidth: window.innerWidth,
         isLoading: false,
-        heroDropdownOpen: false,
-        heroDropdownSearch: '',
         infoText: "Hero Maps provide information on which maps are good for each hero",
         selectedHero: null,
         data: null,
@@ -168,7 +166,6 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
         herorank: null,
         rolerank: null,
         mirrormatch: 0,
-        showPatchNotes: false,
       }
     },
     created(){
@@ -188,11 +185,6 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
     mounted() {
     },
     computed: {
-      filteredDropdownHeroes() {
-        const q = this.heroDropdownSearch.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-        if (!q) return this.heroes;
-        return this.heroes.filter(h => h.name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().includes(q));
-      },
       patchNotesUrl() {
         if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {
           return null;
@@ -202,20 +194,27 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
         return match && match.patch_notes_url ? match.patch_notes_url : null;
       },
        dynamicColumns() {
-        if (this.gametype.includes("sl")) {
-          return [
-            { text: 'Map', value: 'name', sortable: true },
-            { text: 'Win Rate %', value: 'win_rate', sortable: true },
-            { text: 'Ban Rate %', value: 'ban_rate', sortable: true },
-            { text: 'Games Played', value: 'games_played', sortable: true },
-          ];
-        } else {
-          return [
-            { text: 'Map', value: 'name', sortable: true },
-            { text: 'Win Rate %', value: 'win_rate', sortable: true },
-            { text: 'Games Played', value: 'games_played', sortable: true },
-          ];
-        }
+        return [
+          { text: 'Map', value: 'name', sortable: true },
+          { text: 'Win Rate', value: 'win_rate', sortable: true, percent: true },
+          ...(this.showWinRateChange ? [{ text: 'Change', value: 'win_rate_change', sortable: true }] : []),
+          ...(this.gametype.includes("sl") ? [{ text: 'Ban Rate', value: 'ban_rate', sortable: true, percent: true }] : []),
+          { text: 'Games Played', short: 'Games', value: 'games_played', sortable: true },
+        ];
+      },
+      // Before the data: the change column is expected for a single patch
+      skeletonColumns() {
+        return [
+          { text: 'Map', value: 'name' },
+          { text: 'Win Rate', value: 'win_rate' },
+          ...(this.timeframe && this.timeframe.length === 1 ? [{ text: 'Change', value: 'win_rate_change' }] : []),
+          ...(this.gametype.includes("sl") ? [{ text: 'Ban Rate', value: 'ban_rate' }] : []),
+          { text: 'Games Played', short: 'Games', value: 'games_played' },
+        ];
+      },
+      // The server only sends change for one unfiltered patch and game type
+      showWinRateChange() {
+        return Array.isArray(this.data) && this.data.some(row => row.win_rate_change !== null && row.win_rate_change !== undefined);
       },
       sortedData() {
         if (!this.sortKey) return this.data;
@@ -245,7 +244,7 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
         this.getData();
       },
       async getData(){
-        this.dataError = false;
+        this.loadError = null;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -276,13 +275,13 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
           
           this.data = response.data;
         }catch(error){
-          this.dataError = true;
+          this.loadError = this.$loadError(error, () => this.getData());
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
           this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
-          if (responsivetable && this.windowWidth < 1500) {
+          if (responsivetable) {
             this.tablewidth = scaleTableToFit(responsivetable, this.$refs.tablecontainer);
           }
         });
@@ -307,7 +306,6 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
         this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
 
 
-        this.showPatchNotes = false;
 
         this.updateQueryString();
         this.data = null; 
@@ -358,9 +356,6 @@ import { scaleTableToFit } from '../../../../utils/scaleTable';
       },
       redirectChangeHero(){
         window.location.href = "/Global/Hero/Maps";
-      },
-      togglePatchNotes() {
-        this.showPatchNotes = !this.showPatchNotes;
       },
       sortTable(key) {
         if (key === this.sortKey) {

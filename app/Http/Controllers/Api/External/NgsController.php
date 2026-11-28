@@ -50,7 +50,7 @@ class NgsController extends Controller
     public function playerSearch(Request $request): Response
     {
         if (! $request->filled('battletag')) {
-            return $this->error('missing_battletag', 'This endpoint needs a battletag to search for.');
+            return $this->error('missing_battletag', __('This endpoint needs a battletag to search for.'));
         }
 
         return $this->delegate($request, SiteNgsController::class, 'playerSearch', [], [
@@ -73,7 +73,7 @@ class NgsController extends Controller
     public function heroTalentStats(Request $request): Response
     {
         if (! $request->filled('hero')) {
-            return $this->error('missing_hero', 'This endpoint needs a hero to report talents for.');
+            return $this->error('missing_hero', __('This endpoint needs a hero to report talents for.'));
         }
 
         return $this->delegate($request, EsportsController::class, 'getOverallTalentStats', ['season', 'division', 'hero'], defaultSeason: true);
@@ -82,7 +82,7 @@ class NgsController extends Controller
     public function division(Request $request): Response
     {
         if (! $request->filled('division')) {
-            return $this->error('missing_division', 'This endpoint needs a division.');
+            return $this->error('missing_division', __('This endpoint needs a division.'));
         }
 
         return $this->delegate($request, NGSSingleDivisionController::class, 'getSingleDivisionData', ['season', 'division'], defaultSeason: true);
@@ -91,7 +91,7 @@ class NgsController extends Controller
     public function divisionMatches(Request $request): Response
     {
         if (! $request->filled('division')) {
-            return $this->error('missing_division', 'This endpoint needs a division.');
+            return $this->error('missing_division', __('This endpoint needs a division.'));
         }
 
         return $this->delegate($request, NGSSingleDivisionController::class, 'getSingleDivisionMatchHistory', ['season', 'division'], defaultSeason: true);
@@ -105,7 +105,7 @@ class NgsController extends Controller
     public function team(Request $request): Response
     {
         if (! $request->filled('team')) {
-            return $this->error('missing_team', 'This endpoint needs a team name.');
+            return $this->error('missing_team', __('This endpoint needs a team name.'));
         }
 
         return $this->delegate($request, EsportsController::class, 'getData', ['team', 'season', 'division']);
@@ -114,7 +114,7 @@ class NgsController extends Controller
     public function teamMatches(Request $request): Response
     {
         if (! $request->filled('team')) {
-            return $this->error('missing_team', 'This endpoint needs a team name.');
+            return $this->error('missing_team', __('This endpoint needs a team name.'));
         }
 
         return $this->delegate($request, EsportsController::class, 'getTeamMatchHistoryData', ['team', 'season', 'division'], [
@@ -130,7 +130,7 @@ class NgsController extends Controller
     public function playerHero(Request $request): Response
     {
         if (! $request->filled('hero')) {
-            return $this->error('missing_hero', 'This endpoint needs a hero.');
+            return $this->error('missing_hero', __('This endpoint needs a hero.'));
         }
 
         return $this->delegatePlayer($request, ['hero']);
@@ -139,7 +139,7 @@ class NgsController extends Controller
     public function playerMap(Request $request): Response
     {
         if (! $request->filled('game_map')) {
-            return $this->error('missing_game_map', 'This endpoint needs a game_map.');
+            return $this->error('missing_game_map', __('This endpoint needs a game_map.'));
         }
 
         return $this->delegatePlayer($request, ['game_map']);
@@ -159,7 +159,7 @@ class NgsController extends Controller
         $result = $this->delegate($request, SingleMatchController::class, 'getData', [], ['replayID' => $replayID]);
 
         if ($result->getStatusCode() === 404) {
-            return $this->error('replay_not_found', 'No NGS match found for that id.', 404);
+            return $this->error('replay_not_found', __('No NGS match found for that id.'), 404);
         }
 
         // Seconds, as every other endpoint reports length.
@@ -255,7 +255,7 @@ class NgsController extends Controller
             return response()->json([
                 'error' => [
                     'code' => 'test_mode',
-                    'message' => 'This account is receiving test data and cannot delete NGS games.',
+                    'message' => __('This account is receiving test data and cannot delete NGS games.'),
                 ],
             ], 403);
         }
@@ -277,7 +277,7 @@ class NgsController extends Controller
     {
         if ($request->filled('blizz_id')) {
             if (! ctype_digit((string) $request->input('blizz_id'))) {
-                return $this->error('invalid_blizz_id', 'blizz_id must be a number.');
+                return $this->error('invalid_blizz_id', __('blizz_id must be a number.'));
             }
 
             $blizzId = (string) $request->input('blizz_id');
@@ -288,16 +288,16 @@ class NgsController extends Controller
             $matches = $this->ngsBlizzIds((string) $request->input('battletag'));
 
             if ($matches === []) {
-                return $this->error('player_not_found', 'No NGS player found for that battletag.', 404);
+                return $this->error('player_not_found', __('No NGS player found for that battletag.'), 404);
             }
 
             if (count($matches) > 1) {
-                return $this->error('ambiguous_player', 'More than one NGS player matches that battletag. Send the full battletag, or a blizz_id from `ngs/players/search`.');
+                return $this->error('ambiguous_player', __('More than one NGS player matches that battletag. Send the full battletag, or a blizz_id from `ngs/players/search`.'));
             }
 
             $blizzId = (string) $matches[0];
         } else {
-            return $this->error('missing_player', 'This endpoint needs a battletag or a blizz_id.');
+            return $this->error('missing_player', __('This endpoint needs a battletag or a blizz_id.'));
         }
 
         $keys = array_merge(['battletag'], $seasonal ? ['season', 'division'] : [], $keys);

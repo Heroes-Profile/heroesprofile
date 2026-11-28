@@ -860,7 +860,7 @@ class GlobalQueryService
         }
 
         return response()->json([
-            'error' => ['code' => 'query_too_large', 'message' => self::TOO_LARGE_MESSAGE],
+            'error' => ['code' => 'query_too_large', 'message' => __(self::TOO_LARGE_MESSAGE)],
         ], 422);
     }
 

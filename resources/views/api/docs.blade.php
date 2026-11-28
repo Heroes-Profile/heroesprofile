@@ -1,7 +1,7 @@
 @extends('layouts.api')
 
-@section('title', 'Docs')
-@section('meta_description', 'Every endpoint in the Heroes Profile API — parameters, response shapes and quota keys.')
+@section('title', __('API Docs: Endpoints, Parameters & Responses'))
+@section('meta_description', __('Every endpoint in the Heroes Profile API for Heroes of the Storm data: its parameters, response shape and quota key.'))
 
 @section('content')
   <api-docs

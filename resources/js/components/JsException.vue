@@ -1,6 +1,6 @@
 <template>
     <div>
-      Enter the exception zone
+      {{ $t('Enter the exception zone') }}
     </div>
   </template>
   

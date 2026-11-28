@@ -2,11 +2,11 @@
   <icon-with-hover v-if="visible && tooltip" size="small" icon="void-eye-img" title="info" popupsize="small">
     <slot>
       <div>
-        <p class="max-sm:text-xs">Marked by the Void</p>
+        <p class="max-sm:text-xs">{{ $t('Marked by the Void') }}</p>
       </div>
     </slot>
   </icon-with-hover>
-  <i v-else-if="visible" class="void-eye-img" title="Marked by the Void"></i>
+  <i v-else-if="visible" class="void-eye-img" :title="$t('Marked by the Void')"></i>
 </template>
 
 <script>

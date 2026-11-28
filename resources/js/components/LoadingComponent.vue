@@ -1,18 +1,29 @@
 <template>
+  <!-- One line above a page's skeleton, rather than covering the page. With tab, on desktop it sits on a tab of the skeleton
+       panel's background, just above the panel, so the panel can start where the loaded one does (the panel squares its
+       top-left corner with md:!rounded-tl-none); below md it is the plain line again. -->
+  <!-- The tab is 2.25rem tall (extra room above the spinning logo) and overlaps the panel by 1rem, so it sticks up 1.25rem
+       and still clears the 1.5rem gap under the filters -->
+  <div v-if="compact" :class="['flex flex-wrap items-center gap-3 text-sm text-soft', { 'md:absolute md:left-0 md:bottom-[calc(100%-1rem)] md:bg-surface md:rounded-t md:px-6 md:pt-2 md:pb-1': tab }]">
+    <img :class="['logo-spin w-auto shrink-0', tab ? 'h-7 md:h-6' : 'h-7']" :src="overrideimage || '/images/logo/heroesprofilelogo.png'" alt="Loading" />
+    <span v-if="textoverride"><slot></slot></span>
+    <span v-else>{{ $t('Loading data...') }}</span>
+    <span v-if="timer" class="text-subtext">{{ $t('~:count seconds remaining', { count: countdown }) }}</span>
+  </div>
 
-  <div class="loading-container z-40 w-full min-h-[50vh] ">
+  <div v-else class="loading-container z-40 w-full min-h-[50vh] ">
     <img v-if="overrideimage" loading="eager" :src="overrideimage" alt="loading" />
     <img v-else loading="eager" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
     <div class="loading-text">
       <div v-if="textoverride">
         <slot></slot>
-        <span v-if="timer">~{{ countdown }} seconds remaining</span>
+        <span v-if="timer">{{ $t('~:countdown seconds remaining', { countdown: countdown }) }}</span>
       </div>
 
-      <span v-else>Loading data...</span>
+      <span v-else>{{ $t('Loading data...') }}</span>
     </div>
     <!-- Unforunately this only cancels the front end request, and I have found no way to cancel the backend request -->
-    <!--<custom-button @click="cancelRequest" text="Cancel Request" alt="Cancel Request" size="small" :ignoreclick="true">Cancel Request</custom-button>-->
+    <!--<custom-button @click="cancelRequest" text="Cancel Request" alt="Cancel Request" size="small" :ignoreclick="true">{{ $t('Cancel Request') }}</custom-button>-->
   </div>
 </template>
 <script>
@@ -24,6 +35,8 @@
       textoverride: Boolean,
       overrideimage: String,
       timer: Boolean,
+      compact: Boolean,
+      tab: Boolean,
       starttime: Number,
     },
     data(){
@@ -73,7 +86,7 @@
   align-items: center;
   justify-content: flex-start;
   padding-top: 5%; /* Adjust as needed to only occupy the top half */
-  gap: 20px;
+  gap: 1.25rem;
   background-color: rgba(0, 0, 0, 0.95); /* Translucent black background */
   width: 100%; /* Take full width of the parent container */
   height: 100%; /* Take full height of the parent container */
@@ -82,7 +95,7 @@
 
 .loading-text {
   font-family: 'Ruslan Display', cursive;
-  font-size: 24px;
+  font-size: 1.5rem;
   text-align: center;
   color: #fff;
 }
@@ -99,7 +112,7 @@
 .loading-container img {
   animation: spin 2.25s linear infinite;
   width: 121.5;
-  height: 108px;
+  height: 6.75rem;
 }
 </style>
 

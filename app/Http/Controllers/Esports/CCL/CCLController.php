@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CCL\CCLTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class CCLController extends Controller
 {
@@ -21,13 +22,16 @@ class CCLController extends Controller
                 'filters' => $this->globalDataService->getFilterData(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
                 'urlparameters' => $request->query(),
-                'organizations' => CCLTeam::select('team_name')
+                // With its season, so the dropdown lists the chosen season's teams
+                'organizations' => CCLTeam::select('team_name', 'season')
                     ->distinct()
+                    ->orderBy('team_name')
                     ->get()
                     ->map(function ($team) {
                         return [
                             'code' => $team->team_name,
                             'name' => $team->team_name,
+                            'season' => $team->season,
                         ];
                     }),
             ]);
@@ -36,7 +40,7 @@ class CCLController extends Controller
     public function getOrganizationData(Request $request)
     {
         $validationRules = [
-            'season' => 'required|in:1,2,3,4',
+            'season' => ['required', Rule::in(CCLTeam::distinct()->pluck('season')->all())],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);

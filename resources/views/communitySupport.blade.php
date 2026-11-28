@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)  
-@section('title', 'Home')
+@section('title', __('Home'))
 @section('meta_keywords', 'heroes profile, home page, hero statistics, player data')
 @section('meta_description', 'Explore hero statistics, player data, and more on Heroes Profile, your source for in-depth insights into the Heroes of the Storm community.')
 @section('content')

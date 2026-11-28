@@ -1,20 +1,22 @@
 <template>
   <!-- Bottom-left help (the video ad takes bottom-right). One box: the FAQ and site pages answer first, the assistant only when asked. Sits above the cookie banner while it shows. -->
-  <div class="fixed left-4 z-50 flex flex-col items-start gap-3 text-left" :style="{ bottom: 'calc(var(--disclaimer-height, 0px) + 1rem)' }">
-    <div v-if="open" :class="expanded ? 'w-[47.5rem]' : 'w-[26.25rem] h-[35rem]'" :style="{ height: expanded ? 'calc(100dvh - 8rem - var(--disclaimer-height, 0px))' : null, maxHeight: 'calc(100dvh - 8rem - var(--disclaimer-height, 0px))' }" class="max-w-[calc(100vw-2rem)] bg-black rounded-2xl border border-white/20 shadow-[0_0.5rem_2rem_rgba(0,0,0,0.7)] flex flex-col overflow-hidden">
+  <!-- Above the nav (z-[52]), so a tall panel's close button isn't under it -->
+  <!-- Bottom left, lifted above the footer once it scrolls into view (footerLift); the cookie notice may sit beside or under it -->
+  <div class="fixed left-4 z-[53] flex flex-col items-start gap-3" :style="{ bottom: `calc(${footerLift}px + 1rem)` }">
+    <div v-if="open" :class="expanded ? 'w-[47.5rem]' : 'w-[26.25rem] h-[35rem] max-md:h-[65dvh]'" :style="{ height: expanded ? `calc(100dvh - 8rem - ${footerLift}px)` : null, maxHeight: `calc(100dvh - 8rem - ${footerLift}px)` }" class="max-w-[calc(100vw-2rem)] bg-surface-4 rounded-2xl border border-white/20 shadow-[0_0.5rem_2rem_rgba(0,0,0,0.7)] flex flex-col overflow-hidden">
       <!-- Window controls top-right: expand, divider, close -->
       <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
         <div class="flex items-center gap-4">
-          <span class="font-bold text-lg">Help</span>
-          <button v-if="messages.length" class="text-sm underline" :disabled="!!loading" @click="newChat">New chat</button>
+          <span class="font-bold text-lg">{{ $t('Help') }}</span>
+          <button v-if="messages.length" class="text-sm underline" :disabled="!!loading" @click="newChat">{{ $t('New chat') }}</button>
         </div>
         <div class="flex items-center gap-2">
-          <button class="w-8 h-8 rounded flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="expanded ? 'Make help smaller' : 'Make help bigger'" :title="expanded ? 'Smaller' : 'Bigger'" @click="toggleExpanded">
+          <button class="max-md:hidden w-8 h-8 rounded flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="$t(expanded ? $t('Make help smaller') : $t('Make help bigger'))" :title="expanded ? $t('Smaller') : $t('Bigger')" @click="toggleExpanded">
             <i :class="expanded ? 'fas fa-down-left-and-up-right-to-center' : 'fas fa-up-right-and-down-left-from-center'"></i>
           </button>
-          <span class="w-px h-5 bg-white/20" aria-hidden="true"></span>
-          <button class="w-8 h-8 rounded flex items-center justify-center hover:bg-white/10 transition-colors" aria-label="Close help" title="Close" @click="toggle">
-            <i class="fas fa-xmark text-lg"></i>
+          <span class="max-md:hidden w-px h-5 bg-white/20" aria-hidden="true"></span>
+          <button class="w-8 h-8 rounded flex items-center justify-center hover:bg-white/10 transition-colors" :aria-label="$t('Close help')" :title="$t('Close')" @click="toggle">
+            <basil-icon name="cross" class="text-lg"></basil-icon>
           </button>
         </div>
       </div>
@@ -23,35 +25,35 @@
         <!-- The Heroes Profile logo answers, like the Analytics announcer -->
         <!-- First visit: the panel opens itself with this on the first page only -->
         <analytics-speech-bubble v-if="!messages.length && showIntro" :talking="true">
-          <span class="font-bold">New:</span>
-          Got a question about Heroes Profile? Ask it here, like "What's the best Valla build?" or "How do I upload my replays?" I'll find the right page or FAQ answer, and if you're logged in with Battle.net the assistant can help with the rest.
+          <span class="font-bold">{{ $t('New:') }}</span>
+          {{ $t(`Got a question about Heroes Profile? Ask it here, like ":one" or ":two" I'll find the right page or FAQ answer, and if you're logged in with Battle.net the assistant can help with the rest.`, { one: $t("What's the best Valla build?"), two: $t('How do I upload my replays?') }) }}
         </analytics-speech-bubble>
-        <analytics-speech-bubble v-else-if="!messages.length">Ask me anything about Heroes Profile, like "What's the best Valla build?" or "How do I upload my replays?"</analytics-speech-bubble>
+        <analytics-speech-bubble v-else-if="!messages.length">{{ $t('Ask me anything about Heroes Profile, like ":one" or ":two"', { one: $t("What's the best Valla build?"), two: $t('How do I upload my replays?') }) }}</analytics-speech-bubble>
         <template v-for="(message, index) in messages" :key="index">
           <!-- What the FAQ and site pages had, with the choice to ask the assistant -->
           <analytics-speech-bubble v-if="message.role === 'results'" :data-message="index" :logo="message.logo || undefined" :talking="talkingIndex === index" @done="talkingIndex = null">
             <div class="flex flex-col gap-3">
               <span v-if="message.line" class="italic font-medium">{{ message.line }}</span>
               <template v-if="message.faq.length || message.pages.length">
-                <span class="text-xs opacity-70">Here's what I found</span>
+                <span class="text-xs opacity-70">{{ $t("Here's what I found") }}</span>
                 <!-- Pages first: usually where they want to go -->
                 <div v-if="message.pages.length" class="flex flex-col gap-1">
-                  <span class="font-bold">Pages</span>
+                  <span class="font-bold">{{ $t('Pages') }}</span>
                   <div v-for="page in message.pages" :key="page.url">
-                    <a v-if="!page.url.includes('{')" :href="page.url" class="underline">{{ page.name }}</a>
+                    <a v-if="!page.url.includes('{')" :href="page.url" class="link">{{ page.name }}</a>
                     <span v-else class="font-medium">{{ page.name }}</span>
                     <span>: {{ page.description }}</span>
-                    <span v-if="message.examples && page.url.startsWith('/Player/')" class="text-xs opacity-70"> (an example profile; search your own BattleTag)</span>
+                    <span v-if="message.examples && page.url.startsWith('/Player/')" class="text-xs opacity-70"> ({{ $t('an example profile; search your own BattleTag') }})</span>
                   </div>
                 </div>
-                <span v-if="message.faq.length" class="font-bold">From the FAQ</span>
+                <span v-if="message.faq.length" class="font-bold">{{ $t('From the FAQ') }}</span>
                 <div v-for="item in message.faq" :key="item.q" class="flex flex-col gap-1">
                   <span class="font-semibold">{{ item.q }}</span>
                   <div v-html="item.a"></div>
-                  <a v-if="item.id" :href="'/FAQ#' + item.id" class="underline text-xs">Open in the FAQ</a>
+                  <a v-if="item.id" :href="'/FAQ#' + item.id" class="link text-xs">{{ $t('Open in the FAQ') }}</a>
                 </div>
               </template>
-              <span v-else>I couldn't find that in the FAQ.</span>
+              <span v-else>{{ $t("I couldn't find that in the FAQ.") }}</span>
             </div>
           </analytics-speech-bubble>
           <analytics-speech-bubble v-else-if="message.role === 'assistant'" :data-message="index" :logo="message.logo || undefined" :talking="talkingIndex === index" @done="talkingIndex = null">
@@ -60,37 +62,37 @@
           <div v-else-if="message.role === 'user'" :data-message="index" class="self-end max-w-[85%] rounded-xl px-3 py-2 bg-blue whitespace-pre-line">{{ message.content }}</div>
           <!-- Under the latest search result: the way on to the assistant -->
           <template v-if="message.role === 'results' && index === messages.length - 1 && !loading">
-            <custom-button v-if="loggedIn" class="w-full text-center" color="blue" :text="message.faq.length || message.pages.length ? 'Not what you needed? Ask the assistant' : 'Ask the assistant'" :ignoreclick="true" @click="askAssistant(message)"></custom-button>
+            <custom-button v-if="loggedIn" class="w-full text-center" color="blue" :text="message.faq.length || message.pages.length ? $t('Not what you needed? Ask the assistant') : $t('Ask the assistant')" :ignoreclick="true" @click="askAssistant(message)"></custom-button>
             <custom-button v-else class="w-full text-center" color="blue" href="/Authenticate/Battlenet" text="Log in with Battle.net to ask the assistant"></custom-button>
           </template>
         </template>
-        <analytics-speech-bubble v-if="loading" :logo="persona?.logo" :talking="true">{{ loading === 'assistant' ? 'Thinking…' : 'Looking…' }}</analytics-speech-bubble>
+        <analytics-speech-bubble v-if="loading" :logo="persona?.logo" :talking="true">{{ $t(loading === 'assistant' ? $t('Thinking…') : $t('Looking…')) }}</analytics-speech-bubble>
         <p v-if="error" class="text-red">{{ error }}</p>
       </div>
 
       <form class="px-5 py-4 border-t border-white/10 flex flex-col gap-2" @submit.prevent="send">
         <div class="flex gap-2">
-          <input v-model="question" type="text" maxlength="500" placeholder="Ask a question" aria-label="Ask a question" class="form-control search-input flex-1 min-w-0 text-black text-sm" :disabled="!!loading" />
+          <input v-model="question" type="text" maxlength="500" :placeholder="$t('Ask a question')" :aria-label="$t('Ask a question')" class="flex-1 min-w-0 bg-field text-white rounded px-3 py-2 text-sm" :disabled="!!loading" />
           <custom-button color="teal" text="Send" size="small" :ignoreclick="true" :disabled="!!loading || !question.trim()" @click="send"></custom-button>
         </div>
-        <span v-if="loggedIn && remaining !== null" class="text-xs opacity-70">{{ remaining }} assistant {{ remaining === 1 ? 'question' : 'questions' }} left today</span>
+        <span v-if="loggedIn && remaining !== null" class="text-xs text-subtext">{{ $t(':remaining assistant :questions left today', { remaining: remaining, questions: remaining === 1 ? $t('question') : $t('questions') }) }}</span>
       </form>
     </div>
 
     <div class="flex items-center gap-3">
       <button
-        class="w-14 h-14 shrink-0 rounded-full bg-teal hover:bg-lteal text-white text-2xl shadow-[0_0.25rem_1rem_rgba(0,0,0,0.5)] flex items-center justify-center transition-colors"
-        :aria-label="open ? 'Close help' : 'Open help'"
+        class="w-11 h-11 text-lg md:w-14 md:h-14 md:text-2xl shrink-0 rounded-full bg-teal hover:bg-lteal text-white shadow-[0_0.25rem_1rem_rgba(0,0,0,0.5)] flex items-center justify-center transition-colors"
+        :aria-label="$t(open ? $t('Close help') : $t('Open help'))"
         :aria-expanded="open"
         @click="toggle"
       >
-        <i :class="open ? 'fas fa-xmark' : 'fas fa-question'"></i>
+        <basil-icon v-if="open" name="cross"></basil-icon><i v-else class="fas fa-question"></i>
       </button>
       <!-- Phones' first visit, instead of opening the panel over the page -->
       <div v-if="teaser && !open" class="help-teaser animate-bounce flex items-center gap-2 rounded-xl pl-3 pr-1 py-1 text-sm">
-        <button class="text-left" @click="toggle"><span class="font-bold">New:</span> questions? Ask here</button>
-        <button class="w-6 h-6 flex items-center justify-center rounded hover:bg-black/10" aria-label="Dismiss" title="Dismiss" @click="teaser = false">
-          <i class="fas fa-xmark"></i>
+        <button class="text-left" @click="toggle"><span class="font-bold">{{ $t('New:') }}</span> {{ $t('questions? Ask here') }}</button>
+        <button class="w-6 h-6 flex items-center justify-center rounded hover:bg-black/10" :aria-label="$t('Dismiss')" :title="$t('Dismiss')" @click="teaser = false">
+          <basil-icon name="cross"></basil-icon>
         </button>
       </div>
     </div>
@@ -98,7 +100,7 @@
 </template>
 
 <script>
-import moment from 'moment-timezone';
+import { formatGameDate } from '../utils/formatGameDate';
 
 // The conversation lasts for the browser tab, so moving between pages keeps it. The panel itself starts closed on every page, except the first visit.
 const STORAGE_KEY = 'helpChat';
@@ -127,6 +129,8 @@ export default {
       talkingIndex: null,
       showIntro: false,
       teaser: false,
+      // How far the footer has come up into the window, in px, so the button can sit just above it
+      footerLift: 0,
     };
   },
   created() {
@@ -134,7 +138,7 @@ export default {
       // Only the first page they land on, closed or not
       if (!localStorage.getItem(INTRO_KEY)) {
         // Phones get the small note instead: the panel would cover the page
-        if (window.matchMedia('(min-width: 768px)').matches) {
+        if (window.matchMedia('(min-width: 1024px)').matches) {
           this.showIntro = true;
           this.open = true;
         } else {
@@ -160,11 +164,38 @@ export default {
   mounted() {
     // The nav's Help > Help Assistant link
     window.addEventListener('open-help-chat', this.openFromNav);
+    // Rise with the footer as it scrolls into view; pages also change height as their data loads
+    this.footerBar = document.querySelector('[data-footer-bar]');
+    window.addEventListener('scroll', this.queueFooterLift, { passive: true });
+    window.addEventListener('resize', this.queueFooterLift);
+    if (this.footerBar && window.ResizeObserver) {
+      this.footerObserver = new ResizeObserver(this.queueFooterLift);
+      this.footerObserver.observe(document.body);
+    }
+    this.updateFooterLift();
   },
   beforeUnmount() {
     window.removeEventListener('open-help-chat', this.openFromNav);
+    window.removeEventListener('scroll', this.queueFooterLift);
+    window.removeEventListener('resize', this.queueFooterLift);
+    this.footerObserver?.disconnect();
+    cancelAnimationFrame(this.footerFrame);
   },
   methods: {
+    // Once per frame at most while scrolling
+    queueFooterLift() {
+      cancelAnimationFrame(this.footerFrame);
+      this.footerFrame = requestAnimationFrame(this.updateFooterLift);
+    },
+    updateFooterLift() {
+      if (!this.footerBar) {
+        return;
+      }
+      const lift = Math.max(0, Math.round(window.innerHeight - this.footerBar.getBoundingClientRect().top));
+      if (lift !== this.footerLift) {
+        this.footerLift = lift;
+      }
+    },
     openFromNav() {
       if (!this.open) {
         this.toggle();
@@ -306,8 +337,7 @@ export default {
     linkify(text) {
       // Site data times come back as {asof:<UTC>}: shown in the reader's own time zone
       const localized = String(text).replace(/\{asof:([0-9T:\-.]+Z)\}/g, (match, utc) => {
-        const local = moment.tz(utc, 'Atlantic/Reykjavik').clone().tz(moment.tz.guess());
-        return local.isValid() ? local.format('MM/DD/YYYY h:mm:ss a') : utc;
+        return formatGameDate(utc);
       });
 
       const escaped = localized
@@ -327,7 +357,7 @@ export default {
         } catch (e) {
           // A stray % that isn't an escape: show the path as written
         }
-        return `${lead}<a href="${trimmed}" class="underline"${external ? ' target="_blank" rel="noopener"' : ''}>${shown}</a>${rest}`;
+        return `${lead}<a href="${trimmed}" class="link"${external ? ' target="_blank" rel="noopener"' : ''}>${shown}</a>${rest}`;
       });
 
       // Runs of "- " lines become a list, styled like the FAQ's

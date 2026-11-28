@@ -1,360 +1,353 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="'Match Prediction Game'">
-      <template #extraInfo>
-        <p class="text-sm max-md:text-sm">
-          How good are you at predicting the winner of a game based on the team picks? Select your game mode, then select which team you believe won. Results are based off actual game data. 
-        </p>
-      </template>
-    </page-heading>
-
+    <page-heading :heading="'Match Prediction Game'" :subheading="'Guess the winner from the draft'"></page-heading>
 
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-
-
-    <div v-if="!user"  class="max-w-[1000px] mx-auto">
-      <div class="bg-gray-dark p-4">
-        Log in to track your prediction stats and rank on the leaderboard
-      </div>
-    </div>
-    
-    <div v-else class="max-w-[1000px] mx-auto">
-      
-      <div v-if="practicemode" class="bg-red p-4" >PRACTICE MODE ({{ 10 - totalGamesPlayedPractice }} practices left)</div>
-      <div v-else>
-        <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase"> {{ truncatedBattletag }} - {{ seasonLabel(statsSeason) }}</h2>
-        <div class="bg-gray-dark p-4">
-          <div class="flex justify-center">
-            <single-select-filter
-              :values="statsSeasons"
-              :text="'Stats Season'"
-              @input-changed="handleStatsSeasonChange"
-              :defaultValue="season"
-            ></single-select-filter>
-          </div>
-          <p class="text-sm text-center mb-4">Every match you predict counts toward the current season, {{ seasonLabel(currentSeason) }}. The filter only changes which stats are shown.</p>
-          <span ><stat-bar-box class="w-full" size="full" :title="'Quick Match Prediction Rate (Out of '+getPredictionGames(1)+' Games)'" :value="getPredictionRate(1)"></stat-bar-box> </span>
-          <span ><stat-bar-box color="teal" class="w-full" size="full" :title="'Storm League Prediction Rate (Out of '+getPredictionGames(5)+' Games)'" :value="getPredictionRate(5)"></stat-bar-box> </span>
-          <span ><stat-bar-box color="red" class="w-full" size="full" :title="'ARAM Prediction Rate (Out of '+getPredictionGames(6)+' Games)'" :value="getPredictionRate(6)"></stat-bar-box></span>
-          </div>
+    <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <!-- Game type and Next match -->
+      <div class="bg-surface rounded-panel p-4 md:px-6 flex flex-wrap items-end justify-between gap-4">
+        <div class="flex flex-col gap-2 min-w-0 max-w-[44rem]">
+          <span v-if="user && practicemode" class="flex flex-wrap items-center gap-3">
+            <span class="px-1.5 py-0.5 rounded-[0.25rem] bg-red/20 text-[0.625rem]">
+              <span class="font-bold uppercase tracking-wider text-lred">{{ $t('Practice mode') }}</span>
+              <span class="text-subtext"> · {{ $t(':count practices left', { count: practicesLeft }) }}</span>
+            </span>
+            <button type="button" class="text-xs text-subtext hover:text-white hover:underline" @click="skipPracticeOpen = true">{{ $t('Skip practice') }}</button>
+          </span>
+          <p class="text-sm text-subtext">{{ $t('How good are you at predicting the winner from the picks? Every match is a real game, so results are based on actual data.') }}</p>
+          <span class="flex flex-wrap gap-x-4 gap-y-1">
+            <a :href="leaderboardUrl" target="_blank" class="inline-flex items-center text-xs text-lteal link-more">{{ $t('See the leaderboard') }}</a>
+            <!-- Back to How it works and Your record -->
+            <a v-if="user && (data || isLoading)" href="#" class="inline-flex items-center text-xs text-lteal link-more" @click.prevent="showStats">{{ $t('See your stats') }}</a>
+          </span>
         </div>
-
-    </div>
-
-    <div class="max-w-[1000px] mx-auto">
-      <div class="bg-gray-dark p-4">
-        Leaderboards can be found at <a class="link" :href="'/Global/Leaderboard?type=Match%20Prediction&season=' + currentSeason" target="_blank">Leaderboards</a>
-      </div>
-    </div>
-
-
-    <div class="flex justify-center max-w-[1500px] mx-auto">
-     
-
-          <!-- All Game Type Single -->
-          <single-select-filter
-            :values="gametypes" 
-            :text="'Game Type'" 
-            @input-changed="handleInputChange" 
-            :defaultValue="gametype"
-          ></single-select-filter>
-
-
-      <button :disabled="disableFilterInput" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
-          Next Match
-      </button>
-
-    </div>
-
-    <div v-if="isLoading">
-      <loading-component></loading-component>
-    </div>
-
-
-
-    <div v-if="data" class="">
-
-      <div class="w-full max-w-[1000px] bg-blue rounded flex justify-between gap-2 mx-auto p-4 mb-4">
-        <span>{{ data.replayData.game_map.name }}</span>
-        <span>HP Rank: {{ data.rank }}</span>
-        <span>Region: {{ data.replayData.regionString }}</span>
-        <span>{{ data.replayData.timeFormat }}</span>
-      </div>
-
-
-      <p class="mx-auto text-center max-w-[1500px] py-2">Who won the match?</p>
-
-      <div class="flex max-w-[1000px] mx-auto justify-center gap-10">
-
-        <div class="flex flex-col align-center border-2 rounded-md border-white " >
-          <div class="min-h-[4em] ">
-            <button v-if="!disableWinnerSelect" :disabled="disableWinnerSelect" @click="chooseWinner(0)"  :class="{'bg-blue rounded text-white  px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto w-full max-md:mt-10 mx-auto': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
-              {{ "Select Team 1 Winner" }}
-            </button>
-            <div v-else>
-              <div class="rounded-md bg-teal w-full text-center px-4 py-2" v-if="userchoiceteam == 0 && userchoiceresult && userchoiceresult.data == 1">CORRECT!</div>
-              <div class="rounded-md bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 0 && userchoiceresult && userchoiceresult.data == 0">WRONG</div>
-            </div>
+        <div class="flex flex-wrap items-end gap-3 max-sm:w-full">
+          <div class="w-full sm:w-[18.75rem]">
+            <single-select-filter :values="gametypes" :text="'Game type'" :compact="true" :nosearch="true" :placeholder="'Choose game type'" :defaultValue="gametype" @input-changed="handleInputChange"></single-select-filter>
           </div>
-          <div class="px-2" v-if="data.draftData && data.replayBans?.[0]?.length">
-            <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 1 Bans</h2>
-            <div class="flex justify-center gap-5 p-4 max-md:flex-col">
-              <template v-for="(item, index) in data.replayBans[0]" :key="index">
-                <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" size="big" ></hero-image-wrapper >
-                <round-image v-else size="big" image="/images/talents/no-image.png"><h2>No Ban</h2></round-image>
-              </template>
-            </div>
-          </div>
-          <div class="px-2">
-            <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 1 Picks</h2>
-            <div class="flex justify-center gap-5 p-4 max-md:flex-col">
-              <template v-for="(item, index) in teamZeroPicks" :key="index">
-                <hero-image-wrapper v-if="item.hero" :hero="item.hero" size="big" ></hero-image-wrapper >
-              </template>
-            </div>
-          </div>
-        </div>
-        
-        <div class="flex flex-col align-center justify-center  border-2 rounded-md border-white ">
-          <div class="min-h-[4em]">
-            <button v-if="!disableWinnerSelect" :disabled="disableWinnerSelect" @click="chooseWinner(1)"  :class="{'bg-blue rounded text-white px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
-              {{ "Select Team 2 Winner" }}
-            </button>
-            <div v-else>
-              <div class="rounded-md bg-teal w-full text-center px-4 py-2" v-if="userchoiceteam == 1 && userchoiceresult && userchoiceresult.data == 1">CORRECT!</div>
-              <div class="rounded-md bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 1 && userchoiceresult && userchoiceresult.data == 0">WRONG</div>
-            </div>
-          </div>
-          <div class="px-2" v-if="data.draftData && data.replayBans?.[1]?.length">
-            <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 2 Bans</h2>
-            <div class="flex justify-center gap-5 p-4 max-md:flex-col">
-            <template v-for="(item, index) in data.replayBans[1]" :key="index">
-              <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" size="big" ></hero-image-wrapper >
-              <round-image v-else size="big" image="/images/talents/no-image.png"><h2>No Ban</h2></round-image>
-            </template>
-          </div>
-        </div>
-        
-        <div class="px-2">
-          <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 2 Picks</h2>
-          <div class="flex justify-center gap-5 p-4 max-md:flex-col">
-            <template v-for="(item, index) in teamOnePicks" :key="index">
-              <hero-image-wrapper :hero="item.hero" size="big" ></hero-image-wrapper >
-            </template>
-          </div>
+          <custom-button color="teal" class="font-semibold px-8 max-sm:flex-1" :ignoreclick="true" :disabled="disableFilterInput" :alt="'Next match'" @click="applyFilter">{{ $t('Next match') }}</custom-button>
         </div>
       </div>
-    </div>
 
-   
-    <div v-if="userchoiceresult" class="max-w-[1000px] text-center w-full mx-auto mt-2 bg-teal rounded-md p-4">
-      See replay <a target="_blank" class="link" :href="'/Match/Single/' + userchoiceresult.replayID">{{ userchoiceresult.replayID }}</a> for more information
-    </div>
+      <!-- The result, once a team is picked -->
+      <div v-if="userchoiceresult" :class="['rounded border p-4 md:px-6 flex flex-wrap items-center gap-4', guessedRight ? 'bg-teal/10 border-teal' : 'bg-red/10 border-red']">
+        <span :class="['w-9 h-9 shrink-0 rounded-full flex items-center justify-center', guessedRight ? 'bg-teal' : 'bg-red']"><i :class="guessedRight ? 'fas fa-check' : 'fas fa-times'"></i></span>
+        <div class="flex flex-col min-w-0 mr-auto">
+          <span class="font-semibold">{{ guessedRight ? $t('Correct — Team :team won', { team: winnerTeam + 1 }) : $t('Wrong guess — Team :team won', { team: winnerTeam + 1 }) }}</span>
+          <span class="text-xs text-subtext">{{ $t('You picked Team :team. Check the replay to see how the game went.', { team: userchoiceteam + 1 }) }}</span>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <custom-button :href="'/Match/Single/' + userchoiceresult.replayID" :targetblank="true" class="font-semibold" :alt="'See replay'">{{ $t('See replay :replay', { replay: userchoiceresult.replayID }) }}</custom-button>
+          <custom-button color="teal" class="font-semibold" :ignoreclick="true" :disabled="disableFilterInput" :alt="'Next match'" @click="applyFilter">{{ $t('Next match') }}</custom-button>
+        </div>
+      </div>
 
-    <div class="p-10  max-w-[1000px] mx-auto">
-      <h2 class="text-3xl font-bold py-5">Talents to Level 10</h2>
-      <div class="flex flex-wrap gap-20 justify-around">
-        <div class="">
-          <div class="w-full mb-10" v-for="(item, index) in data.playerData[0]" :key="index">
-            <div class="flex items-center gap-5">
-              <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
-              <div class="flex items-center gap-2 mb-2">
-                <talent-image-wrapper :size="'medium'" :talent="item.talent.level_one"></talent-image-wrapper>
-                <talent-image-wrapper :size="'medium'" :talent="item.talent.level_four"></talent-image-wrapper>
-                <talent-image-wrapper :size="'medium'" :talent="item.talent.level_seven"></talent-image-wrapper>
-                <talent-image-wrapper :size="'medium'" :talent="item.talent.level_ten"></talent-image-wrapper>
+      <!-- Loading a match -->
+      <div v-if="isLoading && !data" class="flex flex-col gap-6">
+        <loading-component :compact="true" :textoverride="true">{{ $t('Loading match...') }}</loading-component>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <skeleton-box v-for="tile in 4" :key="tile" class="h-[3.75rem] rounded-control"></skeleton-box>
+        </div>
+        <div class="grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-6 items-center">
+          <skeleton-box class="h-[25rem] rounded-control"></skeleton-box>
+          <span class="max-md:hidden w-8"></span>
+          <skeleton-box class="h-[25rem] rounded-control"></skeleton-box>
+        </div>
+      </div>
+
+      <!-- The match -->
+      <template v-else-if="data">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <stat-box class="!m-0 !min-w-0" :title="'Map'" :value="$mapName(data.replayData.game_map)"></stat-box>
+          <stat-box class="!m-0 !min-w-0" :title="'HP rank'" :value="$t(data.rank)"></stat-box>
+          <stat-box class="!m-0 !min-w-0" :title="'Region'" :value="data.replayData.regionString"></stat-box>
+          <stat-box class="!m-0 !min-w-0" :title="'Game length'" :value="data.replayData.timeFormat"></stat-box>
+        </div>
+
+        <h2 v-if="!userchoiceresult" class="text-xl font-bold text-center">{{ $t('Who won the match?') }}</h2>
+
+        <div class="grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-6 items-center">
+          <template v-for="team in [0, 1]" :key="team">
+            <span v-if="team === 1" class="max-md:hidden w-8 h-8 rounded-full bg-surface flex items-center justify-center text-[0.625rem] font-bold text-subtext">VS</span>
+            <div :class="['bg-surface rounded-panel border-2 p-4 md:p-6 flex flex-col gap-4 min-w-0', teamBorder(team)]">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <span class="flex items-center gap-2">
+                  <span :class="['w-1 h-5 rounded-full', team === 0 ? 'bg-teal' : 'bg-red']"></span>
+                  <span class="text-lg font-bold">{{ $t('Team :team', { team: team + 1 }) }}</span>
+                  <span v-if="userchoiceresult && userchoiceteam === team && winnerTeam !== team" class="px-1.5 py-0.5 rounded-[0.25rem] bg-red/20 text-lred text-[0.625rem] font-bold uppercase">{{ $t('Your pick') }}</span>
+                  <span v-if="userchoiceresult && winnerTeam === team" class="px-1.5 py-0.5 rounded-[0.25rem] bg-teal/20 text-lteal text-[0.625rem] font-bold uppercase">{{ userchoiceteam === team ? $t('Your pick · Winner') : $t('Winner') }}</span>
+                </span>
+                <span v-if="bans(team).length" class="flex items-center gap-2">
+                  <span class="text-[0.625rem] font-bold uppercase tracking-wider text-subtext">{{ $t('Bans') }}</span>
+                  <!-- Struck through in the banning team's colour, as on the Drafter -->
+                  <span v-for="(ban, index) in bans(team)" :key="index" class="relative w-8 h-8 shrink-0" :title="ban.hero ? $heroName(ban.hero) : $t('No Ban')">
+                    <span v-if="ban.hero" class="absolute inset-0 rounded-full bg-cover bg-center opacity-60" :style="{ backgroundImage: 'url(/images/heroes/' + ban.hero.short_name + '.png)' }"></span>
+                    <span :class="['absolute inset-0 rounded-full border-2', team === 0 ? 'border-[rgba(0,153,148,0.8)]' : 'border-[rgba(228,74,35,0.8)]']"></span>
+                    <span :class="['absolute inset-0 rounded-full', team === 0 ? 'ban-strike-teal' : 'ban-strike-red']"></span>
+                  </span>
+                </span>
               </div>
-            </div>
-          </div>
-        </div>
 
-        
-        <div class="">
-          <div class="w-full mb-10" v-for="(item, index) in data.playerData[1]" :key="index">
-            <div class="flex items-center gap-5">
-              <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
-              <div class="flex items-center gap-2 mb-2">
-                <talent-image-wrapper :size="'medium'" :talent="item.talent.level_one"></talent-image-wrapper>
-                <talent-image-wrapper :size="'medium'" :talent="item.talent.level_four"></talent-image-wrapper>
-                <talent-image-wrapper :size="'medium'" :talent="item.talent.level_seven"></talent-image-wrapper>
-                <talent-image-wrapper :size="'medium'" :talent="item.talent.level_ten"></talent-image-wrapper>
+              <div class="border-t border-surface-3 pt-3 flex justify-between text-[0.625rem] font-bold uppercase tracking-wider text-subtext">
+                <span>{{ $t('Picks') }}</span>
+                <span>{{ $t('Talents to level 10') }}</span>
               </div>
+
+              <div class="flex flex-col gap-2">
+                <div v-for="(player, index) in players(team)" :key="index" class="flex items-center gap-3 rounded-lg bg-surface-1 px-3 py-2 min-w-0">
+                  <hero-image-wrapper :hero="player.hero" class="shrink-0"></hero-image-wrapper>
+                  <span class="text-sm font-semibold truncate min-w-0">{{ $heroName(player.hero) }}</span>
+                  <span v-if="player.talent" class="ml-auto flex gap-1.5 shrink-0">
+                    <talent-image-wrapper v-for="level in ['level_one', 'level_four', 'level_seven', 'level_ten']" :key="level" :talent="player.talent[level]" :popup-hoverable="false"></talent-image-wrapper>
+                  </span>
+                </div>
+              </div>
+
+              <custom-button v-if="!userchoiceresult" :color="team === 0 ? 'teal' : 'blue'" class="font-semibold text-center" :ignoreclick="true" :disabled="choosing && userchoiceteam !== team" :alt="'Team won'" @click="chooseWinner(team)">
+                <span v-if="choosing && userchoiceteam === team" class="inline-flex items-center gap-2"><img class="logo-spin h-5 w-auto" src="/images/logo/heroesprofilelogo.png" alt="">{{ $t('Checking who won...') }}</span>
+                <template v-else>{{ $t('Team :team won', { team: team + 1 }) }}</template>
+              </custom-button>
+            </div>
+          </template>
+        </div>
+      </template>
+
+      <!-- Before the first match -->
+      <template v-else>
+        <panel-box title="How it works" :subtitle="user ? 'Three steps per match. Your score goes to the leaderboard once practice is over.' : 'Three steps per match.'" :divider="false">
+          <div class="grid md:grid-cols-3 gap-3">
+            <div v-for="(step, index) in steps" :key="step.title" class="rounded-control bg-surface-1 p-4 flex flex-col gap-2">
+              <span class="w-7 h-7 rounded-full bg-teal/20 text-lteal text-xs font-bold flex items-center justify-center">{{ index + 1 }}</span>
+              <span class="font-semibold">{{ $t(step.title) }}</span>
+              <span class="text-xs text-subtext">{{ $t(step.text) }}</span>
             </div>
           </div>
-        </div>
-    </div>
-  </div>
+        </panel-box>
+      </template>
 
-  </div>
+      <!-- The player's record, or a prompt to log in -->
+      <panel-box v-if="user && !data && !isLoading" title="Your record" subtitle="Practice games don't count." :divider="false">
+        <template #right>
+          <div class="w-full sm:w-[11rem]">
+            <single-select-filter :values="statsSeasons" :text="'Season'" :compact="true" :nosearch="true" :defaultValue="season" @input-changed="handleStatsSeasonChange"></single-select-filter>
+          </div>
+        </template>
+        <tab-button :small="true" :tabs="recordModes" :ignoreclick="true" :overridedefaultside="recordMode" @tab-click="recordMode = $event" class="self-start"></tab-button>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <stat-box class="!m-0 !min-w-0" :title="'Predictions'" :value="record.predictions.toLocaleString('en-US')"></stat-box>
+          <stat-box class="!m-0 !min-w-0" :title="'Correct'" :value="record.correct.toLocaleString('en-US')"></stat-box>
+          <stat-box class="!m-0 !min-w-0" :title="'Accuracy'" :value="record.predictions ? (record.correct / record.predictions * 100).toFixed(1) + '%' : '—'"></stat-box>
+          <stat-box class="!m-0 !min-w-0" :title="'Best streak this visit'" :value="bestStreak"></stat-box>
+        </div>
+      </panel-box>
+      <div v-else-if="!user && !data && !isLoading" class="bg-surface rounded-panel p-4 md:px-6 flex flex-wrap items-center justify-between gap-4">
+        <span class="text-sm text-subtext">{{ $t('Log in to track your predictions and rank on the leaderboard.') }}</span>
+        <custom-button :href="'/Authenticate/Battlenet'" class="font-semibold" :alt="'Log in'">{{ $t('Log in') }}</custom-button>
+      </div>
+    </div>
+
+    <modal-box v-if="skipPracticeOpen" :title="$t('Skip the rest of practice?')" width="max-w-[34rem]" @close="skipPracticeOpen = false">
+      <p class="text-center">{{ $t('Every prediction from now on counts toward the leaderboard. Practice can\'t be started again.') }}</p>
+      <template #footer>
+        <div class="flex flex-wrap justify-center gap-3">
+          <custom-button :ignoreclick="true" :alt="'Keep practicing'" @click="skipPracticeOpen = false">{{ $t('Keep practicing') }}</custom-button>
+          <custom-button color="red" class="font-semibold" :ignoreclick="true" :loading="skippingPractice" :alt="'Skip practice'" @click="skipPractice">{{ $t('Skip practice') }}</custom-button>
+        </div>
+      </template>
+    </modal-box>
   </div>
 </template>
 
 <script>
+const PRACTICE_GAMES = 10;
+
 export default {
   name: 'MatchPredictionGame',
-  components: {
-  },
   props: {
-    filters: {
-      type: Object,
-      required: true
-    },
+    filters: { type: Object, required: true },
     gametypes: Array,
     user: Object,
-    predictionstatspractice: Object,
+    predictionstatspractice: [Object, Array],
     predictionstatsall: Array,
     patreonUser: Boolean,
     season: Number,
   },
-  data(){
+  data() {
     return {
       gametype: null,
       isLoading: false,
+      choosing: false,
       data: null,
-      fingerprint: null,
       userchoiceresult: null,
-      disableWinnerSelect: false,
       userchoiceteam: null,
-      totalGamesPlayedPractice: null,
-      practicemode: null,
+      totalGamesPlayedPractice: 0,
+      practicemode: true,
       predictionstatsallupdated: [],
       currentSeason: this.season,
       statsSeason: this.season,
-    }
+      recordMode: 'all',
+      recordModes: [
+        { key: 'all', text: 'All' },
+        { key: '5', text: 'Storm League' },
+        { key: '1', text: 'Quick Match' },
+        { key: '6', text: 'ARAM' },
+      ],
+      loadRequest: 0,
+      skipPracticeOpen: false,
+      skippingPractice: false,
+      streak: 0,
+      bestStreak: 0,
+      steps: [
+        { title: 'Choose a game type', text: 'Storm League, Quick Match or ARAM. Then press Next match.' },
+        { title: 'Study the draft', text: 'Map, rank, bans, picks and every hero\'s talents up to level 10.' },
+        { title: 'Pick the winner', text: 'Choose the team you think won. You\'ll see the real result and the replay.' },
+      ],
+    };
   },
-  created(){
+  created() {
     this.predictionstatsallupdated = this.predictionstatsall ?? [];
-    this.totalGamesPlayedPractice = this.predictionstatspractice ? this.predictionstatspractice.reduce((total, stat) => total + stat.games_played, 0): 0;
-    this.practicemode = this.predictionstatspractice ? this.predictionstatspractice.reduce((total, stat) => total + stat.games_played, 0) >= 10 ? false : true : true;
-  },
-  mounted() {
+    const practice = Array.isArray(this.predictionstatspractice) ? this.predictionstatspractice : Object.values(this.predictionstatspractice || {});
+    this.totalGamesPlayedPractice = practice.reduce((total, stat) => total + stat.games_played, 0);
+    this.practicemode = this.totalGamesPlayedPractice < PRACTICE_GAMES;
   },
   computed: {
-    disableFilterInput(){
-      if(this.gametype == null || this.gametype == "" || this.isLoading){
-        return true;
-      }
-      return false;
+    disableFilterInput() {
+      return !this.gametype || this.isLoading;
     },
-    teamZeroPicks(){
-      if (this.data.draftData?.[0]?.picks) {
-        return this.data.draftData[0].picks;
-      }
-      return this.data.playerData[0];
+    practicesLeft() {
+      return Math.max(0, PRACTICE_GAMES - this.totalGamesPlayedPractice);
     },
-    teamOnePicks(){
-      if (this.data.draftData?.[1]?.picks) {
-        return this.data.draftData[1].picks;
-      }
-      return this.data.playerData[1];
+    leaderboardUrl() {
+      return '/Global/Leaderboard?type=Match%20Prediction&season=' + this.currentSeason;
     },
-    statsSeasons(){
-      return [{ code: 'All', name: 'All Seasons' }, ...(this.filters.match_prediction_seasons ?? [])];
+    statsSeasons() {
+      return [{ code: 'All', name: 'All Seasons' }, ...(this.filters.match_prediction_seasons ?? []).filter(season => season.name !== 'Preseason')];
     },
-    truncatedBattletag(){
-      return this.user.battletag.split('#')[0];
+    // 1 when the picked team won
+    guessedRight() {
+      return this.userchoiceresult?.data == 1;
     },
-  },
-  watch: {
+    winnerTeam() {
+      if (!this.userchoiceresult) return null;
+      return this.guessedRight ? this.userchoiceteam : 1 - this.userchoiceteam;
+    },
+    record() {
+      const rows = this.predictionstatsallupdated.filter(stat =>
+        (this.statsSeason === 'All' || stat.season == this.statsSeason)
+        && (this.recordMode === 'all' || String(stat.game_type) === this.recordMode));
+      return {
+        predictions: rows.reduce((total, stat) => total + (Number(stat.win) || 0) + (Number(stat.loss) || 0), 0),
+        correct: rows.reduce((total, stat) => total + (Number(stat.win) || 0), 0),
+      };
+    },
   },
   methods: {
-    async getData(){
+    teamBorder(team) {
+      if (!this.userchoiceresult) return 'border-surface';
+      if (this.winnerTeam === team) return 'border-teal';
+      if (this.userchoiceteam === team) return 'border-red';
+      return 'border-surface';
+    },
+    bans(team) {
+      return this.data?.replayBans?.[team] || [];
+    },
+    // In draft order when the draft is known, each with its talents
+    players(team) {
+      const players = this.data?.playerData?.[team] || [];
+      const picks = this.data?.draftData?.[team]?.picks;
+      if (!picks) return players;
+      return picks.filter(pick => pick.hero).map(pick => players.find(player => player.hero?.id === pick.hero.id) || { hero: pick.hero, talent: null });
+    },
+    async getData() {
+      // A match that arrives after See your stats is dropped
+      const request = ++this.loadRequest;
       this.isLoading = true;
       this.data = null;
-      try{
-        const response = await this.$axios.post("/api/v1/match/prediction/game", {
-          gametype: this.gametype, 
-        });
-
-        if(response.data.status == "failure to validate inputs"){
-          throw new Error("Failure to validate inputs");
+      try {
+        const response = await this.$axios.post('/api/v1/match/prediction/game', { gametype: this.gametype });
+        if (response.data.status == 'failure to validate inputs') {
+          throw new Error('Failure to validate inputs');
         }
-        
-        this.data = response.data;
-
-        this.isLoading = false;
-      }catch(error){
-        //Do something here
-      }finally {
-        this.isLoading = false;
+        if (request === this.loadRequest) this.data = response.data;
+      } catch (error) {
+        // Nothing loaded; Next match tries again
+      } finally {
+        if (request === this.loadRequest) this.isLoading = false;
       }
     },
-    applyFilter(){
+    showStats() {
+      this.loadRequest += 1;
+      this.isLoading = false;
+      this.data = null;
       this.userchoiceresult = null;
-      this.disableWinnerSelect = false;
+      this.userchoiceteam = null;
+    },
+    applyFilter() {
+      // The button's click still arrives while it's disabled
+      if (this.disableFilterInput) return;
+      this.userchoiceresult = null;
       this.userchoiceteam = null;
       this.getData();
     },
     handleInputChange(eventPayload) {
       this.gametype = eventPayload.value;
     },
-    async chooseWinner(team){   
-      this.userchoiceteam = team;   
-      this.isLoading = true;
-      this.disableWinnerSelect = true;
-      try{
-        const response = await this.$axios.post("/api/v1/match/prediction/game/choose/winner", {
-          team: team, 
+    async chooseWinner(team) {
+      if (this.choosing || this.userchoiceresult) return;
+      this.userchoiceteam = team;
+      this.choosing = true;
+      try {
+        const response = await this.$axios.post('/api/v1/match/prediction/game/choose/winner', {
+          team,
           fingerprint: this.data.fingerprint,
         });
-
-        if(response.data.status == "failure to validate inputs"){
-          throw new Error("Failure to validate inputs");
+        if (response.data.status == 'failure to validate inputs') {
+          throw new Error('Failure to validate inputs');
         }
-        
         this.userchoiceresult = response.data;
 
-        
-        const stats = response.data.predictionstats ?? [];
+        if (this.guessedRight) {
+          this.streak += 1;
+          this.bestStreak = Math.max(this.bestStreak, this.streak);
+        } else {
+          this.streak = 0;
+        }
 
-        if(this.practicemode){
+        const stats = response.data.predictionstats ?? [];
+        if (this.practicemode) {
           this.totalGamesPlayedPractice = stats.reduce((total, stat) => total + stat.games_played, 0);
         }
         this.predictionstatsallupdated = response.data.predictionstatsall ?? this.predictionstatsallupdated;
         this.currentSeason = response.data.season ?? this.currentSeason;
-        // The server decides when practice is over.
+        // The server decides when practice is over
         this.practicemode = response.data.practicemode;
-        this.isLoading = false;
-      }catch(error){
+      } catch (error) {
         // This replay can no longer be answered (answered already, or a newer one was
         // served in another tab): move on to a fresh one.
-        if(error.response?.status === 409){
+        if (error.response?.status === 409) {
           this.applyFilter();
         }
-      }finally {
-        this.isLoading = false;
+      } finally {
+        this.choosing = false;
       }
     },
-    handleStatsSeasonChange(eventPayload){
+    async skipPractice() {
+      if (this.skippingPractice) return;
+      this.skippingPractice = true;
+      try {
+        const response = await this.$axios.post('/api/v1/match/prediction/game/skip/practice');
+        this.practicemode = response.data.practicemode;
+        this.skipPracticeOpen = false;
+      } catch (error) {
+        // Left open, so Skip can be pressed again
+      } finally {
+        this.skippingPractice = false;
+      }
+    },
+    handleStatsSeasonChange(eventPayload) {
       this.statsSeason = eventPayload.value || this.currentSeason;
     },
-    seasonLabel(season){
-      if(season === 'All'){
-        return 'All Seasons';
-      }
-      const match = this.statsSeasons.find(item => item.code == season);
-      return match ? match.name : 'Season ' + season;
-    },
-    shownStat(gameType){
-      const rows = this.predictionstatsallupdated.filter(stat => stat.game_type === gameType
-        && (this.statsSeason === 'All' || stat.season == this.statsSeason));
-      if(!rows.length){
-        return null;
-      }
-      // Rate weighted by games, so it holds whatever scale win_rate is stored in.
-      const games = rows.reduce((total, stat) => total + stat.games_played, 0);
-      const weighted = rows.reduce((total, stat) => total + Number(stat.win_rate) * stat.games_played, 0);
-      return { games_played: games, win_rate: games ? weighted / games : 0 };
-    },
-    getPredictionRate(gameType) {
-      const stat = this.shownStat(gameType);
-      return stat ? Number(stat.win_rate).toFixed(2) : 0;
-    },
-    getPredictionGames(gameType){
-      const stat = this.shownStat(gameType);
-      return stat ? stat.games_played : 0;
-    },
-  }
-}
+  },
+};
 </script>

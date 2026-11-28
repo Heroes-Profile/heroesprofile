@@ -2,15 +2,17 @@
   
   <div class="search-component mt-auto py-4">
     <div class="flex items-stretch">
-      <input type="text" class="form-control variable-text rounded-l p-2" :placeholder="labelText" :aria-label="labelText" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton">
+      <div class="relative flex-1">
+        <basil-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-lteal pointer-events-none"></basil-icon>
+        <input ref="input" type="text" :class="['variable-text px-4 py-3 pl-10 w-full', { 'rounded-l': !square }, { 'ring-2 ring-inset ring-teal outline-none': showEmptyPrompt }]" :placeholder="$t(labelText)" :aria-label="$t(labelText)" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton" @blur="showEmptyPrompt = false">
+      </div>
       <button
         v-if="buttonText"
-        class="btn btn-outline-secondary bg-teal hover:bg-lteal rounded-r p-2"
+        :class="['btn bg-blue hover:bg-lblue rounded-none font-semibold', { 'rounded-r': !square }]"
         type="button"
-        :disabled="!isInputValid"
         @click="clickedButton"
       >
-        {{ buttonText }}
+        {{ $t(buttonText) }}
       </button>
     </div>
     <p v-if="errorMessage" class="text-red text-sm mt-1">{{ errorMessage }}</p>
@@ -25,14 +27,19 @@
     },
     props: {
       type: String,
-
+      // Square corners, for a field that runs edge to edge (the phone menu)
+      square: Boolean,
+      buttonText: { type: String, default: 'Find Player' },
+      labelText: { type: String, default: 'Enter a BattleTag' },
+      // Hands the query to the page (@search) instead of opening the player search, e.g. NGS's own player search
+      emitSearch: { type: Boolean, default: false },
     },
+    emits: ['search'],
     data(){
       return {
         userinput: "",
-        buttonText: "Find Player",
-        labelText: "Enter a battletag",
         prohibitedCharacters: ['*', '?', '%', '\'', '"', '(', ')', ';', '<', '>', '=', '|', '\\'],
+        showEmptyPrompt: false,
       }
     },
     created(){
@@ -61,10 +68,23 @@
       }
     },
     watch: {
+      userinput() {
+        this.showEmptyPrompt = false;
+      },
     },
     methods: {
       clickedButton(){
+        if (!this.userinput || this.userinput.trim().length === 0) {
+          // Nothing typed: point the user at the box instead of disabling the button
+          this.showEmptyPrompt = true;
+          this.$refs.input.focus();
+          return;
+        }
         if (!this.isInputValid) {
+          return;
+        }
+        if (this.emitSearch) {
+          this.$emit('search', this.userinput.trim());
           return;
         }
         window.location.href = '/battletag/searched/' + encodeURIComponent(this.userinput.trim()) + "/" + this.type;

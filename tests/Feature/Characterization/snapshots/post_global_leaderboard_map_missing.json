@@ -1,0 +1,16 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "data": {
+            "season": 26,
+            "game_type": "sl",
+            "type": "map",
+            "groupsize": "All"
+        },
+        "errors": [
+            "The map field is required when type is map."
+        ],
+        "status": "failure to validate inputs"
+    }
+}

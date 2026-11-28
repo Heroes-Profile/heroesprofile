@@ -1,20 +1,10 @@
-<template >
-  <div v-if="!patreonUser">
-    <template v-if="adBlocker">
-      <div class="bg-teal px-20 py-4 text-sm text-center max-md:hidden">
-        Heroes Profile uses ads to help fund site running costs.  Please consider allowing ads or support us through patreon at <a class="link break-all" href="https://www.patreon.com/heroesprofile" target="_blank">https://www.patreon.com/heroesprofile</a>
-      </div>
-      <details class="group bg-teal px-4 py-2 text-sm text-center md:hidden">
-        <summary class="cursor-pointer list-none">Heroes Profile uses ads to help fund the site. <span class="link group-open:hidden">Read more</span></summary>
-        Please consider allowing ads or support us through patreon at <a class="link break-all" href="https://www.patreon.com/heroesprofile" target="_blank">https://www.patreon.com/heroesprofile</a>
-      </details>
-    </template>
-    <div v-else class="mb-2" id="horizontal-banner-ad-container" style="min-height:120px; position:relative;"></div>
-  </div>
+<template>
+  <!-- The ad only. With an ad blocker the page shows its own notice instead (layouts/app, .ad-blocker-notice) -->
+  <div v-if="!patreonUser && !adBlocker" id="horizontal-banner-ad-container" style="min-height:7.5rem; position:relative;"></div>
 </template>
 
 <script>
-import Cookies from 'js-cookie';
+import { adBlocker, markAdBlocker } from '../../utils/adBlocker';
 
 export default {
   name: 'HorizontalBannerAd',
@@ -25,7 +15,6 @@ export default {
   },
   data(){
     return {
-      detectedBlocker: false,
     }
   },
   created(){
@@ -61,8 +50,7 @@ export default {
           if (container) {
             const placement = container.querySelector('.vm-placement');
             if (!placement || !placement.hasChildNodes()) {
-              this.detectedBlocker = true;
-              sessionStorage.setItem('ad-blocker-detected', 'true');
+              markAdBlocker('empty');
             }
           }
         }, 3500);
@@ -71,7 +59,7 @@ export default {
   },
   computed: {
     adBlocker() {
-      return this.detectedBlocker || sessionStorage.getItem('ad-blocker-detected') === 'true' || Cookies.get('ad-blocker') == "true";
+      return adBlocker.value;
     },
   },
   watch: {

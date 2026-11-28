@@ -1,8 +1,8 @@
 @extends('layouts.app', $bladeGlobals)    
 
-@section('title', 'CCL Esports')
+@section('title', __('CCL (Community Clash League) Stats – Heroes of the Storm'))
 @section('meta_keywords', 'CCL esports, Heroes of the Storm, CCL league, competitive gaming, Heroes of the Storm league')
-@section('meta_description', 'Stay up to date with the latest news and updates from the CCL Esports league. Review competitive Heroes of the Storm matches and follow your favorite teams.')
+@section('meta_description', 'Heroes of the Storm statistics and comparison for the Community Clash League: hero stats, teams, players and match history.')
 
 @section('content')
   <ccl-main 
@@ -12,6 +12,8 @@
     :talentimages="{{ json_encode($talentimages) }}" 
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :organizations="{{ json_encode($organizations) }}"
+    :urlparameters="{{ json_encode($urlparameters) }}"
   >
   </ccl-main>
+  @include('Esports.contactSection')
 @endsection

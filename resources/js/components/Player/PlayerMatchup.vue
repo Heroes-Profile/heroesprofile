@@ -1,86 +1,202 @@
 <template>
   <div>
     
-    <page-heading v-if="esport" :heading="'Matchups'" :infoText1="infotext" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
-    <page-heading v-else :heading="'Matchups'" :infoText1="infotext" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
-
-    <div v-if="esport && ngsFilterOptions" class="flex flex-wrap justify-center max-w-[1500px] mx-auto">
-      <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsSeason"></single-select-filter>
-      <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsDivision"></single-select-filter>
-      <single-select-filter v-if="ngsFilterOptions.teams.length" :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsTeam"></single-select-filter>
-    </div>
-    
-    
-
-    <filters v-if="!esport"
-    :onFilter="filterData" 
-    :filters="filters" 
-    :isLoading="isLoading"
-    :gametypedefault="gametype"
-    :includegamemap="true"
-    :includegametypefull="true"
-    :hideadvancedfilteringbutton="true"
-    :includehero="true"
-    :includemultiseason="true"
-    :includegamedaterange="true"
-    >
-  </filters>
+    <player-page-top>
+      <template #heading>
+      <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infotext" -->
+      <page-heading v-if="esport" :heading="'Matchups'" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
+      <page-heading v-else :heading="'Matchups'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+      </template>
+      <div class="w-full">
+      <filters v-if="!esport"
+      :onFilter="filterData"  
+      :filters="filters" 
+      :isLoading="isLoading"
+      :gametypedefault="gametype"
+      :includegamemap="true"
+      :includegametypefull="true"
+      :hideadvancedfilteringbutton="true"
+      :includehero="true"
+      :includemultiseason="true"
+      :includegamedaterange="true"
+      >
+    </filters>
+      <filters v-else-if="esport"
+        :filters="filters"
+        :isLoading="isLoading"
+        :onFilter="() => getNgsData()"
+        :onChange="ngsFilterChange"
+        :extrafilters="[
+          { text: 'Seasons', values: ngsFilterOptions?.seasons || [], defaultValue: ngsSeason },
+          { text: 'Divisions', values: ngsFilterOptions?.divisions || [], defaultValue: ngsDivision, show: esport == 'NGS' },
+          { text: 'Teams', values: ngsTeamOptions, defaultValue: ngsTeam },
+        ]"
+        :excludetimeframes="true"
+        :excludegametype="true"
+        :hideadvancedfilteringbutton="true"
+      >
+      </filters>
+      </div>
+    </player-page-top>
   <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-  <div v-if="data">
-    <div class="flex flex-wrap justify-center">
-      <group-box :text="'Top 5 Allies with more than 5 games'" :data="topfiveheroes"></group-box>
-      <group-box :text="'Top 5 Enemies with more than 5 games'" :data="topfiveenemies"></group-box>
+  <div v-if="data" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-8">
+    <!-- The five best allies and toughest enemies with 5+ games -->
+    <div class="grid md:grid-cols-2 gap-8">
+      <panel-box v-for="card in topCards" :key="card.title" :title="card.title" :subtitle="card.subtitle" :divider="false">
+        <div class="grid grid-cols-3 sm:grid-cols-5 gap-3">
+          <a v-for="item in card.heroes" :key="item.hero.id" :href="heroUrl(item.hero)" class="bg-surface-1 px-2 pt-5 pb-5 flex flex-col items-center text-center min-w-0 link-tile">
+            <hero-image-wrapper size="big" :hero="item.hero" :includehover="false"></hero-image-wrapper>
+            <span class="text-sm font-bold mt-1.5 truncate max-w-full link-tile-title">{{ $heroName(item.hero) }}</span>
+            <span :class="['text-xl font-bold mt-1.5 tabular-nums', card.valueClass]">{{ item[card.rate].toFixed(2) }}%</span>
+            <span class="text-xs text-subtext mt-1.5">{{ $t(card.games, { count: item[card.count].toLocaleString('en-US') }) }}</span>
+          </a>
+          <p v-if="!card.heroes.length" class="col-span-full text-sm text-subtext">{{ $t('No heroes with 5+ games for these filters.') }}</p>
+        </div>
+      </panel-box>
     </div>
-    <table class="max-md:text-xs">
-      <thead>
-        <tr>
-          <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-            Hero
-          </th>
-          <th @click="sortTable('ally_win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-            Win Rate as Ally %
-          </th>            
-          <th @click="sortTable('enemy_win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-            Win Rate Against Hero %
-          </th>
-          <th @click="sortTable('ally_games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-            Games Played As Ally
-          </th>
-          <th @click="sortTable('enemy_games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-            Games Played Against
-          </th>                 
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(row, index) in sortedData" :key="index">
-          <td class="py-2 px-3">
-            <a class="link flex items-center gap-1" :href="esport ? ngsPlayerUrl + '/Hero/' + encodeURIComponent(row.hero.name) + ngsQuery : '/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/' + row.hero.name">
-              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
-            </a>
-          </td>
-           <td class="py-2 px-3 ">
-            {{ row.ally_games_played ? (row.ally_win_rate ?? 0).toFixed(2) : "No data" }}
-          </td>
-          <td class="py-2 px-3 ">
-            {{ row.enemy_games_played ? (row.enemy_win_rate ?? 0).toFixed(2) : "No data" }}
-          </td>
-          <td class="py-2 px-3 ">
-            {{ row.ally_games_played ? row.ally_games_played.toLocaleString('en-US') : "No data" }}
-          </td>
-          <td class="py-2 px-3 ">
-            {{ row.enemy_games_played ? row.enemy_games_played.toLocaleString('en-US') : "No data" }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+
+    <panel-box title="All Matchups" subtitle="Your win rate with each hero on your team and against each hero on the enemy team." :divider="false">
+      <!-- Phones have no room in the Hero heading; the search sits above the table there -->
+      <search-input v-model="heroSearch" :placeholder="$t('Search hero')" class="md:hidden w-full"></search-input>
+      <div class="overflow-clip">
+        <!-- Which columns are about the hero as your ally, which as your opponent; above the table so it reads the same in either table style -->
+        <div class="grid grid-cols-[18.1%_40.95%_40.95%] max-md:text-xs">
+          <div></div>
+          <div class="py-3 px-1 md:px-3 text-center bg-teal/[0.18] rounded-tl-control">
+            <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide text-teal">{{ $t('With them · On your team') }}</span>
+            <span class="block text-xs text-subtext mt-1">{{ $t('Your win rate when this hero is your ally') }}</span>
+          </div>
+          <div class="py-3 px-1 md:px-3 text-center bg-red/[0.18] rounded-tr-control">
+            <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide text-red">{{ $t('Against them · On enemy team') }}</span>
+            <span class="block text-xs text-subtext mt-1">{{ $t('Your win rate when this hero is your opponent') }}</span>
+          </div>
+        </div>
+        <table class="min-w-0 w-full rounded-table table-fixed max-md:text-xs">
+          <colgroup>
+            <col class="w-[18.1%]">
+            <col class="w-[20.475%]">
+            <col class="w-[20.475%]">
+            <col class="w-[20.475%]">
+            <col class="w-[20.475%]">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="py-2 px-2 md:px-6 text-left text-xs md:text-sm leading-4">
+                <div class="relative flex items-center gap-[1.125rem]">
+                  <span class="cursor-pointer" @click="sortTable('name')">{{ $t('Hero') }}<sort-indicator :column="'name'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></span>
+                  <!-- Phones use the search above the table instead -->
+                      <span class="max-md:hidden"><search-input v-model="heroSearch" :placeholder="$t('Search hero')" :collapsible="true" align="left" class="w-40"></search-input></span>
+                </div>
+              </th>
+              <th @click="sortTable('ally_win_rate')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'ally_win_rate' }">{{ $t('Win rate with') }}<sort-indicator :column="'ally_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+              <th @click="sortTable('ally_games_played')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'ally_games_played' }">{{ $t('Games with') }}<sort-indicator :column="'ally_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+              <th @click="sortTable('enemy_win_rate')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'enemy_win_rate' }">{{ $t('Win rate against') }}<sort-indicator :column="'enemy_win_rate'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+              <th @click="sortTable('enemy_games_played')" class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': sortKey === 'enemy_games_played' }">{{ $t('Games against') }}<sort-indicator :column="'enemy_games_played'" :sort-key="sortKey" :sort-dir="sortDir"></sort-indicator></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in shownData" :key="row.hero.id">
+              <td class="py-2.5 px-2 md:px-6">
+                <a class="inline-flex items-center link-row" :href="heroUrl(row.hero)">
+                  <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="hidden md:block ml-3 font-medium">{{ $heroName(row.hero) }}</span>
+                </a>
+              </td>
+              <td class="py-2.5 px-2 md:px-6">
+                <div v-if="row.ally_games_played" class="flex items-center gap-3">
+                  <stat-bar class="flex-1 max-md:hidden" :value="row.ally_win_rate ?? 0" display-text="" :color="$winRateColor(row.ally_win_rate)"></stat-bar>
+                  <span :class="['max-md:flex-1 max-md:text-center md:w-[3.6rem] md:text-right font-semibold tabular-nums', rateClass(row.ally_win_rate)]">{{ (row.ally_win_rate ?? 0).toFixed(2) }}%</span>
+                </div>
+                <span v-else class="block text-center text-subtext">{{ $t('No data') }}</span>
+              </td>
+              <td class="py-2.5 px-1 md:px-3 text-center">{{ row.ally_games_played ? row.ally_games_played.toLocaleString('en-US') : '—' }}</td>
+              <td class="py-2.5 px-2 md:px-6">
+                <div v-if="row.enemy_games_played" class="flex items-center gap-3">
+                  <stat-bar class="flex-1 max-md:hidden" :value="row.enemy_win_rate ?? 0" display-text="" :color="$winRateColor(row.enemy_win_rate)"></stat-bar>
+                  <span :class="['max-md:flex-1 max-md:text-center md:w-[3.6rem] md:text-right font-semibold tabular-nums', rateClass(row.enemy_win_rate)]">{{ (row.enemy_win_rate ?? 0).toFixed(2) }}%</span>
+                </div>
+                <span v-else class="block text-center text-subtext">{{ $t('No data') }}</span>
+              </td>
+              <td class="py-2.5 px-1 md:px-3 text-center">{{ row.enemy_games_played ? row.enemy_games_played.toLocaleString('en-US') : '—' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </panel-box>
   </div>
-  <div v-else-if="asyncLoading">
-    <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
+  <!-- The load failed: the error page's card in place of the data -->
+  <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+    <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
   </div>
-  <div v-else-if="isLoading">
-    <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+  <!-- The same cards in grey while the matchups load, the message on a tab of the first -->
+  <div v-else-if="isLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-8">
+    <div class="grid md:grid-cols-2 gap-8">
+      <panel-box v-for="(card, index) in topCards" :key="card.title" :title="card.title" :subtitle="card.subtitle" :divider="false" :skeleton="true" :class="{ 'relative md:!rounded-tl-none': index === 0 }">
+        <template v-if="index === 0">
+          <loading-component v-if="asyncLoading" :compact="true" :tab="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
+          <loading-component v-else :compact="true" :tab="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+        </template>
+        <div class="grid grid-cols-3 sm:grid-cols-5 gap-3">
+          <div v-for="tile in 5" :key="tile" class="bg-surface-1 rounded-lg px-2 pt-5 pb-5 flex flex-col items-center text-center min-w-0">
+            <skeleton-box class="w-20 h-20 !rounded-full"></skeleton-box>
+            <span class="text-sm font-bold mt-1.5 skeleton-text">Samuro</span>
+            <span class="text-xl font-bold mt-1.5 skeleton-text">00.00%</span>
+            <span class="text-xs mt-1.5 skeleton-text">00 games together</span>
+          </div>
+        </div>
+      </panel-box>
+    </div>
+
+    <panel-box title="All Matchups" subtitle="Your win rate with each hero on your team and against each hero on the enemy team." :divider="false" :skeleton="true">
+      <span class="md:hidden invisible" aria-hidden="true"><search-input class="w-full"></search-input></span>
+      <div class="overflow-clip">
+        <div class="grid grid-cols-[18.1%_40.95%_40.95%] max-md:text-xs">
+          <div></div>
+          <div class="py-3 px-1 md:px-3 text-center bg-teal/[0.18] rounded-tl-control">
+            <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide"><span class="skeleton-text">{{ $t('With them · On your team') }}</span></span>
+            <span class="block text-xs mt-1"><span class="skeleton-text">{{ $t('Your win rate when this hero is your ally') }}</span></span>
+          </div>
+          <div class="py-3 px-1 md:px-3 text-center bg-red/[0.18] rounded-tr-control">
+            <span class="block text-[0.625rem] md:text-sm font-bold uppercase md:tracking-wide"><span class="skeleton-text">{{ $t('Against them · On enemy team') }}</span></span>
+            <span class="block text-xs mt-1"><span class="skeleton-text">{{ $t('Your win rate when this hero is your opponent') }}</span></span>
+          </div>
+        </div>
+        <table class="min-w-0 w-full rounded-table table-fixed max-md:text-xs">
+          <colgroup>
+            <col class="w-[18.1%]">
+            <col class="w-[20.475%]">
+            <col class="w-[20.475%]">
+            <col class="w-[20.475%]">
+            <col class="w-[20.475%]">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="py-2 px-2 md:px-6 text-left text-xs md:text-sm leading-4">
+                <div class="flex items-center gap-[1.125rem]">
+                  <span class="skeleton-text">{{ $t('Hero') }}</span>
+                  <span class="invisible max-md:hidden" aria-hidden="true"><search-input class="w-40" :collapsible="true"></search-input></span>
+                </div>
+              </th>
+              <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4"><span class="skeleton-text">{{ $t('Win rate with') }}</span></th>
+              <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4"><span class="skeleton-text">{{ $t('Games with') }}</span></th>
+              <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4"><span class="skeleton-text">{{ $t('Win rate against') }}</span></th>
+              <th class="py-2 px-1 md:px-3 text-center text-xs md:text-sm leading-4"><span class="skeleton-text">{{ $t('Games against') }}</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in 15" :key="row">
+              <td class="py-2.5 px-2 md:px-6"><span class="inline-flex items-center"><skeleton-box class="w-10 h-10 !rounded-full shrink-0"></skeleton-box><span class="hidden md:block ml-3 font-medium skeleton-text">Alexstrasza</span></span></td>
+              <td class="py-2.5 px-2 md:px-6"><div class="flex items-center gap-3"><stat-bar class="flex-1 max-md:hidden" value="0" display-text=""></stat-bar><span class="max-md:flex-1 max-md:text-center md:w-[3.6rem] md:text-right font-semibold"><span class="skeleton-text">00.00%</span></span></div></td>
+              <td class="py-2.5 px-1 md:px-3 text-center"><span class="skeleton-text">000</span></td>
+              <td class="py-2.5 px-2 md:px-6"><div class="flex items-center gap-3"><stat-bar class="flex-1 max-md:hidden" value="0" display-text=""></stat-bar><span class="max-md:flex-1 max-md:text-center md:w-[3.6rem] md:text-right font-semibold"><span class="skeleton-text">00.00%</span></span></div></td>
+              <td class="py-2.5 px-1 md:px-3 text-center"><span class="skeleton-text">000</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </panel-box>
   </div>
+
 
 
 
@@ -104,15 +220,17 @@
       patreonUser: Boolean,
       gametypedefault: Array,
       regionsmap: Object,
-      // The league on its esports player pages (NGS, CCL, MastersClash, HeroesInternational, Other), with its filters from the URL
-      esport: String,
-      esportfilters: Object,
+    // The league on its esports player pages (NGS, CCL, MastersClash, HeroesInternational, Other), with its filters from the URL
+    esport: String,
+    esportfilters: Object,
     },
     data(){
       return {
+        loadError: null,
         cancelTokenSource: null,
         isLoading: false,
         asyncLoading: false,
+        heroSearch: '',
         infotext: "Hero Matchups provide information on which heroes " + this.battletag + " is good with and against",
         gametype: null,
         data: null,
@@ -123,11 +241,10 @@
         season: null,
         startdate: null,
         enddate: null,
-        ngsSeason: this.esportfilters?.season ?? null,
-        ngsDivision: this.esportfilters?.division ?? null,
-        ngsTeam: this.esportfilters?.team ?? null,
-        ngsFilterOptions: null,
-        ngsFiltersChanged: false,
+      ngsSeason: this.esportfilters?.season ?? null,
+      ngsDivision: this.esportfilters?.division ?? null,
+      ngsTeam: this.esportfilters?.team ?? null,
+      ngsFilterOptions: null,
       }
     },
     created(){
@@ -144,27 +261,15 @@
       }
     },
     computed: {
-      league() {
-        return this.esport ? this.$esportLeague(this.esport, this.esportfilters) : null;
-      },
-      ngsTeamOptions() {
-        return [{ code: null, name: 'All' }, ...(this.ngsFilterOptions?.teams || []).map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
-      },
-      ngsPlayerUrl() {
-        return this.esport ? `${this.league.root}/Player/${this.battletag}/${this.blizzid}` : null;
-      },
-      // The league and the filters picked here, for links to the player's other pages
-      ngsQuery() {
-        if (!this.esport) {
-          return '';
-        }
-        const params = new URLSearchParams(this.league.params);
-        if (this.ngsSeason) params.set('season', this.ngsSeason);
-        if (this.ngsDivision) params.set('division', this.ngsDivision);
-        if (this.ngsTeam) params.set('team', this.ngsTeam);
-        const query = params.toString();
-        return query ? `?${query}` : '';
-      },
+    league() {
+      return this.esport ? this.$esportLeague(this.esport, this.esportfilters) : null;
+    },
+    ngsTeamOptions() {
+      return [{ code: null, name: 'All' }, ...(this.ngsFilterOptions?.teams || []).map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
+    },
+    ngsPlayerUrl() {
+      return `${this.league.root}/Player/${this.battletag}/${this.blizzid}`;
+    },
       sortedData() {
         if (!this.sortKey) return this.data;
         return this.data.slice().sort((a, b) => {
@@ -177,6 +282,17 @@
           }
         });
       },
+      // Best allies by your win rate with them; toughest enemies by your lowest win rate against them
+      topCards() {
+        return [
+          { title: 'Best allies', subtitle: 'Highest win rate when on the same team · 5+ games', heroes: this.topfiveheroes || [], rate: 'ally_win_rate', count: 'ally_games_played', games: ':count games together', valueClass: 'text-win' },
+          { title: 'Toughest enemies', subtitle: 'Lowest win rate when facing them · 5+ games', heroes: this.topfiveenemies || [], rate: 'enemy_win_rate', count: 'enemy_games_played', games: ':count games against', valueClass: 'text-loss' },
+        ];
+      },
+      shownData() {
+        const search = this.heroSearch.trim().toLowerCase();
+        return search ? this.sortedData.filter(row => row.hero.name.toLowerCase().includes(search) || this.$heroName(row.hero).toLowerCase().includes(search)) : this.sortedData;
+      },
       isOwner(){
         if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
           return true;
@@ -187,24 +303,23 @@
     watch: {
     },
     methods: {
-      ngsParams(extra = {}) {
-        return { ...this.league.params, battletag: this.battletag, blizz_id: this.blizzid, season: this.ngsSeason, division: this.ngsDivision, team: this.ngsTeam, ...extra };
-      },
-      ngsFilterChange(eventPayload) {
-        const field = { Seasons: 'ngsSeason', Divisions: 'ngsDivision', Teams: 'ngsTeam' }[eventPayload.field];
-        if (field && this[field] !== eventPayload.value) {
-          this[field] = eventPayload.value;
-          this.ngsFiltersChanged = true;
-        }
-        history.pushState({}, '', window.location.pathname + this.ngsQuery);
-      },
-      ngsDropdownClosed() {
-        if (this.ngsFiltersChanged) {
-          this.ngsFiltersChanged = false;
-          this.getNgsData();
-        }
-      },
+    ngsParams(extra = {}) {
+      return { ...this.league.params, battletag: this.battletag, blizz_id: this.blizzid, season: this.ngsSeason, division: this.ngsDivision, team: this.ngsTeam, ...extra };
+    },
+    ngsFilterChange(eventPayload) {
+      const field = { Seasons: 'ngsSeason', Divisions: 'ngsDivision', Teams: 'ngsTeam' }[eventPayload.field];
+      if (field) {
+        this[field] = eventPayload.value;
+      }
+      const params = new URLSearchParams(this.league.params);
+      if (this.ngsSeason) params.set('season', this.ngsSeason);
+      if (this.ngsDivision) params.set('division', this.ngsDivision);
+      if (this.ngsTeam) params.set('team', this.ngsTeam);
+      const query = params.toString();
+      history.pushState({}, '', window.location.pathname + (query ? `?${query}` : ''));
+    },
       async getNgsData(){
+        this.loadError = null;
         this.data = null;
         this.isLoading = true;
         try{
@@ -214,12 +329,13 @@
           this.topfiveheroes = response.data.top_five_heroes;
           this.topfiveenemies = response.data.top_five_enemies;
         }catch(error){
-          //Do something here
+          this.loadError = this.$loadError(error, () => this.getNgsData());
         }finally {
           this.isLoading = false;
         }
       },
       async getData(){
+        this.loadError = null;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -251,12 +367,22 @@
           this.topfiveheroes = response.data.top_five_heroes;
           this.topfiveenemies = response.data.top_five_enemies;
         }catch(error){
-          //Do something here
+          this.loadError = this.$loadError(error, () => this.getData());
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
           this.asyncLoading = false;
         }
+      },
+      heroUrl(hero) {
+        if (this.esport) {
+          return `${this.ngsPlayerUrl}/Hero/${hero.name}${window.location.search}`;
+        }
+        return '/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Hero/' + hero.name;
+      },
+      // Below 45% shows red, as the profile's bars do
+      rateClass(rate) {
+        return (rate ?? 0) < 45 ? 'text-loss' : 'text-header';
       },
       cancelAxiosRequest() {
         if (this.cancelTokenSource) {

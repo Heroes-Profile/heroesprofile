@@ -1,11 +1,13 @@
 @extends('layouts.app', $bladeGlobals)    
+@php($league = (empty($esport) || $esport === 'Other') ? (is_string($series ?? null) && $series !== '' ? $series : (optional($series ?? null)->name ?? 'Esports')) : (['MastersClash' => 'Masters Clash', 'HeroesInternational' => (($tournament ?? null) === 'nationscup' ? 'Heroes International Nations Cup' : 'Heroes International'), 'NutCup' => 'Nut Cup'][$esport] ?? $esport))
 
-@section('title', 'Player Hero Stats Esports')
+@section('title', __(':battletag :hero Stats – :league', ['battletag' => $battletag, 'hero' => $hero, 'league' => $league]))
 @section('meta_keywords', 'Heroes Profile, player hero stats, player performance, Heroes of the Storm, specific heroes')
-@section('meta_description', 'Explore player statistics and performance with specific heroes in various esports leagues on Heroes Profile. Analyze player data, track their performance with specific heroes, and compare stats across different esports leagues.')
+@section('meta_description', $hero . ' stats for ' . $battletag . ' in ' . $league . ' Heroes of the Storm esports: win rate, games, talents and matchups.')
 
 @section('content')
   <esports-player-hero-stats 
+    :filters="{{ json_encode($filters) }}"
     :esport="{{ json_encode($esport) }}" 
     :series="{{ isset($series) ? json_encode($series) : 'null' }}" 
     :seriesimage="{{ isset($seriesimage) ? json_encode($seriesimage) : 'null' }}" 

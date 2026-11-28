@@ -294,6 +294,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -735,6 +759,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -1232,6 +1280,30 @@
                             "type": "integer"
                         },
                         "description": "Heroes Profile match ID."
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -1481,6 +1553,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -1666,6 +1762,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -1973,6 +2093,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -2354,6 +2498,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -2999,6 +3167,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -4214,6 +4406,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -4435,6 +4651,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -4845,6 +5085,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -5707,6 +5971,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -6459,6 +6747,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -7399,6 +7711,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -60035,6 +60371,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -61030,6 +61390,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -61191,6 +61575,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -61423,6 +61831,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -61584,6 +62016,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -61716,6 +62172,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -62933,6 +63413,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -63218,6 +63722,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -63482,6 +64010,30 @@
                             "type": "string"
                         },
                         "description": "Defaults to `NGS`."
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -63597,6 +64149,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -63840,6 +64416,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -66952,6 +67552,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -67258,6 +67882,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -69132,6 +69780,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -70898,6 +71570,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -72726,6 +73422,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -73370,6 +74090,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -73607,6 +74351,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -75248,6 +76016,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -75763,6 +76555,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -77820,6 +78636,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -78117,6 +78957,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -78451,6 +79315,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -80260,6 +81148,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -80555,6 +81467,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -82344,6 +83280,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -82814,6 +83774,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -83295,6 +84279,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -83669,6 +84677,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -84883,6 +85915,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -87388,6 +88444,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -87606,6 +88686,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -88619,6 +89723,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -91402,6 +92530,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -92369,6 +93521,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -92924,6 +94100,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -93248,6 +94448,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -93538,6 +94762,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -93905,6 +95153,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -94269,6 +95541,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -94630,6 +95926,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -94967,6 +96287,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -95291,6 +96635,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -95653,6 +97021,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -97489,6 +98881,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -97734,6 +99150,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -98753,6 +100193,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -101640,6 +103104,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -103164,6 +104652,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -104400,6 +105912,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -104602,6 +106138,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -104853,6 +106413,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -105016,6 +106600,30 @@
                             "type": "integer"
                         },
                         "description": "Heroes Profile match ID."
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -105079,6 +106687,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -105222,6 +106854,30 @@
                         },
                         "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
                         "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {
@@ -105845,6 +107501,30 @@
                             "type": "string"
                         },
                         "description": "Uploader build number."
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
                     }
                 ],
                 "responses": {

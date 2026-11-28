@@ -1,29 +1,14 @@
-@php
-    $bladeGlobals = [
-        'regions' => [
-            1 => 'NA',
-            2 => 'EU',
-            3 => 'KR',
-            /* 4 => 'UNK', */
-            5 => 'CN',
-        ],
-        'darkmode' => 0,
-        'heroes' => [],
-        'maps' => [],
-    ];
-@endphp
+@extends('errors.layout')
 
-@extends('layouts.app', $bladeGlobals)
-
-@section('title', 'Error')
+@section('title', __('Error'))
 @section('meta_keywords', '404 error, page not found, not found error, website error, error page, site not found')
 @section('meta_description', 'The page you were looking for could not be found.')
 
-@section('content')
-    <h1 class="p-20 text-center font-logo">You got lost</h1>
-    <div class="flex justify-center items-center text-center  bg-gray-100">
-        <a href="/"><img class="max-w-md w-full h-auto pb-20" src="/images/miscellaneous/404.png" alt="Town Portal"></a>
-    </div>
+@section('error_badge', __('Error 404'))
+@section('error_heading', __('You got lost in the Nexus'))
+@section('error_text', __('This page doesn\'t exist or was moved. Take the portal home, or find what you were looking for below.'))
 
-    <div style="font-size: 10px;">Image referenced from https://static.heroesofthestorm.com/comics/secrets-of-the-storm/en-us-09ab7fb85c.pdf</div>
+@section('error_actions')
+    <custom-button :href="'/'" :text="'Take me home'" :alt="'Take me home'" :color="'teal'" class="font-semibold"></custom-button>
+    <search-component :type="'alt'" class="!mt-0 !py-0 flex-1 min-w-[16rem]"></search-component>
 @endsection

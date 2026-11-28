@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Rules\HeroInputValidation;
 use App\Services\HeroPageService;
+use App\Services\LocalizedGameStrings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Validator;
 
 class HeroesController extends Controller
@@ -18,7 +20,7 @@ class HeroesController extends Controller
             ]);
     }
 
-    public function show(Request $request, HeroPageService $heroPageService, $hero)
+    public function show(Request $request, HeroPageService $heroPageService, LocalizedGameStrings $localizedGameStrings, $hero)
     {
         $validator = Validator::make(['hero' => $hero], [
             'hero' => ['required', new HeroInputValidation],
@@ -31,6 +33,13 @@ class HeroesController extends Controller
         $heroModel = $this->globalDataService->getHeroModel($hero);
         $herodata = $heroPageService->getHero($heroModel);
         $metadata = $herodata['metadata'];
+
+        $locale = App::getLocale();
+        if ($locale !== 'en') {
+            $herodata['talents'] = $localizedGameStrings->localizeTalents($herodata['talents']->toArray(), $locale);
+            $herodata['abilities'] = $localizedGameStrings->localizeAbilities($herodata['abilities']->toArray(), $locale, $heroModel->name);
+            $herodata['localized'] = $localizedGameStrings->hero($locale, $heroModel->id);
+        }
 
         $summary = $heroModel->name.($metadata && $metadata->title ? ', '.$metadata->title.',' : '')
             .' is a'.(preg_match('/^[AEIOU]/i', $heroModel->new_role ?? '') ? 'n ' : ' ').($heroModel->new_role ?? '').' hero in Heroes of the Storm.';

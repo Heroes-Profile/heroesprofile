@@ -1,7 +1,9 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', $battletag . " All Map Stats")
+@php($regionName = $leagueName ?? ($bladeGlobals['regions'][$region] ?? $region))
+@include('Player.structuredData', ['page' => 'Map Stats'])
+@section('title', __(':battletag (:region) Map Stats', ['battletag' => $battletag, 'region' => $regionName]))
 @section('meta_keywords', 'Player Map Stats, Map Statistics, Player Stats')
-@section('meta_description', 'Explore the statistics and data for all maps played by a player. Analyze player performance and stats for different maps.')
+@section('meta_description', 'All Heroes of the Storm maps played by ' . $battletag . ' (' . $regionName . '): win rate and games on every map. Pick a map to see its full stats.')
 @section('content')
   <player-maps-all-stats 
     :filters="{{ json_encode($filters) }}" 
@@ -11,6 +13,7 @@
     :region="{{ json_encode($region) }}"
     :accountlevel="{{ json_encode($account_level) }}" 
     :regionsmap="{{ json_encode($bladeGlobals['regions']) }}"
+    :urlparameters="{{ json_encode((object) request()->query()) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :esport="{{ json_encode($esport ?? null) }}"

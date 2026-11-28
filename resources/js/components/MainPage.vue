@@ -1,95 +1,120 @@
 <template>
-  <div>
+  <div class="flex-1 flex flex-col">
 
-    <div v-if="showPopup" class="modal">
+    <div v-if="showPopup">
       <new-user-popup @popupclosed="showPopup = false"></new-user-popup>
     </div>
 
 
-    <div class="text-center py-10">
-      <h1><img class="block m-4 mr-auto ml-auto max-md:px-4 md:w-2/5 md:max-w-6xl pl-25" src="/images/logo/full_deathwing.png" alt="Heroes Profile - Heroes of the Storm Stats"/></h1>
+    <!-- Short windows (laptops at 125-150% scaling): smaller logo, icons and gaps so the cards stay on the first screen -->
+    <div class="flex-[1_1_0] min-h-12 md:[@media(max-height:700px)]:min-h-6 max-md:hidden"></div>
 
-      <div class="block text-center mx-auto align-items-center justify-center flex">
-        <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
+    <div class="text-center px-4 max-md:hidden">
+      <!-- Equal-width words put the hexagon on the page's centre line; PROFILE is the wider word -->
+      <h1 class="flex items-center justify-center font-logo text-4xl md:text-8xl md:[@media(max-height:700px)]:text-6xl normal-case">
+        <span class="flex-1 basis-0 text-right whitespace-nowrap">Heroes</span>
+        <img class="w-[1.667em] mx-[0.333em] shrink-0" src="/images/logo/heroesprofilelogo.png" alt=""/>
+        <span class="flex-1 basis-0 text-left whitespace-nowrap">Profile</span>
+      </h1>
+      <!-- Count rolls up at the last day's average upload rate; no requests after page load -->
+      <!-- Digits shift by % of their 0-9 strip, not em: the root font size scales with the window, and an em shift would roll on resize -->
+      <div v-if="tickerCount" class="mt-6 md:[@media(max-height:700px)]:mt-3 flex flex-col items-center gap-1">
+        <p class="text-2xl font-bold">
+          <span class="inline-flex tabular-nums leading-none align-baseline" :aria-label="tickerCount.toLocaleString('en-US')">
+            <template v-for="(char, index) in tickerChars" :key="tickerChars.length - index">
+              <span v-if="/\d/.test(char)" class="inline-block h-[1em] overflow-hidden" aria-hidden="true">
+                <span class="flex flex-col transition-transform duration-500 ease-out" :style="{ transform: `translateY(-${char * 10}%)` }">
+                  <span v-for="digit in 10" :key="digit" class="h-[1em]">{{ digit - 1 }}</span>
+                </span>
+              </span>
+              <span v-else aria-hidden="true">{{ char }}</span>
+            </template>
+          </span>
+          {{ $t('replays uploaded') }}
+        </p>
+        <template v-if="latestgamedate">
+          <p v-if="parsingStale" class="bg-red rounded px-4 py-2 text-sm flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i>{{ $t('Replay parsing is currently offline. Latest game played :ago.', { ago: latestGameAgo }) }}</p>
+          <p v-else class="text-sm text-subtext">{{ $t('Latest game played :ago', { ago: latestGameAgo }) }}</p>
+        </template>
+      </div>
 
+         </div>
+
+    <!-- Wider than the gaps inside each group, so the logo and the cards read as two groups -->
+    <div class="flex-[1.5_1_0] min-h-28 md:[@media(max-height:700px)]:min-h-10 max-md:min-h-0"></div>
+
+    <!-- md+: one row of cards that shrink to fit; below md the two wrappers keep the mobile order -->
+    <!-- Full width on desktop with the outer cards on its edges, so they line up with the nav above -->
+    <div class="flex flex-wrap md:flex-nowrap justify-center md:justify-between gap-x-10 md:gap-x-6 2xl:gap-x-10 gap-y-16 w-full max-w-[120rem] mx-auto px-4 md:px-8 max-md:pt-8">
+      <div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem] md:contents">
+      <div :class="cardClasses">
+        <i class="fas fa-address-card text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">{{ $t('Player Profiles') }}</h3>
+        <p class="text-sm text-left mb-8">{{ $t('See all player stats in one place.  See data for individual maps or heroes played, match history, real in-game Storm League rank and comparisons all from within a streamlined profile.') }}</p>
+        <div class="flex mt-auto">
+          <!-- Turns into the header's BattleTag search, ready to type in -->
+          <search-component v-if="showPlayerSearch" ref="playerSearch" :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a BattleTag'" class="flex-1 !mt-0 !py-0"></search-component>
+          <custom-button v-else :text="'Find Player'" :alt="'Find Player'" :color="'teal'" :ignoreclick="true" class="flex-1 font-semibold" @click="openPlayerSearch"></custom-button>
+        </div>
+      </div>
+      <div :class="cardClasses">
+        <i class="fas fa-chart-line text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">{{ $t('Player Analytics') }}</h3>
+        <p class="text-sm text-left mb-8">{{ $t('Deep analysis of your season replays: where and how you die, time spent, performance ahead or behind, habit coaching, and a replay viewer for every game. Pre-alpha: try it free, then keep it with Patreon or any paid API plan.') }}</p>
+        <div class="flex mt-auto">
+          <custom-button v-if="analyticsAllowed" :href="'/Analytics'" :text="'Open Analytics'" :alt="'Open Analytics'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
+          <custom-button v-else :href="'/Analytics'" :text="'Try It Free'" :alt="'Try Player Analytics free'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
+        </div>
+      </div>
+      <div :class="cardClasses" class="max-md:order-first">
+        <i class="fa-solid fa-globe text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">{{ $t('Global Stats') }}</h3>
+        <p class="text-sm text-left mb-8">{{ $t('Variety of Heroes of the Storm stats, including global stats for heroes, talent stats, overall stats, builds, compositions, draft, matchups, and more.') }}</p>
+        <div class="flex flex-wrap gap-4 mt-auto">
+          <custom-button :href="'/Global/Hero'" :text="'Hero Stats'" :alt="'Hero Stats'" :color="'teal'" class="grow basis-auto font-semibold"></custom-button>
+          <custom-button :href="'/Global/Talents'" :text="'Talent Stats'" :alt="'Talent Stats'" :color="'teal'" class="grow basis-auto font-semibold"></custom-button>
+        </div>
+      </div>
+</div>
+<div class="flex flex-wrap justify-center gap-x-10 gap-y-16 max-w-[120rem] md:contents">
+      <div :class="cardClasses">
+        <i class="fa-solid fa-grip text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">{{ $t('Drafter') }}</h3>
+        <p class="text-sm text-left mb-8">{{ $t('Get ban and pick suggestions at every step of a Storm League draft, based on how often heroes are taken at that point, their win rates and bans, and the team compositions they fit into.') }}</p>
+        <div class="flex mt-auto">
+          <custom-button :href="'/Drafter'" :text="'Drafter'" :alt="'Drafter'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
+        </div>
+      </div>
+      <div :class="cardClasses" class="max-md:order-first">
+        <i class="fas fa-list-ol text-[5rem] md:[@media(max-height:700px)]:text-[3.5rem]"></i>
+        <h3 class="text-3xl font-semibold mt-6 mb-4">{{ $t('Leaderboards') }}</h3>
+        <p class="text-sm text-left mb-8">{{ $t("View leaderboards based on Player, Hero, or Role using Heroes Profile Rating, real in-game Storm League ranks, and the Match Prediction game. Get talent builds, and navigate directly to player's profiles.") }}</p>
+        <div class="flex mt-auto">
+          <custom-button :href="'/Global/Leaderboard'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :color="'teal'" class="flex-1 font-semibold"></custom-button>
+        </div>
       </div>
     </div>
 
+</div>
+    <div class="h-[8.75rem] md:[@media(max-height:700px)]:h-12 shrink-0 max-md:h-12"></div>
 
-    <div class="flex   md:p-20 bg-lighten flex-wrap justify-center items-between max-md:py-4">
-
-
-
-        <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
-
-            <i class="fa-solid fa-globe" style="font-size: 100px;"></i>
-
-            <h3 class="text-2xl mb-10 mt-2">Global Stats</h3>
-            <p>Variety of Heroes of the Storm stats, including global stats for heroes, talent stats, overall stats, builds, compositions, draft, matchups, and more.</p>
-            <div class="flex mt-auto gap-10">
-              <custom-button  :href="'/Global/Hero'" :text="'Hero Stats'" :alt="'Hero Stats'" :size="'big'" class="mt-auto flex-1" ></custom-button>
-              <custom-button :href="'/Global/Talents'" :text="'Talent Stats'" :alt="'Hero Stats'" :size="'big'"  class="mt-auto flex-1" ></custom-button>
-            </div>
-        </div>
-      
-
-      <a href="/Global/Leaderboard" class="text-center md:w-[30%] mb-20 mx-5">
-
-        <i class="fas fa-list-ol" style="font-size: 100px;"></i>
-
-        <h3 class="text-2xl mb-10 mt-2">Variety of Leaderboards</h3>
-        <p>View leaderboards based on Player, Hero, or Role using Heroes Profile Rating, real in-game Storm League ranks, and the Match Prediction game. Get talent builds, and navigate directly to player's profiles.</p>
-        
-        <custom-button :href="'/Global/Leaderboard'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :size="'big'" class="mt-10" ></custom-button>
-      </a>
-
-
-      <a href="/Drafter" class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
-
-        <i class="fa-solid fa-grip" style="font-size: 100px;"></i>
-
-        <h3 class="text-2xl mb-10 mt-2">Drafter</h3>
-        <p class="mb-10">Get ban and pick suggestions at every step of a Storm League draft, based on how often heroes are taken at that point, their win rates and bans, and the team compositions they fit into.</p>
-
-        <custom-button  :href="'/Drafter'" :text="'Start Drafting'" :alt="'Drafter'"  :size="'big'" class="mt-auto"  :color="'blue'"></custom-button>
-      </a>
-
-      <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
-
-        <i class="fas fa-address-card" style="font-size: 100px;"></i>
-
-        <h3 class="text-2xl mb-10 mt-2">Player profile</h3>
-        <p>See all player stats in one place.  See data for individual maps or heroes played, match history, real in-game Storm League rank and comparisons all from within a streamlined profile.</p>
-        <div class="flex mt-auto justify-center">
-          <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="mt-auto"></search-component>
-        </div>
-      </div>
-
-      <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
-
-        <i class="fas fa-chart-line" style="font-size: 100px;"></i>
-
-        <h3 class="text-2xl mb-10 mt-2">Player Analytics</h3>
-        <p class="mb-10">Deep analysis of your own season games from their replays: where and how you die, where you spend your time, how you do when ahead or behind, coaching on your habits, and a replay viewer for every game. In pre-alpha: try it with a free trial, then keep it with Patreon or any paid API plan.</p>
-
-        <custom-button v-if="analyticsAllowed" :href="'/Analytics'" :text="'Open Analytics'" :alt="'Open Analytics'" :size="'big'" class="mt-auto" :color="'teal'"></custom-button>
-        <custom-button v-else :href="'/Analytics'" :text="'Try It Free'" :alt="'Try Player Analytics free'" :size="'big'" class="mt-auto" :color="'teal'"></custom-button>
-      </div>
+    <div>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="0" :mobile-override="false"></dynamic-banner-ad>
     </div>
-
-
-    <div class="bg-teal p-5">
-      <p>Heroes Profile uses data from the Heroes Profile API, an open Heroes of the Storm replay database built from user-uploaded replays.
-        So far, Heroes Profile has pulled {{ getValueLocal(maxreplayid) }} replays into its dataset, up to and including patch
-      {{ latestpatch }} and games played through <format-date :input="latestgamedate"></format-date>.</p>
-      <p>For more information on the Heroes Profile API, visit <a class="link" href="/Api">heroesprofile.com/Api</a>.</p>
-      
+    <div class="bg-surface-2 text-sm px-4 md:px-8 py-6">
+      <div class="max-w-[116rem] mx-auto space-y-2">
+        <p>{{ $t('Heroes Profile uses data from the Heroes Profile API, an open Heroes of the Storm replay database built from user-uploaded replays.') }}
+          {{ $t('So far, Heroes Profile has pulled :count replays into its dataset, up to and including patch :patch and games played through :date.', { count: getValueLocal(maxreplayid), patch: latestpatch, date: formatGameDate(latestgamedate) }) }}</p>
+        <p>{{ $t('For more information on the Heroes Profile API, visit') }} <a class="link" href="/Api">heroesprofile.com/Api</a></p>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import Cookies from 'js-cookie';
+import moment from 'moment-timezone';
+import { formatGameDate, timeAgo } from '../utils/formatGameDate';
 
 
   export default {
@@ -98,15 +123,28 @@ import Cookies from 'js-cookie';
     },
     props: {
       user: Object,
+      patreonUser: Boolean,
       maxreplayid: Number,
       latestpatch: String,
       latestgamedate: String,
+      // { count, rate }: rate is replays per second
+      replayTicker: Object,
+      // GlobalDataService::PARSING_STALE_MINUTES
+      parsingStaleMinutes: {
+        type: Number,
+        default: 60,
+      },
       // Whether the signed-in player can open Analytics (trial, Patreon or a paid API plan)
       analyticsAllowed: Boolean,
     },
     data(){
       return {
+        // The Find Player button, swapped for the BattleTag search once clicked
+        showPlayerSearch: false,
         showPopup: true,
+        tickerStart: Date.now(),
+        now: Date.now(),
+        tickerTimer: null,
       }
     },
     created(){
@@ -121,12 +159,47 @@ import Cookies from 'js-cookie';
       }
     },
     mounted() {
+      this.tickerTimer = setInterval(() => { this.now = Date.now(); }, 1000);
+    },
+    beforeUnmount() {
+      clearInterval(this.tickerTimer);
     },
     computed: {
+      tickerCount() {
+        if (!this.replayTicker?.count) {
+          return null;
+        }
+        // Parsing offline: hold at the real count
+        if (this.latestgamedate && this.parsingStale) {
+          return this.maxreplayid || this.replayTicker.count;
+        }
+        const rate = this.replayTicker.rate || 0;
+        return this.replayTicker.count + Math.floor(rate * (this.now - this.tickerStart) / 1000);
+      },
+      tickerChars() {
+        return this.tickerCount.toLocaleString('en-US').split('');
+      },
+      // No new game in that long means the parser has likely stopped
+      parsingStale() {
+        return this.now - moment.tz(this.latestgamedate, 'Atlantic/Reykjavik').valueOf() > this.parsingStaleMinutes * 60 * 1000;
+      },
+      latestGameAgo() {
+        // Recomputes with the ticker clock
+        this.now;
+        return timeAgo(this.latestgamedate, this.now);
+      },
+      cardClasses() {
+        return 'flex flex-col text-center w-[21.0625rem] md:w-auto md:flex-1 md:min-w-0 md:max-w-[21.0625rem]';
+      },
     },
     watch: {
     },
     methods: {
+      openPlayerSearch() {
+        this.showPlayerSearch = true;
+        this.$nextTick(() => this.$refs.playerSearch?.$refs.input?.focus());
+      },
+      formatGameDate,
       getValueLocal(value){
         return value ? value.toLocaleString('en-US') : "";
       },

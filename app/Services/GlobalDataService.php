@@ -13,6 +13,8 @@ use App\Models\GlobalHeroStats;
 use App\Models\HeaderAlert;
 use App\Models\Hero;
 use App\Models\HeroesDataTalent;
+use App\Models\HeroesInternational\HeroesInternationalMainTeam;
+use App\Models\HeroesInternational\HeroesInternationalNationsCupTeam;
 use App\Models\LeagueTier;
 use App\Models\Map;
 use App\Models\MastersClash\MastersClashTeam;
@@ -74,6 +76,9 @@ class GlobalDataService
 
     // Bump when the cached data changes shape or maths, so old entries are skipped.
     private const HERO_WIN_RATES_ALL_CACHE_VERSION = 1;
+
+    // Also bump when a filter list gains an option: the live sites share this cache with their own lists
+    private const FILTER_DATA_CACHE_VERSION = 3;
 
     /**
      * Hour (America/New_York) at/after which the leaderboard "weeks since season start" value
@@ -685,23 +690,8 @@ class GlobalDataService
         });
     }
 
-    public function getDarkMode()
-    {
-        $darkModeCookie = request()->cookie('darkmode') === '1' ? '1' : '0';
-
-        if (Auth::check()) {
-            $darkmode = Auth::user()->userSettings->firstWhere('setting', 'darkmode');
-
-            return $darkmode ? $darkmode->value : $darkModeCookie;
-        }
-
-        return $darkModeCookie;
-    }
-
     public function getBladeGlobals()
     {
-        $darkModeValue = $this->getDarkMode();
-
         $regions = $this->getRegionIDtoString();
         $latestGame = $this->getLatestGameDate();
         $latestGameUtc = Carbon::parse($latestGame, 'UTC');
@@ -711,7 +701,6 @@ class GlobalDataService
 
         return [
             'regions' => $regions,
-            'darkmode' => $darkModeValue,
             'maxReplayID' => $this->calculateMaxReplayNumber(),
             'latestPatch' => $this->getLatestPatch(),
             'latestGameDate' => $latestGame,
@@ -1456,6 +1445,18 @@ class GlobalDataService
         return $value === 'compact' ? 'compact' : 'table';
     }
 
+    /** Account setting first, then the cookie; anything unsupported is English. */
+    public function getLocale(): string
+    {
+        $value = Auth::check()
+            ? Auth::user()->userSettings->firstWhere('setting', 'locale')?->value
+            : null;
+
+        $value ??= request()->cookie('locale');
+
+        return is_string($value) && array_key_exists($value, config('app.supported_locales')) ? $value : 'en';
+    }
+
     public function getTalentBuilderStyle(): string
     {
         $value = Auth::check()
@@ -1463,6 +1464,18 @@ class GlobalDataService
             : null;
 
         $value ??= request()->cookie('talentbuilderstyle');
+
+        return $value === 'horizontal' ? 'horizontal' : 'vertical';
+    }
+
+    // The talent stats grid's Vertical/Horizontal layout, saved like talentbuilderstyle
+    public function getTalentStatsStyle(): string
+    {
+        $value = Auth::check()
+            ? Auth::user()->userSettings->firstWhere('setting', 'talentstatsstyle')?->value
+            : null;
+
+        $value ??= request()->cookie('talentstatsstyle');
 
         return $value === 'horizontal' ? 'horizontal' : 'vertical';
     }
@@ -1650,14 +1663,47 @@ class GlobalDataService
 
         // remember() with a 0 TTL still returns an existing entry, and local shares prod's cache table
         if (! $this->usesProductionCaching()) {
-            return $this->buildFilterData($filtersMinimumPatch);
+            return $this->localizeFilterLabels($this->buildFilterData($filtersMinimumPatch));
         }
 
-        $cacheKey = 'filter_data_'.str_replace('.', '_', $filtersMinimumPatch);
+        $cacheKey = GlobalCacheKey::prefix('filter_data', self::FILTER_DATA_CACHE_VERSION).'|'.$filtersMinimumPatch;
 
-        return Cache::memo()->remember($cacheKey, 600, function () use ($filtersMinimumPatch) {
+        return $this->localizeFilterLabels(Cache::memo()->remember($cacheKey, 600, function () use ($filtersMinimumPatch) {
             return $this->buildFilterData($filtersMinimumPatch);
-        });
+        }));
+    }
+
+    /** Hero and map options get a display label in the chosen language; codes and names stay English. */
+    private function localizeFilterLabels(\stdClass $filterData): \stdClass
+    {
+        $locale = app()->getLocale();
+        if ($locale === 'en') {
+            return $filterData;
+        }
+
+        $names = app(LocalizedGameStrings::class)->names($locale);
+        $filterData = clone $filterData;
+
+        $filterData->heroes = collect($filterData->heroes)
+            ->map(fn ($hero) => $hero + ['label' => $names['heroes'][$hero['name']] ?? $hero['name']]);
+        $filterData->game_maps = collect($filterData->game_maps)
+            ->map(fn ($map) => $map + ['label' => $names['maps'][$map['name']] ?? $map['name']]);
+
+        // "2026 Season 3" and "Season 3" are built in English in buildFilterData()
+        $seasonLabel = function ($season) {
+            if (preg_match('/^(\d+) Season (.+)$/', $season['name'], $m)) {
+                return $season + ['label' => __(':year Season :season', ['year' => $m[1], 'season' => $m[2]])];
+            }
+            if (preg_match('/^Season (.+)$/', $season['name'], $m)) {
+                return $season + ['label' => __('Season :season', ['season' => $m[1]])];
+            }
+
+            return $season + ['label' => __($season['name'])];
+        };
+        $filterData->seasons = collect($filterData->seasons)->map($seasonLabel);
+        $filterData->match_prediction_seasons = collect($filterData->match_prediction_seasons)->map($seasonLabel);
+
+        return $filterData;
     }
 
     /**
@@ -1801,7 +1847,7 @@ class GlobalDataService
         ];
 
         $filterData->sl_leagues = [
-            ['code' => 'grandmaster', 'name' => 'Grandmaster'],
+            ['code' => 'grandmaster', 'name' => 'Grand Master'],
             ['code' => 'master', 'name' => 'Master'],
             ['code' => 'diamond', 'name' => 'Diamond'],
             ['code' => 'platinum', 'name' => 'Platinum'],
@@ -1937,8 +1983,8 @@ class GlobalDataService
             ['code' => '00005', 'name' => '5 Solos'],
             ['code' => '00023', 'name' => '3 Solos and 1 Duo'],
             ['code' => '00041', 'name' => '1 Solo and 2 Duo'],
-            ['code' => '00302', 'name' => '2 Solos and 1 Triple'],
-            ['code' => '00320', 'name' => '1 Duo and 1 Triple'],
+            ['code' => '00302', 'name' => '2 Solos and 1 Trio'],
+            ['code' => '00320', 'name' => '1 Duo and 1 Trio'],
             ['code' => '04001', 'name' => '1 Solo and 1 Quad'],
             ['code' => '50000', 'name' => '5 Stack'],
         ];
@@ -1972,6 +2018,7 @@ class GlobalDataService
             ['code' => 'Player', 'name' => 'Player'],
             ['code' => 'Hero', 'name' => 'Hero'],
             ['code' => 'Role', 'name' => 'Role'],
+            ['code' => 'Map', 'name' => 'Map'],
         ];
 
         $filterData->real_rank_minimum_patch = self::REAL_RANK_MINIMUM_PATCH;
@@ -1980,6 +2027,7 @@ class GlobalDataService
             ['code' => 'Player', 'name' => 'Player'],
             ['code' => 'Hero', 'name' => 'Hero'],
             ['code' => 'Role', 'name' => 'Role'],
+            ['code' => 'Map', 'name' => 'Map'],
             ['code' => 'Match Prediction', 'name' => 'Match Prediction'],
             ['code' => 'SL Rank', 'name' => 'SL Rank'],
         ];
@@ -2022,9 +2070,17 @@ class GlobalDataService
             return ['code' => $season, 'name' => strval($season)];
         });
 
+        $filterData->hi_seasons = HeroesInternationalMainTeam::distinct()->orderBy('season', 'desc')->pluck('season')->map(function ($season) {
+            return ['code' => $season, 'name' => strval($season)];
+        });
+
+        $filterData->hi_nc_seasons = HeroesInternationalNationsCupTeam::distinct()->orderBy('season', 'desc')->pluck('season')->map(function ($season) {
+            return ['code' => $season, 'name' => strval($season)];
+        });
+
         $filterData->nut_cup_seasons = [
-            ['code' => '1', 'name' => '1'],
-            ['code' => '2', 'name' => '2'],
+            ['code' => 2, 'name' => '2'],
+            ['code' => 1, 'name' => '1'],
         ];
 
         return $filterData;
@@ -2230,6 +2286,7 @@ class GlobalDataService
 
     public function checkIfSiteFlair($blizz_id, $region)
     {
+
         $data = BattlenetAccount::where('blizz_id', $blizz_id)->where('region', $region)->first();
 
         if (! $data || empty($data)) {

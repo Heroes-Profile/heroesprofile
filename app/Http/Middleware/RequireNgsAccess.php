@@ -25,7 +25,7 @@ class RequireNgsAccess
         $context = $request->attributes->get(ApiKeyGuard::REQUEST_ATTRIBUTE);
 
         if ($context === null) {
-            return $this->error('unauthenticated', 'A valid API key is required.', 401);
+            return $this->error('unauthenticated', __('A valid API key is required.'), 401);
         }
 
         // No quota middleware on these routes, so suspension is refused here.
@@ -40,7 +40,7 @@ class RequireNgsAccess
         if (! $permitted) {
             return $this->error(
                 'ngs_access_required',
-                'This endpoint is limited to accounts granted NGS access.',
+                __('This endpoint is limited to accounts granted NGS access.'),
                 403
             );
         }

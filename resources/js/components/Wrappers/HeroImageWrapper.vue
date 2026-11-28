@@ -4,7 +4,7 @@
       :rectangle="rectangle" 
       :size="size" 
       :image="getHeroImage()" 
-      :title="hero.name" 
+      :title="$heroName(hero)" 
       :excludehover="excludehover" 
       :hpowner="hpowner"
       :award="award"
@@ -15,10 +15,16 @@
       :mobileClick="mobileClick"
       :hidemobiletext="!hasSlotContent"
       :popupsize="popupsize || 'fit'"
+      :popup-hoverable="popupHoverable"
+      :hidedelay="popupHoverable ? undefined : 0"
+      :href="href"
+      :link-text="linkText"
+      :action-text="actionText"
+      @action="$emit('action')"
     >
       <slot>
         <div v-if="!hasSlotContent">
-          <h2 class="max-sm:text-xs">{{ hero.name }}</h2>
+          <h2 class="max-sm:text-xs">{{ $heroName(hero) }}</h2>
         </div>
       </slot>
     </round-image>
@@ -31,6 +37,7 @@ export default {
   name: 'HeroImageWrapper',
   components: {
   },
+  emits: ['action'],
   props: {
     hero: Object,
     size: String,
@@ -45,6 +52,11 @@ export default {
     voideye: Boolean,
     popupsize: String,
     mobileClick: Boolean,
+    href: String,
+    linkText: String,
+    actionText: String,
+    // false: the popup closes as soon as the pointer leaves the portrait, like the talent icons'
+    popupHoverable: { type: Boolean, default: false },
   },
   data(){
     return {

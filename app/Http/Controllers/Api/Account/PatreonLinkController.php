@@ -46,7 +46,7 @@ class PatreonLinkController extends Controller
         } catch (InvalidStateException $e) {
             Log::error('InvalidStateException linking Patreon to an API account: '.$e->getMessage());
 
-            return redirect('/Api/Account')->withErrors(['patreon' => 'That Patreon sign-in did not complete. Please try again.']);
+            return redirect('/Api/Account')->withErrors(['patreon' => __('That Patreon sign-in did not complete. Please try again.')]);
         }
 
         $record = $this->patreonRecord($patreonUser);
@@ -59,9 +59,7 @@ class PatreonLinkController extends Controller
 
         if ($takenBy) {
             return redirect('/Api/Account')->withErrors([
-                'patreon' => 'That Patreon account is already linked to a different Heroes Profile API account. '
-                    .'Sign in to that account and unlink it there first, then try again. '
-                    .'If you no longer have access to it, email zemill@heroesprofile.com.',
+                'patreon' => __('That Patreon account is already linked to a different Heroes Profile API account. Sign in to that account and unlink it there first, then try again. If you no longer have access to it, email :email.', ['email' => 'zemill@heroesprofile.com']),
             ]);
         }
 
@@ -71,7 +69,7 @@ class PatreonLinkController extends Controller
         // the entry aged out.
         $keys->forgetAccount($account->id);
 
-        return redirect('/Api/Account')->with('status', 'Patreon linked.');
+        return redirect('/Api/Account')->with('status', __('Patreon linked.'));
     }
 
     public function unlink(ApiKeyResolver $keys)

@@ -1,0 +1,8 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "rating": 0,
+        "games_played": 0
+    }
+}

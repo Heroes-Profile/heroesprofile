@@ -56,46 +56,11 @@ class EsportsController extends Controller
     }
 
     /** Every league's player match history, Other's too (EsportOtherController hands it here). */
-    public function showPlayerMatchHistory(Request $request, $esport, $battletag, $blizz_id)
+    public function showPlayerMatchHistory(Request $request)
     {
-        $validationRules = [
-            'esport' => 'required|in:NGS,CCL,MastersClash,NutCup,HeroesInternational',
-            'battletag' => 'required|string',
-            'blizz_id' => 'required|integer',
-        ];
-
-        $otherValidationRules = [
-            'division' => 'nullable|string',
-            'season' => 'nullable|numeric',
-            'tournament' => [
-                'nullable',
-                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
-                'in:main,nationscup',
-            ],
-        ];
-
-        $validator = Validator::make(compact('esport', 'battletag', 'blizz_id'), $validationRules);
-        $otherValidator = Validator::make($request->all(), $otherValidationRules);
-
-        if ($validator->fails()) {
-            if (config('app.env') === 'production') {
-                return \Redirect::to('/');
-            } else {
-                return [
-                    'data' => $request->all(),
-                    'status' => 'failure to validate inputs',
-                ];
-            }
-        }
-
-        return view('Esports.singlePlayerMatchHistory')->with([
-            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-            'battletag' => $battletag,
-            'blizz_id' => $blizz_id,
-            'esport' => $esport,
+        return $this->showEsportPlayerPage($request, 'Esports.singlePlayerMatchHistory', [
             'filters' => $this->globalDataService->getFilterData(),
-            'season' => $request['season'],
-            'tournament' => $request['tournament'],
+            'playermatchtablestyle' => $this->globalDataService->getPlayerMatchStyle(),
         ]);
     }
 
@@ -2446,6 +2411,15 @@ class EsportsController extends Controller
             'blizz_id' => $blizz_id,
             'region' => null,
             'esport' => $this->leagueDataInput()['esport'],
+            // Shown where a player page puts the region, e.g. "Zemill (NGS) Map Stats"
+            'leagueName' => match ($this->esport) {
+                'MastersClash' => 'Masters Clash',
+                'hi' => 'Heroes International',
+                'hi_nc' => 'Heroes International Nations Cup',
+                'NutCup' => 'Nut Cup',
+                'Other' => $this->series,
+                default => $this->esport,
+            },
             'esportfilters' => $esportfilters,
             'filters' => $this->globalDataService->getFilterData(),
             'gametypedefault' => [],

@@ -1,26 +1,26 @@
 <template>
   <div class="flex flex-wrap">
     <div id="filter-label" class="relative">
-      <div class="flex flex-col text-sm font-medium text-gray-700 p-2">
-        <span>{{ text }} Min</span>
+      <div class="flex flex-col gap-1.5 text-sm font-medium text-subtext p-2">
+        <span>{{ $t(':name Min', { name: $t(text) }) }}</span>
         <input type="number"
           v-model="min"
           :min="lowest"
           @change="emitChange(text + ' Min', min)"
           :disabled="disabled"
-          :class="['w-[150px] h-[40px] border-solid border-[1px] border-white p-2 text-white focus:outline-none', disabled ? 'bg-gray-md cursor-not-allowed' : 'bg-blue hover:bg-teal']"
+          :class="['w-[9.375rem] h-[2.5rem] rounded p-2 text-white focus:outline-none', disabled ? '!bg-gray-md' : '!bg-surface-3 hover:!bg-surface-4']"
         >
       </div>
     </div>
     <div id="filter-label" class="relative">
-      <div class="flex flex-col text-sm font-medium text-gray-700 p-2">
-        <span>{{ text }} Max</span>
+      <div class="flex flex-col gap-1.5 text-sm font-medium text-subtext p-2">
+        <span>{{ $t(':name Max', { name: $t(text) }) }}</span>
         <input type="number"
           v-model="max"
           :min="min || lowest"
           @change="emitChange(text + ' Max', max)"
           :disabled="disabled"
-          :class="['w-[150px] h-[40px] border-solid border-[1px] border-white p-2 text-white focus:outline-none', disabled ? 'bg-gray-md cursor-not-allowed' : 'bg-blue hover:bg-teal']"
+          :class="['w-[9.375rem] h-[2.5rem] rounded p-2 text-white focus:outline-none', disabled ? '!bg-gray-md' : '!bg-surface-3 hover:!bg-surface-4']"
         >
       </div>
     </div>

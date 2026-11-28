@@ -60,12 +60,25 @@ class GenerateSitemap extends Command
             ['loc' => '/Heroes',                   'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.8'],
             ['loc' => '/Upload',                   'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.7'],
             ['loc' => '/Upload/Uploader',          'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.6'],
+            ['loc' => '/Upload/Widget',            'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.5'],
             ['loc' => '/Drafter',                  'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.7'],
             ['loc' => '/Tools/RandomizeMe',        'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.5'],
+            ['loc' => '/Match/Prediction/Game',    'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.5'],
             ['loc' => '/Tools/AutoBattler',        'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.5'],
             ['loc' => '/Tools/Activity',           'lastmod' => $now, 'changefreq' => 'daily',   'priority' => '0.5'],
             ['loc' => '/Twitch',                   'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.6'],
             ['loc' => '/Twitch/Guidelines',        'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.3'],
+
+            // Esports: the hub and each league's main page, the ones robots.txt allows
+            ['loc' => '/Esports',                  'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.7'],
+            ['loc' => '/Esports/NGS',              'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.6'],
+            ['loc' => '/Esports/CCL',              'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.6'],
+            ['loc' => '/Esports/MastersClash',     'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.6'],
+            ['loc' => '/Esports/HeroesInternational', 'lastmod' => $now, 'changefreq' => 'weekly', 'priority' => '0.6'],
+            ['loc' => '/Esports/HeroesInternational?tournament=main', 'lastmod' => $now, 'changefreq' => 'weekly', 'priority' => '0.6'],
+            ['loc' => '/Esports/HeroesInternational?tournament=nationscup', 'lastmod' => $now, 'changefreq' => 'weekly', 'priority' => '0.6'],
+            ['loc' => '/Esports/NutCup',           'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.6'],
+            ['loc' => '/Esports/Other',            'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.6'],
 
             // API portal
             ['loc' => '/Api',                      'lastmod' => $now, 'changefreq' => 'weekly',  'priority' => '0.8'],
@@ -88,6 +101,7 @@ class GenerateSitemap extends Command
             $urls[] = ['loc' => "/Global/Talents/{$encoded}",        'lastmod' => $now, 'changefreq' => 'daily',  'priority' => '0.8'];
             $urls[] = ['loc' => "/Global/Hero/Maps/{$encoded}",      'lastmod' => $now, 'changefreq' => 'daily',  'priority' => '0.7'];
             $urls[] = ['loc' => "/Global/Matchups/{$encoded}",       'lastmod' => $now, 'changefreq' => 'daily',  'priority' => '0.7'];
+            $urls[] = ['loc' => "/Global/Draft/{$encoded}",          'lastmod' => $now, 'changefreq' => 'daily',  'priority' => '0.7'];
             $urls[] = ['loc' => "/Global/Talents/Builder/{$encoded}", 'lastmod' => $now, 'changefreq' => 'weekly', 'priority' => '0.6'];
             $urls[] = ['loc' => "/Heroes/{$encoded}",                 'lastmod' => $now, 'changefreq' => 'weekly', 'priority' => '0.7'];
         }

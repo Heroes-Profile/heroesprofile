@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Award;
 use App\Services\FaqMatcher;
+use App\Services\LocalizedFaq;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 
 class FaqController extends Controller
@@ -54,7 +56,7 @@ class FaqController extends Controller
             'patchHistory' => $patchHistory,
             'awards' => $awards,
             'seasonDates' => $seasonDates,
-            'faqCategories' => FaqMatcher::forViewer(config('faq.categories')),
+            'faqCategories' => FaqMatcher::forViewer(LocalizedFaq::localize(config('faq.categories'), App::getLocale())),
             'faqStopwords' => FaqMatcher::STOPWORDS,
             'faqPages' => FaqMatcher::pages(),
         ]);

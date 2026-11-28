@@ -1,6 +1,7 @@
 @extends('layouts.api')
 
-@section('title', 'Admin')
+@section('title', __('Admin'))
+@section('robots', 'noindex, nofollow')
 
 @section('content')
   <api-admin-console></api-admin-console>

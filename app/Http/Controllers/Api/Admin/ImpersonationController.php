@@ -36,23 +36,23 @@ class ImpersonationController extends Controller
 
         // Nesting would leave no way back to the original admin: the key holds one id.
         if ($request->session()->has(self::SESSION_KEY)) {
-            return response()->json(['error' => 'Already impersonating. Stop first.'], 409);
+            return response()->json(['error' => __('Already impersonating. Stop first.')], 409);
         }
 
         $target = ApiAccount::find($id);
 
         if ($target === null) {
-            return response()->json(['error' => 'No such account.'], 404);
+            return response()->json(['error' => __('No such account.')], 404);
         }
 
         if ($target->id === $admin->id) {
-            return response()->json(['error' => 'That is your own account.'], 422);
+            return response()->json(['error' => __('That is your own account.')], 422);
         }
 
         // An admin session would keep the Admin nav and the console reachable, which
         // is how a swap ends up nested by accident.
         if ($target->isAdmin()) {
-            return response()->json(['error' => 'Administrators cannot be impersonated.'], 422);
+            return response()->json(['error' => __('Administrators cannot be impersonated.')], 422);
         }
 
         Auth::guard('api_web')->login($target);

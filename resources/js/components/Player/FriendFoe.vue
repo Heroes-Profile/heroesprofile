@@ -1,151 +1,228 @@
 <template>
   <div>
-    <page-heading v-if="esport" :infoText1="infoText" :heading="'Friend vs Foe'" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
-    <page-heading v-else :infoText1="infoText" :heading="'Friend vs Foe'"  :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
-
-    <div v-if="esport && ngsFilterOptions" class="flex flex-wrap justify-center max-w-[1500px] mx-auto">
-      <single-select-filter :values="ngsFilterOptions.seasons" :text="'Seasons'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsSeason"></single-select-filter>
-      <single-select-filter v-if="ngsFilterOptions.divisions" :values="ngsFilterOptions.divisions" :text="'Divisions'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsDivision"></single-select-filter>
-      <single-select-filter v-if="ngsFilterOptions.teams.length" :values="ngsTeamOptions" :text="'Teams'" @input-changed="ngsFilterChange" @dropdown-closed="ngsDropdownClosed" :trackclosure="true" :defaultValue="ngsTeam"></single-select-filter>
-    </div>
-
-    <filters v-if="!esport"
-
-      :onFilter="filterData" 
-      :filters="filters" 
-      :isLoading="friendIsLoading || enemyIsLoading"
-      :gametypedefault="gametype"
-      :includehero="true"
-      :includegamemap="true"
-      :includegametypefull="true"
-      :includemultiseason="true"
-      :includegamedaterange="true"
-      :includegroupsize="true"
-      :hideadvancedfilteringbutton="true"
-      :groupSizeDefaultValue="'All'"
-      :overrideGroupSizeRemoval="true"
+    <player-page-top>
+      <template #heading>
+      <!-- Heading descriptions hidden site-wide for now; may be added back somewhere else on the page. :infoText1="infoText" -->
+      <page-heading v-if="esport" :heading="'Friend vs Foe'" :battletag="battletag" :esport="esport" :heading-image="league.headingImage" :heading-image-url="league.headingImageUrl"></page-heading>
+      <page-heading v-else :heading="'Friend vs Foe'"  :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+      </template>
+      <div class="w-full">
+      <filters v-if="!esport"
+        :onFilter="filterData"  
+        :filters="filters" 
+        :isLoading="friendIsLoading || enemyIsLoading"
+        :gametypedefault="gametype"
+        :includehero="true"
+        :includegamemap="true"
+        :includegametypefull="true"
+        :includemultiseason="true"
+        :includegamedaterange="true"
+        :includegroupsize="true"
+        :hideadvancedfilteringbutton="true"
+        :groupSizeDefaultValue="'All'"
+        :overrideGroupSizeRemoval="true"
+        >
+      </filters>
+      <filters v-else-if="esport"
+        :filters="filters"
+        :isLoading="(friendIsLoading || enemyIsLoading)"
+        :onFilter="() => getNgsData()"
+        :onChange="ngsFilterChange"
+        :extrafilters="[
+          { text: 'Seasons', values: ngsFilterOptions?.seasons || [], defaultValue: ngsSeason },
+          { text: 'Divisions', values: ngsFilterOptions?.divisions || [], defaultValue: ngsDivision, show: esport == 'NGS' },
+          { text: 'Teams', values: ngsTeamOptions, defaultValue: ngsTeam },
+        ]"
+        :excludetimeframes="true"
+        :excludegametype="true"
+        :hideadvancedfilteringbutton="true"
       >
-    </filters>
+      </filters>
+      </div>
+    </player-page-top>
     
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
-    <div v-if="asyncLoading">
-      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
-    </div>
-
-    <div v-if="frienddata && enemydata" class="gap-1 mx-auto  flex justify-center max-w-[1500px] max-md:flex-col max-md:text-sm max-md:max-w-[100vw]">
-      <div ref="friendcontainer" class="max-md:overflow-hidden">
-        <table ref="friendtable" class="min-w-0 max-w-[750px]">
+    <div v-if="frienddata && enemydata" class="max-w-[120rem] mx-auto px-4 md:px-8 max-md:text-sm max-md:max-w-[100vw]">
+      <!-- One panel around both tables, like the leaderboard's -->
+      <panel-box>
+      <div class="flex gap-6 max-md:flex-col">
+      <div ref="friendcontainer" class="flex-1 min-w-0 max-md:overflow-clip">
+        <table ref="friendtable" class="w-full min-w-[36rem] table-fixed">
+          <!-- The same column widths in both tables, so their columns line up -->
+          <colgroup>
+            <col class="w-[27%]">
+            <col class="w-[22%]">
+            <col class="w-[17%]">
+            <col class="w-[21%]">
+            <col v-if="!esport" class="w-[13%]">
+          </colgroup>
           <thead >
+            <tr>
+              <th colspan="5" class="py-2 px-3 text-center text-base font-bold">{{ $t('Friends') }}</th>
+            </tr>
             <tr >
-              <th  @click="sortTableFriend('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
-                Player
+              <th class="py-2 px-3  text-left text-sm leading-4" :class="{ 'bg-teal text-white': friendSortKey === 'battletag' }">
+                <div class="flex items-center gap-[1.125rem]">
+                  <span class="cursor-pointer" @click="sortTableFriend('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator></span>
+                  <search-input v-model="friendSearch" :placeholder="$t('Search player')" :collapsible="true" class="w-40"></search-input>
+                </div>
               </th>
-              <th @click="sortTableFriend('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[35%]">
-                Favorite Hero
+              <th @click="sortTableFriend('hero')" class="py-2 px-3  text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': friendSortKey === 'hero' }">
+                {{ $t('Favorite Hero') }}<sort-indicator :column="'hero'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>            
-              <th @click="sortTableFriend('total_games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[20%]">
-                Games Played <br/>With
+              <th @click="sortTableFriend('total_games_played')" class="py-2 px-3  text-center text-sm leading-4 cursor-pointer whitespace-nowrap" :class="{ 'bg-teal text-white': friendSortKey === 'total_games_played' }">
+                {{ $t('Games With') }}<sort-indicator :column="'total_games_played'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>
-              <th  @click="sortTableFriend('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%] ">
-                Win Rate with Friend
+              <th  @click="sortTableFriend('win_rate')" class="py-2 px-3  text-center text-sm leading-4 cursor-pointer whitespace-nowrap" :class="{ 'bg-teal text-white': friendSortKey === 'win_rate' }">
+                {{ $t('Win Rate With') }}<sort-indicator :column="'win_rate'" :sort-key="friendSortKey" :sort-dir="friendSortDir"></sort-indicator>
               </th>
-              <th v-if="!esport" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider w-[10%]">
-                Matches
+              <th v-if="!esport" class="py-2 px-3 text-center text-sm leading-4 w-px whitespace-nowrap">
+                {{ $t('Matches') }}
               </th>
             </tr>
           </thead>
 
           <tbody>
-            <tr v-for="row in sortedDataFriends" :key="row.blizz_id">
+            <tr v-for="row in shownFriends" :key="row.blizz_id">
               <td class="py-2 px-3 ">
+                <player-name :battletag="row.battletag" :blizz-id="row.blizz_id" :region="row.region" :link="esport ? row.link : null" :redirect="!esport" :void-eye="!esport" :hp-owner="!!row.hp_owner" :patreon="!!row.patreon"></player-name>
+              </td>
+              <td class="py-2 px-3">
                 <div class="flex items-center">
-                  <a v-if="esport" class="link mr-2" :href="row.link">{{ row.battletag }}</a>
-                  <a v-else class="link mr-2" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
-                  <div class="" v-if="row.hp_owner">
-                    <i class="fas fa-crown text" style="color:gold;"></i>
-                  </div>
-                  <div class="" v-else-if="row.patreon">
-                    <i class="fas fa-star" style="color:gold"></i>
-                  </div>
-                  <void-eye-flair v-if="!esport" :blizz-id="row.blizz_id" :region="row.region" :tooltip="false"></void-eye-flair>
-
+                  <hero-image-wrapper class="mr-2" :hero="row.heroData.hero" :mobile-click="true">
+                    <image-hover-box :title="$heroName(row.heroData.hero)" :paragraph-one="$t('Games Played') + ': ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
+                  </hero-image-wrapper>
+                  <a :href="heroLink(row)" class="hidden md:inline-flex items-center link-row">{{ $heroName(row.heroData.hero) }}</a>
                 </div>
               </td>
-              <td class="py-2 px-3 flex items-center gap-1">
-                <hero-image-wrapper :hero="row.heroData.hero">
-                  <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
-                </hero-image-wrapper>
-               <span class="max-md:hidden"> {{ row.heroData.hero.name }} </span>
-              </td>
-              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString('en-US') }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 text-center">{{ row.total_games_played.toLocaleString('en-US') }}</td>
+              <td class="py-2 px-3 text-center">{{ row.win_rate.toFixed(2) }}</td>
               <td v-if="!esport" class="py-2 px-3">
-                <a class="link" :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`">Matches</a>
+                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" :aria-label="`Matches with ${row.battletag}`" :title="$t('Matches')" class="flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors"><basil-icon name="arrow-small"></basil-icon></a>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div ref="enemycontainer" class="max-md:overflow-hidden">
-        <table ref="enemytable" class="min-w-0 max-w-[750px]">
+      <div ref="enemycontainer" class="flex-1 min-w-0 max-md:overflow-clip">
+        <table ref="enemytable" class="w-full min-w-[36rem] table-fixed">
+          <!-- The same column widths in both tables, so their columns line up -->
+          <colgroup>
+            <col class="w-[27%]">
+            <col class="w-[22%]">
+            <col class="w-[17%]">
+            <col class="w-[21%]">
+            <col v-if="!esport" class="w-[13%]">
+          </colgroup>
           <thead class="bg-red">
             <tr>
-              <th @click="sortTableEnemy('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
-                Player
+              <th colspan="5" class="py-2 px-3 text-center text-base font-bold">{{ $t('Foes') }}</th>
+            </tr>
+            <tr>
+              <th class="py-2 px-3  text-left text-sm leading-4" :class="{ 'bg-teal text-white': enemySortKey === 'battletag' }">
+                <div class="flex items-center gap-[1.125rem]">
+                  <span class="cursor-pointer" @click="sortTableEnemy('battletag')">{{ $t('Player') }}<sort-indicator :column="'battletag'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator></span>
+                  <search-input v-model="enemySearch" :placeholder="$t('Search player')" :collapsible="true" class="w-40"></search-input>
+                </div>
               </th>
-              <th @click="sortTableEnemy('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[35%]">
-                Favorite Hero
+              <th @click="sortTableEnemy('hero')" class="py-2 px-3  text-left text-sm leading-4 cursor-pointer" :class="{ 'bg-teal text-white': enemySortKey === 'hero' }">
+                {{ $t('Favorite Hero') }}<sort-indicator :column="'hero'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>            
-              <th @click="sortTableEnemy('total_games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[20%]">
-                Games Played <br/>Against
+              <th @click="sortTableEnemy('total_games_played')" class="py-2 px-3  text-center text-sm leading-4 cursor-pointer whitespace-nowrap" :class="{ 'bg-teal text-white': enemySortKey === 'total_games_played' }">
+                {{ $t('Games Against') }}<sort-indicator :column="'total_games_played'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>
-              <th @click="sortTableEnemy('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
-                Foe's Win Rate Against {{ battletag }}
+              <th @click="sortTableEnemy('win_rate')" class="py-2 px-3  text-center text-sm leading-4 cursor-pointer whitespace-nowrap" :class="{ 'bg-teal text-white': enemySortKey === 'win_rate' }">
+                {{ $t('Win Rate Against') }}<sort-indicator :column="'win_rate'" :sort-key="enemySortKey" :sort-dir="enemySortDir"></sort-indicator>
               </th>
-              <th v-if="!esport" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider w-[10%]">
-                Matches
+              <th v-if="!esport" class="py-2 px-3 text-center text-sm leading-4 w-px whitespace-nowrap">
+                {{ $t('Matches') }}
               </th>
             </tr>
           </thead>
 
           <tbody>
-            <tr v-for="row in sortedDataEnemies" :key="row.blizz_id">
+            <tr v-for="row in shownEnemies" :key="row.blizz_id">
               <td class="py-2 px-3 ">
 
-                <div class="flex items-center">
-                  <a v-if="esport" class="link mr-2" :href="row.link">{{ row.battletag }}</a>
-                  <a v-else class="link mr-2" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
-                  <div class="" v-if="row.hp_owner">
-                    <i class="fas fa-crown text" style="color:gold;"></i>
-                  </div>
-                  <div class="" v-else-if="row.patreon">
-                    <i class="fas fa-star" style="color:gold"></i>
-                  </div>
-                  <void-eye-flair v-if="!esport" :blizz-id="row.blizz_id" :region="row.region" :tooltip="false"></void-eye-flair>
+                <player-name :battletag="row.battletag" :blizz-id="row.blizz_id" :region="row.region" :link="esport ? row.link : null" :redirect="!esport" :void-eye="!esport" :hp-owner="!!row.hp_owner" :patreon="!!row.patreon"></player-name>
+              </td>
 
+              <td class="py-2 px-3">
+                <div class="flex items-center">
+                  <hero-image-wrapper class="mr-2" :hero="row.heroData.hero" :mobile-click="true">
+                    <image-hover-box :title="$heroName(row.heroData.hero)" :paragraph-one="$t('Games Played') + ': ' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
+                  </hero-image-wrapper>
+                  <a :href="heroLink(row)" class="hidden md:inline-flex items-center link-row">{{ $heroName(row.heroData.hero) }}</a>
                 </div>
               </td>
-
-              <td class="py-2 px-3 flex items-center gap-1">
-                <hero-image-wrapper :hero="row.heroData.hero">
-                  <h2>{{ row.heroData.hero.name }}</h2>
-                  <p>Games Played: {{ row.hero_games.toLocaleString('en-US') }}</p>
-                </hero-image-wrapper>
-                <span class="max-md:hidden">{{ row.heroData.hero.name }} </span>
-              </td>
-              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString('en-US') }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 text-center">{{ row.total_games_played.toLocaleString('en-US') }}</td>
+              <td class="py-2 px-3 text-center">{{ row.win_rate.toFixed(2) }}</td>
               <td v-if="!esport" class="py-2 px-3">
-                <a class="link" :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`">Matches</a>
+                <a :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`" :aria-label="`Matches with ${row.battletag}`" :title="$t('Matches')" class="flex items-center justify-center min-h-[2rem] hover:text-lteal transition-colors"><basil-icon name="arrow-small"></basil-icon></a>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+      </div>
+      </panel-box>
     </div>
-    <div v-else-if="(friendIsLoading || enemyIsLoading) && !asyncLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+    <!-- The load failed: the error page's card in place of the data -->
+    <div v-else-if="loadError" class="max-w-[120rem] mx-auto px-4 md:px-8">
+      <error-card :status="loadError.status" :message="loadError.message" @retry="loadError.retry"></error-card>
+    </div>
+    <div v-else-if="friendIsLoading || enemyIsLoading || asyncLoading" class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-6">
+      <!-- The tables start where the loaded ones do; the message sits on a tab of the panel above them -->
+      <panel-box class="relative md:!rounded-tl-none">
+        <loading-component :tab="true" v-if="asyncLoading" :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('This is taking longer than expected. A background task is computing your results. Please be patient.') }}</loading-component>
+        <loading-component :tab="true" v-else :compact="true" :textoverride="true" :overrideimage="league?.loaderImage">{{ $t('Large amount of data. Please be patient.') }}</loading-component>
+        <!-- The loaded tables themselves: titles as text, the column names as grey blocks their size, and grey rows the same height -->
+        <div class="flex gap-6 max-md:flex-col">
+          <div v-for="side in [{ title: 'Friends', games: 'Games With', rate: 'Win Rate With' }, { title: 'Foes', games: 'Games Against', rate: 'Win Rate Against' }]" :key="side.title" ref="skeletoncontainer" class="flex-1 min-w-0 max-md:overflow-clip">
+            <table ref="skeletontable" class="w-full min-w-[36rem] table-fixed">
+              <colgroup>
+                <col class="w-[27%]">
+                <col class="w-[22%]">
+                <col class="w-[17%]">
+                <col class="w-[21%]">
+                <col v-if="!esport" class="w-[13%]">
+              </colgroup>
+              <thead :class="{ 'bg-red': side.title === 'Foes' }">
+                <tr>
+                  <th colspan="5" class="py-2 px-3 text-center text-base font-bold">{{ $t(side.title) }}</th>
+                </tr>
+                <tr>
+                  <th class="py-2 px-3 text-left text-sm leading-4">
+                    <div class="flex items-center gap-[1.125rem]">
+                      <span class="skeleton-text">{{ $t('Player') }}</span>
+                      <search-input class="w-40 invisible" :collapsible="true" aria-hidden="true"></search-input>
+                    </div>
+                  </th>
+                  <th class="py-2 px-3 text-left text-sm leading-4"><span class="skeleton-text">{{ $t('Favorite Hero') }}</span></th>
+                  <th class="py-2 px-3 text-center text-sm leading-4 whitespace-nowrap"><span class="skeleton-text">{{ $t(side.games) }}</span></th>
+                  <th class="py-2 px-3 text-center text-sm leading-4 whitespace-nowrap"><span class="skeleton-text">{{ $t(side.rate) }}</span></th>
+                  <th v-if="!esport" class="py-2 px-3 text-center text-sm leading-4 w-px whitespace-nowrap"><span class="skeleton-text">{{ $t('Matches') }}</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in 15" :key="row">
+                  <td class="py-2 px-3"><skeleton-box class="h-4 w-24"></skeleton-box></td>
+                  <td class="py-2 px-3">
+                    <div class="flex items-center">
+                      <skeleton-box class="w-10 h-10 mr-2 shrink-0 !rounded-full"></skeleton-box>
+                      <skeleton-box class="h-4 w-20 max-md:hidden"></skeleton-box>
+                    </div>
+                  </td>
+                  <td class="py-2 px-3"><skeleton-box class="h-4 w-12 mx-auto"></skeleton-box></td>
+                  <td class="py-2 px-3"><skeleton-box class="h-4 w-14 mx-auto"></skeleton-box></td>
+                  <td v-if="!esport" class="py-2 px-3"><skeleton-box class="h-8 w-14 mx-auto rounded"></skeleton-box></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </panel-box>
     </div>
   </div>
 </template>
@@ -178,6 +255,7 @@ export default {
   },
   data(){
     return {
+      loadError: null,
       friendIsLoading: false,
       enemyIsLoading: false,
       infoText: "Friends and Foe data showing who " + this.battletag + " plays the most games with and against",
@@ -188,6 +266,8 @@ export default {
 
       enemySortKey: '',
       enemySortDir: 'desc',
+      friendSearch: '',
+      enemySearch: '',
 
       gametype: null,
       gamemap: null,
@@ -202,7 +282,6 @@ export default {
       ngsDivision: this.esportfilters?.division ?? null,
       ngsTeam: this.esportfilters?.team ?? null,
       ngsFilterOptions: null,
-      ngsFiltersChanged: false,
     }
   },
   created(){
@@ -237,6 +316,7 @@ export default {
     if (window.matchMedia('(max-width: 767px)').matches) {
       scaleTableToFit(this.$refs.friendtable, this.$refs.friendcontainer);
       scaleTableToFit(this.$refs.enemytable, this.$refs.enemycontainer);
+      (this.$refs.skeletontable || []).forEach((table, index) => scaleTableToFit(table, this.$refs.skeletoncontainer[index]));
     }
   },
   computed: {
@@ -245,6 +325,15 @@ export default {
     },
     ngsTeamOptions() {
       return [{ code: null, name: 'All' }, ...(this.ngsFilterOptions?.teams || []).map(name => ({ code: name, name: this.$ngsTeam(name).name }))];
+    },
+    ngsPlayerUrl() {
+      return `${this.league.root}/Player/${this.battletag}/${this.blizzid}`;
+    },
+    shownFriends() {
+      return this.filterByBattletag(this.sortedDataFriends, this.friendSearch);
+    },
+    shownEnemies() {
+      return this.filterByBattletag(this.sortedDataEnemies, this.enemySearch);
     },
     sortedDataFriends() {
       if (!this.friendSortKey) return this.frienddata;
@@ -280,14 +369,22 @@ export default {
   watch: {
   },
   methods: {
-    ngsParams() {
-      return { ...this.league.params, battletag: this.battletag, blizz_id: this.blizzid, season: this.ngsSeason, division: this.ngsDivision, team: this.ngsTeam };
+    // That row's player, on their page for this hero
+    heroLink(row) {
+      const hero = encodeURIComponent(row.heroData.hero.name);
+      if (this.esport) {
+        const [path, query] = row.link.split('?');
+        return `${path}/Hero/${hero}${query ? '?' + query : ''}`;
+      }
+      return `/Player/${row.battletag}/${row.blizz_id}/${row.region}/Hero/${hero}`;
+    },
+    ngsParams(extra = {}) {
+      return { ...this.league.params, battletag: this.battletag, blizz_id: this.blizzid, season: this.ngsSeason, division: this.ngsDivision, team: this.ngsTeam, ...extra };
     },
     ngsFilterChange(eventPayload) {
       const field = { Seasons: 'ngsSeason', Divisions: 'ngsDivision', Teams: 'ngsTeam' }[eventPayload.field];
-      if (field && this[field] !== eventPayload.value) {
+      if (field) {
         this[field] = eventPayload.value;
-        this.ngsFiltersChanged = true;
       }
       const params = new URLSearchParams(this.league.params);
       if (this.ngsSeason) params.set('season', this.ngsSeason);
@@ -296,13 +393,8 @@ export default {
       const query = params.toString();
       history.pushState({}, '', window.location.pathname + (query ? `?${query}` : ''));
     },
-    ngsDropdownClosed() {
-      if (this.ngsFiltersChanged) {
-        this.ngsFiltersChanged = false;
-        this.getNgsData();
-      }
-    },
     async getNgsData(){
+      this.loadError = null;
       this.frienddata = null;
       this.enemydata = null;
       this.friendIsLoading = true;
@@ -313,13 +405,18 @@ export default {
         this.frienddata = response.data.friend;
         this.enemydata = response.data.enemy;
       } catch(error) {
-        //Do something here
+        this.loadError = this.$loadError(error, () => this.getNgsData());
       } finally {
         this.friendIsLoading = false;
         this.enemyIsLoading = false;
       }
     },
+    filterByBattletag(rows, search) {
+      const term = search.trim().toLowerCase();
+      return term ? rows.filter(row => row.battletag.toLowerCase().includes(term)) : rows;
+    },
     async getData(type){
+      this.loadError = null;
       let cancelTokenSource;
 
       if (type === 'friend') {
@@ -359,7 +456,7 @@ export default {
 
         return response.data;
       } catch(error) {
-        //Do something here
+        this.loadError = this.$loadError(error, () => { this.getData('friend'); this.getData('enemy'); });
       } finally {
         if (type === 'friend') {
           this.friendCancelTokenSource = null;

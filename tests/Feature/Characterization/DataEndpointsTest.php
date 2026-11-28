@@ -77,6 +77,9 @@ class DataEndpointsTest extends FeatureTestCase
             'global leaderboard player' => ['global/leaderboard', ['season' => 26, 'game_type' => 'sl', 'type' => 'player', 'groupsize' => 'All']],
             'global leaderboard hero' => ['global/leaderboard', ['season' => 26, 'game_type' => 'sl', 'type' => 'hero', 'groupsize' => 'All', 'hero' => self::PLAYER_HERO_ID]],
             'global leaderboard rating' => ['global/leaderboard/calculate/rating', ['season' => 26, 'game_type' => 'sl', 'type' => 'player', 'groupsize' => 'All']],
+            'global leaderboard map' => ['global/leaderboard', ['season' => 26, 'game_type' => 'sl', 'type' => 'map', 'groupsize' => 'All', 'map' => self::MAP]],
+            'global leaderboard map missing' => ['global/leaderboard', ['season' => 26, 'game_type' => 'sl', 'type' => 'map', 'groupsize' => 'All']],
+            'global leaderboard map rating' => ['global/leaderboard/calculate/rating', ['season' => 26, 'game_type' => 'sl', 'type' => 'map', 'groupsize' => 'All', 'map' => self::MAP]],
 
             'player' => ['player', $player()],
             'player one game type' => ['player', $player(['game_type' => ['ar']])],
@@ -101,6 +104,8 @@ class DataEndpointsTest extends FeatureTestCase
             'player mmr hero' => ['player/mmr', $player(['type' => 'Hero', 'hero' => self::PLAYER_HERO_ID, 'game_type' => ['sl']])],
             'player mmr role' => ['player/mmr', $player(['type' => 'Role', 'role' => 'Healer', 'game_type' => ['sl']])],
             'player mmr map' => ['player/mmr', $player(['type' => 'Map', 'map' => self::MAP, 'game_type' => ['sl']])],
+            'player mmr map missing' => ['player/mmr', $player(['type' => 'Map', 'game_type' => ['sl']])],
+            'player mmr map brawl' => ['player/mmr', $player(['type' => 'Map', 'map' => 'Escape From Braxis', 'game_type' => ['sl']])],
             'player awards' => ['player/awards', $player()],
             'player realrank' => ['player/realrank', $player()],
             'player match history' => ['player/match/history', $player(['pagination_page' => 1])],

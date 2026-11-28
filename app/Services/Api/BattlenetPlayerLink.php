@@ -32,20 +32,19 @@ class BattlenetPlayerLink
     public function player(Request $request, string $callbackPath, int $region): array|string
     {
         if ($request->filled('error') || ! $request->filled('code')) {
-            return 'Battle.net sign-in did not complete. Please try again.';
+            return __('Battle.net sign-in did not complete. Please try again.');
         }
 
         try {
             $user = Socialite::driver('battlenet')->setConfig($this->config($callbackPath))->user();
         } catch (InvalidStateException $e) {
-            return 'Battle.net sign-in did not complete. Please try again.';
+            return __('Battle.net sign-in did not complete. Please try again.');
         }
 
         $blizzId = $this->globalDataService->getBlizzIDGivenFullBattletag($user->nickname, $region);
 
         if (! $blizzId) {
-            return "We have no games for {$user->nickname} in ".self::REGIONS[$region].' yet. '
-                .'Upload a replay from that region and try again, or pick the region you play in.';
+            return __('We have no games for :battletag in :region yet. Upload a replay from that region and try again, or pick the region you play in.', ['battletag' => $user->nickname, 'region' => self::REGIONS[$region]]);
         }
 
         return ['blizz_id' => (int) $blizzId, 'battletag' => $user->nickname];

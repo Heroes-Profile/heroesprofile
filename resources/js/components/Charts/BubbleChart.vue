@@ -1,6 +1,21 @@
 <template>
-  <div id="hero-bubble-chart">
-    <canvas ref="chartRef" width="1500" height="750"></canvas>
+  <div>
+    <div class="flex flex-wrap justify-center gap-2 mb-2">
+      <custom-button text="All" alt="All" size="small" :disabled="selectedRoles.length > 0" :ignoreclick="true" @click="showAll"></custom-button>
+      <custom-button
+        v-for="role in roles"
+        :key="role"
+        :text="role"
+        :alt="role"
+        size="small"
+        :disabled="!selectedRoles.includes(role)"
+        :ignoreclick="true"
+        @click="toggleRole(role)"
+      ></custom-button>
+    </div>
+    <div id="hero-bubble-chart">
+      <canvas ref="chartRef" width="1500" height="750"></canvas>
+    </div>
   </div>
 </template>
 
@@ -16,6 +31,9 @@
     data() {
       return {
         chartRef: null,
+        roles: ['Bruiser', 'Healer', 'Melee Assassin', 'Ranged Assassin', 'Support', 'Tank'],
+        // Empty means All
+        selectedRoles: [],
       };
     },
     mounted() {
@@ -101,6 +119,7 @@
               }
             }
           });
+          this.applyRoles();
         });
       },
       beforeUnmount() {
@@ -108,6 +127,29 @@
         this.chart?.destroy();
       },
       methods: {
+        toggleRole(role) {
+          this.selectedRoles = this.selectedRoles.includes(role)
+            ? this.selectedRoles.filter(r => r !== role)
+            : [...this.selectedRoles, role];
+          // Picking every role is the same as All
+          if (this.selectedRoles.length === this.roles.length) {
+            this.selectedRoles = [];
+          }
+
+          this.applyRoles();
+        },
+        showAll() {
+          this.selectedRoles = [];
+          this.applyRoles();
+        },
+        applyRoles() {
+          if (!this.chart) return;
+          // One dataset per hero, in heroData order; hidden ones drop out of the axis range
+          this.heroData.forEach((hero, index) => {
+            this.chart.setDatasetVisibility(index, !this.selectedRoles.length || this.selectedRoles.includes(hero.role));
+          });
+          this.chart.update();
+        },
         calculateRadius(hero) {
           //This works for initial load of page, but if the page is resized without a reload, the images dont change.  This can be fixed through recreating the chart any time the page changes size, but there are performance issues with this.
 
@@ -141,8 +183,8 @@
     #hero-bubble-chart {
       width: 100%;
       height: 100%;
-      max-width: 1500px;
-      max-height: 750px;
+      max-width: 93.75rem;
+      max-height: 46.875rem;
       margin-left:auto;
       margin-right:auto;
     }

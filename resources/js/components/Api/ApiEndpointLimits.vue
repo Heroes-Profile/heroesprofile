@@ -2,55 +2,42 @@
   <div>
     <page-heading heading="Endpoint Limits" :infoText1="infoText"></page-heading>
 
-    <div class="mx-auto max-w-[1200px] px-4 mt-6 pb-16">
+    <div class="mx-auto max-w-[75rem] px-4 mt-6 pb-16">
 
       <div class="bg-lighten border-l-4 border-teal p-4 mb-8">
         <p class="text-sm">
-          Allowances are per endpoint, per week, on a rolling seven-day window that starts
-          at your first call to that endpoint rather than on a fixed calendar day.
-          <strong>Not included</strong> means a call to that endpoint returns
-          <code class="text-lteal">403</code> on that tier.
+          {{ $t('Allowances are per endpoint, per week, on a rolling seven-day window that starts at your first call to that endpoint rather than on a fixed calendar day.') }}
+          <strong>{{ $t('Not included') }}</strong> {{ $t('means a call to that endpoint returns') }}
+          <code class="text-lteal">403</code> {{ $t('on that tier.') }}
         </p>
         <p class="text-sm mt-2">
-          Every tier also allows 60 calls a minute, or 120 on Developer, and a number of
-          active jobs (below). A few endpoints
-          differ from that, noted against them below — the ones answering a single replay
-          allow far more, and the ones that fan a single call out into many queries allow
-          far fewer.
+          {{ $t('Every tier also allows 60 calls a minute, or 120 on Developer, and a number of active jobs (below). A few endpoints differ from that, noted against them below — the ones answering a single replay allow far more, and the ones that fan a single call out into many queries allow far fewer.') }}
         </p>
         <p class="text-sm mt-2">
-          <strong>Active jobs.</strong> A call that isn't cached answers
-          <code class="text-lteal">202</code> and starts a job, which can take several minutes.
-          The job is active until it finishes. Each account can have 3 active jobs on Basic,
-          5 on Intermediate and 10 on Developer. Starting another while you're at the limit
-          returns <code class="text-lteal">429</code> with the code
-          <code class="text-lteal">too_many_active_jobs</code> and isn't charged. Collect a running
-          job from <code class="text-lteal">/v1/jobs</code> and try again. Cached answers and job
-          polling don't count towards this limit.
+          <strong>{{ $t('Active jobs.') }}</strong> {{ $t('A call that isn\'t cached answers') }}
+          <code class="text-lteal">202</code> {{ $t('and starts a job, which can take several minutes. The job is active until it finishes. Each account can have 3 active jobs on Basic, 5 on Intermediate and 10 on Developer. Starting another while you\'re at the limit returns') }} <code class="text-lteal">429</code> {{ $t('with the code') }}
+          <code class="text-lteal">too_many_active_jobs</code> {{ $t('and isn\'t charged. Collect a running job from') }} <code class="text-lteal">/v1/jobs</code> {{ $t('and try again. Cached answers and job polling don\'t count towards this limit.') }}
         </p>
         <p class="text-sm mt-2">
-          A job's query can run for at most 45 minutes. One that runs longer is stopped and
-          answers <code class="text-lteal">422</code> with the code
-          <code class="text-lteal">query_too_large</code>; narrow the call and try again. The same
-          call is refused straight away for the next 24 hours.
+          {{ $t('A job\'s query can run for at most 45 minutes. One that runs longer is stopped and answers') }} <code class="text-lteal">422</code> {{ $t('with the code') }}
+          <code class="text-lteal">query_too_large</code>{{ $t('; narrow the call and try again. The same call is refused straight away for the next 24 hours.') }}
         </p>
         <p class="text-sm mt-2">
-          Responses carry
+          {{ $t('Responses carry') }}
           <code class="text-lteal">X-HP-Quota-Limit</code>,
-          <code class="text-lteal">X-HP-Quota-Remaining</code> and
-          <code class="text-lteal">X-HP-Quota-Reset</code> for the weekly allowance, and
-          <code class="text-lteal">X-RateLimit-*</code> for the per-minute one, so you can
-          track both without guessing.
+          <code class="text-lteal">X-HP-Quota-Remaining</code> {{ $t('and') }}
+          <code class="text-lteal">X-HP-Quota-Reset</code> {{ $t('for the weekly allowance, and') }}
+          <code class="text-lteal">X-RateLimit-*</code> {{ $t('for the per-minute one, so you can track both without guessing.') }}
         </p>
       </div>
 
       <div v-for="group in groups" :key="group.title" class="mb-10">
-        <h2 class="text-2xl mb-3">{{ group.title }}</h2>
+        <h2 class="text-2xl mb-3">{{ $t(group.title) }}</h2>
 
-        <table class="min-w-0 w-full responsive-table">
+        <table class="min-w-0 w-full">
           <thead>
             <tr>
-              <th class="text-left">Endpoint</th>
+              <th class="text-left">{{ $t('Endpoint') }}</th>
               <th v-for="plan in plans" :key="plan.key" class="text-center">{{ plan.name }}</th>
             </tr>
           </thead>
@@ -59,7 +46,7 @@
               <td>
                 {{ endpoint.name }}
                 <span class="block text-xs text-gray-medium">{{ endpoint.endpoint }}</span>
-                <span v-if="endpoint.rate_note" class="block text-xs text-blue">{{ endpoint.rate_note }}</span>
+                <span v-if="endpoint.rate_note" class="block text-xs text-lteal">{{ endpoint.rate_note }}</span>
               </td>
               <td v-for="plan in plans" :key="plan.key" class="text-center">
                 {{ endpoint.limits[plan.key] }}
@@ -70,8 +57,8 @@
       </div>
 
       <p class="text-sm text-gray-medium">
-        NGS replay upload is granted per organisation rather than sold, so it is not listed here.
-        <a class="link" href="/Api">Back to plans</a>.
+        {{ $t('NGS replay upload is granted per organisation rather than sold, so it is not listed here.') }}
+        <a class="link" href="/Api">{{ $t('Back to plans') }}</a>.
       </p>
     </div>
   </div>

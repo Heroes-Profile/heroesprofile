@@ -44,6 +44,11 @@ jobs:
     - name: Twitch extension bundle matches the site's images
       run: php artisan twitch:check-extension
 
+    # Text wrapped in $t / __() with no entry in lang/{locale}.json shows in English for
+    # that language. Lists each missing key; needs no database or API key.
+    - name: Every site string is translated
+      run: php artisan translations:strings --check
+
     - name: Every routed endpoint has a fixture
       run: php artisan api:check-fixtures
 
@@ -60,5 +65,33 @@ jobs:
         if ! git diff --quiet public/spec/heroesprofile-v1.json; then
           echo "::error::public/spec/heroesprofile-v1.json is stale. Run 'php artisan api:build-spec' and commit the result."
           git diff --stat public/spec/heroesprofile-v1.json
+          exit 1
+        fi
+
+  # Component tests (tests/js) and the bundle size: no database or server
+  js-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: npm
+
+    - run: npm ci
+
+    - name: Component tests
+      run: npm run test:js
+
+    # Vite only warns about a big chunk and Cloud Build deploys it anyway; that's how
+    # app.js reached 3.4 MB. Over 500 kB, split the chunk rather than raise the limit.
+    - name: No chunk over 500 kB
+      run: |
+        set -o pipefail
+        npm run build 2>&1 | tee build.log
+        if grep -q "larger than 500 kB" build.log; then
+          echo "::error::A chunk is over 500 kB; see the build output above."
           exit 1
         fi

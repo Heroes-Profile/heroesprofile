@@ -3,32 +3,37 @@
 namespace App\Http\Controllers\Global;
 
 use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
+use App\Http\Controllers\Global\Concerns\ResolvesStatChange;
 use App\Models\GameType;
 use App\Models\GlobalHeroTalentDetails;
 use App\Models\GlobalHeroTalentDetailsRealRank;
 use App\Models\GlobalHeroTalents;
 use App\Models\GlobalHeroTalentsRealRank;
+use App\Models\GlobalTalentChange;
 use App\Models\HeroesDataTalent;
 use App\Models\SeasonGameVersion;
 use App\Rules\HeroInputValidation;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
 use App\Services\GlobalQueryService;
+use App\Services\LocalizedGameStrings;
 use App\Support\GameLength;
 use App\Support\GlobalCacheFreshness;
 use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalTalentStatsController extends GlobalsInputValidationController
 {
     use HandlesAsyncGlobalQueries;
+    use ResolvesStatChange;
 
     public const MINIMUM_PATCH = '2.50.0.79155';
 
     // Bump when the cached data changes shape or maths, so old entries are skipped.
-    private const TALENT_STATS_CACHE_VERSION = 1;
+    private const TALENT_STATS_CACHE_VERSION = 2;
 
     private const BUILDS_CACHE_VERSION = 2;
 
@@ -107,6 +112,18 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 'executeGlobalHeroTalentBuildData',
                 $buildParameters
             );
+
+            // Embedded in the page, so they miss the API's LocalizeGameStrings middleware
+            $locale = App::getLocale();
+            if ($locale !== 'en') {
+                $localize = function ($data) use ($locale) {
+                    $array = json_decode(json_encode($data), true);
+
+                    return is_array($array) ? app(LocalizedGameStrings::class)->localizeTalents($array, $locale) : $data;
+                };
+                $initialTalentData = $initialTalentData === null ? null : $localize($initialTalentData);
+                $initialBuildData = $initialBuildData === null ? null : $localize($initialBuildData);
+            }
         }
 
         return view('Global.Talents.globalTalentStats')
@@ -121,6 +138,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 'defaulttimeframe' => [$defaultTimeframe],
                 'defaultbuildtype' => $defaultBuildType,
                 'talentStatsLayout' => $this->globalDataService->getTalentStatsLayout(),
+                'talentstatsstyle' => $this->globalDataService->getTalentStatsStyle(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
                 'urlparameters' => $request->all(),
                 'initialtalentdata' => $initialTalentData,
@@ -217,7 +235,18 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 return $array;
             });
 
-        $data = collect($data)->groupBy('level')->map(function ($levelGroup) {
+        $changeData = null;
+
+        if (is_null($realLeagueTier) && empty($mirror) && $this->checkIfChange($gameVersion, $region, $gameType, $gameMap, $leagueTier, $heroLeagueTier, $roleLeagueTier, $heroLevel)) {
+            $changeData = GlobalTalentChange::query()
+                ->filterByGameVersion($this->calculateGameVersionsForHeroChange($gameVersion))
+                ->filterByGameType($gameType)
+                ->filterByHero($hero)
+                ->get()
+                ->keyBy(fn ($row) => $row->level.'|'.$row->talent);
+        }
+
+        $data = collect($data)->groupBy('level')->map(function ($levelGroup) use ($changeData) {
 
             // Exclude talent 0 when calculating total games at this level
             $validTalents = $levelGroup->groupBy('talent')->filter(function ($talentGroup) {
@@ -234,7 +263,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 return $wins + $losses;
             })->sum();
 
-            return $levelGroup->groupBy('talent')->map(function ($talentGroup) use ($totalGamesPlayed) {
+            return $levelGroup->groupBy('talent')->map(function ($talentGroup) use ($totalGamesPlayed, $changeData) {
                 $firstItem = $talentGroup->first();
 
                 $wins = $talentGroup->where('win_loss', 1)->sum('games_played');
@@ -248,6 +277,8 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
                 $statFilterTotal = $talentGroup->sum('total_filter_type');
 
+                $change = $changeData ? $changeData->get($firstItem['level'].'|'.$firstItem['talent']) : null;
+
                 if ($talentInfo && isset($talentInfo['hero_name']) && $talentInfo['hero_name'] == $firstItem['name']) {
                     return [
                         'name' => $firstItem['name'],
@@ -257,6 +288,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                         'games_played' => $gamesPlayed,
                         'popularity' => $popularity,
                         'win_rate' => $winRate,
+                        'win_rate_change' => $change ? round($winRate - $change->win_rate, 2) : null,
                         'level' => $firstItem['level'],
                         'sort' => isset($talentInfo['sort']) ? $talentInfo['sort'] : null,
                         'talentInfo' => $talentInfo,

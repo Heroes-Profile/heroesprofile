@@ -1,8 +1,8 @@
 @extends('layouts.app', $bladeGlobals)    
 
-@section('title', 'Masters Clash Esports')
+@section('title', __('Masters Clash Stats – Heroes of the Storm'))
 @section('meta_keywords', 'Masters Clash league, Masters Clash, Heroes of the Storm, Masters Clash esports, competitive gaming, Heroes of the Storm league')
-@section('meta_description', 'Stay up to date with the latest news and updates from the Masters Clash league. Review competitive Heroes of the Storm matches and follow your favorite teams.')
+@section('meta_description', 'Heroes of the Storm statistics and comparison for the Masters Clash: hero stats, teams, players and match history.')
 
 @section('content')
   <masters-clash-main 
@@ -10,8 +10,10 @@
     :defaultseason="{{ json_encode($defaultseason) }}" 
     :filters="{{ json_encode($filters) }}"
     :talentimages="{{ json_encode($talentimages) }}" 
+    :urlparameters="{{ json_encode($urlparameters) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
 
   >
-  </maters-clash-main>
+  </masters-clash-main>
+  @include('Esports.contactSection')
 @endsection

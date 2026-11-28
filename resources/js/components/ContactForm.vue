@@ -1,33 +1,53 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" heading="Contact"></page-heading>
+    <page-heading heading="Contact" subheading="Get in touch with Heroes Profile"></page-heading>
 
-    <div>
-      <!-- Contact form -->
-      <form @submit.prevent="submitForm" class="flex flex-col max-w-[1500px] mx-auto p-4 gap-2">
-        <label for="name">Battletag:</label>
-        <input class="form-control search-input mr-3 text-black" type="text" id="name" v-model="formData.battletag" required>
+    <div class="max-w-[120rem] mx-auto px-4 md:px-8 grid xl:grid-cols-[1188fr_700fr] gap-6 xl:gap-8">
+      <panel-box title="Send us a message" subtitle="Questions, feedback or a problem with your profile. We reply by email." :divider="false">
+        <!-- The two cards share a height; the message box takes up any extra, as in Figma -->
+        <form @submit.prevent="submitForm" class="flex-1 flex flex-col gap-6">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="flex flex-col gap-2">
+              <span class="text-subtext">{{ $t('BattleTag') }}*</span>
+              <input class="w-full bg-field text-white rounded px-4 h-12" type="text" id="name" v-model="formData.battletag" placeholder="Name#1234" required>
+            </label>
+            <label class="flex flex-col gap-2">
+              <span class="text-subtext">{{ $t('Email') }}*</span>
+              <input class="w-full bg-field text-white rounded px-4 h-12" type="email" id="email" v-model="formData.email" placeholder="you@example.com" required>
+            </label>
+          </div>
+          <label class="flex-1 flex flex-col gap-2">
+            <span class="text-subtext">{{ $t('Message') }}*</span>
+            <textarea class="flex-1 w-full bg-field text-white rounded px-4 py-3 min-h-[9.875rem]" id="message" v-model="formData.message" :placeholder="$t('Tell us what happened, which page it was on and your region if it\'s about a profile.')" required></textarea>
+          </label>
 
-        <label for="email">Email:</label>
-        <input class="form-control search-input mr-3 text-black" type="email" id="email" v-model="formData.email" required>
+          <!-- Honeypot field - hidden from users but visible to bots -->
+          <input type="text" name="website" v-model="formData.website" style="display: none !important; visibility: hidden !important; position: absolute !important; left: -624.9375rem !important;" tabindex="-1" autocomplete="off">
 
-        <label for="message">Message:</label>
-        <textarea class="form-control search-input mr-3 text-black" id="message" v-model="formData.message" required></textarea>
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <span class="flex items-center gap-2 text-sm text-subtext"><basil-icon name="info"></basil-icon>{{ $t('All fields are required.') }}</span>
+            <button :disabled="isLoading" type="submit" class="btn bg-teal hover:bg-lteal font-semibold disabled:opacity-60">{{ $t('Send message') }}</button>
+          </div>
 
-        <!-- Honeypot field - hidden from users but visible to bots -->
-        <input type="text" name="website" v-model="formData.website" style="display: none !important; visibility: hidden !important; position: absolute !important; left: -9999px !important;" tabindex="-1" autocomplete="off">
+          <p v-if="emailSent" class="bg-teal/20 text-white rounded px-4 py-3">{{ $t('Email Sent Successfully!') }}</p>
+          <p v-if="sendError" class="bg-red/20 text-white rounded px-4 py-3">{{ $t(sendError) }}</p>
+        </form>
+      </panel-box>
 
-        <button :disabled="isLoading" type="submit" class="transition-colors text-white rounded text-center bg-blue hover:bg-lblue py-2 px-4 w-auto ml-auto mr-2 my-2">Submit</button>
-      </form>
-      <div v-if="emailSent" class="mx-auto max-w-[1500px] bg-teal p-4 text-center">
-        <p>Email Sent Successfully!</p>
-      </div>
-      <div v-if="sendError" class="mx-auto max-w-[1500px] bg-red p-4 text-center">
-        <p>{{ sendError }}</p>
-      </div>
-
+      <panel-box title="Other ways to reach us" subtitle="For bugs and feature ideas, GitHub is the fastest way." :divider="false">
+        <div class="flex flex-col gap-3">
+          <a v-for="link in otherWays" :key="link.title" :href="link.href" :target="link.external ? '_blank' : null" :rel="link.external ? 'noopener noreferrer' : null"
+            class="group/bt flex items-center gap-4 rounded-control bg-surface-1 hover:bg-surface-3 transition-colors p-4">
+            <span :class="['w-12 h-12 shrink-0 rounded flex items-center justify-center text-xl', link.iconClass]"><i :class="link.icon"></i></span>
+            <span class="flex flex-col min-w-0">
+              <span class="font-semibold">{{ $t(link.title) }}</span>
+              <span class="text-sm text-subtext [overflow-wrap:anywhere]">{{ link.external ? $t(link.subtitle) : link.subtitle }}</span>
+            </span>
+            <basil-icon name="arrow-small" class="ml-auto shrink-0 text-sm"></basil-icon>
+          </a>
+        </div>
+      </panel-box>
     </div>
-
   </div>
 </template>
 
@@ -35,7 +55,7 @@
 const RECAPTCHA_MESSAGE = "We couldn't verify this message with reCAPTCHA. Please allow reCAPTCHA (google.com) in your browser or blocker and try again, or email contact@heroesprofile.com directly.";
 
 export default {
-  name: 'ExampleComponent',
+  name: 'ContactForm',
   components: {
   },
   props: {
@@ -55,7 +75,13 @@ export default {
         website: '', // Honeypot field - should remain empty
         recaptcha_token: '', // reCAPTCHA token
       },
-      infoText1: "If you find an issue on the website, or have general questions, please use the contact form below or email us directly at ZEMILL@heroesprofile.com",
+      // The same addresses the nav's Help and Donate menus use
+      otherWays: [
+        { title: 'Email', subtitle: 'Zemill@heroesprofile.com', href: 'mailto:zemill@heroesprofile.com', icon: 'fas fa-at', iconClass: 'bg-teal/20 text-lteal' },
+        { title: 'Report a bug', subtitle: 'Open an issue on GitHub', href: 'https://github.com/Heroes-Profile/heroesprofile/issues/new?assignees=&labels=&projects=&template=bug_report.md', icon: 'fas fa-bullhorn', iconClass: 'bg-red/20 text-lred', external: true },
+        { title: 'Request a feature', subtitle: 'Start a discussion on GitHub', href: 'https://github.com/Heroes-Profile/heroesprofile/discussions/new?category=ideas', icon: 'fas fa-square-plus', iconClass: 'bg-blue/60 text-[#5aa9ff]', external: true },
+        { title: 'Patreon', subtitle: 'Support the site and remove ads', href: 'https://www.patreon.com/c/heroesprofile', icon: 'fas fa-heart', iconClass: 'bg-red/20 text-lred', external: true },
+      ],
       emailSent: false,
       sendError: null,
     }

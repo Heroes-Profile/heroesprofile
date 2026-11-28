@@ -1,45 +1,44 @@
 <template>
-  <api-admin-card title="Community Polls" storage-key="polls" tight>
+  <api-admin-card :title="$t('Community Polls')" storage-key="polls" tight>
     <p class="text-sm text-gray-medium mb-4">
-      Polls live at /Poll/{slug}. Voting needs a Battle.net login. Once a poll has votes, its options
-      can be reworded but not added or removed. Times are UTC.
+      {{ $t('Polls live at /Poll/{slug}. Voting needs a Battle.net login. Once a poll has votes, its options can be reworded but not added or removed. Times are UTC.') }}
     </p>
 
     <div v-if="error" class="bg-red p-3 mb-4 text-sm">{{ error }}</div>
     <div v-if="notice" class="bg-teal p-3 mb-4 text-sm">{{ notice }}</div>
 
     <div class="mb-4">
-      <button type="button" class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4" @click="startNew">New poll</button>
+      <button type="button" class="btn bg-teal hover:bg-lteal" @click="startNew">{{ $t('New poll') }}</button>
     </div>
 
-    <p v-if="!loading && !polls.length" class="text-sm text-gray-medium">No polls yet.</p>
+    <p v-if="!loading && !polls.length" class="text-sm text-gray-medium">{{ $t('No polls yet.') }}</p>
 
     <div v-else class="overflow-x-auto mb-6">
-      <table class="min-w-0 w-full responsive-table text-sm">
+      <table class="min-w-0 w-full text-sm">
         <thead>
           <tr>
-            <th class="py-2 px-3 text-left">Poll</th>
-            <th class="py-2 px-3 text-left">Status</th>
-            <th class="py-2 px-3 text-left">Votes</th>
-            <th class="py-2 px-3 text-left">Actions</th>
+            <th class="py-2 px-3 text-left">{{ $t('Poll') }}</th>
+            <th class="py-2 px-3 text-left">{{ $t('Status') }}</th>
+            <th class="py-2 px-3 text-left">{{ $t('Votes') }}</th>
+            <th class="py-2 px-3 text-left">{{ $t('Actions') }}</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="poll in polls" :key="poll.id">
             <td class="py-2 px-3">
-              <a :href="'/Poll/' + poll.slug" target="_blank" rel="noopener" class="link">{{ poll.title }}</a>
+              <a :href="'/Poll/' + poll.slug" target="_blank" rel="noopener" class="inline-flex items-center link-row">{{ poll.title }}</a>
               <div class="text-xs text-gray-medium">/Poll/{{ poll.slug }}</div>
             </td>
             <td class="py-2 px-3">
-              <span v-if="!poll.is_open" class="text-gray-medium">Closed {{ poll.closes_at }}</span>
-              <span v-else-if="poll.closes_at" class="text-lteal">Open until {{ poll.closes_at }}</span>
-              <span v-else class="text-lteal">Open</span>
+              <span v-if="!poll.is_open" class="text-gray-medium">{{ $t('Closed :closes_at', { closes_at: $formatDate(poll.closes_at, { dateStyle: 'medium', timeStyle: 'short' }) }) }}</span>
+              <span v-else-if="poll.closes_at" class="text-lteal">{{ $t('Open until :closes_at', { closes_at: $formatDate(poll.closes_at, { dateStyle: 'medium', timeStyle: 'short' }) }) }}</span>
+              <span v-else class="text-lteal">{{ $t('Open') }}</span>
             </td>
             <td class="py-2 px-3">{{ poll.votes }}</td>
             <td class="py-2 px-3 whitespace-nowrap space-x-2">
-              <button class="link" @click="open(poll.id, 'results')">Results</button>
-              <button class="link" @click="open(poll.id, 'edit')">Edit</button>
-              <button v-if="poll.is_open" class="link" @click="close(poll)">Close</button>
+              <button class="link" @click="open(poll.id, 'results')">{{ $t('Results') }}</button>
+              <button class="link" @click="open(poll.id, 'edit')">{{ $t('Edit') }}</button>
+              <button v-if="poll.is_open" class="link" @click="close(poll)">{{ $t('Close') }}</button>
             </td>
           </tr>
         </tbody>
@@ -47,71 +46,71 @@
     </div>
 
     <div v-if="form" class="bg-darken p-4 rounded mb-6">
-      <h3 class="text-base mb-3">{{ form.id ? 'Edit poll' : 'New poll' }}</h3>
+      <h3 class="text-base mb-3">{{ form.id ? $t('Edit poll') : $t('New poll') }}</h3>
 
       <div class="grid gap-3 md:grid-cols-2 mb-3">
         <label class="text-sm">
-          Title
+          {{ $t('Title') }}
           <input v-model="form.title" type="text" maxlength="255" class="text-black p-2 rounded w-full mt-1" />
         </label>
         <label class="text-sm">
-          Slug (the URL: lowercase letters, numbers, dashes)
+          {{ $t('Slug (the URL: lowercase letters, numbers, dashes)') }}
           <input v-model="form.slug" type="text" maxlength="100" class="text-black p-2 rounded w-full mt-1" />
         </label>
       </div>
 
       <label class="text-sm block mb-3">
-        Description (shown above the options)
+        {{ $t('Description (shown above the options)') }}
         <textarea v-model="form.description" rows="6" class="text-black p-2 rounded w-full mt-1"></textarea>
       </label>
 
       <div class="flex flex-wrap items-center gap-6 mb-4">
         <label class="flex items-center gap-2 text-sm">
           <input v-model="form.allow_multiple" type="checkbox" />
-          Allow picking more than one option
+          {{ $t('Allow picking more than one option') }}
         </label>
         <label class="text-sm">
-          Closes (UTC, empty = open until closed by hand)
+          {{ $t('Closes (UTC, empty = open until closed by hand)') }}
           <input v-model="form.closes_at" type="datetime-local" class="text-black p-2 rounded ml-2" />
         </label>
       </div>
 
-      <h4 class="text-sm mb-2">Options</h4>
+      <h4 class="text-sm mb-2">{{ $t('Options') }}</h4>
       <div v-for="(option, index) in form.options" :key="option.key" class="flex flex-wrap gap-2 mb-2">
-        <input v-model="option.label" type="text" maxlength="100" placeholder="Label" class="text-black p-2 rounded w-full md:w-1/3" />
-        <input v-model="option.description" type="text" maxlength="1000" placeholder="Description (optional)" class="text-black p-2 rounded flex-1 min-w-[200px]" />
-        <button v-if="!form.has_votes" type="button" class="link text-sm" @click="form.options.splice(index, 1)">Remove</button>
+        <input v-model="option.label" type="text" maxlength="100" :placeholder="$t('Label')" class="text-black p-2 rounded w-full md:w-1/3" />
+        <input v-model="option.description" type="text" maxlength="1000" :placeholder="$t('Description (optional)')" class="text-black p-2 rounded flex-1 min-w-[12.5rem]" />
+        <button v-if="!form.has_votes" type="button" class="link text-sm" @click="form.options.splice(index, 1)">{{ $t('Remove') }}</button>
       </div>
-      <button v-if="!form.has_votes" type="button" class="link text-sm mb-4" @click="addOption">Add option</button>
-      <p v-else class="text-xs text-gray-medium mb-4">This poll has votes, so options can only be reworded.</p>
+      <button v-if="!form.has_votes" type="button" class="link text-sm mb-4" @click="addOption">{{ $t('Add option') }}</button>
+      <p v-else class="text-xs text-gray-medium mb-4">{{ $t('This poll has votes, so options can only be reworded.') }}</p>
 
       <div class="flex gap-2">
-        <button type="button" class="transition-colors text-white rounded bg-blue hover:bg-lblue py-2 px-4" :disabled="saving" @click="save">
-          {{ saving ? 'Saving' : 'Save' }}
+        <button type="button" class="btn bg-blue hover:bg-lblue" :disabled="saving" @click="save">
+          {{ saving ? $t('Saving') : $t('Save') }}
         </button>
-        <button type="button" class="link text-sm" @click="form = null">Cancel</button>
+        <button type="button" class="link text-sm" @click="form = null">{{ $t('Cancel') }}</button>
       </div>
     </div>
 
     <div v-if="detail" class="bg-darken p-4 rounded">
       <h3 class="text-base mb-1">{{ detail.poll.title }}</h3>
-      <p class="text-sm text-gray-medium mb-4">{{ detail.results.total }} {{ detail.results.total === 1 ? 'vote' : 'votes' }}</p>
+      <p class="text-sm text-gray-medium mb-4">{{ detail.results.total }} {{ detail.results.total === 1 ? $t('vote') : $t('votes') }}</p>
 
       <div v-for="option in detail.poll.options" :key="option.id" class="mb-3">
         <div class="text-sm mb-1">{{ option.label }}</div>
         <stat-bar :value="percent(option.id)" :displayText="`${percent(option.id)}% (${count(option.id)})`"></stat-bar>
       </div>
 
-      <h4 class="text-sm mt-6 mb-2">Comments</h4>
-      <p v-if="!detail.comments.length" class="text-sm text-gray-medium">No comments.</p>
+      <h4 class="text-sm mt-6 mb-2">{{ $t('Comments') }}</h4>
+      <p v-if="!detail.comments.length" class="text-sm text-gray-medium">{{ $t('No comments.') }}</p>
       <div v-else class="overflow-x-auto">
-        <table class="min-w-0 w-full responsive-table text-sm">
+        <table class="min-w-0 w-full text-sm">
           <thead>
             <tr>
-              <th class="py-2 px-3 text-left">Battletag</th>
-              <th class="py-2 px-3 text-left">Picked</th>
-              <th class="py-2 px-3 text-left">Comment</th>
-              <th class="py-2 px-3 text-left">Updated</th>
+              <th class="py-2 px-3 text-left">{{ $t('BattleTag') }}</th>
+              <th class="py-2 px-3 text-left">{{ $t('Picked') }}</th>
+              <th class="py-2 px-3 text-left">{{ $t('Comment') }}</th>
+              <th class="py-2 px-3 text-left">{{ $t('Updated') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -119,7 +118,7 @@
               <td class="py-2 px-3 whitespace-nowrap">{{ row.battletag }}</td>
               <td class="py-2 px-3">{{ row.picks.join(', ') }}</td>
               <td class="py-2 px-3 whitespace-pre-line">{{ row.comment }}</td>
-              <td class="py-2 px-3 whitespace-nowrap">{{ row.updated_at }}</td>
+              <td class="py-2 px-3 whitespace-nowrap">{{ $formatDate(row.updated_at, { dateStyle: 'medium', timeStyle: 'short' }) }}</td>
             </tr>
           </tbody>
         </table>
@@ -167,7 +166,7 @@ export default {
         const response = await this.$axios.get('/api/v1/admin/polls');
         this.polls = response.data.polls;
       } catch(error) {
-        this.error = 'Could not load polls.';
+        this.error = this.$t('Could not load polls.');
       } finally {
         this.loading = false;
       }
@@ -200,7 +199,7 @@ export default {
           this.detail = response.data;
         }
       } catch(error) {
-        this.error = 'Could not load that poll.';
+        this.error = this.$t('Could not load that poll.');
       }
     },
     async save(){
@@ -217,27 +216,27 @@ export default {
       };
       try {
         await this.$axios.post(this.form.id ? `/api/v1/admin/polls/${this.form.id}` : '/api/v1/admin/polls', body);
-        this.notice = 'Poll saved.';
+        this.notice = this.$t('Poll saved.');
         this.form = null;
         this.load();
       } catch(error) {
         const errors = error?.response?.data?.errors;
-        this.error = errors ? Object.values(errors).flat()[0] : (error?.response?.data?.message || 'The poll was not saved.');
+        this.error = errors ? Object.values(errors).flat()[0] : (error?.response?.data?.message || this.$t('The poll was not saved.'));
       } finally {
         this.saving = false;
       }
     },
     async close(poll){
-      if(!confirm(`Close "${poll.title}" now? Voting stops and everyone can see the results.`)){
+      if(!confirm(this.$t('Close ":title" now? Voting stops and everyone can see the results.', { title: poll.title }))){
         return;
       }
       this.error = null;
       try {
         await this.$axios.post(`/api/v1/admin/polls/${poll.id}/close`);
-        this.notice = 'Poll closed.';
+        this.notice = this.$t('Poll closed.');
         this.load();
       } catch(error) {
-        this.error = 'The poll was not closed.';
+        this.error = this.$t('The poll was not closed.');
       }
     },
   },

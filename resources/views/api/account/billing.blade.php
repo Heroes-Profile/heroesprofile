@@ -1,6 +1,7 @@
 @extends('layouts.api')
 
-@section('title', 'Billing')
+@section('title', __('Billing'))
+@section('robots', 'noindex, nofollow')
 
 @section('content')
   <api-billing

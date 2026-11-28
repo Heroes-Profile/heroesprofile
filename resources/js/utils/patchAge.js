@@ -1,7 +1,9 @@
+import { formatDate } from './formatGameDate';
+
 const DAY = 24 * 60 * 60 * 1000;
 
-const relativeTime = new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'short' });
-const fullDate = new Intl.DateTimeFormat('en', { dateStyle: 'long' });
+// Words, so in the site language
+const relativeTime = new Intl.RelativeTimeFormat(document.documentElement.lang || 'en', { numeric: 'auto', style: 'short' });
 
 // When a patch group first appeared: the earliest date_added among its builds.
 export function earliestPatchDate(code, timeframes){
@@ -39,5 +41,5 @@ export function patchAge(dateAdded, now = new Date()){
 
 export function patchDate(dateAdded){
   const date = new Date(dateAdded);
-  return !dateAdded || isNaN(date.getTime()) ? '' : fullDate.format(date);
+  return !dateAdded || isNaN(date.getTime()) ? '' : formatDate(date, { dateStyle: 'long' });
 }

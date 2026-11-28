@@ -1,11 +1,18 @@
 <template>
     <div :class="{ 'grayscale': isRemoved }">
-      <round-image v-if="talent" :size="size" popupsize="large" mobileClick="true" :image="getTalentImage()" :title="displayTitle">
-        <h2 v-if="isRemoved" class="text-yellow"><b>Talent no longer available</b></h2>
-        <h2><b>{{ displayTitle }}</b></h2>
-        <p>{{ this.removeNumbers(talent.hotkey || '') }}</p>
-        <game-tooltip v-if="talent.raw_description" :text="talent.raw_description" :level="level"></game-tooltip>
-        <p v-else>{{ talent.description }}</p>
+      <round-image v-if="talent" :size="size" popupsize="large" mobileClick="true" :popup-hoverable="popupHoverable" :hidedelay="popupHoverable ? undefined : 0" :image="getTalentImage()" :title="displayTitle">
+        <h2 v-if="isRemoved" class="text-yellow font-bold mb-1">{{ $t('Talent no longer available') }}</h2>
+        <h2 class="text-base font-bold text-white">{{ displayTitle }}</h2>
+        <game-tooltip v-if="$gameText(talent, 'raw_description')" class="mt-2.5" :text="$gameText(talent, 'raw_description')" :level="level"></game-tooltip>
+        <div v-else class="space-y-2.5 mt-2.5">
+          <p v-for="(part, index) in descriptionParts" :key="index">
+            <template v-if="part.label">
+              <img v-if="part.quest" class="inline-block w-4 h-4 mr-1 align-[-0.15em]" src="/images/miscellaneous/quest-icon.png" alt="">
+              <span :class="part.quest ? 'text-quest' : 'font-bold'">{{ part.label }}:</span>
+            </template>
+            {{ part.text }}
+          </p>
+        </div>
         <slot></slot>
       </round-image>
       <round-image v-else-if="talent != 0 && talent" :size="size" :image="'/images/talents/no-image.png'" tooltipdir="right">
@@ -23,6 +30,7 @@ export default {
     talent: Object,
     size: String,
     mobileClick: true,
+    popupHoverable: { type: Boolean, default: false },
     // Hero level for tooltips that scale; only used when the talent has raw_description
     level: {
       type: Number,
@@ -43,11 +51,23 @@ export default {
     isRemoved() {
       return this.talent && this.talent.status === 'removed';
     },
+    // Descriptions use double spaces between paragraphs, and quest steps are labelled ("Quest:", "Mythic Reward:")
+    descriptionParts() {
+      const labels = 'Repeatable Quest|Repeatable Reward|Mythic Quest|Mythic Reward|Quest|Reward|Passive|Gambit';
+      return (this.talent.description || '')
+        .split(new RegExp(`\\s{2,}|\\s(?<!Mythic |Repeatable )(?=(?:${labels}):)`))
+        .map(part => part.trim())
+        .filter(part => part)
+        .map(part => {
+          const match = part.match(new RegExp(`^(${labels}):\\s*(.*)$`));
+          if (!match) {
+            return { text: part };
+          }
+          return { label: match[1], text: match[2], quest: match[1] !== 'Passive' && match[1] !== 'Gambit' };
+        });
+    },
     displayTitle() {
-      if (this.talent && this.talent.title && this.talent.title !== '') {
-        return this.talent.title;
-      }
-      return this.talent && this.talent.talent_name ? this.talent.talent_name : '';
+      return this.$talentName(this.talent);
     }
   },
   watch: {
@@ -59,9 +79,6 @@ export default {
       }
       return `/images/talents/${this.talent.icon}`;
     },
-    removeNumbers(str) {
-      return str.replace(/\d+/g, '');
-    }
   }
 }
 </script>

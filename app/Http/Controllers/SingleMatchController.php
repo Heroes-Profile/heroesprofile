@@ -281,6 +281,8 @@ class SingleMatchController extends Controller
                     $this->schema.'.player.hero_change',
                     $this->schema.'.player.role_conservative_rating',
                     $this->schema.'.player.role_change',
+                    $this->schema.'.player.map_conservative_rating',
+                    $this->schema.'.player.map_change',
                     $this->schema.'.player.mastery_taunt',
                     $this->schema.'.battletags.account_level',
                     $this->schema.'.scores.match_award',
@@ -349,6 +351,8 @@ class SingleMatchController extends Controller
                 'downloadable' => ! $this->esport ? $this->globalDataService->replayFileIsRetained($replayGroup[0]->date_added) : null,
                 'replay_download_blocked' => $replayDownloadBlocked,
                 'game_type' => ! $this->esport ? $this->globalDataService->getGameTypeIDtoString()[$replayGroup[0]->game_type]['name'] : null,
+                // For links to the MMR page, which takes ?game_type= by short name
+                'game_type_short' => ! $this->esport ? $this->globalDataService->getGameTypeIDtoString()[$replayGroup[0]->game_type]['short_name'] : null,
                 'game_date' => $replayGroup[0]->game_date,
                 'game_map' => $maps[$replayGroup[0]->game_map],
                 'game_length' => $timeFormat,
@@ -473,6 +477,9 @@ class SingleMatchController extends Controller
                         'role_conservative_rating' => ($this->esport || $containsAccount) ? null : $row->role_conservative_rating,
                         'role_mmr' => ($this->esport || $containsAccount) ? null : round(1800 + 40 * $row->role_conservative_rating),
                         'role_change' => ($this->esport || $containsAccount) ? null : round($row->role_change, 2),
+                        // Null for brawls and games the map MMR hasn't reached
+                        'map_mmr' => ($this->esport || $containsAccount || $row->map_conservative_rating === null) ? null : round(1800 + 40 * $row->map_conservative_rating),
+                        'map_change' => ($this->esport || $containsAccount || $row->map_conservative_rating === null) ? null : round($row->map_change, 2),
                         'score' => [
                             'level' => $row->level,
                             'takedowns' => $row->takedowns,

@@ -1,6 +1,7 @@
-@extends('layouts.app', $bladeGlobals)    
+@extends('layouts.app', $bladeGlobals)
+@section('no_ads', '1')
 
-@section('title', 'Patreon Authentication Failed')
+@section('title', __('Patreon Authentication Failed'))
 @section('meta_keywords', 'Patreon authentication Failed')
 @section('meta_description', 'Patreon authentication Failed.')
 
