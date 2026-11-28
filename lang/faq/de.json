@@ -326,6 +326,10 @@
         "f9ae99a59d56f8f0": {
             "q": "Hat Heroes Profile eine API?",
             "a": "Ja, wir bieten eine öffentliche API an. Die Dokumentation findest du unter <a href=\"/Api/Docs\" class=\"link\">heroesprofile.com/Api/Docs</a>. Die API hat Ratenbegrenzungen und ist für eine angemessene Nutzung gedacht – nicht für das massenhafte Herunterladen der gesamten Replay-Datenbank. Jeder bezahlte API-Plan enthält außerdem <a href=\"/Analytics\" class=\"link\">Spieleranalysen</a> für einen Battle.net-Account, den du auf deiner API-Kontoseite verknüpfst."
+        },
+        "131c7f95c7434b69": {
+            "q": "Welcher Held ist gerade der beste?",
+            "a": "Öffne <a href=\"/Global/Hero\" class=\"link\">Heldenstatistiken</a>. Dort stehen Siegesrate, Beliebtheit, Pickrate und Bannrate jedes Helden für den neuesten Patch, oben mit einer Tierliste zum Aufklappen. Sortiere nach <strong>Siegesrate</strong> und achte auf die Zahl der Spiele, denn ein Held mit wenigen Spielen kann besser aussehen, als er ist. Die Filter <strong>Spielmodus</strong> und <strong>HP-Spielerrang</strong> zeigen, was in der Sturmliga oder auf deinem Rang am stärksten ist. Die besten Talente und Builds eines Helden findest du unter <a href=\"/Global/Talents\" class=\"link\">Talente</a>."
         }
     }
 }

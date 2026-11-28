@@ -326,6 +326,10 @@
         "f9ae99a59d56f8f0": {
             "q": "Heroes Profile propose-t-il une API ?",
             "a": "Oui, nous proposons une API publique. La documentation est disponible sur <a href=\"/Api/Docs\" class=\"link\">heroesprofile.com/Api/Docs</a>. L'API est soumise à des limites de requêtes et destinée à un usage raisonnable, pas au téléchargement massif de toute la base de replays. Toute offre API payante inclut aussi les <a href=\"/Analytics\" class=\"link\">Analyses du joueur</a> pour un compte Battle.net, à lier sur la page de votre compte API."
+        },
+        "131c7f95c7434b69": {
+            "q": "Quel héros est le meilleur en ce moment ?",
+            "a": "Ouvrez <a href=\"/Global/Hero\" class=\"link\">Statistiques des héros</a>. Vous y trouverez le taux de victoire, la popularité, le taux de sélection et le taux de bannissement de chaque héros pour le dernier patch, avec un classement des héros à déplier en haut. Triez par <strong>Taux de victoire</strong> et regardez le nombre de parties, car un héros avec peu de parties peut sembler meilleur qu'il ne l'est. Les filtres <strong>Mode de jeu</strong> et <strong>Rang de joueur HP</strong> montrent ce qui est le plus fort en Ligue Tempête ou à votre rang. Pour les meilleurs talents et builds d'un héros, consultez <a href=\"/Global/Talents\" class=\"link\">Talents</a>."
         }
     }
 }

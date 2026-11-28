@@ -326,6 +326,10 @@
         "f9ae99a59d56f8f0": {
             "q": "Heroes Profile에 API가 있나요?",
             "a": "네, 공개 API를 제공합니다. 문서는 <a href=\"/Api/Docs\" class=\"link\">heroesprofile.com/Api/Docs</a>에서 볼 수 있습니다. API에는 요청 한도가 있으며 합리적인 사용을 위한 것으로, 전체 리플레이 데이터베이스를 대량으로 내려받는 용도가 아닙니다. 유료 API 요금제에는 API 계정 페이지에서 연결한 Battle.net 계정 1개에 대한 <a href=\"/Analytics\" class=\"link\">플레이어 분석</a>도 포함됩니다."
+        },
+        "131c7f95c7434b69": {
+            "q": "지금 가장 좋은 영웅은 누구인가요?",
+            "a": "<a href=\"/Global/Hero\" class=\"link\">영웅 통계</a>를 여세요. 최신 패치 기준으로 모든 영웅의 승률, 인기도, 선택률, 금지율이 나오며, 위쪽에서 티어 목록을 펼쳐 볼 수 있습니다. <strong>승률</strong>로 정렬하고 게임 수도 확인하세요. 게임 수가 적은 영웅은 실제보다 좋아 보일 수 있습니다. <strong>게임 모드</strong>와 <strong>HP 플레이어 등급</strong> 필터로 폭풍 리그나 내 등급에서 무엇이 가장 강한지 볼 수 있습니다. 영웅의 가장 좋은 특성과 빌드는 <a href=\"/Global/Talents\" class=\"link\">특성</a>에서 확인하세요."
         }
     }
 }

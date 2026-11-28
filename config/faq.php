@@ -156,6 +156,10 @@ return [
                     'a' => 'The <a href="/Global/Talents/Builder" class="link">Talent Builder</a> lets you construct a specific talent build and see win rate data for exactly that combination. It\'s great for comparing two builds head-to-head with real game data.',
                 ],
                 [
+                    'q' => 'Which hero is the best right now?',
+                    'a' => 'Open <a href="/Global/Hero" class="link">Hero Stats</a>. It lists every hero\'s win rate, popularity, pick rate and ban rate for the latest patch, with a Tier List you can open at the top. Sort by <strong>Win Rate</strong> and check games played, since a hero with few games can look better than it is. The <strong>Game Type</strong> and <strong>HP Player Rank</strong> filters show what is strongest in Storm League or at your rank. For the best talents and builds on a hero, see <a href="/Global/Talents" class="link">Talents</a>.',
+                ],
+                [
                     'q' => 'What is the best build for a hero?',
                     'a' => 'Open the hero on <a href="/Global/Talents" class="link">Talents</a>, e.g. <a href="/Global/Talents/Valla" class="link">/Global/Talents/Valla</a>. It defaults to the latest patch. The builds table lists complete level 1 to 20 builds; sort it by <strong>Win Chance</strong> and check games played, since a build with few games can look better than it is. <strong>Talent Build Type</strong> switches between the most played builds and different early-game paths. The talent table above it shows each talent\'s win rate on its own, which isn\'t the same as a full build. To test a combination of your own, use the <a href="/Global/Talents/Builder" class="link">Talent Builder</a>.',
                 ],

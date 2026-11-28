@@ -326,6 +326,10 @@
         "f9ae99a59d56f8f0": {
             "q": "Czy Heroes Profile ma API?",
             "a": "Tak, udostępniamy publiczne API. Dokumentacja jest dostępna pod adresem <a href=\"/Api/Docs\" class=\"link\">heroesprofile.com/Api/Docs</a>. API ma limity żądań i jest przeznaczone do rozsądnego użytku, a nie do masowego pobierania całej bazy powtórek. Każdy płatny plan API obejmuje też <a href=\"/Analytics\" class=\"link\">Analitykę gracza</a> dla jednego konta Battle.net, które połączysz na stronie konta API."
+        },
+        "131c7f95c7434b69": {
+            "q": "Który bohater jest teraz najlepszy?",
+            "a": "Otwórz <a href=\"/Global/Hero\" class=\"link\">Statystyki bohaterów</a>. Znajdziesz tam odsetek zwycięstw, popularność, odsetek wyborów i odsetek banów każdego bohatera w najnowszej łatce, a na górze ranking bohaterów do rozwinięcia. Posortuj według <strong>Odsetek zwycięstw</strong> i sprawdź liczbę gier, bo bohater z małą liczbą gier może wyglądać lepiej, niż jest. Filtry <strong>Tryb gry</strong> i <strong>Ranga gracza HP</strong> pokazują, co jest najsilniejsze w Lidze Burzy albo na twojej randze. Najlepsze talenty i buildy bohatera znajdziesz w zakładce <a href=\"/Global/Talents\" class=\"link\">Talenty</a>."
         }
     }
 }

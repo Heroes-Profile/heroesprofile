@@ -326,6 +326,10 @@
         "f9ae99a59d56f8f0": {
             "q": "Heroes Profile 有提供 API 嗎？",
             "a": "有，我們提供公開 API。說明文件請見 <a href=\"/Api/Docs\" class=\"link\">heroesprofile.com/Api/Docs</a>。API 設有請求頻率限制，僅供合理使用，不得用於大量下載整個重播資料庫。任一付費 API 方案也包含<a href=\"/Analytics\" class=\"link\">玩家分析</a>，適用於你在 API 帳號頁面連結的一個 Battle.net 帳號。"
+        },
+        "131c7f95c7434b69": {
+            "q": "現在哪個英雄最強？",
+            "a": "打開<a href=\"/Global/Hero\" class=\"link\">英雄統計</a>。這裡列出最新修正檔中每個英雄的勝率、熱門度、選取率和禁用率，頂部還可以展開強度榜。依<strong>勝率</strong>排序，並留意場次：場次少的英雄可能看起來比實際更強。用<strong>遊戲模式</strong>和<strong>HP 玩家段位</strong>篩選，可以查看風暴聯賽或你所在段位中最強的英雄。英雄的最佳天賦和組合請看<a href=\"/Global/Talents\" class=\"link\">天賦</a>。"
         }
     }
 }

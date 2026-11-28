@@ -326,6 +326,10 @@
         "f9ae99a59d56f8f0": {
             "q": "Heroes Profile 有 API 吗？",
             "a": "有，我们提供公开 API。文档见 <a href=\"/Api/Docs\" class=\"link\">heroesprofile.com/Api/Docs</a>。API 有请求频率限制，仅供合理使用——不得用于批量下载整个录像数据库。任意付费 API 方案还包含<a href=\"/Analytics\" class=\"link\">玩家分析</a>，适用于你在 API 账号页面关联的一个 Battle.net 账号。"
+        },
+        "131c7f95c7434b69": {
+            "q": "现在哪个英雄最强？",
+            "a": "打开<a href=\"/Global/Hero\" class=\"link\">英雄统计</a>。这里列出最新补丁中每个英雄的胜率、热门度、选取率和禁用率，顶部还可以展开强度榜。按<strong>胜率</strong>排序，并留意场次：场次少的英雄可能看起来比实际更强。用<strong>游戏模式</strong>和<strong>HP 玩家段位</strong>筛选，可以查看风暴联赛或你所在段位中最强的英雄。英雄的最佳天赋和构筑请看<a href=\"/Global/Talents\" class=\"link\">天赋</a>。"
         }
     }
 }
