@@ -22,10 +22,9 @@
       </div>
     </player-page-top>
 
-      <!---You are going to have to design this better, I am going to use buttons for now -->
-      <!-- The sections; none is picked on the landing cards, and the others wait while one loads -->
-      <div class="flex justify-center px-4 mt-6 mb-6">
-        <tab-button :tabs="[{ key: 'overallHeroStats', text: 'Overall Hero Stats' }, { key: 'overallTalentStats', text: 'Overall Talent Stats' }]" :no-default="true" :disabled="isLoading" :overridedefaultside="activeButton" :ignoreclick="true" @tab-click="setButtonActive"></tab-button>
+      <!-- The sections, across the page as on the other leagues; none is picked on the landing cards, and the others wait while one loads -->
+      <div class="max-w-[120rem] mx-auto px-4 md:px-8 mt-6 mb-6">
+        <tab-button :tabs="[{ key: 'overallHeroStats', text: 'Overall Hero Stats' }, { key: 'overallTalentStats', text: 'Overall Talent Stats' }]" :stretch="true" :no-default="true" :disabled="isLoading" :overridedefaultside="activeButton" :ignoreclick="true" @tab-click="setButtonActive"></tab-button>
       </div>
 
 
