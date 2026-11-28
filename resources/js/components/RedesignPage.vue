@@ -5,9 +5,13 @@
     <div class="max-w-[120rem] mx-auto px-4 md:px-8 flex flex-col gap-10">
       <!-- The same pages screenshotted on the old site and the new one; drag the handle to wipe between them -->
       <section class="flex flex-col gap-4">
-        <div>
-          <h2 class="text-2xl font-bold">{{ $t('Side by side') }}</h2>
-          <p class="text-sm text-subtext mt-1">{{ $t('Browse the site with its own menus: each page shows on the old site and the new one. Drag the handle to compare.') }}</p>
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold">{{ $t('Side by side') }}</h2>
+            <p class="text-sm text-subtext mt-1">{{ $t('Browse the site with its own menus: each page shows on the old site and the new one. Drag the handle to compare.') }}</p>
+          </div>
+          <!-- Which screenshots: a desktop's or a phone's; starts on the visitor's own -->
+          <tab-button tab1text="Desktop" tab2text="Phone" :ignoreclick="true" :overridedefaultside="phoneShots ? 'right' : 'left'" @tab-click="(side) => phoneShots = side === 'right'"></tab-button>
         </div>
         <!-- A copy of the site's nav, on the nav's own classes; its links pick a screenshot instead of leaving the page.
              Desktop opens menus on hover like the real nav, phones on a tap -->
@@ -54,17 +58,18 @@
             </template>
           </div>
         </nav>
-        <div class="relative w-full max-w-[105rem] mx-auto rounded overflow-hidden select-none aspect-video bg-surface" :style="{ '--wipe': wipe + '%' }">
-          <img :src="`/images/redesign/2026/${screenshot}-after.jpg`" :alt="$t('After')" class="absolute inset-0 w-full h-full object-cover object-top" draggable="false" />
+        <div :class="['relative w-full mx-auto rounded overflow-hidden select-none bg-surface', phoneShots ? 'max-w-[24rem] aspect-[390/844]' : 'max-w-[105rem] aspect-video']" :style="{ '--wipe': wipe + '%' }">
+          <img :src="`/images/redesign/2026/${screenshot}-after${shotSuffix}.jpg`" :alt="$t('After')" class="absolute inset-0 w-full h-full object-cover object-top" draggable="false" />
           <!-- A page with no old version (new, or unreachable on the old site) shows the new shot alone -->
           <template v-if="!afterOnly.includes(screenshot)">
-          <img :src="`/images/redesign/2026/${screenshot}-before.jpg`" :alt="$t('Before')" class="absolute inset-0 w-full h-full object-cover object-top [clip-path:inset(0_calc(100%-var(--wipe))_0_0)]" draggable="false" />
+          <img :src="`/images/redesign/2026/${screenshot}-before${shotSuffix}.jpg`" :alt="$t('Before')" class="absolute inset-0 w-full h-full object-cover object-top" :class="phoneShots ? '[clip-path:inset(0_0_calc(100%-var(--wipe))_0)]' : '[clip-path:inset(0_calc(100%-var(--wipe))_0_0)]'" draggable="false" />
           <!-- One label in the middle, naming whichever side shows more -->
           <span class="absolute z-10 top-3 left-1/2 -translate-x-1/2 rounded px-5 py-2 text-xl font-bold pointer-events-none" :class="wipe >= 50 ? 'bg-surface' : 'bg-teal'">{{ wipe >= 50 ? $t('Before') : $t('After') }}</span>
-          <span class="absolute inset-y-0 w-0.5 bg-white pointer-events-none left-[var(--wipe)]">
-            <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-teal flex items-center justify-center shadow-lg"><i class="fas fa-arrows-alt-h"></i></span>
+          <!-- Desktop wipes left to right; the tall phone shots wipe top to bottom, the old page above the line -->
+          <span :class="['absolute bg-white pointer-events-none', phoneShots ? 'inset-x-0 h-0.5 top-[var(--wipe)]' : 'inset-y-0 w-0.5 left-[var(--wipe)]']">
+            <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-teal flex items-center justify-center shadow-lg"><i :class="['fas', phoneShots ? 'fa-arrows-alt-v' : 'fa-arrows-alt-h']"></i></span>
           </span>
-          <input type="range" min="0" max="100" step="0.1" v-model.number="wipe" :aria-label="$t('Drag the handle to compare.')" class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize" />
+          <input type="range" min="0" max="100" step="0.1" v-model.number="wipe" :aria-label="$t('Drag the handle to compare.')" :class="['absolute inset-0 w-full h-full opacity-0', phoneShots ? 'cursor-ns-resize [writing-mode:vertical-lr]' : 'cursor-ew-resize']" />
           </template>
           <span v-else class="absolute top-3 left-1/2 -translate-x-1/2 rounded px-5 py-2 text-xl font-bold pointer-events-none bg-teal">{{ $t('New in the redesign') }}</span>
         </div>
@@ -294,6 +299,8 @@ export default {
       // Side by side: the page showing, and how far across the old screenshot reaches
       screenshot: 'home',
       wipe: 50,
+      // Phone screenshots instead of desktop ones; a phone starts on them
+      phoneShots: window.matchMedia('(max-width: 767px)').matches,
       // The nav replica's open menu on phones, where there's no hover
       openMenu: null,
       // The site nav's menus, in its order; each key has a before and after shot in public/images/redesign/2026
@@ -467,6 +474,10 @@ export default {
     };
   },
   computed: {
+    // The screenshot files' ending for the chosen device
+    shotSuffix() {
+      return this.phoneShots ? '-phone' : '';
+    },
     // The thanks sentence around the name; null is where the name goes
     thanksParts() {
       const marker = '\u0000';
