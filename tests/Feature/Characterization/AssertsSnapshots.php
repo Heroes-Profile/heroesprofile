@@ -32,7 +32,26 @@ trait AssertsSnapshots
             fwrite(STDERR, "\nSnapshot written: {$name}");
         }
 
-        $this->assertSame(file_get_contents($path), $encoded, "Response for {$name} no longer matches its snapshot");
+        // Pages' HTML is always recorded but only compared when asked (hp:test --html, for an upgrade), so a
+        // markup change doesn't fail every run. Status, view, view data and JSON are always compared.
+        $expected = file_get_contents($path);
+        if (! getenv('SNAPSHOT_HTML')) {
+            $expected = $this->withoutBody($expected);
+            $encoded = $this->withoutBody($encoded);
+        }
+
+        $this->assertSame($expected, $encoded, "Response for {$name} no longer matches its snapshot");
+    }
+
+    private function withoutBody(string $snapshot): string
+    {
+        $decoded = json_decode($snapshot, true);
+        if (! is_array($decoded) || ! array_key_exists('body', $decoded)) {
+            return $snapshot;
+        }
+        unset($decoded['body']);
+
+        return json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION)."\n";
     }
 
     private function snapshotFileName(string $name): string
