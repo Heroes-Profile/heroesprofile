@@ -81,9 +81,13 @@ class BattleNetController extends Controller
             ]
         );
 
-        // Keep remember tokens in Laravel's expected short random format.
-        $battlenetAccount->setRememberToken(Str::random(60));
-        $battlenetAccount->save();
+        // Only a missing token, or an old one from Battle.net's access token, gets a new short random one. A new token on
+        // every login signed the account's other browsers, devices and the dev/redesign sites out of "remember me" (#1607).
+        $rememberToken = $battlenetAccount->getRememberToken();
+        if (blank($rememberToken) || strlen($rememberToken) > 60) {
+            $battlenetAccount->setRememberToken(Str::random(60));
+            $battlenetAccount->save();
+        }
 
         Auth::login($battlenetAccount, true);
 
