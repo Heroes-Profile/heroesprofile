@@ -95439,6 +95439,391 @@
                 ]
             }
         },
+        "/players/mmr/history/maps": {
+            "get": {
+                "summary": "Rating over time on one map, one entry per match.",
+                "operationId": "api.external.players.mmr.history.maps",
+                "parameters": [
+                    {
+                        "name": "battletag",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Full battletag including the discriminator.",
+                        "example": "Zemill#1940"
+                    },
+                    {
+                        "name": "region",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "NA",
+                                "EU",
+                                "KR",
+                                "CN",
+                                "1",
+                                "2",
+                                "3",
+                                "5"
+                            ]
+                        },
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
+                    },
+                    {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
+                        "name": "map",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Map name. Brawl maps have no rating.",
+                        "example": "Alterac Pass"
+                    },
+                    {
+                        "name": "game_type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League.",
+                        "example": "Storm League"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "history": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "replayID": {
+                                                        "type": "integer",
+                                                        "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
+                                                    },
+                                                    "game_date": {
+                                                        "type": "string",
+                                                        "description": "When the match was played, as `YYYY-MM-DD HH:MM:SS` UTC."
+                                                    },
+                                                    "game_map": {
+                                                        "type": "integer"
+                                                    },
+                                                    "mmr_ran": {
+                                                        "type": "integer"
+                                                    },
+                                                    "winner": {
+                                                        "type": "string"
+                                                    },
+                                                    "hero": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "alt_name": {
+                                                                "type": [
+                                                                    "null",
+                                                                    "string"
+                                                                ]
+                                                            },
+                                                            "role": {
+                                                                "type": "string"
+                                                            },
+                                                            "new_role": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string"
+                                                            },
+                                                            "release_date": {
+                                                                "type": "string"
+                                                            },
+                                                            "rework_date": {
+                                                                "type": "null"
+                                                            },
+                                                            "last_change_patch_version": {
+                                                                "type": "string"
+                                                            },
+                                                            "attribute_id": {
+                                                                "type": "string"
+                                                            },
+                                                            "build_copy_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "last_updated": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "short_name",
+                                                            "alt_name",
+                                                            "role",
+                                                            "new_role",
+                                                            "type",
+                                                            "release_date",
+                                                            "rework_date",
+                                                            "last_change_patch_version",
+                                                            "attribute_id",
+                                                            "build_copy_name",
+                                                            "last_updated"
+                                                        ]
+                                                    },
+                                                    "player_conservative_rating": {
+                                                        "type": "number"
+                                                    },
+                                                    "player_change": {
+                                                        "type": "number"
+                                                    },
+                                                    "hero_conservative_rating": {
+                                                        "type": "number"
+                                                    },
+                                                    "hero_change": {
+                                                        "type": "number"
+                                                    },
+                                                    "role_conservative_rating": {
+                                                        "type": "number"
+                                                    },
+                                                    "role_change": {
+                                                        "type": "number"
+                                                    },
+                                                    "mmr_date_parsed": {
+                                                        "type": "string"
+                                                    },
+                                                    "hero_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "mmr": {
+                                                        "type": "integer"
+                                                    },
+                                                    "mmr_change": {
+                                                        "type": "number"
+                                                    },
+                                                    "x_label": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "replayID",
+                                                    "game_date",
+                                                    "game_map",
+                                                    "mmr_ran",
+                                                    "winner",
+                                                    "hero",
+                                                    "player_conservative_rating",
+                                                    "player_change",
+                                                    "hero_conservative_rating",
+                                                    "hero_change",
+                                                    "role_conservative_rating",
+                                                    "role_change",
+                                                    "mmr_date_parsed",
+                                                    "hero_id",
+                                                    "mmr",
+                                                    "mmr_change",
+                                                    "x_label"
+                                                ]
+                                            }
+                                        },
+                                        "league_tiers": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "league_breakdowns_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "type_role_hero": {
+                                                        "type": "integer"
+                                                    },
+                                                    "game_type": {
+                                                        "type": "integer"
+                                                    },
+                                                    "league_tier": {
+                                                        "type": "integer"
+                                                    },
+                                                    "min_mmr": {
+                                                        "type": "integer"
+                                                    },
+                                                    "max_mmr": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "league_breakdowns_id",
+                                                    "type_role_hero",
+                                                    "game_type",
+                                                    "league_tier",
+                                                    "min_mmr"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "history",
+                                        "league_tiers"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `terms_not_accepted`, `subscription_inactive`, `project_details_required`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-endpoint-key": "player_mmr_history_map",
+                "x-site-page": "/Player/{battletag}/{blizz_id}/{region}/MMR",
+                "tags": [
+                    "Player Stats"
+                ]
+            }
+        },
         "/players/mmr/history/roles": {
             "get": {
                 "summary": "Rating over time in one role, one entry per match.",
@@ -95818,6 +96203,354 @@
                     }
                 },
                 "x-endpoint-key": "player_mmr_history_role",
+                "x-site-page": "/Player/{battletag}/{blizz_id}/{region}/MMR",
+                "tags": [
+                    "Player Stats"
+                ]
+            }
+        },
+        "/players/mmr/maps": {
+            "get": {
+                "summary": "Current rating on one map, per game type.",
+                "operationId": "api.external.players.mmr.maps",
+                "parameters": [
+                    {
+                        "name": "battletag",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Full battletag including the discriminator.",
+                        "example": "Zemill#1940"
+                    },
+                    {
+                        "name": "region",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "NA",
+                                "EU",
+                                "KR",
+                                "CN",
+                                "1",
+                                "2",
+                                "3",
+                                "5"
+                            ]
+                        },
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
+                    },
+                    {
+                        "name": "map",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Map name. Brawl maps have no rating.",
+                        "example": "Alterac Pass"
+                    },
+                    {
+                        "name": "game_type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.",
+                        "example": "Storm League"
+                    },
+                    {
+                        "name": "extra_mmr_info",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "description": "Adds `conservative_rating`, `mean` and `standard_deviation` to each rating.",
+                        "example": "false"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "de",
+                                "es",
+                                "es-MX",
+                                "fr",
+                                "it",
+                                "ko",
+                                "pl",
+                                "pt-BR",
+                                "ru",
+                                "zh-CN",
+                                "zh-TW"
+                            ]
+                        },
+                        "description": "Language for names and error messages. Hero, map, talent, role, game type and award names keep their English field and gain a `_localized` one beside it, such as `hero` and `hero_localized`, when a translation exists. Error `message` is translated; `code` never is. For a 202, send it on the `jobs/{jobId}` call that collects the result. Omit for English.",
+                        "example": "ko"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "battletag": {
+                                            "type": "string"
+                                        },
+                                        "region": {
+                                            "type": "integer",
+                                            "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                                        },
+                                        "ratings": {
+                                            "type": "object",
+                                            "properties": {
+                                                "Quick Match": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "mmr": {
+                                                            "type": "integer"
+                                                        },
+                                                        "games_played": {
+                                                            "type": "integer"
+                                                        },
+                                                        "games_played_last_90_days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "league_tier": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "mmr",
+                                                        "games_played",
+                                                        "games_played_last_90_days",
+                                                        "league_tier"
+                                                    ]
+                                                },
+                                                "Unranked Draft": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "mmr": {
+                                                            "type": "integer"
+                                                        },
+                                                        "games_played": {
+                                                            "type": "integer"
+                                                        },
+                                                        "games_played_last_90_days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "league_tier": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "mmr",
+                                                        "games_played",
+                                                        "games_played_last_90_days",
+                                                        "league_tier"
+                                                    ]
+                                                },
+                                                "Hero League": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "mmr": {
+                                                            "type": "integer"
+                                                        },
+                                                        "games_played": {
+                                                            "type": "integer"
+                                                        },
+                                                        "games_played_last_90_days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "league_tier": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "mmr",
+                                                        "games_played",
+                                                        "games_played_last_90_days",
+                                                        "league_tier"
+                                                    ]
+                                                },
+                                                "Team League": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "mmr": {
+                                                            "type": "integer"
+                                                        },
+                                                        "games_played": {
+                                                            "type": "integer"
+                                                        },
+                                                        "games_played_last_90_days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "league_tier": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "mmr",
+                                                        "games_played",
+                                                        "games_played_last_90_days",
+                                                        "league_tier"
+                                                    ]
+                                                },
+                                                "Storm League": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "mmr": {
+                                                            "type": "integer"
+                                                        },
+                                                        "games_played": {
+                                                            "type": "integer"
+                                                        },
+                                                        "games_played_last_90_days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "league_tier": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "mmr",
+                                                        "games_played",
+                                                        "games_played_last_90_days",
+                                                        "league_tier"
+                                                    ]
+                                                },
+                                                "ARAM": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "mmr": {
+                                                            "type": "integer"
+                                                        },
+                                                        "games_played": {
+                                                            "type": "integer"
+                                                        },
+                                                        "games_played_last_90_days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "league_tier": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "mmr",
+                                                        "games_played",
+                                                        "games_played_last_90_days",
+                                                        "league_tier"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "Quick Match",
+                                                "Unranked Draft",
+                                                "Hero League",
+                                                "Team League",
+                                                "Storm League",
+                                                "ARAM"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "battletag",
+                                        "region",
+                                        "ratings"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `terms_not_accepted`, `subscription_inactive`, `project_details_required`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-endpoint-key": "player_mmr_map",
                 "x-site-page": "/Player/{battletag}/{blizz_id}/{region}/MMR",
                 "tags": [
                     "Player Stats"

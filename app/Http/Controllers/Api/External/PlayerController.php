@@ -279,6 +279,11 @@ class PlayerController extends Controller
         return $this->currentRating($request, 'role');
     }
 
+    public function mapMmr(Request $request): Response
+    {
+        return $this->currentRating($request, 'map');
+    }
+
     public function mmrHistory(Request $request): Response
     {
         return $this->ratings($request, 'Player');
@@ -294,9 +299,14 @@ class PlayerController extends Controller
         return $this->ratings($request, 'Role');
     }
 
+    public function mapMmrHistory(Request $request): Response
+    {
+        return $this->ratings($request, 'Map');
+    }
+
     /**
-     * `$subjectParam` names the parameter holding what is being rated — `hero` or
-     * `role` — or null for the account overall.
+     * `$subjectParam` names the parameter holding what is being rated — `hero`,
+     * `role` or `map` — or null for the account overall.
      */
     private function currentRating(Request $request, ?string $subjectParam): Response
     {
@@ -425,7 +435,7 @@ class PlayerController extends Controller
     }
 
     /**
-     * Ratings for the account, per hero, or per role — same controller, one flag.
+     * Ratings for the account, per hero, per role or per map — same controller, one flag.
      *
      * `Hero` and `Role` carry `required_if` rules internally, and that controller
      * answers a validation failure as a 200 with a `status` field. Catching the

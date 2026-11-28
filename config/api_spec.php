@@ -167,7 +167,9 @@ return [
             'api.external.players.mmr.heroes',
             'api.external.players.mmr.history',
             'api.external.players.mmr.history.heroes',
+            'api.external.players.mmr.history.maps',
             'api.external.players.mmr.history.roles',
+            'api.external.players.mmr.maps',
             'api.external.players.mmr.roles',
             'api.external.players.party',
             'api.external.players.privacy.changes',
@@ -529,6 +531,27 @@ return [
                 'role' => ['required' => true, 'description' => 'Role name.', 'example' => 'Healer'],
                 'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.', 'example' => 'Storm League'],
                 'extra_mmr_info' => ['type' => 'boolean', 'description' => 'Adds `conservative_rating`, `mean` and `standard_deviation` to each rating.', 'example' => 'false'],
+            ],
+        ],
+
+        'api.external.players.mmr.maps' => [
+            'summary' => 'Current rating on one map, per game type.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/MMR',
+            'uses' => ['player'],
+            'parameters' => [
+                'map' => ['required' => true, 'description' => 'Map name. Brawl maps have no rating.', 'example' => 'Alterac Pass'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.', 'example' => 'Storm League'],
+                'extra_mmr_info' => ['type' => 'boolean', 'description' => 'Adds `conservative_rating`, `mean` and `standard_deviation` to each rating.', 'example' => 'false'],
+            ],
+        ],
+
+        'api.external.players.mmr.history.maps' => [
+            'summary' => 'Rating over time on one map, one entry per match.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/MMR',
+            'uses' => ['player', 'player_dates'],
+            'parameters' => [
+                'map' => ['required' => true, 'description' => 'Map name. Brawl maps have no rating.', 'example' => 'Alterac Pass'],
+                'game_type' => ['description' => 'One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League.', 'example' => 'Storm League'],
             ],
         ],
 

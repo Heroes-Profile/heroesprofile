@@ -1,0 +1,16 @@
+{
+    "status": 200,
+    "content_type": "application/json",
+    "json": {
+        "battletag": "Zemill#194",
+        "region": 1,
+        "ratings": {
+            "Storm League": {
+                "mmr": 2898,
+                "games_played": 21,
+                "games_played_last_90_days": 0,
+                "league_tier": "Master"
+            }
+        }
+    }
+}

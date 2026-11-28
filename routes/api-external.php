@@ -121,6 +121,10 @@ Route::get('players/mmr/history/roles', [PlayerController::class, 'roleMmrHistor
     ->middleware(['api.fixtures:player_mmr_history_role', 'api.quota:player_mmr_history_role'])
     ->name('api.external.players.mmr.history.roles');
 
+Route::get('players/mmr/history/maps', [PlayerController::class, 'mapMmrHistory'])
+    ->middleware(['api.fixtures:player_mmr_history_map', 'api.quota:player_mmr_history_map'])
+    ->name('api.external.players.mmr.history.maps');
+
 Route::get('players/mmr', [PlayerController::class, 'mmr'])
     ->middleware(['api.fixtures:player_mmr', 'api.quota:player_mmr'])
     ->name('api.external.players.mmr');
@@ -132,6 +136,10 @@ Route::get('players/mmr/heroes', [PlayerController::class, 'heroMmr'])
 Route::get('players/mmr/roles', [PlayerController::class, 'roleMmr'])
     ->middleware(['api.fixtures:player_mmr_role', 'api.quota:player_mmr_role'])
     ->name('api.external.players.mmr.roles');
+
+Route::get('players/mmr/maps', [PlayerController::class, 'mapMmr'])
+    ->middleware(['api.fixtures:player_mmr_map', 'api.quota:player_mmr_map'])
+    ->name('api.external.players.mmr.maps');
 
 Route::get('players/talents/build', [PlayerController::class, 'talentBuild'])
     ->middleware(['api.fixtures:player_talents_build', 'api.quota:player_talents_build'])
